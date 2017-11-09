@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.axelor.apps.base.db.*;
 import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;
@@ -34,10 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -85,8 +82,7 @@ public class PartnerController {
 		if(partner.getPartnerSeq() ==  null) {
 			String seq = sequenceService.getSequenceNumber(IAdministration.PARTNER);
 			if (seq == null)
-				throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_1),
-						IException.CONFIGURATION_ERROR);
+				throw new AxelorException(partner, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_1));
 			else
 				response.setValue("partnerSeq", seq);
 		}
@@ -311,10 +307,36 @@ public class PartnerController {
 	public void convertToIndividualPartner(ActionRequest request, ActionResponse response) throws AxelorException {
 		Partner partner = request.getContext().asType(Partner.class);
 		if (partner.getId() == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_3),
-					IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_3));
 		}
 		partner = partnerRepo.find(partner.getId());
 		partnerService.convertToIndividualPartner(partner);
 	}
+
+	public void checkPartnerName(ActionRequest request, ActionResponse response) {
+		Partner partner = request.getContext().asType(Partner.class);
+
+		if (partner.getName() != null && !partner.getName().isEmpty()) {
+			Partner existingPartner = partnerRepo.all()
+					.filter("self.isContact = false and lower(self.name) = lower(?1)", partner.getName())
+					.fetchOne();
+			if (existingPartner != null) {
+				response.setAlert("There is already a partner with this name");
+			}
+		}
+	}
+
+	public void checkContactName(ActionRequest request, ActionResponse response) {
+		Partner partner = request.getContext().asType(Partner.class);
+
+		if (partner.getName() != null && partner.getFirstName() != null) {
+			Partner existingPartner = partnerRepo.all()
+					.filter("self.isContact = true and lower(self.name) = lower(?1) and lower(self.firstName) = lower(?2)", partner.getName(), partner.getFirstName())
+					.fetchOne();
+			if (existingPartner != null) {
+				response.setAlert("There is already a contact with these first name and last name");
+			}
+		}
+	}
+
 }

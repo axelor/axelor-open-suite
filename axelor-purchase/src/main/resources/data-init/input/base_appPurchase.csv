@@ -1,0 +1,2 @@
+"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+"Purchase";"purchase";6;"Purchase configuration";"app-purchase.png";"axelor-purchase";"base";4

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -27,8 +27,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.com.bytecode.opencsv.CSVWriter;
-
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.repo.AddressRepository;
@@ -37,6 +35,7 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.opencsv.CSVWriter;
 
 
 public class AddressServiceImpl implements AddressService  {
@@ -168,6 +167,21 @@ public class AddressServiceImpl implements AddressService  {
     			+ (!Strings.isNullOrEmpty(l5) ? " "+l5 : "") + (!Strings.isNullOrEmpty(l6) ? " "+l6 : "");
 		
 	}
-	
-	
+
+	@Override
+	public String computeAddressStr(Address address) {
+		StringBuilder addressString = new StringBuilder();
+		if (address == null) {
+			return "";
+		}
+
+		if (address.getAddressL2() != null) { addressString.append(address.getAddressL2()).append("\n"); }
+		if (address.getAddressL3() != null) { addressString.append(address.getAddressL3()).append("\n"); }
+		if (address.getAddressL4() != null) { addressString.append(address.getAddressL4()).append("\n"); }
+		if (address.getAddressL5() != null) { addressString.append(address.getAddressL5()).append("\n"); }
+		if (address.getAddressL6() != null) { addressString.append(address.getAddressL6()); }
+		if (address.getAddressL7Country() != null) { addressString = addressString.append("\n").append(address.getAddressL7Country().getName()); }
+
+		return addressString.toString();
+	}
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
  
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
  
   <entity name="Mrp" lang="java">
   
-      <many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location" required="true"/>
+      <many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Stock Location" required="true"/>
       <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Products"/>
       <many-to-many name="productCategorySet" ref="com.axelor.apps.base.db.ProductCategory" title="Product categories"/>
       <many-to-many name="productFamilySet" ref="com.axelor.apps.base.db.ProductFamily" title="Product families"/>

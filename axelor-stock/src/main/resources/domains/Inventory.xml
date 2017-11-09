@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="Inventory" lang="java">
   
   	<integer name="importId" />
-  	<string name="inventorySeq" title="Inventory N°" readonly="true" unique="true"/>
-  	<many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location" required="true"/>
+  	<string name="inventorySeq" title="Inventory N°" readonly="true"/>
+  	<many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Stock Location" required="true"/>
     <integer name="statusSelect" title="Status" selection="inventory.status.select" readonly="true"/>
   	<datetime name="dateT" title="Date" required="true" tz="true"/>
   	<string name="description" title="Description" large="true"/>
@@ -22,13 +22,17 @@
   	<boolean name="excludeOutOfStock" title="Excl. out of stock products ?"/>
   	<boolean name="includeObsolete" title="Incl. obsolete products ?"/>
   	
-  	 <extra-code><![CDATA[
+  	<unique-constraint columns="inventorySeq,location"/>
+  	
+  	<extra-code><![CDATA[
 	
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
 		public static final int STATUS_PLANNED = 2;
-		public static final int STATUS_REALIZED = 3;
-		public static final int STATUS_CANCELED = 4;
+		public static final int STATUS_IN_PROGRESS = 3;
+		public static final int STATUS_COMPLETED = 4;
+		public static final int STATUS_VALIDATED = 5;
+		public static final int STATUS_CANCELED = 6;
 
 	]]></extra-code>
   	

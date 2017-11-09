@@ -19,33 +19,34 @@ package com.axelor.apps.bankpayment.service.bankorder.file.transfer;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
-import com.axelor.apps.account.xsd.pain_001_001_02.AccountIdentification3Choice;
-import com.axelor.apps.account.xsd.pain_001_001_02.AmountType2Choice;
-import com.axelor.apps.account.xsd.pain_001_001_02.BranchAndFinancialInstitutionIdentification3;
-import com.axelor.apps.account.xsd.pain_001_001_02.CashAccount7;
-import com.axelor.apps.account.xsd.pain_001_001_02.CreditTransferTransactionInformation1;
-import com.axelor.apps.account.xsd.pain_001_001_02.CreditorReferenceInformation1;
-import com.axelor.apps.account.xsd.pain_001_001_02.CurrencyAndAmount;
-import com.axelor.apps.account.xsd.pain_001_001_02.Document;
-import com.axelor.apps.account.xsd.pain_001_001_02.FinancialInstitutionIdentification5Choice;
-import com.axelor.apps.account.xsd.pain_001_001_02.GroupHeader1;
-import com.axelor.apps.account.xsd.pain_001_001_02.Grouping1Code;
-import com.axelor.apps.account.xsd.pain_001_001_02.ObjectFactory;
-import com.axelor.apps.account.xsd.pain_001_001_02.Pain00100102;
-import com.axelor.apps.account.xsd.pain_001_001_02.PartyIdentification8;
-import com.axelor.apps.account.xsd.pain_001_001_02.PaymentIdentification1;
-import com.axelor.apps.account.xsd.pain_001_001_02.PaymentInstructionInformation1;
-import com.axelor.apps.account.xsd.pain_001_001_02.PaymentMethod3Code;
-import com.axelor.apps.account.xsd.pain_001_001_02.PaymentTypeInformation1;
-import com.axelor.apps.account.xsd.pain_001_001_02.RemittanceInformation1;
-import com.axelor.apps.account.xsd.pain_001_001_02.ServiceLevel1Code;
-import com.axelor.apps.account.xsd.pain_001_001_02.ServiceLevel2Choice;
-import com.axelor.apps.account.xsd.pain_001_001_02.StructuredRemittanceInformation6;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.AccountIdentification3Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.AmountType2Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.BranchAndFinancialInstitutionIdentification3;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.CashAccount7;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.CreditTransferTransactionInformation1;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.CreditorReferenceInformation1;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.CurrencyAndAmount;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.Document;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.FinancialInstitutionIdentification5Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.GroupHeader1;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.Grouping1Code;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.ObjectFactory;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.Pain00100102;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.PartyIdentification8;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.PaymentIdentification1;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.PaymentInstructionInformation1;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.PaymentMethod3Code;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.PaymentTypeInformation1;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.RemittanceInformation1;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.ServiceLevel1Code;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.ServiceLevel2Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.StructuredRemittanceInformation6;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
@@ -61,7 +62,7 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 		
 		super(bankOrder);
 		
-		context = "com.axelor.apps.account.xsd.pain_001_001_02";
+		context = "com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02";
 		fileExtension = FILE_EXTENSION_XML;
 	}
 	
@@ -119,7 +120,7 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 		 * Format : YYYY-MM-DD
 		 * Rules : date is limited to maximum one year in the future. 
 		 */
-		pmtInf.setReqdExctnDt(datatypeFactory.newXMLGregorianCalendar(bankOrderDate.toString("yyyy-MM-dd")));
+		pmtInf.setReqdExctnDt(datatypeFactory.newXMLGregorianCalendar(bankOrderDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
 		pmtInf.setDbtr(dbtr);
 		pmtInf.setDbtrAcct(dbtrAcct);
 		pmtInf.setDbtrAgt(dbtrAgt);
@@ -214,7 +215,7 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 		 * Occurrences : [1..1]
 		 * Format : YYYY-MM-DDThh:mm:ss 
 		 */
-		grpHdr.setCreDtTm(datatypeFactory.newXMLGregorianCalendar(generationDateTime.toString("yyyy-MM-dd'T'HH:mm:ss")));
+		grpHdr.setCreDtTm(datatypeFactory.newXMLGregorianCalendar(generationDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))));
 		grpHdr.setNbOfTxs(Integer.toString(nbOfLines));
 		grpHdr.setCtrlSum(arithmeticTotal);
 		grpHdr.setGrpg(Grouping1Code.MIXD);

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.RejectImportService;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -40,7 +41,6 @@ import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -105,15 +105,13 @@ public class InterbankPaymentOrderRejectImportService {
 			InterbankCodeLine causeReject = rejectImportService.getInterbankCodeLine(reject[3], 0);
 
 			Invoice invoice = invoiceRepo.all().filter("UPPER(self.invoiceId) = ?1 AND self.company = ?2", refReject, company).fetchOne();
-			if(invoice == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_1),
-						GeneralServiceImpl.EXCEPTION, refReject, company.getName()), IException.INCONSISTENCY);
+			if (invoice == null) {
+				throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_1), AppAccountServiceImpl.EXCEPTION, refReject, company.getName());
 			}
 
 			Partner partner = invoice.getPartner();
-			if(invoice.getPaymentMode() == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_2),
-						GeneralServiceImpl.EXCEPTION, refReject), IException.INCONSISTENCY);
+			if (invoice.getPaymentMode() == null) {
+				throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_2), AppAccountServiceImpl.EXCEPTION, refReject);
 			}
 			
 			//TODO manage multi bank
@@ -151,18 +149,15 @@ public class InterbankPaymentOrderRejectImportService {
 	public Account getAccount(Company company, boolean isTIPCheque) throws AxelorException  {
 		PaymentMode paymentMode = null;
 
-		if(isTIPCheque)  {
+		if (isTIPCheque) {
 			paymentMode = paymentModeRepo.findByCode("TIC");
-			if(paymentMode == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_3),
-						GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+			if (paymentMode == null) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_3), AppAccountServiceImpl.EXCEPTION);
 			}
-		}
-		else  {
+		} else {
 			paymentMode = paymentModeRepo.findByCode("TIP");
-			if(paymentMode == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_4),
-						GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+			if (paymentMode == null) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_4), AppAccountServiceImpl.EXCEPTION);
 			}
 		}
 		

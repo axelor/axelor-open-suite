@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -21,15 +21,17 @@ import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.payment.PaymentModeService;
-import com.axelor.apps.base.db.*;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.db.mapper.Adapter;
+import com.axelor.apps.base.service.AddressService;
 import com.google.common.base.Function;
-import com.google.common.base.Functions;
 import com.google.common.collect.Lists;
+import javax.annotation.Nullable;
+
+import com.axelor.apps.base.service.BankDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,9 +41,14 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
-import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -56,8 +63,6 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
-
-import javax.annotation.Nullable;
 
 public class InvoiceController {
 
@@ -103,7 +108,7 @@ public class InvoiceController {
 		invoice = invoiceRepo.find(invoice.getId());
 
 		try{
-			invoiceService.validate(invoice);
+			invoiceService.validate(invoice, true);
 			response.setReload(true);
 		}
 		catch(Exception e)  {
@@ -125,6 +130,28 @@ public class InvoiceController {
 		invoice = invoiceRepo.find(invoice.getId());
 
 		try {
+			invoiceService.ventilate(invoice);
+			response.setReload(true);
+		} catch(Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+
+	/**
+	 * Called by the validate button, if the ventilation is skipped in invoice config
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws AxelorException
+	 */
+	public void validateAndVentilate(ActionRequest request, ActionResponse response) throws AxelorException {
+
+		Invoice invoice = request.getContext().asType(Invoice.class);
+		invoice = invoiceRepo.find(invoice.getId());
+
+		try {
+            invoiceService.validate(invoice, true);
 			invoiceService.ventilate(invoice);
 			response.setReload(true);
 		} catch(Exception e) {
@@ -503,6 +530,11 @@ public class InvoiceController {
 		}
 	}
 
+	public void computeAddressStr(ActionRequest request, ActionResponse response) {
+		Invoice invoice = request.getContext().asType(Invoice.class);
+		response.setValue("addressStr", Beans.get(AddressService.class)
+				.computeAddressStr(invoice.getAddress()));
+	}
 	/**
 	 * Called on load and in partner, company or payment mode change.
 	 * Fill the bank details with a default value.
@@ -514,13 +546,78 @@ public class InvoiceController {
 		PaymentMode paymentMode = invoice.getPaymentMode();
 		Company company = invoice.getCompany();
 		Partner partner = invoice.getPartner();
-		if(paymentMode == null || company == null || partner == null) {
+		if (company == null) {
 			return;
 		}
-		partner = Beans.get(PartnerRepository.class).find(partner.getId());
-		BankDetails defaultBankDetails = Beans.get(AccountingSituationService.class)
-				.findDefaultBankDetails(company, paymentMode, partner);
+		if (partner != null) {
+			partner = Beans.get(PartnerRepository.class).find(partner.getId());
+		}
+		BankDetails defaultBankDetails = Beans.get(BankDetailsService.class)
+				.getDefaultCompanyBankDetails(company, paymentMode, partner);
 		response.setValue("companyBankDetails", defaultBankDetails);
 	}
 
+	/**
+	 * Called on load and on new, create the domain for the field
+	 * {@link Invoice#advancePaymentInvoiceSet}
+	 * @param request
+	 * @param response
+	 */
+	public void fillAdvancePaymentInvoiceSetDomain(ActionRequest request,
+												   ActionResponse response) {
+
+		Invoice invoice = request.getContext().asType(Invoice.class);
+		try {
+			String domain = invoiceService
+					.createAdvancePaymentInvoiceSetDomain(invoice);
+			response.setAttr("advancePaymentInvoiceSet","domain", domain);
+
+		} catch (AxelorException e) {
+			TraceBackService.trace(e);
+			response.setError(e.getMessage());
+		}
+	}
+
+	/**
+	 * Called on partner and currency change, fill the domain of the field
+	 * {@link Invoice#advancePaymentInvoiceSet} with default values.
+     * The default values are every invoices found in the domain.
+	 * @param request
+	 * @param response
+	 */
+	public void fillAdvancePaymentInvoiceSet(ActionRequest request,
+											 ActionResponse response) {
+
+		Invoice invoice = request.getContext().asType(Invoice.class);
+		Set<Invoice> invoices = null;
+		try {
+			invoices = invoiceService
+                    .getDefaultAdvancePaymentInvoice(invoice);
+			response.setValue("advancePaymentInvoiceSet", invoices);
+		} catch (AxelorException e) {
+			TraceBackService.trace(e);
+			response.setError(e.getMessage());
+		}
+	}
+
+	/**
+	 * set default value for automatic invoice printing
+	 * @param request
+	 * @param response
+	 * @throws AxelorException
+	 */
+	public void setDefaultMail(ActionRequest request, ActionResponse response) throws AxelorException{
+		Invoice invoice = request.getContext().asType(Invoice.class);
+		Company company = invoice.getCompany();
+		Partner partner = invoice.getPartner();
+		if (company != null && partner != null) {
+			AccountingSituation accountingSituation = Beans
+					.get(AccountingSituationService.class)
+					.getAccountingSituation(partner, company);
+			if (accountingSituation != null) {
+				response.setValue("invoiceAutomaticMail", accountingSituation.getInvoiceAutomaticMail());
+				response.setValue("invoiceMessageTemplate", accountingSituation.getInvoiceMessageTemplate());
+			}
+		}
+	}
 }

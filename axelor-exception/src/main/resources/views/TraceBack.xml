@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="trace-back-grid" title="TraceBack" model="com.axelor.exception.db.TraceBack" orderBy="-id">
+       	<toolbar>
+		    <button name="new" title="" hidden="true"/>
+		    <button name="edit" title="" hidden="true"/>
+		    <button name="save" title="" hidden="true"/>
+		    <button name="delete" title="" hidden="true"/>
+		    <button name="copy" title="" hidden="true"/>
+		    <button name="cancel" title="" hidden="true"/>
+		</toolbar>
+		<hilite color="danger" if="typeSelect == 0" />
+        <field name="id"/>
+        <field name="date"/>
+        <field name="internalUser"/>
+        <field name="origin" />
+        <field name="typeSelect"/>
+        <field name="categorySelect"/>
+        <field name="exception"/>
+    </grid>
+    
+    <form name="trace-back-form" title="TraceBack" model="com.axelor.exception.db.TraceBack" onLoad="action-trace-back-load">
+    	<toolbar>
+		    <button name="new" title="" hidden="true"/>
+		    <button name="edit" title="" hidden="true"/>
+		    <button name="save" title="" hidden="true"/>
+		    <button name="delete" title="" hidden="true"/>
+		    <button name="copy" title="" hidden="true"/>
+		    <button name="cancel" title="" hidden="true"/>
+		</toolbar>
+		<panel name="main" sidebar="true">
+	        <field name="date"/>
+	        <field name="internalUser"/>
+	        <field name="origin" />
+	        <field name="typeSelect"/>
+	        <field name="categorySelect"/>
+        </panel>
+        <panel name="reference" title="Reference" showIf="ref" sidebar="true">
+        	<field name="ref" colSpan="10" />
+        	<field name="refId" title="ID" showIf="refId" colSpan="2" />
+        	<button name="showReference" title="Show the reference" icon="fa-share" css="btn-primary" onClick="action-traceback-show-reference" />
+        </panel>
+		<panel title="Batch" showIf="batchId" sidebar="true" if="__config__.app.isApp('base')">
+			<field name="batchId" colSpan="4" />
+     		<button name="showBatch" title="Show the batch" icon="fa-share" css="btn-primary" onClick="action-batch-show-batch" colSpan="8" />
+		</panel>
+        <panel name="exceptionGroup" title="Anomaly" canCollapse="true">
+        	<field name="exception" showTitle="false" colSpan="12"/>
+        </panel>
+        <panel name="errorGroup" title="Error" canCollapse="true">
+            <field name="error" showTitle="false" colSpan="12"/>
+        </panel>
+        <panel name="causeGroup" title="Cause" canCollapse="true">
+            <field name="cause" showTitle="false" colSpan="12"/>
+        </panel>
+        <panel name="messageGroup" title="Message" canCollapse="true">
+            <field name="message" showTitle="false" colSpan="12"/>
+        </panel>
+        <panel name="traceGroup" title="Trace" canCollapse="true">
+            <field name="trace" showTitle="false" colSpan="12"/>
+        </panel>
+    </form>
+    
+    <action-attrs name="action-trace-back-load">
+    	<attribute name="hidden" for="categorySelect" expr="eval: !categorySelect"/>
+    	<attribute name="hidden" for="errorGroup" expr="eval: !error"/>
+    	<attribute name="hidden" for="causeGroup" expr="eval: !cause"/>
+    	<attribute name="hidden" for="messageGroup" expr="eval: !message"/>
+    	<attribute name="hidden" for="traceGroup" expr="eval: !trace"/>
+    </action-attrs>
+
+	<action-method name="action-traceback-show-reference">
+		<call class="com.axelor.exception.web.TraceBackController"
+			method="showReference" />
+	</action-method>
+
+</object-views>

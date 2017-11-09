@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<tree name="customs-code-nomenclature-tree" title="Customs code nomenclature">
+
+		<column name="code" type="string" />
+		<column name="wording" type="string" />
+		<column name="supplementaryUnit" type="string" />
+
+		<node model="com.axelor.apps.stock.db.CustomsCodeNomenclature"
+			domain="self.parentCustomsCode IS NULL">
+			<field as="code" name="code" />
+			<field as="wording" name="wording" />
+			<field as="supplementaryUnit" name="supplementaryUnit" />
+		</node>
+
+		<node model="com.axelor.apps.stock.db.CustomsCodeNomenclature"
+			parent="parentCustomsCode" onClick="action-customs-code-nomenclature-view-form">
+			<field as="code" name="code" />
+			<field as="wording" name="wording" />
+			<field as="supplementaryUnit" name="supplementaryUnit" />
+		</node>
+
+	</tree>
+
+	<grid model="com.axelor.apps.stock.db.CustomsCodeNomenclature"
+		title="Customs code nomenclature" name="customs-code-nomenclature-grid">
+		<field name="code" x-bind="{{code|unaccent|uppercase}}" />
+		<field name="wording" />
+		<field name="supplementaryUnit" />
+		<field name="parentCustomsCode" />
+	</grid>
+
+	<form model="com.axelor.apps.stock.db.CustomsCodeNomenclature"
+		title="Customs code nomenclature" name="customs-code-nomenclature-form">
+		<panel readonly="true">
+			<field name="code" x-bind="{{code|unaccent|uppercase}}" />
+			<field name="wording" />
+			<field name="supplementaryUnit" />
+			<field name="parentCustomsCode" />
+		</panel>
+	</form>
+
+	<action-view name="action-customs-code-nomenclature-view-form"
+		title="Customs code nomenclature" model="com.axelor.apps.stock.db.CustomsCodeNomenclature">
+		<view type="form" name="customs-code-nomenclature-form" />
+		<view-param name="popup" value="reload" />
+		<view-param name="show-toolbar" value="false" />
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="false" />
+		<context name="_showRecord" expr="eval: id" />
+	</action-view>
+
+</object-views>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<form name="sale-order-invoicing-wizard-form" title="Invoicing"
+		  model="com.axelor.apps.sale.db.SaleOrder"
+		  onLoad="action-group-sale-order-invoicing-wizard-onload">
+		<panel>
+            <field name="operationSelect" title="Operation choice"
+				   showIf="$manageAdvanceInvoice &amp;&amp; (!amountInvoiced || amountInvoiced == 0)"
+				   type="selection" required="true"
+				   selection="supplychain.sale.order.invoicing.wizard.select"/>
+
+			<field name="operationSelect" title="Operation choice"
+				   showIf="!$manageAdvanceInvoice &amp;&amp; (!amountInvoiced || amountInvoiced == 0)"
+				   type="selection" required="true" selection-in="[1,2,3]"
+				   selection="supplychain.sale.order.invoicing.wizard.select"/>
+
+			<field name="operationSelect" title="Operation choice"
+				   showIf="$manageAdvanceInvoice &amp;&amp; amountInvoiced &amp;&amp; amountInvoiced > 0"
+				   type="selection" required="true" selection-in="[2,3,4]"
+				   selection="supplychain.sale.order.invoicing.wizard.select"/>
+
+			<field name="operationSelect" title="Operation choice"
+				   showIf="!$manageAdvanceInvoice &amp;&amp; amountInvoiced &amp;&amp; amountInvoiced > 0"
+				   type="selection" required="true" selection-in="[2,3]"
+				   selection="supplychain.sale.order.invoicing.wizard.select"/>
+
+            <field name="amountToInvoice" title="Amount to invoice" type="decimal"
+				   hideIf="operationSelect == 1 || operationSelect == 3"/>
+            <field name="isPercent" title="Is amount in % ?" type="boolean"
+				   hideIf="operationSelect == 1"/>
+		</panel>
+		<panel-related field="saleOrderLineList" hideIf="operationSelect != 3"
+					   grid-view="invoicing-wizard-sale-order-line-grid"
+					   editable="true"/>
+		<panel>
+			<button name="createInvoice" title="Generate the invoice"
+					onClick="action-method-sale-order-invoicing-wizard-generate"/>
+		</panel>
+        <panel hidden="true">
+			<field name="amountInvoiced" hidden="true"/>
+			<field name="exTaxTotal" hidden="true"/>
+            <field name="$manageAdvanceInvoice" type="boolean" hidden="true"/>
+		</panel>
+	</form>
+
+	<grid name="invoicing-wizard-sale-order-line-grid" title="Lines to invoice"
+		  model="com.axelor.apps.sale.db.SaleOrderLine">
+		<field name="productName"/>
+		<field name="qty" aggregate="sum"/>
+		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+		<field name="price" x-scale="2"/>
+		<field name="exTaxTotal" aggregate="sum"/>
+		<field name="inTaxTotal" aggregate="sum"/>
+		<field name="amountInvoiced"/>
+        <field name="qtyToInvoice" title="Qty to invoice" type="decimal"
+			   readonlyIf="invoiceAll" min="0"/>
+        <field name="invoiceAll" title="Invoice all ?" type="boolean"
+			   onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"/>
+	</grid>
+
+	<action-group name="action-group-sale-order-invoicing-wizard-onload">
+		<action name="action-attrs-sale-order-invoicing-wizard-amount-invoiced"/>
+		<action name="action-attrs-sale-order-invoicing-wizard-hide-advance-payment"/>
+	</action-group>
+
+	<action-attrs name="action-attrs-sale-order-line-invoicing-wizard-fill-qty">
+		<attribute for="qtyToInvoice" name="value" if="invoiceAll"
+				   expr="eval: qty"/>
+	</action-attrs>
+
+	<action-attrs name="action-attrs-sale-order-invoicing-wizard-hide-advance-payment">
+		<attribute for="$manageAdvanceInvoice" name="value"
+				   expr="eval: __config__.app.getApp('account').getManageAdvancePaymentInvoice()"/>
+	</action-attrs>
+
+	<action-attrs name="action-attrs-sale-order-invoicing-wizard-amount-invoiced">
+		<attribute for="operationSelect" name="value" expr="eval: 1"
+				   if="amountInvoiced == 0"/>
+		<attribute for="operationSelect" name="value" expr="eval: 2"
+				   if="amountInvoiced > 0"/>
+		<attribute for="amountToInvoice" name="value" if="amountInvoiced > 0"
+				   expr="eval: exTaxTotal - amountInvoiced"/>
+	</action-attrs>
+
+	<action-method name="action-method-sale-order-invoicing-wizard-generate">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController"
+			  method="generateInvoice"/>
+	</action-method>
+</object-views>

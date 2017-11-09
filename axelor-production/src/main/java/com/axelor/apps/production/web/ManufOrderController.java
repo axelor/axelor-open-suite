@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
+import com.axelor.exception.service.TraceBackService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.ManufOrderService;
 import com.axelor.apps.production.service.ManufOrderWorkflowService;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -77,7 +79,7 @@ public class ManufOrderController {
 //	}
 	
 	
-	public void start (ActionRequest request, ActionResponse response) {
+	public void start (ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Long manufOrderId = (Long)request.getContext().get("id");
 		ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
@@ -209,5 +211,66 @@ public class ManufOrderController {
 		response.setReload(true);
 		
 	}
+
+	public void generateWasteStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
+		ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+		manufOrder = manufOrderRepo.find(manufOrder.getId());
+		StockMove wasteStockMove = manufOrderService.generateWasteStockMove(manufOrder);
+		response.setReload(true);
+	}
+  
+	public void updateQty(ActionRequest request, ActionResponse response) {
+		ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+		manufOrder = manufOrderRepo.find(manufOrder.getId());
+		manufOrderService.updateQty(manufOrder);
+		response.setReload(true);
+		response.setCanClose(true);
+	}
 	
+	public void printProdProcess(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
+		String prodProcessId = manufOrder.getProdProcess().getId().toString();
+		String prodProcessLable = manufOrder.getProdProcess().getName();
+		
+		String fileLink = ReportFactory.createReport(IReport.PROD_PROCESS, prodProcessLable+"-${date}")
+				.addParam("Locale", manufOrderService.getLanguageToPrinting(manufOrder))
+				.addParam("ProdProcessId", prodProcessId)
+				.generate()
+				.getFileLink();
+		
+		response.setView(ActionView
+				.define(prodProcessLable)
+				.add("html", fileLink).map());
+		
+	}
+
+	public void updatePlannedDates(ActionRequest request, ActionResponse response) throws AxelorException {
+		ManufOrder manufOrderView = request.getContext().asType(ManufOrder.class);
+
+		if (manufOrderView.getStatusSelect() == ManufOrderRepository.STATUS_PLANNED) {
+			ManufOrder manufOrder = manufOrderRepo.find(manufOrderView.getId());
+
+			if (manufOrderView.getPlannedStartDateT() != null) {
+				if (!manufOrderView.getPlannedStartDateT().isEqual(manufOrder.getPlannedStartDateT())) {
+					manufOrderWorkflowService.updatePlannedDates(manufOrder, manufOrderView.getPlannedStartDateT());
+					response.setReload(true);
+				}
+			} else {
+				response.setValue("plannedStartDateT", manufOrder.getPlannedStartDateT());
+			}
+
+		}
+	}
+
+	public void updateDiffProdProductList(ActionRequest request, ActionResponse response) {
+		ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+		try {
+			manufOrderService.updateDiffProdProductList(manufOrder);
+			response.setValue("diffConsumeProdProductList", manufOrder.getDiffConsumeProdProductList());
+		} catch (AxelorException e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+
 }

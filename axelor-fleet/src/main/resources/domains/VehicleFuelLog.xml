@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="fleet" package="com.axelor.apps.fleet.db"/>
+
+	<entity name="VehicleFuelLog" lang="java" cachable="true">
+		<many-to-one name="vehicle" ref="Vehicle" />
+		<decimal name="liter" title="Liter" />
+		<decimal name="pericePerLiter" title="Price per Liter" />
+		<decimal name="totalPrice" title="Total Price" required="false"/>
+		<many-to-one name="purchasePartner" ref="com.axelor.apps.base.db.Partner" title="Purchaser" />
+		<string name="invocieRef" title="Invoice Reference" />
+		<many-to-one name="vendorPartner" ref="com.axelor.apps.base.db.Partner" title="Vendor" />
+		<string name="notes" title="Notes" large="true"/>
+		<date name="date" title="Date" column="date_val" />
+	</entity>
+
+</domain-models>

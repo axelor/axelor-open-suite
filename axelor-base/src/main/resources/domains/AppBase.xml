@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="base" package="com.axelor.apps.base.db"/>
+
+	<entity name="AppBase" lang="java" cachable="true" extends="App" >
+
+		<datetime name="today" title="Today date" tz="true"/>
+		<many-to-one name="defaultProjectUnit" title="Default Project unit" ref="com.axelor.apps.base.db.Unit"/>
+		<string name="defaultPartnerLanguage" title="Default Partner language" selection="select.language"/>
+		<boolean name="mailAccountByUser" title="Manage mail account by user ?" default="false"/>
+		
+		<!-- Interfaces QAS et SVI -->
+		<string name="qasWsdlUrl" title="URL to QAS WSDL"/>
+
+		<!-- Mapping API -->
+		<integer name="mapApiSelect" title="Mapping service provider" selection="base.app.base.map.api.select" default="1" />
+		
+		<string name="googleMapApiKey" title="Google Map Api Key"/>
+		
+		<!-- Currency Conversion Webservice URL -->
+		<string name="currencyWsURL" title="Currency Ws URL"/>
+
+		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="appBase" title="Currency conversion table"/>
+		
+		<boolean name="hasQasValidation" title="Use QAS Validation ?"/>
+		
+		<integer name="productInAtiSelect" title="Products ATI/WT" selection="base.in.ati.select" default="1"/>
+		<integer name="nbDecimalDigitForUnitPrice" title="Nb of digits for unit prices" max="10" default="2"/>
+		
+		<integer name="computeMethodDiscountSelect" title="Compute Method for Discounts" selection="base.compute.method.discount.select" default="1"/>
+
+		<string name="timeLoggingPreferenceSelect" title="Time logging preference" selection="hr.time.logging.preference.select" default="days"/>
+		<decimal name="dailyWorkHours" title="Daily Work Hours"/>
+		
+		<many-to-one name="unitDays" ref="com.axelor.apps.base.db.Unit" title="Days Unit"/>
+		<many-to-one name="unitHours" ref="com.axelor.apps.base.db.Unit" title="Hours Unit"/>
+		<many-to-one name="unitMinutes" ref="com.axelor.apps.base.db.Unit" title="Minutes Unit"/>
+		
+		<boolean name="teamManagement" title="Team Management" default="true"/>
+		
+		<boolean name="activateSendingEmail" title="Activate sending email" default="true"/>
+
+		<boolean name="activateBarCodeGeneration" title="Activate bar code generation for products" default="false"/>
+
+		<boolean name="generateProductSequence" title="Generate sequence for products" default="false"/>
+		
+		<boolean name="generatePartnerSequence" title="Generate sequence for partners" default="true"/>
+		
+		<boolean name="manageMultiBanks" title="Manage multi banks"/>
+
+		<boolean name="manageProductVariants" title="Manage product variants"/>
+		
+		<boolean name="enterpriseCommunication" title="Messaging" default="true"/>
+		
+		<boolean name="document" title="Documents" default="true" />
+		
+		
+		<extra-code>
+	   		<![CDATA[
+	   			public static final Integer DISCOUNT_SEPARATE = 1;
+	   			public static final Integer INCLUDE_DISCOUNT_REPLACE_ONLY = 2;
+	   			public static final Integer INCLUDE_DISCOUNT = 3;
+	   		]]>
+	   	</extra-code>
+   	</entity>
+
+</domain-models>

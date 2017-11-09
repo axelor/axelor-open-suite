@@ -18,13 +18,13 @@
 package com.axelor.apps.production.service;
 
 import java.math.BigDecimal;
-
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -60,4 +60,23 @@ public interface ManufOrderService {
 	
 	public String getLanguageToPrinting(ManufOrder manufOrder);
 
+	public BigDecimal getProducedQuantity(ManufOrder manufOrder);
+
+	/**
+	 * Generate waste stock move.
+	 * 
+	 * @param manufOrder
+	 * @return wasteStockMove
+	 */
+	public StockMove generateWasteStockMove(ManufOrder manufOrder) throws AxelorException;
+
+	public ManufOrder updateQty(ManufOrder manufOrder);
+
+	/**
+	 * Updates the diff prod product list.
+	 * @param manufOrder
+	 * @return the updated manufOrder
+	 * @throws AxelorException
+	 */
+    ManufOrder updateDiffProdProductList(ManufOrder manufOrder) throws AxelorException;
 }

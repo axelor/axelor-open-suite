@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -9,9 +9,10 @@
 		<string name="importId" hashKey="false" unique="true"/>
 		<string name="name" required="true"/>
         <string name="languageSelect" title="Language" selection="select.language"/>
-		<string name="pdfHeader" large="true" title="Company Header" help="true"/>
-		<string name="pdfFooter" large="true" title="Company Footer" help="true"/>
-		<many-to-one name="defaultMailBirtTemplate" ref="com.axelor.apps.base.db.BirtTemplate" title="Birt Template" help="true" />
+		<string name="pdfHeader" large="true" title="Company Header"/>
+		<string name="pdfFooter" large="true" title="Company Footer"/>
+		<many-to-one name="defaultMailBirtTemplate" ref="com.axelor.apps.base.db.BirtTemplate" title="Birt Template"/>
+		<integer name="logoPositionSelect" title="Logo position" selection="printing.setting.logo.position"/>
  	</entity>
 
 </domain-models>

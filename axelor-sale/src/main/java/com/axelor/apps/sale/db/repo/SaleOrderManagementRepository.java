@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -17,36 +17,58 @@
  */
 package com.axelor.apps.sale.db.repo;
 
-import javax.persistence.PersistenceException;
-
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderService;
-import com.axelor.inject.Beans;
+import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+
+import javax.persistence.PersistenceException;
+import java.util.List;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
+	
+	@Inject
+	private SaleOrderService saleOrderService;
+	
+	@Inject
+	private SaleOrderLineService saleOrderLineService;
 
 	@Override
 	public SaleOrder copy(SaleOrder entity, boolean deep) {
 
 		SaleOrder copy = super.copy(entity, deep);
 
+		List<SaleOrderLine> saleOrderLines = copy.getSaleOrderLineList();
+
 		copy.setStatusSelect(ISaleOrder.STATUS_DRAFT);
 		copy.setSaleOrderSeq(null);
 		copy.clearBatchSet();
 		copy.setImportId(null);
-		copy.setCreationDate(generalService.getTodayDate());
+		copy.setCreationDate(appBaseService.getTodayDate());
 		copy.setConfirmationDate(null);
 		copy.setConfirmedByUser(null);
 		copy.setOrderDate(null);
 		copy.setOrderNumber(null);
 		copy.setVersionNumber(1);
+		copy.setTotalCostPrice(null);
+		copy.setTotalGrossMargin(null);
+		copy.setMarginRate(null);
+		copy.setEndOfValidityDate(null);
+		copy.setDeliveryDate(null);
+
+		for (SaleOrderLine saleOrderLine:saleOrderLines) {
+			saleOrderLine.setDeliveryDate(null);
+		}
+
+		copy.setSaleOrderLineList(saleOrderLines);
 
 		return copy;
 	}
@@ -56,6 +78,8 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 		try {
 			computeSeq(saleOrder);
 			computeFullName(saleOrder);
+			computeSubMargin(saleOrder);
+			saleOrderService.computeMarginSaleOrder(saleOrder);
 			return super.save(saleOrder);
 		} catch (Exception e) {
 			throw new PersistenceException(e.getLocalizedMessage());
@@ -88,4 +112,14 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 			throw new PersistenceException(e.getLocalizedMessage());
 		}
 	}
+	
+	public void computeSubMargin(SaleOrder saleOrder) throws AxelorException {
+		
+		if (saleOrder.getSaleOrderLineList() != null) {
+			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+				saleOrderLineService.computeSubMargin(saleOrderLine);
+			}
+		}
+	}
+	
 }

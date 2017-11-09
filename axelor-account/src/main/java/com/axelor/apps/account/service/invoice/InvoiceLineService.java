@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPriceListLine;
@@ -37,12 +38,12 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.db.repo.AppAccountRepository;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -53,18 +54,18 @@ public class InvoiceLineService {
 	protected AccountManagementService accountManagementService;
 	protected CurrencyService currencyService;
 	protected PriceListService priceListService;
-	protected GeneralService generalService;
+	protected AppAccountService appAccountService;
 	protected AnalyticMoveLineService analyticMoveLineService;
 	protected ProductService productService;
 
 	@Inject
 	public InvoiceLineService(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService, 
-			GeneralService generalService, AnalyticMoveLineService analyticMoveLineService, ProductService productService)  {
+			AppAccountService appAccountService, AnalyticMoveLineService analyticMoveLineService, ProductService productService)  {
 		
 		this.accountManagementService = accountManagementService;
 		this.currencyService = currencyService;
 		this.priceListService = priceListService;
-		this.generalService = generalService;
+		this.appAccountService = appAccountService;
 		this.analyticMoveLineService = analyticMoveLineService;
 		this.productService = productService;
 		
@@ -73,7 +74,7 @@ public class InvoiceLineService {
 	
 	public InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine) throws AxelorException{
 		
-		if(generalService.getGeneral().getAnalyticDistributionTypeSelect() == GeneralRepository.DISTRIBUTION_TYPE_FREE)  {  return invoiceLine;  }
+		if(appAccountService.getAppAccount().getAnalyticDistributionTypeSelect() == AppAccountRepository.DISTRIBUTION_TYPE_FREE)  {  return invoiceLine;  }
 		
 		Invoice invoice = invoiceLine.getInvoice();
 		List<AnalyticMoveLine> analyticMoveLineList = invoiceLine.getAnalyticMoveLineList();
@@ -93,9 +94,8 @@ public class InvoiceLineService {
 		
 		analyticMoveLine.setInvoiceLine(invoiceLine);
 		analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
-		analyticMoveLine.setDate(generalService.getTodayDate());
+		analyticMoveLine.setDate(appAccountService.getTodayDate());
 		analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
-
 	}
 	
 	public InvoiceLine createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) throws AxelorException{
@@ -114,7 +114,7 @@ public class InvoiceLineService {
 	public TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException  {
 
 		return accountManagementService.getTaxLine(
-				generalService.getTodayDate(), invoiceLine.getProduct(), invoice.getCompany(), invoice.getPartner().getFiscalPosition(), isPurchase);
+				appAccountService.getTodayDate(), invoiceLine.getProduct(), invoice.getCompany(), invoice.getPartner().getFiscalPosition(), isPurchase);
 
 	}
 
@@ -136,7 +136,7 @@ public class InvoiceLineService {
 		}
 		
 		return currencyService.getAmountCurrencyConvertedAtDate(
-				productCurrency, invoice.getCurrency(), price, invoice.getInvoiceDate()).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+				productCurrency, invoice.getCurrency(), price, invoice.getInvoiceDate()).setScale(appAccountService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 	}
 
 
@@ -157,7 +157,7 @@ public class InvoiceLineService {
 	public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException  {
 
 		return currencyService.getAmountCurrencyConvertedAtDate(
-				invoice.getCurrency(), invoice.getCompany().getCurrency(), exTaxTotal, invoice.getInvoiceDate()).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+				invoice.getCurrency(), invoice.getCompany().getCurrency(), exTaxTotal, invoice.getInvoiceDate()).setScale(appAccountService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 	}
 
 
@@ -198,7 +198,7 @@ public class InvoiceLineService {
 		BigDecimal discountAmount = BigDecimal.ZERO;
 		Map<String, Object> discounts = null;
 		
-		int computeMethodDiscountSelect = generalService.getGeneral().getComputeMethodDiscountSelect();
+		int computeMethodDiscountSelect = appAccountService.getAppBase().getComputeMethodDiscountSelect();
 
 		if(priceList != null)  {
 			int discountTypeSelect = 0;
@@ -211,8 +211,8 @@ public class InvoiceLineService {
 			discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 			discountAmount = (BigDecimal) discounts.get("discountAmount");
 			
-			if((computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) 
-					|| computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT)  {
+			if((computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) 
+					|| computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT)  {
 				discounts.put("price", priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), discountAmount));
 
 			}
@@ -226,7 +226,7 @@ public class InvoiceLineService {
 					
 					discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
 
-					if(computeMethodDiscountSelect != GeneralRepository.DISCOUNT_SEPARATE){
+					if(computeMethodDiscountSelect != AppBaseRepository.DISCOUNT_SEPARATE){
 						discounts.put("price", priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount")));
 					}
 				}

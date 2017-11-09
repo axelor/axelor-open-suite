@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -19,37 +19,44 @@ package com.axelor.apps.supplychain.service.batch;
 
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
-public class SupplychainBatchService {
+public class SupplychainBatchService extends AbstractBatchService {
 
 	@Inject
 	protected BatchSubscription batchSubscription;
-	
-	@Inject
-	protected SupplychainBatchRepository supplychainBatchRepo;
 
-	public Batch run(String batchCode) throws AxelorException {
+	@Override
+	protected Class<? extends Model> getModelClass() {
+		return SupplychainBatch.class;
+	}
+
+	@Override
+	public Batch run(Model batchModel) throws AxelorException {
 
 		Batch batch;
-		SupplychainBatch supplychainBatch = supplychainBatchRepo.findByCode(batchCode);
+		SupplychainBatch supplychainBatch = (SupplychainBatch) batchModel;
 
-		if (batchCode != null){
-			switch (supplychainBatch.getActionSelect()) {
-			case SupplychainBatchRepository.ACTION_BILL_SUB:
-				batch = billSubscriptions(supplychainBatch);
-				break;
-			default:
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), supplychainBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
-			}
-		}
-		else {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_2), batchCode), IException.INCONSISTENCY);
+		switch (supplychainBatch.getActionSelect()) {
+		case SupplychainBatchRepository.ACTION_BILL_SUB:
+			batch = billSubscriptions(supplychainBatch);
+			break;
+		case SupplychainBatchRepository.ACTION_INVOICE_OUTGOING_STOCK_MOVES:
+			batch = invoiceOutgoingStockMoves(supplychainBatch);
+			break;
+		case SupplychainBatchRepository.ACTION_INVOICE_ORDERS:
+			batch = invoiceOrders(supplychainBatch);
+			break;
+		default:
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_1), supplychainBatch.getActionSelect(), supplychainBatch.getCode());
 		}
 
 		return batch;
@@ -57,6 +64,22 @@ public class SupplychainBatchService {
 
 	public Batch billSubscriptions(SupplychainBatch supplychainBatch){
 		return batchSubscription.run(supplychainBatch);
+	}
+
+	public Batch invoiceOutgoingStockMoves(SupplychainBatch supplychainBatch) {
+		return Beans.get(BatchOutgoingStockMoveInvoicing.class).run(supplychainBatch);
+	}
+
+	public Batch invoiceOrders(SupplychainBatch supplychainBatch) {
+		switch (supplychainBatch.getInvoiceOrdersTypeSelect()) {
+		case SupplychainBatchRepository.INVOICE_ORDERS_TYPE_SALE:
+			return Beans.get(BatchOrderInvoicingSale.class).run(supplychainBatch);
+		case SupplychainBatchRepository.INVOICE_ORDERS_TYPE_PURCHASE:
+			return Beans.get(BatchOrderInvoicingPurchase.class).run(supplychainBatch);
+		default:
+			throw new IllegalArgumentException(
+					String.format("Unknown invoice orders type: %d", supplychainBatch.getInvoiceOrdersTypeSelect()));
+		}
 	}
 
 }

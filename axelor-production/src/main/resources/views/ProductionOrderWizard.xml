@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     
     <form name="production-order-wizard-form" title="Production order wizard" model="com.axelor.apps.base.db.Wizard" 
@@ -19,19 +19,19 @@
 
 	<action-record name="action-production-order-wizard-record-default" model="com.axelor.apps.base.db.Wizard">
     	<field name="product_id" expr="eval: _productId"/>
-    	<field name="product" expr="eval: __repo__.of(Product).find(_productId)" if="_productId"/>
+    	<field name="product" expr="eval: __repo__(Product).find(_productId)" if="_productId"/>
     	<field name="business_id" expr="eval: _businessId?.id"/>
 		<field name="qty" expr="eval: 1.0"/>
-		<field name="_startDate" expr=" eval: __datetime__"/>
+		<field name="_startDate" expr="eval: __datetime__"/>
 	</action-record>
 	
 	<action-record name="action-production-order-wizard-record-default-bom" model="com.axelor.apps.base.db.Wizard">
-		<field name="billOfMaterial" expr="eval: __repo__.of(BillOfMaterial).find(product.parentProduct.defaultBillOfMaterial.id)" if="product?.parentProduct?.defaultBillOfMaterial?.id"/>
-		<field name="billOfMaterial" expr="eval: __repo__.of(BillOfMaterial).find(product.defaultBillOfMaterial.id)" if="product.defaultBillOfMaterial?.id"/>
+		<field name="billOfMaterial" expr="eval: __repo__(BillOfMaterial).find(product.parentProduct.defaultBillOfMaterial.id)" if="product?.parentProduct?.defaultBillOfMaterial?.id"/>
+		<field name="billOfMaterial" expr="eval: __repo__(BillOfMaterial).find(product.defaultBillOfMaterial.id)" if="product.defaultBillOfMaterial?.id"/>
 	</action-record>
 	
 	<action-record name="action-production-order-wizard-record-product" model="com.axelor.apps.base.db.Wizard">
-		<field if="billOfMaterial != null &amp;&amp; product == null" name="product" expr="eval:__repo__.of(BillOfMaterial).find(billOfMaterial.id).product"/>
+		<field if="billOfMaterial != null &amp;&amp; product == null" name="product" expr="eval:__repo__(BillOfMaterial).find(billOfMaterial.id).product"/>
 	</action-record>
 	
 
@@ -40,8 +40,8 @@
     </action-method>
     
     <action-attrs name="action-production-order-wizard-attrs-bill-of-material-domain">
-		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product.id}) AND self.isRawMaterial = false  AND self.parentBillOfMaterial IS NULL &quot;" if="product"/>
-		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;self.isRawMaterial = false AND self.parentBillOfMaterial IS NULL &quot;" if="!product"/>
+		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product.id}) AND self.defineSubBillOfMaterial = false &quot;" if="product"/>
+		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;self.defineSubBillOfMaterial = false AND &quot;" if="!product"/>
 	</action-attrs>
     
     

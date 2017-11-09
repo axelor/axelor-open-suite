@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<form name="app-production-config-form" title="App production" model="com.axelor.apps.base.db.AppProduction" canDelete="false" canNew="false" width="large">
+		<panel name="productionConfiguration" colSpan="12">
+			<field name="prodOrderMgtOnSO" readonlyIf="productionOrderGenerationAuto" colSpan="4" widget="boolean-switch"/>
+			<field name="productionOrderGenerationAuto" showIf="prodOrderMgtOnSO" colSpan="4" widget="boolean-switch"/>
+			<field name="enableConfigurator" widget="boolean-switch"/>
+			<panel name="billOfMaterial" title="Bill of material">
+				<field name="manageBillOfMaterialVersion" colSpan="4" widget="boolean-switch"/>
+			    <field name="manageResidualProductOnBom" widget="boolean-switch"/>
+			</panel>
+			<panel name="manufacturingProcess" title="Manufacturing process">
+   				<field name="workCenterProduct" form-view="product-form" grid-view="product-grid"/>
+			</panel>
+			<panel name="costSheet" title="Cost sheet">
+			    <field name="productCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
+  				<field name="workCenterCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
+  				<field name="cycleUnit" form-view="unit-form" grid-view="unit-grid"/>
+				<field name="subtractProdResidualOnCostSheet" showIf="manageResidualProductOnBom" widget="boolean-switch"/>
+			</panel>
+			<panel name="businessProductionConfiguration" if-module="axelor-business-production"  colSpan="12" >
+				<field name="manageBusinessProduction" widget="boolean-switch"/>
+				<panel showIf="manageBusinessProduction" colSpan="12">
+					<field name="showProductionOrderRelatedToProject" showIf="manageBusinessProduction" />
+				</panel>
+			</panel>
+		</panel>
+		<panel>
+			<button name="generateProductionConfigurations" colSpan="4" title="Generate production configurations" onClick="save,com.axelor.apps.production.web.AppProductionController:generateProductionConfigurations"/>
+			<panel-dashlet action="admin.root.conf.production.config"  colSpan="12"/>
+		</panel>
+		
+	</form>
+	
+	<action-view name="admin.root.conf.production.config" title="Production configurations"
+		model="com.axelor.apps.production.db.ProductionConfig" >
+		<view type="grid" name="production-config-grid"/>
+		<view type="form" name="production-config-form"/>
+	</action-view>
+	
+</object-views>

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -25,7 +25,7 @@ import java.util.Map;
 import javax.persistence.Query;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -54,7 +54,7 @@ public class SubscriptionController {
 	protected SaleOrderLineRepository saleOrderLineRepo;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	public void generateSubscriptions(ActionRequest request, ActionResponse response) throws AxelorException{
 		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
@@ -84,12 +84,12 @@ public class SubscriptionController {
 
 		saleOrderLine = saleOrderLineRepo.find(saleOrderLine.getId());
 
-		if (saleOrderLine != null){
+		if (saleOrderLine != null) {
 
 			Invoice invoice = Beans.get(SaleOrderInvoiceService.class).generateSubcriptionInvoiceForSaleOrderLine(saleOrderLine);
 
-			if(invoice == null){
-				throw new AxelorException(I18n.get("No Subscription to Invoice"), IException.CONFIGURATION_ERROR);
+			if (invoice == null) {
+				throw new AxelorException(saleOrderLine, IException.CONFIGURATION_ERROR, I18n.get("No Subscription to Invoice"));
 			}
 			response.setCanClose(true);
 			response.setView(ActionView
@@ -106,7 +106,7 @@ public class SubscriptionController {
 	public void generateInvoiceForAllSubscriptions(ActionRequest request, ActionResponse response)  throws AxelorException{
 
 		Query q = JPA.em().createQuery("SELECT DISTINCT saleOrderLine.saleOrder.id FROM Subscription WHERE invoicingDate <= ?1 AND invoiced = false ", Long.class);
-		q.setParameter(1, generalService.getTodayDate());
+		q.setParameter(1, appBaseService.getTodayDate());
 		List<Long> saleOrderIdList = q.getResultList();
 		if(saleOrderIdList != null){
 			SaleOrder saleOrder = null;

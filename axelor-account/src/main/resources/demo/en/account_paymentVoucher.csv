@@ -1,0 +1,11 @@
+"importId";"company.importId";"operationTypeSelect";"partner.importId";"account.importId";"paymentMode.importId";"paymentDate";"paidAmount";"currency.code";"allocatedAmount";"orderImport";"user.importId";"statusSelect";"companyBankDetails.importId"
+1;1;3;88;394;8;"TODAY[-4M]";"32978.50";"EUR";;"S_1";20;2;90000
+2;1;1;170;373;5;"TODAY[-4M+22d]";2400;"USD";;"P_1";20;2;90000
+3;1;3;20;394;8;"TODAY[-4M+14d]";"33189.60";"EUR";;"S_2";20;2;90000
+4;1;1;152;373;8;"TODAY[-2M+7d]";30132;"USD";;"P_4";20;2;90000
+5;1;3;44;394;6;"TODAY[-2M+14d]";7000;"EUR";;"S_3";20;2;90000
+6;1;1;70;373;6;"TODAY[-1M+7d]";4000;"EUR";;"P_5";20;1;90000
+7;1;1;148;373;8;"TODAY[-1M+7d]";10000;"USD";;;20;1;90000
+8;1;3;77;394;6;"TODAY";"10443.8";"EUR";;"S_5";20;2;90000
+9;1;3;132;394;8;"TODAY";"19118.4";"EUR";;"S_4";20;2;90000
+10;1;3;77;394;5;"TODAY[+7d]";1000;"EUR";;"S_5";20;1;90000

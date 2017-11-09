@@ -17,12 +17,6 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -33,6 +27,12 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public interface StockMoveService {
 
@@ -77,8 +77,10 @@ public interface StockMoveService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void plan(StockMove stockMove) throws AxelorException;
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public String realize(StockMove stockMove) throws AxelorException;
+
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public String realize(StockMove stockMove, boolean check) throws AxelorException;
 
 	public boolean mustBeSplit(List<StockMoveLine> stockMoveLineList);
 
@@ -108,5 +110,50 @@ public interface StockMoveService {
 	public Long splitInto2(Long originalStockMoveId, List<StockMoveLine> stockMoveLines);
 	
 	public BigDecimal compute(StockMove stockMove);
+	
+	public List<Map<String,Object>> getStockPerDate(Long locationId, Long productId, LocalDate fromDate, LocalDate toDate);
 
+	/**
+	 * Change conformity on each stock move line according to the stock move
+	 * conformity.
+	 * 
+	 * @param stockMove
+	 * @return
+	 */
+	List<StockMoveLine> changeConformityStockMove(StockMove stockMove);
+
+	/**
+	 * Change stock move conformity according to the conformity on each stock move
+	 * line.
+	 * 
+	 * @param stockMove
+	 * @return
+	 */
+	Integer changeConformityStockMoveLine(StockMove stockMove);
+
+	/**
+	 * Fill {@link StockMove#fromAddressStr}
+	 * and {@link StockMove#toAddressStr}
+	 * @param stockMove
+	 */
+	void computeAddressStr(StockMove stockMove);
+
+	/**
+     * Called from {@link com.axelor.apps.stock.web.StockMoveController#viewDirection}
+	 * @param stockMove
+	 * @return the direction for the google map API
+	 */
+	Map<String, Object> viewDirection(StockMove stockMove) throws AxelorException;
+
+	/**
+	 * Print the given stock move.
+	 * @param stockMove
+	 * @param lstSelectedMove
+	 * @param isPicking  true if we print a picking order
+	 * @return the link to the PDF file
+	 * @throws AxelorException
+	 */
+	String printStockMove(StockMove stockMove,
+						  List<Integer> lstSelectedMove,
+						  boolean isPicking) throws AxelorException;
 }

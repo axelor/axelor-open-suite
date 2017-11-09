@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.base.service.weeklyplanning;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -9,7 +9,7 @@
 
 		<integer name="importId"/>
 		<string name="name" title="Department Name" required="true"/>
-		<string name="code" title="DEPT" required="true" unique="true" help="true"/>
+		<string name="code" title="DEPT" required="true" unique="true"/>
 		<many-to-one name="region" ref="com.axelor.apps.base.db.Region" title="Region"/>
 		<one-to-many name="cityList" ref="City" mappedBy="department" title="Department city List"/>
 		<one-to-many name="cantonList" ref="Canton" mappedBy="department" title="Department Cantons List"/>

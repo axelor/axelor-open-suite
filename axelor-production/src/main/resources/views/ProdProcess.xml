@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="prod-process-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcess">
     	<field name="name"/>
-    	<field name="code"/>
+    	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="location" grid-view="location-grid" form-view="location-form"/>
         <field name="product"/>
         <field name="prodProcessLineList" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
@@ -13,20 +13,25 @@
     
     <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"
     	onSave="action-prod-process-method-validate-prod-process" width="large">
+    	<toolbar>
+			<button name="print" title="Print" icon="fa-print" onClick="save,action-production-process-print"/>
+		</toolbar>
 		<panel name="main">
 	    	<field name="name"/>
-	    	<field name="code"/>
-	        <field name="location" required="true" grid-view="location-grid" form-view="location-form"/>
+	    	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+	        <field name="location" required="true" grid-view="location-grid" form-view="location-form" onChange="action-prod-process-record-set-second-location"/>
 	        <field name="product" grid-view="product-grid" form-view="product-form"/>
+	        <field name="producedProductLocation" grid-view="location-grid" form-view="location-form"/>
 	        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"/>
 	        <field name="outsourcing" onChange="action-prod-process-method-change-prodprocesslist-outsourcing"/>
+            <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
         </panel>
         <panel-related field="prodProcessLineList" colSpan="12" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>        
     </form>
     
     <action-validate name="action-prod-process-validate-is-cons-pro">
     	<error message="You can't manage the consumed products on phases because this production process is related to several bills of material"
-    		if="isConsProOnOperation == true &amp;&amp; __repo__.of(BillOfMaterial).all().filter('self.prodProcess.id = ?1', __this__.id).fetch().size &gt; 1" action="action-prod-process-record-false"/>
+			   if="isConsProOnOperation == true &amp;&amp; __repo__(BillOfMaterial).all().filter('self.prodProcess.id = ?1', __self__ ? __self__.id : 0).fetch().size &gt; 1" action="action-prod-process-record-false"/>
     </action-validate>
     
     <action-record name="action-prod-process-record-false" model="com.axelor.apps.production.db.ProdProcess">
@@ -41,4 +46,11 @@
     	<call class="com.axelor.apps.production.web.ProdProcessController" method="changeProdProcessListOutsourcing"/>
     </action-method>
     
+    <action-method name="action-production-process-print">
+		<call class="com.axelor.apps.production.web.ProdProcessController" method="print"/>
+	</action-method>
+	
+	<action-record name="action-prod-process-record-set-second-location" model="com.axelor.apps.production.db.ProdProcess">
+		<field name="producedProductLocation" expr="eval: location" if="producedProductLocation == null"/>
+	</action-record>
 </object-views>

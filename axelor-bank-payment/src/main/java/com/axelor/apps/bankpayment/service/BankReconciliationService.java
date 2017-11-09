@@ -19,23 +19,23 @@ package com.axelor.apps.bankpayment.service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -101,8 +101,8 @@ public class BankReconciliationService {
 	public void checkBalance(BankReconciliation bankReconciliation) throws AxelorException  {
 
 		if(bankReconciliation.getComputedBalance().compareTo(bankReconciliation.getEndingBalance()) != 0)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_STATEMENT_1),
-					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(bankReconciliation, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_STATEMENT_1),
+					AppAccountServiceImpl.EXCEPTION);
 		}
 
 	}
@@ -154,17 +154,15 @@ public class BankReconciliationService {
 
 		MoveLine moveLine = bankReconciliationLine.getMoveLine();
 
-		if(bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) == 0 )  {
-
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_STATEMENT_3),
-					GeneralServiceImpl.EXCEPTION, bankReconciliationLine.getReference()), IException.CONFIGURATION_ERROR);
+		if (bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) == 0) {
+			throw new AxelorException(bankReconciliationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_STATEMENT_3),
+				AppAccountServiceImpl.EXCEPTION, bankReconciliationLine.getReference());
 		}
-
-		if((bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) > 0  && bankReconciliationLine.getAmount().compareTo(moveLine.getCredit()) != 0 )
-				|| (bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) < 0  && bankReconciliationLine.getAmount().compareTo(moveLine.getDebit()) != 0 ) )  {
-
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_STATEMENT_2),
-					GeneralServiceImpl.EXCEPTION, bankReconciliationLine.getReference()), IException.CONFIGURATION_ERROR);
+		
+		if ((bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) > 0  && bankReconciliationLine.getAmount().compareTo(moveLine.getCredit()) != 0)
+				|| (bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) < 0  && bankReconciliationLine.getAmount().compareTo(moveLine.getDebit()) != 0)) {
+			throw new AxelorException(bankReconciliationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_STATEMENT_2),
+				AppAccountServiceImpl.EXCEPTION, bankReconciliationLine.getReference());
 		}
 
 	}
@@ -196,11 +194,11 @@ public class BankReconciliationService {
 		}
 		if(bankReconciliation.getFromDate() != null)  {
 			if(name != "")  {  name += "-";  }
-			name += bankReconciliation.getFromDate().toString("YYYY/MM/DD");
+			name += bankReconciliation.getFromDate().format(DateTimeFormatter.ofPattern("YYYY/MM/DD"));
 		}
 		if(bankReconciliation.getToDate() != null)  {
 			if(name != "")  {  name += "-";  }
-			name += bankReconciliation.getToDate().toString("YYYY/MM/DD");
+			name += bankReconciliation.getToDate().format(DateTimeFormatter.ofPattern("YYYY/MM/DD"));
 		}
 		
 		return name;

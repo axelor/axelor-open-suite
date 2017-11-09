@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -32,11 +32,11 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.GeneralRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
@@ -45,7 +45,7 @@ import com.google.inject.Inject;
 public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService{
 	
 	@Inject
-	protected GeneralService generalService;
+	protected AppAccountService appAccountService;
 	
 	@Inject
 	protected AccountManagementService accountManagementService;
@@ -53,9 +53,9 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService{
 	protected AnalyticMoveLineRepository analyticMoveLineRepository;
 	
 	@Inject
-	public AnalyticMoveLineServiceImpl(GeneralService generalService, AnalyticMoveLineRepository analyticMoveLineRepository){
+	public AnalyticMoveLineServiceImpl(AppAccountService appAccountService, AnalyticMoveLineRepository analyticMoveLineRepository){
 		
-		this.generalService = generalService;
+		this.appAccountService = appAccountService;
 		this.analyticMoveLineRepository = analyticMoveLineRepository;
 	}
 	
@@ -96,10 +96,10 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService{
 	@Override
 	public List<AnalyticMoveLine> generateLines(Partner partner, Product product, Company company,BigDecimal total) throws AxelorException{
 		List<AnalyticMoveLine> analyticDistributionLineList = new ArrayList<AnalyticMoveLine>();
-		if(generalService.getGeneral().getAnalyticDistributionTypeSelect() == GeneralRepository.DISTRIBUTION_TYPE_PARTNER){
+		if(appAccountService.getAppAccount().getAnalyticDistributionTypeSelect() == AppAccountRepository.DISTRIBUTION_TYPE_PARTNER){
 			analyticDistributionLineList = this.generateLinesFromPartner(partner, total);
 		}
-		else if(generalService.getGeneral().getAnalyticDistributionTypeSelect() == GeneralRepository.DISTRIBUTION_TYPE_PRODUCT){
+		else if(appAccountService.getAppAccount().getAnalyticDistributionTypeSelect() == AppAccountRepository.DISTRIBUTION_TYPE_PRODUCT){
 			analyticDistributionLineList = this.generateLinesFromProduct(product, company, total);
 		}
 		return analyticDistributionLineList;
@@ -112,7 +112,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService{
 		analyticMoveLine.setAnalyticAccount(analyticDistributionLine.getAnalyticAccount());
 		analyticMoveLine.setAnalyticAxis(analyticDistributionLine.getAnalyticAxis());
 		analyticMoveLine.setAnalyticJournal(analyticDistributionLine.getAnalyticJournal());
-		analyticMoveLine.setDate(generalService.getTodayDate());
+		analyticMoveLine.setDate(appAccountService.getTodayDate());
 		analyticMoveLine.setPercentage(analyticDistributionLine.getPercentage());
 		
 		return analyticMoveLine;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -18,6 +18,7 @@
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
   	<string name="exportTypeSelect" title="Export file type" selection="iadministration.export.type.select"/>
   	
+	<unique-constraint columns="name,company"/>
   	
   	<extra-code><![CDATA[
 	

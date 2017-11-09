@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<menuitem title="Contracts" name="contracts-root" order="-104" if="__config__.app.isApp('contract')" icon="fa-briefcase" icon-background="blue"/>
+
+	<menuitem title="Customer contracts" name="contracts-root-customer-all" action="contracts.root.customer.all" parent="contracts-root"/>
+
+	<action-view name="contracts.root.customer.all" title="Customer contracts" model="com.axelor.apps.contract.db.Contract">
+		<view type="grid" name="contract-grid"/>
+		<view type="form" name="contract-form"/>
+		<domain>self.targetType = 1 AND self.statusSelect != 3</domain>
+		<context name="_xTargetType" expr="eval: 1"/>
+	</action-view>
+
+	<menuitem title="Supplier contracts" name="contracts-root-supplier-all" action="contracts.root.supplier.all" parent="contracts-root"/>
+
+	<action-view name="contracts.root.supplier.all" title="Supplier contracts" model="com.axelor.apps.contract.db.Contract">
+		<view type="grid" name="contract-grid"/>
+		<view type="form" name="contract-form"/>
+		<domain>self.targetType = 2 AND self.statusSelect != 3</domain>
+		<context name="_xTargetType" expr="eval: 2"/>
+	</action-view>
+
+	<menuitem title="Configuration" name="contracts-root-conf-all" parent="contracts-root"/>
+
+	<menuitem title="Terminated contracts" name="contracts-root-conf-terminated" action="contracts.root.conf.terminated" parent="contracts-root-conf-all"/>
+
+	<action-view name="contracts.root.conf.terminated" title="Terminated contracts" model="com.axelor.apps.contract.db.Contract">
+		<view type="grid" name="contract-grid"/>
+		<view type="form" name="contract-form"/>
+		<domain>self.statusSelect = 3</domain>
+	</action-view>
+	
+	<menuitem name="contract-template-all" title="Contract templates" parent="contracts-root-conf-all" action="contract.templates.all"/>
+
+	<action-view name="contract.templates.all" title="Contract templates" model="com.axelor.apps.contract.db.ContractTemplate">
+		<view type="grid" name="contract-template-grid"/>
+		<view type="form" name="contract-template-form"/>
+	</action-view>
+	
+	<menuitem name="duration-all" title="Durations" parent="contracts-root-conf-all" action="duration.all" />
+	
+	<action-view name="duration.all" title="Duration" model="com.axelor.apps.base.db.Duration">
+		<view type="grid" name="duration-grid"/>
+		<view type="form" name="duration-form"/>
+	</action-view>
+	
+</object-views>

@@ -21,6 +21,7 @@ import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -38,11 +39,13 @@ public class EbicsPartnerController {
 		try {
 			EbicsPartner ebicsPartner = request.getContext().asType(EbicsPartner.class);
 		
-			ebicsPartnerService.getBankStatements(ebicsPartnerRepository.find(ebicsPartner.getId()));
+			int statementNb = ebicsPartnerService.getBankStatements(ebicsPartnerRepository.find(ebicsPartner.getId()));
+			response.setFlash(String.format(I18n.get("%s bank statements get."), statementNb));
 		}
 		catch(Exception e)  {
 			TraceBackService.trace(response, e);
 		}
+		response.setReload(true);
 		
 	}
 	

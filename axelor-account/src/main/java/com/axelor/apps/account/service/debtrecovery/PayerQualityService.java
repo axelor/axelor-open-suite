@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -22,24 +22,24 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayerQualityConfigLine;
-import com.axelor.apps.account.db.Reminder;
-import com.axelor.apps.account.db.ReminderHistory;
-import com.axelor.apps.account.db.ReminderLevel;
-import com.axelor.apps.account.db.ReminderMethodLine;
+import com.axelor.apps.account.db.DebtRecovery;
+import com.axelor.apps.account.db.DebtRecoveryHistory;
+import com.axelor.apps.account.db.DebtRecoveryLevel;
+import com.axelor.apps.account.db.DebtRecoveryMethodLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -52,37 +52,37 @@ public class PayerQualityService {
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected PartnerService partnerService;
-	protected GeneralService generalService;
+	protected AppAccountService appAccountService;
 	protected PartnerRepository partnerRepository;
 	
 	protected LocalDate today;
 	
 	@Inject
-	public PayerQualityService(PartnerService partnerService, GeneralService generalService, PartnerRepository partnerRepository) {
+	public PayerQualityService(PartnerService partnerService, AppAccountService appAccountService, PartnerRepository partnerRepository) {
 
 		this.partnerService = partnerService;
-		this.generalService = generalService;
+		this.appAccountService = appAccountService;
 		this.partnerRepository = partnerRepository;
-		this.today = generalService.getTodayDate();
+		this.today = appAccountService.getTodayDate();
 
 	}
 
 	//TODO : à remplacer par une requête afin de rendre le traitement scalable
-	public List<ReminderHistory> getReminderHistoryList(Partner partner)  {
-		List<ReminderHistory> reminderHistoryList = new ArrayList<ReminderHistory>();
+	public List<DebtRecoveryHistory> getDebtRecoveryHistoryList(Partner partner)  {
+		List<DebtRecoveryHistory> debtRecoveryHistoryList = new ArrayList<DebtRecoveryHistory>();
 		if(partner.getAccountingSituationList() != null)  {
 			for(AccountingSituation accountingSituation : partner.getAccountingSituationList())  {
-				Reminder reminder = accountingSituation.getReminder();
-				if(reminder != null && reminder.getReminderHistoryList()!= null && !reminder.getReminderHistoryList().isEmpty())  {
-					for(ReminderHistory reminderHistory : reminder.getReminderHistoryList())  {
-						if((reminderHistory.getReminderDate() != null && reminderHistory.getReminderDate().isAfter(today.minusYears(1))))  {
-							reminderHistoryList.add(reminderHistory);
+				DebtRecovery debtRecovery = accountingSituation.getDebtRecovery();
+				if(debtRecovery != null && debtRecovery.getDebtRecoveryHistoryList()!= null && !debtRecovery.getDebtRecoveryHistoryList().isEmpty())  {
+					for(DebtRecoveryHistory debtRecoveryHistory : debtRecovery.getDebtRecoveryHistoryList())  {
+						if((debtRecoveryHistory.getDebtRecoveryDate() != null && debtRecoveryHistory.getDebtRecoveryDate().isAfter(today.minusYears(1))))  {
+							debtRecoveryHistoryList.add(debtRecoveryHistory);
 						}
 					}
 				}
 			}
 		}
-		return reminderHistoryList;
+		return debtRecoveryHistoryList;
 	}
 
 
@@ -97,14 +97,14 @@ public class PayerQualityService {
 	public BigDecimal getPayerQualityNote(Partner partner, List<PayerQualityConfigLine> payerQualityConfigLineList)  {
 		BigDecimal burden = BigDecimal.ZERO;
 
-		List<ReminderHistory> reminderHistoryList = this.getReminderHistoryList(partner);
+		List<DebtRecoveryHistory> debtRecoveryHistoryList = this.getDebtRecoveryHistoryList(partner);
 		List<MoveLine> moveLineList = this.getMoveLineRejectList(partner);
 
-		log.debug("Tiers {} : Nombre de relance concernée : {}",partner.getName(), reminderHistoryList.size());
+		log.debug("Tiers {} : Nombre de relance concernée : {}",partner.getName(), debtRecoveryHistoryList.size());
 		log.debug("Tiers {} : Nombre de rejets concernée : {}", partner.getName(), moveLineList.size());
 
-		for(ReminderHistory reminderHistory : reminderHistoryList)  {
-			burden = burden.add(this.getPayerQualityNote(reminderHistory, payerQualityConfigLineList));
+		for(DebtRecoveryHistory debtRecoveryHistory : debtRecoveryHistoryList)  {
+			burden = burden.add(this.getPayerQualityNote(debtRecoveryHistory, payerQualityConfigLineList));
 		}
 		for(MoveLine moveLine : moveLineList)  {
 			burden = burden.add(this.getPayerQualityNote(moveLine, payerQualityConfigLineList));
@@ -114,12 +114,12 @@ public class PayerQualityService {
 	}
 
 
-	public BigDecimal getPayerQualityNote(ReminderHistory reminderHistory, List<PayerQualityConfigLine> payerQualityConfigLineList)  {
-		ReminderLevel reminderLevel = this.getReminderLevel(reminderHistory);
-		if(reminderLevel != null)  {
+	public BigDecimal getPayerQualityNote(DebtRecoveryHistory debtRecoveryHistory, List<PayerQualityConfigLine> payerQualityConfigLineList)  {
+		DebtRecoveryLevel debtRecoveryLevel = this.getDebtRecoveryLevel(debtRecoveryHistory);
+		if(debtRecoveryLevel != null)  {
 			for(PayerQualityConfigLine payerQualityConfigLine : payerQualityConfigLineList)  {
 				if(payerQualityConfigLine.getIncidentTypeSelect() == 0
-						&& payerQualityConfigLine.getReminderLevel().equals(reminderLevel))  {
+						&& payerQualityConfigLine.getDebtRecoveryLevel().equals(debtRecoveryLevel))  {
 					return payerQualityConfigLine.getBurden();
 				}
 			}
@@ -139,17 +139,17 @@ public class PayerQualityService {
 	}
 
 
-	public ReminderLevel getReminderLevel(ReminderHistory reminderHistory)  {
-		ReminderMethodLine reminderMethodLine = null;
+	public DebtRecoveryLevel getDebtRecoveryLevel(DebtRecoveryHistory debtRecoveryHistory)  {
+		DebtRecoveryMethodLine debtRecoveryMethodLine = null;
 
-		if(reminderHistory.getReminderDate() != null)  {
+		if(debtRecoveryHistory.getDebtRecoveryDate() != null)  {
 
-			reminderMethodLine = reminderHistory.getReminderMethodLine();
+			debtRecoveryMethodLine = debtRecoveryHistory.getDebtRecoveryMethodLine();
 
 		}
 
-		if(reminderMethodLine != null)  {
-			return reminderMethodLine.getReminderLevel();
+		if(debtRecoveryMethodLine != null)  {
+			return debtRecoveryMethodLine.getDebtRecoveryLevel();
 		}
 		else  {
 			return null;
@@ -158,16 +158,15 @@ public class PayerQualityService {
 
 
 	public List<Partner> getPartnerList()  {
-		return  partnerRepository.all().filter("self.isCustomer = true and self.hasOrdered = true").fetch();
+		return  partnerRepository.all().filter("self.isCustomer = true").fetch();
 	}
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void payerQualityProcess() throws AxelorException  {
-		List<PayerQualityConfigLine> payerQualityConfigLineList = generalService.getGeneral().getPayerQualityConfigLineList();
+		List<PayerQualityConfigLine> payerQualityConfigLineList = appAccountService.getAppAccount().getPayerQualityConfigLineList();
 		if(payerQualityConfigLineList == null || payerQualityConfigLineList.size() == 0)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYER_QUALITY_1),
-					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYER_QUALITY_1), AppAccountServiceImpl.EXCEPTION);
 		}
 
 		List<Partner> partnerList = this.getPartnerList();

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<menuitem name="account-root-bank-orders" parent="account-root"
 		title="Bank Orders" order="26"/>
 		
-	<menuitem name="account-root-bank-order-direct-debit"
+	<menuitem name="account-root-bank-order-direct-debit" if="__config__.app.getApp('account').getManageDirectDebitPayment()"
 		parent="account-root-bank-orders" title="Direct Debits"/>
 		
 	<menuitem name="account-root-bank-order-sepa-direct-debit"
@@ -102,7 +102,8 @@
 	
 	<menuitem name="account-root-bank-order-awaiting-for-signature"
 		parent="account-root-bank-orders" title="Bank Orders awaiting for signature"
-		action="account.bank.order.awaiting.for.signature" />
+		action="account.bank.order.awaiting.for.signature" tag-count="true"
+		tag-style="default"/>
 	
 	<action-view name="account.bank.order.awaiting.for.signature"
 		title="Bank Orders awaiting for signature" model="com.axelor.apps.bankpayment.db.BankOrder" >
@@ -112,7 +113,7 @@
 	</action-view>
 	
 	<menuitem name="account-root-bank-statement" parent="account-root"
-		title="Bank Statement" order="27"/>
+		title="Bank Statement" order="17"/>
 
 	<menuitem name="account-root-bank-statement-bank-statement"
 		parent="account-root-bank-statement" title="Bank Statement"
@@ -122,7 +123,7 @@
 		title="Bank Statement" model="com.axelor.apps.bankpayment.db.BankStatement" >
 		<view type="grid" name="bank-statement-grid"/>
 		<view type="form" name="bank-statement-form"/>
-	    <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
+	    <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 	
 	<menuitem name="account-root-bank-reconciliation" parent="account-root"
@@ -136,7 +137,7 @@
 		title="Bank Reconciliations" model="com.axelor.apps.bankpayment.db.BankReconciliation" >
 		<view type="grid" name="bank-reconciliation-grid"/>
 		<view type="form" name="bank-reconciliation-form"/>
-	    <context name="todayDate" expr="eval:__config__.generalService.getTodayDate()"/>
+	    <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 	
 	<menuitem name="account-root-bank-reconciliation-bank-reconciliation-line"

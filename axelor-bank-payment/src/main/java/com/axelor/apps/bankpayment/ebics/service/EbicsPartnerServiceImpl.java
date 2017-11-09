@@ -19,10 +19,9 @@ package com.axelor.apps.bankpayment.ebics.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
-
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 
 import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
@@ -30,7 +29,9 @@ import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.service.BankStatementService;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -51,11 +52,11 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
 	}
 	
 	@Transactional
-	public void getBankStatements(EbicsPartner ebicsPartner) throws AxelorException, IOException  {
+	public int getBankStatements(EbicsPartner ebicsPartner) throws AxelorException, IOException  {
 		
-		EbicsUser ebicsUser = ebicsPartner.getBankStatementEbicsUser();
+		EbicsUser transportEbicsUser = ebicsPartner.getTransportEbicsUser();
 		
-		if(ebicsPartner.getBankStatementFileFormatSet() == null || ebicsPartner.getBankStatementFileFormatSet().isEmpty() || ebicsUser == null)  {  return;  }
+		if(ebicsPartner.getBankStatementFileFormatSet() == null || ebicsPartner.getBankStatementFileFormatSet().isEmpty() || transportEbicsUser == null)  {  return 0;  }
 		
 		LocalDateTime executionDateTime = LocalDateTime.now();
 		
@@ -67,11 +68,11 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
 		if(ebicsPartner.getBankStatementGetModeSelect() == EbicsPartnerRepository.GET_MODE_PERIOD)  {
 			bankStatementStartDate = ebicsPartner.getBankStatementStartDate();
 			if(bankStatementStartDate != null)  {
-				startDate = bankStatementStartDate.toDate();
+				startDate = DateTool.toDate(bankStatementStartDate);
 			}
 			bankStatementToDate = ebicsPartner.getBankStatementEndDate();
 			if(bankStatementToDate != null)  {
-				endDate = bankStatementToDate.toDate();
+				endDate = DateTool.toDate(bankStatementToDate);
 			}
 		}
 		else if(ebicsPartner.getBankStatementLastExeDateT() != null) {
@@ -79,20 +80,25 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
 			bankStatementToDate = executionDateTime.toLocalDate();
 		}
 		
+		int statementNb = 0;
 		for(BankStatementFileFormat bankStatementFileFormat : ebicsPartner.getBankStatementFileFormatSet())  {
-			
-			File file = ebicsService.sendFDLRequest(ebicsUser, null, startDate, endDate, bankStatementFileFormat.getStatementFileFormatSelect());
-			
-			bankStatementRepository.save(bankStatementService.createBankStatement(file, bankStatementStartDate, bankStatementToDate, bankStatementFileFormat, ebicsPartner, executionDateTime));
-			
+			try  {
+				File file = ebicsService.sendFDLRequest(transportEbicsUser, null, startDate, endDate, bankStatementFileFormat.getStatementFileFormatSelect());
+				
+				bankStatementRepository.save(bankStatementService.createBankStatement(file, bankStatementStartDate, bankStatementToDate, bankStatementFileFormat, ebicsPartner, executionDateTime));
+				
+				statementNb++;
+			}
+			catch (Exception e) {
+				TraceBackService.trace(e);
+			}
 		}
-		
-		//TODO LIER LES RIB AU EBICS PARTNER ??
 		
 		ebicsPartner.setBankStatementLastExeDateT(executionDateTime);
 		
 		Beans.get(EbicsPartnerRepository.class).save(ebicsPartner);
 		
+		return statementNb;
 	}
 	
 	

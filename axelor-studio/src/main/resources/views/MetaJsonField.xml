@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<form name="studio-meta-json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" onNew="action-studio-set-meta-json-field-defaults">
+	    <panel title="Overview">
+	      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
+	      <spacer/>
+	      <field name="name" x-pattern="[a-z][a-zA-Z0-9_\\$]+"/>
+	      <field name="type" />
+	      <field name="title" />
+	      <field name="defaultValue" />
+	      <field name="help" />
+	      <field name="sequence" />
+	      <field name="includedInCost" widget="inline-checkbox" />
+	      <field name="model" hidden="true" />
+	      <field name="modelField" hidden="true" />
+	    </panel>
+	    <panel-include view="json-field-form-base" />
+    </form>
+    
+	<grid name="studio-meta-json-field-grid" title="Custom fields" model="com.axelor.meta.db.MetaJsonField" edit-icon="true">
+	  <field name="name"/>
+	  <field name="title" />
+	  <field name="type"/>
+	  <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
+	</grid>
+	
+	<action-attrs name="action-studio-set-meta-json-field-defaults" >
+    	<attribute name="value"	for="model" expr="eval:_parent.metaModel?.fullName"/>
+    	<attribute name="value" for="modelField" expr="eval:_parent.metaField?.name"/>
+    </action-attrs>
+    
+</object-views>

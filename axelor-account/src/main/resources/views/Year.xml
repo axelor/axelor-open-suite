@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="year-account-grid" title="Fiscal years" model="com.axelor.apps.base.db.Year">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="fromDate"/>
         <field name="toDate"/>
         <field name="reportedBalanceDate"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="statusSelect"/>
     </grid>
-    
-    <form onSave="action-year-check-date" onNew="action-year-account-record-new" name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year">
+
+    <form name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year"
+		  onLoad="action-attrs-year-hide-linked-adjusting-moves-dashlet,action-attrs-account-year-read-only-dates" onSave="action-year-check-date" onNew="action-year-account-record-new">
 		<panel name="main" readonlyIf="statusSelect == 2">
 			<field name="name"/>
-			<field name="code" colSpan="3"/>
+			<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" required="true" colSpan="3" grid-view="company-grid"/>
 			<panel name="dates" title="Dates" colSpan="12">
 				<field name="fromDate" colSpan="3"/>
@@ -24,33 +25,56 @@
 				<field name="reportedBalanceDate" colSpan="3"/>
 			</panel>
 		</panel>
-		<panel-related field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-form" grid-view="period-grid"/>
+		<panel-related field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>
+		<panel-dashlet action="action-view-year-linked-adjusting-moves-dashlet" name="linkedAdjustingMoves"/>
 		<panel sidebar="true" readonlyIf="statusSelect == 2">
 			<field name="typeSelect" readonly="true" colSpan="6"/>
 			<field name="statusSelect" colSpan="6"/>
-			<button name="close" title="Close fiscal year" onClick="action-group-account-year-close-click"/>
 			<field name="closureDateTime" showIf="statusSelect == 2"/>
+			<button name="close" title="Close fiscal year" onClick="action-group-account-year-close-click" hideIf="statusSelect == 2" prompt="The closing of a fiscal year brings irrevocable integration of a move in Moves book"/>
+			<button name="adjust" title="Adjust fiscal year" onClick="action-group-account-year-adjust-click" showIf="statusSelect == 2"/>
 		</panel>
 		<panel sidebar="true" name="periodsGenerationAssistant" title="Periods generation assistant" hideIf="statusSelect == 2">
 			<field name="periodDurationSelect"/>
-			<button name="generatePeriods" title="Generate periods" onClick="action-group-account-year-generateperiod-click" />    
+			<button name="generatePeriods" title="Generate periods" onClick="action-group-account-year-generateperiod-click" />
 		</panel>
 	</form>
 
+	<action-attrs name="action-attrs-year-hide-linked-adjusting-moves-dashlet">
+		<attribute for="linkedAdjustingMoves" name="hidden" expr="eval: __repo__(AdjustHistory).all().filter('self.fiscalYear.id = ?', id).fetch().size() == 0"/>
+	</action-attrs>
+
+	<action-view name="action-view-year-linked-adjusting-moves-dashlet" title="Linked Adjusting Moves" model="com.axelor.apps.account.db.Move">
+		<view type="grid" name="move-grid"/>
+		<view type="form" name="move-form"/>
+		<domain>self.period.year.id = :id AND self.adjustingMove = true</domain>
+	</action-view>
     
     <action-group name="action-group-account-year-close-click">
     	<action name="action-year-check-date"/>
     	<action name="action-year-close-method"/>
     	<action name="save"/>
     </action-group>
+
+	<action-group name="action-group-account-year-adjust-click">
+		<action name="action-year-check-date"/>
+		<action name="action-year-adjust-method"/>
+		<action name="save"/>
+	</action-group>
     
     <action-group name="action-group-account-year-generateperiod-click">
     	<action name="action-year-check-date"/>
     	<action name="save"/>
     	<action name="action-year-validate-generate-period"/>
     	<action name="action-method-account-year-generate-periods"/>
+		<action name="action-attrs-account-year-read-only-dates"/>
     	<action name="save"/>
     </action-group>
+
+	<action-attrs name="action-attrs-account-year-read-only-dates">
+		<attribute for="fromDate" name="readonly" expr="true" if="!periodList?.isEmpty()"/>
+		<attribute for="toDate" name="readonly" expr="true" if="!periodList?.isEmpty()"/>
+	</action-attrs>
     
     <action-method name="action-method-account-year-generate-periods">
     	<call class="com.axelor.apps.account.web.YearController" method="generatePeriods"/>
@@ -58,12 +82,16 @@
     
     <action-record name="action-year-account-record-new" model="com.axelor.apps.base.db.Year">
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     	<field name="typeSelect"  expr="eval:1"/>
     </action-record>
     
     <action-method name="action-year-close-method">
     	<call class="com.axelor.apps.account.web.YearController" method="close"/>
+    </action-method>
+
+    <action-method name="action-year-adjust-method">
+    	<call class="com.axelor.apps.account.web.YearController" method="adjust"/>
     </action-method>
     
     <action-validate name="action-year-validate-generate-period">

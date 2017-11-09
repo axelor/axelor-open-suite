@@ -22,11 +22,11 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.EventReminder;
 import com.axelor.apps.crm.db.IEventReminder;
@@ -59,7 +59,7 @@ public class BatchEventReminder extends BatchStrategy {
 	public BatchEventReminder(EventReminderService eventReminderService, MessageServiceCrmImpl messageServiceCrmImpl, MailAccountService mailAccountService) {
 
 		super(eventReminderService, messageServiceCrmImpl, mailAccountService);
-		this.today = Beans.get(GeneralService.class).getTodayDateTime().toLocalDateTime();
+		this.today = Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
 	}
 
 
@@ -206,9 +206,9 @@ public class BatchEventReminder extends BatchStrategy {
 	@Override
 	protected void stop() {
 
-		String comment = I18n.get(IExceptionMessage.BATCH_EVENT_REMINDER_2);
+		String comment = I18n.get(IExceptionMessage.BATCH_EVENT_REMINDER_2) + "\n";
 		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_EVENT_REMINDER_3)+"\n", batch.getDone());
-		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+		comment += String.format("\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
 		super.stop();
 		addComment(comment);

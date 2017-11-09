@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -20,18 +20,14 @@ package com.axelor.apps.supplychain.service.invoice.generator;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 
 public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
-
-	@Inject
-	protected GeneralService generalService;
 
 	protected SaleOrder saleOrder;
 
@@ -75,7 +71,7 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
 
 		Invoice invoice = super.createInvoiceHeader();
 
-		if (!Beans.get(GeneralService.class).getGeneral().getManageInvoicedAmountByLine())  {
+		if (!Beans.get(AppSupplychainService.class).getAppSupplychain().getManageInvoicedAmountByLine())  {
 			if(saleOrder != null)  {
 				invoice.setSaleOrder(saleOrder);
 				

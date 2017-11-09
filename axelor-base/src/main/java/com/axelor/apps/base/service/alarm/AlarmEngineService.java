@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +32,7 @@ import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.AlarmEngine;
 import com.axelor.apps.base.db.AlarmMessage;
 import com.axelor.apps.base.db.repo.AlarmEngineRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -46,11 +46,11 @@ import com.google.inject.Inject;
 public class AlarmEngineService <T extends Model> {
 
 
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	private DateTime dateTime;
+	private ZonedDateTime datetime;
 
 	private Templates templates;
 	
@@ -58,15 +58,15 @@ public class AlarmEngineService <T extends Model> {
 	private AlarmEngineRepository alarmEngineRepo;
 
 	@Inject
-	public AlarmEngineService(GeneralService generalService) {
-		this.generalService = generalService;
-		dateTime = this.generalService.getTodayDateTime();
+	public AlarmEngineService(AppBaseService appBaseService) {
+		this.appBaseService = appBaseService;
+		datetime = this.appBaseService.getTodayDateTime();
 
 	}
 
-	public AlarmEngineService(DateTime dateTime) {
+	public AlarmEngineService(ZonedDateTime datetime) {
 
-		this.dateTime = dateTime;
+		this.datetime = datetime;
 
 	}
 
@@ -218,7 +218,7 @@ public class AlarmEngineService <T extends Model> {
 
 		Alarm alarm = new Alarm();
 
-		alarm.setDate(dateTime);
+		alarm.setDate(datetime);
 		alarm.setAlarmEngine(alarmEngine);
 		alarm.setContent( content(alarmEngine.getAlarmMessage(), t) );
 

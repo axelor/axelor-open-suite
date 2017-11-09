@@ -19,32 +19,32 @@ package com.axelor.apps.businessproject.report;
 
 public interface ITranslation {
 
-	public static final String PROJECT_TASK_CUSTOMER = /*$$(*/ "ProjectTask.customer"; /*)*/
-	public static final String PROJECT_TASK_CURRENCY= /*$$(*/ "ProjectTask.currency"; /*)*/
-	public static final String PROJECT_TASK_INITIAL= /*$$(*/ "ProjectTask.initial"; /*)*/
-	public static final String PROJECT_TASK_SO = /*$$(*/ "ProjectTask.salesOrders"; /*)*/
-	public static final String PROJECT_TASK_SO_NO = /*$$(*/ "ProjectTask.salesOrderNumber"; /*)*/
-	public static final String PROJECT_TASK_DATE = /*$$(*/ "ProjectTask.date"; /*)*/
-	public static final String PROJECT_TASK_SALES = /*$$(*/ "ProjectTask.sales"; /*)*/
-	public static final String PROJECT_TASK_COSTS = /*$$(*/ "ProjectTask.costs"; /*)*/
-	public static final String PROJECT_TASK_Margin = /*$$(*/ "ProjectTask.margin"; /*)*/
-	public static final String PROJECT_TASK_TOTAL_SALES = /*$$(*/ "ProjectTask.totalSales"; /*)*/
-	public static final String PROJECT_TASK_TOTAL_COSTS = /*$$(*/ "ProjectTask.totalCosts"; /*)*/
-	public static final String PROJECT_TASK_TOTAL_MARGIN = /*$$(*/ "ProjectTask.totalMargin"; /*)*/
-	public static final String PROJECT_TASK_INVOICED = /*$$(*/ "ProjectTask.invoiced"; /*)*/
-	public static final String PROJECT_TASK_TURNOVER = /*$$(*/ "ProjectTask.turnover"; /*)*/
-	public static final String PROJECT_TASK_SALES_INVOICE = /*$$(*/ "ProjectTask.salesInvoice"; /*)*/
-	public static final String PROJECT_TASK_INVOICE_NUMBER = /*$$(*/ "ProjectTask.invoiceNumber"; /*)*/
-	public static final String PROJECT_TASK_AMOUNT = /*$$(*/ "ProjectTask.amount"; /*)*/
-	public static final String PROJECT_TASK_PURCHASE = /*$$(*/ "ProjectTask.purchase"; /*)*/
-	public static final String PROJECT_TASK_EXPENSE = /*$$(*/ "ProjectTask.expense"; /*)*/
-	public static final String PROJECT_TASK_EMPLOYEE = /*$$(*/ "ProjectTask.employee"; /*)*/
-	public static final String PROJECT_TASK_TIMESHEET = /*$$(*/ "ProjectTask.timesheet"; /*)*/
-	public static final String PROJECT_TASK_TOTAL_HOURS = /*$$(*/ "ProjectTask.totalHours"; /*)*/
-	public static final String PROJECT_TASK_HOURLY_RATE = /*$$(*/ "ProjectTask.hourlyRate"; /*)*/
-	public static final String PROJECT_TASK_ANALYTICAL = /*$$(*/ "ProjectTask.analyticalLines"; /*)*/
-	public static final String PROJECT_TASK_TYPE = /*$$(*/ "ProjectTask.type"; /*)*/
-	public static final String PROJECT_TASK_TOTAL = /*$$(*/ "ProjectTask.total"; /*)*/
+	public static final String PROJECT_CUSTOMER = /*$$(*/ "Project.customer"; /*)*/
+	public static final String PROJECT_CURRENCY= /*$$(*/ "Project.currency"; /*)*/
+	public static final String PROJECT_INITIAL= /*$$(*/ "Project.initial"; /*)*/
+	public static final String PROJECT_SO = /*$$(*/ "Project.salesOrders"; /*)*/
+	public static final String PROJECT_SO_NO = /*$$(*/ "Project.salesOrderNumber"; /*)*/
+	public static final String PROJECT_DATE = /*$$(*/ "Project.date"; /*)*/
+	public static final String PROJECT_SALES = /*$$(*/ "Project.sales"; /*)*/
+	public static final String PROJECT_COSTS = /*$$(*/ "Project.costs"; /*)*/
+	public static final String PROJECT_Margin = /*$$(*/ "Project.margin"; /*)*/
+	public static final String PROJECT_TOTAL_SALES = /*$$(*/ "Project.totalSales"; /*)*/
+	public static final String PROJECT_TOTAL_COSTS = /*$$(*/ "Project.totalCosts"; /*)*/
+	public static final String PROJECT_TOTAL_MARGIN = /*$$(*/ "Project.totalMargin"; /*)*/
+	public static final String PROJECT_INVOICED = /*$$(*/ "Project.invoiced"; /*)*/
+	public static final String PROJECT_TURNOVER = /*$$(*/ "Project.turnover"; /*)*/
+	public static final String PROJECT_SALES_INVOICE = /*$$(*/ "Project.salesInvoice"; /*)*/
+	public static final String PROJECT_INVOICE_NUMBER = /*$$(*/ "Project.invoiceNumber"; /*)*/
+	public static final String PROJECT_AMOUNT = /*$$(*/ "Project.amount"; /*)*/
+	public static final String PROJECT_PURCHASE = /*$$(*/ "Project.purchase"; /*)*/
+	public static final String PROJECT_EXPENSE = /*$$(*/ "Project.expense"; /*)*/
+	public static final String PROJECT_EMPLOYEE = /*$$(*/ "Project.employee"; /*)*/
+	public static final String PROJECT_TIMESHEET = /*$$(*/ "Project.timesheet"; /*)*/
+	public static final String PROJECT_TOTAL_HOURS = /*$$(*/ "Project.totalHours"; /*)*/
+	public static final String PROJECT_HOURLY_RATE = /*$$(*/ "Project.hourlyRate"; /*)*/
+	public static final String PROJECT_ANALYTICAL = /*$$(*/ "ProjectT.analyticalLines"; /*)*/
+	public static final String PROJECT_TYPE = /*$$(*/ "Project.type"; /*)*/
+	public static final String PROJECT_TOTAL = /*$$(*/ "Project.total"; /*)*/
 	
 	public static final String INVOICE_PURCHASE_INVOICE_NO_ANNEX = /*$$(*/ "Invoice.purchaseInvoiceNoAnnex"; /*)*/
 	public static final String INVOICE_PURCHASE_REFUND_NO_ANNEX = /*$$(*/ "Invoice.purchaseRefundNoAnnex"; /*)*/
@@ -62,5 +62,20 @@ public interface ITranslation {
 	public static final String INVOICE_EXPENSE_TOTAL_AMOUNT = /*$$(*/ "Invoice.expenseTotalAmount"; /*)*/
 	public static final String INVOICE_EXPENSE_TAX_AMOUNT = /*$$(*/ "Invoice.expenseTaxAmount"; /*)*/
 	public static final String INVOICE_EXPENSE_PRODUCT = /*$$(*/ "Invoice.expenseProduct"; /*)*/
+	
+	public static final String PROJECT_CONSUMED_TIME = /*$$(*/ "Project.consumedTime"; /*)*/
+	public static final String PROJECT_TOTAL_TIME_CHART = /*$$(*/ "Project.totalTimeChart"; /*)*/
+	public static final String PROJECT_TOTAL_COST_CHART = /*$$(*/ "Project.totalCostChart"; /*)*/
+	public static final String PROJECT_PLANNED_TIME = /*$$(*/ "Project.plannedTime"; /*)*/
+	public static final String PROJECT_SYNTHESIS = /*$$(*/ "Project.synthesis"; /*)*/
+	public static final String PROJECT_TIME = /*$$(*/ "Project.time"; /*)*/
+	public static final String PROJECT_REAL_PASSED = /*$$(*/ "Project.realPassed"; /*)*/
+	public static final String PROJECT_PLANNED_PASSED = /*$$(*/ "Project.plannedPast"; /*)*/
+	public static final String PROJECT_REMAIN_PLANNED = /*$$(*/ "Project.remainPlanned"; /*)*/
+	public static final String PROJECT_REMAIN_THEORY = /*$$(*/ "Project.remainInTheory"; /*)*/
+	public static final String PROJECT_CHART_MONTH_PASSED_TIME = /*$$(*/ "Project.chartTimePassedPerMonth"; /*)*/
+	public static final String PROJECT_CHART_MONTH_PASSED_COST = /*$$(*/ "Project.chartCostPassedPerMonth"; /*)*/
+	public static final String PROJECT_CHART_MONTH_REMAINING_TIME = /*$$(*/ "Project.chartTimeRemainingPerMonth"; /*)*/
+	public static final String PROJECT_CHART_MONTH_REMAINING_COST = /*$$(*/ "Project.chartCostRemainingPerMonth"; /*)*/
 	
 }

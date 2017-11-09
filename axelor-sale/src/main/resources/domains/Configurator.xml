@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="sale" package="com.axelor.apps.sale.db"/>
+
+  <entity name="Configurator" lang="java">
+
+	<many-to-one name="configuratorCreator" ref="com.axelor.apps.sale.db.ConfiguratorCreator" title="Configurator type" required="true" />
+    <string name="attributes" title="Attributes" json="true" />
+    <string name="indicators" title="Indicators" json="true" />
+    <!--we don't want a real database relation between configurator and product,
+        so we just save the id-->
+    <long name="productId"/>
+
+
+      <extra-code><![CDATA[
+          //update sale order line
+          public static final int UPDATE_FROM_PRODUCT = 0;
+          public static final int UPDATE_FROM_CONFIGURATOR = 1;
+    ]]></extra-code>
+  </entity>
+
+</domain-models>

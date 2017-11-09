@@ -29,14 +29,9 @@ import java.util.Map;
 import java.util.Set;
 
 import com.axelor.app.production.db.IManufOrder;
-import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.service.OperationOrderService;
+import com.axelor.exception.service.TraceBackService;
 import org.eclipse.birt.core.exception.BirtException;
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.Minutes;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,22 +55,33 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class OperationOrderController {
-	
-	@Inject
 	protected OperationOrderRepository operationOrderRepo;
-	
-	@Inject
 	protected OperationOrderWorkflowService operationOrderWorkflowService;
-	
-	@Inject
 	protected ManufOrderService manufOrderService;
-	
-	@Inject
+	protected ManufOrderWorkflowService manufOrderWorkflowService;
 	protected WeeklyPlanningService weeklyPlanningService;
 	
-
+	private static final DateTimeFormatter DATE_TIME_FORMAT =  DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+	private static final DateTimeFormatter DATE_FORMAT =  DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+
+	@Inject
+	public OperationOrderController(OperationOrderRepository operationOrderRepo, OperationOrderWorkflowService operationOrderWorkflowService,
+									ManufOrderService manufOrderService, ManufOrderWorkflowService manufOrderWorkflowService,
+									WeeklyPlanningService weeklyPlanningService) {
+		this.operationOrderRepo = operationOrderRepo;
+		this.operationOrderWorkflowService = operationOrderWorkflowService;
+		this.manufOrderService = manufOrderService;
+		this.manufOrderWorkflowService = manufOrderWorkflowService;
+		this.weeklyPlanningService = weeklyPlanningService;
+	}
+
+	
 	
 //	public void copyToConsume (ActionRequest request, ActionResponse response) {
 //
@@ -102,22 +108,29 @@ public class OperationOrderController {
 	public void computeDuration(ActionRequest request, ActionResponse response) {
 		
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
 		
-		OperationOrderWorkflowService operationOrderWorkflowService = Beans.get(OperationOrderWorkflowService.class);
-		
-		if(operationOrder.getPlannedStartDateT() != null && operationOrder.getPlannedEndDateT() != null) {
-			response.setValue("plannedDuration", 
-					operationOrderWorkflowService.getDuration(
-							operationOrderWorkflowService.computeDuration(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
-		}
-		
-		if(operationOrder.getRealStartDateT() != null && operationOrder.getRealEndDateT() != null) {
-			response.setValue("realDuration", 
-					operationOrderWorkflowService.getDuration(
-							operationOrderWorkflowService.computeDuration(operationOrder.getRealStartDateT(), operationOrder.getRealEndDateT())));
-		}
+		operationOrderWorkflowService.computeDuration(operationOrder);
+		response.setReload(true);
+
 	}
-	
+
+	public void setPlannedDates(ActionRequest request, ActionResponse response) {
+		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		LocalDateTime plannedStartDateT = operationOrder.getPlannedStartDateT();
+		LocalDateTime plannedEndDateT = operationOrder.getPlannedEndDateT();
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
+		operationOrderWorkflowService.setPlannedDates(operationOrder, plannedStartDateT, plannedEndDateT);
+	}
+
+	public void setRealDates(ActionRequest request, ActionResponse response) {
+		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		LocalDateTime realStartDateT = operationOrder.getRealStartDateT();
+		LocalDateTime realEndDateT = operationOrder.getRealEndDateT();
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
+		operationOrderWorkflowService.setRealDates(operationOrder, realStartDateT, realEndDateT);
+	}
+
 	public void machineChange(ActionRequest request, ActionResponse response) throws AxelorException{
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
 		
@@ -132,7 +145,7 @@ public class OperationOrderController {
 			response.setReload(true);
 		}
 	}
-	
+
 	public void plan (ActionRequest request, ActionResponse response) throws AxelorException {
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
 		if (operationOrder.getManufOrder() != null
@@ -141,27 +154,45 @@ public class OperationOrderController {
 		    return;
 		}
 		operationOrder = operationOrderWorkflowService.plan(operationOrderRepo.find(operationOrder.getId()));
-		
 		response.setReload(true);
-		
 	}
-	
-	
-	public void finish (ActionRequest request, ActionResponse response) throws AxelorException {
 
-		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
-		OperationOrderWorkflowService operationOrderWorkflowService = Beans.get(OperationOrderWorkflowService.class);
+	public void pause(ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
+		operationOrderWorkflowService.pause(operationOrder);
 
-		operationOrder = operationOrderWorkflowService.finish(operationOrderRepo.find(operationOrder.getId()));
-		
-		Beans.get(ManufOrderWorkflowService.class).allOpFinished(operationOrder.getManufOrder());
-		
 		response.setReload(true);
-		
 	}
-	
-	
-	
+
+	public void resume(ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
+		manufOrderWorkflowService.resume(operationOrder.getManufOrder());
+
+		response.setReload(true);
+	}
+
+	public void finish(ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		//this attribute is not in the database, only in the view
+		LocalDateTime realStartDateT = operationOrder.getRealStartDateT();
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
+        operationOrder.setRealStartDateT(realStartDateT);
+		operationOrderWorkflowService.finish(operationOrder);
+		manufOrderWorkflowService.allOpFinished(operationOrder.getManufOrder());
+
+		response.setReload(true);
+	}
+
+	public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		operationOrderWorkflowService.cancel(operationOrderRepo.find(operationOrder.getId()));
+
+		response.setReload(true);
+	}
+
+
 	/**
 	 * Method that generate a Pdf file for an operation order
 	 *
@@ -216,14 +247,12 @@ public class OperationOrderController {
 	
 	public void chargeByMachineHours(ActionRequest request, ActionResponse response) throws AxelorException {
 		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
-		DateTimeFormatter parser = ISODateTimeFormat.dateTime();
-		LocalDateTime fromDateTime = LocalDateTime.parse(request.getContext().get("fromDateTime").toString(),parser);
-		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(),parser);
-		LocalDateTime itDateTime = new LocalDateTime(fromDateTime);
+		LocalDateTime fromDateTime = LocalDateTime.parse(request.getContext().get("fromDateTime").toString(),DateTimeFormatter.ISO_DATE_TIME);
+		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(),DateTimeFormatter.ISO_DATE_TIME);
+		LocalDateTime itDateTime = LocalDateTime.parse(fromDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME);
 		
-		if(Days.daysBetween(new LocalDate(fromDateTime.getYear(), fromDateTime.getMonthOfYear(), fromDateTime.getDayOfMonth()),
-				new LocalDate(toDateTime.getYear(), toDateTime.getMonthOfYear(), toDateTime.getDayOfMonth())).getDays() > 20){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS)), IException.CONFIGURATION_ERROR);
+		if (Duration.between(fromDateTime,toDateTime).toDays() > 20) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS));
 		}
 		
 		List<OperationOrder> operationOrderListTemp = operationOrderRepo.all().filter("self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1", fromDateTime, toDateTime).fetch();
@@ -241,15 +270,15 @@ public class OperationOrderController {
 			for (OperationOrder operationOrder : operationOrderList) {
 				if(operationOrder.getWorkCenter() != null && operationOrder.getWorkCenter().getMachine() != null){
 					String machine = operationOrder.getWorkCenter().getMachine().getName();
-					int numberOfMinutes = 0;
+					long numberOfMinutes = 0;
 					if(operationOrder.getPlannedStartDateT().isBefore(itDateTime)){
-						numberOfMinutes = Minutes.minutesBetween(itDateTime, operationOrder.getPlannedEndDateT()).getMinutes();
+						numberOfMinutes = Duration.between(itDateTime, operationOrder.getPlannedEndDateT()).toMinutes();
 					}
 					else if(operationOrder.getPlannedEndDateT().isAfter(itDateTime.plusHours(1))){
-						numberOfMinutes = Minutes.minutesBetween(operationOrder.getPlannedStartDateT(), itDateTime.plusHours(1)).getMinutes();
+						numberOfMinutes = Duration.between(operationOrder.getPlannedStartDateT(), itDateTime.plusHours(1)).toMinutes();
 					}
 					else{
-						numberOfMinutes = Minutes.minutesBetween(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()).getMinutes();
+						numberOfMinutes = Duration.between(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()).toMinutes();
 					}
 					if(numberOfMinutes > 60){
 						numberOfMinutes = 60;
@@ -267,14 +296,14 @@ public class OperationOrderController {
 			for (String key : machineNameList) {
 				if(keyList.contains(key)){
 					Map<String, Object> dataMap = new HashMap<String, Object>();
-					dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy HH:mm"));
+					dataMap.put("dateTime",(Object)itDateTime.format(DATE_TIME_FORMAT));
 					dataMap.put("charge", (Object)map.get(key));
 					dataMap.put("machine", (Object) key);
 					dataList.add(dataMap);
 				}
 				else{
 					Map<String, Object> dataMap = new HashMap<String, Object>();
-					dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy HH:mm"));
+					dataMap.put("dateTime",(Object)itDateTime.format(DATE_TIME_FORMAT));
 					dataMap.put("charge", (Object)BigDecimal.ZERO);
 					dataMap.put("machine", (Object) key);
 					dataList.add(dataMap);
@@ -291,15 +320,13 @@ public class OperationOrderController {
 	
 	public void chargeByMachineDays(ActionRequest request, ActionResponse response) throws AxelorException {
 		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
-		DateTimeFormatter parser = ISODateTimeFormat.dateTime();
-		LocalDateTime fromDateTime = LocalDateTime.parse(request.getContext().get("fromDateTime").toString(),parser);
-		fromDateTime = fromDateTime.withHourOfDay(0).withMinuteOfHour(0);
-		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(),parser);
-		toDateTime = toDateTime.withHourOfDay(23).withMinuteOfHour(59);
-		LocalDateTime itDateTime = new LocalDateTime(fromDateTime);
-		if(Days.daysBetween(new LocalDate(fromDateTime.getYear(), fromDateTime.getMonthOfYear(), fromDateTime.getDayOfMonth()),
-				new LocalDate(toDateTime.getYear(), toDateTime.getMonthOfYear(), toDateTime.getDayOfMonth())).getDays() > 500){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS)), IException.CONFIGURATION_ERROR);
+		LocalDateTime fromDateTime = LocalDateTime.parse(request.getContext().get("fromDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
+		fromDateTime = fromDateTime.withHour(0).withMinute(0);
+		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
+		toDateTime = toDateTime.withHour(23).withMinute(59);
+		LocalDateTime itDateTime = LocalDateTime.parse(fromDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME);
+		if (Duration.between(fromDateTime,toDateTime).toDays() > 500) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS));
 		}
 		
 		
@@ -318,25 +345,25 @@ public class OperationOrderController {
 			for (OperationOrder operationOrder : operationOrderList) {
 				if(operationOrder.getWorkCenter() != null && operationOrder.getWorkCenter().getMachine() != null){
 					String machine = operationOrder.getWorkCenter().getMachine().getName();
-					int numberOfMinutes = 0;
+					long numberOfMinutes = 0;
 					if(operationOrder.getPlannedStartDateT().isBefore(itDateTime)){
-						numberOfMinutes = Minutes.minutesBetween(itDateTime, operationOrder.getPlannedEndDateT()).getMinutes();
+						numberOfMinutes = Duration.between(itDateTime, operationOrder.getPlannedEndDateT()).toMinutes();
 					}
 					else if(operationOrder.getPlannedEndDateT().isAfter(itDateTime.plusHours(1))){
-						numberOfMinutes = Minutes.minutesBetween(operationOrder.getPlannedStartDateT(), itDateTime.plusHours(1)).getMinutes();
+						numberOfMinutes = Duration.between(operationOrder.getPlannedStartDateT(), itDateTime.plusHours(1)).toMinutes();
 					}
 					else{
-						numberOfMinutes = Minutes.minutesBetween(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()).getMinutes();
+						numberOfMinutes = Duration.between(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()).toMinutes();
 					}
 					if(numberOfMinutes > 60){
 						numberOfMinutes = 60;
 					}
-					int numberOfMinutesPerDay = 0;
+					long numberOfMinutesPerDay = 0;
 					if(operationOrder.getWorkCenter().getMachine().getWeeklyPlanning() != null){
-						DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(operationOrder.getWorkCenter().getMachine().getWeeklyPlanning(), new LocalDate(itDateTime));
+						DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(operationOrder.getWorkCenter().getMachine().getWeeklyPlanning(), LocalDateTime.parse(itDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME).toLocalDate());
 						if(dayPlanning != null){
-							numberOfMinutesPerDay = Minutes.minutesBetween(dayPlanning.getMorningFrom(), dayPlanning.getMorningTo()).getMinutes();
-							numberOfMinutesPerDay += Minutes.minutesBetween(dayPlanning.getAfternoonFrom(), dayPlanning.getAfternoonTo()).getMinutes();
+							numberOfMinutesPerDay = Duration.between(dayPlanning.getMorningFrom(), dayPlanning.getMorningTo()).toMinutes();
+							numberOfMinutesPerDay += Duration.between(dayPlanning.getAfternoonFrom(), dayPlanning.getAfternoonTo()).toMinutes();
 						}
 						else{
 							numberOfMinutesPerDay = 0;
@@ -361,7 +388,7 @@ public class OperationOrderController {
 				if(keyList.contains(key)){
 					int found = 0;
 					for (Map<String, Object> mapIt : dataList) {
-						if(mapIt.get("dateTime").equals((Object)itDateTime.toString("dd/MM/yyyy")) &&
+						if(mapIt.get("dateTime").equals((Object)itDateTime.format(DATE_FORMAT)) &&
 							mapIt.get("machine").equals((Object) key)){
 							mapIt.put("charge", new BigDecimal(mapIt.get("charge").toString()).add(map.get(key)));
 							found = 1;
@@ -372,7 +399,7 @@ public class OperationOrderController {
 					if(found == 0){
 						Map<String, Object> dataMap = new HashMap<String, Object>();
 						
-						dataMap.put("dateTime",(Object)itDateTime.toString("dd/MM/yyyy"));
+						dataMap.put("dateTime",(Object)itDateTime.format(DATE_FORMAT));
 						dataMap.put("charge", (Object)map.get(key));
 						dataMap.put("machine", (Object) key);
 						dataList.add(dataMap);
@@ -386,14 +413,30 @@ public class OperationOrderController {
 		
 		response.setData(dataList);
 	}
-	
-	public void start (ActionRequest request, ActionResponse response) throws AxelorException {
+
+	public void startManufOrder(ActionRequest request, ActionResponse response) throws AxelorException {
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
-		operationOrder =operationOrderRepo.find(operationOrder.getId());
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
 		Beans.get(OperationOrderWorkflowService.class).start(operationOrder);
 		response.setReload(true);
-		
 	}
-	
+
+	public void start(ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
+		Beans.get(OperationOrderWorkflowService.class).start(operationOrder);
+		response.setReload(true);
+	}
+
+	public void updateDiffProdProductList(ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		try {
+		    Beans.get(OperationOrderService.class).updateDiffProdProductList(operationOrder);
+			response.setValue("diffConsumeProdProductList", operationOrder.getDiffConsumeProdProductList());
+		} catch (AxelorException e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+
 }
 

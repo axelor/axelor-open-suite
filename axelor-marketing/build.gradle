@@ -1,15 +1,18 @@
-apply plugin: 'axelor-module'
+apply plugin: "com.axelor.app-module"
 
-module {
-	name "axelor-marketing"
-	version "4.1.0"
-	title "Axelor :: Marketing"
-	
-	removable true
-
-	module "modules:axelor-crm"
-	module "modules:axelor-studio"
-
-
+apply {
+	version = "5.0.0-SNAPSHOT"
 }
 
+axelor {
+	title "Axelor :: Marketing"
+	description "Axelor Marketing Module"
+
+	removable true
+}
+
+dependencies {
+	compile project(":modules:axelor-crm")
+	compile project(":modules:axelor-studio")
+	compile "com.mandrillapp.wrapper.lutung:lutung:0.0.7"
+}

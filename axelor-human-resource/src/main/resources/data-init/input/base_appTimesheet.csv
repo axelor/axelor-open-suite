@@ -1,0 +1,2 @@
+"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+"Timesheet Management";"timesheet";14;"Timesheet Management";"app-timesheet.png";"axelor-human-resource";"account,project,employee";7

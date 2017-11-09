@@ -20,17 +20,17 @@ package com.axelor.apps.hr.service.employee;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 import com.axelor.apps.hr.service.leave.LeaveService;
-import org.joda.time.LocalDate;
-import org.joda.time.Years;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.WeeklyPlanning;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
@@ -50,7 +50,7 @@ import com.google.inject.Inject;
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
 
 	@Inject
-	private GeneralService generalService;
+	private AppBaseService appBaseService;  
 	
 	@Inject
 	protected WeeklyPlanningService weeklyPlanningService;
@@ -75,20 +75,23 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 		
 		LOG.debug("Employee: {}",employee);
 
-		BigDecimal dailyWorkHrs = null;
+		BigDecimal dailyWorkHrs = new BigDecimal(1);
 		String timePref = null;
 		if(employee != null)  {
 			timePref = employee.getTimeLoggingPreferenceSelect();
 			dailyWorkHrs = employee.getDailyWorkHours();
 		}
 		if (timePref ==  null) {
-			timePref = generalService.getGeneral().getTimeLoggingPreferenceSelect();
+			timePref = appBaseService.getAppBase().getTimeLoggingPreferenceSelect();
 		}
 		
 		if(dailyWorkHrs == null || dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0)  {
-			dailyWorkHrs = generalService.getGeneral().getDailyWorkHours();
+			dailyWorkHrs = appBaseService.getAppBase().getDailyWorkHours();
 		}
-
+		
+		if (dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0) {
+			dailyWorkHrs = new BigDecimal(1);
+		}
 		LOG.debug("Employee's time pref: {}, Daily Working hours: {}", timePref, dailyWorkHrs);
 		
 		if (timePref ==  null) {
@@ -119,10 +122,10 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 	public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException{
 		
 		try{
-			Years years = Years.yearsBetween(employee.getSeniorityDate(), refDate == null ? Beans.get(GeneralService.class).getTodayDate() : refDate );
-			return years.getYears();
-		}catch (IllegalArgumentException e){
-			throw new AxelorException(String.format( I18n.get( IExceptionMessage.EMPLOYEE_NO_SENIORITY_DATE ), employee.getName() ), IException.NO_VALUE);
+			Period period = Period.between(employee.getSeniorityDate(), refDate == null ? Beans.get(AppBaseService.class).getTodayDate() : refDate );
+			return period.getYears();
+		} catch (IllegalArgumentException e) {
+			throw new AxelorException(e.getCause(), employee, IException.NO_VALUE, I18n.get(IExceptionMessage.EMPLOYEE_NO_SENIORITY_DATE ), employee.getName());
 		}
 		
 	}
@@ -130,10 +133,10 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 	public int getAge(Employee employee, LocalDate refDate) throws AxelorException{
 		
 		try{
-			Years years = Years.yearsBetween(employee.getBirthDate(), refDate == null ? Beans.get(GeneralService.class).getTodayDate() : refDate );
-			return years.getYears();
-		}catch (IllegalArgumentException e){
-			throw new AxelorException(String.format( I18n.get( IExceptionMessage.EMPLOYEE_NO_BIRTH_DATE ), employee.getName() ), IException.NO_VALUE);
+			Period period = Period.between(employee.getBirthDate(), refDate == null ? Beans.get(AppBaseService.class).getTodayDate() : refDate );
+			return period.getYears();
+		} catch (IllegalArgumentException e) {
+			throw new AxelorException(e.getCause(), employee, IException.NO_VALUE, I18n.get( IExceptionMessage.EMPLOYEE_NO_BIRTH_DATE ), employee.getName());
 		}
 	}
 
@@ -150,8 +153,8 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 			}
 		}
 		
-		if(weeklyPlanning == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),employee.getName()), IException.CONFIGURATION_ERROR);
+		if (weeklyPlanning == null) {
+			throw new AxelorException(employee, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PLANNING), employee.getName());
 		}
 		
 		PublicHolidayPlanning publicHolidayPlanning = employee.getPublicHolidayPlanning();
@@ -162,13 +165,13 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 			}
 		}
 		
-		if(publicHolidayPlanning == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY),employee.getName()), IException.CONFIGURATION_ERROR);
+		if (publicHolidayPlanning == null) {
+			throw new AxelorException(employee, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY), employee.getName());
 		}
 		
-		LocalDate itDate = new LocalDate(fromDate);
+		LocalDate itDate = fromDate;
 
-		while(!itDate.isEqual(toDate) && !itDate.isAfter(toDate)){
+		while(!itDate.isAfter(toDate)){
 			duration = duration.add(new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
 			itDate = itDate.plusDays(1);
 		}
@@ -196,5 +199,6 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 		
 		return daysWorks.subtract(daysLeave);
 	}
+	
 
 }

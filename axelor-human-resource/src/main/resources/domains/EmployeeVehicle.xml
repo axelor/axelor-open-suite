@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+    <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+    <entity name="EmployeeVehicle">
+
+        <many-to-one name="employee" title="Employee" ref="com.axelor.apps.hr.db.Employee"/>
+        <string name="vehicleMake" title="Vehicle Make"/>
+        <string name="vehicleModel" title="Vehicle Model"/>
+        <string name="plateNo" namecolumn="true" title="Plate Number"/>
+        <many-to-one name="kilometricAllowParam" ref="com.axelor.apps.hr.db.KilometricAllowParam" title="Kilometric Allowance Param" />
+        <date name="startDate" title="Start Date"/>
+        <date name="endDate" title="End Date"/>
+
+    </entity>
+
+</domain-models>

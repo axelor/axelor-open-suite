@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.account.service.payment;
 
+import java.util.List;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
@@ -26,8 +28,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.exception.AxelorException;
 
-import java.util.List;
-
 public interface PaymentModeService {
 
 	public Account getPaymentModeAccount(PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException;
@@ -36,7 +36,7 @@ public interface PaymentModeService {
 
 	public Sequence getPaymentModeSequence(PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException;
 
-	public Journal getPaymentModeJournal(PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException;
+    public Journal getPaymentModeJournal(PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException;
 
 	/**
 	 * @param paymentMode

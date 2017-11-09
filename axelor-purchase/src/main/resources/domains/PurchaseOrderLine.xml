@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
@@ -27,7 +27,8 @@
   	<integer name="sequence" title="Seq."/>
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   	<decimal name="qty" title="Qty" default="1"/>
-  	<string name="productName" title="Displayed Product name" required="true"/>
+  	<string name="productName" title="Displayed Product name" required="true" translatable="true"/>
+  	<string name="productCode" title="Displayed Product code"/>
   	<decimal name="price" title="Unit price" precision="20" scale="10"/>
   	<decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
   	<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
@@ -45,9 +46,10 @@
   	<decimal name="saleMinPrice" title="Min sale price" precision="20" scale="10"/>
   	
   	
-	<date name="estimatedDelivDate" title="Estim. delivery date" help="true"/>
+	<date name="estimatedDelivDate" title="Estim. delivery date"/>
 	<date name="desiredDelivDate" title="Desired delivery date"/>
-
+	  
+	<string name="supplierComment" title="Supplier Comment"/>
   	
   	<!--   	Champ technique non affiché, utilisé pour les reportings -->
   	<decimal name="companyExTaxTotal" title="Total W.T. in company currency" hidden="true"/>
@@ -56,7 +58,6 @@
   	<decimal name="salePrice" precision="20" scale="10"/> 
   	
   	<boolean name="isTitleLine" title="Title Line"/>
-  	
   	
   </entity>
 

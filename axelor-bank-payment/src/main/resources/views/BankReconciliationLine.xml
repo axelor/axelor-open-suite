@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
    
     <grid name="bank-reconciliation-line-grid" title="Bank reconciliation Lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
         <field name="effectDate"/>
@@ -36,10 +36,10 @@
 	</action-attrs>
     
    <action-record model="com.axelor.apps.bankpayment.db.BankReconciliationLine" name="action-bank-reconciliation-line-set-account">
-       <field name="account" expr="eval: __repo__.of(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, _parent?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; _parent"/>
-       <field name="account" expr="eval: __repo__.of(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, _parent?.company).fetchOne()?.supplierAccount" if="typeSelect == 3 &amp;&amp; _parent"/>
-       <field name="account" expr="eval: __repo__.of(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, bankReconciliation?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; bankReconciliation"/>
-       <field name="account" expr="eval: __repo__.of(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, bankReconciliation?.company).fetchOne()?.supplierAccount" if="typeSelect == 3 &amp;&amp; bankReconciliation"/>
+       <field name="account" expr="eval: __repo__(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, _parent?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; _parent"/>
+       <field name="account" expr="eval: __repo__(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, _parent?.company).fetchOne()?.supplierAccount" if="typeSelect == 3 &amp;&amp; _parent"/>
+       <field name="account" expr="eval: __repo__(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, bankReconciliation?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; bankReconciliation"/>
+       <field name="account" expr="eval: __repo__(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, bankReconciliation?.company).fetchOne()?.supplierAccount" if="typeSelect == 3 &amp;&amp; bankReconciliation"/>
    </action-record>
     
 </object-views>

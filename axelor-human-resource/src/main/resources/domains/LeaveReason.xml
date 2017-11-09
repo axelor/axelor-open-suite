@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -16,8 +16,10 @@
       
       <boolean name="payrollPreprationExport" title="Export for payroll preparation ?" />
       <string name="exportCode" title="Export code" />
-      <decimal name="defaultDayNumberGain" title="Default day number gain" help="Used with coefficient on weekly planning to define how many days are to be granted each month" />
+
+      <decimal name="defaultDayNumberGain" title="Default day number gain"/>
       <boolean name="selectedByMgtOnly" title="Can only be selected by HR Management ?"/>
+
   </entity>
   
 </domain-models>

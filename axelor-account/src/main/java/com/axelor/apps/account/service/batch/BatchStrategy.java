@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -18,9 +18,9 @@
 package com.axelor.apps.account.service.batch;
 
 import com.axelor.apps.account.db.AccountingBatch;
+import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reimbursement;
@@ -31,16 +31,15 @@ import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.InterbankPaymentOrderImportService;
 import com.axelor.apps.account.service.InterbankPaymentOrderRejectImportService;
 import com.axelor.apps.account.service.MoveLineExportService;
-import com.axelor.apps.account.service.PaymentScheduleExportService;
-import com.axelor.apps.account.service.PaymentScheduleImportService;
 import com.axelor.apps.account.service.ReimbursementExportService;
 import com.axelor.apps.account.service.ReimbursementImportService;
 import com.axelor.apps.account.service.ReimbursementService;
 import com.axelor.apps.account.service.RejectImportService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbExportService;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
+import com.axelor.apps.account.service.debtrecovery.DebtRecoveryService;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
-import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -48,7 +47,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -56,15 +54,13 @@ import com.google.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
 
-	protected ReminderService reminderService;
+	protected DebtRecoveryService debtRecoveryService;
 	protected DoubtfulCustomerService doubtfulCustomerService;
 	protected ReimbursementExportService reimbursementExportService;
 	protected ReimbursementImportService reimbursementImportService;
 	protected RejectImportService rejectImportService;
 	protected CfonbExportService cfonbExportService;
 	protected CfonbImportService cfonbImportService;
-	protected PaymentScheduleExportService paymentScheduleExportService;
-	protected PaymentScheduleImportService paymentScheduleImportService;
 	protected PaymentModeService paymentModeService;
 	protected InterbankPaymentOrderImportService interbankPaymentOrderImportService;
 	protected InterbankPaymentOrderRejectImportService interbankPaymentOrderRejectImportService;
@@ -92,11 +88,13 @@ public abstract class BatchStrategy extends AbstractBatch {
 
 	@Inject
 	protected ReimbursementService reimbursementService;
+	
+	protected BatchStrategy() {
+	}
 
-
-	protected BatchStrategy(ReminderService reminderService) {
+	protected BatchStrategy(DebtRecoveryService debtRecoveryService) {
 		super();
-		this.reminderService = reminderService;
+		this.debtRecoveryService = debtRecoveryService;
 	}
 
 	protected BatchStrategy(DoubtfulCustomerService doubtfulCustomerService, BatchAccountCustomer batchAccountCustomer) {
@@ -115,23 +113,6 @@ public abstract class BatchStrategy extends AbstractBatch {
 	protected BatchStrategy(ReimbursementImportService reimbursementImportService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
 		super();
 		this.reimbursementImportService = reimbursementImportService;
-		this.rejectImportService = rejectImportService;
-		this.batchAccountCustomer = batchAccountCustomer;
-	}
-
-
-
-	protected BatchStrategy(PaymentScheduleExportService paymentScheduleExportService, PaymentModeService paymentModeService, CfonbExportService cfonbExportService, BatchAccountCustomer batchAccountCustomer) {
-		super();
-		this.paymentScheduleExportService = paymentScheduleExportService;
-		this.cfonbExportService = cfonbExportService;
-		this.paymentModeService = paymentModeService;
-		this.batchAccountCustomer = batchAccountCustomer;
-	}
-
-	protected BatchStrategy(PaymentScheduleImportService paymentScheduleImportService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
-		super();
-		this.paymentScheduleImportService = paymentScheduleImportService;
 		this.rejectImportService = rejectImportService;
 		this.batchAccountCustomer = batchAccountCustomer;
 	}
@@ -203,9 +184,9 @@ public abstract class BatchStrategy extends AbstractBatch {
 		incrementDone();
 	}
 
-	protected void updateMoveLineReport( MoveLineReport moveLineReport){
+	protected void updateAccountingReport( AccountingReport accountingReport){
 
-		moveLineReport.addBatchSetItem( batchRepo.find( batch.getId() ) );
+		accountingReport.addBatchSetItem( batchRepo.find( batch.getId() ) );
 
 		incrementDone();
 	}
@@ -213,8 +194,7 @@ public abstract class BatchStrategy extends AbstractBatch {
 	public void testAccountingBatchBankDetails(AccountingBatch accountingBatch) throws AxelorException  {
 
 		if(accountingBatch.getBankDetails() == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_STRATEGY_1),
-					GeneralServiceImpl.EXCEPTION,accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(accountingBatch, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_STRATEGY_1), AppAccountServiceImpl.EXCEPTION,accountingBatch.getCode());
 		}
 
 		this.cfonbExportService.testBankDetailsField(accountingBatch.getBankDetails());

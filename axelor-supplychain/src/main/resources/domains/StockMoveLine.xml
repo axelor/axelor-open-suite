@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -9,6 +9,7 @@
   
     <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sales order line"/>
     <many-to-one name="purchaseOrderLine" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order line"/>
-    
+
+    <decimal name="reservedQty" title="Reserved Qty"/>
   </entity>
 </domain-models>

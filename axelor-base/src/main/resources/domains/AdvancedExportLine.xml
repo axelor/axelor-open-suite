@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  
+  <module name="base" package="com.axelor.apps.base.db" />
+  
+  <entity name="AdvancedExportLine">
+  	 <integer name="sequence" title="Seq."/>
+  	 <string name="targetField" readonly="true"/>
+  	 <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField" title="Sub Field"/>
+  	 <string name="title"/>
+  	 <many-to-one name="advancedExport" ref="com.axelor.apps.base.db.AdvancedExport" title="Advanced export"/>
+  	 <string name="currentDomain"/>
+  	 <boolean name="orderBy" title="Order by"/>
+  </entity>
+  
+</domain-models>

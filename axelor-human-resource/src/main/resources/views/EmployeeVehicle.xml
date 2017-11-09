@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <grid title="Vehicles" name="employee-vehicle-grid" model="com.axelor.apps.hr.db.EmployeeVehicle">
+        <field name="plateNo"/>
+        <field name="vehicleModel"/>
+        <field name="vehicleMake"/>
+        <field name="kilometricAllowParam"/>
+        <field name="startDate"/>
+        <field name="endDate"/>
+    </grid>
+
+    <form title="Vehicle" name="employee-vehicle-form" model="com.axelor.apps.hr.db.EmployeeVehicle">
+        <panel name="main">
+            <field name="plateNo" colSpan="4"/>
+            <field name="vehicleModel" colSpan="4"/>
+            <field name="vehicleMake" colSpan="4"/>
+            <field name="kilometricAllowParam" colSpan="4"/>
+            <field name="startDate" colSpan="4"/>
+            <field name="endDate" colSpan="4"/>
+        </panel>
+    </form>
+
+</object-views>

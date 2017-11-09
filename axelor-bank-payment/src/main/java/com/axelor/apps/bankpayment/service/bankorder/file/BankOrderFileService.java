@@ -21,13 +21,14 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,7 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
+import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.apps.tool.xml.Marschaller;
 import com.axelor.exception.AxelorException;
@@ -68,6 +69,7 @@ public class BankOrderFileService {
 	protected String bankOrderSeq;
 	protected boolean isMultiDates;
 	protected boolean isMultiCurrencies;
+	protected int orderDebitTypeSelect;
 	
 	protected List<BankOrderLine> bankOrderLineList;
 	protected Object fileToCreate;
@@ -90,6 +92,7 @@ public class BankOrderFileService {
 		this.bankOrderLineList = bankOrder.getBankOrderLineList();
 		this.isMultiDates = bankOrder.getIsMultiDate();
 		this.isMultiCurrencies = bankOrder.getIsMultiCurrency();
+		this.orderDebitTypeSelect = bankOrder.getOrderDebitTypeSelect();
 	}
 	
 	
@@ -97,14 +100,11 @@ public class BankOrderFileService {
 		
 		Address senderAddress = this.senderCompany.getAddress();
 		
-		if(senderAddress == null || Strings.isNullOrEmpty(senderAddress.getFullName()))  {
-			
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_ORDER_FILE_NO_SENDER_ADDRESS), senderCompany.getName()), IException.INCONSISTENCY);
-			
+		if (senderAddress == null || Strings.isNullOrEmpty(senderAddress.getFullName())) {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_FILE_NO_SENDER_ADDRESS), senderCompany.getName());	
 		}
 		
-		return senderAddress.getFullName();
-		
+		return senderAddress.getFullName();	
 	}
 	
 	
@@ -112,14 +112,11 @@ public class BankOrderFileService {
 		
 		String folderPath = paymentMode.getBankOrderExportFolderPath();
 		
-		if(Strings.isNullOrEmpty(folderPath))  {
-			
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_ORDER_FILE_NO_FOLDER_PATH), paymentMode.getName()), IException.INCONSISTENCY);
-			
+		if (Strings.isNullOrEmpty(folderPath)) {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_FILE_NO_FOLDER_PATH), paymentMode.getName());		
 		}
 		
-		return folderPath;
-		
+		return folderPath;	
 	}
 	
 	
@@ -142,12 +139,11 @@ public class BankOrderFileService {
 			try {
 				return FileTool.writer(this.getFolderPath(), this.computeFileName(), (List<String>) fileToCreate);
 			} catch (IOException e) {
-				throw new AxelorException(String.format(I18n.get(com.axelor.apps.account.exception.IExceptionMessage.CFONB_EXPORT_2),
-						GeneralServiceImpl.EXCEPTION,e), IException.CONFIGURATION_ERROR);
+				throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, I18n.get(com.axelor.apps.account.exception.IExceptionMessage.CFONB_EXPORT_2), AppBaseServiceImpl.EXCEPTION,e);
 			}
 
 		default:
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOW_FORMAT), paymentMode.getName()), IException.INCONSISTENCY);
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_FORMAT), paymentMode.getName());
 		}
 		
 		
@@ -158,7 +154,7 @@ public class BankOrderFileService {
 		
 		return String.format("%s%s.%s", 
 				bankOrderFileFormat.getOrderFileFormatSelect(), 
-				generationDateTime.toString("yyyy-MM-dd'T'HH:mm:ss"), 
+				generationDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")), 
 				fileExtension);
 	}
 	

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -9,38 +9,26 @@
   
   	<integer name="importId"/>
   
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>    
+    <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Companies"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     
-	<!-- GROUP Reminder Blocking -->
-    <boolean name="reminderBlockingOk" title="Block Reminders ?"/>
-    <date name="reminderBlockingToDate" title="Block until"/>
-    <many-to-one name="reminderBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
-    <many-to-one name="reminderBlockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
-	<!-- GROUP Blocage Facturation -->
-    <boolean name="invoicingBlockingOk" title="Block Invoicing ?"/>
-    <date name="invoicingBlockingToDate" title="Block until"/>
-    <many-to-one name="invoicingBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
-    <many-to-one name="invoicingBlockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
-    <!-- GROUP Blocage Remboursement -->
-    <boolean name="reimbursementBlockingOk" title="Block Reimbursement ?"/>
-    <date name="reimbursementBlockingToDate" title="Block until"/>
-    <many-to-one name="reimbursementBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
-    <many-to-one name="reimbursementBlockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
-   
-        
-    <string name="name" title="Reference" search="company,partner">
-	    <![CDATA[
-	    if(company != null && partner != null)
-	    	return company.getCode() + " - " + partner.getName();    
-    	else if(partner != null)
-	    	return partner.getName();    
-    	else if(company != null)
-	    	return company.getCode();   
-	   	else 
-	   		return ""; 
-	    ]]>
+	<integer name="blockingSelect" title="Blocking Type" selection="base.blocking.select" default="1"/>
+
+    <date name="blockingToDate" title="Block until"/>
+    <many-to-one name="blockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
+    <many-to-one name="blockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
+
+    <string name="name" title="Reference" search="partner">
+        <![CDATA[return partner != null ? partner.getName() : "";]]>
     </string>
+
+      <extra-code>
+          <![CDATA[
+              public static final Integer REMINDER_BLOCKING = 1;
+              public static final Integer INVOICING_BLOCKING = 2;
+              public static final Integer REIMBURSEMENT_BLOCKING = 3;
+          ]]>
+      </extra-code>
     
   </entity>
 

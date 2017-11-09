@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -19,11 +19,14 @@ package com.axelor.apps.account.web;
 
 import java.util.List;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.service.PeriodService;
+
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -51,6 +54,18 @@ public class MoveController {
 			response.setReload(true);
 		}
 		catch (Exception e){ TraceBackService.trace(response, e); }
+	}
+
+	public void account(ActionRequest request, ActionResponse response) {
+
+		Move move = request.getContext().asType(Move.class);
+		move = moveRepo.find(move.getId());
+
+		try {
+			moveService.getMoveAccountService().account(move);
+			response.setReload(true);
+		}
+		catch (Exception e) { TraceBackService.trace(response, e); }
 	}
 	
 	public void getPeriod(ActionRequest request, ActionResponse response) {
@@ -112,7 +127,7 @@ public class MoveController {
 		Move move = request.getContext().asType(Move.class);
 		move = moveRepo.find(move.getId());
 
-		if(move.getStatusSelect().equals(MoveRepository.STATUS_DRAFT)){
+		if(move.getStatusSelect().equals(MoveRepository.STATUS_NEW)){
 			moveRepo.remove(move);
 			response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
 			response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
@@ -139,7 +154,7 @@ public class MoveController {
 
 		List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
 		if(!moveIds.isEmpty()){
-			List<? extends Move> moveList = moveRepo.all().filter("self.id in ?1 AND self.statusSelect = ?2 AND (self.archived = false or self.archived = null)", moveIds, MoveRepository.STATUS_DRAFT).fetch();
+			List<? extends Move> moveList = moveRepo.all().filter("self.id in ?1 AND self.statusSelect = ?2 AND (self.archived = false or self.archived = null)", moveIds, MoveRepository.STATUS_NEW).fetch();
 			if(!moveList.isEmpty()){
 				moveService.getMoveRemoveService().deleteMultiple(moveList);
 				response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
@@ -149,4 +164,23 @@ public class MoveController {
 		}
 		else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_ARCHIVE));
 	}
+	
+	public void printMove(ActionRequest request, ActionResponse response) throws AxelorException {
+			
+		Move move = request.getContext().asType(Move.class);
+		move = moveRepo.find(move.getId());
+		
+		String moveName = move.getReference().toString();
+				
+		String fileLink = ReportFactory.createReport(IReport.ACCOUNT_MOVE, moveName+"-${date}")
+						.addParam("Locale", moveService.getLanguageToPrinting(move))
+						.addParam("moveId", move.getId())
+						.generate()
+						.getFileLink();
+				
+		response.setView(ActionView
+						.define(moveName)
+						.add("html", fileLink).map());
+	}
+	
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  
+  <grid name="dashboard-builder-grid" title="Dashboard builder" model="com.axelor.studio.db.DashboardBuilder">
+      <field name="name"/>
+      <field name="title"/>
+      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
+  </grid>
+	    
+  <form name="dashboard-builder-form" title="Dashboard builder" model="com.axelor.studio.db.DashboardBuilder" width="large"
+      onNew="action-view-builder-record-default">
+      <panel>
+      	<field name="appBuilder"  grid-view="app-builder-grid" form-view="app-builder-form"/>
+      	<spacer/>
+        <field name="name"/>
+        <field name="title"/>
+        <field name="viewType" hidden="true" />
+        <field name="edited" hidden="true" />
+	    <panel-related field="dashletBuilderList" colSpan="12"/>
+	  </panel>
+  </form>
+  
+</object-views>
+
+

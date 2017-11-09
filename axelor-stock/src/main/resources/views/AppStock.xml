@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<form name="app-stock-config-form" title="App stock" model="com.axelor.apps.base.db.AppStock" canDelete="false" canNew="false" width="large">
+		<panel>
+			<button name="generateStockConfigurations" colSpan="4" title="Generate stock configurations" onClick="save,com.axelor.apps.stock.web.AppStockController:generateStockConfigurations" />
+			<panel-dashlet action="admin.root.conf.stock.config" colSpan="12"/>
+		</panel> 
+	</form>
+	
+	<action-view name="admin.root.conf.stock.config" title="Stock configurations"
+		model="com.axelor.apps.stock.db.StockConfig" >
+		<view type="grid" name="stock-config-grid" />
+		<view type="form" name="stock-config-form"/>
+	</action-view>
+	
+</object-views>

@@ -28,14 +28,8 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-import com.axelor.apps.bankpayment.db.*;
-import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
-import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
-import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.service.BankDetailsService;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,22 +38,36 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
+import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
+import com.axelor.apps.bankpayment.db.BankOrderLine;
+import com.axelor.apps.bankpayment.db.EbicsPartner;
+import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
+import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
+import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100103Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160ICTService;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB320XCTService;
 import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -72,6 +80,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 	protected InvoicePaymentRepository invoicePaymentRepo;
 	protected BankOrderLineService bankOrderLineService;
 	protected EbicsService ebicsService;
+	protected InvoicePaymentToolService invoicePaymentToolService;
 
 	@Inject
 	private AccountConfigBankPaymentService accountConfigBankPaymentService;
@@ -81,12 +90,14 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	@Inject
 	public BankOrderServiceImpl(BankOrderRepository bankOrderRepo, InvoicePaymentRepository invoicePaymentRepo,
-			BankOrderLineService bankOrderLineService, EbicsService ebicsService) {
+			BankOrderLineService bankOrderLineService, EbicsService ebicsService,
+			InvoicePaymentToolService invoicePaymentToolService) {
 
 		this.bankOrderRepo = bankOrderRepo;
 		this.invoicePaymentRepo = invoicePaymentRepo;
 		this.bankOrderLineService = bankOrderLineService;
 		this.ebicsService = ebicsService;
+		this.invoicePaymentToolService = invoicePaymentToolService;
 
 	}
 
@@ -96,37 +107,32 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 		if (brankOrderDate != null) {
 			if (brankOrderDate.isBefore(LocalDate.now())) {
-				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_DATE), IException.INCONSISTENCY);
+				throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_DATE));
 			}
 		} else {
-			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_DATE_MISSING), IException.INCONSISTENCY);
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_DATE_MISSING));
 		}
 
 		if (bankOrder.getOrderTypeSelect() == 0) {
-			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_TYPE_MISSING), IException.INCONSISTENCY);
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_TYPE_MISSING));
 		}
 		if (bankOrder.getPartnerTypeSelect() == 0) {
-			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING),
-					IException.INCONSISTENCY);
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING));
 		}
 		if (bankOrder.getPaymentMode() == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_PAYMENT_MODE_MISSING),
-					IException.INCONSISTENCY);
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_PAYMENT_MODE_MISSING));
 		}
 		if (bankOrder.getSenderCompany() == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_COMPANY_MISSING), IException.INCONSISTENCY);
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_COMPANY_MISSING));
 		}
 		if (bankOrder.getSenderBankDetails() == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING),
-					IException.INCONSISTENCY);
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING));
 		}
 		if (!bankOrder.getIsMultiCurrency() && bankOrder.getBankOrderCurrency() == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_CURRENCY_MISSING),
-					IException.INCONSISTENCY);
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_CURRENCY_MISSING));
 		}
 		if (bankOrder.getSignatoryUser() == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_SIGNATORY_MISSING),
-					IException.INCONSISTENCY);
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_SIGNATORY_MISSING));
 		}
 
 	}
@@ -191,7 +197,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 	public void checkLines(BankOrder bankOrder) throws AxelorException {
 		List<BankOrderLine> bankOrderLines = bankOrder.getBankOrderLineList();
 		if (bankOrderLines.isEmpty()) {
-			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINES_MISSING), IException.INCONSISTENCY);
+			throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINES_MISSING));
 		} else {
 			validateBankOrderLines(bankOrderLines, bankOrder.getOrderTypeSelect(), bankOrder.getArithmeticTotal());
 		}
@@ -208,8 +214,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 		}
 		if (!totalAmount.equals(arithmeticTotal)) {
-			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_LINE_TOTAL_AMOUNT_INVALID),
-					IException.INCONSISTENCY);
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_TOTAL_AMOUNT_INVALID));
 		}
 	}
 
@@ -220,6 +225,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		InvoicePayment invoicePayment = invoicePaymentRepo.findByBankOrder(bankOrder).fetchOne();
 		if (invoicePayment != null) {
 			invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+			invoicePaymentToolService.updateHasPendingPayments(invoicePayment.getInvoice());
 		}
 	}
 
@@ -229,6 +235,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		InvoicePayment invoicePayment = invoicePaymentRepo.findByBankOrder(bankOrder).fetchOne();
 		if (invoicePayment != null) {
 			invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
+			invoicePaymentToolService.updateHasPendingPayments(invoicePayment.getInvoice());
 		}
 
 	}
@@ -246,13 +253,14 @@ public class BankOrderServiceImpl implements BankOrderService {
 		Sequence sequence = getSequence(bankOrder);
 		setBankOrderSeq(bankOrder, sequence);
 
-		setSequenceOnBankOrderLines(bankOrder);
 
 		setNbOfLines(bankOrder);
 
 		generateFile(bankOrder);
 
+		setSequenceOnBankOrderLines(bankOrder);
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
+		makeEbicsUserFollow(bankOrder);
 
 		bankOrderRepo.save(bankOrder);
 	}
@@ -264,11 +272,10 @@ public class BankOrderServiceImpl implements BankOrderService {
 		// TODO
 
 	}
-
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public void validate(BankOrder bankOrder) throws AxelorException {
 
-		bankOrder.setValidationDateTime(new LocalDateTime());
+		bankOrder.setValidationDateTime(LocalDateTime.now());
 
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
 		
@@ -276,29 +283,42 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	}
 	
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public void realize(BankOrder bankOrder) throws AxelorException {
 
-		Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
+		if (bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTransportEbicsUser() == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.EBICS_MISSING_USER_TRANSPORT), IException.MISSING_FIELD);
+		}
+		sendBankOrderFile(bankOrder);
+		realizeBankOrder(bankOrder);
 
+	}
+	
+	protected void sendBankOrderFile(BankOrder bankOrder) throws AxelorException  {
+		
 		File dataFileToSend = null;
 		File signatureFileToSend = null;
 
-		
-		if(bankOrder.getSignatoryEbicsUser().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+		if(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
 			signatureFileToSend = MetaFiles.getPath(bankOrder.getSignedMetaFile()).toFile();
 		}
 		dataFileToSend = MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
 		
 		sendFile(bankOrder, dataFileToSend, signatureFileToSend);
 
+	}
+
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	protected void realizeBankOrder(BankOrder bankOrder)  throws AxelorException {
+		
+		Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
+		
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
 
 		bankOrderRepo.save(bankOrder);
-
 	}
+	
 
-	public void sendFile(BankOrder bankOrder, File dataFileToSend, File signatureFileToSend) throws AxelorException {
+	protected void sendFile(BankOrder bankOrder, File dataFileToSend, File signatureFileToSend) throws AxelorException {
 
 		PaymentMode paymentMode = bankOrder.getPaymentMode();
 
@@ -306,12 +326,15 @@ public class BankOrderServiceImpl implements BankOrderService {
 			return;
 		}
 
-		ebicsService.sendFULRequest(bankOrder.getSignatoryEbicsUser(), null, dataFileToSend,
+		EbicsUser signatoryEbicsUser = bankOrder.getSignatoryEbicsUser();
+		
+		ebicsService.sendFULRequest(signatoryEbicsUser.getEbicsPartner().getTransportEbicsUser(), signatoryEbicsUser, null, dataFileToSend,
 				bankOrder.getBankOrderFileFormat().getOrderFileFormatSelect(), signatureFileToSend);
 
 	}
 
-	protected void setSequenceOnBankOrderLines(BankOrder bankOrder) {
+	@Override
+	public void setSequenceOnBankOrderLines(BankOrder bankOrder) {
 
 		if (bankOrder.getBankOrderLineList() == null) {
 			return;
@@ -363,8 +386,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		String domain = "";
 		if (bankOrder.getSenderCompany() != null) {
 
-			String bankDetailsIds = Beans.get(BankDetailsService.class)
-					.getIdStringListFromCollection(bankOrder.getSenderCompany().getBankDetailsSet());
+			String bankDetailsIds = StringTool.getIdFromCollection(bankOrder.getSenderCompany().getBankDetailsSet());
 
 			if (bankOrder.getSenderCompany().getDefaultBankDetails() != null) {
 				bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
@@ -420,22 +442,18 @@ public class BankOrderServiceImpl implements BankOrderService {
 	@Override
 	public void checkBankDetails(BankDetails bankDetails, BankOrder bankOrder) throws AxelorException {
 		if (bankDetails == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING),
-					IException.INCONSISTENCY);
+			throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING));
 		}
 		if (!bankDetails.getActive()) {
-			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_NOT_ACTIVE),
-					IException.INCONSISTENCY);
+			throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_NOT_ACTIVE));
 		}
 
 		if (bankOrder.getBankOrderFileFormat() != null) {
 			if (!this.checkBankDetailsTypeCompatible(bankDetails, bankOrder.getBankOrderFileFormat())) {
-				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE),
-						IException.INCONSISTENCY);
+				throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE));
 			}
 			if (!this.checkBankDetailsCurrencyCompatible(bankDetails, bankOrder)) {
-				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE),
-						IException.INCONSISTENCY);
+				throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE));
 			}
 		}
 	}
@@ -473,50 +491,55 @@ public class BankOrderServiceImpl implements BankOrderService {
 	public File generateFile(BankOrder bankOrder)
 			throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
 
-		if (bankOrder.getGeneratedMetaFile() != null) {
-			return MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
-		}
-
 		if (bankOrder.getBankOrderLineList() == null || bankOrder.getBankOrderLineList().isEmpty()) {
 			return null;
 		}
 
-		bankOrder.setFileGenerationDateTime(new LocalDateTime());
+		bankOrder.setFileGenerationDateTime(LocalDateTime.now());
 
 		BankOrderFileFormat bankOrderFileFormat = bankOrder.getBankOrderFileFormat();
 
 		File file = null;
 
 		switch (bankOrderFileFormat.getOrderFileFormatSelect()) {
-		case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_02_SCT:
+		    case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_02_SCT:
+    			file = new BankOrderFile00100102Service(bankOrder).generateFile();
+	    		break;
 
-			file = new BankOrderFile00100102Service(bankOrder).generateFile();
-			break;
+		    case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_03_SCT:
+    			file = new BankOrderFile00100103Service(bankOrder).generateFile();
+	    		break;
 
-		case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_03_SCT:
+		    case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB320_XCT:
+    			file = new BankOrderFileAFB320XCTService(bankOrder).generateFile();
+	    		break;
 
-			file = new BankOrderFile00100103Service(bankOrder).generateFile();
-			break;
+		    case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB160_ICT:
+    			file = new BankOrderFileAFB160ICTService(bankOrder).generateFile();
+	    		break;
 
-		case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB320_XCT:
+            case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SDD:
+                file = new BankOrderFile00800101Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_CORE).generateFile();
+                break;
 
-			file = new BankOrderFileAFB320XCTService(bankOrder).generateFile();
-			break;
+            case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SBB:
+                file = new BankOrderFile00800101Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_SBB).generateFile();
+                break;
 
-		case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB160_ICT:
+            case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SDD:
+                file = new BankOrderFile00800102Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_CORE).generateFile();
+                break;
 
-			file = new BankOrderFileAFB160ICTService(bankOrder).generateFile();
-			break;
-
-		default:
-
-			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOW_FORMAT),
-					IException.INCONSISTENCY);
+            case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SBB:
+                file = new BankOrderFile00800102Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_SBB).generateFile();
+                break;
+                
+            default:
+            	throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_FORMAT));
 		}
 
 		if (file == null) {
-			throw new AxelorException(I18n.get(String.format(IExceptionMessage.BANK_ORDER_ISSUE_DURING_FILE_GENERATION,
-					bankOrder.getBankOrderSeq())), IException.INCONSISTENCY);
+			throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_ISSUE_DURING_FILE_GENERATION), bankOrder.getBankOrderSeq());
 		}
 
 		MetaFiles metaFiles = Beans.get(MetaFiles.class);
@@ -565,7 +588,18 @@ public class BankOrderServiceImpl implements BankOrderService {
 			return;
 		}
 
-		throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_ORDER_COMPANY_NO_SEQUENCE),
-				bankOrder.getSenderCompany().getName()), IException.CONFIGURATION_ERROR);
+		throw new AxelorException(bankOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_ORDER_COMPANY_NO_SEQUENCE), bankOrder.getSenderCompany().getName());
+	}
+
+	/**
+	 * The signatory ebics user will follow the bank order record
+	 * @param bankOrder
+	 */
+	protected void makeEbicsUserFollow(BankOrder bankOrder) {
+		EbicsUser ebicsUser = bankOrder.getSignatoryEbicsUser();
+		if (ebicsUser != null) {
+			User signatoryUser = ebicsUser.getAssociatedUser();
+			Beans.get(MailFollowerRepository.class).follow(bankOrder, signatoryUser);
+		}
 	}
 }

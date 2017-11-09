@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
@@ -41,7 +41,7 @@ public class PurchaseOrderLineController {
 			purchaseOrder = request.getContext().getParentContext().asType(PurchaseOrder.class);
 			purchaseOrderLine.setPurchaseOrder(purchaseOrder);
 		}
-		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
+		if(Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()){
 			purchaseOrderLine = purchaseOrderLineServiceSupplychainImpl.computeAnalyticDistribution(purchaseOrderLine);
 			response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
 		}
@@ -57,9 +57,8 @@ public class PurchaseOrderLineController {
 		if(purchaseOrderLine.getAnalyticDistributionTemplate() != null){
 			purchaseOrderLine = purchaseOrderLineServiceSupplychainImpl.createAnalyticDistributionWithTemplate(purchaseOrderLine);
 			response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
-		}
-		else{
-			throw new AxelorException(I18n.get("No template selected"), IException.CONFIGURATION_ERROR);
+		} else {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No template selected"));
 		}
 	}
 }

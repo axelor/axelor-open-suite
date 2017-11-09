@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="meta-schedule-param-grid" id="base-meta-schedule-param-grid"
+		title="Parameters" model="com.axelor.meta.db.MetaScheduleParam"
+		editable="true">
+		<field name="name" />
+		<field name="value" />
+	</grid>
+
+	<form name="meta-schedule-param-form" id="base-meta-schedule-param-form"
+		title="Parameter" model="com.axelor.meta.db.MetaScheduleParam" css="mini-form"
+		onLoad="action-record-meta-schedule-param-job">
+		<panel title="Overview"
+			showIf="$scheduleJob != 'com.axelor.apps.base.job.BatchJob'">
+			<field name="name" />
+			<field name="value" />
+		</panel>
+		<panel title="Overview"
+			showIf="$scheduleJob == 'com.axelor.apps.base.job.BatchJob'">
+			<field name="name" colSpan="12" />
+			<field name="value" widget="CodeEditor" x-code-syntax="groovy"
+				colSpan="12" />
+		</panel>
+		<panel hidden="true">
+			<field name="$scheduleJob" />
+		</panel>
+	</form>
+
+	<action-record name="action-record-meta-schedule-param-job"
+		model="com.axelor.meta.db.MetaScheduleParam">
+		<field name="$scheduleJob" expr="eval: __parent__?.job" />
+	</action-record>
+
+</object-views>

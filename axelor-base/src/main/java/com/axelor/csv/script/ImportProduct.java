@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -38,10 +38,10 @@ public class ImportProduct {
 	private final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
-	ProductService productService;
+	private ProductService productService;
 	
 	@Inject
-	ProductRepository productRepo;
+	private ProductRepository productRepo;
 	
 	@Inject
 	MetaFiles metaFiles;
@@ -62,6 +62,10 @@ public class ImportProduct {
 					final MetaFile metaFile = metaFiles.upload(image);
 					product.setPicture(metaFile);
 				}
+				else {
+					LOG.debug("No image file found: {}", image.getAbsolutePath());
+				}
+				
 			} catch (Exception e) {
 				LOG.error("Error when importing product picture : {}", e);
 			}

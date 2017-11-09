@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -56,7 +56,7 @@ public class BatchValidation extends BatchWkf {
 
 			}  catch (AxelorException e) {
 
-				TraceBackService.trace(new AxelorException(String.format(I18n.get("Invoice")+" %s", invoice.getInvoiceId()), e, e.getcategory()), IException.INVOICE_ORIGIN, batch.getId());
+				TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get("Invoice")+" %s", invoice.getInvoiceId()), IException.INVOICE_ORIGIN, batch.getId());
 				incrementAnomaly();
 
 			} catch (Exception e) {
@@ -77,9 +77,9 @@ public class BatchValidation extends BatchWkf {
 	@Override
 	protected void stop() {
 		
-		String comment = I18n.get(IExceptionMessage.BATCH_VALIDATION_1);
+		String comment = I18n.get(IExceptionMessage.BATCH_VALIDATION_1) + "\n";
 		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_VALIDATION_2)+"\n", batch.getDone() );
-		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly() );
+		comment += String.format("\t"+I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly() );
 		
 		super.stop();
 		addComment(comment);

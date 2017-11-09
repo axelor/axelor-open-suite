@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -13,6 +13,11 @@
 		<option value="4">In progress</option>
 		<option value="5">Standby</option>
 		<option value="6">Finished</option>	
+	</selection>
+
+	<selection name="production.manuf.order.stock.move.realize.order.select">
+		<option value="0">On Start</option>
+		<option value="1">On Finish</option>
 	</selection>
 	
 	<selection name="production.order.priority.select">
@@ -63,6 +68,8 @@
 	    <option value="2">Rate</option>
 	</selection>
 	
-	
+	<selection name="mrp.line.proposal.ref.select" id="production.mrp.line.proposal.ref.select">
+		<option value="com.axelor.apps.production.db.ManufOrder">Manufacturing order</option>
+	</selection>
 	
 </object-views>

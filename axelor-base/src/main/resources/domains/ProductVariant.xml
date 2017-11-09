@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="ProductVariant" lang="java">
 	
 	<integer name="importId" />
-	<many-to-one name="productVariantAttr1" ref="com.axelor.apps.base.db.ProductVariantAttr" help="true"/>
+	<many-to-one name="productVariantAttr1" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
 	<many-to-one name="productVariantAttr2" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
 	<many-to-one name="productVariantAttr3" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
 	<many-to-one name="productVariantAttr4" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
-	<many-to-one name="productVariantValue1" ref="com.axelor.apps.base.db.ProductVariantValue" help="true"/>
+	<many-to-one name="productVariantValue1" ref="com.axelor.apps.base.db.ProductVariantValue"/>
 	<many-to-one name="productVariantValue2" ref="com.axelor.apps.base.db.ProductVariantValue"/>
 	<many-to-one name="productVariantValue3" ref="com.axelor.apps.base.db.ProductVariantValue"/>
 	<many-to-one name="productVariantValue4" ref="com.axelor.apps.base.db.ProductVariantValue"/>
 	
-	<boolean name="usedForStock" title="Use for stock only" help="true"/>
+	<boolean name="usedForStock" title="Use for stock only"/>
 	
 	<string name="name" title="Name" required="true">
 		<![CDATA[

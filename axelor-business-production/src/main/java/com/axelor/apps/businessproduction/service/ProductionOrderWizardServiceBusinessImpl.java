@@ -21,7 +21,9 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,8 +32,8 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.ProductionOrderWizardServiceImpl;
-import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -65,25 +67,24 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
 			product = billOfMaterial.getProduct();
 		}
 
-		DateTime startDate;
+		ZonedDateTime startDate;
 		if (context.containsKey("_startDate") && context.get("_startDate") != null ){
-			startDate = new DateTime(context.get("_startDate") );
+			startDate = ZonedDateTime.parse(context.get("_startDate").toString(), DateTimeFormatter.ISO_DATE_TIME);
 		}else{
-			startDate = generalService.getTodayDateTime().toDateTime();
+			startDate = appProductionService.getTodayDateTime();
 		}
 
-		ProjectTask projectTask = null;
+		Project project = null;
 		if(context.get("business_id") != null)  {
-			projectTask = Beans.get(ProjectTaskRepository.class).find(((Integer) context.get("business_id")).longValue());
+			project = Beans.get(ProjectRepository.class).find(((Integer) context.get("business_id")).longValue());
 		}
 
-		ProductionOrder productionOrder = productionOrderServiceBusinessImpl.generateProductionOrder(product, billOfMaterial, qty, projectTask, startDate.toLocalDateTime());
+		ProductionOrder productionOrder = productionOrderServiceBusinessImpl.generateProductionOrder(product, billOfMaterial, qty, project, startDate.toLocalDateTime());
 
 		if(productionOrder != null)  {
 			return productionOrder.getId();
-		}
-		else  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PRODUCTION_ORDER_2)),IException.CONFIGURATION_ERROR);
+		} else {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_ORDER_2));
 		}
 	}
 

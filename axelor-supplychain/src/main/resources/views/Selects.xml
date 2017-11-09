@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -13,6 +13,13 @@
 	
 	<selection name="supplychain.batch.action.select">
 		<option value="1">Bill Late Subscriptions</option>
+		<option value="3">Invoice orders</option>
+	</selection>
+
+	<selection name="supplychain.batch.invoice.stock.moves.action.select">
+		<option value="1">Bill Late Subscriptions</option>
+		<option value="2">Invoice outgoing stock moves</option>
+		<option value="3">Invoice orders</option>
 	</selection>
 	
 	<selection name="supplychain.mrp.status.select">
@@ -41,5 +48,32 @@
 		<option value="com.axelor.apps.supplychain.db.MrpForecast">Sale forecast</option>
 	</selection>
 	
+	<selection name="mrp.line.proposal.ref.select" id="supplychain.mrp.line.proposal.ref.select">
+		<option value="com.axelor.apps.purchase.db.PurchaseOrder">Purchase order</option>
+	</selection>
 	
+	<selection name="meta.schedule.job.select" id="supplychain.meta.schedule.job.select">
+		<option value="com.axelor.apps.supplychain.job.BillSubJob">com.axelor.apps.supplychain.job.BillSubJob</option>
+	</selection>
+
+	<selection name="meta.schedule.batch.service.select" id="supplychain.meta.schedule.batch.service.select">
+		<option value="com.axelor.apps.supplychain.service.batch.SupplychainBatchService">com.axelor.apps.supplychain.service.batch.SupplychainBatchService</option>
+	</selection>
+
+	<selection name="supplychain.supplychain.batch.invoice.orders.type.select">
+		<option value="2">Purchase orders</option>
+	</selection>
+
+	<selection name="supplychain.supplychain.batch.sale.orders.invoice.orders.type.select">
+		<option value="1">Sale orders</option>
+		<option value="2">Purchase orders</option>
+	</selection>
+
+	<selection name="supplychain.sale.order.invoicing.wizard.select">
+		<option value="1">Invoice all</option>
+		<option value="2">Invoice a fraction</option>
+		<option value="3">Invoice selected lines</option>
+		<option value="4">Invoice an advance payment</option>
+	</selection>
+
 </object-views>

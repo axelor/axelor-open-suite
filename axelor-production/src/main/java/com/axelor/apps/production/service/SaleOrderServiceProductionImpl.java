@@ -20,16 +20,19 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderLineTaxService;
+import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -39,14 +42,18 @@ public class SaleOrderServiceProductionImpl extends SaleOrderServiceSupplychainI
 	protected ProductionOrderSaleOrderService productionOrderSaleOrderService;
 	
 	@Inject
+	protected AppProductionService appProductionService;
+	
+	@Inject
 	public SaleOrderServiceProductionImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService,
 			SequenceService sequenceService, PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo,
-			GeneralService generalService, UserService userService, SaleOrderStockService saleOrderStockService, SaleOrderPurchaseService saleOrderPurchaseService,
-			ProductionOrderSaleOrderService productionOrderSaleOrderService, AccountConfigService accountConfigService) {
+			AppSaleService appSaleService, UserService userService, SaleOrderStockService saleOrderStockService, SaleOrderPurchaseService saleOrderPurchaseService,
+			ProductionOrderSaleOrderService productionOrderSaleOrderService, AppSupplychainService appSupplychainService, AccountConfigService accountConfigService,
+			AccountingSituationSupplychainService accountingSituationSupplychainService) {
 		
-		super(saleOrderLineService, saleOrderLineTaxService, sequenceService,partnerService, partnerRepo, saleOrderRepo, generalService,
-				userService, saleOrderStockService, saleOrderPurchaseService, accountConfigService);
-		
+		super(saleOrderLineService, saleOrderLineTaxService, sequenceService,partnerService, partnerRepo, saleOrderRepo, appSaleService,
+				userService, saleOrderStockService, saleOrderPurchaseService, appSupplychainService, accountConfigService, accountingSituationSupplychainService);
+
 		this.productionOrderSaleOrderService = productionOrderSaleOrderService;
 		
 	}
@@ -58,16 +65,10 @@ public class SaleOrderServiceProductionImpl extends SaleOrderServiceSupplychainI
 
 		super.confirmSaleOrder(saleOrder);
 		
-		if(general.getProductionOrderGenerationAuto())  {
+		if(appProductionService.getAppProduction().getProductionOrderGenerationAuto())  {
 			productionOrderSaleOrderService.generateProductionOrder(saleOrder);
 		}
 		
 	}
 	
-	
 }
-
-
-
-
-

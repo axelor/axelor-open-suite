@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -17,14 +17,22 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.ReportFactory;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
+import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.apps.supplychain.service.MrpService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+
+import java.time.temporal.WeekFields;
 
 public class MrpController {
 	
@@ -55,5 +63,61 @@ public class MrpController {
 		mrpService.generateProposals(mrpRepository.find(mrp.getId()));
 		response.setReload(true);
 	}
+
+	/**
+	 * Prints the weekly breakdown MRP birt report and shows it to the user.
+     *
+	 * @param request
+	 * @param response
+	 */
+	public void printWeeks(ActionRequest request, ActionResponse response) {
+		Mrp mrp = request.getContext().asType(Mrp.class);
+		mrp = mrpRepository.find(mrp.getId());
+		String name = I18n.get("MRP") + "-" + mrp.getId();
+
+		try {
+			String fileLink = ReportFactory.createReport(IReport.MRP_WEEKS, name)
+					.addParam("mrpId", mrp.getId())
+					.addParam("Locale", AuthUtils.getUser().getLanguage())
+					.addParam("endDate", mrpService.findMrpEndDate(mrp).get(WeekFields.ISO.weekOfWeekBasedYear()))
+					.addFormat(ReportSettings.FORMAT_PDF)
+					.generate()
+					.getFileLink();
+
+			response.setView(ActionView
+					.define(name)
+					.add("html", fileLink).map());
+
+		} catch (AxelorException e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+
+    /**
+     * Prints the list MRP birt report and shows it to the user.
+     *
+     * @param request
+     * @param response
+     */
+    public void printList(ActionRequest request, ActionResponse response) {
+        Mrp mrp = request.getContext().asType(Mrp.class);
+        String name = I18n.get("MRP") + "-" + mrp.getId();
+
+        try {
+            String fileLink = ReportFactory.createReport(IReport.MRP_LIST, name)
+                    .addParam("mrpId", mrp.getId())
+                    .addParam("Locale", AuthUtils.getUser().getLanguage())
+                    .addFormat(ReportSettings.FORMAT_PDF)
+                    .generate()
+                    .getFileLink();
+
+            response.setView(ActionView
+                    .define(name)
+                    .add("html", fileLink).map());
+
+        } catch (AxelorException e) {
+            TraceBackService.trace(response, e);
+        }
+    }
 	
 }

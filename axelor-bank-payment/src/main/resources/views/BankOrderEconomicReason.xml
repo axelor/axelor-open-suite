@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="bank-order-economic-reason-grid" orderBy="code" title="Bank Orders economic reasons" model="com.axelor.apps.bankpayment.db.BankOrderEconomicReason">
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="label"/>
     </grid>
     
 	<form name="bank-order-economic-reason-form" title="Bank Orders economic reason" model="com.axelor.apps.bankpayment.db.BankOrderEconomicReason"> 
   		<panel name="main" colSpan="12">
-    		<field name="code"/>
+    		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	        <field name="label"/>
+	        <field name="name" x-bind="{{label ? code + ' - ' + label : code}}" showIf="false"/>
   		</panel>
   		<panel name="description" title="Description" colSpan="12">
   			<field name="description" colSpan="12" showIf="false"/>

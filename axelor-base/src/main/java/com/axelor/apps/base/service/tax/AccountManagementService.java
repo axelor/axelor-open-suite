@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -19,7 +19,7 @@ package com.axelor.apps.base.service.tax;
 
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.FiscalPosition;

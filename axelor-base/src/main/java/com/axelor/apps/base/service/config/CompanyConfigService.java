@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -18,9 +18,9 @@
 package com.axelor.apps.base.service.config;
 
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -31,9 +31,8 @@ public class CompanyConfigService {
 
 	public Currency getCompanyCurrency(Company company) throws AxelorException  {
 
-		if(company.getCurrency() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.COMPANY_CURRENCY),
-					GeneralServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
+		if(company.getCurrency() == null) {
+			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.COMPANY_CURRENCY), AppBaseServiceImpl.EXCEPTION, company.getName());
 		}
 		
 		return company.getCurrency();

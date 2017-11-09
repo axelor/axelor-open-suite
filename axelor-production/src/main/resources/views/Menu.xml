@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	
-	<menuitem name="manufacturing-root" title="Manufacturing" order="-84"
-		icon="fa-cogs" groups="admins,ERP" icon-background="#84429f"/>
+	<menuitem name="manufacturing-root" title="Manufacturing" order="-84"  if="__config__.app.isApp('production')"
+		icon="fa-cogs"  icon-background="#84429f"/>
 	
 	<menuitem name="manufacturing-root-bill-of-material" parent="manufacturing-root"
-		title="Bills of materials" action="manufacturing.root.bill.of.material" />
+		title="Bills of materials" action="manufacturing.root.bill.of.material" order="1" />
 
 	<action-view name="manufacturing.root.bill.of.material" title="Bills of materials"
 		model="com.axelor.apps.production.db.BillOfMaterial" >
 		<view type="grid" name="bill-of-material-grid" />
 		<view type="form" name="bill-of-material-form" />
-		<domain>self.isRawMaterial = false AND self.personalized = false AND self.parentBillOfMaterial IS NULL</domain>
+		<domain>self.defineSubBillOfMaterial = false AND self.personalized = false</domain>
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-prod-process" parent="manufacturing-root"
-		title="Production processes" action="manufacturing.root.prod.process" />
+		title="Production processes" action="manufacturing.root.prod.process" order="5" />
 
 	<action-view name="manufacturing.root.prod.process" title="Production processes"
 		model="com.axelor.apps.production.db.ProdProcess" >
@@ -27,7 +27,7 @@
 	</action-view>
 		
 	<menuitem name="manufacturing-root-production-order" parent="manufacturing-root"
-		title="Productions orders" action="manufacturing.root.production.order" />
+		title="Productions orders" action="manufacturing.root.production.order" order="15" />
 
 	<action-view name="manufacturing.root.production.order" title="Productions orders"
 		model="com.axelor.apps.production.db.ProductionOrder" >
@@ -37,29 +37,29 @@
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-manuf-order" parent="manufacturing-root"
-		title="Manufacturing orders" action="manufacturing.root.manuf.order" />
+		title="Manufacturing orders" action="manufacturing.root.manuf.order" order="20" />
 
 	<action-view name="manufacturing.root.manuf.order" title="Manufacturing orders"
 		model="com.axelor.apps.production.db.ManufOrder" >
 		<view type="grid" name="manuf-order-grid" />
 		<view type="form" name="manuf-order-form" />
 		<view-param name="search-filters" value="manuf-order-filters"/>
-		<context name="_todayDateTime" expr="eval:__config__.generalService.getTodayDateTime()"/>
+		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-operation-order" parent="manufacturing-root"
-		title="Operations orders" action="manufacturing.root.operation.order" />
+		title="Operations orders" action="manufacturing.root.operation.order" order="25" />
 
 	<action-view name="manufacturing.root.operation.order" title="Operation orders"
 		model="com.axelor.apps.production.db.OperationOrder" >
 		<view type="grid" name="operation-order-group-grid" />
 		<view type="form" name="operation-order-form" />
 		<view-param name="search-filters" value="operation-order-filters"/>
-		<context name="_todayDateTime" expr="eval:__config__.generalService.getTodayDateTime()"/>
+		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-operation-order-planned-calendar" parent="manufacturing-root"
-		title="Planned operations" action="manufacturing.root.operation.order.planned.calendar" />
+		title="Planned operations" action="manufacturing.root.operation.order.planned.calendar" order="30" />
 
 	<action-view name="manufacturing.root.operation.order.planned.calendar" title="Planned operations"
 		model="com.axelor.apps.production.db.OperationOrder" >
@@ -69,7 +69,7 @@
 	</action-view>
 	
 	<menuitem name="manufacturing-root-operation-order-real-calendar" parent="manufacturing-root"
-		title="Real operations" action="manufacturing.root.operation.order.real.calendar" />
+		title="Real operations" action="manufacturing.root.operation.order.real.calendar" order="35" />
 
 	<action-view name="manufacturing.root.operation.order.real.calendar" title="Real operations"
 		model="com.axelor.apps.production.db.OperationOrder" >
@@ -79,18 +79,30 @@
 	</action-view>
 	
 	<menuitem name="manufacturing-root-charge-by-machine-dashboard" parent="manufacturing-root"
-		title="Charge by machine" action="manufacturing.root.charge.by.machine.dashboardr" />
+		title="Charge by machine" action="manufacturing.root.charge.by.machine.dashboardr" order="40" />
 
 	<action-view name="manufacturing.root.charge.by.machine.dashboardr" title="Charge by machine"
 		>
 		<view type="dashboard" name="charge.by.machine.dashboard" />
-		<context name="today" expr="eval:__config__.generalService.getTodayDate()"/>
+		<context name="today" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 	
-	<menuitem name="manufacturing-root-report" parent="manufacturing-root"
-		title="Reportings"/>
+	<menuitem name="manufacturing-root-report" parent="manufacturing-root" title="Reportings" order="45" />
 
-	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configurations"/>
+    <menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report" title="Manufacturing" action="manufacturing.dashboard.view" />
+
+    <action-view name="manufacturing.dashboard.view" title="Manufacturing Dashboard">
+        <view type="dashboard" name="manufacturing.dashboard.sample" />
+        <context name="_today" expr="eval: __date__"/>
+    </action-view>
+
+    <menuitem name="menu-manufacturing-user-dashboard" parent="manufacturing-root-report" title="User" action="manufacturing.user.dashboard.view" />
+
+    <action-view name="manufacturing.user.dashboard.view" title="User Dashboard" model="com.axelor.auth.db.User">
+        <view type="form" name="manufacturing-dashboard-user"/>
+    </action-view>
+		
+	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configurations" order="50" />
 
 	<menuitem name="manufacturing-conf-work-center" parent="manufacturing-conf"
 		title="Resources" action="manufacturing.conf.work.center" />
@@ -119,34 +131,91 @@
 		<view type="form" name="cost-sheet-group-form" />
 	</action-view>
 	
-	
-	<menuitem name="admin-root-conf-production-config" parent="admin-root-conf"
-		title="Production configurations" action="admin.root.conf.production.config" />
-		
-	<action-view name="admin.root.conf.production.config" title="Production configurations"
-		model="com.axelor.apps.production.db.ProductionConfig" >
-		<view type="grid" name="production-config-grid"/>
-		<view type="form" name="production-config-form"/>
+	<menuitem name="manufacturing-conf-configurators" parent="manufacturing-conf"
+		title="Configurators" if="__config__.app.getApp('production').getEnableConfigurator()"/>
+
+	<menuitem name="manufacturing-conf-configurators-creator" parent="manufacturing-conf-configurators" order="10"
+			  title="Configurator creators" action="manufacturing.conf.configurator.creator"
+			  if="__config__.app.getApp('sale').getEnableConfigurator()"/>
+
+	<action-view name="manufacturing.conf.configurator.creator" title="Configurator creators"
+				 model="com.axelor.apps.sale.db.ConfiguratorCreator" >
+		<view type="grid" name="configurator-creator-grid" />
+		<view type="form" name="configurator-creator-form" />
 	</action-view>
 
-		
-	<menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report" 
-		title="Manufacturing"  action="manufacturing.dashboard.view" />	
+	<menuitem name="manufacturing-conf-configurators-configurators" parent="manufacturing-conf-configurators" order="20"
+			  title="Configurators" action="manufacturing.conf.configurator.configurators"
+			  if="__config__.app.getApp('sale').getEnableConfigurator()"/>
 
-	<action-view name="manufacturing.dashboard.view" title="Manufacturing Dashboard">
-		<view type="dashboard" name="manufacturing.dashboard.sample" />
-	    <context name="_today" expr="eval: __date__.toDate()"/>
+	<action-view name="manufacturing.conf.configurator.configurators" title="Configurators"
+				 model="com.axelor.apps.sale.db.Configurator" >
+		<view type="grid" name="configurator-grid" />
+		<view type="form" name="configurator-form" />
+		<domain>:__user__ IN self.configuratorCreator.authorizedUserSet OR :groupId IN self.configuratorCreator.authorizedGroupSet</domain>
+		<context name="groupId" expr="eval: __user__.group.id"/>
 	</action-view>
-	
+
+	<menuitem name="manufacturing-conf-configurators-bom" parent="manufacturing-conf-configurators" order="30"
+			  title="Configurator BOM" action="manufacturing.conf.configurator.bom"/>
+
+	<action-view name="manufacturing.conf.configurator.bom" title="Configurator BOM"
+				 model="com.axelor.apps.production.db.ConfiguratorBOM" >
+		<view type="grid" name="configurator-bom-grid" />
+		<view type="form" name="configurator-bom-form" />
+	</action-view>
+
+	<menuitem name="manufacturing-conf-configurators-prodprocess" parent="manufacturing-conf-configurators" order="40"
+			  title="Configurator production process" action="manufacturing.conf.configurator.prod.process"/>
+
+	<action-view name="manufacturing.conf.configurator.prod.process" title="Configurator production process"
+				 model="com.axelor.apps.production.db.ConfiguratorProdProcess" >
+		<view type="grid" name="configurator-prod-process-grid" />
+		<view type="form" name="configurator-prod-process-form" />
+	</action-view>
+
+	<menuitem name="manufacturing-conf-configurators-prod-process-line" parent="manufacturing-conf-configurators" order="50"
+			  title="Configurator Phase" action="manufacturing.conf.configurator.prod.process.line"/>
+
+	<action-view name="manufacturing.conf.configurator.prod.process.line" title="Configurator Phase"
+				 model="com.axelor.apps.production.db.ConfiguratorProdProcessLine" >
+	<view type="grid" name="configurator-prod-process-line-grid" />
+	<view type="form" name="configurator-prod-process-line-form" />
+	</action-view>
+
 	<!-- TOP MENU -->
 	
-	<menuitem name="top-manufacturing" title="Manufacturing" left="false" top="true" groups="admins,ERP"/>
-	<menuitem name="top-manufacturing-create-manufacturing-order" title="Create Manuf. Order" top="true" parent="top-manufacturing" order="-100" action="top.manufacturing.create.manufacturing.order"/>
-	<action-view name="top.manufacturing.create.manufacturing.order" title="New Manufacturing Order" model="com.axelor.apps.production.db.ManufOrder">
-		<view type="form" name="manuf-order-form"/>
-	</action-view>
-	<menuitem name="top-manufacturing-manufacturing-orders" title="View Manuf. Orders" order="-90" parent="top-manufacturing" top="true" action="manufacturing.root.manuf.order"/>
-	<menuitem name="top-manufacturing-operation-orders" title="View Operation Orders" parent="top-manufacturing" top="true" order="-80" action="manufacturing.root.operation.order"/>
-	<menuitem name="top-manufacturing-bill-of-material" title="View Bill Of Materials" parent="top-manufacturing" top="true" order="-70" action="manufacturing.root.bill.of.material" />
+	<menuitem name="top-manufacturing" title="Manufacturing" order="6" left="false" top="true"  if="__config__.app.isApp('production')"/>
+	
+	<menuitem name="top-manufacturing-manuf-order" parent="top-manufacturing"
+		title="Manuf. orders" action="top.manufacturing.manuf.order" top="true"/>
 
+	<action-view name="top.manufacturing.manuf.order" title="Manuf. orders"
+		model="com.axelor.apps.production.db.ManufOrder" >
+		<view type="grid" name="manuf-order-grid" />
+		<view type="form" name="manuf-order-form" />
+		<view-param name="search-filters" value="manuf-order-filters"/>
+		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
+	</action-view>	
+	
+	<menuitem name="top-manufacturing-operation-order" parent="top-manufacturing"
+		title="Operation orders" action="top.manufacturing.operation.order" top="true"/>
+
+	<action-view name="top.manufacturing.operation.order" title="Operation orders"
+		model="com.axelor.apps.production.db.OperationOrder" >
+		<view type="grid" name="operation-order-group-grid" />
+		<view type="form" name="operation-order-form" />
+		<view-param name="search-filters" value="operation-order-filters"/>
+		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
+	</action-view>	
+	
+	<menuitem name="top-manufacturing-bill-of-material" parent="top-manufacturing"
+		title="Bill of materials" action="top.manufacturing.bill.of.material" top="true"/>
+
+	<action-view name="top.manufacturing.bill.of.material" title="Bill of materials"
+		model="com.axelor.apps.production.db.BillOfMaterial" >
+		<view type="grid" name="bill-of-material-grid" />
+		<view type="form" name="bill-of-material-form" />
+		<domain>self.defineSubBillOfMaterial = false AND self.personalized = false</domain>
+	</action-view>
 </object-views>

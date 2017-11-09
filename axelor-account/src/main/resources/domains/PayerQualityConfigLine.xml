@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
   
   <entity name="PayerQualityConfigLine" lang="java" cachable="true">
   
     <integer name="incidentTypeSelect" title="Incident type" selection="payer.quality.config.line.incident.type.select"/>
-    <many-to-one name="reminderLevel" ref="com.axelor.apps.account.db.ReminderLevel" title="Reminder level"/>
+    <many-to-one name="debtRecoveryLevel" ref="com.axelor.apps.account.db.DebtRecoveryLevel" title="Debt recovery level"/>
+    <decimal name="burden" title="Burden (weight)"/>
+    <string name="description" title="Description"/>
     <string name="rejectType" title="Reject type"/>
     <string name="name" title="Label">
     	<![CDATA[
@@ -14,12 +16,10 @@
     		return "Rejet ("+rejectType+")";
     	}
 		else {
-			return "Relance "+reminderLevel.getName();
+			return "Relance "+debtRecoveryLevel.getName();
 		}
 	    ]]>
     </string>
-    <decimal name="burden" title="Burden (weight)"/>
-    <string name="description" title="Description"/>
   
   </entity>
   

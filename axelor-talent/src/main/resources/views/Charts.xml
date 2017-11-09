@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<chart name="chart.employee.training.per.category" title="Training per category">
+  		<dataset type="jpql"><![CDATA[
+		SELECT
+			COUNT(*) AS _total,
+			self.training.category.name AS _category,
+			YEAR(self.fromDate) as _year
+		FROM
+			TrainingRegister self
+		WHERE
+			YEAR(self.fromDate) >= (YEAR(CURRENT_DATE)-3)
+		GROUP BY
+			self.training.category.name,
+			YEAR(self.fromDate)
+		ORDER BY
+			YEAR(self.fromDate)
+		]]></dataset>
+ 	 	<category key="_category" type="text" title="Training"/>
+  		<series key="_total" type="bar" title="Total" groupBy="_year" />
+	</chart>
+	
+	<chart name="chart.nb.hours.per.category" title="Nb. hours per category" onInit="action-training-chart-set-default-from-to-dates">
+		<search-fields>
+			<field name="fromDate" title="From" type="date" required="true" />
+			<field name="toDate" title="To" type="date" required="true" />
+		</search-fields>
+  		<dataset type="jpql"><![CDATA[
+		SELECT
+			SUM(self.duration) AS _nbHours,
+			self.training.category.name AS _category
+		FROM
+			TrainingSession self
+		WHERE
+			self.fromDate >= :fromDate AND self.toDate <= :toDate
+			AND self.statusSelect = 2
+		GROUP BY
+			self.training.category.name
+		]]></dataset>
+ 	 	<category key="_category" type="text" title="Category"/>
+  		<series key="_nbHours" type="bar" title="Nb Hours"/>
+	</chart>
+	
+	<chart name="chart.nb.hours.per.training" title="Nb. hours per training" onInit="action-training-chart-set-default-from-to-dates">
+		<search-fields>
+			<field name="fromDate" title="From" type="date" required="true" />
+			<field name="toDate" title="To" type="date" required="true" />
+		</search-fields>
+  		<dataset type="jpql"><![CDATA[
+		SELECT
+			SUM(self.duration) AS _nbHours,
+			self.training.name AS _training
+		FROM
+			TrainingSession self
+		WHERE
+			self.fromDate >= :fromDate AND self.toDate <= :toDate
+			AND self.statusSelect = 2
+		GROUP BY
+			self.training.name
+		]]></dataset>
+ 	 	<category key="_training" type="text" title="Training"/>
+  		<series key="_nbHours" type="bar" title="Nb Hours" />
+	</chart>
+	
+	<chart name="chart.nb.trained.employee.per.category" title="Nb. of trained employee per category" onInit="action-training-chart-set-default-from-to-dates">
+		<search-fields>
+			<field name="fromDate" title="From" type="date" required="true" />
+			<field name="toDate" title="To" type="date" required="true" />
+		</search-fields>
+  		<dataset type="jpql"><![CDATA[
+		SELECT
+			COUNT(*) AS _nbEmployee,
+			self.training.category.name AS _category
+		FROM
+			TrainingRegister self
+		WHERE
+			self.fromDate >= :fromDate AND self.toDate <= :toDate
+			AND self.statusSelect = 2
+		GROUP BY
+			self.training.category.name,
+			self.employee
+		]]></dataset>
+ 	 	<category key="_category" type="text" title="Category"/>
+  		<series key="_nbEmployee" type="bar" title="Nb Employee" />
+	</chart>
+	
+	<chart name="chart.nb.training.hours.per.month" title="Nb of training hours per month" onInit="action-training-chart-set-3-month-from-to-dates">
+  		<search-fields>
+			<field name="fromDate" title="From" type="date" required="true" />
+			<field name="toDate" title="To" type="date" required="true" />
+		</search-fields>
+  		<dataset type="jpql"><![CDATA[
+		SELECT
+			SUM(self.duration) AS _nbHours,
+			CONCAT(MONTH(self.fromDate),'-',YEAR(self.fromDate)) AS _month
+		FROM
+			TrainingSession self
+		WHERE
+			self.fromDate >= :fromDate AND self.toDate <= :toDate
+			AND self.statusSelect = 2
+		GROUP BY
+			CONCAT(MONTH(self.fromDate),'-',YEAR(self.fromDate))
+		ORDER BY 
+			CONCAT(MONTH(self.fromDate),'-',YEAR(self.fromDate))
+		]]></dataset>
+ 	 	<category key="_month" type="text" title="Month"/>
+  		<series key="_nbHours" type="bar" title="Nb Hours" />
+	</chart>
+	
+	<action-attrs name="action-training-chart-set-default-from-to-dates">
+		<attribute name="value" for="fromDate" expr="eval:__date__.withDayOfMonth(1)"/>
+		<attribute name="value" for="toDate" expr="eval:__date__"/>
+	</action-attrs>
+	
+	<action-attrs name="action-training-chart-set-3-month-from-to-dates">
+		<attribute name="value" for="fromDate" expr="eval:__date__.minusMonths(3)"/>
+		<attribute name="value" for="toDate" expr="eval:__date__"/>
+	</action-attrs>
+	
+</object-views>

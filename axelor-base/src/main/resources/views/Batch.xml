@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="batch-grid" title="Batches" model="com.axelor.apps.base.db.Batch" orderBy="-id"
     canEdit="false" canDelete="false" canNew="false" canSave="false">
@@ -32,7 +32,7 @@
 		    <button name="showPartner" title="Partners" hidden="true" colSpan="2" onClick="save,action-batch-show-partner"/>
 		    <button name="showAccountingSituation" title="Accounting situations" hidden="true" colSpan="2" onClick="save,action-batch-show-accounting-situation"/>
 		    <button name="showPaymentVoucher" title="Payment vouchers" hidden="true" colSpan="2" onClick="save,action-batch-show-payment-voucher"/>
-		    <button name="showMoveLineReport" title="Accounting Export" hidden="true" colSpan="2" onClick="save,action-batch-show-move-line-report"/>
+		    <button name="showAccountingReport" title="Accounting Export" hidden="true" colSpan="2" onClick="save,action-batch-show-accounting-report"/>
 		</panel>
     </form>
     
@@ -47,7 +47,7 @@
     	<attribute name="hidden" for="showPartner" expr="eval: !(_parent?.actionSelect in [14])" if="_parent?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
     	<attribute name="hidden" for="showAccountingSituation" expr="eval: !(_parent?.actionSelect in [17])" if="_parent?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
     	
-    	<attribute name="hidden" for="showMoveLineReport" expr="eval: !(_parent?.actionSelect == 18)" if="_parent?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
+    	<attribute name="hidden" for="showAccountingReport" expr="eval: !(_parent?.actionSelect == 18)" if="_parent?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
     </action-attrs>
 
 	<action-view name="action-batch-show-trace-back" title="Anomalies"
@@ -56,6 +56,12 @@
 		<view type="form" />
 		<domain>self.batchId = :id</domain>
 		<context name="id" expr="eval: id"/>
+	</action-view>
+
+	<action-view name="action-batch-show-batch" model="com.axelor.apps.base.db.Batch"
+		title="Batch">
+		<view name="batch-form" type="form" />
+		<context name="_showRecord" expr="eval: batchId" />
 	</action-view>
 
 	<action-view name="action-batch-show-invoice" title="Invoices"
@@ -107,10 +113,10 @@
 		<context name="batch" expr="eval: id"/>
 	</action-view>
 	
-	<action-view name="action-batch-show-move-line-report" title="Move exports"
-		model="com.axelor.apps.account.db.MoveLineReport">
-		<view type="grid" name="move-line-report-export-grid"/>
-		<view type="form" name="move-line-report-export-form"/>
+	<action-view name="action-batch-show-accounting-report" title="Move exports"
+		model="com.axelor.apps.account.db.AccountingReport">
+		<view type="grid" name="accounting-report-export-grid"/>
+		<view type="form" name="accounting-report-export-form"/>
 		<domain>:batch MEMBER OF self.batchSet</domain>
 		<context name="batch" expr="eval: id"/>
 	</action-view>

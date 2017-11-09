@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -20,7 +20,7 @@ package com.axelor.apps.supplychain.service;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +90,8 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 		
 		Company company = advancePayment.getSaleOrder().getCompany();
 				
-		if(accountConfigService.getAccountConfig(company).getGenerateMoveForAdvancePayment())  {
+		if(accountConfigService.getAccountConfig(company).getGenerateMoveForAdvancePayment()
+				&& advancePayment.getAmount().compareTo(BigDecimal.ZERO) != 0) {
 			this.createMoveForAdvancePayment(advancePayment);
 		}
 		

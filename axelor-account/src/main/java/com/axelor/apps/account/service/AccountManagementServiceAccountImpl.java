@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -32,7 +32,7 @@ import com.axelor.i18n.I18n;
 
 import java.lang.invoke.MethodHandles;
 
-public class AccountManagementServiceAccountImpl extends AccountManagementServiceImpl {
+public class AccountManagementServiceAccountImpl extends AccountManagementServiceImpl implements AccountManagementAccountService {
 	
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
@@ -46,6 +46,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
 	 * @return
 	 * @throws AxelorException 
 	 */
+	@Override
 	public Account getProductAccount(Product product, Company company, boolean isPurchase) throws AxelorException{
 		
 		log.debug("Obtention du compte comptable pour le produit {} (société : {}, achat ? {})",
@@ -66,6 +67,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
 	 * @param isPurchase
 	 * @return
 	 */
+	@Override
 	public Account getProductAccount(AccountManagement accountManagement, boolean isPurchase){
 		
 		if(isPurchase)  { return accountManagement.getPurchaseAccount(); }
@@ -77,7 +79,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
 	@Override
 	public void generateAccountManagementException(Product product, Company company) throws AxelorException  {
 		
-		throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_1_ACCOUNT), product.getCode(), company.getName()), IException.CONFIGURATION_ERROR);
+		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_1_ACCOUNT), product.getCode(), company.getName());
 	
 	}
 	

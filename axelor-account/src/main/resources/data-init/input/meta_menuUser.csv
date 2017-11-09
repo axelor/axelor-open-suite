@@ -1,0 +1,15 @@
+name;roles
+invoice-root;role.user
+invoice-root-custinvoices;role.user
+invoice-root-custrefunds;role.user
+invoice-root-purchase-supinvoices;role.user
+invoice-root-purchase-suprefunds;role.user
+account-root;role.user
+account-root-move;role.user
+account-root-periodic-processing;role.user
+account-root-debt-recovery;role.user
+debt-recovery-root-history;role.user
+account-root-accounting;role.user
+account-root-budget-management;role.user
+account-root-budget-management-my-budgets;role.user
+account-root-report;role.user

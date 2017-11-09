@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -19,9 +19,9 @@ package com.axelor.apps.base.service;
 
 import java.math.BigDecimal;
 
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
-import org.joda.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.repo.DurationRepository;
@@ -52,8 +52,8 @@ public class DurationServiceImpl implements DurationService  {
 		
 	}
 	
-	public BigDecimal computeDurationInDays(DateTime startDate, DateTime endDate){
-		return new BigDecimal(new Interval(startDate,endDate).toDuration().toStandardDays().getDays());
+	public BigDecimal computeDurationInDays(ZonedDateTime startDate, ZonedDateTime endDate){
+		return new BigDecimal(ChronoUnit.DAYS.between(startDate, endDate));
 	}
 	
 }

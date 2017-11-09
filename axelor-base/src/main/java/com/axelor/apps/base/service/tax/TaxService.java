@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -19,7 +19,7 @@ package com.axelor.apps.base.service.tax;
 
 import java.math.BigDecimal;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
@@ -56,7 +56,9 @@ public class TaxService {
 	 */
 	public TaxLine getTaxLine(Tax tax, LocalDate localDate) throws AxelorException  {
 		
-		if(tax == null)  {  throw new AxelorException(I18n.get(IExceptionMessage.TAX_2), IException.CONFIGURATION_ERROR);  }
+		if (tax == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TAX_2));
+		}
 		
 		if(tax.getActiveTaxLine() != null)  {  return tax.getActiveTaxLine();  }
 		
@@ -70,7 +72,7 @@ public class TaxService {
 			}
 		}
 		
-		throw new AxelorException(String.format(I18n.get(IExceptionMessage.TAX_1), tax.getName()), IException.CONFIGURATION_ERROR);
+		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TAX_1), tax.getName());
 	}
 	
 	

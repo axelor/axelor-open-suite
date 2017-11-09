@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AddressExport;
-import com.axelor.apps.base.db.General;
+import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
@@ -43,7 +43,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -66,7 +66,7 @@ public class AddressController {
 	private AddressRepository addressRepo;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 	
 	@Inject
 	private PartnerService partnerService;
@@ -80,11 +80,11 @@ public class AddressController {
 
 	public void check(ActionRequest request, ActionResponse response) {
 
-		General g = request.getContext().asType(General.class);
-		LOG.debug("validate g = {}", g);
-		LOG.debug("validate g.qasWsdlUrl = {}", g.getQasWsdlUrl());
+		AppBase appBase = request.getContext().asType(AppBase.class);
+		LOG.debug("validate g = {}", appBase);
+		LOG.debug("validate g.qasWsdlUrl = {}", appBase.getQasWsdlUrl());
 
-		String msg = Beans.get(AddressService.class).check(g.getQasWsdlUrl())? g.getQasWsdlUrl()+" "+I18n.get(IExceptionMessage.ADDRESS_1):I18n.get(IExceptionMessage.ADDRESS_2);
+		String msg = Beans.get(AddressService.class).check(appBase.getQasWsdlUrl())? appBase.getQasWsdlUrl()+" "+I18n.get(IExceptionMessage.ADDRESS_1):I18n.get(IExceptionMessage.ADDRESS_2);
 		response.setFlash(msg);
 	}
 
@@ -93,7 +93,7 @@ public class AddressController {
 		Address a = request.getContext().asType(Address.class);
 		LOG.debug("validate a = {}", a);
 		String search = a.getAddressL4()+" "+a.getAddressL6();
-		Map<String,Object> retDict = Beans.get(AddressService.class).validate(generalService.getGeneral().getQasWsdlUrl(), search);
+		Map<String,Object> retDict = Beans.get(AddressService.class).validate(appBaseService.getAppBase().getQasWsdlUrl(), search);
 		LOG.debug("validate retDict = {}", retDict);
 
 		VerifyLevelType verifyLevel = (VerifyLevelType) retDict.get("verifyLevel");
@@ -167,7 +167,7 @@ public class AddressController {
 			LOG.debug("select pickedEntry = {}", pickedEntry);
 			String moniker = pickedEntry.getMoniker();
 			if (moniker != null) {
-				com.qas.web_2005_02.Address address = Beans.get(AddressService.class).select(generalService.getGeneral().getQasWsdlUrl(), moniker);
+				com.qas.web_2005_02.Address address = Beans.get(AddressService.class).select(appBaseService.getAppBase().getQasWsdlUrl(), moniker);
 				LOG.debug("select address = {}", address);
 				//addressL4: title="N° et Libellé de la voie"
 				//addressL6: title="Code Postal - Commune"/>
@@ -231,7 +231,7 @@ public class AddressController {
 			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
 			return;
 		}
-		if (generalService.getGeneral().getMapApiSelect() != IAdministration.MAP_API_GOOGLE) {
+		if (appBaseService.getAppBase().getMapApiSelect() != IAdministration.MAP_API_GOOGLE) {
 			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_6));
 			return;
 		}

@@ -1,0 +1,73 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="project" package="com.axelor.apps.project.db"/>
+
+  <entity name="Project">
+      
+     	<integer name="importId"/>
+		<string name="name" required="true" unique="true"/>
+		<string name="description" multiline="true" large="true"/>
+		<many-to-one name="team" ref="com.axelor.team.db.Team"/>
+		<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>      
+		<many-to-many name="projectFolderSet" ref="com.axelor.apps.project.db.ProjectFolder" title="Project Folders"/>
+		<one-to-many name="childProjectList" ref="com.axelor.apps.project.db.Project" title="Child Projects" mappedBy="project"/>
+		<many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
+		<integer name="statusSelect" selection="project.status.select" title="Status" default="1"/>
+		<many-to-many name="categorySet" ref="com.axelor.apps.project.db.ProjectCategory" title="Type of authorized categories"/>
+		<one-to-many name="teamTaskList" ref="com.axelor.team.db.TeamTask" title="Tasks" mappedBy="project"/>
+		<boolean name="synchronisable"/>
+		<many-to-one name="projectParent" ref="com.axelor.apps.project.db.Project" title="Project Parent"/>
+		<one-to-many name="wikiList" ref="com.axelor.apps.project.db.Wiki" title="Wiki" mappedBy="project"/>
+		
+		<string name="code" title="Code" />
+		<many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
+		<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+		
+		<datetime name="fromDate" title="From Date"/>
+		<datetime name="toDate" title="To Date"/>
+		<datetime name="dueDate" title="Due Date"/>
+		
+		<decimal name="duration" title="Duration"/>
+		<decimal name="timeSpent" title="Time Spent"/>
+		<decimal name="leadDelay" title="Lead/Delay"/>
+		
+		<decimal name="progress" title="Progress (%)"/>
+		<decimal name="sequence" title="Sequence" />
+		<integer name="orderByState"/>
+	  
+		<integer name="projectTypeSelect" selection="project.type.select" default="1"/>
+	  
+	  
+		<boolean name="imputable" default="1"/>
+	  
+		<many-to-many name="finishToStartTaskSet" ref="com.axelor.apps.project.db.Project" title="Finish tasks to start"/>
+		<many-to-many name="startToStartTaskSet" ref="com.axelor.apps.project.db.Project" title="Start tasks to start"/>
+		<many-to-many name="finishToFinishTaskSet" ref="com.axelor.apps.project.db.Project" title="Finish tasks to finish"/>
+		<many-to-many name="startToFinishTaskSet" ref="com.axelor.apps.project.db.Project" title="Start tasks to finish"/>
+		
+		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+		
+		<many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Type of authorized activities"/>
+		
+		<boolean name="excludePlanning" title="Exclude planning" />
+		
+		<string name="fullName" namecolumn="true" title="Name"/>
+	 	
+	 	<boolean name="isProject" title="Project" default="true" />
+	 	
+	   <extra-code>
+   		<![CDATA[
+   			public static final String TYPE_PROJECT = "project";
+   			public static final String TYPE_TASK = "task";
+   			
+   			public static final Integer STATE_PLANNED = 1;
+   			public static final Integer STATE_IN_PROGRESS = 2;
+   			public static final Integer STATE_FINISHED = 3;
+   		]]>
+   	</extra-code>
+  </entity>
+  
+</domain-models>

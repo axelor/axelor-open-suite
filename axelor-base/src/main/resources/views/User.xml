@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
     <grid name="user-grid" title="Users list" model="com.axelor.auth.db.User" id="user-grid-base">
         <field name="name"/>
@@ -16,10 +16,9 @@
     onNew="action-user-apply-applicaton-mode,action-user-default-record,action-user-check-company" onSave="com.axelor.auth.AuthService:validate" onLoad="action-user-apply-applicaton-mode">
     	<panel name="main" sidebar="true">
 	        <field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-	        <field name="activeCashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
 <!-- 	        <field name="timesheetPeriodConfig"/> -->
-	        <field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null"/>
-	        <button name="createEmployee" onClick="save,action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0"/>
+	        <field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null" if="__config__.app.isApp('employee')" />
+	        <button name="createEmployee"  onClick="save,action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0" if="__config__.app.isApp('employee')" />
         </panel>
 		<panel name="testing" title="Testing" sidebar="true" hidden="true">
 			<field name="today"/>
@@ -38,14 +37,18 @@
       			</field>
     		 </panel>
         	 <panel-related title="Internal companies" field="companySet" showTitle="false" canNew="false"/>
-        	 <panel name="teams" title="Teams" if="__config__.general.getTeamManagement()">
+        	 <panel name="teams" title="Teams">
         		<field name="activeTeam" form-view="team-form" grid-view="team-grid"/>
-        		<panel-related field="teamSet" canNew="false" colSpan="12" form-view="team-form" grid-view="team-grid"/>
+        		<field name="teamSet" form-view="team-form" grid-view="team-grid" colSpan="12"/>
         	 </panel>
-        	<panel name="calendarsConfiguration" title="Calendars Configuration" if-module="axelor-crm">
-        		<panel-related field="followersCalUserSet" colSpan="12" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
+        	<panel name="calendarsConfiguration" title="Calendars Configuration">
+        		<panel-related field="followersCalUserSet" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
         		<panel-related field="calendarManagementList" colSpan="12"/>
+        		<field name="iCalendar" canNew="true" canEdit="true"/>
         	</panel>
+		    <panel name="electronicSignature" title="Electronic signature" if="__config__.app.isApp('sale') || __config__.app.isApp('purchase')">
+		    	<field name="electronicSignature" widget="Image" />
+		    </panel>
         </panel-tabs>
     </form>
     
@@ -62,7 +65,13 @@
 				<field name="newPassword" title="Password" placeholder="new password" widget="password" requiredIf="change" validIf="(!change) || (newPassword.length &gt;= 4 &amp;&amp; confirm == newPassword)"/>
 				<field name="confirm" title="Confirm" placeholder="confirm password" widget="password"/>
 			</panel>
+			<field name="email"/>
+			<field name="theme"/>
+			<field name="noHelp"/>
+			<field name="iCalendar" canNew="true" canEdit="true"/>
 			<panel-related title="Internal companies" field="companySet" hidden="true"/>
+			<field name="followersCalUserSet" widget="TagSelect" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
+			<panel-related field="calendarManagementList" colSpan="12"/>
 		</panel>
 	</form>
     
@@ -70,15 +79,15 @@
     
     <action-attrs name="action-user-attrs-domain-followers">
     	<attribute name="domain" for="followersCalUserSet" expr="eval: &quot; self.id IN 
-    	(${__repo__.of(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().collect{it.parentUser.id}.join(',')}) &quot;" 
-    	if="!__repo__.of(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().isEmpty()"/>
+    	(${__repo__(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().collect{it.parentUser.id}.join(',')}) &quot;" 
+    	if="!__repo__(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().isEmpty()"/>
     	
     	<attribute name="domain" for="followersCalUserSet" expr="eval: &quot; self.id = 0 &quot;" 
-    	if="__repo__.of(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().isEmpty()"/>
+    	if="__repo__(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().isEmpty()"/>
     </action-attrs>
     
     <action-attrs name="action-user-attrs-domain-active-company">
-  		<attribute name="domain" expr="eval: &quot; self.id IN (${companySet?.collect{it.id}.join(',')}) &quot; " for="activeCompany"/>
+  		<attribute name="domain" expr="eval: &quot; self.id IN (${companySet?.collect{it.id}.join(',')}) &quot; " if="companySet != null &amp;&amp; !companySet.isEmpty()" for="activeCompany"/>
     </action-attrs>
 
     
@@ -87,12 +96,12 @@
     </action-record>
     
     <action-validate name="action-user-check-company">
-        <notify message="Please select active company"  if="__repo__.of(Company).all().fetch().size != 1"/>
+        <notify message="Please select active company"  if="__repo__(Company).all().fetch().size != 1"/>
     </action-validate>
     
     <action-group name="action-user-group-employee">
 		<action name="com.axelor.apps.hr.web.UserHrController:createEmployee"/>
-		<action name="action-hr-user-show-employee" if="partner != null"/>
+		<action name="action-employee-user-show-employee" if="partner != null"/>
     </action-group>
     
 	<action-view name="action-user-record-form-partner-contact" title="Partner" model="com.axelor.apps.base.db.Partner">

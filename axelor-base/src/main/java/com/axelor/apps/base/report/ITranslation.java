@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -65,7 +65,7 @@ public interface ITranslation {
 	public static final String CLIENT_SITUATION_FINANCIAL_DATA = /*$$(*/ "ClientSituation.financialData"; /*)*/
 	public static final String CLIENT_SITUATION_TOTAL_BALANCE = /*$$(*/ "ClientSituation.totalBalance"; /*)*/
 	public static final String CLIENT_SITUATION_DUE_BALANCE = /*$$(*/ "ClientSituation.dueBalance"; /*)*/
-	public static final String CLIENT_SITUATION_REMINDABLE_BALANCE = /*$$(*/ "ClientSituation.remindableBalance"; /*)*/
+	public static final String CLIENT_SITUATION_RECOVERABLE_BALANCE = /*$$(*/ "ClientSituation.recoverableBalance"; /*)*/
 	
 	public static final String PRODUCT_CATALOG_SUMMARY = /*$$(*/ "ProductCatalog.summary"; /*)*/
 	public static final String PRODUCT_CATALOG_REFERENCE = /*$$(*/ "ProductCatalog.reference"; /*)*/

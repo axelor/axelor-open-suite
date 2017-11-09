@@ -75,7 +75,7 @@ public class Splitter {
       content = EbicsUtils.encrypt(input, keySpec);
       segmentation();
     } catch (Exception e) {
-      throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR);
+      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
     }
   }
 

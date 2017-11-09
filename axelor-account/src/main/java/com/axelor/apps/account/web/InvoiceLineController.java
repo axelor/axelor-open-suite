@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -20,13 +20,19 @@ package com.axelor.apps.account.web;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -38,9 +44,14 @@ import com.google.inject.Inject;
 
 public class InvoiceLineController {
 
-	@Inject
 	private InvoiceLineService invoiceLineService;
+	private AccountManagementAccountService accountManagementService;
 
+	@Inject
+	public InvoiceLineController(InvoiceLineService invoiceLineService, AccountManagementAccountService accountManagementService) {
+		this.invoiceLineService = invoiceLineService;
+		this.accountManagementService = accountManagementService;
+	}
 
 	public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response) throws AxelorException{
 		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
@@ -52,9 +63,8 @@ public class InvoiceLineController {
 		if(invoiceLine.getAnalyticDistributionTemplate() != null){
 			invoiceLine = invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine);
 			response.setValue("analyticMoveLineList", invoiceLine.getAnalyticMoveLineList());
-		}
-		else{
-			throw new AxelorException(I18n.get("No template selected"), IException.CONFIGURATION_ERROR);
+		} else {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No template selected"));
 		}
 	}
 	
@@ -65,7 +75,7 @@ public class InvoiceLineController {
 			invoice = request.getContext().getParentContext().asType(Invoice.class);
 			invoiceLine.setInvoice(invoice);
 		}
-		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
+		if(Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()){
 			invoiceLine = invoiceLineService.computeAnalyticDistribution(invoiceLine);
 			response.setValue("analyticMoveLineList", invoiceLine.getAnalyticMoveLineList());
 		}
@@ -100,7 +110,7 @@ public class InvoiceLineController {
 		if(!invoice.getInAti()) {
 			exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine,invoice));
 			inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
-		} else  {
+		} else {
 			inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine,invoice));
 			exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
 		}
@@ -139,11 +149,20 @@ public class InvoiceLineController {
 			response.setValue("taxLine", taxLine);
 			response.setValue("taxRate", taxLine.getValue());
 			response.setValue("taxCode", taxLine.getTax().getCode());
-			
+
+			Tax tax = accountManagementService.getProductTax(accountManagementService.getAccountManagement(product, invoice.getCompany()), isPurchase);
+            TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
+            response.setValue("taxEquiv", taxEquiv);
+
 			BigDecimal price = invoiceLineService.getUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
 
 			response.setValue("productName", invoiceLine.getProduct().getName());
 			response.setValue("unit", invoiceLineService.getUnit(invoiceLine.getProduct(), isPurchase));
+
+			// getting correct account for the product
+			AccountManagement accountManagement = accountManagementService.getAccountManagement(product, invoice.getCompany());
+			Account account = accountManagementService.getProductAccount(accountManagement, isPurchase);
+			response.setValue("account", account);
 
 			Map<String, Object> discounts = invoiceLineService.getDiscount(invoice, invoiceLine, price);
 			
@@ -166,6 +185,7 @@ public class InvoiceLineController {
 	public void resetProductInformation(ActionResponse response)  {
 
 		response.setValue("taxLine", null);
+		response.setValue("taxEquiv", null);
 		response.setValue("taxCode", null);
 		response.setValue("taxRate", null);
 		response.setValue("productName", null);

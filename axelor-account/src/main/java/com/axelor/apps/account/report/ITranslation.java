@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -42,13 +42,21 @@ public interface ITranslation {
 	public static final String INVOICE_CLIENT_REF = /*$$(*/ "Invoice.clientRef"; /*)*/
 	public static final String INVOICE_SUPPLY_REF = /*$$(*/ "Invoice.supplyRef"; /*)*/
 	public static final String INVOICE_PURCHASE_INVOICE_NO = /*$$(*/ "Invoice.purchaseInvoiceNo"; /*)*/
+	public static final String INVOICE_PURCHASE_INVOICE_ADV_PAYMENT_NO = /*$$(*/ "Invoice.purchaseInvoiceAdvPaymentNo"; /*)*/
+	public static final String INVOICE_PURCHASE_INVOICE_BALANCE_NO = /*$$(*/ "Invoice.purchaseInvoiceBalanceNo"; /*)*/
 	public static final String INVOICE_PURCHASE_REFUND_NO = /*$$(*/ "Invoice.purchaseRefundNo"; /*)*/
 	public static final String INVOICE_INVOICE_NO = /*$$(*/ "Invoice.invoiceNo"; /*)*/
+	public static final String INVOICE_INVOICE_ADV_PAYMENT_NO = /*$$(*/ "Invoice.invoiceAdvPaymentNo"; /*)*/
+	public static final String INVOICE_INVOICE_BALANCE_NO = /*$$(*/ "Invoice.invoiceBalanceNo"; /*)*/
 	public static final String INVOICE_DRAFT_INVOICE_NO = /*$$(*/ "Invoice.draftInvoiceNo"; /*)*/
 	public static final String INVOICE_REFUND_NO = /*$$(*/ "Invoice.refundNo"; /*)*/
 	public static final String INVOICE_LAW = /*$$(*/ "Invoice.law"; /*)*/
 	public static final String INVOICE_DISCOUNT_AMOUNT = /*$$(*/ "Invoice.discountAmount"; /*)*/
-	
+	public static final String INVOICE_ADVANCE_PAYMENT = /*$$(*/ "Invoice.advancePayment"; /*)*/
+	public static final String INVOICE_OF = /*$$(*/ "Invoice.of"; /*)*/
+	public static final String INVOICE_IMPUTED_ON = /*$$(*/ "Invoice.imputedOn"; /*)*/
+	public static final String INVOICE_TOTAL_TO_PAY = /*$$(*/ "Invoice.totalToPay"; /*)*/
+
 
 	public static final String INVOICE_TIMESHEET_TITLE = /*$$(*/ "Invoice.timesheetTitle"; /*)*/
 	public static final String INVOICE_EXPENSE_TITLE = /*$$(*/ "Invoice.expenseTitle"; /*)*/
@@ -63,62 +71,61 @@ public interface ITranslation {
 	public static final String INVOICE_EXPENSE_PRODUCT = /*$$(*/ "Invoice.expenseProduct"; /*)*/
 
 	public static final String INVOICE_PRODUCT_CODE = /*$$(*/ "Invoice.productCode"; /*)*/
+	public static final String INVOICE_TERMS_AND_CONDITIONS = /*$$(*/ "Invoice.termsAndConditions"; /*)*/
 
 	
-	public static final String MOVE_LINE_REPORT_1_TITLE = /*$$(*/ "MoveLineReportType1.title"; /*)*/
-	public static final String MOVE_LINE_REPORT_1_JOURNAL = /*$$(*/ "MoveLineReportType1.journal"; /*)*/
-	public static final String MOVE_LINE_REPORT_1_COMPANY = /*$$(*/ "MoveLineReportType1.company"; /*)*/
-	public static final String MOVE_LINE_REPORT_1_END_DATE = /*$$(*/ "MoveLineReportType1.endDate"; /*)*/
-	public static final String MOVE_LINE_REPORT_1_FROM = /*$$(*/ "MoveLineReportType1.from"; /*)*/
-	public static final String MOVE_LINE_REPORT_1_TO = /*$$(*/ "MoveLineReportType1.to"; /*)*/
-	public static final String MOVE_LINE_REPORT_1_PERIOD = /*$$(*/ "MoveLineReportType1.period"; /*)*/
-	public static final String MOVE_LINE_REPORT_1_CASH_REGISTER = /*$$(*/ "MoveLineReportType1.cashRegister"; /*)*/
-	public static final String MOVE_LINE_REPORT_1_PAYMENT_MODE = /*$$(*/ "MoveLineReportType1.paymentMode"; /*)*/
-	public static final String MOVE_LINE_REPORT_1_DATE = /*$$(*/ "MoveLineReportType1.date"; /*)*/
-	public static final String MOVE_LINE_REPORT_1_DESCRIPTION = /*$$(*/ "MoveLineReportType1.description"; /*)*/
-	public static final String MOVE_LINE_REPORT_1_PARTNER = /*$$(*/ "MoveLineReportType1.partner"; /*)*/
-	public static final String MOVE_LINE_REPORT_1_BALANCE = /*$$(*/ "MoveLineReportType1.balance"; /*)*/
-	public static final String MOVE_LINE_REPORT_1_DEBIT = /*$$(*/ "MoveLineReportType1.debit"; /*)*/
-	public static final String MOVE_LINE_REPORT_1_CREDIT = /*$$(*/ "MoveLineReportType1.credit"; /*)*/
-	public static final String MOVE_LINE_REPORT_1_TOTAL = /*$$(*/ "MoveLineReportType1.total"; /*)*/
+	public static final String ACCOUNTING_REPORT_1_TITLE = /*$$(*/ "AccountingReportType1.title"; /*)*/
+	public static final String ACCOUNTING_REPORT_1_JOURNAL = /*$$(*/ "AccountingReportType1.journal"; /*)*/
+	public static final String ACCOUNTING_REPORT_1_COMPANY = /*$$(*/ "AccountingReportType1.company"; /*)*/
+	public static final String ACCOUNTING_REPORT_1_END_DATE = /*$$(*/ "AccountingReportType1.endDate"; /*)*/
+	public static final String ACCOUNTING_REPORT_1_FROM = /*$$(*/ "AccountingReportType1.from"; /*)*/
+	public static final String ACCOUNTING_REPORT_1_TO = /*$$(*/ "AccountingReportType1.to"; /*)*/
+	public static final String ACCOUNTING_REPORT_1_PERIOD = /*$$(*/ "AccountingReportType1.period"; /*)*/
+	public static final String ACCOUNTING_REPORT_1_PAYMENT_MODE = /*$$(*/ "AccountingReportType1.paymentMode"; /*)*/
+	public static final String ACCOUNTING_REPORT_1_DATE = /*$$(*/ "AccountingReportType1.date"; /*)*/
+	public static final String ACCOUNTING_REPORT_1_DESCRIPTION = /*$$(*/ "AccountingReportType1.description"; /*)*/
+	public static final String ACCOUNTING_REPORT_1_PARTNER = /*$$(*/ "AccountingReportType1.partner"; /*)*/
+	public static final String ACCOUNTING_REPORT_1_BALANCE = /*$$(*/ "AccountingReportType1.balance"; /*)*/
+	public static final String ACCOUNTING_REPORT_1_DEBIT = /*$$(*/ "AccountingReportType1.debit"; /*)*/
+	public static final String ACCOUNTING_REPORT_1_CREDIT = /*$$(*/ "AccountingReportType1.credit"; /*)*/
+	public static final String ACCOUNTING_REPORT_1_TOTAL = /*$$(*/ "AccountingReportType1.total"; /*)*/
 
 	
-	public static final String MOVE_LINE_REPORT_2_TITLE = /*$$(*/ "MoveLineReportType2.title"; /*)*/
-	public static final String MOVE_LINE_REPORT_2_JOURNAL = /*$$(*/ "MoveLineReportType2.journal"; /*)*/
-	public static final String MOVE_LINE_REPORT_2_COMPANY = /*$$(*/ "MoveLineReportType2.company"; /*)*/
-	public static final String MOVE_LINE_REPORT_2_END_DATE = /*$$(*/ "MoveLineReportType2.endDate"; /*)*/
-	public static final String MOVE_LINE_REPORT_2_FROM = /*$$(*/ "MoveLineReportType2.from"; /*)*/
-	public static final String MOVE_LINE_REPORT_2_TO = /*$$(*/ "MoveLineReportType2.to"; /*)*/
-	public static final String MOVE_LINE_REPORT_2_PERIOD = /*$$(*/ "MoveLineReportType2.period"; /*)*/
-	public static final String MOVE_LINE_REPORT_2_CASH_REGISTER = /*$$(*/ "MoveLineReportType2.cashRegister"; /*)*/
-	public static final String MOVE_LINE_REPORT_2_PAYMENT_MODE = /*$$(*/ "MoveLineReportType2.paymentMode"; /*)*/
-	public static final String MOVE_LINE_REPORT_2_ACCOUNT = /*$$(*/ "MoveLineReportType2.account"; /*)*/
-	public static final String MOVE_LINE_REPORT_2_ACCOUNT_LABEL = /*$$(*/ "MoveLineReportType2.accountLabel"; /*)*/
-	public static final String MOVE_LINE_REPORT_2_TOTAL_DEBIT = /*$$(*/ "MoveLineReportType2.totalDebit"; /*)*/
-	public static final String MOVE_LINE_REPORT_2_TOTAL_CREDIT = /*$$(*/ "MoveLineReportType2.totalCredit"; /*)*/
-	public static final String MOVE_LINE_REPORT_2_BALANCE = /*$$(*/ "MoveLineReportType2.balance"; /*)*/
-	public static final String MOVE_LINE_REPORT_2_DEBIT = /*$$(*/ "MoveLineReportType2.debit"; /*)*/
-	public static final String MOVE_LINE_REPORT_2_CREDIT = /*$$(*/ "MoveLineReportType2.credit"; /*)*/
-	public static final String MOVE_LINE_REPORT_2_GENERAL_BALANCE = /*$$(*/ "MoveLineReportType2.generalBalance"; /*)*/
+	public static final String ACCOUNTING_REPORT_2_TITLE = /*$$(*/ "AccountingReportType2.title"; /*)*/
+	public static final String ACCOUNTING_REPORT_2_JOURNAL = /*$$(*/ "AccountingReportType2.journal"; /*)*/
+	public static final String ACCOUNTING_REPORT_2_COMPANY = /*$$(*/ "AccountingReportType2.company"; /*)*/
+	public static final String ACCOUNTING_REPORT_2_END_DATE = /*$$(*/ "AccountingReportType2.endDate"; /*)*/
+	public static final String ACCOUNTING_REPORT_2_FROM = /*$$(*/ "AccountingReportType2.from"; /*)*/
+	public static final String ACCOUNTING_REPORT_2_TO = /*$$(*/ "AccountingReportType2.to"; /*)*/
+	public static final String ACCOUNTING_REPORT_2_PERIOD = /*$$(*/ "AccountingReportType2.period"; /*)*/
+	public static final String ACCOUNTING_REPORT_2_PAYMENT_MODE = /*$$(*/ "AccountingReportType2.paymentMode"; /*)*/
+	public static final String ACCOUNTING_REPORT_2_ACCOUNT = /*$$(*/ "AccountingReportType2.account"; /*)*/
+	public static final String ACCOUNTING_REPORT_2_ACCOUNT_LABEL = /*$$(*/ "AccountingReportType2.accountLabel"; /*)*/
+	public static final String ACCOUNTING_REPORT_2_TOTAL_DEBIT = /*$$(*/ "AccountingReportType2.totalDebit"; /*)*/
+	public static final String ACCOUNTING_REPORT_2_TOTAL_CREDIT = /*$$(*/ "AccountingReportType2.totalCredit"; /*)*/
+	public static final String ACCOUNTING_REPORT_2_BALANCE = /*$$(*/ "AccountingReportType2.balance"; /*)*/
+	public static final String ACCOUNTING_REPORT_2_DEBIT = /*$$(*/ "AccountingReportType2.debit"; /*)*/
+	public static final String ACCOUNTING_REPORT_2_CREDIT = /*$$(*/ "AccountingReportType2.credit"; /*)*/
+	public static final String ACCOUNTING_REPORT_2_GENERAL_BALANCE = /*$$(*/ "AccountingReportType2.generalBalance"; /*)*/
 	
-	public static final String MOVE_LINE_REPORT_2000_TITLE = /*$$(*/ "MoveLineReportType2000.title"; /*)*/
-	public static final String MOVE_LINE_REPORT_2000_ANALYTIC_JOURNAL = /*$$(*/ "MoveLineReportType2000.analyticJournal"; /*)*/
-	public static final String MOVE_LINE_REPORT_2000_COMPANY = /*$$(*/ "MoveLineReportType2000.company"; /*)*/
-	public static final String MOVE_LINE_REPORT_2000_END_DATE = /*$$(*/ "MoveLineReportType2000.endDate"; /*)*/
-	public static final String MOVE_LINE_REPORT_2000_FROM = /*$$(*/ "MoveLineReportType2000.from"; /*)*/
-	public static final String MOVE_LINE_REPORT_2000_TO = /*$$(*/ "MoveLineReportType2000.to"; /*)*/
-	public static final String MOVE_LINE_REPORT_2000_ANALYTIC_AXIS = /*$$(*/ "MoveLineReportType2000.analyticAxis"; /*)*/
-	public static final String MOVE_LINE_REPORT_2000_ANALYTIC_AXIS_CODE = /*$$(*/ "MoveLineReportType2000.analyticAxisCode"; /*)*/
-	public static final String MOVE_LINE_REPORT_2000_ANALYTIC_AXIS_NAME = /*$$(*/ "MoveLineReportType2000.analyticAxisName"; /*)*/
-	public static final String MOVE_LINE_REPORT_2000_ANALYTIC_ACCOUNT = /*$$(*/ "MoveLineReportType2000.analyticAccount"; /*)*/
-	public static final String MOVE_LINE_REPORT_2000_ANALYTIC_ACCOUNT_CODE = /*$$(*/ "MoveLineReportType2000.analyticAccountCode"; /*)*/
-	public static final String MOVE_LINE_REPORT_2000_ANALYTIC_ACCOUNT_NAME = /*$$(*/ "MoveLineReportType2000.analyticAccountName"; /*)*/
-	public static final String MOVE_LINE_REPORT_2000_ACCOUNT_TYPE = /*$$(*/ "MoveLineReportType2000.accountType"; /*)*/
-	public static final String MOVE_LINE_REPORT_2000_AMOUNT = /*$$(*/ "MoveLineReportType2000.amount"; /*)*/
-	public static final String MOVE_LINE_REPORT_2000_PERCENTAGE = /*$$(*/ "MoveLineReportType2000.percentage"; /*)*/
-	public static final String MOVE_LINE_REPORT_2000_TOTAL_PER_ANALYTIC_JOURNAL = /*$$(*/ "MoveLineReportType2000.totalPerAnalyticJournal"; /*)*/
-	public static final String MOVE_LINE_REPORT_2000_TOTAL_PER_ANALYTIC_AXIS = /*$$(*/ "MoveLineReportType2000.totalPerAnalyticAxis"; /*)*/
-	public static final String MOVE_LINE_REPORT_2000_TOTAL_PER_ANALYTIC_ACCOUNT = /*$$(*/ "MoveLineReportType2000.totalPerAnalyticAccount"; /*)*/
+	public static final String ACCOUNTING_REPORT_2000_TITLE = /*$$(*/ "AccountingReportType2000.title"; /*)*/
+	public static final String ACCOUNTING_REPORT_2000_ANALYTIC_JOURNAL = /*$$(*/ "AccountingReportType2000.analyticJournal"; /*)*/
+	public static final String ACCOUNTING_REPORT_2000_COMPANY = /*$$(*/ "AccountingReportType2000.company"; /*)*/
+	public static final String ACCOUNTING_REPORT_2000_END_DATE = /*$$(*/ "AccountingReportType2000.endDate"; /*)*/
+	public static final String ACCOUNTING_REPORT_2000_FROM = /*$$(*/ "AccountingReportType2000.from"; /*)*/
+	public static final String ACCOUNTING_REPORT_2000_TO = /*$$(*/ "AccountingReportType2000.to"; /*)*/
+	public static final String ACCOUNTING_REPORT_2000_ANALYTIC_AXIS = /*$$(*/ "AccountingReportType2000.analyticAxis"; /*)*/
+	public static final String ACCOUNTING_REPORT_2000_ANALYTIC_AXIS_CODE = /*$$(*/ "AccountingReportType2000.analyticAxisCode"; /*)*/
+	public static final String ACCOUNTING_REPORT_2000_ANALYTIC_AXIS_NAME = /*$$(*/ "AccountingReportType2000.analyticAxisName"; /*)*/
+	public static final String ACCOUNTING_REPORT_2000_ANALYTIC_ACCOUNT = /*$$(*/ "AccountingReportType2000.analyticAccount"; /*)*/
+	public static final String ACCOUNTING_REPORT_2000_ANALYTIC_ACCOUNT_CODE = /*$$(*/ "AccountingReportType2000.analyticAccountCode"; /*)*/
+	public static final String ACCOUNTING_REPORT_2000_ANALYTIC_ACCOUNT_NAME = /*$$(*/ "AccountingReportType2000.analyticAccountName"; /*)*/
+	public static final String ACCOUNTING_REPORT_2000_ACCOUNT_TYPE = /*$$(*/ "AccountingReportType2000.accountType"; /*)*/
+	public static final String ACCOUNTING_REPORT_2000_AMOUNT = /*$$(*/ "AccountingReportType2000.amount"; /*)*/
+	public static final String ACCOUNTING_REPORT_2000_PERCENTAGE = /*$$(*/ "AccountingReportType2000.percentage"; /*)*/
+	public static final String ACCOUNTING_REPORT_2000_TOTAL_PER_ANALYTIC_JOURNAL = /*$$(*/ "AccountingReportType2000.totalPerAnalyticJournal"; /*)*/
+	public static final String ACCOUNTING_REPORT_2000_TOTAL_PER_ANALYTIC_AXIS = /*$$(*/ "AccountingReportType2000.totalPerAnalyticAxis"; /*)*/
+	public static final String ACCOUNTING_REPORT_2000_TOTAL_PER_ANALYTIC_ACCOUNT = /*$$(*/ "AccountingReportType2000.totalPerAnalyticAccount"; /*)*/
 	
 	public static final String SALE_INVOICE_DETAILS_REPORT_INVOICED = /*$$(*/ "SaleInvoicesDetails.invoiced"; /*)*/
 	public static final String SALE_INVOICE_DETAILS_REPORT_ORDERED = /*$$(*/ "SaleInvoicesDetails.ordered"; /*)*/
@@ -131,5 +138,50 @@ public interface ITranslation {
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUBTOTAL = /*$$(*/ "PurchaseInvoicesDetails.subtotal"; /*)*/
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUM_BY_PARTNER = /*$$(*/ "PurchaseInvoicesDetails.sumByPartner"; /*)*/
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUM_BY_PRODUCT = /*$$(*/ "PurchaseInvoicesDetails.sumByProduct"; /*)*/
+	
+	public static final String ACCOUNT_MOVE_REFERENCE = /*$$(*/ "move.reference"; /*)*/
+	public static final String ACCOUNT_MOVE_JOURNAL = /*$$(*/ "move.journal"; /*)*/
+	public static final String ACCOUNT_MOVE_PARTNER = /*$$(*/ "move.partner"; /*)*/
+	public static final String ACCOUNT_MOVE_TECHNICAL_ORIGIN = /*$$(*/ "move.technical.origin"; /*)*/
+	public static final String ACCOUNT_MOVE_PERIOD = /*$$(*/ "move.period"; /*)*/
+	public static final String ACCOUNT_MOVE_CURRENCY = /*$$(*/ "move.currency"; /*)*/
+	public static final String ACCOUNT_MOVE_COMPANY = /*$$(*/ "move.company"; /*)*/
+	
+	public static final String ACCOUNT_MOVE_LINE_DATE = /*$$(*/ "moveLine.date"; /*)*/
+	public static final String ACCOUNT_MOVE_LINE_PARTNER = /*$$(*/ "moveLine.partner"; /*)*/
+	public static final String ACCOUNT_MOVE_LINE_ACCOUNT = /*$$(*/ "moveLine.account"; /*)*/
+	public static final String ACCOUNT_MOVE_LINE_DEBIT = /*$$(*/ "moveLine.debit"; /*)*/
+	public static final String ACCOUNT_MOVE_LINE_CREDIT = /*$$(*/ "moveLine.credit"; /*)*/
+	public static final String ACCOUNT_MOVE_LINE_CURRENCY_AMOUNT = /*$$(*/ "moveLine.currency.amount"; /*)*/
+	public static final String ACCOUNT_MOVE_LINE_TAX_RATE = /*$$(*/ "moveLine.tax.rate"; /*)*/
+	public static final String ACCOUNT_MOVE_LINE_RECONCILE_LIST = /*$$(*/ "moveLine.reconcile.list"; /*)*/
+
+	public static final String SUBROGATION_RELEASE_TITLE = /*$$(*/ "SubrogationRelease.title"; /*)*/
+	public static final String SUBROGATION_RELEASE_SELLER_CODE = /*$$(*/ "SubrogationRelease.sellerCode"; /*)*/
+	public static final String SUBROGATION_RELEASE_FACTOR = /*$$(*/ "SubrogationRelease.factor"; /*)*/
+	public static final String SUBROGATION_RELEASE_PARTNER_SEQ = /*$$(*/ "SubrogationRelease.partnerSeq"; /*)*/
+	public static final String SUBROGATION_RELEASE_INVOICE_ID = /*$$(*/ "SubrogationRelease.invoiceId"; /*)*/
+	public static final String SUBROGATION_RELEASE_INVOICE_DATE = /*$$(*/ "SubrogationRelease.invoiceDate"; /*)*/
+	public static final String SUBROGATION_RELEASE_DUE_DATE = /*$$(*/ "SubrogationRelease.dueDate"; /*)*/
+	public static final String SUBROGATION_RELEASE_IN_TAX_TOTAL = /*$$(*/ "SubrogationRelease.inTaxtTotal"; /*)*/
+	public static final String SUBROGATION_RELEASE_CURRENCY_CODE = /*$$(*/ "SubrogationRelease.currencyCode"; /*)*/
+	public static final String SUBROGATION_RELEASE_INVOICE_TOTAL = /*$$(*/ "SubrogationRelease.invoiceTotal"; /*)*/
+	public static final String SUBROGATION_RELEASE_CREDIT_TOTAL = /*$$(*/ "SubrogationRelease.creditTotal"; /*)*/
+	public static final String SUBROGATION_RELEASE_GRAND_TOTAL = /*$$(*/ "SubrogationRelease.grandTotal"; /*)*/
+
+    public static final String CHEQUE_DEPOSIT_SLIP_TITLE = /*$$(*/ "ChequeDepositSlip.title"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_PRINTED_ON = /*$$(*/ "ChequeDepositSlip.printedOn"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_NUMBER = /*$$(*/ "ChequeDepositSlip.number"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_DATE = /*$$(*/ "ChequeDepositSlip.depositDate"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_CHEQUE_NUMBERS = /*$$(*/ "ChequeDepositSlip.chequeNumbers"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_BANK = /*$$(*/ "ChequeDepositSlip.bank"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_ACCOUNT_NUMBER = /*$$(*/ "ChequeDepositSlip.accountNumber"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_INDIVIDUAL = /*$$(*/ "ChequeDepositSlip.individual"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_ISSUER = /*$$(*/ "ChequeDepositSlip.issuer"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_PAYER = /*$$(*/ "ChequeDepositSlip.payer"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_CHEQUE_NUMBER = /*$$(*/ "ChequeDepositSlip.chequeNumber"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_PAYMENT_DATE = /*$$(*/ "ChequeDepositSlip.paymentDate"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_CHEQUE_DATE = /*$$(*/ "ChequeDepositSlip.chequeDate"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_AMOUNT = /*$$(*/ "ChequeDepositSlip.amount"; /*)*/
 
 }

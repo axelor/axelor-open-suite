@@ -19,14 +19,14 @@ package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.TrackingNumber;
-import com.axelor.apps.base.db.TrackingNumberConfiguration;
+import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.TrackingNumberRepository;
+import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
@@ -61,7 +61,14 @@ public class TrackingNumberService {
 
 
 	public String getOrderMethod(TrackingNumberConfiguration trackingNumberConfiguration)  {
-		switch (trackingNumberConfiguration.getSaleAutoTrackingNbrOrderSelect()) {
+	    int autoTrackingNbrOrderSelect = -1;
+		if (trackingNumberConfiguration.getIsSaleTrackingManaged()) {
+			autoTrackingNbrOrderSelect = trackingNumberConfiguration.getSaleAutoTrackingNbrOrderSelect();
+		}
+		else if (trackingNumberConfiguration.getIsProductionTrackingManaged()) {
+			autoTrackingNbrOrderSelect = trackingNumberConfiguration.getProductAutoTrackingNbrOrderSelect();
+		}
+		switch (autoTrackingNbrOrderSelect) {
 			case ProductRepository.SALE_TRACKING_ORDER_FIFO:
 				return " ORDER BY self.trackingNumber ASC";
 
@@ -91,9 +98,8 @@ public class TrackingNumberService {
 
 		TrackingNumberConfiguration trackingNumberConfiguration = product.getTrackingNumberConfiguration();
 
-		if (trackingNumberConfiguration.getSequence() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TRACKING_NUMBER_1),
-					company.getName(), product.getCode()), IException.CONFIGURATION_ERROR);
+		if (trackingNumberConfiguration.getSequence() == null) {
+			throw new AxelorException(product, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TRACKING_NUMBER_1), company.getName(), product.getCode());
 		}
 
 		String seq = sequenceService.getSequenceNumber(trackingNumberConfiguration.getSequence());

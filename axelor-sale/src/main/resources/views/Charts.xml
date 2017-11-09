@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	  
 	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.chart.set.dates.this.last.year">
 		<field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
-		<field name="toDateLY" expr="eval:LocalDate.parse(todayDate).minusYears(1).withMonthOfYear(12).withDayOfMonth(31)"/>  
+		<field name="toDateLY" expr="eval:LocalDate.parse(todayDate).minusYears(1).withMonth(12).withDayOfMonth(31)"/>  
 	</action-record>
 	
 	<chart onInit="action.general.chart.set.date.6m" name="chart.family.sale.turnover.per.month" title="Family sale turnover (Excl. Tax) per month">
@@ -20,7 +20,7 @@
 			FROM
 				SaleOrderLine self
 			WHERE
-				self.saleOrder.statusSelect = 3
+				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.company = :activeCompany
 				AND self.product.productFamily.id = :id
 				AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
@@ -53,7 +53,7 @@
 				auth_user AS _user
 				ON _user.id = :_user_id
 			WHERE
-				self.status_select = 3
+				self.status_select in (3,4)
 				AND self.company = _user.active_company  
 				AND(
 				    ( self.confirmation_date &gt;= TO_DATE(DATE_PART('year',DATE(:toDate)) || '-01-01','YYYY-MM-DD') 
@@ -84,7 +84,7 @@
 		      auth_user AS _user
 		      ON _user.id = :_user_id
 		    WHERE
-		      _order.status_select=3
+		      _order.status_select in (3,4)
 		      AND _order.company = _user.active_company    
 		      AND ( ( _order.confirmation_date >= TO_DATE(DATE_PART('year',CURRENT_DATE - INTERVAL '1 year') || '-01-01','YYYY-MM-DD') 
 		              AND _order.confirmation_date <= CURRENT_DATE - INTERVAL '1 year')
@@ -115,7 +115,7 @@
 			sale_sale_order_line AS _line 
 			ON _line.sale_order = _order.id
 		WHERE
-			_order.status_select=3
+			_order.status_select in (3,4)
 			AND DATE_PART('year',_order.confirmation_date) 
 			IN (DATE_PART('year',CURRENT_DATE) - 1, DATE_PART('year',CURRENT_DATE) )
 		GROUP BY
@@ -173,7 +173,7 @@
 			  auth_user AS _user
 			  ON _user.id = :_user_id
 			WHERE
-			  _order.status_select=3
+			  _order.status_select in (3,4)
 			  AND _order.company = _user.active_company  
 			  AND(
 			      ( _order.confirmation_date &gt;= TO_DATE(DATE_PART('year',DATE(:toDate)) || '-01-01','YYYY-MM-DD') 
@@ -246,11 +246,11 @@
 	  		FROM 
 	    		sale_sale_order self
 	  		JOIN
-	    		base_team team ON team.id=self.team
+	    		team_team team ON team.id=self.team
 	  		JOIN 
 	    		auth_user _user ON _user.id = :_user_id AND self.company = _user.active_company
 	  		WHERE
-	    		self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND self.status_select=3
+	    		self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND self.status_select in (3,4)
 	  		GROUP BY
 	    		team.name
 	  		HAVING  
@@ -280,7 +280,7 @@
 			  AND self.company = _user.active_company
 			WHERE
 			  self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
-			  AND self.status_select=3
+			  AND self.status_select in (3,4)
 			GROUP BY
 			  saleman_name
 			HAVING
@@ -315,7 +315,7 @@
 				ON _user.id = :_user_id
 				AND self.company = _user.active_company
 			WHERE
-				self.status_select=3 AND self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
+				self.status_select in (3,4) AND self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			GROUP BY
 			  family_name
 			HAVING
@@ -350,7 +350,7 @@
 				ON _user.id = :_user_id
 				AND self.company = _user.active_company
 			WHERE
-				self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND self.status_select=3    
+				self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND self.status_select in (3,4)    
 			GROUP BY
 				category_name
 		</dataset>
@@ -381,7 +381,7 @@
 			  AND self.company = _user.active_company
 			WHERE
 			  self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
-			  and self.status_select=3
+			  and self.status_select in (3,4)
 			GROUP BY
 			  country_name
 			HAVING
@@ -391,7 +391,7 @@
 		<series key="amount" type="donut" title="Amount"/>
 	</chart>
 	   
-	<chart stacked="true" onInit="action.general.chart.set.date.6m" name="chart.my.turnover.per.month" title="My Turnover per month">
+	<chart stacked="true" onInit="action.sale.chart.set.date.1m" name="chart.my.turnover.per.month" title="My Turnover per month">
   <search-fields>
     <field name="fromDate" title="From Date" type="date" x-required="true"/>
     <field name="toDate" title="To Date" type="date" x-required="true"/>
@@ -446,7 +446,7 @@
 		      	AND _sale_order.company = _user.active_company    
 			    WHERE
 			      _sale_order.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
-			      AND _sale_order.status_select=3
+			      AND _sale_order.status_select in (3,4)
 			    GROUP BY _sale_order.id, _line_product
 			    ORDER BY _turn_over DESC) AS _sale
 		  	JOIN 
@@ -495,7 +495,7 @@
 			    AND _sale_order.company = _user.active_company    
 			  WHERE
 			    _sale_order.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
-			    AND _sale_order.status_select=3
+			    AND _sale_order.status_select in (3,4)
 			  GROUP BY _sale_order.id, _line_product, _turn_over
 			  ORDER BY _turn_over DESC) AS _sale
 			
@@ -533,7 +533,7 @@
 			FROM
 				SaleOrderLine self
 			WHERE
-				self.saleOrder.statusSelect = 3
+				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.company = :activeCompany
 				AND self.product.id = :id
 				AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
@@ -560,7 +560,7 @@
 			FROM
 			  SaleOrderLine AS self
 			WHERE
-				self.saleOrder.statusSelect = 3  
+				self.saleOrder.statusSelect in (3,4)  
 				AND self.saleOrder.company = :activeCompany
 				AND self.product = :product
 				AND self.saleOrder.confirmationDate BETWEEN DATE(:toDate) - 365 AND DATE(:toDate)
@@ -585,7 +585,7 @@
 			FROM
 				SaleOrderLine self
 			WHERE
-				self.saleOrder.statusSelect = 3
+				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.salemanUser =:salemanUser
 				AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:fromDate) + 180
 				AND self.saleOrder.company = :activeCompany
@@ -616,7 +616,7 @@
 			FROM
 				SaleOrderLine self
 			WHERE
-				self.saleOrder.statusSelect = 3
+				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.salemanUser =:salemanUser
 				AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:fromDate) + 120
 				AND self.saleOrder.company = :activeCompany
@@ -648,7 +648,7 @@
 				SaleOrderLine self,
 				MetaSelectItem item
 			WHERE
-				self.saleOrder.statusSelect = 3
+				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
 				AND self.saleOrder.company = :activeCompany
 				AND item.select.name='partner.partner.type.select'
@@ -672,7 +672,7 @@
 		    FROM
 		    	SaleOrderLine self
 		    WHERE
-			    self.saleOrder.statusSelect = 3
+			    self.saleOrder.statusSelect in (3,4)
 			    AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:toDate) 
 			    AND self.saleOrder.company = :activeCompany
 		    GROUP BY
@@ -695,7 +695,7 @@
 				SaleOrderLine self,
 				IndustrySector industrySector
 			WHERE
-				self.saleOrder.statusSelect = 3
+				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
 				AND self.saleOrder.company = :activeCompany
 				AND industrySector.id = self.saleOrder.clientPartner.industrySector.id
@@ -718,7 +718,7 @@
 			FROM
 			    SaleOrderLine self
 			WHERE
-			    self.saleOrder.statusSelect = 3
+			    self.saleOrder.statusSelect in (3,4)
 			    AND self.saleOrder.company = :activeCompany
 			    AND self.product.productCategory.id = :id
 			    AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
@@ -752,7 +752,7 @@
 			WHERE  
 				saleOrder = saleOrderLine.saleOrder
 				AND
-				  saleOrder.statusSelect=3
+				  saleOrder.statusSelect in (3,4) 
 				AND
 				  saleOrder.company =:activeCompany
 				AND

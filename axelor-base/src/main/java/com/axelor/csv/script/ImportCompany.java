@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -55,7 +55,7 @@ public class ImportCompany {
 					company.setLogo(metaFile);
 				}
 			} catch (Exception e) {
-				LOG.error("Error when importing product picture : {}", e);
+				LOG.error("Error when importing company : {}", e);
 			}
 		}
 

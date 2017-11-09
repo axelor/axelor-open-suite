@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -19,9 +19,11 @@ package com.axelor.apps.base.service.scheduler;
 
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.temporal.TemporalAdjusters;
 
-import org.joda.time.DateTimeConstants;
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +33,7 @@ import com.axelor.apps.base.db.SchedulerInstance;
 import com.axelor.apps.base.db.SchedulerInstanceHistory;
 import com.axelor.apps.base.db.repo.SchedulerInstanceRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -50,7 +52,7 @@ import com.google.inject.persist.Transactional;
 public class SchedulerService {
 
 
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
@@ -60,9 +62,9 @@ public class SchedulerService {
 	private SchedulerInstanceRepository schedulerInstanceRepo;
 
 	@Inject
-	public SchedulerService(GeneralService generalService){
-		this.generalService = generalService;
-		today = this.generalService.getTodayDate();
+	public SchedulerService(AppBaseService appBaseService){
+		this.appBaseService = appBaseService;
+		today = this.appBaseService.getTodayDate();
 
 	}
 
@@ -172,7 +174,7 @@ public class SchedulerService {
 		else if(scheduler.getDaily())
 			return this.getDailyComputeDate(scheduler,date);
 		else
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SCHEDULER_1),scheduler.getName()), IException.MISSING_FIELD);
+			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.SCHEDULER_1),scheduler.getName());
 	}
 
 
@@ -206,27 +208,25 @@ public class SchedulerService {
 	 */
 	private LocalDate getWeeklyComputeDate(Scheduler scheduler,LocalDate date){
 
-		int weekDay = 0;
+		DayOfWeek weekDay = DayOfWeek.MONDAY;
 
 		if(scheduler.getMonday())
-			weekDay = DateTimeConstants.MONDAY;
+			weekDay = DayOfWeek.MONDAY;
 		else if(scheduler.getTuesday())
-			weekDay = DateTimeConstants.TUESDAY;
+			weekDay = DayOfWeek.TUESDAY;
 		else if(scheduler.getWednesday())
-			weekDay = DateTimeConstants.WEDNESDAY;
+			weekDay = DayOfWeek.WEDNESDAY;
 		else if(scheduler.getThursday())
-			weekDay = DateTimeConstants.THURSDAY;
+			weekDay = DayOfWeek.THURSDAY;
 		else if(scheduler.getFriday())
-			weekDay = DateTimeConstants.FRIDAY;
+			weekDay = DayOfWeek.FRIDAY;
 		else if(scheduler.getSaturday())
-			weekDay = DateTimeConstants.SATURDAY;
+			weekDay = DayOfWeek.SATURDAY;
 		else if(scheduler.getSunday())
-			weekDay = DateTimeConstants.SUNDAY;
+			weekDay = DayOfWeek.SUNDAY;
 
-		if(weekDay == 0)
-			weekDay = 1;
-
-		return date.plusWeeks(scheduler.getWeekWeekly()).withDayOfWeek(weekDay);
+		
+		return date.plusWeeks(scheduler.getWeekWeekly()).with(TemporalAdjusters.next(weekDay));
 	}
 
 	/**
@@ -246,15 +246,15 @@ public class SchedulerService {
 			return date.plusMonths(scheduler.getMonthMonthly()).withDayOfMonth(1);
 		else {
 
-			int start = date.plusWeeks(scheduler.getWeekWeekly()).dayOfMonth().getMinimumValue();
-			int end = date.plusWeeks(scheduler.getWeekWeekly()).dayOfMonth().getMaximumValue();
+			int start = 1;
+			int end = date.plusWeeks(scheduler.getWeekWeekly()).lengthOfMonth();
 
 			if(start <= scheduler.getDayMonthly() && scheduler.getDayMonthly() <= end)
 				return date.plusMonths(scheduler.getMonthMonthly()).withDayOfMonth(scheduler.getDayMonthly());
 			else if(scheduler.getDayMonthly() < start)
-				return date.plusWeeks(scheduler.getWeekWeekly()).dayOfMonth().withMinimumValue();
+				return date.plusWeeks(scheduler.getWeekWeekly()).withDayOfMonth(start);
 			else if(scheduler.getDayMonthly() > end)
-				return date.plusWeeks(scheduler.getWeekWeekly()).dayOfMonth().withMaximumValue();
+				return date.plusWeeks(scheduler.getWeekWeekly()).withDayOfMonth(end);
 
 			return null;
 		}
@@ -273,44 +273,44 @@ public class SchedulerService {
 	 */
 	private LocalDate getAnnualComputeDate(Scheduler scheduler,LocalDate date){
 
-		int monthOfYear = 0;
+		Month monthOfYear = null;
 
 		if(scheduler.getMonthAnnuallySelect().equals(IAdministration.JAN))
-			monthOfYear = DateTimeConstants.JANUARY;
+			monthOfYear = Month.JANUARY;
 		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.FEB))
-			monthOfYear = DateTimeConstants.FEBRUARY;
+			monthOfYear = Month.FEBRUARY;
 		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.MAR))
-			monthOfYear = DateTimeConstants.MARCH;
+			monthOfYear = Month.MARCH;
 		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.APR))
-			monthOfYear = DateTimeConstants.APRIL;
+			monthOfYear = Month.APRIL;
 		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.MAY))
-			monthOfYear = DateTimeConstants.MAY;
+			monthOfYear = Month.MAY;
 		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.JUN))
-			monthOfYear = DateTimeConstants.JUNE;
+			monthOfYear = Month.JUNE;
 		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.JUL))
-			monthOfYear = DateTimeConstants.JULY;
+			monthOfYear = Month.JULY;
 		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.AUG))
-			monthOfYear = DateTimeConstants.AUGUST;
+			monthOfYear = Month.AUGUST;
 		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.SEP))
-			monthOfYear = DateTimeConstants.SEPTEMBER;
+			monthOfYear = Month.SEPTEMBER;
 		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.OCT))
-			monthOfYear = DateTimeConstants.OCTOBER;
+			monthOfYear = Month.OCTOBER;
 		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.NOV))
-			monthOfYear = DateTimeConstants.NOVEMBER;
+			monthOfYear = Month.NOVEMBER;
 		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.DEC))
-			monthOfYear = DateTimeConstants.DECEMBER;
+			monthOfYear = Month.DECEMBER;
 
-		if(monthOfYear != 0){
+		if(monthOfYear != null){
 
-			int start = date.plusWeeks(scheduler.getWeekWeekly()).dayOfMonth().getMinimumValue();
-			int end = date.plusWeeks(scheduler.getWeekWeekly()).dayOfMonth().getMaximumValue();
+			int start = 1;
+			int end = date.plusWeeks(scheduler.getWeekWeekly()).lengthOfMonth();
 
 			if(start <= scheduler.getDayAnnually() && scheduler.getDayAnnually() <= end)
-				return date.plusYears(scheduler.getYearAnnually()).withMonthOfYear(monthOfYear).withDayOfMonth(scheduler.getDayAnnually());
+				return date.plusYears(scheduler.getYearAnnually()).withMonth(monthOfYear.getValue()).withDayOfMonth(scheduler.getDayAnnually());
 			else if(scheduler.getDayMonthly() < start)
-				return date.plusYears(scheduler.getYearAnnually()).withMonthOfYear(monthOfYear).dayOfMonth().withMinimumValue();
+				return date.plusYears(scheduler.getYearAnnually()).withMonth(monthOfYear.getValue()).withDayOfMonth(1);
 			else if(scheduler.getDayMonthly() > end)
-				return date.plusYears(scheduler.getYearAnnually()).withMonthOfYear(monthOfYear).dayOfMonth().withMaximumValue();
+				return date.plusYears(scheduler.getYearAnnually()).withMonth(monthOfYear.getValue()).withDayOfMonth(end);
 
 		}
 
@@ -394,30 +394,30 @@ public class SchedulerService {
 	public LocalDate getNextDayMonth(LocalDate localDate, int dayMonthly){
 		LocalDate date = null;
 
-		int start = localDate.dayOfMonth().getMinimumValue();
-		int end = localDate.dayOfMonth().getMaximumValue();
+		int start = 1;
+		int end = localDate.lengthOfMonth();
 
-		if(localDate.dayOfMonth().get() <= dayMonthly){
+		if(localDate.getDayOfMonth() <= dayMonthly){
 
 			if(start <= dayMonthly && dayMonthly <= end)
 				date = localDate.withDayOfMonth(dayMonthly);
 			else if(dayMonthly < start)
-				date = localDate.dayOfMonth().withMinimumValue();
+				date = localDate.withDayOfMonth(start);
 			else if(dayMonthly > end)
-				date = localDate.dayOfMonth().withMaximumValue();
+				date = localDate.withDayOfMonth(end);
 
 		}
 		else{
 
-			int startNext = localDate.plusMonths(1).dayOfMonth().getMinimumValue();
-			int endNext = localDate.plusMonths(1).dayOfMonth().getMaximumValue();
+			int startNext = 1;
+			int endNext = localDate.plusMonths(1).lengthOfMonth();
 
 			if(startNext <= dayMonthly && dayMonthly <= endNext)
 				date = localDate.plusMonths(1).withDayOfMonth(dayMonthly);
 			else if(dayMonthly < startNext)
-				date = localDate.plusMonths(1).dayOfMonth().withMinimumValue();
+				date = localDate.plusMonths(1).withDayOfMonth(startNext);
 			else if(dayMonthly > endNext)
-				date = localDate.plusMonths(1).dayOfMonth().withMaximumValue();
+				date = localDate.plusMonths(1).withDayOfMonth(endNext);
 
 		}
 

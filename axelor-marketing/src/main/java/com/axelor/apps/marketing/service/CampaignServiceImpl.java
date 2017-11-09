@@ -19,21 +19,29 @@ package com.axelor.apps.marketing.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.mail.MessagingException;
 
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.crm.db.repo.EventRepository;
+import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.apps.marketing.db.TargetList;
+import com.axelor.apps.marketing.exception.IExceptionMessage;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.studio.service.filter.FilterJpqlService;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class CampaignServiceImpl implements CampaignService {
 	
@@ -43,13 +51,29 @@ public class CampaignServiceImpl implements CampaignService {
 	@Inject
 	private MetaFiles metaFiles;
 	
+	@Inject
+	private FilterJpqlService filterJpqlService;
+	
+	@Inject
+	private PartnerRepository partnerRepo;
+	
+	@Inject
+	private LeadRepository leadRepo;
+	
+	@Inject
+	private EventRepository eventRepo;
+	
 	public MetaFile sendEmail(Campaign campaign) {
 		
 		String errorPartners = "";
 		String errorLeads = "";
-		for (TargetList target : campaign.getTargetListSet()) {
-			errorPartners = sendToPartners(target.getPartnerSet(), campaign.getPartnerTemplate());
-			errorLeads = sendToLeads(target.getLeadSet(), campaign.getLeadTemplate());
+		for (TargetList target : campaign.getTargetModelSet()) {
+			
+			if(campaign.getPartnerTemplate() != null){
+				errorPartners = sendToPartners(target.getPartnerSet(), campaign.getPartnerTemplate());
+			} else if(campaign.getLeadTemplate() != null) {
+				errorLeads = sendToLeads(target.getLeadSet(), campaign.getLeadTemplate());
+			}
 		}
 		
 		if (errorPartners.isEmpty() && errorLeads.isEmpty()) {
@@ -109,14 +133,14 @@ public class CampaignServiceImpl implements CampaignService {
 		}
 		
 		StringBuilder builder = new StringBuilder();
-		builder.append(I18n.get("Error in sending an email to the following targets"));
+		builder.append(I18n.get(IExceptionMessage.EMAIL_ERROR1));
 		builder.append("\n");
 		if (!errorPartners.isEmpty()) {
-			builder.append("Partners:\n");
+			builder.append(I18n.get("Partners") + ":\n");
 			builder.append(errorPartners);
 		}
 		if (!errorLeads.isEmpty()) {
-			builder.append("Leads:\n");
+			builder.append(I18n.get("Leads") + ":\n");
 			builder.append(errorLeads);
 		}
 		
@@ -129,5 +153,63 @@ public class CampaignServiceImpl implements CampaignService {
 		}
 		
 		return null;
+	}
+	
+	@Transactional
+	public void generateEvents(Campaign campaign) {
+		
+		for(Partner partner : campaign.getPartnerSet()) {
+			Event event = new Event();
+			event.setClientPartner(partner);
+			event.setUser(campaign.getEventUser());
+			event.setSubject(campaign.getSubject());
+			event.setTypeSelect(campaign.getEventType());
+			event.setStartDateTime(campaign.getEventStartDateTime());
+			event.setDuration(campaign.getDuration());
+			event.setCampaign(campaign);
+			event.setStatusSelect(1);
+			eventRepo.save(event);
+		}
+		
+		for(Lead lead : campaign.getLeadSet()) {
+			Event event = new Event();
+			event.setLead(lead);
+			event.setUser(campaign.getEventUser());
+			event.setSubject(campaign.getSubject());
+			event.setTypeSelect(campaign.getEventType());
+			event.setStartDateTime(campaign.getEventStartDateTime());
+			event.setDuration(campaign.getDuration());
+			event.setCampaign(campaign);
+			event.setStatusSelect(1);
+			eventRepo.save(event);
+		}
+	}
+	
+	@Transactional
+	public void generateTargets(Campaign campaign) {
+		
+		Set<Partner> partnerSet= new HashSet<>();
+		Set<Lead> leadSet = new HashSet<>();
+		
+		for(TargetList target : campaign.getTargetModelSet()) {
+			String filter = filterJpqlService.getJpqlFilters(target.getPartnerFilterList());
+			if (filter != null) {
+				partnerSet.addAll(partnerRepo.all().filter(filter).fetch());
+			}
+			for(Partner partner : target.getPartnerSet()) {
+				partnerSet.add(partner);
+			}
+			
+			filter = filterJpqlService.getJpqlFilters(target.getLeadFilterList());
+			if (filter != null) {
+				leadSet.addAll(leadRepo.all().filter(filter).fetch());
+			}
+			for(Lead lead : target.getLeadSet()) {
+				leadSet.add(lead);
+			}
+		}
+		
+		campaign.setPartnerSet(partnerSet);
+		campaign.setLeadSet(leadSet);
 	}
 }	

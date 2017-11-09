@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -32,6 +32,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -47,11 +48,11 @@ public class TimetableService {
 
 	@Transactional
 	public Invoice generateInvoice(Timetable timetable) throws AxelorException{
-		if(timetable.getProduct() == null){
-			throw new AxelorException(I18n.get("Select a product"), IException.CONFIGURATION_ERROR);
+		if (timetable.getProduct() == null) {
+			throw new AxelorException(timetable, IException.CONFIGURATION_ERROR, I18n.get("Select a product"));
 		}
-		if(timetable.getUnit() == null){
-			throw new AxelorException(I18n.get("Select an unit"), IException.CONFIGURATION_ERROR);
+		if (timetable.getUnit() == null) {
+			throw new AxelorException(timetable, IException.CONFIGURATION_ERROR, I18n.get("Select an unit"));
 		}
 		Invoice invoice = this.createInvoice(timetable);
 		Beans.get(InvoiceRepository.class).save(invoice);
@@ -63,9 +64,9 @@ public class TimetableService {
 	public Invoice createInvoice(Timetable timetable) throws AxelorException{
 		SaleOrder saleOrder = timetable.getSaleOrder();
 		PurchaseOrder purchaseOrder = timetable.getPurchaseOrder();
-		if(saleOrder != null){
-			if(saleOrder.getCurrency() == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_INVOICE_6), saleOrder.getSaleOrderSeq()), IException.CONFIGURATION_ERROR);
+		if (saleOrder != null) {
+			if (saleOrder.getCurrency() == null) {
+				throw new AxelorException(timetable, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_INVOICE_6), saleOrder.getSaleOrderSeq());
 			}
 			InvoiceGenerator invoiceGenerator = new InvoiceGeneratorSupplyChain(saleOrder) {
 
@@ -81,9 +82,9 @@ public class TimetableService {
 			return invoice;
 		}
 		
-		if(purchaseOrder != null){
-			if(purchaseOrder.getCurrency() == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PO_INVOICE_1), purchaseOrder.getPurchaseOrderSeq()), IException.CONFIGURATION_ERROR);
+		if (purchaseOrder != null) {
+			if (purchaseOrder.getCurrency() == null) {
+				throw new AxelorException(timetable, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PO_INVOICE_1), purchaseOrder.getPurchaseOrderSeq());
 			}
 			InvoiceGenerator invoiceGenerator = new InvoiceGeneratorSupplyChain(purchaseOrder) {
 
@@ -137,7 +138,7 @@ public class TimetableService {
 	    SaleOrder saleOrder = timetable.getSaleOrder();
 	    if (saleOrder != null) {
 	    	for(SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-	    		if (!saleOrderLine.getIsTitleLine()) {
+	    		if (saleOrderLine.getTypeSelect() == null || !saleOrderLine.getTypeSelect().equals(SaleOrderLineRepository.TYPE_TITLE)) {
 	    			return saleOrderLine;
 				}
 			}

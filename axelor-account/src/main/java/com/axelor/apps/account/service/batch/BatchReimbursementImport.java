@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -24,7 +24,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +75,7 @@ public class BatchReimbursementImport extends BatchStrategy {
 		try {
 			reimbursementImportService.testCompanyField(company);
 		} catch (AxelorException e) {
-			TraceBackService.trace(new AxelorException("", e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
+			TraceBackService.trace(new AxelorException(e, e.getCategory(), ""), IException.REIMBURSEMENT, batch.getId());
 			incrementAnomaly();
 			stop = true;
 		}
@@ -101,8 +101,7 @@ public class BatchReimbursementImport extends BatchStrategy {
 				
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_6), batch.getId()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
-				
+				TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_6), batch.getId()), IException.REIMBURSEMENT, batch.getId());				
 				incrementAnomaly();
 				
 				stop();
@@ -141,8 +140,7 @@ public class BatchReimbursementImport extends BatchStrategy {
 						}
 					} catch (AxelorException e) {
 						
-						TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_7), reject[1]), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
-						
+						TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_7), reject[1]), IException.REIMBURSEMENT, batch.getId());						
 						incrementAnomaly();
 						
 					} catch (Exception e) {
@@ -179,8 +177,7 @@ public class BatchReimbursementImport extends BatchStrategy {
 			
 		} catch (AxelorException e) {
 			
-			TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_6), batch.getId()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
-			
+			TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_6), batch.getId()), IException.REIMBURSEMENT, batch.getId());
 			incrementAnomaly();
 			
 			stop();
@@ -212,8 +209,7 @@ public class BatchReimbursementImport extends BatchStrategy {
 			}
 		} catch (AxelorException e) {
 			
-			TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_6), batch.getId()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
-			
+			TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_6), batch.getId()), IException.REIMBURSEMENT, batch.getId());
 			incrementAnomaly();
 			
 		} catch (Exception e) {
@@ -236,10 +232,10 @@ public class BatchReimbursementImport extends BatchStrategy {
 	@Override
 	protected void stop() {
 		String comment = "";
-		comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_8);
+		comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_8) + "\n";
 		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_9)+"\n", batch.getDone());
 		comment += String.format("\t* "+I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_5)+" : %s \n", this.totalAmount);
-		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+		comment += String.format("\t"+I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
 		comment += String.format("\t* ------------------------------- \n");
 		comment += String.format("\t* %s ", updateCustomerAccountLog);

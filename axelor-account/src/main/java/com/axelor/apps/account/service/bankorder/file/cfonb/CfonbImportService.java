@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -19,7 +19,6 @@ package com.axelor.apps.account.service.bankorder.file.cfonb;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,16 +28,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.CfonbConfig;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.CfonbConfigService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -51,17 +47,17 @@ public class CfonbImportService {
 
 	protected CfonbConfigService cfonbConfigService;
 	protected PaymentModeRepository paymentModeRepo;
-	protected GeneralService generalService;
+	protected AppAccountService appAccountService;
 	
 	protected CfonbConfig cfonbConfig;
 	protected List<String> importFile;
 
 	@Inject
-	public CfonbImportService(CfonbConfigService cfonbConfigService, PaymentModeRepository paymentModeRepo, GeneralService generalService)  {
+	public CfonbImportService(CfonbConfigService cfonbConfigService, PaymentModeRepository paymentModeRepo, AppAccountService appAccountService)  {
 		
 		this.cfonbConfigService = cfonbConfigService;
 		this.paymentModeRepo = paymentModeRepo;
-		this.generalService = generalService;
+		this.appAccountService = appAccountService;
 		
 	}
 	
@@ -150,9 +146,8 @@ public class CfonbImportService {
 
 		this.importFile = FileTool.reader(fileName);
 
-		if(generalService.getGeneral().getTransferAndDirectDebitInterbankCode() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_1),
-					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+		if(appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode() == null)  {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_1), AppAccountServiceImpl.EXCEPTION);
 		}
 
 		String headerCFONB = null;
@@ -164,27 +159,24 @@ public class CfonbImportService {
 		// Pour chaque sequence, on récupère les enregistrements, et on les vérifie.
 		// Ensuite on supprime les lignes traitées du fichier chargé en mémoire
 		// Et on recommence l'opération jusqu'à ne plus avoir de ligne à traiter
-		while(this.importFile != null && this.importFile.size() != 0)  {
+		while (this.importFile != null && this.importFile.size() != 0) {
 			headerCFONB = this.getHeaderCFONB(this.importFile, operation, optionalOperation);
-			if(headerCFONB == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_2),
-						GeneralServiceImpl.EXCEPTION,fileName), IException.CONFIGURATION_ERROR);
+			if (headerCFONB == null) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_2), AppAccountServiceImpl.EXCEPTION, fileName);
 			}
 			this.importFile.remove(headerCFONB);
 
 			multiDetailsCFONB = this.getDetailsCFONB(this.importFile, operation, optionalOperation);
-			if(multiDetailsCFONB.isEmpty())  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_3),
-						GeneralServiceImpl.EXCEPTION,fileName), IException.CONFIGURATION_ERROR);
+			if (multiDetailsCFONB.isEmpty()) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_3), AppAccountServiceImpl.EXCEPTION, fileName);
 			}
-			for(String detail : multiDetailsCFONB)  {
+			for (String detail : multiDetailsCFONB) {
 				this.importFile.remove(detail);
 			}
 
 			endingCFONB = this.getEndingCFONB(this.importFile, operation, optionalOperation);
-			if(endingCFONB == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_4),
-						GeneralServiceImpl.EXCEPTION,fileName), IException.CONFIGURATION_ERROR);
+			if (endingCFONB == null) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_4), AppAccountServiceImpl.EXCEPTION, fileName);
 			}
 			this.importFile.remove(endingCFONB);
 
@@ -224,9 +216,8 @@ public class CfonbImportService {
 
 		this.importFile = FileTool.reader(fileName);
 
-		if(generalService.getGeneral().getTransferAndDirectDebitInterbankCode() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_1),
-					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+		if (appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode() == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_1), AppAccountServiceImpl.EXCEPTION);
 		}
 
 		String headerCFONB = null;
@@ -238,27 +229,25 @@ public class CfonbImportService {
 		// Pour chaque sequence, on récupère les enregistrements, et on les vérifie.
 		// Ensuite on supprime les lignes traitées du fichier chargé en mémoire
 		// Et on recommence l'opération jusqu'à ne plus avoir de ligne à traiter
-		while(this.importFile != null && this.importFile.size() != 0)  {
+		while (this.importFile != null && this.importFile.size() != 0) {
 			headerCFONB = this.getHeaderCFONB(this.importFile, operation, optionalOperation);
-			if(headerCFONB == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_2),
-						GeneralServiceImpl.EXCEPTION,fileName), IException.CONFIGURATION_ERROR);
+			if (headerCFONB == null) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_2), AppAccountServiceImpl.EXCEPTION, fileName);
 			}
 			this.importFile.remove(headerCFONB);
 
 			multiDetailsCFONB = this.getDetailsCFONB(this.importFile, operation, optionalOperation);
-			if(multiDetailsCFONB.isEmpty())  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_3),
-						GeneralServiceImpl.EXCEPTION,fileName), IException.CONFIGURATION_ERROR);
+			if (multiDetailsCFONB.isEmpty()) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_3), AppAccountServiceImpl.EXCEPTION, fileName);
+
 			}
-			for(String detail : multiDetailsCFONB)  {
+			for (String detail : multiDetailsCFONB) {
 				this.importFile.remove(detail);
 			}
 
 			endingCFONB = this.getEndingCFONB(this.importFile, operation, optionalOperation);
-			if(endingCFONB == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_4),
-						GeneralServiceImpl.EXCEPTION,fileName), IException.CONFIGURATION_ERROR);
+			if (endingCFONB == null) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_4), AppAccountServiceImpl.EXCEPTION, fileName);
 			}
 			this.importFile.remove(endingCFONB);
 
@@ -312,7 +301,7 @@ public class CfonbImportService {
 
 	private void checkTotalAmount(List<String> multiDetailsCFONB, String endingCFONB, String fileName, int amountPosStart, int amountPosEnd) throws AxelorException   {
 		int totalAmount = 0;
-		for(String detailCFONB : multiDetailsCFONB)  {
+		for (String detailCFONB : multiDetailsCFONB) {
 			totalAmount += Integer.parseInt(detailCFONB.substring(amountPosStart,amountPosEnd));
 		}
 
@@ -321,9 +310,8 @@ public class CfonbImportService {
 		log.debug("Controle du montant total des enregistrement détail ({}) et du montant de l'enregistrement total ({})",
 				new Object[]{totalAmount,totalRecord});
 
-		if(totalAmount != totalRecord)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_5),
-					GeneralServiceImpl.EXCEPTION,fileName, endingCFONB), IException.CONFIGURATION_ERROR);
+		if (totalAmount != totalRecord) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_5), AppAccountServiceImpl.EXCEPTION,fileName, endingCFONB);
 		}
 	}
 
@@ -415,14 +403,12 @@ public class CfonbImportService {
 	public PaymentMode getPaymentMode(Company company, String code) throws AxelorException  {
 		log.debug("Récupération du mode de paiement depuis l'enregistrement CFONB : Société = {} , code CFONB = {}", new Object[]{company.getName(),code});
 
-		if(code.equals(this.cfonbConfig.getIpoOperationCodeImportCFONB()))  {
+		if (code.equals(this.cfonbConfig.getIpoOperationCodeImportCFONB())) {
 			return paymentModeRepo.findByCode("TIP");
-		}
-		else if(code.equals(this.cfonbConfig.getIpoAndChequeOperationCodeImportCFONB()))  {
+		} else if (code.equals(this.cfonbConfig.getIpoAndChequeOperationCodeImportCFONB())) {
 			return paymentModeRepo.findByCode("TIC");
 		}
-		throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_IMPORT_6),
-				GeneralServiceImpl.EXCEPTION, code, company.getName()), IException.INCONSISTENCY);
+		throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.CFONB_IMPORT_6), AppAccountServiceImpl.EXCEPTION, code, company.getName());
 	}
 
 

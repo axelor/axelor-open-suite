@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -19,9 +19,9 @@ package com.axelor.apps.base.service.user;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Team;
 import com.axelor.auth.db.User;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.team.db.Team;
 import com.google.inject.persist.Transactional;
 
 /**

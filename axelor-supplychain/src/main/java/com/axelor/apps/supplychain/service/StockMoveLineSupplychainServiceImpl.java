@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -18,23 +18,34 @@
 package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SupplierCatalog;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.LocationServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImpl{
 	
@@ -59,7 +70,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 		else{
 			if(stockMove.getSaleOrder() != null){
 				taxLine = accountManagementService.getTaxLine(
-						generalService.getTodayDate(), stockMoveLine.getProduct(), stockMove.getCompany(),
+						appBaseService.getTodayDate(), stockMoveLine.getProduct(), stockMove.getCompany(),
 						stockMove.getSaleOrder().getClientPartner().getFiscalPosition(), false);
 				unitPriceUntaxed = stockMoveLine.getProduct().getSalePrice();
 				PriceList priceList = stockMove.getSaleOrder().getPriceList();
@@ -74,7 +85,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 			}
 			else{
 				taxLine = accountManagementService.getTaxLine(
-						generalService.getTodayDate(), stockMoveLine.getProduct(), stockMove.getCompany(),
+						appBaseService.getTodayDate(), stockMoveLine.getProduct(), stockMove.getCompany(),
 						stockMove.getPurchaseOrder().getSupplierPartner().getFiscalPosition(), true);
 				unitPriceUntaxed = stockMoveLine.getProduct().getPurchasePrice();
 				PriceList priceList = stockMove.getPurchaseOrder().getPriceList();
@@ -86,7 +97,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 						unitPriceUntaxed = priceListService.computeDiscount(unitPriceUntaxed, (int) discounts.get("discountTypeSelect"), discountAmount);
 					}
 				}
-				if (discountAmount.equals(BigDecimal.ZERO)){
+				if (discountAmount.compareTo(BigDecimal.ZERO) == 0){
 					List<SupplierCatalog> supplierCatalogList = stockMoveLine.getProduct().getSupplierCatalogList();
 					if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){
 						SupplierCatalog supplierCatalog = Beans.get(SupplierCatalogRepository.class).all().filter("self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",stockMoveLine.getProduct(),unitPriceUntaxed,stockMove.getPurchaseOrder().getSupplierPartner()).fetchOne();
@@ -104,5 +115,58 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 		stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
 		stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
 		return stockMoveLine;
+	}
+
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void updateReservedQty(StockMoveLine stockMoveLine, BigDecimal reservedQty) throws AxelorException {
+	    StockMove stockMove = stockMoveLine.getStockMove();
+	    int statusSelect = stockMove.getStatusSelect();
+	    if (statusSelect == StockMoveRepository.STATUS_PLANNED
+				|| statusSelect == StockMoveRepository.STATUS_REALIZED) {
+			Beans.get(StockMoveService.class).cancel(stockMoveLine.getStockMove());
+			stockMoveLine.setReservedQty(reservedQty);
+			stockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
+			Beans.get(StockMoveService.class).plan(stockMove);
+			if (statusSelect == StockMoveRepository.STATUS_REALIZED) {
+			    Beans.get(StockMoveService.class).realize(stockMove);
+			}
+		} else {
+	    	stockMoveLine.setReservedQty(stockMoveLine.getReservedQty());
+		}
+	}
+
+	@Override
+	public void updateLocations(Location fromLocation, Location toLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList,
+								LocalDate lastFutureStockMoveDate, boolean realQty) throws AxelorException {
+		for (StockMoveLine stockMoveLine : stockMoveLineList) {
+
+			Product product = stockMoveLine.getProduct();
+
+			if (product != null && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
+				Unit productUnit = stockMoveLine.getProduct().getUnit();
+				Unit stockMoveLineUnit = stockMoveLine.getUnit();
+
+				BigDecimal qty = null;
+				BigDecimal reservedQty =  stockMoveLine.getReservedQty();
+				if (realQty) {
+					qty = stockMoveLine.getRealQty();
+				} else {
+					qty = stockMoveLine.getQty();
+				}
+
+				if (productUnit != null && !productUnit.equals(stockMoveLineUnit)) {
+					qty = Beans.get(UnitConversionService.class).convertWithProduct(stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
+					reservedQty = Beans.get(UnitConversionService.class).convertWithProduct(stockMoveLineUnit, productUnit, reservedQty, stockMoveLine.getProduct());
+				}
+
+				if (toLocation.getTypeSelect() != LocationRepository.TYPE_VIRTUAL) {
+					this.updateAveragePriceLocationLine(toLocation, stockMoveLine, toStatus);
+				}
+				this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
+						lastFutureStockMoveDate, stockMoveLine.getTrackingNumber(), reservedQty);
+				Beans.get(LocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct());
+			}
+		}
+
 	}
 }

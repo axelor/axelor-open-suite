@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  
+  <grid name="wkf-tracking-total-grid" title="Nb of time passes per status" model="com.axelor.studio.db.WkfTrackingTotal">
+       <field name="status"/>
+       <field name="totalCount"/>
+  </grid>
+    
+  <form name="wkf-tracking-total-form" title="Nb of time passes per status" model="com.axelor.studio.db.WkfTrackingTotal" width="large"
+    canEdit="false" canNew="false" canDelete="false" canAttach="false" canCopy="false" canSave="false">
+      <panel>
+        <field name="status"/>
+        <field name="totalCount"/>
+      </panel>
+  </form>
+  
+</object-views>
+
+

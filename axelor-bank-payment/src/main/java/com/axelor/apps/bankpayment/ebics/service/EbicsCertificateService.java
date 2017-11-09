@@ -23,12 +23,16 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.invoke.MethodHandles;
 import java.net.URL;
+import java.security.NoSuchProviderException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -40,8 +44,6 @@ import javax.net.ssl.X509TrustManager;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PEMWriter;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +51,8 @@ import com.axelor.apps.bankpayment.db.EbicsBank;
 import com.axelor.apps.bankpayment.db.EbicsCertificate;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -68,7 +71,7 @@ public class EbicsCertificateService {
 	private EbicsCertificateRepository certRepo;
 	
 	@Inject
-	private GeneralService generalService;
+	private AppBaseService appBaseService;
 	
 	public static byte[] getCertificateContent(EbicsBank bank, String type) throws AxelorException {
 		 
@@ -78,11 +81,11 @@ public class EbicsCertificateService {
 			 return cert.getCertificate();
 		 }
 		
-		 if (bank.getUrl() != null && type.equals("ssl")) {
+		 if (bank.getUrl() != null && type.equals(EbicsCertificateRepository.TYPE_SSL)) {
 			 return Beans.get(EbicsCertificateService.class).getSSLCertificate(bank);
 		 }
 
-		 throw new AxelorException(I18n.get("No bank certificate of type %s found"), IException.CONFIGURATION_ERROR, type);
+		 throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No bank certificate of type %s found"), type);
 	}
 	
 	public static X509Certificate getCertificate(byte[] certificate, String type) throws AxelorException {
@@ -90,9 +93,9 @@ public class EbicsCertificateService {
 		ByteArrayInputStream instream = new ByteArrayInputStream(certificate);
 		X509Certificate cert;
 		try {
-			cert = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(instream);
-		} catch (CertificateException e) {
-			throw new AxelorException(I18n.get("Error in bank certificate of type %s"), IException.CONFIGURATION_ERROR, type);
+			cert = (X509Certificate) CertificateFactory.getInstance("X.509", "BC").generateCertificate(instream);
+		} catch (CertificateException | NoSuchProviderException e) {
+			throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, I18n.get("Error in bank certificate of type %s"), type);
 		}
 		
 		return cert;
@@ -189,10 +192,15 @@ public class EbicsCertificateService {
 	}
 	
 	
-	public EbicsCertificate updateCertificate(X509Certificate certificate, EbicsCertificate cert) throws CertificateEncodingException, IOException {
+	public EbicsCertificate updateCertificate(X509Certificate certificate, EbicsCertificate cert, boolean cleanPrivateKey) throws CertificateEncodingException, IOException {
 		
-		cert.setValidFrom(new LocalDate(certificate.getNotBefore()));
-		cert.setValidTo(new LocalDate(certificate.getNotAfter()));
+		String sha = DigestUtils.sha256Hex(certificate.getEncoded());
+		log.debug("sha256 HEX : {}", sha);
+		log.debug("certificat : {}", new String(certificate.getEncoded()));
+		log.debug("certificat size : {}", certificate.getEncoded().length);
+		
+		cert.setValidFrom(DateTool.toLocalDate(certificate.getNotBefore()));
+		cert.setValidTo(DateTool.toLocalDate(certificate.getNotAfter()));
 		cert.setIssuer(certificate.getIssuerDN().getName());
 		cert.setSubject(certificate.getSubjectDN().getName());
 		cert.setCertificate(certificate.getEncoded());
@@ -201,7 +209,11 @@ public class EbicsCertificateService {
 		cert.setPublicKeyModulus(publicKey.getModulus().toString(16));
 		cert.setSerial(certificate.getSerialNumber().toString(16));
 		cert.setPemString(convertToPEMString(certificate));
-		String sha = DigestUtils.sha256Hex(certificate.getEncoded());
+		
+		if (cleanPrivateKey) {
+			cert.setPrivateKey(null);
+		}
+		
 		sha = sha.toUpperCase();
 		cert.setSha2has(sha);
 		computeFullName(cert);
@@ -221,7 +233,7 @@ public class EbicsCertificateService {
 			cert.setTypeSelect(type);
 		}
 		
-		cert =  updateCertificate(certificate, cert);
+		cert =  updateCertificate(certificate, cert, true);
 		
 		return certRepo.save(cert);
 	}
@@ -253,10 +265,10 @@ public class EbicsCertificateService {
 		
 		LocalDate date = entity.getValidFrom();
 		if (date != null) {
-			fullName.append(":" + date.toString("dd/MM/yyyy"));
+			fullName.append(":" + date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 			date = entity.getValidTo();
 			if (date != null) {
-				fullName.append("-" + date.toString("dd/MM/yyyy"));
+				fullName.append("-" + date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 			}
 		}
 		
@@ -289,10 +301,17 @@ public class EbicsCertificateService {
 		return cert;
    }
    
+   public byte[] convertToDER(String pemString) throws IOException, CertificateEncodingException {
+		
+		X509Certificate cert = convertToCertificate(pemString);
+		
+		return cert.getEncoded();
+   }
+   
    @Transactional
    public void updateEditionDate(EbicsUser user) {
 	   
-	   LocalDateTime now = generalService.getTodayDateTime().toLocalDateTime();
+	   LocalDateTime now = appBaseService.getTodayDateTime().toLocalDateTime();
 	   
 	   EbicsCertificate certificate = user.getA005Certificate();
 	   if (certificate != null) {

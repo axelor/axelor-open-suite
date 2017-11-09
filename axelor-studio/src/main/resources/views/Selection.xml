@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <selection name="studio.chart.builder.date.type">
+        <option value="day">Day</option>
+        <option value="month">Month</option>
+        <option value="year">Year</option>
+    </selection>
+    
+    <selection name="studio.chart.builder.display.type">
+        <option value="0">Value</option>
+        <option value="1">Percentage(%)</option>
+    </selection>
+	
+    <selection name="studio.chart.builder.chart.type">
+        <option value="bar">Bar</option>
+        <option value="hbar">Horizontal bar</option>
+        <option value="line">Line</option>
+        <option value="donut">Donut</option>
+        <option value="pie">Pie Chart</option>
+        <option value="area">Area</option>
+        <option value="text">Text</option>
+        <option value="radar">Radar</option>
+        <option value="gauge">Gauge</option>
+        <option value="scatter">Scatter</option>
+        <option value="funnel">Funnel</option>
+    </selection>
+    
+    <selection name="studio.filter.operator">
+        <option value="=">equal</option>
+        <option value="!=">not equal</option>
+        <option value="&gt;=">greater or equal</option>
+        <option value="&lt;=">less or equal</option>
+        <option value="&gt;">greater than</option>
+        <option value="&lt;">less than</option>
+        <option value="in">in</option>
+        <option value="notIn">not in</option>
+        <option value="like">contains</option>
+        <option value="notLike">doesn't contains</option>
+        <option value="isNull">is null</option>
+        <option value="notNull">is not null</option>
+		<option value="isTrue">is true</option>
+		<option value="isFalse">is false</option>       
+		<option value="include">include</option>
+		<option value="notInclude">not include</option> 
+    </selection>
+    
+    <selection name="studio.business.wkf.display.type.select">
+        <option value="0">Nav Select</option>
+        <option value="1">Simple Select</option>
+    </selection>
+    
+    <selection name="studio.filter.logic.operator">
+    	<option value="0">AND</option>
+    	<option value="1">OR</option>
+    </selection>
+    
+    <selection name="studio.condition.alert.type.select">
+    	<option value="1">Blocking</option>
+    	<option value="2">Alert</option>
+    </selection>
+    
+    <selection name="studio.action.builder.type.select">
+    	<option value="0">Create</option>
+    	<option value="1">Update</option>
+    	<option value="2">Script</option>
+    	<option value="3">View</option>
+    	<option value="4">Email</option>
+    	<option value="5">Report</option>
+    </selection>
+    
+	<selection name="studio.action.builder.script.type.select">
+		<option value="0">Javascript</option>
+    	<option value="1">Groovy</option>
+	</selection>
+    
+</object-views>

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -17,23 +17,26 @@
  */
 package com.axelor.apps.account.service.move;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MoveExcessPaymentService {
 
@@ -53,26 +56,35 @@ public class MoveExcessPaymentService {
 	
 	
 	/**
-	 * Méthode permettant de récupérer les trop-perçus pour un compte donné (411) et une facture
+	 * Méthode permettant de récupérer les trop-perçus et une facture
 	 * @param invoice
 	 * 			Une facture
-	 * @param account
-	 * 			Un compte
 	 * @return
 	 * @throws AxelorException
 	 */
-	public List<MoveLine> getExcessPayment(Invoice invoice, Account account) throws AxelorException {
-		 Company company = invoice.getCompany();
+	public List<MoveLine> getExcessPayment(Invoice invoice) throws AxelorException {
+		Company company = invoice.getCompany();
+		AccountConfig accountConfig = Beans.get(AccountConfigService.class)
+				.getAccountConfig(company);
 
-		 List<MoveLine> creditMoveLines =  moveLineRepository.all()
-		 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
-		 " AND self.account.reconcileOk = ?3 AND self.credit > 0 and self.amountRemaining > 0" +
-		 " AND self.partner = ?4 AND self.account = ?5 ORDER BY self.date ASC",
-		 company, MoveRepository.STATUS_VALIDATED, true, invoice.getPartner(), account).fetch();
+		//get advance payments
+		List<MoveLine> advancePaymentMoveLines = Beans.get(InvoiceService.class)
+				.getMoveLinesFromAdvancePayments(invoice);
 
-		 log.debug("Nombre de trop-perçus à imputer sur la facture récupéré : {}", creditMoveLines.size());
+		if(accountConfig.getAutoReconcileOnInvoice()) {
+			List<MoveLine> creditMoveLines = moveLineRepository.all()
+					.filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
+									" AND self.account.useForPartnerBalance = ?3 AND self.credit > 0 and self.amountRemaining > 0" +
+									" AND self.partner = ?4 ORDER BY self.date ASC",
+							company, MoveRepository.STATUS_VALIDATED, true, invoice.getPartner()).fetch();
 
-		 return creditMoveLines;
+			log.debug("Nombre de trop-perçus à imputer sur la facture récupéré : {}", creditMoveLines.size());
+			advancePaymentMoveLines.addAll(creditMoveLines);
+		}
+		//remove duplicates
+		advancePaymentMoveLines = advancePaymentMoveLines
+				.stream().distinct().collect(Collectors.toList());
+		return advancePaymentMoveLines;
 	}
 		
 	

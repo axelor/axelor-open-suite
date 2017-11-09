@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -23,13 +23,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseConfigRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -56,7 +56,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 	protected PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
 
 	protected LocalDate today;
 
@@ -65,7 +65,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 	@Inject
 	public SaleOrderPurchaseServiceImpl() {
 
-		this.today = Beans.get(GeneralService.class).getTodayDate();
+		this.today = Beans.get(AppBaseService.class).getTodayDate();
 		this.user = AuthUtils.getUser();
 	}
 
@@ -87,7 +87,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 	@Override
 	public Map<Partner,List<SaleOrderLine>> splitBySupplierPartner(List<SaleOrderLine> saleOrderLineList) throws AxelorException  {
 
-		Map<Partner,List<SaleOrderLine>> saleOrderLinesBySupplierPartner = new HashMap<Partner,List<SaleOrderLine>>();
+		Map<Partner,List<SaleOrderLine>> saleOrderLinesBySupplierPartner = new HashMap<>();
 
 		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
 
@@ -95,9 +95,8 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 
 				Partner supplierPartner = saleOrderLine.getSupplierPartner();
 
-				if(supplierPartner == null)  {
-
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_PURCHASE_1), saleOrderLine.getProductName()), IException.CONFIGURATION_ERROR);
+				if (supplierPartner == null) {
+					throw new AxelorException(saleOrderLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_PURCHASE_1), saleOrderLine.getProductName());
 				}
 
 				if(!saleOrderLinesBySupplierPartner.containsKey(supplierPartner))  {

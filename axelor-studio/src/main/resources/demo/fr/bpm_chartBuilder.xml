@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chart-builders xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
+  
+  <chart-builder name="product-order-chart" title="Commandes produit par mois" appBuilder="PRD"
+  	type="bar" model="ProductOrder" json="true" groupOnJson="orderDate" groupOnTarget="orderDate" groupOnTargetType="Date" groupDateType="month"
+  	isJsonGroupOn="true" isJsonAggregateOn="true" isJsonDisplayField="true"
+  	aggregateOnJson="customer" aggregateOnTarget="customer.fullName" aggregateOnTargetType="String" displayFieldJson="total">
+  	<filters>
+  		<filter json="true" targetType="many-to-one" operator="notNull" targetField="customer" jsonField="customer" />
+  		<filter json="true" targetType="date" operator="&lt;=" targetField="orderDate" value="$date" jsonField="orderDate" />
+  	</filters>
+  </chart-builder>
+  	
+  <chart-builder name="product-order-per-author-per-category" title="Commandes produit par fournisseurs et catégorie" appBuilder="PRD"
+  	type="pie" model="ProductOrderLine" json="true" groupOnJson="product" 
+  	isJsonGroupOn="true" isJsonAggregateOn="true" isJsonDisplayField="true"
+  	groupOnTarget="product.supplier.name" groupOnTargetType="String" displayFieldJson="total">
+  	<filters>
+  		<filter json="true" targetType="json-many-to-one" operator="=" targetField="product.category" isParameter="true" jsonField="product" />
+  	</filters>
+  </chart-builder>
+  
+  
+<!--   <chart-builder name="sal" title="Ventes de produit par catégorie" -->
+<!--   	type="pie" model="com.axelor.apps.sale.db.SaleOrderLine" groupOn="product"  -->
+<!--   	groupOnTarget="product.productCategory.name" displayField="exTaxTotal"> -->
+<!--   	<filters> -->
+<!--   		<filter targetType="many-to-one" operator="=" targetField="product.productFamily" isParameter="true" field="product" /> -->
+<!--   		<filter targetType="Integer" operator="in" targetField="saleOrder.statusSelect"  field="saleOrder" value="3,4" /> -->
+<!--   	</filters> -->
+<!--   </chart-builder> -->
+  
+<!--   <chart-builder name="products-order-per-month-per-customer" title="Ventes de produit par mois et par client"  -->
+<!--   	type="bar" model="com.axelor.apps.sale.db.SaleOrderLine"  groupOn="saleOrder" groupOnTarget="saleOrder.orderDate" groupOnTargetType="LocalDate" groupDateType="month" -->
+<!--   	aggregateOn="saleOrder" aggregateOnTarget="saleOrder.clientPartner.fullName" displayField="exTaxTotal"> -->
+<!--   	<filters> -->
+<!--   		<filter targetType="Integer" operator="in" targetField="saleOrder.statusSelect" value="3,4"  field="saleOrder" /> -->
+<!--   		<filter targetType="LocalDate" operator="notNull" targetField="saleOrder.orderDate"  field="saleOrder" /> -->
+<!--   		<filter targetType="many-to-one" operator="=" targetField="product" isParameter="true" field="product" /> -->
+<!--   	</filters> -->
+<!--   </chart-builder> -->
+  
+  
+</chart-builders>

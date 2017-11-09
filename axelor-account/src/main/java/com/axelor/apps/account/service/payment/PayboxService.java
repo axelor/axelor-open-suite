@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.payment;
-
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -39,9 +38,9 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.codec.Base64;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import org.bouncycastle.openssl.PEMReader;
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,12 +49,12 @@ import com.axelor.apps.account.db.PayboxConfig;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.PayboxConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -124,7 +123,7 @@ public class PayboxService {
 		String pbxHmac = payboxConfigService.getPayboxHmac(payboxConfig);
 
 		//Date à laquelle l'empreinte HMAC a été calculée (format ISO8601)
-		String pbxTime = ISODateTimeFormat.dateHourMinuteSecond().print(new DateTime());
+		String pbxTime = ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
 
 		// Permet de restreindre les modes de paiement
 		String pbxTypepaiement = "CARTE";
@@ -253,8 +252,7 @@ public class PayboxService {
 	 */
 	public void checkPayboxPaymentVoucherFields(PaymentVoucher paymentVoucher) throws AxelorException  {
 		if (paymentVoucher.getPaidAmount() == null || paymentVoucher.getPaidAmount().compareTo(BigDecimal.ZERO) > 1)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_1),
-					GeneralServiceImpl.EXCEPTION, paymentVoucher.getRef()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(paymentVoucher, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_1), AppAccountServiceImpl.EXCEPTION, paymentVoucher.getRef());
 		}
 	}
 
@@ -272,22 +270,17 @@ public class PayboxService {
 
 		BigDecimal partnerBalance = accountingSituation.getBalanceCustAccount();
 
-		if(paidAmount.compareTo(partnerBalance) > 0)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_2),
-					GeneralServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+		if (paidAmount.compareTo(partnerBalance) > 0) {
+			throw new AxelorException(partner, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_2), AppAccountServiceImpl.EXCEPTION);
 		}
 
 	}
 
 
-	public void checkPaidAmount(PaymentVoucher paymentVoucher) throws AxelorException  {
-
-		if(paymentVoucher.getRemainingAmount().compareTo(BigDecimal.ZERO) > 0 )  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_3),
-					GeneralServiceImpl.EXCEPTION), IException.INCONSISTENCY);
+	public void checkPaidAmount(PaymentVoucher paymentVoucher) throws AxelorException {
+		if (paymentVoucher.getRemainingAmount().compareTo(BigDecimal.ZERO) > 0) {
+			throw new AxelorException(paymentVoucher, IException.INCONSISTENCY, I18n.get(IExceptionMessage.PAYBOX_3), AppAccountServiceImpl.EXCEPTION);
 		}
-
-
 	}
 
 
@@ -298,8 +291,7 @@ public class PayboxService {
 	 */
 	public void checkPayboxPartnerFields(Partner partner) throws AxelorException  {
 		if (partner.getEmailAddress().getAddress() == null || partner.getEmailAddress().getAddress().isEmpty())  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_4),
-					GeneralServiceImpl.EXCEPTION, partner.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(partner, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_4), AppAccountServiceImpl.EXCEPTION, partner.getName());
 		}
 	}
 
@@ -333,12 +325,8 @@ public class PayboxService {
 
 			return s.toUpperCase();
 
-		} catch (InvalidKeyException e) {
-			throw new AxelorException(String.format("%s :\n %s", GeneralServiceImpl.EXCEPTION,e), IException.INCONSISTENCY);
-		} catch (NoSuchAlgorithmException e) {
-			throw new AxelorException(String.format("%s :\n %s", GeneralServiceImpl.EXCEPTION,e), IException.INCONSISTENCY);
-		} catch (UnsupportedEncodingException e) {
-			throw new AxelorException(String.format("%s :\n %s", GeneralServiceImpl.EXCEPTION,e), IException.INCONSISTENCY);
+		} catch (InvalidKeyException | NoSuchAlgorithmException | UnsupportedEncodingException e) {
+			throw new AxelorException(e.getCause(), IException.INCONSISTENCY, "%s :\n %s", AppAccountServiceImpl.EXCEPTION, e);
 		}
 	}
 

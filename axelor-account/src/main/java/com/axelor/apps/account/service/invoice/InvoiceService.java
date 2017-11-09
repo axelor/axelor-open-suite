@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.invoice;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -26,6 +27,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.Alarm;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -74,17 +76,18 @@ public interface InvoiceService {
 	
 	
 	/**
-	 * Validation d'une facture.
-	 * (Transaction)
+	 * Validate an invoice.
 	 * 
 	 * @param invoice
-	 * 		Une facture.
-	 * 
+	 * @param compute
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void validate(Invoice invoice, boolean compute) throws AxelorException;
+
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(Invoice invoice) throws AxelorException;
-	
+
 	/**
 	 * Ventilation comptable d'une facture.
 	 * (Transaction)
@@ -176,5 +179,62 @@ public interface InvoiceService {
 	
 	public Invoice getInvoice(MoveLine moveLine);
 
+
+	/**
+	 * Create the domain for the field {@link Invoice#advancePaymentInvoiceSet}
+	 * @param invoice
+	 * @return
+	 * @throws AxelorException
+	 */
+	String createAdvancePaymentInvoiceSetDomain(Invoice invoice) throws AxelorException;
+
+	/**
+	 * Return the set for the field {@link Invoice#advancePaymentInvoiceSet}
+	 * @param invoice
+	 * @return
+	 * @throws AxelorException
+	 */
+	Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) throws AxelorException;
+
+	/**
+	 * Return the move lines from the advance payments on sale orders
+	 * @param invoice
+	 * @return
+	 */
+	List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) throws AxelorException;
+
+	/**
+	 * Return the move lines from the advance payments from previous invoices
+	 * @param invoice
+	 * @return
+	 */
+	List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice);
+
+	/**
+	 * Return the move line from the advance payment from related sale order
+	 * lines.
+	 * @param invoice
+	 * @return
+	 */
+	List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice);
+	/**
+	 * Filter a set of advance payment invoice. If the amount of
+	 * the payment is greater than the total of the invoice, we filter it.
+     * If there is no remaining amount in the move lines of the advance
+	 * payment invoice, we filter it too.
+	 * @param invoice
+	 * @param advancePaymentInvoices
+	 * @throws AxelorException
+	 */
+	void filterAdvancePaymentInvoice(Invoice invoice,
+									 Set<Invoice> advancePaymentInvoices) throws AxelorException;
+
+	/**
+	 * Get the bank details from the invoice's payment schedule, the invoice itself, or the partner's default.
+	 * 
+	 * @param invoice
+	 * @return
+	 */
+	BankDetails getBankDetails(Invoice invoice);
 
 }

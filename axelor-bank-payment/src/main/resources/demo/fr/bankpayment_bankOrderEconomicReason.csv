@@ -1,0 +1,265 @@
+"code";"label";"description"
+"060";;"Opérations des entreprises soumises à la déclaration directe générale (DDG)"
+"061";;"Compagnies aériennes non résidentes (opérations d’approvisionnement ou de transfert)."
+"062";;"Opérations des déclarants directs partiels (DDP : entreprises ou personnes physiques) ayant des comptes bancaires à l’extérieur de la collectivité ou participant à des compensations multilatérales."
+"090";;"Règlements de toute nature dont le montant est inférieur à 1 million de francs CFP sauf pour les règlements faisant l’objet de comptes rendus de paiements globaux."
+"100";"Exportations - Importations";"- Règlements de toutes marchandises exportées ou importées (c’est-à-dire ayant franchi la frontière douanière), y compris, dans le cas d’exportations, par utilisation de crédits commerciaux bancaires accordés à des acheteurs non résidents.
+ - Avances sur commandes de marchandises à exporter ou à importer NB –
+1) Les règlements comprennent les paiements, les compensations et les échanges de marchandises
+2) Doivent être déclarés sous cette rubrique les règlements de matériels ou matériaux ayant franchi la frontière douanière et destinés à un chantier de grands travaux.
+3) En revanche,
+° les règlements relatifs aux plans et dessins afférents à des marchandises sont exclus de cette rubrique (voir code 262).
+° les règlements de services (frais accessoires, transports, assurances, grands travaux, travail à façon, etc.) associés à des règlements de marchandises doivent être déclarés sous le code du service concerné.
+° les règlements de marchandises achetées ou vendues à des nonrésidents sans faire l’objet, auprès des douanes, de formalités d’importation ou d’exportation sont recensés sous les codes 150, 151 ou 152."
+"103";"Rabais et ristournes sur marchandises";"Rabais et ristournes relatifs aux opérations sur marchandises avec des non-résidents"
+"150";"Négoce";"- Opérations de négoce effectuées à titre habituel ou occasionnel.
+- Règlements de marchandises achetées dans le but de les revendre sans franchissement de la frontière douanière – règlements des reventes correspondantes.
+- Le bien peut avoir été transféré physiquement sur le territoire de la collectivité, mais il doit rester « sous douane », sous le régime de l’entrepôt, du transit, ou autre, avant revente. Autrement il y aurait franchissement de la frontière douanière, donc importation. Si le bien reste présent physiquement sur un territoire extérieur, son statut vis-à- vis de la douane de la collectivité ne se pose pas.                                        - Sont exclues de cette rubrique les commissions de courtage faisant l’objet de règlements séparés de ceux des marchandises (code 356) "
+"151";"Marchandises destinées à un chantier de grands travaux";"- Règlements relatifs à des achats de marchandises auprès de nonrésidents, destinées à des chantiers de grands travaux à l’extérieur de la collectivité.
+- Règlements relatifs à leur revente."
+"152";"Marchandises autres";"- Règlements de marchandises (paiements ou compensations) avec des non-résidents sans franchissement de la frontière douanière (autres que les opérations prévues sous les codes 150 et 151). Ces opérations concernent notamment les mouvements de marchandises entre maisons mères et filiales, entrant dans le cadre d’une activité industrielle : pièces détachées, produits finis et semi-finis...
+-  Achats ou ventes de marchandises – à l’exclusion du négoce – sur le territoire de la collectivité à des non-résidents. "
+"200";"Frais accessoires sur marchandises";"Frais accessoires au commerce extérieur qui ne peuvent être imputés à une autre rubrique : frais de manutention, frais de transit, frais de montage de marchandises exportées ou importées, etc. Sont exclus de cette rubrique les frais relatifs aux transports et aux assurances et les commissions (code 356). "
+"213";"Frets maritimes";"Frets maritimes payés pour des transports de marchandises par des résidents à des compagnies maritimes non résidentes et par des non résidents à des compagnies maritimes résidentes "
+"214";"Transports maritimes de passagers";"Billets de passage payés par des voyageurs résidents à des compagnies maritimes non résidentes et par des voyageurs non résidents à des compagnies maritimes résidentes. "
+"215";"Autres frais de transports maritimes (escales, affrètements)";"Règlements afférents aux comptes d’escale et comptes courants d’escale de navires. Affrètements et locations de navires. Tous autres frais portuaires. "
+"223";"Frets aériens";"Frets aériens réglés pour des transports de marchandises par des résidents à des compagnies aériennes non résidentes et par des non résidents à des compagnies aériennes résidentes. "
+"224";"Transports aériens de passagers";"Billets de passage payés par des voyageurs résidents à des compagnies aériennes non résidentes et par des voyageurs non résidents à des compagnies aériennes résidentes. "
+"225";"Autres frais de transports aériens";"Tous règlements relatifs aux transports aériens et notamment les frais d’escale, les redevances sur trafic, les affrètements et locations d’aéronefs. "
+"227";"Avitaillement";"Dépenses et recettes de carburéacteurs et de carburants. "
+"250";"Assurances sur marchandises : primes";"Primes (y compris les commissions) afférentes à des contrats d’assurance sur marchandises : 
+– versées par des résidents qui ont souscrit des contrats auprès de compagnies d’assurances non résidentes,
+– reçues par des compagnies d’assurances résidentes au titre de contrats souscrits par des non-résidents. "
+"251";"Assurances sur marchandises : indemnités";"Indemnités ou recours d’assurances (y compris les commissions) afférentes à des contrats d’assurance sur marchandises :
+– reçues par des résidents qui ont souscrit des contrats auprès de compagnies d’assurances non résidentes,
+– versées par des compagnies d’assurances résidentes au titre de contrats souscrits par des non-résidents. "
+"252";"Assurances autres : primes";"Primes (y compris les commissions) afférentes à des contrats d’assurance autres que sur marchandises (y compris les assurance vie) :
+– versées par des résidents qui ont souscrit des contrats auprès de compagnies d’assurances non résidentes,
+– reçues par des compagnies d’assurances résidentes au titre de contrats souscrits par des non-résidents. "
+"253";"Assurances autres : indemnités";"Indemnités (y compris les commissions) afférentes à des contrats d’assurance autres que sur marchandises :
+ – reçues par des résidents qui ont souscrit des contrats auprès de compagnies d’assurances non résidentes,
+ – versées par des compagnies d’assurances résidentes au titre de contrats souscrits par des non-résidents
+Règlements d’assurances vie effectués par les compagnies d’assurances non résidentes "
+"254";"Réassurances";"Toutes opérations en relation directe avec des traités ou des contrats de réassurances (y compris les règlements relatifs aux provisions en garantie). "
+"260";"Achats et ventes de brevets";"Achats et ventes de brevets relatifs à des techniques de production. Sont exclus de cette rubrique les règlements afférents à la protection des brevets (code 359). "
+"261";"Redevances sur brevets, échanges de savoir-faire";"- Redevances sur des brevets relatifs à des techniques de production, versées périodiquement au propriétaire qui en a concédé par contrat l’exploitation ou l’utilisation.
+- Échanges de savoir-faire.
+Sont exclus de cette rubrique les règlements afférents à la protection des brevets (code 359). "
+"262";"Cessions et licences de marques, modèles, dessins et droits de propriété – Droits d’auteur";"- Cessions et redevances sur les marques, dessins, modèles d’utilité et modèles industriels, droits de propriété (y compris les plans et dessins afférents à des marchandises) et autres procédés relatifs à des techniques de diffusion et de commercialisation.
+- Franchise, pas de porte.
+- Droit d’exploitation de ligne maritime, de wagons, de mines, de passage. Sont exclus de cette rubrique : 
+° Les règlements afférents à la protection des marques, dessins, modèles (code 359).
+° Les droits d'auteurs sur les œuvres audiovisuelles (code 352). "
+"263";"Services informatiques";"Tous règlements relatifs aux services informatiques de toute nature (redevances sur logiciels, installation de salle de marché…) "
+"264";"Études, recherches et assistance technique";"- Frais d’études, de recherches et d’ingénierie afférents aux phases de conception et d’élaboration d’un projet.
+- Frais de maintenance postérieurs à la phase de mise en oeuvre d’un projet et réparations effectuées sur place (si elles sont achetées à l’extérieur de la collectivité, les pièces détachées doivent être déclarées en code 151).
+- Frais d’assistance technique générale, contrats de formation, coopération inter-entreprises.
+- Contributions à des organismes de recherche scientifique, technique et économique, et notamment frais relatifs à la recherche et au développement. "
+"270";"Travail à façon";"- Tous travaux de transformation, de traitement et d’ouvraison : raffinage du pétrole, traitement des métaux et autres produits, montage de véhicules, etc.
+- Service d’emballage "
+"271";"Réparations";"- Tous règlements afférents à des réparations effectuées dans la collectivité par des résidents sur des biens meubles appartenant à des non-résidents et vice versa (y compris les fournitures utilisées). "
+"272";"Grands travaux";"- Règlements afférents aux bâtiments et travaux publics et aux activités de recherche géologique, pétrolière ou minière et notamment aux frais de fonctionnement et bénéfices de chantiers (travaux publics, ensembles industriels, etc.).
+- Rénovation et réfection de bâtiments industriels, commerciaux et à usage d'habitation.
+- Construction d’une unité de production (hors marchandises).
+Sont exclus de cette rubrique les règlements de marchandises destinées à un chantier de grands travaux ou à un complexe industriel à l’extérieur de la collectivité (code 151) "
+"350";"Télécommunications et courrier";"Tous règlements relatifs :
+– aux services postaux (publics et privés) : levée, transport et distribution de courrier (lettres, journaux, périodiques, etc.) et colis,
+– aux télécommunications : transmission de sons, d’images et autres informations par téléphone, télex, télégramme, câble, radio ou télévision, satellite, courrier électronique…, y compris les communications par réseaux (internet), téléconférences et services d’appui. "
+"351";"Abonnements, publicité";"- Quel que soit le support, tous règlements relatifs :
+° aux abonnements directs à des journaux, périodiques et revues,
+° à la publicité : conception et réalisation de supports publicitaires,
+° à la location d'espaces (panneaux, presse, audiovisuel),
+° à l'organisation des campagnes de promotion.
+- Parrainage.
+- Participation aux foires. "
+"352";"Audiovisuel";"- Redevances cinématographiques.
+- Achats/ventes et locations de programmes de radio et de télévision.
+- Droit sur oeuvres audiovisuelles.
+- Tous services annexes.
+Sont exclues de cette rubrique les locations de satellites (code 350) "
+"353";"Locations de biens meubles et immeubles (autres qu’affrètements)";"- Loyers et rachats éventuels dans le cas de contrats de crédit-bail.
+- Loyers sur biens meubles et immeubles. "
+"354";"Commissions et frais bancaires ou financiers du secteur des IFM 1 (FG)";"- Commissions reçues ou versées par les IFM 1 pour toutes opérations bancaires ou financières (y compris la rémunération de conseils financiers et d’assistance aux opérations financières). "
+"355";"Commissions et frais bancaires ou financiers des secteurs autres que celui des IFM 2 (FG)";"- Commissions versées par la clientèle résidente pour toutes opérations bancaires ou financières (y compris la rémunération de conseils financiers et d’assistance aux opérations financières). "
+"356";"Commissions liées aux opérations commerciales";"- Commissions sur marchandises autres que des rabais et des ristournes.
+- Commissions de courtage international.
+- Commissions liées à la réalisation de contrats commerciaux. "
+"357";"Frais de gestion";"- Participation des filiales ou succursales aux frais de gestion (frais de management, fees...) de leur maison mère (y compris les établissements de crédit et assimilés).
+- Financement de l'exploitation de filiales ou d'autres établissements (GIE, sociétés en participations, succursales, agences, bureaux, comptoirs, etc.).
+Sont exclus de cette rubrique les versements pour les couvertures de pertes (codes 443, 447, 453, 457). "
+"359";"Services divers";"Tous autres paiements de services ne pouvant être classés dans une autre rubrique. Par exemple :
+- Frais d’entretien courant d’immeubles et propriétés.
+- Frais de protection des brevets à un organisme spécialisé chargé de protéger l’invention (Institut national de la propriété industrielle – INPI par exemple).
+- Commissions ni commerciales (356), ni bancaires (354 et 355), ni financières. Exemple : commissions sur opérations immobilières. "
+"330";"Négociations de billets de banque libellés en francs CFP avec les correspondants (FG)";"Ventes et achats de billets de banque libellés en francs CFP entre un intermédiaire et ses correspondants non résidents (y compris les banques d’émission non résidentes). "
+"332";"Négociations de billets de banque libellés en devises avec les correspondants (FG)";"Ventes et achats de billets de banque libellés en devises entre un intermédiaire et ses correspondants non résidents (y compris les banques d’émission non résidentes). "
+"335";"Opérations sur billets de banque libellés en francs CFP par débit ou crédit de comptes de clients non résidents (FG)";"Retraits ou versements de billets de banque libellés en francs CFP par débit ou crédit de comptes de clients non résidents. "
+"336";"Opérations sur billets de banque libellés en devises par débit ou crédit de comptes de clients non résidents (FG)";"Retraits ou versements de billets de banque libellés en devises par débit ou crédit de comptes de clients non résidents. "
+"340";"Recettes et dépenses touristiques (FG)";"Tous règlements scripturaux en couverture de frais de séjours des touristes non résidents dans la collectivité ou des touristes résidents à l’extérieur de la collectivité (cartes de crédit, chèques de voyage, chèques, virements, ...). NB – Les opérations relatives aux agences de voyage résidentes sont exclues de cette rubrique (cf. code 344). "
+"342";"Frais de séjour de nature professionnelle (FG)";"Règlements effectués au titre des voyages officiels, des voyages d’affaires, des frais de délégations à des congrès et à des manifestations commerciales ou autres. "
+"343";"Autres frais de séjour privé (FG)";"- Frais de scolarité et d’études.
+- Frais de séjour dans les maisons de santé, cures médicales et autres séjours prolongés de nature privée. "
+"344";"Agences de voyages résidentes";"Tous règlements relatifs à des frais de tourisme d’ordre ou en faveur des agences de voyage résidentes. "
+"280";"Revenus des capitaux des IFM ayant le caractère d’investissement direct";
+"281";"Revenus des titres de placement détenus ou émis par les IFM (FG)";
+"282";"Intérêts sur crédits commerciaux bancaires (FG)";"Intérêts perçus par les IFM sur les crédits commerciaux accordés à des acheteurs non résidents. NB – Dans le cas de crédits consortiaux, chaque banque participante déclare les intérêts perçus sur sa quote-part. "
+"284";"Intérêts bancaires sur des opérations avec des correspondants (FG)";"Intérêts reçus ou versés pour dépôts, placements, prêts, emprunts, pensions livrées et autres à tous correspondants. Sont exclus de cette rubrique les intérêts en devises versés ou reçus par les IFM sur des prêts ou emprunts en devises réalisés avec d’autres intermédiaires résidents (prêts non enregistrés en balance des paiements). "
+"286";"Intérêts bancaires sur des opérations avec des clients non résidents (FG)";"Intérêts reçus ou versés sur dépôts, placements, prêts et emprunts, pensions livrées et autres à tous non-résidents. Sont exclus de cette rubrique les intérêts portant sur des opérations de crédits commerciaux bancaires à des non-résidents (code 282 "
+"290";"Intérêts sur prêts et emprunts des administrations publiques résidentes";"Règlements d’intérêts sur prêts et emprunts des administrations publiques résidentes. "
+"291";"Coupons sur titres émis par les administrations publiques 1 résidentes";"Coupons versés à des non-résidents sur des titres émis par les administrations publiques résidentes *. "
+"301";"Intérêts sur titres émis par les organismes internationaux 2 et les administrations publiques non résidentes (FG) 3";"Coupons perçus par la clientèle résidente sur des titres émis par les organismes internationaux et les administrations publiques non résidentes. "
+"292";"Coupons sur obligations * et intérêts sur autres titres de créances";"- Coupons et intérêts versés à des non-résidents sur des obligations et autres titres de créances émis par les « autres secteurs 1 ».
+- Coupons et intérêts sur obligations et autres titres de créances reversés à des résidents par des dépositaires ou agents financiers non résidents. "
+"293";"Dividendes sur actions";"- Dividendes versés à des non-résidents sur des actions et titres assimilés émis par les autres secteurs 1.
+- Dividendes reversés à des résidents par des dépositaires ou agents financiers non résidents.
+Sont exclus de cette rubrique les dividendes liés aux investissements directs (code 295) "
+"294";"Autres intérêts";"Intérêts sur toutes opérations de placements et d’emprunts entre la clientèle résidente et des non-résidents : prêts, emprunts, dépôts de toute nature, hypothèques, pensions livrées.
+Sont exclus de cette rubrique les intérêts sur opérations conclues avec les institutions financières monétaires résidentes "
+"295";"Revenus d’investissements directs distribués ou perçus par les autres secteurs 1";"- Revenus (bénéfices et autres revenus...) perçus par des sociétés résidentes au titre de leurs participations ≥ 10 % dans des entités non résidentes (filiales, sociétés, agences et succursales, etc.) et vice versa.
+- Prélèvements sur réserves.
+- Bénéfices d’établissements non résidents appartenant à des personnes physiques résidentes et vice versa. "
+"302";"Coupons sur obligations et intérêts sur autres titres de créances émis par des non-résidents (FG) 2";"Coupons et intérêts perçus par la clientèle résidente sur des obligations et autres titres de créances émis par des non-résidents. "
+"303";"Dividendes sur actions émises par des nonrésidents (FG) 3";"Dividendes perçus par des résidents sur des actions et titres assimilés émis par des non-résidents.
+Sont exclus de cette rubrique les revenus d’investissements directs distribués ou perçus par les « autres secteurs » 4 (cf. code 295). "
+"310";"Rémunérations des salariés des administrations publiques 1 et des autorités monétaires (FG)";"Salaires transférés par les administrations publiques et les autorités monétaires résidentes et non résidentes. "
+"312";"Transferts de salaires par des employeurs privés (FG)";"Salaires transférés directement par des employeurs privés résidents au profit de salariés non résidents et vice versa. "
+"313";"Autres rémunérations du travail (FG)";"- Honoraires des membres des professions libérales, tantièmes et jetons de présence, cachets des artistes et des sportifs.
+- Bénéfices et frais d’entretien des tournées théâtrales, cirques ambulants et toutes autres entreprises itinérantes. "
+"314";"Pensions, retraites et prestations sociales (FG)";"Pensions, retraites obligatoires, allocations familiales et autres prestations versées par des organismes de protection sociale. "
+"360";"Impôts, taxes et droits divers";"- Droits d’enregistrement et de succession perçus sur les non-résidents.
+- Taxes, impôts, confiscations et amendes douanières, redevances d’origines diverses, perçus par les administrations publiques résidentes.
+- Remboursements de trop-reçus sur taxes, impôts et droits divers. "
+"361";"Autres paiements des administrations publiques résidentes";"- Tous paiements (autres que ceux prévus aux codes 290, 291 et 360).
+Sont exclus de cette rubrique les transferts effectués d'ordre ou pour compte de la Poste (qui est à considérer comme un intermédiaire). "
+"370";"Dépenses et recettes civiles des administrations publiques non résidentes";"- Dépenses et recettes civiles effectuées par les administrations publiques non résidentes et non enregistrées ailleurs
+Sont exclus de cette rubrique les règlements suivants :
+° impôts, taxes et droits divers payés par des résidents et au remboursement de trop-perçus sur ces droits (code 380),
+° salaires au profit de résidents (code 310),
+° dépenses locales des fonctionnaires non résidents en poste dans la collectivité (code 382). "
+"377";"Dépenses et recettes militaires des administrations publiques non résidentes";"Dépenses militaires des administrations publiques non résidentes
+Sont exclus de cette rubrique les règlements suivants : salaires au profit de résidents (code 310),"
+"380";"Transferts unilatéraux (tous secteurs) d’ordre ou au profit des administrations publiques non résidentes";"- Impôts, taxes et droits divers payés par des résidents aux administrations publiques non résidentes et remboursements de tropperçus sur ces droits.
+- Subventions versées par les divers organismes européens 2 à des résidents.
+- Contributions privées aux frais de fonctionnement des organismes internationaux. "
+"381";"Transferts des migrants (FG)";"Transferts de capitaux effectués par les immigrants ou les émigrants au titre de la liquidation de leurs biens meubles ou immeubles, à la suite de leur changement de statut de résidence. Sont notamment repris sous cette rubrique les avoirs (en comptes, portefeuilles, etc.) et les engagements contractés auprès des intermédiaires, lors du changement de statut de la clientèle résidente qui devient non résidente et vice versa."
+"382";"Économies des travailleurs (FG)";"Transferts à destination de l’extérieur effectués par des travailleurs résidents, quelle que soit leur nationalité, exerçant leur activité au profit d’un employeur résident et vice versa. "
+"383";"Autres transferts unilatéraux (tous secteurs)";
+"384";"Plus ou moins values sur cessions de créances du secteur des IFM";"Plus ou moins value dégagée lors de la cession d’une créance commerciale ou financière à un non-résident. NB – N’est pas déclarable la cession d’une créance entre deux banques résidentes. "
+"388";"Pertes ou profits sur créances ou engagements du secteur des IFM et des autres secteurs";"Perte ou profit dégagé lors de l’extinction définitive d’une créance ou d’un engagement (commercial ou financier) d’un résident vis-à-vis d’un non-résident. Remises de dettes au profit d’un emprunteur non résident notamment dans le cadre d’accords de restructuration   "
+"390";"Prestations gratuites des administrations publiques résidentes";"Subventions versées ou reçues au titre des péréquations de prix par les administrations publiques.  NB – Les dons recensés dans cette rubrique sont destinés à financer des dépenses courantes (alimentation, médicaments, coopération courante...) "
+"442";"Investissements directs en capital social des résidents non-IFM dans des entreprises non résidentes";
+"443";"Investissements directs, par consolidation, des résidents non-IFM dans des entreprises non résidentes";"Investissements des résidents non-IFM dans des entreprises non résidentes, sous forme de :
+- consolidations de prêts à court ou à long terme antérieurement consentis par les non-IFM résidentes,
+- mises en jeu de garanties consenties par les non-IFM résidentes,
+- versements de subventions d’équilibre par les non-IFM résidentes, pour apurement de pertes.
+Ne sont pas déclarables sous forme de CRP les apurements de pertes par réduction du capital social "
+"446";"Investissements directs en capital social des IFM résidentes dans des entreprises non résidentes";"° Investissements des IFM résidentes dans des entreprises non résidentes, sous forme de :
+- participations (acquisitions initiales et ultérieures) au capital social d’entreprises non résidentes, dès lors que le seuil de 10 % de ce capital est atteint
+- cessions totales ou partielles de ces participations, jusqu’au seuil de 10 % ;
+- dotations de succursales et filiales non résidentes
+- liquidations totales ou partielles de ces dotations ;
+- subventions ou avances non remboursables versées à des entreprises non résidentes du même groupe ;
+- acquisitions/cessions de terrains ou d’immeubles hors de la collectivité, destinés à l’usage d’entreprises non résidentes du même groupe.
+Sont exclus des flux en capital social :
+- les autres investissements immobiliers (code 445),
+- les prêts participatifs et subordonnés (codes 420 et 424).
+Ne sont pas déclarables sous forme de CRP les augmentations de capital provenant de l’intégration de bénéfices réinvestis. "
+"447";"Investissements directs, par consolidation, des IFM résidentes dans des entreprises non résidentes";"Investissements des IFM résidentes dans des entreprises non résidentes, sous forme de :
+- consolidations de prêts à court ou à long terme antérieurement consentis par les IFM résidentes,
+- mises en jeu de garanties consenties par les IFM résidentes,
+- versements de subventions d’équilibre par les IFM résidentes, pour apurement de pertes. Ne sont pas déclarables sous forme de CRP les apurements de pertes par réduction du capital social. "
+"452";"Investissements directs des non-résidents dans des entreprises résidentes non IFM";"Investissements des non-résidents dans des non-IFM résidentes, sous forme de :
+- participations (acquisitions initiales et ultérieures) au capital social d’entreprises résidentes, dès lors que le seuil de 10 % de ce capital est atteint
+- cessions totales ou partielles de ces participations, jusqu’au seuil de 10 % ;
+- dotations de succursales et filiales résidentes
+- liquidations totales ou partielles de ces dotations
+- subventions ou avances non remboursables versées à des entreprises résidentes du même groupe
+- acquisitions/cessions d’obligations convertibles en actions, dès lors que leur montant représente au moins 10 % du capital de l’entreprise résidente émettrice
+- apports en nature (biens d’équipements) représentatifs d’une part du capital dans des entreprises résidentes du même groupe
+- liquidations totales ou partielles de ces apports
+- acquisitions/cessions de terrains ou d’immeubles dans la collectivité, destinés à l’usage d’entreprises résidentes du même groupe ;
+- acquisitions/cessions d’exploitations agricoles, vignobles, forêts, cheval pour reproduction dans un haras…
+Sont exclus des flux en capital social :
+- les autres investissements immobiliers (code 455),
+- les prêts participatifs et subordonnés (codes 430 et 434). Ne sont pas déclarables sous forme de CRP les augmentations de capital provenant de l’intégration de bénéfices réinvestis. "
+"453";"Investissements directs des non-résidents, par consolidation, dans des non-IFM résidentes";"Investissements des non-résidents dans des non-IFM résidentes, sous forme de :
+- consolidations de prêts à court ou à long terme antérieurement consentis par les non-résidents,
+- mises en jeu de garanties consenties par les non-résidents,
+- versements de subventions d’équilibre par les non-résidents, pour apurements de pertes. Ne sont pas déclarables sous forme de CRP les apurements de pertes par réduction du capital social. "
+"456";"Investissements directs des non-résidents dans le capital social des IFM résidentes";"Investissements des non-résidents dans des IFM résidentes, sous forme de :
+- participations (acquisitions initiales et ultérieures) au capital social d’IFM résidentes, dès lors que le seuil de 10 % de ce capital est atteint
+- cessions totales ou partielles de ces participations, jusqu’au seuil de 10 % ;
+- dotations de succursales et filiales résidentes (liquidations totales ou partielles de ces dotations) ;
+- subventions ou avances non remboursables versées aux IFM résidentes du même groupe ;
+- acquisitions/cessions de terrains ou d’immeubles dans la collectivité, destinés à l’usage des IFM résidentes du même groupe. Sont exclus des flux en capital social :
+- les autres investissements immobiliers (code 455),
+- les prêts participatifs et subordonnés (codes 430 et 434). Ne sont pas déclarables sous forme de CRP les augmentations de capital provenant de l’intégration de bénéfices réinvestis. "
+"457";"Investissements directs des non-résidents, par consolidation, dans des IFM résidentes";"Investissements des non-résidents dans des IFM résidentes, sous forme de :
+- consolidations de prêts à court ou à long terme antérieurement consentis par les non-résidents,
+- mises en jeu de garanties consenties par les non-résidents,
+- versements de subventions d’équilibre par les non-résidents, pour apurements de pertes.
+Ne sont pas déclarables sous forme de CRP les apurements de pertes par réduction du capital social. "
+"406";"Autres investissements des administrations publiques résidentes";"Ce code inclut les investissements immobiliers des administrations publiques résidentes. "
+"445";"Investissements immobiliers des résidents (sauf administrations publiques) à l’extérieur de la collectivité";"- Achats et cessions totales ou partielles à l’extérieur de la collectivité de terrains ou d'immeubles (y compris de constructions nouvelles ou en cours) par des résidents.
+- Immobilier privé à caractère résidentiel, quelle que soit sa destination (usage privatif ou location).
+- Immobilier à usage industriel ou commercial destiné à la location.
+Sont exclues de cette rubrique :
+- l’acquisition ou la cession par des résidents de terrains ou d’immeubles à l’extérieur de la collectivité, destinés à l’usage d’entreprises non résidentes du même groupe (code 442 ou 446).
+- Les opérations de construction et de génie civil effectuées à l’extérieur de la collectivité par des résidents, quelle que soit la durée du chantier (code 272 – Grands travaux). "
+"420";"Prêts à long terme des résidents à tout non-résident du même groupe, hors maison mère non résidente";"- Prêts participatifs et subordonnés des résidents de tous secteurs à leurs filiales ou sociétés sœurs 2 non résidentes de tous secteurs. Octroi et remboursement de ces prêts.
+- Prêts à long terme (échéance initiale supérieure à un an) des résidents (SAUF IFM 3 ) à leurs filiales et sociétés sœurs 2 non résidentes. Octroi et remboursement de ces prêts."
+"424";"Prêts à long terme des résidents à leur maison mère non résidente";"Prêts participatifs et subordonnés des résidents de tous secteurs (IFM 3 et non-IFM) à leurs maisons mères 2 non résidentes (quel que soit leur secteur 4 ). Octroi et remboursement de ces prêts.° Prêts à long terme (échéance initiale supérieure à un an) par les résidents (SAUF IFM 3 ) à leurs maisons mères 2 non résidentes. Octroi et remboursement de ces prêts. "
+"520";"Prêts à court terme et dépôts des résidents (sauf IFM) à tout non-résidents du même groupe";"- Prêts à court terme (jusqu’à un an d’échéance initiale) des résidents (SAUF IFM 3 ) à tout non-résident du même groupe (maison mère, filiale, société sœur 2 ). Octroi et remboursement de ces prêts.
+- Dépôts (quelle que soit leur échéance) par les résidents (SAUF IFM 3 ) chez tout non-résident du même groupe (maison mère, filiale, société sœur). Constitution et liquidation de ces dépôts. "
+"430";"Prêts à long terme des non-résidents à un résident du même groupe, hors maison mère résidente";"- Prêts participatifs et subordonnés des non-résidents de tous secteurs 2 à leurs filiales et sociétés sœurs 3 résidentes (quel que soit leur secteur : IFM 4 , autres secteurs). Octroi et remboursement de ces prêts.
+- Prêts à long terme (échéance initiale supérieure à un an) des nonrésidents ( maisons mères ) de tous secteurs 2 à leurs filiales et sociétés sœurs 3 résidentes SAUF IFM 4 résidentes. Octroi et remboursement de ces prêts. "
+"434";"Prêts à long terme des non-résidents à leur maison mère résidente";"- Prêts participatifs et subordonnés des non-résidents de tous secteurs 2 à leurs maisons mères 3 résidentes (quel que soit le secteur : IFM, autres secteurs). Octroi et remboursement de ces prêts.
+- Prêts à long terme (échéance initiale supérieure à un an) des nonrésidents à leurs maisons mères 3 résidentes, SAUF IFM et entreprises d’investissement résidentes non-IFM. Octroi et remboursement de ces prêts. "
+"530";"Prêts à court terme et dépôts des non-résidents à tout résident du même groupe, sauf IFM";"- Prêts à court terme (jusqu’à un an d’échéance initiale) des nonrésidents de tous secteurs 2 à tout résident du même groupe (maison mère, filiale, société sœur 3 ), SAUF IFM 4 résidentes. Octroi et remboursement de ces prêts.
+- Dépôts (quelle que soit leur échéance) des non-résidents de tous secteurs 2 chez tout résident du même groupe (maison mère, filiale, société sœur 3 ), SAUF IFM 4 et entreprises d’investissements résidentes. Constitution et liquidation de ces dépôts. "
+"428";"Autres prêts à long terme accordés par des résidents, sauf IFM";"Prêts à long terme (échéance initiale supérieure à un an) des résidents SAUF IFM 2 résidentes à tout non-résident non-affilié. Octroi et remboursement de ces prêts. "
+"524";"Autres prêts à court terme accordés par des résidents, sauf IFM";"Prêts à court terme (jusqu’à un an d’échéance initiale) des résidents, SAUF IFM 2 résidentes à tout non-résident non affilié. Octroi et remboursement de ces prêts "
+"526";"Placements à l’étranger des résidents sauf IFM";"Dépôts (quelle que soit leur échéance) des résidents SAUF IFM 2 résidentes chez tout non-résident non affilié :
+- dépôts à vue, à terme, à préavis,
+- bons de caisse,
+- dépôts de garantie sur les marchés à terme financiers ou de marchandises,
+- mises en pension non livrées,
+- pensions livrées sur titres : contrepartie monétaire des titres reçus de non-résident par des clients résidents.
+Constitution et liquidation de ces dépôts. "
+"438";"Autres prêts à long terme accordés par des non-résidents";"- Prêts à long terme (échéance initiale supérieure à un an) des nonrésidents de tous secteurs aux résidents non affiliés, SAUF IFM 2 résidentes. Octroi et remboursement de ces prêts.
+- Cessions, à tout non-résident non affilié, de prêts à long terme précédemment consentis à des clients résidents "
+"534";"Autres prêts à court terme accordés par des non-résidents";"- Prêts à court terme (jusqu’à un an d’échéance initiale) des nonrésidents de tous secteurs aux résidents non affiliés, SAUF IFM 2 résidentes. Octroi et remboursement de ces prêts.
+- Cessions, à tout non-résident non affilié, de prêts à court terme précédemment consentis à des clients résidents "
+"536";"Placements de non-résidents auprès de résidents, sauf IFM";"Dépôts (quelle que soit leur échéance) par les non-résidents de tous secteurs chez des résidents non-affiliés SAUF IFM 2 résidentes :
+- constitution et liquidation d’avoirs en compte courant et de dépôts,
+- opérations de pensions livrées sur titres : contrepartie monétaire de titres donnés en pension par un client résident avec un nonrésident,
+- constitutions et liquidation de dépôts de garantie sur les marchés à terme financiers ou de marchandises. Constitution et liquidation de ces dépôts "
+"400";"Prêts à long terme accordés par des administrations publiques résidentes à des non-résidents";"- Prêts à long terme accordés par les administrations publiques résidentes à des non-résidents.
+- Remboursements de ces prêts. Les intérêts reçus doivent être déclarés sous le code 290. "
+"403";"Prêts à court terme accordés par des administrations publiques résidentes à des non-résidents";"- Prêts à court terme accordés par les administrations publiques résidentes à des non-résidents.
+- Remboursements de ces prêts. Les intérêts reçus doivent être déclarés sous le code 290 "
+"406";"Autres investissements des administrations publiques";"Ce code inclut également les investissements immobiliers (cf page 26). "
+"410";"Emprunts à long terme contractés par les administrations publiques résidentes auprès de non résidents";"- Emprunts à long terme contractés par les administrations publiques résidentes auprès de non-résidents.
+- Remboursements de ces prêts.
+- Cessions par les IFM à tout non-résident, de prêts ou de créances à long terme détenus sur des administrations publiques résidentes. Les intérêts reçus doivent être déclarés sous le code 290. "
+"411";"Emprunts à court terme contractés par les administrations publiques résidentes auprès de non résidents";"- Emprunts à court terme contractés par les administrations publiques résidentes auprès de non-résidents
+- Remboursements de ces prêts.
+- Cessions par les IFM à tout non-résident, de prêts ou de créances à court terme détenus sur des administrations publiques résidentes. Les intérêts reçus doivent être déclarés sous le code 290 "
+"460";"Émissions (FG)";"Opérations de souscription (c’est-à-dire à l’émission) de titres émis par des non-résidents. "
+"464";"Négociations (FG)";"Opérations de négociation (c’est-à-dire sur les marchés secondaires), avec des non-résidents, de titres émis par des non-résidents. Sont notamment à classer dans les négociations :
+- les « souscriptions » à des parts d’OPCVM non résidents,
+- les offres publiques de vente (OPV), d’échange (OPE) et de retrait (OPR),
+- les arbitrages,
+- le paiement des soultes. Ne sont pas déclarables sous forme de CRP les réinvestissements de dividendes sous forme de titres. "
+"468";"Remboursements (FG)";"- Opérations de remboursement de titres émis par des non-résidents.
+- Rachats de titres par l’émetteur du titre. "
+"470";"Émissions (FG)";"Opérations de souscription (c’est-à-dire à l’émission) de titres émis par des résidents. "
+"474";"Négociations (FG)";"Opérations de négociation (c’est-à-dire sur les marchés secondaires), avec des non-résidents, de titres émis par des résidents. Sont notamment à classer dans les négociations :
+- les « souscriptions » à des titres d’OPCVM résidents,
+- les offres publiques de vente (OPV), d’échange (OPE) et de retrait (OPR),
+- les arbitrages, qui doivent être recensés en recettes et en dépenses,
+- le paiement des soultes. Ne sont pas déclarables sous forme de CRP les réinvestissements de dividendes sous forme de titres. "
+"478";"Remboursements (FG)";"- Opérations de remboursement de titres émis par des résidents.
+- Rachats de titres par l’émetteur du titre. "
+"535";"Cessions de créances commerciales à un nonrésident (affacturage)";"- Créances commerciales détenues sur des clients résidents par des fournisseurs résidents et cédées à des non-résidents (banques, sociétés d’affacturage, autres...)
+- Règlements ultérieurs par ces clients résidents aux non-résidents (banques, sociétés d’afffacturage, autres...) "

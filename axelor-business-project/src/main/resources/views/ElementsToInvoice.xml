@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="elements-to-invoice-grid" title="Elements To Invoice" model="com.axelor.apps.businessproject.db.ElementsToInvoice">
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
@@ -38,8 +38,8 @@
     </action-record>	
     
     <action-attrs name="action-elements-to-invoice-attrs-scale-and-precision">
-		<attribute name="scale" for="costPrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
-		<attribute name="scale" for="salePrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="salePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
 	
 </object-views>

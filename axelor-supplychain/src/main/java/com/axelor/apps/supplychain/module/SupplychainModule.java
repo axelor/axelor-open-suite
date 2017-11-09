@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -19,35 +19,48 @@ package com.axelor.apps.supplychain.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
+import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
-import com.axelor.apps.account.service.invoice.workflow.cancel.CancelState;
-import com.axelor.apps.account.service.invoice.workflow.ventilate.VentilateState;
+import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
+import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelServiceImpl;
+import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
+import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
-import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
+import com.axelor.apps.sale.db.repo.AdvancePaymentSaleRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
 import com.axelor.apps.sale.service.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.SaleOrderLineServiceImpl;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
-import com.axelor.apps.stock.service.MinStockRulesService;
-import com.axelor.apps.stock.service.MinStockRulesServiceImpl;
+import com.axelor.apps.stock.service.LocationLineServiceImpl;
+import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
+import com.axelor.apps.stock.service.StockRulesService;
+import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.apps.supplychain.db.repo.AdvancePaymentSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.AnalyticMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
+import com.axelor.apps.supplychain.service.AccountCustomerServiceSupplyChain;
+import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
+import com.axelor.apps.supplychain.service.AccountingSituationSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.BudgetSupplychainService;
-import com.axelor.apps.supplychain.service.CustomerCreditLineService;
-import com.axelor.apps.supplychain.service.CustomerCreditLineServiceImpl;
+import com.axelor.apps.supplychain.service.IntercoService;
+import com.axelor.apps.supplychain.service.IntercoServiceImpl;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
-import com.axelor.apps.supplychain.service.MinStockRulesServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.InvoicePaymentToolServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.LocationLineServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.LogisticalFormSupplychainService;
+import com.axelor.apps.supplychain.service.LogisticalFormSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpService;
@@ -68,18 +81,25 @@ import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SubscriptionService;
 import com.axelor.apps.supplychain.service.SubscriptionServiceImpl;
-import com.axelor.apps.supplychain.service.workflow.CancelStateSupplyChain;
-import com.axelor.apps.supplychain.service.workflow.VentilateStateSupplyChain;
+import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
+import com.axelor.apps.supplychain.service.SupplychainSaleConfigServiceImpl;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.workflow.WorkflowValidationServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 
 
 public class SupplychainModule extends AxelorModule {
 
     @Override
     protected void configure() {
-    	bind(MinStockRulesService.class).to(MinStockRulesServiceImpl.class);
-        bind(MinStockRulesServiceImpl.class).to(MinStockRulesServiceSupplychainImpl.class);
+    	bind(StockRulesService.class).to(StockRulesServiceImpl.class);
+        bind(StockRulesServiceImpl.class).to(StockRulesServiceSupplychainImpl.class);
         bind(StockMoveService.class).to(StockMoveServiceImpl.class);
         bind(PurchaseOrderServiceImpl.class).to(PurchaseOrderServiceSupplychainImpl.class);
         bind(PurchaseOrderLineService.class).to(PurchaseOrderLineServiceImpl.class);
@@ -90,13 +110,10 @@ public class SupplychainModule extends AxelorModule {
         bind(StockMoveInvoiceService.class).to(StockMoveInvoiceServiceImpl.class);
         bind(SaleOrderManagementRepository.class).to(SaleOrderSupplychainRepository.class);
         bind(StockMoveServiceImpl.class).to(StockMoveServiceSupplychainImpl.class);
-        bind(VentilateState.class).to(VentilateStateSupplyChain.class);
-        bind(CancelState.class).to(CancelStateSupplyChain.class);
         bind(SubscriptionService.class).to(SubscriptionServiceImpl.class);
         bind(OpportunitySaleOrderServiceImpl.class).to(OpportunitySaleOrderServiceSupplychainImpl.class);
-        bind(CustomerCreditLineService.class).to(CustomerCreditLineServiceImpl.class);
         bind(SaleOrderLineServiceImpl.class).to(SaleOrderLineServiceSupplyChainImpl.class);
-        bind(AdvancePaymentRepository.class).to(AdvancePaymentSupplychainRepository.class);
+        bind(AdvancePaymentSaleRepository.class).to(AdvancePaymentSupplychainRepository.class);
         bind(AdvancePaymentServiceImpl.class).to(AdvancePaymentServiceSupplychainImpl.class);
         bind(MrpService.class).to(MrpServiceImpl.class);
         bind(MrpLineService.class).to(MrpLineServiceImpl.class);
@@ -106,6 +123,19 @@ public class SupplychainModule extends AxelorModule {
         bind(InvoiceLineService.class).to(InvoiceLineSupplychainService.class);
         bind(SaleOrderStockService.class).to(SaleOrderStockServiceImpl.class);
         bind(PurchaseOrderManagementRepository.class).to(PurchaseOrderSupplychainRepository.class);
-
+        bind(AppSupplychainService.class).to(AppSupplychainServiceImpl.class);
+        bind(SupplychainSaleConfigService.class).to(SupplychainSaleConfigServiceImpl.class);
+        bind(AccountCustomerService.class).to(AccountCustomerServiceSupplyChain.class);
+        bind(AccountingSituationServiceImpl.class).to(AccountingSituationSupplychainServiceImpl.class);
+        bind(AccountingSituationSupplychainService.class).to(AccountingSituationSupplychainServiceImpl.class);
+        bind(LocationLineServiceImpl.class).to(LocationLineServiceSupplychainImpl.class);
+        bind(InvoiceServiceImpl.class).to(InvoiceServiceSupplychainImpl.class);
+        bind(InvoicePaymentToolServiceImpl.class).to(InvoicePaymentToolServiceSupplychainImpl.class);
+        bind(WorkflowVentilationServiceImpl.class).to(WorkflowVentilationServiceSupplychainImpl.class);
+        bind(WorkflowCancelServiceImpl.class).to(WorkflowCancelServiceSupplychainImpl.class);
+        bind(WorkflowValidationServiceImpl.class).to(WorkflowValidationServiceSupplychainImpl.class);
+        bind(IntercoService.class).to(IntercoServiceImpl.class);
+        bind(LogisticalFormServiceImpl.class).to(LogisticalFormSupplychainServiceImpl.class);
+        bind(LogisticalFormSupplychainService.class).to(LogisticalFormSupplychainServiceImpl.class);
     }
 }

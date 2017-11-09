@@ -1,0 +1,1434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <list-property name="userProperties">
+        <structure>
+            <property name="name">Data Cube.MrpLineDS.x</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube.MrpLineDS.y</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube.MrpLineDS.width</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube.MrpLineDS.height</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">MRP Cube.MrpLineDS.x</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">MRP Cube.MrpLineDS.y</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+    </list-property>
+    <property name="Data Cube.MrpLineDS.x">76</property>
+    <property name="Data Cube.MrpLineDS.y">43</property>
+    <property name="Data Cube.MrpLineDS.width">150</property>
+    <property name="Data Cube.MrpLineDS.height">200</property>
+    <property name="MRP Cube.MrpLineDS.x">135</property>
+    <property name="MRP Cube.MrpLineDS.y">80</property>
+    <list-property name="propertyBindings">
+        <structure>
+            <property name="name">odaDriverClass</property>
+            <property name="id">4</property>
+            <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaURL</property>
+            <property name="id">4</property>
+            <expression name="value" type="javascript">params["DBName"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaUser</property>
+            <property name="id">4</property>
+            <expression name="value" type="javascript">params["UserName"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaPassword</property>
+            <property name="id">4</property>
+            <expression name="value" type="javascript">params["Password"].value</expression>
+        </structure>
+    </list-property>
+    <property name="units">in</property>
+    <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <parameters>
+        <scalar-parameter name="mrpId" id="3865">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">decimal</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="UserName" id="8">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DBName" id="7">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="Password" id="9">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="Locale" id="10">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">fr</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="AttachmentPath" id="3864">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DefaultDriver" id="3863">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">org.postgresql.Driver</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="endDate" id="4123">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">integer</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+    </parameters>
+    <data-sources>
+        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="4">
+            <list-property name="privateDriverProperties">
+                <ex-property>
+                    <name>metadataBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+                <ex-property>
+                    <name>disabledMetadataBidiFormatStr</name>
+                </ex-property>
+                <ex-property>
+                    <name>contentBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+                <ex-property>
+                    <name>disabledContentBidiFormatStr</name>
+                </ex-property>
+            </list-property>
+            <property name="odaDriverClass">org.postgresql.Driver</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
+        </oda-data-source>
+    </data-sources>
+    <data-sets>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MrpDS" id="5">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">created_on</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">created_on</text-property>
+                    <text-property name="heading">created_on</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">end_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">end_date</text-property>
+                    <text-property name="heading">end_date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">locationName</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">locationName</text-property>
+                    <text-property name="heading">locationName</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">mrpId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">created_on</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">end_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">locationName</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">created_on</property>
+                    <property name="nativeName">created_on</property>
+                    <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">end_date</property>
+                    <property name="nativeName">end_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">locationName</property>
+                    <property name="nativeName">locationName</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select Mrp.created_on, Mrp.end_date, Location.name as "locationName"
+from supplychain_mrp as Mrp
+left join stock_location as Location on (Mrp.location = Location.id)
+where Mrp.id = ?]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>created_on</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>93</design:nativeDataTypeCode>
+            <design:precision>29</design:precision>
+            <design:scale>6</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>created_on</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>created_on</design:label>
+            <design:formattingHints>
+              <design:displaySize>29</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>end_date</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>13</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>end_date</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>end_date</design:label>
+            <design:formattingHints>
+              <design:displaySize>13</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>locationName</design:name>
+              <design:position>3</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>255</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>locationName</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>locationName</design:label>
+            <design:formattingHints>
+              <design:displaySize>255</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MrpLineDS" id="11">
+            <property name="nullsOrdering">nulls lowest</property>
+            <list-property name="columnHints"/>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">mrpId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData"/>
+            <method name="beforeOpen"><![CDATA[function pad(n) {return n<10 ? '0'+n : n}
+var i;
+var str = "";
+var d = new Date();
+d.setMonth(0,1);
+
+for (i=0; i<52;i++) {
+    dToString = d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+    str += "('" + dToString + "'), ";
+    d.setDate(d.getDate() + 7);
+}
+str = str.substr(0,str.length-2)
+this.queryText = this.queryText.replace("@VALUES", str);]]></method>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet"/>
+            <xml-property name="queryText"><![CDATA[select
+    MrpLine.qty,
+    MrpLine.maturity_date,
+    MrpLine.max_level,
+    Unit.name as "unitName",
+    MrpLineType.name as "typeName",
+    MrpLineType.sequence as "typeSeq",
+    Product.name as "productName",
+    Location.name as "locationName",
+    Product.code
+
+from
+    supplychain_mrp_line as MrpLine
+
+inner join
+    supplychain_mrp as Mrp on (MrpLine.mrp = Mrp.id)
+left join
+    stock_location as Location on ( MrpLine.location = Location.id)
+left join
+    base_product as Product on (MrpLine.product = Product.id)
+left join
+    base_unit as Unit on (Product.unit = Unit.id)
+left join
+    supplychain_mrp_line_type as MrpLineType on (MrpLine.mrp_line_type = MrpLineType.id)
+
+where
+    Mrp.id = ?
+
+union
+
+SELECT
+	0 as "qty",
+    CAST(weekDates.week as date) as "maturity_date",
+    -1 as "max_level",
+    '' as "unitName",
+    '' as "typeName",
+    -1 as "typeSeq",
+    '' as "productName",
+    '' as "locationName",
+    '' as code
+FROM (
+  VALUES @VALUES
+) as weekDates(week)
+
+
+order by max_level DESC, "typeSeq" ASC]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>typeName</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>255</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>typeName</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>typeName</design:label>
+            <design:formattingHints>
+              <design:displaySize>255</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>qty</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>2</design:nativeDataTypeCode>
+            <design:precision>19</design:precision>
+            <design:scale>2</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>qty</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>qty</design:label>
+            <design:formattingHints>
+              <design:displaySize>21</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>productName</design:name>
+              <design:position>3</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>255</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>productName</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>productName</design:label>
+            <design:formattingHints>
+              <design:displaySize>255</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3819">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">message_key</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">message_key</text-property>
+                    <text-property name="heading">message_key</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">translation</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">translation</text-property>
+                    <text-property name="heading">translation</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">Locale</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">message_key</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">translation</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">message_key</property>
+                    <property name="nativeName">message_key</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">translation</property>
+                    <property name="nativeName">translation</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation"
+from meta_translation as LangTranslate
+where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>2</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>message_key</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>1024</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>message_key</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>message_key</design:label>
+            <design:formattingHints>
+              <design:displaySize>1024</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>translation</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>1024</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>translation</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>translation</design:label>
+            <design:formattingHints>
+              <design:displaySize>1024</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+    </data-sets>
+    <cubes>
+        <tabular-cube name="MRP Cube" id="4027">
+            <property name="dimensions">
+                <tabular-dimension name="Columns" id="4028">
+                    <property name="isTimeType">true</property>
+                    <property name="defaultHierarchy">NewTabularHierarchy3</property>
+                    <property name="hierarchies">
+                        <tabular-hierarchy name="NewTabularHierarchy3" id="4029">
+                            <property name="levels">
+                                <tabular-level name="Week Of Year" id="4030">
+                                    <property name="dataType">integer</property>
+                                    <property name="dateTimeLevelType">week-of-year</property>
+                                    <list-property name="attributes">
+                                        <structure>
+                                            <property name="name">DateTime</property>
+                                            <property name="dataType">date</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="columnName">maturity_date</property>
+                                </tabular-level>
+                            </property>
+                        </tabular-hierarchy>
+                    </property>
+                </tabular-dimension>
+                <tabular-dimension name="Rows" id="4031">
+                    <property name="defaultHierarchy">NewTabularHierarchy4</property>
+                    <property name="hierarchies">
+                        <tabular-hierarchy name="NewTabularHierarchy4" id="4032">
+                            <property name="levels">
+                                <tabular-level name="max_level" id="4033">
+                                    <property name="dataType">integer</property>
+                                    <property name="columnName">max_level</property>
+                                </tabular-level>
+                                <tabular-level name="productName" id="4034">
+                                    <property name="dataType">string</property>
+                                    <property name="columnName">productName</property>
+                                </tabular-level>
+                                <tabular-level name="unitName" id="4036">
+                                    <property name="dataType">string</property>
+                                    <property name="columnName">unitName</property>
+                                </tabular-level>
+                                <tabular-level name="typeSeq" id="4035">
+                                    <property name="dataType">integer</property>
+                                    <property name="columnName">typeSeq</property>
+                                </tabular-level>
+                                <tabular-level name="typeName" id="4037">
+                                    <property name="dataType">string</property>
+                                    <property name="columnName">typeName</property>
+                                </tabular-level>
+                            </property>
+                        </tabular-hierarchy>
+                    </property>
+                </tabular-dimension>
+            </property>
+            <property name="measureGroups">
+                <tabular-measure-group name="Summary Field1" id="4038">
+                    <property name="measures">
+                        <tabular-measure name="qty1" id="4039">
+                            <expression name="measureExpression" type="javascript">dataSetRow["qty"]</expression>
+                            <property name="dataType">decimal</property>
+                        </tabular-measure>
+                    </property>
+                </tabular-measure-group>
+            </property>
+            <property name="dataSet">MrpLineDS</property>
+        </tabular-cube>
+    </cubes>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <property name="type">a4</property>
+            <property name="orientation">landscape</property>
+            <page-footer>
+                <grid id="507">
+                    <column id="508"/>
+                    <column id="509">
+                        <property name="width">4%</property>
+                    </column>
+                    <column id="510">
+                        <property name="width">12%</property>
+                    </column>
+                    <row id="511">
+                        <cell id="512"/>
+                        <cell id="513">
+                            <property name="textAlign">right</property>
+                            <property name="verticalAlign">middle</property>
+                            <text id="3817">
+                                <property name="contentType">auto</property>
+                                <text-property name="content"><![CDATA[Page]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="514">
+                            <property name="verticalAlign">middle</property>
+                            <grid id="3804">
+                                <column id="3805"/>
+                                <column id="3806"/>
+                                <column id="3807"/>
+                                <row id="3808">
+                                    <cell id="3809">
+                                        <property name="textAlign">right</property>
+                                        <auto-text id="3810">
+                                            <property name="type">page-number</property>
+                                        </auto-text>
+                                    </cell>
+                                    <cell id="3811">
+                                        <property name="textAlign">center</property>
+                                        <text id="3812">
+                                            <property name="contentType">plain</property>
+                                            <text-property name="content"><![CDATA[/]]></text-property>
+                                        </text>
+                                    </cell>
+                                    <cell id="3813">
+                                        <property name="textAlign">left</property>
+                                        <auto-text id="3814">
+                                            <property name="type">total-page</property>
+                                        </auto-text>
+                                    </cell>
+                                </row>
+                            </grid>
+                        </cell>
+                    </row>
+                </grid>
+            </page-footer>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <grid id="12">
+            <property name="height">5.052083333333333in</property>
+            <property name="dataSet">MrpDS</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">created_on</property>
+                    <text-property name="displayName">created_on</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["created_on"]</expression>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="name">end_date</property>
+                    <text-property name="displayName">end_date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["end_date"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">locationName</property>
+                    <text-property name="displayName">locationName</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["locationName"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="13"/>
+            <column id="14"/>
+            <column id="15"/>
+            <row id="16">
+                <cell id="17"/>
+                <cell id="18">
+                    <text id="28">
+                        <property name="fontSize">large</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="textAlign">center</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'MrpWeeks.title'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="19"/>
+            </row>
+            <row id="20">
+                <property name="height">0.3541666666666667in</property>
+                <cell id="21"/>
+                <cell id="22"/>
+                <cell id="23"/>
+            </row>
+            <row id="24">
+                <cell id="25">
+                    <text id="36">
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'MrpWeeks.createdOn'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                    </text>
+                    <text id="37">
+                        <property name="display">inline</property>
+                        <structure name="toc"/>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="Short Date">row["created_on"]</VALUE-OF> ]]></text-property>
+                    </text>
+                </cell>
+                <cell id="26"/>
+                <cell id="27">
+                    <property name="verticalAlign">middle</property>
+                    <text id="51">
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'MrpWeeks.location'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                    </text>
+                    <text id="50">
+                        <property name="display">inline</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["locationName"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="46">
+                <cell id="47">
+                    <text id="44">
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'MrpWeeks.endDate'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                    </text>
+                    <text id="45">
+                        <property name="display">inline</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="Short Date">row["end_date"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="48"/>
+                <cell id="49"/>
+            </row>
+            <row id="52">
+                <property name="height">10%</property>
+                <cell id="53"/>
+                <cell id="54"/>
+                <cell id="55"/>
+            </row>
+            <row id="4040">
+                <cell id="4041">
+                    <property name="colSpan">3</property>
+                    <property name="rowSpan">1</property>
+                    <extended-item extensionName="Crosstab" extensionVersion="3.7.0" id="4044">
+                        <property name="cube">MRP Cube</property>
+                        <property name="measureDirection">horizontal</property>
+                        <property name="measures">
+                            <extended-item extensionName="MeasureView" id="4078">
+                                <property name="measure">qty1</property>
+                                <property name="detail">
+                                    <extended-item extensionName="AggregationCell" id="4079">
+                                        <property name="aggregationOnRow">Rows/typeName</property>
+                                        <property name="aggregationOnColumn">Columns/Week Of Year</property>
+                                        <property name="verticalAlign">middle</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="width">1.5cm</property>
+                                        <property name="content">
+                                            <data id="4080">
+                                                <property name="textAlign">center</property>
+                                                <property name="resultSetColumn">qty1_Rows/typeName_Columns/Week Of Year</property>
+                                            </data>
+                                        </property>
+                                    </extended-item>
+                                </property>
+                                <property name="header">
+                                    <extended-item extensionName="CrosstabCell" id="4081">
+                                        <property name="height">0cm</property>
+                                    </extended-item>
+                                </property>
+                            </extended-item>
+                        </property>
+                        <property name="rows">
+                            <extended-item extensionName="CrosstabView" id="4052">
+                                <property name="views">
+                                    <extended-item extensionName="DimensionView" id="4053">
+                                        <property name="dimension">Rows</property>
+                                        <property name="levels">
+                                            <extended-item extensionName="LevelView" name="NewLevel View6" id="4054">
+                                                <property name="level">Rows/max_level</property>
+                                                <property name="sort">
+                                                    <sort-element>
+                                                        <expression name="key" type="javascript">data["max_level"]</expression>
+                                                        <property name="direction">desc</property>
+                                                        <property name="strength">-1</property>
+                                                    </sort-element>
+                                                </property>
+                                                <property name="member">
+                                                    <extended-item extensionName="CrosstabCell" id="4055">
+                                                        <property name="content">
+                                                            <data name="max_level1" id="4056">
+                                                                <property name="textAlign">center</property>
+                                                                <property name="display">block</property>
+                                                                <property name="pageBreakAfter">auto</property>
+                                                                <property name="pageBreakInside">auto</property>
+                                                                <structure name="toc"/>
+                                                                <property name="resultSetColumn">max_level</property>
+                                                            </data>
+                                                        </property>
+                                                        <property name="verticalAlign">middle</property>
+                                                        <property name="borderTopStyle">solid</property>
+                                                        <property name="borderTopWidth">thin</property>
+                                                        <property name="borderLeftStyle">solid</property>
+                                                        <property name="borderLeftWidth">thin</property>
+                                                        <property name="borderBottomStyle">solid</property>
+                                                        <property name="borderBottomWidth">thin</property>
+                                                        <property name="borderRightStyle">solid</property>
+                                                        <property name="borderRightWidth">thin</property>
+                                                        <property name="width">2.5cm</property>
+                                                    </extended-item>
+                                                </property>
+                                            </extended-item>
+                                            <extended-item extensionName="LevelView" name="NewLevel View7" id="4058">
+                                                <property name="level">Rows/productName</property>
+                                                <property name="filter">
+                                                    <filter-condition-element>
+                                                        <expression name="expr" type="javascript">data["productName"]</expression>
+                                                        <property name="operator">ne</property>
+                                                        <simple-property-list name="value1">
+                                                            <value type="javascript">""</value>
+                                                        </simple-property-list>
+                                                        <property name="updateAggregation">false</property>
+                                                    </filter-condition-element>
+                                                </property>
+                                                <property name="member">
+                                                    <extended-item extensionName="CrosstabCell" id="4059">
+                                                        <property name="content">
+                                                            <data name="productName1" id="4061">
+                                                                <property name="textAlign">left</property>
+                                                                <property name="resultSetColumn">productName</property>
+                                                            </data>
+                                                        </property>
+                                                        <property name="verticalAlign">middle</property>
+                                                        <property name="borderTopStyle">solid</property>
+                                                        <property name="borderTopWidth">thin</property>
+                                                        <property name="borderLeftStyle">solid</property>
+                                                        <property name="borderLeftWidth">thin</property>
+                                                        <property name="borderBottomStyle">solid</property>
+                                                        <property name="borderBottomWidth">thin</property>
+                                                        <property name="borderRightStyle">solid</property>
+                                                        <property name="borderRightWidth">thin</property>
+                                                    </extended-item>
+                                                </property>
+                                            </extended-item>
+                                            <extended-item extensionName="LevelView" name="NewLevel View8" id="4063">
+                                                <property name="level">Rows/unitName</property>
+                                                <property name="member">
+                                                    <extended-item extensionName="CrosstabCell" id="4064">
+                                                        <property name="content">
+                                                            <data name="unitName" id="4066">
+                                                                <property name="resultSetColumn">unitName</property>
+                                                            </data>
+                                                        </property>
+                                                        <property name="textAlign">center</property>
+                                                        <property name="verticalAlign">middle</property>
+                                                        <property name="borderTopStyle">solid</property>
+                                                        <property name="borderTopWidth">thin</property>
+                                                        <property name="borderLeftStyle">solid</property>
+                                                        <property name="borderLeftWidth">thin</property>
+                                                        <property name="borderBottomStyle">solid</property>
+                                                        <property name="borderBottomWidth">thin</property>
+                                                        <property name="borderRightStyle">solid</property>
+                                                        <property name="borderRightWidth">thin</property>
+                                                        <property name="width">3cm</property>
+                                                    </extended-item>
+                                                </property>
+                                            </extended-item>
+                                            <extended-item extensionName="LevelView" name="NewLevel View9" id="4113">
+                                                <property name="level">Rows/typeSeq</property>
+                                                <property name="sort">
+                                                    <sort-element>
+                                                        <expression name="key" type="javascript">data["typeSeq"]</expression>
+                                                        <property name="direction">asc</property>
+                                                        <property name="strength">-1</property>
+                                                    </sort-element>
+                                                </property>
+                                                <property name="member">
+                                                    <extended-item extensionName="CrosstabCell" id="4114">
+                                                        <property name="content">
+                                                            <data name="typeSeq" id="4117">
+                                                                <property name="resultSetColumn">typeSeq</property>
+                                                            </data>
+                                                        </property>
+                                                        <property name="width">0in</property>
+                                                    </extended-item>
+                                                </property>
+                                            </extended-item>
+                                            <extended-item extensionName="LevelView" name="NewLevel View10" id="4073">
+                                                <property name="level">Rows/typeName</property>
+                                                <property name="member">
+                                                    <extended-item extensionName="CrosstabCell" id="4074">
+                                                        <property name="content">
+                                                            <data name="typeName1" id="4076">
+                                                                <property name="textAlign">left</property>
+                                                                <property name="resultSetColumn">typeName</property>
+                                                            </data>
+                                                        </property>
+                                                        <property name="verticalAlign">middle</property>
+                                                        <property name="borderTopStyle">solid</property>
+                                                        <property name="borderTopWidth">thin</property>
+                                                        <property name="borderBottomStyle">solid</property>
+                                                        <property name="borderBottomWidth">thin</property>
+                                                        <property name="borderRightStyle">solid</property>
+                                                        <property name="borderRightWidth">thin</property>
+                                                    </extended-item>
+                                                </property>
+                                            </extended-item>
+                                        </property>
+                                    </extended-item>
+                                </property>
+                            </extended-item>
+                        </property>
+                        <property name="columns">
+                            <extended-item extensionName="CrosstabView" id="4046">
+                                <property name="views">
+                                    <extended-item extensionName="DimensionView" id="4047">
+                                        <property name="dimension">Columns</property>
+                                        <property name="levels">
+                                            <extended-item extensionName="LevelView" name="NewLevel View5" id="4048">
+                                                <property name="level">Columns/Week Of Year</property>
+                                                <property name="member">
+                                                    <extended-item extensionName="CrosstabCell" id="4049">
+                                                        <property name="content">
+                                                            <data name="Week Of Year1" id="4050">
+                                                                <property name="textAlign">center</property>
+                                                                <property name="resultSetColumn">Week Of Year</property>
+                                                            </data>
+                                                        </property>
+                                                        <property name="borderTopStyle">solid</property>
+                                                        <property name="borderTopWidth">thin</property>
+                                                        <property name="borderLeftStyle">solid</property>
+                                                        <property name="borderLeftWidth">thin</property>
+                                                        <property name="borderRightStyle">solid</property>
+                                                        <property name="borderRightWidth">thin</property>
+                                                        <property name="width">5.052083333333333in</property>
+                                                    </extended-item>
+                                                </property>
+                                            </extended-item>
+                                        </property>
+                                    </extended-item>
+                                </property>
+                            </extended-item>
+                        </property>
+                        <property name="header">
+                            <extended-item extensionName="CrosstabCell" id="4097">
+                                <property name="content">
+                                    <text id="4105">
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'MrpWeeks.maxLevel'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </property>
+                                <property name="textAlign">center</property>
+                                <property name="borderTopStyle">solid</property>
+                                <property name="borderTopWidth">thin</property>
+                                <property name="borderLeftStyle">solid</property>
+                                <property name="borderLeftWidth">thin</property>
+                                <property name="borderRightStyle">solid</property>
+                                <property name="borderRightWidth">thin</property>
+                            </extended-item>
+                            <extended-item extensionName="CrosstabCell" id="4098">
+                                <property name="content">
+                                    <text id="4103">
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'MrpWeeks.product'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </property>
+                                <property name="textAlign">center</property>
+                                <property name="borderTopStyle">solid</property>
+                                <property name="borderTopWidth">thin</property>
+                                <property name="borderLeftStyle">solid</property>
+                                <property name="borderLeftWidth">thin</property>
+                                <property name="borderRightStyle">solid</property>
+                                <property name="borderRightWidth">thin</property>
+                            </extended-item>
+                            <extended-item extensionName="CrosstabCell" id="4099">
+                                <property name="content">
+                                    <text id="4104">
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'MrpWeeks.unit'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </property>
+                                <property name="textAlign">center</property>
+                                <property name="borderTopStyle">solid</property>
+                                <property name="borderTopWidth">thin</property>
+                                <property name="borderLeftStyle">solid</property>
+                                <property name="borderLeftWidth">thin</property>
+                                <property name="borderRightStyle">solid</property>
+                                <property name="borderRightWidth">thin</property>
+                            </extended-item>
+                            <extended-item extensionName="CrosstabCell" id="4116"/>
+                            <extended-item extensionName="CrosstabCell" id="4100">
+                                <property name="content">
+                                    <text id="4106">
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'MrpWeeks.week'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </property>
+                                <property name="textAlign">center</property>
+                                <property name="borderTopStyle">solid</property>
+                                <property name="borderTopWidth">thin</property>
+                                <property name="borderRightStyle">solid</property>
+                                <property name="borderRightWidth">thin</property>
+                            </extended-item>
+                            <extended-item extensionName="CrosstabCell" id="4045"/>
+                            <extended-item extensionName="CrosstabCell" id="4060"/>
+                            <extended-item extensionName="CrosstabCell" id="4065"/>
+                            <extended-item extensionName="CrosstabCell" id="4115">
+                                <property name="content">
+                                    <label id="4118">
+                                        <text-property name="text">typeSeq</text-property>
+                                    </label>
+                                </property>
+                            </extended-item>
+                            <extended-item extensionName="CrosstabCell" id="4075"/>
+                        </property>
+                        <property name="repeatRowHeader">true</property>
+                        <property name="emptyCellValue"></property>
+                        <property name="filter">
+                            <filter-condition-element>
+                                <expression name="expr" type="javascript">data["Week Of Year"]</expression>
+                                <property name="operator">ge</property>
+                                <simple-property-list name="value1">
+                                    <value type="javascript">function getWeekNumber(d) {
+    // Copy date so don't modify original
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    // Set to nearest Thursday: current date + 4 - current day number
+    // Make Sunday's day number 7
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+    // Get first day of year
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    // Calculate full weeks to nearest Thursday
+    var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+    // Return week number
+    return weekNo;
+}
+
+getWeekNumber(row._outer["created_on"])</value>
+                                </simple-property-list>
+                            </filter-condition-element>
+                            <filter-condition-element>
+                                <expression name="expr" type="javascript">data["Week Of Year"]</expression>
+                                <property name="operator">le</property>
+                                <simple-property-list name="value1">
+                                    <value type="javascript">params["endDate"].value</value>
+                                </simple-property-list>
+                            </filter-condition-element>
+                        </property>
+                        <property name="display">block</property>
+                        <structure name="toc"/>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">Week Of Year</property>
+                                <expression name="expression">dimension["Columns"]["Week Of Year"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">max_level</property>
+                                <expression name="expression">dimension["Rows"]["max_level"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">productName</property>
+                                <expression name="expression">dimension["Rows"]["productName"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">unitName</property>
+                                <expression name="expression">dimension["Rows"]["unitName"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">typeName</property>
+                                <expression name="expression">dimension["Rows"]["typeName"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">qty1_Rows/typeName_Columns/Week Of Year</property>
+                                <expression name="expression">measure["qty1"]</expression>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>Rows/typeName</value>
+                                    <value>Columns/Week Of Year</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                            </structure>
+                            <structure>
+                                <property name="name">typeSeq</property>
+                                <expression name="expression">dimension["Rows"]["typeSeq"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                        </list-property>
+                    </extended-item>
+                </cell>
+            </row>
+        </grid>
+    </body>
+</report>

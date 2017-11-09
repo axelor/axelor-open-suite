@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<menuitem name="marketing-root" order="-107" title="Marketing" icon="fa-bullhorn" 
-	    groups="admins,ERP" icon-background="violet"/> 
+	<menuitem name="marketing-root" order="-107" title="Marketing" icon="fa-bullhorn" if="__config__.app.isApp('marketing')"
+	     icon-background="violet"/> 
 	
 	<menuitem name="campaign-all" parent="marketing-root" title="Campaigns" action="campaign.all"/>
 	
 	<action-view name="campaign.all" model="com.axelor.apps.marketing.db.Campaign"
 		title="Campaigns">
+		<view name="campaign-kanban" type="kanban"/>
 		<view name="campaign-grid" type="grid" />
 		<view name="campaign-form" type="form" />
 	</action-view>	
@@ -20,5 +21,25 @@
 		<view name="target-list-grid" type="grid" />
 		<view name="target-list-form" type="form" />
 	</action-view>	
+	
+	<menuitem name="marketing-conf" title="Configuration" parent="marketing-root"/>
+	
+	<menuitem name="marketing-conf-campaign-type" parent="marketing-conf" title="Campaign types" action="marketing.conf.campaign.type"/>
+	
+	<action-view name="marketing.conf.campaign.type" model="com.axelor.apps.marketing.db.CampaignType"
+		title="Campaign types">
+		<view name="campaign-type-grid" type="grid" />
+		<view name="campaign-type-form" type="form" />
+	</action-view>
+	
+	<menuitem name="marketing-conf-template" parent="marketing-conf" title="Template" action="marketing.conf.template"/>
+	
+	<action-view name="marketing.conf.template" model="com.axelor.apps.message.db.Template"	title="Template">
+		<view name="template-grid" type="grid" />
+		<view name="template-form" type="form" />
+		<domain>self.mediaTypeSelect IN (4)</domain>
+		<context name="_mediaType" expr="eval:4"/>
+	</action-view>
+		
 
 </object-views>

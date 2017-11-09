@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+  <chart name="chart.wkf.tracking.status.per.month" title="Status per month" onInit="action-chart-wkf-tracking-status-per-month-default">
+    <search-fields>
+      <field name="fromDate" type="date" target="From" x-required="true"/>
+      <field name="toDate" type="date" target="to" x-required="true"/>
+    </search-fields>
+    <dataset type="jpql">
+    <![CDATA[
+    SELECT
+        SUM(self.totalCount) AS total,
+        self.status as status,
+        CONCAT(MONTH(self.createdOn),'-',YEAR(self.createdOn)) AS month
+    FROM
+        WkfTrackingTotal self
+    WHERE
+        DATE(self.createdOn) BETWEEN DATE(:fromDate) and DATE(:toDate)
+        and self.wkfTracking.wkf.id = :_wkfId
+    GROUP BY
+        status,
+        CONCAT(MONTH(self.createdOn),'-',YEAR(self.createdOn))
+    ORDER BY
+        month
+    ]]>
+    </dataset>
+    <category key="month" type="text"/>
+    <series key="total" groupBy="status" type="bar"/>
+  </chart>
+  
+  <action-attrs name="action-chart-wkf-tracking-status-per-month-default">
+    <attribute name="value" for="fromDate" expr="eval:__datetime__.minusMonths(6)"/>
+    <attribute name="value" for="toDate" expr="eval:__datetime__"/>
+  </action-attrs>
+  
+  <chart name="chart.wkf.tracking.status.per.day" title="Status per day" onInit="action-chart-wkf-tracking-status-per-day-default">
+    <search-fields>
+      <field name="fromDate" type="date" target="From" x-required="true"/>
+      <field name="toDate" type="date" target="to" x-required="true"/>
+    </search-fields>
+    <dataset type="jpql">
+    <![CDATA[
+    SELECT
+        SUM(self.totalCount) AS total,
+        self.status as status,
+        self.createdOn AS day
+    FROM
+        WkfTrackingTotal self
+    WHERE
+        DATE(self.createdOn) BETWEEN DATE(:fromDate) and DATE(:toDate)
+        and self.wkfTracking.wkf.id = :_wkfId
+    GROUP BY
+        status,
+        self.createdOn
+    ORDER BY
+        day
+    ]]>
+    </dataset>
+    <category key="day" type="date"/>
+    <series key="total" groupBy="status" type="bar"/>
+    <config name="xFormat" value="DD/MM/YYYY"/>
+  </chart>
+  
+  <action-attrs name="action-chart-wkf-tracking-status-per-day-default">
+    <attribute name="value" for="fromDate" expr="eval:__datetime__.minusMonths(1)"/>
+    <attribute name="value" for="toDate" expr="eval:__datetime__"/>
+  </action-attrs>
+  
+  <chart name="chart.wkf.tracking.status.per.spent.time" title="Status per time(Hours)" onInit="action-chart-wkf-tracking-status-per-spent-time-default">
+    <search-fields>
+      <field name="fromDate" type="date" target="From" x-required="true"/>
+      <field name="toDate" type="date" target="to" x-required="true"/>
+    </search-fields>
+    <dataset type="jpql">
+    <![CDATA[
+    SELECT
+        SUM(self.totalTimeHours) AS total,
+        self.status as status
+    FROM
+        WkfTrackingTime self
+    WHERE
+        DATE(self.createdOn) BETWEEN DATE(:fromDate) and DATE(:toDate)
+        and self.wkfTracking.wkf.id = :_wkfId
+    GROUP BY
+        status
+    ORDER BY
+        status
+    ]]>
+    </dataset>
+    <category key="status" type="text"/>
+    <series key="total" type="bar"/>
+  </chart>
+  
+  <action-attrs name="action-chart-wkf-tracking-status-per-spent-time-default">
+    <attribute name="value" for="fromDate" expr="eval:__datetime__.minusYears(1)"/>
+    <attribute name="value" for="toDate" expr="eval:__datetime__"/>
+  </action-attrs>
+  
+   <chart name="chart.wkf.tracking.status.per.spent.time.user" title="Status per user per time(Hours)" onInit="action-chart-wkf-tracking-status-per-spent-time-user-default">
+    <search-fields>
+      <field name="fromDate" type="date" target="From" x-required="true"/>
+      <field name="toDate" type="date" target="to" x-required="true"/>
+    </search-fields>
+    <dataset type="jpql">
+    <![CDATA[
+    SELECT
+        SUM(self.timeSpent) AS total,
+        self.status as status,
+        User.name as userName
+    FROM
+        WkfTrackingLine self
+        LEFT JOIN self.createdBy AS User
+    WHERE
+        DATE(self.createdOn) BETWEEN DATE(:fromDate) and DATE(:toDate)
+        and self.wkfTracking.wkf.id = :_wkfId
+    GROUP BY
+        User.name,
+        status
+    ORDER BY
+        userName,
+        status
+    ]]>
+    </dataset>
+    <category key="userName" type="text"/>
+    <series key="total" type="bar" groupBy="status"/>
+  </chart>
+  
+  <action-attrs name="action-chart-wkf-tracking-status-per-spent-time-user-default">
+    <attribute name="value" for="fromDate" expr="eval:__datetime__.minusYears(1)"/>
+    <attribute name="value" for="toDate" expr="eval:__datetime__"/>
+  </action-attrs>
+  
+  
+</object-views>

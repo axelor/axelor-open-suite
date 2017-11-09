@@ -1,0 +1,2 @@
+active;name;job;cron
+false;Fetch emails on every 5 minutes ;com.axelor.apps.message.job.FetchEmailJob;0 0/5 * * * ?

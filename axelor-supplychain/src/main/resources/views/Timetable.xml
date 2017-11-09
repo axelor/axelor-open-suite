@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="timetable-grid" title="Timetables" model="com.axelor.apps.supplychain.db.Timetable" editable="true">
        <field name="estimatedDate"/>
        <field name="amount"/>
        <field name="comments"/>
-       <field name="product" if="__config__.general.getAllowTimetableInvoicing()"/>
-       <field name="productName" if="__config__.general.getAllowTimetableInvoicing()"/>
-       <field name="unit" if="__config__.general.getAllowTimetableInvoicing()"/>
-       <field name="qty" if="__config__.general.getAllowTimetableInvoicing()"/>
-       <button name="generateInvoice" help="Generate Invoice" icon="fa-credit-card" onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly" if="__config__.general.getAllowTimetableInvoicing()"/>
+       <field name="product" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       <field name="productName" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       <field name="unit" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       <field name="qty" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       <button name="generateInvoice" icon="fa-credit-card" onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
     </grid>
  
 	 <form name="timetable-form" title="Timetable" model="com.axelor.apps.supplychain.db.Timetable">
 	 	<panel name="main" >
-			<field name="estimatedDate"/>
-      		<field name="amount"/>
-      		<field name="product" if="__config__.general.getAllowTimetableInvoicing()"/>
-       		<field name="productName" if="__config__.general.getAllowTimetableInvoicing()"/>
-       		<field name="unit" if="__config__.general.getAllowTimetableInvoicing()"/>
-       		<field name="qty" if="__config__.general.getAllowTimetableInvoicing()"/>
-       		<button name="generateInvoice" colOffset="9" colSpan="3" title="Generate Invoice" onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly" if="__config__.general.getAllowTimetableInvoicing()" readonlyIf="invoice != null"/>
+			<field name="estimatedDate" colSpan="4"/>
+      		<field name="amount" colSpan="4"/>
+      		<field name="product" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       		<field name="productName" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       		<field name="unit" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       		<field name="qty" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       		<button name="generateInvoice" colOffset="9" colSpan="3" title="Generate Invoice" onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"  readonlyIf="invoice != null"/>
             <field name="invoice" hidden="true"/>
        		<field name="comments" colSpan="12"/>
 	 	</panel>

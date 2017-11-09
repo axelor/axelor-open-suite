@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -43,14 +43,14 @@ public class AccountingBatchController {
 	 * @param request
 	 * @param response
 	 */
-	public void actionReminder(ActionRequest request, ActionResponse response){
+	public void actionDebtRecovery(ActionRequest request, ActionResponse response){
 
 		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
 
 		Batch batch = null;
 
-		if(accountingBatch.getReminderTypeSelect() == AccountingBatchRepository.ACTION_REMINDER)  {
-			batch = accountingBatchService.reminder(accountingBatchRepo.find(accountingBatch.getId()));
+		if(accountingBatch.getActionSelect() == AccountingBatchRepository.ACTION_DEBT_RECOVERY)  {
+			batch = accountingBatchService.debtRecovery(accountingBatchRepo.find(accountingBatch.getId()));
 		}
 		if(batch != null)
 			response.setFlash(batch.getComments());
@@ -107,20 +107,10 @@ public class AccountingBatchController {
 	 * @param response
 	 */
 	public void actionDirectDebit(ActionRequest request, ActionResponse response){
-
 		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
-
-		Batch batch = null;
-
-		if(accountingBatch.getDirectDebitTypeSelect() == AccountingBatchRepository.DIRECT_DEBIT_TYPE_EXPORT)  {
-			batch = accountingBatchService.paymentScheduleExport(accountingBatchRepo.find(accountingBatch.getId()));
-		}
-		else if(accountingBatch.getDirectDebitTypeSelect() == AccountingBatchRepository.DIRECT_DEBIT_TYPE_IMPORT)  {
-			batch = accountingBatchService.paymentScheduleImport(accountingBatchRepo.find(accountingBatch.getId()));
-		}
-
-		if(batch != null)
-			response.setFlash(batch.getComments());
+		accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
+		Batch batch = accountingBatchService.directDebit(accountingBatch);
+		response.setFlash(batch.getComments());
 		response.setReload(true);
 	}
 
@@ -191,6 +181,13 @@ public class AccountingBatchController {
 
 	}
 
+	public void actionCreditTransfer(ActionRequest request, ActionResponse response) {
+		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+		accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
+		Batch batch = accountingBatchService.creditTransfer(accountingBatch);
+		response.setFlash(batch.getComments());
+		response.setReload(true);
+	}
 
 	// WS
 

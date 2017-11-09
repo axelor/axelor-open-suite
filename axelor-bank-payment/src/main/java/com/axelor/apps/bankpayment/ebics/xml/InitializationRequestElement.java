@@ -95,9 +95,9 @@ public abstract class InitializationRequestElement extends DefaultEbicsRootEleme
     try {
       return MessageDigest.getInstance("SHA-256", "BC").digest(EbicsUtils.canonize(toByteArray()));
     } catch (NoSuchAlgorithmException e) {
-      throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR );
+      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
     } catch (NoSuchProviderException e) {
-      throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR );
+      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
     }
   }
 
@@ -117,13 +117,13 @@ public abstract class InitializationRequestElement extends DefaultEbicsRootEleme
    */
   protected byte[] decodeHex(byte[] hex) throws AxelorException {
     if (hex == null) {
-      throw new AxelorException("Bank digest is empty, HPB request must be performed before", IException.CONFIGURATION_ERROR);
+      throw new AxelorException(IException.CONFIGURATION_ERROR, "Bank digest is empty, HPB request must be performed before");
     }
 
     try {
       return Hex.decodeHex((new String(hex)).toCharArray());
     } catch (DecoderException e) {
-      throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR );
+      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
     }
   }
 
@@ -141,7 +141,7 @@ public abstract class InitializationRequestElement extends DefaultEbicsRootEleme
       return cipher.doFinal(nonce);
     } catch (Exception e) {
       e.printStackTrace();
-      throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR );
+      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
     }
   }
 

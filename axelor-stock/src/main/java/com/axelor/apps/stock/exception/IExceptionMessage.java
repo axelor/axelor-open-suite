@@ -47,7 +47,8 @@ public interface IExceptionMessage {
 	 */
 	static final String LOCATION_LINE_1 = /*$$(*/ "Product's stocks %s (%s) are not in sufficient quantity to realize the delivery" /*)*/;
 	static final String LOCATION_LINE_2 = /*$$(*/ "Product's stocks %s (%s), tracking number {} are not in sufficient quantity to realize the delivery" /*)*/;
-
+	static final String LOCATION_LINE_3 = /*$$(*/ "Product's stocks %s (%s) exceeds maximum stock rules." /*)*/;
+	
 	/**
 	 * Stock Move Service and Controller
 	 */
@@ -67,6 +68,9 @@ public interface IExceptionMessage {
 	static final String STOCK_MOVE_14 = /*$$(*/ "No move lines to split" /*)*/;
 	static final String STOCK_MOVE_15 = /*$$(*/ "Please select lines to split" /*)*/;
 	static final String STOCK_MOVE_16 = /*$$(*/ "Please entry proper split qty" /*)*/;
+	static final String STOCK_MOVE_17 = /*$$(*/ "Must set weight unit in stock configuration for customs." /*)*/;
+	static final String STOCK_MOVE_18 = /*$$(*/ "All storable products must have net weight information for customs." /*)*/;
+	static final String STOCK_MOVE_19 = /*$$(*/ "Can't realize this stock move because of the ongoing inventory %s." /*)*/;
 	static final String STOCK_MOVE_SPLIT_NOT_GENERATED = /*$$(*/ "No new stock move was generated" /*)*/;
 	static final String STOCK_MOVE_INCOMING_PARTIAL_GENERATED = /*$$(*/ "An incoming partial stock move has been generated (%s)" /*)*/;
 	static final String STOCK_MOVE_OUTGOING_PARTIAL_GENERATED = /*$$(*/ "An outgoing partial stock move has been generated (%s)" /*)*/;
@@ -90,5 +94,23 @@ public interface IExceptionMessage {
 	static final String LOCATION_1 = /*$$(*/ "There's already an existing storage, you must deactivate it first" /*)*/;
 	static final String LOCATION_2 = /*$$(*/ "Please select the Stock Location(s) to print." /*)*/;
 
+	/**
+	 * Stock Move Line Service
+	 */
+	static final String STOCK_MOVE_LINE_MUST_FILL_CONFORMITY =
+			/*$$(*/ "Please fill the conformity for the product(s) : %s" /*)*/;
+	static final String STOCK_MOVE_LINE_EXPIRED_PRODUCTS = /*$$(*/ "Expired product(s): %s" /*)*/;
+
+	/**
+	 * Partner Product Quality Rating Service
+	 */
+	String PARTNER_PRODUCT_QUALITY_RATING_MISSING_PARTNER = /*$$(*/ "Partner is missing." /*)*/;
+
+	/*
+	 * Logistical form
+	 */
+	String LOGISTICAL_FORM_MISSING_SEQUENCE = /*$$(*/ "Missing logistical form sequence for company %s" /*)*/;
+	String LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS = /*$$(*/ "Invalid dimensions on packaging line No. %d" /*)*/;
+	String LOGISTICAL_FORM_LINES_INCONSISTENT_QUANTITY = /*$$(*/ "Total quantity for %s: %s (expected: %s)" /*)*/;
 
 }

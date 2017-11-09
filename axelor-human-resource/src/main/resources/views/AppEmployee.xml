@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<form name="app-employee-config-form" title="Employees management" model="com.axelor.apps.base.db.AppEmployee" canDelete="false" canNew="false" width="large">
+		<panel>
+			<field name="dailyWorkHours" colSpan="12"/>
+			<field name="advanceManagement" />
+			<field name="payrollPreparation" colSpan="4" widget="boolean-switch" />
+			<field name="lunchVoucher" colSpan="4" widget="boolean-switch" />
+			<field name="employeeBonus" colSpan="4" widget="boolean-switch" />
+		</panel>
+		<panel>
+			<button name="generateHrConfigurations" colSpan="4" title="Generate human resource configurations" onClick="save,com.axelor.apps.hr.web.AppHumanResourceController:generateHrConfigurations"/>
+			<panel-dashlet action="admin.root.conf.hr.config" colSpan="12"/>
+		</panel>
+	</form>
+	
+	<action-view name="admin.root.conf.hr.config" title="Human resource configurations"
+		model="com.axelor.apps.hr.db.HRConfig" >
+		<view type="grid" name="hr-config-grid" />
+		<view type="form" name="hr-config-form"/>
+	</action-view>
+	
+</object-views>

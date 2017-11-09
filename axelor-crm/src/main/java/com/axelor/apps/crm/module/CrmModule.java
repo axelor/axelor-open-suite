@@ -28,6 +28,8 @@ import com.axelor.apps.crm.message.MessageServiceCrmImpl;
 import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.apps.crm.service.OpportunityServiceImpl;
+import com.axelor.apps.crm.service.app.AppCrmService;
+import com.axelor.apps.crm.service.app.AppCrmServiceImpl;
 
 
 public class CrmModule extends AxelorModule {
@@ -39,5 +41,6 @@ public class CrmModule extends AxelorModule {
         bind(OpportunityRepository.class).to(OpportunityManagementRepository.class);
         bind(OpportunityService.class).to(OpportunityServiceImpl.class);
         bind(ICalendarService.class).to(CalendarService.class);
+        bind(AppCrmService.class).to(AppCrmServiceImpl.class);
     }
 }

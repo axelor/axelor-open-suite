@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -39,7 +39,18 @@ public class YearController {
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }	
 	}
-	
+
+	public void adjust(ActionRequest request, ActionResponse response) {
+		Year year = request.getContext().asType(Year.class);
+
+		try {
+			ys.adjust(year);
+			response.setReload(true);
+		} catch(Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+
 	public void generatePeriods(ActionRequest request, ActionResponse response) {
 		Year year = request.getContext().asType(Year.class);
 		response.setValue("periodList", ys.generatePeriods(year));

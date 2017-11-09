@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<studio-data xmlns:ns2="http://axelor.com/xml/ns/object-views">
+    <models name="ProductCategory" packageName="com.axelor.apps.custom.db" title="Product category">
+        <fields>
+            <field fieldType="boolean" label="Active" name="active" typeName="Boolean"/>
+            <field fieldType="string" label="Code" name="code" typeName="String"/>
+            <field fieldType="string" label="Name" name="name" typeName="String"/>
+        </fields>
+    </models>
+    <models name="Product" packageName="com.axelor.apps.custom.db">
+        <fields>
+            <field fieldType="many-to-one" label="Category" name="productCategory" typeName="ProductCategory"/>
+            <field fieldType="string" label="Type" name="productType" typeName="String">
+                <selection name="productType">
+                    <ns2:option value="product" order="1">Product</ns2:option>
+                    <ns2:option value="service" order="2">Service</ns2:option>
+                    <ns2:option value="expense" order="3">Expense</ns2:option>
+                </selection>
+            </field>
+            <field fieldType="decimal" label="Price" name="price" typeName="BigDecimal"/>
+            <field fieldType="integer" label="Minimum Qty" name="minumQty" typeName="Integer"/>
+            <field fieldType="string" label="Code" name="code" typeName="String"/>
+            <field fieldType="string" label="Name" name="name" typeName="String"/>
+        </fields>
+    </models>
+    <models name="Customer" packageName="com.axelor.apps.custom.db">
+        <fields>
+            <field fieldType="integer" label="Active categories" name="totalActiveCateg" typeName="Integer"/>
+            <field fieldType="integer" label="Total categories" name="totalCategories" typeName="Integer"/>
+            <field fieldType="many-to-many" label="Product categories" name="productCategories" typeName="ProductCategory"/>
+            <field fieldType="string" label="Address" name="address" typeName="String"/>
+            <field fieldType="string" label="Code" name="code" typeName="String"/>
+            <field fieldType="string" label="Name" name="name" typeName="String"/>
+            <field fieldType="date" label="Dob" name="dob" typeName="LocalDate"/>
+        </fields>
+    </models>
+    <models name="OrderPolicy" packageName="com.axelor.apps.custom.db" title="Order policy">
+        <fields>
+            <field fieldType="string" label="Code" name="code" typeName="String"/>
+            <field fieldType="string" label="Name" name="name" typeName="String"/>
+        </fields>
+    </models>
+    <models name="OrderLine" packageName="com.axelor.apps.custom.db" title="Order line">
+        <fields>
+            <field fieldType="decimal" label="Total amt" name="totalAmt" typeName="BigDecimal"/>
+            <field fieldType="integer" label="Quantity" name="qty" typeName="Integer"/>
+            <field fieldType="many-to-one" label="Product Category" name="productCategory" typeName="ProductCategory"/>
+            <field fieldType="many-to-one" label="Product" name="product" typeName="Product"/>
+        </fields>
+    </models>
+    <models name="Order" packageName="com.axelor.apps.custom.db">
+        <fields>
+            <field fieldType="integer" label="Avg qty" name="avgQty" typeName="Integer"/>
+            <field fieldType="integer" label="Min qty" name="minQty" typeName="Integer"/>
+            <field fieldType="integer" label="Max qty" name="maxQty" typeName="Integer"/>
+            <field fieldType="decimal" label="Total" name="total" typeName="BigDecimal"/>
+            <field fieldType="string" label="Notes" name="notes" typeName="String"/>
+            <field fieldType="many-to-one" label="Policy" name="orderPolicy" typeName="OrderPolicy"/>
+            <field fieldType="string" label="Order no." name="orderNumber" typeName="String"/>
+            <field fieldType="date" label="Date" name="orderDate" typeName="LocalDate"/>
+            <field fieldType="many-to-one" label="Salesman" name="salesman" typeName="User"/>
+            <field fieldType="many-to-one" label="Customer" name="customer" typeName="Customer"/>
+            <field fieldType="one-to-many" label="Lines" name="lines" typeName="OrderLine"/>
+        </fields>
+    </models>
+</studio-data>

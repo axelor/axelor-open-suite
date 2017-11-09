@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
     <grid name="analytic-move-line-grid" title="Analytic Move Lines" model="com.axelor.apps.account.db.AnalyticMoveLine">
     	<hilite if="typeSelect == 1" color="warning"/>
@@ -23,12 +23,12 @@
         <field name="percentage"/>
         <field name="amount"/>
         <field name="date"/>
-        <field name="projectTask" if-module="axelor-business-project"/>
+        <field name="project" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
         <field name="typeSelect"/>
     </grid>
     
-    <form name="analytic-move-line-form" title="Analytic Move Line" model="com.axelor.apps.account.db.AnalyticMoveLine"  onNew="action-analytic-move-line-attrs-title-project-task"
-    	onLoad="action-analytic-move-line-attrs-title-project-task" width="large">
+    <form name="analytic-move-line-form" title="Analytic Move Line" model="com.axelor.apps.account.db.AnalyticMoveLine"  onNew="action-analytic-move-line-record-currency,action-analytic-move-line-attrs-title-project"
+    	onLoad="action-analytic-move-line-attrs-title-project" width="large">
        <panel name="main" >
        		<field name="analyticJournal" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
        		<field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
@@ -36,7 +36,8 @@
 	        <field name="date"/>
 	        <field name="percentage"/>
 	        <field name="amount"/>
-	        <field name="projectTask" domain="self.imputable = true" if-module="axelor-business-project" form-view="project-task-form" grid-view="project-task-grid" />
+	        <field name="currency" canEdit="false"  form-view="currency-form" grid-view="currency-grid" />
+	        <field name="project" domain="self.imputable = true" if-module="axelor-business-project" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('business-project')"/>
   			<field name="account"/>
 			<field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" showIf="moveLine"/>
 	        <field name="typeSelect"/>
@@ -52,7 +53,7 @@
 	        <field name="percentage" colSpan="4" onChange="action-analytic-move-line-method-compute-amount"/>
 	        <field name="amount" colSpan="4" readonly="true"/>
 	        <field name="date" colSpan="4"/>
-	        <field name="projectTask" grid-view="project-task-grid" form-view="project-task-form" if-module="axelor-business-project"/>
+	        <field name="project" grid-view="project-grid" form-view="project-form" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
 	        <field name="typeSelect"/>
         </panel>      
     </form>
@@ -61,7 +62,12 @@
     	<call class="com.axelor.apps.account.web.AnalyticDistributionLineController" method="computeAmount"/>
     </action-method>
     
-    <action-attrs if-module="axelor-business-project" name="action-analytic-move-line-attrs-title-project-task">
-		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
+    <action-record name="action-analytic-move-line-record-currency" model="com.axelor.apps.account.db.AnalyticMoveLine">
+    	<field name="currency" expr="eval: __user__.activeCompany?.currency"/>
+    </action-record>
+    
+    <action-attrs if-module="axelor-business-project"  name="action-analytic-move-line-attrs-title-project">
+		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
 	</action-attrs>
+	
 </object-views>

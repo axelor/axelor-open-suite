@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -17,16 +17,19 @@
  */
 package com.axelor.apps.sale.service;
 
-import org.joda.time.LocalDate;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.Team;
+import com.axelor.apps.sale.db.CancelReason;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.team.db.Team;
 import com.google.inject.persist.Transactional;
 
 public interface SaleOrderService {
@@ -35,8 +38,9 @@ public interface SaleOrderService {
 	public SaleOrder _computeSaleOrderLineList(SaleOrder saleOrder) throws AxelorException;
 
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public SaleOrder computeSaleOrder(SaleOrder saleOrder) throws AxelorException;
+	
+	public void computeMarginSaleOrder(SaleOrder saleOrder);
 
 
 	/**
@@ -86,13 +90,15 @@ public interface SaleOrderService {
 
 	public SaleOrder createSaleOrder(Company company) throws AxelorException;
 
-	public void cancelSaleOrder(SaleOrder saleOrder);
+	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr);
 
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception;
-	
+
 	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception;
 
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException;
+	
+	public SaleOrder mergeSaleOrders(List<SaleOrder> saleOrderList, Currency currency, Partner clientPartner, Company company, Partner contactPartner, PriceList priceList, Team team) throws AxelorException;
 
 	public String getLanguageForPrinting(SaleOrder saleOrder);
 	
@@ -106,7 +112,23 @@ public interface SaleOrderService {
 
 	public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder);
 	
-	public String getReportLink(SaleOrder saleOrder, String name, String language, String format) throws AxelorException;
+	public String getReportLink(SaleOrder saleOrder, String name, String language, boolean proforma, String format) throws AxelorException;
+
+	/**
+	 * Fill {@link SaleOrder#mainInvoicingAddressStr}
+	 * and {@link SaleOrder#deliveryAddressStr}
+	 * @param saleOrder
+	 */
+	public void computeAddressStr(SaleOrder saleOrder);
+
+	/**
+	 * Return the total price, computed from the lines.
+	 * This price is usually equals to {@link SaleOrder#exTaxTotal} but not
+	 * in all cases.
+	 * @param saleOrder
+	 * @return  total price from the sale order lines
+	 */
+	public BigDecimal getTotalSaleOrderPrice(SaleOrder saleOrder);
 }
 
 

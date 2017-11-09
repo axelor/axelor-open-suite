@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -21,10 +21,10 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -85,8 +85,7 @@ public class PaymentVoucherSequenceService  {
 		Company company = paymentVoucher.getCompany();
 
 		if(!sequenceService.hasSequence(IAdministration.PAYMENT_VOUCHER_RECEIPT_NUMBER, company))  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_SEQUENCE_1),
-					GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(paymentVoucher, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYMENT_VOUCHER_SEQUENCE_1), AppAccountServiceImpl.EXCEPTION,company.getName());
 		}
 
 	}

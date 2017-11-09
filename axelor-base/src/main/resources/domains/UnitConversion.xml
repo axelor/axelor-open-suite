@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -10,9 +10,9 @@
     <integer name="importId" />
     <many-to-one name="startUnit" ref="Unit" title="From Unit" required="true"/>
     <many-to-one name="endUnit" ref="Unit" title="To Unit" required="true"/>
-    <decimal name="coef" title="Coeff." required="true" precision="30" scale="12" help="true"/>
+    <decimal name="coef" title="Coeff." required="true" precision="30" scale="12"/>
     <integer name="typeSelect" title="Type" selection="unit.conversion.type.select" default="1"/>
-    <string name="formula" title="Formula" help="Use $Product.fieldName$ to access to the product's fields"/>
+    <string name="formula" title="Formula"/>
   
     <string name="name" search="startUnit,endUnit" title="Name">
     	<![CDATA[

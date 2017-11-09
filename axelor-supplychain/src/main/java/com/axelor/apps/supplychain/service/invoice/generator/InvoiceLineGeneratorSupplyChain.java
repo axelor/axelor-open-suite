@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -35,12 +35,13 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.Subscription;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -51,17 +52,12 @@ import com.google.inject.Inject;
  */
 public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerator {
 
-	@Inject
-	protected InvoiceLineService invoiceLineService;
-	
-	@Inject
-	protected UnitConversionService unitConversionService;
-	
 	protected SaleOrderLine saleOrderLine;
 	protected PurchaseOrderLine purchaseOrderLine;
 	protected StockMoveLine stockMoveLine;
 	protected Subscription subscription;
 
+	@Inject
 	public InvoiceLineGeneratorSupplyChain(Invoice invoice, Product product, String productName,
 										   BigDecimal price, BigDecimal priceDiscounted, String description,
 										   BigDecimal qty, Unit unit, TaxLine taxLine,
@@ -89,7 +85,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.priceDiscounted = saleOrderLine.getPriceDiscounted();
 			this.taxLine = saleOrderLine.getTaxLine();
 			this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
-			this.isTitleLine = saleOrderLine.getIsTitleLine();
+			this.isTitleLine = saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK;
 		} else if (purchaseOrderLine != null){
 			this.isTitleLine = purchaseOrderLine.getIsTitleLine();
 			this.purchaseOrderLine = purchaseOrderLine;
@@ -159,7 +155,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 		
 		else if(stockMoveLine != null)  {
 			
-			this.price = invoiceLineService.getUnitPrice(invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
+			this.price = Beans.get(InvoiceLineService.class).getUnitPrice(invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
 			this.price = Beans.get(UnitConversionService.class).convertWithProduct(stockMoveLine.getUnit(), this.unit, this.price, product);
 
 		}
@@ -171,7 +167,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 	
 	public void assignOriginElements(InvoiceLine invoiceLine) throws AxelorException  {
 		
-		if (!Beans.get(GeneralService.class).getGeneral().getManageInvoicedAmountByLine())  {  return;  }
+		if (!Beans.get(AppSupplychainService.class).getAppSupplychain().getManageInvoicedAmountByLine())  {  return;  }
 		
 		StockMove stockMove = null;
 		if(stockMoveLine != null)  {  stockMove = stockMoveLine.getStockMove();  }

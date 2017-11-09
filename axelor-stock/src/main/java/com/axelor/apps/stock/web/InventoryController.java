@@ -19,7 +19,6 @@ package com.axelor.apps.stock.web;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
 
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
@@ -27,16 +26,13 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.Location;
-import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.InventoryService;
-import com.axelor.apps.stock.service.LocationLineService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -60,10 +56,7 @@ public class InventoryController {
 	
 	@Inject
 	ProductRepository productRepo;
-	
-	
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
+		
 	private static final String PATH = AppSettings.get().get("file.upload.dir");
 	
 	/**
@@ -80,22 +73,33 @@ public class InventoryController {
 		Inventory inventory = request.getContext().asType(Inventory.class);
 
 		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
+		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
 
 		String name = I18n.get("Inventory")+" "+inventory.getInventorySeq();
-		
-		String fileLink = ReportFactory.createReport(IReport.INVENTORY, name+"-${date}")
+
+		String fileLink = ReportFactory.createReport(IReport.INVENTORY, name + "-${date}")
 				.addParam("InventoryId", inventory.getId())
 				.addParam("Locale", language)
 				.addFormat(inventory.getFormatSelect())
 				.generate()
 				.getFileLink();
 
-		logger.debug("Printing "+name);
-	
+		logger.debug("Printing " + name);
+
 		response.setView(ActionView
 				.define(name)
-				.add("html", fileLink).map());	
+				.add("html", fileLink).map());
+
+	}
+
+	public void exportInventory(ActionRequest request, ActionResponse response) throws IOException {
+
+		Inventory inventory = request.getContext().asType(Inventory.class);
+		inventory = inventoryRepo.find(inventory.getId());
+
+		inventoryService.exportInventoryAsCSV(inventory);
+
+		response.setReload(true);
 	}
 	
 	public void importFile(ActionRequest request, ActionResponse response) throws IOException, AxelorException {
@@ -106,13 +110,15 @@ public class InventoryController {
 		
 		inventoryService.importFile(PATH + System.getProperty("file.separator") + importFile.getFilePath() , separator, inventory);
 		response.setFlash(String.format(I18n.get(IExceptionMessage.INVENTORY_8),importFile.getFilePath()));
+
+		response.setReload(true);
 	}
 	
-	public void realizeInventory(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void validateInventory(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Long id = request.getContext().asType(Inventory.class).getId();
 		Inventory inventory = Beans.get(InventoryRepository.class).find(id);
-		inventoryService.realizeInventory(inventory);
+		inventoryService.validateInventory(inventory);
 		response.setReload(true);
 	}
 	
@@ -120,6 +126,7 @@ public class InventoryController {
 		Inventory inventory = request.getContext().asType(Inventory.class);
 		inventory = inventoryRepo.find(inventory.getId());
 		inventoryService.cancel(inventory);
+		response.setReload(true);
 	}
 	
 	public void fillInventoryLineList(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -130,12 +137,10 @@ public class InventoryController {
 			Boolean succeed = inventoryService.fillInventoryLineList(inventory);
 			if(succeed == null)  {
 				response.setFlash(I18n.get(IExceptionMessage.INVENTORY_9));
-			}
-			else {
+			} else {
 				if(succeed) {
 					response.setNotify(I18n.get(IExceptionMessage.INVENTORY_10));
-				}
-				else  {
+				} else {
 					response.setNotify(I18n.get(IExceptionMessage.INVENTORY_11));
 				}
 			}
@@ -154,18 +159,6 @@ public class InventoryController {
 			
 			response.setValue("inventorySeq", inventoryService.getInventorySequence(location.getCompany()));
 		}
-	}
-	
-	public BigDecimal getCurrentQty(Location location, Product product){
-		
-		if(location != null && product != null){
-			LocationLine locationLine = Beans.get(LocationLineService.class).getLocationLine(location, product);
-			if(locationLine != null ){
-				LOG.debug("Current qty found: {}",locationLine.getCurrentQty());
-				return locationLine.getCurrentQty();
-			}
-		}
-		return BigDecimal.ZERO;
 	}
 	
 	

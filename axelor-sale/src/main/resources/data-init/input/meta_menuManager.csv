@@ -1,0 +1,5 @@
+name;roles
+sc-root-sale;role.manager
+sc-root-sale-templates;role.manager
+sc-root-sale-report;role.manager
+menu-sale-manager-dashboard-sample;role.manager

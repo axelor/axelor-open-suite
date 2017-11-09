@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -18,17 +18,18 @@
 package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Map;
 
-import org.hibernate.proxy.HibernateProxy;
-import org.joda.time.LocalDate;
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -36,16 +37,18 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.Location;
-import com.axelor.apps.stock.db.MinStockRules;
-import com.axelor.apps.stock.db.repo.MinStockRulesRepository;
-import com.axelor.apps.stock.service.MinStockRulesService;
+import com.axelor.apps.stock.db.StockRules;
+import com.axelor.apps.stock.db.repo.StockRulesRepository;
+import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.supplychain.db.MrpForecast;
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.MrpLineOrigin;
 import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.auth.db.AuditableModel;
 import com.axelor.auth.db.User;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -57,39 +60,47 @@ import com.google.inject.persist.Transactional;
 
 public class MrpLineServiceImpl implements MrpLineService  {
 	
+	protected AppBaseService appBaseService;
 	protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
 	protected PurchaseOrderLineService purchaseOrderLineService;
 	protected PurchaseOrderRepository purchaseOrderRepo;
-	protected MinStockRulesService minStockRulesService;
+	protected StockRulesService stockRulesService;
 
 	protected LocalDate today;
 	protected User user;
 
 	@Inject
-	public MrpLineServiceImpl(GeneralService generalService, UserService userService, PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl, 
-			PurchaseOrderLineService purchaseOrderLineService, PurchaseOrderRepository purchaseOrderRepo, MinStockRulesService minStockRulesService)  {
-		
+	public MrpLineServiceImpl(AppBaseService appBaseService, UserService userService, PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl, 
+			PurchaseOrderLineService purchaseOrderLineService, PurchaseOrderRepository purchaseOrderRepo, StockRulesService stockRulesService)  {
+
+		this.appBaseService = appBaseService;
 		this.purchaseOrderServiceSupplychainImpl = purchaseOrderServiceSupplychainImpl;
 		this.purchaseOrderLineService = purchaseOrderLineService;
 		this.purchaseOrderRepo = purchaseOrderRepo;
-		this.minStockRulesService = minStockRulesService;
+		this.stockRulesService = stockRulesService;
 		
-		this.today = generalService.getTodayDate();
+		this.today = appBaseService.getTodayDate();
 		this.user = userService.getUser();
 	}
-	
+
+	@Override
 	public void generateProposal(MrpLine mrpLine) throws AxelorException  {
+		generateProposal(mrpLine, null);
+	}
+
+	@Override
+	public void generateProposal(MrpLine mrpLine, Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders) throws AxelorException  {
 		
 		if(mrpLine.getMrpLineType().getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL)  {
 			
-			this.generatePurchaseProposal(mrpLine);
+			this.generatePurchaseProposal(mrpLine, purchaseOrders);
 			
 		}
 		
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	protected void generatePurchaseProposal(MrpLine mrpLine) throws AxelorException  {
+	protected void generatePurchaseProposal(MrpLine mrpLine, Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders) throws AxelorException  {
 		
 		Product product = mrpLine.getProduct();
 		Location location = mrpLine.getLocation();
@@ -97,25 +108,37 @@ public class MrpLineServiceImpl implements MrpLineService  {
 		
 		Partner supplierPartner = product.getDefaultSupplierPartner();
 
-		if(supplierPartner == null)  {  
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MRP_LINE_1),
-					product.getFullName()), IException.CONFIGURATION_ERROR); 
+		if (supplierPartner == null) {  
+			throw new AxelorException(mrpLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MRP_LINE_1), product.getFullName()); 
 		}
 
 		Company company = location.getCompany();
 
-		PurchaseOrder purchaseOrder = purchaseOrderRepo.save(purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
-				this.user,
-				company,
-				null,
-				supplierPartner.getCurrency(),
-				maturityDate,
-				"MRP-"+this.today.toString(), //TODO sequence on mrp
-				null,
-				location,
-				this.today,
-				supplierPartner.getPurchasePriceList(),
-				supplierPartner));
+		Pair<Partner, LocalDate> key = null;
+		PurchaseOrder purchaseOrder = null;
+	
+		if (purchaseOrders != null) {
+			key = Pair.of(supplierPartner, maturityDate);
+			purchaseOrder = purchaseOrders.get(key);
+		}
+		
+		if (purchaseOrder == null) {
+			purchaseOrder = purchaseOrderRepo.save(purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
+					this.user,
+					company,
+					null,
+					supplierPartner.getCurrency(),
+					maturityDate,
+					"MRP-"+this.today.toString(), //TODO sequence on mrp
+					null,
+					location,
+					this.today,
+					supplierPartner.getPurchasePriceList(),
+					supplierPartner));
+			if (purchaseOrders != null) {
+				purchaseOrders.put(key, purchaseOrder);
+			}
+		}
 		Unit unit = product.getPurchasesUnit();
 		BigDecimal qty = mrpLine.getQty();
 		if(unit == null){
@@ -135,7 +158,13 @@ public class MrpLineServiceImpl implements MrpLineService  {
 
 		purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 
-		
+		linkToOrder(mrpLine, purchaseOrder);
+	}
+
+	protected void linkToOrder(MrpLine mrpLine, AuditableModel order) {
+		mrpLine.setProposalSelect(order.getClass().getName());
+		mrpLine.setProposalSelectId(order.getId());
+		mrpLine.setProposalGenerated(true);
 	}
 	
 	
@@ -165,10 +194,10 @@ public class MrpLineServiceImpl implements MrpLineService  {
 	
 	protected BigDecimal getMinQty(Product product, Location location)  {
 		
-		MinStockRules minStockRules = minStockRulesService.getMinStockRules(product, location, MinStockRulesRepository.TYPE_FUTURE);
+		StockRules stockRules = stockRulesService.getStockRules(product, location, StockRulesRepository.TYPE_FUTURE, StockRulesRepository.USE_CASE_USED_FOR_MRP);
 		
-		if(minStockRules != null)  {
-			return minStockRules.getMinQty();
+		if(stockRules != null)  {
+			return stockRules.getMinQty();
 		}
 		return BigDecimal.ZERO;
 		
@@ -191,8 +220,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 	
 	public MrpLineOrigin createMrpLineOrigin(Model model)  {
 		
-		Class<?> klass = model.getClass();
-		if ( model instanceof HibernateProxy ) { klass = ( (HibernateProxy) model ).getHibernateLazyInitializer().getPersistentClass(); }
+		Class<?> klass = EntityHelper.getEntityClass(model);
 		
 		MrpLineOrigin mrpLineOrigin = new MrpLineOrigin();
 		mrpLineOrigin.setRelatedToSelect(klass.getCanonicalName());

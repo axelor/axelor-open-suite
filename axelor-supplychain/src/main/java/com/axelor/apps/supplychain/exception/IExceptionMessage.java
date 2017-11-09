@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -36,11 +36,19 @@ public interface IExceptionMessage {
 	 * Purchase Order Service
 	 */
 	static final String PURCHASE_ORDER_1 = /*$$(*/ "%s please configure a virtual supplier stock location for the company %s" /*)*/;
+	static final String PURCHASE_ORDER_2 = /*$$(*/ "Error : you have exceeded the budget %s for this period" /*)*/;
 
 	/**
 	 * Sale Order Invoice Service
 	 */
 	static final String SO_INVOICE_6 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
+	static final String SO_INVOICE_NO_LINES_SELECTED = /*$$(*/ "There are no lines to invoice" /*)*/;
+	static final String SO_INVOICE_QTY_MAX = /*$$(*/ "The quantity to invoice is greater than the quantity in the sale order" /*)*/;
+	static final String SO_INVOICE_MISSING_INVOICING_PRODUCT = /*$$(*/ "Please configure the sale order invoicing product" /*)*/;
+	static final String SO_INVOICE_MISSING_ADVANCE_PAYMENT_PRODUCT = /*$$(*/ "Please configure the advance payment product" /*)*/;
+	static final String SO_INVOICE_MISSING_ADVANCE_PAYMENT_ACCOUNT = /*$$(*/ "You must configure an advance payment account for the company %s" /*)*/;
+	static final String SO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/ "The sale order %s invoiced amount cannot be greater than its total amount." /*)*/;
+
 
 	/**
 	 * Sale Order Purchase Service
@@ -66,10 +74,23 @@ public interface IExceptionMessage {
 	/**
 	 * Batch Invoicing
 	 */
-	static final String BATCH_INVOICING_1 = /*$$(*/ "Subscription invoice generation report : " /*)*/;
+	static final String BATCH_INVOICING_1 = /*$$(*/ "Subscription invoice generation report :" /*)*/;
 	static final String BATCH_INVOICING_2 = /*$$(*/ "Order(s) processed" /*)*/;
 
-	
+	/**
+	 * Batch Outgoing stock move invoicing
+	 */
+	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_REPORT = /*$$(*/ "Outgoing stock move invoicing report: " /*)*/;
+	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_SINGULAR = /*$$(*/ "%d outgoing stock move processed successfully, " /*)*/;
+	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_PLURAL = /*$$(*/ "%d outgoing stock moves processed successfully, " /*)*/;
+
+	/**
+	 * Batch Order invoicing
+	 */
+	String BATCH_ORDER_INVOICING_REPORT = /*$$(*/ "Order invoicing report: " /*)*/;
+	String BATCH_ORDER_INVOICING_DONE_SINGULAR = /*$$(*/ "%d order invoiced successfully, " /*)*/;
+	String BATCH_ORDER_INVOICING_DONE_PLURAL = /*$$(*/ "%d orders invoiced successfully, " /*)*/;
+
 	/**
 	 * Mrp Line Service
 	 */
@@ -88,4 +109,10 @@ public interface IExceptionMessage {
 	 * Timetable Controller
 	 */
 	static final String TIMETABLE_INVOICE_ALREADY_GENERATED = /*$$(*/ "The invoice has already been generated." /*)*/;
+
+	/**
+	 * Ventilate State Service
+	 */
+	String VENTILATE_STATE_MISSING_ADVANCE_ACCOUNT = /*$$(*/ "Please configure the advance payment account for the company %s" /*)*/;
 }
+

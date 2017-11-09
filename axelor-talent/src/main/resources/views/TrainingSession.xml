@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<grid name="training-session-grid" title="Training sessions" model="com.axelor.apps.talent.db.TrainingSession">
+		<field name="training" />
+		<field name="fromDate" />
+		<field name="toDate" />
+		<field name="statusSelect" />
+		<field name="nbrRegistered" />
+		<field name="location" />
+		<field name="rating"  widget="progress"/>
+	</grid>
+	
+	<form name="training-session-form" title="Training session" model="com.axelor.apps.talent.db.TrainingSession" width="large" readonlyIf="$popup()">
+		<panel title="Status">
+			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false" />		
+		</panel>
+		<panel>
+			<field name="training" onChange="action-training-session-training-change" />
+			<field name="location" />
+			<field name="fromDate" />
+			<field name="toDate" />
+			<field name="duration" />
+			<panel-dashlet action="action-dashlet-training-session-employee-registered" colSpan="12"/>
+		</panel>
+		<panel itemSpan="12" sidebar="true">
+			<button name="registerTraining" title="Register training" onClick="save,action-training-session-register-training" showIf="statusSelect == 1"/>
+			<button name="closeSession" title="Close session" onClick="save,action-training-session-method-close-session" showIf="statusSelect != 3" />
+			<field name="nbrRegistered" readonly="true"/>
+			<field name="rating" widget="progress" readonly="true" />
+		</panel>
+	</form>
+	
+	<action-record name="action-training-session-training-change" model="com.axelor.apps.talent.db.TrainingSession">
+		<field name="duration" expr="eval:training.duration" if="training != null"/>
+	</action-record>
+	
+	<action-view name="action-dashlet-training-session-employee-registered" title="Employee registred" model="com.axelor.apps.hr.db.Employee">
+		<view type="grid" name="employee-grid"/>
+		<view type="form" name="employee-form"/>
+		<domain>self.id in (:_employeeIds)</domain>
+		<context name="_employeeIds" expr="eval:[0] + __repo__(TrainingRegister).all().filter('self.trainingSession.id = ' + id).fetch().collect{it->it.employee?.id}"/>
+	</action-view>
+	
+	<action-view name="action-training-session-register-training" title="Register training" model="com.axelor.apps.talent.db.TrainingRegister">
+		<view type="form" name="training-register-form"/>
+		<view type="grid" name="training-register-grid"/>
+		<context name="_trainingSession" expr="eval:__self__"/>
+		<context name="_training" expr="eval:__self__.training"/>
+		<context name="_fromDate" expr="eval:__self__.fromDate"/>
+		<context name="_toDate" expr="eval:__self__.toDate"/>
+	</action-view>
+	
+	<action-method name="action-training-session-method-close-session">
+		<call class="com.axelor.apps.talent.web.TrainingSessionController" method="closeSession"/>
+	</action-method>
+	
+</object-views>

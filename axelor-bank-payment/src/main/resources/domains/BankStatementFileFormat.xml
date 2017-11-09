@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
@@ -41,6 +41,7 @@
 		
 		public static final String FILE_FORMAT_CAMT_XXX_CFONB120_STM = "camt.xxx.cfonb120.stm";
 		public static final String FILE_FORMAT_CAMT_XXX_CFONB120_STM_0BY = "camt.xxx.cfonb120.stm.0by";
+		public static final String FILE_FORMAT_CAMT_XXX_CFONB120_STM_EUR = "camt.xxx.cfonb120.stm.eur";
 		public static final String FILE_FORMAT_CAMT_XXX_CFONB120_REP = "camt.xxx.cfonb120.rep";
 
 		public static final String FILE_FORMAT_CAMT_FIN_MT940_STM = "camt.fin.mt940.stm";

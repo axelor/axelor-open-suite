@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="work-center-grid" title="Work centers" model="com.axelor.apps.production.db.WorkCenter">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="machine" form-view="machine-form" grid-view="machine-grid"/>
         <field name="workCenterTypeSelect"/>
     </grid>
@@ -13,7 +13,7 @@
 	<form name="work-center-form" title="Work center" model="com.axelor.apps.production.db.WorkCenter" width="large" onNew="action-work-center-record-default">
 	  <panel name="main" >
 	    <field name="name"/>
-	    <field name="code" colSpan="3"/>
+	    <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
 	    <field name="workCenterTypeSelect" required="true"/>
 		<field name="machine" requiredIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="machine-form" grid-view="machine-grid"/>
 	  </panel>  
@@ -38,14 +38,14 @@
     
      <grid name="work-center-replacement-machine-grid" title="Machines" model="com.axelor.apps.production.db.WorkCenter">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="machine" title="Replacement machine"/>
     </grid>
     
     <form name="work-center-replacement-machine-form" title="Machine" model="com.axelor.apps.production.db.WorkCenter" width="large" onNew="action-work-center-record-default">
     	<panel name="main" >
 	        <field name="name"/>
-	        <field name="code"/>
+	        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	        <field name="machine" title="Replacement machine"/>
         </panel>
         <panel name="productionAndCostSettings" title="Production and cost settings">
@@ -65,14 +65,14 @@
     
     <grid name="work-center-machine-grid" title="Machines" model="com.axelor.apps.production.db.WorkCenter">
         <field name="name"/>
-        <field name="code"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="machine"/>
     </grid>
     
     <form name="work-center-machine-form" title="Machine" model="com.axelor.apps.production.db.WorkCenter" width="large" onNew="action-work-center-record-default">
     	<panel name="main" >
 	        <field name="name"/>
-	        <field name="code"/>
+	        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	        <field name="machine"/>
         </panel>
         <panel name="productionAndCostSettings" title="Production and cost settings">
@@ -91,8 +91,8 @@
     </form>
 
      <action-record name="action-work-center-record-default" model="com.axelor.apps.production.db.WorkCenter">
-        <field name="costSheetGroup" expr="eval: __config__?.general?.workCenterCostSheetGroup"/>
-        <field name="product" expr="eval: __config__?.general?.workCenterProduct"/>
+		     <field name="costSheetGroup" expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterCostSheetGroup : null " />
+		     <field name="product" expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterProduct : null" />
     </action-record>
     
     

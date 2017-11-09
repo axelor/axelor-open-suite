@@ -1,35 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="inventory-line-grid" title="Inventory lines" model="com.axelor.apps.stock.db.InventoryLine" editable="true">
         <field name="product" onChange="action-inventory-line-attrs-tracking-number" form-view="product-form" grid-view="product-grid"/>
         <field name="currentQty" readonly="true" aggregate="sum"/>
         <field name="realQty" aggregate="sum"/>
         <field name="description"/>
-        <field name="trackingNumber"/>
+        <field name="rack"/>
+        <field name="trackingNumber" canNew="true"/>
     </grid>
     
     <form name="inventory-line-form" title="Inventory line" model="com.axelor.apps.stock.db.InventoryLine"
     	onLoad="action-inventory-line-attrs-tracking-number">
     	<panel name="main">
-	        <field name="product" onChange="action-inventory-line-attrs-tracking-number,action-inventory-line-on-change-product"
+	        <field name="product" onChange="action-inventory-line-attrs-tracking-number,action-inventory-line-method-on-change-product"
 	        	domain="self.expense = false and self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty" readonly="true"/>
 	        <field name="realQty"/>
 	        <field name="description"/>
-		    <field name="trackingNumber" readonly="true"/>
+            <field name="rack"/>
+		    <field name="trackingNumber" canNew="true"/>
 	    </panel>
     </form>
     
     <action-attrs name="action-inventory-line-attrs-tracking-number">
     	<attribute name="required" for="trackingNumber" expr="eval: product?.trackingNumberConfiguration?.isPurchaseTrackingManaged || product?.trackingNumberConfiguration?.isProductionTrackingManaged || product?.trackingNumberConfiguration?.isSaleTrackingManaged"/>
-    	<attribute name="readonly" for="trackingNumber" expr="eval: !product?.trackingNumberConfiguration?.isPurchaseTrackingManaged &amp;&amp; !product?.trackingNumberConfiguration?.isProductionTrackingManaged &amp;&amp; !product?.trackingNumberConfiguration?.isSaleTrackingManaged"/>
+		<attribute name="readonly" for="trackingNumber" expr="eval: !product?.trackingNumberConfiguration?.isPurchaseTrackingManaged &amp;&amp; !product?.trackingNumberConfiguration?.isProductionTrackingManaged &amp;&amp; !product?.trackingNumberConfiguration?.isSaleTrackingManaged || __parent__?.statusSelect >= 5"/>
     </action-attrs>
-    
-    <action-record name="action-inventory-line-on-change-product" model="com.axelor.apps.stock.db.InventoryLine">
-  		<field name="currentQty" expr="call:com.axelor.apps.stock.web.InventoryController:getCurrentQty(_parent.location,product)"/>
-	</action-record>
+	
+	<action-method name="action-inventory-line-method-on-change-product">
+		<call class="com.axelor.apps.stock.web.InventoryLineController" method="updateInventoryLine"/>
+	</action-method>
     
 </object-views>

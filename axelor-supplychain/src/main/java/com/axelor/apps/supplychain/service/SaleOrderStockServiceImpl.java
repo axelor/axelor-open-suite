@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
@@ -80,9 +81,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 	 */
 	public StockMove createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
-		if (this.existActiveStockMoveForSaleOrder(saleOrder)){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXIST),
-					saleOrder.getSaleOrderSeq()), IException.CONFIGURATION_ERROR); 
+		if (this.existActiveStockMoveForSaleOrder(saleOrder)) {
+			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXIST), saleOrder.getSaleOrderSeq()); 
 		}
 		
 		Company company = saleOrder.getCompany();
@@ -92,13 +92,12 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 			StockMove stockMove = this.createStockMove(saleOrder, company);
 
 			for(SaleOrderLine saleOrderLine: saleOrder.getSaleOrderLineList()) {
-				if(saleOrderLine.getProduct() != null || saleOrderLine.getIsTitleLine()){
+				if(saleOrderLine.getProduct() != null || saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK){
 					this.createStockMoveLine(stockMove, saleOrderLine, company);
 				}
 			}
 
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-				stockMove.setExTaxTotal(stockMoveService.compute(stockMove));
 				stockMoveService.plan(stockMove);
 				return stockMove;
 			}
@@ -130,6 +129,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 				saleOrder.getShipmentMode(),
 				saleOrder.getFreightCarrierMode());
 
+		stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
 		stockMove.setSaleOrder(saleOrder);
 		stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 		return stockMove;
@@ -168,13 +168,13 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 					StockMoveLineService.TYPE_SALES, saleOrderLine.getSaleOrder().getInAti(), taxRate);
 
 			stockMoveLine.setSaleOrderLine(saleOrderLine);
-
+			stockMoveLine.setReservedQty(saleOrderLine.getReservedQty());
 			if(stockMoveLine != null) {
 				stockMove.addStockMoveLineListItem(stockMoveLine);
 			}
 			return stockMoveLine;
 		}
-		else if(saleOrderLine.getIsTitleLine()){
+		else if(saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK){
 			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
 					null,
 					saleOrderLine.getProductName(),

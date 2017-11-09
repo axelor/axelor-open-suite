@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+	<selection name='trace.back.type.select'>
+	  <option value='0'>Technical anomaly</option>
+	  <option value='1'>Functional anomaly</option>
+	</selection>
+	
+	<selection name='trace.back.category.select'>
+	  <option value='1'>Missing field</option>
+	  <option value='2'>Non-unique key</option>
+	  <option value='3'>No Return Value</option>
+	  <option value='4'>Configuration problem</option>
+	  <option value='5'>Inconsistency</option>
+	</selection>
+	
+	<selection name='trace.back.origin.select'>
+	  <option value='invoice'>Invoicing</option>
+  	  <option value='reminder'>Reminder</option>
+  	  <option value='debtRecovery'>Debt recovery</option>
+ 	  <option value='doubtfulCustomer'>Doubtful customer</option>
+   	  <option value='reimbursement'>Reimbursement</option>
+   	  <option value='directDebit'>Direct debit</option>
+   	  <option value="interbankPaymentOrder">Interbank payment order</option>
+   	  <option value="crm">CRM</option>
+	</selection>
+
+</object-views>

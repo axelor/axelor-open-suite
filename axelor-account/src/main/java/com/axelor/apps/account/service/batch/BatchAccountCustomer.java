@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -70,7 +70,7 @@ public class BatchAccountCustomer extends BatchStrategy {
 		
 		boolean updateCustAccountOk = accountingBatch.getUpdateCustAccountOk();
 		boolean updateDueCustAccountOk = accountingBatch.getUpdateDueCustAccountOk();
-		boolean updateDueReminderCustAccountOk = accountingBatch.getUpdateDueReminderCustAccountOk();
+		boolean updateDueDebtRecoveryCustAccountOk = accountingBatch.getUpdateDueDebtRecoveryCustAccountOk();
 		
 		List<AccountingSituation> accountingSituationList = (List<AccountingSituation>) accountingSituationRepo.all().filter("self.company = ?1", company).fetch();
 		int i = 0;
@@ -82,7 +82,7 @@ public class BatchAccountCustomer extends BatchStrategy {
 						accountingSituationRepo.find(accountingSituation.getId()),
 						updateCustAccountOk,
 						updateDueCustAccountOk,
-						updateDueReminderCustAccountOk);
+						updateDueDebtRecoveryCustAccountOk);
 				
 				if(accountingSituation != null)  {
 					this.updateAccountingSituation(accountingSituation);
@@ -116,9 +116,9 @@ public class BatchAccountCustomer extends BatchStrategy {
 	@Override
 	protected void stop() {
 		String comment = "";
-		comment = I18n.get(IExceptionMessage.BATCH_ACCOUNT_2);
-		comment += String.format(I18n.get(IExceptionMessage.BATCH_ACCOUNT_3), batch.getDone());
-		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+		comment = I18n.get(IExceptionMessage.BATCH_ACCOUNT_2) + "\n";
+		comment += String.format("\t" + I18n.get(IExceptionMessage.BATCH_ACCOUNT_3) + "\n", batch.getDone());
+		comment += String.format("\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
 		super.stop();
 		addComment(comment);

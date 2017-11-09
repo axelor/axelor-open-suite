@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -28,6 +28,7 @@ public interface IAdministration {
 
 	static final String PDF = "pdf";
 	static final String XLS = "xls";
+	static final String CSV = "csv";
 
 	/**
 	 * Static select month
@@ -67,7 +68,7 @@ public interface IAdministration {
 	static final String PAYMENT_VOUCHER = "paymentVoucher";
 	static final String PAYMENT_VOUCHER_RECEIPT_NUMBER = "paymentVoucherReceiptNo";
 	static final String DEBIT = "debit";
-	static final String MOVE_LINE_REPORT = "moveLineReport";
+	static final String ACCOUNTING_REPORT = "accountingReport";
 	static final String REIMBOURSEMENT = "reimbursement";
 	static final String ACCOUNT_CLEARANCE = "accountClearance";
 	static final String IRRECOVERABLE = "irrecoverable";
@@ -77,19 +78,18 @@ public interface IAdministration {
 	static final String TREASURY_INTERFACE = "treasuryInterface";
 	static final String PURCHASE_INTERFACE = "purchaseInterface";
 	static final String MOVE_LINE_EXPORT = "moveLineExport";
-	static final String DOUBTFUL_CUSTOMER = "doubtfulCustomer";
 	static final String SALES_ORDER = "saleOrder";
 	static final String PURCHASE_ORDER = "purchaseOrder";
-	static final String EVENT_TICKET = "eventTicket";
 	static final String INTERNAL = "intStockMove";
 	static final String OUTGOING = "outStockMove";
 	static final String INCOMING = "inStockMove";
 	static final String PRODUCT_TRACKING_NUMBER = "productTrackingNumber";
-	static final String PRO_TRAINING = "proTraining";
 	static final String PRODUCTION_ORDER = "productionOrder";
 	static final String MANUF_ORDER = "manufOrder";
 	static final String RECONCILE = "reconcile";
-	
+	static final String PRODUCT = "product";
+	static final String DEPOSIT_SLIP = "depositSlip";
+
 	
 	/**
 	 * Static select in General

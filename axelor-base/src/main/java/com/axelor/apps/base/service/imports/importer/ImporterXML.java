@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -30,7 +30,7 @@ class ImporterXML extends Importer {
 		
 		ImporterListener listener = new ImporterListener( getConfiguration().getName() ); 		
 		importer.addListener( listener );
-		importer.run(null);
+		importer.run();
 		
 		return addHistory( listener );
 		

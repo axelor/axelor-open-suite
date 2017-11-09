@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wkfs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
+  <wkf name="Commande produit" isJson="true" model="ProductOrder" statusField="status" displayTypeSelect="0" appBuilder="PRD">
+  	<xml>
+  		<![CDATA[
+  		<?xml version="1.0" encoding="UTF-8"?>
+		<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:x="http://axelor.com" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+		  <process id="Process_1" name="undefined" isExecutable="false" x:id="undefined">
+		    <endEvent id="EndEvent_062urgf" name="Terminé">
+		      <incoming>SequenceFlow_18u3b2a</incoming>
+		    </endEvent>
+		    <startEvent id="StartEvent_07npy19" name="Brouillon">
+		      <incoming>SequenceFlow_1yn5orr</incoming>
+		      <outgoing>SequenceFlow_0qljt6y</outgoing>
+		    </startEvent>
+		    <task id="Task_07my1i6" name="Confirmé">
+		      <incoming>SequenceFlow_0qljt6y</incoming>
+		      <outgoing>SequenceFlow_10bvr21</outgoing>
+		      <outgoing>SequenceFlow_02m6a90</outgoing>
+		    </task>
+		    <sequenceFlow id="SequenceFlow_0qljt6y" name="Confirmer" sourceRef="StartEvent_07npy19" targetRef="Task_07my1i6" />
+		    <task id="Task_0k79fbo" name="Validé">
+		      <incoming>SequenceFlow_10bvr21</incoming>
+		      <outgoing>SequenceFlow_18u3b2a</outgoing>
+		    </task>
+		    <sequenceFlow id="SequenceFlow_10bvr21" name="Valider" sourceRef="Task_07my1i6" targetRef="Task_0k79fbo" />
+		    <task id="Task_069h0a2" name="Annulé">
+		      <incoming>SequenceFlow_02m6a90</incoming>
+		      <outgoing>SequenceFlow_1yn5orr</outgoing>
+		    </task>
+		    <sequenceFlow id="SequenceFlow_02m6a90" name="Annuler" sourceRef="Task_07my1i6" targetRef="Task_069h0a2" />
+		    <sequenceFlow id="SequenceFlow_18u3b2a" name="Terminer" sourceRef="Task_0k79fbo" targetRef="EndEvent_062urgf" />
+		    <sequenceFlow id="SequenceFlow_1yn5orr" name="Réinitialiser" sourceRef="Task_069h0a2" targetRef="StartEvent_07npy19" />
+		  </process>
+		  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+		    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+		      <bpmndi:BPMNShape id="EndEvent_062urgf_di" bpmnElement="EndEvent_062urgf">
+		        <dc:Bounds x="747" y="120" width="36" height="36" />
+		        <bpmndi:BPMNLabel>
+		          <dc:Bounds x="720" y="156" width="90" height="20" />
+		        </bpmndi:BPMNLabel>
+		      </bpmndi:BPMNShape>
+		      <bpmndi:BPMNShape id="StartEvent_07npy19_di" bpmnElement="StartEvent_07npy19">
+		        <dc:Bounds x="133" y="120" width="36" height="36" />
+		        <bpmndi:BPMNLabel>
+		          <dc:Bounds x="87" y="168" width="90" height="20" />
+		        </bpmndi:BPMNLabel>
+		      </bpmndi:BPMNShape>
+		      <bpmndi:BPMNShape id="Task_07my1i6_di" bpmnElement="Task_07my1i6">
+		        <dc:Bounds x="291" y="98" width="100" height="80" />
+		      </bpmndi:BPMNShape>
+		      <bpmndi:BPMNEdge id="SequenceFlow_0qljt6y_di" bpmnElement="SequenceFlow_0qljt6y">
+		        <di:waypoint xsi:type="dc:Point" x="169" y="138" />
+		        <di:waypoint xsi:type="dc:Point" x="291" y="138" />
+		        <bpmndi:BPMNLabel>
+		          <dc:Bounds x="190" y="117" width="90" height="20" />
+		        </bpmndi:BPMNLabel>
+		      </bpmndi:BPMNEdge>
+		      <bpmndi:BPMNShape id="Task_0k79fbo_di" bpmnElement="Task_0k79fbo">
+		        <dc:Bounds x="492" y="98" width="100" height="80" />
+		      </bpmndi:BPMNShape>
+		      <bpmndi:BPMNEdge id="SequenceFlow_10bvr21_di" bpmnElement="SequenceFlow_10bvr21">
+		        <di:waypoint xsi:type="dc:Point" x="391" y="138" />
+		        <di:waypoint xsi:type="dc:Point" x="492" y="138" />
+		        <bpmndi:BPMNLabel>
+		          <dc:Bounds x="392" y="105" width="90" height="20" />
+		        </bpmndi:BPMNLabel>
+		      </bpmndi:BPMNEdge>
+		      <bpmndi:BPMNShape id="Task_069h0a2_di" bpmnElement="Task_069h0a2">
+		        <dc:Bounds x="500" y="239" width="100" height="80" />
+		      </bpmndi:BPMNShape>
+		      <bpmndi:BPMNEdge id="SequenceFlow_02m6a90_di" bpmnElement="SequenceFlow_02m6a90">
+		        <di:waypoint xsi:type="dc:Point" x="341" y="178" />
+		        <di:waypoint xsi:type="dc:Point" x="341" y="279" />
+		        <di:waypoint xsi:type="dc:Point" x="500" y="279" />
+		        <bpmndi:BPMNLabel>
+		          <dc:Bounds x="373" y="253.5" width="90" height="20" />
+		        </bpmndi:BPMNLabel>
+		      </bpmndi:BPMNEdge>
+		      <bpmndi:BPMNEdge id="SequenceFlow_18u3b2a_di" bpmnElement="SequenceFlow_18u3b2a">
+		        <di:waypoint xsi:type="dc:Point" x="592" y="138" />
+		        <di:waypoint xsi:type="dc:Point" x="747" y="138" />
+		        <bpmndi:BPMNLabel>
+		          <dc:Bounds x="625" y="112" width="90" height="20" />
+		        </bpmndi:BPMNLabel>
+		      </bpmndi:BPMNEdge>
+		      <bpmndi:BPMNEdge id="SequenceFlow_1yn5orr_di" bpmnElement="SequenceFlow_1yn5orr">
+		        <di:waypoint xsi:type="dc:Point" x="550" y="319" />
+		        <di:waypoint xsi:type="dc:Point" x="550" y="356" />
+		        <di:waypoint xsi:type="dc:Point" x="151" y="356" />
+		        <di:waypoint xsi:type="dc:Point" x="151" y="156" />
+		        <bpmndi:BPMNLabel>
+		          <dc:Bounds x="266" y="330.5" width="90" height="20" />
+		        </bpmndi:BPMNLabel>
+		      </bpmndi:BPMNEdge>
+		    </bpmndi:BPMNPlane>
+		  </bpmndi:BPMNDiagram>
+		</definitions>
+  		]]>
+  	</xml>
+  </wkf>
+  
+  <wkfNode wkf="Commande produit" name="Brouillon" title="Brouillon" startNode="1" sequence="1" xmlId="StartEvent_07npy19"/>
+  <wkfNode wkf="Commande produit" name="Confirmé" title="Confirmé" sequence="2" xmlId="Task_07my1i6" />
+  <wkfNode wkf="Commande produit" name="Validé" title="Validé" sequence="3" xmlId="Task_0k79fbo" />
+  <wkfNode wkf="Commande produit" name="Annulé" title="Annulé" sequence="4" xmlId="Task_069h0a2"/>
+  <wkfNode wkf="Commande produit" name="Terminé" title="Terminé" sequence="5"  endNode="1" xmlId="EndEvent_062urgf"/>
+  
+  <transition wkf="Commande produit" name="Confirmer" source="Brouillon" target="Confirmé" isButton="true" buttonTitle="Confirmer" xmlId="SequenceFlow_0qljt6y"/>
+  <transition wkf="Commande produit" name="Valider" source="Confirmé" target="Validé" isButton="true" buttonTitle="Valider" xmlId="SequenceFlow_10bvr21" alertTypeSelect="1" alertMsg="Êtes-vous sûr de vouloir valider cette commande?" successMsg="Commande validée" />
+  <transition wkf="Commande produit" name="Annuler" source="Confirmé" target="Annulé" isButton="true" buttonTitle="Annuler" xmlId="SequenceFlow_02m6a90" alertTypeSelect="1" alertMsg="Êtes-vous sûr de vouloir annuler cette commande??" />
+  <transition wkf="Commande produit" name="Terminer" source="Validé" target="Terminé" isButton="true" buttonTitle="Terminer" xmlId="SequenceFlow_18u3b2a" alertTypeSelect="2" alertMsg="Commande terminée" />
+  <transition wkf="Commande produit" name="Réinitialiser" source="Annulé" target="Brouillon" isButton="true" buttonTitle="Réinitialiser" xmlId="SequenceFlow_1yn5orr" />
+  
+  <node wkf="Commande produit" name="Brouillon">
+  		<incommings>
+  			<incomming name="Réinitialiser" />
+  		</incommings>
+  		<outgoings>
+  			<outgoing name="Confirmer" />
+  		</outgoings>
+  </node>
+  <node wkf="Commande produit" name="Confirmé">
+  		<incommings>
+  			<incomming name="Confirmer" />
+  		</incommings>
+  		<outgoings>
+  			<outgoing name="Valider" />
+  			<outgoing name="Annuler" />
+  		</outgoings>
+  </node>
+  <node wkf="Commande produit" name="Validé">
+  		<incommings>
+  			<incomming name="Valider" />
+  		</incommings>
+  		<outgoings>
+  			<outgoing name="Terminer" />
+  		</outgoings>
+  </node>
+  <node wkf="Commande produit" name="Annulé">
+  		<incommings>
+  			<incomming name="Annuler" />
+  		</incommings>
+  		<outgoings>
+  			<outgoing name="Réinitialiser" />
+  		</outgoings>
+  </node>
+  <node wkf="Commande produit" name="Terminé">
+  		<incommings>
+  			<incomming name="Terminer" />
+  		</incommings>
+  </node>
+  
+  <workflow name="Commande produit" />
+</wkfs>

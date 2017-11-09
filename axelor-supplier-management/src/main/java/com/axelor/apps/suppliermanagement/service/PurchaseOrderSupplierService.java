@@ -23,14 +23,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SupplierCatalog;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -61,8 +61,6 @@ public class PurchaseOrderSupplierService {
 	@Inject
 	private PurchaseOrderLineService purchaseOrderLineService;
 
-	@Inject
-	protected GeneralService generalService;
 	
 	@Inject
 	protected PurchaseOrderRepository poRepo;
@@ -74,7 +72,7 @@ public class PurchaseOrderSupplierService {
 	@Inject
 	public PurchaseOrderSupplierService() {
 
-		this.today = Beans.get(GeneralService.class).getTodayDate();
+		this.today = Beans.get(AppBaseService.class).getTodayDate();
 		this.user =  AuthUtils.getUser();
 	}
 
@@ -129,15 +127,14 @@ public class PurchaseOrderSupplierService {
 
 	public Map<Partner,List<PurchaseOrderLine>> splitBySupplierPartner(List<PurchaseOrderLine> purchaseOrderLineList) throws AxelorException  {
 
-		Map<Partner,List<PurchaseOrderLine>> purchaseOrderLinesBySupplierPartner = new HashMap<Partner,List<PurchaseOrderLine>>();
+		Map<Partner,List<PurchaseOrderLine>> purchaseOrderLinesBySupplierPartner = new HashMap<>();
 
 		for(PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList)  {
 
 			Partner supplierPartner = purchaseOrderLine.getSupplierPartner();
 
-			if(supplierPartner == null)  {
-
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_PURCHASE_1), purchaseOrderLine.getProductName()), IException.CONFIGURATION_ERROR);
+			if (supplierPartner == null) {
+				throw new AxelorException(purchaseOrderLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_PURCHASE_1), purchaseOrderLine.getProductName());
 			}
 
 			if(!purchaseOrderLinesBySupplierPartner.containsKey(supplierPartner))  {

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -22,16 +22,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
 
-import com.axelor.meta.MetaFiles;
 import org.eclipse.birt.core.data.DataTypeUtil;
 import org.eclipse.birt.core.exception.BirtException;
 import org.eclipse.birt.report.model.api.elements.DesignChoiceConstants;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +50,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.common.base.Strings;
@@ -81,7 +82,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
 		logger.debug("Generate birt metafile: {}", birtTemplate.getName());
 
-		String fileName = birtTemplate.getName() + "-" + new DateTime().toString("yyyyMMddHHmmss");
+		String fileName = birtTemplate.getName() + "-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 		File file = generateBirtTemplate( maker,
 				fileName,
 				birtTemplate.getTemplateLink(),
@@ -113,7 +114,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 		try {
 			return reportSettings.generate().getFile();
 		} catch (AxelorException e) {
-			throw new AxelorException(I18n.get(IExceptionMessage.TEMPLATE_MESSAGE_BASE_2), e, IException.CONFIGURATION_ERROR);
+			throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TEMPLATE_MESSAGE_BASE_2));
 		}
 
 	}
@@ -160,8 +161,8 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message generateMessage( long objectId, String model, String tag, Template template ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
-		if ( !model.equals( template.getMetaModel().getFullName() ) ){
-			throw new AxelorException( I18n.get(com.axelor.apps.message.exception.IExceptionMessage.TEMPLATE_SERVICE_3 ), IException.INCONSISTENCY, template.getMetaModel().getFullName() );
+		if (!model.equals(template.getMetaModel().getFullName())) {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(com.axelor.apps.message.exception.IExceptionMessage.TEMPLATE_SERVICE_3), template.getMetaModel().getFullName());
 		}
 		
 		logger.debug("model : {}", model);

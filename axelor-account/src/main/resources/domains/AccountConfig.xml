@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -31,11 +31,13 @@
 <!--     ACCOUNT -->
     <many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account"/>
     <many-to-one name="supplierAccount" ref="com.axelor.apps.account.db.Account" title="Supplier account"/>
-    <many-to-one name="doubtfulCustomerAccount" ref="com.axelor.apps.account.db.Account" title="Doubtful customers account" help="true"/>
+    <many-to-one name="doubtfulCustomerAccount" ref="com.axelor.apps.account.db.Account" title="Doubtful customers account"/>
     <many-to-one name="employeeAccount" ref="com.axelor.apps.account.db.Account" title="Employee account"/>    
     <many-to-one name="irrecoverableAccount" ref="com.axelor.apps.account.db.Account" title="Irrecoverable account"/>
     <many-to-one name="cashPositionVariationAccount" ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
     <many-to-one name="advancePaymentAccount" ref="com.axelor.apps.account.db.Account" title="Advance Payment Account"/>
+    <many-to-one name="factorDebitAccount" ref="com.axelor.apps.account.db.Account" />
+    <many-to-one name="factorCreditAccount" ref="com.axelor.apps.account.db.Account" />
     
     <decimal name="thresholdDistanceFromRegulation" title="Allowed payment range"/>
     
@@ -63,32 +65,32 @@
    	<integer name="threeMonthDebtMontsNumber" title="Short term debt duration (month)" default="3"/>
    	
 	<!-- DebtRecovery -->
-   	<one-to-many name="reminderConfigLineList" ref="com.axelor.apps.account.db.ReminderConfigLine" mappedBy="accountConfig"  title="Reminder configuration table"/>
+   	<one-to-many name="debtRecoveryConfigLineList" ref="com.axelor.apps.account.db.DebtRecoveryConfigLine" mappedBy="accountConfig"  title="Debt recovery configuration table"/>
    	<integer name="mailTransitTime" title="Mail transit time"/>
 
 	<!-- Reimbursement -->
-   	<string name="reimbursementExportFolderPathCFONB" title="Path for reimbursement files (CFONB)" help="true"/>
-   	<string name="reimbursementExportFolderPath" title="Path for reimbursement files (SEPA)" help="true"/>
+   	<string name="reimbursementExportFolderPathCFONB" title="Path for reimbursement files (CFONB)"/>
+   	<string name="reimbursementExportFolderPath" title="Path for reimbursement files (SEPA)"/>
    	<decimal name="lowerThresholdReimbursement" title="Lower reimbursement limit"/>
    	<decimal name="upperThresholdReimbursement" title="Upper reimbursement limit"/>
    	<many-to-one name="reimbursementAccount" ref="com.axelor.apps.account.db.Account" title="Reimbursement account"/>
    	<many-to-one name="reimbursementTemplate" ref="com.axelor.apps.message.db.Template" title="Reimbursement email template"/>
 	
-    <string name="reimbursementImportFolderPathCFONB" title="Filepath for rejected reimbursements"  help="true"/>
-    <string name="tempReimbImportFolderPathCFONB" title="Filepath for temporary rejected reimbursements import" help="true"/>
+    <string name="reimbursementImportFolderPathCFONB" title="Filepath for rejected reimbursements"/>
+    <string name="tempReimbImportFolderPathCFONB" title="Filepath for temporary rejected reimbursements import"/>
    
    	<string name="exportPath" title="Filepath for exported files (Accounting)"/>
    	<string name="exportFileName" title="File name for payroll journal entries"/>
    	
    	<!-- Onglet Prélèvements -->
-   	<string name="paymentScheduleExportFolderPathCFONB" title="Filepath for direct debit exports (CFONB)" help="true"/>
+   	<string name="paymentScheduleExportFolderPathCFONB" title="Filepath for direct debit exports (CFONB)"/>
    	
    	<many-to-one name="directDebitPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode for direct debit"/>
   	<many-to-one name="rejectionPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode after rejection"/>
     <integer name="paymentScheduleRejectNumLimit" title="Max Nbr. for payment schedule rejection"/>
     <integer name="invoiceRejectNumLimit" title="Max Nbr. of invoices rejection"/>
-    <string name="rejectImportPathAndFileName" title="Filepath to import rejected records"  help="true"/>
-    <string name="tempImportPathAndFileName" title="Temporary filepath to import rejected records" help="true"/>
+    <string name="rejectImportPathAndFileName" title="Filepath to import rejected records"/>
+    <string name="tempImportPathAndFileName" title="Temporary filepath to import rejected records"/>
    	<many-to-one name="rejectPaymentScheduleTemplate" ref="com.axelor.apps.message.db.Template" title="Email template for invoice and payment schedule rejections"/>
    	
    	<!--  Onglet Apurements -->
@@ -103,11 +105,11 @@
 	<many-to-one name="payboxConfig" ref="com.axelor.apps.account.db.PayboxConfig" title="Paybox configuration"/>
 	  
 	<!-- Onglet Import des paiements par TIP et TIP chèque-->
-   	<string name="interbankPaymentOrderImportPathCFONB" title="Filepath to import IPO, and IPO &amp; Cheque payments"  help="true"/>
-    <string name="tempInterbankPaymentOrderImportPathCFONB" title="Temporary filepath to import IPO, and IPO &amp; Cheque payments" help="true"/>
+   	<string name="interbankPaymentOrderImportPathCFONB" title="Filepath to import IPO, and IPO &amp; Cheque payments"/>
+    <string name="tempInterbankPaymentOrderImportPathCFONB" title="Temporary filepath to import IPO, and IPO &amp; Cheque payments"/>
   	
-  	<string name="interbankPaymentOrderRejectImportPathCFONB" title="Filepath to import IPO, and IPO &amp; Cheque payments rejects"  help="true"/>
-    <string name="tempInterbankPaymentOrderRejectImportPathCFONB" title="Temporary filepath to import IPO, and IPO &amp; Cheque payments rejects" help="true"/>
+  	<string name="interbankPaymentOrderRejectImportPathCFONB" title="Filepath to import IPO, and IPO &amp; Cheque payments rejects"/>
+    <string name="tempInterbankPaymentOrderRejectImportPathCFONB" title="Temporary filepath to import IPO, and IPO &amp; Cheque payments rejects"/>
   
     <!-- Invoice page -->
     <boolean name="allowCancelVentilatedInvoice" title="Allow cancelation of ventilated invoice"/>
@@ -119,20 +121,38 @@
 	<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart" />
 	<boolean name="hasChartImported"  title="Chart imported?" />
 	<integer name="invoiceInAtiSelect" title="Invoice ATI/WT" selection="base.in.ati.select" default="1"/>
+
+	<!-- Accounting Daybook (Mode brouillard)-->
+	<boolean name="accountingDaybook" title="Accounting Daybook"/>
 	
 <!-- 	Sequence  -->
 	<many-to-one name="custInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Customer invoices sequence"/>
 	<many-to-one name="custRefSequence" ref="com.axelor.apps.base.db.Sequence" title="Customer refunds sequence"/>
 	<many-to-one name="suppInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier invoices sequence"/>
 	<many-to-one name="suppRefSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier refunds sequence"/>
-	
-	
-	
+
+	<!--Product-->
+
+	<many-to-one name="invoicingProduct"
+				 title="Product to partially invoice sale order"
+				 ref="com.axelor.apps.base.db.Product"/>
+	<many-to-one name="advancePaymentProduct"
+				 title="Advance payment product"
+				 ref="com.axelor.apps.base.db.Product"/>
+
 <!-- 	Invoice printing    -->
 	<boolean name="displayDelAddrOnPrinting" title="Display delivery address on printing ?"/>
   	<boolean name="displayProductCodeOnPrinting" title="Display product code on printing ?"/>
  	<boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing ?"/>
   	<string name="invoiceClientBox" large="true" multiline="true" title="Client box in invoice"/>
+  	
+  	<string name="termsAndConditions" large="true" title="Terms and Conditions"/>
+
+	<!-- Invoice mail -->
+      <boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation" default="false"/>
+	  <many-to-one name="invoiceMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+  	
+  	<finder-method name="findByCompany" using="company" />
   	
   	<extra-code><![CDATA[
 	
@@ -145,7 +165,7 @@
 	
 	]]></extra-code>
 	
-	
-  </entity>
+	  </entity>
   
 </domain-models>
+ 

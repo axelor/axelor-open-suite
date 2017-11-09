@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<form model="com.axelor.apps.crm.db.RecurrenceConfiguration" title="Recurrence assistant" name="recurrence-assistant-form" 
     	onNew="action-recurrence-assistant-on-new, action-recurrence-assistant-method-compute-recurrence-name"
@@ -29,7 +29,7 @@
     		<button name="applyButton" title="Apply" onClick="action-recurrence-assistant-method-generate" hideIf="id &gt; 0"/>
     	</panel>
     	<panel sidebar="true" hidden="true" showIf="id &gt; 0">
-    		<button name="modifToAll" title="Apply modifications for all" help="All events will be deleted and new events will be created" onClick="save, action-recurrence-assistant-method-change-all"/>
+    		<button name="modifToAll" title="Apply modifications for all" onClick="save, action-recurrence-assistant-method-change-all"/>
     		<button name="deleteThis" title="Delete only this event" onClick="action-recurrence-assistant-method-delete-this"/>
     		<button name="deleteNext" title="Delete this and next events" onClick="action-recurrence-assistant-method-delete-next"/>
     		<button name="deleteAll" title="Delete all events" onClick="action-recurrence-assistant-method-delete-all"/>

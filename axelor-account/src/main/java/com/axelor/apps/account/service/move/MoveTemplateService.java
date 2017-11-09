@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -22,7 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -69,7 +70,7 @@ public class MoveTemplateService {
 			List<Long> moveList = new ArrayList<Long>();
 			BigDecimal hundred = new BigDecimal(100);
 			for(HashMap<String,Object> data : dataList){
-				LocalDate moveDate = new LocalDate(data.get("date").toString());
+				LocalDate moveDate = LocalDate.parse(data.get("date").toString(), DateTimeFormatter.ISO_DATE);
 				Partner debitPartner = null;
 				Partner creditPartner = null;
 				BigDecimal moveBalance = new BigDecimal(data.get("moveBalance").toString());

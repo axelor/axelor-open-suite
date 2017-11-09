@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -20,8 +20,8 @@ package com.axelor.apps.account.service.move;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
+import java.time.LocalDate;
 
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,9 +30,10 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -50,7 +51,7 @@ public class MoveValidateService {
 	protected MoveRepository moveRepository;
 
 	@Inject
-	public MoveValidateService(GeneralService generalService, SequenceService sequenceService, MoveCustAccountService moveCustAccountService, MoveRepository moveRepository) {
+	public MoveValidateService(AppAccountService appAccountService, SequenceService sequenceService, MoveCustAccountService moveCustAccountService, MoveRepository moveRepository) {
 
 		this.sequenceService = sequenceService;
 		this.moveCustAccountService = moveCustAccountService;
@@ -61,6 +62,18 @@ public class MoveValidateService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(Move move) throws AxelorException  {
 
+	    completeMoveLines(move);
+
+		this.validateMove(move);
+		moveRepository.save(move);
+	}
+
+	/**
+	 * In move lines, fill the dates field and the partner if they are missing,
+	 * and fill the counter.
+	 * @param move
+	 */
+	public void completeMoveLines(Move move) {
 		LocalDate date = move.getDate();
 		Partner partner = move.getPartner();
 
@@ -69,8 +82,8 @@ public class MoveValidateService {
 			if (moveLine.getDate() == null) {
 				moveLine.setDate(date);
 			}
-						
-			if(moveLine.getAccount() != null && moveLine.getAccount().getReconcileOk() && moveLine.getDueDate() == null)  {
+
+			if(moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance() && moveLine.getDueDate() == null)  {
 				moveLine.setDueDate(date);
 			}
 			if (partner != null){
@@ -79,9 +92,6 @@ public class MoveValidateService {
 			moveLine.setCounter(counter);
 			counter++;
 		}
-
-		this.validateMove(move);
-		moveRepository.save(move);
 	}
 
 
@@ -114,21 +124,37 @@ public class MoveValidateService {
 		Journal journal = move.getJournal();
 		Company company = move.getCompany();
 		if(journal == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_2)),IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_2));
 		}
 		if(company == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_3)),IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_3));
 		}
 
 		if(move.getPeriod() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_4)),IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_4));
 		}
 
 		if (journal.getSequence() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_5), journal.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_5), journal.getName());
+		}
+
+		if (move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_8));
+		}
+
+		if (move.getMoveLineList().stream()
+				.allMatch(moveLine ->
+						moveLine.getDebit().add(moveLine.getCredit())
+								.compareTo(BigDecimal.ZERO) == 0
+				)) {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_8));
 		}
 
 		move.setReference(sequenceService.getSequenceNumber(journal.getSequence()));
+
+		if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
+			move.setAdjustingMove(true);
+		}
 
 		this.validateEquiponderanteMove(move);
 		this.fillMoveLines(move);
@@ -159,9 +185,8 @@ public class MoveValidateService {
 
 			for (MoveLine moveLine : move.getMoveLineList()){
 
-				if(moveLine.getDebit().compareTo(BigDecimal.ZERO) == 1 && moveLine.getCredit().compareTo(BigDecimal.ZERO) == 1)  {
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_6),
-							moveLine.getName()), IException.INCONSISTENCY);
+				if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0 && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+					throw new AxelorException(move, IException.INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_6), moveLine.getName());
 				}
 
 				totalDebit = totalDebit.add(moveLine.getDebit());
@@ -169,8 +194,7 @@ public class MoveValidateService {
 			}
 
 			if (totalDebit.compareTo(totalCredit) != 0){
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_7),
-						move.getReference(), totalDebit, totalCredit), IException.INCONSISTENCY);
+				throw new AxelorException(move, IException.INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_7), move.getReference(), totalDebit, totalCredit);
 			}
 			move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
 		}

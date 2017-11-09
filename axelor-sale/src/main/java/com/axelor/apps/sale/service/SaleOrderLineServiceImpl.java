@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -17,14 +17,8 @@
  */
 package com.axelor.apps.sale.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPriceListLine;
@@ -32,16 +26,25 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.GeneralRepository;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Map;
 
 public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
@@ -54,7 +57,79 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 	private PriceListService priceListService;
 
 	@Inject
-	protected GeneralService generalService;
+	protected AppBaseService appBaseService;
+
+	@Override
+	public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
+		AccountManagementService accountManagementService =
+				Beans.get(AccountManagementService.class);
+
+		Product product = saleOrderLine.getProduct();
+
+		TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
+		saleOrderLine.setTaxLine(taxLine);
+
+		Tax tax = accountManagementService.getProductTax(accountManagementService.getAccountManagement(product, saleOrder.getCompany()), false);
+		TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(saleOrder.getClientPartner().getFiscalPosition(), tax);
+
+		saleOrderLine.setTaxEquiv(taxEquiv);
+
+		BigDecimal price = this.getUnitPrice(saleOrder, saleOrderLine, taxLine);
+
+		saleOrderLine.setProductName(product.getName());
+		saleOrderLine.setUnit(this.getSaleUnit(saleOrderLine));
+		saleOrderLine.setCompanyCostPrice(this.getCompanyCostPrice(saleOrder, saleOrderLine));
+
+		Map<String,Object> discounts = this.getDiscount(saleOrder, saleOrderLine, price);
+
+		if(discounts != null)  {
+			saleOrderLine.setDiscountAmount(
+					new BigDecimal(discounts.get("discountAmount").toString())
+			);
+			saleOrderLine.setDiscountTypeSelect( (Integer) discounts.get("discountTypeSelect"));
+			if(discounts.get("price") != null)  {
+				price = (BigDecimal) discounts.get("price");
+			}
+		}
+		saleOrderLine.setPrice(price);
+	}
+
+	@Override
+	public BigDecimal[] computeValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException {
+
+		if(saleOrder == null || (saleOrderLine.getProduct() == null && saleOrderLine.getProductName() == null) || saleOrderLine.getPrice() == null || saleOrderLine.getQty() == null)  {
+			return null;
+		}
+
+		BigDecimal exTaxTotal;
+		BigDecimal companyExTaxTotal;
+		BigDecimal inTaxTotal;
+		BigDecimal companyInTaxTotal;
+		BigDecimal priceDiscounted = this.computeDiscount(saleOrderLine);
+
+		BigDecimal taxRate = BigDecimal.ZERO;
+		if(saleOrderLine.getTaxLine() != null)  {  taxRate = saleOrderLine.getTaxLine().getValue();  }
+
+		if(!saleOrder.getInAti()){
+			exTaxTotal = this.computeAmount(saleOrderLine.getQty(), priceDiscounted);
+			inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
+			companyExTaxTotal = this.getAmountInCompanyCurrency(exTaxTotal, saleOrder);
+			companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(taxRate));
+		}
+		else  {
+			inTaxTotal = this.computeAmount(saleOrderLine.getQty(), priceDiscounted);
+			exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+			companyInTaxTotal = this.getAmountInCompanyCurrency(inTaxTotal, saleOrder);
+			companyExTaxTotal = companyInTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+		}
+
+		saleOrderLine.setInTaxTotal(inTaxTotal);
+		saleOrderLine.setExTaxTotal(exTaxTotal);
+		saleOrderLine.setCompanyInTaxTotal(companyInTaxTotal);
+		saleOrderLine.setCompanyExTaxTotal(companyExTaxTotal);
+
+		return new BigDecimal[]{exTaxTotal,inTaxTotal,companyInTaxTotal,companyExTaxTotal,priceDiscounted};
+	}
 
 
 	/**
@@ -94,7 +169,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 		
 		return currencyService.getAmountCurrencyConvertedAtDate(
 			product.getSaleCurrency(), saleOrder.getCurrency(), price, saleOrder.getCreationDate())
-			.setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+			.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 
 	}
 
@@ -118,7 +193,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 	public BigDecimal getCompanyCostPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException  {
 
 		Product product = saleOrderLine.getProduct();
-
+		
 		return currencyService.getAmountCurrencyConvertedAtDate(
 				product.getPurchaseCurrency(), saleOrder.getCompany().getCurrency(), product.getCostPrice(), saleOrder.getCreationDate())
 				.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
@@ -164,9 +239,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 			
 			Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 			if(discounts != null){
-				int computeMethodDiscountSelect = generalService.getGeneral().getComputeMethodDiscountSelect();
-				if((computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) 
-						|| computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT)  {
+				int computeMethodDiscountSelect = appBaseService.getAppBase().getComputeMethodDiscountSelect();
+				if((computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) 
+						|| computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT)  {
 					
 					price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
 					discounts.put("price", price);
@@ -204,5 +279,81 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 		}
 		return false;
 		
+	}
+	
+	@Override
+	public BigDecimal computeTotalPack(SaleOrderLine saleOrderLine) {
+		
+		BigDecimal totalPack = BigDecimal.ZERO;
+		
+		for (SaleOrderLine subLine : saleOrderLine.getSubLineList()) {
+			totalPack = totalPack.add(subLine.getInTaxTotal());
+		}
+		
+		return totalPack;
+	}
+
+	@Override
+	public SaleOrder getSaleOrder(Context context) {
+		
+		Context parentContext = context.getParentContext();
+		
+		if (!parentContext.get("_model").equals(SaleOrder.class.getName())) {
+			parentContext = parentContext.getParentContext();
+		}
+		
+		if (parentContext == null) {
+			return null;
+		}
+		
+		SaleOrder saleOrder = parentContext.asType(SaleOrder.class);
+		
+		if(!parentContext.getContextClass().toString().equals(SaleOrder.class.toString())){
+			
+			SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+			
+			saleOrder = saleOrderLine.getSaleOrder();
+		}
+		
+		return saleOrder;
+	}
+
+	@Override
+	public void computeSubMargin(SaleOrderLine saleOrderLine) throws AxelorException {
+		
+		if (saleOrderLine.getProduct() == null
+				|| saleOrderLine.getProduct().getCostPrice().compareTo(BigDecimal.ZERO) == 0
+				|| saleOrderLine.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
+
+			saleOrderLine.setSubTotalCostPrice(BigDecimal.ZERO);
+			saleOrderLine.setSubTotalGrossMargin(BigDecimal.ZERO);
+			saleOrderLine.setSubMarginRate(BigDecimal.ZERO);
+		} else {
+			BigDecimal subTotalCostPrice = BigDecimal.ZERO;
+			BigDecimal subTotalGrossMargin = BigDecimal.ZERO;
+			BigDecimal subMarginRate = BigDecimal.ZERO;
+			BigDecimal totalWT = BigDecimal.ZERO;
+
+			totalWT = currencyService.getAmountCurrencyConvertedAtDate(saleOrderLine.getSaleOrder().getCurrency(),
+					saleOrderLine.getSaleOrder().getCompany().getCurrency(), saleOrderLine.getExTaxTotal(), null);
+			
+			logger.debug("Total WT in company currency: {}", totalWT);
+			subTotalCostPrice = saleOrderLine.getProduct().getCostPrice().multiply(saleOrderLine.getQty());
+			logger.debug("Subtotal cost price: {}", subTotalCostPrice);
+			subTotalGrossMargin = totalWT.subtract(subTotalCostPrice);
+			logger.debug("Subtotal gross margin: {}", subTotalGrossMargin);
+			subMarginRate = subTotalGrossMargin.divide(subTotalCostPrice, RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
+			logger.debug("Subtotal gross margin rate: {}", subMarginRate);
+			
+			saleOrderLine.setSubTotalCostPrice(subTotalCostPrice);
+			saleOrderLine.setSubTotalGrossMargin(subTotalGrossMargin);
+			saleOrderLine.setSubMarginRate(subMarginRate);
+		}
+	}
+
+	@Override
+	public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine) {
+		//defined in supplychain
+		return BigDecimal.ZERO;
 	}
 }

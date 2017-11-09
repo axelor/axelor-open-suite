@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
   
 	<module name="base" package="com.axelor.apps.base.db" />
 		
 		<entity name="PriceList"  lang="java">
 			<string name="title" title="Title" namecolumn="true" required="true"/>
-			<boolean name="isActive" title="Active?" help="true"/>
+			<boolean name="isActive" title="Active?"/>
 			<string name="comments" title="Comments" large="true"/>
 			<one-to-many name="priceListLineList" ref="com.axelor.apps.base.db.PriceListLine" mappedBy="priceList" title="Price list content"/>
-			<boolean name="hideDiscount" title="Hide Discount on prints?" help="true"/>
-			<decimal name="generalDiscount" title="General discount (%)" help="true"/>
+			<boolean name="hideDiscount" title="Hide Discount on prints?"/>
+			<decimal name="generalDiscount" title="General discount (%)"/>
 			
-			<integer name="typeSelect" title="Type" selection="base.price.list.type.select" required="true" help="true"/>
-			<integer name="basedOnSelect" title="Based on" selection="base.price.list.based.on.select" help="true"/>
+			<integer name="typeSelect" title="Type" selection="base.price.list.type.select" required="true"/>
+			<integer name="basedOnSelect" title="Based on" selection="base.price.list.based.on.select"/>
 			<one-to-many name="historizedPriceList" ref="com.axelor.apps.base.db.PriceList" mappedBy="parentPriceList" title="Historized Price Lists" />
   			<many-to-one name="parentPriceList" ref="com.axelor.apps.base.db.PriceList" title="Parent Price List"/>
 		</entity>

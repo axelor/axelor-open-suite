@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.base.service;
 
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Map;
 
@@ -35,6 +34,7 @@ public interface ProductService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateProductPrice(Product product);
 
+	public String getSequence() throws AxelorException;
 
 	/**
 	 * Retourne le prix d'un produit à une date t.

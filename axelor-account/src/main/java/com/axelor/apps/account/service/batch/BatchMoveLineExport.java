@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -22,17 +22,17 @@ import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountingBatch;
-import com.axelor.apps.account.db.MoveLineReport;
-import com.axelor.apps.account.db.repo.MoveLineReportRepository;
+import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.MoveLineExportService;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -51,14 +51,14 @@ public class BatchMoveLineExport extends BatchStrategy {
 	protected BigDecimal credit = BigDecimal.ZERO;
 	protected BigDecimal balance = BigDecimal.ZERO;
 
-	protected MoveLineReportRepository moveLineReportRepository;
+	protected AccountingReportRepository accountingReportRepository;
 
 	@Inject
-	public BatchMoveLineExport(MoveLineExportService moveLineExportService, MoveLineReportRepository moveLineReportRepository) {
+	public BatchMoveLineExport(MoveLineExportService moveLineExportService, AccountingReportRepository accountingReportRepository) {
 
 		super(moveLineExportService);
 		
-		this.moveLineReportRepository = moveLineReportRepository;
+		this.accountingReportRepository = accountingReportRepository;
 	}
 
 
@@ -73,7 +73,7 @@ public class BatchMoveLineExport extends BatchStrategy {
 
 		} catch (AxelorException e) {
 
-			TraceBackService.trace(new AxelorException("", e, e.getcategory()), IException.MOVE_LINE_EXPORT_ORIGIN, batch.getId());
+			TraceBackService.trace(new AxelorException(e, e.getCategory(), ""), IException.MOVE_LINE_EXPORT_ORIGIN, batch.getId());
 			incrementAnomaly();
 			stop = true;
 		}
@@ -93,24 +93,24 @@ public class BatchMoveLineExport extends BatchStrategy {
 				LocalDate endDate = batch.getAccountingBatch().getEndDate();
 				int exportTypeSelect = batch.getAccountingBatch().getMoveLineExportTypeSelect();
 
-				MoveLineReport moveLineReport = moveLineExportService.createMoveLineReport(company, exportTypeSelect, startDate, endDate);
-				moveLineExportService.exportMoveLine(moveLineReport);
+				AccountingReport accountingReport = moveLineExportService.createAccountingReport(company, exportTypeSelect, startDate, endDate);
+				moveLineExportService.exportMoveLine(accountingReport);
 
 				JPA.clear();
 
-				moveLineReport = moveLineReportRepository.find(moveLineReport.getId());
+				accountingReport = accountingReportRepository.find(accountingReport.getId());
 
-				moveLineDone = moveLineRepo.all().filter("self.move.moveLineReport = ?1", moveLineReport).count();
-				moveDone = moveRepo.all().filter("self.moveLineReport = ?1", moveLineReport).count();
-				debit = moveLineReport.getTotalDebit();
-				credit = moveLineReport.getTotalCredit();
-				balance = moveLineReport.getBalance();
+				moveLineDone = moveLineRepo.all().filter("self.move.accountingReport = ?1", accountingReport).count();
+				moveDone = moveRepo.all().filter("self.accountingReport = ?1", accountingReport).count();
+				debit = accountingReport.getTotalDebit();
+				credit = accountingReport.getTotalCredit();
+				balance = accountingReport.getBalance();
 
-				updateMoveLineReport(moveLineReport);
+				updateAccountingReport(accountingReport);
 
 			} catch (AxelorException e) {
 
-				TraceBackService.trace(new AxelorException(String.format("%s", e), e, e.getcategory()), IException.MOVE_LINE_EXPORT_ORIGIN, batch.getId());
+				TraceBackService.trace(new AxelorException(e, e.getCategory(), String.format("%s", e)), IException.MOVE_LINE_EXPORT_ORIGIN, batch.getId());
 				incrementAnomaly();
 
 			} catch (Exception e) {
@@ -130,16 +130,13 @@ public class BatchMoveLineExport extends BatchStrategy {
 	public void testAccountingBatchField() throws AxelorException  {
 		AccountingBatch accountingBatch = batch.getAccountingBatch();
 		if(accountingBatch.getCompany() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_1),
-					GeneralServiceImpl.EXCEPTION, accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_1), AppAccountServiceImpl.EXCEPTION, accountingBatch.getCode());
 		}
 		if(accountingBatch.getEndDate() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_2),
-					GeneralServiceImpl.EXCEPTION, accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_2), AppAccountServiceImpl.EXCEPTION, accountingBatch.getCode());
 		}
 		if(accountingBatch.getMoveLineExportTypeSelect() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_3),
-					GeneralServiceImpl.EXCEPTION, accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_3), AppAccountServiceImpl.EXCEPTION, accountingBatch.getCode());
 		}
 	}
 
@@ -152,12 +149,12 @@ public class BatchMoveLineExport extends BatchStrategy {
 	@Override
 	protected void stop() {
 
-		String comment = I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_4);
+		String comment = I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_4) + "\n";
 		comment += String.format("\t* %s (%s)"+I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_5)+"\n", moveLineDone, moveDone);
 		comment += String.format("\t* "+I18n.get("Debit")+" : %s\n", debit);
 		comment += String.format("\t* "+I18n.get("Credit")+" : %s\n", credit);
 		comment += String.format("\t* "+I18n.get("Balance")+" : %s\n", balance);
-		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+		comment += String.format("\t"+I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
 		super.stop();
 		addComment(comment);

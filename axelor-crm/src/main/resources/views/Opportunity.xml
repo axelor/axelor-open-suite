@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="opportunity-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate">
     	<toolbar>
-    		<button name="grabOpportunity" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
+    		<button name="grabOpportunity" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
 <!--     		<button name="showMap" title="Map" onClick="action-show-opportunities-on-map-page"/> -->
     	</toolbar>
     	<hilite color="danger" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
@@ -22,10 +22,10 @@
 		<field name="probability" aggregate="avg"/>
         <field name="expectedCloseDate"/>
         <field name="user" form-view="user-form" grid-view="user-grid"/>
-        <button name="grabOpportunity" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
-        <button name="next-stage" icon="fa-chevron-circle-right" help="Next Stage" onClick="action-group-crm-opportunity-nextstage-click" readonlyIf="salesStageSelect &gt; 3" />
-        <button name="closed-won" icon="fa-check-circle" help="Closed won" onClick="action-group-crm-opportunity-closedwon-click" readonlyIf="salesStageSelect &gt; 4" />
-        <button name="closed-lost" icon="fa-minus-circle" help="Closed lost" onClick="action-group-crm-opportunity-closedlost-click" readonlyIf="salesStageSelect &gt; 4" />
+        <button name="grabOpportunity" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
+        <button name="next-stage" icon="fa-chevron-circle-right" onClick="action-group-crm-opportunity-nextstage-click" readonlyIf="salesStageSelect &gt; 3" />
+        <button name="closed-won" icon="fa-check-circle" onClick="action-group-crm-opportunity-closedwon-click" readonlyIf="salesStageSelect &gt; 4" />
+        <button name="closed-lost" icon="fa-minus-circle" onClick="action-group-crm-opportunity-closedlost-click" readonlyIf="salesStageSelect &gt; 4" />
     </grid>
 
    <grid name="my-opportunity-grid" title="My Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate" >
@@ -42,9 +42,9 @@
 		<field name="amount" aggregate="sum"/>
 		<field name="probability" aggregate="avg"/>
 		<field name="expectedCloseDate"/>
-		<button name="next-stage" help="Next Stage" readonlyIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" onClick="action-group-crm-opportunity-nextstage-click"/>
-		<button name="closed-won" help="Closed won" readonlyIf="salesStageSelect &gt; 4" icon="fa-check-circle" onClick="action-group-crm-opportunity-closedwon-click"/>
-		<button name="closed-lost" help="Closed lost" readonlyIf="salesStageSelect &gt; 4" icon="fa-minus-circle" onClick="action-group-crm-opportunity-closedlost-click"/>
+		<button name="next-stage" readonlyIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" onClick="action-group-crm-opportunity-nextstage-click"/>
+		<button name="closed-won" readonlyIf="salesStageSelect &gt; 4" icon="fa-check-circle" onClick="action-group-crm-opportunity-closedwon-click"/>
+		<button name="closed-lost" readonlyIf="salesStageSelect &gt; 4" icon="fa-minus-circle" onClick="action-group-crm-opportunity-closedlost-click"/>
 	</grid>
 
     
@@ -81,11 +81,16 @@
 	
     <form   name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" onNew="action-opportunity-group-new">
 		<toolbar>
-			<button name="previous-stage" help="Previous Stage" readonlyIf="salesStageSelect &lt; 2" icon="fa-chevron-circle-left" onClick="action-opportunity-set-previous-stage,save"/>
-			<button name="next-stage" help="Next Stage" readonlyIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" onClick="action-opportunity-set-next-stage,save"/>
-			<button name="closed-won" help="Closed won" readonlyIf="salesStageSelect &gt; 4" icon="fa-check-circle" onClick="action-opportunity-set-closed-won,save"/>
-			<button name="closed-lost" help="Closed lost" readonlyIf="salesStageSelect &gt; 4" icon="fa-minus-circle" onClick="action-opportunity-set-closed-lost,save"/>
+			<button name="previous-stage" readonlyIf="salesStageSelect &lt; 2" icon="fa-chevron-circle-left" onClick="action-opportunity-set-previous-stage,save"/>
+			<button name="next-stage" readonlyIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" onClick="action-opportunity-set-next-stage,save"/>
+			<button name="closed-won" readonlyIf="salesStageSelect &gt; 4" icon="fa-check-circle" onClick="action-opportunity-set-closed-won,save"/>
+			<button name="closed-lost" readonlyIf="salesStageSelect &gt; 4" icon="fa-minus-circle" onClick="action-opportunity-set-closed-lost,save"/>
 		</toolbar>
+		<menubar>
+	    	<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
+	    		<item title="Convert into quotation" action="action-sale-group-generate-sale-order"  if-module="axelor-sale"/>
+	    	</menu>
+	  	</menubar>
 	  
 		<panel name="main" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
 			<field name="name" css="label-bold bold"/>
@@ -114,15 +119,20 @@
 		<panel name="linkedTo" title="Linked to" sidebar="true">
 			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
 			<field name="lead" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" form-view="lead-form" grid-view="lead-grid"/>
-			<panel-include view="convert-opportunity-form" from="axelor-sale" if-module="axelor-sale"/>
+			<panel-include view="convert-opportunity-form" from="axelor-sale" if-module="axelor-sale"  if="__config__.app.isApp('sale')" />
 		</panel>
 		
 		<panel name="assignedTo" title="Assigned to" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" sidebar="true">
 		  <field name="user" form-view="user-form" grid-view="user-grid"/>
 		  <button name="grabOpportunity" title="Assign to me" hideIf="user.id == _internalUserId"   icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
-		  <field name="team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
+		  <field name="team" form-view="team-form" grid-view="team-grid"/>
 		  <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-		  <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()" if-module="axelor-cash-management"/>
+		  <field name="bankDetails" widget="SuggestBox"  if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()"/>
+		  <field name="lostReason" canNew="true" />
+		</panel>
+		
+		<panel>
+			<field name="attrs" colSpan="12" />
 		</panel>
 		
 		<panel-mail>
@@ -139,26 +149,29 @@
 		<field name="probability"/>
 		<field name="expectedCloseDate"/>
 		<field name="user"/>
+		<field name="salesStageSelect"/>
 		<hilite color="danger" if="probability &lt;= 25"/>
 		<hilite color="success" if="probability &gt;= 75"/>
 		<hilite color="info" if="probability &gt;= 50"/>
 		<hilite color="warning" if="probability &lt; 50"/>
-		<template>
-		&lt;h4&gt;{{name}}&lt;/h4&gt;
-		&lt;img ng-if="user" ng-src="{{$image('user', 'image')}}"&gt;
-		&lt;div class="card-body"&gt;{{description}}&lt;/div&gt;
-		&lt;div class="card-footer"&gt;
-		  &lt;i class='fa fa-clock-o'&gt;&lt;/i&gt; &lt;span&gt;{{expectedCloseDate|date:'dd/MM/yyyy'}}&lt;/span&gt;
-		&lt;/div&gt;
-		</template>
+        <template>
+            <![CDATA[
+            <h4>{{name}}</h4>
+            <img ng-if="user" ng-src="{{$image('user', 'image')}}">
+            <div class="card-body">{{description}}</div>
+            <div class="card-footer">
+                <i class='fa fa-clock-o'></i> <span>{{expectedCloseDate|date:'dd/MM/yyyy'}}</span>
+            </div>
+            ]]>
+        </template>
 	</kanban>
     
     <action-group name="action-opportunity-group-new">
-    	<action name="action-opportunity-record-new"/>
     	<action name="action-opportunity-record-currency" if="_lead == null &amp;&amp; _partner == null"/>
     	<action name="action-opportunity-record-default" if="_lead == null &amp;&amp; _partner == null"/>
-    	<action name="action-opportunity-record-from-lead" if="_lead != null"/>
     	<action name="action-opportunity-record-from-partner" if="_partner != null"/>
+    	<action name="action-opportunity-record-new"/>
+    	<action name="action-opportunity-record-from-lead" if="_lead != null"/>
     </action-group>
     
     <action-record name="opportunity.kanban.on.new" model="com.axelor.apps.crm.db.Opportunity">
@@ -183,10 +196,12 @@
     
     <action-record name="action-opportunity-record-new" model="com.axelor.apps.crm.db.Opportunity">
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     	<field name="user" expr="eval:__user__"/>
     	<field name="salesStageSelect" expr="1"/>
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    	<field name="lead" expr="eval: _parent" if="_parent?._model == 'com.axelor.apps.crm.db.Lead' " />
+    	<field name="partner" expr="eval: _partner"/>
     </action-record>
     
     <action-record name="action-opportunity-record-currency" model="com.axelor.apps.crm.db.Opportunity">
@@ -195,21 +210,10 @@
 	
 	<action-record name="action-opportunity-record-default" model="com.axelor.apps.crm.db.Opportunity">
     	<field name="user" expr="eval:__user__"/>
+    	<field name="partner" expr="eval: _customer"/>
+    	<field name="lead" expr="eval: _leadName"/>
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 	</action-record>
-    
-    <action-record name="action-opportunity-record-from-lead" model="com.axelor.apps.crm.db.Opportunity">
-    	<field name="lead" expr="eval: _lead"/>
-    	<field name="amount" expr="eval: _lead.opportunityAmount"/>
-    	<field name="description" expr="eval: _lead.description"/>
-    	<field name="source" expr="eval: _lead.source"/>
-    	<field name="user" expr="eval: _lead.user"/>
-    	<field name="team" expr="eval: _lead.team"/>
-    	<field name="salesStageSelect" expr="1"/>
-    	<field name="currency" expr="eval: _lead.currency"/>
-    	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
-    </action-record>
     
     <action-record name="action-opportunity-record-from-partner" model="com.axelor.apps.crm.db.Opportunity">
     	<field name="partner" expr="eval: _partner" if="_partner.isContact == false"/>
@@ -221,7 +225,7 @@
     	<field name="salesStageSelect" expr="1"/>
     	<field name="currency" expr="eval: _partner.currency"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     </action-record>
     
     <search-filters name="opportunity-filters" model="com.axelor.apps.crm.db.Opportunity" title="Opportunities filters">

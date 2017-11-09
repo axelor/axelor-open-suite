@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="talent" package="com.axelor.apps.talent.db"/>
+
+	<entity name="Training" lang="java" cachable="true">
+		<string name="name" title="Name" required="true" />
+		<many-to-one name="category" ref="com.axelor.apps.talent.db.TrainingCategory" title="Category" />
+		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
+		<many-to-many name="tagSkillSet" ref="com.axelor.apps.talent.db.TagSkill" title="Tag" />
+		<many-to-many name="requiredTrainingSet" ref="com.axelor.apps.talent.db.Training" title="Required training"/>
+		<string name="description" title="Description" large="true" />
+		<string name="program" title="Program" large="true" />
+		<string name="objectives" title="Objectives" large="true" />
+		<decimal name="duration" title="Number of hours" />
+		<boolean name="mandatoryTraining" title="Mandatory training ?"/>
+		<decimal name="rating" title="Rating" />
+	</entity>
+
+</domain-models>

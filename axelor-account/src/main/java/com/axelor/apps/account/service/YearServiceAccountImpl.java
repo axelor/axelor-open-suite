@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -19,26 +19,24 @@ package com.axelor.apps.account.service;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Query;
 
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.ReportedBalance;
 import com.axelor.apps.account.db.ReportedBalanceLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.ReportedBalanceLineRepository;
-import com.axelor.apps.account.db.repo.ReportedBalanceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.db.AdjustHistory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
@@ -46,8 +44,8 @@ import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.YearServiceImpl;
-import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -56,25 +54,24 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 public class YearServiceAccountImpl extends YearServiceImpl {
 	
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected AccountConfigService accountConfigService;
-	protected ReportedBalanceRepository reportedBalanceRepo;
 	protected ReportedBalanceLineRepository reportedBalanceLineRepo;
-	
-	
+	protected AdjustHistoryService adjustHistoryService;
+
 	@Inject
-	public YearServiceAccountImpl(AccountConfigService accountConfigService, PartnerRepository partnerRepository, ReportedBalanceRepository reportedBalanceRepo,
-			ReportedBalanceLineRepository reportedBalanceLineRepo, YearRepository yearRepo)  {
-		
+	public YearServiceAccountImpl(AccountConfigService accountConfigService, PartnerRepository partnerRepository,
+			ReportedBalanceLineRepository reportedBalanceLineRepo, YearRepository yearRepo, AdjustHistoryService adjustHistoryService) {
 		super(partnerRepository, yearRepo);
 		this.accountConfigService = accountConfigService;
-		this.reportedBalanceRepo = reportedBalanceRepo;
 		this.reportedBalanceLineRepo = reportedBalanceLineRepo;
-		
-		
+		this.adjustHistoryService = adjustHistoryService;
 	}
 	
 	/**
@@ -88,18 +85,30 @@ public class YearServiceAccountImpl extends YearServiceImpl {
 		year = yearRepo.find(year.getId());
 
 		for (Period period : year.getPeriodList())  {
+			if (period.getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
+				adjustHistoryService.setEndDate(period);
+			}
+
 			period.setStatusSelect(PeriodRepository.STATUS_CLOSED);
 			period.setClosureDateTime(LocalDateTime.now());
 		}
 		Company company = year.getCompany();
-		if(company == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.YEAR_1),
-					GeneralServiceImpl.EXCEPTION,year.getName()), IException.CONFIGURATION_ERROR);
+		if (company == null)  {
+			throw new AxelorException(year, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.YEAR_1), AppAccountServiceImpl.EXCEPTION, year.getName());
 		}
 
-		Query q = JPA.em().createQuery("select DISTINCT(ml.partner) FROM MoveLine as ml WHERE ml.date >= ?1 AND ml.date <= ?2 AND ml.move.company = ?3");
-		q.setParameter(1, year.getFromDate());
-		q.setParameter(2, year.getToDate());
+		Query q;
+		if (year.getStatusSelect() == YearRepository.STATUS_ADJUSTING) {
+			AdjustHistory adjustHistory = adjustHistoryService.setEndDate(year);
+
+			q = JPA.em().createQuery("select DISTINCT(ml.partner) FROM MoveLine as ml WHERE ml.date >= ?1 AND ml.date <= ?2 AND ml.move.company = ?3 AND ml.move.adjustingMove = true");
+			q.setParameter(1, adjustHistory.getStartDate().toLocalDate());
+			q.setParameter(2, adjustHistory.getEndDate().toLocalDate());
+		} else {
+			q = JPA.em().createQuery("select DISTINCT(ml.partner) FROM MoveLine as ml WHERE ml.date >= ?1 AND ml.date <= ?2 AND ml.move.company = ?3");
+			q.setParameter(1, year.getFromDate());
+			q.setParameter(2, year.getToDate());
+		}
 		q.setParameter(3, year.getCompany());
 
 		@SuppressWarnings("unchecked")
@@ -115,39 +124,24 @@ public class YearServiceAccountImpl extends YearServiceImpl {
 		Account customerAccount = accountConfigService.getCustomerAccount(accountConfig);
 		Account doubtfulCustomerAccount = accountConfigService.getDoubtfulCustomerAccount(accountConfig);
 
-		for(Partner partner : partnerList)  {
+		for (Partner partner : partnerList) {
 			partner = partnerRepository.find(partner.getId());
 			log.debug("Tiers en cours de traitement : {}", partner.getName());
-			boolean find = false;
-			for(ReportedBalance reportedBalance : partner.getReportedBalanceList())  {
-				if(reportedBalance.getCompany().equals(company))  {
-					// On ajoute une ligne au A nouveau trouvé
-					log.debug("On ajoute une ligne au A nouveau trouvé");
 
-					ReportedBalanceLine reportedBalanceLine = this.createReportedBalanceLine(
-							reportedBalance,
-							this.computeReportedBalance(year.getFromDate(), year.getToDate(), partner, customerAccount, doubtfulCustomerAccount),
-							year);
-					log.debug("ReportedBalanceLine : {}",reportedBalanceLine);
-					reportedBalance.getReportedBalanceLineList().add(reportedBalanceLine);
+			for (AccountingSituation accountingSituation : partner.getAccountingSituationList()) {
+				if (accountingSituation.getCompany().equals(company)) {
+					log.debug("On ajoute une ligne à la Situation comptable trouvée");
+
+					BigDecimal reportedBalanceAmount = this.computeReportedBalance(year.getFromDate(), year.getToDate(), partner, customerAccount, doubtfulCustomerAccount);
+					ReportedBalanceLine reportedBalanceLine = this.createReportedBalanceLine(reportedBalanceAmount, year);
+					log.debug("ReportedBalanceLine : {}", reportedBalanceLine);
+
+					accountingSituation.addReportedBalanceLineListItem(reportedBalanceLine);
 //					year.getReportedBalanceLineList().add(reportedBalanceLine);
 //					reportedBalance.save();
-					find = true;
-				}
 
-			}
-			if(!find)  {
-				// On crée un A nouveau et on lui ajoute une ligne
-				log.debug("On crée un A nouveau et on lui ajoute une ligne");
-				ReportedBalance reportedBalance = this.createReportedBalance(company, partner);
-				ReportedBalanceLine reportedBalanceLine = this.createReportedBalanceLine(
-						reportedBalance,
-						this.computeReportedBalance(year.getFromDate(), year.getToDate(), partner, customerAccount, doubtfulCustomerAccount),
-						year);
-//				year.getReportedBalanceLineList().add(reportedBalanceLine);
-				log.debug("ReportedBalanceLine : {}",reportedBalanceLine);
-				reportedBalance.getReportedBalanceLineList().add(reportedBalanceLine);
-				reportedBalanceRepo.save(reportedBalance);
+					break;
+				}
 			}
 
 			partnerRepository.save(partner);
@@ -157,34 +151,25 @@ public class YearServiceAccountImpl extends YearServiceImpl {
 		yearRepo.save(year);
 	}
 
-
 	/**
-	 * Fonction permettant de créer un A nouveau
-	 * @param company
-	 * 				Une société
-	 * @return
-	 * 				Un A nouveau
+	 * Procédure permettant de rectifier un exercice comptable
+	 * @param year
+	 * 			Un exercice comptable
+	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ReportedBalance createReportedBalance(Company company, Partner partner)  {
-		ReportedBalance reportedBalance = new ReportedBalance();
-		reportedBalance.setCompany(company);
-		reportedBalance.setPartner(partner);
-		reportedBalance.setReportedBalanceLineList(new ArrayList<ReportedBalanceLine>());
-		reportedBalanceRepo.save(reportedBalance);
-		return reportedBalance;
+	public void adjust(Year year) {
+		year = yearRepo.find(year.getId());
+
+		adjustHistoryService.setStartDate(year);
+
+		year.setStatusSelect(YearRepository.STATUS_ADJUSTING);
+		yearRepo.save(year);
 	}
 
-
-	/**
-	 * Fonction permettant de créer un Solde rapporté
-	 * @param reportedBalance
-	 * 				Un A nouveau
-	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ReportedBalanceLine createReportedBalanceLine(ReportedBalance reportedBalance, BigDecimal amount, Year year)  {
+	public ReportedBalanceLine createReportedBalanceLine(BigDecimal amount, Year year)  {
 		ReportedBalanceLine reportedBalanceLine = new ReportedBalanceLine();
-		reportedBalanceLine.setReportedBalance(reportedBalance);
 		reportedBalanceLine.setAmount(amount);
 		reportedBalanceLine.setYear(year);
 		reportedBalanceLineRepo.save(reportedBalanceLine);
@@ -206,8 +191,8 @@ public class YearServiceAccountImpl extends YearServiceImpl {
 	 * 				Le solde rapporté
 	 */
 	public BigDecimal computeReportedBalance(LocalDate fromDate, LocalDate toDate, Partner partner, Account account, Account account2)  {
-		Query q = JPA.em().createQuery("select SUM(ml.credit-ml.debit) FROM MoveLine as ml " +
-				"WHERE ml.partner = ?1 AND ml.ignoreInAccountingOk = false AND ml.date >= ?2 AND ml.date <= ?3 AND (ml.account = ?4 OR ml.account = ?5) ", BigDecimal.class);
+		Query q = JPA.em().createQuery("select SUM(ml.debit-ml.credit) FROM MoveLine as ml " +
+				"WHERE ml.partner = ?1 AND ml.move.ignoreInAccountingOk = false AND ml.date >= ?2 AND ml.date <= ?3 AND (ml.account = ?4 OR ml.account = ?5) ", BigDecimal.class);
 		q.setParameter(1, partner);
 		q.setParameter(2, fromDate);
 		q.setParameter(3, toDate);

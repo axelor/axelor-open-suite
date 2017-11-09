@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dashboard-builders xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
+  <dashboard-builder name="product-dashboard" title="Product dashboard" appBuilder="PRD">
+  	<dashlets>
+		<dashlet name="Product orders" sequence="0" viewType="grid" colspan="12" view="custom-model-ProductOrder-grid" />  	
+  		<dashlet name="Product orders per month" sequence="1" viewType="chart" colspan="6" view="product-order-chart" />
+  		<dashlet name="Product orders per supplier per category" sequence="2" viewType="chart" colspan="6" view="product-order-per-author-per-category" />
+  	</dashlets>
+  </dashboard-builder>
+  
+<!--   <dashboard-builder name="product-order-dashboard" title="Product dashboard"> -->
+<!--   	<dashlets> -->
+<!-- 		<dashlet name="All products" sequence="0" viewType="grid" colspan="12" view="product-grid" />  	 -->
+<!--   		<dashlet name="Product sale per category" sequence="1" viewType="chart" colspan="6" view="products-order-per-category" /> -->
+<!--   		<dashlet name="Product sale per month per customer" sequence="2" viewType="chart" colspan="6" view="products-order-per-month-per-customer" /> -->
+<!--   	</dashlets> -->
+<!--   </dashboard-builder> -->
+  
+  
+</dashboard-builders>

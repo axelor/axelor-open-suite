@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -119,7 +119,7 @@ public class ImportPaymentVoucher {
 	public MoveLine getInvoiceDebitMoveline(Invoice invoice) {
 		if (invoice.getMove() != null && invoice.getMove().getMoveLineList() != null)  {
 			for (MoveLine moveLine : invoice.getMove().getMoveLineList())  {
-				if ((moveLine.getAccount().equals(invoice.getPartnerAccount())) && moveLine.getAccount().getReconcileOk() && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)  {
+				if ((moveLine.getAccount().equals(invoice.getPartnerAccount())) && moveLine.getAccount().getUseForPartnerBalance() && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)  {
 					return moveLine;
 				}
 			}
@@ -135,7 +135,7 @@ public class ImportPaymentVoucher {
 	public MoveLine getInvoiceCreditMoveline(Invoice invoice) {
 		if (invoice.getMove() != null && invoice.getMove().getMoveLineList() != null)  {
 			for (MoveLine moveLine : invoice.getMove().getMoveLineList())  {
-				if ((moveLine.getAccount().equals(invoice.getPartnerAccount())) && moveLine.getAccount().getReconcileOk() && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0)  {
+				if ((moveLine.getAccount().equals(invoice.getPartnerAccount())) && moveLine.getAccount().getUseForPartnerBalance() && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0)  {
 					return moveLine;
 				}
 			}

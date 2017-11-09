@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<selection name="training.register.rating.select">
+		<option value="0">0 %</option>
+		<option value="10">10 %</option>
+		<option value="20">20 %</option>
+		<option value="30">30 %</option>
+		<option value="40">40 %</option>
+		<option value="50">50 %</option>
+		<option value="60">60 %</option>
+		<option value="70">70 %</option>
+		<option value="80">80 %</option>
+		<option value="90">90 %</option>
+		<option value="100">100 %</option>
+	</selection>
+	
+	<selection name="training.register.status.select">
+		<option value="0">Requested</option>	
+		<option value="1">Planned</option>
+		<option value="2">Completed</option>
+		<option value="3">Canceled</option>
+	</selection>
+	
+	<selection name="training.session.status.select">
+		<option value="1">Planned</option>
+		<option value="2">Completed</option>
+		<option value="3">Canceled</option>
+	</selection>
+	
+	<selection name="job.position.experience.select">
+		<option value="0">0-2 years</option>
+		<option value="1">2-5 years</option>
+		<option value="2">5-10 years</option>
+		<option value="3">+10 years</option>
+	</selection>
+	
+	<selection name="job.position.status.select">
+		<option value="0">Draft</option>
+		<option value="1">Open</option>
+		<option value="2">On hold</option>
+		<option value="3">Closed</option>
+		<option value="4">Cancel</option>
+	</selection>
+	
+	<selection name="job.application.status.select">
+		<option value="0">Opened</option>
+		<option value="1">Hired</option>
+		<option value="2">Rejected</option>
+	</selection>
+	
+	<selection name="crm.event.related.to.select" id="talent.crm.event.related.to.select">
+		<option value="com.axelor.apps.talent.db.JobApplication">Job Application</option>
+	</selection>
+	
+	<selection name="appraisal.status.selected">
+		<option value="0">Draft</option>
+		<option value="1">Sent</option>
+		<option value="2">Completed</option>
+		<option value="3">Canceled</option>
+	</selection>
+	
+</object-views>

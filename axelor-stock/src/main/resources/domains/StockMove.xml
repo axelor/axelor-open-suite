@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -9,7 +9,7 @@
   
 	<integer name="importId" />
 
-	<string name="stockMoveSeq" namecolumn="true" title="Ref." readonly="true" unique="true"/>
+	<string name="stockMoveSeq" namecolumn="true" title="Ref." readonly="true"/>
     <string name="name" title="Name"/>
     <many-to-one name="fromLocation" ref="com.axelor.apps.stock.db.Location" required="true" title="From location"/>
     <many-to-one name="toLocation" ref="com.axelor.apps.stock.db.Location" required="true" title="To location"/>
@@ -22,7 +22,10 @@
     
     <many-to-one name="fromAddress" ref="com.axelor.apps.base.db.Address" title="From address"/>
     <many-to-one name="toAddress" ref="com.axelor.apps.base.db.Address" title="To address"/>
-    
+
+    <string name="fromAddressStr" title="From address" large="true" multiline="true"/>
+    <string name="toAddressStr" title="To address" large="true" multiline="true"/>
+
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     
@@ -45,6 +48,8 @@
     
     <integer name="conformitySelect" title="Conformity" selection="stock.move.line.conformity.select"/>
     
+    <unique-constraint columns="stockMoveSeq,company"/>
+    
     <extra-code><![CDATA[
 	
 	   	// STATUS SELECT
@@ -58,6 +63,10 @@
 		public static final int TYPE_OUTGOING = 2;
 		public static final int TYPE_INCOMING = 3;
 
+		// CONFORMITY SELECT
+		public static final int CONFORMITY_NONE = 1;
+		public static final int CONFORMITY_COMPLIANT = 2;
+		public static final int CONFORMITY_NON_COMPLIANT = 3;
 	
 	]]></extra-code>
     

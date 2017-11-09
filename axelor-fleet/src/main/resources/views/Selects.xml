@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<selection name="fleet.vehicle.transimission.select">
+		<option value="0">Manual</option>
+		<option value="1">Automatic</option>
+	</selection>
+	
+	<selection name="fleet.vehicle.cost.type.select">
+		<option value="0">Omnium</option>
+		<option value="1">Leasing</option>
+		<option value="2">Repairing</option>
+	</selection>
+	
+	<selection name="fleet.vehicle.contract.status.select">
+		<option value="0">Draft</option>
+		<option value="1">In Progress</option>
+		<option value="2">To Close</option>
+		<option value="3">Terminated</option>
+	</selection>
+	
+	<selection name="fleet.vehicle.contract.cost.frequency.select">
+		<option value="1">Daily</option>
+		<option value="2">Weekly</option>
+		<option value="3">Monthly</option>
+		<option value="4">Yearly</option>
+	</selection>
+   
+	<selection name="fleet.vehicle.fuel.type.select">
+		<option value="0">Gasoline</option>
+		<option value="1">Diesel</option>
+		<option value="2">Electric</option>
+		<option value="3">Hybrid</option>
+	</selection>
+	
+</object-views>

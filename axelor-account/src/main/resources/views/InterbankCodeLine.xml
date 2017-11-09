@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
-    <grid name="interbank-code-line-grid" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCodeLine" orderBy="code">
-        <field name="code"/>
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    <grid name="interbank-code-line-grid" title="Interbank codes list" model="com.axelor.apps.account.db.InterbankCodeLine" orderBy="code">
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="name"/>
         <field name="description"/>
         <field name="technicalRejectOk"/>
         <field name="interbankCode" form-view="interbank-code-form" grid-view="interbank-code-grid"/>
     </grid>
 
-    <form name="interbank-code-line-form" title="Blocking reason/reject codes list" model="com.axelor.apps.account.db.InterbankCodeLine" width="large">
+    <form name="interbank-code-line-form" title="Interbank codes list" model="com.axelor.apps.account.db.InterbankCodeLine" width="large">
         <panel name="main" >
-            <field name="code"/>
+            <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
             <field name="name"/>
         	<field name="interbankCode" form-view="interbank-code-form" grid-view="interbank-code-grid"/>
         </panel>
@@ -29,10 +29,10 @@
         </panel>
     </form>
 	
-	<form name="interbank-code-line-custom-form" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCodeLine" width="large">
+	<form name="interbank-code-line-custom-form" title="Interbank codes list" model="com.axelor.apps.account.db.InterbankCodeLine" width="large">
 		<panel name="main" >
 			<field name="name"/>
-			<field name="code" colSpan="3"/>
+			<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
 			<field name="technicalRejectOk" colSpan="3"/>
 		</panel>
 		<panel name="description" title="Description">

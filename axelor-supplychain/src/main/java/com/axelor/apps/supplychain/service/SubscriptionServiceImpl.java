@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -31,6 +31,7 @@ import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -52,8 +53,8 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 	public SaleOrderLine generateSubscriptions(SaleOrderLine saleOrderLine) throws AxelorException{
 		int iterator = 0;
 
-		if(saleOrderLine.getToSubDate() == null){
-			throw new AxelorException(I18n.get("Field Date To is empty because fields periodicity, date from or number of periods are empty"), 1);
+		if (saleOrderLine.getToSubDate() == null) {
+			throw new AxelorException(IException.MISSING_FIELD, I18n.get("Field Date To is empty because fields periodicity, date from or number of periods are empty"));
 		}
 
 		while(iterator != saleOrderLine.getPeriodNumber()){
@@ -87,8 +88,8 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 			oldExTaxTotal = oldExTaxTotal.divide(new BigDecimal(oldLine), 2 ,RoundingMode.HALF_UP);
 			oldInTaxTotal = oldInTaxTotal.divide(new BigDecimal(oldLine), 2 ,RoundingMode.HALF_UP);
 		}
-		if(saleOrder.getToSubDate() == null){
-			throw new AxelorException(I18n.get("Field Date To is empty because fields periodicity, date from or number of periods are empty"), 1);
+		if (saleOrder.getToSubDate() == null) {
+			throw new AxelorException(IException.MISSING_FIELD, I18n.get("Field Date To is empty because fields periodicity, date from or number of periods are empty"));
 		}
 
 		List<Subscription> subscriptionItList = new ArrayList<Subscription>(saleOrderLineIt.getSubscriptionList());

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="purchase" package="com.axelor.apps.purchase.db"/>
+
+  <entity name="PurchaseRequest" lang="java" cachable="true">
+	
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <boolean name="newProduct" title="New product" />
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit" />
+    <decimal name="quantity" title="Quantity"/>
+    <many-to-one name="supplier" ref="com.axelor.apps.base.db.Partner" title="Supplier" />
+    <decimal name="price" title="Price"  />
+    <string name="description" title="Description" large="true"/>
+    <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery address" />
+    <decimal name="deliveredQty" title="Delivered quantity" />
+    <many-to-one name="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchase order" />
+    <integer name="statusSelect" title="Status" selection="purchase.request.status.select" default="1"/>
+  	
+  </entity>
+  
+</domain-models>

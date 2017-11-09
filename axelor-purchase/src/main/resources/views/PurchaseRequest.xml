@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="accepted-purchase-request-grid" title="All requests accepted" model="com.axelor.apps.purchase.db.PurchaseRequest" edit-icon="true">
+    	<toolbar>
+    		<button name="generatePo" title="Generate PO" onClick="action-purchase-request-open-generate-po-wizard"/>
+    	</toolbar>
+        <field name="company"/>
+        <field name="product" />
+        <field name="newProduct" />
+        <field name="unit" />
+        <field name="quantity" />
+        <field name="statusSelect"/>
+    </grid>
+    
+    <grid name="sent-purchase-request-grid" title="All requests sent" model="com.axelor.apps.purchase.db.PurchaseRequest">
+    	<toolbar>
+    		<button name="acceptRequest" title="Accept and generate PO" onClick="action-purchase-request-method-accept-request"/>
+    	</toolbar>
+        <field name="company"/>
+        <field name="product" />
+        <field name="newProduct" />
+        <field name="unit" />
+        <field name="quantity" />
+        <field name="statusSelect"/>
+    </grid>
+    
+    <grid name="my-current-cart-purchase-request-grid" title="My Purchase request" model="com.axelor.apps.purchase.db.PurchaseRequest">
+    	<toolbar>
+    		<button name="confirmMyCart" title="Confirm my cart" onClick="action-purchase-request-method-confirm-cart"/>
+    	</toolbar>
+        <field name="company"/>
+        <field name="product" />
+        <field name="newProduct" />
+        <field name="unit" />
+        <field name="quantity" />
+        <field name="statusSelect"/>
+    </grid>
+    
+    <grid name="purchase-request-grid" title="Purchase request" model="com.axelor.apps.purchase.db.PurchaseRequest">
+    	<hilite if="statusSelect == 2" color="info"/>
+    	<hilite if="statusSelect == 3" color="primary"/>
+    	<hilite if="statusSelect == 4 || statusSelect == 5 || statusSelect == 6" color="success"/>
+    	<hilite if="statusSelect == 7" color="warning"  />
+    	<hilite if="statusSelect == 8" color="danger"/>
+        <field name="product" />
+        <field name="newProduct" />
+        <field name="unit" />
+        <field name="quantity" />
+        <field name="statusSelect"/>
+    </grid>
+
+    <form name="purchase-request-form" title="Purchase request" model="com.axelor.apps.purchase.db.PurchaseRequest" onNew="action-purchase-request-record-default" width="large">
+		<toolbar>
+		  <button name="request" title="Request" showIf="statusSelect == 1" onClick="action-purchase-request-set-status-requested,save"/>
+	      <button name="accept" title="Accept" showIf="statusSelect == 2" onClick="action-purchase-request-set-status-accepted,save"/>
+	      <button name="purchase" title="Purchase" showIf="statusSelect == 3" onClick="action-purchase-request-set-status-purchased,save"/>
+	      <button name="deliverPartially" title="Deliver Partially" showIf="statusSelect == 4" onClick="action-purchase-request-set-status-delivered-partially,save"/>
+	      <button name="delivered" title="Deliver" showIf="statusSelect == 5 || statusSelect == 4" onClick="action-purchase-request-set-status-delivered,save"/>
+	      <button name="refuse" title="Refuse" showIf="statusSelect == 6"  onClick="action-purchase-request-set-status-refused,save"/>
+	      <button name="cancel" title="Cancel" showIf="statusSelect != 3 &amp;&amp; statusSelect != 8"  onClick="action-purchase-request-set-status-cancel,save"/>
+	    </toolbar>
+	    <panel title="Status">
+      		<field name="statusSelect" readonly="true" colSpan="12" widget="nav-select" showTitle="false"/>
+      	</panel>
+		<panel name="main" >
+		  <field name="company" form-view="company-form"  grid-view="company-grid"/>
+		  <spacer/>
+		  <field name="newProduct"/>
+		  <field name="product" form-view="product-form" grid-view="product-grid" hideIf="newProduct" onChange="action-purchase-request-product-on-change"/>
+		  <field name="unit" />
+		  <field name="quantity" />
+		  <field name="supplier" search="self.isSupplier = true" />
+		  <field name="price" />
+		  <field name="description" colSpan="12"/>
+		  <field name="deliveryAddress" onSelect="action-purchase-request-set-delivery-address-domain"/>
+		  <field name="deliveredQty" readonly="true" />
+		  <field name="purchaseOrder" hideIf="purchaseOrder == null"/>
+		</panel>
+		<panel>
+			<field name="attrs" colSpan="12" />
+		</panel>
+		<panel-mail>
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	  	</panel-mail>
+    </form>
+    
+    <form name="purchase-request-wizard-generate-po-form"  title="Generate PO" model="com.axelor.apps.purchase.db.PurchaseRequest" >
+    	<panel>
+    		<field name="$groupBySupplier" title="Group by supplier" type="boolean" />
+    		<spacer/>
+    		<field name="$groupByProduct" title="Group by product" type="boolean" />
+    		<spacer/>
+    		<field name="$groupByDeliveryAddress" title="Group by delivery address" type="boolean" />
+    		<spacer/>
+    		<button name="generatePO" title="Generate PO" />
+    	</panel>
+    </form>
+	
+	<action-attrs name="action-purchase-request-set-delivery-address-domain">
+		<attribute if="company?.partner != null" name="domain" expr="eval:&quot; self.id  in ( &quot; + ([0] + company.partner.partnerAddressList.findAll{it->it.isDeliveryAddr}.collect{it->it.address.id}).join(',') + &quot;)&quot;" for="deliveryAddress"/>
+	</action-attrs>
+	
+	<action-record name="action-purchase-request-record-default" model="com.axelor.apps.purchase.db.PurchaseRequest">
+		<field name="company"  expr="eval:__user__.activeCompany"/>
+		<field name="quantity" expr="eval:1" />
+		<field name="product" expr="eval:_product" />
+		<field name="supplier" expr="eval:_product.defaultSupplierPartner" if="_product != null"/>		
+		<field name="unit" expr="eval:_product.purchasesUnit" if="_product != null &amp;&amp; _product.purchasesUnit != null"/>		
+		<field name="unit" expr="eval:_product.unit" if="_product != null &amp;&amp; _product.purchasesUnit == null"/>		
+		<field name="price" expr="eval:_product.purchasePrice" if="_product != null"/>		
+	</action-record>
+	
+	<action-record name="action-purchase-request-product-on-change" model="com.axelor.apps.purchase.db.PurchaseRequest">
+		<field name="supplier" expr="eval:product.defaultSupplierPartner" if="product != null"/>		
+		<field name="unit" expr="eval:product.purchasesUnit" if="product != null &amp;&amp; product.purchasesUnit != null"/>		
+		<field name="unit" expr="eval:product.unit" if="product != null &amp;&amp; product.purchasesUnit == null"/>	
+		<field name="price" expr="eval:product.purchasePrice" if="product != null"/>		
+	</action-record>
+	
+	<!-- update status -->
+	<action-record name="action-purchase-request-set-status-requested" model="com.axelor.apps.purchase.db.PurchaseRequest">
+    	<field name="statusSelect" expr="eval:2"/>
+  	</action-record>
+  	
+  	<action-record name="action-purchase-request-set-status-accepted" model="com.axelor.apps.purchase.db.PurchaseRequest">
+    	<field name="statusSelect" expr="eval:3"/>
+  	</action-record>
+  	
+  	<action-record name="action-purchase-request-set-status-purchased" model="com.axelor.apps.purchase.db.PurchaseRequest">
+    	<field name="statusSelect" expr="eval:4"/>
+  	</action-record>
+  	
+  	<action-record name="action-purchase-request-set-status-delivered-partially" model="com.axelor.apps.purchase.db.PurchaseRequest">
+    	<field name="statusSelect" expr="eval:5"/>
+  	</action-record>
+	
+	<action-record name="action-purchase-request-set-status-delivered" model="com.axelor.apps.purchase.db.PurchaseRequest">
+    	<field name="statusSelect" expr="eval:6"/>
+  	</action-record>
+  	
+  	<action-record name="action-purchase-request-set-status-refused" model="com.axelor.apps.purchase.db.PurchaseRequest">
+    	<field name="statusSelect" expr="eval:7"/>
+  	</action-record>
+  	
+  	<action-record name="action-purchase-request-set-status-cancel" model="com.axelor.apps.purchase.db.PurchaseRequest">
+    	<field name="statusSelect" expr="eval:8"/>
+  	</action-record>
+  	<!-- update status end -->
+	
+	<action-method name="action-purchase-request-method-confirm-cart">
+		<call class="com.axelor.apps.purchase.web.PurchaseRequestController" method="confirmCart"/>
+	</action-method>
+	
+	<action-method name="action-purchase-request-method-accept-request">
+		<call class="com.axelor.apps.purchase.web.PurchaseRequestController" method="acceptRequest"/>
+	</action-method>
+	
+	<action-view name="action-purchase-request-open-generate-po-wizard" title="Generate PO" model="com.axelor.apps.purchase.db.PurchaseRequest">
+		<view type="form" name="purchase-request-wizard-generate-po-form"/>
+		<view-param name="popup" value="true"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="false" />
+	</action-view>
+	
+	
+</object-views>

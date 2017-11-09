@@ -19,7 +19,6 @@ package com.axelor.apps.crm.web;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +26,6 @@ import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
@@ -59,6 +57,9 @@ public class LeadController {
 	@Inject
 	private LeadRepository leadRepo;
 	
+	@Inject
+	private MapService mapService;
+
 	/**
 	 * Method to generate Lead as a Pdf
 	 *
@@ -127,21 +128,7 @@ public class LeadController {
 	
 	public void showLeadsOnMap(ActionRequest request, ActionResponse response) throws IOException {
 		
-		String appHome = AppSettings.get().get("application.home");
-		if (Strings.isNullOrEmpty(appHome)) {
-			response.setFlash(I18n.get(IExceptionMessage.LEAD_2));
-			return;
-		}
-		if (!Beans.get(MapService.class).isInternetAvailable()) {
-			response.setFlash(I18n.get(IExceptionMessage.LEAD_3));
-			return;			
-		}		
-		String mapUrl = new String(appHome + "/map/gmap-objs.html?apphome=" + appHome + "&object=lead");
-		Map<String, Object> mapView = new HashMap<String, Object>();
-		mapView.put("title", I18n.get("Leads"));
-		mapView.put("resource", mapUrl);
-		mapView.put("viewType", "html");		
-		response.setView(mapView);
+		mapService.showMap("lead", I18n.get("Leads"), response);
 	}	
 	
 	
@@ -174,6 +161,21 @@ public class LeadController {
   					  		  .param("show-toolbar", "false")
 							  .context("_showRecord", leadImportConfig.getId().toString())
 							  .map());
+		}
+	}
+
+	public void checkLeadName(ActionRequest request, ActionResponse response) {
+		Lead lead = request.getContext().asType(Lead.class);
+
+		if (lead.getName() != null && !lead.getName().isEmpty() &&
+				lead.getFirstName() != null && !lead.getFirstName().isEmpty()) {
+			Lead existingLead = leadRepo.all()
+					.filter("lower(self.name) = lower(?1) and lower(self.firstName) = lower(?2)",
+							lead.getName(), lead.getFirstName())
+					.fetchOne();
+			if (existingLead != null) {
+				response.setAlert("There is already a lead with these first name and last name");
+			}
 		}
 	}
 	

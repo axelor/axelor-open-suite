@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  
+  <grid name="wkf-tracking-time-grid" title="Total time per status" model="com.axelor.studio.db.WkfTrackingTime">
+       <field name="status"/>
+       <field name="totalTimeHours"/>
+       <field name="totalTimeDays"/>
+  </grid>
+    
+  <form name="wkf-tracking-time-form" title="Total time per status" model="com.axelor.studio.db.WkfTrackingTime" width="large"
+    canEdit="false" canNew="false" canDelete="false" canAttach="false" canCopy="false" canSave="false">
+      <panel>
+        <field name="status"/>
+        <field name="totalTimeHours"/>
+        <field name="totalTimeDays"/>
+      </panel>
+  </form>
+  
+</object-views>
+
+

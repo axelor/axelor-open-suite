@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -10,7 +10,7 @@
     <boolean name="generateBankOrder" title="Generate Bank order"/>
   	<boolean name="automaticTransmission" title="Transmit automatically to Bank"/>
   	<integer name="orderTypeSelect" title="Order Type" selection="bankpayment.bank.order.type.select"/>
-  	<string name="bankOrderExportFolderPath" help="true"/>
+  	<string name="bankOrderExportFolderPath"/>
   	<many-to-one name="bankOrderFileFormat" ref="com.axelor.apps.bankpayment.db.BankOrderFileFormat" title="File format"/>
     <boolean name="generateMoveAutoFromBankOrder" title="Generate account move from the bank order"/>
   	

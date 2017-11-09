@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -54,15 +54,15 @@ public class MoveCancelService {
 
 		for(MoveLine moveLine : move.getMoveLineList())  {
 			
-			if(moveLine.getAccount().getReconcileOk() && moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0)  {
-				throw new AxelorException(I18n.get(IExceptionMessage.MOVE_CANCEL_1), IException.CONFIGURATION_ERROR);
+			if(moveLine.getAccount().getUseForPartnerBalance() && moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0)  {
+				throw new AxelorException(move, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_CANCEL_1));
 			}
 			
 		}
 
 		Period period = Beans.get(PeriodService.class).getPeriod(move.getDate(), move.getCompany());
 		if(period == null || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED)  {
-			throw new AxelorException(I18n.get(IExceptionMessage.MOVE_CANCEL_2), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(move, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_CANCEL_2));
 		}
 
 		try{
@@ -78,7 +78,7 @@ public class MoveCancelService {
 		}
 		catch(Exception e)  {
 
-			throw new AxelorException(I18n.get(IExceptionMessage.MOVE_CANCEL_3), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(move, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_CANCEL_3));
 
 		}
 

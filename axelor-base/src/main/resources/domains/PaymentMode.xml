@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="PaymentMode" lang="java" cachable="true">
   
   	<integer name="importId"/>
-    <string name="name" required="true" unique="true" title="Label"/>
+    <string name="name" required="true" unique="true" title="Label" translatable="true"/>
     <string name="code" required="true" title="Code"/>
-  	<integer name="typeSelect" title="Type" selection="iaccount.payment.mode.type.select" help="true"/>
-  	<integer name="inOutSelect" title="In / Out ?" selection="iaccount.payment.mode.in.out.select" help="true"/>
+  	<integer name="typeSelect" title="Type" selection="iaccount.payment.mode.type.select" />
+  	<integer name="inOutSelect" title="In / Out ?" selection="iaccount.payment.mode.in.out.select" />
   	
   	<extra-code><![CDATA[
 	

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
  
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
  
@@ -12,13 +12,15 @@
       <integer name="elementSelect" title="Element" selection="supplychain.mrp.line.element.select" default="0"/>
       <integer name="typeSelect" title="Type" selection="supplychain.mrp.line.type.select" default="0"/>
       <integer name="sequence" title="Sequence to order MRP results"/>
-      
+
+      <string name="statusSelect" title="Statuses to take into account" />
+
       <extra-code><![CDATA[
 	
 	
 	   	// ELEMENT SELECT
 		public static final int ELEMENT_AVAILABLE_STOCK = 1;  // Available stock
-		public static final int ELEMENT_PURCHASE_ORDER = 2;  // Pruchase order
+		public static final int ELEMENT_PURCHASE_ORDER = 2;  // Purchase order
 		public static final int ELEMENT_SALE_ORDER = 3;  // Sale order
 		public static final int ELEMENT_SALE_FORECAST = 4;  // Sales forecast
 		

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  
+  <grid name="menu-builder-grid" title="Menu builder" model="com.axelor.studio.db.MenuBuilder">
+      <field name="parentMenu" />
+      <field name="title" />	
+      <field name="actionBuilder.model" title="Model" />
+      <field name="order" />
+      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
+  </grid>
+  
+  <form name="menu-builder-form" title="Menu builder" model="com.axelor.studio.db.MenuBuilder"  width="large">
+      <panel>
+      	  <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
+      	  <field name="$existingMenu" title="Existing menu" type="many-to-one" target="com.axelor.meta.db.MetaMenu" target-name="title" hideIf="id" onChange="action-menubuilder-method-fetch-menu" />
+	      <field name="title" />
+	      <field name="parentMenu" />
+	      <field name="icon" />
+	      <field name="iconBackground"/>
+	      <field name="order"/>
+	      <field name="showAction" widget="boolean-switch" onChange="action-menu-builder-show-action" />
+	      <field name="actionBuilder" colSpan="12" showIf="showAction" showTitle="false">
+	      	<editor>
+	      		<field name="isJson" colSpan="2"/>
+				<field name="model"   widget="ref-text" x-target-name="name" x-target="com.axelor.meta.db.MetaJsonModel" 
+						hideIf="!isJson"
+						colSpan="5"
+						onChange="action-action-builder-method-set-views" />
+				<field name="model" showIf="!isJson" 
+						widget="ref-text" x-target-name="fullName" x-target="com.axelor.meta.db.MetaModel"
+						colSpan="5"
+						onChange="action-action-builder-method-set-views" />
+				<field name="actionBuilderViews" colSpan="12" grid-view="action-builder-view-grid" form-view="action-builder-view-form"/>
+				<field name="lines" title="Context" colSpan="12" grid-view="action-builder-line-simple-grid" form-view="action-builder-line-simple-form" />
+				<field name="viewParams" title="View params"  colSpan="12" grid-view="action-builder-line-simple-grid" form-view="action-builder-line-simple-form" />
+				<field name="domainCondition"  colSpan="12" />
+				<field name="model" hidden="true" />
+				<field name="typeSelect" hidden="true" />
+	      	</editor>
+	      </field> 
+		  <panel colSpan="12" title="Permissions">
+		  	<field name="groups" colSpan="12" widget="TagSelect"/>
+		  	<field name="roles" colSpan="12" widget="TagSelect"/>
+		  </panel>
+	      <panel colSpan="12" title="Extra" canCollapse="true">
+	      	<field name="conditionToCheck" />
+	      	<field name="moduleToCheck" />
+	      	<field name="top" />
+	      	<field name="left" />
+	      	<field name="mobile" />
+	      	<field name="hidden" />
+	      	<field name="link" />
+	      	<field name="tag" />
+	      	<field name="tagGet" />
+	      	<field name="tagCount"/>
+	      	<field name="tagStyle" />
+	      </panel>
+	      <field name="name" hidden="true"/> 
+	  </panel>
+  </form>
+	
+  
+  <action-attrs name="action-menu-builder-show-action">
+  	<attribute name="value" for="actionBuilder" expr="eval:null" if="!showAction" />
+<!--   	<attribute name="value" for="actionBuilder" expr="eval:__repo__(ActionBuilder).findByName(name.replace('-','.'))" if="showAction &amp;&amp; name != null" /> -->
+  	<attribute name="value" for="actionBuilder.typeSelect" expr="eval:3" if="showAction" />
+  	<attribute name="value" for="actionBuilder.name" expr="eval:name.replaceAll('-','.')" if="showAction &amp;&amp; name != null" />
+  	<attribute name="value" for="actionBuilder.title" expr="eval:title" if="showAction" />
+  </action-attrs>
+  
+  <action-method name="action-menubuilder-method-fetch-menu">
+  	<call class="com.axelor.studio.web.MenuBuilderController" method="fetchMenu"/>
+  </action-method>
+  
+</object-views>
