@@ -102,4 +102,11 @@ public class LogisticalFormLineServiceImpl implements LogisticalFormLineService 
 		return (BigDecimal) scriptHelper.eval(String.format("new BigDecimal(%s)", script.replaceAll("x", "*")));
 	}
 
+	@Override
+	public void initParcelPallet(LogisticalFormLine logisticalFormLine) {
+		int parcelPalletNumber = Beans.get(LogisticalFormService.class).findHighestParcelPalletNumber(
+				logisticalFormLine.getLogisticalForm(), logisticalFormLine.getTypeSelect());
+		logisticalFormLine.setParcelPalletNumber(parcelPalletNumber + 1);
+	}
+
 }

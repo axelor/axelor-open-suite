@@ -60,4 +60,11 @@ public interface LogisticalFormLineService {
 	BigDecimal evalVolume(LogisticalFormLine logisticalFormLine, ScriptHelper scriptHelper)
 			throws InvalidLogisticalFormLineDimensions;
 
+	/**
+	 * Initialize parcel/pallet line.
+	 * 
+	 * @param logisticalFormLine
+	 */
+	void initParcelPallet(LogisticalFormLine logisticalFormLine);
+
 }

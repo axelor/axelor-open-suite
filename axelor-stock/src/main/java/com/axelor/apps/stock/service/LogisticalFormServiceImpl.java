@@ -72,6 +72,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 	 * @param stockMoveLine
 	 * @return
 	 */
+	@SuppressWarnings("all")
 	protected boolean testForDetailLine(StockMoveLine stockMoveLine) {
 		return true;
 	}
@@ -189,7 +190,8 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 		return logisticalFormLine;
 	}
 
-	protected int findHighestParcelPalletNumber(LogisticalForm logisticalForm, int typeSelect) {
+	@Override
+	public int findHighestParcelPalletNumber(LogisticalForm logisticalForm, int typeSelect) {
 		int highest = 0;
 
 		if (logisticalForm.getLogisticalFormLineList() != null) {
