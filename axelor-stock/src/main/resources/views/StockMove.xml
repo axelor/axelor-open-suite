@@ -129,6 +129,7 @@
 		<field name="numOfPackages" readonlyIf="statusSelect == 3 || statusSelect == 4" />
 		<field name="numOfPalettes" readonlyIf="statusSelect == 3 || statusSelect == 4" />
 		<field name="grossWeight" readonlyIf="statusSelect == 3 || statusSelect == 4" />
+		<field name="saleOrder.specificPackage" readonly="true"/>
 	</panel>
 	   
 	   <panel sidebar="true" readonly="true"  colSpan="4">  
