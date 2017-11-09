@@ -70,8 +70,6 @@
     <string name="orderNumber" title="Order Number"/>
     
 <!--     Onglet scheduler -->
-<!-- 	<many-to-one name="scheduler" ref="com.axelor.apps.base.db.Scheduler" title="Scheduler"/> -->
-	<one-to-one name="schedulerInstance" ref="com.axelor.apps.base.db.SchedulerInstance" title="Scheduler instance"/>
 	<date name="subscriptionStartDate" title="Subscription start date"/>
 	<date name="invoicedFirstDate" title="Invoiced first date"/>
 	<date name="nextInvPeriodStartDate" title="Next invoiced period start date" readonly="true"/>
