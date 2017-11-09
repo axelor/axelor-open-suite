@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.AddressService;
@@ -30,6 +31,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import javax.annotation.Nullable;
 
+import com.axelor.apps.base.service.BankDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -544,12 +546,14 @@ public class InvoiceController {
 		PaymentMode paymentMode = invoice.getPaymentMode();
 		Company company = invoice.getCompany();
 		Partner partner = invoice.getPartner();
-		if(paymentMode == null || company == null || partner == null) {
+		if (company == null) {
 			return;
 		}
-		partner = Beans.get(PartnerRepository.class).find(partner.getId());
-		BankDetails defaultBankDetails = Beans.get(AccountingSituationService.class)
-				.findDefaultBankDetails(company, paymentMode, partner);
+		if (partner != null) {
+			partner = Beans.get(PartnerRepository.class).find(partner.getId());
+		}
+		BankDetails defaultBankDetails = Beans.get(BankDetailsService.class)
+				.getDefaultCompanyBankDetails(company, paymentMode, partner);
 		response.setValue("companyBankDetails", defaultBankDetails);
 	}
 
@@ -596,4 +600,24 @@ public class InvoiceController {
 		}
 	}
 
+	/**
+	 * set default value for automatic invoice printing
+	 * @param request
+	 * @param response
+	 * @throws AxelorException
+	 */
+	public void setDefaultMail(ActionRequest request, ActionResponse response) throws AxelorException{
+		Invoice invoice = request.getContext().asType(Invoice.class);
+		Company company = invoice.getCompany();
+		Partner partner = invoice.getPartner();
+		if (company != null && partner != null) {
+			AccountingSituation accountingSituation = Beans
+					.get(AccountingSituationService.class)
+					.getAccountingSituation(partner, company);
+			if (accountingSituation != null) {
+				response.setValue("invoiceAutomaticMail", accountingSituation.getInvoiceAutomaticMail());
+				response.setValue("invoiceMessageTemplate", accountingSituation.getInvoiceMessageTemplate());
+			}
+		}
+	}
 }

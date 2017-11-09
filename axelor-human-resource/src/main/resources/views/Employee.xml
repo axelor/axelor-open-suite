@@ -8,6 +8,7 @@
 		 <field name="timeLoggingPreferenceSelect" />
 		 <field name="manager" form-view="user-form" grid-view="user-grid" />
 		 <field name="mainEmploymentContract.companyDepartment" form-view="company-department-form" grid-view="company-department-grid"/>
+		 <field name="mainEmploymentContract.payCompany"/>
 		 <field name="archived" hidden="true" />
 	</grid>
 	

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -145,8 +145,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 
 		BigDecimal inTaxAmount = paymentSchedule.getInTaxAmount();
 
-		log.debug("Création de lignes pour l'échéancier numéro {} (nombre d'échéance : {}, montant : {})",
-				new Object[] { paymentSchedule.getScheduleId(), nbrTerm, inTaxAmount });
+		log.debug("Création de lignes pour l'échéancier numéro {} (nombre d'échéance : {}, montant : {})", new Object[]{paymentSchedule.getPaymentScheduleSeq(), nbrTerm, inTaxAmount});
 
 		if (nbrTerm > 0 && inTaxAmount.compareTo(BigDecimal.ZERO) == 1) {
 
@@ -330,8 +329,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 		PaymentMode directDebitPaymentMode = company.getAccountConfig().getDirectDebitPaymentMode();
 
 		if (directDebitPaymentMode == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE),
-					IException.MISSING_FIELD);
+			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE));
 		}
 
 		// TODO manage multi bank

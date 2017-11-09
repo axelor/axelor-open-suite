@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -53,9 +53,8 @@ public class ExternalReportSettings extends ReportSettings  {
 			this.getUrl();
 			
 	    	String urlNotExist = URLService.notExist(url.toString());
-			if (urlNotExist != null){
-				
-				throw new AxelorException(String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.BIRT_EXTERNAL_REPORT_NO_URL), birtViewerUrl), IException.CONFIGURATION_ERROR);
+			if (urlNotExist != null) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.BIRT_EXTERNAL_REPORT_NO_URL), birtViewerUrl);
 			}
 			
 			final Path tmpFile = MetaFiles.createTempFile(null, "");

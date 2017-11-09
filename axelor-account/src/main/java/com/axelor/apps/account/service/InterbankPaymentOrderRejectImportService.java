@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -105,15 +105,13 @@ public class InterbankPaymentOrderRejectImportService {
 			InterbankCodeLine causeReject = rejectImportService.getInterbankCodeLine(reject[3], 0);
 
 			Invoice invoice = invoiceRepo.all().filter("UPPER(self.invoiceId) = ?1 AND self.company = ?2", refReject, company).fetchOne();
-			if(invoice == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_1),
-						AppAccountServiceImpl.EXCEPTION, refReject, company.getName()), IException.INCONSISTENCY);
+			if (invoice == null) {
+				throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_1), AppAccountServiceImpl.EXCEPTION, refReject, company.getName());
 			}
 
 			Partner partner = invoice.getPartner();
-			if(invoice.getPaymentMode() == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_2),
-						AppAccountServiceImpl.EXCEPTION, refReject), IException.INCONSISTENCY);
+			if (invoice.getPaymentMode() == null) {
+				throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_2), AppAccountServiceImpl.EXCEPTION, refReject);
 			}
 			
 			//TODO manage multi bank
@@ -151,18 +149,15 @@ public class InterbankPaymentOrderRejectImportService {
 	public Account getAccount(Company company, boolean isTIPCheque) throws AxelorException  {
 		PaymentMode paymentMode = null;
 
-		if(isTIPCheque)  {
+		if (isTIPCheque) {
 			paymentMode = paymentModeRepo.findByCode("TIC");
-			if(paymentMode == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_3),
-						AppAccountServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+			if (paymentMode == null) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_3), AppAccountServiceImpl.EXCEPTION);
 			}
-		}
-		else  {
+		} else {
 			paymentMode = paymentModeRepo.findByCode("TIP");
-			if(paymentMode == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_4),
-						AppAccountServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+			if (paymentMode == null) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INTER_BANK_PO_REJECT_IMPORT_4), AppAccountServiceImpl.EXCEPTION);
 			}
 		}
 		

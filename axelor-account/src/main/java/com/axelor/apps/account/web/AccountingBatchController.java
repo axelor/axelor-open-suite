@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -49,7 +49,7 @@ public class AccountingBatchController {
 
 		Batch batch = null;
 
-		if(accountingBatch.getDebtRecoveryTypeSelect() == AccountingBatchRepository.ACTION_DEBT_RECOVERY)  {
+		if(accountingBatch.getActionSelect() == AccountingBatchRepository.ACTION_DEBT_RECOVERY)  {
 			batch = accountingBatchService.debtRecovery(accountingBatchRepo.find(accountingBatch.getId()));
 		}
 		if(batch != null)
@@ -107,11 +107,9 @@ public class AccountingBatchController {
 	 * @param response
 	 */
 	public void actionDirectDebit(ActionRequest request, ActionResponse response){
-
 		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
 		accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
 		Batch batch = accountingBatchService.directDebit(accountingBatch);
-
 		response.setFlash(batch.getComments());
 		response.setReload(true);
 	}

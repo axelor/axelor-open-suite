@@ -15,6 +15,7 @@
 		<field name="comments"/>
 		<field name="untaxedAmount" hidden="true"/>
 		<field name="expenseProduct.blockExpenseTax" hidden="true" />
+		<field name="toInvoice" hidden="true"/>
 	</grid>
 	
 	<grid name="expense-line-kilometric-grid" 
@@ -62,7 +63,7 @@
 		</panel>
 		
 		<panel>
-			<field name="expenseLineAttrs" colSpan="12" />
+			<field name="attrs" colSpan="12" />
 		</panel>
 		
 	</form>

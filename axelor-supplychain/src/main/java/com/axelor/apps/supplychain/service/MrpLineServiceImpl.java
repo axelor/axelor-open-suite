@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -108,9 +108,8 @@ public class MrpLineServiceImpl implements MrpLineService  {
 		
 		Partner supplierPartner = product.getDefaultSupplierPartner();
 
-		if(supplierPartner == null)  {  
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MRP_LINE_1),
-					product.getFullName()), IException.CONFIGURATION_ERROR); 
+		if (supplierPartner == null) {  
+			throw new AxelorException(mrpLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MRP_LINE_1), product.getFullName()); 
 		}
 
 		Company company = location.getCompany();

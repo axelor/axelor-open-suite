@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -22,12 +22,14 @@ import java.util.Map;
 
 import javax.persistence.PersistenceException;
 
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -39,18 +41,24 @@ public class PartnerBaseRepository extends PartnerRepository {
 	
 	@Inject
 	PartnerService partnerService;
+
+	@Inject
+	AppBaseService appBaseService;
 	
 	@Override
 	public Partner save(Partner partner) {
 		try {
 
-			if (partner.getPartnerSeq() == null){
+			if (partner.getPartnerSeq() == null && appBaseService.getAppBase().getGeneratePartnerSequence()){
 				String seq = Beans.get(SequenceService.class).getSequenceNumber(IAdministration.PARTNER);
-				if (seq == null)
-					throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_1),
-							IException.CONFIGURATION_ERROR);
+				if (seq == null) {
+					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_1));
+				}
 				partner.setPartnerSeq(seq);
 			}
+			
+			Address mainAddress = partnerService.searchMainAddress(partner);
+			partner.setMainAddress(mainAddress);
 
 			return super.save(partner);
 		} catch (Exception e) {

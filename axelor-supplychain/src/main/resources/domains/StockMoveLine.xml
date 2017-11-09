@@ -9,6 +9,7 @@
   
     <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sales order line"/>
     <many-to-one name="purchaseOrderLine" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order line"/>
-    
+
+    <decimal name="reservedQty" title="Reserved Qty"/>
   </entity>
 </domain-models>

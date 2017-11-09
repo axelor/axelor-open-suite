@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -57,7 +57,7 @@ public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateSe
 		this.appBaseService = appBaseService;
 		
 	}
-	
+
 	/**
 	 * 
 	 * @param amount

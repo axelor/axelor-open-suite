@@ -54,11 +54,21 @@
 		    ]]>  
 		</decimal>
 		
+        <string name="chequeNumber" />
+        <string name="chequeBank" />
+        <string name="chequeOwner" />
+        <date name="chequeDate" />
+        <many-to-one name="depositSlip" ref="com.axelor.apps.account.db.DepositSlip" />
+        
+        <unique-constraint columns="ref,company"/>
+		<unique-constraint columns="receiptNo,company"/>
+
 		<extra-code><![CDATA[
 		
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
-		public static final int STATUS_CONFIRMED = 2;
+        public static final int STATUS_WAITING_FOR_DEPOSIT_SLIP = 2;
+		public static final int STATUS_CONFIRMED = 3;
 		
 	   	// OPERATION TYPE SELECT
 		public static final int OPERATION_TYPE_SUPPLIER_PURCHASE = 1;
@@ -68,9 +78,6 @@
 		
 		]]></extra-code>
 	
-		
-		
-  	
   	</entity>
 
 </domain-models>

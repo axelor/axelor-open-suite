@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -271,7 +271,7 @@ public class PartnerService {
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public String getSIRENNumber(Partner partner)throws AxelorException{
+	public String getSIRENNumber(Partner partner) throws AxelorException {
 		char[] str = new char[9];
 		if (partner.getRegistrationCode() == null || partner.getRegistrationCode().isEmpty()) {
 			throw new AxelorException(partner, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_2), AppBaseServiceImpl.EXCEPTION, partner.getName());

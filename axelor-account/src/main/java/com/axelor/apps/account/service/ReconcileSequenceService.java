@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -50,9 +50,8 @@ public class ReconcileSequenceService {
 
 		SequenceService sequenceService = Beans.get(SequenceService.class);
 		String seq = sequenceService.getSequenceNumber(IAdministration.RECONCILE, reconcile.getDebitMoveLine().getMove().getCompany());
-		if(seq == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECONCILE_6),
-					AppAccountServiceImpl.EXCEPTION, AuthUtils.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
+		if (seq == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECONCILE_6), AppAccountServiceImpl.EXCEPTION, AuthUtils.getUser().getActiveCompany().getName());
 		}
 		return seq;
 	}

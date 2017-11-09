@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -97,7 +97,7 @@ public class ConfiguratorController {
 
     /**
      * Called from configurator wizard form view,
-     * call {@link ConfiguratorService#addLineToSaleOrder(Configurator, SaleOrder, JsonContext, JsonContext, int)}
+     * call {@link ConfiguratorService#addLineToSaleOrder(Configurator, SaleOrder, JsonContext, JsonContext)}
      * @param request
      * @param response
      */
@@ -105,7 +105,6 @@ public class ConfiguratorController {
                                       ActionResponse response) {
         Configurator configurator = request.getContext().asType(Configurator.class);
         long saleOrderId = ((Integer) request.getContext().get("_saleOrderId")).longValue();
-        int updateFromSelect = Integer.parseInt(request.getContext().get("updateFromSelect").toString());
 
         JsonContext jsonAttributes = (JsonContext) request.getContext().get("$attributes");
         JsonContext jsonIndicators = (JsonContext) request.getContext().get("$indicators");
@@ -114,7 +113,7 @@ public class ConfiguratorController {
         SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrderId);
         try {
             configuratorService.addLineToSaleOrder(configurator, saleOrder,
-                    jsonAttributes, jsonIndicators, updateFromSelect);
+                    jsonAttributes, jsonIndicators);
             response.setSignal("refresh-app",true);
         } catch (Exception e) {
             TraceBackService.trace(response, e);

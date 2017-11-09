@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -88,7 +88,7 @@ public abstract class BatchStrategy extends AbstractBatch {
 
 	@Inject
 	protected ReimbursementService reimbursementService;
-
+	
 	protected BatchStrategy() {
 	}
 
@@ -194,8 +194,7 @@ public abstract class BatchStrategy extends AbstractBatch {
 	public void testAccountingBatchBankDetails(AccountingBatch accountingBatch) throws AxelorException  {
 
 		if(accountingBatch.getBankDetails() == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_STRATEGY_1),
-					AppAccountServiceImpl.EXCEPTION,accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(accountingBatch, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_STRATEGY_1), AppAccountServiceImpl.EXCEPTION,accountingBatch.getCode());
 		}
 
 		this.cfonbExportService.testBankDetailsField(accountingBatch.getBankDetails());

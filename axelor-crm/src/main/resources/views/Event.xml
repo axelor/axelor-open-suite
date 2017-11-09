@@ -127,7 +127,7 @@
 		</panel>
 		
 		<panel>
-			<field name="eventAttrs" colSpan="12" />
+			<field name="attrs" colSpan="12" />
 		</panel>
 		
 	</form>

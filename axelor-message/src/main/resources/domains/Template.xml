@@ -6,7 +6,8 @@
   <module name="message" package="com.axelor.apps.message.db"/>
 
   <entity name="Template" lang="java">
-  	
+  
+  	<integer name="importId"/>
   	<string name="name" title="Name" required="true" namecolumn="true"/>
   	<string name="content" large="true" multiline="true" title="Content"/>
   	<string name="subject" large="true" multiline="true" title="Suject"/>

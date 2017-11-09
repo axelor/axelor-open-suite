@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -621,15 +621,11 @@ public class MrpServiceImpl implements MrpService  {
 		
 		MrpLineType mrpLineType =  mrpLineTypeRepository.all().filter("self.elementSelect = ?1", elementSelect).fetchOne();
 		
-		if(mrpLineType != null)  {
-			
+		if (mrpLineType != null) {
 			return mrpLineType;
 		}
 		
-
-		throw new AxelorException(
-				String.format(I18n.get(IExceptionMessage.MRP_MISSING_MRP_LINE_TYPE), elementSelect),
-				IException.CONFIGURATION_ERROR);
+		throw new AxelorException(mrpLineType, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MRP_MISSING_MRP_LINE_TYPE), elementSelect);
 		
 		//TODO get the right label in fact of integer value
 	
@@ -678,10 +674,8 @@ public class MrpServiceImpl implements MrpService  {
 
 		}
 
-		if(productSet.isEmpty())  {
-			throw new AxelorException(
-					String.format(I18n.get(IExceptionMessage.MRP_NO_PRODUCT)),
-					IException.CONFIGURATION_ERROR);
+		if (productSet.isEmpty()) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MRP_NO_PRODUCT));
 		}
 		
 		return productSet;

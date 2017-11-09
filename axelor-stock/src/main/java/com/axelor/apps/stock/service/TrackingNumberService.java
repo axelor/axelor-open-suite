@@ -98,9 +98,8 @@ public class TrackingNumberService {
 
 		TrackingNumberConfiguration trackingNumberConfiguration = product.getTrackingNumberConfiguration();
 
-		if (trackingNumberConfiguration.getSequence() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TRACKING_NUMBER_1),
-					company.getName(), product.getCode()), IException.CONFIGURATION_ERROR);
+		if (trackingNumberConfiguration.getSequence() == null) {
+			throw new AxelorException(product, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TRACKING_NUMBER_1), company.getName(), product.getCode());
 		}
 
 		String seq = sequenceService.getSequenceNumber(trackingNumberConfiguration.getSequence());

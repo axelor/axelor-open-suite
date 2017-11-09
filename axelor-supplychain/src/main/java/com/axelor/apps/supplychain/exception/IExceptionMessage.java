@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -74,7 +74,7 @@ public interface IExceptionMessage {
 	/**
 	 * Batch Invoicing
 	 */
-	static final String BATCH_INVOICING_1 = /*$$(*/ "Subscription invoice generation report : " /*)*/;
+	static final String BATCH_INVOICING_1 = /*$$(*/ "Subscription invoice generation report :" /*)*/;
 	static final String BATCH_INVOICING_2 = /*$$(*/ "Order(s) processed" /*)*/;
 
 	/**

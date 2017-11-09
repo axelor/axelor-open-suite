@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,8 @@ package com.axelor.studio.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.studio.db.repo.ActionBuilderRepo;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
+import com.axelor.studio.db.repo.AppBuilderRepo;
+import com.axelor.studio.db.repo.AppBuilderRepository;
 import com.axelor.studio.db.repo.MenuBuilderRepo;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
 import com.axelor.studio.db.repo.StudioWkfRepository;
@@ -38,6 +40,7 @@ public class StudioModule extends AxelorModule {
 		bind(ActionBuilderRepository.class).to(ActionBuilderRepo.class);
 		bind(MenuBuilderRepository.class).to(MenuBuilderRepo.class);
 		bind(DashboardBuilderRepository.class).to(DashboardBuilderRepo.class);
+		bind(AppBuilderRepository.class).to(AppBuilderRepo.class);
 	}
 
 }

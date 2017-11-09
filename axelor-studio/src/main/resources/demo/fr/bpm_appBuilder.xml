@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<app-builders xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
+  	<app-builder>
+		<name>Product App</name>
+		<code>PRD</code>
+		<description>This is a demo product app of BPM</description>
+		<depends>base</depends>
+		<sequence>100</sequence>
+		<image name="app-bpm.png">iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAEJQTFRFP2u0____b5DHn7Xah6PQ8_b6t8jjY4fCS3S52-PxV369q77ek6zVe5nL5-32z9rsw9Ho5-z2t8fjn7XZw9Hn____mC5QggAAABZ0Uk5T____________________________AAHSwOQAAAKdSURBVHja7JvrcqsgFEYBQQVUTHt8_1c9bZB6TWQjl3Zmf386TSazViKgbIBMc6T-ZNnyqaXjEvvnQ5HMUR8rAdmQAmmkE5AtKZJWWoFSfGtAJlGM_2UgvgQ4KRg-kQcpmgfRZQU0YWUFCuMxGAwGg8FgMBjMnwrrKp_0u1IDi1N6YCP1jhj7Ze4pKB3623hlKCyu3qPtv3fn340A8l3FoXMv3DNoKJQ_X3a-vHTHoAV_f3bg3zJwzc90XhXAvnINYCMQbqDs54eAeXwcA71pVv7e0QyG54eh37-2DXFjIMKKsfYCQPmuK2wMuvA-qMH8M4MqaAwOcK_XwwG_-QsweBOotwMS34-PqQUsXxwNwu5JYIF67nLD3iCwF0IFHJ_vr0LoOAQU2PEXg-CRGCZw4DuD8AUhkMAJf7k5ZxA45d81AAi84If2P7DASz7PcwkS8b0FUvF9BZLxPQXS8f0EEvK9BFLyfQSS8j0ELF8m4l8LuOcfmYZ_KVC_mqDFWpG-EEjOvxCw_FGk478XsPz6OIGPuCPgnYCe-ftJYEz-W4EffrxaAEjg-dZIXlVDGtbmEGgOxYCZXwVOxaACal-O4Ev7qHIISGNMs7klPNPTXAI_7274dmKWU6CVG76imQV2_PmtbALSiH3_zytwMv6UEOAkoUB1LbDht7EFTqtkar1OwW6XtqLWCXVQdfM8MuAGNxfY4-xT1AFzfDM_KEfJXC0X_pN8JWnEJrB67q56n_WCzq0vDLF2irYDDUpPYgW8ZhX1AoQaxN0p245A_BB9oyarAb-CSbNRuGF-a8es4D5pDAaDwWAwGAwG80dT_LRd8fOGhU9cCjJ1Jfnd96lbVY6vxG84d1z-5PU0PYr0RfZYnb7_l12BGUv-L8AA9yEaQThspnUAAAAASUVORK5CYII</image>
+	</app-builder>
+  
+</app-builders>

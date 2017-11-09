@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.google.inject.persist.Transactional;
 
 public class WeeklyPlanningServiceImp implements WeeklyPlanningService{
@@ -47,37 +48,30 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService{
 		List<DayPlanning> listDay = planning.getWeekDays();
 		for (DayPlanning dayPlanning : listDay) {
 
-			if(dayPlanning.getMorningFrom() != null && dayPlanning.getMorningTo() != null){
-				if(dayPlanning.getMorningFrom().isAfter(dayPlanning.getMorningTo()))
-				{
-					String message = "Invalid times in morning on "+dayPlanning.getName();
-					throw new AxelorException(message, 5);
-				}
+			if (dayPlanning.getMorningFrom() != null && dayPlanning.getMorningTo() != null
+					&& dayPlanning.getMorningFrom().isAfter(dayPlanning.getMorningTo())) {
+				String message = "Invalid times in morning on " + dayPlanning.getName();
+				throw new AxelorException(IException.INCONSISTENCY, message);
 			}
 
-			if(dayPlanning.getMorningTo() != null && dayPlanning.getAfternoonFrom() != null){
-				if(dayPlanning.getMorningTo().isAfter(dayPlanning.getAfternoonFrom()))
-				{
-					String message = "Invalid times between morning and afternoon on "+dayPlanning.getName();
-					throw new AxelorException(message, 5);
-				}
+			if (dayPlanning.getMorningTo() != null && dayPlanning.getAfternoonFrom() != null
+					&& dayPlanning.getMorningTo().isAfter(dayPlanning.getAfternoonFrom())) {
+				String message = "Invalid times between morning and afternoon on " + dayPlanning.getName();
+				throw new AxelorException(IException.INCONSISTENCY, message);
 			}
 
-			if(dayPlanning.getAfternoonFrom() != null && dayPlanning.getAfternoonTo() != null){
-				if(dayPlanning.getAfternoonFrom().isAfter(dayPlanning.getAfternoonTo()))
-				{
-					String message = "Invalid times in afternoon on "+dayPlanning.getName();
-					throw new AxelorException(message, 5);
-				}
+			if (dayPlanning.getAfternoonFrom() != null && dayPlanning.getAfternoonTo() != null
+					&& dayPlanning.getAfternoonFrom().isAfter(dayPlanning.getAfternoonTo())) {
+				String message = "Invalid times in afternoon on " + dayPlanning.getName();
+				throw new AxelorException(IException.INCONSISTENCY, message);
 			}
 
-			if((dayPlanning.getMorningFrom() == null && dayPlanning.getMorningTo() != null)
+			if ((dayPlanning.getMorningFrom() == null && dayPlanning.getMorningTo() != null)
 				|| (dayPlanning.getMorningTo() == null && dayPlanning.getMorningFrom() != null)
 				|| (dayPlanning.getAfternoonFrom() == null && dayPlanning.getAfternoonTo() != null)
-				|| (dayPlanning.getAfternoonTo() == null && dayPlanning.getAfternoonFrom() != null))
-			{
-				String message = "Some times are null and should not on "+dayPlanning.getName();
-				throw new AxelorException(message, 5);
+				|| (dayPlanning.getAfternoonTo() == null && dayPlanning.getAfternoonFrom() != null)) {
+				String message = "Some times are null and should not on " + dayPlanning.getName();
+				throw new AxelorException(IException.INCONSISTENCY, message);
 			}
 		}
 		return planning;

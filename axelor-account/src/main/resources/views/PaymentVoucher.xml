@@ -21,21 +21,21 @@
 	onLoad="action-account-payment-voucher-onload-group" 
 	onSave="com.axelor.apps.account.web.PaymentVoucherController:paymentVoucherSetNum">
 	
-		<panel name="main" readonlyIf="statusSelect == 2" itemSpan="12">
+		<panel name="main" readonlyIf="statusSelect == 3" itemSpan="12">
 			 <field name="ref" readonly="true" colSpan="4"/>
 			 <field name="operationTypeSelect" colSpan="4" onChange="action-payment-voucher-hidden-fields-if-purchase"/>
 			 <field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
 			 <field name="paymentDate" colSpan="4" required="true"/>
-			 <field name="company" widget="SuggestBox" colSpan="4" form-view="company-form" grid-view="company-grid" onChange="action-payment-voucher-attrs-fill-bank-details"/>
+			 <field name="company" widget="SuggestBox" colSpan="4" form-view="company-form" grid-view="company-grid" onChange="action-payment-voucher-method-fill-bank-details"/>
 			 <field name="hasAutoInput" colSpan="4" hidden="true"/>
 		</panel>
 		
 		<panel sidebar="true" name="actions" title="Actions" stacked="true" >
 			<button name="confirmPaymentVoucher" title="Confirm payment" onClick="action-group-account-payment-voucher-confirm-click" showIf="statusSelect == 1"/>
-			<button name="printPaymentVoucher" title="Print receipt" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher" showIf="statusSelect == 2"/>
+			<button name="printPaymentVoucher" title="Print receipt" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher" showIf="statusSelect == 3"/>
 		</panel>
 		
-		<panel sidebar="true" name="payboxGroup" title="Paybox" readonlyIf="statusSelect == 2">
+		<panel sidebar="true" name="payboxGroup" title="Paybox" readonlyIf="statusSelect == 3">
 			<panel name="payboxEmail" title="Add an email for payment through Paybox" hidden="true">
 				<label title="The payer doesn't have email attached. Please input/provide the email to use."/>
 				<field name="email" widget="Email"/>
@@ -52,32 +52,44 @@
 		
 		<panel sidebar="true" name="info" title="Info" itemSpan="6" readonly="true">
 			<field name="statusSelect"/>
-			<field name="generatedMove" showIf="statusSelect == 2" form-view="move-form" grid-view="move-grid"/>
-			<field name="receiptNo" showIf="statusSelect == 2"/>
+			<field name="generatedMove" showIf="statusSelect == 3" form-view="move-form" grid-view="move-grid"/>
+			<field name="receiptNo" showIf="statusSelect == 3"/>
 		</panel>
 		
-		<panel name="payer" title="Payer" itemSpan="12" readonlyIf="statusSelect == 2">
+		<panel name="payer" title="Payer" itemSpan="12" readonlyIf="statusSelect >= 2">
 			<field name="partner" form-view="partner-form" grid-view="partner-grid" colSpan="4" onChange="action-pv-record-default-partner-inf" onSelect="action-payment-voucher-set-partner-domain" />
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" colSpan="4" widget="SuggestBox" onChange="action-group-account-payment-voucher-paymentmode-onchange" onSelect="action-set-payment-mode-domain"/>
-			<field name="companyBankDetails" form-view="bank-details-form" grid-view="bank-details-grid" colSpan="4" onSelect="action-payment-voucher-attrs-set-company-bank-details-domain"/>
+			<field name="companyBankDetails" form-view="bank-details-form" grid-view="bank-details-grid" colSpan="4" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"/>
+
+            <field name="paymentMode.typeSelect" colSpan="12" hidden="true" />
+            <panel colSpan="12" title="Cheque" showIf="paymentMode.typeSelect == 7">
+                <field name="chequeNumber" />
+                <field name="chequeBank" />
+                <field name="chequeOwner" />
+                <field name="chequeDate" />
+            </panel>
+
+            <field name="depositSlip" showIf="depositSlip" colSpan="12" />
 		</panel>
 		
 		<panel colSpan="12" showIf="statusSelect == 1">
 			<button name="loadMoveLines" title="Search elements to pay" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines,save" colSpan="6"/>
 		</panel>
 		
-		<panel readonlyIf="statusSelect == 2 || payboxPaidOk" colSpan="12">
+		<panel readonlyIf="statusSelect == 3 || payboxPaidOk" colSpan="12">
 		 	<field name="paidAmount" colSpan="4"/>
 			<field name="currency" canEdit="false" colSpan="4" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="remainingAmount" readonly="true" colSpan="4"/>
-			<field name="moveLine" onChange="action-record-fill-paidAmount-fromMoveLine,action-pv-moveLine-attrs" onSelect="action-pv-moveLine-domain" colSpan="4" showIf="operationTypeSelect == 3 || operationTypeSelect == 4" form-view="move-line-form" grid-view="move-line-grid"/>
+            <field name="moveLine" onChange="action-record-fill-paidAmount-fromMoveLine,action-pv-moveLine-attrs"
+                onSelect="action-pv-moveLine-domain" colSpan="4" showIf="operationTypeSelect == 3 || operationTypeSelect == 4"
+                form-view="move-line-form" grid-view="move-line-grid" />
 		</panel>
 		
-		<panel-stack readonlyIf="statusSelect == 2">
+		<panel-stack readonlyIf="statusSelect >= 2">
 			<panel-related colSpan="12" field="payVoucherDueElementList"  form-view="pay-voucher-due-element-form" grid-view="pay-voucher-due-element-grid" showIf="statusSelect == 1"/>
 			<panel colSpan="12" showIf="statusSelect == 1">
-				<button name="loadSelectedLines" title="Load selected lines" onClick="com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save" colSpan="6"/>
-				<button name="resetImputation" title="Reset imputation" onClick="com.axelor.apps.account.web.PaymentVoucherController:resetImputation,save" colSpan="6"/>
+				<button name="loadSelectedLines" title="Load selected lines" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save" colSpan="6"/>
+				<button name="resetImputation" title="Reset imputation" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:resetImputation,save" colSpan="6"/>
 			</panel>
 			<panel-related colSpan="12" field="payVoucherElementToPayList" form-view="pay-voucher-element-to-pay-form" grid-view="pay-voucher-element-to-pay-grid"/>
 		</panel-stack>
@@ -100,6 +112,7 @@
 	    <action name="action-attrs-payment-voucher-readonly-status"/>
 	    <action name="action-payment-voucher-hidden-fields-if-purchase"/>
 		<action name="action-attrs-payment-voucher-hidden-bank-details"/>
+        <action name="action-payment-voucher-from-invoice" if="_invoice"/>
     </action-group>
     
     <action-group name="action-account-payment-voucher-onload-group">
@@ -123,7 +136,7 @@
     	<action name="action-pv-hide-confirm-button"/>
     	<action name="action-attrs-payment-voucher-hidden-receipt"/>
     	<action name="action-attrs-payment-voucher-readonly-status"/>
-        <action name="action-payment-voucher-attrs-fill-bank-details"/>
+        <action name="action-payment-voucher-method-fill-bank-details"/>
     </action-group>
     
     <action-group name="action-group-account-payment-voucher-paybox-onclick">
@@ -155,18 +168,18 @@
 	</action-attrs>
 	
    	<action-attrs name="action-pv-hide-confirm-button">
-   		<attribute name="hidden" for="confirmPaymentVoucher" expr="eval: statusSelect == 2 || (!payboxPaidOk &amp;&amp; paymentMode?.typeSelect == 6)"/>
+   		<attribute name="hidden" for="confirmPaymentVoucher" expr="eval: statusSelect > __repo__(PaymentVoucher).STATUS_DRAFT || (!payboxPaidOk &amp;&amp; paymentMode?.typeSelect == 6)"/>
    	</action-attrs>
    	
 	<action-attrs name="action-attrs-payment-voucher-hidden-receipt">
-		<attribute name="hidden" for="receiptNo" expr="eval: __repo__(AccountManagement).all().filter('self.company.id = ?1 AND self.paymentMode.id = ?2',company?.id,paymentMode?.id).fetchOne()?.journal?.editReceiptOk == false || statusSelect != 2"  if="paymentMode != null"/>
-		<attribute name="hidden" for="printPaymentVoucher" expr="eval: __repo__(AccountManagement).all().filter('self.company.id = ?1 AND self.paymentMode.id = ?2',company?.id,paymentMode?.id).fetchOne()?.journal?.editReceiptOk == false || statusSelect != 2"  if="paymentMode != null"/>
+		<attribute name="hidden" for="receiptNo" expr="eval: __repo__(AccountManagement).all().filter('self.company.id = ?1 AND self.paymentMode.id = ?2',company?.id,paymentMode?.id).fetchOne()?.journal?.editReceiptOk == false || statusSelect != __repo__(PaymentVoucher).STATUS_CONFIRMED"  if="paymentMode != null"/>
+		<attribute name="hidden" for="printPaymentVoucher" expr="eval: __repo__(AccountManagement).all().filter('self.company.id = ?1 AND self.paymentMode.id = ?2',company?.id,paymentMode?.id).fetchOne()?.journal?.editReceiptOk == false || statusSelect != __repo__(PaymentVoucher).STATUS_CONFIRMED"  if="paymentMode != null"/>
 	</action-attrs>
 	
 	<action-attrs name="action-attrs-payment-voucher-readonly-status">
 		<attribute name="hidden" for="paybox" expr="eval: payboxPaidOk || paymentMode?.typeSelect != 6 || operationTypeSelect != 3"/>
 		<attribute name="hidden" for="payboxGroup" expr="eval: paymentMode?.typeSelect != 6 || operationTypeSelect != 3"/>
-		<attribute name="readonly" for="paidGroup" expr="eval: statusSelect == 2 || payboxPaidOk"/>
+		<attribute name="readonly" for="paidGroup" expr="eval: statusSelect >= __repo__(PaymentVoucher).STATUS_WAITING_FOR_DEPOSIT_SLIP || payboxPaidOk"/>
 	</action-attrs>
 	
 	<action-attrs name="action-pv-attrs-hidden-bankCardTransactionNumber">
@@ -210,8 +223,11 @@
 		<filter title="Draft Customer payments">
 			<domain>self.operationTypeSelect = 3 AND self.statusSelect = 1</domain>
 		</filter>
+        <filter title="Customer payments waiting for deposit slip" if="__config__.app.getApp('account').paymentVouchersOnInvoice">
+            <domain>self.operationTypeSelect = 3 AND self.statusSelect = 2</domain>
+        </filter>
 		<filter title="Confirmed Customer payments">
-			<domain>self.operationTypeSelect = 3 AND self.statusSelect = 2</domain>
+			<domain>self.operationTypeSelect = 3 AND self.statusSelect = 3</domain>
 		</filter>
 		<filter title="Customer payments with remaining">
 			<domain>self.operationTypeSelect = 3 AND self.remainingAllocatedAmount &gt; 0</domain>
@@ -229,7 +245,7 @@
 			<domain>self.operationTypeSelect = 1 AND self.statusSelect = 1</domain>
 		</filter>
 		<filter title="Confirmed Supplier payments">
-			<domain>self.operationTypeSelect = 1 AND self.statusSelect = 2</domain>
+			<domain>self.operationTypeSelect = 1 AND self.statusSelect = 3</domain>
 		</filter>
 		<filter title="Supplier refunds">
 			<domain>self.operationTypeSelect = 2</domain>
@@ -249,18 +265,12 @@
 		<attribute name="domain" for="partner" expr="eval:'self.isContact = false AND self.isCustomer = true'" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
 	</action-attrs>
 
-    <action-attrs name="action-payment-voucher-attrs-set-company-bank-details-domain">
-		<attribute for="companyBankDetails" name="domain"
-				   if="company &amp;&amp; paymentMode?.accountManagementList &amp;&amp; !paymentMode.accountManagementList.isEmpty()"
-				   expr="eval: &quot;self.id IN (${paymentMode?.accountManagementList?.collect{ if(it.company == company &amp;&amp; it.bankDetails) return it.bankDetails.id }.join(',')}) AND self.active = true&quot;"/>
-	</action-attrs>
+	<action-method name="action-payment-voucher-method-fill-bank-details">
+		<call class="com.axelor.apps.account.web.PaymentVoucherController" method="fillCompanyBankDetails"/>
+	</action-method>
 
-	<action-attrs name="action-payment-voucher-attrs-fill-bank-details">
-		<attribute for="companyBankDetails" name="value" expr="eval: null"/>
-		<attribute for="companyBankDetails" name="value"
-				   if="company &amp;&amp; paymentMode?.accountManagementList?.findAll{ it.company == company }.size() == 1"
-				   expr="eval: paymentMode?.accountManagementList?.find{ it.company == company }.bankDetails"/>
-	</action-attrs>
+    <action-method name="action-payment-voucher-from-invoice" model="com.axelor.apps.account.db.PaymentVoucher">
+        <call class="com.axelor.apps.account.web.PaymentVoucherController" method="initFromInvoice"/>
+    </action-method>
 
-	
 </object-views>

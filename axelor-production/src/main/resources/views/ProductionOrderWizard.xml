@@ -22,7 +22,7 @@
     	<field name="product" expr="eval: __repo__(Product).find(_productId)" if="_productId"/>
     	<field name="business_id" expr="eval: _businessId?.id"/>
 		<field name="qty" expr="eval: 1.0"/>
-		<field name="_startDate" expr=" eval: __datetime__"/>
+		<field name="_startDate" expr="eval: __datetime__"/>
 	</action-record>
 	
 	<action-record name="action-production-order-wizard-record-default-bom" model="com.axelor.apps.base.db.Wizard">

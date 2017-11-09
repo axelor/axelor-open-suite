@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -41,9 +41,7 @@ public class BaseBatchService extends AbstractBatchService {
 		switch (baseBatch.getActionSelect()) {
 
 		default:
-			throw new AxelorException(
-					String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), baseBatch.getActionSelect(), baseBatch.getCode()),
-					IException.INCONSISTENCY);
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_1), baseBatch.getActionSelect(), baseBatch.getCode());
 		}
 
 	}

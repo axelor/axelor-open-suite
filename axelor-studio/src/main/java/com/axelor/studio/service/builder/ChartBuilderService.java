@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.validation.ValidationException;
 import javax.xml.bind.JAXBException;
 
 import org.slf4j.Logger;
@@ -30,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
@@ -97,8 +97,7 @@ public class ChartBuilderService {
 	public void build(ChartBuilder chartBuilder) throws JAXBException, AxelorException {
 		
 		if (chartBuilder.getName().contains(" ")) {
-			throw new AxelorException(
-					I18n.get("Name must not contains space"), 1);
+			throw new AxelorException(IException.MISSING_FIELD, I18n.get("Name must not contains space"));
 		}
 		
 		searchFields = new ArrayList<String>();

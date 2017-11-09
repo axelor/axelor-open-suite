@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -22,7 +22,6 @@ import java.math.RoundingMode;
 import java.util.List;
 
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -35,9 +34,9 @@ import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -100,7 +99,8 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 	}
 
 	@Override
-	@Transactional
+    @Transactional(rollbackOn = { AxelorException.class, Exception.class }, ignore = {
+            BlockedSaleOrderException.class })
 	public void updateCustomerCreditFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
 		
 		if (!appAccountService.getAppAccount().getManageCustomerCredit()) {
@@ -126,14 +126,14 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 				}
 				boolean usedCreditExceeded = isUsedCreditExceeded(accountingSituation);
 				if (usedCreditExceeded) {
-					saleOrder.setBloqued(true);	// No rollback
-					if (!saleOrder.getManualUnblock()) {
-						String message = accountingSituation.getCompany().getOrderBloquedMessage();
-						if (Strings.isNullOrEmpty(message)) {
-							message = I18n.get("Client bloqued");
-						}
-						throw new AxelorException(message, IException.CONFIGURATION_ERROR);
-					}
+				    saleOrder.setBloqued(true);
+				    if (!saleOrder.getManualUnblock()) {
+	                    String message = accountingSituation.getCompany().getOrderBloquedMessage();
+	                    if (Strings.isNullOrEmpty(message)) {
+	                        message = I18n.get("Client bloqued");
+	                    }
+	                    throw new BlockedSaleOrderException(accountingSituation, message);
+				    }
 				}
 			}
 		}

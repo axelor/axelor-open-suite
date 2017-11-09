@@ -2,7 +2,7 @@
 <wkfs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
-  <wkf name="Product Order Flow" isJson="true" model="ProductOrder" statusField="status" displayTypeSelect="0">
+  <wkf name="Product Order Flow" isJson="true" model="ProductOrder" statusField="status" displayTypeSelect="0" appBuilder="PRD">
   	<xml>
   		<![CDATA[
   		<?xml version="1.0" encoding="UTF-8"?>

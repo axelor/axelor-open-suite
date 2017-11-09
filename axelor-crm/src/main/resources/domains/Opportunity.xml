@@ -30,10 +30,7 @@
   	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
   	
   	<many-to-one name="lostReason" ref="LostReason" title="Lost reason" />
-  	
-  	<!-- -Json fields -->
-	<string name="opportunityAttrs" title="Fields" json="true" />
-	
+ 	
   	<track>
       <field name="name"/>
       <message if="true" on="CREATE">Opportunity created</message>

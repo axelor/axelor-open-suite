@@ -13,14 +13,14 @@
         <bind column="permissions" to="permissions" search="self.name in :permissions" eval="permissions.split('\\|') as List"/>
     </input>
     
-    <input file="crm_crmBatch.csv" separator=";" type="com.axelor.apps.crm.db.CrmBatch" search="self.code = :code"/>
+<!--     <input file="crm_crmBatch.csv" separator=";" type="com.axelor.apps.crm.db.CrmBatch" search="self.code = :code"/> -->
 	
 	<input file="crm_meetingType.csv" separator=";" type="com.axelor.apps.crm.db.MeetingType" search="self.importId = :importId"/>
 	
 	<input file="crm_opportunityType.csv" separator=";" type="com.axelor.apps.crm.db.OpportunityType" search="self.code = :code"/>
 
-	<input file="meta_menuUser.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name">
-		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
-	</input>
+<!-- 	<input file="meta_menuUser.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name"> -->
+<!-- 		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/> -->
+<!-- 	</input> -->
 
 </csv-inputs>

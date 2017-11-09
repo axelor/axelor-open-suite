@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -25,6 +25,8 @@ import com.axelor.apps.account.db.repo.AccountingReportManagementRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.DepositSlipAccountRepository;
+import com.axelor.apps.account.db.repo.DepositSlipRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -49,6 +51,9 @@ import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.AnalyticMoveLineServiceImpl;
+import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
+import com.axelor.apps.account.service.DepositSlipService;
+import com.axelor.apps.account.service.DepositSlipServiceImpl;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.MoveLineExportServiceImpl;
@@ -85,6 +90,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentVal
 import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.service.AddressServiceImpl;
+import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
@@ -147,6 +153,8 @@ public class AccountModule extends AxelorModule {
 
         bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
 
+        bind(BankDetailsServiceImpl.class).to(BankDetailsServiceAccountImpl.class);
+
         bind(MoveLineExportService.class).to(MoveLineExportServiceImpl.class);
 
         bind(AccountRepository.class).to(AccountAccountRepository.class);
@@ -164,6 +172,10 @@ public class AccountModule extends AxelorModule {
         bind(PaymentScheduleService.class).to(PaymentScheduleServiceImpl.class);
 
         bind(PaymentScheduleLineService.class).to(PaymentScheduleLineServiceImpl.class);
+
+        bind(DepositSlipRepository.class).to(DepositSlipAccountRepository.class);
+
+        bind(DepositSlipService.class).to(DepositSlipServiceImpl.class);
 
         IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }

@@ -54,7 +54,7 @@
 				<viewer>
 					<![CDATA[
 						<h4 style="text-align: right;">
-							<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record."adjustingMove"" x-translate>Adjusting Move</span>
+							<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.adjustingMove" x-translate>Adjusting Move</span>
 						</h4>
 					]]>
 				</viewer>

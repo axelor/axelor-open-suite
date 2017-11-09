@@ -17,6 +17,8 @@
  		<boolean name="manageResidualProductOnBom" title="Manage residual products on BOM"/>
  		<boolean name="subtractProdResidualOnCostSheet" title="Subtract the product residuals cost on Cost sheet"/>
  		<boolean name="manageBillOfMaterialVersion" title="Manage bill of material versions" />
+
+		<boolean name="enableConfigurator" title="Enable production configurator"/>
 	</entity>
 
 </domain-models>

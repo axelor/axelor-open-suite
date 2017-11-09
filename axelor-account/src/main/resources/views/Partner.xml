@@ -22,23 +22,22 @@
 	    </panel>
 	    <panel name="bankDetails" title="Bank details" colSpan="12">
 	        <field name="bankDetailsList" colSpan="12" showTitle="false" >
-                <viewer><![CDATA[
+                <viewer depends="isDefault,fullName,bankCode,sortCode,accountNbr,bbanKey"><![CDATA[
                     <dl>
-                        <dd ng-if="!record.isDefault"> {{record.fullName}} </dd>
-                        <dd ng-if="record.isDefault"> <b>{{record.fullName}}</b> </dd>
+                        <dd ng-if="!record.isDefault"> {{fullName}} </dd>
+                        <dd ng-if="record.isDefault"> <b>{{fullName}}</b> </dd>
                     </dl>
                 ]]></viewer>
-			    <editor layout="table" x-show-titles="false" onNew="action-set-default-partner" x-show-on-new="false">
+			    <editor onNew="action-set-default-partner" x-show-on-new="false">
 					<field name="ownerName"/>
 					<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" min="14" max="34" />
-					<field name="bank" canNew="true"></field>
+					<field name="bank" onChange="action-group-account-bankdetails-iban-onchange" canNew="true"/>
+					<field name="bankAddress" showIf="bank" grid-view="bank-address-grid"
+						   onSelect="action-attrs-account-bankdetails-bank-set-address-domain"
+						   canNew="true" form-view="bank-address-form"/>
 					<field name="label"/>
 					<field name="isDefault" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star" x-exclusive="true" />
 					<field name="ibanBic" hidden="true" x-bind="{{iban + ' ' + bank.code}}"/>
-					<field name="bankCode" hidden="true"/>
-					<field name="sortCode" hidden="true"/>
-					<field name="accountNbr" hidden="true"/>
-					<field name="bbanKey" hidden="true"/>
 			    </editor>
 			</field>
 	    </panel>

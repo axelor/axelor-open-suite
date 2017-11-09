@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -46,7 +46,6 @@ import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -345,18 +344,14 @@ public class DebtRecoveryService {
 		AccountingSituationRepository accSituationRepo = Beans.get(AccountingSituationRepository.class);
 		AccountingSituation accountingSituation = accSituationRepo.all().filter("self.partner = ?1 and self.company = ?2", partner, company).fetchOne();
 		
-		if(accountingSituation != null)  {
-			if(accountingSituation.getDebtRecovery() != null)  {
+		if (accountingSituation != null) {
+			if (accountingSituation.getDebtRecovery() != null) {
 				return accountingSituation.getDebtRecovery();
-			}
-			else  {
+			} else {
 				return this.createDebtRecovery(accountingSituation);
 			}
-		}
-
-		else  {
-			throw new AxelorException(String.format("%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_1),
-					AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
+		} else {
+			throw new AxelorException(accountingSituation, IException.CONFIGURATION_ERROR, "%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_1), AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName());
 		}
 	}
 
@@ -416,25 +411,20 @@ public class DebtRecoveryService {
 
 				LocalDate referenceDate = this.getReferenceDate(debtRecovery);
 
-				if(referenceDate != null)  {
+				if (referenceDate != null) {
 					log.debug("date de référence : {} ",referenceDate);
 					debtRecovery.setReferenceDate(referenceDate);
+				} else {
+					throw new AxelorException(debtRecovery, IException.CONFIGURATION_ERROR, "%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_2), AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName());
 				}
-				else {
-					throw new AxelorException(String.format("%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_2),
-							AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
-				}
-				if(debtRecovery.getDebtRecoveryMethod() == null)  {
-					if(debtRecoverySessionService.getDebtRecoveryMethod(debtRecovery)!=null)  {
+				if (debtRecovery.getDebtRecoveryMethod() == null) {
+					if (debtRecoverySessionService.getDebtRecoveryMethod(debtRecovery)!=null) {
 						debtRecovery.setDebtRecoveryMethod(debtRecoverySessionService.getDebtRecoveryMethod(debtRecovery));
 						debtRecoverySessionService.debtRecoverySession(debtRecovery);
+					} else {
+						throw new AxelorException(debtRecovery, IException.CONFIGURATION_ERROR, "%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_3), AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName());
 					}
-					else  {
-						throw new AxelorException(String.format("%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_3),
-								AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.CONFIGURATION_ERROR);
-					}
-				}
-				else {
+				} else {
 					debtRecoverySessionService.debtRecoverySession(debtRecovery);
 				}
 				if(debtRecovery.getWaitDebtRecoveryMethodLine()==null)  {
@@ -443,17 +433,13 @@ public class DebtRecoveryService {
 							debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName() > levelDebtRecovery)  {
 						debtRecoveryActionService.runAction(debtRecovery);
 					}
-				}
-				else  {
+				} else {
 					log.debug("Tiers {}, Société {} - Niveau de relance en attente ", partner.getName(), company.getName());
 					// TODO Alarm ?
-					TraceBackService.trace(new AxelorException(
-						String.format("%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_4),
-								AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()), IException.INCONSISTENCY));
+					TraceBackService.trace(new AxelorException(debtRecovery, IException.INCONSISTENCY, "%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_4), AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()));
 				}
 			}
-		}
-		else  {
+		} else {
 			debtRecoverySessionService.debtRecoveryInitialization(debtRecovery);
 		}
 		return remindedOk;

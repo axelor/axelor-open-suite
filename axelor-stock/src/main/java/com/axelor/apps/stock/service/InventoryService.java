@@ -17,8 +17,12 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.io.IOException;
+import java.io.*;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -26,6 +30,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.app.AppSettings;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.repo.MetaFileRepository;
+import com.google.common.base.Joiner;
+import com.google.common.base.Throwables;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.axelor.apps.base.db.Company;
@@ -55,8 +65,12 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InventoryService {
+
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private InventoryLineService inventoryLineService;
@@ -80,8 +94,8 @@ public class InventoryService {
 	public Inventory createInventory(LocalDate date, String description, Location location, boolean excludeOutOfStock, boolean includeObsolete,
 			ProductFamily productFamily, ProductCategory productCategory) throws AxelorException  {
 
-		if(location == null)  {
-			throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_1),IException.CONFIGURATION_ERROR);
+		if (location == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_1));
 		}
 
 		Inventory inventory = new Inventory();
@@ -114,8 +128,7 @@ public class InventoryService {
 
 		String ref = sequenceService.getSequenceNumber(IAdministration.INVENTORY, company);
 		if (ref == null)
-			throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_2)+" "+company.getName(),
-							IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_2)+" "+company.getName());
 
 		return ref;
 
@@ -133,46 +146,45 @@ public class InventoryService {
 
 		for (String[] line : data) {
 			if (line.length < 6)
-				throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_3), IException.CONFIGURATION_ERROR);
+				throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
 
 			String code = line[1].replace("\"", "");
 			String trackingNumberSeq = line[3].replace("\"", "");
 
-			Integer realQty = 0;
+			BigDecimal realQty;
 			try {
-				realQty = Integer.valueOf(line[6].replace("\"", ""));
-			}catch(NumberFormatException e) {
-				throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_3), IException.CONFIGURATION_ERROR);
+				realQty = new BigDecimal(line[6].replace("\"", ""));
+			} catch (NumberFormatException e) {
+				throw new AxelorException(e.getCause(), inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
 			}
 
 			String description = line[7].replace("\"", "");
 
 			if (inventoryLineMap.containsKey(code)) {
-				inventoryLineMap.get(code).setRealQty(new BigDecimal(realQty));
+				inventoryLineMap.get(code).setRealQty(realQty);
 				inventoryLineMap.get(code).setDescription(description);
-			}
-			else {
-				Integer currentQty = 0;
+			} else {
+				BigDecimal currentQty;
 				try {
-					currentQty = Integer.valueOf(line[4].replace("\"", ""));
-				}catch(NumberFormatException e) {
-					throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_3), IException.CONFIGURATION_ERROR);
+					currentQty = new BigDecimal(line[4].replace("\"", ""));
+				} catch (NumberFormatException e) {
+					throw new AxelorException(e.getCause(), inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
 				}
 
 				InventoryLine inventoryLine = new InventoryLine();
 				List<Product> productList = productRepo.all().filter("self.code = :code").bind("code", code).fetch();
 				if (productList != null && !productList.isEmpty()){
-					if (productList.size() > 1){
-						throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_12)+" "+code, IException.CONFIGURATION_ERROR);
+					if (productList.size() > 1) {
+						throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_12)+" "+code);
 					}
 				}
 				Product product = productList.get(0);
 				if (product == null || !product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE))
-					throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_4)+" "+code, IException.CONFIGURATION_ERROR);
+					throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_4)+" "+code);
 				inventoryLine.setProduct(product);
 				inventoryLine.setInventory(inventory);
-				inventoryLine.setCurrentQty(new BigDecimal(currentQty));
-				inventoryLine.setRealQty(new BigDecimal(realQty));
+				inventoryLine.setCurrentQty(currentQty);
+				inventoryLine.setRealQty(realQty);
 				inventoryLine.setDescription(description);
 				inventoryLine.setTrackingNumber(this.getTrackingNumber(trackingNumberSeq));
 				inventoryLineList.add(inventoryLine);
@@ -188,14 +200,13 @@ public class InventoryService {
 
 		List<String[]> data = null;
 		try {
-			data = CsvTool.cSVFileReader(filePath, separator);
-			
-		} catch(Exception e) {
-			throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_5), IException.CONFIGURATION_ERROR);
+			data = CsvTool.cSVFileReader(filePath, separator);	
+		} catch (Exception e) {
+			throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_5));
 		}
 
-		if (data == null || data.isEmpty())  {
-			throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_3), IException.CONFIGURATION_ERROR);
+		if (data == null || data.isEmpty()) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
 		}
 
 		return data;
@@ -310,7 +321,7 @@ public class InventoryService {
 		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
 
 		if (company == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INVENTORY_6), toLocation.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_6), toLocation.getName());
 		}
 
 		String inventorySeq = inventory.getInventorySeq();
@@ -331,8 +342,8 @@ public class InventoryService {
 						product.getDescription(), diff,
 						product.getCostPrice(),
 						product.getUnit(), stockMove, StockMoveLineService.TYPE_NULL, false, BigDecimal.ZERO);
-				if (stockMoveLine == null)  {
-					throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_7)+" "+inventorySeq, IException.CONFIGURATION_ERROR);
+				if (stockMoveLine == null) {
+					throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_7)+" "+inventorySeq);
 				}
 				if (trackingNumber != null && stockMoveLine.getTrackingNumber() == null) {
 					stockMoveLine.setTrackingNumber(trackingNumber);
@@ -380,8 +391,8 @@ public class InventoryService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Boolean fillInventoryLineList(Inventory inventory) throws AxelorException {
 
-		if(inventory.getLocation() == null)  {
-			throw new AxelorException(I18n.get(IExceptionMessage.INVENTORY_1),IException.CONFIGURATION_ERROR);
+		if (inventory.getLocation() == null) {
+			throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_1));
 		}
 
 		this.initInventoryLines(inventory);
@@ -450,4 +461,36 @@ public class InventoryService {
 		else  {  inventory.getInventoryLineList().clear();  }
 	}
 
+	@Transactional
+	public void exportInventoryAsCSV(Inventory inventory) throws IOException {
+
+		List<String[]> list = new ArrayList<String[]>();
+
+		for (InventoryLine inventoryLine:inventory.getInventoryLineList()) {
+			String item[] = new String[8];
+			
+			item[0] = (inventoryLine.getProduct() == null) ? "" : inventoryLine.getProduct().getName();
+			item[1] = (inventoryLine.getProduct() == null) ? "" : inventoryLine.getProduct().getCode();
+			item[2] = "";
+			item[3] = (inventoryLine.getTrackingNumber() == null) ? "" : inventoryLine.getTrackingNumber().getTrackingNumberSeq();
+			item[4] = inventoryLine.getCurrentQty().toString();
+			item[5] = "";
+			item[6] = inventoryLine.getRealQty().toString();
+			item[7] = (inventoryLine.getDescription() == null) ? "" : inventoryLine.getDescription();
+			list.add(item);
+		}
+
+		String fileName = I18n.get("Inventory")+"_"+inventory.getInventorySeq()+".csv";
+		String filePath= AppSettings.get().get("file.upload.dir");
+		Path path = Paths.get(filePath, fileName);
+		File file = path.toFile();
+
+		log.debug("File Located at: {}" , path);
+
+		CsvTool.csvWriter(filePath,fileName,',','"',null,list);
+
+		try (InputStream is = new FileInputStream(file)) {
+			Beans.get(MetaFiles.class).attach(is, fileName, inventory);
+		}
+	}
 }

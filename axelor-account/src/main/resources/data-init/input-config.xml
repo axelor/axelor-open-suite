@@ -21,23 +21,23 @@
         <bind column="permissions" to="permissions" search="self.name in :permissions" eval="permissions.split('\\|') as List"/>
     </input>
     
-    <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId">
-    	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
-    	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
-    	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
-    	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
-    	<bind to="resetDate" eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate()" />
-    </input>
+<!--     <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId"> -->
+<!--     	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/> -->
+<!--     	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/> -->
+<!--     	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/> -->
+<!--     	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/> -->
+<!--     	<bind to="resetDate" eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate()" /> -->
+<!--     </input> -->
     
-  	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" search="self.importId = :importId" />
+<!--   	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" search="self.importId = :importId" /> -->
 
-	<input file="account_accountingBatch.csv" separator=";" type="com.axelor.apps.account.db.AccountingBatch" search="self.code = :code" >
-		<bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)" column="dueDate"/>
-		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
-		<bind to="endDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(endDate)" column="endDate"/>
-	</input>
+<!-- 	<input file="account_accountingBatch.csv" separator=";" type="com.axelor.apps.account.db.AccountingBatch" search="self.code = :code" > -->
+<!-- 		<bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)" column="dueDate"/> -->
+<!-- 		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/> -->
+<!-- 		<bind to="endDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(endDate)" column="endDate"/> -->
+<!-- 	</input> -->
 
-	<input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal" search="self.importId = :importId" />
+<!-- 	<input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal" search="self.importId = :importId" /> -->
 		
 <!-- 	<input file="account_paymentMode.csv" separator=";" type="com.axelor.apps.account.db.PaymentMode" search="self.importId = :importId" /> -->
 	
@@ -60,13 +60,13 @@
     <input file="account_accountChart.csv" separator=";" type="com.axelor.apps.account.db.AccountChart" search="self.code = :code" />
 	
 	   
-    <input file="meta_menuUser.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name">
-		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
-	</input>
+<!--     <input file="meta_menuUser.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name"> -->
+<!-- 		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/> -->
+<!-- 	</input> -->
 	
 	
-	<input file="meta_menuManager.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name">
-		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
-	</input>
+<!-- 	<input file="meta_menuManager.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name"> -->
+<!-- 		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/> -->
+<!-- 	</input> -->
     
 </csv-inputs>

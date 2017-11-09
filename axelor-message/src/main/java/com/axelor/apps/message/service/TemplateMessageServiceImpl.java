@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -85,8 +85,8 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message generateMessage( long objectId, String model, String tag, Template template ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
-		if ( !model.equals( template.getMetaModel().getFullName() ) ){
-			throw new AxelorException( I18n.get(IExceptionMessage.TEMPLATE_SERVICE_3 ), IException.INCONSISTENCY, template.getMetaModel().getFullName() );
+		if (!model.equals(template.getMetaModel().getFullName())) {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.TEMPLATE_SERVICE_3), template.getMetaModel().getFullName());
 		}
 		
 		log.debug("model : {}", model);

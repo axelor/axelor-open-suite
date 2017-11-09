@@ -91,6 +91,8 @@
 			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
     	</toolbar>
 	    <panel name="main">
+            <field name="productTypeSelect" hidden="true"/>
+
 	    	<panel colSpan="4">
 	        	<field name="picture" showTitle="false" widget="Image" colSpan="12"/>
 	        	<field name="versionSelect" colSpan="12"/>

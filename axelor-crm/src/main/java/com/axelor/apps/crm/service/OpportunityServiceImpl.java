@@ -50,8 +50,8 @@ public class OpportunityServiceImpl implements OpportunityService {
 	@Transactional
 	public Partner createClientFromLead(Opportunity opportunity) throws AxelorException{
 		Lead lead = opportunity.getLead();
-		if(lead == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAD_PARTNER)),IException.CONFIGURATION_ERROR);
+		if (lead == null) {
+			throw new AxelorException(opportunity, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAD_PARTNER));
 		}
 
 		String name = lead.getCompanyName();

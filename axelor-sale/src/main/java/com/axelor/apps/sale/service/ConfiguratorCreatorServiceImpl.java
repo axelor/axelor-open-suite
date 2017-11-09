@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -15,15 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.axelor.apps.sale.service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
-import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
@@ -41,36 +44,17 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
-    private ConfiguratorRepository configuratorRepo;
     private ConfiguratorCreatorRepository configuratorCreatorRepo;
     private ConfiguratorFormulaService configuratorFormulaService;
 
     @Inject
-    public ConfiguratorCreatorServiceImpl(ConfiguratorRepository configuratorRepo,
-                                          ConfiguratorCreatorRepository configuratorCreatorRepo,
+    public ConfiguratorCreatorServiceImpl(ConfiguratorCreatorRepository configuratorCreatorRepo,
                                           ConfiguratorFormulaService configuratorFormulaService) {
-        this.configuratorRepo = configuratorRepo;
         this.configuratorCreatorRepo = configuratorCreatorRepo;
         this.configuratorFormulaService = configuratorFormulaService;
     }
-
-    @Override
-    @Transactional
-    public void generateConfigurator(ConfiguratorCreator creator) {
-        updateIndicators(creator);
-        Configurator configurator = new Configurator();
-        configurator.setConfiguratorCreator(creator);
-        configuratorRepo.save(configurator);
-    }
-
 
     @Override
     @Transactional
@@ -108,6 +92,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         configuratorCreatorRepo.save(creator);
     }
 
+    @Transactional
     public void updateIndicators(ConfiguratorCreator creator) {
         List<ConfiguratorFormula> formulas = creator.getConfiguratorFormulaList();
         List<MetaJsonField> indicators = creator.getIndicators();
@@ -132,6 +117,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
         updateIndicatorsAttrs(creator);
 
+        configuratorCreatorRepo.save(creator);
     }
 
     @Override
@@ -157,12 +143,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         if (attributes != null) {
             for (MetaJsonField attribute : attributes) {
                 if (attribute.getDefaultValue() == null) {
-                    throw new AxelorException(
-                            I18n.get(
-                                    IExceptionMessage.CONFIGURATOR_CREATOR_MISSING_VALUES
-                            ),
-                            IException.CONFIGURATION_ERROR
-                    );
+                    throw new AxelorException(creator, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_MISSING_VALUES));
                 }
                 attributesValues.put(attribute.getName(), attribute.getDefaultValue());
             }
@@ -323,4 +304,17 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
                 + StringTool.getIdFromCollection(configuratorCreatorList)
                 + ")";
     }
+
+	@Override
+	@Transactional
+	public void authorizeUser(ConfiguratorCreator creator, User user) {
+		creator.addAuthorizedUserSetItem(user);
+	}
+
+	@Override
+    @Transactional
+    public void activate(ConfiguratorCreator creator) {
+        creator.setIsActive(true);
+    }
+
 }

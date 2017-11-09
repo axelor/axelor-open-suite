@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -54,8 +54,8 @@ public class PeriodService {
 	public Period rightPeriod(LocalDate date, Company company) throws AxelorException {
 	
 		Period period = this.getPeriod(date, company);
-		if (period == null || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PERIOD_1), company.getName()), IException.CONFIGURATION_ERROR);
+		if (period == null || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PERIOD_1), company.getName());
 		}
 		LOG.debug("Period : {}",period);	
 		return period;
@@ -73,15 +73,15 @@ public class PeriodService {
 		Period nextPeriod = periodRepo.all().filter("self.fromDate > ?1 AND self.year.company = ?2 AND self.statusSelect = ?3", period.getToDate(), period.getYear().getCompany(), PeriodRepository.STATUS_OPENED).fetchOne();
 		
 		if (nextPeriod == null || nextPeriod.getStatusSelect() == PeriodRepository.STATUS_CLOSED)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PERIOD_1), period.getYear().getCompany().getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(period, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PERIOD_1), period.getYear().getCompany().getName());
 		}
 		LOG.debug("Next Period : {}",nextPeriod);	
 		return nextPeriod;
 	}
 	
 	public void testOpenPeriod(Period period) throws AxelorException {
-		if(period.getStatusSelect()==PeriodRepository.STATUS_CLOSED){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PERIOD_2)), IException.CONFIGURATION_ERROR);
+		if (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+			throw new AxelorException(period, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PERIOD_2));
 		}
 	}
 

@@ -70,4 +70,16 @@
 		<option value="5.00" icon="img/rating/rating-5.00.png">5.00</option>
 	</selection>
 
+    <selection name="logistical.form.status.select">
+        <option value="1">Provision</option>
+        <option value="2">Carrier validated</option>
+        <option value="3">Collected</option>
+    </selection>
+
+    <selection name="logistical.form.line.type.select">
+        <option value="1">Parcel</option>
+        <option value="2">Pallet</option>
+        <option value="3">Detail</option>
+    </selection>
+
 </object-views>

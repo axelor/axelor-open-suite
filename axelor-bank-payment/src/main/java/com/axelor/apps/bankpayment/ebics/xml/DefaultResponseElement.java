@@ -60,10 +60,8 @@ public abstract class DefaultResponseElement extends DefaultEbicsRootElement {
   protected void parse(ContentFactory factory) throws AxelorException {
     try {
       document = XmlObject.Factory.parse(factory.getContent());
-    } catch (XmlException e) {
-      throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR );
-    } catch (IOException e) {
-      throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR );
+    } catch (XmlException | IOException e) {
+      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
     }
   }
 

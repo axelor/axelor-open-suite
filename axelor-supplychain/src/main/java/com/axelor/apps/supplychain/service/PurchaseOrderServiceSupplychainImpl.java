@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -38,8 +38,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockConfig;
@@ -63,17 +61,6 @@ import com.axelor.inject.Beans;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -162,12 +149,11 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
 			Location startLocation = Beans.get(LocationRepository.class).findByPartner(purchaseOrder.getSupplierPartner());
 
-			if(startLocation == null)  {
+			if (startLocation == null) {
 				startLocation = stockConfigService.getSupplierVirtualLocation(stockConfig);
 			}
-			if(startLocation == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_1),
-						company.getName()), IException.CONFIGURATION_ERROR);
+			if (startLocation == null) {
+				throw new AxelorException(purchaseOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PURCHASE_ORDER_1), company.getName());
 			}
 
 			Partner supplierPartner = purchaseOrder.getSupplierPartner();
@@ -433,7 +419,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		// checking budget excess
 		if (bl != null) {
 			if (amount.add(bl.getAmountCommitted()).compareTo(bl.getAmountExpected()) > 0) {
-				throw new AxelorException(I18n.get(IExceptionMessage.PURCHASE_ORDER_2), IException.INCONSISTENCY, budget.getCode());
+				throw new AxelorException(budget, IException.INCONSISTENCY, I18n.get(IExceptionMessage.PURCHASE_ORDER_2), budget.getCode());
 			}
 		}
 	}

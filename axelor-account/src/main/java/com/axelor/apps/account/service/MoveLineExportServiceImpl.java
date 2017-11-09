@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -201,8 +201,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 		String exportNumber = sequenceService.getSequenceNumber(IAdministration.SALES_INTERFACE, company);
 		if(exportNumber == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_1),
-					AppBaseServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_1), AppBaseServiceImpl.EXCEPTION, company.getName());
 		}
 
 		return exportNumber;
@@ -214,8 +213,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 		String exportNumber = sequenceService.getSequenceNumber(IAdministration.REFUND_INTERFACE, company);
 		if(exportNumber == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_2),
-					AppBaseServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_2), AppBaseServiceImpl.EXCEPTION, company.getName());
 		}
 
 		return exportNumber;
@@ -227,8 +225,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 		String exportNumber = sequenceService.getSequenceNumber(IAdministration.TREASURY_INTERFACE, company);
 		if(exportNumber == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_3),
-					AppBaseServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_3), AppBaseServiceImpl.EXCEPTION, company.getName());
 		}
 
 		return exportNumber;
@@ -240,8 +237,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 		String exportNumber = sequenceService.getSequenceNumber(IAdministration.PURCHASE_INTERFACE, company);
 		if(exportNumber == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_4),
-					AppBaseServiceImpl.EXCEPTION, company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_4), AppBaseServiceImpl.EXCEPTION, company.getName());
 		}
 
 		return exportNumber;

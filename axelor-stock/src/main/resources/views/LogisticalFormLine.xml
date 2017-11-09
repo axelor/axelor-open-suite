@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <grid model="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging lines" name="logistical-form-line-grid">
+        <hilite strong="true" color="default" if="$contains([1, 2], typeSelect)" />
+        <field name="typeSelect" onChange="action-logisitcal-form-line-type-change" />
+        <field name="stockMoveLine" onSelect="action-logistical-form-line-stock-move-line-domain" onChange="action-logistical-form-line-stock-move-line-change"
+            readonlyIf="typeSelect != 3" />
+        <field name="stockMoveLine.stockMove" />
+        <field name="stockMoveLine.product.code" title="Product code" />
+        <field name="stockMoveLine.product.description" title="Product description" />
+        <field name="stockMoveLine.stockMove.saleOrder.saleOrderSeq" title="Sale order number" if-module="axelor-supplychain" />
+        <field name="stockMoveLine.stockMove.saleOrder.externalReference" title="Customer reference" if-module="axelor-supplychain" />
+        <field name="stockMoveLine.netWeight" title="Unit net weight" />
+        <field name="qty" readonlyIf="typeSelect != 3" />
+        <field name="parcelPalletNumber" readonlyIf="typeSelect == 3" />
+        <field name="grossWeight" readonlyIf="typeSelect == 3" />
+        <field name="dimensions" readonlyIf="typeSelect == 3" />
+        <field name="logisticalForm.deliverToCustomer" hidden="true" />
+    </grid>
+
+    <form model="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging line" name="logistical-form-line-form"
+        width="large" canCopy="true">
+        <panel>
+            <field name="typeSelect" onChange="action-logisitcal-form-line-type-change" />
+            <field name="stockMoveLine" onSelect="action-logistical-form-line-stock-move-line-domain" onChange="action-logistical-form-line-stock-move-line-change"
+                hideIf="typeSelect != 3" />
+            <field name="qty" hideIf="typeSelect != 3" />
+            <field name="parcelPalletNumber" hideIf="typeSelect == 3" />
+            <field name="grossWeight" hideIf="typeSelect == 3" />
+            <field name="dimensions" hideIf="typeSelect == 3" />
+            <field name="logisticalForm.deliverToCustomer" hidden="true" />
+        </panel>
+    </form>
+
+    <action-record name="action-logisitcal-form-line-type-change" model="com.axelor.apps.stock.db.LogisticalFormLine">
+        <field name="stockMoveLine" expr="eval: null" />
+        <field name="qty" expr="eval: null" />
+        <field name="parcelPalletNumber" expr="eval: null" />
+        <field name="grossWeight" expr="eval: null" />
+        <field name="dimensions" expr="eval: null" />
+    </action-record>
+    
+    <action-method name="action-logistical-form-line-stock-move-line-change">
+        <call class="com.axelor.apps.stock.web.LogisticalFormLineController" method="setQty" />
+    </action-method>
+
+    <action-method name="action-logistical-form-line-stock-move-line-domain">
+        <call class="com.axelor.apps.stock.web.LogisticalFormLineController" method="setStockMoveLineDomain" />
+    </action-method>
+
+</object-views>

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -652,14 +652,12 @@ public class ICalendarService {
 					calendar = doSync(calendar, colList.get(0));
 					Beans.get(ICalendarRepository.class).save(calendar);
 				}
-			}
-			else{
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CALENDAR_NOT_VALID)), IException.CONFIGURATION_ERROR);
+			} else {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CALENDAR_NOT_VALID));
 			}
 		} catch (Exception e) {
 			throw new ICalendarException(e);
-		}
-		finally {
+		} finally {
 			store.disconnect();
 		}
 	}
@@ -849,9 +847,8 @@ public class ICalendarService {
 					CalDavCalendarCollection collection = colList.get(0);
 					cal = collection.getCalendar(uid);
 				}
-			}
-			else{
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CALENDAR_NOT_VALID)), IException.CONFIGURATION_ERROR);
+			} else {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CALENDAR_NOT_VALID));
 			}
 		} catch (Exception e) {
 			throw new ICalendarException(e);
@@ -883,9 +880,8 @@ public class ICalendarService {
 						VEvent target = remoteEvents.get(event.getUid());
 						removeCalendar(collection,target.getUid().getValue());
 					}
-				}
-				else{
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.CALENDAR_NOT_VALID)), IException.CONFIGURATION_ERROR);
+				} else {
+					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CALENDAR_NOT_VALID));
 				}
 			} catch (Exception e) {
 				throw new ICalendarException(e);

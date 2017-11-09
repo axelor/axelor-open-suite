@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.axelor.app.production.db.IManufOrder;
+import com.axelor.apps.production.service.OperationOrderService;
+import com.axelor.exception.service.TraceBackService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -249,8 +251,8 @@ public class OperationOrderController {
 		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(),DateTimeFormatter.ISO_DATE_TIME);
 		LocalDateTime itDateTime = LocalDateTime.parse(fromDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME);
 		
-		if(Duration.between(fromDateTime,toDateTime).toDays() > 20){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS)), IException.CONFIGURATION_ERROR);
+		if (Duration.between(fromDateTime,toDateTime).toDays() > 20) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS));
 		}
 		
 		List<OperationOrder> operationOrderListTemp = operationOrderRepo.all().filter("self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1", fromDateTime, toDateTime).fetch();
@@ -323,8 +325,8 @@ public class OperationOrderController {
 		LocalDateTime toDateTime = LocalDateTime.parse(request.getContext().get("toDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
 		toDateTime = toDateTime.withHour(23).withMinute(59);
 		LocalDateTime itDateTime = LocalDateTime.parse(fromDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME);
-		if(Duration.between(fromDateTime,toDateTime).toDays() > 500){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS)), IException.CONFIGURATION_ERROR);
+		if (Duration.between(fromDateTime,toDateTime).toDays() > 500) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS));
 		}
 		
 		
@@ -412,18 +414,29 @@ public class OperationOrderController {
 		response.setData(dataList);
 	}
 
-	public void startManufOrder (ActionRequest request, ActionResponse response) throws AxelorException {
+	public void startManufOrder(ActionRequest request, ActionResponse response) throws AxelorException {
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
-		operationOrder =operationOrderRepo.find(operationOrder.getId());
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
 		Beans.get(OperationOrderWorkflowService.class).start(operationOrder);
 		response.setReload(true);
 	}
 
-	public void start (ActionRequest request, ActionResponse response) throws AxelorException {
+	public void start(ActionRequest request, ActionResponse response) throws AxelorException {
 		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
 		operationOrder = operationOrderRepo.find(operationOrder.getId());
 		Beans.get(OperationOrderWorkflowService.class).start(operationOrder);
 		response.setReload(true);
 	}
+
+	public void updateDiffProdProductList(ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		try {
+		    Beans.get(OperationOrderService.class).updateDiffProdProductList(operationOrder);
+			response.setValue("diffConsumeProdProductList", operationOrder.getDiffConsumeProdProductList());
+		} catch (AxelorException e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+
 }
 

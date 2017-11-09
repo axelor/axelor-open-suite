@@ -17,30 +17,16 @@
  */
 package com.axelor.apps.production.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.ProductVariantService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.production.db.BillOfMaterial;
-import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.ProdProcess;
-import com.axelor.apps.production.db.ProdProcessLine;
-import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.production.db.ProdResidualProduct;
-import com.axelor.apps.production.db.ProductionConfig;
+import com.axelor.apps.production.db.*;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -59,6 +45,13 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class ManufOrderServiceImpl implements  ManufOrderService  {
 
@@ -258,8 +251,8 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 
 		String seq = sequenceService.getSequenceNumber(IAdministration.MANUF_ORDER);
 
-		if(seq == null)  {
-			throw new AxelorException(I18n.get(IExceptionMessage.MANUF_ORDER_SEQ), IException.CONFIGURATION_ERROR);
+		if (seq == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MANUF_ORDER_SEQ));
 		}
 
 		return seq;
@@ -290,19 +283,14 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		
 		BillOfMaterial billOfMaterial = product.getDefaultBillOfMaterial();
 
-		if(billOfMaterial == null && product.getParentProduct() != null)  {
-
+		if (billOfMaterial == null && product.getParentProduct() != null) {
 			billOfMaterial = product.getParentProduct().getDefaultBillOfMaterial();
-
 		}
 
-		if(billOfMaterial == null)  {
-
-			throw new AxelorException(
-					String.format(I18n.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM), product.getName(), product.getCode()),
-					IException.CONFIGURATION_ERROR);
-
+		if (billOfMaterial == null) {
+			throw new AxelorException(product, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM), product.getName(), product.getCode());
 		}
+		
 		return billOfMaterial;
 		
 	}
@@ -344,7 +332,7 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		StockMove wasteStockMove = null;
 		Company company = manufOrder.getCompany();
 
-		if (manufOrder.getWasteProdProductList() == null || company == null) {
+		if (manufOrder.getWasteProdProductList() == null || company == null || manufOrder.getWasteProdProductList().isEmpty()) {
 			return wasteStockMove;
 		}
 
@@ -399,6 +387,45 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 
 		manufOrderRepo.save(manufOrder);
 
+		return manufOrder;
+	}
+
+	public ManufOrder updateDiffProdProductList(ManufOrder manufOrder) throws AxelorException {
+	    List<ProdProduct> toConsumeList = manufOrder.getToConsumeProdProductList();
+	    List<StockMoveLine> consumedList = manufOrder.getConsumedStockMoveLineList();
+		List<ProdProduct> diffConsumeList = new ArrayList<>();
+	    BigDecimal consumedQty;
+	    if (toConsumeList == null || consumedList == null) {
+	    	return manufOrder;
+		}
+	    for (ProdProduct prodProduct : toConsumeList) {
+	    	Product product = prodProduct.getProduct();
+	    	Unit newUnit = prodProduct.getUnit();
+	    	Optional<StockMoveLine> stockMoveLineOpt = consumedList.stream()
+					.filter(stockMoveLine1 -> stockMoveLine1.getProduct() != null)
+					.filter(stockMoveLine1 -> stockMoveLine1.getProduct().equals(product))
+					.findAny();
+	    	if (!stockMoveLineOpt.isPresent()) {
+	    		continue;
+			}
+			StockMoveLine stockMoveLine = stockMoveLineOpt.get();
+	    	if (stockMoveLine.getUnit() != null && prodProduct.getUnit() != null) {
+				consumedQty = Beans.get(UnitConversionService.class)
+						.convertWithProduct(stockMoveLine.getUnit(), prodProduct.getUnit(), stockMoveLine.getQty(), product);
+			} else {
+	    		consumedQty = stockMoveLine.getQty();
+			}
+	    	BigDecimal diffQty = consumedQty.subtract(prodProduct.getQty());
+	    	if (diffQty.compareTo(BigDecimal.ZERO) != 0) {
+	    		ProdProduct diffProdProduct = new ProdProduct();
+	    		diffProdProduct.setQty(diffQty);
+	    		diffProdProduct.setProduct(product);
+	    		diffProdProduct.setUnit(newUnit);
+	    		diffProdProduct.setDiffConsumeManufOrder(manufOrder);
+	    		diffConsumeList.add(diffProdProduct);
+			}
+		}
+		manufOrder.setDiffConsumeProdProductList(diffConsumeList);
 		return manufOrder;
 	}
 

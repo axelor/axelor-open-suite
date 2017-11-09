@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Address;
@@ -85,7 +86,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
 		if (stockMove.getInvoice() != null
 				&& stockMove.getInvoice().getStatusSelect() != InvoiceRepository.STATUS_CANCELED){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName());
 		}
 		InvoiceGenerator invoiceGenerator = saleOrderInvoiceService.createInvoiceGenerator(saleOrder);
 
@@ -94,9 +95,18 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, stockMove.getStockMoveLineList()));
 
 		if (invoice != null) {
+			invoice.setSaleOrder(saleOrder);
 			saleOrderInvoiceService.fillInLines(invoice);
 			this.extendInternalReference(stockMove, invoice);
 			invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
+
+			//fill default advance payment invoice
+			if (invoice.getOperationSubTypeSelect()
+					!= InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+				invoice.setAdvancePaymentInvoiceSet(
+						Beans.get(InvoiceService.class).getDefaultAdvancePaymentInvoice(invoice)
+				);
+			}
 			invoiceRepository.save(invoice);
 
 			stockMove.setInvoice(invoice);
@@ -112,7 +122,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
 		if (stockMove.getInvoice() != null
 				&& stockMove.getInvoice().getStatusSelect() != InvoiceRepository.STATUS_CANCELED){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName());
 		}
 		InvoiceGenerator invoiceGenerator = purchaseOrderInvoiceService.createInvoiceGenerator(purchaseOrder);
 
@@ -148,12 +158,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		else if(stockMoveType == StockMoveRepository.TYPE_OUTGOING)  {  invoiceOperationType = InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;  }
 		else  {  return null;  }
 		
-		if (invoice != null && invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED){
-			if(stockMoveType == StockMoveRepository.TYPE_INCOMING)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName()), IException.CONFIGURATION_ERROR);
-			}
-			else  { 
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName()), IException.CONFIGURATION_ERROR);
+		if (invoice != null && invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED) {
+			if (stockMoveType == StockMoveRepository.TYPE_INCOMING) {
+				throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName());
+			} else { 
+				throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName());
 			}
 		}
 		
@@ -221,7 +230,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 				}
 			}
 			SaleOrder saleOrder = stockMove.getSaleOrder();
-			if (count == 1){
+			if (saleOrder != null && count == 1){
 				invoiceCurrency = saleOrder.getCurrency();
 				invoiceClientPartner = saleOrder.getClientPartner();
 				invoiceCompany = saleOrder.getCompany();
@@ -318,7 +327,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		}
 
 		if (fieldErrors.length() > 0){
-			throw new AxelorException(fieldErrors.toString(), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, fieldErrors.toString());
 		}
 
 		/***
@@ -458,7 +467,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 				}
 			}
 			PurchaseOrder purchaseOrder = stockMove.getPurchaseOrder();
-			if (count == 1){
+			if (purchaseOrder != null && count == 1){
 				invoiceCompany = purchaseOrder.getCompany();
 				invoiceSupplierPartner = purchaseOrder.getSupplierPartner();
 				invoiceContactPartner = purchaseOrder.getContactPartner();
@@ -510,7 +519,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		}
 
 		if (fieldErrors.length() > 0){
-			throw new AxelorException(fieldErrors.toString(), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, fieldErrors.toString());
 		}
 
 		/***
@@ -649,7 +658,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 			return null;
 		}
 		if (product == null && !isTitleLine) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_1), stockMoveLine.getStockMove().getStockMoveSeq()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_1), stockMoveLine.getStockMove().getStockMoveSeq());
 		}
 		
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, stockMoveLine.getProductName(),

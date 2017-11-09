@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -18,17 +18,17 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.base.db.*;
-import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.common.base.Joiner;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -287,26 +287,6 @@ public class PurchaseOrderController {
 		purchaseOrderServiceSupplychain.updatePurchaseOrderOnCancel(stockMove, purchaseOrder);
 		
 		
-	}
-
-	/**
-	 * Called on partner, company or payment change.
-	 * Fill the bank details with a default value.
-	 * @param request
-	 * @param response
-	 */
-	public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
-		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-		PaymentMode paymentMode = purchaseOrder.getPaymentMode();
-		Company company = purchaseOrder.getCompany();
-		Partner partner = purchaseOrder.getSupplierPartner();
-		if(paymentMode == null || company == null || partner == null) {
-			return;
-		}
-		partner = Beans.get(PartnerRepository.class).find(partner.getId());
-		BankDetails defaultBankDetails = Beans.get(AccountingSituationService.class)
-				.findDefaultBankDetails(company, paymentMode, partner);
-		response.setValue("companyBankDetails", defaultBankDetails);
 	}
 
 	public void updateAmountToBeSpreadOverTheTimetable(ActionRequest request, ActionResponse response) {

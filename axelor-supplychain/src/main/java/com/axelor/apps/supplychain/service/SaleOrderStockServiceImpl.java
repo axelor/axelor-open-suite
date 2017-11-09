@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -81,9 +81,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 	 */
 	public StockMove createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
-		if (this.existActiveStockMoveForSaleOrder(saleOrder)){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXIST),
-					saleOrder.getSaleOrderSeq()), IException.CONFIGURATION_ERROR); 
+		if (this.existActiveStockMoveForSaleOrder(saleOrder)) {
+			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXIST), saleOrder.getSaleOrderSeq()); 
 		}
 		
 		Company company = saleOrder.getCompany();
@@ -169,7 +168,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 					StockMoveLineService.TYPE_SALES, saleOrderLine.getSaleOrder().getInAti(), taxRate);
 
 			stockMoveLine.setSaleOrderLine(saleOrderLine);
-
+			stockMoveLine.setReservedQty(saleOrderLine.getReservedQty());
 			if(stockMoveLine != null) {
 				stockMove.addStockMoveLineListItem(stockMoveLine);
 			}

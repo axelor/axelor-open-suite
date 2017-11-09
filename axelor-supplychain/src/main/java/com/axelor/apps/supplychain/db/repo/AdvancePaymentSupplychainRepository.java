@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -17,16 +17,16 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.sale.db.AdvancePayment;
-import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
+import com.axelor.apps.sale.db.repo.AdvancePaymentSaleRepository;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
-public class AdvancePaymentSupplychainRepository extends AdvancePaymentRepository {
+import javax.persistence.PersistenceException;
+
+public class AdvancePaymentSupplychainRepository extends AdvancePaymentSaleRepository {
 	
 	@Inject
 	private AppService appService;

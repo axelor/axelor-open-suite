@@ -22,7 +22,6 @@ import java.util.List;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
@@ -38,7 +37,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 public class SaleOrderProjectController {
 
@@ -68,12 +66,12 @@ public class SaleOrderProjectController {
 	public void generateProjects(ActionRequest request, ActionResponse response) throws AxelorException{
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		saleOrder = saleOrderRepo.find(saleOrder.getId());
-		if(saleOrder.getProject() == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SALE_ORDER_NO_PROJECT)), IException.CONFIGURATION_ERROR);
+		if (saleOrder.getProject() == null) {
+			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALE_ORDER_NO_PROJECT));
 		}
 		List<Long> listId = saleOrderProjectService.generateProjects(saleOrder);
-		if(listId == null || listId.isEmpty()){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SALE_ORDER_NO_LINES)), IException.CONFIGURATION_ERROR);
+		if (listId == null || listId.isEmpty()) {
+			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALE_ORDER_NO_LINES));
 		}
 		response.setReload(true);
 		if(listId.size() == 1){
@@ -85,8 +83,7 @@ public class SaleOrderProjectController {
 					.add("form", "task-form")
 					.param("forceEdit", "true")
 					.context("_showRecord", String.valueOf(listId.get(0))).map());
-		}
-		else{
+		} else {
 			response.setView(ActionView
 					.define("Tasks generated")
 					.model(Project.class.getName())

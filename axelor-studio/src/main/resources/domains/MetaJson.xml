@@ -8,6 +8,11 @@
   <entity name="MetaJsonField" table="META_JSON_FIELD">
     <many-to-one name="jsonCreator" ref="com.axelor.studio.db.JsonCreator" />
     <boolean name="isWkf" />
+    <many-to-one name="appBuilder" ref="com.axelor.studio.db.AppBuilder" title="App builder" />
+  </entity>
+  
+  <entity name="MetaJsonModel" table="META_JSON_MODEL">
+    <many-to-one name="appBuilder" ref="com.axelor.studio.db.AppBuilder" title="App builder" />
   </entity>
 
 </domain-models>

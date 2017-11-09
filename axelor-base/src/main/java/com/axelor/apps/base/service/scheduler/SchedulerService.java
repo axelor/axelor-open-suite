@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -174,7 +174,7 @@ public class SchedulerService {
 		else if(scheduler.getDaily())
 			return this.getDailyComputeDate(scheduler,date);
 		else
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SCHEDULER_1),scheduler.getName()), IException.MISSING_FIELD);
+			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.SCHEDULER_1),scheduler.getName());
 	}
 
 

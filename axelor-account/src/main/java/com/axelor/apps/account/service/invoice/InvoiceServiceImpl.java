@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.axelor.apps.account.db.AccountConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +75,7 @@ import com.google.inject.persist.Transactional;
 
 /**
  * InvoiceService est une classe implémentant l'ensemble des services de
- * facturations.
+ * facturation.
  * 
  */
 public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceService  {
@@ -150,7 +151,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice compute(final Invoice invoice) throws AxelorException {
 
-		log.debug("Calcule de la facture");
+		log.debug("Calcul de la facture");
 		
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator() {
 			
@@ -237,7 +238,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	public void ventilate( Invoice invoice ) throws AxelorException {
 		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
 			if (invoiceLine.getAccount() == null) {
-				throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_6), IException.MISSING_FIELD, invoiceLine.getProductName());
+				throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.VENTILATE_STATE_6), invoiceLine.getProductName());
 			}
 		}
 
@@ -592,7 +593,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	}
 
 	@Override
-	public List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) {
+	public List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) throws AxelorException {
+		if (Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice()) {
+			return getMoveLinesFromInvoiceAdvancePayments(invoice);
+		} else {
+			return getMoveLinesFromSOAdvancePayments(invoice);
+		}
+	}
+
+	@Override
+	public List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice) {
 		List<MoveLine> advancePaymentMoveLines = new ArrayList<>();
 
 		Set<Invoice> advancePayments = invoice.getAdvancePaymentInvoiceSet();
@@ -609,6 +619,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 			advancePaymentMoveLines.addAll(creditMoveLines);
 		}
 		return advancePaymentMoveLines;
+	}
+
+	@Override
+	public List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice) {
+		return new ArrayList<>();
 	}
 
 	protected String writeGeneralFilterForAdvancePayment() {
