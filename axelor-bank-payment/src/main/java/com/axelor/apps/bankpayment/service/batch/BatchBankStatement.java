@@ -76,7 +76,13 @@ public class BatchBankStatement extends AbstractBatch {
                 
                 for(BankStatement bankStatement : bankStatementList)  {
                 	
-                	bankStatementService.runImport(bankStatementRepository.find(bankStatement.getId()));
+                	try {
+                		bankStatementService.runImport(bankStatementRepository.find(bankStatement.getId()), false);
+                	} catch (AxelorException e) { 
+                		incrementAnomaly();
+                		log.error(e.getMessage());
+                		TraceBackService.trace(e); 
+                	}
                 }
                 
                 incrementDone();
