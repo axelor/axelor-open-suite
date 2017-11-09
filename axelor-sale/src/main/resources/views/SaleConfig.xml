@@ -36,4 +36,10 @@
 		<call class="com.axelor.apps.supplychain.service.SupplychainSaleConfigService" method="updateCustomerCredit(__self__)"/>
 	</action-method>
 	
+	<action-view name="action-company-view-sale-config" title="Sale config (${ name })" model="com.axelor.apps.sale.db.SaleConfig">
+    	<view type="form" name="sale-config-form"/>
+    	<context name="_showRecord" expr="eval: __self__.saleConfig?.id"/>
+    	<context name="_company" expr="eval: __this__"/>
+    </action-view>
+	
 </object-views>

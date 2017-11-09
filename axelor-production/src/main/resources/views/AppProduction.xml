@@ -28,7 +28,11 @@
 				</panel>
 			</panel>
 		</panel>
-		<panel-dashlet action="admin.root.conf.production.config"  colSpan="12"/>
+		<panel>
+			<button name="generateProductionConfigurations" colSpan="4" title="Generate production configurations" onClick="save,com.axelor.apps.production.web.AppProductionController:generateProductionConfigurations"/>
+			<panel-dashlet action="admin.root.conf.production.config"  colSpan="12"/>
+		</panel>
+		
 	</form>
 	
 	<action-view name="admin.root.conf.production.config" title="Production configurations"

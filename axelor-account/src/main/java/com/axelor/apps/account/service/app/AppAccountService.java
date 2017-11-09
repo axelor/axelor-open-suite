@@ -30,4 +30,6 @@ public interface AppAccountService extends AppBaseService {
 	
 	public AppInvoice getAppInvoice();
 	
+	public void generateAccountConfigurations();
+	
 }
