@@ -95,12 +95,20 @@ public interface LogisticalFormService {
 	String getStockMoveDomain(LogisticalForm logisticalForm);
 
 	/**
-	 * Find highest parcel/pallet number
+	 * Get next parcel/pallet number.
 	 * 
 	 * @param logisticalForm
 	 * @param typeSelect
 	 * @return
 	 */
-	int findHighestParcelPalletNumber(LogisticalForm logisticalForm, int typeSelect);
+	int getNextParcelPalletNumber(LogisticalForm logisticalForm, int typeSelect);
+
+	/**
+	 * Get next line sequence.
+	 * 
+	 * @param logisticalForm
+	 * @return
+	 */
+	int getNextLineSequence(LogisticalForm logisticalForm);
 
 }

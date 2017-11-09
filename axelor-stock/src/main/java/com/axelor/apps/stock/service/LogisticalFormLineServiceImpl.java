@@ -104,9 +104,11 @@ public class LogisticalFormLineServiceImpl implements LogisticalFormLineService 
 
 	@Override
 	public void initParcelPallet(LogisticalFormLine logisticalFormLine) {
-		int parcelPalletNumber = Beans.get(LogisticalFormService.class).findHighestParcelPalletNumber(
-				logisticalFormLine.getLogisticalForm(), logisticalFormLine.getTypeSelect());
-		logisticalFormLine.setParcelPalletNumber(parcelPalletNumber + 1);
+		LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
+		logisticalFormLine.setParcelPalletNumber(logisticalFormService
+				.getNextParcelPalletNumber(logisticalFormLine.getLogisticalForm(), logisticalFormLine.getTypeSelect()));
+		logisticalFormLine
+				.setSequence(logisticalFormService.getNextLineSequence(logisticalFormLine.getLogisticalForm()));
 	}
 
 }

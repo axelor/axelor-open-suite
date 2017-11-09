@@ -178,40 +178,51 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 		logisticalFormLine.setTypeSelect(LogisticalFormLineRepository.TYPE_DETAIL);
 		logisticalFormLine.setStockMoveLine(stockMoveLine);
 		logisticalFormLine.setQty(qty);
-		logisticalFormLine.setSequence(findHighestLineSequence(logisticalForm) + 1);
+		logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
 		return logisticalFormLine;
 	}
 
 	protected LogisticalFormLine createParcelPalletLine(LogisticalForm logisticalForm, int typeSelect) {
 		LogisticalFormLine logisticalFormLine = new LogisticalFormLine();
 		logisticalFormLine.setTypeSelect(typeSelect);
-		logisticalFormLine.setParcelPalletNumber(findHighestParcelPalletNumber(logisticalForm, typeSelect) + 1);
-		logisticalFormLine.setSequence(findHighestLineSequence(logisticalForm) + 1);
+		logisticalFormLine.setParcelPalletNumber(getNextParcelPalletNumber(logisticalForm, typeSelect));
+		logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
 		return logisticalFormLine;
 	}
 
 	@Override
-	public int findHighestParcelPalletNumber(LogisticalForm logisticalForm, int typeSelect) {
+	public int getNextParcelPalletNumber(LogisticalForm logisticalForm, int typeSelect) {
 		int highest = 0;
+		Set<Integer> parcelPalletNumberSet = new HashSet<>();
 
 		if (logisticalForm.getLogisticalFormLineList() != null) {
 			for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
 				if (logisticalFormLine.getTypeSelect() == typeSelect
-						&& logisticalFormLine.getParcelPalletNumber() != null
-						&& logisticalFormLine.getParcelPalletNumber() > highest) {
-					highest = logisticalFormLine.getParcelPalletNumber();
+						&& logisticalFormLine.getParcelPalletNumber() != null) {
+					parcelPalletNumberSet.add(logisticalFormLine.getParcelPalletNumber());
+
+					if (logisticalFormLine.getParcelPalletNumber() > highest) {
+						highest = logisticalFormLine.getParcelPalletNumber();
+					}
 				}
 			}
 		}
 
-		return highest;
+		for (int i = 1; i < highest; ++i) {
+			if (!parcelPalletNumberSet.contains(i)) {
+				return i;
+			}
+		}
+
+		return highest + 1;
 	}
 
-	protected int findHighestLineSequence(LogisticalForm logisticalForm) {
+	@Override
+	public int getNextLineSequence(LogisticalForm logisticalForm) {
 		return logisticalForm.getLogisticalFormLineList() != null
 				? logisticalForm.getLogisticalFormLineList().stream().mapToInt(LogisticalFormLine::getSequence).max()
-						.orElse(0)
-				: 0;
+						.orElse(1)
+				: 1;
 	}
 
 	@Override
