@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.axelor.apps.stock.db.LogisticalForm;
@@ -37,19 +36,15 @@ import com.axelor.apps.stock.db.repo.LogisticalFormLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.exception.InconsistentLogisticalFormLines;
+import com.axelor.apps.stock.exception.InvalidLogisticalFormLineDimensions;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
-import com.google.common.base.Strings;
 
 public class LogisticalFormServiceImpl implements LogisticalFormService {
-
-	private static final Pattern DIMENSIONS_PATTERN = Pattern
-			.compile("\\s*\\d+(\\.\\d*)?\\s*[x\\*]\\s*\\d+(\\.\\d*)?\\s*[x\\*]\\s*\\d+(\\.\\d*)?\\s*");
 
 	@Override
 	public void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove) {
@@ -88,7 +83,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 	}
 
 	@Override
-	public void checkLines(LogisticalForm logisticalForm) throws InconsistentLogisticalFormLines {
+	public void checkInconsistentLines(LogisticalForm logisticalForm) throws InconsistentLogisticalFormLines {
 		Map<StockMoveLine, BigDecimal> stockMoveLineMap = getStockMoveLineQtyMap(logisticalForm);
 		List<String> errorMessageList = new ArrayList<>();
 
@@ -108,6 +103,16 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 		if (!errorMessageList.isEmpty()) {
 			String errorMessage = errorMessageList.stream().collect(Collectors.joining("<br />"));
 			throw new InconsistentLogisticalFormLines(logisticalForm, errorMessage);
+		}
+	}
+
+	@Override
+	public void checkInvalidLineDimensions(LogisticalForm logisticalForm) throws InvalidLogisticalFormLineDimensions {
+		if (logisticalForm.getLogisticalFormLineList() != null) {
+			LogisticalFormLineService logisticalFormLineService = Beans.get(LogisticalFormLineService.class);
+			for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
+				logisticalFormLineService.validateDimensions(logisticalFormLine);
+			}
 		}
 	}
 
@@ -208,13 +213,14 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 	}
 
 	@Override
-	public void compute(LogisticalForm logisticalForm) throws AxelorException {
+	public void computeTotals(LogisticalForm logisticalForm) throws InvalidLogisticalFormLineDimensions {
 		BigDecimal totalNetWeight = BigDecimal.ZERO;
 		BigDecimal totalGrossWeight = BigDecimal.ZERO;
 		BigDecimal totalVolume = BigDecimal.ZERO;
 
 		if (logisticalForm.getLogisticalFormLineList() != null) {
 			ScriptHelper scriptHelper = getScriptHelper(logisticalForm);
+			LogisticalFormLineService logisticalFormLineService = Beans.get(LogisticalFormLineService.class);
 
 			for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
 				StockMoveLine stockMoveLine = logisticalFormLine.getStockMoveLine();
@@ -224,7 +230,8 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 						totalGrossWeight = totalGrossWeight.add(logisticalFormLine.getGrossWeight());
 					}
 
-					totalVolume = totalVolume.add(evalVolume(logisticalFormLine, scriptHelper));
+					totalVolume = totalVolume
+							.add(logisticalFormLineService.evalVolume(logisticalFormLine, scriptHelper));
 				} else if (stockMoveLine != null) {
 					totalNetWeight = totalNetWeight
 							.add(logisticalFormLine.getQty().multiply(stockMoveLine.getNetWeight()));
@@ -237,22 +244,6 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 		logisticalForm.setTotalNetWeight(totalNetWeight);
 		logisticalForm.setTotalGrossWeight(totalGrossWeight);
 		logisticalForm.setTotalVolume(totalVolume);
-	}
-
-	protected BigDecimal evalVolume(LogisticalFormLine logisticalFormLine, ScriptHelper scriptHelper)
-			throws AxelorException {
-		String script = logisticalFormLine.getDimensions();
-
-		if (Strings.isNullOrEmpty(script)) {
-			return BigDecimal.ZERO;
-		}
-
-		if (!DIMENSIONS_PATTERN.matcher(script).matches()) {
-			throw new AxelorException(logisticalFormLine, IException.CONFIGURATION_ERROR,
-					IExceptionMessage.LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS, logisticalFormLine.getSequence() + 1);
-		}
-
-		return (BigDecimal) scriptHelper.eval(String.format("new BigDecimal(%s)", script.replaceAll("x", "*")));
 	}
 
 	protected ScriptHelper getScriptHelper(LogisticalForm logisticalForm) {

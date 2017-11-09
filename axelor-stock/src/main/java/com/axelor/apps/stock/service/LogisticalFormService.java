@@ -25,7 +25,7 @@ import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.exception.InconsistentLogisticalFormLines;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.stock.exception.InvalidLogisticalFormLineDimensions;
 
 public interface LogisticalFormService {
 
@@ -49,17 +49,26 @@ public interface LogisticalFormService {
 	 * Compute totals.
 	 * 
 	 * @param logisticalForm
-	 * @throws AxelorException
+	 * @throws InvalidLogisticalFormLineDimensions
 	 */
-	void compute(LogisticalForm logisticalForm) throws AxelorException;
+	void computeTotals(LogisticalForm logisticalForm) throws InvalidLogisticalFormLineDimensions;
 
 	/**
-	 * Check lines.
+	 * Check for inconsistent lines.
 	 * 
 	 * @param logisticalForm
 	 * @throws InconsistentLogisticalFormLines
+	 * @throws InvalidLogisticalFormLineDimensions
 	 */
-	void checkLines(LogisticalForm logisticalForm) throws InconsistentLogisticalFormLines;
+	void checkInconsistentLines(LogisticalForm logisticalForm) throws InconsistentLogisticalFormLines;
+
+	/**
+	 * Check for invalid dimensions in lines.
+	 * 
+	 * @param logisticalForm
+	 * @throws InvalidLogisticalFormLineDimensions
+	 */
+	void checkInvalidLineDimensions(LogisticalForm logisticalForm) throws InvalidLogisticalFormLineDimensions;
 
 	/**
 	 * Get list of full spread stock move lines.

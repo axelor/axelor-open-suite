@@ -21,16 +21,23 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.exception.InvalidLogisticalFormLineDimensions;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.inject.Beans;
+import com.axelor.script.ScriptHelper;
+import com.google.common.base.Strings;
 
 public class LogisticalFormLineServiceImpl implements LogisticalFormLineService {
+
+	private static final Pattern DIMENSIONS_PATTERN = Pattern
+			.compile("\\s*\\d+(\\.\\d*)?\\s*[x\\*]\\s*\\d+(\\.\\d*)?\\s*[x\\*]\\s*\\d+(\\.\\d*)?\\s*");
 
 	@Override
 	public BigDecimal getUnspreadQty(LogisticalFormLine logisticalFormLine) {
@@ -72,6 +79,27 @@ public class LogisticalFormLineServiceImpl implements LogisticalFormLineService 
 		}
 
 		return domainList.stream().map(domain -> String.format("(%s)", domain)).collect(Collectors.joining(" AND "));
+	}
+
+	@Override
+	public void validateDimensions(LogisticalFormLine logisticalFormLine) throws InvalidLogisticalFormLineDimensions {
+		String dimensions = logisticalFormLine.getDimensions();
+		if (!Strings.isNullOrEmpty(dimensions) && !DIMENSIONS_PATTERN.matcher(dimensions).matches()) {
+			throw new InvalidLogisticalFormLineDimensions(logisticalFormLine);
+		}
+	}
+
+	@Override
+	public BigDecimal evalVolume(LogisticalFormLine logisticalFormLine, ScriptHelper scriptHelper)
+			throws InvalidLogisticalFormLineDimensions {
+		validateDimensions(logisticalFormLine);
+		String script = logisticalFormLine.getDimensions();
+
+		if (Strings.isNullOrEmpty(script)) {
+			return BigDecimal.ZERO;
+		}
+
+		return (BigDecimal) scriptHelper.eval(String.format("new BigDecimal(%s)", script.replaceAll("x", "*")));
 	}
 
 }

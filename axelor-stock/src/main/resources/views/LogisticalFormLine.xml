@@ -41,7 +41,7 @@
         <field name="grossWeight" expr="eval: null" />
         <field name="dimensions" expr="eval: null" />
     </action-record>
-    
+
     <action-method name="action-logistical-form-line-stock-move-line-change">
         <call class="com.axelor.apps.stock.web.LogisticalFormLineController" method="setQty" />
     </action-method>

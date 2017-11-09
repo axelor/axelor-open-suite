@@ -11,7 +11,7 @@
     </grid>
 
     <form model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical form" name="logistical-form-form"
-        width="large" onNew="action-logistical-form-new" onSave="action-logistical-form-check-lines">
+        width="large" onNew="action-logistical-form-new" onSave="action-logistical-form-save">
         <toolbar>
             <button name="carrierValidatedBtn" title="Carrier validated" showIf="statusSelect == 1" readonlyIf="!logisticalFormLineList.length"
                 onClick="action-logistical-form-change-status" />
@@ -49,8 +49,7 @@
                         colSpan="2" readonlyIf="!stockMove" />
                 </panel>
                 <panel-related field="logisticalFormLineList" grid-view="logistical-form-line-grid"
-                    form-view="logistical-form-line-form" colSpan="12" canMove="true" orderBy="sequence" editable="true"
-                    onChange="action-logistical-form-lines-change" />
+                    form-view="logistical-form-line-form" colSpan="12" canMove="true" orderBy="sequence" editable="true" />
                 <panel colSpan="12" hideIf="$readonly()">
                     <button name="addParcelBtn" title="Add parcel" onClick="action-logistical-form-add-parcel"
                         colSpan="2" colOffset="8" />
@@ -91,7 +90,6 @@
 
     <action-group name="action-logistical-form-add-stock-move">
         <action name="action-logistical-form-method-add-stock-move" />
-        <action name="action-logistical-form-lines-change" />
         <action name="save" />
     </action-group>
 
@@ -99,8 +97,13 @@
         <call class="com.axelor.apps.stock.web.LogisticalFormController" method="addStockMove" />
     </action-method>
 
-    <action-method name="action-logistical-form-lines-change">
-        <call class="com.axelor.apps.stock.web.LogisticalFormController" method="compute" />
+    <action-group name="action-logistical-form-save">
+        <action name="action-logistical-form-check-lines" />
+        <action name="action-logistical-form-compute-totals" />
+    </action-group>
+
+    <action-method name="action-logistical-form-compute-totals">
+        <call class="com.axelor.apps.stock.web.LogisticalFormController" method="computeTotals" />
     </action-method>
 
     <action-group name="action-logistical-form-add-parcel">

@@ -20,6 +20,8 @@ package com.axelor.apps.stock.service;
 import java.math.BigDecimal;
 
 import com.axelor.apps.stock.db.LogisticalFormLine;
+import com.axelor.apps.stock.exception.InvalidLogisticalFormLineDimensions;
+import com.axelor.script.ScriptHelper;
 
 public interface LogisticalFormLineService {
 
@@ -38,5 +40,24 @@ public interface LogisticalFormLineService {
 	 * @return
 	 */
 	BigDecimal getUnspreadQty(LogisticalFormLine logisticalFormLine);
+
+	/**
+	 * Validate dimensions
+	 * 
+	 * @param logisticalFormLine
+	 * @throws InvalidLogisticalFormLineDimensions
+	 */
+	void validateDimensions(LogisticalFormLine logisticalFormLine) throws InvalidLogisticalFormLineDimensions;
+
+	/**
+	 * Evaluate volume.
+	 * 
+	 * @param logisticalFormLine
+	 * @param scriptHelper
+	 * @return
+	 * @throws InvalidLogisticalFormLineDimensions
+	 */
+	BigDecimal evalVolume(LogisticalFormLine logisticalFormLine, ScriptHelper scriptHelper)
+			throws InvalidLogisticalFormLineDimensions;
 
 }
