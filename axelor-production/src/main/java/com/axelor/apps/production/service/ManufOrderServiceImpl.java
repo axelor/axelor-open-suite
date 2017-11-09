@@ -345,17 +345,9 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		Location virtualLocation = productionConfigService.getProductionVirtualLocation(productionConfig);
 		Location wasteLocation = productionConfigService.getWasteLocation(productionConfig);
 
-		wasteStockMove = stockMoveService.createStockMove(
-				virtualLocation.getAddress(),
-				wasteLocation.getAddress(),
-				company,
-				company.getPartner(),
-				virtualLocation,
-				wasteLocation,
-				appBaseService.getTodayDate(),
-				manufOrder.getWasteProdDescription(),
-				null,
-				null);
+		wasteStockMove = stockMoveService.createStockMove(virtualLocation.getAddress(), wasteLocation.getAddress(),
+				company, company.getPartner(), virtualLocation, wasteLocation, null, appBaseService.getTodayDate(),
+				manufOrder.getWasteProdDescription(), null, null);
 
 		for (ProdProduct prodProduct : manufOrder.getWasteProdProductList()) {
 			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
