@@ -65,7 +65,7 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
                 return "self.id IN (0)";
             } else {
                 return "self.id IN ("
-                        + StringTool.getIdFromCollection(authorizedBankDetails)
+                        + StringTool.getIdListString(authorizedBankDetails)
                         + ") AND self.active = true";
             }
         }

@@ -484,7 +484,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	public String createAdvancePaymentInvoiceSetDomain(Invoice invoice) throws AxelorException {
 		Set<Invoice> invoices = getDefaultAdvancePaymentInvoice(invoice);
 		String domain = "self.id IN (" +
-				StringTool.getIdFromCollection(invoices)
+				StringTool.getIdListString(invoices)
 				+ ")";
 
 		return domain;

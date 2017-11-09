@@ -102,7 +102,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
 		}
 
 		return "self.id IN ("
-				+ StringTool.getIdFromCollection(company.getBankDetailsSet())
+				+ StringTool.getIdListString(company.getBankDetailsSet())
 				+ ") AND self.active = true";
 	}
 

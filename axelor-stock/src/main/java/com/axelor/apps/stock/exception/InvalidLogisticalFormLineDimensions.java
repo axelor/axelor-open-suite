@@ -15,20 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.stock.exception;
 
-import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
+import com.axelor.apps.stock.db.LogisticalFormLine;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 
-public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceImpl
-		implements LogisticalFormSupplychainService {
+public class InvalidLogisticalFormLineDimensions extends AxelorException {
 
-	@Override
-	protected boolean testForDetailLine(StockMoveLine stockMoveLine) {
-		SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
-		return saleOrderLine == null || saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_TITLE;
+	private static final long serialVersionUID = 354779411257144849L;
+
+	public InvalidLogisticalFormLineDimensions(LogisticalFormLine logisticalFormLine) {
+		super(logisticalFormLine, IException.CONFIGURATION_ERROR,
+				IExceptionMessage.LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS, logisticalFormLine.getSequence() + 1);
 	}
 
 }

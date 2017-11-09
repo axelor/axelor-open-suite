@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.axelor.apps.stock.db.LogisticalForm;
@@ -38,20 +36,15 @@ import com.axelor.apps.stock.db.repo.LogisticalFormLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.exception.InconsistentLogisticalFormLines;
+import com.axelor.apps.stock.exception.InvalidLogisticalFormLineDimensions;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
-import com.google.common.base.Strings;
 
 public class LogisticalFormServiceImpl implements LogisticalFormService {
-
-	private static final Pattern DIMENSIONS_PATTERN = Pattern
-			.compile("\\d+(\\.\\d*)?\\s*[x\\*]\\s*\\d+(\\.\\d*)?\\s*[x\\*]\\s*\\d+(\\.\\d*)?");
 
 	@Override
 	public void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove) {
@@ -64,12 +57,24 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 					continue;
 				}
 
-				LogisticalFormLine logisticalFormLine = createDetailLine(logisticalForm, stockMoveLine,
-						stockMoveLine.getRealQty().subtract(qty));
-				logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
+				if (testForDetailLine(stockMoveLine)) {
+					LogisticalFormLine logisticalFormLine = createDetailLine(logisticalForm, stockMoveLine,
+							stockMoveLine.getRealQty().subtract(qty));
+					logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
+				}
 			}
 		}
+	}
 
+	/**
+	 * Test for detail line (to be overridden).
+	 * 
+	 * @param stockMoveLine
+	 * @return
+	 */
+	@SuppressWarnings("all")
+	protected boolean testForDetailLine(StockMoveLine stockMoveLine) {
+		return true;
 	}
 
 	@Override
@@ -79,7 +84,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 	}
 
 	@Override
-	public void checkLines(LogisticalForm logisticalForm) throws InconsistentLogisticalFormLines {
+	public void checkInconsistentLines(LogisticalForm logisticalForm) throws InconsistentLogisticalFormLines {
 		Map<StockMoveLine, BigDecimal> stockMoveLineMap = getStockMoveLineQtyMap(logisticalForm);
 		List<String> errorMessageList = new ArrayList<>();
 
@@ -103,6 +108,16 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 	}
 
 	@Override
+	public void checkInvalidLineDimensions(LogisticalForm logisticalForm) throws InvalidLogisticalFormLineDimensions {
+		if (logisticalForm.getLogisticalFormLineList() != null) {
+			LogisticalFormLineService logisticalFormLineService = Beans.get(LogisticalFormLineService.class);
+			for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
+				logisticalFormLineService.validateDimensions(logisticalFormLine);
+			}
+		}
+	}
+
+	@Override
 	public List<StockMoveLine> getFullySpreadStockMoveLineList(LogisticalForm logisticalForm) {
 		List<StockMoveLine> stockMoveLineList = new ArrayList<>();
 		Map<StockMoveLine, BigDecimal> stockMoveLineMap = getStockMoveLineQtyMap(logisticalForm);
@@ -121,8 +136,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
 	protected List<StockMove> getFullSpreadStockMoveList(LogisticalForm logisticalForm) {
 		List<StockMove> fullySpreadStockMoveList = new ArrayList<>();
-		List<StockMoveLine> fullySpreadStockMoveLineList = Beans.get(LogisticalFormService.class)
-				.getFullySpreadStockMoveLineList(logisticalForm);
+		List<StockMoveLine> fullySpreadStockMoveLineList = getFullySpreadStockMoveLineList(logisticalForm);
 
 		Set<StockMove> stockMoveSet = new HashSet<>();
 
@@ -164,57 +178,73 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 		logisticalFormLine.setTypeSelect(LogisticalFormLineRepository.TYPE_DETAIL);
 		logisticalFormLine.setStockMoveLine(stockMoveLine);
 		logisticalFormLine.setQty(qty);
-		logisticalFormLine.setSequence(findHighestLineSequence(logisticalForm) + 1);
+		logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
 		return logisticalFormLine;
 	}
 
 	protected LogisticalFormLine createParcelPalletLine(LogisticalForm logisticalForm, int typeSelect) {
 		LogisticalFormLine logisticalFormLine = new LogisticalFormLine();
 		logisticalFormLine.setTypeSelect(typeSelect);
-		logisticalFormLine.setParcelPalletNumber(findHighestParcelPalletNumber(logisticalForm, typeSelect) + 1);
-		logisticalFormLine.setSequence(findHighestLineSequence(logisticalForm) + 1);
+		logisticalFormLine.setParcelPalletNumber(getNextParcelPalletNumber(logisticalForm, typeSelect));
+		logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
 		return logisticalFormLine;
 	}
 
-	protected int findHighestParcelPalletNumber(LogisticalForm logisticalForm, int typeSelect) {
+	@Override
+	public int getNextParcelPalletNumber(LogisticalForm logisticalForm, int typeSelect) {
 		int highest = 0;
+		Set<Integer> parcelPalletNumberSet = new HashSet<>();
 
 		if (logisticalForm.getLogisticalFormLineList() != null) {
 			for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
 				if (logisticalFormLine.getTypeSelect() == typeSelect
-						&& logisticalFormLine.getParcelPalletNumber() != null
-						&& logisticalFormLine.getParcelPalletNumber() > highest) {
-					highest = logisticalFormLine.getParcelPalletNumber();
+						&& logisticalFormLine.getParcelPalletNumber() != null) {
+					parcelPalletNumberSet.add(logisticalFormLine.getParcelPalletNumber());
+
+					if (logisticalFormLine.getParcelPalletNumber() > highest) {
+						highest = logisticalFormLine.getParcelPalletNumber();
+					}
 				}
 			}
 		}
 
-		return highest;
-	}
+		for (int i = 1; i < highest; ++i) {
+			if (!parcelPalletNumberSet.contains(i)) {
+				return i;
+			}
+		}
 
-	protected int findHighestLineSequence(LogisticalForm logisticalForm) {
-		return logisticalForm.getLogisticalFormLineList() != null
-				? logisticalForm.getLogisticalFormLineList().stream().mapToInt(LogisticalFormLine::getSequence).max()
-						.orElse(0)
-				: 0;
+		return highest + 1;
 	}
 
 	@Override
-	public void compute(LogisticalForm logisticalForm) throws AxelorException {
+	public int getNextLineSequence(LogisticalForm logisticalForm) {
+		return logisticalForm.getLogisticalFormLineList() != null
+				? logisticalForm.getLogisticalFormLineList().stream().mapToInt(LogisticalFormLine::getSequence).max()
+						.orElse(1)
+				: 1;
+	}
+
+	@Override
+	public void computeTotals(LogisticalForm logisticalForm) throws InvalidLogisticalFormLineDimensions {
 		BigDecimal totalNetWeight = BigDecimal.ZERO;
 		BigDecimal totalGrossWeight = BigDecimal.ZERO;
 		BigDecimal totalVolume = BigDecimal.ZERO;
 
 		if (logisticalForm.getLogisticalFormLineList() != null) {
 			ScriptHelper scriptHelper = getScriptHelper(logisticalForm);
+			LogisticalFormLineService logisticalFormLineService = Beans.get(LogisticalFormLineService.class);
 
 			for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
 				StockMoveLine stockMoveLine = logisticalFormLine.getStockMoveLine();
 
-				if (logisticalFormLine.getTypeSelect() != LogisticalFormLineRepository.TYPE_DETAIL
-						&& logisticalFormLine.getGrossWeight() != null) {
-					totalGrossWeight = totalGrossWeight.add(logisticalFormLine.getGrossWeight());
-					totalVolume = totalVolume.add(evalVolume(logisticalFormLine, scriptHelper));
+				if (logisticalFormLine.getTypeSelect() != LogisticalFormLineRepository.TYPE_DETAIL) {
+					if (logisticalFormLine.getGrossWeight() != null) {
+						totalGrossWeight = totalGrossWeight.add(logisticalFormLine.getGrossWeight());
+					}
+
+					totalVolume = totalVolume
+							.add(logisticalFormLineService.evalVolume(logisticalFormLine, scriptHelper));
 				} else if (stockMoveLine != null) {
 					totalNetWeight = totalNetWeight
 							.add(logisticalFormLine.getQty().multiply(stockMoveLine.getNetWeight()));
@@ -227,24 +257,6 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 		logisticalForm.setTotalNetWeight(totalNetWeight);
 		logisticalForm.setTotalGrossWeight(totalGrossWeight);
 		logisticalForm.setTotalVolume(totalVolume);
-	}
-
-	protected BigDecimal evalVolume(LogisticalFormLine logisticalFormLine, ScriptHelper scriptHelper)
-			throws AxelorException {
-		String script = logisticalFormLine.getDimensions();
-
-		if (Strings.isNullOrEmpty(script)) {
-			return BigDecimal.ZERO;
-		}
-
-		Matcher matcher = DIMENSIONS_PATTERN.matcher(script);
-
-		if (!matcher.matches()) {
-			throw new AxelorException(logisticalFormLine, IException.CONFIGURATION_ERROR,
-					IExceptionMessage.LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS, logisticalFormLine.getSequence() + 1);
-		}
-
-		return (BigDecimal) scriptHelper.eval(String.format("new BigDecimal(%s)", script.replaceAll("x", "*")));
 	}
 
 	protected ScriptHelper getScriptHelper(LogisticalForm logisticalForm) {
@@ -262,7 +274,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 		List<StockMove> fullySpreadStockMoveList = getFullSpreadStockMoveList(logisticalForm);
 
 		if (!fullySpreadStockMoveList.isEmpty()) {
-			String idListString = StringTool.getIdFromCollection(fullySpreadStockMoveList);
+			String idListString = StringTool.getIdListString(fullySpreadStockMoveList);
 			domainList.add(String.format("self.id NOT IN (%s)", idListString));
 		}
 

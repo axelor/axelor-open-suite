@@ -26,6 +26,14 @@
             <field name="typeSelect" onChange="action-logisitcal-form-line-type-change" />
             <field name="stockMoveLine" onSelect="action-logistical-form-line-stock-move-line-domain" onChange="action-logistical-form-line-stock-move-line-change"
                 hideIf="typeSelect != 3" />
+            <field name="stockMoveLine.stockMove" hideIf="typeSelect != 3" />
+            <field name="stockMoveLine.product.code" title="Product code" hideIf="typeSelect != 3" />
+            <field name="stockMoveLine.product.description" title="Product description" hideIf="typeSelect != 3" />
+            <field name="stockMoveLine.stockMove.saleOrder.saleOrderSeq" title="Sale order number" hideIf="typeSelect != 3"
+                if-module="axelor-supplychain" />
+            <field name="stockMoveLine.stockMove.saleOrder.externalReference" title="Customer reference" hideIf="typeSelect != 3"
+                if-module="axelor-supplychain" />
+            <field name="stockMoveLine.netWeight" title="Unit net weight" hideIf="typeSelect != 3" />
             <field name="qty" hideIf="typeSelect != 3" />
             <field name="parcelPalletNumber" hideIf="typeSelect == 3" />
             <field name="grossWeight" hideIf="typeSelect == 3" />
@@ -34,20 +42,29 @@
         </panel>
     </form>
 
-    <action-record name="action-logisitcal-form-line-type-change" model="com.axelor.apps.stock.db.LogisticalFormLine">
+    <action-group name="action-logisitcal-form-line-type-change">
+        <action name="action-logisitcal-form-line-record-type-change" />
+        <action name="action-logisitcal-form-line-type-init-parcel-pallet" if="typeSelect != __repo__(LogisticalFormLine).TYPE_DETAIL" />
+    </action-group>
+
+    <action-record name="action-logisitcal-form-line-record-type-change" model="com.axelor.apps.stock.db.LogisticalFormLine">
         <field name="stockMoveLine" expr="eval: null" />
         <field name="qty" expr="eval: null" />
         <field name="parcelPalletNumber" expr="eval: null" />
         <field name="grossWeight" expr="eval: null" />
         <field name="dimensions" expr="eval: null" />
     </action-record>
-    
+
     <action-method name="action-logistical-form-line-stock-move-line-change">
         <call class="com.axelor.apps.stock.web.LogisticalFormLineController" method="setQty" />
     </action-method>
 
     <action-method name="action-logistical-form-line-stock-move-line-domain">
         <call class="com.axelor.apps.stock.web.LogisticalFormLineController" method="setStockMoveLineDomain" />
+    </action-method>
+
+    <action-method name="action-logisitcal-form-line-type-init-parcel-pallet">
+        <call class="com.axelor.apps.stock.web.LogisticalFormLineController" method="initParcelPallet" />
     </action-method>
 
 </object-views>

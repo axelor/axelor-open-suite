@@ -301,7 +301,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         );
 
         return "self.id in ("
-                + StringTool.getIdFromCollection(configuratorCreatorList)
+                + StringTool.getIdListString(configuratorCreatorList)
                 + ")";
     }
 
