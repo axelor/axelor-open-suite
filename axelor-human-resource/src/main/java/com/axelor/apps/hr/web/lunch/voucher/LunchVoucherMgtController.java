@@ -148,9 +148,9 @@ public class LunchVoucherMgtController {
 					Beans.get(LunchVoucherMgtLineRepository.class).all()
 							.filter("self.lunchVoucherMgt.id = ?", lunchVoucherMgt.getId())
 							.fetch();
-			lunchVoucherMgt = lunchVoucherMgtService.updateStock(lunchVoucherMgt,
-					oldLunchVoucherLines);
-			response.setValue("stockQuantityStatus", lunchVoucherMgt.getStockQuantityStatus());
+			int stockQuantityStatus = lunchVoucherMgtService.updateStock(lunchVoucherMgt.getLunchVoucherMgtLineList(),
+					oldLunchVoucherLines, lunchVoucherMgt.getCompany());
+			response.setValue("stockQuantityStatus", stockQuantityStatus);
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}

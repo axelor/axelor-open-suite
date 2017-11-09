@@ -34,7 +34,6 @@ import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -144,16 +143,25 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 		
 		return availableStoclLV - numberToUse - minStoclLV;
 	}
+
+	/**
+	 * Update the stock in the config from lunch voucher management
+	 * @param newLunchVoucherMgtLines the new mgt lines
+	 * @param oldLunchVoucherMgtLines the previous mgt lines
+	 * @param company the company of the HR config
+	 * @return the stock quantity status of the lunch voucher mgt
+	 * @throws AxelorException
+	 */
 	@Transactional
 	@Override
-	public LunchVoucherMgt updateStock(LunchVoucherMgt lunchVoucherMgt,
-									   List<LunchVoucherMgtLine> oldLunchVoucherMgtLines)
+	public int updateStock(List<LunchVoucherMgtLine> newLunchVoucherMgtLines,
+						   List<LunchVoucherMgtLine> oldLunchVoucherMgtLines, Company company)
 			throws AxelorException{
-		HRConfig hrConfig = hrConfigService.getHRConfig(lunchVoucherMgt.getCompany());
+		HRConfig hrConfig = hrConfigService.getHRConfig(company);
 
 		int newLunchVoucherQty = hrConfig.getAvailableStockLunchVoucher();
 		int i = 0;
-		for (LunchVoucherMgtLine line : lunchVoucherMgt.getLunchVoucherMgtLineList()) {
+		for (LunchVoucherMgtLine line : newLunchVoucherMgtLines) {
 		    int oldQty = oldLunchVoucherMgtLines.get(i).getGivenToEmployee();
 		    int newQty = line.getGivenToEmployee();
 		    newLunchVoucherQty = newLunchVoucherQty - newQty + oldQty;
@@ -161,8 +169,7 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 		}
 		hrConfig.setAvailableStockLunchVoucher(newLunchVoucherQty);
 		Beans.get(HRConfigRepository.class).save(hrConfig);
-		lunchVoucherMgt.setStockQuantityStatus(hrConfig.getAvailableStockLunchVoucher());
-		return lunchVoucherMgt;
+		return hrConfig.getAvailableStockLunchVoucher();
 	}
 
 	@Transactional
