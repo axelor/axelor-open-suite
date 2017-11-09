@@ -67,7 +67,7 @@ public class LogisticalFormLineServiceImpl implements LogisticalFormLineService 
 				.getFullySpreadStockMoveLineList(logisticalForm);
 
 		if (!fullySpreadStockMoveLineList.isEmpty()) {
-			String idListString = StringTool.getIdFromCollection(fullySpreadStockMoveLineList);
+			String idListString = StringTool.getIdListString(fullySpreadStockMoveLineList);
 			domainList.add(String.format("self.id NOT IN (%s)", idListString));
 		}
 
