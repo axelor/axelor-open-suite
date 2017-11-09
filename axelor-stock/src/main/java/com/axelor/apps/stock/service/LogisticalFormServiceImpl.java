@@ -41,7 +41,6 @@ import com.axelor.apps.tool.StringTool;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
@@ -63,12 +62,23 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 					continue;
 				}
 
-				LogisticalFormLine logisticalFormLine = createDetailLine(logisticalForm, stockMoveLine,
-						stockMoveLine.getRealQty().subtract(qty));
-				logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
+				if (testForDetailLine(stockMoveLine)) {
+					LogisticalFormLine logisticalFormLine = createDetailLine(logisticalForm, stockMoveLine,
+							stockMoveLine.getRealQty().subtract(qty));
+					logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
+				}
 			}
 		}
+	}
 
+	/**
+	 * Test for detail line (to be overridden).
+	 * 
+	 * @param stockMoveLine
+	 * @return
+	 */
+	protected boolean testForDetailLine(StockMoveLine stockMoveLine) {
+		return true;
 	}
 
 	@Override
@@ -120,8 +130,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
 	protected List<StockMove> getFullSpreadStockMoveList(LogisticalForm logisticalForm) {
 		List<StockMove> fullySpreadStockMoveList = new ArrayList<>();
-		List<StockMoveLine> fullySpreadStockMoveLineList = Beans.get(LogisticalFormService.class)
-				.getFullySpreadStockMoveLineList(logisticalForm);
+		List<StockMoveLine> fullySpreadStockMoveLineList = getFullySpreadStockMoveLineList(logisticalForm);
 
 		Set<StockMove> stockMoveSet = new HashSet<>();
 
