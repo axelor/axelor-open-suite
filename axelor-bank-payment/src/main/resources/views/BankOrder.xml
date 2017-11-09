@@ -57,8 +57,12 @@
 	    		<field name="bankOrderDate" css="label-bold bold" colSpan="6" hidden="true" hideIf="isMultiDate"/>
 	    		<field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true"/>
 	    		<field name="paymentMode" css="label-bold bold" colSpan="6" domain="self.orderTypeSelect = :orderTypeSelect" onChange="action-bank-order-record-payment-mode-change,action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"/>
-	    		<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" colSpan="6" onChange="action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"/>
-	    		<field name="partnerTypeSelect" css="label-bold bold" colSpan="6" onChange="action-bank-order-attrs-show-partner-or-receiver-company" hideIf="orderTypeSelect == 5 || orderTypeSelect == 6" required="true"/>
+	    		<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" colSpan="6" onChange="action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter,action-bank-order-reset-order-debit-type"/>
+                <panel showIf="bankOrderFileFormat &amp;&amp; !isMultiDate">
+                    <field name="orderDebitTypeSelect" selection-in="[1, 2, 3]" showIf="!isMultiCurrency" colSpan="12" />
+                    <field name="orderDebitTypeSelect" selection-in="[2, 3]" showIf="isMultiCurrency" colSpan="12" />
+                </panel>
+                <field name="partnerTypeSelect" css="label-bold bold" colSpan="6" onChange="action-bank-order-attrs-show-partner-or-receiver-company" hideIf="orderTypeSelect == 5 || orderTypeSelect == 6" required="true"/>
 		        <field name="generatedMetaFile" widget="binary-link" showIf="statusSelect &gt;= 2"/>
 	        </panel>
 	        <panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 3">  
@@ -330,7 +334,11 @@
         <field name="isMultiDate" expr="eval: bankOrderFileFormat?.isMultiDate"/>
 		<field name="isMultiCurrency" expr="eval: bankOrderFileFormat?.isMultiCurrency"/>
 	</action-record>
-	
+
+    <action-record name="action-bank-order-reset-order-debit-type" model="com.axelor.apps.bankpayment.db.BankOrder">
+        <field name="orderDebitTypeSelect" expr="eval: __repo__(BankOrder).ORDER_DEBIT_TYPE_UNIT_DEBIT_BY_OPERATION" />
+    </action-record>
+
 	<action-record name="action-bank-order-record-update-company-currency" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<field name="companyCurrency" expr="eval: senderCompany?.currency"/>
 	</action-record>

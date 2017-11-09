@@ -25,7 +25,8 @@
 	<boolean name="isMultiDate" title="Multi dates"/>
 	<boolean name="isMultiCurrency" title="Multi currencies"/>
 	<decimal name="arithmeticTotal" title="Arithmetic total" readonly="true"/>
-	
+    <integer name="orderDebitTypeSelect" title="Order debit type" selection="bankpayment.bank.order.debit.type.select" default="2" />
+
 	<!-- Sender -->
 	<many-to-one name="senderCompany" ref="com.axelor.apps.base.db.Company" title="Company"/>
 	<many-to-one name="senderBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Account"/>
@@ -75,6 +76,11 @@
 		public static final int REJECT_STATUS_NOT_REJECTED = 0;
 		public static final int REJECT_STATUS_PARTIALLY_REJECTED = 1;
 		public static final int REJECT_STATUS_TOTALLY_REJECTED = 2;
+
+        // ORDER DEBIT TYPE SELECT
+        public static final int ORDER_DEBIT_TYPE_ORDER_OVERALL_DEBIT = 1;
+        public static final int ORDER_DEBIT_TYPE_UNIT_DEBIT_BY_OPERATION = 2;
+        public static final int ORDER_DEBIT_TYPE_OVERALL_DEBIT_BY_TRANSFER_CURRENCY = 3;
 	
 	]]></extra-code>
 
