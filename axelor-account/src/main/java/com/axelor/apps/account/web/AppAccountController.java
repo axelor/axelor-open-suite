@@ -18,15 +18,20 @@
 package com.axelor.apps.account.web;
 
 
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.debtrecovery.PayerQualityService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 public class AppAccountController {
 
 	private Injector injector;
+	
+	@Inject
+	private AppAccountService appAccountService;
 
 	public void payerQualityProcess(ActionRequest request, ActionResponse response)  {
 
@@ -37,6 +42,11 @@ public class AppAccountController {
 		catch (Exception e) { TraceBackService.trace(response, e); }
 	}
 	
-	
-	
+	public void generateAccountConfigurations(ActionRequest request, ActionResponse response)  {
+		
+		appAccountService.generateAccountConfigurations();
+		
+		response.setReload(true);
+		
+	}
 }

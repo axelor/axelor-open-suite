@@ -7,13 +7,12 @@
         <field name="company" />
         <field name="deliverToCustomer" />
         <field name="collectionDate" />
+        <field name="statusSelect" />
     </grid>
 
     <form model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical form" name="logistical-form-form"
-        width="large" onNew="action-logistical-form-new">
+        width="large" onNew="action-logistical-form-new" onSave="action-logistical-form-save">
         <toolbar>
-            <button name="provisionBtn" title="Provision" showIf="!statusSelect" readonlyIf="!logisticalFormLineList.length"
-                onClick="action-logistical-form-change-status" />
             <button name="carrierValidatedBtn" title="Carrier validated" showIf="statusSelect == 1" readonlyIf="!logisticalFormLineList.length"
                 onClick="action-logistical-form-change-status" />
             <button name="collectedBtn" title="Collected" showIf="statusSelect == 2" readonlyIf="!logisticalFormLineList.length"
@@ -23,8 +22,9 @@
         </toolbar>
         <panel colSpan="12" readonlyIf="statusSelect > 1">
             <field name="deliveryNumber" />
-            <field name="company" />
-            <field name="deliverToCustomer" domain="self.isCustomer = TRUE AND :company MEMBER OF self.companySet" />
+            <field name="company" onChange="action-logistical-form-company-change" />
+            <field name="deliverToCustomer" domain="self.isCustomer = TRUE AND :company MEMBER OF self.companySet"
+                onChange="action-logistical-form-partner-change" />
             <field name="collectionDate" />
         </panel>
         <panel-tabs colSpan="12" readonlyIf="statusSelect > 1">
@@ -44,13 +44,12 @@
                 <panel colSpan="12">
                     <field name="stockMove" title="Stock move" type="reference" widget="many-to-one"
                         target="com.axelor.apps.stock.db.StockMove" grid-view="stock-move-out-grid" form-view="stock-move-form"
-                        colSpan="10" domain="self.partner = :deliverToCustomer AND self.typeSelect = 2" />
+                        colSpan="10" onSelect="action-logistical-form-stock-move-domain" />
                     <button name="addStockMoveBtn" title="Add" onClick="action-logistical-form-add-stock-move"
                         colSpan="2" readonlyIf="!stockMove" />
                 </panel>
                 <panel-related field="logisticalFormLineList" grid-view="logistical-form-line-grid"
-                    form-view="logistical-form-line-form" colSpan="12" canMove="true" orderBy="sequence" editable="true"
-                    onChange="action-logistical-form-lines-change" />
+                    form-view="logistical-form-line-form" colSpan="12" canMove="true" orderBy="sequence" editable="true" />
             </panel>
         </panel-tabs>
     </form>
@@ -66,6 +65,15 @@
         <action name="save" />
     </action-group>
 
+    <action-record name="action-logistical-form-company-change" model="com.axelor.apps.stock.db.LogisticalForm">
+        <field name="deliverToCustomer" expr="eval: null" />
+        <field name="logisticalFormLineList" expr="eval: null" />
+    </action-record>
+
+    <action-record name="action-logistical-form-partner-change" model="com.axelor.apps.stock.db.LogisticalForm">
+        <field name="logisticalFormLineList" expr="eval: null" />
+    </action-record>
+
     <action-record name="action-logistical-form-record-change-status" model="com.axelor.apps.stock.db.LogisticalForm">
         <field name="statusSelect" expr="eval: ++statusSelect" />
     </action-record>
@@ -76,21 +84,28 @@
 
     <action-group name="action-logistical-form-add-stock-move">
         <action name="action-logistical-form-method-add-stock-move" />
-        <action name="action-logistical-form-lines-change" />
+        <action name="save" />
     </action-group>
 
     <action-method name="action-logistical-form-method-add-stock-move">
         <call class="com.axelor.apps.stock.web.LogisticalFormController" method="addStockMove" />
     </action-method>
 
-    <action-group name="action-logistical-form-lines-change">
-        <action name="save" />
-        <action name="action-logistical-form-method-lines-change" />
-        <action name="save" />
+    <action-group name="action-logistical-form-save">
+        <action name="action-logistical-form-check-lines" />
+        <action name="action-logistical-form-compute-totals" />
     </action-group>
 
-    <action-method name="action-logistical-form-method-lines-change">
-        <call class="com.axelor.apps.stock.web.LogisticalFormController" method="compute" />
+    <action-method name="action-logistical-form-compute-totals">
+        <call class="com.axelor.apps.stock.web.LogisticalFormController" method="computeTotals" />
+    </action-method>
+
+    <action-method name="action-logistical-form-check-lines">
+        <call class="com.axelor.apps.stock.web.LogisticalFormController" method="checkLines" />
+    </action-method>
+
+    <action-method name="action-logistical-form-stock-move-domain">
+        <call class="com.axelor.apps.stock.web.LogisticalFormController" method="setStockMoveDomain" />
     </action-method>
 
 </object-views>

@@ -386,7 +386,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		String domain = "";
 		if (bankOrder.getSenderCompany() != null) {
 
-			String bankDetailsIds = StringTool.getIdFromCollection(bankOrder.getSenderCompany().getBankDetailsSet());
+			String bankDetailsIds = StringTool.getIdListString(bankOrder.getSenderCompany().getBankDetailsSet());
 
 			if (bankOrder.getSenderCompany().getDefaultBankDetails() != null) {
 				bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";

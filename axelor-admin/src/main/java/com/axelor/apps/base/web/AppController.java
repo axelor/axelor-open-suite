@@ -90,18 +90,6 @@ public class AppController {
 		}
 	}
 	
-	public void checkParent(ActionRequest request, ActionResponse response) {
-		
-		App app = request.getContext().asType(App.class);
-		app = appRepo.find(app.getId());
-		
-		List<App> depends = appService.getDepends(app, false);
-		if (!depends.isEmpty()) {
-			List<String> parents = appService.getNames(depends);
-			response.setAlert(String.format(I18n.get(IAppExceptionMessages.CONFIRM_APPS), parents));
-		}
-	}
-	
 	public void uninstallApp(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		App app = request.getContext().asType(App.class);

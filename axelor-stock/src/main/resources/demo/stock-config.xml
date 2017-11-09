@@ -40,8 +40,10 @@
 	
 	<input file="stock_incoterm.csv" separator=";" type="com.axelor.apps.stock.db.Incoterm"/>
 
-	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId"/>
-
+	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId">
+		<bind to="isCarrier" eval="true"/>
+	</input>
+  
     <input file="stock_shipmentMode.csv" separator=";" type="com.axelor.apps.stock.db.ShipmentMode" search="self.importId = :importId"/>
 
     <input file="stock_freightCarrierMode.csv" separator=";" type="com.axelor.apps.stock.db.FreightCarrierMode" search="self.importId = :importId"/>

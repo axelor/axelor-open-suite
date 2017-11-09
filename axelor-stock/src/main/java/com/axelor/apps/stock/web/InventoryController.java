@@ -20,7 +20,6 @@ package com.axelor.apps.stock.web;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
-import com.axelor.apps.base.db.IAdministration;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

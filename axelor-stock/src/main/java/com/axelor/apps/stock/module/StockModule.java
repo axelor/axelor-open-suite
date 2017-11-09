@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.repo.ProductBaseRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryManagementRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
-import com.axelor.apps.stock.db.repo.LogisticalFormManagementRepository;
+import com.axelor.apps.stock.db.repo.LogisticalFormStockRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
@@ -33,6 +33,8 @@ import com.axelor.apps.stock.service.LocationLineService;
 import com.axelor.apps.stock.service.LocationLineServiceImpl;
 import com.axelor.apps.stock.service.LocationService;
 import com.axelor.apps.stock.service.LocationServiceImpl;
+import com.axelor.apps.stock.service.LogisticalFormLineService;
+import com.axelor.apps.stock.service.LogisticalFormLineServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormService;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
@@ -43,6 +45,8 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
+import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.apps.stock.service.app.AppStockServiceImpl;
 
 
 public class StockModule extends AxelorModule {
@@ -60,7 +64,9 @@ public class StockModule extends AxelorModule {
         bind(ProductBaseRepository.class).to(ProductStockRepository.class);
         bind(PartnerProductQualityRatingService.class).to(PartnerProductQualityRatingServiceImpl.class);
         bind(LogisticalFormService.class).to(LogisticalFormServiceImpl.class);
-        bind(LogisticalFormRepository.class).to(LogisticalFormManagementRepository.class);
+        bind(LogisticalFormLineService.class).to(LogisticalFormLineServiceImpl.class);
+		bind(LogisticalFormRepository.class).to(LogisticalFormStockRepository.class);
+		bind(AppStockService.class).to(AppStockServiceImpl.class);
         IPartner.modelPartnerFieldMap.put(StockMove.class.getName(), "partner");
     }
 }

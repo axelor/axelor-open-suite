@@ -17,11 +17,18 @@
  */
 package com.axelor.apps.sale.service.app;
 
+import java.util.List;
+
 import com.axelor.apps.base.db.AppSale;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.AppSaleRepository;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.apps.sale.db.SaleConfig;
+import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 
 @Singleton
 public class AppSaleServiceImpl extends AppBaseServiceImpl implements AppSaleService {
@@ -29,9 +36,28 @@ public class AppSaleServiceImpl extends AppBaseServiceImpl implements AppSaleSer
 	@Inject
 	private AppSaleRepository appSaleRepo;
 	
+	@Inject
+	private CompanyRepository companyRepo;
+	
+	@Inject
+	private SaleConfigRepository saleConfigRepo;
+	
 	@Override
 	public AppSale getAppSale() {
 		return appSaleRepo.all().fetchOne();
+	}
+
+	@Override
+	@Transactional
+	public void generateSaleConfigurations() {
+		
+		List<Company> companies = companyRepo.all().filter("self.saleConfig is null").fetch();
+		
+		for (Company company : companies) {
+			SaleConfig  saleConfig = new SaleConfig();
+			saleConfig.setCompany(company);
+			saleConfigRepo.save(saleConfig);
+		}
 	}
 	
 }

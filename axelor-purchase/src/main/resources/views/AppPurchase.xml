@@ -9,7 +9,10 @@
 			<field name="managePurchaseOrderVersion"  widget="boolean-switch"/>
 			<field name="supplierRequestMgt"  widget="boolean-switch" if-module="axelor-supplier-management"/>
 		</panel>
-		<panel-dashlet action="admin.root.conf.purchase.config" colSpan="12"/> 
+		<panel>
+			<button name="generatePurchaseConfigurations" colSpan="4" title="Generate purchase configurations" onClick="save,com.axelor.apps.purchase.web.AppPurchaseController:generatePurchaseConfigurations"  />
+			<panel-dashlet action="admin.root.conf.purchase.config" colSpan="12"/> 
+		</panel>
 	</form>
 	
 	<action-view name="admin.root.conf.purchase.config" title="Purchase configurations"

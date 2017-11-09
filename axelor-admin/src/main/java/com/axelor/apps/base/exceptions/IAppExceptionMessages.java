@@ -23,8 +23,6 @@ public interface IAppExceptionMessages {
 	
 	static final public String APP_IN_USE = /*$$(*/ "This app is used by %s. Please deactivate them before continue." /*)*/;
 	
-	static final public String CONFIRM_APPS = /*$$(*/ "Following apps will be installed %s" /*)*/;
-	
 	static final public String BULK_INSTALL_SUCCESS = /*$$(*/ "Apps installed successfully" /*)*/;
 	
 	static final public String REFRESH_APP_SUCCESS = /*$$(*/ "Apps refreshed successfully" /*)*/;

@@ -15,19 +15,18 @@
 			<panel colSpan="6">
 				<field name="name" readonly="true" colSpan="12" />
 				<field name="languageSelect" />
-				<field name="demoDataLoaded" readonly="true"/>
+				<field name="demoDataLoaded" readonly="true" if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'"/>
 			</panel>
 			<field name="description" colSpan="12" readonly="true"/>
 			<field name="initDataLoaded" hidden="true" />
 			<field name="code" hidden="true" />
 			<field name="active" hidden="true" />
-			<field name="demoDataLoaded" hidden="true"/>
 		</panel>
 		<panel itemSpan="12" sidebar="true">
-				<button name="install" title="Install"  onClick="action-app-method-check-parent,save,action-app-method-install-app"  showIf="!active" />
-				<button name="uninstall" title="Uninstall" onClick="action-app-method-uninstall-app" showIf="active" />
+				<button name="install" title="Install"  onClick="action-app-alert-install,save,action-app-method-install-app"  showIf="!active" />
+				<button name="uninstall" title="Uninstall" onClick="action-app-alert-un-install,action-app-method-uninstall-app" showIf="active" />
 				<button name="configure" title="Configure" showIf="active" onClick="com.axelor.apps.base.web.AppController:configure" />
-				<button name="importDataDemo" showIf="active &amp;&amp; !demoDataLoaded" onClick="save,action-method-app-import-data-demo" title="Import demo data" />
+				<button name="importDataDemo" if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'" showIf="active &amp;&amp; !demoDataLoaded" onClick="action-app-alert-demo-import,save,action-method-app-import-data-demo" title="Import demo data" />
 		</panel>
 		<panel-related field="dependsOnSet" readonly="true" canSelect="false" canView="false" >
 			<field name="name" />
@@ -65,9 +64,9 @@
 				 <strong>{{name}}</strong>
 			  </div>
 			  <div class="span12">
-				<a class="btn btn-small btn-info pull-right" href="" ng-show="!active" ui-action-click="action-app-method-check-parent,action-app-method-install-app" x-translate>Install</a>
+				<a class="btn btn-small btn-info pull-right" href="" ng-show="!active" ui-action-click="action-app-alert-install,action-app-method-install-app" x-translate>Install</a>
 				<a class="btn btn-small btn-success pull-right" href="" ng-show="active" ui-action-click="com.axelor.apps.base.web.AppController:configure" x-translate>Configure</a>
-				<a class="btn btn-small btn-danger pull-right" href="" ng-show="active" ui-action-click="action-app-method-uninstall-app" x-translate>Uninstall</a>
+				<a class="btn btn-small btn-danger pull-right" href="" ng-show="active" ui-action-click="action-app-alert-un-install,action-app-method-uninstall-app" x-translate>Uninstall</a>
 			  </div>
 			</div>
 		]]>
@@ -82,10 +81,6 @@
 		<call class="com.axelor.apps.base.web.AppController" method="importDataDemo"/>
 	</action-method>
 	
-	 <action-method name="action-app-method-check-parent">
-	    <call class="com.axelor.apps.base.web.AppController" method="checkParent" />
-	 </action-method>
-	 
 	 <action-method name="action-app-method-install-app">
 	    <call class="com.axelor.apps.base.web.AppController" method="installApp"  />
 	 </action-method>
@@ -120,5 +115,17 @@
 	 <action-attrs name="action-app-bulk-install-apps-set-change">
 	 	<attribute name="hidden" for="install" expr="eval:appsSet == null || appsSet.empty"/>
 	 </action-attrs>
+	 
+	 <action-validate name="action-app-alert-install">
+	 	<alert message="Are you sure wants to install '${name}'?"/>
+	 </action-validate>
+	 
+	 <action-validate name="action-app-alert-un-install">
+	 	<alert message="Are you sure wants to uninstall '${name}'?"/>
+	 </action-validate>
+	 
+	 <action-validate name="action-app-alert-demo-import">
+	 	<alert message="Are you sure wants to import demo data for '${name}'?"/>
+	 </action-validate>
        
 </object-views>

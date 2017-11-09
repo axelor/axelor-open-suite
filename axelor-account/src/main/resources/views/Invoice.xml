@@ -145,7 +145,7 @@
 					   readonlyIf="statusSelect > 1"
 					   showIf="operationTypeSelect == 1 || operationTypeSelect == 3"/>
 			</panel>
-			<field name="company" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange, action-invoice-attrs-hide-totals-company-currency" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1 || partner != null"/>
+			<field name="company" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1 || partner != null"/>
 			<field name="companyBankDetails" widget="SuggestBox" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="currency" canEdit="false" onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="project" if-module="axelor-business-project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')"/>
@@ -155,7 +155,7 @@
 		</panel>
 
 		<panel name="invoicingInformations" title="Invoicing informations" hideIf="company == null">
-			<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0" onChange="action-group-account-invoice-partner-onchange,action-invoice-attrs-hide-totals-company-currency,action-method-invoice-address-str" onSelect="action-set-partner-domain"/>
+			<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0" onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str" onSelect="action-set-partner-domain"/>
 			<field name="contactPartner"  onSelect="action-set-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"
 				   readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2"/>
 			<panel stacked="true">
@@ -223,6 +223,8 @@
 			<panel title="Advance payments" showIf="operationSubTypeSelect != 2"
 				   if="__config__.app.getApp('account').getManageAdvancePaymentInvoice()">
 				<field name="advancePaymentInvoiceSet" widget="TagSelect"
+					   canNew="false"
+					   canEdit="false"
 					   onSelect="action-invoice-method-create-advance-payment-domain"
 					   readonlyIf="statusSelect == 3"
 					   form-view="invoice-form" grid-view="invoice-grid"/>
@@ -253,10 +255,10 @@
         <panel sidebar="true" name="actions" title="Actions"  hideIf="partner == null">
             <field name="amountRemaining" hidden="true"/>
             <field name="hasPendingPayments" hidden="true"/>
-            <button name="validate" title="Validate" onClick="save,action-invoice-method-validate"/>
-            <button name="ventilate" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
-            <button name="validateAndVentilate" title="Validate" onClick="save,action-invoice-method-validate-and-ventilate"/> <!-- hidden with action-attrs -->
-            <button name="cancel" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
+            <button name="validate" hidden="true" title="Validate" onClick="save,action-invoice-method-validate"/>
+            <button name="ventilate" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
+            <button name="validateAndVentilate" hidden="true" title="Validate" onClick="save,action-invoice-method-validate-and-ventilate"/>
+            <button name="cancel" hidden="true" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
             <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save"/>
             <button name="addPayment" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <button name="addPayment" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment-voucher" if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
@@ -424,16 +426,16 @@
 				</field>
 
 			</panel>
-			<field name="company" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange, action-invoice-attrs-hide-totals-company-currency" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1"/>
+			<field name="company" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1"/>
 			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-domain-company-bank-details" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="currency" canEdit="false" onChange="action-invoice-attrs-change-total-title, action-invoice-attrs-hide-totals-company-currency" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
+			<field name="currency" canEdit="false" onChange="action-invoice-attrs-change-total-title" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="project" if-module="axelor-business-project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')"/>
 			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
 			<field name="isSubscription" hidden="true"/>
 		</panel>
 
 		<panel name="invoicingInformations" title="Invoicing informations">
-			<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0" onChange="action-group-account-invoice-partner-onchange,action-invoice-attrs-hide-totals-company-currency,action-method-invoice-address-str" onSelect="action-set-partner-domain" canView="false"/>
+			<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0" onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str" onSelect="action-set-partner-domain" canView="false"/>
 			<field name="contactPartner"  onSelect="action-set-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"
 				   readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2" canView="false"/>
 			<panel stacked="true">
@@ -669,7 +671,6 @@
 	    <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
 	    <action name="action-invoice-record-in-ati"/>
 	    <action name="action-invoice-attrs-in-ati"/>
-	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
 		<action name="action-invoice-attrs-hidden-bank-details"/>
 		<action name="action-invoice-method-fill-advance-payment-set"/>
         <action name="action-invoice-attrs-show-validate-button"/>
@@ -682,7 +683,6 @@
 	    <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
 	    <action name="action-invoice-attrs-in-ati"/>
 	    <action name="action-invoice-attrs-printing-fields"/>
-	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
 		<action name="action-invoice-attrs-hidden-bank-details"/>
 		<action name="action-invoice-attrs-ventilate"/>
         <action name="action-invoice-attrs-show-validate-button"/>
@@ -714,7 +714,6 @@
 
 	<action-group name="action-invoice-group-currency-onchange">
 		<action name="action-invoice-attrs-change-total-title"/>
-        <action name="action-invoice-attrs-hide-totals-company-currency"/>
 		<action name="action-invoice-method-fill-advance-payment-set"/>
 	</action-group>
 
