@@ -162,12 +162,7 @@
 			<panel name="notes" title="Notes">
 				<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 			</panel>
-			<panel name="deliveryPanel" title="Delivery"  hideIf="typeSelect == 2">
-				<panel-dashlet name="sale.order.line.dashboard" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
-			</panel>
 			<panel name="invoicingFollowUp" title="Invoicing follow-up"  hideIf="typeSelect == 2" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()">
-				<field name="invoicingDate"/>
-				<field name="amountInvoiced" />
 				<panel-dashlet action="action-sale-order-line-view-show-invoice-lines"  colSpan="12"/>
 			</panel>
 			<panel name="projectPanel" hideIf="typeSelect == 2"  if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" title="Project/Task" if-module="axelor-business-project">
