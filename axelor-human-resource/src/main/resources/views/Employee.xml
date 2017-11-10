@@ -60,6 +60,7 @@
 						<editor x-viewer="true">
 							<field name="payCompany"/>
 							<field name="executiveStatusSelect"/>
+							<field name="employment"/>
 						</editor>
 					</field>
         			<field name="bonusCoef" colSpan="4" />
