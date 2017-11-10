@@ -46,6 +46,6 @@
 	    <field name="generateBankOrder" expr="false" />
 	    <field name="automaticTransmission" expr="false"/>
 	    <field name="bankOrderExportFolderPath" expr=""/>    
-	</action-record>    
+	</action-record>
 	
 </object-views>

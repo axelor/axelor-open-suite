@@ -69,7 +69,7 @@
       			<panel colSpan="12">
 			        <field name="inAti" colSpan="6"/>
 			        <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account"/>
-			        <field name="expense" hidden="true"/>
+			        <field name="expense" hidden="true" if-module="axelor-human-resource"/>
       			</panel>
     		</panel>
   		</panel>
@@ -305,19 +305,6 @@
 		<attribute name="scale" for="purchasePrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="costPrice" expr="eval: __config__.generalService.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
-    
-    <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
-    	<field name="expense" expr="false"/>
-    	<field name="productTypeSelect" expr="eval: _productTypeSelect"/>
-    	<field name="procurementMethodSelect" expr="buy"/>
-    	<field name="startDate" expr="eval:__config__.generalService.getTodayDate()" if="startDate == null"/>
-    	<field name="salePrice" expr="0"/>
-    	<field name="purchasePrice" expr="0"/>
-    	<field name="saleCurrency" expr="eval: _activeCompany?.currency"/>
-    	<field name="purchaseCurrency" expr="eval: _activeCompany?.currency"/>
-    	<field name="managPriceCoef" expr="1"/>
-    	<field name="isModel" expr="eval: _isModel"/>
-    </action-record>
     
     <action-record name="action-product-record-sale-supply-select" model="com.axelor.apps.base.db.Product">
     	<field name="saleSupplySelect" expr="1" if="productTypeSelect == 'storable'"/>
