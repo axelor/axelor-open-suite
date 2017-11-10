@@ -71,8 +71,9 @@ public class BatchBankStatement extends AbstractBatch {
 
         for (EbicsPartner ebicsPartner : ebicsPartners) {
             try {
-                List<BankStatement> bankStatementList = ebicsPartnerService
-                        .getBankStatements(ebicsPartnerRepository.find(ebicsPartner.getId()));
+                List<BankStatement> bankStatementList = ebicsPartnerService.getBankStatements(
+                        ebicsPartnerRepository.find(ebicsPartner.getId()),
+                        accountingBatch.getBankStatementFileFormatSet());
 
                 bankStatementCount += bankStatementList.size();
                 
