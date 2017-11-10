@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
-    <grid name="product-expense-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="name">
+    <grid name="product-expense-grid" title="Expense types" model="com.axelor.apps.base.db.Product" orderBy="name">
    		<toolbar>
         	<button name="catalog" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
 	    </toolbar>
@@ -17,26 +17,24 @@
 	    <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
 
-   <form   name="product-expense-form" onNew="action-group-base-product-expense-onnew" onLoad="action-product-attrs-title-sale-price" title="Product" model="com.axelor.apps.base.db.Product" >
+   <form name="product-expense-form" onNew="action-group-base-product-expense-onnew" onLoad="action-product-attrs-title-sale-price" title="Expense type" model="com.axelor.apps.base.db.Product" >
     <toolbar>
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
     	</toolbar>
 	    <panel name="main">
-            <panel colSpan="8">
-				<field name="name" showTitle="false" css="label-bold bold" placeholder="Name"	colSpan="8"/>
-				<field name="code" x-bind="{{code|uppercase}}" showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4"/>
-				<panel name="productTypology" title="Product typology" colSpan="6" colWidths="30%,70%">
-					<field name="productTypeSelect" readonly="true" colSpan="12"/>
-					<field name="saleSupplySelect" readonly="true" colSpan="12"/>
-					<field name="deductLunchVoucher" hideIf="!expense" colSpan="12"/>
-					<field name="expense" hidden="true"/>
-					<field name="blockExpenseTax" colSpan="12" />
-					<field name="personalExpense" />
-				</panel>
-				<panel name="categorization" title="Categorization" colSpan="6" colWidths="30%,70%">
-					<field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
-				</panel>
+			<field name="name" showTitle="false" css="label-bold bold" placeholder="Name"	colSpan="8"/>
+			<field name="code" x-bind="{{code|uppercase}}" showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4"/>
+			<panel name="productTypology" title="Product typology" colSpan="12">
+				<field name="productTypeSelect" readonly="true" />
+				<field name="saleSupplySelect" readonly="true" />
+				<field name="deductLunchVoucher" hideIf="!expense" />
+				<field name="blockExpenseTax" />
+				<field name="personalExpense" />
+                <field name="expense" hidden="true"/>
+			</panel>
+			<panel name="categorization" title="Categorization" colSpan="12">
+				<field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
 			</panel>
 	    </panel>
 	    <panel-tabs title="Product specific attributes">
