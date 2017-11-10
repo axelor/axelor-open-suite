@@ -163,6 +163,7 @@
     	<field name="expense" expr="true"/>
     	<field name="productTypeSelect" expr="service"/>
     	<field name="saleSupplySelect" expr="0"/>
+		<field name="sellable" expr="false"/>
     </action-record>
     
 
