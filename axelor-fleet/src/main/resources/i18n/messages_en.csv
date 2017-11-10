@@ -1,181 +1,116 @@
 "key","message","comment","context"
-"Acquisition Date",,,"resources/domains/Vehicle.xml:18"
-"Activation Cost",,,"resources/domains/VehicleContract.xml:23"
-"Active",,,"resources/domains/VehicleContract.xml:9"
-"Additional Properties",,,"resources/views/Vehicle.xml:45"
-"Amount",,,"resources/domains/RecurringCost.xml:9"
-"Archived",,,"resources/domains/Vehicle.xml:34"
-"Automatic",,,"resources/views/Selects.xml:8"
-"Booking",,,"resources/views/Booking.xml:11
-resources/views/Booking.xml:6"
-"BookingDate",,,"resources/domains/Booking.xml:8"
-"CO2 Emissions",,,"resources/domains/Vehicle.xml:31"
-"Car value",,,"resources/domains/Vehicle.xml:33"
-"Category",,,"resources/domains/Booking.xml:12"
-"Chassis Number",,,"resources/domains/Vehicle.xml:11"
-"Color",,,"resources/domains/Vehicle.xml:19"
-"Company",,,"resources/domains/Vehicle.xml:10"
-"Configuration",,,"resources/views/Menu.xml:59"
-"Confirmed",,,"resources/domains/Booking.xml:11"
-"Contact",,,"resources/domains/Booking.xml:9"
-"Contract Expiration Date",,,"resources/domains/VehicleContract.xml:11"
-"Contract Reference",,,"resources/domains/VehicleContract.xml:16"
-"Contract Start date",,,"resources/domains/VehicleContract.xml:10"
-"Contract details",,,"resources/views/VehicleContract.xml:26"
-"Contractor",,,"resources/domains/VehicleContract.xml:14"
-"Cost",,,"resources/domains/VehicleService.xml:9"
-"Daily",,,"resources/views/Selects.xml:25"
-"Date",,,"resources/domains/RecurringCost.xml:8
-resources/domains/VehicleCost.xml:11
-resources/domains/VehicleFuelLog.xml:16
-resources/domains/VehicleOdometer.xml:9
-resources/domains/VehicleServiceLog.xml:9"
-"Diesel",,,"resources/views/Selects.xml:33"
-"Doors",,,"resources/domains/Vehicle.xml:23"
-"Draft",,,"resources/views/Selects.xml:18"
-"Driver",,,"resources/domains/Vehicle.xml:12"
-"Electric",,,"resources/views/Selects.xml:34"
-"Engine Options",,,"resources/views/Vehicle.xml:51"
-"Fleet",,,"resources/views/Menu.xml:7"
-"Fuel log",,,"resources/domains/Vehicle.xml:14"
-"Fuel type",,,"resources/domains/Vehicle.xml:27"
-"Gasoline",,,"resources/views/Selects.xml:32"
-"General Properties",,,"resources/views/Vehicle.xml:31"
-"Horse Power",,,"resources/domains/Vehicle.xml:28"
-"Horse Power Tax",,,"resources/domains/Vehicle.xml:29"
-"Hybrid",,,"resources/views/Selects.xml:35"
-"Image",,,"resources/domains/Vehicle.xml:32
-resources/domains/VehicleMake.xml:9"
-"In Progress",,,"resources/views/Selects.xml:19"
-"Included Services",,,"resources/views/VehicleContract.xml:43"
-"Information",,,"resources/views/VehicleFuelLog.xml:22
-resources/views/VehicleServiceLog.xml:10"
-"Invoice Date",,,"resources/domains/VehicleContract.xml:25"
-"Invoice Reference",,,"resources/domains/VehicleFuelLog.xml:13
-resources/domains/VehicleServiceLog.xml:11"
-"Leasing",,,"resources/views/Selects.xml:13"
-"Liter",,,"resources/domains/VehicleFuelLog.xml:9"
-"Location",,,"resources/domains/Vehicle.xml:21"
-"Make",,,"resources/domains/VehicleModel.xml:8
-resources/views/VehicleMake.xml:10
-resources/views/VehicleMake.xml:6"
-"Manual",,,"resources/views/Selects.xml:7"
-"Model",,,"resources/domains/Vehicle.xml:13
-resources/domains/VehicleModel.xml:9"
-"Monthly",,,"resources/views/Selects.xml:27"
-"Name",,,"resources/domains/Booking.xml:7
-resources/domains/Vehicle.xml:9
-resources/domains/VehicleContract.xml:8
-resources/domains/VehicleMake.xml:8
-resources/domains/VehicleModel.xml:10
-resources/domains/VehicleOdometer.xml:8
-resources/domains/VehicleServiceType.xml:8
-resources/domains/VehicleState.xml:8
-resources/domains/VehicleTag.xml:8"
-"Notes",,,"resources/domains/VehicleContract.xml:18
-resources/domains/VehicleFuelLog.xml:15
-resources/domains/VehicleServiceLog.xml:13"
-"Odometer",,,"resources/domains/Vehicle.xml:25
-resources/views/VehicleOdometer.xml:13"
-"Odometer unit",,,"resources/domains/VehicleOdometer.xml:12"
-"Odometers",,,"resources/views/VehicleOdometer.xml:6"
-"Omnium",,,"resources/views/Selects.xml:12"
-"Partner",,,"resources/domains/Booking.xml:10"
-"Plate number",,,"resources/domains/Vehicle.xml:8"
-"Power(KW)",,,"resources/domains/Vehicle.xml:30"
-"Price per Liter",,,"resources/domains/VehicleFuelLog.xml:10"
-"Purchaser",,,"resources/domains/VehicleFuelLog.xml:12
-resources/domains/VehicleServiceLog.xml:10"
-"Recurring Cost",,,"resources/domains/VehicleContract.xml:19
-resources/views/Menu.xml:61
-resources/views/Menu.xml:63"
-"Recurring Cost Frequency",,,"resources/domains/VehicleContract.xml:20"
-"Recurring Cost Generated",,,"resources/views/VehicleContract.xml:50"
-"Refueling details",,,"resources/views/VehicleFuelLog.xml:28"
-"Repairing",,,"resources/views/Selects.xml:14"
-"Seats",,,"resources/domains/Vehicle.xml:22"
-"Sequence",,,"resources/domains/VehicleState.xml:9"
-"Service Type",,,"resources/domains/VehicleCost.xml:9
-resources/domains/VehicleService.xml:8"
-"Service log",,,"resources/domains/Vehicle.xml:15"
-"Services",,,"resources/views/VehicleServiceLog.xml:23"
-"State",,,"resources/domains/Vehicle.xml:20"
-"Status",,,"resources/domains/VehicleContract.xml:17
-resources/views/VehicleContract.xml:15"
-"Tags",,,"resources/domains/Vehicle.xml:24"
-"Terminated",,,"resources/views/Selects.xml:21"
-"Terms and Conditions",,,"resources/views/VehicleContract.xml:47"
-"To Close",,,"resources/views/Selects.xml:20"
-"Total Price",,,"resources/domains/VehicleCost.xml:10
-resources/domains/VehicleFuelLog.xml:11"
-"Total cost",,,"resources/domains/VehicleContract.xml:22"
-"Transmission",,,"resources/domains/Vehicle.xml:26"
-"Type",,,"resources/domains/VehicleContract.xml:15"
-"Value",,,"resources/domains/VehicleOdometer.xml:10"
-"Vehicle",,,"resources/domains/VehicleContract.xml:24
-resources/domains/VehicleCost.xml:8
-resources/domains/VehicleFuelLog.xml:8
-resources/domains/VehicleOdometer.xml:11
-resources/domains/VehicleServiceLog.xml:8
-resources/views/Menu.xml:11
-resources/views/Menu.xml:9
-resources/views/Vehicle.xml:19
-resources/views/Vehicle.xml:6
-resources/views/Vehicle.xml:94
-resources/views/VehicleContract.xml:20
-resources/views/VehicleFuelLog.xml:15
-resources/views/VehicleServiceLog.xml:11"
-"Vehicle Contract",,,"resources/views/Vehicle.xml:74
-resources/views/VehicleContract.xml:14
-resources/views/VehicleContract.xml:6"
-"Vehicle Cost",,,"resources/domains/Vehicle.xml:17
-resources/views/Vehicle.xml:79
-resources/views/VehicleCost.xml:11
-resources/views/VehicleCost.xml:6"
-"Vehicle Fuel",,,"resources/views/VehicleFuelLog.xml:12
-resources/views/VehicleFuelLog.xml:6"
-"Vehicle Fuel Log",,,"resources/views/Vehicle.xml:63"
-"Vehicle Model",,,"resources/views/VehicleModel.xml:12
-resources/views/VehicleModel.xml:6"
-"Vehicle Recurring Cost",,,"resources/views/RecurringCost.xml:10
-resources/views/RecurringCost.xml:5"
-"Vehicle Service",,,"resources/views/VehicleService.xml:10
-resources/views/VehicleService.xml:5"
-"Vehicle Service Log",,,"resources/views/VehicleServiceLog.xml:5
-resources/views/VehicleServiceLog.xml:9"
-"Vehicle Service Type",,,"resources/views/VehicleServiceType.xml:10
-resources/views/VehicleServiceType.xml:6"
-"Vehicle contract",,,"resources/domains/Vehicle.xml:16"
-"Vehicle contracts",,,"resources/views/Menu.xml:24
-resources/views/Menu.xml:26"
-"Vehicle cost",,,"resources/views/Menu.xml:52
-resources/views/Menu.xml:54"
-"Vehicle fuel log",,,"resources/views/Menu.xml:38
-resources/views/Menu.xml:40"
-"Vehicle makes",,,"resources/views/Menu.xml:31
-resources/views/Menu.xml:33"
-"Vehicle models",,,"resources/views/Menu.xml:17
-resources/views/Menu.xml:19"
-"Vehicle odometer",,,"resources/views/Menu.xml:69
-resources/views/Menu.xml:71"
-"Vehicle service",,,"resources/domains/VehicleContract.xml:21
-resources/domains/VehicleServiceLog.xml:14
-resources/views/Vehicle.xml:68"
-"Vehicle service log",,,"resources/views/Menu.xml:45
-resources/views/Menu.xml:47"
-"Vehicle service type",,,"resources/views/Menu.xml:76"
-"Vehicle sevice type",,,"resources/views/Menu.xml:78"
-"Vehicle state",,,"resources/views/VehicleState.xml:10
-resources/views/VehicleState.xml:6"
-"Vehicle states",,,"resources/views/Menu.xml:83
-resources/views/Menu.xml:85"
-"Vehicle tags",,,"resources/views/Menu.xml:90
-resources/views/Menu.xml:92"
-"Vendor",,,"resources/domains/VehicleContract.xml:13
-resources/domains/VehicleFuelLog.xml:14
-resources/domains/VehicleServiceLog.xml:12"
-"Vendors",,,"resources/domains/VehicleModel.xml:15"
-"Warning Date",,,"resources/domains/VehicleContract.xml:12"
-"Weekly",,,"resources/views/Selects.xml:26"
-"Yearly",,,"resources/views/Selects.xml:28"
-"g/km",,,"resources/views/Vehicle.xml:55"
+"Acquisition Date",,,
+"Activation Cost",,,
+"Active",,,
+"Additional Properties",,,
+"Amount",,,
+"Archived",,,
+"Automatic",,,
+"Booking",,,
+"BookingDate",,,
+"CO2 Emissions",,,
+"Car value",,,
+"Category",,,
+"Chassis Number",,,
+"Color",,,
+"Company",,,
+"Configuration",,,
+"Confirmed",,,
+"Contact",,,
+"Contract Expiration Date",,,
+"Contract Reference",,,
+"Contract Start date",,,
+"Contract details",,,
+"Contractor",,,
+"Cost",,,
+"Daily",,,
+"Date",,,
+"Diesel",,,
+"Doors",,,
+"Draft",,,
+"Driver",,,
+"Electric",,,
+"Engine Options",,,
+"Fleet",,,
+"Fuel log",,,
+"Fuel type",,,
+"Gasoline",,,
+"General Properties",,,
+"Horse Power",,,
+"Horse Power Tax",,,
+"Hybrid",,,
+"Image",,,
+"In Progress",,,
+"Included Services",,,
+"Information",,,
+"Invoice Date",,,
+"Invoice Reference",,,
+"Kilometric value","Value",,
+"Leasing",,,
+"Liter",,,
+"Location",,,
+"Make",,,
+"Manual",,,
+"Model",,,
+"Monthly",,,
+"Name",,,
+"Notes",,,
+"Odometer",,,
+"Odometer unit",,,
+"Odometers",,,
+"Omnium",,,
+"Partner",,,
+"Plate number",,,
+"Power(KW)",,,
+"Price per Liter",,,
+"Purchaser",,,
+"Recurring Cost",,,
+"Recurring Cost Frequency",,,
+"Recurring Cost Generated",,,
+"Refueling details",,,
+"Repairing",,,
+"Seats",,,
+"Sequence",,,
+"Service Type",,,
+"Service log",,,
+"Services",,,
+"State",,,
+"Status",,,
+"Tags",,,
+"Terminated",,,
+"Terms and Conditions",,,
+"To Close",,,
+"Total Price",,,
+"Total cost",,,
+"Transmission",,,
+"Type",,,
+"Vehicle",,,
+"Vehicle Contract",,,
+"Vehicle Cost",,,
+"Vehicle Fuel",,,
+"Vehicle Fuel Log",,,
+"Vehicle Model",,,
+"Vehicle Recurring Cost",,,
+"Vehicle Service",,,
+"Vehicle Service Log",,,
+"Vehicle Service Type",,,
+"Vehicle contract",,,
+"Vehicle contracts",,,
+"Vehicle cost",,,
+"Vehicle fuel log",,,
+"Vehicle makes",,,
+"Vehicle models",,,
+"Vehicle odometer",,,
+"Vehicle service",,,
+"Vehicle service log",,,
+"Vehicle service type",,,
+"Vehicle sevice type",,,
+"Vehicle state",,,
+"Vehicle states",,,
+"Vehicle tags",,,
+"Vendor",,,
+"Vendors",,,
+"Warning Date",,,
+"Weekly",,,
+"Yearly",,,
+"g/km",,,
