@@ -25,7 +25,7 @@
 	       <field name="inChargeUser"/>
        </panel>
        <panel-related field="budgetLineList" onChange="action-budget-method-compute-total-amount"/>
-       <panel sidebar="true" name="periodsGenerationAssistant" title="Periods generation assistant" hideIf="statusSelect == 2">
+       <panel sidebar="true" name="periodsGenerationAssistant" title="Periods generation assistant">
 			<field name="periodDurationSelect"/>
 			<field name="amountForGeneration"/>
 			<button name="generatePeriods" title="Generate periods" onClick="action-group-account-budget-generateperiod-click" />    
@@ -36,7 +36,7 @@
                     <![CDATA[
                     <dl class="dl-horizontal">
                         <dt class="order-subtotal-total" x-translate>Expected total Amount</dt>
-                        <dd class="order-subtotal-total">{{record.totalAmountExpected}}</dd>
+                        <dd class="order-subtotal-total">{{totalAmountExpected}}</dd>
                     </dl>
                     ]]>
                 </viewer>

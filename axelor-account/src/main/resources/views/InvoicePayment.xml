@@ -28,6 +28,7 @@
 			<field name="bankDepositDate" showIf="paymentMode.typeSelect == 7"/>
 			<field name="chequeNumber" showIf="paymentMode.typeSelect == 7"/>
 			<field name="paymentMode.typeSelect" hidden="true"/>
+            <field name="invoice" hidden="true" />
 		</panel>
 		<panel showIf="id">
 			<field name="move" form-view="move-form" grid-view="move-grid"/>
@@ -49,7 +50,7 @@
     	<field name="currency" expr="eval: _invoice?.currency"/>
     	<field name="paymentDate" expr="eval: __date__"/>
     	<field name="amount" expr="eval: new BigDecimal(_invoice?.inTaxTotal) - new BigDecimal(_invoice?.amountPaid)"/>
-    	<field name="paymentMode" expr="eval: _invoice?.paymentMode"/>
+		<field name="paymentMode" expr="eval: __repo__(PaymentMode).find(_invoice?.paymentMode.id)" if="_invoice?.paymentMode != null"/>
 		<field name="companyBankDetails" expr="eval: _invoice?.companyBankDetails"/>
     	<field name="invoice" expr="eval: _invoice"/>
     	<field name="typeSelect" expr="2"/>

@@ -10,7 +10,6 @@
   		<many-to-one name="resourceCategory" ref="ResourceCategory" title="Category" />
   		<decimal name="cost" title="Cost"/>
   		<string name="batchNo" title="Serial/batch number"/>
-  		<string name="resourceAttrs" title="Attrs" json="true"/>
 	</entity>
  
  </domain-models>

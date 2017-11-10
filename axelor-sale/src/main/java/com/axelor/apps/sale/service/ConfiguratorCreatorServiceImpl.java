@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.axelor.apps.sale.service;
 
 import java.util.ArrayList;
@@ -302,7 +301,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         );
 
         return "self.id in ("
-                + StringTool.getIdFromCollection(configuratorCreatorList)
+                + StringTool.getIdListString(configuratorCreatorList)
                 + ")";
     }
 

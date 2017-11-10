@@ -106,4 +106,11 @@ public interface IExceptionMessage {
 	 */
 	String PARTNER_PRODUCT_QUALITY_RATING_MISSING_PARTNER = /*$$(*/ "Partner is missing." /*)*/;
 
+	/*
+	 * Logistical form
+	 */
+	String LOGISTICAL_FORM_MISSING_SEQUENCE = /*$$(*/ "Missing logistical form sequence for company %s" /*)*/;
+	String LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS = /*$$(*/ "Invalid dimensions on packaging line No. %d" /*)*/;
+	String LOGISTICAL_FORM_LINES_INCONSISTENT_QUANTITY = /*$$(*/ "Total quantity for %s: %s (expected: %s)" /*)*/;
+
 }

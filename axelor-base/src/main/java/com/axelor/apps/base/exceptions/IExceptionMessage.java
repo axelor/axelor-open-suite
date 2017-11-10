@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -143,11 +143,6 @@ public interface IExceptionMessage {
 	static final public String QUERIE_1 = /*$$(*/ "Error : There is no query set for the querie %s" /*)*/;
 	static final public String QUERIE_2 = /*$$(*/ "Error : Incorrect query for the querie %s" /*)*/;
 	static final public String QUERIE_3 = /*$$(*/ "Valid query." /*)*/;
-	
-	/**
-	 * Scheduler service
-	 */
-	static final public String SCHEDULER_1 = /*$$(*/ "Please enter a periodicity for the scheduler %s" /*)*/;
 	
 	/**
 	 * Tax service

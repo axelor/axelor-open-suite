@@ -61,9 +61,6 @@
 	<boolean name="priceDisplay" title="Display price on requested purchase printing" />
   	
   	<string name="priceRequest" title="Message for requesting prices" large="true"/>
-  	
-  	<!-- -Json fields -->
-	<string name="poAttrs" title="Fields" json="true" />
 
   	<unique-constraint columns="purchaseOrderSeq,company"/>
   	

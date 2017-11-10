@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -194,6 +194,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	public void _computeSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
 		saleOrder.setExTaxTotal(BigDecimal.ZERO);
+		saleOrder.setCompanyExTaxTotal(BigDecimal.ZERO);
 		saleOrder.setTaxTotal(BigDecimal.ZERO);
 		saleOrder.setInTaxTotal(BigDecimal.ZERO);
 		
@@ -297,6 +298,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		saleOrder.setContactPartner(contactPartner);
 		saleOrder.setCurrency(currency);
 		saleOrder.setExternalReference(externalReference);
+		saleOrder.setDeliveryDate(deliveryDate);
 		saleOrder.setOrderDate(orderDate);
 
 		if(salemanUser == null)  {
@@ -307,22 +309,21 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		if(team == null)  {
 			team = salemanUser.getActiveTeam();
 		}
+		saleOrder.setTeam(team);
 
 		if(company == null)  {
 			company = salemanUser.getActiveCompany();
 		}
-
 		saleOrder.setCompany(company);
+
 		saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(clientPartner));
 		saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(clientPartner));
 
 		this.computeAddressStr(saleOrder);
 
-
 		if(priceList == null)  {
 			priceList = clientPartner.getSalePriceList();
 		}
-
 		saleOrder.setPriceList(priceList);
 
 		saleOrder.setSaleOrderLineList(new ArrayList<SaleOrderLine>());
@@ -355,23 +356,18 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		saleOrderRepo.save(saleOrder);
 	}
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	protected void _finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
-		saleOrder.setStatusSelect(ISaleOrder.STATUS_FINALIZE);
-		saleOrderRepo.save(saleOrder);
-		if (appSaleService.getAppSale().getManageSaleOrderVersion()){
-			this.saveSaleOrderPDFAsAttachment(saleOrder);
-		}
-		if (saleOrder.getVersionNumber() == 1){
-			saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
-		}
-	}
-
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
-		_finalizeSaleOrder(saleOrder);
-	}
+    @Override
+    @Transactional(rollbackOn = { AxelorException.class, Exception.class })
+    public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
+        saleOrder.setStatusSelect(ISaleOrder.STATUS_FINALIZE);
+        saleOrderRepo.save(saleOrder);
+        if (appSaleService.getAppSale().getManageSaleOrderVersion()) {
+            this.saveSaleOrderPDFAsAttachment(saleOrder);
+        }
+        if (saleOrder.getVersionNumber() == 1) {
+            saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
+        }
+    }
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

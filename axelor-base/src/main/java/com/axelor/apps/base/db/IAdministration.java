@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -28,6 +28,7 @@ public interface IAdministration {
 
 	static final String PDF = "pdf";
 	static final String XLS = "xls";
+	static final String CSV = "csv";
 
 	/**
 	 * Static select month

@@ -147,9 +147,15 @@ public class EventService {
 		if(!Strings.isNullOrEmpty(description)){
 			event.setDescription(description);
 		}
+
+        if (fromDateTime != null && toDateTime != null) {
+            long duration = Duration.between(fromDateTime, toDateTime).getSeconds();
+            event.setDuration(duration);
+        }
+
 		return event;
 	}
-	
+
 	public String getInvoicingAddressFullName(Partner partner) {
 
 		Address address = partnerService.getInvoicingAddress(partner);

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -18,10 +18,10 @@
 package com.axelor.apps.sale.web;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.lang.invoke.MethodHandles;
 
 import com.axelor.i18n.I18n;
 
@@ -32,6 +32,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.inject.Beans;
+
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -187,14 +188,14 @@ public class SaleOrderController {
 
 	}
 
-	public void finalizeSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
+	public void finalizeSaleOrder(ActionRequest request, ActionResponse response) {
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		saleOrder = saleOrderRepo.find(saleOrder.getId());
 
 		try {
 			saleOrderService.finalizeSaleOrder(saleOrder);
-		} catch (AxelorException e) {
-			response.setFlash(e.getMessage());
+		} catch (Exception e) {
+		    TraceBackService.trace(response, e);
 		}
 
 		response.setReload(true);
@@ -239,9 +240,11 @@ public class SaleOrderController {
 	}
 
 	public void createTemplate(ActionRequest request, ActionResponse response)  {
-		SaleOrder origin = saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
-		SaleOrder copy = saleOrderService.createTemplate(origin);
-		response.setValues(copy);
+		if (request.getContext().get("_idCopy") != null) {
+			SaleOrder origin = saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
+			SaleOrder copy = saleOrderService.createTemplate(origin);
+			response.setValues(copy);
+		}
 	}
 
 	public void computeEndOfValidityDate(ActionRequest request, ActionResponse response)  {

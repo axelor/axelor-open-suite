@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -90,4 +90,6 @@ public interface SaleOrderLineService {
 	public SaleOrder getSaleOrder(Context context);
 	
 	public void computeSubMargin(SaleOrderLine saleOrderLine) throws AxelorException;
+
+	public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine);
 }

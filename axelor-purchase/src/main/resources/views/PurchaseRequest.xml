@@ -80,7 +80,7 @@
 		  <field name="purchaseOrder" hideIf="purchaseOrder == null"/>
 		</panel>
 		<panel>
-			<field name="attributes" colSpan="12" />
+			<field name="attrs" colSpan="12" />
 		</panel>
 		<panel-mail>
 		  <mail-messages limit="4" />

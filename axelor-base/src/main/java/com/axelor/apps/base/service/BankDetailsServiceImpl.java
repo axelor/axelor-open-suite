@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -102,7 +102,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
 		}
 
 		return "self.id IN ("
-				+ StringTool.getIdFromCollection(company.getBankDetailsSet())
+				+ StringTool.getIdListString(company.getBankDetailsSet())
 				+ ") AND self.active = true";
 	}
 

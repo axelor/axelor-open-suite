@@ -100,7 +100,16 @@
 	    <panel-include view="incl-event-actions-partner-form" />
         <panel name="main" >
             <panel colSpan="3">
-                <field name="picture" showTitle="false" widget="Image" colSpan="12"/>
+				<field name="picture" showTitle="false" widget="Image" colSpan="12">
+					<viewer>
+					<![CDATA[
+					    <div>
+			    			<img width="50%" ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
+          					<img width="50%" ng-show="!record.picture" src="img/company-default.jpg" />
+     					</div>
+					]]>
+					</viewer>
+				</field>
                 <panel colSpan="8" showIf="fullName != null">
                     <label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
                     <label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
@@ -113,10 +122,10 @@
                 <field name="fullName" colSpan="9" showTitle="false">
                     <hilite strong="true" if="true" color="primary"/>
                     <editor x-show-titles="false">
-                        <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url, action-partner-record-employee" colSpan="4"/>
+                        <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="4"/>
                         <spacer colSpan="8"/>
-                        <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
-                        <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="3"/>
+                        <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
+                        <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="3"/>
                         <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
                     </editor>
                 </field>
@@ -129,8 +138,9 @@
                     <field name="isCustomer" hideIf="$readonly() || isEmployee" onChange="action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account,action-partner-attrs-unset-prospect"/>
                     <field name="isSupplier" hideIf="$readonly() || isEmployee" onChange="action-partner-account-attrs-hide-supplier-account"/>
                     <field name="isFactor" hideIf="$readonly() || isEmployee" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
+					<field name="isCarrier" hideIf="$readonly() || isEmployee" if="__config__.app.isApp('stock')"/>
                     <field name="$viewerPartnerType" showTitle="false" hideIf="!$readonly()" colSpan="12">
-                        <viewer>
+                        <viewer depends="isProspect,isEmployee,isCustomer,isSupplier,isFactor,isCarrier">
                             <![CDATA[
                                 <h4 style="text-align: right;">
                                     <span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
@@ -138,6 +148,7 @@
                                     <span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
                                     <span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
                                     <span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
+                                    <span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
                                 </h4>
                             ]]>
                         </viewer>
@@ -253,26 +264,21 @@
                 <field name="purchaseOrderInformation"/>
                 <field name="purchasePriceList" canNew="true" domain="self.typeSelect = 2" if-module="axelor-account" form-view="purchase-price-list-form" grid-view="price-list-grid"/>
                 <field name="supplierCatalogList" colSpan="12" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid"/>
+                <field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false" colSpan="3"/>
+				<field name="supplierArrivalProductQty" colSpan="3"/>
+				<spacer/>
+				<field name="partnerProductQualityRatingList" colSpan="12" grid-view="partner-product-quality-rating-grid" form-view="partner-product-quality-rating-form"/>
             </panel>
+			<panel name="carrier" title="Carrier" showIf="isCarrier">
+				<field name="freightCarrierModeList" title="Freight Carrier Mode" form-view="freight-carrier-mode-freight-carrier-form" grid-view="freight-carrier-mode-freight-carrier-grid" colSpan="12"/>
+			</panel>
             <panel name="delivery" title="Delivery" showIf="isSupplier || isCustomer">
                 <field name="deliveryDelay" showIf="isSupplier"/>
                 <spacer/>
                 <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-partner-record-empty-freight-carrier-mode" title="Shipment Mode" if="__config__.app.isApp('stock')" />
                 <field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode" if="__config__.app.isApp('stock')" />
-                <field name="freightCarrier" if-module="axelor-stock" form-view="freight-carrier-form" grid-view="freight-carrier-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
+                <field name="freightCarrier" if-module="axelor-stock" form-view="partner-form" grid-view="partner-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
             </panel>
-			<panel name="quality" title="Supplier quality rating" if-module="axelor-stock" showIf="isSupplier" readonly="true">
-				<field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false" colSpan="3"/>
-				<field name="supplierArrivalProductQty" colSpan="3"/>
-				<spacer/>
-				<field name="partnerProductQualityRatingList" colSpan="12" grid-view="partner-product-quality-rating-grid" form-view="partner-product-quality-rating-form"/>
-			</panel>
-			<panel name="socialNetwork" title="Social network" if-module="axelor-social-network">
-				<button name="search" onClick="action-partner-view-search-profile" title="Search Profile" />
-				<spacer/>
-				<field name="snProfileList" colSpan="12"/>
-			</panel>
-			<panel-related field="supplierCatalogList" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid"/>
         </panel-tabs>
         <panel>
             <field name="partnerAttrs" colSpan="12" />
@@ -358,7 +364,18 @@
 	    <panel-include view="incl-event-actions-partner-form" />
 	    <panel name="main" >
 	    	<panel colSpan="3">
-	    		<field name="picture" widget="Image" showTitle="false" colSpan="12"/>
+	    		<field name="picture" widget="Image" showTitle="false" colSpan="12">
+                    <viewer>
+					<![CDATA[
+					    <div>
+			    			<img width="80%" ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
+          					<img width="80%" ng-show="!record.picture && record.titleSelect == 1" src="img/partner-m-default.png" />
+          					<img width="80%" ng-show="!record.picture && record.titleSelect == 2" src="img/partner-w-default.png" />
+        					<img width="80%" ng-show="!record.picture && (record.titleSelect > 2 || !record.titleSelect)" src="img/partner-default.png" />
+     					</div>
+					]]>
+                    </viewer>
+				</field>
 	    		<panel colSpan="12">
 	           		<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
 				    <label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
@@ -452,7 +469,8 @@
 		    <div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
 			  <div class="span4 card-image">
-			    <img ng-src="{{$image('picture', 'content')}}" />
+			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" />
+                <img ng-show="!picture" src="img/company-default.jpg" />
 			  </div>
 			  <div class="span8">
 			  	<address>
@@ -478,11 +496,15 @@
 		<field name="emailAddress.address" />
 		<field name="partnerCategory" />
 		<field name="contactAddress" />
+		<field name="titleSelect" />
 		<template><![CDATA[
 		    <div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
 			  <div class="span4 card-image">
-			    <img ng-src="{{$image('picture', 'content')}}" />
+			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" />
+                <img ng-show="!picture && titleSelect == 1" src="img/partner-m-default.png" />
+                <img ng-show="!picture && titleSelect == 2" src="img/partner-w-default.png" />
+                <img ng-show="!picture && (titleSelect > 2 || !titleSelect)" src="img/partner-default.png" />
 			  </div>
 			  <div class="span8">
 			    <span>{{contactAddress.fullName}}<br/>
@@ -580,6 +602,7 @@
 		<action name="action-partner-account-attrs-hide-employee-account"/>
         <action name="action-partner-record-set-balance"/>
         <action name="action-partner-attrs-name-balance"/>
+		<action name="action-partner-attrs-partner-seq-editable"/>
     </action-group>
 	
 	<action-group name="action-group-base-partner-onnew">
@@ -587,6 +610,7 @@
 		<action name="action-partner-record-set-default"/>
 		<action name="action-partner-record-set-payment-modes"/>
 		<action name="action-partner-record-payment-condition"/>
+		<action name="action-partner-attrs-partner-seq-editable"/>
 	</action-group>
 	
 	<action-group name="action-group-base-partner-contact-name-onchange">
@@ -594,7 +618,11 @@
 	</action-group>
 
 	<action-method name="action-partner-method-check-same-name">
-		<call class="com.axelor.apps.base.web.PartnerController" method="checkOtherPartnerName"/>
+		<call class="com.axelor.apps.base.web.PartnerController" method="checkContactName"/>
+	</action-method>
+
+	<action-method name="action-partner-method-check-name">
+		<call class="com.axelor.apps.base.web.PartnerController" method="checkPartnerName"/>
 	</action-method>
 
     <action-method name="action-partner-method-show-partner-info">
@@ -612,6 +640,10 @@
      <action-method name="action-partner-method-set-user-partner">
 		<call class="com.axelor.apps.base.web.UserController" method="setUserPartner"/>
 	</action-method>
+	
+	<action-attrs name="action-partner-attrs-partner-seq-editable">
+		<attribute name="readonly" for="partnerSeq" expr="__config__.app.getApp('base').getGeneratePartnerSequence()"/>
+	</action-attrs>
 	
 	<action-attrs name="action-partner-attrs-change-name">
 		<attribute name="title" for="name" expr="Raison sociale" if="partnerTypeSelect != 2"/>
@@ -671,6 +703,7 @@
     	<field name="languageSelect" expr="#{__config__.app.getApp('base').getDefaultPartnerLanguage()}" />
     	<field name="isCustomer" expr="true" if="_isCustomer"/>
   		<field name="isSupplier" expr="true" if="_isSupplier"/>
+		<field name="isCarrier" expr="true" if="_isCarrier"/>
     	<field name="paymentDelay" expr="eval: __user__.activeCompany?.customerPaymentDelay" if="_isCustomer"/>
     	<field name="paymentDelay" expr="eval: __user__.activeCompany?.supplierPaymentDelay" if="_isSupplier"/>
     </action-record>

@@ -76,7 +76,7 @@
 			<field name="toJustifyLeaveReason" hidden="true"/>
 		</panel>
 		<panel>
-			<field name="leaveRequestAttrs" colSpan="12" />
+			<field name="attrs" colSpan="12" />
 		</panel>
 		<panel-mail>
 		  <mail-messages limit="4" />

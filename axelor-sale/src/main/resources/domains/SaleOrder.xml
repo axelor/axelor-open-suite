@@ -70,8 +70,6 @@
     <string name="orderNumber" title="Order Number"/>
     
 <!--     Onglet scheduler -->
-<!-- 	<many-to-one name="scheduler" ref="com.axelor.apps.base.db.Scheduler" title="Scheduler"/> -->
-	<one-to-one name="schedulerInstance" ref="com.axelor.apps.base.db.SchedulerInstance" title="Scheduler instance"/>
 	<date name="subscriptionStartDate" title="Subscription start date"/>
 	<date name="invoicedFirstDate" title="Invoiced first date"/>
 	<date name="nextInvPeriodStartDate" title="Next invoiced period start date" readonly="true"/>
@@ -90,6 +88,7 @@
     
 	<date name="deliveryDate" title="Delivery date"/>
 	<string name="deliveryCondition" title="Delivery conditions" large="true" multiline="true"/>
+	<string name="specificPackage" title="Specific package" large="true" multiline="true"/>
 	
 	<one-to-many name="advancePaymentList" ref="com.axelor.apps.sale.db.AdvancePayment" mappedBy="saleOrder" title="Advance Payments"/>
 	
@@ -97,9 +96,6 @@
 	
 	<!-- Impression -->
     <string name="specificNotes" title="Specific notes" large="true"/>
-
-	<!-- -Json fields -->
-	<string name="soAttrs" title="Fields" json="true" />
 	
  	<unique-constraint columns="saleOrderSeq,company"/>
 

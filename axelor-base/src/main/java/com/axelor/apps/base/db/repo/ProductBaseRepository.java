@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -50,9 +50,7 @@ public class ProductBaseRepository extends ProductRepository{
 		
 		product = super.save(product);
 		
-		if((product.getBarCode() == null)&&
-           (appBaseService.getAppBase().getActivateBarCodeGeneration())) {
-			    	
+		if(product.getBarCode() == null && appBaseService.getAppBase().getActivateBarCodeGeneration()) {
 			try {
 				InputStream inStream = BarcodeGeneratorService.createBarCode(product.getId());
 				if (inStream != null) {

@@ -12,16 +12,6 @@
 		<option value="3">Closed</option>
 	</selection>
 	
-	<selection name="contract.type.select">
-		<option value="1">Client</option>
-		<option value="2">Supplier</option>
-	</selection>
-
-	<selection name="contract.type.select">
-		<option value="1">Client</option>
-		<option value="2">Supplier</option>
-	</selection>
-
 	<selection name="contract.version.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Waiting</option>

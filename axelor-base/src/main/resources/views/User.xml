@@ -46,9 +46,6 @@
         		<panel-related field="calendarManagementList" colSpan="12"/>
         		<field name="iCalendar" canNew="true" canEdit="true"/>
         	</panel>
-        	<panel name="personalCredential" if-module="axelor-social-network" title="SN Personal Credential" > 
-		    	<field name="snPersonalCredential" form-view="sn-personal-credential-form" grid-view="sn-personal-credential-grid" canNew="true"/>
-		    </panel>  
 		    <panel name="electronicSignature" title="Electronic signature" if="__config__.app.isApp('sale') || __config__.app.isApp('purchase')">
 		    	<field name="electronicSignature" widget="Image" />
 		    </panel>

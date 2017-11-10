@@ -52,21 +52,21 @@ public class LocationLineServiceImpl implements LocationLineService {
 	protected StockRulesService stockRulesService;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
-			LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException  {
+	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
+							   LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException  {
 		
-		this.updateLocation(location, product, qty, current, future, isIncrement, lastFutureStockMoveDate);
+		this.updateLocation(location, product, qty, current, future, isIncrement, lastFutureStockMoveDate, reservedQty);
 		
 		if(trackingNumber != null)  {
-			this.updateDetailLocation(location, product, qty, current, future, isIncrement, lastFutureStockMoveDate, trackingNumber);
+			this.updateDetailLocation(location, product, qty, current, future, isIncrement, lastFutureStockMoveDate, trackingNumber, reservedQty);
 		}
 		
 	}
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
-			LocalDate lastFutureStockMoveDate) throws AxelorException  {
+	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
+							   LocalDate lastFutureStockMoveDate, BigDecimal reservedQty) throws AxelorException  {
 		
 		LocationLine locationLine = this.getLocationLine(location, product);
 		
@@ -79,7 +79,7 @@ public class LocationLineServiceImpl implements LocationLineService {
 			maxStockRules(product, qty, locationLine, current, future);
 		}
 		
-		locationLine = this.updateLocation(locationLine, qty, current, future, isIncrement, lastFutureStockMoveDate);
+		locationLine = this.updateLocation(locationLine, qty, current, future, isIncrement, lastFutureStockMoveDate, reservedQty);
 		
 		this.checkStockMin(locationLine, false);
 		
@@ -127,15 +127,15 @@ public class LocationLineServiceImpl implements LocationLineService {
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateDetailLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
-			LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException  {
+	public void updateDetailLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
+									 LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException  {
 		
 		LocationLine detailLocationLine = this.getDetailLocationLine(location, product, trackingNumber);
 		
 		LOG.debug("Mise à jour du detail du stock : Entrepot? {}, Produit? {}, Quantité? {}, Actuel? {}, Futur? {}, Incrément? {}, Date? {}, Num de suivi? {} ", 
 				new Object[] { location.getName(), product.getCode(), qty, current, future, isIncrement, lastFutureStockMoveDate, trackingNumber});
 		
-		detailLocationLine = this.updateLocation(detailLocationLine, qty, current, future, isIncrement, lastFutureStockMoveDate);
+		detailLocationLine = this.updateLocation(detailLocationLine, qty, current, future, isIncrement, lastFutureStockMoveDate, reservedQty);
 		
 		this.checkStockMin(detailLocationLine, true);
 		
@@ -170,8 +170,8 @@ public class LocationLineServiceImpl implements LocationLineService {
 		}
 	}
 
-	public LocationLine updateLocation(LocationLine locationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
-			LocalDate lastFutureStockMoveDate) {
+	public LocationLine updateLocation(LocationLine locationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
+									   LocalDate lastFutureStockMoveDate, BigDecimal reservedQty) {
 		
 		if(current)  {
 			if(isIncrement)  {

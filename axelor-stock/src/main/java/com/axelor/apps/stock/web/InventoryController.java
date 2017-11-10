@@ -73,22 +73,33 @@ public class InventoryController {
 		Inventory inventory = request.getContext().asType(Inventory.class);
 
 		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
+		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
 
 		String name = I18n.get("Inventory")+" "+inventory.getInventorySeq();
-		
-		String fileLink = ReportFactory.createReport(IReport.INVENTORY, name+"-${date}")
+
+		String fileLink = ReportFactory.createReport(IReport.INVENTORY, name + "-${date}")
 				.addParam("InventoryId", inventory.getId())
 				.addParam("Locale", language)
 				.addFormat(inventory.getFormatSelect())
 				.generate()
 				.getFileLink();
 
-		logger.debug("Printing "+name);
-	
+		logger.debug("Printing " + name);
+
 		response.setView(ActionView
 				.define(name)
-				.add("html", fileLink).map());	
+				.add("html", fileLink).map());
+
+	}
+
+	public void exportInventory(ActionRequest request, ActionResponse response) throws IOException {
+
+		Inventory inventory = request.getContext().asType(Inventory.class);
+		inventory = inventoryRepo.find(inventory.getId());
+
+		inventoryService.exportInventoryAsCSV(inventory);
+
+		response.setReload(true);
 	}
 	
 	public void importFile(ActionRequest request, ActionResponse response) throws IOException, AxelorException {
@@ -99,6 +110,8 @@ public class InventoryController {
 		
 		inventoryService.importFile(PATH + System.getProperty("file.separator") + importFile.getFilePath() , separator, inventory);
 		response.setFlash(String.format(I18n.get(IExceptionMessage.INVENTORY_8),importFile.getFilePath()));
+
+		response.setReload(true);
 	}
 	
 	public void validateInventory(ActionRequest request, ActionResponse response) throws AxelorException {

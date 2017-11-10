@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -145,7 +145,7 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 				authorizedBankDetails = Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(
 						accountingSituation.getPartner().getOutPaymentMode(), accountingSituation.getCompany());
 			}
-			String idList = StringTool.getIdFromCollection(authorizedBankDetails);
+			String idList = StringTool.getIdListString(authorizedBankDetails);
 			if (idList.equals("")) {
 				return domain;
 			}

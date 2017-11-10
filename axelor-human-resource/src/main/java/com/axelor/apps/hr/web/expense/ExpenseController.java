@@ -231,12 +231,14 @@ public class ExpenseController {
 		expense = Beans.get(ExpenseRepository.class).find(expense.getId());
 		Move move = expenseServiceProvider.get().ventilate(expense);
 		response.setReload(true);
-		response.setView(ActionView.define(I18n.get("Move"))
-				   .model(Move.class.getName())
-				   .add("grid","move-grid")
-				   .add("form","move-form")
-				   .context("_showRecord", String.valueOf(move.getId()))
-				   .map());
+		if (move != null) {
+			response.setView(ActionView.define(I18n.get("Move"))
+					.model(Move.class.getName())
+					.add("grid", "move-grid")
+					.add("form", "move-form")
+					.context("_showRecord", String.valueOf(move.getId()))
+					.map());
+		}
 	}
 
 	public void validateDates(ActionRequest request, ActionResponse response) throws AxelorException{
@@ -500,7 +502,7 @@ public class ExpenseController {
 		}
 		
 		List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
-		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList)+ ")");
+		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdListString(kilometricAllowParamList)+ ")");
 
 		KilometricAllowParam currentKilometricAllowParam = expenseLine.getKilometricAllowParam();
 		boolean vehicleOk = false;
@@ -542,7 +544,7 @@ public class ExpenseController {
 		}
 		
 		List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
-		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList)+ ")");
+		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdListString(kilometricAllowParamList)+ ")");
 	}
 
 	public void computeDistanceAndKilometricExpense(ActionRequest request, ActionResponse response)

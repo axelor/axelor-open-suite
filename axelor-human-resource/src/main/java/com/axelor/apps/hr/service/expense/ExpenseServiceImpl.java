@@ -43,6 +43,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
@@ -313,6 +314,20 @@ public class ExpenseServiceImpl implements ExpenseService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move ventilate(Expense expense) throws AxelorException {
 
+	    Move move = null;
+		HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
+		setExpenseSeq(expense, hrConfigService.getExpenseSequence(hrConfig));
+
+		if (expense.getInTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
+			move = createAndSetMove(expense);
+		}
+		expense.setVentilated(true);
+		expenseRepository.save(expense);
+
+		return move;
+	}
+
+	protected Move createAndSetMove(Expense expense) throws AxelorException {
 		LocalDate moveDate = expense.getMoveDate();
 		if(moveDate == null){
 			moveDate = appAccountService.getTodayDate();
@@ -336,7 +351,11 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 		int moveLineId = 1;
 		int expenseLineId = 1;
-		Account employeeAccount = accountingSituationService.getAccountingSituation(expense.getUser().getPartner(), expense.getCompany()).getEmployeeAccount();
+		AccountingSituation accSituation =  accountingSituationService.getAccountingSituation(expense.getUser().getPartner(), expense.getCompany());
+		Account employeeAccount = null;
+		if (accSituation != null) {
+			employeeAccount = accSituation.getEmployeeAccount();
+		}
 		if (employeeAccount == null) {
 			employeeAccount = accountConfigService.getExpenseEmployeeAccount(accountConfig);
 		}
@@ -382,13 +401,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 		moveService.getMoveValidateService().validateMove(move);
 
-		HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
-		setExpenseSeq(expense, hrConfigService.getExpenseSequence(hrConfig));
-
 		expense.setMove(move);
-		expense.setVentilated(true);
-		expenseRepository.save(expense);
-
 		return move;
 	}
 
@@ -716,15 +729,22 @@ public class ExpenseServiceImpl implements ExpenseService {
 			expense = expenseRepository.find(expense.getId());
 		}
 		
-		if (expense.getUser() != null && expense.getUser().getEmployee() == null) {
+		LocalDate expenseDate = expenseLine.getExpenseDate();
+		if (expense.getUser() == null || expense.getUser().getEmployee() == null || expenseDate == null) {
 			return kilometricAllowParamList;
 		}
 		
 		List<EmployeeVehicle> vehicleList = expense.getUser().getEmployee().getEmployeeVehicleList();
-		LocalDate expenseDate = expenseLine.getExpenseDate();
+		
 
 		for (EmployeeVehicle vehicle : vehicleList) {
-			if (expenseDate.compareTo(vehicle.getStartDate())>=0 && expenseDate.compareTo(vehicle.getEndDate())<=0) {
+			LocalDate startDate = vehicle.getStartDate();
+			LocalDate endDate = vehicle.getEndDate();
+			if (startDate != null 
+					&& expenseDate.compareTo(startDate)>=0  
+					&& endDate != null 
+					&& expenseDate.compareTo(endDate)<=0) { 
+					
 				kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
 			}
 		}

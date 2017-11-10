@@ -46,6 +46,8 @@
 
 		<boolean name="generateProductSequence" title="Generate sequence for products" default="false"/>
 		
+		<boolean name="generatePartnerSequence" title="Generate sequence for partners" default="true"/>
+		
 		<boolean name="manageMultiBanks" title="Manage multi banks"/>
 
 		<boolean name="manageProductVariants" title="Manage product variants"/>

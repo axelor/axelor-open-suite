@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -101,25 +101,7 @@ public class ExcelToCSV {
 
 							case Cell.CELL_TYPE_NUMERIC:
 								if (DateUtil.isCellDateFormatted(cell)) {
-									Calendar cal = Calendar.getInstance();
-									Date date = cell.getDateCellValue();
-									cal.setTime(date);
-									int hours = cal.get(Calendar.HOUR_OF_DAY);
-									int minutes = cal.get(Calendar.MINUTE);
-									int seconds = cal.get(Calendar.SECOND);
-
-									String dateInString = "";
-									SimpleDateFormat format;
-									if (hours == 0 && minutes == 0 && seconds == 0)
-										format = new SimpleDateFormat("yyyy-MM-dd");
-
-									else if (seconds == 0)
-										format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-
-									else
-										format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SS");
-
-									dateInString = format.format(date);
+									String dateInString = getDateValue(cell);
 									writer.append("\"" + dateInString + "\"" + separator);
 
 								} else {
@@ -145,6 +127,28 @@ public class ExcelToCSV {
 		}
 		writer.flush();
 		writer.close();
+	}
+	
+	public static String getDateValue(Cell cell) {
+
+		Calendar cal = Calendar.getInstance();
+		Date date = cell.getDateCellValue();
+		cal.setTime(date);
+		int hours = cal.get(Calendar.HOUR_OF_DAY);
+		int minutes = cal.get(Calendar.MINUTE);
+		int seconds = cal.get(Calendar.SECOND);
+
+		SimpleDateFormat format;
+		if (hours == 0 && minutes == 0 && seconds == 0)
+			format = new SimpleDateFormat("yyyy-MM-dd");
+
+		else if (seconds == 0)
+			format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+		else
+			format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SS");
+
+		return format.format(date);
+
 	}
 
 }
