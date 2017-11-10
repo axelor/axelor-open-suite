@@ -41,7 +41,7 @@ public class BankStatementController {
 		try {
 			BankStatement bankStatement = request.getContext().asType(BankStatement.class);
 			bankStatement = bankStatementRepository.find(bankStatement.getId());
-			bankStatementService.runImport(bankStatement);
+			bankStatementService.runImport(bankStatement, true);
 			
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);

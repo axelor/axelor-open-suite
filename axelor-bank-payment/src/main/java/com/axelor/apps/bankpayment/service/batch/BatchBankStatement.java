@@ -75,10 +75,14 @@ public class BatchBankStatement extends AbstractBatch {
                         .getBankStatements(ebicsPartnerRepository.find(ebicsPartner.getId()));
 
                 bankStatementCount += bankStatementList.size();
-
-                for (BankStatement bankStatement : bankStatementList) {
-
-                    bankStatementService.runImport(bankStatementRepository.find(bankStatement.getId()));
+                
+                for(BankStatement bankStatement : bankStatementList)  {
+                	
+                	try {
+                		bankStatementService.runImport(bankStatementRepository.find(bankStatement.getId()), false);
+                	} catch (AxelorException e) { 
+                        processError(e, e.getcategory(), ebicsPartner);
+                	}
                 }
 
                 incrementDone();

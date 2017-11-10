@@ -44,7 +44,7 @@ public class BankStatementService {
 		this.bankStatementRepository = bankStatementRepository;
 	}
 
-	public void runImport(BankStatement bankStatement) throws IOException, AxelorException  {
+	public void runImport(BankStatement bankStatement, boolean alertIfFormatNotSupported) throws IOException, AxelorException  {
 
         if (bankStatement.getBankStatementFile() == null) {
             throw new AxelorException(I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE),
@@ -68,8 +68,10 @@ public class BankStatementService {
             break;
 
         default:
-            throw new AxelorException(I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT),
-                    IException.INCONSISTENCY);
+        	if(alertIfFormatNotSupported)  {
+        		throw new AxelorException(I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT),
+        				IException.INCONSISTENCY);
+        	}
         }
 
 	}
