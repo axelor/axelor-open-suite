@@ -24,7 +24,7 @@
 	<string name="qualifyingOfDate" title="Qualifying of date"/>
 	<boolean name="isMultiDate" title="Multidate"/>
 	<boolean name="isMultiCurrency" title="Multicurrency"/>
-    <integer name="orderDebitTypeSelect" title="Order debit type" selection="bankpayment.order.debit.type.select" default="2" />
+    <integer name="orderDebitTypeSelect" title="Order debit type" selection="bankpayment.order.debit.type.select" nullable="true" />
 
   	<boolean name="displayAdditionnalInformations" title="Display additional information?"/>
 	

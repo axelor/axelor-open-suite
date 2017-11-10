@@ -1,31 +1,31 @@
 "importId";"orderFileFormatSelect";"orderTypeSelect";"currency.code";"name";"description";"fileGenerationSupported";"bankDetailsTypeSelect";"orderDebitTypeSelect"
-1;"pain.001.001.02.ict";"5";"EUR";"pain.001.001.02.ict - Virement de trésorerie (intra groupe)";"Remise de virement de trésorerie (intra groupe)";"false";;2
-2;"pain.001.001.02.mct";"1";"EUR";"pain.001.001.02.mct - Virement";"Remise de virement";"false";;2
-3;"pain.001.001.02.rft";"1";"EUR";"pain.001.001.02.rft - Virement request for transfer";"Remise de virement request for transfer";"false";;2
-4;"pain.001.001.02.sct";"1";"EUR";"pain.001.001.02.sct - Virement SEPA";"Remise de virement SEPA - Version 2";"true";"1";2
-5;"pain.001.001.02.xct";"3";"EUR";"pain.001.001.02.xct - Virement international";"Remise de virement international";"false";;2
-6;"pain.001.001.03.sct";"1";"EUR";"pain.001.001.03.sct - Virement SEPA";"Remise de virement SEPA - Version 3";"true";"1";2
-7;"pain.008.001.01.sbb";"2";"EUR";"pain.008.001.01.sbb - SDD BtoB";"Remise de SDD BtoB";"true";;2
-8;"pain.008.001.01.sdd";"2";"EUR";"pain.008.001.01.sdd - SDD CORE";"Remise de SDD CORE";"true";;2
-9;"pain.008.001.02.sbb";"2";"EUR";"pain.008.001.02.sbb - SDD BtoB";"Remise de SDD BtoB";"true";;2
-10;"pain.008.001.02.sdd";"2";"EUR";"pain.008.001.02.sdd - SDD CORE";"Remise de SDD CORE";"true";;2
-11;"pain.fin.mt101.dct";"1";"EUR";"pain.fin.mt101.dct - Virement domestique France";"Remise de virement domestique France";"false";;2
-12;"pain.fin.mt101.mct";"1";"EUR";"pain.fin.mt101.mct - Virement";"Remise de virement";"false";;2
-13;"pain.xxx.cfonb160.dco";;"EUR";"pain.xxx.cfonb160.dco - LCR";"Remise de LCR";"false";;2
-14;"pain.xxx.cfonb160.dct";;"EUR";"pain.xxx.cfonb160.dct - Virement domestique France";"Remise de virement domestique France";"false";;2
-15;"pain.xxx.cfonb160.dda";;"EUR";"pain.xxx.cfonb160.dda - Prélèvement accéléré domestique France";"Remise d'avis de prélèvement accéléré domestique France";"false";;2
-16;"pain.xxx.cfonb160.ddd";;"EUR";"pain.xxx.cfonb160.ddd - Prélèvement domestique France";"Remise d'avis de prélèvement domestique France";"false";;2
-17;"pain.xxx.cfonb160.dtg";;"EUR";"pain.xxx.cfonb160.dtg - Télérèglement domestique France";"Remise de télérèglement domestique France";"false";;2
-18;"pain.xxx.cfonb160.dvd";;"EUR";"pain.xxx.cfonb160.dvd - Vérification de domiciliation";"Demande de vérification de domiciliation";"false";;2
-19;"pain.xxx.cfonb160.ict";"5";"EUR";"pain.xxx.cfonb160.ict - Virement de trésorerie France";"Remise de virement de trésorerie France (Intra groupe)";"true";"1,2";2
-20;"pain.xxx.cfonb240.bco";;"EUR";"pain.xxx.cfonb240.bco - Bon à payer de LCR";"Bon à payer de LCR (réponse au relevé de LCR)";"false";;2
-21;"pain.xxx.cfonb240.tch";;"EUR";"pain.xxx.cfonb240.tch - Télécollecte de chèque";"Remise de télécollecte de chèque";"false";;2
-22;"pain.xxx.cfonb320.dct";;"EUR";"pain.xxx.cfonb320.dct - Virement domestique France";"Remise de virement domestique France";"false";;2
-23;"pain.xxx.cfonb320.rft";;"EUR";"pain.xxx.cfonb320.rft - Virement  request for transfer";"Remise de virement  request for transfer";"false";;2
+1;"pain.001.001.02.ict";"5";"EUR";"pain.001.001.02.ict - Virement de trésorerie (intra groupe)";"Remise de virement de trésorerie (intra groupe)";"false";;
+2;"pain.001.001.02.mct";"1";"EUR";"pain.001.001.02.mct - Virement";"Remise de virement";"false";;
+3;"pain.001.001.02.rft";"1";"EUR";"pain.001.001.02.rft - Virement request for transfer";"Remise de virement request for transfer";"false";;
+4;"pain.001.001.02.sct";"1";"EUR";"pain.001.001.02.sct - Virement SEPA";"Remise de virement SEPA - Version 2";"true";"1";
+5;"pain.001.001.02.xct";"3";"EUR";"pain.001.001.02.xct - Virement international";"Remise de virement international";"false";;
+6;"pain.001.001.03.sct";"1";"EUR";"pain.001.001.03.sct - Virement SEPA";"Remise de virement SEPA - Version 3";"true";"1";
+7;"pain.008.001.01.sbb";"2";"EUR";"pain.008.001.01.sbb - SDD BtoB";"Remise de SDD BtoB";"true";;
+8;"pain.008.001.01.sdd";"2";"EUR";"pain.008.001.01.sdd - SDD CORE";"Remise de SDD CORE";"true";;
+9;"pain.008.001.02.sbb";"2";"EUR";"pain.008.001.02.sbb - SDD BtoB";"Remise de SDD BtoB";"true";;
+10;"pain.008.001.02.sdd";"2";"EUR";"pain.008.001.02.sdd - SDD CORE";"Remise de SDD CORE";"true";;
+11;"pain.fin.mt101.dct";"1";"EUR";"pain.fin.mt101.dct - Virement domestique France";"Remise de virement domestique France";"false";;
+12;"pain.fin.mt101.mct";"1";"EUR";"pain.fin.mt101.mct - Virement";"Remise de virement";"false";;
+13;"pain.xxx.cfonb160.dco";;"EUR";"pain.xxx.cfonb160.dco - LCR";"Remise de LCR";"false";;
+14;"pain.xxx.cfonb160.dct";;"EUR";"pain.xxx.cfonb160.dct - Virement domestique France";"Remise de virement domestique France";"false";;
+15;"pain.xxx.cfonb160.dda";;"EUR";"pain.xxx.cfonb160.dda - Prélèvement accéléré domestique France";"Remise d'avis de prélèvement accéléré domestique France";"false";;
+16;"pain.xxx.cfonb160.ddd";;"EUR";"pain.xxx.cfonb160.ddd - Prélèvement domestique France";"Remise d'avis de prélèvement domestique France";"false";;
+17;"pain.xxx.cfonb160.dtg";;"EUR";"pain.xxx.cfonb160.dtg - Télérèglement domestique France";"Remise de télérèglement domestique France";"false";;
+18;"pain.xxx.cfonb160.dvd";;"EUR";"pain.xxx.cfonb160.dvd - Vérification de domiciliation";"Demande de vérification de domiciliation";"false";;
+19;"pain.xxx.cfonb160.ict";"5";"EUR";"pain.xxx.cfonb160.ict - Virement de trésorerie France";"Remise de virement de trésorerie France (Intra groupe)";"true";"1,2";
+20;"pain.xxx.cfonb240.bco";;"EUR";"pain.xxx.cfonb240.bco - Bon à payer de LCR";"Bon à payer de LCR (réponse au relevé de LCR)";"false";;
+21;"pain.xxx.cfonb240.tch";;"EUR";"pain.xxx.cfonb240.tch - Télécollecte de chèque";"Remise de télécollecte de chèque";"false";;
+22;"pain.xxx.cfonb320.dct";;"EUR";"pain.xxx.cfonb320.dct - Virement domestique France";"Remise de virement domestique France";"false";;
+23;"pain.xxx.cfonb320.rft";;"EUR";"pain.xxx.cfonb320.rft - Virement  request for transfer";"Remise de virement  request for transfer";"false";;
 24;"pain.xxx.cfonb320.xct";"3";"EUR";"pain.xxx.cfonb320.xct- Virement international";"Remise de virement international";"true";"0, 1, 2";2
-25;"pain.xxx.fff.lch";;"EUR";"pain.xxx.fff.lch - Remise de lettre chèque";"Remise de lettre chèque où <FFF> est égale à la longueur des enregistrements";"false";;2
-26;"pain.xxx.fff.ech";;"EUR";"pain.xxx.fff.ech - Remise de chèques émis";"Remise de chèques émis où <FFF> est égale à la longueur des enregistrements";"false";;2
-27;"pain.xxx.payext912.vct";;"EUR";"pain.xxx.payext912.vct - Remise de VCOM";"Remise de VCOM";"false";;2
-28;"pain.xxx.payext96a.vct";;"EUR";"pain.xxx.payext96a.vct - Remise de VCOM";"Remise de VCOM";"false";;2
-29;"pain.xxx.payord912.ict";;"EUR";"pain.xxx.payord912.ict - Virement de trésorerie France (Intra groupe)";"Remise de virement de trésorerie France (Intra groupe)";"false";;2
-30;"pain.xxx.vcom400.vct";;"EUR";"pain.xxx.vcom400.vct - Remise de VCOM";"Remise de VCOM";"false";;2
+25;"pain.xxx.fff.lch";;"EUR";"pain.xxx.fff.lch - Remise de lettre chèque";"Remise de lettre chèque où <FFF> est égale à la longueur des enregistrements";"false";;
+26;"pain.xxx.fff.ech";;"EUR";"pain.xxx.fff.ech - Remise de chèques émis";"Remise de chèques émis où <FFF> est égale à la longueur des enregistrements";"false";;
+27;"pain.xxx.payext912.vct";;"EUR";"pain.xxx.payext912.vct - Remise de VCOM";"Remise de VCOM";"false";;
+28;"pain.xxx.payext96a.vct";;"EUR";"pain.xxx.payext96a.vct - Remise de VCOM";"Remise de VCOM";"false";;
+29;"pain.xxx.payord912.ict";;"EUR";"pain.xxx.payord912.ict - Virement de trésorerie France (Intra groupe)";"Remise de virement de trésorerie France (Intra groupe)";"false";;
+30;"pain.xxx.vcom400.vct";;"EUR";"pain.xxx.vcom400.vct - Remise de VCOM";"Remise de VCOM";"false";;
