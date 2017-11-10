@@ -205,8 +205,8 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			// Zone 17-4 : Zone réservée 
 			senderRecord += cfonbToolService.createZone("17-4", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 8);
 			
-			// Zone 18 : Zone non utilisée 
-			senderRecord += cfonbToolService.createZone("18", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);
+			// Zone 18 : Indice type de débit de la remise
+			senderRecord += cfonbToolService.createZone(I18n.get("18 - Order debit type index"), bankOrderFileFormat.getOrderDebitTypeSelect(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);
 			
 			// Zone 19 : Indice type de remises :
 			// "1" : mono date et mono devise : La date et la devise sont prises dans l'enregistrement "En-tête".
