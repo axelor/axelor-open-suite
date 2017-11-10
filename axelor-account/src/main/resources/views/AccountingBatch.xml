@@ -66,6 +66,7 @@
 		</panel>
 		<panel name="bankStatementPage" title="Bank statement retrieval configuration" hideIf="actionSelect != 20">
 			<field name="ebicsPartnerSet" canNew="false" widget="TagSelect" colSpan="12" domain="self.transportEbicsUser.statusSelect = 3"/>
+            <field name="bankStatementFileFormatSet" canNew="false" widget="TagSelect" colSpan="12"/>
 		</panel>
 		<panel name="information" title="Information"  >
 			<field name="createdOn" title="Created on"/>
