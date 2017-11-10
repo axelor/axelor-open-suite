@@ -20,12 +20,12 @@
 	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Default Currency"/>
 	
 	
-<!-- 	 AFB320 -->
+    <!-- 	 AFB320 -->
 	<string name="qualifyingOfDate" title="Qualifying of date"/>
-	<boolean name="isMultiDate" title="Multi dates"/>
-	<boolean name="isMultiCurrency" title="Multi currencies"/>
-	
-  	
+	<boolean name="isMultiDate" title="Multidate"/>
+	<boolean name="isMultiCurrency" title="Multicurrency"/>
+    <integer name="orderDebitTypeSelect" title="Order debit type" selection="bankpayment.order.debit.type.select" default="2" />
+
   	<boolean name="displayAdditionnalInformations" title="Display additionnal informations ?"/>
 	
   	<boolean name="displayBankOrderEconomicReason" title="Display economic reason ?"/>
@@ -76,6 +76,10 @@
 		public static final String FILE_FORMAT_PAIN_XXX_PAYORD912_ICT = "pain.xxx.payord912.ict";
 		public static final String FILE_FORMAT_PAIN_XXX_VCOM400_VCT = "pain.xxx.vcom400.vct";
 
+        // ORDER DEBIT TYPE SELECT
+        public static final int ORDER_DEBIT_TYPE_ORDER_OVERALL_DEBIT = 1;
+        public static final int ORDER_DEBIT_TYPE_UNIT_DEBIT_BY_OPERATION = 2;
+        public static final int ORDER_DEBIT_TYPE_OVERALL_DEBIT_BY_TRANSFER_CURRENCY = 3;
 	]]></extra-code>
 
   </entity>
