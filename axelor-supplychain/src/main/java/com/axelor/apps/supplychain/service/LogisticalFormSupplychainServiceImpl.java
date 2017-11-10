@@ -17,14 +17,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-import java.util.Map;
-
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.stock.db.LogisticalForm;
-import com.axelor.apps.stock.db.LogisticalFormLine;
-import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
 
@@ -32,24 +26,9 @@ public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceI
 		implements LogisticalFormSupplychainService {
 
 	@Override
-	public void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove) {
-		if (stockMove.getStockMoveLineList() != null) {
-			Map<StockMoveLine, BigDecimal> stockMoveLineMap = getStockMoveLineQtyMap(logisticalForm);
-
-			for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-				BigDecimal qty = stockMoveLineMap.getOrDefault(stockMoveLine, BigDecimal.ZERO);
-				SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
-
-				if (qty.compareTo(stockMoveLine.getRealQty()) >= 0 || saleOrderLine != null
-						&& saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE) {
-					continue;
-				}
-
-				LogisticalFormLine logisticalFormLine = createDetailLine(logisticalForm, stockMoveLine,
-						stockMoveLine.getRealQty().subtract(qty));
-				logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
-			}
-		}
+	protected boolean testForDetailLine(StockMoveLine stockMoveLine) {
+		SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
+		return saleOrderLine == null || saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_TITLE;
 	}
 
 }

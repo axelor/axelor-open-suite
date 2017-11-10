@@ -242,12 +242,12 @@ public final class StringTool {
 
 
 	/**
-	 * Retrieve an ID list from a collection of any object
-	 * if the collection is empty, this method will return "0"
+	 * Retrieve an ID list string from a collection of model objects.
+	 * If the collection is empty, this method will return "0".
 	 * @param collection
 	 * @return
 	 */
-	public static String getIdFromCollection(Collection<? extends Model> collection) {
+	public static String getIdListString(Collection<? extends Model> collection) {
 		List<Long> idList = new ArrayList<>();
 		String idString;
 		if (collection.isEmpty()) {

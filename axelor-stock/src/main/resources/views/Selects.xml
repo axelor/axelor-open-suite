@@ -69,6 +69,12 @@
 		<option value="4.50" icon="img/rating/rating-4.50.png">4.50</option>
 		<option value="5.00" icon="img/rating/rating-5.00.png">5.00</option>
 	</selection>
+	
+	<selection name="stock.incoterm.allocation.select">
+		<option value="1">Buyer</option>
+		<option value="2">Seller</option>
+		<option value="3">Buyer/Seller</option>
+	</selection>
 
     <selection name="logistical.form.status.select">
         <option value="1">Provision</option>

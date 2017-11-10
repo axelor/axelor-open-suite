@@ -31,13 +31,8 @@ public class LogisticalFormLineController {
 
 	public void setQty(ActionRequest request, ActionResponse response) {
 		try {
-			LogisticalFormLine logisticalFormLine = request.getContext().asType(LogisticalFormLine.class);
-
-			if (logisticalFormLine.getLogisticalForm() == null) {
-				logisticalFormLine.setLogisticalForm(request.getContext().getParent().asType(LogisticalForm.class));
-			}
-
-			BigDecimal qty = Beans.get(LogisticalFormLineService.class).getRemainingQty(logisticalFormLine);
+			LogisticalFormLine logisticalFormLine = getLogisticalFormLine(request);
+			BigDecimal qty = Beans.get(LogisticalFormLineService.class).getUnspreadQty(logisticalFormLine);
 			response.setValue("qty", qty);
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
@@ -46,17 +41,32 @@ public class LogisticalFormLineController {
 
 	public void setStockMoveLineDomain(ActionRequest request, ActionResponse response) {
 		try {
-			LogisticalFormLine logisticalFormLine = request.getContext().asType(LogisticalFormLine.class);
-
-			if (logisticalFormLine.getLogisticalForm() == null) {
-				logisticalFormLine.setLogisticalForm(request.getContext().getParent().asType(LogisticalForm.class));
-			}
-
+			LogisticalFormLine logisticalFormLine = getLogisticalFormLine(request);
 			String domain = Beans.get(LogisticalFormLineService.class).getStockMoveLineDomain(logisticalFormLine);
 			response.setAttr("stockMoveLine", "domain", domain);
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
+	}
+
+	public void initParcelPallet(ActionRequest request, ActionResponse response) {
+		try {
+			LogisticalFormLine logisticalFormLine = getLogisticalFormLine(request);
+			Beans.get(LogisticalFormLineService.class).initParcelPallet(logisticalFormLine);
+			response.setValue("parcelPalletNumber", logisticalFormLine.getParcelPalletNumber());
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+
+	private LogisticalFormLine getLogisticalFormLine(ActionRequest request) {
+		LogisticalFormLine logisticalFormLine = request.getContext().asType(LogisticalFormLine.class);
+
+		if (logisticalFormLine.getLogisticalForm() == null) {
+			logisticalFormLine.setLogisticalForm(request.getContext().getParent().asType(LogisticalForm.class));
+		}
+
+		return logisticalFormLine;
 	}
 
 }

@@ -502,7 +502,7 @@ public class ExpenseController {
 		}
 		
 		List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
-		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList)+ ")");
+		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdListString(kilometricAllowParamList)+ ")");
 
 		KilometricAllowParam currentKilometricAllowParam = expenseLine.getKilometricAllowParam();
 		boolean vehicleOk = false;
@@ -544,7 +544,7 @@ public class ExpenseController {
 		}
 		
 		List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
-		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList)+ ")");
+		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdListString(kilometricAllowParamList)+ ")");
 	}
 
 	public void computeDistanceAndKilometricExpense(ActionRequest request, ActionResponse response)
