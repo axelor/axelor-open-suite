@@ -27,7 +27,6 @@
 			<field name="code" x-bind="{{code|uppercase}}" showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4"/>
 			<panel name="productTypology" title="Product typology" colSpan="12">
 				<field name="productTypeSelect" readonly="true" />
-				<field name="saleSupplySelect" readonly="true" />
 				<field name="deductLunchVoucher" hideIf="!expense" />
 				<field name="blockExpenseTax" />
 				<field name="personalExpense" />
