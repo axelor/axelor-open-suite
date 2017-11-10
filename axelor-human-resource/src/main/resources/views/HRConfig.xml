@@ -55,7 +55,7 @@
 		<field name="canceledLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification" domain="self.metaModel.name = 'LeaveRequest'"/>
   	</panel>
   	<panel title="Leave Batch rules">
-  		<panel-related field="leaveManagementBatchRuleList" form-view="leave-management-batch-rule-form" grid-view="leave-management-batch-rule-grid" colSpan="12" />
+  		<panel-related field="leaveManagementBatchRuleList" x-can-copy="true" form-view="leave-management-batch-rule-form" grid-view="leave-management-batch-rule-grid" colSpan="12" />
   	</panel>
 	<panel title="Formula variables configuration">
 		<field name="seniorityVariableName" />
@@ -69,7 +69,7 @@
   		
   	</panel>
    </panel-tabs>
-	  	<panel-related field="kilometricAllowanceRateList" colSpan="12" form-view="kilometric-allowance-rate-form" grid-view="kilometric-allowance-rate-grid"/>
+	  	<panel-related field="kilometricAllowanceRateList" x-can-copy="true" colSpan="12" form-view="kilometric-allowance-rate-form" grid-view="kilometric-allowance-rate-grid"/>
 	</form>
 	
 	<action-record name="action-hr-config-record-default" model="com.axelor.apps.hr.db.HRConfig">
