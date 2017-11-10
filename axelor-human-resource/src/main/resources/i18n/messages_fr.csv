@@ -212,7 +212,7 @@
 "ExpenseLine.expenseType","Type de frais",,
 "ExpenseLine.kilometricAllowParam","Puissance fiscale",,
 "ExpenseLine.kilometricExpenseType","Type",,
-"ExpenseLine.totalTax",,,
+"ExpenseLine.totalTax","Montant TVA",,
 "ExpenseLine.untaxedAmount","Montant HT",,
 "Expenses","Note de frais",,
 "Expenses amount to pay","Montant NdeF à payer",,
