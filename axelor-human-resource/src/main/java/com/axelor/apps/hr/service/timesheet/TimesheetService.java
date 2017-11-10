@@ -82,4 +82,5 @@ public interface TimesheetService {
 	public String computeFullName(Timesheet timesheet);
 	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet);
 	public BigDecimal computePeriodTotal(Timesheet timesheet);
+	public String getPeriodTotalConvertTitleByUserPref(User user);
 }

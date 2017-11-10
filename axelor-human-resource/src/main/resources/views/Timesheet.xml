@@ -60,7 +60,7 @@
 	    </panel>
 		<panel sidebar="true" name="totals" title="Totals on period">
 			<field name="periodTotal" readonly="true"/>
-			<field name="$periodTotalConvert" readonly="true"/>
+			<field name="$periodTotalConvert" readonly="true" hidden="true"/>
 		</panel>
 		<panel name="head">
 		    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
@@ -77,7 +77,7 @@
 			<field name="$logTime" type="decimal"/>
 			<button name="generateLines" title="Generate lines" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines,action-timesheet-attrs-generale-lines-panel-hidden-true"/>
 		</panel>
-		<panel-related field="timesheetLineList" height="20" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!$readonly()" x-can-copy="true"/>
+		<panel-related field="timesheetLineList" height="20" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!$readonly()" x-can-copy="true" onChange="action-timesheet-method-timesheet-compute-period-total"/>
 		<panel-related field="timesheetLineList" height="20" grid-view="timesheet-line-timesheet-readonly-grid" form-view="timesheet-line-timesheet-form" hidden="true" showIf="$readonly()" x-can-copy="true"/>
     	<panel-dashlet name="panelDashboard" title="Total Hours per Day" showIf="id" action="action-timesheet-view-total-hours-per-day"/>
 		<panel itemSpan="4" sidebar="true" showIf="sentDate != null">
@@ -102,8 +102,6 @@
 	<action-group name="action-timesheet-group-onsave">
 		<action name="action-timesheet-validate-toDate"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
-		<action name="action-timesheet-record-set-period-total-convert"/>
-		<action name="action-timesheet-attrs-set-duration-preference"/>
 	</action-group>
 
 	<action-group name="action-timesheet-group-onload">
@@ -113,8 +111,6 @@
 		<action name="action-timesheet-attrs-title-project-task"/>
 		<action name="action-timesheet-attrs-from-date"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
-		<action name="action-timesheet-record-set-period-total-convert"/>
-		<action name="action-timesheet-attrs-set-duration-preference"/>
 		<action name="save"/>
 	</action-group>
 	
@@ -123,8 +119,6 @@
 		<action name="action-timesheet-method-confirm"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
-		<action name="action-timesheet-record-set-period-total-convert"/>
-		<action name="action-timesheet-attrs-set-duration-preference"/>
 		<action name="save"/>
 	</action-group>
 
@@ -133,8 +127,6 @@
         <action name="action-timesheet-method-continue"/>
         <action name="action-timesheet-attrs-buttons"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
-		<action name="action-timesheet-record-set-period-total-convert"/>
-		<action name="action-timesheet-attrs-set-duration-preference"/>
         <action name="save"/>
     </action-group>
 
@@ -143,8 +135,6 @@
 		<action name="action-timesheet-method-confirm-continue"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
-		<action name="action-timesheet-record-set-period-total-convert"/>
-		<action name="action-timesheet-attrs-set-duration-preference"/>
 		<action name="save"/>
 	</action-group>
 	
@@ -152,8 +142,6 @@
 		<action name="action-timesheet-method-valid"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
-		<action name="action-timesheet-record-set-period-total-convert"/>
-		<action name="action-timesheet-attrs-set-duration-preference"/>
 		<action name="save"/>
 	</action-group>
 	
@@ -163,8 +151,6 @@
 		<action name="action-timesheet-refusal-popup-form"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
-		<action name="action-timesheet-record-set-period-total-convert"/>
-		<action name="action-timesheet-attrs-set-duration-preference"/>
 		<action name="save"/>
 	</action-group>
 	
@@ -175,22 +161,11 @@
 		<action name="action-timesheet-record-from-period-date"/>
 		<action name="action-timesheet-attrs-title-project-task"/>
 		<action name="action-timesheet-attrs-from-date-on-new"/>
-		<action name="action-timesheet-method-timesheet-compute-period-total"/>
-		<action name="action-timesheet-record-set-period-total-convert"/>
-		<action name="action-timesheet-attrs-set-duration-preference"/>
 	</action-group>
 
 	<action-method name="action-timesheet-method-timesheet-compute-period-total">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="timesheetPeriodTotalController"/>
 	</action-method>
-
-	<action-record name="action-timesheet-record-set-period-total-convert" model="com.axelor.apps.hr.db.TimesheetLine">
-		<field name="$periodTotalConvert" expr="call:com.axelor.apps.hr.service.employee.EmployeeService:getUserDuration(periodTotal,user,true)"/>
-	</action-record>
-
-	<action-attrs name="action-timesheet-attrs-set-duration-preference">
-		<attribute name="title" for="$periodTotalConvert" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
-	</action-attrs>
 	
 	<action-record name="action-timesheet-record-default" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="user" expr="eval:__user__"/>
