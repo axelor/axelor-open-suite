@@ -6,7 +6,6 @@
 	<module name="quality" package="com.axelor.apps.quality.db"/>
 	
 	<entity name="QualityControl">
-		<string name="qualityControlSeq"/>
 		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
 	    <many-to-one name="qualityProcess" ref="QualityProcess" title="Quality process" required="true"/>
 	    <many-to-one name="team" ref="com.axelor.apps.quality.db.QualityTeam" title="Team" />
