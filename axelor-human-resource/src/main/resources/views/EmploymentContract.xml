@@ -45,6 +45,7 @@
 				   form-view="contract-type-form" colSpan="4"
 				   onChange="action-employment-contract-record-contract-type-on-change"/>
 			<field name="executiveStatusSelect" colSpan="4"/>
+			<field name="employment" colSpan="4"/>
 			<panel name="organization" title="Organization" colSpan="12">
 				<field name="startDate" colSpan="3"/>
 				<field name="trialPeriodDuration" colSpan="3"/>

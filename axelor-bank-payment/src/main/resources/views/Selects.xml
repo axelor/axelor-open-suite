@@ -196,4 +196,10 @@
         <option value="1">Exempt</option>
     </selection>
 
+    <selection name="bankpayment.order.debit.type.select">
+        <option value="1">Order overall debit</option>
+        <option value="2">Unit debit by operation</option>
+        <option value="3">Overall debit by transfer currency</option>
+    </selection>
+
 </object-views>
