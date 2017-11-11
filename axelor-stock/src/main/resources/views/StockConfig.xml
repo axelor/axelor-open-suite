@@ -9,7 +9,7 @@
 
 	<form name="stock-config-form" title="Stock configuration" model="com.axelor.apps.stock.db.StockConfig" onNew="action-stock-config-record-default" width="large">
 	  <panel name="main" >
-	    <field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
+	    <field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	  </panel>
 	  <panel name="virtualLocationsInformations" title="Virtual locations informations">
 	    <field name="customerVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="location-form" grid-view="location-grid"/>

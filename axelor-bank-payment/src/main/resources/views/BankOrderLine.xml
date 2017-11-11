@@ -33,7 +33,7 @@
 		</panel>
 		<panel name="receiverInfo" title="Receiver Info.">
 			<field name="sequence"/>
-			<field name="receiverCompany" showIf="bankOrder.partnerTypeSelect == 4" colSpan="6" form-view="company-form" grid-view="company-grid" />
+			<field name="receiverCompany" canEdit="false" showIf="bankOrder.partnerTypeSelect == 4" colSpan="6" form-view="company-form" grid-view="company-grid" />
 			<field name="partner" hideIf="bankOrder.partnerTypeSelect != 4" form-view="partner-form" grid-view="partner-grid" colSpan="6"/>
 			<field name="receiverBankDetails" colSpan="6" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="bankOrderAmount"/>

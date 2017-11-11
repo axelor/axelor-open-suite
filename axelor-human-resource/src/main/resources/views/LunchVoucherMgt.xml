@@ -25,7 +25,7 @@
   			<panel colSpan="6">
   				<panel colSpan="12" readonlyIf="statusSelect != 1">
   					<field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
-		    		<field name="company" colSpan="6" onChange="action-lunch-voucher-record-company-onchange" />
+		    		<field name="company" canEdit="false" colSpan="6" onChange="action-lunch-voucher-record-company-onchange" />
 		    		<spacer colSpan="6"/>
 		    		<field name="payPeriod"/>
 		        	<field name="leavePeriod"/>

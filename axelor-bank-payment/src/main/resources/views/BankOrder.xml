@@ -32,7 +32,7 @@
         <field name="partnerTypeSelect"/>
         <field name="bankOrderDate"/>
         <field name="confirmationDateTime"/>
-        <field name="senderCompany"/>
+        <field name="senderCompany" canEdit="false"/>
         <field name="bankOrderTotalAmount"/>
         <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
@@ -51,7 +51,7 @@
         <field name="generatedMetaFile"/>
         <field name="bankOrderDate"/>
         <field name="confirmationDateTime"/>
-        <field name="senderCompany"/>
+        <field name="senderCompany" canEdit="false"/>
         <field name="bankOrderTotalAmount"/>
         <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
@@ -78,7 +78,7 @@
 		        <field name="generatedMetaFile" widget="binary-link" showIf="statusSelect &gt;= 2"/>
 	        </panel>
 	        <panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 3">  
-		        <field name="signatoryUser" form-view="user-form" grid-view="user-grid" canView="false" hidden="true"/>
+		        <field name="signatoryUser" canEdit="false" form-view="user-form" grid-view="user-grid" canView="false" hidden="true"/>
 		        <field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" canView="false" onChange="action-bank-order-record-fill-signatory-user" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.userTypeSelect = 1" showIf="senderBankDetails"/>
 	    		<field name="isMultiDate" hidden="true"/>
 	    		<field name="isMultiCurrency" hidden="true"/>
@@ -86,7 +86,7 @@
         </panel>
 	   
 		<panel name="senderInfo" title="Sender Info." readonlyIf="statusSelect &gt;= 2" showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect">
-			<field name="senderCompany" canView="false" grid-view="company-grid" form-view="company-form" required="true" onChange="action-bank-order-group-sender-company-change"/>
+			<field name="senderCompany" canEdit="false" canView="false" grid-view="company-grid" form-view="company-form" required="true" onChange="action-bank-order-group-sender-company-change"/>
 			<field name="senderBankDetails" canEdit="false" grid-view="bank-details-grid" form-view="bank-details-form" required="true" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
 			
 			<panel hidden="true" hideIf="isMultiCurrency" >
@@ -196,12 +196,12 @@
 		    	<field name="bankOrderFileFormat" colSpan="6" onChange="action-bank-order-record-update-bankorder-currency"/>
 				<field name="bankOrderTotalAmount" colSpan="4"/>
 				<field name="bankOrderCurrency" canView="false" grid-view="currency-grid" form-view="currency-form" colSpan="2"/>
-				<field name="senderCompany" grid-view="company-grid" form-view="company-form" colSpan="6" onChange="action-bank-order-group-sender-company-change"/>
+				<field name="senderCompany" canEdit="false" grid-view="company-grid" form-view="company-form" colSpan="6" onChange="action-bank-order-group-sender-company-change"/>
 				<field name="senderBankDetails" canView="false" grid-view="bank-details-grid" form-view="bank-details-form" colSpan="6" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
 			</panel>
 	        <panel colSpan="12" readonlyIf="statusSelect &gt;= 3">  	
 				<field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" requiredIf="statusSelect == 2" onChange="action-bank-order-record-fill-signatory-user" colSpan="6" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet" showIf="senderBankDetails"/>
-				<field name="signatoryUser" form-view="user-form" grid-view="user-grid" hidden="true"/>
+				<field name="signatoryUser" canEdit="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
 			</panel>
 		</panel>
 		<panel name="action" title="Action" itemSpan="12" sidebar="true" hideIf="statusSelect == 4 || statusSelect == 5">

@@ -18,7 +18,7 @@
 		<panel name="main" colSpan="12">
 			<field name="name"/>
 			<field name="bankStatement" domain="self.statusSelect = 2"/>
-			<field name="company" widget="SuggestBox" onChange="action-bank-reconciliation-set-currency" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" widget="SuggestBox" onChange="action-bank-reconciliation-set-currency" form-view="company-form" grid-view="company-grid"/>
 			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="fromDate"/>
 			<field name="toDate"/>

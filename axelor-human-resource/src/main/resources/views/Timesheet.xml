@@ -60,8 +60,8 @@
 	    </panel>
 		<panel name="head">
 		    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
-			<field name="company" colSpan="6" form-view="company-form" grid-view="company-grid"/>
-			<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"/>
+			<field name="company" canEdit="false" colSpan="6" form-view="company-form" grid-view="company-grid"/>
+			<field name="user" canEdit="false" colSpan="6" form-view="user-form" grid-view="user-grid"/>
 			<field name="fromDate" onChange="action-timesheet-validate-fromDate"/>
 			<field name="toDate" onChange="action-timesheet-validate-toDate"/>
 		</panel>
@@ -69,7 +69,7 @@
 		    <field name="$fromGenerationDate" title="From generation date" widget="Date"/>
 			<field name="$toGenerationDate" title="To generation date" widget="Date"/>
 			<field name="$projectTask" title="Project/Task" target="com.axelor.apps.project.db.ProjectTask" type="many-to-one" form-view="project-task-form" grid-view="project-task-grid" onSelect="action-hr-timesheet-attrs-domain-project-task" onChange="action-hr-timesheet-record-empty-product"/>
-			<field name="$product" title="Activity" type="many-to-one" target="com.axelor.apps.base.db.Product" Select="action-hr-timesheet-attrs-domain-product" onSelect="action-hr-timesheet-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid"/>
+			<field name="$product" title="Activity" type="many-to-one" target="com.axelor.apps.base.db.Product" canEdit="false" Select="action-hr-timesheet-attrs-domain-product" onSelect="action-hr-timesheet-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid"/>
 			<field name="$logTime" type="decimal"/>
 			<button name="generateLines" title="Generate lines" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines,action-timesheet-attrs-generale-lines-panel-hidden-true"/>
 		</panel>
@@ -78,8 +78,8 @@
     	<panel-dashlet name="panelDashboard" title="Total Hours per Day" showIf="id" action="action-timesheet-view-total-hours-per-day"/>
 		<panel itemSpan="4" sidebar="true" showIf="sentDate != null">
 		 	<field name="sentDate"/>
-			<field name="validatedBy" form-view="user-form" grid-view="user-grid" showIf="validatedBy != null"/>
-			<field name="refusedBy" form-view="user-form" grid-view="user-grid" showIf="refusedBy != null"/>
+			<field name="validatedBy" canEdit="false" form-view="user-form" grid-view="user-grid" showIf="validatedBy != null"/>
+			<field name="refusedBy" canEdit="false" form-view="user-form" grid-view="user-grid" showIf="refusedBy != null"/>
 			<field name="validationDate" colOffset="4" showIf="validationDate != null"/>
 			<field name="refusalDate" showIf="refusalDate != null"/>
 			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>

@@ -169,7 +169,7 @@
 				</field>
 
 			</panel>
-			<field name="company" widget="SuggestBox"
+			<field name="company" canEdit="false" widget="SuggestBox"
 				onChange="action-group-account-invoice-company-onchange, action-invoice-attrs-hide-totals-company-currency"
 				form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1 || partner != null" />
 			<field name="companyBankDetails" widget="SuggestBox"
@@ -277,7 +277,7 @@
 				<field name="reminderBlockingOk" />
 				<panel name="debitBlockingGroup" title="Direct debit blocking"
 					showIf="debitBlockingOk" colSpan="12">
-					<field name="debitBlockingByUser" form-view="user-form"
+					<field name="debitBlockingByUser" canEdit="false" form-view="user-form"
 						grid-view="user-grid" />
 					<field name="debitBlockingToDate" />
 					<field name="debitBlockingReason" form-view="stop-reason-form"
@@ -285,7 +285,7 @@
 				</panel>
 				<panel showIf="reminderBlockingOk" name="reminderBlocking"
 					title="Reminder blocking" colSpan="12">
-					<field name="reminderBlockingByUser" form-view="user-form"
+					<field name="reminderBlockingByUser" canEdit="true" form-view="user-form"
 						grid-view="user-grid" />
 					<field name="reminderBlockingToDate" />
 					<field name="reminderBlockingReason" form-view="stop-reason-form"
@@ -348,7 +348,7 @@
 			<button name="addPayment" title="Register payment"
 				showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12"
 				onClick="save,action-invoice-view-register-payment" />
-			<field name="validatedByUser" grid-view="user-grid" form-view="user-form" />
+			<field name="validatedByUser" canEdit="false" grid-view="user-grid" form-view="user-form" />
 		</panel>
 
 		<panel sidebar="true" name="totals" title="Totals" itemSpan="6" hideIf="partner == null">
