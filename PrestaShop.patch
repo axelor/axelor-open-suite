@@ -1,0 +1,4528 @@
+diff --git a/axelor-prestashop/build.gradle b/axelor-prestashop/build.gradle
+new file mode 100644
+index 0000000..477b6ec
+--- /dev/null
++++ b/axelor-prestashop/build.gradle
+@@ -0,0 +1,20 @@
++apply plugin: "com.axelor.app-module"
++
++apply {
++	version = "5.0.0-SNAPSHOT"
++}
++
++axelor {
++	title "Axelor :: PrestaShop"
++	description "Axelor PrestaShop Module"
++
++	removable true
++}
++
++dependencies {
++	compile project(":modules:axelor-base")
++	compile project(":modules:axelor-sale")
++	compile project(":modules:axelor-account")
++	compile project(":modules:axelor-supplychain")
++	compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.3'
++}
+\ No newline at end of file
+diff --git a/axelor-prestashop/src/main/java/com/axelor/apps/db/IPrestaShopBatch.java b/axelor-prestashop/src/main/java/com/axelor/apps/db/IPrestaShopBatch.java
+new file mode 100644
+index 0000000..5927c98
+--- /dev/null
++++ b/axelor-prestashop/src/main/java/com/axelor/apps/db/IPrestaShopBatch.java
+@@ -0,0 +1,37 @@
++/**
++ * Axelor Business Solutions
++ *
++ * Copyright (C) 2017 Axelor (<http://axelor.com>).
++ *
++ * This program is free software: you can redistribute it and/or  modify
++ * it under the terms of the GNU Affero General Public License, version 3,
++ * as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++package com.axelor.apps.db;
++
++/**
++ * Interface of Event object. Enum all static variable of object.
++ * 
++ * @author dubaux
++ * 
++ */
++public interface IPrestaShopBatch {
++
++
++	/**
++	 * Static select in CrmBatch
++	 */
++
++	// ACTION TYPE
++	static final int BATCH_IMPORT = 1;
++	static final int BATCH_EXPORT = 2;
++	
++}
+diff --git a/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/app/AppPrestaShopService.java b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/app/AppPrestaShopService.java
+new file mode 100644
+index 0000000..2d0a214
+--- /dev/null
++++ b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/app/AppPrestaShopService.java
+@@ -0,0 +1,66 @@
++/**
++ * Axelor Business Solutions
++ *
++ * Copyright (C) 2017 Axelor (<http://axelor.com>).
++ *
++ * This program is free software: you can redistribute it and/or  modify
++ * it under the terms of the GNU Affero General Public License, version 3,
++ * as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++package com.axelor.apps.prestashop.app;
++
++import java.util.HashMap;
++import com.axelor.apps.base.db.AppPrestashop;
++import com.axelor.apps.prestashop.service.PSWebServiceClient;
++
++public class AppPrestaShopService {
++
++	public boolean connection(AppPrestashop ps) {
++		
++		String shopUrl = ps.getPrestaShopUrl();
++		String key = ps.getPrestaShopKey();
++		
++		try {
++			char end = shopUrl.charAt(shopUrl.length() - 1);
++
++			if (end == '/') {
++				return false;
++			}
++			PSWebServiceClient ws = new PSWebServiceClient(shopUrl + "/api", key);
++			HashMap<String, Object> opt = new HashMap<String, Object>();
++			opt.put("url", shopUrl + "/api");
++			ws.get(opt);
++			return true;
++		} catch (Exception e) {
++			
++			return false;
++		}
++	}
++	
++	public boolean urlTest(AppPrestashop ps) {
++		
++		String url = null; 
++		url = ps.getPrestaShopUrl();		
++		
++		if (url == null) {
++			return true;
++		}
++		
++		char end = url.charAt(url.length() - 1);
++
++		if(end == '/') {
++			return true;
++		}
++		return false;
++	}
++
++}
+diff --git a/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/batch/PrestaShopBatchService.java b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/batch/PrestaShopBatchService.java
+new file mode 100644
+index 0000000..72283eb
+--- /dev/null
++++ b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/batch/PrestaShopBatchService.java
+@@ -0,0 +1,99 @@
++/**
++ * Axelor Business Solutions
++ *
++ * Copyright (C) 2017 Axelor (<http://axelor.com>).
++ *
++ * This program is free software: you can redistribute it and/or  modify
++ * it under the terms of the GNU Affero General Public License, version 3,
++ * as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++package com.axelor.apps.prestashop.batch;
++
++
++import com.axelor.apps.base.db.Batch;
++import com.axelor.apps.base.exceptions.IExceptionMessage;
++import com.axelor.apps.crm.db.CrmBatch;
++import com.axelor.apps.crm.db.ICrmBatch;
++import com.axelor.apps.crm.db.repo.CrmBatchRepository;
++import com.axelor.apps.db.IPrestaShopBatch;
++import com.axelor.apps.prestashop.db.PrestaShopBatch;
++import com.axelor.apps.prestashop.db.repo.PrestaShopBatchRepository;
++import com.axelor.apps.prestashop.service.exports.batch.ExportPrestaShop;
++import com.axelor.apps.prestashop.service.imports.batch.ImportPrestaShop;
++import com.axelor.exception.AxelorException;
++import com.axelor.exception.db.IException;
++import com.axelor.i18n.I18n;
++import com.axelor.inject.Beans;
++import com.google.inject.Inject;
++
++/**
++ * InvoiceBatchService est une classe implémentant l'ensemble des batchs de
++ * comptabilité et assimilé.
++ * 
++ * @author Geoffrey DUBAUX
++ * 
++ * @version 0.1
++ */
++public class PrestaShopBatchService {
++
++	
++	@Inject
++	protected PrestaShopBatchRepository prestaShopBatchRepo;
++	
++// Appel 	
++	
++	/**
++	 * Lancer un batch à partir de son code.
++	 * 
++	 * @param batchCode
++	 * 		Le code du batch souhaité.
++	 * 
++	 * @throws AxelorException
++	 */
++	public Batch run(String batchCode) throws AxelorException {
++				
++		Batch batch;
++		PrestaShopBatch prestaShopBatch = prestaShopBatchRepo.findByCode(batchCode);
++		
++		if (prestaShopBatch != null){
++			switch (prestaShopBatch.getActionSelect()) {
++			
++			case IPrestaShopBatch.BATCH_IMPORT:
++				batch = importPrestaShop(prestaShopBatch);
++				break;
++				
++			case IPrestaShopBatch.BATCH_EXPORT:
++				batch = exportPrestaShop(prestaShopBatch);
++				break;
++				
++			default:
++				throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), prestaShopBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
++			}
++		}
++		else {
++			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_2), batchCode), IException.INCONSISTENCY);
++		}
++		return batch;
++	}
++	
++	
++	public Batch importPrestaShop(PrestaShopBatch prestaShopBatch) {
++		
++		return Beans.get(ImportPrestaShop.class).run(prestaShopBatch);
++		
++	}
++	
++	public Batch exportPrestaShop(PrestaShopBatch prestaShopBatch) {
++		
++		return Beans.get(ExportPrestaShop.class).run(prestaShopBatch);
++		
++	}
++}
+diff --git a/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/PSWebServiceClient.java b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/PSWebServiceClient.java
+new file mode 100644
+index 0000000..b72185d
+--- /dev/null
++++ b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/PSWebServiceClient.java
+@@ -0,0 +1,508 @@
++package com.axelor.apps.prestashop.service;
++
++import java.io.BufferedInputStream;
++import java.io.ByteArrayInputStream;
++import java.io.ByteArrayOutputStream;
++import java.io.IOException;
++import java.io.InputStream;
++import java.io.StringWriter;
++import java.io.UnsupportedEncodingException;
++import java.net.MalformedURLException;
++import java.net.URL;
++import java.net.URLEncoder;
++import java.util.HashMap;
++import java.util.Iterator;
++import java.util.Map;
++import javax.xml.parsers.DocumentBuilder;
++import javax.xml.parsers.DocumentBuilderFactory;
++import javax.xml.parsers.ParserConfigurationException;
++import javax.xml.transform.OutputKeys;
++import javax.xml.transform.Transformer;
++import javax.xml.transform.TransformerException;
++import javax.xml.transform.TransformerFactory;
++import javax.xml.transform.dom.DOMSource;
++import javax.xml.transform.stream.StreamResult;
++import org.apache.commons.io.IOUtils;
++import org.apache.http.Consts;
++import org.apache.http.Header;
++import org.apache.http.auth.AuthScope;
++import org.apache.http.auth.UsernamePasswordCredentials;
++import org.apache.http.client.CredentialsProvider;
++import org.apache.http.client.methods.CloseableHttpResponse;
++import org.apache.http.client.methods.HttpUriRequest;
++import org.apache.http.impl.client.BasicCredentialsProvider;
++import org.apache.http.impl.client.CloseableHttpClient;
++import org.apache.http.impl.client.DefaultHttpClient;
++import org.apache.http.impl.client.HttpClients;
++import org.apache.http.HttpEntity;
++import org.apache.http.client.methods.HttpDelete;
++import org.apache.http.client.methods.HttpGet;
++import org.apache.http.client.methods.HttpHead;
++import org.apache.http.client.methods.HttpPost;
++import org.apache.http.client.methods.HttpPut;
++import org.apache.http.entity.ContentType;
++import org.apache.http.entity.StringEntity;
++import org.apache.http.entity.mime.HttpMultipartMode;
++import org.apache.http.entity.mime.MultipartEntityBuilder;
++import org.apache.http.entity.mime.content.ByteArrayBody;
++import org.w3c.dom.Document;
++import org.xml.sax.SAXException;
++
++/**
++ *
++ * @author www.zydor.pl
++ */
++public class PSWebServiceClient {
++    
++    /** @var string Shop URL */
++    protected String url;
++    /** @var string Authentification key */
++    protected String key;
++    
++    private final CloseableHttpClient httpclient;
++    private CloseableHttpResponse response;
++    private HashMap<String,Object> responseReturns;
++
++    /**
++     * PrestaShopWebservice constructor. 
++     * <code>
++     * 
++     * try
++     * {
++     * 	PSWebServiceClient ws = new PSWebServiceClient('http://mystore.com/', 'ZQ88PRJX5VWQHCWE4EE7SQ7HPNX00RAJ', false);
++     * 	// Now we have a webservice object to play with
++     * }
++     * catch (PrestaShopWebserviceException ex)
++     * {
++     * 	// Handle exception
++     * }
++     * 
++     * </code>
++     * @param url Root URL for the shop
++     * @param key Authentification key
++     * @param debug Debug mode Activated (true) or deactivated (false)
++    */
++    public PSWebServiceClient(String url,String key){
++        this.url    = url;
++        this.key    = key;
++        
++        CredentialsProvider credsProvider = new BasicCredentialsProvider();
++        credsProvider.setCredentials(
++                    AuthScope.ANY,
++                    new UsernamePasswordCredentials(key, ""));
++        
++        this.httpclient = HttpClients.custom()
++                .setDefaultCredentialsProvider(credsProvider)
++                .build();
++    }
++    
++    /**
++     * Take the status code and throw an exception if the server didn't return 200 or 201 code
++     * @param status_code Status code of an HTTP return
++     * @throws pswebservice.PrestaShopWebserviceException
++     */
++    protected void checkStatusCode(int status_code) throws PrestaShopWebserviceException
++    {
++
++            String error_label = "This call to PrestaShop Web Services failed and returned an HTTP status of %d. That means: %s.";            
++            switch(status_code)
++            {
++                    case 200:
++                    case 201:	break;
++                    case 204: throw new PrestaShopWebserviceException(String.format(error_label, status_code, "No content"),this);
++                    case 400: throw new PrestaShopWebserviceException(String.format(error_label, status_code, "Bad Request"),this);
++                    case 401: throw new PrestaShopWebserviceException(String.format(error_label, status_code, "Unauthorized"),this);
++                    case 404: throw new PrestaShopWebserviceException(String.format(error_label, status_code, "Not Found"),this);
++                    case 405: throw new PrestaShopWebserviceException(String.format(error_label, status_code, "Method Not Allowed"),this);
++                    case 500: throw new PrestaShopWebserviceException(String.format(error_label, status_code, "Internal Server Error"),this);
++                    default: throw new PrestaShopWebserviceException("This call to PrestaShop Web Services returned an unexpected HTTP status of:" + status_code);
++            }
++    }   
++    
++    protected String getResponseContent() {
++        try {
++            return readInputStreamAsString((InputStream) this.responseReturns.get("response"));
++        } catch (IOException ex) {
++            return "";
++        }
++    }
++    
++    /**
++     * Handles request to PrestaShop Webservice. Can throw exception.
++     * @param url Resource name
++     * @param request
++     * @return array status_code, response
++     * @throws pswebservice.PrestaShopWebserviceException
++     */
++    protected HashMap<String,Object> executeRequest(HttpUriRequest request) throws PrestaShopWebserviceException
++    {
++        
++        HashMap<String,Object> returns = new HashMap<>();
++        
++        try {
++            response = httpclient.execute(request);
++            Header[] headers =response.getAllHeaders();
++            HttpEntity entity = response.getEntity();
++            
++            returns.put("status_code", response.getStatusLine().getStatusCode());
++            returns.put("response", entity.getContent());
++            returns.put("header", headers );
++
++            this.responseReturns = returns;
++            
++        } catch (IOException ex) {
++            throw new PrestaShopWebserviceException("Bad HTTP response : "+ex.toString());
++        }
++        
++        return returns;
++    }
++    
++    /**
++     * Load XML from string. Can throw exception
++     * @param responseBody
++     * @return parsedXml
++     * @throws javax.xml.parsers.ParserConfigurationException
++     * @throws org.xml.sax.SAXException
++     * @throws java.io.IOException
++     */
++    protected Document parseXML(InputStream responseBody) throws ParserConfigurationException, SAXException, IOException
++    {
++        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
++	DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
++        //System.out.println(responseBody);
++        return docBuilder.parse(responseBody);
++    }
++    
++    /**
++     * Add (POST) a resource
++     * <p>Unique parameter must take : <br><br>
++     * 'resource' => Resource name<br>
++     * 'postXml' => Full XML string to add resource<br><br>
++     * @param opt
++     * @return xml response
++     * @throws pswebservice.PrestaShopWebserviceException
++     * @throws TransformerException 
++     */
++    public Document add(Map<String,Object> opt) throws PrestaShopWebserviceException, TransformerException
++    {
++		if ( (opt.containsKey("resource") &&  opt.containsKey("postXml")) || (opt.containsKey("url") &&  opt.containsKey("postXml"))  )
++                {
++                    String completeUrl;
++                    completeUrl = (opt.containsKey("resource") ? this.url+"/api/"+ (String) opt.get("resource") : (String) opt.get("url"));
++                    String xml = (String)opt.get("postXml");
++			if (opt.containsKey("id_shop"))
++				completeUrl += "&id_shop="+ (String)opt.get("id_shop");
++			if (opt.containsKey("id_group_shop"))
++				completeUrl += "&id_group_shop="+(String)opt.get("id_group_shop");
++			
++                    StringEntity entity = new StringEntity(xml, ContentType.create("text/xml", Consts.UTF_8));
++                    //entity.setChunked(true);
++                    
++                    HttpPost httppost = new HttpPost(completeUrl);
++                    httppost.setEntity(entity);
++                    
++                    HashMap<String,Object> resoult = this.executeRequest(httppost);
++                    this.checkStatusCode((Integer)resoult.get("status_code"));
++                    		
++                    try {
++                    	String obj = IOUtils.toString((InputStream)resoult.get("response"));
++                    	InputStream is = new ByteArrayInputStream(obj.trim().getBytes());
++                    	Document doc = this.parseXML(is);
++                        response.close();
++                        return doc;
++                    } catch (ParserConfigurationException | SAXException | IOException ex) {
++                    	ex.printStackTrace();
++                        throw new PrestaShopWebserviceException("Response XML Parse exception");
++                    }
++                
++		}
++		else
++                {
++			throw new PrestaShopWebserviceException("Bad parameters given");
++                }
++                
++      
++    }
++
++    /**
++     * Retrieve (GET) a resource
++     * <p>Unique parameter must take : <br><br>
++     * 'url' => Full URL for a GET request of Webservice (ex: http://mystore.com/api/customers/1/)<br>
++     * OR<br>
++     * 'resource' => Resource name,<br>
++     * 'id' => ID of a resource you want to get<br><br>
++     * </p>
++     * <code>
++     * 
++     * try
++     * {
++     *  PSWebServiceClient ws = new PrestaShopWebservice('http://mystore.com/', 'ZQ88PRJX5VWQHCWE4EE7SQ7HPNX00RAJ', false);
++     *  HashMap<String,Object> opt = new HashMap();
++     *  opt.put("resouce","orders");
++     *  opt.put("id",1);
++     *  Document xml = ws->get(opt);
++     *	// Here in xml, a XMLElement object you can parse
++     * catch (PrestaShopWebserviceException ex)
++     * {
++     *  Handle exception
++     * }
++     * 
++     * </code>
++     * @param opt Map representing resource to get.
++     * @return Document response
++     * @throws pswebservice.PrestaShopWebserviceException
++     */
++    public Document get(Map<String,Object> opt) throws PrestaShopWebserviceException
++    {
++        String completeUrl;
++            if (opt.containsKey("url")){
++                    completeUrl = (String) opt.get("url");
++            }
++            else if (opt.containsKey("resource"))
++            {
++                    completeUrl = this.url +"/api/"+ opt.get("resource");
++                    if (opt.containsKey("id"))
++                            completeUrl += "/"+opt.get("id");
++
++                    String[] params = new String[]{"filter", "display", "sort", "limit", "id_shop", "id_group_shop"};
++                    for (String p : params)
++                        if (opt.containsKey(p))
++                            try {
++                            	Object param = opt.get(p);
++                            	
++                            	if (param instanceof HashMap) {
++                            		Map xparams = (HashMap) param;
++                            		Iterator it = xparams.entrySet().iterator();
++                            	    while (it.hasNext()) {
++                            	        Map.Entry pair = (Map.Entry)it.next();
++                            	        completeUrl += "?"+p+"["+pair.getKey()+"]="+URLEncoder.encode((String)pair.getValue(), "UTF-8")+"&";
++                            	        it.remove(); // avoids a ConcurrentModificationException
++                            	    }
++                            	} else {
++                            		completeUrl += "?"+p+"="+URLEncoder.encode((String)opt.get(p), "UTF-8")+"&";
++                            	}
++                            } catch (UnsupportedEncodingException ex) {
++                                throw new PrestaShopWebserviceException("URI encodin excepton: "+ex.toString());
++                            }
++                      
++            }else{
++                throw new PrestaShopWebserviceException("Bad parameters given");
++            }
++           
++        HttpGet httpget = new HttpGet(completeUrl);
++        HashMap<String,Object> resoult = this.executeRequest(httpget);
++        this.checkStatusCode((int) resoult.get("status_code"));// check the response validity
++
++        try {  
++            Document doc = this.parseXML((InputStream)resoult.get("response"));
++            response.close();
++            return doc;
++        } catch (ParserConfigurationException | SAXException | IOException ex) {
++            throw new PrestaShopWebserviceException("Response XML Parse exception: "+ex.toString());
++        }            
++            
++    }    
++    
++    /**
++     * Head method (HEAD) a resource
++     *
++     * @param opt Map representing resource for head request.
++     * @return XMLElement status_code, response
++     */
++    public Map<String,String> head(Map<String,Object> opt) throws PrestaShopWebserviceException
++    {
++        String completeUrl;
++            if (opt.containsKey("url")){
++                    completeUrl = (String) opt.get("url");
++            }
++            else if (opt.containsKey("resource"))
++            {
++                    completeUrl = this.url+"/api/"+opt.get("resource");
++                    if (opt.containsKey("id"))
++                            completeUrl += "/"+opt.get("id");
++
++                    String[] params = new String[]{"filter", "display", "sort", "limit"};
++                    for (String p : params)
++                        if (opt.containsKey("p"))
++                            try {
++                                completeUrl += "?"+p+"="+URLEncoder.encode((String)opt.get(p), "UTF-8")+"&";
++                            } catch (UnsupportedEncodingException ex) {
++                                throw new PrestaShopWebserviceException("URI encodin excepton: "+ex.toString());
++                            }
++
++            }
++            else
++                    throw new PrestaShopWebserviceException("Bad parameters given");
++            
++            
++            
++            HttpHead httphead = new HttpHead(completeUrl);
++            HashMap<String,Object> resoult = this.executeRequest(httphead);
++            this.checkStatusCode((int) resoult.get("status_code"));// check the response validity
++            
++            HashMap<String,String> headers = new HashMap();
++            for(Header h : (Header[])resoult.get("header")){
++                headers.put(h.getName(),h.getValue());
++            }
++            return headers;
++    }    
++ 
++    /**
++     * Edit (PUT) a resource
++     * <p>Unique parameter must take : <br><br>
++     * 'resource' => Resource name ,<br>
++     * 'id' => ID of a resource you want to edit,<br>
++     * 'putXml' => Modified XML string of a resource<br><br>
++     * @param opt representing resource to edit.
++     * @return 
++     * @throws TransformerException 
++     */
++    public Document edit(Map<String,Object> opt) throws PrestaShopWebserviceException, TransformerException
++    {
++            
++        String xml ="";
++            String completeUrl;
++            if (opt.containsKey("url"))
++                    completeUrl = (String) opt.get("url");
++            else if (((opt.containsKey("resource") && opt.containsKey("id"))  || opt.containsKey("url")) && opt.containsKey("putXml"))
++            {
++                    completeUrl = (opt.containsKey("url")) ? (String)opt.get("url") : this.url+"/api/"+opt.get("resource")+"/"+opt.get("id") ;
++                    xml = (String) opt.get("putXml");
++                    if (opt.containsKey("id_shop"))
++                            completeUrl += "&id_shop="+opt.get("id_shop");
++                    if (opt.containsKey("id_group_shop"))
++                            completeUrl += "&id_group_shop="+opt.get("id_group_shop");
++            }
++            else
++                throw new PrestaShopWebserviceException("Bad parameters given");
++
++
++            StringEntity entity = new StringEntity(xml, ContentType.create("text/xml", Consts.UTF_8));
++            //entity.setChunked(true);
++            
++            HttpPut httpput = new HttpPut(completeUrl);
++            httpput.setEntity(entity);
++            HashMap<String,Object> resoult = this.executeRequest(httpput);
++            this.checkStatusCode((int) resoult.get("status_code"));// check the response validity
++            
++            try {  
++                Document doc = this.parseXML((InputStream)resoult.get("response"));
++                response.close();
++                return doc;
++            } catch (ParserConfigurationException | SAXException | IOException ex) {
++                throw new PrestaShopWebserviceException("Response XML Parse exception: "+ex.toString());
++            }  
++    } 
++    
++    /**
++     * Delete (DELETE) a resource.
++     * Unique parameter must take : <br><br>
++     * 'resource' => Resource name<br>
++     * 'id' => ID or array which contains IDs of a resource(s) you want to delete<br><br>
++     * @param opt representing resource to delete.
++     * @return 
++     * @throws pswebservice.PrestaShopWebserviceException 
++     */
++    public boolean delete(Map<String,Object> opt) throws PrestaShopWebserviceException
++    {
++        String completeUrl = "";
++            if (opt.containsKey("url"))
++                    completeUrl = (String) opt.get("url");
++            else if (opt.containsKey("resource") && opt.containsKey("id"))
++                    //if (opt.get("id"))
++                    //        completeUrl = this.url+"/api/"+opt.get("resource")+"/?id=[".implode(',', $options['id'])+"]";
++                    //else
++                            completeUrl = this.url+"/api/"+opt.get("resource")+"/"+opt.get("id");
++            
++            if (opt.containsKey("id_shop"))
++                    completeUrl += "&id_shop="+opt.get("id_shop");
++            if (opt.containsKey("id_group_shop"))
++                    completeUrl += "&id_group_shop="+opt.get("id_group_shop");
++            
++            HttpDelete httpdelete = new HttpDelete(completeUrl);
++            HashMap<String,Object> resoult = this.executeRequest(httpdelete);
++
++            this.checkStatusCode((int) resoult.get("status_code"));// check the response validity    
++            
++            return true;
++    }    
++    
++     /**
++     * 
++     * @param imgURL
++     * @param productId
++     * @return xml response
++     * @throws pswebservice.PrestaShopWebserviceException
++     * @throws java.net.MalformedURLException
++     */
++    public Document addImg(String imgURL,Integer productId) throws PrestaShopWebserviceException, MalformedURLException, IOException
++    {
++                        
++        URL imgUrl = new URL(imgURL);
++        InputStream is = imgUrl.openStream();
++           
++        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
++        int nRead;
++        byte[] data = new byte[16384];
++        while ((nRead = is.read(data, 0, data.length)) != -1) {
++          buffer.write(data, 0, nRead);
++        }
++        buffer.flush();        
++        
++        String completeUrl =  this.url+"/api/images/products/"+ String.valueOf(productId);
++        HttpPost httppost = new HttpPost(completeUrl);          
++
++        MultipartEntityBuilder builder = MultipartEntityBuilder.create();         
++        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
++        builder.addPart("image", new ByteArrayBody(buffer.toByteArray(), "upload.jpg"));
++        
++        HttpEntity entity = builder.build();       
++        httppost.setEntity(entity);
++
++        HashMap<String,Object> resoult = this.executeRequest(httppost);
++        this.checkStatusCode((Integer)resoult.get("status_code"));
++
++        try {  
++            Document doc = this.parseXML((InputStream)resoult.get("response"));
++            response.close();
++            return doc;
++        } catch (ParserConfigurationException | SAXException | IOException ex) {
++            throw new PrestaShopWebserviceException("Response XML Parse exception");
++        }
++
++    }
++
++    private String readInputStreamAsString(InputStream in) 
++        throws IOException {
++
++        BufferedInputStream bis = new BufferedInputStream(in);
++        ByteArrayOutputStream buf = new ByteArrayOutputStream();
++        int result = bis.read();
++        while(result != -1) {
++          byte b = (byte)result;
++          buf.write(b);
++          result = bis.read();
++        }      
++        
++        String returns = buf.toString();
++        return returns;
++    }  
++    
++    public String DocumentToString(Document doc) throws TransformerException {
++        TransformerFactory transfac = TransformerFactory.newInstance();
++        Transformer trans = transfac.newTransformer();
++        trans.setOutputProperty(OutputKeys.METHOD, "xml");
++        trans.setOutputProperty(OutputKeys.INDENT, "yes");
++        trans.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(2));
++
++        StringWriter sw = new StringWriter();
++        StreamResult result = new StreamResult(sw);
++        DOMSource source = new DOMSource(doc.getDocumentElement());
++
++        trans.transform(source, result);
++        String xmlString = sw.toString();
++        
++        return xmlString;
++    }
++   
++}
+diff --git a/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/PrestaShopWebserviceException.java b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/PrestaShopWebserviceException.java
+new file mode 100644
+index 0000000..5df9a52
+--- /dev/null
++++ b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/PrestaShopWebserviceException.java
+@@ -0,0 +1,19 @@
++package com.axelor.apps.prestashop.service;
++
++import java.io.IOException;
++
++/**
++ *
++ * @author www.zydor.pl
++ */
++
++public class PrestaShopWebserviceException extends Exception {
++    
++    public PrestaShopWebserviceException(String massage){
++        super(massage);
++    }
++    
++    public PrestaShopWebserviceException(String massage,PSWebServiceClient ws) {
++        super(massage + '\n'+ws.getResponseContent());
++    }
++}
+\ No newline at end of file
+diff --git a/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/exports/PrestaShopServiceExport.java b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/exports/PrestaShopServiceExport.java
+new file mode 100644
+index 0000000..816e697
+--- /dev/null
++++ b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/exports/PrestaShopServiceExport.java
+@@ -0,0 +1,58 @@
++/**
++ * Axelor Business Solutions
++ *
++ * Copyright (C) 2017 Axelor (<http://axelor.com>).
++ *
++ * This program is free software: you can redistribute it and/or  modify
++ * it under the terms of the GNU Affero General Public License, version 3,
++ * as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++package com.axelor.apps.prestashop.service.exports;
++
++import java.io.File;
++import java.io.IOException;
++import java.time.ZonedDateTime;
++import javax.xml.transform.TransformerException;
++import com.axelor.apps.prestashop.service.PrestaShopWebserviceException;
++import com.axelor.meta.MetaFiles;
++import com.axelor.meta.db.MetaFile;
++import com.google.inject.Inject;
++
++public class PrestaShopServiceExport {
++	
++	@Inject
++	private PrestaShopServiceImplExport psExport;
++	
++	@Inject
++	private MetaFiles metaFiles;
++	
++	public void exportAxelorBase(ZonedDateTime endDate) throws PrestaShopWebserviceException, TransformerException, IOException {
++		
++		psExport.exportAxelorCurrencies(endDate);
++		psExport.exportAxelorCountries(endDate);
++		psExport.exportAxelorPartners(endDate);
++		psExport.exportAxelorPartnerAddresses(endDate);
++		psExport.exportAxelorProductCategories(endDate);
++		psExport.exportAxelorProducts(endDate);
++	}	
++	
++	public MetaFile exportPrestShop(ZonedDateTime endDate) throws PrestaShopWebserviceException, TransformerException, IOException {
++		
++		this.exportAxelorBase(endDate);
++		psExport.exportAxelorSaleOrders(endDate);
++		psExport.exportAxelorSaleOrderLines();
++		
++		File exportFile = psExport.closeLog();
++		MetaFile exporMetatFile = metaFiles.upload(exportFile);
++		return exporMetatFile;
++	}
++}
+diff --git a/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/exports/PrestaShopServiceImplExport.java b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/exports/PrestaShopServiceImplExport.java
+new file mode 100644
+index 0000000..de398ab
+--- /dev/null
++++ b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/exports/PrestaShopServiceImplExport.java
+@@ -0,0 +1,1186 @@
++/**
++ * Axelor Business Solutions
++ *
++ * Copyright (C) 2017 Axelor (<http://axelor.com>).
++ *
++ * This program is free software: you can redistribute it and/or  modify
++ * it under the terms of the GNU Affero General Public License, version 3,
++ * as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++package com.axelor.apps.prestashop.service.exports;
++
++import java.io.BufferedWriter;
++import java.io.File;
++import java.io.FileWriter;
++import java.io.IOException;
++import java.math.BigDecimal;
++import java.math.RoundingMode;
++import java.net.MalformedURLException;
++import java.nio.file.Path;
++import java.time.ZonedDateTime;
++import java.util.ArrayList;
++import java.util.HashMap;
++import java.util.List;
++import javax.xml.transform.TransformerException;
++
++import org.apache.poi.hssf.record.ScenarioProtectRecord;
++import org.w3c.dom.Document;
++import org.w3c.dom.Element;
++import org.w3c.dom.Node;
++import org.w3c.dom.NodeList;
++import com.axelor.apps.base.db.AppPrestashop;
++import com.axelor.apps.base.db.Country;
++import com.axelor.apps.base.db.Currency;
++import com.axelor.apps.base.db.Partner;
++import com.axelor.apps.base.db.PartnerAddress;
++import com.axelor.apps.base.db.Product;
++import com.axelor.apps.base.db.ProductCategory;
++import com.axelor.apps.base.db.repo.AppPrestashopRepository;
++import com.axelor.apps.base.db.repo.CountryRepository;
++import com.axelor.apps.base.db.repo.CurrencyRepository;
++import com.axelor.apps.base.db.repo.PartnerAddressRepository;
++import com.axelor.apps.base.db.repo.PartnerRepository;
++import com.axelor.apps.base.db.repo.ProductCategoryRepository;
++import com.axelor.apps.base.db.repo.ProductRepository;
++import com.axelor.apps.prestashop.db.SaleOrderStatus;
++import com.axelor.apps.prestashop.service.PSWebServiceClient;
++import com.axelor.apps.prestashop.service.PrestaShopWebserviceException;
++import com.axelor.apps.sale.db.SaleOrder;
++import com.axelor.apps.sale.db.SaleOrderLine;
++import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
++import com.axelor.apps.sale.db.repo.SaleOrderRepository;
++import com.axelor.apps.stock.db.StockMoveLine;
++import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
++import com.axelor.exception.AxelorException;
++import com.axelor.exception.db.IException;
++import com.axelor.inject.Beans;
++import com.axelor.meta.MetaFiles;
++import com.axelor.meta.db.MetaFile;
++import com.google.inject.Inject;
++import com.google.inject.persist.Transactional;
++
++import edu.emory.mathcs.backport.java.util.Collections;
++
++public class PrestaShopServiceImplExport {
++
++	@Inject
++	private MetaFiles metaFiles;
++
++	@Inject
++	private CountryRepository countryRepo;
++	
++	@Inject
++	private CurrencyRepository currencyRepo;
++	
++	@Inject
++	private PartnerRepository partnerRepo;
++	
++	@Inject
++	private ProductCategoryRepository productCategoryRepo;
++	
++	@Inject
++	private ProductRepository productRepo;
++	
++	@Inject
++	private SaleOrderRepository saleOrderRepo;
++	
++	@Inject
++	private SaleOrderLineRepository saleOrderLineRepo;
++
++	File exportFile = File.createTempFile("Export Log", ".txt");
++	FileWriter fwExport = null;
++	BufferedWriter bwExport = null;
++	Integer cnt = 0;
++
++	private final String shopUrl;
++	private final String key;
++	private final boolean isStatus;
++	private final List<SaleOrderStatus> saleOrderStatus;
++
++	PSWebServiceClient ws;
++	HashMap<String, Object> opt;
++	Document schema;
++
++	public PrestaShopServiceImplExport() throws IOException {
++
++		AppPrestashop prestaShopObj = Beans.get(AppPrestashopRepository.class).all().fetchOne();
++		shopUrl = prestaShopObj.getPrestaShopUrl();
++		key = prestaShopObj.getPrestaShopKey();
++		isStatus = prestaShopObj.getIsOrderStatus();
++		saleOrderStatus = prestaShopObj.getSaleOrderStatus();
++		ws = new PSWebServiceClient(shopUrl, key);
++		fwExport = new FileWriter(exportFile);
++		bwExport = new BufferedWriter(fwExport);
++	}
++
++	public void exportLogObjectHeder(String objectName) throws IOException {
++		bwExport.newLine();
++		bwExport.write("--------------");
++		bwExport.newLine();
++		bwExport.write(objectName + " object");
++		bwExport.newLine();
++		bwExport.write("--------------");
++	}
++
++	public void exportLog(String id, String msg) throws IOException {
++		bwExport.newLine();
++		bwExport.write("Id - " + id + " " + msg);
++	}
++
++	public File closeLog() throws IOException {
++		bwExport.close();
++		fwExport.close();
++
++		return exportFile;
++	}
++
++	public void exportNewConnection(String apiName) throws PrestaShopWebserviceException {
++		ws = new PSWebServiceClient(shopUrl + "/api/" + apiName + "?schema=blank", key);
++		opt = new HashMap<String, Object>();
++		opt.put("url", shopUrl + "/api/" + apiName + "?schema=blank");
++		schema = ws.get(opt);
++	}
++
++	public void exportUpdateConnection(String resource, String id) throws PrestaShopWebserviceException {
++		ws = new PSWebServiceClient(shopUrl, key);
++		opt = new HashMap<String, Object>();
++		opt.put("resource", resource);
++		opt.put("id", id);
++		schema = ws.get(opt);
++	}
++
++	public Document addRecord(String resource, Document schemaObj)
++			throws TransformerException, PrestaShopWebserviceException {
++		opt.put("resource", resource);
++		opt.put("postXml", ws.DocumentToString(schemaObj));
++		Document document = ws.add(opt);
++		return document;
++	}
++
++	public void updatRecord(String resource, Document schemaObj, String id)
++			throws PrestaShopWebserviceException, TransformerException {
++		HashMap<String, Object> updateOpt = new HashMap<String, Object>();
++		updateOpt.put("resource", resource);
++		updateOpt.put("putXml", ws.DocumentToString(schemaObj));
++		updateOpt.put("id", id);
++		ws.edit(updateOpt);
++	}
++
++	public List<String> fetchApiIds(String resources, String node) throws PrestaShopWebserviceException {
++
++		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
++		opt = new HashMap<String, Object>();
++		opt.put("resource", resources);
++		Document schema = ws.get(opt);
++		NodeList nodeList = schema.getElementsByTagName(node);
++		List<String> ids = new ArrayList<String>();
++
++		for (int x = 0, size = nodeList.getLength(); x < size; x++) {
++			ids.add(nodeList.item(x).getAttributes().getNamedItem("id").getNodeValue());
++		}
++		return ids;
++	}
++	
++	public void addImages(MetaFile productPicture)
++			throws PrestaShopWebserviceException, TransformerException, MalformedURLException, IOException {
++
++		ws = new PSWebServiceClient(shopUrl, key);
++		opt = new HashMap<String, Object>();
++		opt.put("resource", "products");
++		schema = ws.get(opt);
++		NodeList productsNodeList = schema.getElementsByTagName("product");
++
++		List<Long> sortIds = new ArrayList<>();
++		for (int x = 0; x < productsNodeList.getLength(); x++) {
++			sortIds.add(Long.parseLong(productsNodeList.item(x).getAttributes().getNamedItem("id").getNodeValue()));
++		}
++		Collections.sort(sortIds);
++		Integer productId = Integer.parseInt(sortIds.get(sortIds.size() - 1).toString());
++
++		Path path = metaFiles.getPath(productPicture);
++		ws = new PSWebServiceClient(shopUrl, key);
++		ws.addImg(path.toUri().toString(), productId);
++	}
++
++	public String fetchCategories(String catName) throws PrestaShopWebserviceException {
++
++		String cat_id = "";
++		List<String> categoriesIds = fetchApiIds("categories", "category");
++
++		for (String id : categoriesIds) {
++			PSWebServiceClient ws = new PSWebServiceClient(shopUrl + "/api/categories/" + id, key);
++			opt = new HashMap<String, Object>();
++			opt.put("resource", "categories");
++			Document catSchema = ws.get(opt);
++			NodeList list = catSchema.getChildNodes();
++
++			for (int i = 0; i < list.getLength(); i++) {
++				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
++					Element element = (Element) list.item(i);
++					if (element.getElementsByTagName("name").item(0).getTextContent().toString().equals(catName)) {
++						cat_id = element.getElementsByTagName("id").item(0).getTextContent().toString();
++					}
++				}
++			}
++		}
++		return cat_id;
++	}
++	
++	public String isCurrency(String currencyCode) throws PrestaShopWebserviceException {
++		
++		String prestaShopId = null;
++		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
++		HashMap<String, String> currencyMap = new HashMap<String, String>();
++		currencyMap.put("iso_code", currencyCode);
++		opt = new HashMap<String, Object>();
++		opt.put("resource", "currencies");
++		opt.put("filter", currencyMap);
++		Document str =  ws.get(opt);
++		
++		NodeList list = str.getElementsByTagName("currencies");
++		for(int i = 0; i < list.getLength(); i++) {
++		    Element element = (Element) list.item(i);
++		    NodeList node = element.getElementsByTagName("currency");
++		    Node currency = node.item(i);
++		    if(node.getLength() > 0) {
++		    	prestaShopId = currency.getAttributes().getNamedItem("id").getNodeValue();
++		    	return prestaShopId;
++		    }
++		}
++		return prestaShopId;
++	}
++	
++	public String isCountry(String countryCode) throws PrestaShopWebserviceException {
++		
++		String prestaShopId = null;
++		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
++		HashMap<String, String> countryMap = new HashMap<String, String>();
++		countryMap.put("iso_code", countryCode);
++		opt = new HashMap<String, Object>();
++		opt.put("resource", "countries");
++		opt.put("filter", countryMap);
++		Document str =  ws.get(opt);
++		
++		NodeList list = str.getElementsByTagName("countries");
++		for(int i = 0; i < list.getLength(); i++) {
++		    Element element = (Element) list.item(i);
++		    NodeList node = element.getElementsByTagName("country");
++		    Node country = node.item(i);
++		    if(node.getLength() > 0) {
++		    	prestaShopId = country.getAttributes().getNamedItem("id").getNodeValue();
++		    	return prestaShopId;
++		    }
++		}
++		return prestaShopId;
++	}
++	
++	public void exportResetOrderDetails(String orderId) throws PrestaShopWebserviceException {
++		
++		String orderDetailId = null;
++		ws = new PSWebServiceClient(shopUrl, key);
++		HashMap<String, String> orderDetailMap = new HashMap<String, String>();
++		orderDetailMap.put("id_order", orderId);
++		opt = new HashMap<String, Object>();
++		opt.put("resource", "order_details");
++		opt.put("filter", orderDetailMap);
++		Document str =  ws.get(opt);
++		
++		NodeList list = str.getElementsByTagName("order_details");
++		for(int i = 0; i < list.getLength(); i++) {
++		    Element element = (Element) list.item(i);
++		    NodeList nodeList = element.getElementsByTagName("order_detail");
++		    for(int j = 0; j < nodeList.getLength(); j++) {
++		    	Node order = nodeList.item(j);
++		    	
++		    	if(nodeList.getLength() > 0) {
++		    		orderDetailId =  order.getAttributes().getNamedItem("id").getNodeValue();
++		    		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
++			    	HashMap<String, Object> opt  = new HashMap<String, Object>();
++			    	opt.put("resource", "order_details");
++			    	opt.put("id", orderDetailId);
++			    	ws.delete(opt);
++			    }
++		    	
++		    }
++		}
++	}
++	
++	@SuppressWarnings("deprecation")
++	public Partner addPartner(Partner partner) throws IOException {
++		
++		try {
++
++			if (partner.getPartnerTypeSelect() == 1) {
++
++				if (partner.getContactPartnerSet().size() != 0) {
++					schema.getElementsByTagName("company").item(0).setTextContent(partner.getName());
++					
++					if(!partner.getContactPartnerSet().iterator().next().getFirstName().isEmpty() && !partner.getContactPartnerSet().iterator().next().getName().isEmpty()) {
++						schema.getElementsByTagName("firstname").item(0).setTextContent(partner.getContactPartnerSet().iterator().next().getFirstName());
++						schema.getElementsByTagName("lastname").item(0).setTextContent(partner.getContactPartnerSet().iterator().next().getName());
++					} else {
++						throw new AxelorException(String.format("Contact is null or invalid"), IException.NO_VALUE);
++					}
++					
++				} else {
++					throw new AxelorException(String.format("Contact is null or invalid"), IException.NO_VALUE);
++				}
++
++			} else {
++				
++				if (!partner.getName().isEmpty() && !partner.getFirstName().isEmpty()) {
++					schema.getElementsByTagName("firstname").item(0).setTextContent(partner.getFirstName());
++					schema.getElementsByTagName("lastname").item(0).setTextContent(partner.getName());
++				} else {
++					throw new AxelorException(String.format("Individual is null or invalid"),IException.NO_VALUE);
++				}
++			}
++				
++			if (partner.getPaymentCondition() != null) {
++				schema.getElementsByTagName("max_payment_days").item(0)
++						.setTextContent(partner.getPaymentCondition().getPaymentTime().toString());
++			}
++
++			if (partner.getEmailAddress() != null) {
++				schema.getElementsByTagName("email").item(0).setTextContent(partner.getEmailAddress().getAddress());
++			} else {
++				throw new AxelorException(String.format("Email is null or invalid"), IException.NO_VALUE);
++			}
++			
++			schema.getElementsByTagName("id_gender").item(0).setTextContent(partner.getTitleSelect().toString());
++			schema.getElementsByTagName("id_default_group").item(0).setTextContent("3");
++			schema.getElementsByTagName("website").item(0).setTextContent(partner.getWebSite());
++			schema.getElementsByTagName("active").item(0).setTextContent("1");
++			
++		} catch (AxelorException e) {
++			cnt++;
++			exportLog(partner.getId().toString(), e.getMessage());
++		}
++		
++		
++		return partner;
++	}
++	
++	public String getCustomerId() throws PrestaShopWebserviceException {
++		
++		ws = new PSWebServiceClient(shopUrl, key);
++		opt = new HashMap<String, Object>();
++		opt.put("resource", "customers");
++		schema = ws.get(opt);
++		NodeList customersNodeList = schema.getElementsByTagName("customer");
++		List<Long> sortIds = new ArrayList<>();
++
++		for (int x = 0; x < customersNodeList.getLength(); x++) {
++			sortIds.add(Long.parseLong(customersNodeList.item(x).getAttributes().getNamedItem("id").getNodeValue()));
++		}
++
++		Collections.sort(sortIds);
++		return sortIds.get(sortIds.size() - 1).toString();
++	}
++	
++	public ProductCategory addCategory(ProductCategory category) throws PrestaShopWebserviceException {
++		
++		String id_parent = "";
++		schema.getElementsByTagName("active").item(0).setTextContent("1");
++		if (category.getParentProductCategory() == null || category.getParentProductCategory().getPrestaShopId().equals("1") || category.getParentProductCategory().getPrestaShopId().equals("1")) {
++			schema.getElementsByTagName("id_parent").item(0).setTextContent("2");
++		} else {
++			id_parent = category.getParentProductCategory().getPrestaShopId();
++			schema.getElementsByTagName("id_parent").item(0).setTextContent(id_parent);
++		}
++		
++		schema.getElementsByTagName("active").item(0).setTextContent("1");
++		
++		Element name = (Element) schema.getElementsByTagName("name").item(0).getFirstChild();
++		name.setTextContent(null);
++		name.appendChild(schema.createCDATASection(category.getName()));
++		name.setAttribute("id", "1");
++		name.setAttribute("xlink:href", shopUrl + "/api/languages/" + 1);
++
++		Element link_rewrite = (Element) schema.getElementsByTagName("link_rewrite").item(0)
++				.getFirstChild();
++		link_rewrite.setTextContent(null);
++		link_rewrite.appendChild(schema.createCDATASection(category.getCode()));
++		link_rewrite.setAttribute("id", "1");
++		link_rewrite.setAttribute("xlink:href", shopUrl + "/api/languages/" + 1);
++		
++		return category;
++				
++	}
++	
++	public Product addProduct(Product product) {
++		
++		ProductCategory productCategory = productCategoryRepo.findByName(product.getProductCategory().getName());
++		String prestaShopCategoryId = productCategory.getPrestaShopId().toString();
++		
++		schema.getElementsByTagName("id_category_default").item(0).setTextContent(prestaShopCategoryId);
++		
++		Node categoriesRows = schema.getElementsByTagName("categories").item(0);
++		Node defaultRow;
++		Integer totalCategoryRow = schema.getElementsByTagName("category").getLength();
++
++		for (int x = 0; x < totalCategoryRow; x++) {
++			defaultRow = schema.getElementsByTagName("category").item(0);
++			categoriesRows.removeChild(defaultRow);
++		}
++
++		Element categoryRow = schema.createElement("category");
++		Element id = schema.createElement("id");
++		id.setTextContent(null);
++		id.setTextContent(prestaShopCategoryId);
++		categoryRow.appendChild(id);
++		categoriesRows.appendChild(categoryRow);
++		
++		schema.getElementsByTagName("price").item(0).setTextContent(product.getSalePrice().setScale(0, RoundingMode.HALF_UP).toString());
++		schema.getElementsByTagName("width").item(0).setTextContent(product.getWidth().toString());
++		schema.getElementsByTagName("minimal_quantity").item(0).setTextContent("2");
++		schema.getElementsByTagName("on_sale").item(0).setTextContent("0");
++		schema.getElementsByTagName("active").item(0).setTextContent("1");
++		schema.getElementsByTagName("available_for_order").item(0).setTextContent("1");
++		schema.getElementsByTagName("show_price").item(0).setTextContent("1");
++		schema.getElementsByTagName("state").item(0).setTextContent("1");
++		schema.getElementsByTagName("name").item(0).getFirstChild().setTextContent(product.getName());
++
++		if (product.getDescription() != null) {
++			schema.getElementsByTagName("description").item(0).getFirstChild().setTextContent(product.getDescription());
++		}
++
++		if (product.getProductTypeSelect() != null) {
++			schema.getElementsByTagName("link_rewrite").item(0).getFirstChild().setTextContent(product.getProductTypeSelect().toString());
++		}
++		
++		return product;
++	}
++	
++	public void addStock(String id, String quantity) throws PrestaShopWebserviceException, TransformerException {
++		
++		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
++		HashMap<String, Object> opt = new HashMap<String, Object>();
++		opt.put("resource", "stock_availables");
++		opt.put("id", id);
++		Document stockSchema = ws.get(opt);
++		
++			stockSchema.getElementsByTagName("quantity").item(0).setTextContent(quantity);
++			
++		HashMap<String, Object> updateOpt = new HashMap<String, Object>();
++		updateOpt.put("resource", "stock_availables");
++		updateOpt.put("putXml", ws.DocumentToString(stockSchema));
++		updateOpt.put("id", id);
++		ws.edit(updateOpt);	
++			
++	}
++	
++	public String getCartId(SaleOrder saleOrder) throws PrestaShopWebserviceException {
++			
++		String cart_id = "";
++
++			ws = new PSWebServiceClient(shopUrl + "/api/orders/" + saleOrder.getPrestaShopId(),key);
++			opt = new HashMap<String, Object>();
++			opt.put("resource", "orders");
++			schema = ws.get(opt);
++			NodeList list = schema.getChildNodes();
++
++			for (int i = 0; i < list.getLength(); i++) {
++				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
++					Element element = (Element) list.item(i);
++					if (element.getElementsByTagName("id").item(0).getTextContent().toString()
++							.equals(saleOrder.getPrestaShopId())) {
++						cart_id = element.getElementsByTagName("id_cart").item(0).getTextContent().toString();
++					}
++				}
++			}
++		
++		return cart_id;
++	}
++	
++	public void addCartProduct(SaleOrder saleOrder, String[] saleOrder_product_id, String id_address_delivery) {
++		
++		Node cartRows = schema.getElementsByTagName("cart_rows").item(0);
++		Node defaultRow;
++		Integer totalCartRow = schema.getElementsByTagName("cart_row").getLength();
++
++		for (int x = 0; x < totalCartRow; x++) {
++			defaultRow = schema.getElementsByTagName("cart_row").item(0);
++			cartRows.removeChild(defaultRow);
++		}
++
++		for (int j = 0; j < saleOrder_product_id.length; j++) {
++			
++			if(saleOrder_product_id[j] != null) {
++				Element cartRow = schema.createElement("cart_row");
++				Element idProduct = schema.createElement("id_product");
++				Element id_product_attribute = schema.createElement("id_product_attribute");
++				Element idAddressDelivery = schema.createElement("id_address_delivery");
++				Element quantity = schema.createElement("quantity");
++
++				idProduct.setTextContent(saleOrder_product_id[j]);
++				idAddressDelivery.setTextContent(id_address_delivery);
++				quantity.setTextContent(
++						saleOrder.getSaleOrderLineList().get(j).getQty().toString());
++
++				cartRow.appendChild(idProduct);
++				cartRow.appendChild(id_product_attribute);
++				cartRow.appendChild(idAddressDelivery);
++				cartRow.appendChild(quantity);
++				cartRows.appendChild(cartRow);
++			}
++		}
++	}
++	
++	public void createOrder(SaleOrder saleOrder, String id_address_delivery, String id_address_invoice,
++								String cartId, String cart_id, String id_currency, String id_customer, String[] saleOrder_product_id, ZonedDateTime endDate) throws PrestaShopWebserviceException, TransformerException {
++		
++		if (saleOrder.getPrestaShopId() == null) {
++			exportNewConnection("orders");
++		} else {
++			exportUpdateConnection("orders", saleOrder.getPrestaShopId());
++		}
++
++		schema.getElementsByTagName("id_address_delivery").item(0)
++				.setTextContent(id_address_delivery);
++		schema.getElementsByTagName("id_address_invoice").item(0)
++				.setTextContent(id_address_invoice);
++
++		if (saleOrder.getPrestaShopId() == null) {
++			schema.getElementsByTagName("id_cart").item(0).setTextContent(cartId);
++		} else {
++			schema.getElementsByTagName("id_cart").item(0).setTextContent(cart_id);
++		}
++
++		schema.getElementsByTagName("id_currency").item(0).setTextContent(id_currency);
++		schema.getElementsByTagName("id_lang").item(0).setTextContent("1");
++		schema.getElementsByTagName("id_customer").item(0).setTextContent(id_customer);
++		schema.getElementsByTagName("id_carrier").item(0).setTextContent("1");
++		schema.getElementsByTagName("total_paid_tax_incl").item(0).setTextContent(saleOrder.getExTaxTotal().setScale(2, RoundingMode.HALF_UP).toString());
++		schema.getElementsByTagName("total_wrapping_tax_incl").item(0).setTextContent(saleOrder.getTaxTotal().setScale(2, RoundingMode.HALF_UP).toString());
++		schema.getElementsByTagName("total_paid").item(0).setTextContent(saleOrder.getInTaxTotal().setScale(2, RoundingMode.HALF_UP).toString());
++		schema.getElementsByTagName("total_paid_tax_excl").item(0).setTextContent(saleOrder.getExTaxTotal().setScale(2, RoundingMode.HALF_UP).toString());
++		schema.getElementsByTagName("total_paid_real").item(0).setTextContent(saleOrder.getExTaxTotal().setScale(2, RoundingMode.HALF_UP).toString());
++		schema.getElementsByTagName("total_products_wt").item(0).setTextContent(saleOrder.getExTaxTotal().setScale(2, RoundingMode.HALF_UP).toString());
++		schema.getElementsByTagName("total_shipping").item(0).setTextContent("0");
++		schema.getElementsByTagName("total_products").item(0).setTextContent(saleOrder.getExTaxTotal().setScale(2, RoundingMode.HALF_UP).toString());
++		schema.getElementsByTagName("total_wrapping_tax_incl").item(0).setTextContent("00.0");
++		schema.getElementsByTagName("total_shipping_tax_incl").item(0).setTextContent("00.0");
++		schema.getElementsByTagName("total_shipping_tax_excl").item(0).setTextContent("00.0");
++		schema.getElementsByTagName("conversion_rate").item(0).setTextContent("0.00");
++		schema.getElementsByTagName("module").item(0).setTextContent("ps_checkpayment");
++		schema.getElementsByTagName("payment").item(0).setTextContent(saleOrder.getPaymentCondition().getName());
++			
++		if(saleOrder.getPrestaShopId() == null) {
++			
++			Node orderRows = schema.getElementsByTagName("order_rows").item(0);
++			Node defaultOrderRow;
++			Integer totalOrderRow = schema.getElementsByTagName("order_row").getLength();
++
++			for (int x = 0; x < totalOrderRow; x++) {
++				defaultOrderRow = schema.getElementsByTagName("order_row").item(0);
++				orderRows.removeChild(defaultOrderRow);
++			}
++
++			for (int j = 0; j < saleOrder_product_id.length; j++) {
++
++				if(saleOrder_product_id[j] != null) {
++					Element orderRow = schema.createElement("order_row");
++					Element product_id = schema.createElement("product_id");
++					product_id.setTextContent(saleOrder_product_id[j]);
++					orderRow.appendChild(product_id);
++					orderRows.appendChild(orderRow);
++				}
++			}
++			
++			Document document = addRecord("orders", schema);
++			String orderId = document.getElementsByTagName("id").item(0).getTextContent();
++			saleOrder.setPrestaShopId(orderId);
++			exportNewConnection("order_histories");
++			schema.getElementsByTagName("id_order").item(0).setTextContent(orderId);
++			
++		} else {
++			
++			updatRecord("orders", schema, saleOrder.getPrestaShopId());
++			exportNewConnection("order_histories");
++			schema.getElementsByTagName("id_order").item(0).setTextContent(saleOrder.getPrestaShopId());
++		}
++		
++		for(SaleOrderStatus orderStatus : saleOrderStatus) {
++			if(orderStatus.getAbsStatus() == saleOrder.getStatusSelect()) {
++				schema.getElementsByTagName("id_order_state").item(0).setTextContent(orderStatus.getPrestaShopStatus().toString());
++				break;
++			}
++		}
++		opt.put("resource", "db_order_history");
++		opt.put("postXml", ws.DocumentToString(schema));
++		ws.add(opt);
++		saleOrderRepo.save(saleOrder);
++	}
++	
++	public List<String> getOrderDetailsIds(String orderId) throws PrestaShopWebserviceException {
++		
++		List<String> orderDetailsIds = new ArrayList<String>();
++		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
++		HashMap<String, String> orderDetailMap = new HashMap<String, String>();
++		orderDetailMap.put("id_order", orderId);
++		opt = new HashMap<String, Object>();
++		opt.put("resource", "order_details");
++		opt.put("filter", orderDetailMap);
++		Document str =  ws.get(opt);
++		
++		NodeList list = str.getElementsByTagName("order_details");
++		for(int i = 0; i < list.getLength(); i++) {
++		    Element element = (Element) list.item(i);
++		    NodeList nodeList = element.getElementsByTagName("order_detail");
++		    for(int j = 0; j < nodeList.getLength(); j++) {
++		    	Node order_detail = nodeList.item(j);
++		    	
++		    	if(nodeList.getLength() > 0) {
++		    		orderDetailsIds.add(order_detail.getAttributes().getNamedItem("id").getNodeValue());
++			    }
++		    	
++		    }
++		}
++		return orderDetailsIds;
++	}
++	
++	@Transactional
++	public void updateOrderStatus(SaleOrder saleOrder, String orderId) throws PrestaShopWebserviceException, TransformerException {
++		
++		exportNewConnection("order_histories");
++		schema.getElementsByTagName("id_order").item(0).setTextContent(orderId);
++		schema.getElementsByTagName("id_order_state").item(0).setTextContent("1");
++		opt.put("resource", "db_order_history");
++		opt.put("postXml", ws.DocumentToString(schema));
++		ws.add(opt);
++		
++		saleOrderRepo.save(saleOrder);
++	}
++	
++	@SuppressWarnings("deprecation")
++	@Transactional
++	public void exportAxelorCurrencies(ZonedDateTime endDate) throws IOException, PrestaShopWebserviceException, TransformerException {
++
++		this.exportLogObjectHeder("Currency");
++		List<Currency> currencies = null;
++		
++		if(endDate == null) {
++			currencies = Beans.get(CurrencyRepository.class).all().fetch();
++		} else {
++			currencies = Beans.get(CurrencyRepository.class).all().filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null", endDate, endDate).fetch();
++		}
++
++		for (Currency currency : currencies) {
++				try {
++					String prestaShopId = this.isCurrency(currency.getCode()); 
++					
++					if (currency.getPrestaShopId() == null) {
++						if(prestaShopId != null) {
++							this.exportUpdateConnection("currencies", prestaShopId);
++							currency.setPrestaShopId(prestaShopId);
++						} else {
++							this.exportNewConnection("currencies");
++						}
++						
++					} else {
++						this.exportUpdateConnection("currencies", currency.getPrestaShopId());
++					}
++
++					if (currency.getCode() != null && currency.getName() != null) {
++						schema.getElementsByTagName("name").item(0).setTextContent(currency.getName());
++						schema.getElementsByTagName("iso_code").item(0).setTextContent(currency.getCode());
++						schema.getElementsByTagName("conversion_rate").item(0).setTextContent("1.00");
++						schema.getElementsByTagName("deleted").item(0).setTextContent("0");
++						schema.getElementsByTagName("active").item(0).setTextContent("1");
++						
++					} else {
++						throw new AxelorException(String.format("Currency code /name is null or invalid"),IException.NO_VALUE);
++					}
++
++					if (currency.getPrestaShopId() == null) {
++						Document document = this.addRecord("currencies", schema);
++						currency.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
++						currencyRepo.save(currency);
++					} else {
++						this.updatRecord("currencies", schema, currency.getPrestaShopId());
++					}
++					currencyRepo.save(currency);
++					
++				} catch (AxelorException e) {
++					this.exportLog(currency.getId().toString(), e.getMessage());
++					continue;
++				} catch (Exception e) {
++					this.exportLog(currency.getId().toString(), e.getMessage());
++					continue;
++				}
++			}
++	}
++	
++	@SuppressWarnings("deprecation")
++	public void exportAxelorCountries(ZonedDateTime endDate) throws PrestaShopWebserviceException, IOException {
++		
++		this.exportLogObjectHeder("Country");
++		List<Country> countries = null;
++		
++		if(endDate == null) {
++			countries = Beans.get(CountryRepository.class).all().fetch();
++		} else {
++			countries = Beans.get(CountryRepository.class).all().filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null", endDate, endDate).fetch();
++		}
++		
++		for(Country country : countries) {
++			try {
++				
++				String prestaShopId = this.isCountry(country.getAlpha2Code());
++				
++				if(prestaShopId != null) {
++					this.exportUpdateConnection("countries", prestaShopId);
++				} else {
++					this.exportNewConnection("countries");
++				}
++				
++				if(country.getName() != null) {
++					schema.getElementsByTagName("name").item(0).getFirstChild().setTextContent(country.getName());
++					schema.getElementsByTagName("iso_code").item(0).setTextContent(country.getAlpha2Code());
++					schema.getElementsByTagName("id_zone").item(0).setTextContent("1");
++					schema.getElementsByTagName("contains_states").item(0).setTextContent("0");
++					schema.getElementsByTagName("need_identification_number").item(0).setTextContent("0");
++					schema.getElementsByTagName("display_tax_label").item(0).setTextContent("1");
++					schema.getElementsByTagName("active").item(0).setTextContent("1");
++				} else {
++					throw new AxelorException(String.format("Country is null or invalid"), IException.NO_VALUE);		
++				}
++
++				if (prestaShopId == null) {
++					Document document = this.addRecord("countries", schema);
++					country.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
++				} else {
++					country.setPrestaShopId(prestaShopId);
++					this.updatRecord("countries", schema, country.getPrestaShopId());
++				}
++				countryRepo.save(country);
++				
++			} catch (AxelorException e) {
++				this.exportLog(country.getId().toString(), e.getMessage());
++				continue;
++			} catch (Exception e) {
++				this.exportLog(country.getId().toString(), e.getMessage());
++				continue;
++			}
++		}
++	}
++
++	@Transactional
++	public void exportAxelorPartners(ZonedDateTime endDate) throws IOException, PrestaShopWebserviceException {
++
++		this.exportLogObjectHeder("Partner");
++		String prestaShopId = null;
++		List<Partner> partners = null;
++		
++		if(endDate == null) {
++			partners = Beans.get(PartnerRepository.class).all().filter("isCustomer = true").fetch();
++		} else {
++			partners = Beans.get(PartnerRepository.class).all().filter("isCustomer = true AND (self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null)", endDate, endDate).fetch();
++		}
++		
++			for (Partner partnerObj : partners) {
++				
++				try {
++					if (partnerObj.getPrestaShopId() == null) {
++						this.exportNewConnection("customers");
++					} else {
++						this.exportUpdateConnection("customers", partnerObj.getPrestaShopId());
++					}
++
++					partnerObj = this.addPartner(partnerObj);
++					
++					if (partnerObj.getPrestaShopId() == null) {
++						Document document = this.addRecord("customers", schema);
++						prestaShopId = document.getElementsByTagName("id").item(0).getTextContent();
++						partnerObj.setPrestaShopId(prestaShopId);
++						partnerRepo.save(partnerObj);
++					} else {
++						this.updatRecord("customers", schema, partnerObj.getPrestaShopId());
++					}
++
++				} catch (Exception e) {
++					if(cnt > 0) {
++                        cnt = 0;
++                        continue;
++                    }
++					this.exportLog(partnerObj.getId().toString(), e.getMessage());
++					continue;
++				}
++			}
++	}
++	
++	@SuppressWarnings("deprecation")
++	@Transactional
++	public void exportAxelorPartnerAddresses(ZonedDateTime endDate) throws TransformerException, PrestaShopWebserviceException, IOException {
++		
++		this.exportLogObjectHeder("Address");
++		List<PartnerAddress> partnerAddresses = null;
++		
++		if(endDate == null) {
++			partnerAddresses = Beans.get(PartnerAddressRepository.class).all().filter("self.partner.prestaShopId != null").fetch();
++		} else {
++			partnerAddresses = Beans.get(PartnerAddressRepository.class).all().filter("(self.createdOn > ?1 OR self.updatedOn > ?2 OR self.address.updatedOn > ?3 OR self.address.prestaShopId = null) AND self.partner.prestaShopId != null", endDate, endDate, endDate).fetch();
++		}
++		
++			for (PartnerAddress partnerAddress : partnerAddresses) {
++				
++				try {
++						if (partnerAddress.getAddress().getPrestaShopId() == null) {
++							this.exportNewConnection("addresses");
++						} else {
++							this.exportUpdateConnection("addresses", partnerAddress.getAddress().getPrestaShopId());
++						}
++						
++						schema.getElementsByTagName("id_customer").item(0).setTextContent(partnerAddress.getPartner().getPrestaShopId());
++						
++						if(partnerAddress.getPartner().getPartnerTypeSelect() == 1) {
++							
++							if(!partnerAddress.getPartner().getContactPartnerSet().isEmpty()) {
++								
++								if (partnerAddress.getPartner().getContactPartnerSet().iterator().next().getName() != null && 
++										partnerAddress.getPartner().getContactPartnerSet().iterator().next().getFirstName() != null) {
++									
++									schema.getElementsByTagName("company").item(0).setTextContent(partnerAddress.getPartner().getName());
++									schema.getElementsByTagName("firstname").item(0).setTextContent(partnerAddress.getPartner().getContactPartnerSet().iterator().next().getFirstName());
++									schema.getElementsByTagName("lastname").item(0).setTextContent(partnerAddress.getPartner().getContactPartnerSet().iterator().next().getName());
++									
++								} else {
++									throw new AxelorException(String.format("Company/Firstname is null or invalid"),IException.NO_VALUE);
++								}
++							} else {
++								throw new AxelorException(String.format("Contact is null or invalid"),IException.NO_VALUE);
++							}
++							
++						} else {
++							if (partnerAddress.getPartner().getName() != null && partnerAddress.getPartner().getFirstName() != null) {
++								schema.getElementsByTagName("firstname").item(0).setTextContent(partnerAddress.getPartner().getFirstName());
++								schema.getElementsByTagName("lastname").item(0).setTextContent(partnerAddress.getPartner().getName());
++							} else {
++								throw new AxelorException(String.format("Company/Firstname is null or invalid"),IException.NO_VALUE);
++							}
++						}
++						
++						schema.getElementsByTagName("id_country").item(0).setTextContent(partnerAddress.getAddress().getAddressL7Country().getPrestaShopId());
++						schema.getElementsByTagName("alias").item(0).setTextContent("Main Addresses");
++						
++						if (partnerAddress.getAddress().getCity() != null) {
++							
++							String postCode = null;
++							String addString = partnerAddress.getAddress().getAddressL6();
++							String[] words = addString.split("\\s");
++							
++							if(partnerAddress.getAddress().getCity().getHasZipOnRight()) {
++								postCode = words[1];
++							} else {
++								postCode = words[0];
++							}
++							
++							schema.getElementsByTagName("address1").item(0).setTextContent(partnerAddress.getAddress().getAddressL4());
++							schema.getElementsByTagName("address2").item(0).setTextContent(partnerAddress.getAddress().getAddressL5());
++							schema.getElementsByTagName("postcode").item(0).setTextContent(postCode);
++							schema.getElementsByTagName("city").item(0).setTextContent(partnerAddress.getAddress().getCity().getName());
++						} else {
++							throw new AxelorException(String.format("City is null"), IException.NO_VALUE);
++						}
++
++						if (partnerAddress.getAddress().getPrestaShopId() == null) {
++							Document document = this.addRecord("addresses", schema);
++							partnerAddress.getAddress().setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
++							partnerRepo.save(partnerAddress.getPartner());
++						} else {
++							this.updatRecord("addresses", schema, partnerAddress.getAddress().getPrestaShopId());
++						}
++						
++					} catch (AxelorException e) {
++						this.exportLog(partnerAddress.getAddress().getId().toString(), e.getMessage());
++					}
++			}
++		}
++	
++	@SuppressWarnings("deprecation")
++	@Transactional
++	public void exportAxelorProductCategories(ZonedDateTime endDate) throws IOException, PrestaShopWebserviceException, TransformerException {
++
++		this.exportLogObjectHeder("Product Category");
++		List<ProductCategory> categories = null;
++		
++		if(endDate == null) {
++			categories = Beans.get(ProductCategoryRepository.class).all().fetch();
++		} else {
++			categories = Beans.get(ProductCategoryRepository.class).all().filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null", endDate, endDate).fetch();
++		}
++		
++		for (ProductCategory category : categories) {
++				
++				try {
++					
++					if (category.getPrestaShopId() == null) {
++						this.exportNewConnection("categories");
++					} else {
++						if(category.getPrestaShopId().equals("1") || category.getPrestaShopId().equals("2")) {
++							continue;
++						}
++						this.exportUpdateConnection("categories", category.getPrestaShopId());
++						Node categoryRoot = schema.getElementsByTagName("category").item(0);
++						Node level_depth = schema.getElementsByTagName("level_depth").item(0);
++						Node nb_products_recursive = schema.getElementsByTagName("nb_products_recursive").item(0);
++						categoryRoot.removeChild(level_depth);
++						categoryRoot.removeChild(nb_products_recursive);
++					}
++
++					if (!category.getName().equals("") && !category.getCode().equals("")) {
++
++						category = this.addCategory(category);
++						if (category.getPrestaShopId() == null) {
++							Document document = this.addRecord("categories", schema);
++							category.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
++							productCategoryRepo.save(category);
++						} else {
++							this.updatRecord("categories", schema, category.getPrestaShopId());
++						}
++
++					} else {
++						throw new AxelorException(String.format("Product Category is null or invalid"),	IException.NO_VALUE);
++					}
++
++				} catch (AxelorException e) {
++					this.exportLog(category.getId().toString(), e.getMessage());
++					continue;
++
++				} catch (Exception e) {
++					this.exportLog(category.getId().toString(), e.getMessage());
++					continue;
++				}
++		}
++	}
++
++	@SuppressWarnings("deprecation")
++	@Transactional
++	public void exportAxelorProducts(ZonedDateTime endDate) throws PrestaShopWebserviceException, IOException, TransformerException {
++		
++		this.exportLogObjectHeder("Product");
++		List<Product> products = null;
++		
++		if(endDate == null) {
++			products = Beans.get(ProductRepository.class).all().fetch();
++		} else {
++			products = Beans.get(ProductRepository.class).all().filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null", endDate, endDate).fetch();
++		}
++		
++			for (Product product : products) {
++				
++				try {
++					if (product.getPrestaShopId() == null) {
++						this.exportNewConnection("products");
++					} else {
++						exportUpdateConnection("products", product.getPrestaShopId());
++						Node productRoot = schema.getElementsByTagName("product").item(0);
++						Node manufacturer_name = schema.getElementsByTagName("manufacturer_name").item(0);
++						Node quantity = schema.getElementsByTagName("quantity").item(0);
++						productRoot.removeChild(manufacturer_name);
++						productRoot.removeChild(quantity);
++					}
++
++					if (!product.getName().equals("")) {
++						this.addProduct(product);
++						
++						if (product.getPrestaShopId() == null) {
++							Document document = addRecord("products", schema);
++							product.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
++							if (product.getPicture() != null) {
++								this.addImages(product.getPicture());
++							}
++							
++							NodeList nodeList = document.getElementsByTagName("stock_availables").item(0).getChildNodes();
++							String stock_id = null;
++							for (int i = 0; i < nodeList.getLength(); i++) {
++								if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
++									Element element = (Element) nodeList.item(i);
++										stock_id = element.getElementsByTagName("id").item(0).getTextContent().toString();
++								}
++							}
++							
++							List<StockMoveLine> moveLine = Beans.get(StockMoveLineRepository.class).all().filter("self.stockMove.statusSelect = 3 and (self.stockMove.fromLocation.typeSelect = 1 or self.stockMove.toLocation.typeSelect = 1) and self.product = ?", product).fetch();
++							BigDecimal totalRealQty = BigDecimal.ZERO;
++							
++							if(!moveLine.isEmpty()) {
++								
++								for(int i=0 ; i<moveLine.size(); i++) {
++									totalRealQty =  totalRealQty.add(moveLine.get(i).getRealQty());
++								}
++								this.addStock(stock_id, totalRealQty.setScale(0, RoundingMode.HALF_UP).toString());
++							}
++							
++							productRepo.save(product);
++							
++						} else {
++							this.updatRecord("products", schema, product.getPrestaShopId());
++						}
++
++					} else {
++						throw new AxelorException(String.format("Product Name is null or invalid"), IException.NO_VALUE);
++					}
++				} catch (AxelorException e) {
++					this.exportLog(product.getId().toString(), e.getMessage());
++					continue;
++				} catch (Exception e) {
++					this.exportLog(product.getId().toString(), e.getMessage());
++					continue	;
++				}
++			}
++	}
++	
++	@SuppressWarnings("deprecation")
++	@Transactional
++	public void exportAxelorSaleOrders(ZonedDateTime endDate) throws PrestaShopWebserviceException, TransformerException, IOException {
++		
++		String cart_id = "";
++		this.exportLogObjectHeder("SaleOrder");
++		List<SaleOrder> orders = null;
++		
++		if(endDate == null) {
++			if(isStatus == true) {
++				orders = Beans.get(SaleOrderRepository.class).all().fetch();
++			} else {
++				orders = Beans.get(SaleOrderRepository.class).all().filter("self.statusSelect = 1").fetch();
++			}
++		} else {
++			if(isStatus == true) {
++				orders = Beans.get(SaleOrderRepository.class).all().filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null", endDate, endDate).fetch();
++			} else {
++				orders = Beans.get(SaleOrderRepository.class).all().filter("(self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null) AND self.statusSelect = 1", endDate, endDate).fetch();
++			}			
++		}
++		
++		for (SaleOrder saleOrder : orders) {
++			
++			String saleOrder_product_id[] = new String[saleOrder.getSaleOrderLineList().size()];
++			String id_customer = "";
++			String id_address_delivery = "";
++			String id_address_invoice = "";
++			String secure_key = "";
++			String cartId = "";
++			String id_currency = "";
++				if (saleOrder.getPrestaShopId() == null) {
++					this.exportNewConnection("carts");
++				} else {
++					cart_id = this.getCartId(saleOrder);
++					this.exportUpdateConnection("carts", cart_id);
++				}
++				
++				try {
++					
++					if (!saleOrder.getClientPartner().getPrestaShopId().isEmpty()) {
++						
++						id_customer = saleOrder.getClientPartner().getPrestaShopId();
++						id_address_delivery = saleOrder.getDeliveryAddress().getPrestaShopId();
++						id_address_invoice =  saleOrder.getMainInvoicingAddress().getPrestaShopId();
++						Currency currency = currencyRepo.findByCode(saleOrder.getCurrency().getCode());
++						id_currency = currency.getPrestaShopId();
++						
++						schema.getElementsByTagName("id_shop_group").item(0).setTextContent("1");
++						schema.getElementsByTagName("id_shop").item(0).setTextContent("1");
++						schema.getElementsByTagName("id_carrier").item(0).setTextContent("1");
++						schema.getElementsByTagName("id_currency").item(0).setTextContent(id_currency);
++						schema.getElementsByTagName("id_lang").item(0).setTextContent("1");
++						
++						if(id_address_delivery == null) {
++							throw new AxelorException(String.format("Address in Order null or invalid"),IException.NO_VALUE);
++						} else {
++							schema.getElementsByTagName("id_address_delivery").item(0).setTextContent(id_address_delivery);
++						}
++						
++						schema.getElementsByTagName("id_address_invoice").item(0).setTextContent(id_address_invoice);
++						schema.getElementsByTagName("id_customer").item(0).setTextContent(id_customer.toString());
++						schema.getElementsByTagName("secure_key").item(0).setTextContent(secure_key.toString());
++						
++						for(int k = 0; k < saleOrder.getSaleOrderLineList().size(); k++) {
++							
++							if(saleOrder.getSaleOrderLineList().get(k).getProduct() != null) {
++								saleOrder_product_id[k] = saleOrder.getSaleOrderLineList().get(k).getProduct().getPrestaShopId();
++							}
++						}
++						
++						this.addCartProduct(saleOrder, saleOrder_product_id, id_address_delivery);
++						
++						if (saleOrder.getPrestaShopId() == null) {
++							Document document = this.addRecord("carts", schema);
++							cartId = document.getElementsByTagName("id").item(0).getTextContent();
++							
++						} else {
++							this.updatRecord("carts", schema, cart_id);
++						}
++									
++						this.createOrder(saleOrder, id_address_delivery, id_address_invoice, cartId, cart_id, id_currency, id_customer, saleOrder_product_id, endDate);
++					}
++					
++				} catch (AxelorException e) {
++					this.exportLog(saleOrder.getId().toString(), e.getMessage());
++					continue;
++				} catch (Exception e) {
++					this.exportLog(saleOrder.getId().toString(), e.getMessage());
++					continue;
++				}
++			}
++	}
++	
++	@SuppressWarnings("deprecation")
++	public void exportAxelorSaleOrderLines() throws PrestaShopWebserviceException, TransformerException, IOException {
++			
++			this.exportLogObjectHeder("SaleOrderLines");
++			List<SaleOrderLine> saleOrderLines = null;
++			
++			if(isStatus == true) {
++				saleOrderLines = Beans.get(SaleOrderLineRepository.class).all().filter("self.saleOrder.prestaShopId != null").fetch();
++			} else {
++				saleOrderLines = Beans.get(SaleOrderLineRepository.class).all().filter("self.saleOrder.statusSelect = 1 AND self.saleOrder.prestaShopId != null").fetch();
++			}
++			
++			for(SaleOrderLine orderLine : saleOrderLines) {
++				this.exportResetOrderDetails(orderLine.getSaleOrder().getPrestaShopId());
++			}
++			
++			for(SaleOrderLine orderLine : saleOrderLines) {
++				try {
++					
++					if(orderLine.getProduct() != null && orderLine.getSaleOrder().getPrestaShopId() != null) {
++						
++						this.exportNewConnection("order_details");
++						
++						schema.getElementsByTagName("id_order").item(0).setTextContent(orderLine.getSaleOrder().getPrestaShopId());
++						schema.getElementsByTagName("product_id").item(0).setTextContent(orderLine.getProduct().getPrestaShopId());
++						schema.getElementsByTagName("product_name").item(0).setTextContent(orderLine.getProduct().getName());
++						schema.getElementsByTagName("product_quantity").item(0).setTextContent(orderLine.getQty().setScale(0, RoundingMode.HALF_UP).toString());
++						schema.getElementsByTagName("unit_price_tax_incl").item(0).setTextContent(orderLine.getPrice().setScale(2, RoundingMode.HALF_UP).toString());
++						schema.getElementsByTagName("unit_price_tax_excl").item(0).setTextContent(orderLine.getPrice().setScale(2, RoundingMode.HALF_UP).toString());
++						schema.getElementsByTagName("product_price").item(0).setTextContent(orderLine.getPrice().setScale(2, RoundingMode.HALF_UP).toString());
++						schema.getElementsByTagName("id_warehouse").item(0).setTextContent("0");
++						schema.getElementsByTagName("id_shop").item(0).setTextContent("1");
++						
++						Document document = this.addRecord("order_details", schema);
++						orderLine.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
++						saleOrderLineRepo.save(orderLine);
++
++					} else {
++						throw new AxelorException(String.format("This order is not on prestashop or invalid product"),IException.NO_VALUE);
++					}
++				} catch (AxelorException e) {
++					this.exportLog(orderLine.getId().toString(), e.getMessage());
++					continue;
++				} catch (Exception e) {
++					this.exportLog(orderLine.getId().toString(), e.getMessage());
++					continue;
++				}
++			}
++		}
++}
+\ No newline at end of file
+diff --git a/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/exports/batch/BatchStrategyExport.java b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/exports/batch/BatchStrategyExport.java
+new file mode 100644
+index 0000000..843c9d6
+--- /dev/null
++++ b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/exports/batch/BatchStrategyExport.java
+@@ -0,0 +1,31 @@
++/**
++ * Axelor Business Solutions
++ *
++ * Copyright (C) 2017 Axelor (<http://axelor.com>).
++ *
++ * This program is free software: you can redistribute it and/or  modify
++ * it under the terms of the GNU Affero General Public License, version 3,
++ * as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++package com.axelor.apps.prestashop.service.exports.batch;
++
++import com.axelor.apps.base.service.administration.AbstractBatch;
++import com.axelor.apps.prestashop.service.exports.PrestaShopServiceExport;
++
++public abstract class BatchStrategyExport extends AbstractBatch {
++
++	protected PrestaShopServiceExport prestaShopServiceExport;
++	
++	protected BatchStrategyExport(PrestaShopServiceExport prestaShopServiceExport) {
++		super();
++		this.prestaShopServiceExport = prestaShopServiceExport;
++	}
++}
+diff --git a/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/exports/batch/ExportPrestaShop.java b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/exports/batch/ExportPrestaShop.java
+new file mode 100644
+index 0000000..a4b955d
+--- /dev/null
++++ b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/exports/batch/ExportPrestaShop.java
+@@ -0,0 +1,98 @@
++/**
++ * Axelor Business Solutions
++ *
++ * Copyright (C) 2017 Axelor (<http://axelor.com>).
++ *
++ * This program is free software: you can redistribute it and/or  modify
++ * it under the terms of the GNU Affero General Public License, version 3,
++ * as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++package com.axelor.apps.prestashop.service.exports.batch;
++
++import java.lang.invoke.MethodHandles;
++import java.time.ZonedDateTime;
++import javax.inject.Inject;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++import com.axelor.apps.crm.exception.IExceptionMessage;
++import com.axelor.apps.prestashop.db.PrestaShopBatch;
++import com.axelor.apps.prestashop.service.exports.PrestaShopServiceExport;
++import com.axelor.db.JPA;
++import com.axelor.exception.AxelorException;
++import com.axelor.i18n.I18n;
++import com.axelor.meta.db.MetaFile;
++import com.google.inject.persist.Transactional;
++
++public class ExportPrestaShop extends BatchStrategyExport {
++
++	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
++	
++	@Inject
++	public ExportPrestaShop(PrestaShopServiceExport prestaShopServiceExport) {
++		
++		super(prestaShopServiceExport);
++	}
++
++	@Override
++	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
++		
++		super.start();
++	}
++
++	@Override
++	@Transactional
++	protected void process() {
++			
++			int i = 0;
++			
++			try {
++				PrestaShopBatch prestaShopBatch = (PrestaShopBatch) model;
++				Integer size = prestaShopBatch.getBatchList().size();
++				MetaFile exportFile;
++				
++				if(size == 1) {
++					exportFile = prestaShopServiceExport.exportPrestShop(null);
++				} else {
++					ZonedDateTime endDate = prestaShopBatch.getBatchList().get(size - 2).getEndDate();
++					exportFile = prestaShopServiceExport.exportPrestShop(endDate);
++				}
++				batch.getPrestaShopBatch().setPrestaShopBatchLog(exportFile);
++				batchRepo.save(batch);
++				i++;
++				
++			} catch (Exception e) {
++				incrementAnomaly();
++				
++				LOG.error("Bug(Anomalie) généré(e) pour le rappel de l'évènement {}", batch.getId());
++				
++			} finally {
++				
++				if (i % 1 == 0) { JPA.clear(); }
++		}
++	}
++
++	/**
++	 * As {@code batch} entity can be detached from the session, call {@code Batch.find()} get the entity in the persistant context.
++	 * Warning : {@code batch} entity have to be saved before.
++	 */
++	@Override
++	protected void stop() {
++
++		String comment = I18n.get(IExceptionMessage.BATCH_TARGET_2);
++		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_TARGET_3)+"\n", batch.getDone());
++		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
++		
++		super.stop();
++		addComment(comment);
++		
++	}
++}
+diff --git a/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/imports/PrestaShopServiceImplImport.java b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/imports/PrestaShopServiceImplImport.java
+new file mode 100644
+index 0000000..d226909
+--- /dev/null
++++ b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/imports/PrestaShopServiceImplImport.java
+@@ -0,0 +1,1116 @@
++/**
++ * Axelor Business Solutions
++ *
++ * Copyright (C) 2017 Axelor (<http://axelor.com>).
++ *
++ * This program is free software: you can redistribute it and/or  modify
++ * it under the terms of the GNU Affero General Public License, version 3,
++ * as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++package com.axelor.apps.prestashop.service.imports;
++
++import java.io.BufferedWriter;
++import java.io.File;
++import java.io.FileOutputStream;
++import java.io.FileWriter;
++import java.io.IOException;
++import java.io.InputStream;
++import java.io.OutputStream;
++import java.math.BigDecimal;
++import java.math.RoundingMode;
++import java.text.SimpleDateFormat;
++import java.time.LocalDate;
++import java.util.ArrayList;
++import java.util.Date;
++import java.util.HashMap;
++import java.util.List;
++
++import javax.persistence.criteria.CriteriaBuilder.In;
++
++import org.apache.http.HttpEntity;
++import org.apache.http.HttpResponse;
++import org.apache.http.auth.UsernamePasswordCredentials;
++import org.apache.http.client.HttpClient;
++import org.apache.http.client.methods.HttpGet;
++import org.apache.http.impl.auth.BasicScheme;
++import org.apache.http.impl.client.DefaultHttpClient;
++import org.apache.regexp.recompile;
++import org.w3c.dom.DOMException;
++import org.w3c.dom.Document;
++import org.w3c.dom.Element;
++import org.w3c.dom.Node;
++import org.w3c.dom.NodeList;
++import com.axelor.app.AppSettings;
++import com.axelor.apps.account.db.PaymentCondition;
++import com.axelor.apps.account.db.PaymentMode;
++import com.axelor.apps.account.db.repo.PaymentConditionRepository;
++import com.axelor.apps.base.db.Address;
++import com.axelor.apps.base.db.AppPrestashop;
++import com.axelor.apps.base.db.City;
++import com.axelor.apps.base.db.Company;
++import com.axelor.apps.base.db.Country;
++import com.axelor.apps.base.db.Currency;
++import com.axelor.apps.base.db.Partner;
++import com.axelor.apps.base.db.PartnerAddress;
++import com.axelor.apps.base.db.Product;
++import com.axelor.apps.base.db.ProductCategory;
++import com.axelor.apps.base.db.repo.AddressRepository;
++import com.axelor.apps.base.db.repo.AppPrestashopRepository;
++import com.axelor.apps.base.db.repo.CityRepository;
++import com.axelor.apps.base.db.repo.CompanyRepository;
++import com.axelor.apps.base.db.repo.CountryRepository;
++import com.axelor.apps.base.db.repo.CurrencyRepository;
++import com.axelor.apps.base.db.repo.PartnerRepository;
++import com.axelor.apps.base.db.repo.ProductCategoryRepository;
++import com.axelor.apps.base.db.repo.ProductRepository;
++import com.axelor.apps.message.db.EmailAddress;
++import com.axelor.apps.prestashop.service.PSWebServiceClient;
++import com.axelor.apps.prestashop.service.PrestaShopWebserviceException;
++import com.axelor.apps.prestashop.db.SaleOrderStatus;
++import com.axelor.apps.sale.db.CancelReason;
++import com.axelor.apps.sale.db.SaleOrder;
++import com.axelor.apps.sale.db.SaleOrderLine;
++import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
++import com.axelor.apps.sale.db.repo.SaleOrderRepository;
++import com.axelor.apps.sale.service.SaleOrderService;
++import com.axelor.auth.AuthUtils;
++import com.axelor.exception.AxelorException;
++import com.axelor.exception.db.IException;
++import com.axelor.inject.Beans;
++import com.axelor.meta.MetaFiles;
++import com.axelor.meta.db.MetaFile;
++import com.google.inject.Inject;
++import com.google.inject.persist.Transactional;
++import com.ibm.icu.text.MessagePattern.Part;
++
++public class PrestaShopServiceImplImport {
++	
++	@Inject
++	private SaleOrderService saleOrderService;
++	
++	@Inject
++	private PartnerRepository partnerRepo;
++	
++	@Inject
++	private ProductRepository productRepo;
++	
++	@Inject
++	private ProductCategoryRepository productCategoryRepo;
++	
++	@Inject
++	private CompanyRepository companyRepo;
++	
++	@Inject
++	private CityRepository cityRepo;
++	
++	@Inject
++	private CountryRepository countryRepo;
++	
++	@Inject
++	private AddressRepository addressRepo;
++	
++	@Inject
++	private SaleOrderRepository saleOrderRepo;
++	
++	@Inject
++	private PaymentConditionRepository paymentConditionRepo;
++
++	@Inject
++	private CurrencyRepository currencyRepo;
++	
++	@Inject
++	private MetaFiles metaFiles;
++	
++	File importFile = File.createTempFile("Import Log", ".txt");
++	FileWriter fwImport = null;
++	BufferedWriter bwImport = null;
++	
++	private final String shopUrl;
++	private final String key;
++	private final boolean isStatus;
++	private final PaymentMode paymentMode;
++	private final List<SaleOrderStatus> saleOrderStatus;
++	
++    PSWebServiceClient ws;
++    HashMap<String,Object> opt;
++    Document schema;
++
++	public PrestaShopServiceImplImport() throws IOException {
++
++		AppPrestashop prestaShopObj = Beans.get(AppPrestashopRepository.class).all().fetchOne();
++		shopUrl = prestaShopObj.getPrestaShopUrl();
++		key = prestaShopObj.getPrestaShopKey();
++		isStatus = prestaShopObj.getIsOrderStatus();
++		saleOrderStatus = prestaShopObj.getSaleOrderStatus();
++		paymentMode = prestaShopObj.getPaymentMode();
++		ws = new PSWebServiceClient(shopUrl, key);
++		fwImport = new FileWriter(importFile, true);
++		bwImport = new BufferedWriter(fwImport);
++
++	}
++	
++	public void importLogObjectHeder(String objectName) throws IOException {
++		bwImport.newLine();
++		bwImport.write("--------------");
++		bwImport.newLine();
++		bwImport.write(objectName + " object");
++		bwImport.newLine();
++		bwImport.write("--------------");
++	}
++	
++	public void importLog(String id, String msg) throws IOException {
++		bwImport.newLine();
++		bwImport.write("Id - " + id + " " + msg);
++	}
++	
++	public File closeLog() throws IOException {
++		bwImport.close();
++		fwImport.close();
++		
++		return importFile;
++	}
++	
++	public void importConnection(String resource, String id) throws PrestaShopWebserviceException {
++		ws = new PSWebServiceClient(shopUrl + "/api/"+ resource + "/"+ id,key);
++		opt = new HashMap<String, Object>();
++		opt.put("resource", resource);
++		schema = ws.get(opt);
++	}
++	
++	public boolean check(Integer st) {
++		
++		if((st == 2 || st == 3 || st == 4 || st == 5 || st == 7 || st == 9 || st == 11) && isStatus == true) {
++			return true;
++		} else {
++			return false;
++		}
++	}
++	
++	public List<String> fetchApiIds(String resources, String node) throws PrestaShopWebserviceException {
++
++		ws = new PSWebServiceClient(shopUrl, key);
++		opt = new HashMap<String, Object>();
++		opt.put("resource", resources);
++		schema = ws.get(opt);
++		NodeList nodeList = schema.getElementsByTagName(node);
++		List<String> ids = new ArrayList<String>();
++
++		for (int x = 0, size = nodeList.getLength(); x < size; x++) {
++			ids.add(nodeList.item(x).getAttributes().getNamedItem("id").getNodeValue());
++		}
++		return ids;
++	}
++	
++	public List<String> getDraftOrderIds() throws PrestaShopWebserviceException {
++		
++		List<String> orderIds = new ArrayList<String>();
++		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
++		HashMap<String, String> orderMap = new HashMap<String, String>();
++		List<Integer> currentStatus = new ArrayList<Integer>();
++		
++		
++		for(SaleOrderStatus orderStatus : saleOrderStatus) {
++			
++			if(orderStatus.getAbsStatus() == 1) {
++				currentStatus.add(orderStatus.getPrestaShopStatus());
++			}
++		}
++		
++		for(Integer id : currentStatus) {
++			
++			orderMap.put("current_state", id.toString());
++			opt = new HashMap<String, Object>();
++			opt.put("resource", "orders");
++			opt.put("filter", orderMap);
++			Document str =  ws.get(opt);
++			
++			NodeList list = str.getElementsByTagName("orders");
++			for(int i = 0; i < list.getLength(); i++) {
++			    Element element = (Element) list.item(i);
++			    NodeList nodeList = element.getElementsByTagName("order");
++			    for(int j = 0; j < nodeList.getLength(); j++) {
++			    	Node order = nodeList.item(j);
++			    	
++			    	if(nodeList.getLength() > 0) {
++			    		orderIds.add(order.getAttributes().getNamedItem("id").getNodeValue());
++				    }
++			    	
++			    }
++			}
++		}
++		
++		return orderIds;
++	}
++	
++	public List<String> getOrderLineIds(List<String> orderIds) throws PrestaShopWebserviceException {
++		
++		List<String> orderDetailIds = new ArrayList<String>();
++			
++		for(String id : orderIds) {
++			
++			PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
++			HashMap<String, String> orderDetailMap = new HashMap<String, String>();
++			orderDetailMap.put("id_order", id);
++			opt = new HashMap<String, Object>();
++			opt.put("resource", "order_details");
++			opt.put("filter", orderDetailMap);
++			Document str =  ws.get(opt);
++			
++			NodeList list = str.getElementsByTagName("order_details");
++			for(int i = 0; i < list.getLength(); i++) {
++			    Element element = (Element) list.item(i);
++			    NodeList nodeList = element.getElementsByTagName("order_detail");
++			    for(int j = 0; j < nodeList.getLength(); j++) {
++			    	Node orderDetail = nodeList.item(j);
++			    	
++			    	if(nodeList.getLength() > 0) {
++			    		orderDetailIds.add(orderDetail.getAttributes().getNamedItem("id").getNodeValue());
++				    }
++			    	
++			    }
++			}
++		}
++		
++		return orderDetailIds;
++	}
++	
++	public String[] getParentCategoryName(String id) throws PrestaShopWebserviceException {
++		
++		PSWebServiceClient ws = new PSWebServiceClient(shopUrl + "/api/categories/" + id,key);
++		HashMap<String, Object> opt = new HashMap<String, Object>();
++		opt.put("resource", "categories");
++		Document schema = ws.get(opt);
++		NodeList list = schema.getChildNodes();
++		String[] category = new String[2];
++		
++		for (int i = 0; i < list.getLength(); i++) {
++
++			if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
++				Element element = (Element) list.item(i);
++				category[0] = element.getElementsByTagName("name").item(0).getFirstChild().getTextContent();
++				category[1] = element.getElementsByTagName("link_rewrite").item(0).getFirstChild().getTextContent();
++			}
++		}
++		return category;
++	}
++	
++	public MetaFile importProductImages(String productId, String imgId) throws IOException {
++
++		String path = AppSettings.get().get("file.upload.dir");
++		String imageUrl = "http://localhost/prestashop/api/images/products/" + productId + "/" + imgId;
++		String destinationFile = path + File.separator + productId + ".jpg";
++
++		HttpClient httpClient = new DefaultHttpClient();
++		HttpGet httpGet = new HttpGet(imageUrl);
++		httpGet.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(key, ""), "UTF-8", false));
++		HttpResponse httpResponse = httpClient.execute(httpGet);
++		HttpEntity responseEntity = httpResponse.getEntity();
++		InputStream is = responseEntity.getContent();
++		OutputStream os = new FileOutputStream(destinationFile);
++
++		byte[] b = new byte[2048];
++		int length;
++
++		while ((length = is.read(b)) != -1) {
++			os.write(b, 0, length);
++		}
++		is.close();
++		os.close();
++
++		File image = new File(path + File.separator + productId + ".jpg");
++		MetaFile imgUpload = metaFiles.upload(image);
++		return imgUpload;
++	}
++	
++	public Address getAddress(String addressL4, String addressL6, String city) {
++
++		Address addressObj = new Address();
++		List<Address> addresses = addressRepo.all().fetch();
++		String fullName = addressL4 + addressL6;
++		Integer cnt = 0;
++
++		for (Address address : addresses) {
++			if (address.getAddressL4().equals(addressL4) && address.getAddressL6().equals(addressL6)) {
++				addressObj = addressRepo.find(address.getId());
++				cnt++;
++				break;
++			}
++		}
++
++		if (cnt == 0) {
++			addressObj.setAddressL4(addressL4);
++			addressObj.setAddressL6(addressL6);
++			addressObj.setFullName(fullName);
++		}
++
++		City c = cityRepo.findByName(city);
++		if (c == null) {
++			City city2 = new City();
++			city2.setName(city);
++			addressObj.setCity(city2);
++		} else {
++			addressObj.setCity(c);
++		}
++		return addressObj;
++	}
++	
++	public SaleOrder updateOrderStatus(SaleOrder order, int status) throws Exception {
++		
++		for(SaleOrderStatus saleOrderStatus : saleOrderStatus) {
++						if(status == saleOrderStatus.getPrestaShopStatus()) {
++							if(saleOrderStatus.getAbsStatus() == 1) {
++								order.setStatusSelect(saleOrderStatus.getAbsStatus());
++								
++							} else if (saleOrderStatus.getAbsStatus() == 2) {
++								order.setManualUnblock(true);
++								saleOrderService.finalizeSaleOrder(order);
++								order.setStatusSelect(saleOrderStatus.getAbsStatus());
++								
++							} else if (saleOrderStatus.getAbsStatus() == 3) {
++								order.setManualUnblock(true);
++								saleOrderService.finalizeSaleOrder(order);
++								saleOrderService.confirmSaleOrder(order);
++								order.setStatusSelect(saleOrderStatus.getAbsStatus());
++								
++							} else if (saleOrderStatus.getAbsStatus() == 4) {
++								order.setManualUnblock(true);
++								saleOrderService.finalizeSaleOrder(order);
++								saleOrderService.confirmSaleOrder(order);
++								order.setStatusSelect(saleOrderStatus.getAbsStatus());
++								
++							} else if (saleOrderStatus.getAbsStatus() == 5) {
++								CancelReason cancelReason = new CancelReason();
++								cancelReason.setName("From prestashop");
++								order.setCancelReason(cancelReason);
++								order.setCancelReasonStr("From prestashop");
++								saleOrderService.cancelSaleOrder(order, order.getCancelReason(), order.getCancelReasonStr());
++								order.setStatusSelect(saleOrderStatus.getAbsStatus());
++								
++							} else {
++								order.setStatusSelect(1);
++							}
++						}
++			}
++					
++		return order;
++	}
++	
++	public SaleOrder manageAddresses(String id_delivery_address, String id_invoice_address, SaleOrder order) {
++
++		Address deliveryAddress = null;
++		Address invoiceAddress = null;
++		
++		if (id_delivery_address != null) {
++			deliveryAddress = Beans.get(AddressRepository.class).all().filter("self.prestaShopId = ?" , id_delivery_address).fetchOne(); 
++			order.setDeliveryAddress(deliveryAddress);
++			order.setDeliveryAddressStr(deliveryAddress.getAddressL4() + "\n" + deliveryAddress.getAddressL5() 
++				+ "\n" + deliveryAddress.getAddressL6() + "\n" + deliveryAddress.getAddressL7Country().getName());
++		}
++		
++		if(id_invoice_address != null) {
++			invoiceAddress = Beans.get(AddressRepository.class).all().filter("self.prestaShopId = ?" , id_invoice_address).fetchOne();
++			order.setMainInvoicingAddress(invoiceAddress);
++			order.setMainInvoicingAddressStr(invoiceAddress.getAddressL4() + "\n" + invoiceAddress.getAddressL5() 
++				+ "\n" + invoiceAddress.getAddressL6() + "\n" + invoiceAddress.getAddressL7Country().getName());
++		}
++		
++		return order;
++	}
++	
++	@SuppressWarnings("deprecation")
++	@Transactional
++	public void importAxelorCurrencies() throws IOException, PrestaShopWebserviceException {
++		
++		this.importLogObjectHeder("Currency");
++		List<String> currencyIds = this.fetchApiIds("currencies", "currency");
++		
++		for (String id : currencyIds) {
++			
++			this.importConnection("currencies", id);
++			NodeList list = schema.getChildNodes();
++			Currency currency = null;
++			String code = "";
++			String name = "";
++			
++			for (int i = 0; i < list.getLength(); i++) {
++				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
++					try {
++						Element element = (Element) list.item(i);
++						String prestashop_id = element.getElementsByTagName("id").item(0).getTextContent();
++						currency = Beans.get(CurrencyRepository.class).all().filter("self.prestaShopId = ?", prestashop_id).fetchOne();
++						
++						if(currency == null) {
++							currency = currencyRepo.findByCode(element.getElementsByTagName("iso_code").item(0).getTextContent());
++							
++							if(currency == null) {
++								currency = new Currency();
++								currency.setPrestaShopId(prestashop_id);
++							} else {
++								currency.setPrestaShopId(prestashop_id);
++							}
++						}
++						
++						if(!element.getElementsByTagName("iso_code").item(0).getTextContent().equals(null) &&
++								!element.getElementsByTagName("name").item(0).getTextContent().equals(null)) {
++							
++							code = element.getElementsByTagName("iso_code").item(0).getTextContent();
++							name = element.getElementsByTagName("name").item(0).getTextContent();
++							currency.setCode(code);
++							currency.setName(name);
++							
++						} else {
++							throw new AxelorException(String.format("Currency code / name is null or invalid"), IException.NO_VALUE);
++						}
++
++						currencyRepo.save(currency);
++						
++					} catch (AxelorException e) {
++						this.importLog(id, e.getMessage());
++						continue;
++					} catch (Exception e) {
++						this.importLog(id, e.getMessage());
++						continue;
++					}
++				}
++			}
++		}
++
++	}
++	
++	@SuppressWarnings("deprecation")
++	public void importAxelorCountries() throws IOException, PrestaShopWebserviceException {
++		
++		this.importLogObjectHeder("Country");
++		List<String> countryIds = this.fetchApiIds("countries", "country");
++
++		for (String id : countryIds) {
++			
++			this.importConnection("countries", id);
++			NodeList list = schema.getChildNodes();
++			
++			for (int i = 0; i < list.getLength(); i++) {
++
++				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
++					try {
++						Element element = (Element) list.item(i);
++						
++						String name = element.getElementsByTagName("name").item(i).getFirstChild().getTextContent();
++						String alpha2Code = element.getElementsByTagName("iso_code").item(i).getTextContent();
++						
++						if(name.isEmpty()) {
++							throw new AxelorException(String.format("Country is null or invalid"), IException.NO_VALUE);
++						}
++						
++						Country country = Beans.get(CountryRepository.class).all().filter("self.alpha2Code = ?", alpha2Code).fetchOne();
++						
++						if(country == null) {
++							country = new Country();
++						}
++
++						country.setName(name);
++						country.setAlpha2Code(alpha2Code);
++						country.setPrestaShopId(id);
++						countryRepo.save(country);
++						
++					} catch (AxelorException e) {
++						this.importLog(id, e.getMessage());
++						continue;
++					} catch (Exception e) {
++						this.importLog(id, e.getMessage());
++						continue;
++					}
++					
++				}
++			}
++		}
++	}
++	
++	@SuppressWarnings("deprecation")
++	@Transactional
++	public void importAxelorPartners() throws PrestaShopWebserviceException, IOException {
++
++		this.importLogObjectHeder("Partner(Customer)");
++		List<String> customerIds = this.fetchApiIds("customers", "customer");
++		
++		for (String id : customerIds) {
++			
++			this.importConnection("customers", id);
++			NodeList list = schema.getChildNodes();
++			Integer titleSelect;
++			String emailName = "";
++			String firstName = "";
++			String name = "";
++			String email = "";
++			String website = "";
++			String company = "";
++			boolean flag = false; 
++			Partner partner = null;
++			Partner contactPartner = null;
++
++			for (int i = 0; i < list.getLength(); i++) {
++
++				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
++					try {
++						Element element = (Element) list.item(i);
++						String prestashop_id = element.getElementsByTagName("id").item(i).getTextContent();
++						partner = Beans.get(PartnerRepository.class).all().filter("self.prestaShopId = ?", prestashop_id).fetchOne();
++						
++						if(partner == null) {
++							flag = true;
++							partner = new Partner();
++							partner.setPrestaShopId(prestashop_id);
++						}
++						
++						if (!element.getElementsByTagName("firstname").item(0).getTextContent().isEmpty() && 
++								!element.getElementsByTagName("lastname").item(0).getTextContent().isEmpty()) {
++
++							titleSelect = Integer.parseInt(element.getElementsByTagName("id_gender").item(0).getTextContent());
++							firstName = element.getElementsByTagName("firstname").item(0).getTextContent();
++							name = element.getElementsByTagName("lastname").item(0).getTextContent();
++							email = element.getElementsByTagName("email").item(0).getTextContent();
++							website = element.getElementsByTagName("website").item(0).getTextContent();
++							company = element.getElementsByTagName("company").item(0).getTextContent();
++							
++								if(!element.getElementsByTagName("company").item(0).getTextContent().isEmpty()) {
++									
++									partner.setPartnerTypeSelect(1);
++									partner.setName(company);
++									
++									if(flag) {
++										contactPartner = new Partner();
++									} else {
++										contactPartner = partner.getContactPartnerSet().iterator().next();
++									}
++									
++									partner.setFullName(company);
++									contactPartner.setName(name);
++									contactPartner.setFirstName(firstName);
++									contactPartner.setIsContact(true);
++									contactPartner.setMainPartner(partner);
++									
++									if(name != null && firstName != null) {
++										contactPartner.setFullName(name + " " + firstName);
++									} else if (name != null && firstName == null) {
++										contactPartner.setFullName(name);
++									} else if (name == null && firstName != null) {
++										contactPartner.setFullName(firstName);
++									}
++									
++									if(flag) {
++										partner.addContactPartnerSetItem(contactPartner);
++									}
++									
++									
++								} else {
++									partner.setPartnerTypeSelect(2);
++									partner.setFirstName(firstName);
++									partner.setName(name);
++									
++									if(name != null && firstName != null) {
++										partner.setFullName(name + " " + firstName);
++									} else if (name != null && firstName == null) {
++										partner.setFullName(name);
++									} else if (name == null && firstName != null) {
++										partner.setFullName(firstName);
++									}
++								}
++							
++						} else {
++							throw new AxelorException(String.format("Firstname / Lastname / Company is null or invalid"), IException.NO_VALUE);
++						}
++
++						partner.setTitleSelect(titleSelect);
++						EmailAddress emailAddress = new EmailAddress();
++						emailAddress.setAddress(email);
++
++						if (partner != null) {
++							emailName = partner.getFullName();
++						}
++						if (emailAddress.getAddress() != null) {
++							emailName = emailAddress.getAddress();
++						}
++						if(flag) {
++							partner.addCompanySetItem(AuthUtils.getUser().getActiveCompany());
++							flag = false;
++						}
++
++						emailAddress.setName(emailName);
++						partner.setEmailAddress(emailAddress);
++						partner.setWebSite(website);
++						partner.setIsCustomer(true);
++						
++						partnerRepo.persist(partner);
++						partnerRepo.save(partner);
++
++					} catch (AxelorException e) {
++						this.importLog(id, e.getMessage());
++						continue;
++					} catch (Exception e) {
++						this.importLog(id, e.getMessage());
++						continue;
++					}
++				}
++			}
++		}
++	}
++	
++	@SuppressWarnings("deprecation")
++	@Transactional
++	public void importAxelorPartnerAddresses() throws PrestaShopWebserviceException, IOException {
++		
++		this.importLogObjectHeder("Partner(Customer) Address");
++		List<String> addressesIds = this.fetchApiIds("addresses", "address");
++		String partnerId = null;
++		String deletedId = null;
++		String id_address = null;
++		String addressL4 = null;
++		String addressL5 = null;
++		String postcode = null;
++		String cityName = null;
++		String countryId = null;
++		Partner partner = null;
++		Address address = null;
++		PartnerAddress partnerAddress = null;
++		City city = null;
++		
++		
++		for (String id : addressesIds) {
++
++			ws = new PSWebServiceClient(shopUrl + "/api/addresses/" + id, key);
++			opt.put("resource", "addresses");
++			schema = ws.get(opt);
++			NodeList nodeList = schema.getChildNodes();
++
++			for (int i = 0; i < nodeList.getLength(); i++) {
++
++				if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
++					Element element = (Element) nodeList.item(i);
++						
++						deletedId = element.getElementsByTagName("deleted").item(i).getTextContent();
++						partnerId = element.getElementsByTagName("id_customer").item(i).getTextContent();
++						
++						if(deletedId.equals("1")) {
++							continue;
++						}
++						
++						try {
++							if(partnerId == null || partnerId.equals("0")) {
++								throw new AxelorException(String.format("Partner Address is null or invalid"), IException.NO_VALUE);
++							}
++							id_address = element.getElementsByTagName("id").item(i).getTextContent();
++							addressL4 = element.getElementsByTagName("address1").item(i).getTextContent();
++							addressL5 = element.getElementsByTagName("address2").item(i).getTextContent();
++							cityName = element.getElementsByTagName("city").item(i).getTextContent();
++							postcode = element.getElementsByTagName("postcode").item(i).getTextContent();
++							countryId = element.getElementsByTagName("id_country").item(i).getTextContent();
++							partner = Beans.get(PartnerRepository.class).all().filter("self.prestaShopId = ?", partnerId).fetchOne();
++							address = Beans.get(AddressRepository.class).all().filter("self.prestaShopId = ?", id).fetchOne(); 
++							
++							city = cityRepo.findByName(cityName);
++							if(city == null) {
++								city = new City();
++							}
++							
++							Country country = Beans.get(CountryRepository.class).all().filter("self.prestaShopId = ?", countryId).fetchOne();
++							
++							if(country == null) {
++								throw new AxelorException(String.format("Country is null or invalid"), IException.NO_VALUE);
++							}
++							
++							
++							if(address == null) {
++								
++								address = new Address();
++								address.setAddressL4(addressL4);
++								address.setAddressL5(addressL5);
++								city.setName(cityName);
++								city.setHasZipOnRight(false);
++								address.setAddressL6(cityName + " " + postcode);
++								address.setFullName(address.getAddressL4().toString() + " " + address.getAddressL6().toString());
++								address.setCity(city);
++								address.setAddressL7Country(country);
++								
++								partnerAddress = new PartnerAddress();
++								partnerAddress.setIsDeliveryAddr(true);
++								partnerAddress.setIsInvoicingAddr(true);
++								partnerAddress.setIsDefaultAddr(true);
++								partnerAddress.setAddress(address);
++								partnerAddress.setPartner(partner);
++								address.setPrestaShopId(id_address);
++								partner.addPartnerAddressListItem(partnerAddress);
++								
++							} else {
++								
++								address.setAddressL4(addressL4);
++								address.setAddressL5(addressL5);
++								city.setName(cityName);
++								city.setHasZipOnRight(false);
++								address.setAddressL6(cityName + " " + postcode);
++								address.setFullName(address.getAddressL4().toString() + " " + address.getAddressL6().toString());
++								address.setAddressL7Country(country);
++								address.setPrestaShopId(id_address);
++								address.setCity(city);
++							}
++							partnerRepo.save(partner);
++							
++						} catch (AxelorException e) {
++							this.importLog(id, e.getMessage());
++							continue;
++						} catch (Exception e) {
++							this.importLog(id, e.getMessage());
++							continue;
++						}
++					}
++			}
++		}
++	}
++	
++	@SuppressWarnings("deprecation")
++	@Transactional
++	public void importAxelorProductCategories() throws PrestaShopWebserviceException, DOMException, IOException {
++
++		this.importLogObjectHeder("Product Category");
++		List<String> categoryIds = this.fetchApiIds("categories", "category");
++		String prestashop_id = "";
++		for (String id : categoryIds) {
++
++			this.importConnection("categories", id);
++			NodeList list = schema.getChildNodes();
++			
++			for (int i = 0; i < list.getLength(); i++) {
++
++				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
++					Element element = (Element) list.item(i);
++					try {
++						ProductCategory productCategory = null;
++						String name = element.getElementsByTagName("name").item(i).getFirstChild().getTextContent();
++						String code = element.getElementsByTagName("link_rewrite").item(i).getFirstChild().getTextContent();
++						String id_parent = element.getElementsByTagName("id_parent").item(i).getTextContent();
++						ProductCategory categoryObj = productCategoryRepo.findByName(name);
++						ProductCategory parentProductCategory = null;
++						
++						if(categoryObj != null) {
++							categoryObj.setPrestaShopId(id);
++							parentProductCategory = Beans.get(ProductCategoryRepository.class).all().filter("self.prestaShopId = ?", id_parent).fetchOne();
++							categoryObj.setParentProductCategory(parentProductCategory);
++							productCategoryRepo.save(categoryObj);
++							continue;
++						}
++						
++						String[] parent_category = new String[2];
++						prestashop_id = element.getElementsByTagName("id").item(i).getTextContent();
++						productCategory = Beans.get(ProductCategoryRepository.class).all().filter("self.prestaShopId = ?", prestashop_id).fetchOne();
++						
++						if(productCategory == null) {
++							productCategory = productCategoryRepo.findByCode(element.getElementsByTagName("link_rewrite").item(0).getTextContent());
++							
++							if(productCategory == null) {
++								productCategory = new ProductCategory();
++								productCategory.setPrestaShopId(prestashop_id);
++							} else {
++								productCategory.setPrestaShopId(prestashop_id);
++							}
++						}
++
++						ProductCategory parentCategory = null;
++						
++						if(!id_parent.equals("0")) {
++							parent_category = getParentCategoryName(id_parent);
++							parentCategory = productCategoryRepo.findByName(parent_category[0]);
++							
++							if(parentCategory == null) {
++								parentCategory = new ProductCategory();
++								parentCategory.setName(parent_category[0]);
++								parentCategory.setCode(parent_category[1]);
++							}
++						}
++
++						if (name.equals(null) || code.equals(null)) {
++							throw new AxelorException(String.format("Null Category"), IException.NO_VALUE);
++						}
++
++						productCategory.setCode(code);
++						productCategory.setName(name);
++						if(!id_parent.equals("0")) {
++							productCategory.setParentProductCategory(parentCategory);
++						}
++						
++						productCategoryRepo.save(productCategory);
++						
++					} catch (AxelorException e) {
++						this.importLog(prestashop_id, e.getMessage());
++						continue;
++					} catch (Exception e) {
++						this.importLog(prestashop_id, e.getMessage());
++						continue;
++					}
++				}
++			}
++		}
++	}
++
++	@SuppressWarnings("deprecation")
++	@Transactional
++	public void importAxelorProducts() throws PrestaShopWebserviceException, IOException {
++
++		this.importLogObjectHeder("Product");
++		String prestashop_id = "";
++		String name = "";
++		List<String> productsIds = this.fetchApiIds("products", "product");
++
++		for (String id : productsIds) {
++			try {
++
++				this.importConnection("products", id);
++				NodeList list = schema.getChildNodes();
++
++				for (int i = 0; i < list.getLength(); i++) {
++					
++					if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
++						Element element = (Element) list.item(i);
++						Product product = null;
++						String id_category_default = element.getElementsByTagName("id_category_default").item(0).getTextContent();
++						prestashop_id = element.getElementsByTagName("id").item(0).getTextContent();
++
++						product = Beans.get(ProductRepository.class).all().filter("self.prestaShopId = ?", prestashop_id).fetchOne();
++						
++						if(product == null) {
++							product = new Product();
++							product.setPrestaShopId(prestashop_id);
++						}
++
++						if (!element.getElementsByTagName("name").item(0).getFirstChild().getTextContent().equals(null)) {
++							name = element.getElementsByTagName("name").item(0).getFirstChild().getTextContent();
++						} else {
++							throw new AxelorException(String.format("Product name is null or invalid"), IException.NO_VALUE);
++						}
++
++						String imgId = element.getElementsByTagName("id_default_image").item(0).getTextContent();
++						MetaFile img = importProductImages(prestashop_id, imgId);
++						BigDecimal price = new BigDecimal(
++								(element.getElementsByTagName("price").item(0).getTextContent().isEmpty() ? "000.00"
++										: element.getElementsByTagName("price").item(0).getTextContent()));
++						BigDecimal width = new BigDecimal(
++								(element.getElementsByTagName("width").item(0).getTextContent().isEmpty()) ? "000.00"
++										: element.getElementsByTagName("width").item(0).getTextContent());
++						Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
++								.parse(element.getElementsByTagName("date_add").item(0).getTextContent());
++						String formattedDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
++						LocalDate start_date = LocalDate.parse(formattedDate);
++						String description = element.getElementsByTagName("description").item(0).getTextContent();
++						String productTypeSelect = element.getElementsByTagName("link_rewrite").item(0).getTextContent();
++						
++						if (!name.equals(null)) {
++							product.setCode(name);
++							product.setName(name);
++						}
++						
++						ProductCategory category = Beans.get(ProductCategoryRepository.class).all().filter("self.prestaShopId = ?", id_category_default).fetchOne();
++						
++						product.setPicture(img);
++						product.setProductCategory(category);
++						product.setSalePrice(price);
++						product.setWidth(width);
++						product.setStartDate(start_date);
++						product.setDescription(description);
++						product.setFullName(name);
++						product.setProductTypeSelect(productTypeSelect);
++						
++						productRepo.save(product);
++					}
++				}
++
++			} catch (AxelorException e) {
++				this.importLog(prestashop_id, e.getMessage());
++				continue;
++			} catch (Exception e) {
++				this.importLog(prestashop_id, e.getMessage());
++				continue;
++			}
++		}
++
++	}
++
++	@SuppressWarnings("deprecation")
++	@Transactional
++	public void importAxelorSaleOrders() throws PrestaShopWebserviceException, IOException {
++
++		this.importLogObjectHeder("SaleOrder");
++		List<String> orderIds = null;
++		Long client_partner = 0l;
++		String prestashop_id = "";
++		
++		if(isStatus == true) {
++			orderIds = this.fetchApiIds("orders", "order");
++		} else {
++			orderIds = this.getDraftOrderIds();
++		}
++
++		for (String id : orderIds) {
++			try {
++				ws = new PSWebServiceClient(shopUrl + "/api/orders/" + id, key);
++				opt = new HashMap<String, Object>();
++				opt.put("resource", "orders");
++				schema = ws.get(opt);
++				NodeList list = schema.getChildNodes();
++
++				for (int i = 0; i < list.getLength(); i++) {
++					if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
++						Element element = (Element) list.item(i);
++						prestashop_id = element.getElementsByTagName("id").item(i).getTextContent();
++						SaleOrder order = null;
++						Partner partner = null;
++						Integer status = null;
++						Currency currency = null;
++						order = Beans.get(SaleOrderRepository.class).all().filter("self.prestaShopId = ?", prestashop_id).fetchOne();
++
++						if(order == null) {
++							order = new SaleOrder();
++							order.setPrestaShopId(prestashop_id);
++						}
++						
++						if (!element.getElementsByTagName("id_customer").item(0).getTextContent().isEmpty()) {
++							client_partner = Long.parseLong(element.getElementsByTagName("id_customer").item(0).getTextContent());
++						} else {
++							throw new AxelorException(String.format("Customer in order null or invalid"), IException.NO_VALUE);
++						}
++
++						partner = Beans.get(PartnerRepository.class).all().filter("self.prestaShopId = ?", client_partner).fetchOne();
++						status = Integer.parseInt(element.getElementsByTagName("current_state").item(0).getTextContent());
++						currency = Beans.get(CurrencyRepository.class).all().filter("self.prestaShopId = ?" , element.getElementsByTagName("id_currency").item(0).getTextContent()).fetchOne();
++						
++						if(partner == null) {
++							throw new AxelorException(String.format("Customer is null or invalid"),IException.NO_VALUE);
++						}
++						
++						if(currency == null) {
++							throw new AxelorException(String.format("Currency is null or invalid"),IException.NO_VALUE);
++						}
++						
++						String id_delivery_address = element.getElementsByTagName("id_address_delivery").item(0).getTextContent();
++						String id_invoice_address = element.getElementsByTagName("id_address_invoice").item(0).getTextContent();
++						String paymentCondition = element.getElementsByTagName("payment").item(0).getTextContent();
++						Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(element.getElementsByTagName("date_add").item(0).getTextContent());
++						String formattedDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
++						
++						PaymentCondition paymentConditionObj = paymentConditionRepo.findByName(paymentCondition);
++						
++						if(paymentConditionObj == null) {
++							paymentConditionObj = new PaymentCondition();
++							paymentConditionObj.setCode(paymentCondition);
++							paymentConditionObj.setName(paymentCondition);
++						}
++						
++						order.setClientPartner(partner);
++						order = this.manageAddresses(id_delivery_address, id_invoice_address, order);
++						order.setExTaxTotal(new BigDecimal(element.getElementsByTagName("total_paid_tax_excl").item(0).getTextContent()).setScale(2, RoundingMode.HALF_UP));
++						order.setTaxTotal(new BigDecimal(element.getElementsByTagName("total_wrapping_tax_incl").item(0).getTextContent()).setScale(2, RoundingMode.HALF_UP));
++						order.setInTaxTotal(new BigDecimal(element.getElementsByTagName("total_paid").item(0).getTextContent()).setScale(2, RoundingMode.HALF_UP));
++						order.setCreationDate(LocalDate.parse(formattedDate));
++						order.setOrderDate(LocalDate.parse(formattedDate));
++						order.setExternalReference(element.getElementsByTagName("reference").item(0).getTextContent());
++						order.setPaymentMode(paymentMode);
++						order.setPaymentCondition(paymentConditionObj);
++						Company company = companyRepo.find(1L);
++						order.setCompany(company);
++						order.setCurrency(currency);
++						order = this.updateOrderStatus(order, status);
++						
++						saleOrderRepo.persist(order);
++						saleOrderRepo.save(order);
++					}
++				}
++
++			} catch (AxelorException e) {
++				this.importLog(prestashop_id, e.getMessage());
++				continue;
++			} catch (Exception e) {
++				this.importLog(prestashop_id, e.getMessage());
++				continue;
++			}
++		}
++	}
++	
++	@SuppressWarnings("deprecation")
++	@Transactional
++	public void importAxelorSaleOrderLines() throws PrestaShopWebserviceException, IOException {
++		
++		this.importLogObjectHeder("OrderLine");
++		List<String> orderIds = null;
++		List<String> orderLineIds = null;
++		boolean isNewSaleOrderLine = false;
++		
++		if(isStatus == true) {
++			orderIds = this.fetchApiIds("orders", "order");
++		} else {
++			orderIds = this.getDraftOrderIds();
++		}
++		orderLineIds = this.getOrderLineIds(orderIds);
++		
++		for(String id : orderLineIds) {
++			try {
++				ws = new PSWebServiceClient(shopUrl + "/api/order_details/" + id, key);
++				opt = new HashMap<String, Object>();
++				opt.put("resource", "order_details");
++				schema = ws.get(opt);
++				NodeList list = schema.getChildNodes();
++				
++				for (int i = 0; i < list.getLength(); i++) {
++					if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
++						Element element = (Element) list.item(i);
++						
++						SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).all().filter("self.prestaShopId = ?", element.getElementsByTagName("id_order").item(i).getTextContent()).fetchOne();
++						Product product = Beans.get(ProductRepository.class).all().filter("self.prestaShopId = ?", element.getElementsByTagName("product_id").item(i).getTextContent()).fetchOne();
++						SaleOrderLine saleOrderLine = Beans.get(SaleOrderLineRepository.class).all().filter("self.prestaShopId = ?", id).fetchOne();
++						
++						if(saleOrder == null) {
++							throw new AxelorException(String.format("Order null or invalid"), IException.NO_VALUE);
++						}
++						
++						if(saleOrderLine == null) {
++							isNewSaleOrderLine = true;
++							saleOrderLine = new SaleOrderLine();
++						}
++						
++						if(product == null) {
++							throw new AxelorException(String.format("Product null or invalid"), IException.NO_VALUE);
++						}
++						
++						saleOrderLine.setProduct(product);	
++						saleOrderLine.setProductName(element.getElementsByTagName("product_name").item(i).getTextContent());
++						saleOrderLine.setQty(new BigDecimal(element.getElementsByTagName("product_quantity").item(i).getTextContent()));
++						saleOrderLine.setPrice(new BigDecimal(element.getElementsByTagName("product_price").item(i).getTextContent()));
++						saleOrderLine.setExTaxTotal(new BigDecimal(element.getElementsByTagName("total_price_tax_incl").item(i).getTextContent()));
++						saleOrderLine.setSaleOrder(saleOrder);
++						saleOrderLine.setPrestaShopId(id);
++						
++						if(isNewSaleOrderLine) {
++							saleOrder.addSaleOrderLineListItem(saleOrderLine);
++							isNewSaleOrderLine = false;
++						}
++
++						saleOrderRepo.persist(saleOrder);
++						saleOrderRepo.save(saleOrder);
++					}
++				}
++				
++			} catch (AxelorException e) {
++				this.importLog(id, e.getMessage());
++				continue;
++			} catch (Exception e) {
++				this.importLog(id, e.getMessage());
++				continue;
++			}
++				
++		}
++	}
++}
+diff --git a/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/imports/PrestaShopServiceImport.java b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/imports/PrestaShopServiceImport.java
+new file mode 100644
+index 0000000..39b3d7e
+--- /dev/null
++++ b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/imports/PrestaShopServiceImport.java
+@@ -0,0 +1,58 @@
++/**
++ * Axelor Business Solutions
++ *
++ * Copyright (C) 2017 Axelor (<http://axelor.com>).
++ *
++ * This program is free software: you can redistribute it and/or  modify
++ * it under the terms of the GNU Affero General Public License, version 3,
++ * as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++package com.axelor.apps.prestashop.service.imports;
++
++import java.io.File;
++import java.io.IOException;
++import java.text.ParseException;
++import javax.xml.transform.TransformerException;
++import com.axelor.apps.prestashop.service.PrestaShopWebserviceException;
++import com.axelor.meta.MetaFiles;
++import com.axelor.meta.db.MetaFile;
++import com.google.inject.Inject;
++
++public class PrestaShopServiceImport {
++	
++	@Inject
++	private PrestaShopServiceImplImport psImport;
++	
++	@Inject
++	private MetaFiles metaFiles;
++	
++	public void importAxelorBase() throws IOException, PrestaShopWebserviceException {
++		
++		psImport.importAxelorCurrencies();
++		psImport.importAxelorCountries();
++		psImport.importAxelorPartners();
++		psImport.importAxelorPartnerAddresses();
++		psImport.importAxelorProductCategories();
++		psImport.importAxelorProducts();
++	}
++	
++	public MetaFile importPrestShop() throws PrestaShopWebserviceException, ParseException, TransformerException, IOException {
++
++		this.importAxelorBase();
++		psImport.importAxelorSaleOrders();
++		psImport.importAxelorSaleOrderLines();
++		
++		File importFile = psImport.closeLog();
++		MetaFile importMetaFile = metaFiles.upload(importFile);
++		return importMetaFile;
++	}
++}
+diff --git a/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/imports/batch/BatchStrategyImport.java b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/imports/batch/BatchStrategyImport.java
+new file mode 100644
+index 0000000..95a1b98
+--- /dev/null
++++ b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/imports/batch/BatchStrategyImport.java
+@@ -0,0 +1,31 @@
++/**
++ * Axelor Business Solutions
++ *
++ * Copyright (C) 2017 Axelor (<http://axelor.com>).
++ *
++ * This program is free software: you can redistribute it and/or  modify
++ * it under the terms of the GNU Affero General Public License, version 3,
++ * as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++package com.axelor.apps.prestashop.service.imports.batch;
++
++import com.axelor.apps.base.service.administration.AbstractBatch;
++import com.axelor.apps.prestashop.service.imports.PrestaShopServiceImport;
++
++public abstract class BatchStrategyImport extends AbstractBatch {
++
++	protected PrestaShopServiceImport prestaShopServiceImport;
++	
++	protected BatchStrategyImport(PrestaShopServiceImport prestaShopServiceImport) {
++		super();
++		this.prestaShopServiceImport = prestaShopServiceImport;
++	}
++}
+diff --git a/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/imports/batch/ImportPrestaShop.java b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/imports/batch/ImportPrestaShop.java
+new file mode 100644
+index 0000000..4990d81
+--- /dev/null
++++ b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/service/imports/batch/ImportPrestaShop.java
+@@ -0,0 +1,90 @@
++/**
++ * Axelor Business Solutions
++ *
++ * Copyright (C) 2017 Axelor (<http://axelor.com>).
++ *
++ * This program is free software: you can redistribute it and/or  modify
++ * it under the terms of the GNU Affero General Public License, version 3,
++ * as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++package com.axelor.apps.prestashop.service.imports.batch;
++
++import java.lang.invoke.MethodHandles;
++import javax.inject.Inject;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++import com.axelor.apps.crm.exception.IExceptionMessage;
++import com.axelor.apps.prestashop.service.imports.PrestaShopServiceImport;
++import com.axelor.db.JPA;
++import com.axelor.exception.AxelorException;
++import com.axelor.exception.service.TraceBackService;
++import com.axelor.i18n.I18n;
++import com.axelor.meta.db.MetaFile;
++import com.google.inject.persist.Transactional;
++
++public class ImportPrestaShop extends BatchStrategyImport {
++
++	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
++
++	@Inject
++	public ImportPrestaShop(PrestaShopServiceImport prestaShopServiceImport) {
++		
++		super(prestaShopServiceImport);
++	}
++
++	@Override
++	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
++		
++		super.start();
++		
++	}
++
++	
++	@Override
++	@Transactional
++	protected void process() {
++			
++			int i = 0;
++			
++			try {
++				MetaFile importFile = prestaShopServiceImport.importPrestShop();
++				batch.getPrestaShopBatch().setPrestaShopBatchLog(importFile);
++				batchRepo.save(batch);
++				i++;
++				
++			} catch (Exception e) {
++				incrementAnomaly();
++				
++				LOG.error("Bug(Anomalie) généré(e) pour le rappel de l'évènement {}", batch.getId());
++				
++			} finally {
++				
++				if (i % 1 == 0) { JPA.clear(); }
++		}
++	}
++
++	/**
++	 * As {@code batch} entity can be detached from the session, call {@code Batch.find()} get the entity in the persistant context.
++	 * Warning : {@code batch} entity have to be saved before.
++	 */
++	@Override
++	protected void stop() {
++
++		String comment = I18n.get(IExceptionMessage.BATCH_TARGET_2);
++		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_TARGET_3)+"\n", batch.getDone());
++		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
++		
++		super.stop();
++		addComment(comment);
++		
++	}
++}
+diff --git a/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/web/AppPrestaShopController.java b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/web/AppPrestaShopController.java
+new file mode 100644
+index 0000000..9dc4dfc
+--- /dev/null
++++ b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/web/AppPrestaShopController.java
+@@ -0,0 +1,56 @@
++/**
++ * Axelor Business Solutions
++ *
++ * Copyright (C) 2017 Axelor (<http://axelor.com>).
++ *
++ * This program is free software: you can redistribute it and/or  modify
++ * it under the terms of the GNU Affero General Public License, version 3,
++ * as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++package com.axelor.apps.prestashop.web;
++
++import javax.xml.transform.TransformerException;
++
++import com.axelor.apps.base.db.AppPrestashop;
++import com.axelor.apps.prestashop.app.AppPrestaShopService;
++import com.axelor.apps.prestashop.service.PrestaShopWebserviceException;
++import com.axelor.rpc.ActionRequest;
++import com.axelor.rpc.ActionResponse;
++import com.google.inject.Inject;
++
++public class AppPrestaShopController {
++	
++	@Inject
++	private AppPrestaShopService service;
++	
++	public void testConnection(ActionRequest request, ActionResponse response) throws PrestaShopWebserviceException, TransformerException {
++		
++		AppPrestashop ps = request.getContext().asType(AppPrestashop.class);
++		
++		boolean test = service.connection(ps);
++		
++		if(test) {
++			response.setAlert("Connection Sucessfully");
++		} else {
++			response.setAlert("Connection Fail");
++		}
++	}
++	
++	public void validUrl(ActionRequest request, ActionResponse response) {
++		
++		AppPrestashop ps = request.getContext().asType(AppPrestashop.class);
++		boolean valid = service.urlTest(ps);
++		
++		if(valid) {
++			response.setError("Invalid url");
++		}
++	}
++}
+diff --git a/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/web/PrestaShopController.java b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/web/PrestaShopController.java
+new file mode 100644
+index 0000000..c573a4f
+--- /dev/null
++++ b/axelor-prestashop/src/main/java/com/axelor/apps/prestashop/web/PrestaShopController.java
+@@ -0,0 +1,66 @@
++/**
++ * Axelor Business Solutions
++ *
++ * Copyright (C) 2017 Axelor (<http://axelor.com>).
++ *
++ * This program is free software: you can redistribute it and/or  modify
++ * it under the terms of the GNU Affero General Public License, version 3,
++ * as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++package com.axelor.apps.prestashop.web;
++
++import java.io.IOException;
++import java.net.MalformedURLException;
++import java.text.ParseException;
++import javax.xml.parsers.ParserConfigurationException;
++import javax.xml.transform.TransformerException;
++import org.xml.sax.SAXException;
++import com.axelor.apps.base.db.Batch;
++import com.axelor.apps.prestashop.batch.PrestaShopBatchService;
++import com.axelor.apps.prestashop.db.PrestaShopBatch;
++import com.axelor.apps.prestashop.db.repo.PrestaShopBatchRepository;
++import com.axelor.apps.prestashop.service.PrestaShopWebserviceException;
++import com.axelor.rpc.ActionRequest;
++import com.axelor.rpc.ActionResponse;
++import com.google.inject.Inject;
++
++public class PrestaShopController {
++	
++	@Inject
++	private PrestaShopBatchService prestaShopBatchService;
++
++	@Inject
++	private PrestaShopBatchRepository prestaShopBatchRepo;
++	
++	public void importPrestShop(ActionRequest request, ActionResponse response) throws PrestaShopWebserviceException, ParseException, TransformerException{
++		
++		PrestaShopBatch prestaShopBatch = request.getContext().asType(PrestaShopBatch.class);
++		
++		Batch batch = prestaShopBatchService.importPrestaShop(prestaShopBatchRepo.find(prestaShopBatch.getId()));
++		response.setValue("prestaShopBatchLog", batch.getPrestaShopBatch().getPrestaShopBatchLog());
++		
++		if(batch != null)
++			response.setFlash(batch.getComments());
++		response.setReload(true);
++	}
++	
++	public void exportPrestShop(ActionRequest request, ActionResponse response) throws PrestaShopWebserviceException, TransformerException, NumberFormatException, MalformedURLException, IOException, SAXException, ParserConfigurationException{
++
++		PrestaShopBatch prestaShopBatch = request.getContext().asType(PrestaShopBatch.class);
++		
++		Batch batch = prestaShopBatchService.exportPrestaShop(prestaShopBatchRepo.find(prestaShopBatch.getId()));
++		response.setValue("prestaShopBatchLog", batch.getPrestaShopBatch().getPrestaShopBatchLog());
++		
++		if(batch != null)
++			response.setFlash(batch.getComments());
++		response.setReload(true);
++	}
++}
+diff --git a/axelor-prestashop/src/main/resources/data-init/input-config.xml b/axelor-prestashop/src/main/resources/data-init/input-config.xml
+new file mode 100644
+index 0000000..d63de13
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/data-init/input-config.xml
+@@ -0,0 +1,25 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
++  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.0.xsd">
++	
++	<input file="base_appPrestaShop.csv" separator=";" type="com.axelor.apps.base.db.AppPrestashop" call="com.axelor.csv.script.ImportApp:importApp">
++		<bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn" eval="dependsOn.split(',') as List"/>
++	</input>
++		
++	<input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" search="self.name = :name"/>
++  	
++  	<input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role"  search="self.name = :name">
++        <bind column="permissions" to="permissions" search="self.name in :permissions" eval="permissions.split('\\|') as List"/>
++    </input>
++    
++    <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId">
++    	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
++    	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
++    	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
++    	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
++    	<bind to="resetDate" eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate()" />
++    </input>
++    
++</csv-inputs>
++
+diff --git a/axelor-prestashop/src/main/resources/data-init/input/auth_permission.csv b/axelor-prestashop/src/main/resources/data-init/input/auth_permission.csv
+new file mode 100644
+index 0000000..26c2293
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/data-init/input/auth_permission.csv
+@@ -0,0 +1,2 @@
++"name";"object";"canRead";"canWrite";"canCreate";"canRemove";"canExport";"readCondition";"readParams";"writeCondition";"writeParams";"createCondition";"createParams";"removeCondition";"removeParams"
++"perm.prestashop.all";"com.axelor.apps.prestashop.db.*";"true";"true";"true";"true";"true";;;;;;;;
+diff --git a/axelor-prestashop/src/main/resources/data-init/input/auth_role.csv b/axelor-prestashop/src/main/resources/data-init/input/auth_role.csv
+new file mode 100644
+index 0000000..86143cf
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/data-init/input/auth_role.csv
+@@ -0,0 +1,3 @@
++"name";"description";"permissions"
++"role.admin";"Access to all objects for all modules";"perm.prestashop.all"
++"role.user";"Access to all objects for all modules except admin";"perm.prestashop.all"
+diff --git a/axelor-prestashop/src/main/resources/data-init/input/base_appPrestaShop.csv b/axelor-prestashop/src/main/resources/data-init/input/base_appPrestaShop.csv
+new file mode 100644
+index 0000000..f2a29a3
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/data-init/input/base_appPrestaShop.csv
+@@ -0,0 +1,2 @@
++"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
++"PrestaShop";"prestashop";25;"PrestaShop configuration";"prestashop.png";"axelor-prestashop";"sale";3
+diff --git a/axelor-prestashop/src/main/resources/data-init/input/base_sequence.csv b/axelor-prestashop/src/main/resources/data-init/input/base_sequence.csv
+new file mode 100644
+index 0000000..aa6dc20
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/data-init/input/base_sequence.csv
+@@ -0,0 +1,2 @@
++"importId";"code";"name";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk";"company.importId";"journal.importId"
++3;"prestashop";"PrestaShop";1;5;"PS";;1;0;1;
+diff --git a/axelor-prestashop/src/main/resources/data-init/input/img/prestashop.png b/axelor-prestashop/src/main/resources/data-init/input/img/prestashop.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..0ec736d5e94add117062d46878696c8c7884dc7a
+GIT binary patch
+literal 21205
+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
+
+literal 0
+HcmV?d00001
+
+diff --git a/axelor-prestashop/src/main/resources/domains/Address.xml b/axelor-prestashop/src/main/resources/domains/Address.xml
+new file mode 100644
+index 0000000..5b2a4fb
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/domains/Address.xml
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
++  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
++
++	<module name="base" package="com.axelor.apps.base.db"/>
++
++  	<entity name="Address" lang="java">
++   		<string name="prestaShopId"/>
++	</entity>
++
++</domain-models>
+diff --git a/axelor-prestashop/src/main/resources/domains/AppPrestaShop.xml b/axelor-prestashop/src/main/resources/domains/AppPrestaShop.xml
+new file mode 100644
+index 0000000..3c1f958
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/domains/AppPrestaShop.xml
+@@ -0,0 +1,15 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
++
++	<module name="base" package="com.axelor.apps.base.db"/>
++
++	<entity name="AppPrestashop" lang="java" cachable="true" extends="App">
++		<boolean name="isOrderStatus" title="Manage Sales Flow" />
++		<string name="prestaShopUrl" title="PrestaShop URL"/>
++		<string name="prestaShopKey" title="PrestaShop Key"/>
++		<many-to-one  name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Default payment mode"/>
++		<one-to-many name="saleOrderStatus" ref="com.axelor.apps.prestashop.db.SaleOrderStatus" title="Sale Order Status" />
++	</entity>
++
++</domain-models>
+diff --git a/axelor-prestashop/src/main/resources/domains/Batch.xml b/axelor-prestashop/src/main/resources/domains/Batch.xml
+new file mode 100644
+index 0000000..909b325
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/domains/Batch.xml
+@@ -0,0 +1,15 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
++  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
++
++  <module name="base" package="com.axelor.apps.base.db"/>
++
++  <entity name="Batch" lang="java" sequential="true">
++  	
++  	<!-- NOT DISPLAY -->
++  	<many-to-one name="prestaShopBatch" ref="com.axelor.apps.prestashop.db.PrestaShopBatch"/>
++  
++  </entity>
++
++</domain-models>
+diff --git a/axelor-prestashop/src/main/resources/domains/Country.xml b/axelor-prestashop/src/main/resources/domains/Country.xml
+new file mode 100644
+index 0000000..2710420
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/domains/Country.xml
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
++  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
++
++  <module name="base" package="com.axelor.apps.base.db"/>
++
++  <entity name="Country" lang="java" cachable="true">
++   <string name="prestaShopId"/>
++  </entity>
++
++</domain-models>
+diff --git a/axelor-prestashop/src/main/resources/domains/Currency.xml b/axelor-prestashop/src/main/resources/domains/Currency.xml
+new file mode 100644
+index 0000000..3ba230a
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/domains/Currency.xml
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
++  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
++
++  <module name="base" package="com.axelor.apps.base.db"/>
++
++  <entity name="Currency" lang="java" cachable="true">
++	<string name="prestaShopId"/>    
++  </entity>
++  
++</domain-models>
+diff --git a/axelor-prestashop/src/main/resources/domains/Partner.xml b/axelor-prestashop/src/main/resources/domains/Partner.xml
+new file mode 100644
+index 0000000..0bcb90f
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/domains/Partner.xml
+@@ -0,0 +1,10 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
++  
++  <module name="base" package="com.axelor.apps.base.db"/>
++  
++  <entity name="Partner" lang="java">
++  	<string name="prestaShopId"/>
++  </entity>
++  
++</domain-models>
+\ No newline at end of file
+diff --git a/axelor-prestashop/src/main/resources/domains/PrestaShopBatch.xml b/axelor-prestashop/src/main/resources/domains/PrestaShopBatch.xml
+new file mode 100644
+index 0000000..1fe978d
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/domains/PrestaShopBatch.xml
+@@ -0,0 +1,21 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
++  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
++
++  <module name="prestashop" package="com.axelor.apps.prestashop.db"/>
++
++  <entity name="PrestaShopBatch" lang="java">
++  	
++  	<!-- HEADER -->
++  	<integer name="actionSelect" title="Action" required="true" selection="iprestashop.batch.action.select"/>
++  	<string name="code" title="Code" namecolumn="true" unique="true"/>
++    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
++    
++    <!-- OTHERS INFORMATIONS -->
++    <string name="description" title="Description" large="true" />
++    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="prestaShopBatch" title="Batchs" />
++  	<many-to-one name="prestaShopBatchLog" ref="com.axelor.meta.db.MetaFile"/>
++  </entity>
++
++</domain-models>
+diff --git a/axelor-prestashop/src/main/resources/domains/Product.xml b/axelor-prestashop/src/main/resources/domains/Product.xml
+new file mode 100644
+index 0000000..26554d6
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/domains/Product.xml
+@@ -0,0 +1,10 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
++ 
++  <module name="base" package="com.axelor.apps.base.db"/>
++ 
++  <entity name="Product" lang="java">
++  	<string name="prestaShopId"/>
++  </entity>
++
++</domain-models>
+diff --git a/axelor-prestashop/src/main/resources/domains/ProductCategory.xml b/axelor-prestashop/src/main/resources/domains/ProductCategory.xml
+new file mode 100644
+index 0000000..caa5203
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/domains/ProductCategory.xml
+@@ -0,0 +1,10 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
++  
++  <module name="base" package="com.axelor.apps.base.db"/>
++  
++  <entity name="ProductCategory" lang="java" cachable="true">
++  	<string name="prestaShopId"/>
++  </entity>
++  
++</domain-models>
+diff --git a/axelor-prestashop/src/main/resources/domains/SaleOrder.xml b/axelor-prestashop/src/main/resources/domains/SaleOrder.xml
+new file mode 100644
+index 0000000..4607200
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/domains/SaleOrder.xml
+@@ -0,0 +1,13 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
++  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
++
++  <module name="sale" package="com.axelor.apps.sale.db"/>
++
++  <entity name="SaleOrder" lang="java">
++  	<string name="prestaShopId" />
++  	<string name="deletedSaleOrderLine" />
++  </entity>
++
++</domain-models>
+diff --git a/axelor-prestashop/src/main/resources/domains/SaleOrderLine.xml b/axelor-prestashop/src/main/resources/domains/SaleOrderLine.xml
+new file mode 100644
+index 0000000..eb5ece3
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/domains/SaleOrderLine.xml
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
++  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
++
++  <module name="sale" package="com.axelor.apps.sale.db"/>
++
++  <entity name="SaleOrderLine" lang="java">
++  	<string name="prestaShopId" />  	
++  </entity>
++
++</domain-models>
+diff --git a/axelor-prestashop/src/main/resources/domains/SaleOrderStatus.xml b/axelor-prestashop/src/main/resources/domains/SaleOrderStatus.xml
+new file mode 100644
+index 0000000..a3cc00d
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/domains/SaleOrderStatus.xml
+@@ -0,0 +1,13 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
++  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
++
++   <module name="prestashop" package="com.axelor.apps.prestashop.db"/>
++
++  <entity name="SaleOrderStatus" lang="java" cachable="true">
++   		<integer name="absStatus" selection="sale.order.status.select" title="Sale Order Status"/>
++   		<integer name="prestaShopStatus" selection="presta.shop.sale.order.status.select" title="PrestaShop Sale Order Status"/>
++  </entity>
++
++</domain-models>
+diff --git a/axelor-prestashop/src/main/resources/views/AppPrestaShop.xml b/axelor-prestashop/src/main/resources/views/AppPrestaShop.xml
+new file mode 100644
+index 0000000..b337224
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/views/AppPrestaShop.xml
+@@ -0,0 +1,19 @@
++<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
++<object-views xmlns="http://axelor.com/xml/ns/object-views"
++	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
++	
++	<form name="app-prestashop-config-form" title="App prestashop" model="com.axelor.apps.base.db.AppPrestashop" canDelete="false" canNew="false" width="large">
++		<panel title="PrestaShop">
++			<field name="prestaShopUrl" onChange="com.axelor.apps.prestashop.web.AppPrestaShopController:validUrl"/>
++			<field name="prestaShopKey"/>
++			<button name="btnTest" title="Test" onClick="save,com.axelor.apps.prestashop.web.AppPrestaShopController:testConnection"/>
++		</panel>
++		<panel>
++			<field name="isOrderStatus" widget="boolean-switch"/>
++			<field name="paymentMode" canNew="true" canEdit="true" form-view="prestaShop-payment-mode-form" grid-view="prestaShop-payment-mode-grid"/>	
++			<panel-related colSpan="12" field="saleOrderStatus" form-view="prestaShop-sale-order-status-form" grid-view="prestaShop-sale-order-status-grid"/>			
++		</panel>
++	</form>
++	
++</object-views>
+diff --git a/axelor-prestashop/src/main/resources/views/Menu.xml b/axelor-prestashop/src/main/resources/views/Menu.xml
+new file mode 100644
+index 0000000..706d843
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/views/Menu.xml
+@@ -0,0 +1,15 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<object-views xmlns="http://axelor.com/xml/ns/object-views"
++	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
++	
++	<menuitem name="root-prestaShop-batch-base" parent="admin-root-batch"
++		title="PrestaShop batch" action="admin-root-prestaShop-batch-import-export-base" if="__config__.app.isApp('prestashop')" />
++	
++	<action-view name="admin-root-prestaShop-batch-import-export-base" title="PrestaShop Import/Export"
++		model="com.axelor.apps.prestashop.db.PrestaShopBatch" >
++		<view type="grid" name="prestashop-batch-grid"/>
++		<view type="form" name="prestashop-batch-form"/>
++	</action-view>
++	
++</object-views>	
+\ No newline at end of file
+diff --git a/axelor-prestashop/src/main/resources/views/PaymentMode.xml b/axelor-prestashop/src/main/resources/views/PaymentMode.xml
+new file mode 100644
+index 0000000..72ad594
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/views/PaymentMode.xml
+@@ -0,0 +1,18 @@
++<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
++<object-views xmlns="http://axelor.com/xml/ns/object-views"
++	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
++	
++    <grid name="prestaShop-payment-mode-grid" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode">
++        <field name="name"/>
++        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
++    </grid>
++    
++    <form name="prestaShop-payment-mode-form" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode" width="large">
++        <panel name="main" >
++        	<field name="name"/>
++	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
++        </panel>
++    </form>
++
++</object-views>
+\ No newline at end of file
+diff --git a/axelor-prestashop/src/main/resources/views/PrestaShopBatch.xml b/axelor-prestashop/src/main/resources/views/PrestaShopBatch.xml
+new file mode 100644
+index 0000000..c5a9e8b
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/views/PrestaShopBatch.xml
+@@ -0,0 +1,54 @@
++<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
++<object-views xmlns="http://axelor.com/xml/ns/object-views"
++	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
++    
++    <grid name="prestashop-batch-grid" title="PrestaShop batches" model="com.axelor.apps.prestashop.db.PrestaShopBatch">
++    	<field name="code" />
++		<field name="company" form-view="company-form" grid-view="company-grid"/>
++		<field name="createdOn"/>
++		<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
++    </grid>
++    
++   <form name="prestashop-batch-form" title="PrestaShop Batch Import/Export" model="com.axelor.apps.prestashop.db.PrestaShopBatch" 
++   onLoad="action-prestashop-button-visiblity" onNew="action-prestashop-default-data,action-prestashop-button-visiblity">
++	   	<panel name="main" >
++	   		<field name="actionSelect" onChange="action-prestashop-button-visiblity"/>
++	    	<field name="code"/>
++	    	<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
++	    	<field name="prestaShopBatchLog" title="Logs" widget="binary-link"></field>
++	  </panel>
++	  <panel-tabs>
++	    <panel name="information" title="Information" >
++	      <field name="createdOn" title="Created on"/>
++	      <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
++	      <field name="description" colSpan="12" />
++	      <panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
++	    </panel>
++	  </panel-tabs>
++	  <panel sidebar="true">
++		<button name="import"  title="Import" onClick="save,action-import-prestaShop-method" colSpan="12" hidden="true"/>
++		<button name="export"  title="Export" onClick="save,action-export-prestaShop-method" colSpan="12" hidden="true"/>	  	
++	  </panel>
++  </form>
++   
++   <action-method name="action-import-prestaShop-method" model="com.axelor.apps.base.db.PrestaShopBatch">
++   		<call class="com.axelor.apps.prestashop.web.PrestaShopController" method="importPrestShop"/>
++   </action-method>
++   
++   <action-method name="action-export-prestaShop-method" model="com.axelor.apps.base.db.PrestaShopBatch">
++   		<call class="com.axelor.apps.prestashop.web.PrestaShopController" method="exportPrestShop"/>
++   </action-method>
++   
++   <action-attrs name="action-prestashop-button-visiblity" model="com.axelor.apps.prestashop.db.PrestaShopBatch"> 
++   		<attribute if="actionSelect == 1" name="hidden" expr="false" for="import"/>
++  		<attribute if="actionSelect == 1" name="hidden" expr="true" for="export"/>
++  		<attribute if="actionSelect == 2" name="hidden" expr="false" for="export"/>
++  		<attribute if="actionSelect == 2" name="hidden" expr="true" for="import"/>
++   </action-attrs>
++   
++   <action-record name="action-prestashop-default-data" model="com.axelor.apps.prestashop.db.PrestaShopBatch">
++   		<field name="actionSelect" expr="1"/>
++   </action-record>
++
++</object-views>
+diff --git a/axelor-prestashop/src/main/resources/views/SaleOrderStatus.xml b/axelor-prestashop/src/main/resources/views/SaleOrderStatus.xml
+new file mode 100644
+index 0000000..652a470
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/views/SaleOrderStatus.xml
+@@ -0,0 +1,18 @@
++<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
++<object-views xmlns="http://axelor.com/xml/ns/object-views"
++	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
++	
++	<grid name="prestaShop-sale-order-status-grid" title="Sale Order Status" model="com.axelor.apps.prestashop.db.SaleOrderStatus">
++        <field name="absStatus"/>
++        <field name="prestaShopStatus"/>
++    </grid>
++    
++    <form name="prestaShop-sale-order-status-form" title="Sale Order Status" model="com.axelor.apps.prestashop.db.SaleOrderStatus" width="large">
++        <panel name="main" >
++        	<field name="absStatus" />
++	        <field name="prestaShopStatus" />
++        </panel>
++    </form>
++
++</object-views>
+\ No newline at end of file
+diff --git a/axelor-prestashop/src/main/resources/views/Selects.xml b/axelor-prestashop/src/main/resources/views/Selects.xml
+new file mode 100644
+index 0000000..13eff6d
+--- /dev/null
++++ b/axelor-prestashop/src/main/resources/views/Selects.xml
+@@ -0,0 +1,27 @@
++<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
++<object-views xmlns="http://axelor.com/xml/ns/object-views"
++	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
++	
++	<selection name="iprestashop.batch.action.select">
++		<option value="1">Import</option>
++		<option value="2">Export</option>
++	</selection>
++	
++	<selection name="presta.shop.sale.order.status.select">
++  		<option value="1">Awaiting check payment</option>
++  		<option value="2">Payment accepted</option>
++		<option value="3">Processing in progress</option>
++		<option value="4">Shipped</option>
++		<option value="5">Delivered</option>
++		<option value="6">Canceled</option>
++		<option value="7">Refunded</option>
++		<option value="8">Payment error</option>
++		<option value="9">On backorder (paid)</option>
++		<option value="10">Awaiting bank wire payment</option>
++		<option value="11">Remote payment accepted payment</option>
++		<option value="12">On backorder (not paid)</option>
++		<option value="13">Awaiting Cash On Delivery validation</option>
++	</selection>
++	
++</object-views>
+\ No newline at end of file
