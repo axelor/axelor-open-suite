@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.repo.AlarmEngineBatchRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.alarm.AlarmEngineBatchService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
@@ -54,7 +55,7 @@ public class AlarmEngineBatchController {
 		AlarmEngineBatch alarmEngineBatch = alarmEngineBatchRepo.findByCode("code");
 
 		if (alarmEngineBatch == null) {
-			TraceBackService.trace(new AxelorException(I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_5)+" "+request.getContext().get("code"), 3));
+			TraceBackService.trace(new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_5)+" "+request.getContext().get("code")));
 		}
 		else {
 			Map<String,Object> mapData = new HashMap<String,Object>();

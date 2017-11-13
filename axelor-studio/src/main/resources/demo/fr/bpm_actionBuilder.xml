@@ -5,6 +5,7 @@
   <action-builder name="action-create-invoice-from-timesheet" 
   	isJson="false" 
   	typeSelect="0" 
+  	appBuilder="PRD"
   	model="com.axelor.apps.hr.db.Timesheet"
   	targetModel="com.axelor.apps.account.db.Invoice">
   	<lines>
@@ -12,8 +13,8 @@
 	  	<line metaField="company" metaModel="Invoice" valueField="company" valueModel="Timesheet" value="$.company" />
 	  	<line metaField="currency" metaModel="Invoice"  valueField="company"  valueModel="Timesheet" value="$.company.currency" />
 	  	<line metaField="operationTypeSelect" metaModel="Invoice"  value="3"/>
-	  	<line metaField="paymentCondition" metaModel="Invoice"  filter="self.code = '15JRFDM'"/>
-	  	<line metaField="paymentMode" metaModel="Invoice"  filter="self.code = 'ENC_VIR'"/>
+	  	<line metaField="paymentCondition" metaModel="Invoice"  filter="self.code = '15D_EOM'"/>
+	  	<line metaField="paymentMode" metaModel="Invoice"  filter="self.code = 'OUT_WT'"/>
 	  	<line name="total" value="$.timesheetLineList.sum($.durationStored*$$.user.employee.hourlyRate)" dummy="true"/>
 	  	<line metaField="exTaxTotal" metaModel="Invoice"  value="_$.total" />
 	  	<line metaField="inTaxTotal" metaModel="Invoice"  value="_$.total" />
@@ -32,7 +33,8 @@
   
   <action-builder name="action-create-project-planning"
 	isJson="false" 
-  	typeSelect="0" 
+  	typeSelect="0"
+  	appBuilder="PRD" 
   	model="com.axelor.apps.project.db.Project"
   	targetModel="com.axelor.apps.project.db.ProjectPlanning">
   	<lines>
@@ -46,6 +48,7 @@
   <action-builder name="action-timesheet-line-invert-to-invoice"
 	isJson="false" 
   	typeSelect="1" 
+  	appBuilder="PRD"
   	model="com.axelor.apps.hr.db.Timesheet">
   	<lines>
 	  	<line metaField="timesheetLineList" metaModel="Timesheet"  value="$.timesheetLineList" valueModel="Timesheet" valueField="timesheetLineList">
@@ -56,23 +59,57 @@
   	</lines>
   </action-builder>
   
-  <action-builder name="action-create-book-order-from-category"
+  <action-builder name="action-create-product-order-from-category"
   	isJson="true" 
   	typeSelect="0" 
-  	model="BookCategory"
-  	targetModel="BookOrder">
+  	appBuilder="PRD"
+  	model="ProductCategory"
+  	targetModel="ProductOrder">
   	<lines>
-	  	<line jsonField="customer" jsonModel="BookOrder"  filter="self.name = 'Axelor'" />
-	  	<line jsonField="total" jsonModel="BookOrder"  value="$.books.sum($.price)" />
-	  	<line jsonField="status" jsonModel="BookOrder" value="1" />
-	  	<line jsonField="lines" jsonModel="BookOrder"  value="$.books" valueJsonModel="BookCategory" valueJsonField="books">
+	  	<line jsonField="customer" jsonModel="ProductOrder"  filter="self.name = 'Axelor'" />
+	  	<line jsonField="status" jsonModel="ProductOrder" value="1" />
+	  	<line jsonField="total" jsonModel="ProductOrder"  value="$.products.sum($.price)" />
+	  	<line jsonField="lines" jsonModel="ProductOrder"  value="$.products" valueJsonModel="ProductCategory" valueJsonField="products">
 	  		<subLines>
-	  			<line jsonField="book" jsonModel="BookOrderLine"  value="$" />
-	  			<line jsonField="price" jsonModel="BookOrderLine"  value="$.price" valueJsonModel="Book" valueJsonField="price" />
-	  			<line jsonField="qty" jsonModel="BookOrderLine"  value="1" />
-	  			<line jsonField="total" jsonModel="BookOrderLine"  value="$.price" valueJsonModel="Book" valueJsonField="price" />
+	  			<line jsonField="product" jsonModel="ProductOrderLine"  value="$" />
+	  			<line jsonField="price" jsonModel="ProductOrderLine"  value="$.price" valueJsonModel="Product" valueJsonField="price" />
+	  			<line jsonField="qty" jsonModel="ProductOrderLine"  value="1" />
+	  			<line jsonField="total" jsonModel="ProductOrderLine"  value="$.price" valueJsonModel="Product" valueJsonField="price" />
 	  		</subLines>
 	  	</line>
+	</lines>
+  </action-builder>
+  
+  <action-builder name="action-product-order-line-update-total"
+  	isJson="true" 
+  	typeSelect="1" 
+  	appBuilder="PRD"
+  	model="ProductOrderLine"
+  	targetModel="ProductOrderLine">
+  	<lines>
+	  	<line jsonField="total" jsonModel="ProductOrderLine"  value="$.price*$.qty" />
+	</lines>
+  </action-builder>
+  
+  <action-builder name="action-product-order-line-get-product-details"
+  	isJson="true" 
+  	typeSelect="1"
+  	appBuilder="PRD"
+  	model="ProductOrderLine"
+  	targetModel="ProductOrderLine">
+  	<lines>
+	  	<line jsonField="price" jsonModel="ProductOrderLine" valueJson="Product" valueJsonModel="ProductOrderLine" valueJsonField="product" value="$.product.price" />
+	</lines>
+  </action-builder>
+  
+  <action-builder name="action-product-order-update-total"
+  	isJson="true" 
+  	typeSelect="1"
+  	appBuilder="PRD"
+  	model="ProductOrder"
+  	targetModel="ProductOrder">
+  	<lines>
+	  	<line jsonField="total" jsonModel="ProductOrder" valueJson="Product" valueJsonModel="ProductOrder"  valueJsonField="lines" value="$.lines.sum($.total)" />
 	</lines>
   </action-builder>
   

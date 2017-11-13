@@ -15,7 +15,7 @@
         <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="statusSelect"/>
         <field name="typeSelect" hidden="true" />
-        <field name="toAddress" hidden="true" form-view="address-form" grid-view="address-grid"/>
+        <field name="toAddressStr" hidden="true" form-view="address-form" grid-view="address-grid"/>
         <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
         <button name="viewDirection" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
     </grid>
@@ -23,13 +23,14 @@
      <grid name="stock-move-out-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     	<toolbar>
 			<button name="printStockMoveGrid" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
+			<button name="printPickingStockMoveGrid" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
     	</toolbar>
         <field name="stockMoveSeq"/>
         <field name="fromLocation" form-view="location-form" grid-view="location-grid"/>
         <field name="estimatedDate"/>
         <field name="realDate"/>
-        <field name="fromAddress" hidden="true" form-view="address-form" grid-view="address-grid"/>
-        <field name="toAddress" form-view="address-form" grid-view="address-grid"/>
+        <field name="fromAddressStr" hidden="true"/>
+        <field name="toAddressStr"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="statusSelect"/>
@@ -46,8 +47,8 @@
         <field name="toLocation"  form-view="location-form" grid-view="location-grid"/>
         <field name="estimatedDate"/>
         <field name="realDate"/>
-        <field name="fromAddress" form-view="address-form" grid-view="address-grid"/>
-        <field name="toAddress" hidden="true" form-view="address-form" grid-view="address-grid"/>
+        <field name="fromAddressStr"/>
+        <field name="toAddressStr" hidden="true"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="partner"  form-view="partner-form" grid-view="partner-grid"/>
         <field name="statusSelect"/>
@@ -57,11 +58,12 @@
     </grid>
     
 	<form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove"
-		 onLoad="action-stock-move-attrs-typeselect-change" onNew="action-group-stock-stockmove-onnew">
+		 onLoad="action-stock-move-attrs-typeselect-change,action-stock-move-hide-reserved-qty" onNew="action-group-stock-stockmove-onnew">
 		 
 		 <menubar>
 		 		<menu title="Reports">
-		 			<item title=" Print" action="save,action-print-stock-move" showIf="statusSelect != 1"/>
+		 			<item title="Print" action="save,action-print-stock-move" showIf="statusSelect != 1"/>
+					<item title="Print picking order" action="save,action-print-picking-stock-move" showIf="statusSelect != 1 &amp;&amp; typeSelect == 2"/>
 		 		</menu>
 		 		<menu title="Tools">
 		 			<item title="View Direction" showIf="typeSelect == 2 &amp;&amp; statusSelect!=4" action="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
@@ -77,28 +79,33 @@
 	  </panel>
 	  <panel name="main">
 		  <field name="typeSelect" title="Type" colSpan="4" onChange="action-stock-move-set-default-locations, action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1"/>
-		  <field name="conformitySelect" onChange="action-stock-move-method-change-conformity"/>
+		  <field name="conformitySelect" onChange="action-stock-move-method-change-conformity" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
 	  </panel>
 	  <panel>
 	    <panel title="Stock move reference" name="stockMoveRef">
 	      <field name="stockMoveSeq" colSpan="12"/>
-	      <field name="name" colSpan="12"/>
+	      <field name="name" colSpan="12" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
 	      <field name="company" widget="SuggestBox" form-view="company-form" colSpan="12" readonlyIf="statusSelect != 1" grid-view="company-grid"/>
 	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12" readonlyIf="statusSelect != 1" onChange="action-stock-move-record-partner-delivery-informations"/>
 	    </panel>
 	    <panel title="Stock move informations" name="stockMoveInformation">
-	      <field name="fromLocation" domain="self.company = :company" onChange="action-stock-move-set-from-address" readonlyIf="statusSelect != 1" form-view="location-form" grid-view="location-grid"/>
-	      <field name="toLocation" domain="self.company = :company" onChange="action-stock-move-set-to-address" readonlyIf="statusSelect != 1" form-view="location-form" grid-view="location-grid"/>
+	      <field name="fromLocation" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" form-view="location-form" grid-view="location-grid"/>
+	      <field name="toLocation" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1" form-view="location-form" grid-view="location-grid"/>
 	      <field name="estimatedDate" colSpan="6" readonlyIf="statusSelect != 1"/>
 	      <field name="realDate" colSpan="6"/>
-	      <field name="fromAddress" showIf="typeSelect == 3" colSpan="12" onSelect="action-stock-move-attrs-domain-address" form-view="address-partner-address-form"/>
-	      <field name="toAddress" showIf="typeSelect == 2" colSpan="12" onSelect="action-stock-move-attrs-domain-address" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
-	      <field name="isWithReturnSurplus" colSpan="3"/>
-	      <field name="isWithBackorder" colSpan="3"/>
-		</panel>
+	      <field name="isWithReturnSurplus" colSpan="6" showIf="typeSelect == 3"/>
+	      <field name="isWithBackorder" colSpan="6"/>
+	      <field name="fromAddress" showIf="!$readonly() &amp;&amp; statusSelect == 1 &amp;&amp; typeSelect == 3" colSpan="12" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str"  readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
+            <field name="fromAddressStr" showIf="typeSelect == 3" readonlyIf="statusSelect &gt; 1" height="5" colSpan="12">
+				<viewer>{{fromAddressStr}}</viewer>
+			</field>
+	      <field name="toAddress" showIf="!$readonly() &amp;&amp; statusSelect == 1 &amp;&amp; typeSelect == 2" colSpan="12" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
+			<field name="toAddressStr" showIf="typeSelect == 2" readonlyIf="statusSelect &gt; 1" height="5" colSpan="12">
+				<viewer>{{toAddressStr}}</viewer>
+			</field>
+	    </panel>
 	  </panel>
 	  <panel-tabs>
-	   
 	    <panel-related name="stockMoveLineListPanel" title="Stock move line" field="stockMoveLineList" onChange="action-stock-move-method-compute, action-stock-move-line-method-change-conformity" readonlyIf="statusSelect == 3" form-view="stock-move-line-form" grid-view="stock-move-line-grid"/>
 	    <panel name="configuration" title="Configuration"  if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" >
 	      <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="sale-order-form" grid-view="sale-order-grid"/>
@@ -114,14 +121,15 @@
 			<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
 			<button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3"/>
 			<button name="generateReversion" title="Generate reversion" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3"/>
-	  </panel>
+    </panel>
 	<panel sidebar="true" title="Freight Carrier">
-		<field name="shipmentMode" colSpan="12"/>
-		<field name="freightCarrierMode" colSpan="12"/>
-		<field name="trackingNumber" />
-		<field name="numOfPalettes" />
-		<field name="numOfPackages" />
-		<field name="grossWeight" />
+		<field name="shipmentMode" colSpan="12" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
+      	<field name="freightCarrierMode" colSpan="12" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
+		<field name="trackingNumber" readonlyIf="statusSelect == 3 || statusSelect == 4" />
+		<field name="numOfPackages" readonlyIf="statusSelect == 3 || statusSelect == 4" />
+		<field name="numOfPalettes" readonlyIf="statusSelect == 3 || statusSelect == 4" />
+		<field name="grossWeight" readonlyIf="statusSelect == 3 || statusSelect == 4" />
+		<field name="saleOrder.specificPackage" readonly="true"/>
 	</panel>
 	   
 	   <panel sidebar="true" readonly="true"  colSpan="4">  
@@ -130,7 +138,7 @@
 	                  <![CDATA[
 	                <dl class="dl-horizontal">
 	                    <dt class="order-subtotal-total" x-translate>Total W.T.</dt>
-	                    <dd class="order-subtotal-total">{{record.exTaxTotal}}</dd>
+	                    <dd class="order-subtotal-total">{{exTaxTotal}}</dd>
 	                </dl>
 	                ]]>
 	            </viewer>
@@ -199,6 +207,7 @@
     <action-group name="action-group-stock-stockmove-onnew">
     	<action name="action-stock-move-record-new"/>
     	<action name="action-stock-move-attrs-typeselect-change"/>
+		<action name="action-stock-move-hide-reserved-qty"/>
     </action-group>
     
 	<action-group name="action-group-stock-stockmove-plan-click">
@@ -228,7 +237,17 @@
     	<action name="save"/>
   	</action-group>
 
-     <action-attrs name="action-stock-move-attrs-typeselect-change">     
+	<action-group name="action-stock-move-group-to-location-onchange">
+		<action name="action-stock-move-set-to-address"/>
+        <action name="action-stock-move-method-set-addresses-str"/>
+	</action-group>
+
+	<action-group name="action-stock-move-group-from-location-onchange">
+		<action name="action-stock-move-set-from-address"/>
+		<action name="action-stock-move-method-set-addresses-str"/>
+	</action-group>
+
+     <action-attrs name="action-stock-move-attrs-typeselect-change">
     	<attribute name="title" for="stockMoveRef" expr="eval: com.axelor.i18n.I18n.get('Internal move reference')" if="typeSelect == 1"/>
     	<attribute name="title" for="stockMoveRef" expr="eval: com.axelor.i18n.I18n.get('Outgoing move reference')" if="typeSelect == 2"/>
     	<attribute name="title" for="stockMoveRef" expr="eval: com.axelor.i18n.I18n.get('Incoming move reference')" if="typeSelect == 3"/>
@@ -254,6 +273,10 @@
     	<attribute name="value" for="stockFromDate" expr="eval:__date__"/>
     	<attribute name="value" for="stockToDate" expr="eval:__date__"/>
     </action-attrs>
+	
+	<action-attrs name="action-stock-move-hide-reserved-qty">
+        <attribute for="stockMoveLineList.reservedQty" name="hidden" expr="eval: typeSelect != 2"/>
+	</action-attrs>
     
     <action-record name="action-stock-move-record-draft" model="com.axelor.apps.stock.db.StockMove">
     	<field name="statusSelect" expr="eval: 1"/>
@@ -315,6 +338,10 @@
 	<action-method name="action-print-stock-move">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="printStockMove"/>
 	</action-method>
+
+	<action-method name="action-print-picking-stock-move">
+		<call class="com.axelor.apps.stock.web.StockMoveController" method="printPickingStockMove"/>
+	</action-method>
 	
 	<action-method name="action-stock-move-method-split-into-2">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="splitInto2"/>
@@ -351,7 +378,11 @@
 	<action-method name="action-stock-move-method-open-stock-per-day">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="openStockPerDay"/>
 	</action-method>
-	
+
+	<action-method name="action-stock-move-method-set-addresses-str">
+		<call class="com.axelor.apps.stock.web.StockMoveController" method="fillAddressesStr"/>
+	</action-method>
+
 	<action-validate name="action-stock-move-check-stock-move-line-real-qty">
 		<alert message="The move doesn't contain any product, do you wish to continue ?" if="stockMoveLineList != null &amp;&amp; stockMoveLineList.sum{it->it.realQty} == 0"/>
 	</action-validate>

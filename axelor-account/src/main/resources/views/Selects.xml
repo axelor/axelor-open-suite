@@ -6,14 +6,10 @@
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 	
-	<selection name="account.account.schedule.type">
-		<option value='type'>Type</option>
-		<option value='subtype'>Subtype</option>
-	</selection>
-	
 	<selection name='iaccount.payment.voucher.status.select'>
 		<option value='1'>Draft</option>
-		<option value='2'>Confirmed</option>
+        <option value='2'>Waiting for deposit slip</option>
+		<option value='3'>Confirmed</option>
 	</selection>
 	
 	<selection name='account.account.technical.type.select'>
@@ -38,12 +34,6 @@
 		<option value='email'>Email</option>
 		<option value='paper'>Paper</option>
 		<option value='emailpaper'>Email and paper</option>
-	</selection>
-	
-	<selection name='move.line.reimbursement.status.select'>
-		<option value='0'></option>
-		<option value='1'>Reimbursement ongoing</option>
-		<option value='2'>Reimbursed</option>
 	</selection>
 	
 	<selection name='account.reconcile.status.select'>
@@ -126,12 +116,12 @@
 		<option value="3">Balance invoice</option>
 	</selection>
 
-	<selection name='ipayment.operation.type.select'>
+	<!-- <selection name='ipayment.operation.type.select'>
 		<option value='1'>Supplier purchase</option>
 		<option value='2'>Supplier refund</option>
 		<option value='3'>Customer sale</option>
 		<option value='4'>Customer refund</option>
-	</selection>
+	</selection> -->
 	
 	<selection name='iaccount.account.schedule.export.type.select'>
 		<option value='0'>Payment smoothing(DD)</option>
@@ -152,7 +142,6 @@
 	
 	<selection name="iaccounting.batch.action.select">
 		<option value="11">Reimbursement</option>
-		<option value="12">Direct debit</option>
 		<option value="14">Debt recovery</option>
 		<option value="15">Payments by IPO et IPO cheque</option>
 		<option value="16">Doubtful Customers</option>
@@ -194,11 +183,6 @@
 	<selection name="iinterbank.account.order.batch.type.select">
 		<option value="1">Import payments by IPO and IPO cheque</option>
 		<option value="2">Import payment rejects by IPO and IPO cheque</option>
-	</selection>
-	
-	<selection name="iinvoice.batch.to.status.select">
-		<option value="tov">Validate</option>
-		<option value="val">Ventilate</option>
 	</selection>
 	
 	<selection name="account.payment.condition.type.select">
@@ -289,21 +273,39 @@
 		<option value="3">Real (accounting)</option>
 	</selection>
 
-	<selection name="app.type.select" id="account.app.type.select">
-		<option order="2" value="account">Account</option>
-		<option order="3" value="invoice">Invoice</option>
-		<option order="4" value="budget">Budget</option>
-	</selection>
-
     <selection name="base.blocking.select" id="account.blocking.select">
         <option value="1">Reminder blocking</option>
         <option value="2">Invoicing blocking</option>
         <option value="3">Reimbursement blocking</option>
         <option value="4">Debit blocking</option>
     </selection>
+    
+	<selection name="account.interbankcode.type.select">
+		<option value="1">Operation code</option>
+		<option value="2">Reject/Return code</option>
+	</selection>
 
 	<selection name="meta.schedule.batch.service.select" id="account.meta.schedule.batch.service.select">
 		<option value="com.axelor.apps.account.service.batch.AccountingBatchService">com.axelor.apps.account.service.batch.AccountingBatchService</option>
+	</selection>
+
+	<selection name="account.subrogation.release.status.select">
+		<option value="1">New release</option>
+		<option value="2">Release transmitted</option>
+		<option value="3">Release accounted</option>
+		<option value="4">Release cleared</option>
+		<option value="5">Release canceled</option>
+	</selection>
+
+	<selection name="account.notification.status.select">
+		<option value="1">New notification</option>
+		<option value="2">Notification validated</option>
+	</selection>
+
+	<selection name="iaccount.payment.schedule.type.select">
+		<option value="0"></option>
+		<option value="1">Payment terms</option>
+		<option value="2">Monthly payments</option>
 	</selection>
 
 </object-views>

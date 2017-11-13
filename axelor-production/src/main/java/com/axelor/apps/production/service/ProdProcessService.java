@@ -27,7 +27,6 @@ import java.util.Set;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
-import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
@@ -49,8 +48,8 @@ public class ProdProcessService {
 		}
 		for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
 			for (ProdProduct prodProduct : prodProcessLine.getToConsumeProdProductList()) {
-				if(!bomMap.containsKey(prodProduct.getProduct())){
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.PROD_PROCESS_USELESS_PRODUCT), prodProduct.getProduct().getName()), IException.CONFIGURATION_ERROR);
+				if (!bomMap.containsKey(prodProduct.getProduct())) {
+					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PROD_PROCESS_USELESS_PRODUCT), prodProduct.getProduct().getName());
 				}
 				bomMap.put(prodProduct.getProduct(), bomMap.get(prodProduct.getProduct()).subtract(prodProduct.getQty()));
 			}
@@ -64,8 +63,8 @@ public class ProdProcessService {
 				nameProductList.add(product.getName());
 			}
 		}
-		if(!copyMap.isEmpty()){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PROD_PROCESS_MISS_PRODUCT), Joiner.on(",").join(nameProductList)), IException.CONFIGURATION_ERROR);
+		if (!copyMap.isEmpty()) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PROD_PROCESS_MISS_PRODUCT), Joiner.on(",").join(nameProductList));
 		}
 	}
 

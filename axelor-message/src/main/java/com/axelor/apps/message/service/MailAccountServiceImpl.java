@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -133,9 +133,9 @@ public class MailAccountServiceImpl implements MailAccountService {
 			}
 			
 		} catch ( AuthenticationFailedException e ) {
-			throw new AxelorException(I18n.get(IExceptionMessage.MAIL_ACCOUNT_1), e, IException.CONFIGURATION_ERROR) ;
+			throw new AxelorException(e, mailAccount, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MAIL_ACCOUNT_1));
 		} catch ( NoSuchProviderException e ) {
-			throw new AxelorException(I18n.get(IExceptionMessage.MAIL_ACCOUNT_2), e, IException.CONFIGURATION_ERROR) ;
+			throw new AxelorException(e, mailAccount, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MAIL_ACCOUNT_2));
 		}
 
 	}

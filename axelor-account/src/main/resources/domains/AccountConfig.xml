@@ -36,6 +36,8 @@
     <many-to-one name="irrecoverableAccount" ref="com.axelor.apps.account.db.Account" title="Irrecoverable account"/>
     <many-to-one name="cashPositionVariationAccount" ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
     <many-to-one name="advancePaymentAccount" ref="com.axelor.apps.account.db.Account" title="Advance Payment Account"/>
+    <many-to-one name="factorDebitAccount" ref="com.axelor.apps.account.db.Account" />
+    <many-to-one name="factorCreditAccount" ref="com.axelor.apps.account.db.Account" />
     
     <decimal name="thresholdDistanceFromRegulation" title="Allowed payment range"/>
     
@@ -145,6 +147,12 @@
   	<string name="invoiceClientBox" large="true" multiline="true" title="Client box in invoice"/>
   	
   	<string name="termsAndConditions" large="true" title="Terms and Conditions"/>
+
+	<!-- Invoice mail -->
+      <boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation" default="false"/>
+	  <many-to-one name="invoiceMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+  	
+  	<finder-method name="findByCompany" using="company" />
   	
   	<extra-code><![CDATA[
 	

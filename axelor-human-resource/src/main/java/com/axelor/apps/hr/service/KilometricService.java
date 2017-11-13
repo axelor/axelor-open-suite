@@ -102,12 +102,14 @@ public class KilometricService {
 		KilometricLog log = getKilometricLog(employee, date);
 		
 		if (log != null) { return log; }
-		if (employee.getMainEmploymentContract() == null) { throw new AxelorException( String.format( I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT), employee.getName() ), IException.CONFIGURATION_ERROR ); }
+		if (employee.getMainEmploymentContract() == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT), employee.getName());
+		}
 		
 		Year year = Beans.get(YearServiceImpl.class).getYear(date, employee.getMainEmploymentContract().getPayCompany());
 		
-		if (year == null){
-			throw new AxelorException( String.format( I18n.get(IExceptionMessage.KILOMETRIC_LOG_NO_YEAR), employee.getUser().getActiveCompany(), date)  , IException.CONFIGURATION_ERROR);
+		if (year == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.KILOMETRIC_LOG_NO_YEAR), employee.getUser().getActiveCompany(), date);
 		}
 		
 		return createKilometricLog(employee, new BigDecimal("0.00"), year);
@@ -137,7 +139,9 @@ public class KilometricService {
 			}
 		}
 		
-		if (ruleList.size() == 0) { throw new AxelorException( String.format(I18n.get( IExceptionMessage.KILOMETRIC_ALLOWANCE_NO_RULE ), allowance.getKilometricAllowParam().getName()) , IException.CONFIGURATION_ERROR); }
+		if (ruleList.size() == 0) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_NO_RULE), allowance.getKilometricAllowParam().getName());
+		}
 		
 		BigDecimal price = BigDecimal.ZERO;
 		
@@ -212,8 +216,7 @@ public class KilometricService {
 			String msg = json.has("error_message") ? String.format("%s / %s", status, json.getString("error_message"))
 					: status;
 
-			throw new AxelorException(String.format(IExceptionMessage.KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR, msg),
-					IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, IExceptionMessage.KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR, msg);
 
 		} catch (URISyntaxException | IOException | JSONException e) {
 			throw new AxelorException(e, IException.CONFIGURATION_ERROR);

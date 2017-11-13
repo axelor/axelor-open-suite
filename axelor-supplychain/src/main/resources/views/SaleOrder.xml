@@ -40,6 +40,8 @@
 		<action name="action-sale-order-attrs-in-ati"/>
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
 		<action name="action-sale-order-method-fill-company-bank-details"/>
+        <action name="action-sale-order-attrs-interco"/>
+		<action name="action-sale-order-record-interco"/>
 	</action-group>
 	
 	<action-group name="action-group-supplychain-saleorder-onload">
@@ -48,31 +50,19 @@
 		<action name="action-sale-order-attrs-in-ati"/>
 		<action name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
+		<action name="action-sale-order-attrs-interco"/>
 		<action name="save"/>
 	</action-group>
 
-	<action-group name="action-so-group-domain-company-bank-details" id="supplychain-so-action-group-bank-details-domain">
-		<action name="action-invoice-attrs-domain-company-bank-details"/>
-	</action-group>
-
-	<action-method name="action-sale-order-method-fill-company-bank-details">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="fillCompanyBankDetails"/>
-	</action-method>
-	
 	<action-method name="action-supplychain-sale-order-method-get-location">
     	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
     </action-method>
     
-    
-    <!--   azeaeaeaeae -->
-
     <action-group name="action-supplychain-sale-order-group-generate-invoice">
     	<action name="action-supplychain-sale-order-view-invoicing-wizard"
 				if="eval: !__config__.app.isApp('business-project') ||  !__config__.app.getApp('business-project').getEnableToInvoiceExpense() &amp;&amp; !__config__.app.getApp('business-project').getEnableToInvoiceTimesheet()" />
     	<action name="action-business-project-sale-order-view-invoicing-wizard" if="eval: __config__.app.isApp('business-project') &amp;&amp; (__config__.app.getApp('business-project').getEnableToInvoiceExpense() || __config__.app.getApp('business-project').getEnableToInvoiceTimesheet())" />
     </action-group>
-    
-    <!--   azeaeaeaeae -->
     
 	<action-method name="action-supplychain-sale-order-create-stock-move" >
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createStockMove"/>
@@ -98,8 +88,20 @@
 		<field name="paymentMode" expr="eval: clientPartner?.inPaymentMode" if="clientPartner?.inPaymentMode != null"/>
 		<field name="paymentMode" expr="eval: __user__.activeCompany?.accountConfig?.inPaymentMode" if="clientPartner?.inPaymentMode == null"/>
 	</action-record>
-	
-	<action-view name="action-view-show-invoices-from-sale-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">	
+
+    <action-record name="action-sale-order-record-interco"
+				   model="com.axelor.apps.sale.db.SaleOrder">
+		<field name="interco" expr="eval: __config__.app.getApp('supplychain').getIntercoFromSale()"/>
+	</action-record>
+
+	<action-attrs name="action-sale-order-attrs-interco">
+		<attribute for="interco" name="hidden"
+				   expr="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
+		<attribute for="interco" name="value" expr="eval: false"
+				   if="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
+	</action-attrs>
+
+	<action-view name="action-view-show-invoices-from-sale-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-light-grid" />
 		<view type="form" name="invoice-form" />
 		<domain>self.saleOrder.id = :saleOrderId OR (self.saleOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.saleOrderLine.id IN (:saleOrderLineIdList)))</domain>

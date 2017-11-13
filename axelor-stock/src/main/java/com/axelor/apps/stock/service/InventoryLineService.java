@@ -21,21 +21,46 @@ import java.math.BigDecimal;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.inject.Beans;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
+import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.LocationLine;
 
 public class InventoryLineService {
+	
 
-	public InventoryLine createInventoryLine(Inventory inventory, Product product, BigDecimal currentQty, TrackingNumber trackingNumber)  {
+	public InventoryLine createInventoryLine(Inventory inventory, Product product, BigDecimal currentQty, String rack, TrackingNumber trackingNumber)  {
 		
 		InventoryLine inventoryLine = new InventoryLine();
 		inventoryLine.setInventory(inventory);
 		inventoryLine.setProduct(product);
+		inventoryLine.setRack(rack);
 		inventoryLine.setCurrentQty(currentQty);
 		inventoryLine.setTrackingNumber(trackingNumber);
 		
 		return inventoryLine;
 		
+	}
+
+	public InventoryLine updateInventoryLine(InventoryLine inventoryLine) {
+		
+		Location location = inventoryLine.getInventory().getLocation();
+		Product product = inventoryLine.getProduct();
+		
+		if (product != null) {
+			LocationLine locationLine = Beans.get(LocationLineService.class).getLocationLine(location, product);
+			
+			if (locationLine != null) {
+				inventoryLine.setCurrentQty(locationLine.getCurrentQty());
+				inventoryLine.setRack(locationLine.getRack());
+			} else {
+				inventoryLine.setCurrentQty(null);
+				inventoryLine.setRack(null);
+			}
+		}
+		
+		return inventoryLine;
 	}
 
 	

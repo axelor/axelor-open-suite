@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -18,6 +18,9 @@
 package com.axelor.apps.account.web;
 
 
+import java.util.List;
+import java.util.Map;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
@@ -27,6 +30,8 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.service.TraceBackService;
@@ -35,21 +40,18 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
-import java.util.List;
-import java.util.Map;
-
 public class InvoicePaymentController  {
 
 	@Inject
 	private InvoicePaymentCancelService invoicePaymentCancelService;
-	
+
 	@Inject
 	private InvoiceRepository invoiceRepo;
 
 	public void cancelInvoicePayment(ActionRequest request, ActionResponse response)
 	{
 		InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
-		
+
 		invoicePayment = Beans.get(InvoicePaymentRepository.class).find(invoicePayment.getId());
 		try{
 			invoicePaymentCancelService.cancel(invoicePayment);
@@ -59,12 +61,12 @@ public class InvoicePaymentController  {
 		}
 		response.setReload(true);
 	}
-	
+
 	//filter the payment mode depending on the target invoice
 
 	@SuppressWarnings("unchecked")
 	public void filterPaymentMode(ActionRequest request, ActionResponse response) {
-		Map<String, Object> partialInvoice = 
+		Map<String, Object> partialInvoice =
 				(Map<String, Object>) request.getContext().get("_invoice");
 		Invoice invoice = invoiceRepo.find( Long.valueOf(partialInvoice.get("id").toString()) );
 		PaymentMode paymentMode = invoice.getPaymentMode();
@@ -76,7 +78,7 @@ public class InvoicePaymentController  {
 	}
 
 	/**
-	 * Create the domain for bankDetails field.
+	 * Create the domain for companyBankDetails field.
 	 * @param request
 	 * @param response
 	 */
@@ -91,11 +93,11 @@ public class InvoicePaymentController  {
 		List<BankDetails> bankDetailsList = Beans.get(InvoicePaymentToolService.class)
 				.findCompatibleBankDetails(company, invoicePayment);
 		if (bankDetailsList.isEmpty()) {
-			response.setAttr("bankDetails", "domain", "self.id IN (0)");
+			response.setAttr("companyBankDetails", "domain", "self.id IN (0)");
 		}
 		else {
-		    String idList = StringTool.getIdFromCollection(bankDetailsList);
-			response.setAttr("bankDetails", "domain", "self.id IN (" + idList + ")");
+		    String idList = StringTool.getIdListString(bankDetailsList);
+			response.setAttr("companyBankDetails", "domain", "self.id IN (" + idList + ")");
 		}
 	}
 
@@ -112,15 +114,26 @@ public class InvoicePaymentController  {
 				(Map<String, Object>) request.getContext().get("_invoice");
 
 		Invoice invoice = invoiceRepo.find( ((Integer) partialInvoice.get("id")).longValue());
+		PaymentMode paymentMode = invoicePayment.getPaymentMode();
 		Company company = invoice.getCompany();
 		List<BankDetails> bankDetailsList = Beans.get(InvoicePaymentToolService.class)
 				.findCompatibleBankDetails(company, invoicePayment);
 		if (bankDetailsList.size() == 1) {
-			response.setValue("bankDetails", bankDetailsList.get(0));
+			response.setValue("companyBankDetails", bankDetailsList.get(0));
 		}
 		else {
-			response.setValue("bankDetails", null);
+			response.setValue("companyBankDetails", null);
 		}
+		Partner partner = invoice.getPartner();
+		if (company == null) {
+			return;
+		}
+		if (partner != null) {
+			partner = Beans.get(PartnerRepository.class).find(partner.getId());
+		}
+		BankDetails defaultBankDetails = Beans.get(BankDetailsService.class)
+				.getDefaultCompanyBankDetails(company, paymentMode, partner);
+		response.setValue("bankDetails", defaultBankDetails);
 	}
 
 }

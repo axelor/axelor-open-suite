@@ -6,7 +6,7 @@
 	<menuitem name="account-root-bank-orders" parent="account-root"
 		title="Bank Orders" order="26"/>
 		
-	<menuitem name="account-root-bank-order-direct-debit"
+	<menuitem name="account-root-bank-order-direct-debit" if="__config__.app.getApp('account').getManageDirectDebitPayment()"
 		parent="account-root-bank-orders" title="Direct Debits"/>
 		
 	<menuitem name="account-root-bank-order-sepa-direct-debit"
@@ -102,7 +102,8 @@
 	
 	<menuitem name="account-root-bank-order-awaiting-for-signature"
 		parent="account-root-bank-orders" title="Bank Orders awaiting for signature"
-		action="account.bank.order.awaiting.for.signature" />
+		action="account.bank.order.awaiting.for.signature" tag-count="true"
+		tag-style="default"/>
 	
 	<action-view name="account.bank.order.awaiting.for.signature"
 		title="Bank Orders awaiting for signature" model="com.axelor.apps.bankpayment.db.BankOrder" >

@@ -10,9 +10,9 @@
 			<field name="terminateSaleOrderOnDelivery"  showIf="custStockMoveMgtOnSO" widget="boolean-switch" colSpan="4"/>
 		</panel>
 		<panel>
-			<field name="supplierStockMoveManagement" readonlyIf="supplierStockMoveGenerationAuto || terminatePurchaseOrderOnReceipt" widget="boolean-switch" colSpan="4"/>
-			<field name="supplierStockMoveGenerationAuto" showIf="supplierStockMoveManagement" widget="boolean-switch" colSpan="4"/>
-			<field name="terminatePurchaseOrderOnReceipt" showIf="supplierStockMoveManagement" widget="boolean-switch" colSpan="4"/>
+			<field name="supplStockMoveMgtOnSO" readonlyIf="supplierStockMoveGenerationAuto || terminatePurchaseOrderOnReceipt" widget="boolean-switch" colSpan="4"/>
+			<field name="supplierStockMoveGenerationAuto" showIf="supplStockMoveMgtOnSO" widget="boolean-switch" colSpan="4"/>
+			<field name="terminatePurchaseOrderOnReceipt" showIf="supplStockMoveMgtOnSO" widget="boolean-switch" colSpan="4"/>
 		</panel>
 		<panel>
 			<field name="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4"/>
@@ -24,6 +24,16 @@
 			<field name="allowTimetableInvoicing" widget="boolean-switch"/>
 			<field name="checkSaleStocks" widget="boolean-switch"/>
 			<field name="manageInvoicedAmountByLine" widget="boolean-switch" />
+		</panel>
+		<panel title="Interco">
+			<field name="intercoFromPurchase" widget="boolean-switch"/>
+			<field name="intercoFromSale" widget="boolean-switch"/>
+			<field name="intercoPurchaseCreatingStatusSelect" selection-in="[2,3]"/>
+			<field name="intercoSaleCreatingStatusSelect" selection-in="[2,3]"/>
+			<field name="intercoFromInvoice" widget="boolean-switch"/>
+		</panel>
+		<panel>
+			<field name="manageStockReservation" widget="boolean-switch"/>
 		</panel>
 	</form>
 

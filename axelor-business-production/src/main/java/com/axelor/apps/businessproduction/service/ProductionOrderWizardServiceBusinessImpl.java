@@ -83,9 +83,8 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
 
 		if(productionOrder != null)  {
 			return productionOrder.getId();
-		}
-		else  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PRODUCTION_ORDER_2)),IException.CONFIGURATION_ERROR);
+		} else {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_ORDER_2));
 		}
 	}
 

@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -71,22 +71,21 @@ public class ActionBuilderService {
 	@Transactional
 	public MetaAction build(ActionBuilder builder) {
 		
-		if (builder.getTypeSelect() < 2 &&  builder.getLines() != null && builder.getLines().isEmpty()) {
+		if (builder.getTypeSelect() < 2 &&  (builder.getLines() == null || builder.getLines().isEmpty())) {
 			return null;
 		}
 		
 		inflector = Inflector.getInstance();
 		MetaAction metaAction = null;
 		String xml = null;
-		String xmlId = "studio-" + builder.getName();
 		if (builder.getTypeSelect() == 3) {
 			String[] val = buildActionView(builder);
 			xml = val[1];
-			metaAction = metaService.updateMetaAction(xmlId, builder.getName(), "action-view", xml, val[0]);
+			metaAction = metaService.updateMetaAction(builder.getName(), "action-view", xml, val[0]);
 		}
 		else {
 			xml = buildActionScript(builder);
-			metaAction = metaService.updateMetaAction(xmlId, builder.getName(), "action-script", xml, null);
+			metaAction = metaService.updateMetaAction(builder.getName(), "action-script", xml, null);
 		}
 
 		log.debug("Processing action: {}, type: {}", builder.getName(), builder.getTypeSelect());
@@ -172,7 +171,7 @@ public class ActionBuilderService {
 	private void addUpdateCode(boolean isJson, StringBuilder stb, int level, String target) {
 		
 		if (isJson) {
-			stb.append(format("var target = $json.create('" + target + "', ctx);", level));
+			stb.append(format("var target = {};", level));
 		}
 		else {
 			stb.append(format("var target = ctx.asType(" + target + ".class)" , level));
@@ -238,12 +237,16 @@ public class ActionBuilderService {
 			else if (metaField != null && metaField.getRelationship() != null) {
 				value = addRelationalBinding(line, target, false);
 			}
+//			else {
+//				MetaJsonField valueJson = line.getValueJson();
+//				if (valueJson != null && valueJson.getType().contentEquals("many-to-one")) {
+//					value = value.replace("$." + valueJson.getName(),"$json.create($json.find($." + valueJson.getName() + ".id))");
+//				}
+//			}
 			
 			if (value != null && value.contains("*")) {
 				value = "new BigDecimal(" + value + ")";
 			}
-			
-			
 			
 			String condition = line.getConditionText();
 			if (condition != null) {
@@ -261,54 +264,6 @@ public class ActionBuilderService {
 	}
 	
 
-//	private String getValue(String typeName, String value, String filter, String context) {
-//		
-////		if (value.startsWith(":sum(")) {
-////			return context + "." + getSumValue(value.substring(1), filter);
-////		}
-//		
-//		if (value == null) {
-//			return value;
-//		}
-//		
-//		if (value.contains("$:")) {
-//			return value.replaceAll("\\$:", "(" + context + " || {})" + ".");
-//		}
-//		if (value.contains("$ctx.")) {
-//			return value.replaceAll("\\$ctx.", "ctx.");
-//		}
-//		
-//		switch(typeName) {
-//			case "date":
-//				value =  "LocalDate.parse(\"" + StringEscapeUtils.escapeJava(value) + "\")";
-//				break;
-//			case "LocalDate":
-//				value =  "LocalDate.parse(\"" + StringEscapeUtils.escapeJava(value) + "\")";
-//				break;
-//			case "ZonedDateTime":
-//				value =  "ZonedDateTime.parse(\"" + StringEscapeUtils.escapeJava(value) + "\")";
-//				break;
-//			case "LocalTime":
-//				value =  "LocalTime.parse(\"" + StringEscapeUtils.escapeJava(value) + "\")";
-//				break;
-//			case "datetime":
-//				value =  "LocalDateTime.parse(\"" + StringEscapeUtils.escapeJava(value) + "\")";
-//				break;
-//			case "BigDecimal":
-//				value =  "new BigDecimal(" + StringEscapeUtils.escapeJava(value) + ")";
-//				break;
-//			case "string":
-//				value =  "\"" + StringEscapeUtils.escapeJava(value) + "\"";
-//				break;
-//			case "String":
-//				value =  "\"" + StringEscapeUtils.escapeJava(value) + "\"";
-//				break;
-//		}
-//		
-//		return value;
-//	}
-	
-	
 	private String addRelationalBinding(ActionBuilderLine line, String target,  boolean json) {
 		
 		line = builderLineRepo.find(line.getId());
@@ -561,9 +516,9 @@ public class ActionBuilderService {
 			stb.append(format("if (!val) {", 2));
 			stb.append(format("val = $json.create('" + model + "');", 3));
 			stb.append(format("}",2));
-			stb.append(format("if($){$ = new com.axelor.rpc.JsonContext($)};", 2));
+//			stb.append(format("if($ instanceof MetaJsonRecord){$ = $json.create($json.find($.id))};", 2));
 			stb.append(addFieldsBinding("val", lines, 2));
-			stb.append(format("$json.save(val);", 2));
+			stb.append(format("val = $json.save(val);", 2));
 		}
 		stb.append(format("return val;", 2));
 		stb.append(format("}", 1));
@@ -654,7 +609,7 @@ public class ActionBuilderService {
 		stb.append(format("var val  = 0", 2));
 		stb.append(format("if (sumOf$ == null){ return val;}", 2));
 		stb.append(format("sumOf$.forEach(function($){", 2));
-		stb.append(format("if ($ instanceof MetaJsonRecord){ $ = new com.axelor.rpc.JsonContext($); }", 3));
+//		stb.append(format("if ($ instanceof MetaJsonRecord){ $ = $json.create($json.find($.id)); }", 3));
 		String val = "val += " + expr[1] + ";" ;
 		if (filter != null) {
 			val = "if(filter){" + val + "}";
@@ -687,6 +642,12 @@ public class ActionBuilderService {
 		}
 		xml.append("model=\"" + model + "\">");
 		
+		builder.getActionBuilderViews().sort(new Comparator<ActionBuilderView>(){
+			@Override
+			public int compare(ActionBuilderView action1, ActionBuilderView action2) {
+				return action1.getSequence().compareTo(action2.getSequence());
+			}
+		});
 		for (ActionBuilderView view : builder.getActionBuilderViews()) {
 			xml.append("\n" + INDENT + "<view type=\"" + view.getViewType() + "\" ");
 			xml.append("name=\"" + view.getViewName() + "\" />");
@@ -702,19 +663,33 @@ public class ActionBuilderService {
 		String domain = builder.getDomainCondition();
 		
 		if (builder.getIsJson())  {
-			String jsonDomain = "self.jsonModel = '" + builder.getModel() + "'" ;
-			domain = domain == null ? jsonDomain : jsonDomain + " AND (" +  builder.getDomainCondition() + ")";
+			String jsonDomain = "self.jsonModel = :jsonModel" ;
+			if (domain == null) {
+				domain = jsonDomain;
+			}
+			else if (!domain.contains(jsonDomain)){
+				domain = jsonDomain + " AND (" +  domain + ")";
+			}
 		}
 		
 		if (domain != null) {
 			xml.append("\n" + INDENT + "<domain>" + StringEscapeUtils.escapeXml(domain) + "</domain>");
 		}
 		
+		boolean addJsonCtx = true;
 		if (builder.getLines() != null) {
 			for (ActionBuilderLine context : builder.getLines()) {
+				if (context.getName().contentEquals("jsonModel")) {
+					addJsonCtx = false;
+				}
 				xml.append("\n" + INDENT + "<context name=\"" + context.getName() + "\" ");
 				xml.append("expr=\"eval:" + StringEscapeUtils.escapeXml(context.getValue()) + "\" />");
 			}
+		}
+		
+		if (addJsonCtx && builder.getIsJson() && builder.getModel() != null) {
+			xml.append("\n" + INDENT + "<context name=\"jsonModel\" ");
+			xml.append("expr=\"eval:" + builder.getModel() + "\" />");
 		}
 		
 		xml.append("\n" + "</action-view>");

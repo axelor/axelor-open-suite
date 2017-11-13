@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -50,6 +50,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -149,7 +152,6 @@
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
             <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">YXhlbG9y</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -266,48 +268,62 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="columnName">logo_path</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">logo_path</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">logo_path</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">name</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">code</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">code</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">isconsproonoperation</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">isconsproonoperation</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">isconsproonoperation</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">outsourcing</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">outsourcing</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">outsourcing</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">company</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">company</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">company</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">location</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">location</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">location</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">producedproductlocation</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">producedproductlocation</text-property>
+                    <text-property name="heading">producedproductlocation</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">product</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">product</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">product</text-property>
                 </structure>
             </list-property>
@@ -363,6 +379,11 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">8</property>
+                        <property name="name">producedproductlocation</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
                         <property name="name">product</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -421,6 +442,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">8</property>
+                    <property name="name">producedproductlocation</property>
+                    <property name="nativeName">producedproductlocation</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
                     <property name="name">product</property>
                     <property name="nativeName">product</property>
                     <property name="dataType">string</property>
@@ -433,12 +461,14 @@ Production.is_cons_pro_on_operation as isConsProOnOperation,
 Production.outsourcing as outsourcing,
 Company.name as Company,
 Stock.name as Location,
+DestinationStock.name as producedProductLocation,
 Product.full_name as Product from
 production_prod_process as Production
 LEFT JOIN base_product as Product ON Product.id = Production.product
 LEFT JOIN base_company as Company ON Production.company = Company.id
 LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
 LEFT JOIN stock_location as Stock ON Stock.id = Production.location
+LEFT JOIN stock_location as DestinationStock ON DestinationStock.id = Production.produced_product_location
 WHERE Production.id IN (?);]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ProdProcessLine" id="4604">
@@ -986,21 +1016,9 @@ where prod.to_consume_prod_process_line = ?;
             <property name="dataSet">ProdProcess</property>
             <list-property name="boundDataColumns">
                 <structure>
-                    <property name="name">code</property>
-                    <text-property name="displayName">code</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["code"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">company</property>
-                    <text-property name="displayName">company</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["company"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">location</property>
-                    <text-property name="displayName">location</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["location"]</expression>
+                    <property name="name">logo_path</property>
+                    <text-property name="displayName">logo_path</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -1010,9 +1028,9 @@ where prod.to_consume_prod_process_line = ?;
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">logo_path</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                    <property name="name">code</property>
+                    <text-property name="displayName">code</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["code"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -1028,9 +1046,27 @@ where prod.to_consume_prod_process_line = ?;
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
+                    <property name="name">company</property>
+                    <text-property name="displayName">company</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["company"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">location</property>
+                    <text-property name="displayName">location</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["location"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
                     <property name="name">product</property>
                     <text-property name="displayName">product</text-property>
                     <expression name="expression" type="javascript">dataSetRow["product"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">producedproductlocation</property>
+                    <text-property name="displayName">producedproductlocation</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["producedproductlocation"]</expression>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
@@ -1243,7 +1279,7 @@ where prod.to_consume_prod_process_line = ?;
                                 <cell id="4591">
                                     <property name="colSpan">4</property>
                                     <property name="rowSpan">1</property>
-                                    <text id="4580">
+                                    <text id="5061">
                                         <property name="marginTop">1pt</property>
                                         <property name="marginLeft">2pt</property>
                                         <property name="textAlign">left</property>
@@ -1252,7 +1288,7 @@ where prod.to_consume_prod_process_line = ?;
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">"ProdProcess.isOperation"</value>
+                                                    <value type="javascript">"ProdProcess.producedProductLocation"</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -1271,16 +1307,7 @@ where prod.to_consume_prod_process_line = ?;
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>
-if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 'en'){
-	'No';
-} else if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 'fr'){
-	'Non';
-} else if(row._outer["isconsproonoperation"] != 0 &amp;&amp; params["Locale"].value == 'en'){
- 	'Yes';
-} else {
-	'Oui';
-}</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["producedproductlocation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4595">
@@ -1363,8 +1390,49 @@ if(row._outer["outsourcing"] == 0 &amp;&amp; params["Locale"].value == 'en'){
                                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["company"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="4602"/>
-                                <cell id="4603"/>
+                                <cell id="4602">
+                                    <property name="colSpan">2</property>
+                                    <property name="rowSpan">1</property>
+                                    <text id="4580">
+                                        <property name="marginTop">1pt</property>
+                                        <property name="marginLeft">2pt</property>
+                                        <property name="textAlign">left</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">"ProdProcess.isOperation"</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>
+if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 'en'){
+	'No';
+} else if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 'fr'){
+	'Non';
+} else if(row._outer["isconsproonoperation"] != 0 &amp;&amp; params["Locale"].value == 'en'){
+ 	'Yes';
+} else {
+	'Oui';
+}</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
                             </row>
                             <row id="4062">
                                 <property name="height">0.2708333333333333in</property>

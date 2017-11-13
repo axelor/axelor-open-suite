@@ -82,10 +82,11 @@
 		<name>${u.name}</name>
 		<userId>${u.userId}</userId>
 		<password>${u.password}</password>
-		<ebicsTypeSelect>${u.ebicsTypeSelect}</ebicsTypeSelect>
+		<userTypeSelect>${u.userTypeSelect}</userTypeSelect>
 		<statusSelect>${u.statusSelect}</statusSelect>
 		<ebicsPartner>
 			<partnerId>${u.ebicsPartner?.partnerId}</partnerId>
+			<ebicsTypeSelect>${u.ebicsPartner?.ebicsTypeSelect}</ebicsTypeSelect>
 			<testMode>${u.ebicsPartner?.testMode}</testMode>
 			<bankStatementFileFormatSet>
 					$bankStatementFileFormat
@@ -96,7 +97,7 @@
 				<name>${u.ebicsPartner?.pSRBankStatementFileFormat?.name}</name>
 				<description>${u.ebicsPartner?.pSRBankStatementFileFormat?.description}</description>
 			</pSRBankStatementFileFormat>
-			<bankStatementEbicsUserId>${u.ebicsPartner?.bankStatementEbicsUser?.userId}</bankStatementEbicsUserId>
+			<transportEbicsUserId>${u.ebicsPartner?.transportEbicsUser?.userId}</transportEbicsUserId>
 			<bankStatementGetModeSelect>${u.ebicsPartner?.bankStatementGetModeSelect}</bankStatementGetModeSelect>
 			<bankStatementLastExeDateT>${u.ebicsPartner?.bankStatementLastExeDateT}</bankStatementLastExeDateT>
 			<filterReceiverBD>${u.ebicsPartner?.filterReceiverBD}</filterReceiverBD>

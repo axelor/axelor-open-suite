@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,7 +27,6 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
-import org.hibernate.proxy.HibernateProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,13 +61,14 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected TemplateMaker maker;
-	
+
 	protected MessageService messageService;
-	
+
 	protected EmailAddressRepository emailAddressRepo;
 
 	@Inject
-	public TemplateMessageServiceImpl( MessageService messageService, EmailAddressRepository emailAddressRepo ){
+	public TemplateMessageServiceImpl(MessageService messageService,
+			EmailAddressRepository emailAddressRepo) {
 		this.messageService = messageService;
 		this.emailAddressRepo = emailAddressRepo;
 	}
@@ -76,8 +76,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	@Override
 	public Message generateMessage(Model model, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
-		Class<?> klass = model.getClass();
-		if ( model instanceof HibernateProxy ) { klass = ( (HibernateProxy) model ).getHibernateLazyInitializer().getPersistentClass(); }
+		Class<?> klass = EntityHelper.getEntityClass(model);
 		return generateMessage( model.getId(), klass.getCanonicalName(), klass.getSimpleName(), template);
 		
 	}
@@ -86,8 +85,8 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message generateMessage( long objectId, String model, String tag, Template template ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
-		if ( !model.equals( template.getMetaModel().getFullName() ) ){
-			throw new AxelorException( I18n.get(IExceptionMessage.TEMPLATE_SERVICE_3 ), IException.INCONSISTENCY, template.getMetaModel().getFullName() );
+		if (!model.equals(template.getMetaModel().getFullName())) {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.TEMPLATE_SERVICE_3), template.getMetaModel().getFullName());
 		}
 		
 		log.debug("model : {}", model);

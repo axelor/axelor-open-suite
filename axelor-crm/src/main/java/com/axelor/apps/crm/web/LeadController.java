@@ -163,5 +163,20 @@ public class LeadController {
 							  .map());
 		}
 	}
+
+	public void checkLeadName(ActionRequest request, ActionResponse response) {
+		Lead lead = request.getContext().asType(Lead.class);
+
+		if (lead.getName() != null && !lead.getName().isEmpty() &&
+				lead.getFirstName() != null && !lead.getFirstName().isEmpty()) {
+			Lead existingLead = leadRepo.all()
+					.filter("lower(self.name) = lower(?1) and lower(self.firstName) = lower(?2)",
+							lead.getName(), lead.getFirstName())
+					.fetchOne();
+			if (existingLead != null) {
+				response.setAlert("There is already a lead with these first name and last name");
+			}
+		}
+	}
 	
 }

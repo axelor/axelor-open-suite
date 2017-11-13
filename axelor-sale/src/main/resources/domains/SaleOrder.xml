@@ -23,9 +23,12 @@
   	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" required="true" title="Customer" massUpdate="true"/>
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Customer contact"/>
   	<many-to-one name="mainInvoicingAddress" ref="com.axelor.apps.base.db.Address" title="Main/Invoicing address"/>
+
+	<string name="mainInvoicingAddressStr" title="Main/Invoicing address" large="true" multiline="true"/>
+
 	<many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
-    <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery address"/>  	
-  
+    <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery address"/>
+	<string name="deliveryAddressStr" title="Delivery address" large="true" multiline="true"/>
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal per line"/>
   	<boolean name="hasSubLineDefaultValue" title="Default value for sublines"/>
   	<boolean name="inAti" title="In ATI"/>
@@ -41,6 +44,7 @@
     <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
     <decimal name="taxTotal" title="Total tax" scale="2" precision="20" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
+	<decimal name="advanceTotal" title="Advance payment total" scale="2" precision="20" readonly="true"/>
 	<decimal name="amountToBeSpreadOverTheTimetable" title="Amount to be spread over the timetable" scale="2" precision="20" readonly="true"/>
     
     <decimal name="companyExTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
@@ -66,8 +70,6 @@
     <string name="orderNumber" title="Order Number"/>
     
 <!--     Onglet scheduler -->
-<!-- 	<many-to-one name="scheduler" ref="com.axelor.apps.base.db.Scheduler" title="Scheduler"/> -->
-	<one-to-one name="schedulerInstance" ref="com.axelor.apps.base.db.SchedulerInstance" title="Scheduler instance"/>
 	<date name="subscriptionStartDate" title="Subscription start date"/>
 	<date name="invoicedFirstDate" title="Invoiced first date"/>
 	<date name="nextInvPeriodStartDate" title="Next invoiced period start date" readonly="true"/>
@@ -86,6 +88,7 @@
     
 	<date name="deliveryDate" title="Delivery date"/>
 	<string name="deliveryCondition" title="Delivery conditions" large="true" multiline="true"/>
+	<string name="specificPackage" title="Specific package" large="true" multiline="true"/>
 	
 	<one-to-many name="advancePaymentList" ref="com.axelor.apps.sale.db.AdvancePayment" mappedBy="saleOrder" title="Advance Payments"/>
 	
@@ -93,9 +96,6 @@
 	
 	<!-- Impression -->
     <string name="specificNotes" title="Specific notes" large="true"/>
-
-	<!-- -Json fields -->
-	<string name="soAttrs" title="Fields" json="true" />
 	
  	<unique-constraint columns="saleOrderSeq,company"/>
 

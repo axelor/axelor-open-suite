@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<configuration>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{40} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- Log everything for axelor -->
+	<logger name="com.axelor" level="debug" />
+
+	<!-- Good for troubleshooting hibernate issues -->
+	<!-- <logger name="org.hibernate" level="info" /> -->
+
+	<!-- Log all SQL DML statements as they are executed -->
+	<!-- <logger name="org.hibernate.SQL" level="debug" /> -->
+	<!-- <logger name="org.hibernate.engine.jdbc" level="debug" /> -->
+
+	<!-- Log all SQL DDL statements as they are executed -->
+	<!-- <logger name="org.hibernate.tool.hbm2ddl" level="info" /> -->
+
+	<!-- Log all JDBC parameters -->
+	<!-- <logger name="org.hibernate.type" level="all" /> -->
+
+	<!-- Log transactions -->
+	<!-- <logger name="org.hibernate.transaction" level="debug" /> -->
+
+	<!-- Log L2-Cache -->
+	<!-- <logger name="org.hibernate.cache" level="debug" /> -->
+
+	<!-- Log JDBC resource acquisition -->
+	<!-- <logger name="org.hibernate.jdbc" level="trace" /> -->
+	<!-- <logger name="org.hibernate.service.jdbc" level="trace" /> -->
+
+	<!-- Log connection pooling -->
+	<!-- <logger name="com.zaxxer.hikari" level="info" /> -->
+
+	<root level="error">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>

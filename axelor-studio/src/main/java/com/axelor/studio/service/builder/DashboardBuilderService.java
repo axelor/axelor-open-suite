@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -60,6 +60,13 @@ public class DashboardBuilderService {
 	public MetaView build(DashboardBuilder dashboardBuilder) {
 
 		log.debug("Processing dashboard: {}", dashboardBuilder.getName());
+		
+		log.debug("Dashlet list: {}", dashboardBuilder.getDashletBuilderList());
+		
+		if (dashboardBuilder.getDashletBuilderList() == null
+				|| dashboardBuilder.getDashletBuilderList().isEmpty()) {
+			return null;
+		}
 
 		Dashboard dashboard = new Dashboard();
 		String boardName = dashboardBuilder.getName();
@@ -132,7 +139,15 @@ public class DashboardBuilderService {
 		String actionName = "action-"
 				+ (dashboard + "-" + name).replace(".", "-");
 		
-		String xmlId = "studio-" + actionName;
+		boolean isJson = model != null && model.contentEquals(MetaJsonRecord.class.getName());
+		
+		String otherView = "form";
+		String view = dashletBuilder.getViewType();
+		if (view == "form") {
+			otherView = "grid";
+		}
+		
+		String xmlId = StudioMetaService.XML_ID_PREFIX + actionName;
 		StringBuilder xml = new StringBuilder();
 		xml.append("<action-view name=\"" + actionName + "\" ");
 		xml.append("id=\"" + xmlId + "\" ");
@@ -141,20 +156,26 @@ public class DashboardBuilderService {
 			xml.append("model=\"" + model + "\"");
 		}
 		xml.append(">");
-		xml.append("\n\t<view type=\"" + dashletBuilder.getViewType() + "\" ");
+		xml.append("\n\t<view type=\"" + view + "\" ");
 		xml.append("name=\"" +  name + "\" />");
+		if (isJson) {
+			xml.append("\n\t<view type=\"" + otherView + "\" ");
+			xml.append("name=\"" +  name.replace("-" + view, "-" + otherView) + "\" />");
+		}
+		else {
+			xml.append("\n\t<view type=\"" + otherView  + "\" />");
+		}
 		if (dashletBuilder.getPaginationLimit() > 0) {
 			xml.append("\n\t<view-param name=\"limit\" value=\"" + dashletBuilder.getPaginationLimit().toString() + "\"/>");
 		}
 		
-		if (model != null && model.contentEquals(MetaJsonRecord.class.getName())) {
+		if (isJson) {
 			String[] models = name.split("-");
 			xml.append("\n\t<domain>self.jsonModel = '" + models[models.length - 2] + "'</domain>");
 		}
 		xml.append("\n</action-view>");
 		
-		return metaService.updateMetaAction(xmlId,
-				actionName, "action-view", xml.toString(), model);
+		return metaService.updateMetaAction(actionName, "action-view", xml.toString(), model);
 	}
 	
 }

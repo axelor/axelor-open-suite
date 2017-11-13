@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -19,7 +19,6 @@ package com.axelor.apps.base.service.administration;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
-
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -31,6 +30,7 @@ import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.AuditableModel;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -46,7 +46,7 @@ public abstract class AbstractBatch {
 	@Inject
 	protected AppBaseService appBaseService;
 
-	static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+	protected static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected Batch batch;
 	protected Model model;
@@ -182,7 +182,7 @@ public abstract class AbstractBatch {
 	@Transactional
 	protected void unarchived() {
 
-		model = JPA.find(appBaseService.getPersistentClass(model), model.getId());
+		model = JPA.find(EntityHelper.getEntityClass(model), model.getId());
 		model.setArchived( false );
 
 	}
@@ -218,7 +218,7 @@ public abstract class AbstractBatch {
 
 	private boolean isAssociable(Field field){
 
-		return field.getType().equals( appBaseService.getPersistentClass(model) );
+		return field.getType().equals( EntityHelper.getEntityClass(model) );
 
 	}
 

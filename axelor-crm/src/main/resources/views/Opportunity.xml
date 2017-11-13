@@ -132,7 +132,7 @@
 		</panel>
 		
 		<panel>
-			<field name="opportunityAttrs" colSpan="12" />
+			<field name="attrs" colSpan="12" />
 		</panel>
 		
 		<panel-mail>

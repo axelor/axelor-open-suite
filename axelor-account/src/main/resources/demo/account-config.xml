@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.0.xsd">
   	
 	<input file="account_accountingBatch.csv" separator=";" type="com.axelor.apps.account.db.AccountingBatch" search="self.code = :code" >
-		<bind to="debitDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(debitDate)" column="debitDate"/>
+		<bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)" column="dueDate"/>
 		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
 		<bind to="endDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(endDate)" column="endDate"/>
 	</input>
@@ -25,7 +25,7 @@
 		<bind column="importId" to="importId"/>
 	</input>
 	
-	<input file="account_interBankCode.csv" separator=";" type="com.axelor.apps.account.db.InterbankCodeLine">
+	<input file="account_interBankCodeReject.csv" separator=";" type="com.axelor.apps.account.db.InterbankCodeLine">
         <bind column="code_rejet" to="code" />
         <bind column="libelle_rejet" to="name" />
         <bind column="description_rejet" to="description" />
@@ -40,8 +40,28 @@
             <bind column="nom_fichier" to="name"/>
             <bind column="date_fin" to="endDate" eval="date_fin ? date_fin : null"/>
             <bind column="description_fichier" to="description"/>
+			<bind to="typeSelect" eval="2"/>
         </bind>
-    </input>
+	</input>
+	
+	<input file="account_interBankCodeOperation.csv" separator=";" type="com.axelor.apps.account.db.InterbankCodeLine">
+		<bind column="code_operation" to="code" />
+		<bind column="libelle_operation" to="name" />
+		<bind column="description_operation" to="description" />
+		<bind column="transferCfonbOk" to="transferCfonbOk" eval="transferCfonbOk == 't' ? true : false"/>
+		<bind column="prelevement" to="directDebitAndTipCfonbOk" eval="prelevement == 't' ? true : false"/>
+		<bind column="prelevement_sepa" to="directDebitSepaOk" eval="prelevement_sepa == 't' ? true : false"/>
+		<bind column="lcr_bor" to="lcrBorOk" eval="lcr_bor == 't' ? true : false"/>
+		<bind column="cheque" to="chequeOk" eval="cheque == 't' ? true : false"/>
+		<bind column="operation_technique" to="technicalRejectOk" eval="rejet_technique == 't' ? true : false"/>
+		<bind to="interbankCode" search="self.code = :code_fichier">
+			<bind column="code_fichier" to="code"/>
+			<bind column="nom_fichier" to="name"/>
+			<bind column="date_fin" to="endDate" eval="date_fin ? date_fin : null"/>
+			<bind column="description_fichier" to="description"/>
+			<bind to="typeSelect" eval="1"/>
+		</bind>
+	</input>
 	
 	<input file="account_debtRecoveryLevel.csv" separator=";" type="com.axelor.apps.account.db.DebtRecoveryLevel" search="self.name = :name"/>
 	
@@ -80,6 +100,6 @@
 		<bind column="bankDetailsSet_id" to="bankDetailsSet" search="self.importId in :bankDetailsSet_id" update="true" />
 	</input> 
  	
- 	<input file="base_appAccount.csv" separator=";" search="self.typeSelect = :typeSelect" update="true" type="com.axelor.apps.base.db.AppAccount" />
+ 	<input file="base_appAccount.csv" separator=";" search="self.code = :code" update="true" type="com.axelor.apps.base.db.AppAccount" />
   	
 </csv-inputs>

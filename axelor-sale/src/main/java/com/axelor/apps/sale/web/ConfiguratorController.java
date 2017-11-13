@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -22,6 +22,7 @@ import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.ConfiguratorCreatorService;
 import com.axelor.apps.sale.service.ConfiguratorService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -61,8 +62,7 @@ public class ConfiguratorController {
             configuratorService.updateIndicators(configurator, jsonAttributes, jsonIndicators);
             response.setValue("indicators", request.getContext().get("indicators"));
         } catch (AxelorException e) {
-            TraceBackService.trace(e);
-            response.setError(e.getLocalizedMessage());
+            TraceBackService.trace(response, e);
         }
     }
 
@@ -78,7 +78,7 @@ public class ConfiguratorController {
         JsonContext jsonIndicators = (JsonContext) request.getContext().get("$indicators");
         configurator = configuratorRepository.find(configurator.getId());
         try {
-            configuratorService.generateProduct(configurator, jsonAttributes, jsonIndicators);
+            configuratorService.generate(configurator, jsonAttributes, jsonIndicators);
             response.setReload(true);
             if (configurator.getProductId() != null) {
                 response.setView(ActionView
@@ -91,7 +91,7 @@ public class ConfiguratorController {
             }
         } catch (Exception e) {
             TraceBackService.trace(e);
-            response.setError(e.getLocalizedMessage());
+            response.setError(e.getMessage());
         }
     }
 
@@ -116,8 +116,22 @@ public class ConfiguratorController {
                     jsonAttributes, jsonIndicators);
             response.setSignal("refresh-app",true);
         } catch (Exception e) {
-            TraceBackService.trace(e);
-            response.setError(e.getLocalizedMessage());
+            TraceBackService.trace(response, e);
         }
+    }
+
+    /**
+     * Called from configurator view on selecting
+     * {@link Configurator#configuratorCreator}.
+     * @param request
+     * @param response
+     */
+    public void createDomainForCreator(ActionRequest request, ActionResponse response) {
+        response.setAttr(
+                "configuratorCreator",
+                "domain",
+                Beans.get(ConfiguratorCreatorService.class).getConfiguratorCreatorDomain()
+
+        );
     }
 }

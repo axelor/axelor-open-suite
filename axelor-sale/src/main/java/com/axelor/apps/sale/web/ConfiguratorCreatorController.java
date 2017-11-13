@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -21,12 +21,12 @@ import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.ConfiguratorCreatorService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.JsonContext;
 import com.axelor.script.ScriptBindings;
 import com.google.inject.Inject;
 
@@ -42,24 +42,7 @@ public class ConfiguratorCreatorController {
         this.configuratorCreatorService = configuratorCreatorService;
     }
 
-    /**
-     * Called from configurator creator form.
-     * Call {@link ConfiguratorCreatorService#generateConfigurator}
-     * @param request
-     * @param response
-     */
-    public void createConfigurator(ActionRequest request, ActionResponse response) {
-
-        ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
-
-        creator = configuratorCreatorRepo.find(creator.getId());
-
-        configuratorCreatorService.generateConfigurator(creator);
-        response.setSignal("refresh-app", true);
-        response.setFlash(I18n.get(IExceptionMessage.CONFIGURATOR_GENERATED));
-    }
-
-    public void testCreator(ActionRequest request, ActionResponse response) {
+    /*    public void testCreator(ActionRequest request, ActionResponse response) {
         ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
 
         creator = configuratorCreatorRepo.find(creator.getId());
@@ -77,5 +60,58 @@ public class ConfiguratorCreatorController {
         } catch (AxelorException e) {
             response.setAlert(e.getMessage());
         }
+    }*/
+
+    /**
+     * Called from the sale order generate configurator wizard form.
+     * @param request
+     * @param response
+     */
+    public void createWizardDomain(ActionRequest request, ActionResponse response) {
+        response.setAttr(
+                "configuratorCreator",
+                "domain",
+                configuratorCreatorService.getConfiguratorCreatorDomain()
+        );
     }
+
+    /**
+     * Called from the configurator creator form on attributes changes
+     * @param request
+     * @param response
+     */
+    public void updateAttributes(ActionRequest request, ActionResponse response) {
+        ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
+        creator = configuratorCreatorRepo.find(creator.getId());
+        response.setSignal("refresh-app", true);
+    }
+
+    /**
+     * Called from the configurator creator form on formula changes
+     * @param request
+     * @param response
+     */
+    public void updateAndActivate(ActionRequest request, ActionResponse response) {
+        ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
+        creator = configuratorCreatorRepo.find(creator.getId());
+        configuratorCreatorService.updateAttributes(creator);
+        configuratorCreatorService.updateIndicators(creator);
+        configuratorCreatorService.activate(creator);
+        response.setSignal("refresh-app", true);
+    }
+    
+
+    /**
+     * Called from the configurator creator form on new
+     * @param request
+     * @param response
+     */
+    public void authorizeCurrentUser(ActionRequest request, ActionResponse response) {
+        ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
+        creator = configuratorCreatorRepo.find(creator.getId());
+        User currentUser = AuthUtils.getUser();
+		configuratorCreatorService.authorizeUser(creator, currentUser);
+        response.setReload(true);
+    }
+    
 }

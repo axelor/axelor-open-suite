@@ -13,11 +13,13 @@
   	
     <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
     
-  	<many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Location"/>
+  	<many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Stock Location"/>
   	
   	<one-to-many name="timetableList" ref="com.axelor.apps.supplychain.db.Timetable" title="Timetable" mappedBy="purchaseOrder"/>
 	<date name="expectedRealisationDate" title="Expected realisation date"/>
-	
+	<boolean name="interco" title="Interco"/>
+	<boolean name="createdByInterco" default="false"/>
+
 	<many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
   </entity>
 

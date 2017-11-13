@@ -28,13 +28,6 @@
 		<option value="5">Canceled</option>
 	</selection>
 	
-	<selection name="hrs.extra.hours.status.select">
-		<option value="1">Draft</option>
-		<option value="2">Waiting validation</option>
-		<option value="3">Validated</option>
-		<option value="4">Refused</option>
-		<option value="5">Canceled</option>
-	</selection>
 	
 	<selection name="hr.time.logging.preference.select">
 		<option value="days">Days</option>
@@ -65,11 +58,6 @@
 	<selection name="hrs.timesheet.line.invoicing.type.select">
 		<option value="1">Use line's Activity</option>
 		<option value="2">Use employee's Activity</option>
-	</selection>
-	
-	<selection name="hrs.payroll.leave.unit.select">
-		<option value="1">Hours</option>
-		<option value="2">Days</option>
 	</selection>
 	
 	<selection name="hr.employment.contract.amendment.type.select">
@@ -156,14 +144,6 @@
 		<option value="2">Forecast (invoice)</option>
 		<option value="3">Real (accounting)</option>
 		<option value="4">Forecast (expense)</option>
-	</selection>
-	
-	<selection name="app.type.select" id="human.resource.app.type.select">
-		<option order="12" value="employee">Employee management</option>
-		<option order="13" value="leave">Leave management</option>
-		<option order="14" value="timesheet">Timesheet management</option>
-		<option order="15" value="expense">Expense management</option>
-		<option order="16" value="exthrs">Extra hours</option>
 	</selection>
 	
 	<selection name="hr.batch.payroll.preparation.export.type.select">

@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -49,14 +49,14 @@ public class ActionBuilderController {
 				model = inflector.dasherize(model);
 			}
 			List<ActionBuilderView> views = new ArrayList<ActionBuilderView>();
-			addActionBuilderView(views, model, "grid", builder.getIsJson());
-			addActionBuilderView(views, model, "form", builder.getIsJson());
+			addActionBuilderView(views, model, "grid", builder.getIsJson(), 0);
+			addActionBuilderView(views, model, "form", builder.getIsJson(), 1);
 			response.setValue("actionBuilderViews", views);
 		}
 		
 	}
 
-	private void addActionBuilderView(List<ActionBuilderView> views, String model, String type, boolean isJson) {
+	private void addActionBuilderView(List<ActionBuilderView> views, String model, String type, boolean isJson, int sequence) {
 		
 		String viewName = model + "-" + type;
 		if (isJson) {
@@ -71,6 +71,7 @@ public class ActionBuilderController {
 		ActionBuilderView builderView = new ActionBuilderView();
 		builderView.setViewName(view.getName());
 		builderView.setViewType(view.getType());
+		builderView.setSequence(sequence);
 		
 		views.add(builderView);
 		

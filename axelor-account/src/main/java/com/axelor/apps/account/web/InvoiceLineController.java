@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -63,9 +63,8 @@ public class InvoiceLineController {
 		if(invoiceLine.getAnalyticDistributionTemplate() != null){
 			invoiceLine = invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine);
 			response.setValue("analyticMoveLineList", invoiceLine.getAnalyticMoveLineList());
-		}
-		else{
-			throw new AxelorException(I18n.get("No template selected"), IException.CONFIGURATION_ERROR);
+		} else {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No template selected"));
 		}
 	}
 	
@@ -111,7 +110,7 @@ public class InvoiceLineController {
 		if(!invoice.getInAti()) {
 			exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine,invoice));
 			inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
-		} else  {
+		} else {
 			inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine,invoice));
 			exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
 		}

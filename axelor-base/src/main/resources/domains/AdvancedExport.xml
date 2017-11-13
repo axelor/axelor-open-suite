@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  
+  <module name="base" package="com.axelor.apps.base.db" />
+  
+  <entity name="AdvancedExport">
+  	 <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Target model" required="true"/>
+  	 <many-to-one name="advancedExportFile" ref="com.axelor.meta.db.MetaFile" title="Export file"/>
+  	 <one-to-many name="advancedExportLineList" ref="com.axelor.apps.base.db.AdvancedExportLine" mappedBy="advancedExport" title="Advanced export line"/>
+  	 <boolean name="isViewData" default="true"/>
+  </entity>
+  
+</domain-models>

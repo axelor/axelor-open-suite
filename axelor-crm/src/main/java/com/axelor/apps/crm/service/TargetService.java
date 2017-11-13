@@ -55,13 +55,11 @@ public class TargetService {
 	
 	public void createsTargets(TargetConfiguration targetConfiguration) throws AxelorException  {
 		
-		if(targetConfiguration.getPeriodTypeSelect() == ITarget.NONE)  {
+		if (targetConfiguration.getPeriodTypeSelect() == ITarget.NONE) {
 			Target target = this.createTarget(targetConfiguration, targetConfiguration.getFromDate(), targetConfiguration.getToDate());
 			
 			this.update(target);
-		}
-		
-		else  {
+		} else {
 			
 			LocalDate oldDate = targetConfiguration.getFromDate();
 			LocalDate date = oldDate ;
@@ -75,16 +73,14 @@ public class TargetService {
 						targetConfiguration.getCallEmittedNumber(), targetConfiguration.getMeetingNumber(),
 						targetConfiguration.getOpportunityAmountWon().doubleValue(), targetConfiguration.getOpportunityCreatedNumber(), targetConfiguration.getOpportunityCreatedWon()).fetchOne(); 
 				
-				if(target2 == null)  {
+				if (target2 == null) {
 					Target target = this.createTarget(targetConfiguration, oldDate, (date.isBefore(targetConfiguration.getToDate())) ? date.minusDays(1) : targetConfiguration.getToDate());
 				
 					this.update(target);
 				
 					oldDate = date;
-				}
-				else {
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.TARGET_1), 
-							target2.getCode(), targetConfiguration.getCode()), IException.CONFIGURATION_ERROR);
+				} else {
+					throw new AxelorException(targetConfiguration, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TARGET_1), target2.getCode(), targetConfiguration.getCode());
 				}
 			}
 		}

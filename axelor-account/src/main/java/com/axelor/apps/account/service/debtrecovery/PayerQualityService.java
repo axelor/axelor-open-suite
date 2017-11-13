@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -166,8 +166,7 @@ public class PayerQualityService {
 	public void payerQualityProcess() throws AxelorException  {
 		List<PayerQualityConfigLine> payerQualityConfigLineList = appAccountService.getAppAccount().getPayerQualityConfigLineList();
 		if(payerQualityConfigLineList == null || payerQualityConfigLineList.size() == 0)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYER_QUALITY_1),
-					AppAccountServiceImpl.EXCEPTION), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYER_QUALITY_1), AppAccountServiceImpl.EXCEPTION);
 		}
 
 		List<Partner> partnerList = this.getPartnerList();

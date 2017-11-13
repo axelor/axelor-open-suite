@@ -3,10 +3,24 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.0.xsd">
 	
+	<input file="bpm_appBuilder.xml" root="app-builders">
+		<bind node="app-builder" type="com.axelor.studio.db.AppBuilder"  call="com.axelor.studio.service.ImportService:importAppBuilderImg">
+ 			<bind node="name" to="name" />
+ 			<bind node="code" to="code" />
+ 			<bind node="description" to="description" />
+ 			<bind node="sequence" to="sequence" />
+			<bind node="depends" alias="depends" />
+			<bind to="dependsOnSet" alias="deps"  search="self.code in :deps"  eval="depends.split(',') as List" update="true"  />
+			<bind node="image/@name" alias="fileName"/>
+ 			<bind node="image" alias="imageData" />
+ 		</bind>
+	</input>
+	
 	<input file="bpm_metaJsonModel.xml" root="json-models">
 		<bind node="json-model" type="com.axelor.meta.db.MetaJsonModel" call="com.axelor.studio.service.ImportService:importMetaJsonModel">
 			<bind node="@name" to="name" />
 			<bind node="@title" to="title" />
+			<bind node="@appBuilder" to="appBuilder" search="self.code = :appBuilder"  />
 			<bind node="fields/field" to="fields">
 				<bind node="@name" to="name"/>
 				<bind node="@title" to="title" />
@@ -18,6 +32,7 @@
 				<bind to="model" eval="'com.axelor.meta.db.MetaJsonRecord'" />
 				<bind to="modelField" eval="'attrs'" />
 				<bind node="@sequence" to="sequence"/>
+				<bind node="@onChange" to="onChange" />
 			</bind>
 		</bind>
 		
@@ -31,6 +46,8 @@
 			<bind node="@target-json-model" alias="targetJsonModel" to="targetJsonModel" search="self.name = :targetJsonModel" update="true"/>
 			<bind node="@jsonModel" to="jsonModel" search="self.name = :jsonModel" update="true" />
 			<bind node="@sequence" to="sequence"/>
+			<bind node="@onChange" to="onChange" />
+			<bind node="@appBuilder" to="appBuilder" search="self.code = :appBuilder"  />
 		</bind>
 	</input>
 	
@@ -41,6 +58,7 @@
 			<bind node="@type" to="chartType" />
 			<bind node="@json" to="isJson" />
 			<bind node="@model" to="model" alias="_model"/>
+			<bind node="@appBuilder" to="appBuilder" search="self.code = :appBuilder"  />
 			<bind node="@groupOnJson" to="groupOnJson" search="self.name = :groupOnJson and self.jsonModel.name = :_model" />
 			<bind node="@groupOn" to="groupOn" search="self.name = :groupOn and self.metaModel.fullName = :_model" />
 			<bind node="@groupDateType" to="groupDateType" />
@@ -73,6 +91,7 @@
 		<bind node="dashboard-builder" type="com.axelor.studio.db.DashboardBuilder" call="com.axelor.studio.service.ImportService:importDashboardBuilder">
 			<bind node="@name" to="name" />
 			<bind node="@title" to="title" />
+			<bind node="@appBuilder" to="appBuilder" search="self.code = :appBuilder"  />
 			<bind node="dashlets/dashlet" to="dashletBuilderList">
 				<bind node="@name" to="name" />
 				<bind node="@sequence" to="sequence" />
@@ -91,13 +110,21 @@
 			<bind node="@background" to="iconBackground" />
 			<bind node="@parent" to="parentMenu" search="self.name = :parentMenu" />
 			<bind node="@show-action" to="showAction" />
+			<bind node="@appBuilder" to="appBuilder" search="self.code = :appBuilder"  />
 			<bind node="action" to="actionBuilder" if="actionName != null">
 				<bind node="@name" to="name" alias="actionName"  />
+				<bind node="@model" to="model" />
+				<bind node="@isJson" to="isJson" />
 				<bind node="@title" to="title" />
 				<bind to="typeSelect" eval="3"/>
 				<bind node="views/view" to="actionBuilderViews">
 					<bind node="@type" to="viewType" />
 					<bind node="@name" to="viewName" />
+				</bind>
+				<bind node="@domain" to="domainCondition" />
+				<bind node="context/ctx" to="lines">
+					<bind node="@value" to="value" />
+					<bind node="@name" to="name" />
 				</bind>
 			</bind>
 		</bind>
@@ -110,6 +137,7 @@
 			<bind node="@typeSelect" to="typeSelect" />
 			<bind node="@model" to="model" />
 			<bind node="@targetModel" to="targetModel" />
+			<bind node="@appBuilder" to="appBuilder" search="self.code = :appBuilder"  />
 			<bind node="lines/line" to="lines">
 				<bind node="@metaModel" to="metaModel" />
 				<bind node="@valueModel" to="valueModel" />
@@ -147,6 +175,7 @@
 	
 	<input file="bpm_workflow.xml" root="wkfs" >
 		<bind node="wkf" type="com.axelor.studio.db.Wkf">
+			<bind node="@appBuilder" to="appBuilder" search="self.code = :appBuilder"  />
 			<bind node="@name" to="name" />
 			<bind node="@isJson" to="isJson" />
 			<bind node="@model" to="model" />

@@ -97,7 +97,7 @@ public abstract class DefaultEbicsRootElement implements EbicsRootElement {
       document = sxb.build(new InputStreamReader(new ByteArrayInputStream(toByteArray()), "UTF-8"));
       xmlOutputter.output(document, output);
     } catch (IOException | JDOMException e) {
-    	throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR );
+    	throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
     }
 
     return output.toByteArray();
@@ -199,7 +199,7 @@ public abstract class DefaultEbicsRootElement implements EbicsRootElement {
 	message += iter.next().getMessage();
       }
 
-      throw new AxelorException(message, IException.CONFIGURATION_ERROR);
+      throw new AxelorException(IException.CONFIGURATION_ERROR, message);
     }
   }
 
@@ -213,7 +213,7 @@ public abstract class DefaultEbicsRootElement implements EbicsRootElement {
       out.flush();
       out.close();
     } catch (IOException e) {
-      throw new AxelorException(e.getMessage(), IException.CONFIGURATION_ERROR );
+      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
     }
   }
 

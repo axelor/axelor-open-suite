@@ -147,9 +147,15 @@ public class EventService {
 		if(!Strings.isNullOrEmpty(description)){
 			event.setDescription(description);
 		}
+
+        if (fromDateTime != null && toDateTime != null) {
+            long duration = Duration.between(fromDateTime, toDateTime).getSeconds();
+            event.setDuration(duration);
+        }
+
 		return event;
 	}
-	
+
 	public String getInvoicingAddressFullName(Partner partner) {
 
 		Address address = partnerService.getInvoicingAddress(partner);
@@ -193,8 +199,7 @@ public class EventService {
 		Template changedDateTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingDateChangeTemplate();
 
 		if(deletedGuestsTemplate == null || addedGuestsTemplate == null || changedDateTemplate == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CRM_CONFIG_TEMPLATES),event.getUser().getActiveCompany()),
-					IException.CONFIGURATION_ERROR);
+			throw new AxelorException(event, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CRM_CONFIG_TEMPLATES), event.getUser().getActiveCompany());
 		}
 		if(!event.getEndDateTime().isEqual(previousEvent.getEndDateTime())){
 			for (Partner partner : contactSet) {
@@ -282,9 +287,8 @@ public class EventService {
 
 	public void sendMails(Event event) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, MessagingException{
 		Template guestAddedTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingGuestAddedTemplate();
-		if(guestAddedTemplate == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CRM_CONFIG_TEMPLATES),event.getUser().getActiveCompany()),
-					IException.CONFIGURATION_ERROR);
+		if (guestAddedTemplate == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CRM_CONFIG_TEMPLATES), event.getUser().getActiveCompany());
 		}
 		if(event.getExternalGuestSet() != null){
 			for (Partner partner : event.getExternalGuestSet()) {
@@ -753,19 +757,19 @@ public class EventService {
 			}
 			
 			if(recurrConf.getEndType() == RecurrenceConfigurationRepository.END_TYPE_REPET){
-				recurrName += String.format(I18n.get(", %d times"), recurrConf.getRepetitionsNumber());
+				recurrName += String.format(", " + I18n.get("%d times"), recurrConf.getRepetitionsNumber());
 			}
 			else if(recurrConf.getEndDate() != null){
-				recurrName += I18n.get(", until the ") + recurrConf.getEndDate().format(DATE_FORMAT);
+				recurrName += ", " + I18n.get("until the") + " " + recurrConf.getEndDate().format(DATE_FORMAT);
 			}
 			break;
 		
 		case RecurrenceConfigurationRepository.TYPE_WEEK:
 			if(recurrConf.getPeriodicity() == 1){
-				recurrName += I18n.get("Every week ");
+				recurrName += I18n.get("Every week") + " ";
 			}
 			else{
-				recurrName += String.format(I18n.get("Every %d weeks "), recurrConf.getPeriodicity());
+				recurrName += String.format(I18n.get("Every %d weeks") + " ", recurrConf.getPeriodicity());
 			}
 			if(recurrConf.getMonday() && recurrConf.getTuesday() && recurrConf.getWednesday() && recurrConf.getThursday() && recurrConf.getFriday()
 					&& !recurrConf.getSaturday() && !recurrConf.getSunday()){
@@ -776,7 +780,7 @@ public class EventService {
 				recurrName += I18n.get("everyday");
 			}
 			else{
-				recurrName += I18n.get("on ");
+				recurrName += I18n.get("on") + " ";
 				if(recurrConf.getMonday()){
 					recurrName += I18n.get("mon,");
 				}
@@ -801,42 +805,42 @@ public class EventService {
 			}
 			
 			if(recurrConf.getEndType() == RecurrenceConfigurationRepository.END_TYPE_REPET){
-				recurrName += String.format(I18n.get(" %d times"), recurrConf.getRepetitionsNumber());
+				recurrName += String.format(" " + I18n.get("%d times"), recurrConf.getRepetitionsNumber());
 			}
 			else if(recurrConf.getEndDate() != null){
-				recurrName += I18n.get(" until the ") + recurrConf.getEndDate().format(DATE_FORMAT);
+				recurrName += " " + I18n.get("until the") + " " + recurrConf.getEndDate().format(DATE_FORMAT);
 			}
 			break;
 		
 		case RecurrenceConfigurationRepository.TYPE_MONTH:
 			if(recurrConf.getPeriodicity() == 1){
-				recurrName += I18n.get("Every month the ") + recurrConf.getStartDate().getDayOfMonth();
+				recurrName += I18n.get("Every month the") + " " + recurrConf.getStartDate().getDayOfMonth();
 			}
 			else{
 				recurrName += String.format(I18n.get("Every %d months the %d"), recurrConf.getPeriodicity(), recurrConf.getStartDate().getDayOfMonth());
 			}
 			
 			if(recurrConf.getEndType() == RecurrenceConfigurationRepository.END_TYPE_REPET){
-				recurrName += String.format(I18n.get(", %d times"), recurrConf.getRepetitionsNumber());
+				recurrName += String.format(", " + I18n.get("%d times"), recurrConf.getRepetitionsNumber());
 			}
 			else if(recurrConf.getEndDate() != null){
-				recurrName += I18n.get(", until the ") + recurrConf.getEndDate().format(DATE_FORMAT);
+				recurrName += ", " + I18n.get("until the") + " " + recurrConf.getEndDate().format(DATE_FORMAT);
 			}
 			break;
 			
 		case RecurrenceConfigurationRepository.TYPE_YEAR:
 			if(recurrConf.getPeriodicity() == 1){
-				recurrName += I18n.get("Every year the ") + recurrConf.getStartDate().format(MONTH_FORMAT);
+				recurrName += I18n.get("Every year the") + recurrConf.getStartDate().format(MONTH_FORMAT);
 			}
 			else{
 				recurrName += String.format(I18n.get("Every %d years the %s"), recurrConf.getPeriodicity(), recurrConf.getStartDate().format(MONTH_FORMAT));
 			}
 			
 			if(recurrConf.getEndType() == RecurrenceConfigurationRepository.END_TYPE_REPET){
-				recurrName += String.format(I18n.get(", %d times"), recurrConf.getRepetitionsNumber());
+				recurrName += String.format(", " + I18n.get("%d times"), recurrConf.getRepetitionsNumber());
 			}
 			else if(recurrConf.getEndDate() != null){
-				recurrName += I18n.get(", until the ") + recurrConf.getEndDate().format(DATE_FORMAT);
+				recurrName +=  ", " + I18n.get("until the")+ " " +recurrConf.getEndDate().format(DATE_FORMAT);
 			}
 			break;
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -25,6 +25,8 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import com.axelor.apps.base.service.AddressService;
+import com.axelor.inject.Beans;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +70,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 		Invoice invoice = this.createInvoice(purchaseOrder);
 		invoice = invoiceRepo.save(invoice);
 		invoiceService.setDraftSequence(invoice);
-		invoice.setAddressStr(invoiceService.computeAddressStr(invoice.getAddress()));
+		invoice.setAddressStr(Beans.get(AddressService.class)
+				.computeAddressStr(invoice.getAddress()));
 
 		if(invoice != null) {
 			purchaseOrder.setInvoice(invoice);
@@ -91,8 +94,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 	@Override
 	public InvoiceGenerator createInvoiceGenerator(PurchaseOrder purchaseOrder) throws AxelorException  {
 
-		if(purchaseOrder.getCurrency() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PO_INVOICE_1), purchaseOrder.getPurchaseOrderSeq()), IException.CONFIGURATION_ERROR);
+		if (purchaseOrder.getCurrency() == null) {
+			throw new AxelorException(purchaseOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PO_INVOICE_1), purchaseOrder.getPurchaseOrderSeq());
 		}
 
 		InvoiceGenerator invoiceGenerator = new InvoiceGeneratorSupplyChain(purchaseOrder) {

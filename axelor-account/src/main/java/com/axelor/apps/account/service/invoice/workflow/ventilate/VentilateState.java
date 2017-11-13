@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -22,15 +22,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import java.time.LocalDate;
-import java.util.Set;
 
-import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveToolService;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.*;
@@ -128,8 +120,8 @@ public class VentilateState extends WorkflowInvoice {
 		if(invoice.getPartnerAccount() == null)  {
 			Account account = InvoiceToolService.isPurchase(invoice) ? accountSituation.getSupplierAccount() : accountSituation.getCustomerAccount();
 
-			if(account == null) {
-				throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_5), IException.CONFIGURATION_ERROR);
+			if (account == null) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_5));
 			}
 
 			invoice.setPartnerAccount(account);
@@ -147,8 +139,7 @@ public class VentilateState extends WorkflowInvoice {
 		if(invoice.getInvoiceDate() == null)  {
 			invoice.setInvoiceDate(appAccountService.getTodayDate());
 		} else if (invoice.getInvoiceDate().isAfter(appAccountService.getTodayDate())) {
-			throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_DATE),
-					IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_DATE));
 		}
 
 		if(!invoice.getPaymentCondition().getIsFree() || invoice.getDueDate() == null)  {
@@ -190,12 +181,12 @@ public class VentilateState extends WorkflowInvoice {
 
 		if(invoiceRepo.all().filter(query, params.toArray()).count() > 0)  {
 			if(sequence.getMonthlyResetOk())  {
-				throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_2), IException.CONFIGURATION_ERROR);
+				throw new AxelorException(sequence, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_2));
 			}
 			if(sequence.getYearlyResetOk())  {
-				throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_3), IException.CONFIGURATION_ERROR);
+				throw new AxelorException(sequence, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_3));
 			}
-			throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_1), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(sequence, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_1));
 		}
 
 	}
@@ -238,15 +229,19 @@ public class VentilateState extends WorkflowInvoice {
 	 * @param sequence
 	 * @throws AxelorException
 	 */
-	protected void setInvoiceId( Sequence sequence ) throws AxelorException {
+	protected void setInvoiceId(Sequence sequence) throws AxelorException {
 
-		if ( !Strings.isNullOrEmpty(invoice.getInvoiceId()) && !invoice.getInvoiceId().contains("*") ) { return; }
+		if (!Strings.isNullOrEmpty(invoice.getInvoiceId()) && !invoice.getInvoiceId().contains("*")) {
+			return;
+		}
 
-		invoice.setInvoiceId( sequenceService.setRefDate( invoice.getInvoiceDate() ).getSequenceNumber(sequence) );
+		invoice.setInvoiceId(sequenceService.setRefDate(invoice.getInvoiceDate()).getSequenceNumber(sequence));
 
-		if (invoice.getInvoiceId() != null) { return; }
+		if (invoice.getInvoiceId() != null) {
+			return;
+		}
 
-		throw new AxelorException(String.format(I18n.get(IExceptionMessage.VENTILATE_STATE_4), invoice.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		throw new AxelorException(invoice, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_4), invoice.getCompany().getName());
 
 	}
 
@@ -257,23 +252,19 @@ public class VentilateState extends WorkflowInvoice {
 		switch (invoice.getOperationTypeSelect()) {
 
 		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
-
 			return accountConfigService.getSuppInvSequence(accountConfig);
 
 		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
-
 			return accountConfigService.getSuppRefSequence(accountConfig);
 
 		case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
-
 			return accountConfigService.getCustInvSequence(accountConfig);
 
 		case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
-
 			return accountConfigService.getCustRefSequence(accountConfig);
 
 		default:
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.JOURNAL_1), invoice.getInvoiceId()), IException.MISSING_FIELD);
+			throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.JOURNAL_1), invoice.getInvoiceId());
 		}
 
 	}

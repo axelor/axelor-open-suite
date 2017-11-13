@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,15 +18,20 @@
 package com.axelor.apps.account.web;
 
 
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.debtrecovery.PayerQualityService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 public class AppAccountController {
 
 	private Injector injector;
+	
+	@Inject
+	private AppAccountService appAccountService;
 
 	public void payerQualityProcess(ActionRequest request, ActionResponse response)  {
 
@@ -37,6 +42,11 @@ public class AppAccountController {
 		catch (Exception e) { TraceBackService.trace(response, e); }
 	}
 	
-	
-	
+	public void generateAccountConfigurations(ActionRequest request, ActionResponse response)  {
+		
+		appAccountService.generateAccountConfigurations();
+		
+		response.setReload(true);
+		
+	}
 }

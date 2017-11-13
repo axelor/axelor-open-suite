@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,26 +27,25 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
 
 import org.apache.commons.io.output.FileWriterWithEncoding;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.IMessage;
 import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.PermissionAssistant;
+import com.axelor.auth.db.Role;
 import com.axelor.auth.db.repo.GroupRepository;
 import com.axelor.auth.db.repo.PermissionAssistantRepository;
 import com.axelor.auth.db.repo.PermissionRepository;
+import com.axelor.auth.db.repo.RoleRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -55,10 +54,12 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaPermission;
 import com.axelor.meta.db.MetaPermissionRule;
+import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaPermissionRepository;
 import com.axelor.meta.db.repo.MetaPermissionRuleRepository;
 import com.google.common.base.Strings;
+import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.opencsv.CSVReader;
@@ -83,9 +84,19 @@ public class PermissionAssistantService {
 
 	@Inject
 	private MetaModelRepository modelRepository;
+	
+	@Inject
+	private MetaFieldRepository fieldRepository;
+	
+	@Inject
+	private MetaFiles metaFiles;
+	
+	@Inject
+	private RoleRepository roleRepo;
 
 	private String errorLog = "";
-
+	
+	private String[] header = new String[]{"Object", "Field", "Title"};
 
 	@SuppressWarnings("serial")
 	private List<String> groupHeader = new ArrayList<String>(){{
@@ -95,6 +106,8 @@ public class PermissionAssistantService {
 			add(I18n.get("Create"));
 			add(I18n.get("Delete"));
 			add(I18n.get("Export"));
+			add(I18n.get("Condition"));
+			add(I18n.get("ConditionParams"));
 			add(I18n.get("Readonly If"));
 			add(I18n.get("Hide If"));
 	}};
@@ -110,8 +123,7 @@ public class PermissionAssistantService {
 
 	public void createFile(PermissionAssistant assistant){
 
-		AppSettings appSettings = AppSettings.get();
-		File permFile = new File(appSettings.get("file.upload.dir"), getFileName(assistant));
+		File permFile = new File(Files.createTempDir(), getFileName(assistant));
 
 		try {
 			
@@ -129,40 +141,44 @@ public class PermissionAssistantService {
 	}
 
 	@Transactional
-	public void createMetaFile(File permFile, PermissionAssistant assistant) {
+	public void createMetaFile(File permFile, PermissionAssistant assistant) throws IOException {
 
-		MetaFile metaFile = new MetaFile();
-		metaFile.setFileName(permFile.getName());
-		metaFile.setFilePath(permFile.getName());
-
-		assistant.setMetaFile(metaFile);
+		assistant.setMetaFile(metaFiles.upload(permFile));
 
 		Beans.get(PermissionAssistantRepository.class).save(assistant);
 	}
 
 	private void writeGroup(CSVWriter csvWriter, PermissionAssistant assistant) {
 
-		@SuppressWarnings("serial")
-		List<String> headerRow = new ArrayList<String>(){{
-			add("Object");
-			add("Field");
-			add("Title");
-		}};
-
-		String[] groupRow = new String[assistant.getGroupSet().size()*8+3];
-		Integer count = 3;
-		for(Group group : assistant.getGroupSet()){
-			groupRow[count+1] = group.getCode();
-			headerRow.addAll(groupHeader);
-			count += 8;
+		String[] groupRow = null;
+		Integer count = header.length;
+		Integer rowSize = groupHeader.size() + header.length;
+		
+		List<String> headerRow = new ArrayList<String>();
+		headerRow.addAll(Arrays.asList(header));
+		if (assistant.getTypeSelect() == 1) {
+			groupRow = new String[assistant.getGroupSet().size()*rowSize];
+			for(Group group : assistant.getGroupSet()){
+				groupRow[count+1] = group.getCode();
+				headerRow.addAll(groupHeader);
+				count += groupHeader.size();
+			}
+		} else if (assistant.getTypeSelect() == 2){
+			groupRow = new String[assistant.getRoleSet().size()*rowSize];
+			for(Role role : assistant.getRoleSet()){
+				groupRow[count+1] = role.getName();
+				headerRow.addAll(groupHeader);
+				count += groupHeader.size();
+			}
 		}
 
 		LOG.debug("Header row created: {}",headerRow);
 
 		csvWriter.writeNext(groupRow);
 		csvWriter.writeNext(headerRow.toArray(groupRow));
-
+		
 		writeObject(csvWriter, assistant, groupRow.length);
+		
 	}
 
 	public Comparator<Object> compareField() {
@@ -176,95 +192,164 @@ public class PermissionAssistantService {
 	}
 
 	private void writeObject(CSVWriter csvWriter, PermissionAssistant assistant, Integer size) {
-
-		String language = assistant.getLanguage();
-		language = language != null ? language : "en";
-
-		LOG.debug("Language selected: {}",language);
-		ResourceBundle bundle = I18n.getBundle(new Locale(language));
-
-		for(MetaModel object : assistant.getObjectSet()){
-
+		
+		MetaField userField = assistant.getMetaField();
+		
+		for(MetaModel object : assistant.getObjectSet()) {
+			
+			int colIndex = header.length + 1;
 			String[] row = new String[size];
 			row[0] = object.getFullName();
-
-			Set<Group> groupSet = assistant.getGroupSet();
-			int colIndex = 4;
 			
-			for (Group group : groupSet) {
-				for (Permission perm : group.getPermissions()) {
-					if (perm.getObject().equals(object.getFullName())) {
-						row[colIndex++] = perm.getCanRead() == false ? "" : "x";
-						row[colIndex++] = perm.getCanWrite() == false ? "" : "x";
-						row[colIndex++] = perm.getCanCreate() == false ? "" : "x";
-						row[colIndex++] = perm.getCanRemove() == false ? "" : "x";
-						row[colIndex++] = perm.getCanExport() == false ? "" : "x";
-						row[colIndex++] = ""; // readonly if
-						row[colIndex++] = ""; // hide if
-						break;
-					}
+			if (assistant.getTypeSelect() == 1) {
+				for (Group group : assistant.getGroupSet()) {
+					String permName = getPermissionName(userField, object.getName(), group.getCode());
+					colIndex = writePermission(object, userField, row, colIndex, permName);
+					colIndex++;
 				}
-				colIndex++;
+				
+			} else if (assistant.getTypeSelect() == 2) {
+				for (Role role : assistant.getRoleSet()) {
+					String permName = getPermissionName(userField, object.getName(), role.getName());
+					colIndex = writePermission(object, userField, row, colIndex, permName);
+					colIndex++;
+				}
 			}
 			
 			csvWriter.writeNext(row);
+			
+			if (!assistant.getFieldPermission()) {
+				continue;
+			}
+			
 			List<MetaField> fieldList = object.getMetaFields();
 			Collections.sort(fieldList, compareField());
-
+			
 			for(MetaField field : fieldList){
-
-				colIndex = 4;
-
+				colIndex = header.length + 1;
 				row = new String[size];
 				row[1] = field.getName();
-
-				String title = field.getLabel();
-				if(!Strings.isNullOrEmpty(title)){
-					title = bundle.getString(title);
-				}
-				row[2] = title;
-
-				for (Group group : groupSet) {
-					Set<MetaPermission> fieldPermission = group.getMetaPermissions();
-					for (MetaPermission perm : fieldPermission) {
-						if (perm.getObject().equals(object.getFullName())) {
-							for (MetaPermissionRule fieldPerm : perm.getRules()) {
-								if (field.getName().equals(fieldPerm.getField())) {
-									row[colIndex++] = fieldPerm.getCanRead() == false ? "" : "x";
-									row[colIndex++] = fieldPerm.getCanWrite() == false ? "" : "x";
-									row[colIndex++] = "";
-									row[colIndex++] = "";
-									row[colIndex++] = fieldPerm.getCanExport() == false ? "" : "x";
-									row[colIndex++] = Strings.isNullOrEmpty(fieldPerm.getReadonlyIf()) ? "" : fieldPerm.getReadonlyIf(); // readonly if
-									row[colIndex++] = Strings.isNullOrEmpty(fieldPerm.getHideIf()) ? "" : fieldPerm.getHideIf(); // hide if
-								}
-							}
-						}
- 					}
-					colIndex++;
+				row[2] = getFieldTitle(field);
+				
+				if (assistant.getTypeSelect() == 1) {
+					for (Group group : assistant.getGroupSet()) {
+						String permName = getPermissionName(null, object.getName(), group.getCode());
+						colIndex = writeFieldPermission(field, row, colIndex, permName);
+						colIndex++;
+					}
+					
+				} else if (assistant.getTypeSelect() == 2) {
+					for (Role role : assistant.getRoleSet()) {
+						String permName = getPermissionName(null, object.getName(), role.getName());
+						colIndex = writeFieldPermission(field, row, colIndex, permName);
+						colIndex++;
+					}
 				}
 				csvWriter.writeNext(row);
 			}
+			
 		}
+	}
+
+	private String getPermissionName(MetaField userField, String objectName, String suffix) {
+		
+		String permName = "perm." + objectName + "." +  suffix;
+		if (userField != null) {
+			permName += "." + userField.getName();
+		}
+		
+		return permName;
+	}
+
+	private String getFieldTitle(MetaField field) {
+		
+		String title = field.getLabel();
+		if(!Strings.isNullOrEmpty(title)){
+			title = I18n.get(title);
+			if (Strings.isNullOrEmpty(title)) {
+				title = field.getLabel(); 
+			}
+		}
+		
+		return title;
+	}
+			
+	private int writeFieldPermission(MetaField field, String[] row, int colIndex, String permName) {
+		
+		MetaPermissionRule rule = ruleRepository.all()
+				.filter("self.metaPermission.name = ?1 and self.metaPermission.object = ?2 and self.field = ?3", 
+						permName, field.getMetaModel().getFullName(), field.getName()).fetchOne();
+		if (rule != null) {
+			row[colIndex++] = rule.getCanRead() == false ? "" : "x";
+			row[colIndex++] = rule.getCanWrite() == false ? "" : "x";
+			row[colIndex++] = "";
+			row[colIndex++] = "";
+			row[colIndex++] = rule.getCanExport() == false ? "" : "x";
+			row[colIndex++] = "";
+			row[colIndex++] = "";
+			row[colIndex++] = Strings.isNullOrEmpty(rule.getReadonlyIf()) ? "" : rule.getReadonlyIf(); // readonly if
+			row[colIndex++] = Strings.isNullOrEmpty(rule.getHideIf()) ? "" : rule.getHideIf(); // hide if
+		}
+		
+		return colIndex;
+	}
+	
+
+	private int writePermission(MetaModel object, MetaField userField, String[] row, int colIndex, String permName) {
+		
+		Permission perm = permissionRepository.findByName(permName);
+		
+		if (perm != null && perm.getObject().equals(object.getFullName())) {
+			row[colIndex++] = perm.getCanRead() == false ? "" : "x";
+			row[colIndex++] = perm.getCanWrite() == false ? "" : "x";
+			row[colIndex++] = perm.getCanCreate() == false ? "" : "x";
+			row[colIndex++] = perm.getCanRemove() == false ? "" : "x";
+			row[colIndex++] = perm.getCanExport() == false ? "" : "x";
+			row[colIndex++] = Strings.isNullOrEmpty(perm.getCondition()) ? "" : perm.getCondition() ;
+			row[colIndex++] = Strings.isNullOrEmpty(perm.getConditionParams()) ? "" : perm.getConditionParams();
+			row[colIndex++] = ""; // readonly if
+			row[colIndex++] = ""; // hide if
+		}
+		else if (userField != null) {
+			MetaField objectField = fieldRepository.all()
+					.filter("self.typeName = ?1 and self.metaModel = ?2 and self.relationship = 'ManyToOne'", 
+							userField.getTypeName(), object).fetchOne();
+			if (objectField != null) {
+				String condition = "";
+				String conditionParams = "__user__." + userField.getName();
+				
+				if (userField.getRelationship().contentEquals("ManyToOne")) {
+					condition = "self." + objectField.getName() + " = ?";
+				} else {
+					condition = "self." + objectField.getName() + " in (?)";
+				}
+				row[colIndex++] = "x";
+				row[colIndex++] = "x";
+				row[colIndex++] = "x";
+				row[colIndex++] = "x";
+				row[colIndex++] = "x";
+				row[colIndex++] = condition;
+				row[colIndex++] = conditionParams;
+				row[colIndex++] = ""; // readonly if
+				row[colIndex++] = ""; // hide if
+			}
+		}
+		
+		return colIndex;
 	}
 	
 	private boolean checkHeaderRow(String[] headerRow){
 
-		@SuppressWarnings("serial")
-		List<String> headerList = new ArrayList<String>(){{
-			add("Object");
-			add("Field");
-			add("Title");
-		}};
-
-		Integer count = 3;
+		Integer count = header.length;
+		List<String> standardRow = new ArrayList<String>();
+		standardRow.addAll(Arrays.asList(header));
 		while(count < headerRow.length){
-			headerList.addAll(groupHeader);
-			count += 8;
+			standardRow.addAll(groupHeader);
+			count += groupHeader.size();
 		}
-		LOG.debug("Standard Headers: {}",headerList);
+		LOG.debug("Standard Headers: {}", standardRow);
 
-		String[] headers =  headerList.toArray(new String[headerList.size()]);
+		String[] headers =  standardRow.toArray(new String[standardRow.size()]);
 		LOG.debug("File Headers: {}",Arrays.asList(headerRow));
 
 		return Arrays.equals(headers, headerRow);
@@ -295,13 +380,21 @@ public class PermissionAssistantService {
 				csvReader.close();
 				return errorLog;
 			}
+			
+			if (permissionAssistant.getTypeSelect() == 1) {
+				Map<String,Group> groupMap = checkBadGroups(groupRow);
+				processGroupCSV(csvReader, groupRow, groupMap, permissionAssistant.getMetaField()
+						, permissionAssistant.getFieldPermission());
+				saveGroups(groupMap);
+			}
+			else if (permissionAssistant.getTypeSelect() == 2) {
+				Map<String,Role> roleMap = checkBadRoles(groupRow);
+				processRoleCSV(csvReader, groupRow, roleMap, permissionAssistant.getMetaField()
+						, permissionAssistant.getFieldPermission());
+				saveRoles(roleMap);
+			}
 
-			Map<String,Group> groupMap = checkBadGroups(groupRow);
-			Map<String, MetaPermission> metaPermissionDict = new HashMap<String, MetaPermission>();
-			processCSV(csvReader, groupRow, null, metaPermissionDict, groupMap);
-
-			saveGroups(groupMap);
-
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			errorLog += "\n"+String.format(I18n.get(IMessage.ERR_IMPORT_WITH_MSG), e.getMessage());
@@ -318,13 +411,23 @@ public class PermissionAssistantService {
 		}
 
 	}
+	
+	
+	@Transactional
+	public void saveRoles(Map<String, Role> roleMap) {
+
+		for(Role role: roleMap.values()){
+			roleRepo.save(role);
+		}
+
+	}
 
 	private Map<String,Group> checkBadGroups(String[] groupRow){
 
 		List<String> badGroups = new ArrayList<String>();
 		Map<String,Group> groupMap = new HashMap<String, Group>();
 
-		for(Integer glen = 4; glen<groupRow.length; glen+=8){
+		for(Integer glen = header.length + 1; glen<groupRow.length; glen+=groupHeader.size()){
 
 			String groupName = groupRow[glen];
 			Group group = groupRepository.all().filter("self.code = ?1", groupName).fetchOne();
@@ -342,6 +445,30 @@ public class PermissionAssistantService {
 
 		return groupMap;
 	}
+	
+	private Map<String, Role> checkBadRoles(String[] roleRow){
+
+		List<String> badroles = new ArrayList<String>();
+		Map<String, Role> roleMap = new HashMap<String, Role>();
+
+		for(Integer len = header.length + 1; len<roleRow.length; len+=groupHeader.size()){
+
+			String roleName = roleRow[len];
+			Role role = roleRepo.all().filter("self.name = ?1", roleName).fetchOne();
+			if(roleName == null){
+				badroles.add(roleName);
+			}
+			else{
+				roleMap.put(roleName, role);
+			}
+		}
+
+		if(!badroles.isEmpty()){
+			errorLog += "\n"+String.format(I18n.get(IMessage.NO_ROLE), badroles);
+		}
+
+		return roleMap;
+	}
 
 	private String checkObject(String objectName){
 
@@ -355,47 +482,85 @@ public class PermissionAssistantService {
 		return objectName;
 	}
 
-	private void processCSV(CSVReader csvReader, String[] groupRow,
+	private void processGroupCSV(CSVReader csvReader, String[] groupRow,
+			Map<String,Group> groupMap, MetaField field, Boolean fieldBoolean) throws IOException{
 
-		String objectName, Map<String, MetaPermission> metaPermissionDict, Map<String,Group> groupMap) throws IOException{
-
+		Map<String, MetaPermission> metaPermDict = new HashMap<String, MetaPermission>();
+		String objectName = null;
+		
 		String[] row = csvReader.readNext();
-
-		if(row == null){
-			return;
-		}
-
-		for(Integer groupIndex = 4; groupIndex < row.length; groupIndex += 8){
-
-			String groupName = groupRow[groupIndex];
-			if(!groupMap.containsKey(groupName)) {continue;}
-
-			String[] rowGroup = (String[]) Arrays.copyOfRange(row, groupIndex, groupIndex + 8);
-
-			if(!Strings.isNullOrEmpty(groupName) && !Strings.isNullOrEmpty(row[0])){
-				objectName = checkObject(row[0]);
-				if(objectName == null){
-					break;
+		while (row != null) {
+			for(Integer groupIndex = header.length + 1; groupIndex < row.length; groupIndex += groupHeader.size()){
+	
+				String groupName = groupRow[groupIndex];
+				if(!groupMap.containsKey(groupName)) {continue;}
+	
+				String[] rowGroup = (String[]) Arrays.copyOfRange(row, groupIndex, groupIndex + groupHeader.size());
+	
+				if(!Strings.isNullOrEmpty(groupName) && !Strings.isNullOrEmpty(row[0])){
+					objectName = checkObject(row[0]);
+					if(objectName == null){
+						break;
+					}
+					if (fieldBoolean) {
+						metaPermDict.put(groupName, getMetaPermission(groupMap.get(groupName), objectName));
+					}
+					updatePermission(groupMap.get(groupName), objectName, field, rowGroup);
 				}
-				metaPermissionDict.put(groupName, getMetaPermission(groupMap.get(groupName), objectName));
-				updatePermission(groupMap.get(groupName), objectName, rowGroup);
+				else if(fieldBoolean && objectName != null && !Strings.isNullOrEmpty(row[1])){
+					updateFieldPermission(metaPermDict.get(groupName), row[1], rowGroup);
+				}
+	
 			}
-			else if(objectName != null && !Strings.isNullOrEmpty(row[1])){
-				updateFieldPermission(metaPermissionDict.get(groupName), row[1], rowGroup);
-			}
-
+		
+			row = csvReader.readNext();
 		}
-
-		processCSV(csvReader, groupRow, objectName, metaPermissionDict, groupMap);
 
 	}
+	
+	private void processRoleCSV(CSVReader csvReader, String[] roleRow,
+			Map<String, Role> roleMap, MetaField field, Boolean fieldPermission) throws IOException{
+		
+			Map<String, MetaPermission> metaPermDict = new HashMap<String, MetaPermission>();
+			String objectName = null;
+			
+			String[] row = csvReader.readNext();
+			while (row != null) {
+				
+				for(Integer groupIndex = header.length + 1; groupIndex < row.length; groupIndex += groupHeader.size()){
+		
+					String roleName = roleRow[groupIndex];
+					if(!roleMap.containsKey(roleName)) {continue;}
+		
+					String[] rowGroup = (String[]) Arrays.copyOfRange(row, groupIndex, groupIndex + groupHeader.size());
+		
+					if(!Strings.isNullOrEmpty(roleName) && !Strings.isNullOrEmpty(row[0])){
+						objectName = checkObject(row[0]);
+						if(objectName == null){
+							break;
+						}
+						if (fieldPermission) {
+							metaPermDict.put(roleName, getMetaPermission(roleMap.get(roleName), objectName));
+						}
+						updatePermission(roleMap.get(roleName), objectName, field, rowGroup);
+					}
+					else if(fieldPermission && objectName != null && !Strings.isNullOrEmpty(row[1])){
+						updateFieldPermission(metaPermDict.get(roleName), row[1], rowGroup);
+					}
+		
+				}
+			
+				row = csvReader.readNext();
+			}
+
+		}
 
 
 	public MetaPermission getMetaPermission(Group group, String objectName){
 
 		String[] objectNames = objectName.split("\\.");
 		String groupName = group.getCode();
-		String permName = groupName + "." + objectNames[objectNames.length - 1];
+		String permName = getPermissionName(null, objectNames[objectNames.length - 1], group.getCode());
 		MetaPermission metaPermission = metaPermissionRepository.all().filter("self.name = ?1",  permName).fetchOne();
 
 		if(metaPermission == null){
@@ -411,11 +576,32 @@ public class PermissionAssistantService {
 
 		return metaPermission;
 	}
+	
+	public MetaPermission getMetaPermission(Role role, String objectName){
 
+		String[] objectNames = objectName.split("\\.");
+		String roleName = role.getName();
+		String permName =  getPermissionName(null, objectNames[objectNames.length - 1], roleName);
+		MetaPermission metaPermission = metaPermissionRepository.all().filter("self.name = ?1",  permName).fetchOne();
+
+		if(metaPermission == null){
+			LOG.debug("Create metaPermission role: {}, object: {}", roleName, objectName);
+
+			metaPermission = new MetaPermission();
+			metaPermission.setName(permName);
+			metaPermission.setObject(objectName);
+
+			role.addMetaPermission(metaPermission);
+
+		}
+
+		return metaPermission;
+	}
+	
 	public MetaPermission updateFieldPermission(MetaPermission metaPermission, String field, String[] row) {
 
 		MetaPermissionRule permissionRule = ruleRepository.all().filter("self.field = ?1 and self.metaPermission.name = ?2",
-				field,metaPermission.getName()).fetchOne();
+				field, metaPermission.getName()).fetchOne();
 
 		if(permissionRule == null){
 			permissionRule = new MetaPermissionRule();
@@ -433,11 +619,10 @@ public class PermissionAssistantService {
 		return metaPermission;
 	}
 
-	public void updatePermission(Group group, String objectName, String[] row) {
+	public void updatePermission(Group group, String objectName, MetaField field, String[] row) {
 
 		String[] objectNames = objectName.split("\\.");
-		String groupName = group.getCode();
-		String permName = groupName + "." + objectNames[objectNames.length-1];
+		String permName = getPermissionName(field, objectNames[objectNames.length-1], group.getCode());
 
 		Permission permission = permissionRepository.all().filter("self.name = ?1", permName).fetchOne();
 		boolean newPermission = false;
@@ -457,6 +642,34 @@ public class PermissionAssistantService {
 
 		if(newPermission){
 			group.addPermission(permission);
+		}
+	}
+	
+	public void updatePermission(Role role, String objectName, MetaField field, String[] row) {
+
+		String[] objectNames = objectName.split("\\.");
+		String permName = getPermissionName(field, objectNames[objectNames.length-1], role.getName());
+
+		Permission permission = permissionRepository.all().filter("self.name = ?1", permName).fetchOne();
+		boolean newPermission = false;
+
+		if(permission == null){
+			newPermission = true;
+			permission = new Permission();
+			permission.setName(permName);
+			permission.setObject(objectName);
+		}
+
+		permission.setCanRead(row[0].equalsIgnoreCase("x"));
+		permission.setCanWrite(row[1].equalsIgnoreCase("x"));
+		permission.setCanCreate(row[2].equalsIgnoreCase("x"));
+		permission.setCanRemove(row[3].equalsIgnoreCase("x"));
+		permission.setCanExport(row[4].equalsIgnoreCase("x"));
+		permission.setCondition(row[5]);
+		permission.setConditionParams(row[6]);
+
+		if(newPermission){
+			role.addPermission(permission);
 		}
 	}
 }

@@ -58,14 +58,12 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     @Override
     @Transactional(rollbackOn = {Exception.class, AxelorException.class})
     public BillOfMaterial generateBillOfMaterial(ConfiguratorBOM configuratorBOM,
-                                                 JsonContext attributes, int level)
-            throws AxelorException {
+                                                 JsonContext attributes,
+                                                 int level,
+                                                 Product generatedProduct) throws AxelorException {
         level++;
         if (level > MAX_LEVEL) {
-            throw new AxelorException(I18n.get(
-                    IExceptionMessage.CONFIGURATOR_BOM_TOO_MANY_CALLS),
-                    IException.CONFIGURATION_ERROR
-            );
+            throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_BOM_TOO_MANY_CALLS));
         }
         String name;
         Product product;
@@ -81,7 +79,10 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
         } else {
             name = configuratorBOM.getName();
         }
-        if (configuratorBOM.getDefProductAsFormula()) {
+        if (configuratorBOM.getDefProductFromConfigurator()) {
+            product = generatedProduct;
+        }
+        else if (configuratorBOM.getDefProductAsFormula()) {
             product = (Product) configuratorService.computeFormula(
                     configuratorBOM.getProductFormula(),
                     attributes
@@ -121,6 +122,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
         }
 
         BillOfMaterial billOfMaterial = new BillOfMaterial();
+        billOfMaterial.setCompany(configuratorBOM.getCompany());
         billOfMaterial.setName(name);
         billOfMaterial.setProduct(product);
         billOfMaterial.setQty(qty);
@@ -131,7 +133,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
             for (ConfiguratorBOM confBomChild : configuratorBOM
                     .getConfiguratorBomList()) {
                  BillOfMaterial childBom = generateBillOfMaterial(
-                         confBomChild, attributes, level);
+                         confBomChild, attributes, level, generatedProduct);
                  billOfMaterial.addBillOfMaterialSetItem(childBom);
             }
         }

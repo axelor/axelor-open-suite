@@ -11,10 +11,13 @@
 			<field name="lunchVoucher" colSpan="4" widget="boolean-switch" />
 			<field name="employeeBonus" colSpan="4" widget="boolean-switch" />
 		</panel>
-		<panel-dashlet action="admin.root.conf.hr.config" colSpan="12"/>
+		<panel>
+			<button name="generateHrConfigurations" colSpan="4" title="Generate human resource configurations" onClick="save,com.axelor.apps.hr.web.AppHumanResourceController:generateHrConfigurations"/>
+			<panel-dashlet action="admin.root.conf.hr.config" colSpan="12"/>
+		</panel>
 	</form>
 	
-	<action-view name="admin.root.conf.hr.config" title="Human Resources configurations"
+	<action-view name="admin.root.conf.hr.config" title="Human resource configurations"
 		model="com.axelor.apps.hr.db.HRConfig" >
 		<view type="grid" name="hr-config-grid" />
 		<view type="form" name="hr-config-form"/>

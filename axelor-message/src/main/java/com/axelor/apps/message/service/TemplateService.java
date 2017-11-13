@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -46,14 +46,14 @@ public class TemplateService {
 			return;
 		}
 		if(metaModel == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.TEMPLATE_SERVICE_1), IException.MISSING_FIELD);
+			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.TEMPLATE_SERVICE_1));
 		}
 		
 		try {
 			this.validTarget(target, metaModel);
 		}
-		catch(Exception ex) {
-			throw new AxelorException(I18n.get(IExceptionMessage.TEMPLATE_SERVICE_2), IException.INCONSISTENCY);
+		catch (Exception e) {
+			throw new AxelorException(e.getCause(), IException.INCONSISTENCY, I18n.get(IExceptionMessage.TEMPLATE_SERVICE_2));
 		}
 	}
 

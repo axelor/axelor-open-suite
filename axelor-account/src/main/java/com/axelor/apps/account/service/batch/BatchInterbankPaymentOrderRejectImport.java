@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -68,7 +68,7 @@ public class BatchInterbankPaymentOrderRejectImport extends BatchStrategy {
 		try {
 			interbankPaymentOrderRejectImportService.testCompanyField(company);
 		} catch (AxelorException e) {
-			TraceBackService.trace(new AxelorException("", e, e.getcategory()), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
+			TraceBackService.trace(new AxelorException(e, e.getCategory(), ""), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
 			incrementAnomaly();
 			stop = true;
 		}
@@ -102,7 +102,7 @@ public class BatchInterbankPaymentOrderRejectImport extends BatchStrategy {
 			
 		} catch (AxelorException e) {
 			
-			TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_REJECT_IMPORT_1), batch.getId()), e, e.getcategory()), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
+			TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_REJECT_IMPORT_1), batch.getId()), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
 			
 			incrementAnomaly();
 			
@@ -137,7 +137,7 @@ public class BatchInterbankPaymentOrderRejectImport extends BatchStrategy {
 						
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_REJECT_IMPORT_2), reject[1]), e, e.getcategory()), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
+				TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_REJECT_IMPORT_2), reject[1]), IException.INTERBANK_PAYMENT_ORDER, batch.getId());
 				
 				incrementAnomaly();
 				
@@ -169,7 +169,7 @@ public class BatchInterbankPaymentOrderRejectImport extends BatchStrategy {
 		String comment = I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_REJECT_IMPORT_3)+" :\n";
 		comment += String.format("\t* "+I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_4)+"\n", batch.getDone());
 		comment += String.format("\t* "+I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_5)+" : %s \n", this.totalAmount);
-		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+		comment += String.format("\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
 		comment += String.format("\t* ------------------------------- \n");
 		comment += String.format("\t* %s ", updateCustomerAccountLog);

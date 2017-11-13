@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,6 +29,7 @@ import com.axelor.common.Inflector;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonModel;
@@ -38,6 +39,7 @@ import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.db.Filter;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class FilterSqlService {
@@ -100,7 +102,7 @@ public class FilterSqlService {
 			if (target == null) {
 				continue;
 			}
-			String field = getSqlField(target, parent.toString())[0];
+			String field = getSqlField(target, parent.toString(), null)[0];
 			String value = getParam(filter.getIsParameter(), filter.getValue(), filter.getId());
 			String condition = filterCommonService.getCondition(field, filter.getOperator(), value);
 			
@@ -117,23 +119,41 @@ public class FilterSqlService {
 	}
 	
 
-	public String[] getSqlField(Object target, String source) {
+	public String[] getSqlField(Object target, String source, List<String> joins) {
 		
 		String field = null;
 		String type = null;
+		String selection = null;
 		
 		if (target instanceof MetaField) {
 			MetaField metaField = (MetaField)target;
 			field = source + "." + getColumn(metaField);
 			type = metaField.getTypeName();
+			try {
+				selection = Mapper.of(Class.forName(metaField.getMetaModel().getFullName())).getProperty(metaField.getName()).getSelection();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
 		else {
 			MetaJsonField metaJsonField = (MetaJsonField)target;
+			selection = metaJsonField.getSelection();
 			String jsonColumn = getColumn(metaJsonField.getModel(), metaJsonField.getModelField());
 			field = "cast(" + source + "." + jsonColumn + "->>'"
 					+ metaJsonField.getName() 
 					+ "' as " + getSqlType(metaJsonField.getType()) + ")";
 			type = metaJsonField.getType();
+		}
+		
+		log.debug("Selection for field :{} : {}", field, selection);
+		if (joins != null && !Strings.isNullOrEmpty(selection)) {
+			int join = joins.size();
+			joins.add("left join meta_select obj" + join + " on (obj" + join + ".name = '" + selection + "')");
+			join = joins.size();
+			joins.add("left join meta_select_item obj" + join + " on (obj" + join + ".select_id = obj" + (join-1) + ".id and obj" + join + ".value = cast(" + field + " as varchar))" );
+			join = joins.size();
+			joins.add("left join meta_translation obj" + join + " on (obj" + join + ".message_key = obj" + (join-1) + ".title and obj" + join + ".language = (select language from auth_user where id = :__user__))" );
+			field = "COALESCE(nullif(obj"+ join + ".message_value,''), obj" + (join-1) + ".title)";
 		}
 		
 		return new String[]{field, type};
@@ -271,8 +291,7 @@ public class FilterSqlService {
 			}
 		}
 		
-		throw new AxelorException("No sub field found field: %s model: %s ", 
-				1, targetName, model.getFullName());
+		throw new AxelorException(IException.MISSING_FIELD, "No sub field found field: %s model: %s ", targetName, model.getFullName());
 		
 	}
 	
@@ -308,8 +327,7 @@ public class FilterSqlService {
 				if (joins != null) { addJoin(field, joins, parent); }
 				return parseJsonField(subJson, target, joins, parent);
 			}
-			throw new AxelorException("No sub field found model: %s field %s ", 1,
-					field.getTargetJsonModel().getName(), targetName);
+			throw new AxelorException(IException.MISSING_FIELD, "No sub field found model: %s field %s ", field.getTargetJsonModel().getName(), targetName);
 		}
 		else {
 			MetaField subMeta = findMetaField(targetName, field.getTargetModel());
@@ -317,8 +335,7 @@ public class FilterSqlService {
 				if (joins != null) { addJoin(field, joins, parent); }
 				return parseMetaField(subMeta, target, joins, parent, true);
 			}
-			throw new AxelorException("No sub field found model: %s field %s ", 1,
-					field.getTargetModel(), targetName);
+			throw new AxelorException(IException.MISSING_FIELD, "No sub field found model: %s field %s ", field.getTargetModel(), targetName);
 		}
 		
 	}

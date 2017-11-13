@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.axelor.apps.base.db.App;
+import com.axelor.exception.AxelorException;
 
 public interface AppService {
 	
@@ -38,6 +39,8 @@ public interface AppService {
 	public List<App> getChildren(App app, Boolean active);
 	
 	public App installApp(App app, Boolean importDemo);
+	
+	public App unInstallApp(App app) throws AxelorException;
 	
 	public List<App> sortApps(Collection<App> apps);
 

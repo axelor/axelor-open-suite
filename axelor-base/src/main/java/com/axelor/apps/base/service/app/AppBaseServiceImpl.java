@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -19,23 +19,20 @@ package com.axelor.apps.base.service.app;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import javax.inject.Singleton;
 
-import org.hibernate.proxy.HibernateProxy;
-import java.time.ZonedDateTime;
-import java.time.LocalDate;
-
-import com.axelor.apps.base.db.AppBase;
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -160,17 +157,6 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 		AppBase appBase = getAppBase();
 		if (appBase != null) { return appBase.getCurrencyConversionLineList(); }
 		else { return null; }
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public Class<? extends Model> getPersistentClass(Model model){
-
-		if (model instanceof HibernateProxy) {
-		      return ((HibernateProxy) model).getHibernateLazyInitializer().getPersistentClass();
-		}
-		else { return model.getClass(); }
-
 	}
 
 	@Override

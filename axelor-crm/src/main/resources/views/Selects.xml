@@ -21,18 +21,6 @@
 		<option value="com.axelor.apps.crm.db.Event">Event</option>
 	</selection>
 	
-	<selection name="crm.event.call.duration.minutes.select">
-		<option value="0">00</option>
-		<option value="15">15</option>
-		<option value="30">30</option>
-		<option value="45">45</option>
-	</selection>
-	
-	<selection name="crm.opportunity.type.select">
-		<option value="1">Existing business</option>
-		<option value="2">New business</option>
-	</selection>
-	
 	<selection name="crm.opportunity.sales.stage.select">
 		<option value="1">New</option>
 		<option value="2">Qualification</option>
@@ -58,19 +46,6 @@
 		<option value="13">Pending</option>
 		<option value="14">Finished</option>
 		<option value="15">Reported</option>
-		
-		
-	</selection>
-	
-	<selection name="crm.event.primary.status.select">
-		<option value="1">Tentative</option>
-		<option value="2">Confirmed</option>
-	</selection>
-	
-	<selection name="crm.event.task.priority.select">
-		<option value="1">Low</option>
-		<option value="2">Medium</option>
-		<option value="3">High</option>
 	</selection>
 	
 	<selection name="crm.event.attendee.status.select">
@@ -129,10 +104,6 @@
 	<selection name="crm.event.recurrence.month.repeat.type">
 		<option value="1">Day of month</option>
 		<option value="2">Day of week</option>
-	</selection>
-	
-	<selection name="app.type.select" id="crm.app.type.select">
-		<option order="8" value="crm">CRM</option>
 	</selection>
 	
 	<selection name="meta.schedule.job.select" id="crm.meta.schedule.job.select">

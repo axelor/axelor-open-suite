@@ -1,46 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-
 
 	<selection name="app.type.select" id="contract.app.type.select">
 		<option order="24" value="contract">Contract</option>
 	</selection>
+
+	<selection name="contract.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Active</option>
+		<option value="3">Closed</option>
+	</selection>
 	
-	<selection name="contract.type.select">
-		<option value="1">Client</option>
+	<selection name="contract.version.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Waiting</option>
+		<option value="3">Ongoing</option>
+		<option value="4">Terminated</option>
+	</selection>
+
+	<selection name="contract.version.invoicing.moment.select">
+		<option value="1">End of period</option>
+		<option value="2">Start of period</option>
+	</selection>
+
+	<selection name="contract.invoice.period.statut.select">
+		<option value="1">Not invoiced</option>
+		<option value="2">Invoiced</option>
+	</selection>
+
+	<selection name="contract.target.type.select">
+		<option value="1">Customer</option>
 		<option value="2">Supplier</option>
 	</selection>
-	
-	<selection name="contract.duration.select">
-		<option value="1">Till date</option>
-		<option value="2">Nb of periods</option>
-		<option value="3">Till termination</option>
+
+	<selection name="sequence.generic.code.select" id="contract.sequence.generic.code.select">
+		<option value="customerContract">Customer contracts</option>
+		<option value="supplierContract">Supplier contracts</option>
 	</selection>
 	
-	<selection name="contract.period.type.select">
-		<option value="year">Year</option>
-		<option value="month">Month</option>
-		<option value="day">Day</option>
-	</selection>
-	
-	<selection name="contract.alert.reminder.select">
-		<option value="1">1</option>	
-		<option value="2">2</option>
-		<option value="3">3</option>	
-		<option value="4">4</option>	
-		<option value="5">5</option>	
-		<option value="6">6</option>	
-		<option value="7">7</option>	
-		<option value="8">8</option>	
-		<option value="9">9</option>	
-		<option value="10">10</option>	
-	</selection>
-	
-	<selection name="contract.alert.reminder.type.select">
-		<option value="hours">Hours</option>	
-		<option value="days">Days</option>	
+	<selection name='iinvoice.operation.sub.type.select' id="fnath.iinvoice.operation.sub.type.select">
+		<option value='4'>Contract invoice</option>
+		<option value='5'>Contract closing invoice</option>
 	</selection>
 
 </object-views>

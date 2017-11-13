@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -72,13 +72,13 @@ public class IndicatorGeneratorGroupingService {
 		
 		if(indicatorGeneratorGrouping.getPath() == null || indicatorGeneratorGrouping.getPath().isEmpty())  {
 			
-			log += I18n.get(IExceptionMessage.INDICATOR_GENERATOR_GROUPING_1);
+			log += "\n" + I18n.get(IExceptionMessage.INDICATOR_GENERATOR_GROUPING_1);
 
 		}
 		
 		if(indicatorGeneratorGrouping.getCode() == null || indicatorGeneratorGrouping.getCode().isEmpty())  {
 			
-			log += I18n.get(IExceptionMessage.INDICATOR_GENERATOR_GROUPING_2);
+			log += "\n" + I18n.get(IExceptionMessage.INDICATOR_GENERATOR_GROUPING_2);
 
 		}
 		

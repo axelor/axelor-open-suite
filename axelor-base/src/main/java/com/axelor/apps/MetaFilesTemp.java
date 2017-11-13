@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -30,6 +30,7 @@ import javax.persistence.PersistenceException;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaAttachment;
@@ -166,7 +167,7 @@ public class MetaFilesTemp {
 		MetaAttachment attachment = new MetaAttachment();
 		attachment.setMetaFile(file);
 		attachment.setObjectId(entity.getId());
-		attachment.setObjectName(appBaseService.getPersistentClass(entity).getCanonicalName());
+		attachment.setObjectName(EntityHelper.getEntityClass(entity).getCanonicalName());
 
 		return attachment;
 	}

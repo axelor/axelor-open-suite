@@ -11,5 +11,6 @@
         <string name="formula" title="Formula"/>
         <boolean name="showOnConfigurator" title="Show on configurator"/>
         <many-to-one name="creator" ref="com.axelor.apps.sale.db.ConfiguratorCreator"/>
+        <integer name="updateFromSelect" title="Update from" default="0" selection="configurator.update.sale.order.line"/>
     </entity>
 </domain-models>

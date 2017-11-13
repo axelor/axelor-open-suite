@@ -1,15 +1,31 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.studio.db.repo;
 
 import java.lang.invoke.MethodHandles;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.meta.db.MetaMenu;
-import com.axelor.meta.db.repo.MetaMenuRepository;
+import com.axelor.meta.MetaStore;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.MenuBuilder;
+import com.axelor.studio.service.StudioMetaService;
 import com.axelor.studio.service.builder.MenuBuilderService;
 import com.google.inject.Inject;
 
@@ -21,13 +37,21 @@ public class MenuBuilderRepo extends MenuBuilderRepository {
 	private MenuBuilderService menuBuilderService;
 	
 	@Inject
-	private MetaMenuRepository metaMenuRepo;
+	private ActionBuilderRepo actionBuilderRepo;
 	
 	@Inject
-	private ActionBuilderRepo actionBuilderRepo;
+	private StudioMetaService metaService;
 	
 	@Override
 	public MenuBuilder save(MenuBuilder menuBuilder) {
+		
+		if (menuBuilder.getName() == null) {
+			menuBuilder.setName("studio-menu-" + menuBuilder.getId());
+		}
+		
+		if (menuBuilder.getActionBuilder() != null) {
+			menuBuilder.getActionBuilder().setMenuAction(true);
+		}
 		
 		menuBuilder = super.save(menuBuilder);
 		
@@ -37,14 +61,24 @@ public class MenuBuilderRepo extends MenuBuilderRepository {
 	}
 	
 	@Override
+	public MenuBuilder copy(MenuBuilder menuBuilder, boolean deep) {
+		
+		ActionBuilder actionBuilder = menuBuilder.getActionBuilder();
+		menuBuilder.setActionBuilder(null);
+		
+		menuBuilder = super.copy(menuBuilder, deep);
+		
+		if (actionBuilder != null) {
+			menuBuilder.setActionBuilder(actionBuilderRepo.copy(actionBuilder, deep));
+		}
+		
+		return menuBuilder;
+	}
+	
+	@Override
 	public void remove (MenuBuilder menuBuilder) {
 		
-		MetaMenu metaMenu = metaMenuRepo.findByID("studio-" + menuBuilder.getName());
-		
-		log.debug("Removing menu: {}", metaMenu);
-		if (metaMenu != null) {
-			removeMetaMenu(metaMenu);
-		}
+		metaService.removeMetaMenu(menuBuilder.getName());
 		
 		ActionBuilder actionBuilder = menuBuilder.getActionBuilder();
 		
@@ -56,20 +90,10 @@ public class MenuBuilderRepo extends MenuBuilderRepository {
 			}
 		}
 		
+		MetaStore.clear();
+		
 		super.remove(menuBuilder);
 	}
 
-	private void removeMetaMenu(MetaMenu metaMenu) {
-		
-		List<MetaMenu> subMenus = metaMenuRepo.all().filter("self.parent = ?1", metaMenu).fetch();
-		for (MetaMenu subMenu : subMenus) {
-			subMenu.setParent(null);
-		}
-		List<MenuBuilder> subBuilders = all().filter("self.parentMenu = ?1", metaMenu).fetch();
-		for (MenuBuilder subBuilder : subBuilders) {
-			subBuilder.setParentMenu(null);
-		}
-		
-		metaMenuRepo.remove(metaMenu);
-	}
+	
 }

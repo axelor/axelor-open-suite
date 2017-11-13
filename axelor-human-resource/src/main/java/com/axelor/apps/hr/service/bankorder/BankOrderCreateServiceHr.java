@@ -21,15 +21,16 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -43,13 +44,14 @@ import com.google.inject.Inject;
 
 public class BankOrderCreateServiceHr extends BankOrderCreateService {
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
+
 	@Inject
-	public BankOrderCreateServiceHr(BankOrderRepository bankOrderRepo, BankOrderService bankOrderService, AccountConfigBankPaymentService accountConfigBankPaymentService, BankOrderLineService bankOrderLineService)  {
-		super(bankOrderRepo, bankOrderService, accountConfigBankPaymentService, bankOrderLineService);
+	public BankOrderCreateServiceHr(BankOrderRepository bankOrderRepo, BankOrderService bankOrderService,
+			AccountConfigBankPaymentService accountConfigBankPaymentService, BankOrderLineService bankOrderLineService,
+			InvoiceService invoiceService) {
+		super(bankOrderRepo, bankOrderService, accountConfigBankPaymentService, bankOrderLineService, invoiceService);
 	}
 
-	
 	/**
 	 * Method to create a bank order for an expense
 	 * 
@@ -78,7 +80,7 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
 								expense.getFullName(),
 								expense.getFullName());
 
-		bankOrder.addBankOrderLineListItem(bankOrderLineService.createBankOrderLine(paymentMode.getBankOrderFileFormat(), partner, amount, currency, paymentDate, expense.getFullName(), expense.getFullName()));
+		bankOrder.addBankOrderLineListItem(bankOrderLineService.createBankOrderLine(paymentMode.getBankOrderFileFormat(), partner, amount, currency, paymentDate, expense.getExpenseSeq(), expense.getFullName()));
 		bankOrder = bankOrderRepo.save(bankOrder);
 
 		return bankOrder;

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -42,13 +42,21 @@ public interface ITranslation {
 	public static final String INVOICE_CLIENT_REF = /*$$(*/ "Invoice.clientRef"; /*)*/
 	public static final String INVOICE_SUPPLY_REF = /*$$(*/ "Invoice.supplyRef"; /*)*/
 	public static final String INVOICE_PURCHASE_INVOICE_NO = /*$$(*/ "Invoice.purchaseInvoiceNo"; /*)*/
+	public static final String INVOICE_PURCHASE_INVOICE_ADV_PAYMENT_NO = /*$$(*/ "Invoice.purchaseInvoiceAdvPaymentNo"; /*)*/
+	public static final String INVOICE_PURCHASE_INVOICE_BALANCE_NO = /*$$(*/ "Invoice.purchaseInvoiceBalanceNo"; /*)*/
 	public static final String INVOICE_PURCHASE_REFUND_NO = /*$$(*/ "Invoice.purchaseRefundNo"; /*)*/
 	public static final String INVOICE_INVOICE_NO = /*$$(*/ "Invoice.invoiceNo"; /*)*/
+	public static final String INVOICE_INVOICE_ADV_PAYMENT_NO = /*$$(*/ "Invoice.invoiceAdvPaymentNo"; /*)*/
+	public static final String INVOICE_INVOICE_BALANCE_NO = /*$$(*/ "Invoice.invoiceBalanceNo"; /*)*/
 	public static final String INVOICE_DRAFT_INVOICE_NO = /*$$(*/ "Invoice.draftInvoiceNo"; /*)*/
 	public static final String INVOICE_REFUND_NO = /*$$(*/ "Invoice.refundNo"; /*)*/
 	public static final String INVOICE_LAW = /*$$(*/ "Invoice.law"; /*)*/
 	public static final String INVOICE_DISCOUNT_AMOUNT = /*$$(*/ "Invoice.discountAmount"; /*)*/
-	
+	public static final String INVOICE_ADVANCE_PAYMENT = /*$$(*/ "Invoice.advancePayment"; /*)*/
+	public static final String INVOICE_OF = /*$$(*/ "Invoice.of"; /*)*/
+	public static final String INVOICE_IMPUTED_ON = /*$$(*/ "Invoice.imputedOn"; /*)*/
+	public static final String INVOICE_TOTAL_TO_PAY = /*$$(*/ "Invoice.totalToPay"; /*)*/
+
 
 	public static final String INVOICE_TIMESHEET_TITLE = /*$$(*/ "Invoice.timesheetTitle"; /*)*/
 	public static final String INVOICE_EXPENSE_TITLE = /*$$(*/ "Invoice.expenseTitle"; /*)*/
@@ -147,4 +155,33 @@ public interface ITranslation {
 	public static final String ACCOUNT_MOVE_LINE_CURRENCY_AMOUNT = /*$$(*/ "moveLine.currency.amount"; /*)*/
 	public static final String ACCOUNT_MOVE_LINE_TAX_RATE = /*$$(*/ "moveLine.tax.rate"; /*)*/
 	public static final String ACCOUNT_MOVE_LINE_RECONCILE_LIST = /*$$(*/ "moveLine.reconcile.list"; /*)*/
+
+	public static final String SUBROGATION_RELEASE_TITLE = /*$$(*/ "SubrogationRelease.title"; /*)*/
+	public static final String SUBROGATION_RELEASE_SELLER_CODE = /*$$(*/ "SubrogationRelease.sellerCode"; /*)*/
+	public static final String SUBROGATION_RELEASE_FACTOR = /*$$(*/ "SubrogationRelease.factor"; /*)*/
+	public static final String SUBROGATION_RELEASE_PARTNER_SEQ = /*$$(*/ "SubrogationRelease.partnerSeq"; /*)*/
+	public static final String SUBROGATION_RELEASE_INVOICE_ID = /*$$(*/ "SubrogationRelease.invoiceId"; /*)*/
+	public static final String SUBROGATION_RELEASE_INVOICE_DATE = /*$$(*/ "SubrogationRelease.invoiceDate"; /*)*/
+	public static final String SUBROGATION_RELEASE_DUE_DATE = /*$$(*/ "SubrogationRelease.dueDate"; /*)*/
+	public static final String SUBROGATION_RELEASE_IN_TAX_TOTAL = /*$$(*/ "SubrogationRelease.inTaxtTotal"; /*)*/
+	public static final String SUBROGATION_RELEASE_CURRENCY_CODE = /*$$(*/ "SubrogationRelease.currencyCode"; /*)*/
+	public static final String SUBROGATION_RELEASE_INVOICE_TOTAL = /*$$(*/ "SubrogationRelease.invoiceTotal"; /*)*/
+	public static final String SUBROGATION_RELEASE_CREDIT_TOTAL = /*$$(*/ "SubrogationRelease.creditTotal"; /*)*/
+	public static final String SUBROGATION_RELEASE_GRAND_TOTAL = /*$$(*/ "SubrogationRelease.grandTotal"; /*)*/
+
+    public static final String CHEQUE_DEPOSIT_SLIP_TITLE = /*$$(*/ "ChequeDepositSlip.title"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_PRINTED_ON = /*$$(*/ "ChequeDepositSlip.printedOn"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_NUMBER = /*$$(*/ "ChequeDepositSlip.number"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_DATE = /*$$(*/ "ChequeDepositSlip.depositDate"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_CHEQUE_NUMBERS = /*$$(*/ "ChequeDepositSlip.chequeNumbers"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_BANK = /*$$(*/ "ChequeDepositSlip.bank"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_ACCOUNT_NUMBER = /*$$(*/ "ChequeDepositSlip.accountNumber"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_INDIVIDUAL = /*$$(*/ "ChequeDepositSlip.individual"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_ISSUER = /*$$(*/ "ChequeDepositSlip.issuer"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_PAYER = /*$$(*/ "ChequeDepositSlip.payer"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_CHEQUE_NUMBER = /*$$(*/ "ChequeDepositSlip.chequeNumber"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_PAYMENT_DATE = /*$$(*/ "ChequeDepositSlip.paymentDate"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_CHEQUE_DATE = /*$$(*/ "ChequeDepositSlip.chequeDate"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_AMOUNT = /*$$(*/ "ChequeDepositSlip.amount"; /*)*/
+
 }

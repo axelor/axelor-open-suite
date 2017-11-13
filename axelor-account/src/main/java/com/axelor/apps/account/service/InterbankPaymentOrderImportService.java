@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -22,7 +22,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +42,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -57,7 +56,7 @@ public class InterbankPaymentOrderImportService {
 	protected PaymentVoucherCreateService paymentVoucherCreateService;
 	protected CfonbImportService cfonbImportService;
 	protected RejectImportService rejectImportService;
-	protected BankDetailsService bankDetailsService;
+	protected BankDetailsServiceImpl bankDetailsService;
 	protected AccountConfigService accountConfigService;
 	protected PartnerRepository partnerRepo;
 	protected InvoiceRepository invoiceRepo;
@@ -66,7 +65,7 @@ public class InterbankPaymentOrderImportService {
 
 	@Inject
 	public InterbankPaymentOrderImportService(AppAccountService appAccountService, PaymentVoucherCreateService paymentVoucherCreateService, CfonbImportService cfonbImportService,
-			RejectImportService rejectImportService, BankDetailsService bankDetailsService, AccountConfigService accountConfigService, PartnerRepository partnerRepo,
+			RejectImportService rejectImportService,  BankDetailsServiceImpl bankDetailsService, AccountConfigService accountConfigService, PartnerRepository partnerRepo,
 			InvoiceRepository invoiceRepo) {
 
 		this.paymentVoucherCreateService = paymentVoucherCreateService;
@@ -143,9 +142,8 @@ public class InterbankPaymentOrderImportService {
 
 	public Invoice getInvoice(String ref, Company company) throws AxelorException  {
 		Invoice invoice = invoiceRepo.all().filter("UPPER(self.invoiceId) = ?1", ref).fetchOne();
-		if(invoice == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.INTER_BANK_PO_IMPORT_1),
-					AppAccountServiceImpl.EXCEPTION, ref, company.getName()), IException.INCONSISTENCY);
+		if (invoice == null) {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.INTER_BANK_PO_IMPORT_1), AppAccountServiceImpl.EXCEPTION, ref, company.getName());
 		}
 		return invoice;
 	}

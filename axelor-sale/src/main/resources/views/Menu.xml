@@ -56,7 +56,7 @@
 	<action-view name="sc.root.sale.quotations" title="Sale quotations"
 		model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="cards" name="sale-order-quotation-cards" />
-		<view type="grid" name="sale-order-grid" />
+		<view type="grid" name="sale-order-quotation-grid" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
 		<view-param name="forceTitle" value="true" />
@@ -149,11 +149,10 @@
 	
 	<menuitem name="sale-maps-partner-prospects" parent="sc-root-sale-maps" 
 		title="Prospects" action="action-show-prospects-on-map-page"/>
-	
-	
+
 	<menuitem name="sc-root-sale-conf" parent="sc-root-sale"
 		title="Configuration"  order="45"/>
-	
+
 	<menuitem name="sale-conf-cancelreason" parent="sc-root-sale-conf"
 		title="Cancel Reasons" action="sale.conf.cancelreason" />
 
@@ -190,7 +189,28 @@
 		<view type="grid" name="tax-grid"/>
 		<view type="form" name="tax-form"/>
 	</action-view>
-	
+
+	<menuitem name="sale-conf-configurators-creator" parent="sc-root-sale-conf"
+			  title="Configurator creators" action="sale.conf.configurator.creator"
+			  if="__config__.app.getApp('sale').getEnableConfigurator()"/>
+
+	<action-view name="sale.conf.configurator.creator" title="Configurator creators"
+				 model="com.axelor.apps.sale.db.ConfiguratorCreator" >
+		<view type="grid" name="configurator-creator-grid" />
+		<view type="form" name="configurator-creator-form" />
+	</action-view>
+
+	<menuitem name="sale-conf-configurators-configurators" parent="sc-root-sale-conf" order="20"
+			  title="Configurators" action="sale.conf.configurator.configurators"
+			  if="__config__.app.getApp('sale').getEnableConfigurator()"/>
+
+	<action-view name="sale.conf.configurator.configurators" title="Configurators"
+				 model="com.axelor.apps.sale.db.Configurator" >
+		<view type="grid" name="configurator-grid" />
+		<view type="form" name="configurator-form" />
+		<domain>:__user__ IN self.configuratorCreator.authorizedUserSet OR :groupId IN self.configuratorCreator.authorizedGroupSet</domain>
+		<context name="groupId" expr="eval: __user__.group.id"/>
+	</action-view>
 
 <!-- ADMINISTRATION -->
 
@@ -213,7 +233,7 @@
 	
 	<action-view name="top.menu.sales.quotations" title="Quotations"
 		model="com.axelor.apps.sale.db.SaleOrder">
-		<view type="cards" name="sale-order-cards" />
+		<view type="cards" name="sale-order-quotation-cards" />
 		<view type="grid" name="sale-order-quotation-grid" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
@@ -237,8 +257,9 @@
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_template" expr="eval:false" />
+		<context name="status" expr="3"/>
 	</action-view>
-	
+		
 	<menuitem name="menu-saleman-dashboard-sample" parent="sc-root-sale-report" order="-205"
 		title="Salesman"  action="saleman.dashboard.view.sample" />
 		

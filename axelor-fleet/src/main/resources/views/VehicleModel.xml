@@ -13,8 +13,8 @@
    		<panel>
    				<field name="vehicleMake"  colSpan="5" />
    				<field name="model" colSpan="5" />
-   				<field name="vehicleVendors" colSpan="12"/>
    		</panel>
+   		<panel-related field="vehicleVendors" form-view="partner-form" grid-view="partner-grid"/>
    </form>
 
 </object-views>

@@ -2,50 +2,124 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-    
+
     <grid name="configurator-creator-grid" title="ConfiguratorCreators" model="com.axelor.apps.sale.db.ConfiguratorCreator">
     	<field name="name"/>
 		<field name="isActive"/>
     </grid>
-    
+
+
     <form name="configurator-creator-form" title="ConfiguratorCreator" model="com.axelor.apps.sale.db.ConfiguratorCreator">
+        <panel showIf="!isActive &amp;&amp; attributes.length &gt; 0 &amp;&amp; configuratorFormulaList.length &gt; 0">
+			<!--it does not matter which field is used here, as long as it is not a boolean-->
+            <field name="name" readonly="true" showTitle="false">
+				<viewer><![CDATA[
+
+			 			<h4>
+			             <span class="label label-important" x-translate>Changes were made to the configurator creator. Please activate the configurator creator to use it.</span>
+			           </h4>
+
+					]]></viewer>
+			</field>
+		</panel>
+
     	<panel>
     		<field name="name"/>
-    		<panel-related field="attributes" colSpan="12" readonlyIf="id == null" form-view="sale-json-field-form" grid-view="sale-json-field-grid"/>
+    		<button name="configure" title="Configure" showIf="id == null" onClick="save, action-configurator-creator-method-authorize-current-user"/>
+    		<panel-related field="attributes" hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save"
+    				colSpan="12" readonlyIf="id == null" form-view="sale-json-field-form" grid-view="sale-json-field-grid" canMove="true" orderBy="sequence"/>
     	</panel>
-		<panel sidebar="true" title="Actions">
-			<button name="activate" title="Activate" readonlyIf="isActive"
-					onClick="action-configurator-creator-record-activate,save"/>
-			<button name="test" title="Test this creator"
-					onClick="action-configurator-creator-method-test"/>
-			<field name="generateProduct" widget="boolean-switch"/>
-		</panel>
-		<panel-related field="configuratorFormulaList" form-view="configurator-formula-form"
-					   grid-view="configurator-formula-grid"/>
-        <panel>
-			<button name="createConfigurator" readonlyIf="!isActive" colSpan="3"
-					title="Create configurator" onClick="action-configurator-creator-group-create-configurator"/>
-		</panel>
-    </form>
-	
-	<action-group name="action-configurator-creator-group-create-configurator">
-        <action name="save"/>
-		<action name="action-configurator-creator-create-configurator"/>
-	</action-group>
-    
-    <action-method name="action-configurator-creator-create-configurator">
-    	<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
-			  method="createConfigurator"/>
-    </action-method>
 
-	<action-method name="action-configurator-creator-method-test">
-		<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
-			  method="testCreator"/>
+		<panel sidebar="true" title="Actions" hideIf="id == null">
+			<button name="activate" title="Activate" readonlyIf="isActive || !(attributes.length &gt; 0) || !(configuratorFormulaList.length &gt; 0)" onClick="action-configurator-creator-group-activate"/>
+			<button name="test" title="Test this creator" showIf="generateProduct" readonlyIf="!isActive" onClick="action-configurator-creator-view-test"/>
+			<field name="generateProduct" widget="boolean-switch"/>
+			<field name="isActive" hidden="true"/>
+		</panel>
+
+		<panel-related field="configuratorFormulaList" form-view="configurator-formula-form" grid-view="configurator-formula-grid" hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save"/>
+
+		<panel title="Authorizations" hideIf="id == null">
+			<field name="authorizedUserSet" widget="TagSelect" canEdit="false" canNew="false" form-view="user-form" grid-view="user-grid" colSpan="12"/>
+            <field name="authorizedGroupSet" widget="TagSelect" canEdit="false" canNew="false" form-view="group-form" grid-view="group-grid" colSpan="12"/>
+		</panel>
+
+		<panel if-module="axelor-production" if="__config__.app.getApp('production').getEnableConfigurator()">
+			<panel title="Configurator BoM" if-module="axelor-production" colSpan="12" hideIf="id == null || $hideBOMConfigurator">
+	            <field name="configuratorBom" if-module="axelor-production" colSpan="12">
+	                <editor>
+	                    <field name="company"/>
+	                    <panel title="Label">
+	                        <field name="defNameAsFormula" colSpan="6"/>
+	                        <field name="name" colSpan="12" showIf="!defNameAsFormula"/>
+	                        <field name="nameFormula" colSpan="12" height="120"
+	                               widget="CodeEditor" x-code-syntax="groovy"
+	                               showTitle="false" showIf="defNameAsFormula"/>
+	                    </panel>
+	                    <field name="useCondition" widget="CodeEditor" height="120" colSpan="12"
+	                           x-code-syntax="groovy"/>
+	                    <panel title="Product">
+	                        <field name="defProductFromConfigurator" colSpan="6" showIf="!defProductAsFormula"/>
+	                        <field name="defProductAsFormula" colSpan="6" showIf="!defProductFromConfigurator"/>
+	                        <field name="product" colSpan="12"
+	                               showIf="!defProductAsFormula &amp;&amp; !defProductFromConfigurator"
+	                               form-view="product-view" grid-view="product-grid"/>
+	                        <field name="productFormula" colSpan="12" height="120" widget="CodeEditor"
+	                               x-code-syntax="groovy" showTitle="false" showIf="defProductAsFormula"/>
+	                    </panel>
+	                    <panel title="Qty">
+	                        <field name="defQtyAsFormula" colSpan="6" type="boolean"/>
+	                        <field name="qty" colSpan="12" showIf="!defQtyAsFormula"/>
+	                        <field name="qtyFormula" colSpan="12" height="120" widget="CodeEditor"
+	                               showTitle="false" x-code-syntax="groovy" showIf="defQtyAsFormula"/>
+	                    </panel>
+	                    <panel title="Unit">
+	                        <field name="defUnitAsFormula" colSpan="6" type="boolean"/>
+	                        <field name="unit" colSpan="12" showIf="!defUnitAsFormula"
+	                        form-view="unit-view" grid-view="unit-grid"/>
+	                        <field name="unitFormula" colSpan="12" height="120" widget="CodeEditor"
+	                               showTitle="false" x-code-syntax="groovy" showIf="defUnitAsFormula"/>
+	                    </panel>
+	                    <panel title="Production process">
+	                        <field name="defProdProcessAsFormula" readonlyIf="defProdProcessAsConfigurator" colSpan="6" type="boolean"/>
+	                        <field name="defProdProcessAsConfigurator" readonlyIf="defProdProcessAsFormula" colSpan="6" type="boolean"/>
+	                        <field name="prodProcess" form-view="prod-process-form" grid-view="prod-process-form"
+	                               colSpan="12" showIf="!defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
+	                        <field name="prodProcessFormula" colSpan="12" height="120" widget="CodeEditor"
+	                               showTitle="false" x-code-syntax="groovy" showIf="defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
+	                        <field name="configuratorProdProcess" colSpan="12"
+	                               canNew="true" showIf="defProdProcessAsConfigurator"/>
+	                    </panel>
+	                    <field name="configuratorBomList" colSpan="12"/>
+	                </editor>
+	            </field>
+	        </panel>
+		</panel>
+
+    </form>
+
+	<action-method name="action-configurator-creator-method-authorize-current-user" model="com.axelor.apps.sale.db.ConfiguratorCreator">
+		<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController" method="authorizeCurrentUser"/>
 	</action-method>
 
-	<action-record name="action-configurator-creator-record-activate"
+    <action-method name="action-configurator-creator-method-update-activate">
+        <call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
+              method="updateAndActivate"/>
+    </action-method>
+
+	<action-group name="action-configurator-creator-group-activate">
+		<action name="save"/>
+		<action name="action-configurator-creator-method-update-activate"/>
+	</action-group>
+
+	<action-record name="action-configurator-creator-record-desactivate"
 				   model="com.axelor.apps.sale.db.ConfiguratorCreator">
-		<field name="isActive" expr="eval: true"/>
+		<field name="isActive" expr="eval: false"/>
 	</action-record>
+
+    <action-view name="action-configurator-creator-view-test" title="Configurator" model="com.axelor.apps.sale.db.Configurator">
+        <view type="form" name="configurator-form"/>
+        <context name="_configuratorCreator" expr="eval: __self__"/>
+    </action-view>
 
 </object-views>

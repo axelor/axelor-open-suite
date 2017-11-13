@@ -45,7 +45,9 @@
     </string>
     <boolean name="active" title="Active" default="true"/>
 
-	<finder-method name="findDefaultByPartner" using="partner,isDefault"/>	
+	<finder-method name="findDefaultByPartner" using="partner"
+		filter="self.partner = :partner AND self.isDefault = TRUE" />
+    <finder-method name="findActivesByPartner" using="partner,active" all="true"/>
 
   </entity>
 

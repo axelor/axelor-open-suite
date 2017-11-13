@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -17,11 +17,14 @@
  */
 package com.axelor.apps.account.service;
 
-//import com.axelor.apps.account.db.AccountConfig;
+import java.util.List;
+import java.util.Set;
+
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
-import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
@@ -32,9 +35,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
-import java.util.List;
-import java.util.Set;
 
 
 public class AccountingSituationServiceImpl implements AccountingSituationService {
@@ -103,6 +103,10 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 			}
 		}
 
+		AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
+		accountingSituation.setInvoiceAutomaticMail(accountConfig.getInvoiceAutomaticMail());
+		accountingSituation.setInvoiceMessageTemplate(accountConfig.getInvoiceMessageTemplate());
+
 		partner.addAccountingSituationListItem(accountingSituation);
 		return accountingSituationRepo.save(accountingSituation);
 	}
@@ -141,7 +145,7 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 				authorizedBankDetails = Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(
 						accountingSituation.getPartner().getOutPaymentMode(), accountingSituation.getCompany());
 			}
-			String idList = StringTool.getIdFromCollection(authorizedBankDetails);
+			String idList = StringTool.getIdListString(authorizedBankDetails);
 			if (idList.equals("")) {
 				return domain;
 			}
@@ -150,38 +154,60 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 		return domain;
 	}
 
-	/**
-	 * Find a default bank details.
-	 * @param company
-	 * @param paymentMode
-	 * @param partner
-	 * @return  the default bank details in accounting situation if it is active
-	 *          and allowed by the payment mode.
-	 */
-	public BankDetails findDefaultBankDetails(Company company, PaymentMode paymentMode, Partner partner) {
-		AccountingSituation accountingSituation = this.getAccountingSituation(partner, company);
-		if (accountingSituation == null) { return null;}
-		BankDetails candidateBankDetails = null;
-		if (paymentMode.getInOutSelect() == PaymentModeRepository.IN) {
-			candidateBankDetails = accountingSituation.getCompanyInBankDetails();
-		}
-		else if (paymentMode.getInOutSelect() == PaymentModeRepository.OUT) {
-			candidateBankDetails = accountingSituation.getCompanyOutBankDetails();
-		}
-		List<BankDetails>authorizedBankDetails = Beans.get(PaymentModeService.class).
-				getCompatibleBankDetailsList(paymentMode, company);
-		if (authorizedBankDetails.contains(candidateBankDetails) &&
-				candidateBankDetails.getActive()) {
-			return candidateBankDetails;
-		}
-		else {
-			return null;
-		}
-	}
-
 	@Override
 	public void updateCustomerCredit(Partner partner) throws AxelorException {
 		// Nothing to do if the supplychain module is not loaded.
+	}
+
+	@Override
+	public Account getCustomerAccount(Partner partner, Company company) throws AxelorException {
+		Account account = null;
+		AccountingSituation accountingSituation = getAccountingSituation(partner, company);
+
+		if (accountingSituation != null) {
+			account = accountingSituation.getCustomerAccount();
+		}
+
+		if (account == null) {
+			AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+			account = accountConfigService.getCustomerAccount(accountConfig);
+		}
+
+		return account;
+	}
+
+	@Override
+	public Account getSupplierAccount(Partner partner, Company company) throws AxelorException {
+		Account account = null;
+		AccountingSituation accountingSituation = getAccountingSituation(partner, company);
+
+		if (accountingSituation != null) {
+			account = accountingSituation.getSupplierAccount();
+		}
+
+		if (account == null) {
+			AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+			account = accountConfigService.getSupplierAccount(accountConfig);
+		}
+
+		return account;
+	}
+
+	@Override
+	public Account getEmployeeAccount(Partner partner, Company company) throws AxelorException {
+		Account account = null;
+		AccountingSituation accountingSituation = getAccountingSituation(partner, company);
+
+		if (accountingSituation != null) {
+			account = accountingSituation.getEmployeeAccount();
+		}
+
+		if (account == null) {
+			AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+			account = accountConfigService.getEmployeeAccount(accountConfig);
+		}
+
+		return account;
 	}
 
 }

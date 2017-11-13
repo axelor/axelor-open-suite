@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,6 +29,8 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonRecord;
@@ -92,7 +94,11 @@ public class ChartBuilderService {
 	 * @throws JAXBException
 	 * @throws AxelorException 
 	 */
-	public MetaView build(ChartBuilder chartBuilder) throws JAXBException, AxelorException {
+	public void build(ChartBuilder chartBuilder) throws JAXBException, AxelorException {
+		
+		if (chartBuilder.getName().contains(" ")) {
+			throw new AxelorException(IException.MISSING_FIELD, I18n.get("Name must not contains space"));
+		}
 		
 		searchFields = new ArrayList<String>();
 		onNewFields = new ArrayList<RecordField>();
@@ -107,7 +113,11 @@ public class ChartBuilderService {
 
 		ObjectViews chartView = XMLViews.fromXML(xml);
 		
-		return metaService.generateMetaView(chartView.getViews().get(0));
+		MetaView metaView = metaService.generateMetaView(chartView.getViews().get(0));
+		
+		if (metaView != null) {
+			chartBuilder.setMetaViewGenerated(metaView);
+		}
 	}
 
 	private String createXml(ChartBuilder chartBuilder, String[] queryString) {
@@ -264,7 +274,7 @@ public class ChartBuilderService {
 		
 		
 		if (object != null) {
-			String[] sqlField = filterSqlService.getSqlField(object, parent.toString());
+			String[] sqlField = filterSqlService.getSqlField(object, parent.toString(), joins);
 			typeName = sqlField[1];
 			group = sqlField[0];
 		}

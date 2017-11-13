@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -15,16 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.axelor.apps.sale.service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
-import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.Group;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -37,38 +44,20 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
-    private ConfiguratorRepository configuratorRepo;
     private ConfiguratorCreatorRepository configuratorCreatorRepo;
     private ConfiguratorFormulaService configuratorFormulaService;
 
     @Inject
-    public ConfiguratorCreatorServiceImpl(ConfiguratorRepository configuratorRepo,
-                                          ConfiguratorCreatorRepository configuratorCreatorRepo,
+    public ConfiguratorCreatorServiceImpl(ConfiguratorCreatorRepository configuratorCreatorRepo,
                                           ConfiguratorFormulaService configuratorFormulaService) {
-        this.configuratorRepo = configuratorRepo;
         this.configuratorCreatorRepo = configuratorCreatorRepo;
         this.configuratorFormulaService = configuratorFormulaService;
     }
 
     @Override
     @Transactional
-    public void generateConfigurator(ConfiguratorCreator creator) {
-        updateAttributes(creator);
-        updateIndicators(creator);
-        Configurator configurator = new Configurator();
-        configurator.setConfiguratorCreator(creator);
-        configuratorRepo.save(configurator);
-    }
-
-
-    @Override
     public void updateAttributes(ConfiguratorCreator creator) {
 
         if (creator == null) {
@@ -83,8 +72,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
                 if (!showIf.contains(condition)) {
                     field.setShowIf(condition + " && (" + showIf + ")");
                 }
-            }
-            else {
+            } else {
                 field.setShowIf(condition);
             }
 
@@ -101,8 +89,10 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
                 field.setOnChange(modifiedOnChange);
             }
         }
+        configuratorCreatorRepo.save(creator);
     }
 
+    @Transactional
     public void updateIndicators(ConfiguratorCreator creator) {
         List<ConfiguratorFormula> formulas = creator.getConfiguratorFormulaList();
         List<MetaJsonField> indicators = creator.getIndicators();
@@ -127,6 +117,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
         updateIndicatorsAttrs(creator);
 
+        configuratorCreatorRepo.save(creator);
     }
 
     @Override
@@ -152,12 +143,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         if (attributes != null) {
             for (MetaJsonField attribute : attributes) {
                 if (attribute.getDefaultValue() == null) {
-                    throw new AxelorException(
-                            I18n.get(
-                                    IExceptionMessage.CONFIGURATOR_CREATOR_MISSING_VALUES
-                            ),
-                            IException.CONFIGURATION_ERROR
-                    );
+                    throw new AxelorException(creator, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_MISSING_VALUES));
                 }
                 attributesValues.put(attribute.getName(), attribute.getDefaultValue());
             }
@@ -189,13 +175,19 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         MetaJsonField newField = new MetaJsonField();
         newField.setModel(Configurator.class.getName());
         newField.setModelField("indicators");
-        String typeName = Beans.get(MetaFieldRepository.class).all()
-                .filter("self.metaModel.name = '" + metaModelName + "' AND " +
-                        "self.name = ?", formulaMetaField.getName())
-                .fetchOne().getTypeName();
+        MetaField metaField = Beans.get(MetaFieldRepository.class).all()
+                .filter("self.metaModel.name = :metaModelName AND self.name = :name")
+                .bind("metaModelName", metaModelName)
+                .bind("name", formulaMetaField.getName())
+                .fetchOne();
+        String typeName;
+        if (!Strings.isNullOrEmpty(metaField.getRelationship())) {
+            typeName = metaField.getRelationship();
+        } else {
+            typeName = metaField.getTypeName();
+        }
         newField.setType(typeToJsonType(typeName));
-        newField.setName(formulaMetaField.getName()
-                + "_" + creator.getId());
+        newField.setName(formulaMetaField.getName() + "_" + creator.getId());
         newField.setTitle(formulaMetaField.getLabel());
         creator.addIndicator(newField);
     }
@@ -228,6 +220,14 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     protected String typeToJsonType(String nameType) {
         if (nameType.equals("BigDecimal")) {
             return "decimal";
+        } else if(nameType.equals("ManyToOne")) {
+            return "many-to-one";
+        } else if(nameType.equals("OneToMany")) {
+            return "one-to-many";
+        } else if(nameType.equals("OneToOne")) {
+            return "one-to-one";
+        } else if(nameType.equals("ManyToMany")) {
+            return "many-to-many";
         } else {
             return nameType.toLowerCase();
         }
@@ -279,6 +279,42 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
             indicator.setPrecision(20);
             indicator.setScale(scale);
         }
+    }
+
+    public String getConfiguratorCreatorDomain() {
+        User user = AuthUtils.getUser();
+        Group group = user.getGroup();
+
+        List<ConfiguratorCreator> configuratorCreatorList =
+                configuratorCreatorRepo.all()
+                .filter("self.isActive = true")
+                .fetch();
+
+        if (configuratorCreatorList == null
+                || configuratorCreatorList.isEmpty()) {
+            return "self.id in (0)";
+        }
+
+        configuratorCreatorList.removeIf(creator ->
+                !creator.getAuthorizedUserSet().contains(user)
+                    && !creator.getAuthorizedGroupSet().contains(group)
+        );
+
+        return "self.id in ("
+                + StringTool.getIdListString(configuratorCreatorList)
+                + ")";
+    }
+
+	@Override
+	@Transactional
+	public void authorizeUser(ConfiguratorCreator creator, User user) {
+		creator.addAuthorizedUserSetItem(user);
+	}
+
+	@Override
+    @Transactional
+    public void activate(ConfiguratorCreator creator) {
+        creator.setIsActive(true);
     }
 
 }

@@ -87,26 +87,7 @@
   		<series key="_nbEmployee" type="bar" title="Nb Employee" />
 	</chart>
 	
-	<chart name="chart.nb.delivered.hours.for.last.3.years" title="Nb. of delivered hours for last 3 years" >
-  		<dataset type="jpql"><![CDATA[
-		SELECT
-			SUM(self.duration) AS _nbHours,
-			YEAR(self.fromDate) AS _year
-		FROM
-			TrainingSession self
-		WHERE
-			self.statusSelect = 2
-			AND YEAR(self.fromDate) >= (YEAR(CURRENT_DATE)-3)
-		GROUP BY
-			YEAR(self.fromDate)
-		ORDER BY 
-			YEAR(self.fromDate)
-		]]></dataset>
- 	 	<category key="_year" type="text" title="Year"/>
-  		<series key="_nbHours" type="bar" title="Nb Hours" />
-	</chart>
-	
-	<chart name="chart.nb.delivered.hours.per.month" title="Nb. of delivered hours per month" onInit="action-training-chart-set-3-month-from-to-dates">
+	<chart name="chart.nb.training.hours.per.month" title="Nb of training hours per month" onInit="action-training-chart-set-3-month-from-to-dates">
   		<search-fields>
 			<field name="fromDate" title="From" type="date" required="true" />
 			<field name="toDate" title="To" type="date" required="true" />

@@ -29,6 +29,7 @@
     <many-to-one name="displayFieldJson" title="Display" ref="com.axelor.meta.db.MetaJsonField" />
     <string name="chartType" selection="studio.chart.builder.chart.type"  default="bar"/>
     <many-to-one name="metaViewGenerated" title="View generated" ref="com.axelor.meta.db.MetaView" />
+    <many-to-one name="appBuilder" ref="AppBuilder" title="App builder" />
   </entity>
     
     

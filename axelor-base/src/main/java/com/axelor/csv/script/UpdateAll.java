@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -18,7 +18,6 @@
 package com.axelor.csv.script;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import java.time.LocalDate;
@@ -45,20 +44,20 @@ public class UpdateAll {
 			try {
 				assert bean instanceof Company;
 				Company company = (Company) bean;
-				List<? extends Period> periods = periodRepo.all().filter("self.company.id = ?1",company.getId()).fetch();
-				if(periods == null || periods.isEmpty()) {
-					for(Year year : yearRepo.all().filter("self.company.id = ?1 AND self.typeSelect = 1",company.getId()).fetch()) {
-						for(Integer month : Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9,10,11,12})) {
-							Period period = new Period();
-							LocalDate dt = LocalDate.of(year.getFromDate().getYear(),month,1);
-							period.setFromDate(dt.withDayOfMonth(1));
-							period.setToDate(dt.withDayOfMonth(dt.lengthOfMonth()));
-							period.setYear(year);
-							period.setStatusSelect(PeriodRepository.STATUS_OPENED);
-							period.setCode((dt.toString().split("-")[1]+"/"+year.getCode().split("_")[0]+"_"+company.getCode()).toUpperCase());
-							period.setName(dt.toString().split("-")[1]+'/'+year.getName());
-							periodRepo.save(period);
-						}
+				for(Year year : yearRepo.all().filter("self.company.id = ?1 AND self.typeSelect = 1",company.getId()).fetch()) {
+					if (!year.getPeriodList().isEmpty()) {
+						continue;
+					}
+					for(Integer month : Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9,10,11,12})) {
+						Period period = new Period();
+						LocalDate dt = LocalDate.of(year.getFromDate().getYear(),month,1);
+						period.setFromDate(dt.withDayOfMonth(1));
+						period.setToDate(dt.withDayOfMonth(dt.lengthOfMonth()));
+						period.setYear(year);
+						period.setStatusSelect(PeriodRepository.STATUS_OPENED);
+						period.setCode((dt.toString().split("-")[1]+"/"+year.getCode().split("_")[0]+"_"+company.getCode()).toUpperCase());
+						period.setName(dt.toString().split("-")[1]+'/'+year.getName());
+						periodRepo.save(period);
 					}
 				}
 				

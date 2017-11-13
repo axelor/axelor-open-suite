@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -204,33 +204,27 @@ public class AccountClearanceService{
 		AccountConfig accountConfig = company.getAccountConfig();
 
 		if(accountConfig == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_1),
-					AppBaseServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_1), AppBaseServiceImpl.EXCEPTION,company.getName());
 		}
 
 		if(accountConfig.getProfitAccount() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_2),
-					AppBaseServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_2), AppBaseServiceImpl.EXCEPTION,company.getName());
 		}
 
 		if(accountConfig.getStandardRateTax() == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_3),
-					AppBaseServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_3), AppBaseServiceImpl.EXCEPTION,company.getName());
 		}
 
 		if(accountConfig.getClearanceAccountSet() == null || accountConfig.getClearanceAccountSet().size() == 0)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_4),
-					AppBaseServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_4), AppBaseServiceImpl.EXCEPTION,company.getName());
 		}
 
 		if(!sequenceService.hasSequence(IAdministration.ACCOUNT_CLEARANCE, company)) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_5),
-					AppBaseServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_5), AppBaseServiceImpl.EXCEPTION,company.getName());
 		}
 
 		if(accountConfig.getAccountClearanceJournal() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_6),
-					AppBaseServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_6), AppBaseServiceImpl.EXCEPTION,company.getName());
 		}
 
 	}

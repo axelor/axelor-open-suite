@@ -8,6 +8,7 @@
     <integer name="periodicitySelect" title="Periodicity" selection="product.periodicity.subscription.select" default="1"/>
   	<many-to-one name="mrpFamily" ref="com.axelor.apps.supplychain.db.MrpFamily" title="MRP family"/>
     <boolean name="excludeFromMrp" title="Exclude from MRP"/>
+    <integer name="standardDelay" title="Standard delay (days)" default="0"  />
   	
   </entity>
 

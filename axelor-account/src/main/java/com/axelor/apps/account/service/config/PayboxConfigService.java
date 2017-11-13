@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -32,9 +32,8 @@ public class PayboxConfigService extends AccountConfigService  {
 
 		PayboxConfig payboxConfig = accountConfig.getPayboxConfig();
 
-		if(payboxConfig == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_CONFIG_1),
-					AppAccountServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		if (payboxConfig == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_1), AppAccountServiceImpl.EXCEPTION, accountConfig.getCompany().getName());
 		}
 
 		return payboxConfig;
@@ -57,9 +56,8 @@ public class PayboxConfigService extends AccountConfigService  {
 
 	public String getPayboxSite(PayboxConfig payboxConfig) throws AxelorException  {
 
-		if(payboxConfig.getPayboxSite() == null || payboxConfig.getPayboxSite().isEmpty())   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_CONFIG_2),
-					AppAccountServiceImpl.EXCEPTION, payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+		if (payboxConfig.getPayboxSite() == null || payboxConfig.getPayboxSite().isEmpty()) {
+			throw new AxelorException(payboxConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_2), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
 		}
 
 		return payboxConfig.getPayboxSite();
@@ -67,9 +65,8 @@ public class PayboxConfigService extends AccountConfigService  {
 
 	public String getPayboxRang(PayboxConfig payboxConfig) throws AxelorException  {
 
-		if(payboxConfig.getPayboxRang() == null || payboxConfig.getPayboxRang().isEmpty())   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_CONFIG_3),
-					AppAccountServiceImpl.EXCEPTION, payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+		if (payboxConfig.getPayboxRang() == null || payboxConfig.getPayboxRang().isEmpty()) {
+			throw new AxelorException(payboxConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_3), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
 		}
 
 		return payboxConfig.getPayboxRang();
@@ -77,9 +74,8 @@ public class PayboxConfigService extends AccountConfigService  {
 
 	public String getPayboxDevise(PayboxConfig payboxConfig) throws AxelorException  {
 
-		if(payboxConfig.getPayboxDevise() == null || payboxConfig.getPayboxDevise().isEmpty())   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_CONFIG_4),
-					AppAccountServiceImpl.EXCEPTION, payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+		if (payboxConfig.getPayboxDevise() == null || payboxConfig.getPayboxDevise().isEmpty()) {
+			throw new AxelorException(payboxConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_4), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
 		}
 
 		return payboxConfig.getPayboxDevise();
@@ -87,9 +83,8 @@ public class PayboxConfigService extends AccountConfigService  {
 
 	public String getPayboxRetour(PayboxConfig payboxConfig) throws AxelorException  {
 
-		if(payboxConfig.getPayboxRetour() == null || payboxConfig.getPayboxRetour().isEmpty())   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_CONFIG_5),
-					AppAccountServiceImpl.EXCEPTION, payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+		if (payboxConfig.getPayboxRetour() == null || payboxConfig.getPayboxRetour().isEmpty()) {
+			throw new AxelorException(payboxConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_5), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
 		}
 
 		return payboxConfig.getPayboxRetour();
@@ -97,9 +92,8 @@ public class PayboxConfigService extends AccountConfigService  {
 
 	public String getPayboxRetourUrlEffectue(PayboxConfig payboxConfig) throws AxelorException  {
 
-		if(payboxConfig.getPayboxRetourUrlEffectue() == null || payboxConfig.getPayboxRetourUrlEffectue().isEmpty())   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_CONFIG_6),
-					AppAccountServiceImpl.EXCEPTION, payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+		if (payboxConfig.getPayboxRetourUrlEffectue() == null || payboxConfig.getPayboxRetourUrlEffectue().isEmpty()) {
+			throw new AxelorException(payboxConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_6), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
 		}
 
 		return payboxConfig.getPayboxRetourUrlEffectue();
@@ -107,9 +101,8 @@ public class PayboxConfigService extends AccountConfigService  {
 
 	public String getPayboxRetourUrlRefuse(PayboxConfig payboxConfig) throws AxelorException  {
 
-		if(payboxConfig.getPayboxRetourUrlRefuse() == null || payboxConfig.getPayboxRetourUrlRefuse().isEmpty())   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_CONFIG_7),
-					AppAccountServiceImpl.EXCEPTION, payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+		if (payboxConfig.getPayboxRetourUrlRefuse() == null || payboxConfig.getPayboxRetourUrlRefuse().isEmpty()) {
+			throw new AxelorException(payboxConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_7), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
 		}
 
 		return payboxConfig.getPayboxRetourUrlRefuse();
@@ -117,9 +110,8 @@ public class PayboxConfigService extends AccountConfigService  {
 
 	public String getPayboxRetourUrlAnnule(PayboxConfig payboxConfig) throws AxelorException  {
 
-		if(payboxConfig.getPayboxRetourUrlAnnule() == null || payboxConfig.getPayboxRetourUrlAnnule().isEmpty())   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_CONFIG_8),
-					AppAccountServiceImpl.EXCEPTION, payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+		if (payboxConfig.getPayboxRetourUrlAnnule() == null || payboxConfig.getPayboxRetourUrlAnnule().isEmpty()) {
+			throw new AxelorException(payboxConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_8), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
 		}
 
 		return payboxConfig.getPayboxRetourUrlAnnule();
@@ -127,9 +119,8 @@ public class PayboxConfigService extends AccountConfigService  {
 
 	public String getPayboxIdentifiant(PayboxConfig payboxConfig) throws AxelorException  {
 
-		if(payboxConfig.getPayboxIdentifiant() == null || payboxConfig.getPayboxIdentifiant().isEmpty())   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_CONFIG_9),
-					AppAccountServiceImpl.EXCEPTION, payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+		if (payboxConfig.getPayboxIdentifiant() == null || payboxConfig.getPayboxIdentifiant().isEmpty()) {
+			throw new AxelorException(payboxConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_9), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
 		}
 
 		return payboxConfig.getPayboxIdentifiant();
@@ -137,9 +128,8 @@ public class PayboxConfigService extends AccountConfigService  {
 
 	public String getPayboxHashSelect(PayboxConfig payboxConfig) throws AxelorException  {
 
-		if(payboxConfig.getPayboxHashSelect() == null || payboxConfig.getPayboxHashSelect().isEmpty())   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_CONFIG_10),
-					AppAccountServiceImpl.EXCEPTION, payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+		if (payboxConfig.getPayboxHashSelect() == null || payboxConfig.getPayboxHashSelect().isEmpty()) {
+			throw new AxelorException(payboxConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_10), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
 		}
 
 		return payboxConfig.getPayboxHashSelect();
@@ -147,9 +137,8 @@ public class PayboxConfigService extends AccountConfigService  {
 
 	public String getPayboxHmac(PayboxConfig payboxConfig) throws AxelorException  {
 
-		if(payboxConfig.getPayboxHmac() == null || payboxConfig.getPayboxHmac().isEmpty())   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_CONFIG_11),
-					AppAccountServiceImpl.EXCEPTION, payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+		if (payboxConfig.getPayboxHmac() == null || payboxConfig.getPayboxHmac().isEmpty()) {
+			throw new AxelorException(payboxConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_11), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
 		}
 
 		return payboxConfig.getPayboxHmac();
@@ -157,9 +146,8 @@ public class PayboxConfigService extends AccountConfigService  {
 
 	public String getPayboxUrl(PayboxConfig payboxConfig) throws AxelorException  {
 
-		if(payboxConfig.getPayboxUrl() == null || payboxConfig.getPayboxUrl().isEmpty())   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_CONFIG_12),
-					AppAccountServiceImpl.EXCEPTION, payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+		if (payboxConfig.getPayboxUrl() == null || payboxConfig.getPayboxUrl().isEmpty()) {
+			throw new AxelorException(payboxConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_12), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
 		}
 
 		return payboxConfig.getPayboxUrl();
@@ -167,9 +155,8 @@ public class PayboxConfigService extends AccountConfigService  {
 
 	public String getPayboxPublicKeyPath(PayboxConfig payboxConfig) throws AxelorException  {
 
-		if(payboxConfig.getPayboxPublicKeyPath() == null || payboxConfig.getPayboxPublicKeyPath().isEmpty())   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_CONFIG_13),
-					AppAccountServiceImpl.EXCEPTION, payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+		if (payboxConfig.getPayboxPublicKeyPath() == null || payboxConfig.getPayboxPublicKeyPath().isEmpty()) {
+			throw new AxelorException(payboxConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_13), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
 		}
 
 		return payboxConfig.getPayboxPublicKeyPath();
@@ -177,9 +164,8 @@ public class PayboxConfigService extends AccountConfigService  {
 
 	public String getPayboxDefaultEmail(PayboxConfig payboxConfig) throws AxelorException  {
 
-		if(payboxConfig.getPayboxDefaultEmail() == null || payboxConfig.getPayboxDefaultEmail().isEmpty())   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYBOX_CONFIG_14),
-					AppAccountServiceImpl.EXCEPTION, payboxConfig.getName()), IException.CONFIGURATION_ERROR);
+		if (payboxConfig.getPayboxDefaultEmail() == null || payboxConfig.getPayboxDefaultEmail().isEmpty()) {
+			throw new AxelorException(payboxConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_14), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
 		}
 
 		return payboxConfig.getPayboxDefaultEmail();

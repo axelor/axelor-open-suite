@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -57,7 +57,14 @@ public interface ConfiguratorService {
      */
     void testFormula(String groovyFormula, ScriptBindings values) throws AxelorException;
 
-
+    /**
+     * Generate the product, and the bill of material
+     * if we are in the right module
+     * @param configurator
+     * @param jsonAttributes
+     * @param jsonIndicators
+     */
+    void generate(Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators) throws AxelorException, NoSuchMethodException;
 
     /**
      * Generate a product from the configurator
@@ -65,7 +72,7 @@ public interface ConfiguratorService {
      * @param jsonAttributes
      * @param jsonIndicators
      */
-    void generateProduct(Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, JSONException, ClassNotFoundException;
+    void generateProduct(Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, JSONException, ClassNotFoundException, AxelorException;
 
     /**
      * Return the right configurator for the given product
@@ -82,5 +89,5 @@ public interface ConfiguratorService {
      * @param jsonAttributes
      * @param jsonIndicators
      */
-    void addLineToSaleOrder(Configurator configurator, SaleOrder saleOrder, JsonContext jsonAttributes, JsonContext jsonIndicators) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException;
+    void addLineToSaleOrder(Configurator configurator, SaleOrder saleOrder, JsonContext jsonAttributes, JsonContext jsonIndicators) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, AxelorException;
 }

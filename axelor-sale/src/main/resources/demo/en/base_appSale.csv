@@ -1,2 +1,2 @@
-typeSelect;manageSalesUnits;manageSaleOrderVersion;sequence
-sale;true;true;3
+"code";"manageSalesUnits";"manageSaleOrderVersion";"sequence";"productPackMgt"
+"sale";"true";"true";3;"true"

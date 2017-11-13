@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -23,10 +23,14 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.LocationLineService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.StockMoveLineSupplychainServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -63,9 +67,8 @@ public class SaleOrderLineController {
 		if(saleOrderLine.getAnalyticDistributionTemplate() != null){
 			saleOrderLine = saleOrderLineServiceSupplyChainImpl.createAnalyticDistributionWithTemplate(saleOrderLine);
 			response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
-		}
-		else{
-			throw new AxelorException(I18n.get("No template selected"), IException.CONFIGURATION_ERROR);
+		} else {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No template selected"));
 		}
 	}
 
@@ -94,4 +97,33 @@ public class SaleOrderLineController {
 			response.setAlert(e.getLocalizedMessage());
 		}
 	}
+
+	public void fillAvailableStock(ActionRequest request, ActionResponse response) {
+		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+		if (saleOrderLine.getSaleOrder() == null) {
+			return;
+		}
+		if (saleOrderLine.getProduct() != null && saleOrderLine.getSaleOrder().getLocation() != null) {
+			response.setValue("$availableStock", saleOrderLineServiceSupplyChainImpl.getAvailableStock(saleOrderLine));
+		}
+	}
+
+	public void changeReservedQty(ActionRequest request, ActionResponse response) {
+		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+		BigDecimal newReservedQty = saleOrderLine.getReservedQty();
+		try {
+			saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+			StockMoveLine stockMoveLine = Beans.get(StockMoveLineRepository.class)
+					.all().filter("self.saleOrderLine = :saleOrderLine")
+					.bind("saleOrderLine", saleOrderLine)
+					.fetchOne();
+			saleOrderLineServiceSupplyChainImpl.changeReservedQty(saleOrderLine, newReservedQty);
+			if (stockMoveLine != null) {
+				Beans.get(StockMoveLineSupplychainServiceImpl.class).updateReservedQty(stockMoveLine, newReservedQty);
+			}
+		} catch (AxelorException e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+
 }

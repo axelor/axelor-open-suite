@@ -56,10 +56,6 @@
 		<option value="3">Non compliant</option>
 	</selection>
 	
-	<selection name="app.type.select" id="stock.app.type.select">
-		<option order="5" value="stock">Stock</option>
-	</selection>
-
 	<selection name="rating.icon.select">
 		<option value="0.00" icon="img/rating/rating-0.00.png">0.00</option>
 		<option value="0.50" icon="img/rating/rating-0.50.png">0.50</option>
@@ -73,5 +69,23 @@
 		<option value="4.50" icon="img/rating/rating-4.50.png">4.50</option>
 		<option value="5.00" icon="img/rating/rating-5.00.png">5.00</option>
 	</selection>
+	
+	<selection name="stock.incoterm.allocation.select">
+		<option value="1">Buyer</option>
+		<option value="2">Seller</option>
+		<option value="3">Buyer/Seller</option>
+	</selection>
+
+    <selection name="logistical.form.status.select">
+        <option value="1">Provision</option>
+        <option value="2">Carrier validated</option>
+        <option value="3">Collected</option>
+    </selection>
+
+    <selection name="logistical.form.line.type.select">
+        <option value="1">Parcel</option>
+        <option value="2">Pallet</option>
+        <option value="3">Detail</option>
+    </selection>
 
 </object-views>

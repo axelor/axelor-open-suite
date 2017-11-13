@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -44,5 +44,12 @@ public interface AddressService {
 	public Address checkLatLang(Address address, boolean forceUpdate);
 	
 	public String computeFullName(Address address);
-	
+
+	/**
+	 * Used to fill the string field in invoice, sale/purchase order
+	 * and stock move
+	 * @param address
+	 * @return  the string field corresponding to the given address.
+	 */
+	String computeAddressStr(Address address);
 }

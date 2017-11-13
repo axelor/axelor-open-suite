@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -18,15 +18,13 @@
 package com.axelor.apps.base.service.app;
 
 import java.math.BigDecimal;
-import java.util.List;
-
-import java.time.ZonedDateTime;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.util.List;
 
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.db.Model;
 
 public interface AppBaseService extends AppService {
 
@@ -68,8 +66,6 @@ public interface AppBaseService extends AppService {
 	 * @return
 	 */
 	public List<CurrencyConversionLine> getCurrencyConfigurationLineList();
-
-	public Class<? extends Model> getPersistentClass(Model model);
 
 	public BigDecimal getDurationHours(BigDecimal duration);
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -17,9 +17,14 @@
  */
 package com.axelor.apps.account.web;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLineService;
@@ -27,72 +32,91 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
 
 public class MoveLineController {
-	
-	@Inject
-	private Injector injector;
-	
-	@Inject
-	private MoveLineService moveLineService;
-	
-	@Inject
-	private MoveLineRepository moveLineRepo;
-	
-	
-	public void computeAnalyticDistribution(ActionRequest request, ActionResponse response){
+
+	public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
+
 		MoveLine moveLine = request.getContext().asType(MoveLine.class);
 		Move move = moveLine.getMove();
-		if(move == null){
-			move = request.getContext().getParentContext().asType(Move.class);
+
+		if (move == null) {
+			move = request.getContext().getParent().asType(Move.class);
 			moveLine.setMove(move);
 		}
-		if(Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()){
-			moveLine = moveLineService.computeAnalyticDistribution(moveLine);
-			response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
-		}
-	}
-	
-	public void usherProcess(ActionRequest request, ActionResponse response) {
-		
-		MoveLine moveLine = request.getContext().asType(MoveLine.class);
-		moveLine = moveLineRepo.find(moveLine.getId());
-		
-		MoveLineService mls = injector.getInstance(MoveLineService.class);
-		
+
 		try {
-			mls.usherProcess(moveLine);
+			if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
+				moveLine = Beans.get(MoveLineService.class).computeAnalyticDistribution(moveLine);
+				response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+			}
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
 		}
-		catch (Exception e){ TraceBackService.trace(response, e); }
 	}
-	
-	public void passInIrrecoverable(ActionRequest request, ActionResponse response)  {
-		
+
+	public void usherProcess(ActionRequest request, ActionResponse response) {
+
 		MoveLine moveLine = request.getContext().asType(MoveLine.class);
-		moveLine = moveLineRepo.find(moveLine.getId());
-		
-		IrrecoverableService is = injector.getInstance(IrrecoverableService.class);
-		
-		try  {
-			is.passInIrrecoverable(moveLine, true, true);
-			response.setReload(true);
+		moveLine = Beans.get(MoveLineRepository.class).find(moveLine.getId());
+
+		try {
+			Beans.get(MoveLineService.class).usherProcess(moveLine);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
 		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
-	
-	public void notPassInIrrecoverable(ActionRequest request, ActionResponse response)  {
-		
+
+	public void passInIrrecoverable(ActionRequest request, ActionResponse response) {
+
 		MoveLine moveLine = request.getContext().asType(MoveLine.class);
-		moveLine = moveLineRepo.find(moveLine.getId());
-		
-		IrrecoverableService is = injector.getInstance(IrrecoverableService.class);
-		
-		try  {
-			is.notPassInIrrecoverable(moveLine, true);
+		moveLine = Beans.get(MoveLineRepository.class).find(moveLine.getId());
+
+		try {
+			Beans.get(IrrecoverableService.class).passInIrrecoverable(moveLine, true, true);
 			response.setReload(true);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
 		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
+
+	public void notPassInIrrecoverable(ActionRequest request, ActionResponse response) {
+
+		MoveLine moveLine = request.getContext().asType(MoveLine.class);
+		moveLine = Beans.get(MoveLineRepository.class).find(moveLine.getId());
+
+		try {
+			Beans.get(IrrecoverableService.class).notPassInIrrecoverable(moveLine, true);
+			response.setReload(true);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+
+	public void accountingReconcile(ActionRequest request, ActionResponse response) {
+
+		List<MoveLine> moveLineList = new ArrayList<>();
+
+		@SuppressWarnings("unchecked")
+		List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+
+		try {
+			if (idList != null) {
+				for (Integer it : idList) {
+					MoveLine moveLine = Beans.get(MoveLineRepository.class).find(it.longValue());
+					if (moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_VALIDATED
+							&& moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+						moveLineList.add(moveLine);
+					}
+				}
+			}
+
+			if (!moveLineList.isEmpty()) {
+				Beans.get(MoveLineService.class).reconcileMoveLines(moveLineList);
+			}
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+
 }

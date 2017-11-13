@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -229,18 +229,15 @@ public class AccountingReportServiceImpl implements AccountingReportService  {
 		if(accountingReport.getTypeSelect() <= 5 || accountingReport.getTypeSelect() >= 10 )  {
 
 			String seq = sequenceService.getSequenceNumber(IAdministration.ACCOUNTING_REPORT, accountingReport.getCompany());
-			if(seq == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_1),
-						AppBaseServiceImpl.EXCEPTION, accountingReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
+			if (seq == null) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNTING_REPORT_1), AppBaseServiceImpl.EXCEPTION, accountingReport.getCompany().getName());
 			}
 
 			return seq;
-		}
-		else  {
+		} else {
 			String seq = sequenceService.getSequenceNumber(IAdministration.MOVE_LINE_EXPORT, accountingReport.getCompany());
-			if(seq == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_2),
-						AppBaseServiceImpl.EXCEPTION, accountingReport.getCompany().getName()), IException.CONFIGURATION_ERROR);
+			if (seq == null) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNTING_REPORT_2), AppBaseServiceImpl.EXCEPTION, accountingReport.getCompany().getName());
 			}
 
 			return seq;

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -61,9 +61,8 @@ public class MailBatchController{
 			if(batch != null)
 				response.setFlash(batch.getComments());
 			response.setReload(true);
-		}
-		else{
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_2), MailBatchRepository.CODE_BATCH_EMAIL_TIME_SHEET), IException.INCONSISTENCY);
+		} else {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_2), MailBatchRepository.CODE_BATCH_EMAIL_TIME_SHEET);
 		}
 	}
 }

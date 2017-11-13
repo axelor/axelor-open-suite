@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -17,7 +17,18 @@
  */
 package com.axelor.apps.supplychain.service.invoice;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -28,24 +39,21 @@ import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
+import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
 
 	@Inject
-	public InvoiceServiceSupplychainImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory, CancelFactory cancelFactory,
-							  AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo, AppAccountService appAccountService) {
-		super(validateFactory, ventilateFactory, cancelFactory,
-				alarmEngineService, invoiceRepo, appAccountService);
+	public InvoiceServiceSupplychainImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory,
+			CancelFactory cancelFactory, AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo,
+			AppAccountService appAccountService) {
+		super(validateFactory, ventilateFactory, cancelFactory, alarmEngineService, invoiceRepo, appAccountService);
 	}
-
 
 	@Override
 	public Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) throws AxelorException {
@@ -86,4 +94,38 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
 		filterAdvancePaymentInvoice(invoice, advancePaymentInvoices);
 		return advancePaymentInvoices;
     }
+
+	@Override
+	public List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice) {
+		//search sale order in the invoice
+        SaleOrder saleOrder = invoice.getSaleOrder();
+        //search sale order in invoice lines
+		List<SaleOrder> saleOrderList = invoice.getInvoiceLineList()
+				.stream()
+				.map(InvoiceLine::getSaleOrder)
+				.collect(Collectors.toList());
+		saleOrderList.add(saleOrder);
+
+		//remove null value and duplicates
+		saleOrderList = saleOrderList.stream()
+				.filter(Objects::nonNull)
+				.distinct()
+				.collect(Collectors.toList());
+
+		if (saleOrderList.isEmpty()) {
+			return new ArrayList<>();
+		} else {
+			//get move lines from sale order
+			return saleOrderList
+					.stream()
+					.flatMap(saleOrder1 -> saleOrder1.getAdvancePaymentList().stream())
+					.filter(Objects::nonNull)
+					.distinct()
+					.map(AdvancePayment::getMove)
+					.filter(Objects::nonNull)
+					.distinct()
+					.flatMap(move -> move.getMoveLineList().stream())
+					.collect(Collectors.toList());
+		}
+	}
 }

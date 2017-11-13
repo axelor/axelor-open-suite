@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -17,16 +17,28 @@
  */
 package com.axelor.apps.account.web;
 
+import java.lang.invoke.MethodHandles;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherSequenceService;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -36,8 +48,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-
-import java.lang.invoke.MethodHandles;
 
 public class PaymentVoucherController {
 
@@ -135,6 +145,41 @@ public class PaymentVoucherController {
 				.add("html", fileLink).map());
 		
 	}	
-	
-	
+
+    /**
+	 * Called on load and in partner, company or payment mode change.
+	 * Fill the bank details with a default value.
+ 	 * @param request
+	 * @param response
+	 */
+	public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
+		PaymentMode paymentMode = paymentVoucher.getPaymentMode();
+		Company company = paymentVoucher.getCompany();
+		Partner partner = paymentVoucher.getPartner();
+		if (company == null) {
+			return;
+		}
+		if (partner != null) {
+			partner = Beans.get(PartnerRepository.class).find(partner.getId());
+		}
+		BankDetails defaultBankDetails = Beans.get(BankDetailsService.class)
+				.getDefaultCompanyBankDetails(company, paymentMode, partner);
+		response.setValue("companyBankDetails", defaultBankDetails);
+    }
+
+    public void initFromInvoice(ActionRequest request, ActionResponse response) {
+        PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
+        @SuppressWarnings("unchecked")
+        Invoice invoice = Mapper.toBean(Invoice.class, (Map<String, Object>) request.getContext().get("_invoice"));
+        invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+
+        try {
+            paymentVoucherLoadService.initFromInvoice(paymentVoucher, invoice);
+            response.setValues(paymentVoucher);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
+
 }

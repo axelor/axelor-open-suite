@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -114,9 +114,8 @@ public class ReimbursementImportService {
 		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
 		
 		Reimbursement reimbursement = reimbursementRepo.all().filter("UPPER(self.ref) = ?1 AND self.company = ?2", refReject, company).fetchOne();
-		if(reimbursement == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.REIMBURSEMENT_3),
-					refReject, company.getName()), IException.INCONSISTENCY);
+		if (reimbursement == null) {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.REIMBURSEMENT_3), refReject, company.getName());
 		}
 		
 		Partner partner = reimbursement.getPartner();

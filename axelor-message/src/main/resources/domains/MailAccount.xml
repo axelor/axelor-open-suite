@@ -16,7 +16,7 @@
 		<integer name="securitySelect" title="SSL/STARTTLS" selection="mail.account.security.select"/>
 		<boolean name="isDefault" title="Default account ?"/>
 		<boolean name="isValid" title="Valid ?"/>
-		<string name="signature" title="Signature"/>
+		<string name="signature" title="Signature" large="true"/>
 
 		<extra-code><![CDATA[
 	

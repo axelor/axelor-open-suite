@@ -81,11 +81,11 @@ public class EbicsCertificateService {
 			 return cert.getCertificate();
 		 }
 		
-		 if (bank.getUrl() != null && type.equals("ssl")) {
+		 if (bank.getUrl() != null && type.equals(EbicsCertificateRepository.TYPE_SSL)) {
 			 return Beans.get(EbicsCertificateService.class).getSSLCertificate(bank);
 		 }
 
-		 throw new AxelorException(I18n.get("No bank certificate of type %s found"), IException.CONFIGURATION_ERROR, type);
+		 throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No bank certificate of type %s found"), type);
 	}
 	
 	public static X509Certificate getCertificate(byte[] certificate, String type) throws AxelorException {
@@ -95,7 +95,7 @@ public class EbicsCertificateService {
 		try {
 			cert = (X509Certificate) CertificateFactory.getInstance("X.509", "BC").generateCertificate(instream);
 		} catch (CertificateException | NoSuchProviderException e) {
-			throw new AxelorException(I18n.get("Error in bank certificate of type %s"), IException.CONFIGURATION_ERROR, type);
+			throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, I18n.get("Error in bank certificate of type %s"), type);
 		}
 		
 		return cert;
@@ -192,7 +192,12 @@ public class EbicsCertificateService {
 	}
 	
 	
-	public EbicsCertificate updateCertificate(X509Certificate certificate, EbicsCertificate cert) throws CertificateEncodingException, IOException {
+	public EbicsCertificate updateCertificate(X509Certificate certificate, EbicsCertificate cert, boolean cleanPrivateKey) throws CertificateEncodingException, IOException {
+		
+		String sha = DigestUtils.sha256Hex(certificate.getEncoded());
+		log.debug("sha256 HEX : {}", sha);
+		log.debug("certificat : {}", new String(certificate.getEncoded()));
+		log.debug("certificat size : {}", certificate.getEncoded().length);
 		
 		cert.setValidFrom(DateTool.toLocalDate(certificate.getNotBefore()));
 		cert.setValidTo(DateTool.toLocalDate(certificate.getNotAfter()));
@@ -204,8 +209,11 @@ public class EbicsCertificateService {
 		cert.setPublicKeyModulus(publicKey.getModulus().toString(16));
 		cert.setSerial(certificate.getSerialNumber().toString(16));
 		cert.setPemString(convertToPEMString(certificate));
-		cert.setPrivateKey(null);
-		String sha = DigestUtils.sha256Hex(certificate.getEncoded());
+		
+		if (cleanPrivateKey) {
+			cert.setPrivateKey(null);
+		}
+		
 		sha = sha.toUpperCase();
 		cert.setSha2has(sha);
 		computeFullName(cert);
@@ -225,7 +233,7 @@ public class EbicsCertificateService {
 			cert.setTypeSelect(type);
 		}
 		
-		cert =  updateCertificate(certificate, cert);
+		cert =  updateCertificate(certificate, cert, true);
 		
 		return certRepo.save(cert);
 	}

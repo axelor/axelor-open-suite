@@ -147,8 +147,8 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 			catch(AxelorException e){
 				TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
 				incrementAnomaly();
-				if (e.getcategory() == IException.NO_UNIQUE_KEY) { duplicateAnomaly ++; }
-				else if (e.getcategory() == IException.CONFIGURATION_ERROR) { configurationAnomaly ++; }
+				if (e.getCategory() == IException.NO_UNIQUE_KEY) { duplicateAnomaly ++; }
+				else if (e.getCategory() == IException.CONFIGURATION_ERROR) { configurationAnomaly ++; }
 			}
 			finally {
 				total ++;
@@ -163,8 +163,8 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 		
 		List<PayrollPreparation> payrollPreparationList = payrollPreparationRepository.all().filter("self.period = ?1 AND self.employee = ?2 AND self.company = ?3", hrBatch.getPeriod(), employee, company).fetch();
 		log.debug("list : " + payrollPreparationList);
-		if ( !payrollPreparationList.isEmpty() ){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYROLL_PREPARATION_DUPLICATE), employee.getName(), hrBatch.getCompany().getName(), hrBatch.getPeriod().getName() ), IException.NO_UNIQUE_KEY );
+		if (!payrollPreparationList.isEmpty()) {
+			throw new AxelorException(employee, IException.NO_UNIQUE_KEY, I18n.get(IExceptionMessage.PAYROLL_PREPARATION_DUPLICATE), employee.getName(), hrBatch.getCompany().getName(), hrBatch.getPeriod().getName());
 		}
 		Company currentCompany = companyRepository.find(company.getId());
 		Period period = periodRepository.find(hrBatch.getPeriod().getId());

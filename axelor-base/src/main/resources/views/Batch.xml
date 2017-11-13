@@ -58,6 +58,12 @@
 		<context name="id" expr="eval: id"/>
 	</action-view>
 
+	<action-view name="action-batch-show-batch" model="com.axelor.apps.base.db.Batch"
+		title="Batch">
+		<view name="batch-form" type="form" />
+		<context name="_showRecord" expr="eval: batchId" />
+	</action-view>
+
 	<action-view name="action-batch-show-invoice" title="Invoices"
 		model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>

@@ -28,7 +28,6 @@ import com.axelor.apps.bankpayment.db.EbicsTransferState;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.apps.bankpayment.ebics.io.ByteArrayContentFactory;
 import com.axelor.apps.bankpayment.ebics.io.Joiner;
-import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
 import com.axelor.apps.bankpayment.ebics.xml.DInitializationRequestElement;
 import com.axelor.apps.bankpayment.ebics.xml.DInitializationResponseElement;
 import com.axelor.apps.bankpayment.ebics.xml.DTransferRequestElement;

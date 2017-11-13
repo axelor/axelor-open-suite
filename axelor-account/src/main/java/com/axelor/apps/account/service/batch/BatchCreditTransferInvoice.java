@@ -1,12 +1,25 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.batch;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,15 +33,15 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 	protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -98,10 +111,17 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 			query.bind("currency", accountingBatch.getCurrency());
 		}
 
+		BankDetailsRepository bankDetailsRepo = Beans.get(BankDetailsRepository.class);
+		BankDetails companyBankDetails = accountingBatch.getBankDetails();
+
 		for (List<Invoice> invoiceList; !(invoiceList = query.fetch(FETCH_LIMIT)).isEmpty(); JPA.clear()) {
+			if (!JPA.em().contains(companyBankDetails)) {
+				companyBankDetails = bankDetailsRepo.find(companyBankDetails.getId());
+			}
+
 			for (Invoice invoice : invoiceList) {
 				try {
-					doneList.add(addPayment(invoice, accountingBatch.getBankDetails()));
+					doneList.add(invoicePaymentCreateService.createInvoicePayment(invoice, companyBankDetails));
 					incrementDone();
 				} catch (Exception ex) {
 					incrementAnomaly();
@@ -121,46 +141,17 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 	@Override
 	protected void stop() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE));
+		sb.append(I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE)).append(" ");
 		sb.append(String.format(
 				I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_INVOICE_DONE_SINGULAR,
-						IExceptionMessage.BATCH_CREDIT_TRANSFER_INVOICE_DONE_PLURAL, batch.getDone()),
+						IExceptionMessage.BATCH_CREDIT_TRANSFER_INVOICE_DONE_PLURAL, batch.getDone()) + " ",
 				batch.getDone()));
 		sb.append(String.format(
-				I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_ANOMALY_SINGULAR,
-						IExceptionMessage.BATCH_CREDIT_TRANSFER_ANOMALY_PLURAL, batch.getAnomaly()),
+				I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+				        com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL, batch.getAnomaly()),
 				batch.getAnomaly()));
 		addComment(sb.toString());
 		super.stop();
-	}
-
-	/**
-	 * Create an invoice payment for the specified invoice.
-	 * 
-	 * @param invoice
-	 * @param bankDetails
-	 * @return
-	 * @throws AxelorException
-	 * @throws JAXBException
-	 * @throws IOException
-	 * @throws DatatypeConfigurationException
-	 */
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	protected InvoicePayment addPayment(Invoice invoice, BankDetails bankDetails)
-			throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
-
-		log.debug(String.format("Credit transfer batch for invoices: adding payment for invoice %s",
-				invoice.getInvoiceId()));
-
-		InvoicePayment invoicePayment = invoicePaymentCreateService.createInvoicePayment(
-				invoice,
-				invoice.getInTaxTotal().subtract(invoice.getAmountPaid()),
-				appBaseService.getTodayDate(),
-				invoice.getCurrency(),
-				invoice.getPaymentMode(),
-				InvoicePaymentRepository.TYPE_PAYMENT);
-		invoicePayment.setBankDetails(bankDetails);
-		return invoicePaymentRepository.save(invoicePayment);
 	}
 
 }

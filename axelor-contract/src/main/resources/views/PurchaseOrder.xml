@@ -28,6 +28,7 @@
     	<action name="action-purchase-order-attrs-in-ati"/>
     	<action name="action-purchase-order-dispaly-price"/>
     	<action name="action-contract-purchase-order-record-new" if="__config__.app.isApp('contract')"/>
+		<action name="action-purchase-order-attrs-interco"/>
     </action-group>
     
     <action-record name="action-contract-purchase-order-record-new" model="com.axelor.apps.purchase.db.PurchaseOrder">

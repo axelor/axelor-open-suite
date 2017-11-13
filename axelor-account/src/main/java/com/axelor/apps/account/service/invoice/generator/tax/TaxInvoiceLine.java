@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -113,7 +113,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 
 				if (!customerSpecificNote) {
                     TaxEquiv taxEquiv = invoiceLine.getTaxEquiv();
-                    if (taxEquiv != null) {
+                    if (taxEquiv != null && taxEquiv.getSpecificNote() != null) {
                         specificNotes.add(taxEquiv.getSpecificNote());
                     }
                 }

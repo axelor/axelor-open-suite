@@ -5,6 +5,8 @@
 	
 	<form name="studio-meta-json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" onNew="action-studio-set-meta-json-field-defaults">
 	    <panel title="Overview">
+	      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
+	      <spacer/>
 	      <field name="name" x-pattern="[a-z][a-zA-Z0-9_\\$]+"/>
 	      <field name="type" />
 	      <field name="title" />
@@ -22,6 +24,7 @@
 	  <field name="name"/>
 	  <field name="title" />
 	  <field name="type"/>
+	  <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
 	</grid>
 	
 	<action-attrs name="action-studio-set-meta-json-field-defaults" >

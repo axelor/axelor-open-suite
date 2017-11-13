@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -172,9 +172,8 @@ public class ChequeRejectionService {
 
 		String seq = sequenceService.getSequenceNumber(IAdministration.CHEQUE_REJECT, chequeRejection.getCompany());
 
-		if(seq == null)   {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CHECK_REJECTION_1),
-					AppAccountServiceImpl.EXCEPTION,chequeRejection.getCompany().getName()), IException.CONFIGURATION_ERROR);
+		if (seq == null) {
+			throw new AxelorException(chequeRejection, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CHECK_REJECTION_1), AppAccountServiceImpl.EXCEPTION,chequeRejection.getCompany().getName());
 		}
 
 		chequeRejection.setName(seq);

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -16,6 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.invoice;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.axelor.apps.account.db.AccountConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.BudgetDistribution;
@@ -38,12 +51,13 @@ import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
-import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Alarm;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -58,21 +72,10 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * InvoiceService est une classe implémentant l'ensemble des services de
- * facturations.
+ * facturation.
  * 
  */
 public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceService  {
@@ -88,10 +91,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	protected AlarmEngineService<Invoice> alarmEngineService;
 	protected InvoiceRepository invoiceRepo;
 	protected AppAccountService appAccountService;
-	
+
 	@Inject
-	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory, CancelFactory cancelFactory,
-			AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo, AppAccountService appAccountService) {
+	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory,
+			CancelFactory cancelFactory, AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo,
+			AppAccountService appAccountService) {
 
 		this.validateFactory = validateFactory;
 		this.ventilateFactory = ventilateFactory;
@@ -100,7 +104,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		this.invoiceRepo = invoiceRepo;
 		this.appAccountService = appAccountService;
 	}
-	
 	
 // WKF
 	
@@ -148,7 +151,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice compute(final Invoice invoice) throws AxelorException {
 
-		log.debug("Calcule de la facture");
+		log.debug("Calcul de la facture");
 		
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator() {
 			
@@ -235,7 +238,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	public void ventilate( Invoice invoice ) throws AxelorException {
 		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
 			if (invoiceLine.getAccount() == null) {
-				throw new AxelorException(I18n.get(IExceptionMessage.VENTILATE_STATE_6), IException.MISSING_FIELD, invoiceLine.getProductName());
+				throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.VENTILATE_STATE_6), invoiceLine.getProductName());
 			}
 		}
 
@@ -476,27 +479,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		return invoice;
 	}
 
-	public String computeAddressStr(Address address) {
-		StringBuilder addressString = new StringBuilder();
-		if (address == null) {
-			return "";
-		}
-
-		if (address.getAddressL2() != null) { addressString.append(address.getAddressL2()).append("\n"); }
-		if (address.getAddressL3() != null) { addressString.append(address.getAddressL3()).append("\n"); }
-		if (address.getAddressL4() != null) { addressString.append(address.getAddressL4()).append("\n"); }
-		if (address.getAddressL5() != null) { addressString.append(address.getAddressL5()).append("\n"); }
-		if (address.getAddressL6() != null) { addressString.append(address.getAddressL6()); }
-		if (address.getAddressL7Country() != null) { addressString = addressString.append("\n").append(address.getAddressL7Country().getName()); }
-
-		return addressString.toString();
-	}
 
 	@Override
 	public String createAdvancePaymentInvoiceSetDomain(Invoice invoice) throws AxelorException {
 		Set<Invoice> invoices = getDefaultAdvancePaymentInvoice(invoice);
 		String domain = "self.id IN (" +
-				StringTool.getIdFromCollection(invoices)
+				StringTool.getIdListString(invoices)
 				+ ")";
 
 		return domain;
@@ -605,7 +593,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	}
 
 	@Override
-	public List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) {
+	public List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) throws AxelorException {
+		if (Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice()) {
+			return getMoveLinesFromInvoiceAdvancePayments(invoice);
+		} else {
+			return getMoveLinesFromSOAdvancePayments(invoice);
+		}
+	}
+
+	@Override
+	public List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice) {
 		List<MoveLine> advancePaymentMoveLines = new ArrayList<>();
 
 		Set<Invoice> advancePayments = invoice.getAdvancePaymentInvoiceSet();
@@ -624,10 +621,35 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		return advancePaymentMoveLines;
 	}
 
+	@Override
+	public List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice) {
+		return new ArrayList<>();
+	}
+
 	protected String writeGeneralFilterForAdvancePayment() {
 		return "self.statusSelect = :_status"
 				+ " AND self.operationSubTypeSelect = :_operationSubType";
 	}
+
+	@Override
+	public BankDetails getBankDetails(Invoice invoice) {
+		BankDetails bankDetails = null;
+
+		if (invoice.getSchedulePaymentOk() && invoice.getPaymentSchedule() != null) {
+			bankDetails = invoice.getPaymentSchedule().getBankDetails();
+		}
+
+		if (bankDetails == null) {
+			bankDetails = invoice.getBankDetails();
+		}
+
+		if (bankDetails == null) {
+			bankDetails = Beans.get(BankDetailsRepository.class).findDefaultByPartner(invoice.getPartner());
+		}
+
+		return bankDetails;
+	}
+
 }
 
 

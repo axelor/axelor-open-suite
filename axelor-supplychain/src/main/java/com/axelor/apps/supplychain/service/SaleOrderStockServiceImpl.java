@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -74,16 +74,11 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 	}
 
 
-	/**
-	 * Method that create a delivery StockMove from a SaleOrder.
-	 * @param saleOrder
-	 * @throws AxelorException No sequence for StockMove (delivery) has been set.
-	 */
+	@Override
 	public StockMove createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
-		if (this.existActiveStockMoveForSaleOrder(saleOrder)){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXIST),
-					saleOrder.getSaleOrderSeq()), IException.CONFIGURATION_ERROR); 
+		if (this.existActiveStockMoveForSaleOrder(saleOrder)) {
+			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXIST), saleOrder.getSaleOrderSeq()); 
 		}
 		
 		Company company = saleOrder.getCompany();
@@ -108,28 +103,22 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 		
 	}
 
-
+	@Override
 	public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException  {
 
-		Location toLocation = locationRepo.all().filter("self.isDefaultLocation = true and self.company = ?1 and self.typeSelect = ?2", company, LocationRepository.TYPE_EXTERNAL).fetchOne();
-
-		if(toLocation == null)  {
-
+		Location toLocation = locationRepo.all()
+				.filter("self.isDefaultLocation = true and self.company = ?1 and self.typeSelect = ?2", company, LocationRepository.TYPE_EXTERNAL)
+				.fetchOne();
+		
+		if (toLocation == null) {
 			toLocation = stockConfigService.getCustomerVirtualLocation(stockConfigService.getStockConfig(company));
 		}
 
-		StockMove stockMove = stockMoveService.createStockMove(
-				null,
-				saleOrder.getDeliveryAddress(),
-				company,
-				saleOrder.getClientPartner(),
-				saleOrder.getLocation(),
-				toLocation,
-				saleOrder.getShipmentDate(),
-				saleOrder.getDescription(),
-				saleOrder.getShipmentMode(),
-				saleOrder.getFreightCarrierMode());
+		StockMove stockMove = stockMoveService.createStockMove(null, saleOrder.getDeliveryAddress(), company,
+				saleOrder.getClientPartner(), saleOrder.getLocation(), toLocation, null, saleOrder.getShipmentDate(),
+				saleOrder.getDescription(), saleOrder.getShipmentMode(), saleOrder.getFreightCarrierMode());
 
+		stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
 		stockMove.setSaleOrder(saleOrder);
 		stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 		return stockMove;
@@ -168,7 +157,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 					StockMoveLineService.TYPE_SALES, saleOrderLine.getSaleOrder().getInAti(), taxRate);
 
 			stockMoveLine.setSaleOrderLine(saleOrderLine);
-
+			stockMoveLine.setReservedQty(saleOrderLine.getReservedQty());
 			if(stockMoveLine != null) {
 				stockMove.addStockMoveLineListItem(stockMoveLine);
 			}
@@ -215,7 +204,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 		return false;
 	}
 
-	//Check if existing at least one stockMove not canceled for the saleOrder
 	public boolean existActiveStockMoveForSaleOrder(SaleOrder saleOrder){
 		long nbStockMove = stockMoveRepo.all().filter("self.saleOrder = ? AND self.statusSelect <> ?", saleOrder, StockMoveRepository.STATUS_CANCELED).count();
 		return nbStockMove > 0;

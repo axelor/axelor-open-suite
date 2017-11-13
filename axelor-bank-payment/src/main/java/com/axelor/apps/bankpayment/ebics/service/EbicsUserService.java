@@ -37,6 +37,7 @@ import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.client.EbicsRootElement;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -290,7 +291,7 @@ public class EbicsUserService {
 		Integer orderNo = Integer.parseInt(orderId.substring(1)) + 1;
 		
 		if (orderNo > 999) {
-			throw new AxelorException(I18n.get("Maximum order limit reach"),1);
+			throw new AxelorException(IException.MISSING_FIELD, I18n.get("Maximum order limit reach"));
 		}
 		
 		return orderId.substring(0,1) + String.format("%03d", orderNo);

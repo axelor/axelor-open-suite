@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -94,7 +94,7 @@ public class WkfService {
 	 * @return Exception string if any issue in processing else null.
 	 */
 	public String process(Wkf wkf) {
-
+		
 		try {
 			workflow = wkf;
 			inflector = Inflector.getInstance();
@@ -141,6 +141,7 @@ public class WkfService {
 		status.setSequence(-102);
 		status.setSelection(getSelectName());
 		status.setWidget(null);
+		status.setIsWkf(true);
 		status.setWidgetAttrs("{\"colSpan\": \"10\",\"readonly\": \"true\"}");
 		if (workflow.getDisplayTypeSelect() == 0) {
 			status.setWidget("NavSelect");
@@ -155,6 +156,13 @@ public class WkfService {
 		trackFlow.setIsWkf(true);
 		trackFlow.setHiddenInGrid(true);
 		saveJsonField(trackFlow);
+		
+		MetaJsonField wkfEnd = getJsonField("wkfSeparator", "separator");
+		wkfEnd.setSequence(-1);
+		wkfEnd.setHiddenInGrid(true);
+		wkfEnd.setIsWkf(true);
+		wkfEnd.setWidgetAttrs("{\"colSpan\": \"12\"}");
+		saveJsonField(panel);
 		
 		setTrackOnSave(workflow, false);
 		
@@ -204,7 +212,7 @@ public class WkfService {
 
 		String xml = XMLViews.toXml(actionGroup, true);
 
-		metaService.updateMetaAction(name, name, "action-group", xml, null);
+		metaService.updateMetaAction(name, "action-group", xml, null);
 
 		return actionGroup;
 	}
@@ -291,7 +299,7 @@ public class WkfService {
 		List<MetaJsonField> fields = getFields(wkf);
 		
 		for (MetaJsonField field : fields) {
-			if (field.getIsWkf()) {
+			if (field.getIsWkf() && !field.equals(wkf.getStatusField())) {
 				if (field.getOnClick() != null) {
 					actions  += "," + field.getOnClick();
 				}

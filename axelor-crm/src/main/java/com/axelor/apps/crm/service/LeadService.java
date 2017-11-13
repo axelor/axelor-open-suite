@@ -127,9 +127,8 @@ public class LeadService {
 	public String getSequence() throws AxelorException  {
 
 		String seq = sequenceService.getSequenceNumber(IAdministration.PARTNER);
-		if (seq == null)  {
-			throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_1),
-							IException.CONFIGURATION_ERROR);
+		if (seq == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_1));
 		}
 		return seq;
 	}

@@ -17,12 +17,6 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.time.LocalDate;
-
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -33,6 +27,12 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public interface StockMoveService {
 
@@ -45,25 +45,22 @@ public interface StockMoveService {
 	 */
 	public String getSequenceStockMove(int stockMoveType, Company company) throws AxelorException;
 
+	
 	/**
 	 * Méthode générique permettant de créer un StockMove.
-	 * @param fromAddress l'adresse destination
-	 * @param toAddress l'adresse destination
-	 * @param company la société
-	 * @param clientPartner le tier client
-	 * @return l'objet StockMove
-	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
-	 */
-	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation,
-			Location toLocation, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException;
-
-	/**
-	 * Méthode générique permettant de créer un StockMove.
-	 * @param toAddress l'adresse destination
-	 * @param company la société
-	 * @param clientPartner le tier client
-	 * @param refSequence la séquence du StockMove
-	 * @return l'objet StockMove
+	 * 
+	 * @param fromAddress
+	 * @param toAddress
+	 * @param company
+	 * @param clientPartner
+	 * @param fromLocation
+	 * @param toLocation
+	 * @param realDate
+	 * @param estimatedDate
+	 * @param description
+	 * @param shipmentMode
+	 * @param freightCarrierMode
+	 * @return
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
 	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation,
@@ -131,4 +128,29 @@ public interface StockMoveService {
 	 */
 	Integer changeConformityStockMoveLine(StockMove stockMove);
 
+	/**
+	 * Fill {@link StockMove#fromAddressStr}
+	 * and {@link StockMove#toAddressStr}
+	 * @param stockMove
+	 */
+	void computeAddressStr(StockMove stockMove);
+
+	/**
+     * Called from {@link com.axelor.apps.stock.web.StockMoveController#viewDirection}
+	 * @param stockMove
+	 * @return the direction for the google map API
+	 */
+	Map<String, Object> viewDirection(StockMove stockMove) throws AxelorException;
+
+	/**
+	 * Print the given stock move.
+	 * @param stockMove
+	 * @param lstSelectedMove
+	 * @param isPicking  true if we print a picking order
+	 * @return the link to the PDF file
+	 * @throws AxelorException
+	 */
+	String printStockMove(StockMove stockMove,
+						  List<Integer> lstSelectedMove,
+						  boolean isPicking) throws AxelorException;
 }

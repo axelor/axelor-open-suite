@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -32,6 +32,22 @@ import com.axelor.rpc.Context;
 
 public interface SaleOrderLineService {
 
+
+	/**
+     * Update all fields of the sale order line from the product.
+	 * @param saleOrderLine
+	 * @param saleOrder
+	 */
+	void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
+
+	/**
+	 * Compute totals from a sale order line
+	 * @param saleOrder
+	 * @param saleOrderLine
+	 * @return
+	 * @throws AxelorException
+	 */
+	BigDecimal[] computeValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException;
 
 	/**
 	 * Compute the excluded tax total amount of a sale order line.
@@ -74,4 +90,6 @@ public interface SaleOrderLineService {
 	public SaleOrder getSaleOrder(Context context);
 	
 	public void computeSubMargin(SaleOrderLine saleOrderLine) throws AxelorException;
+
+	public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine);
 }

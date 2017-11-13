@@ -96,9 +96,8 @@ public class ExpenseController {
 		if(expenseLine.getAnalyticDistributionTemplate() != null){
 			expenseLine = expenseServiceProvider.get().createAnalyticDistributionWithTemplate(expenseLine);
 			response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
-		}
-		else{
-			throw new AxelorException(I18n.get("No template selected"), IException.CONFIGURATION_ERROR);
+		} else {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No template selected"));
 		}
 	}
 	
@@ -127,16 +126,14 @@ public class ExpenseController {
 									.model(Expense.class.getName())
 									.add("form", "expense-form")
 									.map());
-		}
-		else if(expenseList.size() == 1){
+		} else if (expenseList.size() == 1) {
 			response.setView(ActionView
 					.define(I18n.get("Expense"))
 					.model(Expense.class.getName())
 					.add("form", "expense-form")
 					.param("forceEdit", "true")
 					.context("_showRecord", String.valueOf(expenseList.get(0).getId())).map());
-		}
-		else{
+		} else {
 			response.setView(ActionView
 					.define(I18n.get("Expense"))
 					.model(Wizard.class.getName())
@@ -234,12 +231,14 @@ public class ExpenseController {
 		expense = Beans.get(ExpenseRepository.class).find(expense.getId());
 		Move move = expenseServiceProvider.get().ventilate(expense);
 		response.setReload(true);
-		response.setView(ActionView.define(I18n.get("Move"))
-				   .model(Move.class.getName())
-				   .add("grid","move-grid")
-				   .add("form","move-form")
-				   .context("_showRecord", String.valueOf(move.getId()))
-				   .map());
+		if (move != null) {
+			response.setView(ActionView.define(I18n.get("Move"))
+					.model(Move.class.getName())
+					.add("grid", "move-grid")
+					.add("form", "move-form")
+					.context("_showRecord", String.valueOf(move.getId()))
+					.map());
+		}
 	}
 
 	public void validateDates(ActionRequest request, ActionResponse response) throws AxelorException{
@@ -256,7 +255,7 @@ public class ExpenseController {
 			}
 			if(!expenseLineId.isEmpty()){
 				String ids =  Joiner.on(",").join(expenseLineId);
-				throw new AxelorException(String.format(I18n.get("Date problem for line(s) : "+ids)), IException.CONFIGURATION_ERROR);
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("Date problem for line(s) : "+ids));
 			}
 		}
 	}
@@ -479,8 +478,8 @@ public class ExpenseController {
 		}
 		Employee employee = Beans.get(EmployeeRepository.class).all().filter("self.user.id = ?1", userId).fetchOne();
 		
-		if (employee == null){
-			throw new AxelorException( String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), userName)  , IException.CONFIGURATION_ERROR);
+		if (employee == null) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), userName);
 		}
 		
 		BigDecimal amount = BigDecimal.ZERO;
@@ -503,7 +502,7 @@ public class ExpenseController {
 		}
 		
 		List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
-		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList)+ ")");
+		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdListString(kilometricAllowParamList)+ ")");
 
 		KilometricAllowParam currentKilometricAllowParam = expenseLine.getKilometricAllowParam();
 		boolean vehicleOk = false;
@@ -545,7 +544,7 @@ public class ExpenseController {
 		}
 		
 		List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
-		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList)+ ")");
+		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdListString(kilometricAllowParamList)+ ")");
 	}
 
 	public void computeDistanceAndKilometricExpense(ActionRequest request, ActionResponse response)
@@ -585,9 +584,7 @@ public class ExpenseController {
 		Employee employee = expense.getUser().getEmployee();
 
 		if (employee == null) {
-			throw new AxelorException(
-					String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), expense.getUser().getName()),
-					IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), expense.getUser().getName());
 		}
 
 		BigDecimal amount = kilometricService.computeKilometricExpense(expenseLine, employee);

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,6 @@ import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
-import com.axelor.apps.tool.Pair;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -621,15 +621,11 @@ public class MrpServiceImpl implements MrpService  {
 		
 		MrpLineType mrpLineType =  mrpLineTypeRepository.all().filter("self.elementSelect = ?1", elementSelect).fetchOne();
 		
-		if(mrpLineType != null)  {
-			
+		if (mrpLineType != null) {
 			return mrpLineType;
 		}
 		
-
-		throw new AxelorException(
-				String.format(I18n.get(IExceptionMessage.MRP_MISSING_MRP_LINE_TYPE), elementSelect),
-				IException.CONFIGURATION_ERROR);
+		throw new AxelorException(mrpLineType, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MRP_MISSING_MRP_LINE_TYPE), elementSelect);
 		
 		//TODO get the right label in fact of integer value
 	
@@ -678,10 +674,8 @@ public class MrpServiceImpl implements MrpService  {
 
 		}
 
-		if(productSet.isEmpty())  {
-			throw new AxelorException(
-					String.format(I18n.get(IExceptionMessage.MRP_NO_PRODUCT)),
-					IException.CONFIGURATION_ERROR);
+		if (productSet.isEmpty()) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MRP_NO_PRODUCT));
 		}
 		
 		return productSet;

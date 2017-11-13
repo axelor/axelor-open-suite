@@ -1,2 +1,2 @@
-importId;name;code;description;typeSelect;imagePath;modules;dependsOn;sequence
-5;Sale;SALE;Sales configuration;sale;app-sale.png;axelor-sale;crm;3
+"importId";"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+5;"Sale";"sale";9;"Sales configuration";"app-sale.png";"axelor-sale";"crm";3

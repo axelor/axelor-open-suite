@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -113,6 +113,13 @@ public interface SaleOrderService {
 	public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder);
 	
 	public String getReportLink(SaleOrder saleOrder, String name, String language, boolean proforma, String format) throws AxelorException;
+
+	/**
+	 * Fill {@link SaleOrder#mainInvoicingAddressStr}
+	 * and {@link SaleOrder#deliveryAddressStr}
+	 * @param saleOrder
+	 */
+	public void computeAddressStr(SaleOrder saleOrder);
 
 	/**
 	 * Return the total price, computed from the lines.

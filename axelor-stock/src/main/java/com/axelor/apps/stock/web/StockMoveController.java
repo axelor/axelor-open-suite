@@ -17,31 +17,12 @@
  */
 package com.axelor.apps.stock.web;
 
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.birt.core.exception.BirtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
-import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -53,10 +34,16 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class StockMoveController {
 
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
 	@Inject
 	private StockMoveService stockMoveService;
 	
@@ -116,103 +103,58 @@ public class StockMoveController {
 
 
 	/**
-	 * Method to generate stock move as a pdf
-	 *
+	 * Method called from stock move form and grid view.
+	 * Print one or more stock move as PDF
 	 * @param request
 	 * @param response
-	 * @return
-	 * @throws BirtException 
-	 * @throws IOException 
 	 */
 	public void printStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
-
-
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		String stockMoveIds = "";
-
 		@SuppressWarnings("unchecked")
 		List<Integer> lstSelectedMove = (List<Integer>) request.getContext().get("_ids");
-		if(lstSelectedMove != null){
-			for(Integer it : lstSelectedMove) {
-				stockMoveIds+= it.toString()+",";
-			}
-		}
 
-		if(!stockMoveIds.equals("")){
-			stockMoveIds = stockMoveIds.substring(0, stockMoveIds.length()-1);
-			stockMove = stockMoveRepo.find(new Long(lstSelectedMove.get(0)));
-		}else if(stockMove.getId() != null){
-			stockMoveIds = stockMove.getId().toString();
-		}
+		String fileLink =  stockMoveService.printStockMove(stockMove, lstSelectedMove, false);
 
-		if(!stockMoveIds.equals("")){
-
-			String language="";
-			try{
-				language = stockMove.getPartner().getLanguageSelect() != null? stockMove.getPartner().getLanguageSelect() : stockMove.getCompany().getPrintingSettings().getLanguageSelect() != null ? stockMove.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-			}catch (NullPointerException e) {
-				language = "en";
-			}
-			language = language.equals("")? "en": language;
-
-			String title = I18n.get("Stock move");
-			if(stockMove.getStockMoveSeq() != null)  {
-				title = lstSelectedMove == null ? I18n.get("StockMove") + " " + stockMove.getStockMoveSeq() : I18n.get("StockMove(s)");
-			}
-
-			String fileLink = ReportFactory.createReport(IReport.STOCK_MOVE, title+"-${date}")
-					.addParam("StockMoveId", stockMoveIds)
-					.addParam("Locale", language)
-					.generate()
-					.getFileLink();
-
-			logger.debug("Printing "+title);
-		
-			response.setView(ActionView
-					.define(title)
-					.add("html", fileLink).map());
-				
-		}else{
-			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_10));
-		}
+		response.setView(ActionView
+				.define(I18n.get("Stock move"))
+				.add("html", fileLink).map());
 	}
 
+	/**
+	 * Method called from stock move form and grid view.
+	 * Print one or more stock move as PDF
+	 * @param request
+	 * @param response
+	 * @throws AxelorException
+	 */
+	public void printPickingStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
+		StockMove stockMove = request.getContext().asType(StockMove.class);
+		@SuppressWarnings("unchecked")
+		List<Integer> lstSelectedMove = (List<Integer>) request.getContext().get("_ids");
+
+		String fileLink =  stockMoveService.printStockMove(stockMove, lstSelectedMove, true);
+
+		response.setView(ActionView
+				.define(I18n.get("Stock move"))
+				.add("html", fileLink).map());
+	}
 
 
 
 	public void  viewDirection(ActionRequest request, ActionResponse response) {
 
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-
-		Address fromAddress = stockMove.getFromAddress();
-		Address toAddress = stockMove.getToAddress();
-		String msg = "";
-		if(fromAddress == null)
-			fromAddress =  stockMove.getCompany().getAddress();
-		if(toAddress == null)
-			toAddress =  stockMove.getCompany().getAddress();
-		if(fromAddress == null || toAddress == null)
-			msg = I18n.get(IExceptionMessage.STOCK_MOVE_11);
-		if (appBaseService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_OSM)
-			msg = I18n.get(IExceptionMessage.STOCK_MOVE_12);
-		if(msg.isEmpty()){
-			String dString = fromAddress.getAddressL4()+" ,"+fromAddress.getAddressL6();
-			String aString = toAddress.getAddressL4()+" ,"+toAddress.getAddressL6();
-			BigDecimal dLat = fromAddress.getLatit();
-			BigDecimal dLon = fromAddress.getLongit();
-			BigDecimal aLat = toAddress.getLatit();
-			BigDecimal aLon =  toAddress.getLongit();
-			Map<String, Object> result = Beans.get(MapService.class).getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
-			if(result != null){
-				Map<String,Object> mapView = new HashMap<String,Object>();
-				mapView.put("title", I18n.get("Map"));
-				mapView.put("resource", result.get("url"));
-				mapView.put("viewType", "html");
-			    response.setView(mapView);
-			}
-			else response.setFlash(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_13),dString,aString));
-		}else response.setFlash(msg);
-
+		try {
+			Map<String, Object> result = Beans.get(StockMoveService.class)
+					.viewDirection(stockMove);
+			Map<String,Object> mapView = new HashMap<>();
+			mapView.put("title", I18n.get("Map"));
+			mapView.put("resource", result.get("url"));
+			mapView.put("viewType", "html");
+			response.setView(mapView);
+		} catch (Exception e) {
+		    response.setFlash(e.getLocalizedMessage());
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -238,7 +180,7 @@ public class StockMoveController {
 			return;
 		}
 		Integer splitQty = (Integer)request.getContext().get("splitQty");
-		if(splitQty < 1){
+		if(splitQty != null && splitQty < 1){
 			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_16));
 			return ;
 		}
@@ -341,6 +283,12 @@ public class StockMoveController {
 			.map());
 		
 	}
-	
+
+	public void fillAddressesStr(ActionRequest request, ActionResponse response) {
+	    StockMove stockMove = request.getContext().asType(StockMove.class);
+	    stockMoveService.computeAddressStr(stockMove);
+
+	    response.setValues(stockMove);
+	}
 
 }

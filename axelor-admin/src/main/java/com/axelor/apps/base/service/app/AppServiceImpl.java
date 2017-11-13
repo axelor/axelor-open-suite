@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -39,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.repo.AppRepository;
+import com.axelor.apps.base.exceptions.IAppExceptionMessages;
 import com.axelor.common.FileUtils;
 import com.axelor.common.Inflector;
 import com.axelor.data.Importer;
@@ -47,13 +47,12 @@ import com.axelor.data.csv.CSVImporter;
 import com.axelor.data.csv.CSVInput;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.MetaScanner;
-import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
-import com.axelor.meta.schema.views.Selection.Option;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
@@ -69,8 +68,6 @@ public class AppServiceImpl implements AppService {
 
 	private static final String DIR_INIT = "data-init" + File.separator + "app";
 
-	private static final String APP_TYPE_SELECT = "app.type.select";
-	
 	private static final String CONFIG_PATTERN = "-config.xml";
 	
 	private static final String IMG_DIR = "img";
@@ -92,12 +89,13 @@ public class AppServiceImpl implements AppService {
 	@Override
 	public String importDataDemo(App app) {
 		app = appRepo.find(app.getId());
-
+		
+		log.debug("Demo import: App code: {}, App lang: {}", app.getCode(), app.getLanguageSelect());
 		importParentData(app);
 		
 		String lang = getLanguage(app);
 		if (lang == null) {
-			return I18n.get("No application language set. Please set 'application.locale' property.");
+			return I18n.get(IAppExceptionMessages.NO_LANGAUAGE_SELECTED);
 		}
 		
 		importData(app, DIR_DEMO);
@@ -107,25 +105,25 @@ public class AppServiceImpl implements AppService {
 		
 		saveApp(app);
 		
-		return I18n.get("Demo data loaded successfully");
+		return I18n.get(IAppExceptionMessages.DEMO_DATA_SUCCESS);
 	}
 	
 	private void importData(App app, String dataDir) {
 		
 		String modules = app.getModules();
-		String type = app.getTypeSelect();
+		String code = app.getCode();
 		String lang = getLanguage(app);
 		
-		log.debug("Data import: App type: {}, App lang: {}", type, lang);
+		log.debug("Data import: App code: {}, App lang: {}", code, lang);
 		
 		for (String module : modules.split(",")) {
 			log.debug("Importing module: {}", module);
-			File tmp = extract(module, dataDir, lang, type);
+			File tmp = extract(module, dataDir, lang, code);
 			if (tmp == null) {
 				continue;
 			}
 			try {
-				File config = FileUtils.getFile(tmp, dataDir, type + CONFIG_PATTERN);
+				File config = FileUtils.getFile(tmp, dataDir, code + CONFIG_PATTERN);
 				File data = FileUtils.getFile(tmp, dataDir);
 				if (config != null && config.exists()) {
 					runImport(config, data);
@@ -142,10 +140,10 @@ public class AppServiceImpl implements AppService {
 
 	private String getLanguage(App app) {
 		
-		String lang = AppSettings.get().get("application.locale");
+		String lang = app.getLanguageSelect();
 		
-		if (app.getLanguageSelect() != null) {
-			lang = app.getLanguageSelect();
+		if (app.getLanguageSelect() == null) {
+			lang = AppSettings.get().get("application.locale");
 		}
 		
 		return lang;
@@ -157,7 +155,6 @@ public class AppServiceImpl implements AppService {
 		for (App parent : depends) {
 			parent = appRepo.find(parent.getId());
 			if (!parent.getDemoDataLoaded()) {
-				log.debug("Importing demo data for parent app: {}", parent.getName());
 				importDataDemo(parent);
 			}
 		}
@@ -215,11 +212,11 @@ public class AppServiceImpl implements AppService {
 
 	}
 	
-	private File extract(String module, String dirName, String lang, String type) {
+	private File extract(String module, String dirName, String lang, String code) {
 		
-		String dirPath = dirName + File.separator;
+		String dirPath = dirName + "/";
 		List<URL> files = new ArrayList<URL>();
-		files.addAll(MetaScanner.findAll(module, dirName, type + CONFIG_PATTERN));
+		files.addAll(MetaScanner.findAll(module, dirName, code + CONFIG_PATTERN));
 		if (files.isEmpty()) {
 			return null;
 		}
@@ -235,7 +232,7 @@ public class AppServiceImpl implements AppService {
 		for (URL file : files) {
 			String name = file.toString();
 			name = name.substring(name.lastIndexOf(dirName));
-			name = name.replace(dirName + File.separator + lang, dirName);
+			name = name.replace(dirName + "/" + lang, dirName);
 			try {
 				copy(file.openStream(), tmp, name);
 			} catch (IOException e) {
@@ -275,16 +272,13 @@ public class AppServiceImpl implements AppService {
 	}
 
 	@Override
-	public App getApp(String type) {
-		if (type == null) {
-			return null;
-		}
-		return Beans.get(AppRepository.class).all().filter("self.typeSelect = ?1", type).cacheable().fetchOne();
+	public App getApp(String code) {
+		return appRepo.findByCode(code);
 	}
 
 	@Override
-	public boolean isApp(String type) {
-		App app = getApp(type);
+	public boolean isApp(String code) {
+		App app = getApp(code);
 		if (app == null) {
 			return false;
 		}
@@ -295,19 +289,14 @@ public class AppServiceImpl implements AppService {
 	@Override
 	public List<App> getDepends(App app, Boolean active) {
 
-		String dependsOn = app.getDependsOn();
-		if (dependsOn == null) {
-			return new ArrayList<App>();
+		List<App> apps = new ArrayList<App>();
+		
+		for (App depend : app.getDependsOnSet()) {
+			if (depend.getActive().equals(active)) {
+				apps.add(depend);
+			}
 		}
-
-		String query = "self.typeSelect in (?1)";
-
-		if (active != null) {
-			query += " AND self.active = " + active;	
-		}
-
-		List<App> apps = appRepo.all().filter(query, Arrays.asList(dependsOn.split(","))).fetch();
-		log.debug("App: {}, DependsOn: {}, Parent active: {}, Total parent founds: {}", app.getName(), dependsOn, active, apps.size());
+		
 		return sortApps(apps);
 	}
 
@@ -326,17 +315,14 @@ public class AppServiceImpl implements AppService {
 	@Override
 	public List<App> getChildren(App app, Boolean active) {
 
-		String type = app.getTypeSelect();
+		String code = app.getCode();
 
-		String query = "self.dependsOn = ?1 "
-				+ "OR self.dependsOn like ?2 "
-				+ "OR self.dependsOn like ?3 "
-				+ "OR self.dependsOn like ?4 ";
+		String query = "self.dependsOnSet.code = ?1";
 
 		if (active != null) {
 			query = "(" + query + ") AND self.active = " + active;
 		}
-		List<App> apps = appRepo.all().filter(query, type, type + ",%", "%," + type + ",%",  "%," + type).fetch();
+		List<App> apps = appRepo.all().filter(query, code).fetch();
 
 		log.debug("Parent app: {}, Total children: {}", app.getName(), apps.size());
 
@@ -354,7 +340,7 @@ public class AppServiceImpl implements AppService {
 
 		app = appRepo.find(app.getId());
 		
-		log.debug("Init data loaded: {}, for app: {}", app.getInitDataLoaded(), app.getTypeSelect());
+		log.debug("Init data loaded: {}, for app: {}", app.getInitDataLoaded(), app.getCode());
 		if (!app.getInitDataLoaded()) {
 			importDataInit(app);
 		}
@@ -383,15 +369,8 @@ public class AppServiceImpl implements AppService {
 			@Override
 			public int compare(App app1, App app2) {
 
-				Option option1 = MetaStore.getSelectionItem(APP_TYPE_SELECT, app1.getTypeSelect());
-				Option option2 = MetaStore.getSelectionItem(APP_TYPE_SELECT, app2.getTypeSelect());
-
-				if (option1 == null || option2 == null) {
-					return 0;
-				}
-
-				Integer order1 = option1.getOrder();
-				Integer order2 = option2.getOrder();
+				Integer order1 = app1.getInstallOrder();
+				Integer order2 = app2.getInstallOrder();
 
 				if (order1 < order2) {
 					return -1;
@@ -446,7 +425,7 @@ public class AppServiceImpl implements AppService {
 			input.setFileName(csvName);
 			input.setTypeName(klass.getName());
 			input.setCallable("com.axelor.csv.script.ImportApp:importApp");
-			input.setSearch("self.typeSelect =:typeSelect");
+			input.setSearch("self.code =:code");
 			input.setSeparator(';');
 			csvConfig.getInputs().add(input);
 			InputStream stream = klass.getResourceAsStream("/data-init/input/" +  csvName);
@@ -488,6 +467,21 @@ public class AppServiceImpl implements AppService {
 		}
 		
 		return app;
+	}
+
+	@Override
+	@Transactional
+	public App unInstallApp(App app) throws AxelorException {
+		
+		List<App> children = getChildren(app, true);
+		if (!children.isEmpty()) {
+			List<String> childrenNames = getNames(children);
+			throw new AxelorException(IException.INCONSISTENCY, IAppExceptionMessages.APP_IN_USE, childrenNames);
+		}
+		
+		app.setActive(false);
+		
+		return appRepo.save(app);
 	}
 
 }

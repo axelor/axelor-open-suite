@@ -6,9 +6,10 @@
     <grid name="stock-move-line-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
         <field name="productName" required="true" />
         <field name="product" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
-        <field name="productModel" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
+        <field name="productModel" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
         <field name="qty"  aggregate="sum" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price"/>
         <field name="realQty" aggregate="sum"/>
+		<field name="reservedQty" if-module="axelor-supplychain" onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -21,9 +22,10 @@
         <panel name="main" >
             <field name="productName" />
 	        <field name="product" domain="self.expense = false" onChange="action-stock-move-line-tracking-number-attrs,action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
-	        <field name="productModel" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
+	        <field name="productModel" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
 	        <field name="qty" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price" colSpan="3"/>
 	        <field name="realQty" colSpan="3"/>
+			<field name="reservedQty" onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
 	        <field name="unitPriceUntaxed"/>
         	<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
@@ -52,7 +54,7 @@
     	<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
         <field name="productName" required="true" />
         <field name="product" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
-        <field name="productModel" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
+        <field name="productModel" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
         <field name="qty"  aggregate="sum" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price"/>
         <field name="realQty" aggregate="sum"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
@@ -107,7 +109,7 @@
         <panel name="moveDetails" title="Move details">
             <field name="productName" required="true"/>
 	        <field name="product" domain="self.expense = false" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
-	        <field name="productModel" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
+	        <field name="productModel" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
 	        <field name="stockMove.partner"/>
 			<field name="qty" colSpan="3" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price"/>
 	        <field name="realQty" colSpan="3"/>
@@ -118,7 +120,7 @@
 	        <field name="totalNetWeight" readonly="true" showIf="totalNetWeight != 0"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
 	        <field name="stockMove.statusSelect" hidden="true"/>
-	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true AND self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
+	        <field name="businessProject" if-module="axelor-business-project" domain="self.isBusinessProject = true AND self.projectTypeSelect = 1" form-view="project-form" grid-view="project-grid"/>
 	        <field name="description" colSpan="12" widget="html" />
         </panel>
     </form>
@@ -138,7 +140,7 @@
 		<panel name="main">
 		    <field name="productName" required="true" />
 	        <field name="product" domain="self.expense = false" onChange="action-stock-move-line-set-product-info" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
-	        <field name="productModel" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
+	        <field name="productModel" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
 	        <field name="qty" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price" title="Consumed quantity"/>
 	        <field name="unitPriceUntaxed"/>
         	<field name="unitPriceTaxed" hidden="true"/>
@@ -204,6 +206,7 @@
 	    <field name="unit" expr="eval: product.unit"/>
 	    <field name="price" expr="eval: product.costPrice"/>
 	    <field name="productName" expr="eval: product.name"/>
+	    <field name="productModel" expr="eval: product.parentProduct" if="__config__.app.getApp('base').getManageProductVariants()"/>
 	</action-record>
 	
 	<action-record name="action-stock-move-line-record-product" model="com.axelor.apps.stock.db.StockMoveLine">
@@ -215,7 +218,8 @@
 	</action-record>
 
 	<action-attrs name="action-stock-move-line-product-domain">
-		<attribute name="domain" for="product" expr="eval: self.parentProduct.id = :productModel" if="productModel"/>
+		<attribute name="domain" for="product" expr="eval:&quot;self.isModel = false AND self.parentProduct.id = ${productModel.id}&quot;" if="productModel"/>
+		<attribute name="domain" for="product" expr="eval:&quot;self.isModel = false&quot;" if="!productModel"/>
 	</action-attrs>
 	
 	<action-attrs name="action-stock-move-line-attrs-scale-and-precision">

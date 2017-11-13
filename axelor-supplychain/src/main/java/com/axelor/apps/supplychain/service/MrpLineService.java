@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -21,6 +21,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -28,7 +30,6 @@ import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.MrpLineOrigin;
 import com.axelor.apps.supplychain.db.MrpLineType;
-import com.axelor.apps.tool.Pair;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 

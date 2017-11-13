@@ -99,14 +99,11 @@ public class BankOrderFileService {
 		
 		Address senderAddress = this.senderCompany.getAddress();
 		
-		if(senderAddress == null || Strings.isNullOrEmpty(senderAddress.getFullName()))  {
-			
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_ORDER_FILE_NO_SENDER_ADDRESS), senderCompany.getName()), IException.INCONSISTENCY);
-			
+		if (senderAddress == null || Strings.isNullOrEmpty(senderAddress.getFullName())) {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_FILE_NO_SENDER_ADDRESS), senderCompany.getName());	
 		}
 		
-		return senderAddress.getFullName();
-		
+		return senderAddress.getFullName();	
 	}
 	
 	
@@ -114,14 +111,11 @@ public class BankOrderFileService {
 		
 		String folderPath = paymentMode.getBankOrderExportFolderPath();
 		
-		if(Strings.isNullOrEmpty(folderPath))  {
-			
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_ORDER_FILE_NO_FOLDER_PATH), paymentMode.getName()), IException.INCONSISTENCY);
-			
+		if (Strings.isNullOrEmpty(folderPath)) {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_FILE_NO_FOLDER_PATH), paymentMode.getName());		
 		}
 		
-		return folderPath;
-		
+		return folderPath;	
 	}
 	
 	
@@ -144,12 +138,11 @@ public class BankOrderFileService {
 			try {
 				return FileTool.writer(this.getFolderPath(), this.computeFileName(), (List<String>) fileToCreate);
 			} catch (IOException e) {
-				throw new AxelorException(String.format(I18n.get(com.axelor.apps.account.exception.IExceptionMessage.CFONB_EXPORT_2),
-						AppBaseServiceImpl.EXCEPTION,e), IException.CONFIGURATION_ERROR);
+				throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, I18n.get(com.axelor.apps.account.exception.IExceptionMessage.CFONB_EXPORT_2), AppBaseServiceImpl.EXCEPTION,e);
 			}
 
 		default:
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOW_FORMAT), paymentMode.getName()), IException.INCONSISTENCY);
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_FORMAT), paymentMode.getName());
 		}
 		
 		

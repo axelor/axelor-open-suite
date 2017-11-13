@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -55,7 +55,7 @@ public class QuerieService {
 		String filter = querie.getQuery();
 	
 		if(filter == null || filter.isEmpty())  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.QUERIE_1), querie.getId()), IException.MISSING_FIELD);
+			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.QUERIE_1), querie.getId());
 		}
 		
 		Class<?> klass = this.getClass(querie.getMetaModel());
@@ -69,7 +69,7 @@ public class QuerieService {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.QUERIE_2), querie.getId()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.QUERIE_2), querie.getId());
 		}
 		
 		return result;

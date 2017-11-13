@@ -46,6 +46,7 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
         ProdProcess prodProcess = new ProdProcess();
         prodProcess.setName(confProdProcess.getName());
         prodProcess.setCompany(confProdProcess.getCompany());
+        prodProcess.setLocation(confProdProcess.getLocation());
         if (confLines != null) {
             for (ConfiguratorProdProcessLine confLine : confLines) {
                 prodProcess.addProdProcessLineListItem(

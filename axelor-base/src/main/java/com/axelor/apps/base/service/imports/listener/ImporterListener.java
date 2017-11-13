@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -45,8 +45,8 @@ public class ImporterListener implements Listener {
 	public String getImportLog(){
 		
 		String log = importLog;
-		log += I18n.get(IExceptionMessage.IMPORTER_LISTERNER_1)+ totalRecord + I18n.get(IExceptionMessage.IMPORTER_LISTERNER_2)  + successRecord + I18n.get(IExceptionMessage.IMPORTER_LISTERNER_5) + notNull;
-		log += I18n.get(IExceptionMessage.IMPORTER_LISTERNER_3) + anomaly;
+		log += "\n" + I18n.get(IExceptionMessage.IMPORTER_LISTERNER_1) + " " + totalRecord + " " + I18n.get(IExceptionMessage.IMPORTER_LISTERNER_2) + " " + successRecord + " " + I18n.get(IExceptionMessage.IMPORTER_LISTERNER_5) + " " + notNull;
+		log += "\n" + I18n.get(IExceptionMessage.IMPORTER_LISTERNER_3) + anomaly;
 		
 		return log;
 	}
@@ -63,10 +63,7 @@ public class ImporterListener implements Listener {
 	public void handle(Model bean, Exception e) {
 		anomaly++;
 		importLog += "\n"+e;
-		TraceBackService.trace( new AxelorException (
-				String.format(I18n.get(IExceptionMessage.IMPORTER_LISTERNER_4), name ), 
-				e, IException.FUNCTIONNAL )
-		, IException.IMPORT );
+		TraceBackService.trace( new AxelorException(e, IException.FUNCTIONNAL, I18n.get(IExceptionMessage.IMPORTER_LISTERNER_4), name), IException.IMPORT);
 	}
 
 }

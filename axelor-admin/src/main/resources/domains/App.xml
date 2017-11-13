@@ -7,19 +7,23 @@
 
   	<entity name="App" lang="java" strategy="JOINED" cachable="true">
 		
-		<string name="typeSelect" title="Type" selection="app.type.select"  required="true" unique="true"/>
 	    <integer name="importId"/>
 	    <string name="name" title="Name" required="true" translatable="true"/>
-	    <string name="code" title="Code"/>
+	    <string name="code" title="Code" required="true" unique="true"/>
 	    <string name="description" title="Description" large="true" translatable="true"/>
-	    <string name="modules" title="Modules contains in the app" required="true" />
-	    <string name="dependsOn" title="Depends on" selection="app.type.select"/>
+	    <string name="modules" title="Modules contains in the app" />
+	    <many-to-many name="dependsOnSet" title="Depends on" ref="App"/>
 		<many-to-one name="image" ref="com.axelor.meta.db.MetaFile" title="Image"/>
 		<boolean name="initDataLoaded" title="Init data loaded ?" />
 		<boolean name="demoDataLoaded" title="Demo data loaded ?" />
-		<boolean name="active" title="Active" />
+		<boolean name="active" title="Installed" />
 		<integer name="sequence" title="Sequence" />
+		<integer name="installOrder" title="Install order" />
 		<string name="languageSelect" title="Language" selection="select.language" />
+		
+		<finder-method name="findByCode" using="code" cacheable="true" />
+		
+		<finder-method name="findByName" using="name" cacheable="true" />
 
   	</entity>
 

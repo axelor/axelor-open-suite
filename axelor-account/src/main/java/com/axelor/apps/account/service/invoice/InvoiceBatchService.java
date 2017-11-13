@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -67,11 +67,10 @@ public class InvoiceBatchService {
 				batch = wkf(invoiceBatch);
 				break;
 			default:
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), invoiceBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
+				throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_1), invoiceBatch.getActionSelect(), batchCode);
 			}
-		}
-		else {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_2), batchCode), IException.INCONSISTENCY);
+		} else {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_2), batchCode);
 		}
 		
 		return batch;
@@ -85,12 +84,10 @@ public class InvoiceBatchService {
 		
 		if (invoiceBatch.getToStatusSelect().equals(InvoiceRepository.STATUS_VALIDATED)) { 
 			strategy = Beans.get(BatchValidation.class); 
-		}
-		else if (invoiceBatch.getToStatusSelect().equals(InvoiceRepository.STATUS_VENTILATED)) { 
+		} else if (invoiceBatch.getToStatusSelect().equals(InvoiceRepository.STATUS_VENTILATED)) { 
 			strategy = Beans.get(BatchVentilation.class);
-		}
-		else {
-			throw new AxelorException(String.format(I18n.get(com.axelor.apps.account.exception.IExceptionMessage.INVOICE_BATCH_1), invoiceBatch.getToStatusSelect(), invoiceBatch.getCode()), IException.INCONSISTENCY);
+		} else {
+			throw new AxelorException(IException.INCONSISTENCY, I18n.get(com.axelor.apps.account.exception.IExceptionMessage.INVOICE_BATCH_1), invoiceBatch.getToStatusSelect(), invoiceBatch.getCode());
 		}
 
 		return strategy.run(invoiceBatch);

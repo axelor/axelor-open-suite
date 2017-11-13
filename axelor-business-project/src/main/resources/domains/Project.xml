@@ -12,7 +12,7 @@
   		<decimal name="price" title="Unit price" precision="20" scale="10"/>
   		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
   		<decimal name="exTaxTotal" title="Total W.T."/>
-		<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale Order"/>
+		<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Original Sale Order"/>
 		<integer name="projInvTypeSelect" selection="project.invoicing.type.select" title="Invoicing Type" default="1"/>
 		<decimal name="totalSaleOrdersFinalized" title="Finalized Orders Total" readonly="true"/>
 		<decimal name="totalSaleOrdersConfirmed" title="Confirmed Orders Total" readonly="true"/>

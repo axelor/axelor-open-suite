@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -22,10 +22,8 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
@@ -45,35 +43,20 @@ public class MoveAccountService {
 
 	protected MoveCustAccountService moveCustAccountService;
 	protected MoveRepository moveRepository;
+	protected MoveValidateService moveValidateService;
 
 	@Inject
-	public MoveAccountService(MoveCustAccountService moveCustAccountService, MoveRepository moveRepository) {
+	public MoveAccountService(MoveCustAccountService moveCustAccountService, MoveRepository moveRepository, MoveValidateService moveValidateService) {
 		this.moveCustAccountService = moveCustAccountService;
 		this.moveRepository = moveRepository;
+		this.moveValidateService = moveValidateService;
 	}
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void account(Move move) throws AxelorException  {
 
-		LocalDate date = move.getDate();
-		Partner partner = move.getPartner();
-
-		int counter = 1;
-		for(MoveLine moveLine : move.getMoveLineList())  {
-			if (moveLine.getDate() == null) {
-				moveLine.setDate(date);
-			}
-						
-			if(moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance() && moveLine.getDueDate() == null)  {
-				moveLine.setDueDate(date);
-			}
-			if (partner != null) {
-				moveLine.setPartner(partner);
-			}
-			moveLine.setCounter(counter);
-			counter++;
-		}
+		moveValidateService.completeMoveLines(move);
 
 		this.accountMove(move);
 		moveRepository.save(move);
@@ -106,19 +89,17 @@ public class MoveAccountService {
 		log.debug("Comptabilisation de l'écriture comptable {}", move.getReference());
 		Journal journal = move.getJournal();
 		Company company = move.getCompany();
-		if(journal == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_2)),IException.CONFIGURATION_ERROR);
+		if (journal == null) {
+			throw new AxelorException(move, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_2));
 		}
-		if(company == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_3)),IException.CONFIGURATION_ERROR);
+		if (company == null) {
+			throw new AxelorException(move, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_3));
 		}
-
-		if(move.getPeriod() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_4)),IException.CONFIGURATION_ERROR);
+		if (move.getPeriod() == null) {
+			throw new AxelorException(move, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_4));
 		}
-
-		if (journal.getSequence() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_5), journal.getName()), IException.CONFIGURATION_ERROR);
+		if (journal.getSequence() == null) {
+			throw new AxelorException(move, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_2), journal.getName());
 		}
 
 		this.accountEquiponderanteMove(move);
@@ -150,18 +131,17 @@ public class MoveAccountService {
 
 			for (MoveLine moveLine : move.getMoveLineList()){
 
-				if(moveLine.getDebit().compareTo(BigDecimal.ZERO) == 1 && moveLine.getCredit().compareTo(BigDecimal.ZERO) == 1)  {
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_6),
-							moveLine.getName()), IException.INCONSISTENCY);
+				if(moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0 && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+					throw new AxelorException(move, IException.INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_6), moveLine.getName());
 				}
 
 				totalDebit = totalDebit.add(moveLine.getDebit());
 				totalCredit = totalCredit.add(moveLine.getCredit());
 			}
 
-			if (totalDebit.compareTo(totalCredit) != 0){
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_7),
-						move.getReference(), totalDebit, totalCredit), IException.INCONSISTENCY);
+			if (totalDebit.compareTo(totalCredit) != 0) {
+				throw new AxelorException(move, IException.INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_7),
+						move.getReference(), totalDebit, totalCredit);
 			}
 			move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
 		}

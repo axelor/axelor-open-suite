@@ -24,6 +24,8 @@
   	   	  <field name="generateMoveForAdvancePayment"/>
 	   	  <field name="invoiceInAtiSelect"/>
 			<field name="accountingDaybook"/>
+			<field name="invoiceAutomaticMail"/>
+			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
     
 		</panel>
 		
@@ -53,6 +55,10 @@
 					<field name="irrecoverableAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="employeeAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="advancePaymentAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+					<panel if="__config__.app.getApp('account').getManageFactors()" colSpan="12">
+						<field name="factorDebitAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+						<field name="factorCreditAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+					</panel>
 				</panel>
 				<panel name="paymentDifferences" title="Payment differences" colSpan="12">
 					<field name="thresholdDistanceFromRegulation"/>
@@ -147,23 +153,27 @@
 			</panel>
 			
 			<panel name="bankOrder" title="Bank Order" if-module="axelor-bank-payment">
-			  	<field name="generateMoveOnBankOrderValidation"  if-module="axelor-bank-payment"/>
-			  	<field name="internalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-				<field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-				
-				<panel name="creditTransferBankOrderSequences" title="Credit transfer bank orders sequences" colSpan="6">
+                <panel colSpan="12">
+                    <field name="generateMoveOnBankOrderValidation" if-module="axelor-bank-payment"/>
+                    <field name="icsNumber" if="__config__.app.getApp('account').getManageDirectDebitPayment()" if-module="axelor-bank-payment"/>
+                    <field name="internalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+                    <field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+                </panel>
+				<panel name="creditTransferBankOrderSequences" title="Credit transfer bank orders sequences" colSpan="4">
 					<field name="sepaCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 					<field name="intCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 				</panel>
-				<panel name="directDebitBankOrderSequences" title="Direct debit bank orders sequences" colSpan="6">
+				<panel name="directDebitBankOrderSequences" title="Direct debit bank orders sequences" colSpan="4">
 					<field name="sepaDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 					<field name="intDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 				</panel>
-				<panel name="treasuryTransferBankOrderSequences" title="Treasury transfer Bank orders sequences" colSpan="6">
+				<panel name="treasuryTransferBankOrderSequences" title="Treasury transfer Bank orders sequences" colSpan="4">
 					<field name="natTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 					<field name="intTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 				</panel>
-				<field name="otherBankOrderSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+                <panel name="other" title="Other" colSpan="12">
+                    <field name="otherBankOrderSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+                </panel>
 			</panel>
 		
 			<panel name="reimbursement" title="Reimbursement">
@@ -265,5 +275,11 @@
 		<domain>self.company.id = :id</domain>
 		<context name="id" expr="eval: company.id"/>
 	</action-view>
+	
+	<action-view name="action-company-view-account-config" title="Account config (${ name })" model="com.axelor.apps.account.db.AccountConfig">
+    	<view type="form" name="account-config-form"/>
+    	<context name="_showRecord" expr="eval: __self__.accountConfig?.id"/>
+    	<context name="_company" expr="eval: __this__"/>
+    </action-view>
 	
 </object-views>

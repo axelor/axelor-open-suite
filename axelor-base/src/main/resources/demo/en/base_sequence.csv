@@ -78,3 +78,5 @@
 9;"productTrackingNumber";"Tracking N°";1;12;"TN";;1;0;1
 10;"productionOrder";"Production Order N°";1;11;"PDO";;1;0;1
 11;"manufOrder";"Manufacturing Order N°";1;12;"MO";;1;0;1
+169;"subrogationRelease";"Subrogation release";1;4;"SR%YY%FM";;1;1;1
+170;"depositSlip";"Deposit slip";1;4;"DS%YY%FM";;1;1;1

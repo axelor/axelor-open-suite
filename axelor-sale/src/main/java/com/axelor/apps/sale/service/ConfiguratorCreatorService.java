@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -20,18 +20,11 @@ package com.axelor.apps.sale.service;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.script.ScriptBindings;
 
 public interface ConfiguratorCreatorService {
-
-    /**
-     * Call {@link #updateAttributes} and {@link #updateIndicators}
-     * then create a new {@link Configurator}.
-     * Finally save the creator given in param.
-     * @param creator
-     */
-    void generateConfigurator(ConfiguratorCreator creator);
 
     /**
      * Add default view attrs for configurator attributes
@@ -63,4 +56,23 @@ public interface ConfiguratorCreatorService {
      * @throws AxelorException
      */
     ScriptBindings getTestingValues(ConfiguratorCreator creator) throws AxelorException;
+
+    /**
+     * Compute the correct domain to filter creator that are not authorized
+     * for the current user.
+     * @return the domain
+     */
+    String getConfiguratorCreatorDomain();
+
+	/**
+	 * Add the current user to the authorized user list
+	 * @param creator
+	 */
+	void authorizeUser(ConfiguratorCreator creator, User user);
+
+    /**
+     * Activates the creator and saves it.
+     * @param creator
+     */
+	void activate(ConfiguratorCreator creator);
 }

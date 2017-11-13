@@ -205,9 +205,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	@Override
 	public String getSequence(Company company) throws AxelorException  {
 		String seq = sequenceService.getSequenceNumber(IAdministration.PURCHASE_ORDER, company);
-		if (seq == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_1), company.getName()),
-							IException.CONFIGURATION_ERROR);
+		if (seq == null) {
+			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PURCHASE_ORDER_1), company.getName());
 		}
 		return seq;
 	}

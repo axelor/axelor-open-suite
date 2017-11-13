@@ -523,6 +523,13 @@
 		<view type="grid" name="indicator-generator-grid" />
 		<view type="form" name="indicator-generator-form"/>
 	</action-view>
+	
+	<menuitem title="Advanced exports" name="menu-advanced-export" parent="admin-root-maintenance" action="menu.advanced.export" />
+  
+	<action-view name="menu.advanced.export" title="Advanced export" model="com.axelor.apps.base.db.AdvancedExport">
+		<view type="grid" name="advanced-export-grid"/>
+		<view type="form" name="advanced-export-form"/>
+	</action-view>
 
 	<menuitem name="admin-root-calendars" parent="admin-root"
 			  title="Calendars" order="50"/>
@@ -553,6 +560,5 @@
 		<view type="grid" name="calendar-configuration-grid"/>
 		<view type="form" name="calendar-configuration-form"/>
 	</action-view>
-	
 	
 </object-views>

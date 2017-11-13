@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -53,17 +53,15 @@ public class StockMoveInvoiceController {
 		try {
 			stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
 
-			if(stockMove.getSaleOrder() != null) {
+			if (stockMove.getSaleOrder() != null) {
 				invoice = stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder());
-			}
-			else if(stockMove.getPurchaseOrder() != null) {
+			} else if(stockMove.getPurchaseOrder() != null) {
 				invoice = stockMoveInvoiceService.createInvoiceFromPurchaseOrder(stockMove, stockMove.getPurchaseOrder());
-			}
-			else  {
+			} else {
 				invoice = stockMoveInvoiceService.createInvoiceFromStockMove(stockMove);
 			}
 
-			if(invoice != null)  {
+			if (invoice != null) {
 				//refresh stockMove context
 				response.setReload(true);
 				//Open the generated invoice in a new tab
@@ -218,8 +216,10 @@ public class StockMoveInvoiceController {
 			for (Map map : stockMoveMap) {
 				try{
 					stockMove = JPA.em().find(StockMove.class, new Long((Integer)map.get("id")));
-					invoice = stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder());
-					invoiceIdList.add(invoice.getId());
+					if (stockMove.getSaleOrder() != null) {
+						invoice = stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder());
+						invoiceIdList.add(invoice.getId());
+					}
 				}catch (AxelorException ae){
 					if (stockMovesInError.length() > 0){
 						stockMovesInError.append("<br/>");
@@ -237,8 +237,10 @@ public class StockMoveInvoiceController {
 			for (Map map : stockMoveMap) {
 				try{
 					stockMove = JPA.em().find(StockMove.class, new Long((Integer)map.get("id")));
-					invoice = stockMoveInvoiceService.createInvoiceFromPurchaseOrder(stockMove, stockMove.getPurchaseOrder());
-					invoiceIdList.add(invoice.getId());
+					if (stockMove.getPurchaseOrder() != null) {
+						invoice = stockMoveInvoiceService.createInvoiceFromPurchaseOrder(stockMove, stockMove.getPurchaseOrder());
+						invoiceIdList.add(invoice.getId());
+					}
 				}catch (AxelorException ae){
 					if (stockMovesInError.length() > 0){
 						stockMovesInError.append("<br/>");

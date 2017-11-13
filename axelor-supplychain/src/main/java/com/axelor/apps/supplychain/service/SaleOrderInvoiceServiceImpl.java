@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -23,9 +23,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
@@ -79,7 +77,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	protected SaleOrderRepository saleOrderRepo;
 
 	protected InvoiceRepository invoiceRepo;
-	
+
 	protected InvoiceService invoiceService;
 
 	@Inject
@@ -151,10 +149,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 				);
 		}
 		if (amount.compareTo(new BigDecimal("100")) > 0) {
-	    	throw new AxelorException(
-	    			I18n.get(IExceptionMessage.SO_INVOICE_QTY_MAX),
-					IException.INCONSISTENCY
-			);
+	    	throw new AxelorException(saleOrder, IException.INCONSISTENCY,	I18n.get(IExceptionMessage.SO_INVOICE_QTY_MAX));
 		}
 
 		return amount;
@@ -168,10 +163,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		Product invoicingProduct = Beans.get(AccountConfigService.class)
 				.getAccountConfig(saleOrder.getCompany()).getInvoicingProduct();
 		if (invoicingProduct == null) {
-			throw new AxelorException(I18n.get(
-					IExceptionMessage.SO_INVOICE_MISSING_INVOICING_PRODUCT),
-					IException.CONFIGURATION_ERROR
-			);
+			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_INVOICE_MISSING_INVOICING_PRODUCT));
 		}
 		Invoice invoice = createInvoiceAndLines(
 				saleOrder, taxLineList, invoicingProduct,
@@ -197,18 +189,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 				.getAccountConfig(saleOrder.getCompany())
 				.getAdvancePaymentAccount();
 		if (invoicingProduct == null) {
-			throw new AxelorException(
-					I18n.get(IExceptionMessage.SO_INVOICE_MISSING_ADVANCE_PAYMENT_PRODUCT),
-					IException.CONFIGURATION_ERROR
-			);
+			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_INVOICE_MISSING_ADVANCE_PAYMENT_PRODUCT));
 		}
 		if (advancePaymentAccount == null) {
-			throw new AxelorException(
-					String.format(I18n.get(
-							IExceptionMessage.SO_INVOICE_MISSING_ADVANCE_PAYMENT_ACCOUNT),
-							saleOrder.getCompany().getName()
-					), IException.CONFIGURATION_ERROR
-			);
+			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_INVOICE_MISSING_ADVANCE_PAYMENT_ACCOUNT), saleOrder.getCompany().getName());
 		}
 
 		Invoice invoice = createInvoiceAndLines(
@@ -236,7 +220,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		);
 		this.fillInLines(invoice);
 
-		invoice.setAddressStr(invoiceService.computeAddressStr(invoice.getAddress()));
+		invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
 
 		invoice.setOperationSubTypeSelect(operationSubTypeSelect);
 
@@ -306,13 +290,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 											boolean isPercent) throws AxelorException {
 
 		if (qtyToInvoiceMap.isEmpty()) {
-			throw new AxelorException(
-					I18n.get(IExceptionMessage.SO_INVOICE_NO_LINES_SELECTED),
-					IException.INCONSISTENCY
-			);
+			throw new AxelorException(saleOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.SO_INVOICE_NO_LINES_SELECTED));
 		}
 
-		for( SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+		for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 			Long SOrderId = saleOrderLine.getId();
 			if (qtyToInvoiceMap.containsKey(SOrderId)) {
 				if (isPercent) {
@@ -328,10 +309,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 				}
 				if (qtyToInvoiceMap.get(SOrderId)
 						.compareTo(saleOrderLine.getQty()) > 0) {
-					throw new AxelorException(
-							I18n.get(IExceptionMessage.SO_INVOICE_QTY_MAX),
-							IException.INCONSISTENCY
-					);
+					throw new AxelorException(saleOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.SO_INVOICE_QTY_MAX));
 				}
 			}
 		}
@@ -445,7 +423,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, saleOrderLineList, qtyToInvoiceMap));
 		this.fillInLines(invoice);
 
-		invoice.setAddressStr(invoiceService.computeAddressStr(invoice.getAddress()));
+		invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
 
 		return invoice;
 
@@ -455,8 +433,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	@Override
 	public InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder) throws AxelorException  {
 
-		if(saleOrder.getCurrency() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_INVOICE_6), saleOrder.getSaleOrderSeq()), IException.CONFIGURATION_ERROR);
+		if (saleOrder.getCurrency() == null) {
+			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_INVOICE_6), saleOrder.getSaleOrderSeq());
 		}
 
 		InvoiceGenerator invoiceGenerator = new InvoiceGeneratorSupplyChain(saleOrder) {
@@ -579,13 +557,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	    BigDecimal amountInvoiced = this.getInvoicedAmount(saleOrder,
 				currentInvoiceId, excludeCurrentInvoice);
 	    if (amountInvoiced.compareTo(saleOrder.getExTaxTotal()) > 0) {
-	    	throw new AxelorException(
-	    			String.format(
-	    					I18n.get(IExceptionMessage.SO_INVOICE_TOO_MUCH_INVOICED),
-							saleOrder.getSaleOrderSeq()
-					),
-					IException.FUNCTIONNAL
-			);
+	    	throw new AxelorException(saleOrder, IException.FUNCTIONNAL, I18n.get(IExceptionMessage.SO_INVOICE_TOO_MUCH_INVOICED), saleOrder.getSaleOrderSeq());
 		}
 		saleOrder.setAmountInvoiced(amountInvoiced);
 	}

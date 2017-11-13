@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -75,7 +75,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 			
 		} catch (AxelorException e) {
 			
-			TraceBackService.trace(new AxelorException("", e, e.getcategory()), IException.DOUBTFUL_CUSTOMER, batch.getId());
+			TraceBackService.trace(new AxelorException(e, e.getCategory(), ""), IException.DOUBTFUL_CUSTOMER, batch.getId());
 			incrementAnomaly();
 			stop = true;
 		}
@@ -146,7 +146,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 			
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format(I18n.get("Invoice")+" %s", move.getInvoice().getInvoiceId()), e, e.getcategory()), IException.DOUBTFUL_CUSTOMER, batch.getId());
+				TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get("Invoice")+" %s", move.getInvoice().getInvoiceId()), IException.DOUBTFUL_CUSTOMER, batch.getId());
 				incrementAnomaly();
 				
 			} catch (Exception e) {
@@ -191,7 +191,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 				
 			} catch (AxelorException e) {
 				
-				TraceBackService.trace(new AxelorException(String.format(I18n.get("Invoice")+" %s", moveLine.getInvoiceReject().getInvoiceId()), e, e.getcategory()), IException.DOUBTFUL_CUSTOMER, batch.getId());
+				TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get("Invoice")+" %s", moveLine.getInvoiceReject().getInvoiceId()), IException.DOUBTFUL_CUSTOMER, batch.getId());
 				incrementAnomaly();
 				
 			} catch (Exception e) {
@@ -224,8 +224,8 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 	protected void stop() {
 
 		String comment = I18n.get(IExceptionMessage.BATCH_DOUBTFUL_1)+" :\n";
-		comment += String.format(I18n.get(IExceptionMessage.BATCH_DOUBTFUL_2), batch.getDone());
-		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+		comment += String.format("\t" + I18n.get(IExceptionMessage.BATCH_DOUBTFUL_2) + "\n", batch.getDone());
+		comment += String.format("\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 		
 		comment += String.format("\t* ------------------------------- \n");
 		comment += String.format("\t* %s ", updateCustomerAccountLog);

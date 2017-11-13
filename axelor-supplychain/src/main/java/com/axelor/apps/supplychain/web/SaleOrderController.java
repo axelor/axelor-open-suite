@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -18,15 +18,11 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Wizard;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -293,8 +289,8 @@ public class SaleOrderController{
 		for (Subscription subscription : subscriptionList) {
 			listId.add(subscription.getSaleOrderLine().getSaleOrder().getId());
 		}
-		if(listId.isEmpty()){
-			throw new AxelorException(I18n.get("No Subscription to Invoice"), IException.CONFIGURATION_ERROR);
+		if (listId.isEmpty()) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No Subscription to Invoice"));
 		}
 		if(listId.size() == 1){
 			response.setView(ActionView
@@ -327,8 +323,8 @@ public class SaleOrderController{
 					listInvoiceId.add(invoice.getId());
 				}
 			}
-			if(listInvoiceId.isEmpty()){
-				throw new AxelorException(I18n.get("No sale order selected or no subscription to invoice"), IException.CONFIGURATION_ERROR);
+			if (listInvoiceId.isEmpty()) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No sale order selected or no subscription to invoice"));
 			}
 			response.setReload(true);
 			if(listInvoiceId.size() == 1){
@@ -354,8 +350,8 @@ public class SaleOrderController{
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		saleOrder = saleOrderRepo.find(saleOrder.getId());
 		Invoice invoice = saleOrderInvoiceServiceImpl.generateSubcriptionInvoiceForSaleOrder(saleOrder);
-		if(invoice == null){
-			throw new AxelorException(I18n.get("No Subscription to Invoice"), IException.CONFIGURATION_ERROR);
+		if (invoice == null) {
+			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get("No Subscription to Invoice"));
 		}
 		response.setReload(true);
 		response.setView(ActionView
@@ -567,26 +563,6 @@ public class SaleOrderController{
 		}catch(AxelorException ae){
 			response.setFlash(ae.getLocalizedMessage());
 		}
-	}
-
-	/**
-	 * Called on partner, company or payment change.
-	 * Fill the bank details with a default value.
-	 * @param request
-	 * @param response
-	 */
-	public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		PaymentMode paymentMode = saleOrder.getPaymentMode();
-		Company company = saleOrder.getCompany();
-		Partner partner = saleOrder.getClientPartner();
-		if(paymentMode == null || company == null || partner == null) {
-			return;
-		}
-		partner = Beans.get(PartnerRepository.class).find(partner.getId());
-		BankDetails defaultBankDetails = Beans.get(AccountingSituationService.class)
-				.findDefaultBankDetails(company, paymentMode, partner);
-		response.setValue("companyBankDetails", defaultBankDetails);
 	}
 
 	public void updateAmountToBeSpreadOverTheTimetable(ActionRequest request, ActionResponse response) {

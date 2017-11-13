@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -33,9 +36,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
 
 	@Inject
@@ -44,9 +44,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
 			AppAccountService appAccountService) {
 		super(validateFactory, ventilateFactory, cancelFactory, alarmEngineService, invoiceRepo, appAccountService);
 	}
-	
-	
-	
+
 	public List<String> editInvoiceAnnex(Invoice invoice, String invoiceIds, boolean toAttach) throws AxelorException{
 		
 		if (!AuthUtils.getUser().getActiveCompany().getAccountConfig().getDisplayTimesheetOnPrinting() && !AuthUtils.getUser().getActiveCompany().getAccountConfig().getDisplayExpenseOnPrinting()) { return null; }

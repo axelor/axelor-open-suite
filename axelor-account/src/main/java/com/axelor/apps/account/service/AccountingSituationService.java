@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -19,9 +19,8 @@ package com.axelor.apps.account.service;
 
 import java.util.List;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
@@ -34,7 +33,33 @@ public interface AccountingSituationService	{
 	AccountingSituation getAccountingSituation(Partner partner, Company company);
 	AccountingSituation createAccountingSituation(Partner partner, Company company) throws AxelorException;
 	String createDomainForBankDetails(AccountingSituation accountingSituation, boolean isInBankDetails);
-	BankDetails findDefaultBankDetails(Company company, PaymentMode paymentMode, Partner partner);
 	void updateCustomerCredit(Partner partner) throws AxelorException;
+
+	/**
+	 * Get customer account from accounting situation or account config.
+	 * 
+	 * @param partner
+	 * @param company
+	 * @return
+	 */
+	Account getCustomerAccount(Partner partner, Company company) throws AxelorException;
+	
+	/**
+	 * Get supplier account from accounting situation or account config.
+	 * 
+	 * @param partner
+	 * @param company
+	 * @return
+	 */
+	Account getSupplierAccount(Partner partner, Company company) throws AxelorException;
+	
+	/**
+	 * Get employee account from accounting situation or account config.
+	 * 
+	 * @param partner
+	 * @param company
+	 * @return
+	 */
+	Account getEmployeeAccount(Partner partner, Company company) throws AxelorException;
 
 }

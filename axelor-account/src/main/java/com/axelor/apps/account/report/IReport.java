@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -18,7 +18,6 @@
 package com.axelor.apps.account.report;
 
 public interface IReport {
-
 	
 	public static final String ACCOUNTING_REPORT_TYPE = "AccountingReportType%s.rptdesign";
 	public static final String PAYMENT_VOUCHER = "PaymentVoucher.rptdesign";
@@ -27,6 +26,8 @@ public interface IReport {
 	public static final String SALE_INVOICES_DETAILS = "SaleInvoicesDetails.rptdesign";
 	public static final String PURCHASE_INVOICES_DETAILS = "PurchaseInvoicesDetails.rptdesign";
 	public static final String ACCOUNT_MOVE = "AccountMove.rptdesign";
-	
-	
+	public static final String SUBROGATION_RELEASE = "SubrogationRelease.rptdesign";
+	public static final String CHEQUE_DEPOSIT_SLIP = "ChequeDepositSlip.rptdesign";
+    public static final String CASH_DEPOSIT_SLIP = "CashDepositSlip.rptdesign";
+
 }

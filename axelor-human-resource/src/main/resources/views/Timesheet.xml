@@ -103,7 +103,7 @@
 			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
 		</panel>
 		<panel>
-			<field name="timesheetAttrs" colSpan="12" />
+			<field name="attrs" colSpan="12" />
 		</panel>
 		<panel-mail>
 		  <mail-messages limit="4" />

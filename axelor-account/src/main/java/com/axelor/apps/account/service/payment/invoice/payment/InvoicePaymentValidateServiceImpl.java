@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -36,6 +36,7 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -47,6 +48,8 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -144,7 +147,7 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		Partner partner = invoice.getPartner();
 		LocalDate paymentDate = invoicePayment.getPaymentDate();
 		BigDecimal paymentAmount = invoicePayment.getAmount();
-		BankDetails companyBankDetails = invoicePayment.getBankDetails();
+		BankDetails companyBankDetails = invoicePayment.getCompanyBankDetails();
 
 		Account customerAccount;
 
@@ -153,6 +156,7 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		boolean isDebitInvoice = moveService.getMoveToolService().isDebitCustomer(invoice, true);
 
 		MoveLine invoiceMoveLine = moveService.getMoveToolService().getInvoiceCustomerMoveLineByLoop(invoice);
+
 		if (invoice.getOperationSubTypeSelect()
 				== InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
 
@@ -162,6 +166,9 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		    customerAccount = accountConfigService
 					.getAdvancePaymentAccount(accountConfig);
 		} else {
+			if (invoiceMoveLine == null) {
+			    return null;
+			}
 			customerAccount = invoiceMoveLine.getAccount();
 		}
 		
