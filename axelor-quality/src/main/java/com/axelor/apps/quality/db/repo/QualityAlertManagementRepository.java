@@ -30,12 +30,8 @@ public class QualityAlertManagementRepository extends QualityAlertRepository {
 	
 	@Override
 	public QualityAlert save(QualityAlert qualityAlert) {
-			if (Strings.isNullOrEmpty(qualityAlert.getReference())) {
-				if (Strings.isNullOrEmpty(qualityAlert.getQualityAlertSeq())) {
-					qualityAlert.setQualityAlertSeq(sequenceService.getSequenceNumber(IAdministration.QUALITY_ALERT, null));
-				}
-			} 
-			qualityAlert.setReference(qualityAlert.getQualityAlertSeq());
+			if (Strings.isNullOrEmpty(qualityAlert.getReference()))
+				qualityAlert.setReference(sequenceService.getSequenceNumber(IAdministration.QUALITY_ALERT, null));
 		return super.save(qualityAlert);
 	}
 		

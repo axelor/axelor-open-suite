@@ -31,12 +31,8 @@ public class QualityControlManagementRepository extends QualityControlRepository
 	@Override
 	public QualityControl save(QualityControl qualityControl) {
 		
-		if (Strings.isNullOrEmpty(qualityControl.getReference())) {
-			if (Strings.isNullOrEmpty(qualityControl.getQualityControlSeq())) {
-				qualityControl.setQualityControlSeq(sequenceService.getSequenceNumber(IAdministration.QUALITY_CONTROL, null));
-			}
-		} 
-		qualityControl.setReference(qualityControl.getQualityControlSeq());
+		if (Strings.isNullOrEmpty(qualityControl.getReference()))
+			qualityControl.setReference(sequenceService.getSequenceNumber(IAdministration.QUALITY_CONTROL, null));
 		return super.save(qualityControl);
 	}
 	
