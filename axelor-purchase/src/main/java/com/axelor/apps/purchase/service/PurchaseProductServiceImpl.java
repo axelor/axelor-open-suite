@@ -18,18 +18,40 @@
 package com.axelor.apps.purchase.service;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.IProductVariant;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
+import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.ProductVariantRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.beust.jcommander.internal.Lists;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public interface ProductService {
-	
-	public Map<String, Object> getDiscountsFromCatalog(SupplierCatalog supplierCatalog,BigDecimal price);	
+public class PurchaseProductServiceImpl implements PurchaseProductService  {
+
+	@Override
+	public Map<String, Object> getDiscountsFromCatalog(SupplierCatalog supplierCatalog,BigDecimal price){
+		Map<String, Object> discounts = new HashMap<String, Object>();
+
+		discounts.put("discountAmount", supplierCatalog.getPrice().subtract(price));
+		discounts.put("discountTypeSelect", 2);
+
+		return discounts;
+	}
 
 }

@@ -31,7 +31,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
-public class ProductController {
+public class PurchaseProductController {
 
 	@Inject
 	private ProductRepository productRepo;

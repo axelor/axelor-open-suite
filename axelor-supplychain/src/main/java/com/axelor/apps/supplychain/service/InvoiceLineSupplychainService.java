@@ -17,19 +17,37 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.math.BigDecimal;
+import java.util.Map;
+import java.util.List;
+
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.base.db.IPriceListLine;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.apps.purchase.service.ProductService;
+import com.axelor.apps.purchase.service.PurchaseProductService;
+import com.axelor.apps.base.service.ProductService;
 import com.google.inject.Inject;
+import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.inject.Beans;
+
 
 public class InvoiceLineSupplychainService extends InvoiceLineService  {
 	
+	protected PurchaseProductService purchaseProductService;
+
 	@Inject
 	public InvoiceLineSupplychainService(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService, 
 			AppAccountService appAccountService, AnalyticMoveLineService analyticMoveLineService, ProductService productService)  {
@@ -56,5 +74,48 @@ public class InvoiceLineSupplychainService extends InvoiceLineService  {
 				return product.getUnit();
 			}
 		}
+	}
+	
+	@Override
+	public Map<String,Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price)  {
+		
+		PriceList priceList = invoice.getPriceList();
+		BigDecimal discountAmount = BigDecimal.ZERO;
+		Map<String, Object> discounts = null;
+		
+		int computeMethodDiscountSelect = appAccountService.getAppBase().getComputeMethodDiscountSelect();
+
+		if(priceList != null)  {
+			int discountTypeSelect = 0;
+			
+			PriceListLine priceListLine = this.getPriceListLine(invoiceLine, priceList);
+			if(priceListLine!=null){
+				discountTypeSelect = priceListLine.getTypeSelect();
+			}
+
+			discounts = priceListService.getDiscounts(priceList, priceListLine, price);
+			discountAmount = (BigDecimal) discounts.get("discountAmount");
+			
+			if((computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) 
+					|| computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT)  {
+				discounts.put("price", priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), discountAmount));
+			}
+		}
+
+		if (invoice.getOperationTypeSelect() < InvoiceRepository.OPERATION_TYPE_CLIENT_SALE && discountAmount.compareTo(BigDecimal.ZERO) == 0){
+			List<SupplierCatalog> supplierCatalogList = invoiceLine.getProduct().getSupplierCatalogList();
+			if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){
+				SupplierCatalog supplierCatalog = Beans.get(SupplierCatalogRepository.class).all().filter("self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",invoiceLine.getProduct(),invoiceLine.getQty(),invoice.getPartner()).fetchOne();
+				if(supplierCatalog != null){
+					
+					discounts = purchaseProductService.getDiscountsFromCatalog(supplierCatalog,price);
+
+					if(computeMethodDiscountSelect != AppBaseRepository.DISCOUNT_SEPARATE){
+						discounts.put("price", priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount")));
+					}
+				}
+			}
+		}
+		return discounts;
 	}
 }
