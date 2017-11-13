@@ -31,6 +31,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -67,32 +68,11 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         }
 
         for (MetaJsonField field : creator.getAttributes()) {
-            //set context field
-            final String fieldName = "configuratorCreator";
+            setContextToJsonField(creator, field);
 
-            final Class<?> modelClass = creator.getClass();
-
-            final Mapper mapper = Mapper.of(modelClass);
-            final Property property = mapper.getProperty(fieldName);
-            final String target = property == null ? null : property.getTarget().getName();
-            final String targetName = property == null ? null : property.getTargetName();
-
-            field.setContextFieldTarget(target);
-            field.setContextFieldTargetName(targetName);
-            field.setContextFieldValue(creator.getId().toString());
-            field.setContextFieldTitle(creator.getName());
-
-            //update onChange
-
-            String onChange = field.getOnChange();
-            if (onChange == null
-                    || !onChange.contains("save,action-configurator-update-indicators,save")) {
-
-                String modifiedOnChange = "save,action-configurator-update-indicators,save";
-                if (!Strings.isNullOrEmpty(onChange)) {
-                    modifiedOnChange = modifiedOnChange + "," + onChange;
-                }
-                field.setOnChange(modifiedOnChange);
+            //fill onChange if empty
+            if (Strings.isNullOrEmpty(field.getOnChange())) {
+                field.setOnChange("save,action-configurator-update-indicators,save");
             }
         }
         configuratorCreatorRepo.save(creator);
@@ -274,11 +254,9 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         }
         if (formula.getShowOnConfigurator()) {
             indicator.setHidden(false);
-            indicator.setShowIf("$record.configuratorCreator.id == "
-                    + creator.getId());
+            setContextToJsonField(creator, indicator);
         } else {
             indicator.setHidden(true);
-            indicator.setShowIf("");
         }
         if (configuratorFormulaService.getMetaField(formula)
                 .getTypeName().equals("BigDecimal")) {
@@ -321,6 +299,37 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     @Transactional
     public void activate(ConfiguratorCreator creator) {
         creator.setIsActive(true);
+    }
+
+    /**
+     * Set the context field to a json field. Allows to limit the json field
+     * to the configurator having the right configurator creator.
+     * @param creator
+     * @param field
+     */
+    protected void setContextToJsonField(ConfiguratorCreator creator,
+                                         MetaJsonField field) {
+        final String fieldName = "configuratorCreator";
+        final Class<?> modelClass;
+        final String modelName = field.getModel();
+
+        try {
+            modelClass = Class.forName(modelName);
+        } catch (ClassNotFoundException e) {
+            // this should not happen
+            TraceBackService.trace(e);
+            return;
+        }
+        final Mapper mapper = Mapper.of(modelClass);
+        final Property property = mapper.getProperty(fieldName);
+        final String target = property == null ? null : property.getTarget().getName();
+        final String targetName = property == null ? null : property.getTargetName();
+
+        field.setContextField(fieldName);
+        field.setContextFieldTarget(target);
+        field.setContextFieldTargetName(targetName);
+        field.setContextFieldValue(creator.getId().toString());
+        field.setContextFieldTitle(creator.getName());
     }
 
 }
