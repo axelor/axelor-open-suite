@@ -13,7 +13,7 @@
 		onNew="action-payroll-preparation-group-on-new"
 		onLoad="action-payroll-preparation-method-fill-in-leaves">
 		<panel name="main" >
-			<field name="company" form-view="company-form" grid-view="company-grid" colSpan="4"/>
+			<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" colSpan="4"/>
 			 <field name="employee" colSpan="4" onChange="action-payroll-preparation-record-delete-contract, action-payroll-preparation-group-fill-in"/>
 			 <field name="employmentContract" colSpan="4" domain="self.employee = :employee" onChange="action-payroll-preparation-group-fill-in"/> 
 			 <field name="period" onChange="action-payroll-preparation-group-fill-in" colSpan="4"/>
