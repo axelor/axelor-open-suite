@@ -47,7 +47,7 @@
 	</form>
 	
 	<form name="incl-customer-balance-partner-form"   title="Partner" model="com.axelor.apps.base.db.Partner" >
-	    <panel-related field="accountingSituationList" title="Customer balance" hideIf="isContact" colSpan="12" widget="MasterDetail" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
+	    <panel-related field="accountingSituationList" title="Customer sales" hideIf="isContact" colSpan="12" widget="MasterDetail" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
 	</form>
 	
 	<form name="incl-blocking-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
