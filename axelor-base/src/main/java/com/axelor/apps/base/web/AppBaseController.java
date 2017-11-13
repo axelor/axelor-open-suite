@@ -195,13 +195,14 @@ public class AppBaseController {
 		
 		for(String field : fieldList) {
 			query += ", m." + field;
-		}
+
 		List<List<Object>> resultList = new ArrayList<>();
 		if(selectedRecored.isEmpty() || selectedRecored == null) {
 			resultList = JPA.em().createQuery(query + ") FROM " + object + " m").getResultList();
 		} else {
 			resultList = JPA.em().createQuery(query + ") FROM " + object + " m where m.id in("+selectedRecored+")").getResultList();
 		}
+
 		
 		List<List<String>> records = new ArrayList<List<String>>();
 		
