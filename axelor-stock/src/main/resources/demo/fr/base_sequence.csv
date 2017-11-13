@@ -7,3 +7,4 @@
 7;"inStockMove";"Bon de réception de bien N°";1;4;"RO";;1;0;1
 8;"inventory";"Inventaire N°";1;4;"INV%M%YY";;1;0;1
 9;"productTrackingNumber";"Numéro de suivi";1;5;"TN";;1;0;1
+203;"logisticalForm";"Fiche logistique";1;5;"FL";;1;0;1

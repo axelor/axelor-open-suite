@@ -7,3 +7,4 @@
 7;"inStockMove";"Goods receipt order N°";1;4;"RO";;1;0;1
 8;"inventory";"Inventory N°";1;4;"INV%M%YY";;1;0;1
 9;"productTrackingNumber";"Tracking N°";1;5;"TN";;1;0;1
+203;"logisticalForm";"Logistical form";1;5;"LF";;1;0;1
