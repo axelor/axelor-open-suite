@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -49,7 +49,7 @@ public class AccountingBatchController {
 
 		Batch batch = null;
 
-		if(accountingBatch.getDebtRecoveryTypeSelect() == AccountingBatchRepository.ACTION_DEBT_RECOVERY)  {
+		if(accountingBatch.getActionSelect() == AccountingBatchRepository.ACTION_DEBT_RECOVERY)  {
 			batch = accountingBatchService.debtRecovery(accountingBatchRepo.find(accountingBatch.getId()));
 		}
 		if(batch != null)

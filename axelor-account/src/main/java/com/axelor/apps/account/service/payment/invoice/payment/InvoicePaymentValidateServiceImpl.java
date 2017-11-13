@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -156,10 +156,7 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		boolean isDebitInvoice = moveService.getMoveToolService().isDebitCustomer(invoice, true);
 
 		MoveLine invoiceMoveLine = moveService.getMoveToolService().getInvoiceCustomerMoveLineByLoop(invoice);
-		if (invoiceMoveLine == null) {
-			throw new AxelorException(invoicePayment, IException.MISSING_FIELD, I18n.get(IExceptionMessage.NO_INVOICE_LINE));
-		}
-		
+
 		if (invoice.getOperationSubTypeSelect()
 				== InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
 
@@ -169,6 +166,9 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		    customerAccount = accountConfigService
 					.getAdvancePaymentAccount(accountConfig);
 		} else {
+			if (invoiceMoveLine == null) {
+			    return null;
+			}
 			customerAccount = invoiceMoveLine.getAccount();
 		}
 		

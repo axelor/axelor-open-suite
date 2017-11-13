@@ -126,7 +126,7 @@
 			</panel>
 		</panel-tabs>
 		<panel>
-			<field name="polAttrs" colSpan="12" />
+			<field name="attrs" colSpan="12" />
 		</panel>
 	</form>
 	

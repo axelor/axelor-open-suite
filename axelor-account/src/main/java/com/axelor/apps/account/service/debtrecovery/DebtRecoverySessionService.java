@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -57,6 +57,7 @@ public class DebtRecoverySessionService {
 	public DebtRecoverySessionService(DebtRecoveryRepository debtRecoveryRepo, AppAccountService appAccountService) {
 
 		this.today = appAccountService.getTodayDate();
+		this.debtRecoveryRepo = debtRecoveryRepo;
 
 	}
 

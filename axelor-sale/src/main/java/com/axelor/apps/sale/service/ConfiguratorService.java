@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -88,7 +88,6 @@ public interface ConfiguratorService {
      * @param saleOrder
      * @param jsonAttributes
      * @param jsonIndicators
-     * @param updateFromStatusSelect
      */
-    void addLineToSaleOrder(Configurator configurator, SaleOrder saleOrder, JsonContext jsonAttributes, JsonContext jsonIndicators, int updateFromStatusSelect) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, AxelorException;
+    void addLineToSaleOrder(Configurator configurator, SaleOrder saleOrder, JsonContext jsonAttributes, JsonContext jsonIndicators) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, AxelorException;
 }

@@ -24,6 +24,8 @@
   	   	  <field name="generateMoveForAdvancePayment"/>
 	   	  <field name="invoiceInAtiSelect"/>
 			<field name="accountingDaybook"/>
+			<field name="invoiceAutomaticMail"/>
+			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
     
 		</panel>
 		
@@ -153,7 +155,7 @@
 			<panel name="bankOrder" title="Bank Order" if-module="axelor-bank-payment">
                 <panel colSpan="12">
                     <field name="generateMoveOnBankOrderValidation" if-module="axelor-bank-payment"/>
-                    <field name="icsNumber" if="__config__.general.getManageDirectDebitPayment()" if-module="axelor-bank-payment"/>
+                    <field name="icsNumber" if="__config__.app.getApp('account').getManageDirectDebitPayment()" if-module="axelor-bank-payment"/>
                     <field name="internalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
                     <field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
                 </panel>
@@ -273,5 +275,11 @@
 		<domain>self.company.id = :id</domain>
 		<context name="id" expr="eval: company.id"/>
 	</action-view>
+	
+	<action-view name="action-company-view-account-config" title="Account config (${ name })" model="com.axelor.apps.account.db.AccountConfig">
+    	<view type="form" name="account-config-form"/>
+    	<context name="_showRecord" expr="eval: __self__.accountConfig?.id"/>
+    	<context name="_company" expr="eval: __this__"/>
+    </action-view>
 	
 </object-views>

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -251,7 +251,7 @@ public class MoveService {
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
 		// Récupération des trop-perçus
-		creditMoveLineList.addAll(moveExcessPaymentService.getExcessPayment(invoice, moveToolService.getCustomerAccount(invoice.getPartner(), company, InvoiceToolService.isPurchase(invoice))));
+		creditMoveLineList.addAll(moveExcessPaymentService.getExcessPayment(invoice));
 		if(creditMoveLineList != null && creditMoveLineList.size() != 0)  {
 
 			Partner partner = invoice.getPartner();

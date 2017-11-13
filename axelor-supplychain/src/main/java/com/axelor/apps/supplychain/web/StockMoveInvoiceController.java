@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -216,8 +216,10 @@ public class StockMoveInvoiceController {
 			for (Map map : stockMoveMap) {
 				try{
 					stockMove = JPA.em().find(StockMove.class, new Long((Integer)map.get("id")));
-					invoice = stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder());
-					invoiceIdList.add(invoice.getId());
+					if (stockMove.getSaleOrder() != null) {
+						invoice = stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder());
+						invoiceIdList.add(invoice.getId());
+					}
 				}catch (AxelorException ae){
 					if (stockMovesInError.length() > 0){
 						stockMovesInError.append("<br/>");
@@ -235,8 +237,10 @@ public class StockMoveInvoiceController {
 			for (Map map : stockMoveMap) {
 				try{
 					stockMove = JPA.em().find(StockMove.class, new Long((Integer)map.get("id")));
-					invoice = stockMoveInvoiceService.createInvoiceFromPurchaseOrder(stockMove, stockMove.getPurchaseOrder());
-					invoiceIdList.add(invoice.getId());
+					if (stockMove.getPurchaseOrder() != null) {
+						invoice = stockMoveInvoiceService.createInvoiceFromPurchaseOrder(stockMove, stockMove.getPurchaseOrder());
+						invoiceIdList.add(invoice.getId());
+					}
 				}catch (AxelorException ae){
 					if (stockMovesInError.length() > 0){
 						stockMovesInError.append("<br/>");

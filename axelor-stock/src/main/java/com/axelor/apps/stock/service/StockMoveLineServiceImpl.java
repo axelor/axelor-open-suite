@@ -283,7 +283,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 					this.updateAveragePriceLocationLine(toLocation, stockMoveLine, toStatus);
 				}
 				this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
-						lastFutureStockMoveDate, stockMoveLine.getTrackingNumber());
+						lastFutureStockMoveDate, stockMoveLine.getTrackingNumber(), BigDecimal.ZERO);
 				Beans.get(LocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct());
 			}
 		}
@@ -420,19 +420,19 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 	@Override
 	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
-			lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException  {
+			lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException  {
 
 		LocationLineService locationLineService = Beans.get(LocationLineService.class);
 
 		switch(fromStatus)  {
 			case StockMoveRepository.STATUS_PLANNED:
-				locationLineService.updateLocation(fromLocation, product, qty, false, true, true, null, trackingNumber);
-				locationLineService.updateLocation(toLocation, product, qty, false, true, false, null, trackingNumber);
+				locationLineService.updateLocation(fromLocation, product, qty, false, true, true, null, trackingNumber, reservedQty);
+				locationLineService.updateLocation(toLocation, product, qty, false, true, false, null, trackingNumber, reservedQty);
 				break;
 
 			case StockMoveRepository.STATUS_REALIZED:
-				locationLineService.updateLocation(fromLocation, product, qty, true, true, true, null, trackingNumber);
-				locationLineService.updateLocation(toLocation, product, qty, true, true, false, null, trackingNumber);
+				locationLineService.updateLocation(fromLocation, product, qty, true, true, true, null, trackingNumber, reservedQty);
+				locationLineService.updateLocation(toLocation, product, qty, true, true, false, null, trackingNumber, reservedQty);
 				break;
 
 			default:
@@ -441,13 +441,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 		switch(toStatus)  {
 			case StockMoveRepository.STATUS_PLANNED:
-				locationLineService.updateLocation(fromLocation, product, qty, false, true, false, lastFutureStockMoveDate, trackingNumber);
-				locationLineService.updateLocation(toLocation, product, qty, false, true, true, lastFutureStockMoveDate, trackingNumber);
+				locationLineService.updateLocation(fromLocation, product, qty, false, true, false, lastFutureStockMoveDate, trackingNumber, reservedQty);
+				locationLineService.updateLocation(toLocation, product, qty, false, true, true, lastFutureStockMoveDate, trackingNumber, reservedQty);
 				break;
 
 			case StockMoveRepository.STATUS_REALIZED:
-				locationLineService.updateLocation(fromLocation, product, qty, true, true, false, null, trackingNumber);
-				locationLineService.updateLocation(toLocation, product, qty, true, true, true, null, trackingNumber);
+				locationLineService.updateLocation(fromLocation, product, qty, true, true, false, null, trackingNumber, reservedQty);
+				locationLineService.updateLocation(toLocation, product, qty, true, true, true, null, trackingNumber, reservedQty);
 				break;
 
 			default:

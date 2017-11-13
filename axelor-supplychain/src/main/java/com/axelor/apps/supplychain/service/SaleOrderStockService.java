@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -30,6 +30,13 @@ public interface SaleOrderStockService {
 
 	public Location getLocation(Company company);
 
+	/**
+	 * Create a delivery stock move from a sale order.
+	 * 
+	 * @param saleOrder
+	 * @return
+	 * @throws AxelorException
+	 */
 	public StockMove createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
 	public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException;
@@ -38,7 +45,12 @@ public interface SaleOrderStockService {
 
 	public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException;
 
-	//Check if existing at least one stockMove not canceled for the saleOrder
+	/**
+	 * Check whether there is at least one stock move not canceled for the sale order.
+	 * 
+	 * @param saleOrder
+	 * @return
+	 */
 	public boolean existActiveStockMoveForSaleOrder(SaleOrder saleOrder);
 }
 

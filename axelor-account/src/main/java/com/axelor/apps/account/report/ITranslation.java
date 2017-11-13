@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -168,4 +168,20 @@ public interface ITranslation {
 	public static final String SUBROGATION_RELEASE_INVOICE_TOTAL = /*$$(*/ "SubrogationRelease.invoiceTotal"; /*)*/
 	public static final String SUBROGATION_RELEASE_CREDIT_TOTAL = /*$$(*/ "SubrogationRelease.creditTotal"; /*)*/
 	public static final String SUBROGATION_RELEASE_GRAND_TOTAL = /*$$(*/ "SubrogationRelease.grandTotal"; /*)*/
+
+    public static final String CHEQUE_DEPOSIT_SLIP_TITLE = /*$$(*/ "ChequeDepositSlip.title"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_PRINTED_ON = /*$$(*/ "ChequeDepositSlip.printedOn"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_NUMBER = /*$$(*/ "ChequeDepositSlip.number"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_DATE = /*$$(*/ "ChequeDepositSlip.depositDate"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_CHEQUE_NUMBERS = /*$$(*/ "ChequeDepositSlip.chequeNumbers"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_BANK = /*$$(*/ "ChequeDepositSlip.bank"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_ACCOUNT_NUMBER = /*$$(*/ "ChequeDepositSlip.accountNumber"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_INDIVIDUAL = /*$$(*/ "ChequeDepositSlip.individual"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_ISSUER = /*$$(*/ "ChequeDepositSlip.issuer"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_PAYER = /*$$(*/ "ChequeDepositSlip.payer"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_CHEQUE_NUMBER = /*$$(*/ "ChequeDepositSlip.chequeNumber"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_PAYMENT_DATE = /*$$(*/ "ChequeDepositSlip.paymentDate"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_CHEQUE_DATE = /*$$(*/ "ChequeDepositSlip.chequeDate"; /*)*/
+    public static final String CHEQUE_DEPOSIT_SLIP_AMOUNT = /*$$(*/ "ChequeDepositSlip.amount"; /*)*/
+
 }

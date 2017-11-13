@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -313,16 +313,30 @@ public class PartnerController {
 		partnerService.convertToIndividualPartner(partner);
 	}
 
-	public void checkOtherPartnerName(ActionRequest request, ActionResponse response) {
+	public void checkPartnerName(ActionRequest request, ActionResponse response) {
+		Partner partner = request.getContext().asType(Partner.class);
+
+		if (partner.getName() != null && !partner.getName().isEmpty()) {
+			Partner existingPartner = partnerRepo.all()
+					.filter("self.isContact = false and lower(self.name) = lower(?1)", partner.getName())
+					.fetchOne();
+			if (existingPartner != null) {
+				response.setAlert("There is already a partner with this name");
+			}
+		}
+	}
+
+	public void checkContactName(ActionRequest request, ActionResponse response) {
 		Partner partner = request.getContext().asType(Partner.class);
 
 		if (partner.getName() != null && partner.getFirstName() != null) {
 			Partner existingPartner = partnerRepo.all()
-					.filter("self.isContact = true and self.name = ?1 and self.firstName = ?2", partner.getName(), partner.getFirstName())
+					.filter("self.isContact = true and lower(self.name) = lower(?1) and lower(self.firstName) = lower(?2)", partner.getName(), partner.getFirstName())
 					.fetchOne();
 			if (existingPartner != null) {
 				response.setAlert("There is already a contact with these first name and last name");
 			}
 		}
 	}
+
 }

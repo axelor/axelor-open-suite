@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.sale.db.repo;
 
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -28,6 +26,9 @@ import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+
+import javax.persistence.PersistenceException;
+import java.util.List;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
 
@@ -45,6 +46,8 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
 		SaleOrder copy = super.copy(entity, deep);
 
+		List<SaleOrderLine> saleOrderLines = copy.getSaleOrderLineList();
+
 		copy.setStatusSelect(ISaleOrder.STATUS_DRAFT);
 		copy.setSaleOrderSeq(null);
 		copy.clearBatchSet();
@@ -55,6 +58,17 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 		copy.setOrderDate(null);
 		copy.setOrderNumber(null);
 		copy.setVersionNumber(1);
+		copy.setTotalCostPrice(null);
+		copy.setTotalGrossMargin(null);
+		copy.setMarginRate(null);
+		copy.setEndOfValidityDate(null);
+		copy.setDeliveryDate(null);
+
+		for (SaleOrderLine saleOrderLine:saleOrderLines) {
+			saleOrderLine.setDeliveryDate(null);
+		}
+
+		copy.setSaleOrderLineList(saleOrderLines);
 
 		return copy;
 	}

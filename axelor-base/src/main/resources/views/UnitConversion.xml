@@ -24,7 +24,7 @@
 			
 			<field name="startUnit" colSpan="3" form-view="unit-form" grid-view="unit-grid" hideIf="typeSelect == 1"/>
 			<label title="=" colSpan="1" hideIf="typeSelect == 1"/>
-			<field name="formula" colSpan="3" hideIf="typeSelect == 1"/>
+			<field name="formula" colSpan="3" hideIf="typeSelect == 1" widget="CodeEditor" x-code-syntax="groovy"/>
 			<label title="X" colSpan="1" hideIf="typeSelect == 1"/>
 			<field name="endUnit" colSpan="3" form-view="unit-form" grid-view="unit-grid" hideIf="typeSelect == 1"/>
 		</panel>

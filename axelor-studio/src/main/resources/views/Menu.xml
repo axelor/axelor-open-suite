@@ -20,9 +20,9 @@
     <view type="html" name="studio/custom-model"/>
   </action-view>
   
-  <menuitem name="menu-json-creator" title="Custom fields" parent="menu-studio-root" action="action.json.creator" order="10"/>
+  <menuitem name="menu-json-creator" title="Custom field creators" parent="menu-studio-root" action="action.json.creator" order="10"/>
   
-  <action-view name="action.json.creator" title="Custom fields" model="com.axelor.studio.db.JsonCreator">
+  <action-view name="action.json.creator" title="Custom field creators" model="com.axelor.studio.db.JsonCreator">
     <view type="grid" name="json-creator-grid"/>
     <view type="form" name="json-creator-form"/>
   </action-view>

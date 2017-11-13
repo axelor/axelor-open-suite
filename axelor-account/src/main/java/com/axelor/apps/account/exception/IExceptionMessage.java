@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -145,6 +145,7 @@ public interface IExceptionMessage {
 	static final String MOVE_5 = /*$$(*/ "Journal %s does not have any account move sequence configured" /*)*/ ;
 	static final String MOVE_6 = /*$$(*/ "Move account sens %s can't be determined" /*)*/ ;
 	static final String MOVE_7 = /*$$(*/ "Account move %s has a total debit different than total credit : %s <> %s" /*)*/ ;
+	static final String MOVE_8 = /*$$(*/ "A move cannot be empty" /*)*/ ;
 
 	/**
 	 * Payment schedule export service
@@ -161,10 +162,12 @@ public interface IExceptionMessage {
 	 */
 	static final String RECONCILE_1 = /*$$(*/ "%s : Reconciliation : You must fill concerned moves lines." /*)*/ ;
 	static final String RECONCILE_2 = /*$$(*/ "%s : Reconciliation : Move line accounts are not compatible." /*)*/ ;
-	static final String RECONCILE_3 = /*$$(*/ "\n (Debit %s account %s - Credit %s account %s)" /*)*/ ;
+	static final String RECONCILE_3 = /*$$(*/ "(Debit %s account %s - Credit %s account %s)" /*)*/ ;
 	static final String RECONCILE_4 = /*$$(*/ "%s : Reconciliation %s: Reconciliated amount must be different than zero. \n (Debit %s account %s - Credit %s account %s)" /*)*/ ;
 	static final String RECONCILE_5 = /*$$(*/ "%s : Reconciliation %s: Reconciliated amount must be lower or equal to remaining amount to reconciliate from moves lines." /*)*/ ;
 	static final String RECONCILE_6 = /*$$(*/ "%s : Error : You must configure a reconciliation sequence for the company %s" /*)*/ ;
+	static final String RECONCILE_7 = /*$$(*/ "Reconciliation : Selected moves lines must concern the same company. Reconcile : %s company \n Debit move line : %s company \n Credit move line : %s company" /*)*/ ;
+
 
 	/**
 	 * Reimbursement service and controller
@@ -183,8 +186,8 @@ public interface IExceptionMessage {
 	 * Batch Account customer
 	 */
 	static final String BATCH_ACCOUNT_1 = /*$$(*/ "Accounting situation %s" /*)*/ ;
-	static final String BATCH_ACCOUNT_2 = /*$$(*/ "Contact's account balances determination's reporting :\n" /*)*/ ;
-	static final String BATCH_ACCOUNT_3 = /*$$(*/ "\t* %s Account(s) situation(s) treated\n" /*)*/ ;
+	static final String BATCH_ACCOUNT_2 = /*$$(*/ "Contact's account balances determination's reporting :" /*)*/ ;
+	static final String BATCH_ACCOUNT_3 = /*$$(*/ "* %s Account(s) situation(s) treated" /*)*/ ;
 	static final String BATCH_ACCOUNT_4 = /*$$(*/ "Account balances of %s accounting situation has not been updated, you must run the contact account batch update." /*)*/ ;
 	static final String BATCH_ACCOUNT_5 = /*$$(*/ "Account balances from all accounts situations (%s) has been updated." /*)*/ ;
 
@@ -192,7 +195,7 @@ public interface IExceptionMessage {
 	 * Batch doubtful customer
 	 */
 	static final String BATCH_DOUBTFUL_1 = /*$$(*/ "Doubtful account's determination's reporting" /*)*/ ;
-	static final String BATCH_DOUBTFUL_2 = /*$$(*/ "\t* %s Invoice(s) treated\n" /*)*/ ;
+	static final String BATCH_DOUBTFUL_2 = /*$$(*/ "* %s Invoice(s) treated" /*)*/ ;
 
 	/**
 	 * Batch interbank payment order import
@@ -216,7 +219,7 @@ public interface IExceptionMessage {
 	static final String BATCH_MOVELINE_EXPORT_1 = /*$$(*/ "%s : Error : You must configure a company for the batch configurator %s" /*)*/ ;
 	static final String BATCH_MOVELINE_EXPORT_2 = /*$$(*/ "%s : Error : You must configure a due date for the batch configurator %s" /*)*/ ;
 	static final String BATCH_MOVELINE_EXPORT_3 = /*$$(*/ "%s : Error : You must configure an export type for the batch configurator %s" /*)*/ ;
-	static final String BATCH_MOVELINE_EXPORT_4 = /*$$(*/ "Moves export batch's reporting :\n" /*)*/ ;
+	static final String BATCH_MOVELINE_EXPORT_4 = /*$$(*/ "Moves export batch's reporting :" /*)*/ ;
 	static final String BATCH_MOVELINE_EXPORT_5 = /*$$(*/ "Moves Lines (Moves) exported" /*)*/ ;
 
 
@@ -226,44 +229,44 @@ public interface IExceptionMessage {
 	static final String BATCH_PAYMENT_SCHEDULE_1 = /*$$(*/ "Unknowned data type for the treatment %s" /*)*/ ;
 	static final String BATCH_PAYMENT_SCHEDULE_2 = /*$$(*/ "Direct debit's export batch %s" /*)*/ ;
 	static final String BATCH_PAYMENT_SCHEDULE_3 = /*$$(*/ "Due date's direct debit %s" /*)*/ ;
-	static final String BATCH_PAYMENT_SCHEDULE_4 = /*$$(*/ "Export reporting to invoices direct debits :\n" /*)*/ ;
+	static final String BATCH_PAYMENT_SCHEDULE_4 = /*$$(*/ "Export reporting to invoices direct debits :" /*)*/ ;
 	static final String BATCH_PAYMENT_SCHEDULE_5 = /*$$(*/ "Invoice(s) direct debit(s) treated" /*)*/ ;
-	static final String BATCH_PAYMENT_SCHEDULE_6 = /*$$(*/ "Export reporting to monthly direct debits :\n" /*)*/ ;
+	static final String BATCH_PAYMENT_SCHEDULE_6 = /*$$(*/ "Export reporting to monthly direct debits :" /*)*/ ;
 	static final String BATCH_PAYMENT_SCHEDULE_7 = /*$$(*/ "Monthly direct debit(s) treated" /*)*/ ;
 	static final String BATCH_PAYMENT_SCHEDULE_8 = /*$$(*/ "%s : No timetable nor invoice found for the direct debit number : %s" /*)*/;
 	static final String BATCH_PAYMENT_SCHEDULE_9 = /*$$(*/ "Reject %s" /*)*/;
 	static final String BATCH_PAYMENT_SCHEDULE_10 = /*$$(*/ "Timetable's reject move's creation %s" /*)*/;
 	static final String BATCH_PAYMENT_SCHEDULE_11 = /*$$(*/ "Invoice's reject move's creation %s" /*)*/;
-	static final String BATCH_PAYMENT_SCHEDULE_12 = /*$$(*/ "Reporting to direct debit reject's import :\n" /*)*/;
+	static final String BATCH_PAYMENT_SCHEDULE_12 = /*$$(*/ "Reporting to direct debit reject's import :" /*)*/;
 	static final String BATCH_PAYMENT_SCHEDULE_13 = /*$$(*/ "Direct debit(s) rejected" /*)*/;
 
 	/**
 	 * Batch reimbursement export/import
 	 */
 	static final String BATCH_REIMBURSEMENT_1 = /*$$(*/ "Bug(Anomaly) generated during SEPA export - Batch %s" /*)*/;
-	static final String BATCH_REIMBURSEMENT_2 = /*$$(*/ "Reporting to reimbursement creation :\n" /*)*/;
+	static final String BATCH_REIMBURSEMENT_2 = /*$$(*/ "Reporting to reimbursement creation :" /*)*/;
 	static final String BATCH_REIMBURSEMENT_3 = /*$$(*/ "Reimbursement(s) created" /*)*/;
-	static final String BATCH_REIMBURSEMENT_4 = /*$$(*/ "Reporting to reimbursement's export :\n" /*)*/;
+	static final String BATCH_REIMBURSEMENT_4 = /*$$(*/ "Reporting to reimbursement's export :" /*)*/;
 	static final String BATCH_REIMBURSEMENT_5 = /*$$(*/ "Reimbursement(s) treated" /*)*/;
 	static final String BATCH_REIMBURSEMENT_6 = /*$$(*/ "Reimbursement's import's batch %s" /*)*/;
 	static final String BATCH_REIMBURSEMENT_7 = /*$$(*/ "Reimbursement reject %s" /*)*/;
-	static final String BATCH_REIMBURSEMENT_8 = /*$$(*/ "Reporting to reimbursement reject's import :\n" /*)*/;
+	static final String BATCH_REIMBURSEMENT_8 = /*$$(*/ "Reporting to reimbursement reject's import :" /*)*/;
 	static final String BATCH_REIMBURSEMENT_9 = /*$$(*/ "Reimbursement(s) rejected" /*)*/;
 
 	/**
 	 * Batch debt recovery
 	 */
-	static final String BATCH_DEBT_RECOVERY_1 = /*$$(*/ "Debt recovery's reporting :\n" /*)*/;
+	static final String BATCH_DEBT_RECOVERY_1 = /*$$(*/ "Debt recovery's reporting :" /*)*/;
 	static final String BATCH_DEBT_RECOVERY_2 = /*$$(*/ "Partner(s) treated" /*)*/;
 
 	/**
 	 * Batch credit transfer
 	 */
-	static final String BATCH_CREDIT_TRANSFER_REPORT_TITLE = /*$$(*/ "Report for credit transfer batch: " /*)*/;
-	static final String BATCH_CREDIT_TRANSFER_INVOICE_DONE_SINGULAR = /*$$(*/ "%d invoice treated successfully, " /*)*/;
-	static final String BATCH_CREDIT_TRANSFER_INVOICE_DONE_PLURAL = /*$$(*/ "%d invoices treated successfully, " /*)*/;
-	static final String BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_SINGULAR = /*$$(*/ "%d reimbursement created successfully, " /*)*/;
-	static final String BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_PLURAL = /*$$(*/ "%d reimbursements created successfully, " /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_REPORT_TITLE = /*$$(*/ "Report for credit transfer batch:" /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_INVOICE_DONE_SINGULAR = /*$$(*/ "%d invoice treated successfully," /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_INVOICE_DONE_PLURAL = /*$$(*/ "%d invoices treated successfully," /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_SINGULAR = /*$$(*/ "%d reimbursement created successfully," /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_PLURAL = /*$$(*/ "%d reimbursements created successfully," /*)*/;
 	static final String BATCH_CREDIT_TRANSFER_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
 	static final String BATCH_CREDIT_TRANSFER_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
 
@@ -451,13 +454,13 @@ public interface IExceptionMessage {
 	/**
 	 * Batch validation
 	 */
-	static final String BATCH_VALIDATION_1 = /*$$(*/ "Invoice validation's reporting :\n" /*)*/;
+	static final String BATCH_VALIDATION_1 = /*$$(*/ "Invoice validation's reporting :" /*)*/;
 	static final String BATCH_VALIDATION_2 = /*$$(*/ "Invoice(s) validated" /*)*/;
 
 	/**
 	 * Batch ventilation
 	 */
-	static final String BATCH_VENTILATION_1 = /*$$(*/ "Invoice ventilation's reporting :\n" /*)*/;
+	static final String BATCH_VENTILATION_1 = /*$$(*/ "Invoice ventilation's reporting :" /*)*/;
 	static final String BATCH_VENTILATION_2 = /*$$(*/ "Invoice(s) ventilated" /*)*/;
 
 	/**
@@ -498,11 +501,6 @@ public interface IExceptionMessage {
 	 * Workflow ventilation
 	 */
 	String AMOUNT_ADVANCE_PAYMENTS_TOO_HIGH =  /*$$(*/ "Sum of advance payments amounts is higher than the total of this invoice." /*)*/;
-
-	/**
-	 * Payment registration
-	 */
-	String NO_INVOICE_LINE =  /*$$(*/ "You can't register a payment if there are no invoice lines." /*)*/;
 
 	/**
 	 * Paybox service and controller
@@ -584,5 +582,14 @@ public interface IExceptionMessage {
 
 
 	static final String USER_PARTNER = /*$$(*/ "You must create a contact for user %s" /*)*/;
-	
+
+	/*
+	 * Deposit slip
+	 */
+	static final String DEPOSIT_SLIP_MISSING_SEQUENCE = /*$$(*/ "Missing deposit slip sequence for company %s" /*)*/;
+	static final String DEPOSIT_SLIP_CANNOT_DELETE = /*$$(*/ "You cannot delete this deposit slip." /*)*/;
+	static final String DEPOSIT_SLIP_ALREADY_PUBLISHED = /*$$(*/ "The deposit slip has already been published." /*)*/;
+	static final String DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE = /*$$(*/ "Unsupported payment mode type" /*)*/;;
+    static final String DEPOSIT_SLIP_MISSING_CHEQUE_INFORMATION = /*$$(*/ "Missing cheque information on payment %s" /*)*/;;
+
 }

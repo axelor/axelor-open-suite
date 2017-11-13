@@ -55,6 +55,8 @@
     <string name="wasteProdDescription" title="Waste description" large="true"/>
     
     <integer name="statusSelect" title="Status" selection="production.manuf.order.status.select" initParam="true"/>
+    
+    <unique-constraint columns="manufOrderSeq,company"/>
 
 	<extra-code><![CDATA[
 		// STATUS SELECT
@@ -65,6 +67,6 @@
 		public static final int STATUS_STANDBY = 5;
 		public static final int STATUS_FINISHED = 6;
 	]]></extra-code>
-
+    
   </entity>
 </domain-models>

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -85,9 +85,9 @@ public class AlarmEngineBatchService extends AbstractBatch {
 	@Override
 	protected void stop() {
 
-		String comment = I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_2);
-		comment += String.format(I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_3), batch.getDone() );
-		comment += String.format(I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly() );
+		String comment = I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_2) + "\n";
+		comment += String.format("\t" + I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_3) + "\n", batch.getDone() );
+		comment += String.format("\t" + I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly() );
 		
 		super.stop();
 		addComment(comment);

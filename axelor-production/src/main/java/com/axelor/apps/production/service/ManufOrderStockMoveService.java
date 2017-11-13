@@ -94,28 +94,16 @@ public class ManufOrderStockMoveService {
 
 		Location fromLocation = null;
 
-		if(manufOrder.getProdProcess() != null && manufOrder.getProdProcess().getLocation() != null)  {
-
+		if (manufOrder.getProdProcess() != null && manufOrder.getProdProcess().getLocation() != null) {
 			fromLocation = manufOrder.getProdProcess().getLocation();
-		}
-		else  {
+		} else {
 			fromLocation = locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3",
 					company, true, LocationRepository.TYPE_INTERNAL).fetchOne();
 		}
 
-		StockMove stockMove = stockMoveService.createStockMove(
-				null,
-				null,
-				company,
-				null,
-				fromLocation,
-				virtualLocation,
-				manufOrder.getPlannedStartDateT().toLocalDate(),
-				null,
-				null,
-				null);
+		return stockMoveService.createStockMove(null, null, company, null, fromLocation, virtualLocation,
+				null, manufOrder.getPlannedStartDateT().toLocalDate(), null, null, null);
 
-		return stockMove;
 	}
 
 
@@ -151,17 +139,8 @@ public class ManufOrderStockMoveService {
 		LocalDateTime plannedEndDateT = manufOrder.getPlannedEndDateT();
 		LocalDate plannedEndDate = plannedEndDateT != null ? plannedEndDateT.toLocalDate() : null;
 
-		StockMove stockMove = stockMoveService.createStockMove(
-				null,
-				null,
-				company,
-				null,
-				virtualLocation,
-				manufOrder.getProdProcess().getProducedProductLocation(),
-				plannedEndDate,
-				null,
-				null,
-				null);
+		StockMove stockMove = stockMoveService.createStockMove(null, null, company, null, virtualLocation,
+				manufOrder.getProdProcess().getProducedProductLocation(), null, plannedEndDate, null, null, null);
 		stockMove.setTypeSelect(StockMoveRepository.TYPE_INCOMING);
 
 		return stockMove;

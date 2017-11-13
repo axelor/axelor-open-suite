@@ -54,9 +54,6 @@
 		
 		<boolean name="excludePlanning" title="Exclude planning" />
 		
-		<!-- -Json fields -->
-		<string name="projectAttrs" title="Fields" json="true" />
-		
 		<string name="fullName" namecolumn="true" title="Name"/>
 	 	
 	 	<boolean name="isProject" title="Project" default="true" />

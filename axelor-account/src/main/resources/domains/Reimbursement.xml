@@ -37,6 +37,8 @@
 	    ]]>
     </decimal>
     
+	<unique-constraint columns="ref,company"/>
+    
     <extra-code><![CDATA[
 
     // STATUS SELECT

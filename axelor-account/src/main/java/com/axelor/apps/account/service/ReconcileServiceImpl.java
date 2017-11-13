@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -26,6 +26,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -44,6 +45,8 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppService;
+import com.axelor.apps.base.service.app.AppServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -101,10 +104,10 @@ public class ReconcileServiceImpl  implements ReconcileService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Reconcile createReconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount, boolean canBeZeroBalanceOk)  {
 
-		log.debug("Create Reconcile (Debit MoveLine : {}, Credit MoveLine : {}, Amount : {}, Can be zero balance ? {} ",
-				new Object[]{debitMoveLine.getName(), creditMoveLine.getName(), amount, canBeZeroBalanceOk});
+		log.debug("Create Reconcile (Company : {}, Debit MoveLine : {}, Credit MoveLine : {}, Amount : {}, Can be zero balance ? {} )",
+				debitMoveLine.getMove().getCompany(), debitMoveLine.getName(), creditMoveLine.getName(), amount, canBeZeroBalanceOk);
 
-		Reconcile reconcile =  new Reconcile(
+		Reconcile reconcile =  new Reconcile(debitMoveLine.getMove().getCompany(), 
 				amount.setScale(2, RoundingMode.HALF_EVEN),
 				debitMoveLine, creditMoveLine,
 				ReconcileRepository.STATUS_DRAFT,
@@ -172,6 +175,16 @@ public class ReconcileServiceImpl  implements ReconcileService {
 		if (debitMoveLine == null || creditMoveLine == null)  {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECONCILE_1), AppAccountServiceImpl.EXCEPTION);
 		}
+		
+		// Check if move lines companies are the same as the reconcile company
+		Company reconcileCompany = reconcile.getCompany();
+		Company debitMoveLineCompany = debitMoveLine.getMove().getCompany();
+		Company creditMoveLineCompany = creditMoveLine.getMove().getCompany();
+		if (!debitMoveLineCompany.equals(reconcileCompany) && !creditMoveLineCompany.equals(reconcileCompany)){
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECONCILE_7), AppAccountServiceImpl.EXCEPTION,
+					debitMoveLineCompany, creditMoveLineCompany, reconcileCompany),
+					IException.CONFIGURATION_ERROR);
+		}
 
 		// Check if move lines accounts are the same (debit and credit)
 		if (!creditMoveLine.getAccount().equals(debitMoveLine.getAccount())) {
@@ -191,7 +204,6 @@ public class ReconcileServiceImpl  implements ReconcileService {
 		if ((reconcile.getAmount().compareTo(creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid())) > 0
 				|| (reconcile.getAmount().compareTo(debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid())) > 0))){
 			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.RECONCILE_5)+" " +I18n.get(IExceptionMessage.RECONCILE_3), AppAccountServiceImpl.EXCEPTION, reconcile.getReconcileSeq(), debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(), creditMoveLine.getName(), creditMoveLine.getAccount().getLabel());
-
 		}
 
 	}

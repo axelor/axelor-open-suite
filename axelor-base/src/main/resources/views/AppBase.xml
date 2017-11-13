@@ -91,6 +91,7 @@
 		<view-param name="width" value="500" />
 		<view-param name="popup" value="true" />  
 		<context name="object" expr="eval:_model"/>
+		<context name="_ids" expr="eval:_ids"/>
 	</action-view>
 	
 	<action-method name="action-method-general-remind-timesheet">

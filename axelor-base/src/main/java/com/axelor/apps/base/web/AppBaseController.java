@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -121,13 +121,17 @@ public class AppBaseController {
 		
 		if(fields.size() > 0){
 			LOG.debug("Duplicate record joinList: {}", fields);
-			String ids = findDuplicateRecords(fields,model);
+			String selectedRecored =  request.getContext().get("_ids").toString();
+			selectedRecored = selectedRecored.substring(1, selectedRecored.length()-1);
+			String ids = findDuplicateRecords(fields,model,selectedRecored);
 			if(ids.isEmpty())
 				response.setFlash(I18n.get(IExceptionMessage.GENERAL_1));
 			else{
 				response.setView(ActionView
 						  .define(I18n.get(IExceptionMessage.GENERAL_2))
 						  .model(model)
+						  .add("grid", "partner-grid")
+						  .add("form", "partner-form")
 						  .domain("self.id in ("+ids+")")
 						  .map());
 				response.setCanClose(true);
@@ -154,10 +158,10 @@ public class AppBaseController {
 		}
 	}
 	
-	private String findDuplicateRecords(List<String> fieldList,String object){
+	private String findDuplicateRecords(List<String> fieldList,String object,String selectedRecored){
 		
 		
-		List<List<String>> allRecords = getAllRecords(fieldList, object);
+		List<List<String>> allRecords = getAllRecords(fieldList, object,selectedRecored);
 		
 		Map<String, List<String>> recordMap = new HashMap<String, List<String>>();
 		
@@ -185,15 +189,19 @@ public class AppBaseController {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private List<List<String>> getAllRecords(List<String> fieldList,String object){
+	private List<List<String>> getAllRecords(List<String> fieldList,String object,String selectedRecored){
 		
 		String query = "SELECT new List( CAST ( m.id AS string )";
 		
 		for(String field : fieldList) {
 			query += ", m." + field;
 		}
-		
-		List<List<Object>> resultList = JPA.em().createQuery(query + ") FROM " + object + " m").getResultList();
+		List<List<Object>> resultList = new ArrayList<>();
+		if(selectedRecored.isEmpty() || selectedRecored == null) {
+			resultList = JPA.em().createQuery(query + ") FROM " + object + " m").getResultList();
+		} else {
+			resultList = JPA.em().createQuery(query + ") FROM " + object + " m where m.id in("+selectedRecored+")").getResultList();
+		}
 		
 		List<List<String>> records = new ArrayList<List<String>>();
 		

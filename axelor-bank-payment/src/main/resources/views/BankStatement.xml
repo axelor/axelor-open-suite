@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
   
-     <grid name="bank-statement-grid" title="Bank Statements" model="com.axelor.apps.bankpayment.db.BankStatement">
+     <grid name="bank-statement-grid" title="Bank Statements" model="com.axelor.apps.bankpayment.db.BankStatement"  orderBy="-toDate,name">
 			<toolbar>
 				<button name="showBankStatementLines" title="See bank statement lines" onClick="account.bank.statement.line" />
 			</toolbar>
@@ -13,17 +13,20 @@
             <field name="statusSelect"/> 
      </grid>
   
-	<form name="bank-statement-form" title="Bank Statement" model="com.axelor.apps.bankpayment.db.BankStatement" width="large" readonlyIf="statusSelect == 2">
+	<form name="bank-statement-form" title="Bank Statement" model="com.axelor.apps.bankpayment.db.BankStatement" width="large" readonlyIf="statusSelect == 1 || statusSelect == 2">
 		<panel name="main" colSpan="12">
 			<field name="name"/>
-			<field name="bankStatementFile" canNew="true" widget="binary-link"/>
+			<field name="bankStatementFile" widget="binary-link" canNew="true"/>
 			<field name="fromDate"/>
 			<field name="toDate"/>
+			<field name="ebicsPartner"/>
+			<field name="ebicsPartner.ebicsBank"/>
+			<field name="bankStatementFileFormat"/>
 		</panel>
-		<panel name="status" title="Status" colSpan="12">
+		<panel sidebar="true">
+			<field name="createdBy"/>
 			<field name="statusSelect" title="Status"/>
 		</panel>
-		
 	</form>
 	
 	

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<menuitem name="root-prestaShop-batch-base" parent="admin-root-batch"
+		title="PrestaShop batch" action="admin-root-prestaShop-batch-import-export-base" if="__config__.app.isApp('prestashop')" />
+	
+	<action-view name="admin-root-prestaShop-batch-import-export-base" title="PrestaShop Import/Export"
+		model="com.axelor.apps.prestashop.db.PrestaShopBatch" >
+		<view type="grid" name="prestashop-batch-grid"/>
+		<view type="form" name="prestashop-batch-form"/>
+	</action-view>
+	
+</object-views>	

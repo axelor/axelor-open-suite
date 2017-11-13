@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -17,30 +17,38 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.account.db.DebtRecovery;
+import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
+import com.axelor.apps.account.service.debtrecovery.DebtRecoveryActionService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class DebtRecoveryController {
+    private DebtRecoveryRepository debtRecoveryRepository;
+    private DebtRecoveryActionService debtRecoveryActionService;
 
-	@Inject
-	private PartnerRepository partnerRepo;
+    @Inject
+    public DebtRecoveryController(DebtRecoveryRepository debtRecoveryRepository, DebtRecoveryActionService debtRecoveryActionService) {
+        this.debtRecoveryRepository = debtRecoveryRepository;
+        this.debtRecoveryActionService = debtRecoveryActionService;
+    }
 
-	public void debtRecoveryGenerate(ActionRequest request, ActionResponse response) {
+    public void runDebtRecovery(ActionRequest request, ActionResponse response) {
+        DebtRecovery debtRecovery = request.getContext().asType(DebtRecovery.class);
 
-		try {			
-			Partner partner = request.getContext().asType(Partner.class);
-			partner = partnerRepo.find(partner.getId());
+        debtRecovery = debtRecoveryRepository.find(debtRecovery.getId());
+        try {
+        	debtRecovery.setDebtRecoveryMethodLine(debtRecovery.getWaitDebtRecoveryMethodLine());
+        	debtRecoveryActionService.runManualAction(debtRecovery);
+            //find the updated debtRecovery
+        	debtRecovery = debtRecoveryRepository.find(debtRecovery.getId());
+        	debtRecoveryActionService.runMessage(debtRecovery);
+            response.setReload(true);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
 
-//			MailService mailService = Beans.get(MailService.class);
-//			for(Mail mail : mailService.getMailList(partner))  {
-//				mailService.generatePdfMail(mail);
-//			}
-			response.setReload(true);			
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
+    }
 }

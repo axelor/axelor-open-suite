@@ -52,7 +52,7 @@
 	    </panel>
 		<panel name="information">
 			<spacer/>
-			<field name="company" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" onChange="action-leave-request-method-leave-reason-to-justify" form-view="company-form" grid-view="company-grid"/>
 			<field name="user" form-view="user-form" grid-view="user-grid" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration, action-leave-request-method-leave-reason-to-justify"/>
 			<field name="requestDate" colSpan="12" width="50%"/>
 			<field name="leaveLine" onSelect="action-leave-request-attrs-line-domain" title="Reason" canEdit="false" canNew="false" widget="SuggestBox" required="true" onChange="action-leave-request-attrs-select,action-leave-request-attrs-inject-change" form-view="leave-line-form" grid-view="leave-line-grid"/>
@@ -76,7 +76,7 @@
 			<field name="toJustifyLeaveReason" hidden="true"/>
 		</panel>
 		<panel>
-			<field name="leaveRequestAttrs" colSpan="12" />
+			<field name="attrs" colSpan="12" />
 		</panel>
 		<panel-mail>
 		  <mail-messages limit="4" />

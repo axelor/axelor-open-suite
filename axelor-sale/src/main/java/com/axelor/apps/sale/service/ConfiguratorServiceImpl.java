@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -18,11 +18,7 @@
 package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductFamily;
-import com.axelor.apps.base.db.repo.ProductCategoryRepository;
-import com.axelor.apps.base.db.repo.ProductFamilyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
@@ -48,7 +44,6 @@ import com.axelor.script.ScriptHelper;
 import com.google.inject.persist.Transactional;
 import groovy.lang.MissingPropertyException;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +62,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         for (MetaJsonField indicator : indicators) {
             try {
                 Object calculatedValue = computeIndicatorValue(
-                        configurator, indicator, jsonAttributes);
+                        configurator, indicator.getName(), jsonAttributes);
                 jsonIndicators.put(indicator.getName(),
                         calculatedValue);
             } catch (MissingPropertyException e) {
@@ -86,8 +81,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     @Override
     @Transactional(rollbackOn = {Exception.class, AxelorException.class})
     public void generate(Configurator configurator,
-                                JsonContext jsonAttributes,
-                                JsonContext jsonIndicators) throws AxelorException {
+                         JsonContext jsonAttributes,
+                         JsonContext jsonIndicators) throws AxelorException {
         generateProduct(configurator, jsonAttributes, jsonIndicators);
     }
 
@@ -124,24 +119,27 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     public void addLineToSaleOrder(Configurator configurator,
                                    SaleOrder saleOrder,
                                    JsonContext jsonAttributes,
-                                   JsonContext jsonIndicators,
-                                   int updateFromStatusSelect) throws AxelorException {
+                                   JsonContext jsonIndicators) throws AxelorException {
 
-        SaleOrderLine saleOrderLine = new SaleOrderLine();
-        saleOrderLine.setSaleOrder(saleOrder);
+        SaleOrderLine saleOrderLine;
         if (configurator.getConfiguratorCreator().getGenerateProduct()) {
             //generate sale order line from product
+            saleOrderLine = new SaleOrderLine();
+            saleOrderLine.setSaleOrder(saleOrder);
             generateProduct(configurator, jsonAttributes, jsonIndicators);
 
             Product product = Beans.get(ProductRepository.class)
                     .find(configurator.getProductId());
             saleOrderLine.setProduct(product);
             this.fillSaleOrderWithProduct(saleOrderLine);
+            Beans.get(SaleOrderLineService.class)
+                    .computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
         } else {
             saleOrderLine = generateSaleOrderLine(configurator, jsonAttributes,
-                    jsonIndicators, updateFromStatusSelect);
+                    jsonIndicators, saleOrder);
         }
         saleOrder.addSaleOrderLineListItem(saleOrderLine);
+        Beans.get(SaleOrderService.class).computeSaleOrder(saleOrder);
 
         Beans.get(SaleOrderRepository.class).save(saleOrder);
     }
@@ -153,7 +151,27 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     protected void fillSaleOrderWithProduct(SaleOrderLine saleOrderLine) throws AxelorException {
         SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
         saleOrderLineService.computeProductInformation(saleOrderLine, saleOrderLine.getSaleOrder());
-        saleOrderLineService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+    }
+
+    protected void overwriteFieldToUpdate(Configurator configurator,
+                                          SaleOrderLine saleOrderLine,
+                                          JsonContext attributes) throws AxelorException {
+        // update a field if its formula has updateFromSelect to update
+        // from product
+        List<ConfiguratorFormula> formulas =
+                configurator.getConfiguratorCreator().getConfiguratorFormulaList();
+        if (formulas != null) {
+            Mapper mapper = Mapper.of(SaleOrderLine.class);
+            for (ConfiguratorFormula formula : formulas) {
+                if (formula.getUpdateFromSelect() == ConfiguratorRepository.UPDATE_FROM_CONFIGURATOR) {
+                    Object valueToUpdate = computeIndicatorValue(
+                            configurator,
+                            formula.getSaleOrderLineMetaField().getName() + "_1",
+                            attributes);
+                    mapper.set(saleOrderLine, formula.getSaleOrderLineMetaField().getName(), valueToUpdate);
+                }
+            }
+        }
     }
 
     /**
@@ -161,17 +179,17 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
      * Using the corresponding formula and
      * the values in {@link Configurator#attributes}
      * @param configurator
-     * @param indicator
+     * @param indicatorName
      * @param jsonAttributes
      * @return
      */
     protected Object computeIndicatorValue(Configurator configurator,
-                                           MetaJsonField indicator,
+                                           String indicatorName,
                                            JsonContext jsonAttributes) throws AxelorException {
         ConfiguratorCreator creator = configurator.getConfiguratorCreator();
         String groovyFormula = null;
         for (ConfiguratorFormula formula : creator.getConfiguratorFormulaList()) {
-            String fieldName = indicator.getName();
+            String fieldName = indicatorName;
             fieldName = fieldName.substring(0, fieldName.indexOf("_"));
             MetaField metaField = Beans.get(ConfiguratorFormulaService.class)
                     .getMetaField(formula);
@@ -198,29 +216,31 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     @Override
     public void testFormula(String groovyFormula, ScriptBindings values)
             throws AxelorException {
-       ScriptHelper scriptHelper = new GroovyScriptHelper(values);
-       if (scriptHelper.eval(groovyFormula) == null) {
-           throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR));
-       }
-   }
+        ScriptHelper scriptHelper = new GroovyScriptHelper(values);
+        if (scriptHelper.eval(groovyFormula) == null) {
+            throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR));
+        }
+    }
 
     /**
      * Create a sale order line from the configurator
      * @param configurator
      * @param jsonAttributes
      * @param jsonIndicators
-     * @param updateFromSelect
+     * @param saleOrder
      * @return
      */
     protected SaleOrderLine generateSaleOrderLine(Configurator configurator,
                                                   JsonContext jsonAttributes,
                                                   JsonContext jsonIndicators,
-                                                  int updateFromSelect) throws AxelorException {
+                                                  SaleOrder saleOrder) throws AxelorException {
         cleanIndicators(jsonIndicators);
         SaleOrderLine saleOrderLine = Mapper.toBean(SaleOrderLine.class, jsonIndicators);
-        if (updateFromSelect == ConfiguratorRepository.UPDATE_FROM_PRODUCT) {
-            this.fillSaleOrderWithProduct(saleOrderLine);
-        }
+        saleOrderLine.setSaleOrder(saleOrder);
+        fixRelationalFields(saleOrderLine);
+        this.fillSaleOrderWithProduct(saleOrderLine);
+        this.overwriteFieldToUpdate(configurator, saleOrderLine, jsonAttributes);
+        Beans.get(SaleOrderLineService.class).computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
         return saleOrderLine;
     }
 
@@ -232,7 +252,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
      */
     protected void cleanIndicators(JsonContext jsonIndicators) {
         Map<String, Object> newKeyMap = new HashMap<>();
-        for (Map.Entry entry  : jsonIndicators.entrySet()) {
+        for (Map.Entry entry : jsonIndicators.entrySet()) {
             String oldKey = entry.getKey().toString();
             newKeyMap.put(oldKey.substring(0, oldKey.indexOf("_")),
                     entry.getValue());
@@ -242,30 +262,27 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     }
 
     /**
-     * Fix relational fields of a product generated from configurator.
+     * Fix relational fields of a product or a sale order line generated
+     * from a configurator.
      * This method may become useless on a future ADK update.
-     * @param product
+     * @param model
      */
-    protected void fixRelationalFields(Product product) throws AxelorException {
+    protected void fixRelationalFields(Model model) throws AxelorException {
         //get all many to one fields
         List<MetaField> manyToOneFields = Beans.get(MetaFieldRepository.class).all()
                 .filter("self.metaModel.name = :name " +
                         "AND self.relationship = 'ManyToOne'")
-                .bind("name", Product.class.getSimpleName())
+                .bind("name", model.getClass().getSimpleName())
                 .fetch();
 
-        Mapper mapper = Mapper.of(Product.class);
+        Mapper mapper = Mapper.of(model.getClass());
         for (MetaField manyToOneField : manyToOneFields) {
-            Model manyToOneValue = (Model) mapper.get(product, manyToOneField.getName());
-            if(manyToOneValue != null) {
+            Model manyToOneValue = (Model) mapper.get(model, manyToOneField.getName());
+            if (manyToOneValue != null) {
                 Model manyToOneDbValue =
                         JPA.find(manyToOneValue.getClass(), manyToOneValue.getId());
                 try {
-                    String fieldName = manyToOneField.getName();
-                    Method setter = Product.class.getMethod(
-                            "set" + fieldName.substring(0,1).toUpperCase() + fieldName.substring(1),
-                            manyToOneValue.getClass());
-                    setter.invoke(product, manyToOneDbValue);
+                    mapper.set(model, manyToOneField.getName(), manyToOneDbValue);
                 } catch (Exception e) {
                     throw new AxelorException(Configurator.class, IException.CONFIGURATION_ERROR, e.getMessage());
                 }

@@ -137,6 +137,7 @@ public class LocationServiceImpl implements LocationService{
 		for (LocationLine locationLine : locationLineList) {
 			StockRules stockRules = Beans.get(StockRulesRepository.class).all()
 					.filter("self.location = ?1 AND self.product = ?2", locationLine.getLocation(), locationLine.getProduct()).fetchOne();
+			if (stockRules != null)
 			if (locationLine.getFutureQty().compareTo(stockRules.getMinQty()) < 0) {
 				idList.add(locationLine.getId());
 			}

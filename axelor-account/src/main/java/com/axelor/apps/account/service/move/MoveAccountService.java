@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -43,35 +43,20 @@ public class MoveAccountService {
 
 	protected MoveCustAccountService moveCustAccountService;
 	protected MoveRepository moveRepository;
+	protected MoveValidateService moveValidateService;
 
 	@Inject
-	public MoveAccountService(MoveCustAccountService moveCustAccountService, MoveRepository moveRepository) {
+	public MoveAccountService(MoveCustAccountService moveCustAccountService, MoveRepository moveRepository, MoveValidateService moveValidateService) {
 		this.moveCustAccountService = moveCustAccountService;
 		this.moveRepository = moveRepository;
+		this.moveValidateService = moveValidateService;
 	}
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void account(Move move) throws AxelorException  {
 
-		LocalDate date = move.getDate();
-		Partner partner = move.getPartner();
-
-		int counter = 1;
-		for(MoveLine moveLine : move.getMoveLineList())  {
-			if (moveLine.getDate() == null) {
-				moveLine.setDate(date);
-			}
-						
-			if(moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance() && moveLine.getDueDate() == null)  {
-				moveLine.setDueDate(date);
-			}
-			if (partner != null) {
-				moveLine.setPartner(partner);
-			}
-			moveLine.setCounter(counter);
-			counter++;
-		}
+		moveValidateService.completeMoveLines(move);
 
 		this.accountMove(move);
 		moveRepository.save(move);

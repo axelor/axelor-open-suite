@@ -20,13 +20,6 @@
 		<option value="3">Received</option>
 	</selection>
 	
-	
-	<selection name="purchase.purchase.order.invoicing.type.select">
-		<option value="1">Free</option>
-		<option value="2">By delivery</option>
-		<option value="3">Per order</option>
-	</selection>
-	
 	<selection name="purchase.request.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Requested</option>

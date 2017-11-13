@@ -11,6 +11,7 @@
     <string name="name" title="Name" required="true"/>
     <date name="endDate" title="Expiration date (only for reference)"/>
     <string name="description" multiline="true" title="Description"/>
+    <integer name="typeSelect" title="Type" selection="account.interbankcode.type.select"/>
     <one-to-many name="interbankCodeLineList" ref="InterbankCodeLine" mappedBy="interbankCode" title="Rejects/Return Reason Code List"/>
   
   </entity>

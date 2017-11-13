@@ -21,7 +21,7 @@
 			<field name="batchNo" />
 		</panel>
 		<panel>
-			<field name="resourceAttrs" colSpan="12" />
+			<field name="attrs" colSpan="12" />
 		</panel>
 	</form>
 	

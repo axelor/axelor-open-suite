@@ -1,17 +1,17 @@
-/**
+/*
  * Axelor Business Solutions
- * <p>
+ *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
- * <p>
+ *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
  * as published by the Free Software Foundation.
- * <p>
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * <p>
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,9 +24,11 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 import java.math.BigDecimal;
@@ -56,6 +58,15 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
                 .getGenerateMoveForInvoicePayment()) {
 
             copyAdvancePaymentToInvoice(invoice);
+        }
+
+        //send message
+        if (invoice.getInvoiceAutomaticMail()) {
+            try {
+                Beans.get(TemplateMessageService.class).generateAndSendMessage(invoice, invoice.getInvoiceMessageTemplate());
+            } catch (Exception e) {
+                throw new AxelorException(IException.CONFIGURATION_ERROR, e.getMessage(), invoice);
+            }
         }
     }
 

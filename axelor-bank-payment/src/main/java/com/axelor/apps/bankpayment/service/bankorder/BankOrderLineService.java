@@ -21,6 +21,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -170,7 +171,7 @@ public class BankOrderLineService {
 		if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
 			if (bankOrderLine.getReceiverCompany() != null) {
 
-			    bankDetailsIds = StringTool.getIdFromCollection(bankOrderLine.getReceiverCompany().getBankDetailsSet());
+			    bankDetailsIds = StringTool.getIdListString(bankOrderLine.getReceiverCompany().getBankDetailsSet());
 
 				if(bankOrderLine.getReceiverCompany().getDefaultBankDetails() != null) {
 					bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
@@ -183,7 +184,7 @@ public class BankOrderLineService {
 
 		//case where the bank order is for a partner
 		else if (bankOrderLine.getPartner() != null) {
-		    bankDetailsIds = StringTool.getIdFromCollection(bankOrderLine.getPartner().getBankDetailsList());
+		    bankDetailsIds = StringTool.getIdListString(bankOrderLine.getPartner().getBankDetailsList());
 		}
 
 		if (bankDetailsIds.equals("")) {
@@ -203,7 +204,7 @@ public class BankOrderLineService {
 
 		if (ebicsPartnerIsFiltering(ebicsPartner, bankOrder.getOrderTypeSelect())) {
 		    domain += " AND self.id IN (" +
-					StringTool.getIdFromCollection(ebicsPartner.getReceiverBankDetailsSet()) +
+					StringTool.getIdListString(ebicsPartner.getReceiverBankDetailsSet()) +
 					")";
 		}
 
@@ -224,27 +225,43 @@ public class BankOrderLineService {
 		return domain;
 	}
 
+	/**
+	 * Search the default bank detail in receiver company if partner type select is company.
+	 * If not company, search default in partner of bank order line. If no default bank detail,
+	 * return the alone bank detail present if is active in the partner of bank order line.
+	 * @param bankOrderLine The bank order line
+	 * @param bankOrder The bank order
+	 * @return default bank detail if present otherwise the unique bank detail if active
+	 */
 	public BankDetails getDefaultBankDetails(BankOrderLine bankOrderLine, BankOrder bankOrder) {
 		BankDetails candidateBankDetails = null;
-		if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
-			//fill using the default in company
-			if (bankOrderLine.getReceiverCompany() == null) {return null;}
+		if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY && bankOrderLine.getReceiverCompany() != null) {
 			candidateBankDetails = bankOrderLine.getReceiverCompany().getDefaultBankDetails();
-		}
-		else {
-			//fill using the default in partner
-			if (bankOrderLine.getPartner() == null) {return null;}
-			for (BankDetails bankDetails : bankOrderLine.getPartner().getBankDetailsList()) {
-				if (bankDetails.getIsDefault()) {
-					candidateBankDetails = bankDetails;
-					break;
+			if (candidateBankDetails == null) {
+				for (BankDetails bankDetails : bankOrderLine.getReceiverCompany().getBankDetailsSet()) {
+					if (candidateBankDetails != null && bankDetails.getActive()) {
+						candidateBankDetails = null;
+						break;
+					} else if (bankDetails.getActive()) {
+						candidateBankDetails = bankDetails;
+					}
 				}
 			}
 		}
+		else if (bankOrder.getPartnerTypeSelect() != BankOrderRepository.PARTNER_TYPE_COMPANY && bankOrderLine.getPartner() != null){
+			candidateBankDetails = bankDetailsRepo.findDefaultByPartner(bankOrderLine.getPartner());
+			if (candidateBankDetails == null) {
+				List<BankDetails> bankDetailsList = bankDetailsRepo.findActivesByPartner(bankOrderLine.getPartner(), true).fetch();
+				if (bankDetailsList.size() == 1) {
+					candidateBankDetails = bankDetailsList.get(0);
+				}
+			}
+		}
+
 		try {
 			checkBankDetails(candidateBankDetails, bankOrder);
 		} catch (AxelorException e) {
-			return null;
+			candidateBankDetails = null;
 		}
 
 		return candidateBankDetails;

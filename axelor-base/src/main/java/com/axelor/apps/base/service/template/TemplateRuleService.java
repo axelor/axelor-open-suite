@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -60,7 +60,7 @@ public class TemplateRuleService {
 
 		Class<?> klass = this.getTemplateClass(templateRule.getMetaModel());
 		if (!klass.isInstance(bean)) {
-			throw new IllegalArgumentException(I18n.get(IExceptionMessage.TEMPLATE_RULE_1) + klass.getSimpleName());
+			throw new IllegalArgumentException(I18n.get(IExceptionMessage.TEMPLATE_RULE_1) + " " + klass.getSimpleName());
 		}
 
 		List<TemplateRuleLine> lines = _sortRuleLine(templateRule.getTemplateRuleLineList());

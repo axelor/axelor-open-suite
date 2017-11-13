@@ -58,7 +58,6 @@
             <field name="indicators" colSpan="12"/>
         </panel>
         <panel>
-            <field name="$updateFromSelect" title="Update from" default="0" type="selection" selection="configurator.update.sale.order.line"/>
             <button name="validate" title="Validate and generate the line"
                     onClick="save,action-configurator-wizard-method-generate"/>
         </panel>

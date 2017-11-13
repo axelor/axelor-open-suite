@@ -58,16 +58,11 @@
     	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
     </action-method>
     
-    
-    <!--   azeaeaeaeae -->
-
     <action-group name="action-supplychain-sale-order-group-generate-invoice">
     	<action name="action-supplychain-sale-order-view-invoicing-wizard"
 				if="eval: !__config__.app.isApp('business-project') ||  !__config__.app.getApp('business-project').getEnableToInvoiceExpense() &amp;&amp; !__config__.app.getApp('business-project').getEnableToInvoiceTimesheet()" />
     	<action name="action-business-project-sale-order-view-invoicing-wizard" if="eval: __config__.app.isApp('business-project') &amp;&amp; (__config__.app.getApp('business-project').getEnableToInvoiceExpense() || __config__.app.getApp('business-project').getEnableToInvoiceTimesheet())" />
     </action-group>
-    
-    <!--   azeaeaeaeae -->
     
 	<action-method name="action-supplychain-sale-order-create-stock-move" >
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createStockMove"/>
