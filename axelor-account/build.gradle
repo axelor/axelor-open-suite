@@ -14,6 +14,7 @@ axelor {
 
 dependencies {
 	compile project(":modules:axelor-base")
+	compile project(":modules:axelor-purchase")
 	
 	compile 'xalan:xalan:2.7.2'
 

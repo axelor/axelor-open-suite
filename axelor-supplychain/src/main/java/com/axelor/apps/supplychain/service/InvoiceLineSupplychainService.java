@@ -24,8 +24,8 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.purchase.service.ProductService;
 import com.google.inject.Inject;
 
 public class InvoiceLineSupplychainService extends InvoiceLineService  {
