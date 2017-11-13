@@ -511,6 +511,7 @@
 	<action-group name="action-group-base-partner-onnew">
 		<action name="action-partner-record-partner-type-select"/>
 		<action name="action-partner-record-set-default"/>
+		<action name="action-partner-record-set-default-cash-management"/>
 		<action name="action-partner-record-set-payment-modes"/>
 		<action name="action-partner-record-payment-condition"/>
 	</action-group>
@@ -575,8 +576,6 @@
     	<field name="languageSelect" expr="#{__config__.general.getDefaultPartnerLanguage()}" />
     	<field name="isCustomer" expr="true" if="_isCustomer"/>
   		<field name="isSupplier" expr="true" if="_isSupplier"/>
-    	<field name="paymentDelay" expr="eval: __user__.activeCompany?.customerPaymentDelay" if="_isCustomer"/>
-    	<field name="paymentDelay" expr="eval: __user__.activeCompany?.supplierPaymentDelay" if="_isSupplier"/>
     </action-record>
     
     <action-record name="action-partner-contact-record-default" model="com.axelor.apps.base.db.Partner">
