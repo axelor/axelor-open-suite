@@ -224,7 +224,7 @@
 	
 	<action-record name="action-opportunity-record-default" model="com.axelor.apps.crm.db.Opportunity">
     	<field name="user" expr="eval:__user__"/>
-    	<field name="partner" expr="eval: _customer"/>
+    	<field name="_partner" expr="eval: _customer"/>
     	<field name="lead" expr="eval: _leadName"/>
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 	</action-record>
