@@ -17,11 +17,6 @@
  */
 package com.axelor.apps.sale.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
@@ -32,6 +27,8 @@ import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.User;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -43,6 +40,11 @@ import com.axelor.script.ScriptBindings;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
@@ -65,16 +67,20 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         }
 
         for (MetaJsonField field : creator.getAttributes()) {
-            //update showIf
-            String condition = "$record.configuratorCreator.id == " + creator.getId();
-            String showIf = field.getShowIf();
-            if (!Strings.isNullOrEmpty(showIf)) {
-                if (!showIf.contains(condition)) {
-                    field.setShowIf(condition + " && (" + showIf + ")");
-                }
-            } else {
-                field.setShowIf(condition);
-            }
+            //set context field
+            final String fieldName = "configuratorCreator";
+
+            final Class<?> modelClass = creator.getClass();
+
+            final Mapper mapper = Mapper.of(modelClass);
+            final Property property = mapper.getProperty(fieldName);
+            final String target = property == null ? null : property.getTarget().getName();
+            final String targetName = property == null ? null : property.getTargetName();
+
+            field.setContextFieldTarget(target);
+            field.setContextFieldTargetName(targetName);
+            field.setContextFieldValue(creator.getId().toString());
+            field.setContextFieldTitle(creator.getName());
 
             //update onChange
 
