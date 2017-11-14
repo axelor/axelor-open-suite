@@ -52,7 +52,7 @@
 		</panel>
 		
 		<panel name="productPage" title="Product" showIf="typeSelect == 1">
-			<field name="product"  colSpan="12" form-view="product-form" grid-view="product-grid"/>
+			<field name="product" canEdit="false" colSpan="12" form-view="product-form" grid-view="product-grid"/>
 		</panel>
 		
 		<panel name="taxPage" title="Tax" hideIf="typeSelect == 3">
