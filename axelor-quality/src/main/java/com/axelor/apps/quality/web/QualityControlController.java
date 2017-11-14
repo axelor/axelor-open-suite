@@ -42,6 +42,7 @@ public class QualityControlController {
 				.model("com.axelor.apps.quality.db.ControlPoint")
 				.add("grid","control-point-grid")
 				.add("form", "control-point-form")
+				.domain("self.qualityControl.id = " + request.getContext().asType(QualityControl.class).getId())
 				.map()
 				);
 	}
