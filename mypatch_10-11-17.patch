@@ -1,0 +1,158 @@
+diff --git a/axelor-base/src/main/resources/views/Partner.xml b/axelor-base/src/main/resources/views/Partner.xml
+index 876e11a..e998737 100644
+--- a/axelor-base/src/main/resources/views/Partner.xml
++++ b/axelor-base/src/main/resources/views/Partner.xml
+@@ -251,7 +251,7 @@
+             </panel>
+             <panel name="customer" title="Customer" if-module="axelor-sale" showIf="isCustomer" if="__config__.app.isApp('sale')">
+                 <field name="saleOrderInformation"/>
+-                <field name="payerQuality" hideIf="isEmployee"/>
++                <field name="payerQuality" if-module="axelor-account" hideIf="isEmployee"/>
+                 <field name="salePriceList" canNew="true" domain="self.typeSelect = 1" if-module="axelor-account" form-view="sale-price-list-form" grid-view="price-list-grid"/>
+                 <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
+                 <field name="chargeBackPurchase" colSpan="3" showIf="chargeBackPurchaseSelect == 3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
+diff --git a/axelor-base/src/main/resources/views/Product.xml b/axelor-base/src/main/resources/views/Product.xml
+index 3ff337f..91ac107 100644
+--- a/axelor-base/src/main/resources/views/Product.xml
++++ b/axelor-base/src/main/resources/views/Product.xml
+@@ -73,8 +73,8 @@
+ 			        <field name="standardDelay" colSpan="12" showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true" if-module="axelor-supplychain" />
+       			</panel>
+ 		      	<panel name="categorization" title="Categorization" colSpan="6" colWidths="30%,70%">
+-		        	<field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
+-		        	<field name="productCategory" colSpan="12" domain="self.productFamily = :productFamily" form-view="product-category-form" grid-view="product-category-grid"/>
++		        	<field name="productFamily" canEdit="false"  colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
++		        	<field name="productCategory" canEdit="false" colSpan="12" domain="self.productFamily = :productFamily" form-view="product-category-form" grid-view="product-category-grid"/>
+ 		      	</panel>
+       			<panel colSpan="12">
+ 			        <field name="inAti" colSpan="6"/>
+@@ -91,9 +91,9 @@
+ 					<field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
+ 					<field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
+ 					<panel name="units" title="Units" colSpan="6">
+-						<field name="unit" colSpan="12" form-view="unit-form" grid-view="unit-grid"/>
+-						<field name="salesUnit" hideIf="!sellable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale').getManageSalesUnits()"/>
+-						<field name="purchasesUnit" hideIf="!purchasable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('purchase').getManagePurchasesUnits()"/>
++						<field name="unit" canEdit="false" colSpan="12" form-view="unit-form" grid-view="unit-grid"/>
++						<field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale').getManageSalesUnits()"/>
++						<field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('purchase').getManagePurchasesUnits()"/>
+ 					</panel>
+ 					<panel colSpan="12" title="Configurator" if-module="axelor-sale">
+ 						<button name="showConfigurator" title="Show Configurator" onClick="action-product-method-show-product-configurator"/>
+@@ -119,7 +119,7 @@
+ 			        <field name="purchasable" colSpan="12"/>
+ 			        <field name="purchasePrice" showIf="purchasable" colSpan="6"/>
+ 			        <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
+-			        <field name="defaultSupplierPartner" showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
++			        <field name="defaultSupplierPartner" canEdit="false" showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
+ 			        <field name="supplierDeliveryTime" showIf="purchasable" colSpan="6"/>
+ 		      	</panel>
+ 	      		<panel name="costs" title="Costs" colSpan="6">
+@@ -215,19 +215,19 @@
+ 	    	</panel>
+ 	    	<panel name="packaging" title="Packaging">
+ 	  			<panel name="weight" title="Weight" colSpan="6">
+-	  				<field name="weightUnit" domain="self.unitTypeSelect = 1"/>
++	  				<field name="weightUnit" canEdit="false" domain="self.unitTypeSelect = 1"/>
+ 	  				<field name="grossWeight"/>
+ 	  				<field name="netWeight"/>
+ 	  			</panel>
+ 			      <panel name="articleDimension" title="Article dimension" colSpan="6">
+-			        <field name="lengthUnit" domain="self.unitTypeSelect = 2" />
++			        <field name="lengthUnit" canEdit="false" domain="self.unitTypeSelect = 2" />
+ 			        <field name="length" readonlyIf="diameter > 0" onChange="action-product-record-calculate-volume-length"/>
+ 			        <field name="width" readonlyIf="diameter > 0" onChange="action-product-record-calculate-volume-length"/>
+ 			        <field name="height" onChange="action-product-record-calculate-volume-length, action-product-record-calculate-volume-diameter"/>
+ 			        <field name="diameter" readonlyIf="length > 0 || width > 0" onChange="action-product-record-calculate-volume-diameter"/>
+ 			        <field name="articleVolume" readonly="true"/>
+ 			      </panel>
+-				  <field name="customsCodeNomenclature" if-module="axelor-stock"/>
++				  <field name="customsCodeNomenclature" canEdit="false" if-module="axelor-stock"/>
+   			</panel>
+   			<panel-related field="packLines" showIf="isPack" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" />
+   		</panel-tabs>
+diff --git a/axelor-production/src/main/resources/views/Product.xml b/axelor-production/src/main/resources/views/Product.xml
+index 06aff36..a71e8e6 100644
+--- a/axelor-production/src/main/resources/views/Product.xml
++++ b/axelor-production/src/main/resources/views/Product.xml
+@@ -6,9 +6,9 @@
+ 
+    <form name="product-production-form" title="Product" model="com.axelor.apps.base.db.Product">
+        <panel colSpan="12">
+-           	<field name="defaultBillOfMaterial" onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
++           	<field name="defaultBillOfMaterial" canEdit="false" onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
+ 			<field name="lastProductionPrice" readonly="true"/>
+-		  	<field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
++		  	<field name="costSheetGroup" canEdit="false" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
+ 			<button name="createProductionOrder" title="Create production order"  onClick="save,action-product-view-create-production-order"/>
+ 			<panel-dashlet action="action-product-view-show-bill-of-material" colSpan="12"/>
+        </panel>
+diff --git a/axelor-sale/src/main/java/com/axelor/apps/sale/web/SaleOrderController.java b/axelor-sale/src/main/java/com/axelor/apps/sale/web/SaleOrderController.java
+index c1fd5cd..1742cd4 100644
+--- a/axelor-sale/src/main/java/com/axelor/apps/sale/web/SaleOrderController.java
++++ b/axelor-sale/src/main/java/com/axelor/apps/sale/web/SaleOrderController.java
+@@ -42,6 +42,7 @@ import com.axelor.apps.base.db.PriceList;
+ import com.axelor.apps.base.db.Wizard;
+ import com.axelor.apps.report.engine.ReportSettings;
+ import com.axelor.apps.sale.db.SaleOrder;
++import com.axelor.apps.sale.db.SaleOrderLine;
+ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+ import com.axelor.apps.sale.exception.IExceptionMessage;
+ import com.axelor.apps.sale.service.SaleOrderService;
+@@ -69,9 +70,15 @@ public class SaleOrderController {
+ 	public void compute(ActionRequest request, ActionResponse response)  {
+ 
+ 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
++		System.err.println("\n-- From count " + saleOrder.getImportId().intValue());
++		List<SaleOrderLine> lines = saleOrder.getSaleOrderLineList();
+ 		
++		for (SaleOrderLine saleOrderLine : lines) {
++			System.err.println(" ==>"+ (saleOrderLine.getExTaxTotal().intValue()+ saleOrder.getTaxTotal().intValue()));
++		}
+ 		try {
+ 			saleOrder = saleOrderService.computeSaleOrder(saleOrder);
++			System.err.println(" -- try : --  " +saleOrder.getInTaxTotal().intValue());
+ 			response.setValues(saleOrder);
+ 		}
+ 		catch(Exception e)  { TraceBackService.trace(response, e); }
+diff --git a/axelor-sale/src/main/resources/demo/en/sale_saleOrder.csv b/axelor-sale/src/main/resources/demo/en/sale_saleOrder.csv
+index 7f7bb02..bd4e204 100644
+--- a/axelor-sale/src/main/resources/demo/en/sale_saleOrder.csv
++++ b/axelor-sale/src/main/resources/demo/en/sale_saleOrder.csv
+@@ -1,12 +1,12 @@
+-"importId";"externalReference";"clientPartner.importId";"contactPartner.importId";"mainInvoicingAddress.importId";"deliveryAddress.importId";"salemanUser.importId";"team.importId";"paymentMode.importId";"paymentCondition.importId";"currency.code";"creationDate";"statusSelect";"company.importId";"location.id";"confirmedByUser.importId";"confirmationDate";"shipmentDate"
+-1;8736;88;89;590;590;9;1;6;2;"EUR";"TODAY[-5M]";3;1;1;9;"TODAY[-5M+7d]";
+-2;"CF_1342";20;21;62;62;11;2;8;6;"EUR";"TODAY[-4M]";3;1;1;11;"TODAY[-4M+7d]";
+-3;"F-2549";44;45;13002;13002;11;2;8;6;"EUR";"TODAY[-3M]";3;1;1;11;"TODAY[-3M+14d]";
+-4;"CF_2014_032";132;133;940;940;8;3;6;2;"EUR";"TODAY[-2M]";3;1;1;12;"TODAY[-2M+14d]";
+-5;"2014-134";77;79;330;330;12;2;8;2;"EUR";"TODAY[-1M-15d]";3;1;1;12;"TODAY[-1M]";
+-6;"CF-2014-342";88;89;590;590;9;1;6;2;"EUR";"TODAY[-1M-7d]";2;1;1;;;
+-7;"PO001236";205;206;3002;3002;13;3;8;5;"EUR";"TODAY[-1M]";3;1;1;8;"TODAY[-1M+7d]";
+-8;;132;133;940;940;8;3;6;2;"EUR";"TODAY[-14d]";2;1;1;;;
+-9;;136;139;950;950;8;3;6;2;"EUR";"TODAY[-7d]";2;1;1;;;
+-10;;1012;;671;671;9;1;4;2;"EUR";"TODAY[-7d]";3;1;1;9;"TODAY[-6d]";
+-11;;224;225;10010;10010;13;3;8;5;"USD";"TODAY";1;1;1;;;
++"importId";"externalReference";"clientPartner.importId";"contactPartner.importId";"mainInvoicingAddress.importId";"deliveryAddress.importId";"salemanUser.importId";"team.importId";"paymentMode.importId";"paymentCondition.importId";"currency.code";"creationDate";"statusSelect";"company.importId";"location.id";"confirmedByUser.importId";"confirmationDate";"shipmentDate";"inTaxTotal"
++1;8736;88;89;590;590;9;1;6;2;"EUR";"TODAY[-5M]";3;1;1;9;"TODAY[-5M+7d]";;
++2;"CF_1342";20;21;62;62;11;2;8;6;"EUR";"TODAY[-4M]";3;1;1;11;"TODAY[-4M+7d]";;
++3;"F-2549";44;45;13002;13002;11;2;8;6;"EUR";"TODAY[-3M]";3;1;1;11;"TODAY[-3M+14d]";;
++4;"CF_2014_032";132;133;940;940;8;3;6;2;"EUR";"TODAY[-2M]";3;1;1;12;"TODAY[-2M+14d]";;
++5;"2014-134";77;79;330;330;12;2;8;2;"EUR";"TODAY[-1M-15d]";3;1;1;12;"TODAY[-1M]";;
++6;"CF-2014-342";88;89;590;590;9;1;6;2;"EUR";"TODAY[-1M-7d]";2;1;1;;;;
++7;"PO001236";205;206;3002;3002;13;3;8;5;"EUR";"TODAY[-1M]";3;1;1;8;"TODAY[-1M+7d]";;
++8;;132;133;940;940;8;3;6;2;"EUR";"TODAY[-14d]";2;1;1;;;;
++9;;136;139;950;950;8;3;6;2;"EUR";"TODAY[-7d]";2;1;1;;;;
++10;;1012;;671;671;9;1;4;2;"EUR";"TODAY[-7d]";3;1;1;9;"TODAY[-6d]";;
++11;;224;225;10010;10010;13;3;8;5;"USD";"TODAY";1;1;1;;;;
+diff --git a/axelor-sale/src/main/resources/demo/sale-config.xml b/axelor-sale/src/main/resources/demo/sale-config.xml
+index 2d4f598..68c9705 100644
+--- a/axelor-sale/src/main/resources/demo/sale-config.xml
++++ b/axelor-sale/src/main/resources/demo/sale-config.xml
+@@ -26,6 +26,7 @@
+ 		<bind to="creationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)" column="creationDate"/>
+ 		<bind to="confirmationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(confirmationDate)" column="confirmationDate"/>
+ 		<bind to="shipmentDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)" column="shipmentDate"/>
++		<bind to="inTaxTotal" eval="call:com.axelor.apps.sale.web.SaleOrderController:computesss" column="inTaxTotal"/>
+ 	</input>
+ 	
+ 	<input file="sale_saleOrderLine.csv" separator=";" type="com.axelor.apps.sale.db.SaleOrderLine" search="self.importId = :importId">
