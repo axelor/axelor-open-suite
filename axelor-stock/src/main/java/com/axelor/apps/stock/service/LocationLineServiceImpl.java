@@ -161,7 +161,6 @@ public class LocationLineServiceImpl implements LocationLineService {
 		}
 	}
 
-	//check if the location has more than qty units of the product
 	public void checkIfEnoughStock(Location location, Product product, BigDecimal qty) throws AxelorException{
 	    LocationLine locationLine = this.getLocationLine(location.getLocationLineList(), product);
 
