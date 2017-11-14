@@ -91,6 +91,7 @@ public interface IAdministration {
 	static final String DEPOSIT_SLIP = "depositSlip";
 	static final String QUALITY_ALERT = "qualityAlert";
 	static final String QUALITY_CONTROL = "qualityControl";
+	static final String TICKET = "ticket";
 
 	
 	/**
