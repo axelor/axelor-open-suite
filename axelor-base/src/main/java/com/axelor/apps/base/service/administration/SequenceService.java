@@ -63,7 +63,6 @@ public class SequenceService {
 
 	@Inject
 	public SequenceService( SequenceVersionRepository sequenceVersionRepository, GeneralService generalService ) {
-		System.out.println("Creating sequence service " + toString());
 
 		this.sequenceVersionRepository = sequenceVersionRepository;
 		this.generalService = generalService;
