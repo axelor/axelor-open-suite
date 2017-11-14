@@ -4,7 +4,6 @@
 
 	<grid name="quality-alert-grid" title="Quality alerts" model="com.axelor.apps.quality.db.QualityAlert">
 		<field name="reference"/>
-		<field name="fullName"/>
 		<field name="reference"/>
 		<field name="product"/>
 		<field name="workCenter"/>
@@ -15,9 +14,9 @@
 		<field name="priority"/>
 	</grid>
 	
-	<calendar name="quality-alert-calendar" title="My Alert Calendar" mode="month" colorBy="priority" 
+	<calendar name="quality-alert-calendar" title="Alert calendar" mode="month" colorBy="priority" 
     	eventStart="startDate" eventStop="endDate" eventLength="1" model="com.axelor.apps.quality.db.QualityAlert">
-    	<field name="description" />
+    	<field name="fullName" />
  	</calendar>
 	
 	<form name="quality-alert-form" title="Quality alerts" model="com.axelor.apps.quality.db.QualityAlert" onNew="action-quality-alert-record-default">
@@ -26,7 +25,6 @@
 		</panel>
 		<panel>
 			<field name="reference"/>
-			<field name="fullName" readonly="true"/>
 			<field name="product"/>
 			<field name="workCenter"/>
 			<field name="team"/>
@@ -37,7 +35,6 @@
 			<field name="endDate"/>
 			<field name="deadLine"/>
 			<field name="qualityTagSet" widget="TagSelect" colSpan="12"/>
-			<field name="sequence"/>
 		</panel>
 		<panel name="description">
 			<field name="description" colSpan="12" height="6" widget="html" showTitle="false"/>
@@ -60,12 +57,10 @@
 	
 	<kanban columnBy="statusSelect" sequenceBy="priority" limit="10"
 	 name="quality-alert-kanban" title="Quality alerts" model="com.axelor.apps.quality.db.QualityAlert">
-		<field name="team"/>
-		<field name="description"/>
+		<field name="fullName"/>
 		<template>
             <![CDATA[
-            <div class="card-body">{{description}}</div>
-    		<h4>{{team.name}}</h4>    
+            <div class="card-body">{{fullName}}</div>
     		]]>
         </template>
 	</kanban>
