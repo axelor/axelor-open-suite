@@ -49,4 +49,9 @@
 		<option value="1">Week(s)</option>
 	</selection>
 	
+	<selection name="sequence.generic.code.select" id="quality.sequence.generic.code.select">
+		<option value="qualityAlert">Quality alert</option>
+		<option value="qualityControl">Quality control</option>
+	</selection>
+	
 </object-views>
