@@ -10,7 +10,6 @@
 		<field name="responsible"/>
 		<field name="controlType"/>
 		<field name="testType"/>
-		<field name="counter"/>
 	</grid>
 	
 	<form name="control-point-model-form" title="Control points" model="com.axelor.apps.quality.db.ControlPointModel">	
@@ -22,7 +21,6 @@
 			<field name="responsible"/>
 			<field name="controlType"/>
 			<field name="testType"/>
-			<field name="counter" readonly="true"/>
 		</panel>
 		<panel name="ControlFrequency" showIf="controlType == 2 || controlType == 3" title="Cotrol Frequency">
 			<field name="cf" title="Control Frequency" type="string" colSpan="12" showIf="controlType == 2" showTitle="false">
