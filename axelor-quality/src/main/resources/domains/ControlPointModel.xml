@@ -16,7 +16,7 @@
 		<string name="instructions" title="Instructions"/>
 		<string name="notes" title="Notes"/>
 		<string name="messageIfFailure" title="Message if failure"/>
-		<many-to-one name="counter" title="counter" ref="QualityProcess"/>
+		<many-to-one name="qualityProcess" title="counter" ref="QualityProcess"/>
 		<track/>
 	</entity>
 
