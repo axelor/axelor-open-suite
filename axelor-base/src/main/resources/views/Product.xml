@@ -73,8 +73,8 @@
 			        <field name="standardDelay" colSpan="12" showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true" if-module="axelor-supplychain" />
       			</panel>
 		      	<panel name="categorization" title="Categorization" colSpan="6" colWidths="30%,70%">
-		        	<field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
-		        	<field name="productCategory" colSpan="12" domain="self.productFamily = :productFamily" form-view="product-category-form" grid-view="product-category-grid"/>
+		        	<field name="productFamily" canEdit="false"  colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
+		        	<field name="productCategory" canEdit="false" colSpan="12" domain="self.productFamily = :productFamily" form-view="product-category-form" grid-view="product-category-grid"/>
 		      	</panel>
       			<panel colSpan="12">
 			        <field name="inAti" colSpan="6"/>
@@ -91,9 +91,9 @@
 					<field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
 					<field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
 					<panel name="units" title="Units" colSpan="6">
-						<field name="unit" colSpan="12" form-view="unit-form" grid-view="unit-grid"/>
-						<field name="salesUnit" hideIf="!sellable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale').getManageSalesUnits()"/>
-						<field name="purchasesUnit" hideIf="!purchasable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('purchase').getManagePurchasesUnits()"/>
+						<field name="unit" canEdit="false" colSpan="12" form-view="unit-form" grid-view="unit-grid"/>
+						<field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale').getManageSalesUnits()"/>
+						<field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('purchase').getManagePurchasesUnits()"/>
 					</panel>
 					<panel colSpan="12" title="Configurator" if-module="axelor-sale">
 						<button name="showConfigurator" title="Show Configurator" onClick="action-product-method-show-product-configurator"/>
@@ -119,7 +119,7 @@
 			        <field name="purchasable" colSpan="12"/>
 			        <field name="purchasePrice" showIf="purchasable" colSpan="6"/>
 			        <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
-			        <field name="defaultSupplierPartner" showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
+			        <field name="defaultSupplierPartner" canEdit="false" showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			        <field name="supplierDeliveryTime" showIf="purchasable" colSpan="6"/>
 		      	</panel>
 	      		<panel name="costs" title="Costs" colSpan="6">
@@ -215,19 +215,19 @@
 	    	</panel>
 	    	<panel name="packaging" title="Packaging">
 	  			<panel name="weight" title="Weight" colSpan="6">
-	  				<field name="weightUnit" domain="self.unitTypeSelect = 1"/>
+	  				<field name="weightUnit" canEdit="false" domain="self.unitTypeSelect = 1"/>
 	  				<field name="grossWeight"/>
 	  				<field name="netWeight"/>
 	  			</panel>
 			      <panel name="articleDimension" title="Article dimension" colSpan="6">
-			        <field name="lengthUnit" domain="self.unitTypeSelect = 2" />
+			        <field name="lengthUnit" canEdit="false" domain="self.unitTypeSelect = 2" />
 			        <field name="length" readonlyIf="diameter > 0" onChange="action-product-record-calculate-volume-length"/>
 			        <field name="width" readonlyIf="diameter > 0" onChange="action-product-record-calculate-volume-length"/>
 			        <field name="height" onChange="action-product-record-calculate-volume-length, action-product-record-calculate-volume-diameter"/>
 			        <field name="diameter" readonlyIf="length > 0 || width > 0" onChange="action-product-record-calculate-volume-diameter"/>
 			        <field name="articleVolume" readonly="true"/>
 			      </panel>
-				  <field name="customsCodeNomenclature" if-module="axelor-stock"/>
+				  <field name="customsCodeNomenclature" canEdit="false" if-module="axelor-stock"/>
   			</panel>
   			<panel-related field="packLines" showIf="isPack" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" />
   		</panel-tabs>
