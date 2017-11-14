@@ -47,8 +47,6 @@ public class ImportSaleOrder {
 
 		SaleOrder saleOrder = (SaleOrder) bean;
 
-		SaleOrder saleorders = saleOrderService.computeSaleOrder(saleOrder);
-
-		return saleorders;
+		return saleOrderService.computeSaleOrder(saleOrder);
 	}
 }
