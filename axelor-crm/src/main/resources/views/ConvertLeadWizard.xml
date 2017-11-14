@@ -325,8 +325,8 @@
 
 	
 	<form name="partner-lead-converted-form" title="Partner" model="com.axelor.apps.base.db.Partner"
-	onNew="action-partner-record-set-default" 
-	onLoad="action-convert-lead-wizard-record-default-partner-address,action-partner-attrs-change-name">
+	onNew="action-partner-record-set-default, action-partner-record-set-default-cash-management" 
+	onLoad="action-convert-lead-wizard-record-default-partner-address, action-partner-attrs-change-name">
 	
 		<panel name="personal" title="Personal">
 		  <panel colSpan="4">
