@@ -256,8 +256,6 @@ public class BankOrderServiceImpl implements BankOrderService {
 			checkLines(bankOrder);
 		}
 
-
-
 		setNbOfLines(bankOrder);
 		
 		setSequenceOnBankOrderLines(bankOrder);
@@ -593,7 +591,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	protected void setBankOrderSeq(BankOrder bankOrder, Sequence sequence) throws AxelorException {
 		bankOrder.setBankOrderSeq(
-				(sequenceService.setRefDate(bankOrder.getBankOrderDate()).getSequenceNumber(sequence)));
+				(sequenceService.getSequenceNumber(sequence, bankOrder.getBankOrderDate())));
 
 		if (bankOrder.getBankOrderSeq() != null) {
 			return;

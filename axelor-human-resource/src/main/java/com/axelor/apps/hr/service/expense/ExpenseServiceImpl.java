@@ -29,9 +29,9 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
-import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.account.db.Account;
@@ -374,8 +374,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 		moveService.getMoveValidateService().validateMove(move);
 
-		HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
-		setExpenseSeq(expense, hrConfigService.getExpenseSequence(hrConfig));
+		setExpenseSeq(expense);
 
 		expense.setMove(move);
 		expense.setVentilated(true);
@@ -616,20 +615,15 @@ public class ExpenseServiceImpl implements ExpenseService {
 		return "*" + expense.getId();
 	}
 
-	private void setExpenseSeq(Expense expense, Sequence sequence) throws AxelorException {
+	private void setExpenseSeq(Expense expense) throws AxelorException {
 		if (!Strings.isNullOrEmpty(expense.getExpenseSeq()) && !expense.getExpenseSeq().contains("*")) {
 			return;
 		}
 
-		if (sequence != null) {
-			expense.setExpenseSeq(Beans.get(SequenceService.class).setRefDate(expense.getSentDate()).getSequenceNumber(sequence));
-
-			if (expense.getExpenseSeq() != null) {
-				return;
-			}
-		}
-
-		throw new AxelorException(String.format(I18n.get(IExceptionMessage.HR_CONFIG_NO_EXPENSE_SEQUENCE), expense.getCompany().getName()), IException.CONFIGURATION_ERROR);
+    HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
+		Sequence sequence = hrConfigService.getExpenseSequence(hrConfig);
+  
+		expense.setExpenseSeq(Beans.get(SequenceService.class).getSequenceNumber(sequence, expense.getSentDate()));
 	}
 
 	@Override
