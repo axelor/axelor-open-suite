@@ -16,7 +16,7 @@
 	    	<button name="print" title="Print" onClick="action-employee-bonus-mgt-method-print" />
 	    </toolbar>
     	<panel name="main" readonlyIf="statusSelect == 2">
-    		<field name="company" required="true"/>
+    		<field name="company" canEdit="false" required="true"/>
     		<field name="employeeBonusType" required="true" form-view="employee-bonus-type-form" canEdit="false" canNew="false" />
 			<field name="payPeriod" required="true" />
 			<field name="leavePeriod" required="true" />

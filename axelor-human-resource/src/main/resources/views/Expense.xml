@@ -28,7 +28,7 @@
 		<hilite background="danger" if="$moment(sentDate).diff(todayDate,'days') &lt;= 0"/>
 		<hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7"/>
 		<field name="expenseSeq"/>
-		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"/>
 		<field name="sentDate"/>
 		<field name="period" form-view="period-form" grid-view="period-grid"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
@@ -69,8 +69,8 @@
 			</panel>
 		    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 			<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
-			<field name="company" form-view="company-form" grid-view="company-grid" readonlyIf="ventilated"/>
-			<field name="user" form-view="user-form" grid-view="user-grid"/>
+			<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" readonlyIf="ventilated"/>
+			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()" if-module="axelor-cash-management"/>
 			<field name="period" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" readonlyIf="ventilated"/>
 			<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb" readonlyIf="ventilated"/>
@@ -80,7 +80,7 @@
 		</panel>
 		<panel-tabs>
 			<panel-related field="expenseLineList" height="20" title="General expenses" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" colSpan="12" />
-			<panel title="Kilometric Allowances">
+			<panel title="Kilometric Allowances" showIf="!setMultipleUsers">
 				<field name="kilometricExpenseLineList" readonlyIf="statusSelect &gt; 1" colSpan="12" showTitle="false" onChange="action-expense-method-compute" >
 				<editor x-show-on-new="false" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4" onNew="action-kilometric-allowance-record-default,action-expense-line-method-fill-kilometric-expense-product" >
 					<field name="expenseDate" title="Date" onChange="action-kilometric-allowance-method-compute,action-kilometric-allowance-method-update-kap" />
@@ -97,7 +97,7 @@
 				</editor>
 				</field>
 			</panel>
-			<panel-related field="employeeAdvanceUsageList" title="Employee advance list" readonly="false" canNew="false" canSelect="false" canEdit="true" editable="true" form-view="employee-advance-usage-expense-form" grid-view="employee-advance-usage-expense-grid" />
+			<panel-related showIf="!setMultipleUsers" field="employeeAdvanceUsageList" title="Employee advance list" readonly="false" canNew="false" canSelect="false" canEdit="true" editable="true" form-view="employee-advance-usage-expense-form" grid-view="employee-advance-usage-expense-grid" />
 		</panel-tabs>
         <panel sidebar="true" readonly="true"  colSpan="4">
             <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
@@ -139,9 +139,9 @@
 		</panel>
 		<panel showIf="sentDate" sidebar="true">
 			<field name="sentDate" hidden="true" showIf="sentDate" colSpan="4"/>
-			<field name="validatedBy" hidden="true" showIf="validatedBy" colSpan="4" form-view="user-form" grid-view="user-grid"/>
+			<field name="validatedBy" canEdit="false" hidden="true" showIf="validatedBy" colSpan="4" form-view="user-form" grid-view="user-grid"/>
 			<field name="validationDate" hidden="true" showIf="validationDate" colSpan="4"/>
-			<field name="refusedBy" hidden="true" showIf="refusedBy" colSpan="4" form-view="user-form" grid-view="user-grid"/>
+			<field name="refusedBy" canEdit="false" hidden="true" showIf="refusedBy" colSpan="4" form-view="user-form" grid-view="user-grid"/>
 			<field name="refusalDate" hidden="true" showIf="refusalDate" colSpan="4"/>
 			<field name="groundForRefusal" hidden="true" readonly="true" showIf="statusSelect == 5" colSpan="12"/>
 		</panel>

@@ -19,6 +19,7 @@ package com.axelor.apps.bankpayment.ebics.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -53,10 +54,16 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
 		this.bankStatementRepository = bankStatementRepository;
 		
 	}
-	
-	@Transactional
-	public List<BankStatement> getBankStatements(EbicsPartner ebicsPartner) throws AxelorException, IOException  {
-		
+
+    @Transactional
+    public List<BankStatement> getBankStatements(EbicsPartner ebicsPartner) throws AxelorException, IOException  {
+        return getBankStatements(ebicsPartner, null);
+    }
+
+    @Transactional
+    public List<BankStatement> getBankStatements(EbicsPartner ebicsPartner,
+            Collection<BankStatementFileFormat> bankStatementFileFormatCollection) throws AxelorException, IOException {
+
 		List<BankStatement> bankStatementList = Lists.newArrayList();
 		
 		EbicsUser transportEbicsUser = ebicsPartner.getTransportEbicsUser();
@@ -88,6 +95,11 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
 		}
 		
 		for(BankStatementFileFormat bankStatementFileFormat : ebicsPartner.getBankStatementFileFormatSet())  {
+            if (bankStatementFileFormatCollection != null && !bankStatementFileFormatCollection.isEmpty()
+                    && !bankStatementFileFormatCollection.contains(bankStatementFileFormat)) {
+                continue;
+            }
+
 			try  {
 				File file = ebicsService.sendFDLRequest(transportEbicsUser, null, startDate, endDate, bankStatementFileFormat.getStatementFileFormatSelect());
 				

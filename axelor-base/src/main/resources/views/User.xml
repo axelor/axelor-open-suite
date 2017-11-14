@@ -38,11 +38,11 @@
     		 </panel>
         	 <panel-related title="Internal companies" field="companySet" showTitle="false" canNew="false"/>
         	 <panel name="teams" title="Teams" if="__config__.general.getTeamManagement()">
-        		<field name="activeTeam" form-view="team-form" grid-view="team-grid"/>
-        		<panel-related field="teamSet" canNew="false" colSpan="12" form-view="team-form" grid-view="team-grid"/>
+        		<field name="activeTeam" canEdit="false" form-view="team-form" grid-view="team-grid"/>
+        		<panel-related field="teamSet" canEdit="false" canNew="false" colSpan="12" form-view="team-form" grid-view="team-grid"/>
         	 </panel>
         	<panel name="calendarsConfiguration" title="Calendars Configuration" if-module="axelor-crm">
-        		<panel-related field="followersCalUserSet" colSpan="12" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
+        		<panel-related field="followersCalUserSet" canEdit="false" colSpan="12" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
         		<panel-related field="calendarManagementList" colSpan="12"/>
         	</panel>
         </panel-tabs>

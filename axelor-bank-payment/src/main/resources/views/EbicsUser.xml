@@ -22,14 +22,14 @@
 	</grid>
 	
 	<form name="ebics-user-form" title="Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" onSave="save,action-ebics-user-method-generate-dn">
-		<panel title="General informations" colSpan="12">
+		<panel title="General information" colSpan="12">
 			<field name="statusSelect" colSpan="12"/>
 			<field name="name" />
 			<field name="password" requiredIf="ebicsPartner.ebicsTypeSelect == 0"/>
 			<field name="userId" help="Name of the user or service" x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$' readonlyIf="statusSelect &gt; 2"/>
 			<field name="securityMedium" readonlyIf="statusSelect == 3"/>
 			<field name="userTypeSelect" widget="RadioSelect" readonlyIf="statusSelect == 3"/>
-			<field name="associatedUser"/>
+			<field name="associatedUser" canEdit="false"/>
 			<field name="nextOrderId"/>
 			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" readonlyIf="statusSelect &gt; 2"/>
 			<field name="ebicsPartner.ebicsTypeSelect" widget="RadioSelect"/>

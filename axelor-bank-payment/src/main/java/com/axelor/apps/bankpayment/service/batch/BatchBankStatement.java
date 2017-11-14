@@ -71,8 +71,9 @@ public class BatchBankStatement extends AbstractBatch {
 
         for (EbicsPartner ebicsPartner : ebicsPartners) {
             try {
-                List<BankStatement> bankStatementList = ebicsPartnerService
-                        .getBankStatements(ebicsPartnerRepository.find(ebicsPartner.getId()));
+                List<BankStatement> bankStatementList = ebicsPartnerService.getBankStatements(
+                        ebicsPartnerRepository.find(ebicsPartner.getId()),
+                        accountingBatch.getBankStatementFileFormatSet());
 
                 bankStatementCount += bankStatementList.size();
                 
@@ -109,6 +110,7 @@ public class BatchBankStatement extends AbstractBatch {
     protected void stop() {
         StringBuilder sb = new StringBuilder();
         sb.append(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_REPORT));
+        sb.append(" ");
         sb.append(String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR,
                 com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR, batch.getDone()),
                 batch.getDone()));

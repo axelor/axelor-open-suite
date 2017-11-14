@@ -21,9 +21,9 @@
 		<panel name="main">
 			<field name="fullName" hidden="true" showIf="$readonly()" colSpan="12" showTitle="false" css="label-bold bold large"/>
 			<field name="name" hidden="true" showIf="!$readonly()" colSpan="12"/>
-			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process" domain="self.product = :product"/>
-			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
+			<field name="product" canEdit="false" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" colSpan="3"/>
 			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
 		</panel>
@@ -65,7 +65,7 @@
 		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name"
 		onNew="action-bill-of-material-line-default-record" width="large">
 		<panel name="main">
-			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
+			<field name="product" canEdit="false" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
 			<field name="isRawMaterial" colSpan="3"/>
 			<field name="hasNoManageStock" colSpan="3"/>
 			<field name="qty" colSpan="3"/>
