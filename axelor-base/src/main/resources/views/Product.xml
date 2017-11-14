@@ -177,7 +177,7 @@
 					            <field name="productVariantValue4" showTitle="false" showIf="productVariantAttr4" widget="SuggestBox" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
 				          </editor>
 	        			</field>
-	        			<field name="parentProduct" form-view="product-form" grid-view="product-grid"/>
+	        			<field name="parentProduct" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	        			<panel-dashlet colSpan="12" action="action-product-view-other-product-variant"/>
 	      			</panel>
 	      			<button name="updateProductsPrices" title="Update products prices" help="Update current product prices and variants" onClick="save,action-product-method-update-products-prices"/>
