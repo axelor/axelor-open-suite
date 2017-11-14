@@ -14,7 +14,7 @@
         <string name="dimensions" title="Dimensions (cm)" nullable="true" />
         <many-to-one name="logisticalForm" ref="com.axelor.apps.stock.db.LogisticalForm" />
 
-        <unique-constraint columns="typeSelect,parcelPalletNumber" />
+        <unique-constraint columns="typeSelect,parcelPalletNumber,logisticalForm" />
 
         <extra-code>
         <![CDATA[
