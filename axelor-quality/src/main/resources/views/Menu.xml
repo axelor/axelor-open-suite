@@ -47,7 +47,7 @@
 	    	
 	<menuitem name="quality-alert-calendar" parent="quality-calendar" title="Alert calendar" action="quality.alert.calendar" />
 	    	
-	<action-view name="quality.alert.calendar" title="Alert Calendar" model="com.axelor.apps.quality.db.QualityAlert" > 
+	<action-view name="quality.alert.calendar" title="Alert calendar" model="com.axelor.apps.quality.db.QualityAlert" > 
  		<view type="calendar" name="quality-alert-calendar" />
 	</action-view>
 		 	
@@ -58,8 +58,10 @@
  		<domain>self.statusSelect &gt; 2</domain>
 	</action-view>
 	    
-	<menuitem name="quality-reportings" parent="menu-quality-root" title="Reportings" action="quality.dashboard.view" />
-	     
+	<menuitem name="quality-reportings" parent="menu-quality-root" title="Reportings" />
+	
+	<menuitem name="quality-reportings-dashboard" parent="quality-reportings" title="Quality dashboard" action="quality.dashboard.view" />
+	 
 	<action-view name="quality.dashboard.view" title="Quality Dashboard" > 
  		<view type="dashboard" name="quality.dashboard" />
 	</action-view>
