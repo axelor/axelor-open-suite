@@ -89,7 +89,7 @@
 	  
 		<panel name="main" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
 			<field name="name" css="label-bold bold"/>
-			<field name="opportunityType" widget="SuggestBox" colSpan="3" grid-view="opportunity-type-grid" form-view="opportunity-type-form"/>
+			<field name="opportunityType" widget="SuggestBox" canEdit="false" colSpan="3" grid-view="opportunity-type-grid" form-view="opportunity-type-form"/>
 			<field name="source" canEdit="false" colSpan="3" form-view="source-form" grid-view="source-grid"/>
 		</panel>
 		
