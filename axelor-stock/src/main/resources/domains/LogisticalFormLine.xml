@@ -14,6 +14,8 @@
         <string name="dimensions" title="Dimensions (cm)" nullable="true" />
         <many-to-one name="logisticalForm" ref="com.axelor.apps.stock.db.LogisticalForm" />
 
+        <unique-constraint columns="typeSelect,parcelPalletNumber" />
+
         <extra-code>
         <![CDATA[
             public static int TYPE_PARCEL = 1;

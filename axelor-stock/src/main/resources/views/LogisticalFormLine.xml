@@ -9,7 +9,7 @@
             readonlyIf="typeSelect != 3" />
         <field name="stockMoveLine.stockMove" />
         <field name="stockMoveLine.product.code" title="Product code" />
-        <field name="stockMoveLine.product.description" title="Product description" />
+        <field name="stockMoveLine.product.name" title="Product description" />
         <field name="stockMoveLine.stockMove.saleOrder.saleOrderSeq" title="Sale order number" if-module="axelor-supplychain" />
         <field name="stockMoveLine.stockMove.saleOrder.externalReference" title="Customer reference" if-module="axelor-supplychain" />
         <field name="stockMoveLine.netWeight" title="Unit net weight" />
@@ -28,7 +28,7 @@
                 hideIf="typeSelect != 3" />
             <field name="stockMoveLine.stockMove" hideIf="typeSelect != 3" />
             <field name="stockMoveLine.product.code" title="Product code" hideIf="typeSelect != 3" />
-            <field name="stockMoveLine.product.description" title="Product description" hideIf="typeSelect != 3" />
+            <field name="stockMoveLine.product.name" title="Product description" hideIf="typeSelect != 3" />
             <field name="stockMoveLine.stockMove.saleOrder.saleOrderSeq" title="Sale order number" hideIf="typeSelect != 3"
                 if-module="axelor-supplychain" />
             <field name="stockMoveLine.stockMove.saleOrder.externalReference" title="Customer reference" hideIf="typeSelect != 3"
