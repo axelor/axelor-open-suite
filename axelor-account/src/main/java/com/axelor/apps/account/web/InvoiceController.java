@@ -179,15 +179,17 @@ public class InvoiceController {
 	 * Function returning both the paymentMode and the paymentCondition
 	 * @param request
 	 * @param response
-	 * @throws AxelorException
 	 */
-
-	public void fillPaymentModeAndCondition(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void fillPaymentModeAndCondition(ActionRequest request, ActionResponse response) {
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		PaymentMode paymentMode = InvoiceToolService.getPaymentMode(invoice);
-		PaymentCondition paymentCondition = InvoiceToolService.getPaymentCondition(invoice);
-		response.setValue("paymentMode", paymentMode);
-		response.setValue("paymentCondition", paymentCondition);
+		try {
+			PaymentMode paymentMode = InvoiceToolService.getPaymentMode(invoice);
+			PaymentCondition paymentCondition = InvoiceToolService.getPaymentCondition(invoice);
+			response.setValue("paymentMode", paymentMode);
+			response.setValue("paymentCondition", paymentCondition);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 	
 
