@@ -75,13 +75,6 @@ public interface IExceptionMessage {
 	static final String ACCOUNT_CUSTOMER_2 = /*$$(*/ "%s : A supplier account is missing for the company %s" /*)*/ ;
 
 	/**
-	 * Cash register line service
-	 */
-	static final String CASH_REGISTER_1 = /*$$(*/ "%s : You must configure an active company for the user %s" /*)*/ ;
-	static final String CASH_REGISTER_2 = /*$$(*/ "%s : A cash register closure already exists for the same date and the same cash register" /*)*/ ;
-	static final String CASH_REGISTER_3 = /*$$(*/ "%s : You must configure a cashier email address for the company %s" /*)*/ ;
-
-	/**
 	 * Check rejection service
 	 */
 	static final String CHECK_REJECTION_1 = /*$$(*/ "%s : You must configure a cheque rejection sequence for the company %s" /*)*/ ;
@@ -168,10 +161,12 @@ public interface IExceptionMessage {
 	 */
 	static final String RECONCILE_1 = /*$$(*/ "%s : Reconciliation : You must fill concerned moves lines." /*)*/ ;
 	static final String RECONCILE_2 = /*$$(*/ "%s : Reconciliation : Selected moves lines must concerned the same account." /*)*/ ;
-	static final String RECONCILE_3 = /*$$(*/ "\n (Debit %s account %s - Credit %s account %s)" /*)*/ ;
+	static final String RECONCILE_3 = /*$$(*/ "(Debit %s account %s - Credit %s account %s)" /*)*/ ;
 	static final String RECONCILE_4 = /*$$(*/ "%s : Reconciliation %s: Reconciliated amount must be different than zero. \n (Debit %s account %s - Credit %s account %s)" /*)*/ ;
 	static final String RECONCILE_5 = /*$$(*/ "%s : Reconciliation %s: Reconciliated amount must be lower or equal to remaining amount to reconciliate from moves lines." /*)*/ ;
 	static final String RECONCILE_6 = /*$$(*/ "%s : Error : You must configure a reconciliation sequence for the company %s" /*)*/ ;
+	static final String RECONCILE_7 = /*$$(*/ "Reconciliation : Selected moves lines must concern the same company. Reconcile : %s company \n Debit move line : %s company \n Credit move line : %s company" /*)*/ ;
+
 
 	/**
 	 * Reimbursement service and controller
@@ -190,8 +185,8 @@ public interface IExceptionMessage {
 	 * Batch Account customer
 	 */
 	static final String BATCH_ACCOUNT_1 = /*$$(*/ "Accounting situation %s" /*)*/ ;
-	static final String BATCH_ACCOUNT_2 = /*$$(*/ "Contact's account balances determination's reporting :\n" /*)*/ ;
-	static final String BATCH_ACCOUNT_3 = /*$$(*/ "\t* %s Account(s) situation(s) treated\n" /*)*/ ;
+	static final String BATCH_ACCOUNT_2 = /*$$(*/ "Contact's account balances determination's reporting :" /*)*/ ;
+	static final String BATCH_ACCOUNT_3 = /*$$(*/ "* %s Account(s) situation(s) treated" /*)*/ ;
 	static final String BATCH_ACCOUNT_4 = /*$$(*/ "Account balances of %s accounting situation has not been updated, you must run the contact account batch update." /*)*/ ;
 	static final String BATCH_ACCOUNT_5 = /*$$(*/ "Account balances from all accounts situations (%s) has been updated." /*)*/ ;
 
@@ -199,7 +194,7 @@ public interface IExceptionMessage {
 	 * Batch doubtful customer
 	 */
 	static final String BATCH_DOUBTFUL_1 = /*$$(*/ "Doubtful account's determination's reporting" /*)*/ ;
-	static final String BATCH_DOUBTFUL_2 = /*$$(*/ "\t* %s Invoice(s) treated\n" /*)*/ ;
+	static final String BATCH_DOUBTFUL_2 = /*$$(*/ "* %s Invoice(s) treated" /*)*/ ;
 
 	/**
 	 * Batch interbank payment order import
@@ -223,7 +218,7 @@ public interface IExceptionMessage {
 	static final String BATCH_MOVELINE_EXPORT_1 = /*$$(*/ "%s : Error : You must configure a company for the batch configurator %s" /*)*/ ;
 	static final String BATCH_MOVELINE_EXPORT_2 = /*$$(*/ "%s : Error : You must configure a due date for the batch configurator %s" /*)*/ ;
 	static final String BATCH_MOVELINE_EXPORT_3 = /*$$(*/ "%s : Error : You must configure an export type for the batch configurator %s" /*)*/ ;
-	static final String BATCH_MOVELINE_EXPORT_4 = /*$$(*/ "Moves export batch's reporting :\n" /*)*/ ;
+	static final String BATCH_MOVELINE_EXPORT_4 = /*$$(*/ "Moves export batch's reporting :" /*)*/ ;
 	static final String BATCH_MOVELINE_EXPORT_5 = /*$$(*/ "Moves Lines (Moves) exported" /*)*/ ;
 
 
@@ -233,35 +228,46 @@ public interface IExceptionMessage {
 	static final String BATCH_PAYMENT_SCHEDULE_1 = /*$$(*/ "Unknowned data type for the treatment %s" /*)*/ ;
 	static final String BATCH_PAYMENT_SCHEDULE_2 = /*$$(*/ "Direct debit's export batch %s" /*)*/ ;
 	static final String BATCH_PAYMENT_SCHEDULE_3 = /*$$(*/ "Due date's direct debit %s" /*)*/ ;
-	static final String BATCH_PAYMENT_SCHEDULE_4 = /*$$(*/ "Export reporting to invoices direct debits :\n" /*)*/ ;
+	static final String BATCH_PAYMENT_SCHEDULE_4 = /*$$(*/ "Export reporting to invoices direct debits :" /*)*/ ;
 	static final String BATCH_PAYMENT_SCHEDULE_5 = /*$$(*/ "Invoice(s) direct debit(s) treated" /*)*/ ;
-	static final String BATCH_PAYMENT_SCHEDULE_6 = /*$$(*/ "Export reporting to monthly direct debits :\n" /*)*/ ;
+	static final String BATCH_PAYMENT_SCHEDULE_6 = /*$$(*/ "Export reporting to monthly direct debits :" /*)*/ ;
 	static final String BATCH_PAYMENT_SCHEDULE_7 = /*$$(*/ "Monthly direct debit(s) treated" /*)*/ ;
 	static final String BATCH_PAYMENT_SCHEDULE_8 = /*$$(*/ "%s : No timetable nor invoice found for the direct debit number : %s" /*)*/;
 	static final String BATCH_PAYMENT_SCHEDULE_9 = /*$$(*/ "Reject %s" /*)*/;
 	static final String BATCH_PAYMENT_SCHEDULE_10 = /*$$(*/ "Timetable's reject move's creation %s" /*)*/;
 	static final String BATCH_PAYMENT_SCHEDULE_11 = /*$$(*/ "Invoice's reject move's creation %s" /*)*/;
-	static final String BATCH_PAYMENT_SCHEDULE_12 = /*$$(*/ "Reporting to direct debit reject's import :\n" /*)*/;
+	static final String BATCH_PAYMENT_SCHEDULE_12 = /*$$(*/ "Reporting to direct debit reject's import :" /*)*/;
 	static final String BATCH_PAYMENT_SCHEDULE_13 = /*$$(*/ "Direct debit(s) rejected" /*)*/;
 
 	/**
 	 * Batch reimbursement export/import
 	 */
 	static final String BATCH_REIMBURSEMENT_1 = /*$$(*/ "Bug(Anomaly) generated during SEPA export - Batch %s" /*)*/;
-	static final String BATCH_REIMBURSEMENT_2 = /*$$(*/ "Reporting to reimbursement creation :\n" /*)*/;
+	static final String BATCH_REIMBURSEMENT_2 = /*$$(*/ "Reporting to reimbursement creation :" /*)*/;
 	static final String BATCH_REIMBURSEMENT_3 = /*$$(*/ "Reimbursement(s) created" /*)*/;
-	static final String BATCH_REIMBURSEMENT_4 = /*$$(*/ "Reporting to reimboursement's export :\n" /*)*/;
+	static final String BATCH_REIMBURSEMENT_4 = /*$$(*/ "Reporting to reimboursement's export :" /*)*/;
 	static final String BATCH_REIMBURSEMENT_5 = /*$$(*/ "Reimbursement(s) treated" /*)*/;
 	static final String BATCH_REIMBURSEMENT_6 = /*$$(*/ "Reimbursement's import's batch %s" /*)*/;
 	static final String BATCH_REIMBURSEMENT_7 = /*$$(*/ "Reimbursement reject %s" /*)*/;
-	static final String BATCH_REIMBURSEMENT_8 = /*$$(*/ "Reporting to reimbursement reject's import :\n" /*)*/;
+	static final String BATCH_REIMBURSEMENT_8 = /*$$(*/ "Reporting to reimbursement reject's import :" /*)*/;
 	static final String BATCH_REIMBURSEMENT_9 = /*$$(*/ "Reimbursement(s) rejected" /*)*/;
 
 	/**
 	 * Batch reminder
 	 */
-	static final String BATCH_REMINDER_1 = /*$$(*/ "Reminder's reporting :\n" /*)*/;
+	static final String BATCH_REMINDER_1 = /*$$(*/ "Reminder's reporting :" /*)*/;
 	static final String BATCH_REMINDER_2 = /*$$(*/ "Partner(s) treated" /*)*/;
+
+	/**
+	 * Batch credit transfer
+	 */
+	static final String BATCH_CREDIT_TRANSFER_REPORT_TITLE = /*$$(*/ "Report for credit transfer batch:" /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_INVOICE_DONE_SINGULAR = /*$$(*/ "%d invoice treated successfully," /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_INVOICE_DONE_PLURAL = /*$$(*/ "%d invoices treated successfully," /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_SINGULAR = /*$$(*/ "%d reimbursement created successfully," /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_PLURAL = /*$$(*/ "%d reimbursements created successfully," /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
+	static final String BATCH_CREDIT_TRANSFER_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
 
 	/**
 	 * Batch strategy
@@ -447,13 +453,13 @@ public interface IExceptionMessage {
 	/**
 	 * Batch validation
 	 */
-	static final String BATCH_VALIDATION_1 = /*$$(*/ "Invoice validation's reporting :\n" /*)*/;
+	static final String BATCH_VALIDATION_1 = /*$$(*/ "Invoice validation's reporting :" /*)*/;
 	static final String BATCH_VALIDATION_2 = /*$$(*/ "Invoice(s) validated" /*)*/;
 
 	/**
 	 * Batch ventilation
 	 */
-	static final String BATCH_VENTILATION_1 = /*$$(*/ "Invoice ventilation's reporting :\n" /*)*/;
+	static final String BATCH_VENTILATION_1 = /*$$(*/ "Invoice ventilation's reporting :" /*)*/;
 	static final String BATCH_VENTILATION_2 = /*$$(*/ "Invoice(s) ventilated" /*)*/;
 
 	/**

@@ -31,8 +31,6 @@ import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.InterbankPaymentOrderImportService;
 import com.axelor.apps.account.service.InterbankPaymentOrderRejectImportService;
 import com.axelor.apps.account.service.MoveLineExportService;
-import com.axelor.apps.account.service.PaymentScheduleExportService;
-import com.axelor.apps.account.service.PaymentScheduleImportService;
 import com.axelor.apps.account.service.ReimbursementExportService;
 import com.axelor.apps.account.service.ReimbursementImportService;
 import com.axelor.apps.account.service.ReimbursementService;
@@ -63,8 +61,6 @@ public abstract class BatchStrategy extends AbstractBatch {
 	protected RejectImportService rejectImportService;
 	protected CfonbExportService cfonbExportService;
 	protected CfonbImportService cfonbImportService;
-	protected PaymentScheduleExportService paymentScheduleExportService;
-	protected PaymentScheduleImportService paymentScheduleImportService;
 	protected PaymentModeService paymentModeService;
 	protected InterbankPaymentOrderImportService interbankPaymentOrderImportService;
 	protected InterbankPaymentOrderRejectImportService interbankPaymentOrderRejectImportService;
@@ -92,7 +88,9 @@ public abstract class BatchStrategy extends AbstractBatch {
 
 	@Inject
 	protected ReimbursementService reimbursementService;
-
+	
+	protected BatchStrategy() {
+	}
 
 	protected BatchStrategy(ReminderService reminderService) {
 		super();
@@ -120,21 +118,6 @@ public abstract class BatchStrategy extends AbstractBatch {
 	}
 
 
-
-	protected BatchStrategy(PaymentScheduleExportService paymentScheduleExportService, PaymentModeService paymentModeService, CfonbExportService cfonbExportService, BatchAccountCustomer batchAccountCustomer) {
-		super();
-		this.paymentScheduleExportService = paymentScheduleExportService;
-		this.cfonbExportService = cfonbExportService;
-		this.paymentModeService = paymentModeService;
-		this.batchAccountCustomer = batchAccountCustomer;
-	}
-
-	protected BatchStrategy(PaymentScheduleImportService paymentScheduleImportService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
-		super();
-		this.paymentScheduleImportService = paymentScheduleImportService;
-		this.rejectImportService = rejectImportService;
-		this.batchAccountCustomer = batchAccountCustomer;
-	}
 
 	protected BatchStrategy(InterbankPaymentOrderImportService interbankPaymentOrderImportService, CfonbImportService cfonbImportService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
 		super();

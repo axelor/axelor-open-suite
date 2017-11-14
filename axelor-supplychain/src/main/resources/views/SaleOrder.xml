@@ -51,14 +51,6 @@
 		<action name="save"/>
 	</action-group>
 
-	<action-group name="action-so-group-domain-company-bank-details" id="supplychain-so-action-group-bank-details-domain">
-		<action name="action-invoice-attrs-domain-company-bank-details"/>
-	</action-group>
-
-	<action-method name="action-sale-order-method-fill-company-bank-details">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="fillCompanyBankDetails"/>
-	</action-method>
-	
 	<action-method name="action-supplychain-sale-order-method-get-location">
     	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
     </action-method>
@@ -87,11 +79,7 @@
 	<action-method name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" >
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generatePurchaseOrdersFromSelectedSOLines"/>
 	</action-method>
-	
-	<action-method name="action-sale-method-update-customer-credit-line" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.CustomerCreditLineController" method="updateLinesFromSaleOrder"/>
-	</action-method>
-	
+
 	<action-validate name="action-supplychain-sale-order-validate-check-location">
 		<error message="The location must be filled." if="location == null"/>
 	</action-validate>

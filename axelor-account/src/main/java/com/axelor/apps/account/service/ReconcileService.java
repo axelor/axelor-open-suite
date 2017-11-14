@@ -36,7 +36,7 @@ public interface ReconcileService {
 	
 	public void reconcilePreconditions(Reconcile reconcile) throws AxelorException;
 	
-	public void updatePartnerAccountingSituation(Reconcile reconcile);
+	public void updatePartnerAccountingSituation(Reconcile reconcile) throws AxelorException;
 	
 	public List<Partner> getPartners(Reconcile reconcile);
 	

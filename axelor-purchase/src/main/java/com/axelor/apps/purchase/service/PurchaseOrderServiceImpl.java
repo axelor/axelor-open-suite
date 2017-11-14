@@ -367,15 +367,25 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
 		purchaseOrderRepo.save(purchaseOrder);
 	}
-	
+
 	@Override
-	@Transactional
-	public void validatePurchaseOrder(PurchaseOrder purchaseOrder){
-		
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+		computePurchaseOrder(purchaseOrder);
+
 		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
-		purchaseOrderRepo.save(purchaseOrder);
+		purchaseOrder.setValidationDate(generalService.getTodayDate());
+		purchaseOrder.setValidatedByUser(AuthUtils.getUser());
+
+		purchaseOrder.setSupplierPartner(validateSupplier(purchaseOrder));
+
+		if (purchaseOrder.getCompany() != null) {
+			purchaseOrder.setPurchaseOrderSeq(getSequence(purchaseOrder.getCompany()));
+		}
+
+		updateCostPrice(purchaseOrder);
 	}
-	
+
 	@Override
 	@Transactional
 	public void finishPurchaseOrder(PurchaseOrder purchaseOrder){

@@ -19,7 +19,8 @@ package com.axelor.apps.purchase.report;
 
 public interface ITranslation {
 
-	public static final String PURCHASE_ORDER_PURCHASE_INFO = /*$$(*/ "PurchaseOrder.purchaseInfo"; /*)*/
+	public static final String PURCHASE_ORDER_ORDER = /*$$(*/ "PurchaseOrder.order"; /*)*/
+	public static final String PURCHASE_ORDER_QUOTE = /*$$(*/ "PurchaseOrder.quote"; /*)*/
 	public static final String PURCHASE_ORDER_DELIVERY_DATE = /*$$(*/ "PurchaseOrder.deliveryDate"; /*)*/
 	public static final String PURCHASE_ORDER_PAYMENT_CONDITION = /*$$(*/ "PurchaseOrder.paymentCondition"; /*)*/
 	public static final String PURCHASE_ORDER_PAYMENT_MODE = /*$$(*/ "PurchaseOrder.paymentMode"; /*)*/
@@ -27,6 +28,7 @@ public interface ITranslation {
 	public static final String PURCHASE_ORDER_CUSTOMER_REF = /*$$(*/ "PurchaseOrder.customerRef"; /*)*/
 	public static final String PURCHASE_ORDER_SUPPLIER = /*$$(*/ "PurchaseOrder.supplier"; /*)*/
 	public static final String PURCHASE_ORDER_CUSTOMER = /*$$(*/ "PurchaseOrder.customer"; /*)*/
+    public static final String PURCHASE_ORDER_REF = /*$$(*/ "PurchaseOrder.ref"; /*)*/
 	public static final String PURCHASE_ORDER_DESCRIPTION = /*$$(*/ "PurchaseOrder.description"; /*)*/
 	public static final String PURCHASE_ORDER_TAX = /*$$(*/ "PurchaseOrder.tax"; /*)*/
 	public static final String PURCHASE_ORDER_QTY_UNIT = /*$$(*/ "PurchaseOrder.qtyUnit"; /*)*/
@@ -42,5 +44,10 @@ public interface ITranslation {
 	public static final String PURCHASE_ORDER_CHEQUE = /*$$(*/ "PurchaseOrder.cheque"; /*)*/
 	public static final String PURCHASE_ORDER_BANK_DETAILS = /*$$(*/ "PurchaseOrder.bankDetails"; /*)*/
 	public static final String PURCHASE_ORDER_STATE = /*$$(*/ "PurchaseOrder.state"; /*)*/
+	public static final String PURCHASE_ORDER_DRAFT = /*$$(*/ "PurchaseOrder.draft"; /*)*/
+	public static final String PURCHASE_ORDER_REQUESTED = /*$$(*/ "PurchaseOrder.requested"; /*)*/
+	public static final String PURCHASE_ORDER_VALIDATED = /*$$(*/ "PurchaseOrder.validated"; /*)*/
+	public static final String PURCHASE_ORDER_FINISHED = /*$$(*/ "PurchaseOrder.finished"; /*)*/
+	public static final String PURCHASE_ORDER_CANCELED = /*$$(*/ "PurchaseOrder.canceled"; /*)*/
 
 }

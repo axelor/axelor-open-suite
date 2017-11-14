@@ -21,17 +21,20 @@
 		<panel name="main">
 			<field name="fullName" hidden="true" showIf="$readonly()" colSpan="12" showTitle="false" css="label-bold bold large"/>
 			<field name="name" hidden="true" showIf="!$readonly()" colSpan="12"/>
-			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process" domain="self.product = :product"/>
-			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
+			<field name="product" canEdit="false" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" colSpan="3"/>
 			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
 		</panel>
 	  
 		<panel-tabs>
-			<panel-related field="billOfMaterialList" title="Components" colSpan="12" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
+			<panel title="Components" >
+				<button name="openBomTree" title="Open tree"  onClick="save,action-bill-of-material-method-open-bom-tree" colSpan="3"/> 
+				<panel-related field="billOfMaterialSet" title="Components" colSpan="12" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
+			</panel>
 			<panel-related field="prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form" if="__config__.general.manageResidualProductOnBom"/>	    
-			<panel-dashlet title="BOM tree" action="action-bill-of-material-view-tree"/>
+			<!--<panel-dashlet title="BOM tree" action="action-bill-of-material-view-tree"/>-->
 			<panel name="cost" title="Cost">
 				<button name="computeCostPrice" title="Compute cost price"   onClick="save,action-bill-of-material-method-compute-cost-price"/>
 				<field name="costPrice" readonly="true"/>
@@ -41,7 +44,6 @@
 			<panel name="versionManagement" title="Version management" hidden="true" showIf="versionNumber &gt; 1">
 				<field name="versionNumber" colSpan="3" />
 				<field name="originalBillOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" readonly="true"/>
-		
 			</panel>
 		</panel-tabs>
 	  
@@ -63,7 +65,7 @@
 		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name"
 		onNew="action-bill-of-material-line-default-record" width="large">
 		<panel name="main">
-			<field name="product" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
+			<field name="product" canEdit="false" onChange="action-bill-of-material-record-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
 			<field name="isRawMaterial" colSpan="3"/>
 			<field name="hasNoManageStock" colSpan="3"/>
 			<field name="qty" colSpan="3"/>
@@ -74,39 +76,9 @@
 			</panel>
 		</panel>
 		<panel-tabs hideIf="isRawMaterial">
-			<panel-related title="Components" field="billOfMaterialList" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
+			<panel-related title="Components" field="billOfMaterialSet" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
 		</panel-tabs>
 	</form>
-    
-    <action-view name="action-bill-of-material-view-tree" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
-    	<view type="tree" name="bill-of-material-tree"/>
-    	<view type="form" name="bill-of-material-line-form"/>
-    	<domain>self.parentBillOfMaterial.id = :id</domain>
-     	<context name="id" expr="eval: id"/>
-    </action-view>
-    
-    <tree name="bill-of-material-tree" title="Bills of material">
-    	
-    	<column name="product" type="reference"/>
-    	<column name="qty" type="decimal"/>
-    	<column name="unit" type="reference"/>
-    	<column name="prodProcess" type="reference"/>
-		
-		<node model="com.axelor.apps.production.db.BillOfMaterial" domain="self.parentBillOfMaterial.id = :id" onClick="action-bill-of-material-line-view">
-			<field name="product" as="product"/>
-			<field name="qty" as="qty"/>
-			<field name="unit" as="unit"/>
-			<field name="prodProcess" as="prodProcess"/>
-		</node>    	
-		
-		<node model="com.axelor.apps.production.db.BillOfMaterial" parent="parentBillOfMaterial" draggable="true" onClick="action-bill-of-material-line-view">
-			<field name="product" as="product"/>
-			<field name="qty" as="qty"/>
-			<field name="unit" as="unit"/>
-			<field name="prodProcess" as="prodProcess"/>
-		</node>
-    
-	</tree>
 	
 	
 	<action-view name="action-bill-of-material-line-view" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
@@ -115,7 +87,7 @@
         <view-param name="show-toolbar" value="false"/>
   		<view-param name="show-confirm" value="false" />
  	  	<view-param name="popup-save" value="false"/>
-    	<context name="_showRecord" expr="eval: id"/>
+    	<context name="_showRecord" expr="eval: bom.id"/>
     </action-view>
     
     <action-record name="action-bill-of-material-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
@@ -126,7 +98,7 @@
     
      <action-record name="action-bill-of-material-line-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="qty" expr="1"/>
-    	<field name="priority" expr="eval:__parent__?.billOfMaterialList?.max{ it.getPriority() }.getPriority() + 10"/>
+    	<field name="priority" expr="eval:__parent__?.billOfMaterialSet?.max{ it.getPriority() }.getPriority() + 10"/>
     	<field name="isRawMaterial" expr="eval:true" />
     </action-record>
     
@@ -159,8 +131,12 @@
     	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="generateNewVersion"/>
     </action-method>
     
-     <action-method name="action-bill-of-material-method-validate-prod-process">
+    <action-method name="action-bill-of-material-method-validate-prod-process">
     	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="validateProdProcess" if="id != null"/>
+    </action-method>
+    
+    <action-method name="action-bill-of-material-method-open-bom-tree">
+    	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="openBomTree" />
     </action-method>
     
     <action-attrs name="action-bill-of-material-attrs-price-digits">

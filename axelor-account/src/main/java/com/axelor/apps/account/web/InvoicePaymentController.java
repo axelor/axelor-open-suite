@@ -27,7 +27,11 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.BankDetailsServiceImpl;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -41,14 +45,14 @@ public class InvoicePaymentController  {
 
 	@Inject
 	private InvoicePaymentCancelService invoicePaymentCancelService;
-	
+
 	@Inject
 	private InvoiceRepository invoiceRepo;
 
 	public void cancelInvoicePayment(ActionRequest request, ActionResponse response)
 	{
 		InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
-		
+
 		invoicePayment = Beans.get(InvoicePaymentRepository.class).find(invoicePayment.getId());
 		try{
 			invoicePaymentCancelService.cancel(invoicePayment);
@@ -58,12 +62,12 @@ public class InvoicePaymentController  {
 		}
 		response.setReload(true);
 	}
-	
+
 	//filter the payment mode depending on the target invoice
 
 	@SuppressWarnings("unchecked")
 	public void filterPaymentMode(ActionRequest request, ActionResponse response) {
-		Map<String, Object> partialInvoice = 
+		Map<String, Object> partialInvoice =
 				(Map<String, Object>) request.getContext().get("_invoice");
 		Invoice invoice = invoiceRepo.find( Long.valueOf(partialInvoice.get("id").toString()) );
 		PaymentMode paymentMode = invoice.getPaymentMode();
@@ -86,16 +90,13 @@ public class InvoicePaymentController  {
 				(Map<String, Object>) request.getContext().get("_invoice");
 
 		Invoice invoice = invoiceRepo.find( ((Integer) partialInvoice.get("id")).longValue());
-		Company company = invoice.getCompany();
-		List<BankDetails> bankDetailsList = Beans.get(InvoicePaymentToolService.class)
-				.findCompatibleBankDetails(company, invoicePayment);
-		if (bankDetailsList.isEmpty()) {
-			response.setAttr("bankDetails", "domain", "self.id IN (0)");
-		}
-		else {
-		    String idList = Beans.get(BankDetailsService.class).getIdStringListFromCollection(bankDetailsList);
-			response.setAttr("bankDetails", "domain", "self.id IN (" + idList + ")");
-		}
+		response.setAttr(
+				"bankDetails",
+				"domain",
+				Beans.get(BankDetailsServiceImpl.class)
+						.createCompanyBankDetailsDomain(invoice.getCompany(),
+								invoicePayment.getPaymentMode())
+		);
 	}
 
 	/**
@@ -111,15 +112,18 @@ public class InvoicePaymentController  {
 				(Map<String, Object>) request.getContext().get("_invoice");
 
 		Invoice invoice = invoiceRepo.find( ((Integer) partialInvoice.get("id")).longValue());
+		PaymentMode paymentMode = invoicePayment.getPaymentMode();
 		Company company = invoice.getCompany();
-		List<BankDetails> bankDetailsList = Beans.get(InvoicePaymentToolService.class)
-				.findCompatibleBankDetails(company, invoicePayment);
-		if (bankDetailsList.size() == 1) {
-			response.setValue("bankDetails", bankDetailsList.get(0));
+		Partner partner = invoice.getPartner();
+		if (company == null) {
+			return;
 		}
-		else {
-			response.setValue("bankDetails", null);
+		if (partner != null) {
+			partner = Beans.get(PartnerRepository.class).find(partner.getId());
 		}
+		BankDetails defaultBankDetails = Beans.get(BankDetailsService.class)
+				.getDefaultCompanyBankDetails(company, paymentMode, partner);
+		response.setValue("bankDetails", defaultBankDetails);
 	}
 
 }

@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
+import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.CostSheetService;
@@ -84,14 +85,14 @@ public class BillOfMaterialController {
 		
 		BillOfMaterial billOfMaterial = billOfMaterialRepo.find( request.getContext().asType(BillOfMaterial.class).getId() );
 		
-		List<BillOfMaterial> billOfMaterialList = Lists.newArrayList();
-		billOfMaterialList = billOfMaterialRepo.all().filter("self.originalBillOfMaterial = :origin").bind("origin", billOfMaterial).fetch();
+		List<BillOfMaterial> BillOfMaterialSet = Lists.newArrayList();
+		BillOfMaterialSet = billOfMaterialRepo.all().filter("self.originalBillOfMaterial = :origin").bind("origin", billOfMaterial).fetch();
 		String message;
 		
-		if(!billOfMaterialList.isEmpty()){
+		if(!BillOfMaterialSet.isEmpty()){
 			
 			String existingVersions = "";
-			for (BillOfMaterial billOfMaterialVersion : billOfMaterialList) {
+			for (BillOfMaterial billOfMaterialVersion : BillOfMaterialSet) {
 				existingVersions += "<li>" + billOfMaterialVersion.getFullName() + "</li>";
 			}
 			message = String.format(I18n.get("This bill of material already has the following versions : <br/><ul> %s </ul>And these versions may also have ones. Do you still wish to create a new one ?"), existingVersions);
@@ -114,7 +115,7 @@ public class BillOfMaterialController {
 				.model(BillOfMaterial.class.getName())
 				   .add("form","bill-of-material-form")
 				   .add("grid","bill-of-material-grid")
-				   .domain("self.isRawMaterial = false AND self.personalized = false AND self.parentBillOfMaterial IS NULL")
+				   .domain("self.isRawMaterial = false AND self.personalized = false")
 				   .context("_showRecord", String.valueOf(copy.getId()))
 				   .map());
 	}
@@ -126,5 +127,20 @@ public class BillOfMaterialController {
 				prodProcessService.validateProdProcess(billOfMaterial.getProdProcess(),billOfMaterial);
 			}
 		}
+	}
+	
+	public void openBomTree(ActionRequest request, ActionResponse response) {
+		
+		BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+		billOfMaterial = billOfMaterialRepo.find(billOfMaterial.getId());
+		
+		TempBomTree tempBomTree = billOfMaterialService.generateTree(billOfMaterial);
+		
+		response.setView(ActionView.define(I18n.get("Bill of material"))
+				.model(TempBomTree.class.getName())
+				.add("tree", "bill-of-material-tree")
+				.context("_tempBomTreeId", tempBomTree.getId())
+				.map());
+				
 	}
 }

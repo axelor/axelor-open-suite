@@ -23,7 +23,7 @@
 	    <button name="showManufOrderWizard" title="Add Manuf. Order" width="50%"   onClick="save,action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
 	  </panel>  
 	  <panel name="addManufOrderWizard" title="Add Manuf. Order" hidden="true">
-	    <field name="$product" title="Product" type="many-to-one" target="com.axelor.apps.base.db.Product" domain="self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'" form-view="product-form" grid-view="product-grid"/>
+	    <field name="$product" title="Product" type="many-to-one" target="com.axelor.apps.base.db.Product" canEdit="false" domain="self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'" form-view="product-form" grid-view="product-grid"/>
 	    <field name="$billOfMaterial" title="BOM" type="many-to-one" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-dummy-domain" target="com.axelor.apps.production.db.BillOfMaterial" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
 	    <field name="$qty" title="Quantity" type="decimal"/>
 	    <field name="$_startDate" widget="dateTime" title="Planned start date"/>
@@ -47,8 +47,8 @@
 	</action-attrs>
 
 	<action-attrs name="action-production-order-wizard-attrs-bill-of-material-dummy-domain">
-		<attribute name="domain" for="$billOfMaterial" expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product.id}) AND self.isRawMaterial = false  AND self.parentBillOfMaterial IS NULL &quot;" if="product"/>
-		<attribute name="domain" for="$billOfMaterial" expr="eval: &quot;self.isRawMaterial = false AND self.parentBillOfMaterial IS NULL &quot;" if="!product"/>
+		<attribute name="domain" for="$billOfMaterial" expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product.id}) AND self.isRawMaterial = false  &quot;" if="product"/>
+		<attribute name="domain" for="$billOfMaterial" expr="eval: &quot;self.isRawMaterial = false &quot;" if="!product"/>
 	</action-attrs>
     
    	<action-method name="action-production-order-method-add-manuf-order">

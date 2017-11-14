@@ -21,11 +21,12 @@ import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.administration.AbstractBatchService;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 
 /**
  * InvoiceBatchService est une classe implémentant l'ensemble des batchs de
@@ -35,78 +36,56 @@ import com.google.inject.Inject;
  * 
  * @version 0.1
  */
-public class AccountingBatchService {
+public class AccountingBatchService extends AbstractBatchService {
 
-	AccountingBatchRepository accountingBatchRepo;
-	
-	@Inject
-	public AccountingBatchService(AccountingBatchRepository accountingBatchRepo)  {
-		
-		this.accountingBatchRepo = accountingBatchRepo;
-		
+	@Override
+	protected Class<? extends Model> getModelClass() {
+		return AccountingBatch.class;
 	}
-	
-	/**
-	 * Lancer un batch à partir de son code.
-	 * 
-	 * @param batchCode
-	 * 		Le code du batch souhaité.
-	 * 
-	 * @throws AxelorException
-	 */
-	public Batch run(String batchCode) throws AxelorException {
-				
+
+	@Override
+	public Batch run(Model batchModel) throws AxelorException {
+
 		Batch batch;
-		AccountingBatch accountingBatch = accountingBatchRepo.findByCode(batchCode);
-		
-		if (accountingBatch != null){
-			switch (accountingBatch.getActionSelect()) {
-			case AccountingBatchRepository.ACTION_REIMBURSEMENT:
-				if(accountingBatch.getReimbursementTypeSelect() == AccountingBatchRepository.REIMBURSEMENT_TYPE_EXPORT)  {
-					batch = reimbursementExport(accountingBatch);
-				}
-				else if(accountingBatch.getReimbursementTypeSelect() == 
-						AccountingBatchRepository.REIMBURSEMENT_TYPE_IMPORT)  {
-					batch = reimbursementImport(accountingBatch);
-				}
-				batch = null;
-				break;
-			case AccountingBatchRepository.ACTION_DIRECT_DEBIT:
-				if(accountingBatch.getDirectDebitTypeSelect() == AccountingBatchRepository.DIRECT_DEBIT_TYPE_EXPORT)  {
-					batch = paymentScheduleExport(accountingBatch);
-				}
-				else if(accountingBatch.getDirectDebitTypeSelect() == AccountingBatchRepository.DIRECT_DEBIT_TYPE_IMPORT)  {
-					batch = paymentScheduleImport(accountingBatch);
-				}
-				batch = null;
-				break;
-			case AccountingBatchRepository.ACTION_REMINDER:
-				batch = reminder(accountingBatch);
-				break;
-			case AccountingBatchRepository.ACTION_INTERBANK_PAYMENT_ORDER:
-				if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatchRepository.INTERBANK_PAYMENT_ORDER_TYPE_IMPORT)  {
-					batch = interbankPaymentOrderImport(accountingBatch);
-				}
-				else if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatchRepository.INTERBANK_PAYMENT_ORDER_TYPE_REJECT_IMPORT)  {
-					batch = interbankPaymentOrderRejectImport(accountingBatch);
-				}
-				batch = null;
-				break;
-			case AccountingBatchRepository.ACTION_DOUBTFUL_CUSTOMER:
-				batch = doubtfulCustomer(accountingBatch);
-				break;
-			case AccountingBatchRepository.ACTION_ACCOUNT_CUSTOMER:
-				batch = accountCustomer(accountingBatch);
-				break;
-			case AccountingBatchRepository.ACTION_MOVE_LINE_EXPORT:
-				batch = moveLineExport(accountingBatch);
-				break;
-			default:
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), accountingBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
+		AccountingBatch accountingBatch = (AccountingBatch) batchModel;
+
+		switch (accountingBatch.getActionSelect()) {
+		case AccountingBatchRepository.ACTION_REIMBURSEMENT:
+			if(accountingBatch.getReimbursementTypeSelect() == AccountingBatchRepository.REIMBURSEMENT_TYPE_EXPORT)  {
+				batch = reimbursementExport(accountingBatch);
 			}
-		}
-		else {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_2), batchCode), IException.INCONSISTENCY);
+			else if(accountingBatch.getReimbursementTypeSelect() == 
+					AccountingBatchRepository.REIMBURSEMENT_TYPE_IMPORT)  {
+				batch = reimbursementImport(accountingBatch);
+			}
+			batch = null;
+			break;
+		case AccountingBatchRepository.ACTION_REMINDER:
+			batch = reminder(accountingBatch);
+			break;
+		case AccountingBatchRepository.ACTION_INTERBANK_PAYMENT_ORDER:
+			if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatchRepository.INTERBANK_PAYMENT_ORDER_TYPE_IMPORT)  {
+				batch = interbankPaymentOrderImport(accountingBatch);
+			}
+			else if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatchRepository.INTERBANK_PAYMENT_ORDER_TYPE_REJECT_IMPORT)  {
+				batch = interbankPaymentOrderRejectImport(accountingBatch);
+			}
+			batch = null;
+			break;
+		case AccountingBatchRepository.ACTION_DOUBTFUL_CUSTOMER:
+			batch = doubtfulCustomer(accountingBatch);
+			break;
+		case AccountingBatchRepository.ACTION_ACCOUNT_CUSTOMER:
+			batch = accountCustomer(accountingBatch);
+			break;
+		case AccountingBatchRepository.ACTION_MOVE_LINE_EXPORT:
+			batch = moveLineExport(accountingBatch);
+			break;
+		case AccountingBatchRepository.ACTION_CREDIT_TRANSFER:
+			batch = creditTransfer(accountingBatch);
+			break;
+		default:
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), accountingBatch.getActionSelect(), accountingBatch.getCode()), IException.INCONSISTENCY);
 		}
 		
 		return batch;
@@ -136,18 +115,6 @@ public class AccountingBatchService {
 		
 	}
 	
-	public Batch paymentScheduleExport(AccountingBatch accountingBatch) {
-		
-		return Beans.get(BatchPaymentScheduleExport.class).run(accountingBatch);
-		
-	}
-	
-	public Batch paymentScheduleImport(AccountingBatch accountingBatch) {
-		
-		return Beans.get(BatchPaymentScheduleImport.class).run(accountingBatch);
-		
-	}
-	
 	public Batch interbankPaymentOrderImport(AccountingBatch accountingBatch) {
 		
 		return Beans.get(BatchInterbankPaymentOrderImport.class).run(accountingBatch);
@@ -171,5 +138,39 @@ public class AccountingBatchService {
 		return Beans.get(BatchMoveLineExport.class).run(accountingBatch);
 
 	}
-	
+
+	public Batch creditTransfer(AccountingBatch accountingBatch) {
+		Class<? extends BatchStrategy> batchStrategyClass;
+
+		switch (accountingBatch.getCreditTransferTypeSelect()) {
+		case AccountingBatchRepository.CREDIT_TRANSFER_EXPENSE_PAYMENT:
+			batchStrategyClass = BatchCreditTransferExpensePayment.class;
+			break;
+		case AccountingBatchRepository.CREDIT_TRANSFER_SUPPLIER_PAYMENT:
+			batchStrategyClass = BatchCreditTransferSupplierPayment.class;
+			break;
+		case AccountingBatchRepository.CREDIT_TRANSFER_CUSTOMER_REIMBURSEMENT:
+			switch (accountingBatch.getCustomerReimbursementTypeSelect()) {
+			case AccountingBatchRepository.CUSTOMER_REIMBURSEMENT_CUSTOMER_REFUND:
+				batchStrategyClass = BatchCreditTransferCustomerRefund.class;
+				break;
+			case AccountingBatchRepository.CUSTOMER_REIMBURSEMENT_PARTNER_CREDIT_BALANCE:
+				batchStrategyClass = BatchCreditTransferPartnerReimbursement.class;
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown customer reimbursement type");
+			}
+			break;
+		default:
+			throw new IllegalArgumentException(
+					String.format("Unknown credit transfer type: %d", accountingBatch.getCreditTransferTypeSelect()));
+		}
+
+		return Beans.get(batchStrategyClass).run(accountingBatch);
+	}
+
+	public Batch directDebit(AccountingBatch accountingBatch) {
+		throw new UnsupportedOperationException(I18n.get("This batch requires the bank payment module."));
+	}
+
 }

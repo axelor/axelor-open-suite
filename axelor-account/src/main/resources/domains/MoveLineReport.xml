@@ -16,7 +16,6 @@
     <string name="exportTypeSelect" title="Export type" selection="iadministration.export.type.select"/>
     <integer name="typeSelect" title="Printing output"  required="true"/>
     <many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Partners"/>
-    <many-to-one name="cashRegister" ref="com.axelor.apps.account.db.CashRegister" title="Cash register"/>
     <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Fiscal year"/>
     <date name="date" column="date_val" title="Creation Date" required="true"/>
     <datetime name="publicationDateTime" title="Last print date" tz="true" readonly="true"/>
@@ -33,6 +32,8 @@
     <decimal name="totalCredit" title="Total Credit" readonly="true"/>
     <decimal name="balance" title="Balance" readonly="true"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+    
+	<unique-constraint columns="ref,company"/>
     
     <extra-code><![CDATA[
 	

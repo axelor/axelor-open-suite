@@ -78,7 +78,9 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/ "The bank details type is not compatible with the accepted types in file format." /*)*/;
 	static final String BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/ "The bank details currency is not compatible with the currency in bank order." /*)*/;
 
-	
+	String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS = /*$$(*/ "Please fill the bank address in the receiver bank details." /*)*/;
+	String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK = /*$$(*/ "Please fill the bank in the receiver bank details." /*)*/;
+
 	/**
 	 *  BankOrder lines
 	 */
@@ -106,13 +108,15 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_MERGE_SAME_SENDER_COMPANY = /*$$(*/ "Please select some bank orders that have the same sender company" /*)*/;
 	static final String BANK_ORDER_MERGE_SAME_SENDER_BANK_DETAILS = /*$$(*/ "Please select some bank orders that have the same sender bank details" /*)*/;
 	static final String BANK_ORDER_MERGE_SAME_CURRENCY = /*$$(*/ "Please select some bank orders that have the same currency" /*)*/;
+	static final String BANK_ORDER_MERGE_NO_BANK_ORDERS = /*$$(*/ "No bank orders found" /*)*/;
 	
 	/**
 	 * BankOrder file
 	 */
 	static final String BANK_ORDER_FILE_NO_SENDER_ADDRESS = /*$$(*/ "No address has been defined in the sender company %s" /*)*/;
 	static final String BANK_ORDER_FILE_NO_FOLDER_PATH = /*$$(*/ "No folder path has been defined in the payment mode %s" /*)*/;
-	static final String BANK_ORDER_FILE_UNKNOW_FORMAT = /*$$(*/ "Unknow format for file generation for payment mode %s" /*)*/;
+	static final String BANK_ORDER_FILE_UNKNOWN_FORMAT = /*$$(*/ "Unknown format for file generation" /*)*/;
+    static final String BANK_ORDER_FILE_UNKNOWN_SEPA_TYPE = /*$$(*/ "Unknown SEPA type for file generation" /*)*/;
 
 	
 	/**
@@ -124,7 +128,19 @@ public interface IExceptionMessage {
 	static final String EBICS_TEST_MODE_NOT_ENABLED = /*$$(*/ "Test mode is not enabled or test file is missing" /*)*/;
 	static final String EBICS_MISSING_CERTIFICATES = /*$$(*/  "Please add certificates to print" /*)*/;
 	static final String EBICS_INVALID_BANK_URL = /*$$(*/  "Invalid bank url. It must be start with http:// or https://" /*)*/;
-	
-	
-	
+	static final String EBICS_MISSING_USER_TRANSPORT = /*$$(*/ "Please insert a EBICS user for transport in the EBICS partner" /*)*/;
+
+	/**
+	 * Batch bank statement
+	 */
+    String BATCH_BANK_STATEMENT_RETRIEVED_BANK_STATEMENT_COUNT = /*$$(*/ "Number of retrieved bank statements: %d." /*)*/;
+
+    /**
+     * BankStatement import
+     */
+	static final String BANK_STATEMENT_FILE_UNKNOWN_FORMAT = /*$$(*/ "Unknown format for file import process" /*)*/;
+    static final String BANK_STATEMENT_MISSING_FILE = /*$$(*/ "Missing bank statement file" /*)*/;
+    static final String BANK_STATEMENT_MISSING_FILE_FORMAT = /*$$(*/ "Missing bank statement file format" /*)*/;
+    static final String BANK_STATEMENT_EBICS_PARTNER = /*$$(*/ "Error with EBICS partner %s: %s" /*)*/;
+
 }

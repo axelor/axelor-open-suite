@@ -23,6 +23,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.invoke.MethodHandles;
 import java.net.URL;
+import java.security.NoSuchProviderException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
@@ -78,7 +79,7 @@ public class EbicsCertificateService {
 			 return cert.getCertificate();
 		 }
 		
-		 if (bank.getUrl() != null && type.equals("ssl")) {
+		 if (bank.getUrl() != null && type.equals(EbicsCertificateRepository.TYPE_SSL)) {
 			 return Beans.get(EbicsCertificateService.class).getSSLCertificate(bank);
 		 }
 
@@ -90,8 +91,8 @@ public class EbicsCertificateService {
 		ByteArrayInputStream instream = new ByteArrayInputStream(certificate);
 		X509Certificate cert;
 		try {
-			cert = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(instream);
-		} catch (CertificateException e) {
+			cert = (X509Certificate) CertificateFactory.getInstance("X.509", "BC").generateCertificate(instream);
+		} catch (CertificateException | NoSuchProviderException e) {
 			throw new AxelorException(I18n.get("Error in bank certificate of type %s"), IException.CONFIGURATION_ERROR, type);
 		}
 		
@@ -189,7 +190,12 @@ public class EbicsCertificateService {
 	}
 	
 	
-	public EbicsCertificate updateCertificate(X509Certificate certificate, EbicsCertificate cert) throws CertificateEncodingException, IOException {
+	public EbicsCertificate updateCertificate(X509Certificate certificate, EbicsCertificate cert, boolean cleanPrivateKey) throws CertificateEncodingException, IOException {
+		
+		String sha = DigestUtils.sha256Hex(certificate.getEncoded());
+		log.debug("sha256 HEX : {}", sha);
+		log.debug("certificat : {}", new String(certificate.getEncoded()));
+		log.debug("certificat size : {}", certificate.getEncoded().length);
 		
 		cert.setValidFrom(new LocalDate(certificate.getNotBefore()));
 		cert.setValidTo(new LocalDate(certificate.getNotAfter()));
@@ -201,7 +207,11 @@ public class EbicsCertificateService {
 		cert.setPublicKeyModulus(publicKey.getModulus().toString(16));
 		cert.setSerial(certificate.getSerialNumber().toString(16));
 		cert.setPemString(convertToPEMString(certificate));
-		String sha = DigestUtils.sha256Hex(certificate.getEncoded());
+		
+		if (cleanPrivateKey) {
+			cert.setPrivateKey(null);
+		}
+		
 		sha = sha.toUpperCase();
 		cert.setSha2has(sha);
 		computeFullName(cert);
@@ -221,7 +231,7 @@ public class EbicsCertificateService {
 			cert.setTypeSelect(type);
 		}
 		
-		cert =  updateCertificate(certificate, cert);
+		cert =  updateCertificate(certificate, cert, true);
 		
 		return certRepo.save(cert);
 	}
@@ -287,6 +297,13 @@ public class EbicsCertificateService {
 		pr.close();
 		
 		return cert;
+   }
+   
+   public byte[] convertToDER(String pemString) throws IOException, CertificateEncodingException {
+		
+		X509Certificate cert = convertToCertificate(pemString);
+		
+		return cert.getEncoded();
    }
    
    @Transactional

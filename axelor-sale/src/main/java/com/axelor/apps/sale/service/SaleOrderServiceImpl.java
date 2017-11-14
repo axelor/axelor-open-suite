@@ -17,14 +17,12 @@
  */
 package com.axelor.apps.sale.service;
 
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import javax.persistence.Query;
 
-import org.eclipse.birt.core.exception.BirtException;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -293,9 +291,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		saleOrderRepo.save(saleOrder);
 	}
 
-	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException, IOException, BirtException {
+	protected void _finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_FINALIZE);
 		saleOrderRepo.save(saleOrder);
 		if (generalService.getGeneral().getManageSaleOrderVersion()){
@@ -305,7 +302,12 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 			saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
 		}
 	}
-	
+
+	@Override
+	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
+		_finalizeSaleOrder(saleOrder);
+	}
+
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception  {

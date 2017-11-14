@@ -7,7 +7,7 @@
     <form name="production-order-wizard-form" title="Production order wizard" model="com.axelor.apps.base.db.Wizard" 
     onNew="action-production-order-wizard-record-default,action-production-order-wizard-record-default-bom">
 		<panel name="main">
-			<field name="product" widget="ManyToOne" target="com.axelor.apps.base.db.Product" title="Product" showIf="!product_id" form-view="product-form" grid-view="product-grid"/>
+			<field name="product" widget="ManyToOne" target="com.axelor.apps.base.db.Product" canEdit="false" title="Product" showIf="!product_id" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" widget="decimal" title="Quantity"/>
 			<field name="billOfMaterial" widget="ManyToOne" target="com.axelor.apps.production.db.BillOfMaterial" title="BOM" form-view="bill-of-material-form" grid-view="bill-of-material-grid"
 			onSelect="action-production-order-wizard-attrs-bill-of-material-domain"
@@ -22,7 +22,7 @@
     	<field name="product" expr="eval: __repo__.of(Product).find(_productId)" if="_productId"/>
     	<field name="business_id" expr="eval: _businessId?.id"/>
 		<field name="qty" expr="eval: 1.0"/>
-		<field name="_startDate" expr=" eval: __datetime__"/>
+		<field name="_startDate" expr="eval: __datetime__"/>
 	</action-record>
 	
 	<action-record name="action-production-order-wizard-record-default-bom" model="com.axelor.apps.base.db.Wizard">
@@ -40,8 +40,8 @@
     </action-method>
     
     <action-attrs name="action-production-order-wizard-attrs-bill-of-material-domain">
-		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product.id}) AND self.isRawMaterial = false  AND self.parentBillOfMaterial IS NULL &quot;" if="product"/>
-		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;self.isRawMaterial = false AND self.parentBillOfMaterial IS NULL &quot;" if="!product"/>
+		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product.id}) AND self.isRawMaterial = false &quot;" if="product"/>
+		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;self.isRawMaterial = false &quot;" if="!product"/>
 	</action-attrs>
     
     

@@ -61,13 +61,13 @@
 	  <panel name="main">
 		  <field name="typeSelect" title="Type" colSpan="4" onChange="action-stock-move-set-default-locations, action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1"/>
 		  <field name="statusSelect" widget="NavSelect" colSpan="8"/>
-		  <field name="conformitySelect" onChange="action-stock-move-method-change-conformity"/>
+		  <field name="conformitySelect" onChange="action-stock-move-method-change-conformity" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
 	  </panel>
 	  <panel>
 	    <panel title="Stock move reference" name="stockMoveRef">
 	      <field name="stockMoveSeq" colSpan="12"/>
-	      <field name="name" colSpan="12"/>
-	      <field name="company" widget="SuggestBox" form-view="company-form" colSpan="12" readonlyIf="statusSelect != 1" grid-view="company-grid"/>
+	      <field name="name" colSpan="12" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
+	      <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" colSpan="12" readonlyIf="statusSelect != 1" grid-view="company-grid"/>
 	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12" readonlyIf="statusSelect != 1" onChange="action-stock-move-record-partner-delivery-informations"/>
 	    </panel>
 	    <panel title="Stock move informations" name="stockMoveInformation">
@@ -75,18 +75,18 @@
 	      <field name="toLocation" domain="self.company = :company" onChange="action-stock-move-set-to-address" colSpan="12" readonlyIf="statusSelect != 1" form-view="location-form" grid-view="location-grid"/>
 	      <field name="estimatedDate" colSpan="6" readonlyIf="statusSelect != 1"/>
 	      <field name="realDate" colSpan="6"/>
-	      <field name="fromAddress" showIf="typeSelect == 3" colSpan="12" onSelect="action-stock-move-attrs-domain-address" form-view="address-partner-address-form"/>
+	      <field name="fromAddress" showIf="typeSelect == 3" colSpan="12" onSelect="action-stock-move-attrs-domain-address" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
 	      <field name="toAddress" showIf="typeSelect == 2" colSpan="12" onSelect="action-stock-move-attrs-domain-address" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
-	      <field name="isWithReturnSurplus" colSpan="6"/>
+	      <field name="isWithReturnSurplus" colSpan="6" showIf="typeSelect == 3"/>
 	      <field name="isWithBackorder" colSpan="6"/>
-	      <field name="shipmentMode" colSpan="12"/>
-	      <field name="freightCarrierMode" colSpan="12"/>
+	      <field name="shipmentMode" colSpan="12" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
+	      <field name="freightCarrierMode" colSpan="12" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
 	    </panel>
 		<panel colSpan="12">
-	    	<field name="trackingNumber" />
-			<field name="numOfPackages" />
-			<field name="numOfPalettes" />
-			<field name="grossWeight" />
+	    	<field name="trackingNumber" readonlyIf="statusSelect == 3 || statusSelect == 4" />
+			<field name="numOfPackages" readonlyIf="statusSelect == 3 || statusSelect == 4" />
+			<field name="numOfPalettes" readonlyIf="statusSelect == 3 || statusSelect == 4" />
+			<field name="grossWeight" readonlyIf="statusSelect == 3 || statusSelect == 4" />
 		</panel>
 	  </panel>  
 	  <panel-tabs>
@@ -116,17 +116,19 @@
 	      <button name="specialSplit" title="Special split"  onClick="save,action-stock-move-wizard-special-split"/>
 	      <button name="shipReciveAllProducts" title="Ship/Receive all products" onClick="save,action-stock-move-ship-recieve-all-products"/>
 	    </panel>
-	    
-	    <panel sidebar="true" readonly="true"  colSpan="4">  
-	  		<field name="exTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
-	          <viewer>
-	            &lt;dl class="dl-horizontal"&gt;
-	              &lt;dt class="order-subtotal-total" x-translate&gt;Total W.T.&lt;/dt&gt;
-	              &lt;dd class="order-subtotal-total" &gt;{{record.exTaxTotal}}&lt;/dd&gt;
-	            &lt;/dl&gt;
-	          </viewer>
-	        </field>
-      </panel>
+
+        <panel sidebar="true" readonly="true"  colSpan="4">
+            <field name="exTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
+                <viewer>
+                    <![CDATA[
+                    <dl class="dl-horizontal">
+                        <dt class="order-subtotal-total" x-translate>Total W.T.</dt>
+                        <dd class="order-subtotal-total">{{record.exTaxTotal}}</dd>
+                    </dl>
+                    ]]>
+                </viewer>
+            </field>
+        </panel>
 	</form>
     
     <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard">

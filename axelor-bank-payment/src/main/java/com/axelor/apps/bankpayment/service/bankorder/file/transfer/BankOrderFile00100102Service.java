@@ -24,31 +24,29 @@ import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
-import com.axelor.apps.account.xsd.pain_001_001_02.AccountIdentification3Choice;
-import com.axelor.apps.account.xsd.pain_001_001_02.AmountType2Choice;
-import com.axelor.apps.account.xsd.pain_001_001_02.BranchAndFinancialInstitutionIdentification3;
-import com.axelor.apps.account.xsd.pain_001_001_02.CashAccount7;
-import com.axelor.apps.account.xsd.pain_001_001_02.CreditTransferTransactionInformation1;
-import com.axelor.apps.account.xsd.pain_001_001_02.CreditorReferenceInformation1;
-import com.axelor.apps.account.xsd.pain_001_001_02.CurrencyAndAmount;
-import com.axelor.apps.account.xsd.pain_001_001_02.Document;
-import com.axelor.apps.account.xsd.pain_001_001_02.FinancialInstitutionIdentification5Choice;
-import com.axelor.apps.account.xsd.pain_001_001_02.GroupHeader1;
-import com.axelor.apps.account.xsd.pain_001_001_02.Grouping1Code;
-import com.axelor.apps.account.xsd.pain_001_001_02.ObjectFactory;
-import com.axelor.apps.account.xsd.pain_001_001_02.Pain00100102;
-import com.axelor.apps.account.xsd.pain_001_001_02.PartyIdentification8;
-import com.axelor.apps.account.xsd.pain_001_001_02.PaymentIdentification1;
-import com.axelor.apps.account.xsd.pain_001_001_02.PaymentInstructionInformation1;
-import com.axelor.apps.account.xsd.pain_001_001_02.PaymentMethod3Code;
-import com.axelor.apps.account.xsd.pain_001_001_02.PaymentTypeInformation1;
-import com.axelor.apps.account.xsd.pain_001_001_02.RemittanceInformation1;
-import com.axelor.apps.account.xsd.pain_001_001_02.ServiceLevel1Code;
-import com.axelor.apps.account.xsd.pain_001_001_02.ServiceLevel2Choice;
-import com.axelor.apps.account.xsd.pain_001_001_02.StructuredRemittanceInformation6;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.AccountIdentification3Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.AmountType2Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.BranchAndFinancialInstitutionIdentification3;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.CashAccount7;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.CreditTransferTransactionInformation1;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.CurrencyAndAmount;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.Document;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.FinancialInstitutionIdentification5Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.GroupHeader1;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.Grouping1Code;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.ObjectFactory;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.Pain00100102;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.PartyIdentification8;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.PaymentIdentification1;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.PaymentInstructionInformation1;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.PaymentMethod3Code;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.PaymentTypeInformation1;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.RemittanceInformation1;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.ServiceLevel1Code;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.ServiceLevel2Choice;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
@@ -61,7 +59,7 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 		
 		super(bankOrder);
 		
-		context = "com.axelor.apps.account.xsd.pain_001_001_02";
+		context = "com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02";
 		fileExtension = FILE_EXTENSION_XML;
 	}
 	

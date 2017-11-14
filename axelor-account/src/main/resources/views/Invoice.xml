@@ -2,110 +2,159 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
-    
-    <!-- VUE GENERALE -->
-    
-    <grid name="invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
-    	<toolbar>
-			<button name="printInvoices" title="Print invoices" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
-			<button name="massInvoiceValidation" title="Validate selected invoices" prompt="Are you sure you want to validate all selected invoices ?" onClick="action-invoice-method-mass-validation"/>
-			<button name="massInvoiceVentilation" title="Ventilate selected invoices" prompt="Are you sure you want to ventilate all selected invoices ?" onClick="action-invoice-method-mass-ventilation"/>
-    	</toolbar>   
-    	<hilite color="info" if="statusSelect == 1"/>
-	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
-	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
-	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
-        <field name="operationTypeSelect" />
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-        <field name="invoiceDate"/>
-        <field name="dueDate"/>
-        <field name="exTaxTotal" aggregate="sum"/>
-        <field name="inTaxTotal" aggregate="sum"/>
-        <field name="amountRemaining" aggregate="sum"/>
-        <field name="currency"/>
-        <field name="statusSelect"/>
-        <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
-        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
-    </grid>
-    
-    <grid name="invoice-supplier-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
-    	<toolbar>
-			<button name="printInvoices" title="Print invoices" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
-			<button name="massInvoiceValidation" title="Validate selected invoices" prompt="Are you sure you want to validate all selected invoices ?" onClick="action-invoice-method-mass-validation"/>
-			<button name="massInvoiceVentilation" title="Ventilate selected invoices" prompt="Are you sure you want to ventilate all selected invoices ?" onClick="action-invoice-method-mass-ventilation"/>
-    	</toolbar>   
-    	<hilite color="info" if="statusSelect == 1"/>
-	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
-	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
-	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
-        <field name="externalReference"/>
-        <field name="operationTypeSelect" />
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-        <field name="invoiceDate"/>
-        <field name="dueDate"/>
-        <field name="exTaxTotal" aggregate="sum"/>
-        <field name="inTaxTotal" aggregate="sum"/>
-        <field name="amountRemaining" aggregate="sum"/>
-        <field name="currency"/>
-        <field name="statusSelect"/>
-        <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
-        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
-    </grid>
-    
-    <grid name="invoice-light-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
-    	<toolbar>
-			<button name="printInvoices" title="Print invoices" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
-			<button name="massInvoiceValidation" title="Validate selected invoices" prompt="Are you sure you want to validate all selected invoices ?" onClick="action-invoice-method-mass-validation"/>
-			<button name="massInvoiceVentilation" title="Ventilate selected invoices" prompt="Are you sure you want to ventilate all selected invoices ?" onClick="action-invoice-method-mass-ventilation"/>
-    	</toolbar>   
-    	<hilite color="info" if="statusSelect == 1"/>
-	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
-	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
-	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
-        <field name="operationTypeSelect" />
-        <field name="invoiceDate"/>
-        <field name="exTaxTotal" aggregate="sum"/>
-        <field name="amountRemaining" aggregate="sum"/>
-        <field name="currency"/>
-        <field name="statusSelect"/>
-        <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
-        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
-    </grid>
-    
-    <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
-    	<hilite color="info" if="statusSelect == 1"/>
-	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
-	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
-	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
-        <field name="operationTypeSelect" />
-        <field name="invoiceDate"/>
-        <field name="exTaxTotal" aggregate="sum"/>
-        <field name="amountRemaining" aggregate="sum"/>
-        <field name="statusSelect"/>
-        <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
-    </grid>
-    
-	<form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"  
-	onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group">
-	
+
+	<!-- VUE GENERALE -->
+
+	<grid name="invoice-grid" title="Invoices"
+		model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
 		<toolbar>
-		  <button name="showInvoice" title="Print" icon="fa-print" onClick="save,action-invoice-method-show-invoice"/>
-		  <button name="showAnnex" title="Print annex" icon="fa-print" onClick="action-invoice-business-project-method-print-annex" if-module="axelor-business-project"/>
-		  <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
+			<button name="printInvoices" title="Print invoices" icon="fa-print"
+				onClick="action-invoice-method-show-invoice" />
+			<button name="massInvoiceValidation" title="Validate selected invoices"
+				prompt="Are you sure you want to validate all selected invoices ?"
+				onClick="action-invoice-method-mass-validation" />
+			<button name="massInvoiceVentilation" title="Ventilate selected invoices"
+				prompt="Are you sure you want to ventilate all selected invoices ?"
+				onClick="action-invoice-method-mass-ventilation" />
 		</toolbar>
-	  
-		<panel name="main" >
-			<field name="invoiceId"/>
+		<hilite color="info" if="statusSelect == 1" />
+		<hilite color="danger"
+			if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0" />
+		<hilite color="warning"
+			if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5" />
+		<hilite color="success"
+			if="statusSelect == 3 &amp;&amp; amountRemaining == 0" />
+		<field name="invoiceId" />
+		<field name="operationTypeSelect" />
+		<field name="partner" form-view="partner-form" grid-view="partner-grid" />
+		<field name="paymentMode" grid-view="payment-mode-grid"
+			form-view="payment-mode-form" />
+		<field name="invoiceDate" />
+		<field name="dueDate" />
+		<field name="exTaxTotal" aggregate="sum" />
+		<field name="inTaxTotal" aggregate="sum" />
+		<field name="amountRemaining" aggregate="sum" />
+		<field name="currency" />
+		<field name="statusSelect" />
+		<button name="showInvoice" title="Print" icon="fa-print"
+			onClick="action-invoice-method-show-invoice" />
+		<button name="sendByEmail" title="Send email" icon="fa-envelope"
+			onClick="action-send-by-email-with-template" />
+	</grid>
+
+	<grid name="invoice-supplier-grid" title="Invoices"
+		model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+		<toolbar>
+			<button name="printInvoices" title="Print invoices" icon="fa-print"
+				onClick="action-invoice-method-show-invoice" />
+			<button name="massInvoiceValidation" title="Validate selected invoices"
+				prompt="Are you sure you want to validate all selected invoices ?"
+				onClick="action-invoice-method-mass-validation" />
+			<button name="massInvoiceVentilation" title="Ventilate selected invoices"
+				prompt="Are you sure you want to ventilate all selected invoices ?"
+				onClick="action-invoice-method-mass-ventilation" />
+		</toolbar>
+		<hilite color="info" if="statusSelect == 1" />
+		<hilite color="danger"
+			if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0" />
+		<hilite color="warning"
+			if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5" />
+		<hilite color="success"
+			if="statusSelect == 3 &amp;&amp; amountRemaining == 0" />
+		<field name="invoiceId" />
+		<field name="externalReference" />
+		<field name="operationTypeSelect" />
+		<field name="partner" form-view="partner-form" grid-view="partner-grid" />
+		<field name="paymentMode" grid-view="payment-mode-grid"
+			form-view="payment-mode-form" />
+		<field name="invoiceDate" />
+		<field name="dueDate" />
+		<field name="exTaxTotal" aggregate="sum" />
+		<field name="inTaxTotal" aggregate="sum" />
+		<field name="amountRemaining" aggregate="sum" />
+		<field name="currency" />
+		<field name="statusSelect" />
+		<button name="showInvoice" title="Print" icon="fa-print"
+			onClick="action-invoice-method-show-invoice" />
+		<button name="sendByEmail" title="Send email" icon="fa-envelope"
+			onClick="action-send-by-email-with-template" />
+	</grid>
+
+	<grid name="invoice-light-grid" title="Invoices"
+		model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+		<toolbar>
+			<button name="printInvoices" title="Print invoices" icon="fa-print"
+				onClick="action-invoice-method-show-invoice" />
+			<button name="massInvoiceValidation" title="Validate selected invoices"
+				prompt="Are you sure you want to validate all selected invoices ?"
+				onClick="action-invoice-method-mass-validation" />
+			<button name="massInvoiceVentilation" title="Ventilate selected invoices"
+				prompt="Are you sure you want to ventilate all selected invoices ?"
+				onClick="action-invoice-method-mass-ventilation" />
+		</toolbar>
+		<hilite color="info" if="statusSelect == 1" />
+		<hilite color="danger"
+			if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0" />
+		<hilite color="warning"
+			if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5" />
+		<hilite color="success"
+			if="statusSelect == 3 &amp;&amp; amountRemaining == 0" />
+		<field name="invoiceId" />
+		<field name="operationTypeSelect" />
+		<field name="invoiceDate" />
+		<field name="exTaxTotal" aggregate="sum" />
+		<field name="amountRemaining" aggregate="sum" />
+		<field name="currency" />
+		<field name="statusSelect" />
+		<button name="showInvoice" title="Print" icon="fa-print"
+			onClick="action-invoice-method-show-invoice" />
+		<button name="sendByEmail" title="Send email" icon="fa-envelope"
+			onClick="action-send-by-email-with-template" />
+	</grid>
+
+	<grid name="invoice-refund-grid" title="Invoices"
+		model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+		<hilite color="info" if="statusSelect == 1" />
+		<hilite color="danger"
+			if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0" />
+		<hilite color="warning"
+			if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5" />
+		<hilite color="success"
+			if="statusSelect == 3 &amp;&amp; amountRemaining == 0" />
+		<field name="invoiceId" />
+		<field name="operationTypeSelect" />
+		<field name="invoiceDate" />
+		<field name="exTaxTotal" aggregate="sum" />
+		<field name="amountRemaining" aggregate="sum" />
+		<field name="statusSelect" />
+		<button name="showInvoice" title="Print" icon="fa-print"
+			onClick="action-invoice-method-show-invoice" />
+	</grid>
+
+	<form name="invoice-form" title="Invoice"
+		model="com.axelor.apps.account.db.Invoice" onNew="action-account-invoice-onnew-group"
+		onLoad="action-account-invoice-onload-group">
+
+		<toolbar>
+			<button name="showInvoice" title="Print" icon="fa-print"
+				onClick="save,action-invoice-method-show-invoice" />
+			<button name="showAnnex" title="Print annex" icon="fa-print"
+				onClick="action-invoice-business-project-method-print-annex"
+				if-module="axelor-business-project" />
+			<button name="sendByEmail" title="Send email" icon="fa-envelope"
+				onClick="save,action-send-by-email-with-template" />
+		</toolbar>
+
+		<panel name="main">
+			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
 			
+			<field name="invoiceId" />
+
 			<panel itemSpan="12" colSpan="6">
-				<field name="operationTypeSelect" selection="iinvoice.operation.type.select" readonlyIf="statusSelect &gt; 1" showTitle="false" onChange="action-group-account-invoice-operationtype-onchange">
-			        <viewer>
+				<field name="operationTypeSelect" selection="iinvoice.operation.type.select"
+					readonlyIf="statusSelect &gt; 1 || partner != null" showTitle="false"
+					onChange="action-group-account-invoice-operationtype-onchange">
+					<viewer>
 			        <![CDATA[
 			
 			 			<h3>
@@ -117,120 +166,196 @@
 			
 					]]>
 					</viewer>
-			     </field>
-			
-	    	</panel>
-			<field name="company" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange, action-invoice-attrs-hide-totals-company-currency" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1"/>
-			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-domain-company-bank-details" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="currency" canEdit="false" onChange="action-invoice-attrs-change-total-title, action-invoice-attrs-hide-totals-company-currency" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
-			<field name="project" if-module="axelor-business-project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
-			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
-			<field name="isSubscription" hidden="true"/>
+				</field>
+
+			</panel>
+			<field name="company" canEdit="false" widget="SuggestBox"
+				onChange="action-group-account-invoice-company-onchange, action-invoice-attrs-hide-totals-company-currency"
+				form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1 || partner != null" />
+			<field name="companyBankDetails" widget="SuggestBox"
+				onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
+				form-view="bank-details-form" grid-view="bank-details-grid" />
+			<field name="currency" canEdit="false"
+				onChange="action-invoice-attrs-change-total-title, action-invoice-attrs-hide-totals-company-currency"
+				readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid" />
+			<field name="project" if-module="axelor-business-project"
+				onSelect="action-invoice-attrs-domain-project" form-view="project-form"
+				grid-view="project-grid" />
+			<field name="inAti" onChange="action-invoice-attrs-in-ati" />
+			<field name="isSubscription" hidden="true" />
 		</panel>
-	  
-		<panel name="invoicingInformations" title="Invoicing informations">
-			<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0" onChange="action-group-account-invoice-partner-onchange, action-invoice-attrs-hide-totals-company-currency" onSelect="action-set-partner-domain"/>
-			<field name="contactPartner"  onSelect="action-set-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"
-					readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2"/>
-			<field name="address" onSelect="action-invoice-attrs-domain-address" form-view="address-partner-address-form" canNew="true" />
-			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" onSelect="action-set-payment-mode-domain" onChange="action-invoice-method-fill-company-bank-details"/>
-			<field name="paymentCondition" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
-			<field name="bankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="priceList" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-attrs-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
-			<field name="saleOrder" if="!__config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-method-fill-in-lines" form-view="sale-order-form" grid-view="sale-order-grid"/>
+
+		<panel name="invoicingInformations" title="Invoicing informations" hideIf="company == null">
+			<field name="partner" form-view="partner-form" grid-view="partner-grid"
+				readonlyIf="statusSelect != 1 || invoiceLineList.length > 0"
+				onChange="action-group-account-invoice-partner-onchange, action-invoice-attrs-hide-totals-company-currency"
+				onSelect="action-set-partner-domain" />
+			<field name="contactPartner" onSelect="action-set-partner-domain"
+				domain="self.isContact = true" form-view="partner-contact-form"
+				grid-view="partner-contact-grid"
+				readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2" />
+			<field name="address" onSelect="action-invoice-attrs-domain-address"
+				form-view="address-partner-address-form" canNew="true" />
+			<field name="paymentMode" grid-view="payment-mode-grid"
+				form-view="payment-mode-form" widget="SuggestBox"
+				onSelect="action-set-payment-mode-domain" onChange="action-invoice-method-fill-company-bank-details" />
+			<field name="paymentCondition" readonlyIf="statusSelect == 3"
+				widget="SuggestBox" onChange="action-invoice-record-due-date"
+				form-view="payment-condition-form" grid-view="payment-condition-grid" />
+			<field name="bankDetails" widget="SuggestBox"
+				onSelect="action-invoice-attrs-bank-details-from-partner-domain"
+				form-view="bank-details-form" grid-view="bank-details-grid" />
+			<field name="priceList" onChange="action-invoice-record-hide-discount"
+				readonlyIf="statusSelect != 1" onSelect="action-invoice-attrs-domain-priceList"
+				form-view="price-list-form" grid-view="price-list-grid" />
+			<field name="saleOrder"
+				if="!__config__.general.getManageInvoicedAmountByLine()" if-module="axelor-supplychain"
+				onChange="action-invoice-method-fill-in-lines" form-view="sale-order-form"
+				grid-view="sale-order-grid" />
 			<field name="message" />
-			<field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
+			<field name="supplierInvoiceNb"
+				showIf="operationTypeSelect == 1 || operationTypeSelect == 2" />
 		</panel>
-	  
-		<panel-tabs>
+
+		<panel-tabs hideIf="partner == null">
 			<panel name="invoiceContent" title="Invoice content" showTitle="false">
-				<panel-related field="invoiceLineList" readonlyIf="statusSelect == 2 || statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
-				<panel-related field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
+				<panel-related field="invoiceLineList"
+					readonlyIf="statusSelect == 2 || statusSelect == 3 || partner == null"
+					colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid"
+					onChange="action-invoice-method-compute" canMove="true" orderBy="sequence" />
+				<panel-related field="invoiceLineTaxList" colSpan="12"
+					form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid" />
 			</panel>
 			<panel name="accounting" title="Accounting" showTitle="false">
-				<panel name="accountingDetails" title="Accounting details"  colSpan="12">
-					<field name="journal" readonlyIf="statusSelect == 3" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
-					<field name="partnerAccount" readonlyIf="statusSelect == 3" onSelect="action-invoice-partner-account-domain" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
+				<panel name="accountingDetails" title="Accounting details"
+					colSpan="12">
+					<field name="journal" readonlyIf="statusSelect == 3"
+						domain="self.statusSelect = 1 AND self.company = :company"
+						form-view="journal-form" grid-view="journal-grid" />
+					<field name="partnerAccount" readonlyIf="statusSelect == 3"
+						onSelect="action-invoice-partner-account-domain" domain="self.company = :company"
+						form-view="account-form" grid-view="account-grid" />
 					<panel showIf="move != null">
-						<field name="move" readonly="true" form-view="move-form" grid-view="move-grid"/>
-						<field name="move.accountingOk" readonly="true"/>
+						<field name="move" readonly="true" form-view="move-form"
+							grid-view="move-grid" />
+						<field name="move.accountingOk" readonly="true" />
 					</panel>
-					<field name="doubtfulCustomerOk" readonly="true" showIf="doubtfulCustomerOk &amp;&amp; statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"/>
-					<field name="usherPassageOk" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)" onChange="save,com.axelor.apps.account.web.InvoiceController:usherProcess"/>
-					<field name="oldMove" readonly="true" showIf="oldMove" form-view="move-form" grid-view="move-grid"/>
+					<field name="doubtfulCustomerOk" readonly="true"
+						showIf="doubtfulCustomerOk &amp;&amp; statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)" />
+					<field name="usherPassageOk"
+						showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"
+						onChange="save,com.axelor.apps.account.web.InvoiceController:usherProcess" />
+					<field name="oldMove" readonly="true" showIf="oldMove"
+						form-view="move-form" grid-view="move-grid" />
 				</panel>
-				<panel name="refund" title="Refund" showIf="statusSelect != 1 || originalInvoice"  colSpan="12" showTitle="false">
-					<button name="createRefund" title="Generate refund" colSpan="3" showIf="statusSelect != 1" onClick="save,action-invoice-method-create-refund,save" />
-					<field name="originalInvoice" readonly="true" showIf="originalInvoice" form-view="invoice-form" grid-view="invoice-grid"/>
-					<panel-related field="refundInvoiceList" readonly="true" showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()" colSpan="12" form-view="invoice-form" grid-view="invoice-refund-grid"/>
+				<panel name="refund" title="Refund"
+					showIf="statusSelect != 1 || originalInvoice" colSpan="12"
+					showTitle="false">
+					<button name="createRefund" title="Generate refund" colSpan="3"
+						showIf="statusSelect != 1" onClick="save,action-invoice-method-create-refund,save" />
+					<field name="originalInvoice" readonly="true" showIf="originalInvoice"
+						form-view="invoice-form" grid-view="invoice-grid" />
+					<panel-related field="refundInvoiceList" readonly="true"
+						showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()"
+						colSpan="12" form-view="invoice-form" grid-view="invoice-refund-grid" />
 				</panel>
-				<panel colSpan="12"  name="irrecoverable" title="Irrecoverable" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"  showTitle="false">
-					<field name="irrecoverableStatusSelect"/>
-					<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid"/>
-					<button name="passInIrrecoverable" title="Shift to irrecoverable"   onClick="com.axelor.apps.account.web.InvoiceController:passInIrrecoverable"/>
-					<button name="notPassInIrrecoverable" title="Do not shift into irrecoverable"   onClick="com.axelor.apps.account.web.InvoiceController:notPassInIrrecoverable"/>
+				<panel colSpan="12" name="irrecoverable" title="Irrecoverable"
+					showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"
+					showTitle="false">
+					<field name="irrecoverableStatusSelect" />
+					<field name="managementObject" form-view="management-object-form"
+						grid-view="management-object-grid" />
+					<button name="passInIrrecoverable" title="Shift to irrecoverable"
+						onClick="com.axelor.apps.account.web.InvoiceController:passInIrrecoverable" />
+					<button name="notPassInIrrecoverable" title="Do not shift into irrecoverable"
+						onClick="com.axelor.apps.account.web.InvoiceController:notPassInIrrecoverable" />
 				</panel>
 			</panel>
-			<panel name="blockings" title="Blockings" showIf="statusSelect == 3" showTitle="false">
-				<field name="debitBlockingOk"/>
-				<field name="reminderBlockingOk"/>
-				<panel name="debitBlockingGroup" title="Direct debit blocking"  showIf="debitBlockingOk" colSpan="12">
-					<field name="debitBlockingByUser" form-view="user-form" grid-view="user-grid"/>
+			<panel name="blockings" title="Blockings" showIf="statusSelect == 3"
+				showTitle="false">
+				<field name="debitBlockingOk" />
+				<field name="reminderBlockingOk" />
+				<panel name="debitBlockingGroup" title="Direct debit blocking"
+					showIf="debitBlockingOk" colSpan="12">
+					<field name="debitBlockingByUser" canEdit="false" form-view="user-form"
+						grid-view="user-grid" />
 					<field name="debitBlockingToDate" />
-					<field name="debitBlockingReason" form-view="stop-reason-form" grid-view="stop-reason-grid" />
+					<field name="debitBlockingReason" form-view="stop-reason-form"
+						grid-view="stop-reason-grid" />
 				</panel>
-				<panel showIf="reminderBlockingOk" name="reminderBlocking" title="Reminder blocking" colSpan="12">
-					<field name="reminderBlockingByUser" form-view="user-form" grid-view="user-grid"/>
-					<field name="reminderBlockingToDate"/>
-					<field name="reminderBlockingReason" form-view="stop-reason-form" grid-view="stop-reason-grid" />
+				<panel showIf="reminderBlockingOk" name="reminderBlocking"
+					title="Reminder blocking" colSpan="12">
+					<field name="reminderBlockingByUser" canEdit="true" form-view="user-form"
+						grid-view="user-grid" />
+					<field name="reminderBlockingToDate" />
+					<field name="reminderBlockingReason" form-view="stop-reason-form"
+						grid-view="stop-reason-grid" />
 				</panel>
 			</panel>
 
-			<panel-related title="Payments details" field="invoicePaymentList" colSpan="12"  grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false" showIf="statusSelect == 3 || statusSelect == 4"/>
+			<panel-related title="Payments details" field="invoicePaymentList"
+				colSpan="12" grid-view="invoice-payment-grid" form-view="invoice-payment-form"
+				canNew="false" canRemove="false" showIf="statusSelect == 3 || statusSelect == 4" />
 
-			<panel  name="directDebit" title="Direct debit" showIf="statusSelect == 3" showTitle="false">
-				<panel name="paymentSchedule" title="Payment schedule" colSpan="12" >
-					<field name="schedulePaymentOk" readonly="true" showIf="schedulePaymentOk"/>
-					<field name="paymentSchedule" readonly="true" showIf="schedulePaymentOk" domain="self.company = :company AND self.partner = :partner" form-view="payment-schedule-form" grid-view="payment-schedule-grid"/>
+			<panel name="directDebit" title="Direct debit" showIf="statusSelect == 3"
+				showTitle="false">
+				<panel name="paymentSchedule" title="Payment schedule"
+					colSpan="12">
+					<field name="schedulePaymentOk" readonly="true" showIf="schedulePaymentOk" />
+					<field name="paymentSchedule" readonly="true" showIf="schedulePaymentOk"
+						domain="self.company = :company AND self.partner = :partner"
+						form-view="payment-schedule-form" grid-view="payment-schedule-grid" />
 				</panel>
 			</panel>
 			<panel title="Impression" name="impression" colSpan="12">
-				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>
-				<field name="hideDiscount" colSpan="6"/>
-				<field name="note" colSpan="12"/>
+				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy" />
+				<field name="hideDiscount" colSpan="6" />
+				<field name="note" colSpan="12" />
+				<field name="specificNotes" colSpan="12" readonly="true" />
 			</panel>
-			<panel title="Printing" name="printing" hidden="true" if-module="axelor-business-project" colSpan="12">
+			<panel title="Printing" name="printing" hidden="true"
+				if-module="axelor-business-project" colSpan="12">
 				<field name="displayTimesheetOnPrinting" />
 				<field name="displayExpenseOnPrinting" />
 			</panel>
 		</panel-tabs>
-	
-		<panel-stack sidebar="true">
-			<panel name="referenceDocuments" title="Reference documents" itemSpan="6">
-				<field name="internalReference"/>
-				<field name="externalReference"/>
+
+		<panel-stack sidebar="true" hideIf="partner == null">
+			<panel name="referenceDocuments" title="Reference documents"
+				itemSpan="6">
+				<field name="internalReference" />
+				<field name="externalReference" />
 			</panel>
 			<panel name="dates" title="Dates" readonlyIf="statusSelect == 3">
-				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date,action-invoice-attrs-ventilate"/>
-				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date"/>
-				<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"/>
+				<field name="invoiceDate"
+					onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date,action-invoice-attrs-ventilate" />
+				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date" />
+				<field name="estimatedPaymentDate" readonly="true"
+					if-module="axelor-cash-management" />
 			</panel>
 		</panel-stack>
-	 
-	    <panel sidebar="true" name="actions" title="Actions" >
-	        <button name="validate" title="Validate" showIf="statusSelect == 1" onClick="save,action-invoice-method-compute,action-invoice-method-validate,save"/>
-	        <button name="ventilate" title="Ventilate" showIf="statusSelect == 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
-	        <button name="cancel" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
-	        <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save"/>
-      	  	<button name="addPayment" title="Register payment" showIf="statusSelect == 3 &amp;&amp; companyInTaxTotalRemaining &gt; 0" colSpan="12" onClick="save,action-invoice-view-register-payment"/>
-	        <field name="statusSelect"/>
-	        <field name="validatedByUser" grid-view="user-grid" form-view="user-form"/>
-	    </panel>
-	    
-		<panel sidebar="true" name="totals" title="Totals" itemSpan="6">
-		    <field name="currency.symbol" hidden="true"/>
-			<field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
-		       <viewer><![CDATA[ 
+
+		<panel sidebar="true" name="actions" title="Actions" hideIf="partner == null">
+			<button name="validate" title="Validate" showIf="statusSelect == 1"
+				onClick="save,action-invoice-method-validate" />
+			<button name="ventilate" title="Ventilate" showIf="statusSelect == 2"
+				onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"
+				readonly="true" />
+			<button name="cancel" title="Cancel"
+				onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?" />
+			<button name="draft" title="Draft" showIf="statusSelect == 4"
+				onClick="save,action-invoice-record-draft,save" />
+			<button name="addPayment" title="Register payment"
+				showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12"
+				onClick="save,action-invoice-view-register-payment" />
+			<field name="validatedByUser" canEdit="false" grid-view="user-grid" form-view="user-form" />
+		</panel>
+
+		<panel sidebar="true" name="totals" title="Totals" itemSpan="6" hideIf="partner == null">
+			<field name="currency.symbol" hidden="true" />
+			<field name="inTaxTotal" css="order-subtotal" showTitle="false"
+				colSpan="12">
+				<viewer><![CDATA[ 
 		         <dl class="dl-horizontal">
 		           <dt x-translate>Total W.T.</dt>
 		           <dd>{{record.exTaxTotal}} {{record.currency.symbol}}</dd>
@@ -239,10 +364,11 @@
 		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
 		           <dd class="order-subtotal-total">{{record.inTaxTotal}} {{record.currency.symbol}}</dd>
 		         </dl>]]>
-		       </viewer>
-		     </field>
-		     <field name="invoicePaymentList" colSpan="12" showTitle="false" readonly="true" css="order-subtotal">
-              	<viewer><![CDATA[ 
+				</viewer>
+			</field>
+			<field name="invoicePaymentList" colSpan="12" showTitle="false"
+				readonly="true" css="order-subtotal">
+				<viewer><![CDATA[ 
 				  <span class="form-item-container">
          			<dl class="dl-horizontal">
                			<dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a>  <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
@@ -263,29 +389,33 @@
 	           		 	<dd ng-if="record.statusSelect == 1">-{{record.amount}} {{record.currency.symbol}}</dd>
 	           		 	<dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{record.amount}} {{record.currency.symbol}})</dd>
 	           		</dl> 
-           	      </span>]]>  
-      			</viewer>
-      			<editor layout="table" x-show-titles="false"> <label title="Paid on"/>
-                     <field name="paymentDate"/>
-		             <field name="amount"/>
-		             <field name="currency.symbol" hidden="true"/>
-   		             <field name="currency"/>
-		             <field name="paymentMode"/>
-		         </editor>
-		     </field>
-		     <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12" showIf="statusSelect == 2 || statusSelect == 3">
-		       <viewer><![CDATA[
+           	      </span>]]>
+				</viewer>
+				<editor layout="table" x-show-titles="false">
+					<label title="Paid on" />
+					<field name="paymentDate" />
+					<field name="amount" />
+					<field name="currency.symbol" hidden="true" />
+					<field name="currency" />
+					<field name="paymentMode" />
+				</editor>
+			</field>
+			<field name="inTaxTotal" css="order-subtotal" showTitle="false"
+				colSpan="12" showIf="statusSelect == 2 || statusSelect == 3">
+				<viewer><![CDATA[
 		         <dl class="dl-horizontal">
 		           <dt class="order-subtotal-total" x-translate>Amount due</dt>
 		           <dd class="order-subtotal-total">{{record.amountRemaining}} {{record.currency.symbol}}</dd>
 		         </dl>]]>
-		       </viewer>
-		     </field>
+				</viewer>
+			</field>
 		</panel>
-		<panel name="totalsCompanyCurrency" title="Totals company currency" itemSpan="6" sidebar="true" >
-		    <field name="company.currency.symbol" hidden="true"/>
-		    <field name="companyInTaxTotal" showTitle="false" colSpan="12" css="order-subtotal" >
-		      <viewer><![CDATA[ 
+		<panel name="totalsCompanyCurrency" title="Totals company currency"
+			itemSpan="6" sidebar="true" hideIf="partner == null">
+			<field name="company.currency.symbol" hidden="true" />
+			<field name="companyInTaxTotal" showTitle="false" colSpan="12"
+				css="order-subtotal">
+				<viewer><![CDATA[ 
 		         <dl class="dl-horizontal">
 		           <dt x-translate>Total W.T.</dt>
 		           <dd>{{record.companyExTaxTotal}} {{record.company.currency.symbol}}</dd>
@@ -297,331 +427,421 @@
 		           <dd class="order-subtotal-total">{{record.companyInTaxTotalRemaining}} {{record.company.currency.symbol}}</dd>
 		         </dl>
 		       ]]></viewer>
-		    </field>
-		  </panel>
-		
-		<panel-mail>
-		  <mail-messages limit="4" />
-		  <mail-followers />
-	  	</panel-mail>
-	</form>
-    
-    <!-- invoice-account  -->
-    <grid name="invoice-account-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">			        
-    	<field name="operationTypeSelect"/>
-		<field name="invoiceId"/>
-		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-		<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" />
-		<field name="invoiceDate"/>
-		<field name="dueDate"/>
-		<field name="inTaxTotal" aggregate="sum"/>
-		<field name="amountRemaining" aggregate="sum"/>
-		<field name="currency"/>
-		<field name="statusSelect"/>
-    </grid>
-    
-    <!-- invoice-direct-debit  -->
-    <grid name="invoice-direct-debit-grid" title="Debited invoices" model="com.axelor.apps.account.db.Invoice">			        
-    	<field name="operationTypeSelect"/>
-		<field name="invoiceId"/>
-		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-		<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" />
-		<field name="invoiceDate"/>
-		<field name="dueDate"/>
-		<field name="inTaxTotal" aggregate="sum"/>
-		<field name="directDebitAmount" aggregate="sum"/>
-		<field name="currency"/>
-		<field name="statusSelect"/>
-    </grid>
-    
-	<!-- VIEW LITE  -->
-    <grid name="invoice-lite-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">
-    	<toolbar>
-        	<button name="new" title="" hidden="true"/>
-    		<button name="save" title="" hidden="true"/>
-    		<button name="copy" title="" hidden="true"/>
-    		<button name="delete" title="" hidden="true"/>
-		</toolbar>
-        <field name="operationTypeSelect"/>
-        <field name="invoiceId"/>
-        <field name="invoiceDate"/>
-        <field name="statusSelect"/>
-    </grid>
-    
-    
-    <!-- CUSTOMER INVOICES MERGE  -->
-    <form name="customer-invoices-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge Cust. Invoices" width="large">
-		<panel-related field="$invoiceToMerge" form-view="invoice-form" grid-view="invoice-grid" title="Cust. Invoices to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.Invoice" domain="self.statusSelect = 1 AND self.operationTypeSelect = 3" canNew="false" canEdit="false" />
-		<panel sidebar="true" title="Actions">
-			<button name="generateMergedCustInvoices" title="Merge into single cust. invoice" onClick="action-validate-invoice-check-selection,action-group-invoice-merge-action"/>			
-	  	</panel>
-    </form>
-    
-    <form name="customer-invoices-merge-confirm-form" model="com.axelor.apps.base.db.Wizard" title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-invoice">
-		<panel colSpan="6" colOffset="3">
-			<field name="$contactPartner" title="Contact partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))" colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-			<field name="$priceList" title="Price List" type="many-to-one" target="com.axelor.apps.base.db.PriceList" domain="self.typeSelect = 2 and self.isActive = true" colSpan="6" colOffset="3" width="200px" showIf="priceListToCheck" canSelect="true" form-view="price-list-form" grid-view="price-list-grid"/>
-			<field name="$paymentMode" title="Payment Mode" type="many-to-one" target="com.axelor.apps.account.db.PaymentMode"  colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="paymentModeToCheck" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
-			<field name="$paymentCondition" title="Payment Condition" type="many-to-one" target="com.axelor.apps.account.db.PaymentCondition"  colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="paymentConditionToCheck" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
-			<button name="confirm" title="Confirm" onClick="action-group-invoice-merge-action" colSpan="12" width="200px"/>
+			</field>
 		</panel>
-    </form>
-    
-    <action-group name="action-group-invoice-merge-action">
-	    <action name="action-invoice-method-merge-account" if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
-	    <action name="action-invoice-method-merge-supplychain" if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == true &amp;&amp; __repo__.of(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == false"/>
-	    <action name="action-invoice-method-merge-business-project" if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == true"/>
-	    
+
+		<panel-mail>
+			<mail-messages limit="4" />
+			<mail-followers />
+		</panel-mail>
+	</form>
+
+	<!-- invoice-account -->
+	<grid name="invoice-account-grid" title="Invoices"
+		model="com.axelor.apps.account.db.Invoice">
+		<field name="operationTypeSelect" />
+		<field name="invoiceId" />
+		<field name="partner" form-view="partner-form" grid-view="partner-grid" />
+		<field name="paymentMode" grid-view="payment-mode-grid"
+			form-view="payment-mode-form" />
+		<field name="invoiceDate" />
+		<field name="dueDate" />
+		<field name="inTaxTotal" aggregate="sum" />
+		<field name="amountRemaining" aggregate="sum" />
+		<field name="currency" />
+		<field name="statusSelect" />
+	</grid>
+
+	<!-- invoice-direct-debit -->
+	<grid name="invoice-direct-debit-grid" title="Debited invoices"
+		model="com.axelor.apps.account.db.Invoice">
+		<field name="operationTypeSelect" />
+		<field name="invoiceId" />
+		<field name="partner" form-view="partner-form" grid-view="partner-grid" />
+		<field name="paymentMode" grid-view="payment-mode-grid"
+			form-view="payment-mode-form" />
+		<field name="invoiceDate" />
+		<field name="dueDate" />
+		<field name="inTaxTotal" aggregate="sum" />
+		<field name="directDebitAmount" aggregate="sum" />
+		<field name="currency" />
+		<field name="statusSelect" />
+	</grid>
+
+	<!-- VIEW LITE -->
+	<grid name="invoice-lite-grid" title="Invoices"
+		model="com.axelor.apps.account.db.Invoice">
+		<toolbar>
+			<button name="new" title="" hidden="true" />
+			<button name="save" title="" hidden="true" />
+			<button name="copy" title="" hidden="true" />
+			<button name="delete" title="" hidden="true" />
+		</toolbar>
+		<field name="operationTypeSelect" />
+		<field name="invoiceId" />
+		<field name="invoiceDate" />
+		<field name="statusSelect" />
+	</grid>
+
+
+	<!-- CUSTOMER INVOICES MERGE -->
+	<form name="customer-invoices-merge-form" model="com.axelor.apps.base.db.Wizard"
+		title="Merge Cust. Invoices" width="large">
+		<panel-related field="$invoiceToMerge" form-view="invoice-form"
+			grid-view="invoice-grid" title="Cust. Invoices to merge" colSpan="12"
+			type="many-to-many" target="com.axelor.apps.account.db.Invoice"
+			domain="self.statusSelect = 1 AND self.operationTypeSelect = 3"
+			canNew="false" canEdit="false" />
+		<panel sidebar="true" title="Actions">
+			<button name="generateMergedCustInvoices" title="Merge into single cust. invoice"
+				onClick="action-validate-invoice-check-selection,action-group-invoice-merge-action" />
+		</panel>
+	</form>
+
+	<form name="customer-invoices-merge-confirm-form" model="com.axelor.apps.base.db.Wizard"
+		title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-invoice">
+		<panel colSpan="6" colOffset="3">
+			<field name="$contactPartner" title="Contact partner" type="many-to-one"
+				target="com.axelor.apps.base.db.Partner"
+				domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
+				colSpan="6" colOffset="3" width="200px" widget="SuggestBox"
+				showIf="contactPartnerToCheck" form-view="partner-contact-form"
+				grid-view="partner-contact-grid" />
+			<field name="$priceList" title="Price List" type="many-to-one"
+				target="com.axelor.apps.base.db.PriceList" domain="self.typeSelect = 2 and self.isActive = true"
+				colSpan="6" colOffset="3" width="200px" showIf="priceListToCheck"
+				canSelect="true" form-view="price-list-form" grid-view="price-list-grid" />
+			<field name="$paymentMode" title="Payment Mode" type="many-to-one"
+				target="com.axelor.apps.account.db.PaymentMode" colSpan="6"
+				colOffset="3" width="200px" widget="SuggestBox" showIf="paymentModeToCheck"
+				form-view="payment-mode-form" grid-view="payment-mode-grid" />
+			<field name="$paymentCondition" title="Payment Condition" type="many-to-one"
+				target="com.axelor.apps.account.db.PaymentCondition" colSpan="6"
+				colOffset="3" width="200px" widget="SuggestBox" showIf="paymentConditionToCheck"
+				form-view="payment-condition-form" grid-view="payment-condition-grid" />
+			<button name="confirm" title="Confirm"
+				onClick="action-group-invoice-merge-action" colSpan="12" width="200px" />
+		</panel>
+	</form>
+
+	<action-group name="action-group-invoice-merge-action">
+		<action name="action-invoice-method-merge-account"
+			if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false" />
+		<action name="action-invoice-method-merge-supplychain"
+			if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == true &amp;&amp; __repo__.of(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == false" />
+		<action name="action-invoice-method-merge-business-project"
+			if="__repo__.of(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == true" />
+
 	</action-group>
-	
-    <action-group name="action-account-invoice-onnew-group">
-	    <action name="action-invoice-record-default"/>
-		<action name="action-invoice-method-payment-mode-condition"/>
-	    <action name="action-invoice-method-fill-company-bank-details"/>
-	    <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
-	    <action name="action-invoice-record-in-ati"/>
-	    <action name="action-invoice-attrs-in-ati"/>
-	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
-		<action name="action-invoice-attrs-hidden-bank-details"/>
-    </action-group>
-    
-    <action-group name="action-account-invoice-onload-group" >
-	    <action name="action-invoice-attrs-hide-cancel-button"/>
-	    <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
-	    <action name="action-invoice-attrs-in-ati"/>
-	    <action name="action-invoice-attrs-printing-fields"/>
-	    <action name="action-invoice-attrs-hide-totals-company-currency"/>
-		<action name="action-invoice-attrs-hidden-bank-details"/>
-		<action name="action-invoice-attrs-ventilate"/>
-    </action-group>
-    
-    <action-group name="action-group-account-invoice-operationtype-onchange">
-		<action name="action-invoice-method-payment-mode-condition"/>
-    	<action name="action-invoice-record-partner-change"/>
-    </action-group>
-    
-    <action-group name="action-group-account-invoice-company-onchange">
-    	<action name="action-invoice-method-fill-company-bank-details"/>
-    	<action name="action-invoice-attrs-hide-cancel-button"/>
-    	
-    </action-group>
-    
-    <action-group name="action-group-account-invoice-partner-onchange">
-    	<action name="action-invoice-record-partner-change"/>
-		<action name="action-invoice-method-payment-mode-condition"/>
-    	<action name="action-invoice-record-due-date"/>
-    	<action name="action-invoice-record-estimated-payment-date"/>
-		<action name="action-invoice-method-fill-company-bank-details"/>
-    </action-group>
+
+	<action-group name="action-account-invoice-onnew-group">
+		<action name="action-invoice-record-default" />
+		<action name="action-invoice-method-payment-mode-condition" />
+		<action name="action-invoice-method-fill-company-bank-details" />
+		<action name="action-invoice-attrs-collapse-irrecoverable-group" />
+		<action name="action-invoice-record-in-ati" />
+		<action name="action-invoice-attrs-in-ati" />
+		<action name="action-invoice-attrs-hide-totals-company-currency" />
+		<action name="action-invoice-attrs-hidden-bank-details" />
+	</action-group>
+
+	<action-group name="action-account-invoice-onload-group">
+		<action name="action-invoice-attrs-hide-cancel-button" />
+		<action name="action-invoice-attrs-collapse-irrecoverable-group" />
+		<action name="action-invoice-attrs-in-ati" />
+		<action name="action-invoice-attrs-printing-fields" />
+		<action name="action-invoice-attrs-hide-totals-company-currency" />
+		<action name="action-invoice-attrs-hidden-bank-details" />
+		<action name="action-invoice-attrs-ventilate" />
+	</action-group>
+
+	<action-group name="action-group-account-invoice-operationtype-onchange">
+		<action name="action-invoice-method-payment-mode-condition" />
+		<action name="action-invoice-record-partner-change" />
+	</action-group>
+
+	<action-group name="action-group-account-invoice-company-onchange">
+		<action name="action-invoice-method-fill-company-bank-details" />
+		<action name="action-invoice-attrs-hide-cancel-button" />
+
+	</action-group>
+
+	<action-group name="action-group-account-invoice-partner-onchange">
+		<action name="action-invoice-record-partner-change" />
+		<action name="action-invoice-method-payment-mode-condition" />
+		<action name="action-invoice-record-due-date" />
+		<action name="action-invoice-record-estimated-payment-date" />
+		<action name="action-invoice-method-fill-company-bank-details" />
+	</action-group>
 
 	<action-attrs name="action-invoice-attrs-in-ati">
-    	<attribute name="hidden" for="invoiceLineList.exTaxTotal" expr="inAti"/>
-    	<attribute name="hidden" for="invoiceLineList.inTaxTotal" expr="!inAti"/>
-    	<attribute name="hidden" for="inAti" expr=" eval: __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 1
-										|| __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2"/>
-    </action-attrs>
-    
-    <action-attrs name="action-invoice-attrs-domain-project">
-    	<attribute name="domain" for="project" expr="eval: &quot; self.typeSelect = 'project' AND self.clientPartner.id = ${partner?.id} &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
-    </action-attrs>
+		<attribute name="hidden" for="invoiceLineList.exTaxTotal"
+			expr="inAti" />
+		<attribute name="hidden" for="invoiceLineList.inTaxTotal"
+			expr="!inAti" />
+		<attribute name="hidden" for="inAti"
+			expr=" eval: __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 1
+										|| __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2" />
+	</action-attrs>
 
-    <action-attrs name="action-invoice-attrs-ventilate">
-    	<attribute name="readonly" for="ventilate" expr="eval: invoiceDate > __date__"/>
-    </action-attrs>
+	<action-attrs name="action-invoice-attrs-domain-project">
+		<attribute name="domain" for="project"
+			expr="eval: &quot; self.typeSelect = 'project' AND self.clientPartner.id = ${partner?.id} &quot;"
+			if="operationTypeSelect == 3 || operationTypeSelect == 4" />
+	</action-attrs>
+
+	<action-attrs name="action-invoice-attrs-ventilate">
+		<attribute name="readonly" for="ventilate"
+			expr="eval: invoiceDate > __date__" />
+	</action-attrs>
 
 	<!-- ACTION RECORD -->
-	
-	<action-record name="action-invoice-record-estimated-payment-date" model="com.axelor.apps.account.db.Invoice" if-module="axelor-cash-management">
-		<field name="estimatedPaymentDate" expr="eval: dueDate?.plusDays(partner?.paymentDelay?.intValue())"/>
-	</action-record>
-	
-	<action-record name="action-invoice-record-hide-discount" model="com.axelor.apps.account.db.Invoice">
-		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
-	</action-record>
-	
-	<action-record name="action-invoice-record-in-ati" model="com.axelor.apps.account.db.Invoice">
-		<field name="inAti" expr="eval: __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2
-										|| __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 4"/>
-	</action-record>
-	
-    <action-record name="action-invoice-record-default" model="com.axelor.apps.account.db.Invoice">
-    	<field name="exTaxTotal" expr="eval: 0"/>
-    	<field name="taxTotal" expr="eval: 0"/>
-    	<field name="inTaxTotal" expr="eval: 0"/>
-    	<field name="amountPaid" expr="eval: 0"/>
-    	<field name="companyExTaxTotal" expr="eval: 0"/>
-    	<field name="companyTaxTotal" expr="eval: 0"/>
-    	<field name="companyInTaxTotal" expr="eval: 0"/>
-    	<field name="companyInTaxTotalRemaining" expr="eval: 0"/>
-        <field name="currency" expr="eval:__repo__.of(User).find(__user__.id)?.activeCompany?.currency" />
-        <field name="operationTypeSelect" expr="eval: _operationTypeSelect" if="_operationTypeSelect"/>
-        <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
-    </action-record>
 
-    <action-record name="action-invoice-record-partner-change" model="com.axelor.apps.account.db.Invoice">
-    	<field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
-		<field name="address" expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
-    	<field name="currency" expr="eval: partner?.currency"/>
-		<field name="priceList" expr="eval: partner?.salePriceList" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
-		<field name="priceList" expr="eval: partner?.purchasePriceList" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
-		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : bankDetails" />
-    	<field name="contactPartner" expr="eval:null" />
-    	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect"/>
-    </action-record>
-    
-    <action-record name="action-invoice-record-due-date" model="com.axelor.apps.account.db.Invoice">
-    	<field name="dueDate" expr="call: com.axelor.apps.account.service.invoice.InvoiceToolService:getDueDate(paymentCondition,invoiceDate)" if="paymentCondition != null &amp;&amp; invoiceDate!=null"/>
-    </action-record>
-    
-    <action-record name="action-invoice-record-draft" model="com.axelor.apps.account.db.Invoice">
-    	<field name="statusSelect" expr="eval: __repo__.of(Invoice).STATUS_DRAFT"/>
-    </action-record>
-    
-	<action-record name="action-record-load-dummy-field-confirm-merge-invoice" model="com.axelor.apps.base.db.Wizard">
-		<field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>
-		<field name="partnerId" expr="eval: contextPartnerId"/>
-		<field name="priceListToCheck" expr="eval: contextPriceListToCheck"/>
-		<field name="paymentModeToCheck" expr="eval: contextPaymentModeToCheck"/>
-		<field name="paymentConditionToCheck" expr="eval: contextPaymentConditionToCheck"/>
+	<action-record name="action-invoice-record-estimated-payment-date"
+		model="com.axelor.apps.account.db.Invoice" if-module="axelor-cash-management">
+		<field name="estimatedPaymentDate"
+			expr="eval: dueDate?.plusDays(partner?.paymentDelay?.intValue())" />
 	</action-record>
-	
-    <!-- ACTION ATTRS -->
-    
-    <action-attrs name="action-invoice-attrs-bank-details-from-partner-domain">
-		<attribute name="domain" for="bankDetails" expr="eval: &quot; self = null&quot;"/>
-    	<attribute name="domain" for="bankDetails" expr="eval: &quot; self.id IN (${partner.bankDetailsList.collect{it.id}.join(',')}) AND self.active = true &quot;" if="partner?.bankDetailsList &amp;&amp; !partner.bankDetailsList.isEmpty()"/>
-    </action-attrs>
-    
-    <action-attrs name="action-invoice-attrs-hide-cancel-button">
-    	<attribute name="hidden" for="cancel" expr="statusSelect == 4 || (statusSelect == 3 &amp;&amp; !company?.accountConfig?.allowCancelVentilatedInvoice)"/>
-    </action-attrs>
-	
+
+	<action-record name="action-invoice-record-hide-discount"
+		model="com.axelor.apps.account.db.Invoice">
+		<field name="hideDiscount" expr="eval: priceList?.hideDiscount" />
+	</action-record>
+
+	<action-record name="action-invoice-record-in-ati" model="com.axelor.apps.account.db.Invoice">
+		<field name="inAti"
+			expr="eval: __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2
+										|| __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 4" />
+	</action-record>
+
+	<action-record name="action-invoice-record-default"
+		model="com.axelor.apps.account.db.Invoice">
+		<field name="exTaxTotal" expr="eval: 0" />
+		<field name="taxTotal" expr="eval: 0" />
+		<field name="inTaxTotal" expr="eval: 0" />
+		<field name="amountPaid" expr="eval: 0" />
+		<field name="companyExTaxTotal" expr="eval: 0" />
+		<field name="companyTaxTotal" expr="eval: 0" />
+		<field name="companyInTaxTotal" expr="eval: 0" />
+		<field name="companyInTaxTotalRemaining" expr="eval: 0" />
+		<field name="currency"
+			expr="eval:__repo__.of(User).find(__user__.id)?.activeCompany?.currency" />
+		<field name="operationTypeSelect" expr="eval: _operationTypeSelect"
+			if="_operationTypeSelect" />
+		<field name="company" expr="eval:__user__.activeCompany" if="__user__.activeCompany != null" />
+		<field name="company" expr="eval:__repo__.of(Company).all().fetchOne()"
+			if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1" />
+	</action-record>
+
+	<action-record name="action-invoice-record-partner-change"
+		model="com.axelor.apps.account.db.Invoice">
+		<field name="paymentCondition" expr="eval: partner?.paymentCondition" />
+		<field name="address"
+			expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)" />
+		<field name="currency" expr="eval: partner?.currency" />
+		<field name="priceList" expr="eval: partner?.salePriceList"
+			if="operationTypeSelect == 3 || operationTypeSelect == 4" />
+		<field name="priceList" expr="eval: partner?.purchasePriceList"
+			if="operationTypeSelect == 1 || operationTypeSelect == 2" />
+		<field name="bankDetails"
+			expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : bankDetails" />
+		<field name="contactPartner" expr="eval:null" />
+		<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect" />
+	</action-record>
+
+	<action-record name="action-invoice-record-due-date"
+		model="com.axelor.apps.account.db.Invoice">
+		<field name="dueDate"
+			expr="call: com.axelor.apps.account.service.invoice.InvoiceToolService:getDueDate(paymentCondition,invoiceDate)"
+			if="paymentCondition != null &amp;&amp; invoiceDate!=null" />
+	</action-record>
+
+	<action-record name="action-invoice-record-draft" model="com.axelor.apps.account.db.Invoice">
+		<field name="statusSelect" expr="eval: __repo__.of(Invoice).STATUS_DRAFT" />
+	</action-record>
+
+	<action-record name="action-record-load-dummy-field-confirm-merge-invoice"
+		model="com.axelor.apps.base.db.Wizard">
+		<field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck" />
+		<field name="partnerId" expr="eval: contextPartnerId" />
+		<field name="priceListToCheck" expr="eval: contextPriceListToCheck" />
+		<field name="paymentModeToCheck" expr="eval: contextPaymentModeToCheck" />
+		<field name="paymentConditionToCheck" expr="eval: contextPaymentConditionToCheck" />
+	</action-record>
+
+	<!-- ACTION ATTRS -->
+
+	<action-attrs name="action-invoice-attrs-bank-details-from-partner-domain">
+		<attribute name="domain" for="bankDetails"
+			expr="eval: &quot; self = null&quot;" />
+		<attribute name="domain" for="bankDetails"
+			expr="eval: &quot; self.id IN (${partner.bankDetailsList.collect{it.id}.join(',')}) AND self.active = true &quot;"
+			if="partner?.bankDetailsList &amp;&amp; !partner.bankDetailsList.isEmpty()" />
+	</action-attrs>
+
+	<action-attrs name="action-invoice-attrs-hide-cancel-button">
+		<attribute name="hidden" for="cancel"
+			expr="statusSelect == 4 || (statusSelect == 3 &amp;&amp; !company?.accountConfig?.allowCancelVentilatedInvoice)" />
+	</action-attrs>
+
 	<action-attrs name="action-set-partner-domain">
-		<attribute name="domain" for="partner" expr="eval:'self.isContact = false AND self.isSupplier = true'" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
-		<attribute name="domain" for="partner" expr="eval:'self.isContact = false AND self.isCustomer = true'" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
-		<attribute for="contactPartner" name="domain" expr="eval: &quot;self = null&quot;"/>
-		<attribute for="contactPartner" name="domain" expr="eval: &quot;self.id IN (${partner.contactPartnerSet?.collect{it.id}.join(',')})&quot;" if="partner?.contactPartnerSet &amp;&amp; !partner.contactPartnerSet.isEmpty()"/>
+		<attribute name="domain" for="partner"
+			expr="eval:&quot;self.id != ${company.partner.id} AND self.isContact = false AND self.isSupplier = true&quot;"
+			if="operationTypeSelect == 1 || operationTypeSelect == 2" />
+		<attribute name="domain" for="partner"
+			expr="eval:&quot;self.id != ${company.partner.id} AND self.isContact = false AND self.isCustomer = true&quot;"
+			if="operationTypeSelect == 3 || operationTypeSelect == 4" />
+		<attribute for="contactPartner" name="domain"
+			expr="eval: &quot;self = null&quot;" />
+		<attribute for="contactPartner" name="domain"
+			expr="eval: &quot;self.id IN (${partner.contactPartnerSet?.collect{it.id}.join(',')})&quot;"
+			if="partner?.contactPartnerSet &amp;&amp; !partner.contactPartnerSet.isEmpty()" />
 	</action-attrs>
-	
+
 	<action-attrs name="action-invoice-attrs-collapse-irrecoverable-group">
-		<attribute name="collapse" for="irrecoverableGroup" expr="eval: irrecoverablestatusSelect == null || irrecoverablestatusSelect == 0"/>
+		<attribute name="collapse" for="irrecoverableGroup"
+			expr="eval: irrecoverablestatusSelect == null || irrecoverablestatusSelect == 0" />
 	</action-attrs>
-	
+
 	<action-attrs name="action-invoice-attrs-change-total-title">
-		<attribute name="title" for="accountingTotalGroup" expr="eval: 'Totaux en devise comptable (${:self.currency.symbol})'"/>
-		<attribute name="title" for="invoiceTotalGroup" expr="eval: 'Totaux en devise de la facture (${:self.partner.currency.symbol})'"/>
+		<attribute name="title" for="accountingTotalGroup"
+			expr="eval: 'Totaux en devise comptable (${:self.currency.symbol})'" />
+		<attribute name="title" for="invoiceTotalGroup"
+			expr="eval: 'Totaux en devise de la facture (${:self.partner.currency.symbol})'" />
 	</action-attrs>
-	
-	<action-attrs name="action-invoice-attrs-printing-fields" if-module="axelor-business-project">
-		<attribute name="hidden" for="printing" expr="eval: __repo__.of(InvoicingProject).all().filter('self.invoice.id = ?1', id).fetch().isEmpty()"/>
-		<attribute name="hidden" for="showAnnex" expr=" eval: __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayTimesheetOnPrinting == false
-										&amp;&amp; __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayExpenseOnPrinting == false"/>
+
+	<action-attrs name="action-invoice-attrs-printing-fields"
+		if-module="axelor-business-project">
+		<attribute name="hidden" for="printing"
+			expr="eval: __repo__.of(InvoicingProject).all().filter('self.invoice.id = ?1', id).fetch().isEmpty()" />
+		<attribute name="hidden" for="showAnnex"
+			expr=" eval: __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayTimesheetOnPrinting == false
+										&amp;&amp; __repo__.of(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayExpenseOnPrinting == false" />
 	</action-attrs>
-	
+
 	<action-attrs name="action-invoice-attrs-hide-totals-company-currency">
-    	<attribute name="hidden" for="totalsCompanyCurrency" expr="eval: !company || !currency || company?.currency == currency"/>
-    </action-attrs>
+		<attribute name="hidden" for="totalsCompanyCurrency"
+			expr="eval: !company || !currency || company?.currency == currency" />
+	</action-attrs>
 
 	<action-attrs name="action-invoice-attrs-hidden-bank-details">
-		<attribute for="companyBankDetails" name="hidden" expr="eval: !__config__.general.getManageMultiBanks()"/>
+		<attribute for="companyBankDetails" name="hidden"
+			expr="eval: !__config__.general.getManageMultiBanks()" />
 	</action-attrs>
 
 	<!-- DOMAIN -->
-	
+
 	<action-attrs name="action-invoice-partner-account-domain">
-		<attribute name="domain" for="partnerAccount" expr="eval: &quot;self.company.id = ${company.id} AND (self.accountType.technicalTypeSelect = 'receivable' OR self.accountType.technicalTypeSelect = 'payable') AND self.reconcileOk = true &quot;" if="company"/>
+		<attribute name="domain" for="partnerAccount"
+			expr="eval: &quot;self.company.id = ${company.id} AND (self.accountType.technicalTypeSelect = 'receivable' OR self.accountType.technicalTypeSelect = 'payable') AND self.reconcileOk = true &quot;"
+			if="company" />
 	</action-attrs>
-	
+
 	<action-attrs name="action-invoice-attrs-domain-priceList">
-		<attribute name="domain" for="priceList" expr="eval: &quot; self.typeSelect = 1 &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
-		<attribute name="domain" for="priceList" expr="eval: &quot; self.typeSelect = 2 &quot;" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
+		<attribute name="domain" for="priceList"
+			expr="eval: &quot; self.typeSelect = 1 &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4" />
+		<attribute name="domain" for="priceList"
+			expr="eval: &quot; self.typeSelect = 2 &quot;" if="operationTypeSelect == 1 || operationTypeSelect == 2" />
 	</action-attrs>
 
 	<action-attrs name="action-invoice-attrs-domain-address">
-		<attribute name="domain" for="address" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isInvoicingAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
-    </action-attrs>
-
-	<action-attrs name="action-invoice-attrs-domain-company-bank-details">
-		<attribute for="companyBankDetails" name="domain" expr="eval: &quot;self.id IN (${(paymentMode?.accountManagementList?.findAll{it.company == company &amp;&amp; it.bankDetails}.collect{it.bankDetails.id}+[null]).join(',')}) AND self.active = true&quot;"/>
+		<attribute name="domain" for="address"
+			expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isInvoicingAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
 	</action-attrs>
-    
-    <!-- ACTION VALIDATE -->
-    
-    <action-validate name="action-validate-invoice-check-selection">
-		<error message="You have to choose at least one invoice" if="invoiceToMerge == null || invoiceToMerge.size() == 0"/>
+
+	<!-- ACTION VALIDATE -->
+
+	<action-validate name="action-validate-invoice-check-selection">
+		<error message="You have to choose at least one invoice"
+			if="invoiceToMerge == null || invoiceToMerge.size() == 0" />
 	</action-validate>
 
 	<!-- ACTION METHOD -->
 
 	<action-method name="action-invoice-method-payment-mode-condition">
-		<call class="com.axelor.apps.account.web.InvoiceController" method="fillPaymentModeAndCondition"/>
+		<call class="com.axelor.apps.account.web.InvoiceController"
+			method="fillPaymentModeAndCondition" />
 	</action-method>
 
 	<action-method name="action-invoice-method-fill-in-lines">
-		<call class="com.axelor.apps.supplychain.web.InvoiceController" method="fillInLines"/>
+		<call class="com.axelor.apps.supplychain.web.InvoiceController"
+			method="fillInLines" />
 	</action-method>
-	
+
 	<action-method name="action-invoice-method-mass-validation">
-    	<call class="com.axelor.apps.account.web.InvoiceController" method="massValidation"/>
-    </action-method>
-    
-    <action-method name="action-invoice-method-mass-ventilation">
-    	<call class="com.axelor.apps.account.web.InvoiceController" method="massVentilation"/>
-    </action-method>
-	
+		<call class="com.axelor.apps.account.web.InvoiceController"
+			method="massValidation" />
+	</action-method>
+
+	<action-method name="action-invoice-method-mass-ventilation">
+		<call class="com.axelor.apps.account.web.InvoiceController"
+			method="massVentilation" />
+	</action-method>
+
 	<action-method name="action-invoice-method-show-invoice">
-		<call class="com.axelor.apps.account.web.InvoiceController" method="showInvoice"/>
+		<call class="com.axelor.apps.account.web.InvoiceController"
+			method="showInvoice" />
 	</action-method>
-		
+
 	<action-method name="action-invoice-method-validate">
-		<call class="com.axelor.apps.account.web.InvoiceController" method="validate"/>
+		<call class="com.axelor.apps.account.web.InvoiceController"
+			method="validate" />
 	</action-method>
-	
+
 	<action-method name="action-invoice-method-ventilate">
-		<call class="com.axelor.apps.account.web.InvoiceController" method="ventilate"/>
+		<call class="com.axelor.apps.account.web.InvoiceController"
+			method="ventilate" />
 	</action-method>
-	
+
 	<action-method name="action-invoice-method-cancel">
-		<call class="com.axelor.apps.account.web.InvoiceController" method="cancel"/>
+		<call class="com.axelor.apps.account.web.InvoiceController"
+			method="cancel" />
 	</action-method>
-	
+
 	<action-method name="action-invoice-method-create-refund">
-		<call class="com.axelor.apps.account.web.InvoiceController" method="createRefund"/>
+		<call class="com.axelor.apps.account.web.InvoiceController"
+			method="createRefund" />
 	</action-method>
-	
+
 	<action-method name="action-invoice-method-compute">
-        <call class="com.axelor.apps.account.web.InvoiceController" method="compute"/>
-    </action-method>
+		<call class="com.axelor.apps.account.web.InvoiceController"
+			method="compute" />
+	</action-method>
 
 	<action-method name="action-invoice-method-fill-company-bank-details">
-		<call class="com.axelor.apps.account.web.InvoiceController" method="fillCompanyBankDetails"/>
+		<call class="com.axelor.apps.account.web.InvoiceController"
+			method="fillCompanyBankDetails" />
 	</action-method>
 
 	<action-method name="action-invoice-method-merge-account">
-		<call class="com.axelor.apps.account.web.InvoiceController" method="mergeInvoice"/>
+		<call class="com.axelor.apps.account.web.InvoiceController"
+			method="mergeInvoice" />
 	</action-method>
-	
+
 	<action-method name="action-invoice-method-merge-supplychain">
-		<call class="com.axelor.apps.supplychain.web.InvoiceController" method="mergeInvoice"/>
+		<call class="com.axelor.apps.supplychain.web.InvoiceController"
+			method="mergeInvoice" />
 	</action-method>
-	
+
 	<action-method name="action-invoice-method-merge-business-project">
-		<call class="com.axelor.apps.businessproject.web.InvoiceController" method="mergeInvoice"/>
+		<call class="com.axelor.apps.businessproject.web.InvoiceController"
+			method="mergeInvoice" />
 	</action-method>
 
-    <action-view name="action-invoice-view-register-payment" title="Register a payment" model="com.axelor.apps.account.db.InvoicePayment">
-    	<view type="form" name="invoice-payment-form"/>
-    	<view-param name="popup" value="reload"/>
-	  	<view-param name="show-toolbar" value="false"/>
-	  	<view-param name="forceEdit" value="true" />
- 	  	<view-param name="show-confirm" value="true"/>
-	  	<context name="_invoice" expr="eval: __this__"/>
-    </action-view>
-    
-    
+	<action-view name="action-invoice-view-register-payment"
+		title="Register a payment" model="com.axelor.apps.account.db.InvoicePayment">
+		<view type="form" name="invoice-payment-form" />
+		<view-param name="popup" value="reload" />
+		<view-param name="show-toolbar" value="false" />
+		<view-param name="forceEdit" value="true" />
+		<view-param name="show-confirm" value="true" />
+		<context name="_invoice" expr="eval: __this__" />
+	</action-view>
 
-	<search-filters name="customer-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Customer invoices filters">
+
+
+	<search-filters name="customer-invoices-filters"
+		model="com.axelor.apps.account.db.Invoice" title="Customer invoices filters">
 		<filter title="Validated">
 			<domain>self.statusSelect = 2</domain>
 		</filter>
@@ -644,8 +864,9 @@
 			<domain>self.partner.partnerTypeSelect = 2</domain>
 		</filter>
 	</search-filters>
-	
-	<search-filters name="customer-refunds-filters" model="com.axelor.apps.account.db.Invoice" title="Customer refunds filters">
+
+	<search-filters name="customer-refunds-filters"
+		model="com.axelor.apps.account.db.Invoice" title="Customer refunds filters">
 		<filter title="Validated">
 			<domain>self.statusSelect = 2</domain>
 		</filter>
@@ -659,8 +880,9 @@
 			<domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
 		</filter>
 	</search-filters>
-	
-	<search-filters name="supplier-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Supplier invoices filters">
+
+	<search-filters name="supplier-invoices-filters"
+		model="com.axelor.apps.account.db.Invoice" title="Supplier invoices filters">
 		<filter title="Draft">
 			<domain>self.statusSelect = 1</domain>
 		</filter>
@@ -677,8 +899,9 @@
 			<domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
 		</filter>
 	</search-filters>
-	
-	<search-filters name="supplier-refunds-filters" model="com.axelor.apps.account.db.Invoice" title="Supplier refunds filters">
+
+	<search-filters name="supplier-refunds-filters"
+		model="com.axelor.apps.account.db.Invoice" title="Supplier refunds filters">
 		<filter title="Draft">
 			<domain>self.statusSelect = 1</domain>
 		</filter>
@@ -695,5 +918,5 @@
 			<domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
 		</filter>
 	</search-filters>
-	
+
 </object-views>

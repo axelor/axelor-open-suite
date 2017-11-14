@@ -2,17 +2,50 @@ apply plugin: 'axelor-module'
 
 module {
 	name "axelor-bank-payment"
-	title "Axelor bank payment"
-	
-	version "4.1.0"
-	
+	version "4.1.1"
+	title "Axelor :: Bank Payment"
+
 	removable true
-	
-	// module dependencies
+
 	module "modules:axelor-account"
 }
 
+configurations {
+	jaxb
+}
+
 dependencies {
+    jaxb 'com.sun.xml.bind:jaxb-xjc:2.2.2',
+         'com.sun.xml.bind:jaxb-impl:2.2.2',
+    	 'javax.xml.bind:jaxb-api:2.2.2'
+
 	compile files("src/main/lib/ebics-1.0.2.jar")
 	compile "org.bouncycastle:bcprov-jdk14:1.38"
+}
+
+license {
+	// Don't generate license header on java classes generated from xsd
+	// exclude "**/xsd/pain_001_001_*/**"
+	exclude "**/xsd/sepa/**"
+}
+
+task xjc () {
+	def source = "${projectDir}/src/main/resources/xsd/sepa"
+	def target = "${buildDir}/src-gen"
+	def xsdToGenerate = [
+		['package': 'com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02', 'destdir': "$target", 'schema': "$source/pain.001.001.02.xsd"],
+		['package': 'com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03', 'destdir': "$target", 'schema': "$source/pain.001.001.03.xsd"],
+		['package': 'com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01', 'destdir': "$target", 'schema': "$source/pain.008.001.01.xsd"], // SEPA Direct Debit v01
+		['package': 'com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02', 'destdir': "$target", 'schema': "$source/pain.008.001.02.xsd"]  // SEPA Direct Debit v02
+	]
+
+	doLast {
+		ant.taskdef(name: 'xjc', classname: 'com.sun.tools.xjc.XJCTask', classpath: configurations.jaxb.asPath)
+
+		xsdToGenerate.each { argsin ->
+			ant.xjc	( argsin )
+		}
+	}
+
+	compileJava.dependsOn name
 }

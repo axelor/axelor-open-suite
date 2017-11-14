@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
@@ -39,6 +40,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -100,14 +102,16 @@ public class InvoicePaymentValidateServiceBankPayImpl  extends  InvoicePaymentVa
 				
 		if(accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment() && !paymentMode.getGenerateBankOrder())  {
 			this.createMoveForInvoicePayment(invoicePayment);
+		} else {
+			Beans.get(AccountCustomerService.class).updateCustomerCreditLines(invoicePayment.getInvoice().getPartner());
 		}
 		if(paymentMode.getGenerateBankOrder())  {
+			invoicePayment = invoicePaymentRepository.save(invoicePayment);
 			this.createBankOrder(invoicePayment);
 		}
 		
 		invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
 		invoicePaymentRepository.save(invoicePayment);
-
 	}
 	
 	

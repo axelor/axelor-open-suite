@@ -14,23 +14,16 @@
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="BBAN/IBAN to use"/>
     
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
-    
+	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
+  	<date name="dueDate" />
+  	<boolean name="includeOtherBankAccounts" />
+
     <!-- REIMBURSEMENT -->
     <integer name="reimbursementTypeSelect" title="Reimbursement batch type" selection="ireimbursement.batch.type.select"/>
     <integer name="reimbursementExportTypeSelect" title="Treatment/Operation type" selection="ireimbursement.batch.export.type.select"/>
     
     <!-- REMINDER -->
     <integer name="reminderTypeSelect" title="Reminder batch type" selection="ireminder.batch.type.select"/>
-    
-    
-    <!--  DIRECT DEBIT -->
-    <integer name="directDebitTypeSelect" title="Direct Debit batch type" selection="iaccount.account.schedule.type.select"/>
-    <integer name="directDebitExportTypeSelect" title="Datatype" selection="iaccount.account.schedule.export.type.select"/>
-    <date name="debitDate" title="Reference Due Date"/>
-	<boolean name="isSepaDirectDebit" title="SEPA ?" default="false"/>
-	<boolean name="hasToReExportCfbonb" title="Re-export the bank file"/>
-	<many-to-one name="batchToReExport" ref="com.axelor.apps.base.db.Batch" title="Batch to re-export"/>
-	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
     
     <!--  INTERBANK PAYMENT ORDER -->
     <integer name="interbankPaymentOrderTypeSelect" title="Interbank Payment Orders batch type" selection="iinterbank.account.order.batch.type.select"/>
@@ -45,18 +38,21 @@
     <date name="startDate" title="Start date"/>
     <date name="endDate" title="End date"/>
     
-    <!-- OTHERS INFORMATIONS -->
+    <!-- OTHERS INFORMATION -->
     <string name="description" title="Description" large="true" />
     <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="accountingBatch" title="Batchs" />
     
     <!-- CREDIT TRANSFER -->
-  	<integer name="creditTransfertTypeSelect" title="Credit Transfer batch type" selection="iaccount.account.batch.transfer.type.select"/>
+  	<integer name="creditTransferTypeSelect" title="Credit Transfer batch type" selection="iaccount.account.batch.transfer.type.select"/>
   	<many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
+	<integer name="customerReimbursementTypeSelect" title="Customer reimbursement type"
+		default="1" required="true"
+		selection="iaccount.account.batch.transfer.customer.reimbursement.type.select" />
+
   	<extra-code><![CDATA[
 	
 	   	// ACTION TYPE
 		public static final int ACTION_REIMBURSEMENT = 11;
-		public static final int ACTION_DIRECT_DEBIT = 12;
 		public static final int ACTION_REMINDER = 14;
 		public static final int ACTION_INTERBANK_PAYMENT_ORDER = 15;
 		public static final int ACTION_DOUBTFUL_CUSTOMER = 16;
@@ -71,15 +67,7 @@
 		// REIMBURSEMENT EXPORT TYPE
 		public static final int REIMBURSEMENT_EXPORT_TYPE_GENERATE = 1;
 		public static final int REIMBURSEMNT_EXPORT_TYPE_EXPORT = 2;
-	
-		// DIRECT DEBIT TYPE
-		public static final int DIRECT_DEBIT_TYPE_EXPORT = 1;
-		public static final int DIRECT_DEBIT_TYPE_IMPORT = 2;
-		
-		// DIRECT DEBIT EXPORT TYPE
-		public static final int DIRECT_DEBIT_EXPORT_TYPE_MONTHLY = 0;
-		public static final int DIRECT_DEBIT_EXPORT_TYPE_INVOICE = 1;
-		
+
 		// INTERBANK PAYMENT ORDER TYPE
 		public static final int INTERBANK_PAYMENT_ORDER_TYPE_IMPORT = 1;
 		public static final int INTERBANK_PAYMENT_ORDER_TYPE_REJECT_IMPORT = 2;
@@ -87,11 +75,15 @@
 		// REMINDER TYPE
 		public static final int REMINDER_TYPE = 1;
 		
-		//CREDIT TRANSFER TYPE
+		// CREDIT TRANSFER TYPE
 		public static final int CREDIT_TRANSFER_EXPENSE_PAYMENT = 1;
 		public static final int CREDIT_TRANSFER_SUPPLIER_PAYMENT = 2;
 		public static final int CREDIT_TRANSFER_CUSTOMER_REIMBURSEMENT = 3;
-	
+
+		// CUSTOMER REIMBURSEMENT TYPE
+		public static final int CUSTOMER_REIMBURSEMENT_CUSTOMER_REFUND = 1;
+		public static final int CUSTOMER_REIMBURSEMENT_PARTNER_CREDIT_BALANCE = 2;
+
 	]]></extra-code>
 	
   

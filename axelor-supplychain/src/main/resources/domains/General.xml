@@ -6,9 +6,9 @@
 
 	<entity name="General" lang="java" cachable="true">
 		<boolean name="manageInvoicedAmountByLine" title="Manage the invoiced amount by line" default="false"/>
-		<boolean name="customerStockMoveManagement" title="Customer deliveries management" default="false"/>
+		<boolean name="custStockMoveMgtOnSO" title="Customer deliveries management" default="false"/>
 		<boolean name="customerStockMoveGenerationAuto" title="Generate customer deliveries automatically" default="false"/>
-		<boolean name="supplierStockMoveManagement" title="Supplier arrivals management" default="false"/>
+		<boolean name="supplStockMoveMgtOnSO" title="Supplier arrivals management" default="false"/>
 		<boolean name="supplierStockMoveGenerationAuto" title="Generate supplier arrivals automatically" default="false"/>
 		<boolean name="allowSusbcriptionSaleOrder" title="Allow Subscriptions for Sale Orders" default="false"/>
 		<boolean name="generateInvoiceFromStockMove" title="Generate invoice from stock move" default="false"/>

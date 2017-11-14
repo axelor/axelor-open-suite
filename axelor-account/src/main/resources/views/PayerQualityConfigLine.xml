@@ -2,20 +2,20 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+
     <grid name="payer-quality-config-line-grid" title="Payer quality configuration lines" model="com.axelor.apps.account.db.PayerQualityConfigLine">
         <field name="name"/>
         <field name="burden"/>
         <field name="description"/>
     </grid>
+
     <form name="payer-quality-config-line-form" title="Payer quality configuration line" model="com.axelor.apps.account.db.PayerQualityConfigLine"  >
         <panel name="main" >
         <field name="incidentTypeSelect"/>
-        <field name="reminderLevel" form-view="reminder-level-form" grid-view="reminder-level-grid"/>
-        <field name="rejectType"/>
-        <field name="name"/>
+        <field name="reminderLevel" form-view="reminder-level-form" grid-view="reminder-level-grid" showIf="incidentTypeSelect == 0"/>
         <field name="burden"/>
         <field name="description"/>
-        </panel>
-    
+        </panel>    
     </form>
+   
 </object-views>

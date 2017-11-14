@@ -8,10 +8,11 @@
       <bind node="name" to="name" />
       <bind node="userId" to="userId" />
       <bind node="password" to="password" />
-      <bind node="ebicsTypeSelect" to="ebicsTypeSelect" />
+      <bind node="userTypeSelect" to="userTypeSelect" />
       <bind node="statusSelect" to="statusSelect" />
       <bind node="ebicsPartner" to="ebicsPartner" search="self.partnerId = :partnerId" update="false">
       	<bind node="partnerId" to="partnerId" alias="partnerId"/>
+        <bind node="ebicsTypeSelect" to="ebicsTypeSelect" />
 		<bind node="testMode" to="testMode"/>
 		<bind node="filterReceiverBD" to="filterReceiverBD"/>
       	<bind node="ebicsBank" to="ebicsBank" search="self.hostId = :hostId" update="true">
@@ -46,7 +47,7 @@
       		<bind node="name" to="name" alias="pSRBsankStatementFileFormatName" />
       		<bind node="description" to="description" />
       	</bind>
-      	<bind node="bankStatementEbicsUserId" to="bankStatementEbicsUser" search="self.userId = :bankStatementEbicsUserId" />
+      	<bind node="transportEbicsUserId" to="transportEbicsUser" search="self.userId = :transportEbicsUserId" />
       	<bind node="bankStatementGetModeSelect" to="bankStatementGetModeSelect" />
       	<bind node="bankStatementLastExeDateT" to="bankStatementLastExeDateT" />
       	<bind node="usePSR" to="usePSR" />

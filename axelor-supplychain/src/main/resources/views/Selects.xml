@@ -40,6 +40,13 @@
 		<option value="com.axelor.apps.purchase.db.PurchaseOrderLine">Purchase order line</option>
 		<option value="com.axelor.apps.supplychain.db.MrpForecast">Sale forecast</option>
 	</selection>
-	
-	
+
+	<selection name="meta.schedule.job.select" id="supplychain.meta.schedule.job.select">
+		<option value="com.axelor.apps.supplychain.job.BillSubJob">com.axelor.apps.supplychain.job.BillSubJob</option>
+	</selection>
+
+	<selection name="meta.schedule.batch.service.select" id="supplychain.meta.schedule.batch.service.select">
+		<option value="com.axelor.apps.supplychain.service.batch.SupplychainBatchService">com.axelor.apps.supplychain.service.batch.SupplychainBatchService</option>
+	</selection>
+
 </object-views>

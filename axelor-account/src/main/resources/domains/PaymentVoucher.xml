@@ -15,7 +15,6 @@
 	    <date name="paymentDate" title="Payment date"/>
 		<decimal name="paidAmount" title="Amount paid" />
 		<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User" readonly="true"/>
-        <many-to-one name="cashRegister" ref="com.axelor.apps.account.db.CashRegister" title="Cash register"/>
 		<many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine" title="Overdue moveline" />
 		<decimal name="remainingAllocatedAmount" title="Amount Remaining to allocate" />
 		<decimal name="allocatedAmount" title="Allocated amount" />
@@ -55,6 +54,9 @@
 		    ]]>  
 		</decimal>
 		
+		<unique-constraint columns="ref,company"/>
+		<unique-constraint columns="receiptNo,company"/>
+		
 		<extra-code><![CDATA[
 		
 	   	// STATUS SELECT
@@ -69,9 +71,6 @@
 		
 		]]></extra-code>
 	
-		
-		
-  	
   	</entity>
 
 </domain-models>

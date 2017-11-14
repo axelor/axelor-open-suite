@@ -26,6 +26,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +61,10 @@ public class ReportSettings {
 	protected File output;
 
 	private boolean FLAG_ATTACH = false;
-
+    private static final String[] OUTPUT_NAME_SEARCH_LIST = new String[] { "*", "\"", "/", "\\", "?", "%", ":", "|",
+            "<", ">" };
+    private static final String[] OUTPUT_NAME_REPLACEMENT_LIST = new String[] { "#", "'", "_", "_", "_", "_", "_", "_",
+            "_", "_" };
 
 	public ReportSettings(String rptdesign, String outputName)  {
 		
@@ -128,11 +132,12 @@ public class ReportSettings {
 	
 	
 	protected void computeOutputName(String outputName)  {
-		
+
 		this.outputName = outputName
 							.replace("${date}", new DateTime().toString("yyyyMMdd"))
 							.replace("${time}", new DateTime().toString("HHmmss"));
-		
+        this.outputName = StringUtils.replaceEach(this.outputName, OUTPUT_NAME_SEARCH_LIST,
+                OUTPUT_NAME_REPLACEMENT_LIST);
 	}
 	
 	protected void computeFileName()  {

@@ -21,8 +21,8 @@
 	       <field name="code" required="true"/>
 	       <field name="fromDate"/>
 	       <field name="toDate"/>
-	       <field name="company"/>
-	       <field name="inChargeUser"/>
+	       <field name="company" canEdit="false"/>
+	       <field name="inChargeUser" canEdit="false"/>
        </panel>
        <panel-related field="budgetLineList" onChange="action-budget-method-compute-total-amount"/>
        <panel sidebar="true" name="periodsGenerationAssistant" title="Periods generation assistant" hideIf="statusSelect == 2">
@@ -30,16 +30,18 @@
 			<field name="amountForGeneration"/>
 			<button name="generatePeriods" title="Generate periods" onClick="action-group-account-budget-generateperiod-click" />    
 		</panel>
-		<panel sidebar="true" readonly="true"  colSpan="4">  
-	  		<field name="totalAmountExpected" css="order-subtotal" showTitle="false" colSpan="12">
-	          <viewer>
-	            &lt;dl class="dl-horizontal"&gt;
-	              &lt;dt class="order-subtotal-total" x-translate&gt;Expected total Amount&lt;/dt&gt;
-	              &lt;dd class="order-subtotal-total" &gt;{{record.totalAmountExpected}}&lt;/dd&gt;
-	            &lt;/dl&gt;
-	          </viewer>
-	        </field>
-      	</panel>
+        <panel sidebar="true" readonly="true"  colSpan="4">
+            <field name="totalAmountExpected" css="order-subtotal" showTitle="false" colSpan="12">
+                <viewer>
+                    <![CDATA[
+                    <dl class="dl-horizontal">
+                        <dt class="order-subtotal-total" x-translate>Expected total Amount</dt>
+                        <dd class="order-subtotal-total">{{record.totalAmountExpected}}</dd>
+                    </dl>
+                    ]]>
+                </viewer>
+            </field>
+        </panel>
     </form>
     
    <action-group name="action-group-account-budget-generateperiod-click">

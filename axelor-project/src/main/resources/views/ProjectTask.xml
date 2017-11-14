@@ -29,9 +29,9 @@
 			</field>
 			<field name="statusSelect" widget="NavSelect" colSpan="6"/>
 			<field name="project" onChange="action-project-task-record-inv-type-select,action-project-task-record-bind-customer-project" colSpan="6" title="Parent Project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
-			<field name="company" requiredIf="project == null" hideIf="project != null" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" requiredIf="project == null" hideIf="project != null" form-view="company-form" grid-view="company-grid"/>
 			<field name="clientPartner" readonlyIf="project != null" domain="self.isCustomer = true" form-view="partner-form" grid-view="partner-grid" />
-			<field name="assignedTo" title="Person In Charge" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
+			<field name="assignedTo" canEdit="false" title="Person In Charge" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
 			<field name="saleOrder" domain="self.clientPartner = :clientPartner" if-module="axelor-business-project" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="fromDate" />
 			<field name="toDate" />
@@ -77,14 +77,14 @@
 				<field name="leadDelay" hidden="true"/>
 			</panel>
 			<panel name="activity" title="Activities" if-module="axelor-human-resource">
-				<panel-related field="productSet" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
+				<panel-related field="productSet" canEdit="false" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
 			</panel>
 		</panel-tabs>
 		<panel sidebar="true" name="actions" title="Actions" stacked="true" showIf="childProjectTaskList.length > 0">
 	    	<button name="computeDurationFromChildren" title="Compute duration" showIf="childProjectTaskList.length > 0" colSpan="12" onClick="save,action-method-project-task-compute-duration-fromchildren,save"/>
 	  	</panel>
 		<panel name="settings" title="Settings" sidebar="true">
-			<field name="membersUserSet" widget="TagSelect" form-view="user-form" grid-view="user-grid"/>
+			<field name="membersUserSet" canEdit="false" widget="TagSelect" form-view="user-form" grid-view="user-grid"/>
 			<field name="typeSelect"/>
 			<field name="sequence" hidden="true"/>
 		</panel>
@@ -117,7 +117,7 @@
 	    	<field name="statusSelect" widget="NavSelect" colSpan="6"/>
 	        <field name="project" onChange="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-inv-type-select,action-project-task-record-bind-customer-project" colSpan="6" requiredIf="!$popup()" title="Project" hideIf="$popup()" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 		    <field name="name" colSpan="12" />
-			<field name="assignedTo" colSpan="12" title="Assigned To" onSelect="action-task-attrs-assigned-to-domain" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
+			<field name="assignedTo" canEdit="false" colSpan="12" title="Assigned To" onSelect="action-task-attrs-assigned-to-domain" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
 			<field name="clientPartner" readonly="true"/>
 			<field name="fromDate" />
 			<field name="toDate" />
@@ -156,10 +156,10 @@
 				<field name="duration" hidden="true"/>
 				<field name="timeSpent" hidden="true"/>
 				<field name="leadDelay" hidden="true"/>
-				<field name="company" hidden="true" />
+				<field name="company" canEdit="false" hidden="true" />
 			</panel>
 			<panel name="activity" title="Activities">
-				<panel-related field="productSet" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
+				<panel-related field="productSet" canEdit="false" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
 			</panel>
 		</panel-tabs>
 	</form>
@@ -193,9 +193,9 @@
 				   onChange="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-inv-type-select" 
 				   title="Parent Project"  form-view="project-form" grid-view="project-grid" domain="self.typeSelect = 'project'" 
 				   colSpan="6" width="50%" hide="true"/>
-			<field name="company" requiredIf="project == null &amp;&amp; typeSelect == 'project'" hideIf="typeSelect == 'task' || project != null"/>
+			<field name="company" canEdit="false" requiredIf="project == null &amp;&amp; typeSelect == 'project'" hideIf="typeSelect == 'task' || project != null"/>
 			<field name="clientPartner" domain="self.isCustomer = true" readonly="true"/>
-			<field name="assignedTo" title="Person In Charge" onSelect="action-task-attrs-assigned-to-domain" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
+			<field name="assignedTo" canEdit="false" title="Person In Charge" onSelect="action-task-attrs-assigned-to-domain" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
 			<field name="saleOrder" domain="self.clientPartner.id = :clientPartner.id" if-module="axelor-business-project" readonlyIf="typeSelect == 'task'" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="fromDate" />
 			<field name="toDate" />
@@ -236,7 +236,7 @@
 				<panel-dashlet action="action-view-show-project-tree" colSpan="12" title="Project Tree"/>
 			</panel>
 			<panel name="activity" title="Activities">
-				<panel-related field="productSet" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
+				<panel-related field="productSet" canEdit="false" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12"/>
 			</panel>
 			<panel name="description" title="Description">
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>
@@ -249,7 +249,7 @@
 	    	<button name="computeDurationFromChildren" title="Compute duration" showIf="childProjectTaskList.length > 0" colSpan="12" onClick="save,action-method-project-task-compute-duration-fromchildren,save"/>
 	  	</panel>
 		<panel name="settings" title="Settings" sidebar="true" hideIf="typeSelect == 'task'">
-			<field name="membersUserSet" widget="TagSelect" form-view="user-form" grid-view="user-grid"/>
+			<field name="membersUserSet" canEdit="false" widget="TagSelect" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 	</form>
 	
@@ -264,13 +264,15 @@
 		<hilite color="danger" if="dueDate &gt; __datetime__ &amp;&amp; statusSelect &lt; 3"/>
 		<hilite color="success" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &gt;= 0 &amp;&amp; statusSelect &lt; 3"/>
 		<hilite color="warning" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &lt; 0 &amp;&amp; statusSelect &lt; 3"/>
-		<template>
-		&lt;h4&gt;{{fullName}}&lt;/h4&gt;
-		&lt;div class="card-body"&gt;{{description}}&lt;/div&gt;
-		&lt;div class="card-footer"&gt;
-		&lt;i class='fa fa-clock-o'&gt;&lt;/i&gt; &lt;span&gt;{{dueDate|date:'dd/MM/yyyy'}}&lt;/span&gt;
-		&lt;/div&gt;
-		</template>
+        <template>
+            <![CDATA[
+            <h4>{{fullName}}</h4>
+            <div class="card-body">{{description}}</div>
+            <div class="card-footer">
+                <i class='fa fa-clock-o'></i> <span>{{dueDate|date:'dd/MM/yyyy'}}</span>
+            </div>
+            ]]>
+        </template>
 	</kanban>
 	
 	
@@ -285,13 +287,15 @@
 		<hilite color="danger" if="dueDate &gt; __datetime__ &amp;&amp; statusSelect &lt; 3"/>
 		<hilite color="success" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &gt;= 0 &amp;&amp; statusSelect &lt; 3"/>
 		<hilite color="warning" if="dueDate &lt;= __datetime__ &amp;&amp; leadDelay &lt; 0 &amp;&amp; statusSelect &lt; 3"/>
-		<template>
-		&lt;h4&gt;{{fullName}}&lt;/h4&gt;
-		&lt;div class="card-body"&gt;{{description}}&lt;/div&gt;
-		&lt;div class="card-footer"&gt;
-		  &lt;i class='fa fa-clock-o'&gt;&lt;/i&gt; &lt;span&gt;{{dueDate|date:'dd/MM/yyyy'}}&lt;/span&gt;
-		&lt;/div&gt;
-		</template>
+        <template>
+            <![CDATA[
+            <h4>{{fullName}}</h4>
+            <div class="card-body">{{description}}</div>
+            <div class="card-footer">
+                <i class='fa fa-clock-o'></i> <span>{{dueDate|date:'dd/MM/yyyy'}}</span>
+            </div>
+            ]]>
+        </template>
 	</kanban>
 	
 	<calendar name="project-calendar" 

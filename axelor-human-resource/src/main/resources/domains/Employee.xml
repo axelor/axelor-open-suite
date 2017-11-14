@@ -24,7 +24,6 @@
       <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Default Activity Product"/>
       <many-to-one name="publicHolidayPlanning" ref="com.axelor.apps.hr.db.PublicHolidayPlanning" title="Public Holiday Planning"/>
       <one-to-many name="employmentContractList" ref="com.axelor.apps.hr.db.EmploymentContract" title="Employment contracts" mappedBy="employee"/>
-      <many-to-one name="kilometricAllowParam" ref="com.axelor.apps.hr.db.KilometricAllowParam" title="Kilometric Allowance Param" />
       <boolean name="hrManager" title="HR manager" />
       <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
       <date name="birthDate" title="Birth date" />
@@ -46,6 +45,7 @@
       <one-to-many name="kilometricLogList" ref="com.axelor.apps.hr.db.KilometricLog" mappedBy="employee"/>
       <decimal name="bonusCoef" title="Coefficient for bonus" />
       <string name="exportCode" title="Export code" help="May be used as registration number in export" />
+      <one-to-many name="employeeVehicleList" ref="com.axelor.apps.hr.db.EmployeeVehicle" mappedBy="employee"/>
       <string name="name" title="Name" search="contactPartner">
            <![CDATA[
 	       		if(contactPartner != null) { return contactPartner.getFullName(); }

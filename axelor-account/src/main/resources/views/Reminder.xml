@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+
+    <form name="reminder-form" title="Reminder"
+          model="com.axelor.apps.account.db.Reminder">
+        <panel title="Overview">
+            <field name="name"/>
+            <field name="referenceDate"/>
+            <field name="reminderMethod" grid-view="reminder-method-grid"
+                   form-view="reminder-method-form"/>
+            <field name="reminderMethodLine"
+                   onSelect="action-reminder-attrs-set-reminder-line-domain"
+                   grid-view="reminder-method-line-grid"
+                   form-view="reminder-method-line-form"/>
+            <field name="balanceDue"/>
+            <field name="balanceDueReminder"/>
+        </panel>
+        <panel>
+            <field name="setToIrrecoverableOk"/>
+            <field name="deceasedPartnerOk"/>
+            <field name="unknownAddressOk"/>
+        </panel>
+        <panel>
+            <field name="reminderDate"/>
+            <field name="waitReminderMethodLine"
+                   onSelect="action-reminder-attrs-set-reminder-line-domain"
+                   grid-view="reminder-method-line-grid"
+                   form-view="reminder-method-line-form"/>
+            <button name="validateReminder" title="Validate Reminder"
+                    onClick="save,action-reminder-method-validate-reminder"/>
+        </panel>
+        <panel-tabs>
+            <panel-related field="reminderHistoryList"
+                           grid-view="reminder-history-grid"
+                           form-view="reminder-history-form"/>
+            <panel-related field="invoiceReminderSet" grid-view="invoice-grid"
+                           form-view="invoice-form"/>
+            <panel-related field="paymentScheduleLineReminderSet"
+                           grid-view="payment-schedule-line-grid"
+                           form-view="payment-schedule-line-form"/>
+        </panel-tabs>
+    </form>
+
+    <action-attrs name="action-reminder-attrs-set-reminder-line-domain">
+        <attribute for="reminderMethodLine" name="domain"
+                   expr="eval: &quot;self.reminderMethod.id = ${reminderMethod.id}&quot;"/>
+        <attribute for="waitReminderMethodLine" name="domain"
+                   expr="eval: &quot;self.reminderMethod.id = ${reminderMethod.id}&quot;"/>
+    </action-attrs>
+
+    <action-method name="action-reminder-method-validate-reminder">
+        <call class="com.axelor.apps.account.web.ReminderController"
+              method="runReminder"/>
+    </action-method>
+
+</object-views>

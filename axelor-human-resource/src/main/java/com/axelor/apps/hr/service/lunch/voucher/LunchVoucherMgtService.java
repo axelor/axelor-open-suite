@@ -18,9 +18,11 @@
 package com.axelor.apps.hr.service.lunch.voucher;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
+import com.axelor.apps.hr.db.LunchVoucherMgtLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -31,6 +33,11 @@ public interface LunchVoucherMgtService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
+
+	@Transactional
+	public int updateStock(List<LunchVoucherMgtLine> newLunchVoucherMgtLines,
+						   List<LunchVoucherMgtLine> oldLunchVoucherMgtLines, Company company)
+            throws AxelorException;
 
 	@Transactional
 	public void export(LunchVoucherMgt lunchVoucherMgt) throws IOException;

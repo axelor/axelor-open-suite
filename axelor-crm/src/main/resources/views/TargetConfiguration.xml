@@ -58,8 +58,8 @@
 	    <field name="code"/>
 	  </panel>
 	  <panel name="concerns" title="Concerns">
-	    <field name="user" showIf="team == null" form-view="user-form" grid-view="user-grid" />
-	    <field name="team" showIf="user == null" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
+	    <field name="user" canEdit="false" showIf="team == null" form-view="user-form" grid-view="user-grid" />
+	    <field name="team" canEdit="false" showIf="user == null" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 	  </panel>
 	  <panel name="period" title="Period">
 	    <field name="periodTypeSelect"/>

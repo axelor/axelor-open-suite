@@ -100,12 +100,7 @@
 		<option value='3'>Template</option>
 		<option value='4'>Import</option>
 	</selection>
-	
-	<selection name='iaccount.cash.register.line.status.select'>
-		<option value='0'>Draft</option>
-		<option value='1'>Closed</option>
-	</selection>
-	
+
 	<selection name='payer.quality.config.line.incident.type.select'>
 		<option value='0'>Reminder</option>
 		<option value='1'>Reject</option>
@@ -150,7 +145,6 @@
 	
 	<selection name="iaccounting.batch.action.select">
 		<option value="11">Reimbursement</option>
-		<option value="12">Direct debit</option>
 		<option value="14">Reminder</option>
 		<option value="15">Payments by IPO et IPO cheque</option>
 		<option value="16">Doubtful Customers</option>
@@ -164,7 +158,12 @@
 		<option value="2">Supplier Payment</option>
 		<option value="3">Customer Reimbursement</option>
 	</selection>
-	
+
+	<selection name="iaccount.account.batch.transfer.customer.reimbursement.type.select">
+		<option value="1">Customer refund</option>
+		<option value="2">Partner credit balance reimbursement</option>
+	</selection>
+
 	<selection name="ireimbursement.batch.type.select">
 		<option value="1">Reimbursement Export</option>
 		<option value="2">Rejected Reimbursements Import</option>
@@ -279,6 +278,15 @@
 		<option value="1">Forecast (order)</option>
 		<option value="2">Forecast (invoice)</option>
 		<option value="3">Real (accounting)</option>
+	</selection>
+
+	<selection name="account.interbankcode.type.select">
+		<option value="1">Operation code</option>
+		<option value="2">Reject/Return code</option>
+	</selection>
+
+	<selection name="meta.schedule.batch.service.select" id="account.meta.schedule.batch.service.select">
+		<option value="com.axelor.apps.account.service.batch.AccountingBatchService">com.axelor.apps.account.service.batch.AccountingBatchService</option>
 	</selection>
 
 </object-views>

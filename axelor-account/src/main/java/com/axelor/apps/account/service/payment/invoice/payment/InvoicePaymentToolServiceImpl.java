@@ -17,6 +17,14 @@
  */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
@@ -33,13 +41,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolService {
 	
@@ -58,17 +59,24 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 	}
 	
 	
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateAmountPaid(Invoice invoice) throws AxelorException  {
-		
-		invoice.setAmountPaid(this.computeAmountPaid(invoice));
+
+		invoice.setAmountPaid(computeAmountPaid(invoice));
 		invoice.setAmountRemaining(invoice.getInTaxTotal().subtract(invoice.getAmountPaid()));
+		updateHasPendingPayments(invoice);
 		invoiceRepo.save(invoice);
 		log.debug("Invoice : {}, amount paid : {}", invoice.getInvoiceId(), invoice.getAmountPaid());
 		
 	}
-	
-	
+
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void updateHasPendingPayments(Invoice invoice) {
+		invoice.setHasPendingPayments(checkPendingPayments(invoice));
+	}
+
 	protected BigDecimal computeAmountPaid(Invoice invoice) throws AxelorException  {
 		
 		BigDecimal amountPaid = BigDecimal.ZERO;
@@ -78,10 +86,10 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 		CurrencyService currencyService = Beans.get(CurrencyService.class);
 		
 		Currency invoiceCurrency = invoice.getCurrency();
-		
-		for(InvoicePayment invoicePayment : invoice.getInvoicePaymentList())  {
-			
-			if(invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_VALIDATED)  {
+
+		for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
+
+			if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_VALIDATED) {
 				
 				log.debug("Amount paid without move : {}", invoicePayment.getAmount());
 				
@@ -100,6 +108,25 @@ public class InvoicePaymentToolServiceImpl  implements  InvoicePaymentToolServic
 		return amountPaid;
 	}
 
+	/**
+	 * Check whether the sum of pending payments equals or exceeds the remaining amount of the invoice.
+	 * 
+	 * @param invoice
+	 * @return
+	 */
+	protected boolean checkPendingPayments(Invoice invoice) {
+		BigDecimal pendingAmount = BigDecimal.ZERO;
+
+		if (invoice.getInvoicePaymentList() != null) {
+			for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
+				if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_PENDING) {
+					pendingAmount = pendingAmount.add(invoicePayment.getAmount());
+				}
+			}
+		}
+
+		return invoice.getAmountRemaining().compareTo(pendingAmount) <= 0;
+	}
 
 	/**
 	 * @inheritDoc

@@ -5,12 +5,13 @@
     
     <grid name="reconcile-grid" title="Reconcile" model="com.axelor.apps.account.db.Reconcile">
     	<field name="reconcileSeq"/>
+    	<field name="company"/>
         <field name="debitMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="debitMoveLine.amountRemaining" title="Debit remaining"/>
         <field name="creditMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
         <field name="amount" aggregate="sum"/>
-         <field name="reconciliationDate"/>
+        <field name="reconciliationDate"/>
         <field name="statusSelect"/>
     </grid>
 
@@ -19,24 +20,25 @@
         <field name="debitMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="creditMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="amount" aggregate="sum"/>
-         <field name="reconciliationDate"/>
+        <field name="reconciliationDate"/>
         <field name="statusSelect"/>
     </grid>
 
     <form name="reconcile-form" title="Reconcile" model="com.axelor.apps.account.db.Reconcile"  >
 		
-		<panel name="main" >
-			 <field name="debitMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3" onSelect="action-reconcile-attrs-domain-debit" form-view="move-line-form" grid-view="move-line-grid"/>
-			 <field name="creditMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3" onSelect="action-reconcile-attrs-domain-credit" form-view="move-line-form" grid-view="move-line-grid"/>
-			 <field name="debitMoveLine.amountRemaining" title="Debit remaining"/>
-			 <field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
+		<panel name="main">
+			<field name="company" canEdit="false"/>
+			<field name="debitMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3" onSelect="action-reconcile-attrs-domain-debit" form-view="move-line-form" grid-view="move-line-grid"/>
+			<field name="creditMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3" onSelect="action-reconcile-attrs-domain-credit" form-view="move-line-form" grid-view="move-line-grid"/>
+			<field name="debitMoveLine.amountRemaining" title="Debit remaining"/>
+			<field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
 		</panel>
 		
 		<panel sidebar="true" name="info" title="Info">
-		  <field name="amount" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
-		  <field name="statusSelect"/>
-		  <field name="reconciliationDate"/>
- 		  <field name="reconcileSeq" colSpan="12" readonly="true"/>
+			<field name="amount" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
+			<field name="statusSelect"/>
+			<field name="reconciliationDate"/>
+			<field name="reconcileSeq" colSpan="12" readonly="true"/>
 		</panel>
 		
 		<panel sidebar="true" name="actions" title="Actions">
@@ -46,18 +48,18 @@
 	  
 	</form>
 
+   	
+   	
+	<action-attrs name="action-reconcile-attrs-domain-debit">
+		<attribute if="eval: creditMoveLine != null" name="domain" expr="eval: &quot;self.move.statusSelect = 3 AND self.move.company.id = ${company?.id} AND self.partner.id = ${creditMoveLine?.partner?.id} AND self.debit > 0.0 AND self.account.reconcileOk = 'true'&quot;" for="debitMoveLine"/>
+		<attribute if="eval: creditMoveLine == null" name="domain" expr="eval: &quot;self.move.statusSelect = 3 AND self.move.company.id = ${company?.id} AND self.debit > 0.0 AND self.account.reconcileOk = 'true'&quot;" for="debitMoveLine"/>
+	</action-attrs>
     
+	<action-attrs name="action-reconcile-attrs-domain-credit">
+		<attribute if="eval: debitMoveLine != null" name="domain" expr="eval: &quot;self.move.statusSelect = 3 AND self.move.company.id = ${company?.id} AND self.partner.id = ${debitMoveLine?.partner?.id} AND self.credit > 0.0 AND self.account.reconcileOk = 'true'&quot;" for="creditMoveLine"/>
+		<attribute if="eval: debitMoveLine == null" name="domain" expr="eval: &quot;self.move.statusSelect = 3 AND self.move.company.id = ${company?.id} AND self.credit > 0.0 AND self.account.reconcileOk = 'true'&quot;" for="creditMoveLine"/>
+	</action-attrs>
     
-    <action-attrs name="action-reconcile-attrs-domain-credit">
-		<attribute name="domain" for="creditMoveLine" if="eval: debitMoveLine != null" expr="eval: &quot;self.move.statusSelect = 3 AND self.move.company.id = ${debitMoveLine?.move?.company?.id} AND self.partner.id = ${debitMoveLine?.partner?.id} AND self.credit &gt; 0.0 AND self.account.reconcileOk = 'true'&quot;"/>
-   		<attribute name="domain" for="creditMoveLine" if="eval: debitMoveLine == null" expr="eval: &quot;self.move.statusSelect = 3 AND self.credit &gt; 0.0 AND self.account.reconcileOk = 'true'&quot;"/>
-    </action-attrs>
-    
-    <action-attrs name="action-reconcile-attrs-domain-debit">
-		<attribute name="domain" for="debitMoveLine" if="eval: creditMoveLine != null" expr="eval: &quot;self.move.statusSelect = 3 AND self.move.company.id = ${creditMoveLine?.move?.company?.id} AND self.partner.id = ${creditMoveLine?.partner?.id} AND self.debit &gt; 0.0 AND self.account.reconcileOk = 'true'&quot;"/>
- 		<attribute name="domain" for="debitMoveLine" if="eval: creditMoveLine == null" expr="eval: &quot;self.move.statusSelect = 3 AND self.debit &gt; 0.0 AND self.account.reconcileOk = 'true'&quot;"/>
-    </action-attrs>
-
     <action-method name="action-reconcile-method-reconcile">
     	<call class="com.axelor.apps.account.web.ReconcileController" method="reconcile"/>
     </action-method>

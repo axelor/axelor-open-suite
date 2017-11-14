@@ -89,7 +89,7 @@ public interface SaleOrderService {
 	public void cancelSaleOrder(SaleOrder saleOrder);
 
 	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception;
-	
+
 	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception;
 
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException;

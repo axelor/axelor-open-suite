@@ -22,9 +22,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.axelor.apps.account.db.TaxEquiv;
+import com.google.common.base.Joiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +65,12 @@ public class TaxInvoiceLine extends TaxGenerator {
 
 		List<InvoiceLineTax> invoiceLineTaxList = new ArrayList<InvoiceLineTax>();
 		Map<TaxLine, InvoiceLineTax> map = new HashMap<TaxLine, InvoiceLineTax>();
+        Set<String> specificNotes = new HashSet<String>();
+
+        boolean customerSpecificNote = false;
+        if (invoice.getPartner().getFiscalPosition() != null) {
+        	customerSpecificNote = invoice.getPartner().getFiscalPosition().getCustomerSpecificNote();
+        }
 
 		if (invoiceLines != null && !invoiceLines.isEmpty()) {
 
@@ -99,6 +109,13 @@ public class TaxInvoiceLine extends TaxGenerator {
 
 					}
 				}
+
+				if (!customerSpecificNote) {
+                    TaxEquiv taxEquiv = invoiceLine.getTaxEquiv();
+                    if (taxEquiv != null && taxEquiv.getSpecificNote() != null) {
+                        specificNotes.add(taxEquiv.getSpecificNote());
+                    }
+                }
 			}
 		}
 
@@ -121,6 +138,12 @@ public class TaxInvoiceLine extends TaxGenerator {
 			LOG.debug("Ligne de TVA : Total TVA => {}, Total HT => {}", new Object[] {invoiceLineTax.getTaxTotal(), invoiceLineTax.getInTaxTotal()});
 
 		}
+
+        if (!customerSpecificNote) {
+            invoice.setSpecificNotes(Joiner.on('\n').join(specificNotes));
+        } else {
+		    invoice.setSpecificNotes(invoice.getPartner().getSpecificTaxNote());
+        }
 
 		return invoiceLineTaxList;
 	}

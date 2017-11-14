@@ -20,6 +20,14 @@ package com.axelor.apps.sale.web;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.inject.Beans;
+import com.axelor.rpc.Context;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,15 +140,18 @@ public class SaleOrderController {
 	}
 
 	public void finalizeSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
-
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		saleOrder = saleOrderRepo.find(saleOrder.getId());
 
-		saleOrderService.finalizeSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+		try {
+			saleOrderService.finalizeSaleOrder(saleOrder);
+		} catch (AxelorException e) {
+			response.setFlash(e.getMessage());
+		}
 
 		response.setReload(true);
-
 	}
-	
+
 	public void confirmSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
@@ -175,14 +186,20 @@ public class SaleOrderController {
 
 	public void createSaleOrder(ActionRequest request, ActionResponse response)  {
 		SaleOrder origin = saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
-		SaleOrder copy = saleOrderService.createSaleOrder(origin);
-		response.setValues(copy);
+		if (origin != null) {
+			SaleOrder copy = saleOrderService.createSaleOrder(origin);
+			response.setValues(copy);
+		}
 	}
 
-	public void createTemplate(ActionRequest request, ActionResponse response)  {
-		SaleOrder origin = saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
-		SaleOrder copy = saleOrderService.createTemplate(origin);
-		response.setValues(copy);
+	public void createTemplate(ActionRequest request, ActionResponse response) {
+	    Context context = request.getContext();
+	    if (context.get("_idCopy") != null) {
+	    	String idCopy = context.get("_idCopy").toString();
+			SaleOrder origin = saleOrderRepo.find(Long.parseLong(idCopy));
+			SaleOrder copy = saleOrderService.createSaleOrder(origin);
+			response.setValues(copy);
+		}
 	}
 
 	public void computeEndOfValidityDate(ActionRequest request, ActionResponse response)  {
@@ -196,5 +213,26 @@ public class SaleOrderController {
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 	
-	
+
+	/**
+	 * Called on partner, company or payment change.
+	 * Fill the bank details with a default value.
+	 * @param request
+	 * @param response
+	 */
+	public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		PaymentMode paymentMode = (PaymentMode) request.getContext().get("paymentMode");
+		Company company = saleOrder.getCompany();
+		Partner partner = saleOrder.getClientPartner();
+		if(company == null) {
+			return;
+		}
+		if (partner != null) {
+			partner = Beans.get(PartnerRepository.class).find(partner.getId());
+		}
+		BankDetails defaultBankDetails = Beans.get(BankDetailsService.class)
+				.getDefaultCompanyBankDetails(company, paymentMode, partner);
+		response.setValue("companyBankDetails", defaultBankDetails);
+	}
 }

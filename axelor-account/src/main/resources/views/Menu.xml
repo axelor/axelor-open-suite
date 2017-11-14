@@ -241,16 +241,6 @@
 		<view-param name="search-filters" value="reconcile-filters"/>
 	</action-view>
 
-	<menuitem name="account-root-periodic-processing-cash-register-closure"
-		parent="account-root-periodic-processing" title="Cash register closure"
-		action="account.root.periodic.processing.cash.register.closure" />
-
-	<action-view name="account.root.periodic.processing.cash.register.closure"
-		title="Cash register closure" model="com.axelor.apps.account.db.CashRegisterLine" >
-		<view type="grid" name="cash-register-line-grid"/>
-		<view type="form" name="cash-register-line-form"/>
-	</action-view>
-
 	<menuitem name="account-root-periodic-processing-overpayment-clearances"
 		parent="account-root-periodic-processing" title="Overpayments clearances"
 		action="account.root.periodic.processing.overpayment.clearances" />
@@ -558,25 +548,15 @@
 		<view type="grid" name="payment-condition-grid" />
 		<view type="form" name="payment-condition-form"/>
 	</action-view>
-	
-	<menuitem name="account-conf-cash-register" parent="account-conf-payment"
-		title="Cash registers" action="account.conf.cash.register" />
-		
-	<action-view name="account.conf.cash.register" title="Cash registers"
-		model="com.axelor.apps.account.db.CashRegister" >
-		<view type="grid" name="cash-register-grid"/>
-		<view type="form" name="cash-register-form"/>
-	</action-view>
-	
-	
+
 	<menuitem name="account-conf-reporting" parent="account-conf"
 		title="Reportings/Exports" />
 
 	<menuitem name="account-conf-reporting-interbank-code" parent="account-conf-reporting"
-		title="Reject/Return reason codes" action="account.conf.reporting.interbank.code" />
+		title="Interbank codes" action="account.conf.reporting.interbank.code" />
 
 	<action-view name="account.conf.reporting.interbank.code"
-		title="Reject/Return reason codes" model="com.axelor.apps.account.db.InterbankCode" >
+		title="Interbank codes" model="com.axelor.apps.account.db.InterbankCode" >
 		<view type="grid" name="interbank-code-grid"/>
 		<view type="form" name="interbank-code-form"/>
 	</action-view>
