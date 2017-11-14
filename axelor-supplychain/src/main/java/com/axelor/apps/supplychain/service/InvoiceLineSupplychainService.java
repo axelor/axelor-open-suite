@@ -26,9 +26,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
-import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
@@ -81,27 +79,14 @@ public class InvoiceLineSupplychainService extends InvoiceLineService  {
 		
 		PriceList priceList = invoice.getPriceList();
 		BigDecimal discountAmount = BigDecimal.ZERO;
-		Map<String, Object> discounts = null;
-		
 		int computeMethodDiscountSelect = appAccountService.getAppBase().getComputeMethodDiscountSelect();
-
-		if(priceList != null)  {
-			int discountTypeSelect = 0;
-			
-			PriceListLine priceListLine = this.getPriceListLine(invoiceLine, priceList);
-			if(priceListLine!=null){
-				discountTypeSelect = priceListLine.getTypeSelect();
-			}
-
-			discounts = priceListService.getDiscounts(priceList, priceListLine, price);
+		
+		Map<String, Object> discounts = super.getDiscount(invoice, invoiceLine, price);
+		
+		if(priceList != null){
 			discountAmount = (BigDecimal) discounts.get("discountAmount");
-			
-			if((computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) 
-					|| computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT)  {
-				discounts.put("price", priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), discountAmount));
-			}
 		}
-
+		
 		if (invoice.getOperationTypeSelect() < InvoiceRepository.OPERATION_TYPE_CLIENT_SALE && discountAmount.compareTo(BigDecimal.ZERO) == 0){
 			List<SupplierCatalog> supplierCatalogList = invoiceLine.getProduct().getSupplierCatalogList();
 			if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){
