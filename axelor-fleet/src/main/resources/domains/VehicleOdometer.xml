@@ -7,7 +7,7 @@
 	<entity name="VehicleOdometer" lang="java" cachable="true">
 		<string name="name" title="Name" required="true" />
 		<date name="date" title="Date" column="date_val" />
-		<decimal name="value" title="Value" />
+		<decimal name="value" title="Kilometric value"/>
 		<many-to-one name="vehicle" ref="Vehicle" />
 		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Odometer unit" />
 	</entity>
