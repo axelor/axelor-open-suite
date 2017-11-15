@@ -34,17 +34,17 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
-import com.axelor.apps.base.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.ProductService;
+import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -65,7 +65,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 	protected AppBaseService appBaseService;
 	
 	@Inject
-	protected ProductService productService;
+	protected PurchaseProductService productService;
 
 	private int sequence = 0;
 

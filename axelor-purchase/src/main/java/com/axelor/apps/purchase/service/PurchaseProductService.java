@@ -15,20 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.exception;
+package com.axelor.apps.purchase.service;
 
-import com.axelor.apps.stock.db.LogisticalFormLine;
+import java.math.BigDecimal;
+import java.util.Map;
+
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductVariant;
+import com.axelor.apps.base.db.ProductVariantConfig;
+import com.axelor.apps.base.db.ProductVariantValue;
+import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
+import com.google.inject.persist.Transactional;
 
-public class InvalidLogisticalFormLineDimensions extends AxelorException {
-
-	private static final long serialVersionUID = 354779411257144849L;
-
-	public InvalidLogisticalFormLineDimensions(LogisticalFormLine logisticalFormLine) {
-		super(logisticalFormLine, IException.CONFIGURATION_ERROR,
-				I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS), logisticalFormLine.getSequence() + 1);
-	}
+public interface PurchaseProductService {
+	
+	public Map<String, Object> getDiscountsFromCatalog(SupplierCatalog supplierCatalog,BigDecimal price);	
 
 }
