@@ -121,18 +121,24 @@ public class AppBaseController {
 		
 		if(fields.size() > 0){
 			LOG.debug("Duplicate record joinList: {}", fields);
-			String selectedRecored =  request.getContext().get("_ids").toString();
-			selectedRecored = selectedRecored.substring(1, selectedRecored.length()-1);
+			String selectedRecored =  String.valueOf((request.getContext().get("_ids")));
+			if(selectedRecored.equals("null") || selectedRecored.isEmpty()) {
+				selectedRecored = null;
+			} else {
+				selectedRecored = selectedRecored.substring(1, selectedRecored.length()-1);
+			}
 			String ids = findDuplicateRecords(fields,model,selectedRecored);
 			if(ids.isEmpty())
 				response.setFlash(I18n.get(IExceptionMessage.GENERAL_1));
 			else{
+				String domain = "self.id in ("+ids+") And " + request.getContext().get("_domain_");
 				response.setView(ActionView
 						  .define(I18n.get(IExceptionMessage.GENERAL_2))
 						  .model(model)
 						  .add("grid", "partner-grid")
 						  .add("form", "partner-form")
-						  .domain("self.id in ("+ids+")")
+						  .domain(domain)
+						  .context("_domain", domain)
 						  .map());
 				response.setCanClose(true);
 			}
@@ -197,7 +203,7 @@ public class AppBaseController {
 			query += ", m." + field;
 		}
 		List<List<Object>> resultList = new ArrayList<>();
-		if(selectedRecored.isEmpty() || selectedRecored == null) {
+		if(selectedRecored == null || selectedRecored.isEmpty()) {
 			resultList = JPA.em().createQuery(query + ") FROM " + object + " m").getResultList();
 		} else {
 			resultList = JPA.em().createQuery(query + ") FROM " + object + " m where m.id in("+selectedRecored+")").getResultList();
