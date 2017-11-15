@@ -12,6 +12,7 @@
 		<field name="responsible"/>
 		<field name="controlType"/>
 		<field name="testType"/>
+		<field name="controlPointDate"/>
 	</grid>
 	
 	<form name="control-point-form" title="Control points" model="com.axelor.apps.quality.db.ControlPoint" onNew="action-quality-control-point-record-default">
@@ -25,6 +26,7 @@
 			<field name="responsible"/>
 			<field name="controlType" readonly="true"/>
 			<field name="testType" readonly="true"/>
+			<field name="controlPointDate"/>
 		</panel>
 		<panel name="ControlFrequency" showIf="controlType == 2 || controlType == 3" title="Cotrol Frequency" readonly="true">
 			<field name="cf" title="Control Frequency" type="string" colSpan="12" showIf="controlType == 2" showTitle="false">
@@ -74,6 +76,7 @@
 	</form>
 	
 	<action-record name="action-quality-control-point-record-default" model="com.axelor.apps.quality.db.ControlPoint">
+		<field name="controlPointDate" expr="eval: _parent.startDate"/>
 		<field name="status" expr="eval: 1"/>
 	</action-record>
 	
