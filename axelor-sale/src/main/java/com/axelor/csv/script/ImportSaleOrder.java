@@ -19,24 +19,34 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
 import java.util.Map;
 
 public class ImportSaleOrder {
 
-    protected SaleOrderService saleOrderService;
+	protected SaleOrderService saleOrderService;
 
-    @Inject
-    public ImportSaleOrder(SaleOrderService saleOrderService) {
-        this.saleOrderService = saleOrderService;
-    }
+	@Inject
+	public ImportSaleOrder(SaleOrderService saleOrderService) {
+		this.saleOrderService = saleOrderService;
+	}
 
-    public Object importAddressStr(Object bean, Map<String,Object> values) {
-        assert bean instanceof SaleOrder;
+	public Object importAddressStr(Object bean, Map<String, Object> values) {
+		assert bean instanceof SaleOrder;
 
-        SaleOrder saleOrder = (SaleOrder) bean;
-        saleOrderService.computeAddressStr(saleOrder);
-        return saleOrder;
-    }
+		SaleOrder saleOrder = (SaleOrder) bean;
+		saleOrderService.computeAddressStr(saleOrder);
+		return saleOrder;
+	}
+
+	public Object computeAmt(Object bean, Map<String, Object> values) throws AxelorException {
+
+		assert bean instanceof SaleOrder;
+
+		SaleOrder saleOrder = (SaleOrder) bean;
+
+		return saleOrderService.computeSaleOrder(saleOrder);
+	}
 }

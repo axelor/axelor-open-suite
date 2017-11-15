@@ -254,7 +254,7 @@
             </panel>
             <panel name="customer" title="Customer" if-module="axelor-sale" showIf="isCustomer" if="__config__.app.isApp('sale')">
                 <field name="saleOrderInformation"/>
-                <field name="payerQuality" hideIf="isEmployee"/>
+                <field name="payerQuality" if-module="axelor-account"  if="__config__.app.isApp('account')" hideIf="isEmployee"/>
                 <field name="salePriceList" canNew="true" domain="self.typeSelect = 1" if-module="axelor-account" form-view="sale-price-list-form" grid-view="price-list-grid"/>
                 <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
                 <field name="chargeBackPurchase" colSpan="3" showIf="chargeBackPurchaseSelect == 3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
