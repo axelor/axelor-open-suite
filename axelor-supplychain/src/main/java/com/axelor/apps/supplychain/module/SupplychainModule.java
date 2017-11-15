@@ -28,6 +28,8 @@ import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelSer
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseProductService;
+import com.axelor.apps.purchase.service.PurchaseProductServiceImpl;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
@@ -137,5 +139,6 @@ public class SupplychainModule extends AxelorModule {
         bind(IntercoService.class).to(IntercoServiceImpl.class);
         bind(LogisticalFormServiceImpl.class).to(LogisticalFormSupplychainServiceImpl.class);
         bind(LogisticalFormSupplychainService.class).to(LogisticalFormSupplychainServiceImpl.class);
+        bind(PurchaseProductService.class).to(PurchaseProductServiceImpl.class);
     }
 }

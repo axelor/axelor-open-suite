@@ -214,8 +214,8 @@
 
 <!-- ADMINISTRATION -->
 
-	<menuitem name="admin-root-batch-sale" parent="admin-root-batch" hidden="true"
-		title="Sale batches" action="admin.root.batch.sale" />
+	<menuitem name="admin-root-batch-sale" parent="admin-root-batch" if="__config__.app.isApp('sale')" if-module="axelor-sale" 
+	title="Sale batches" action="admin.root.batch.sale" />
 
 	<action-view name="admin.root.batch.sale" title="Sale batches"
 		model="com.axelor.apps.sale.db.SaleBatch" >

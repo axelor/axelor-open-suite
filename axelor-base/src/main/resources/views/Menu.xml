@@ -173,7 +173,8 @@
 		<context name="_isModel" expr="true"/>
 	</action-view>
 	
-	<menuitem name="referential-root-price-list" parent="referential-root"
+	<menuitem name="referential-root-price-list" parent="referential-root" 
+		if="__config__.app.isApp('account') || __config__.app.isApp('sale') || __config__.app.isApp('purchase')" 
 		title="Price lists" action="referential.root.price.list"  order="95" />
 
 	<action-view name="referential.root.price.list" title="Price lists"
