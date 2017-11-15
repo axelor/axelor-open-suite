@@ -58,9 +58,13 @@
 	<kanban columnBy="statusSelect" sequenceBy="priority" limit="10"
 	 name="quality-alert-kanban" title="Quality alerts" model="com.axelor.apps.quality.db.QualityAlert">
 		<field name="fullName"/>
+		<field name="team"/>
+		<field name="responsible"/>
 		<template>
             <![CDATA[
-            <div class="card-body">{{fullName}}</div>
+            <h4>{{fullName}}</h4>
+            <div class="card-body">{{team.name}}</div>
+            <div class="card-body">{{responsible.name}}</div>
     		]]>
         </template>
 	</kanban>
@@ -69,6 +73,7 @@
 		<field name="statusSelect" expr="eval: 1"/>
 		<field name="priority" expr="eval: 1"/>
 		<field name="product" expr="eval: _product" if="eval: _product != null"/>
+		<field name="team" expr="eval: _team" if="eval: _team != null"/>
 	</action-record>
 	
 	<action-record name="action-quality-alert-record-status-confirm" model="com.axelor.apps.quality.db.QualityAlert">

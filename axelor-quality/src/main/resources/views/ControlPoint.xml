@@ -76,7 +76,6 @@
 	</form>
 	
 	<action-record name="action-quality-control-point-record-default" model="com.axelor.apps.quality.db.ControlPoint">
-		<field name="controlPointDate" expr="eval: _parent.startDate"/>
 		<field name="status" expr="eval: 1"/>
 	</action-record>
 	
@@ -91,6 +90,7 @@
 	<action-view name="action-quality-control-point-create-quality-alert" title="Quality alert" model="com.axelor.apps.quality.db.QualityAlert">
 		<view  type="form" name="quality-alert-form"/>
 		<context name="_product" expr="eval: product"/>
+		<context name="_team" expr="eval: team"/>
 	</action-view>
 	
 </object-views>
