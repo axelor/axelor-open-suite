@@ -54,19 +54,10 @@ public class TicketService {
 		if (helpdesk.getIsSLApolicies()) {
 
 			if (ticket.getAssignedTo() != null) {
-				SLA sla;
-				SLA slaPriority = slaRepo.all().filter("self.priority = 4").fetchOne();
 				
-				if (slaPriority != null) {
+				SLA sla = slaRepo.all().filter("self.team = ?1 and self.ticketType = ?2 and (self.priority = ?3 or self.priority = 4)",
+						ticket.getAssignedTo().getActiveTeam(), ticket.getTicketType(), ticket.getPriority()).fetchOne();
 				
-					sla = slaRepo.all().filter("self.team = ?1 and self.ticketType = ?2",
-							ticket.getAssignedTo().getActiveTeam(), ticket.getTicketType()).fetchOne();
-				} else {
-					
-					sla = slaRepo.all().filter("self.team = ?1 and self.priority = ?2 and self.ticketType = ?3",
-							ticket.getAssignedTo().getActiveTeam(), ticket.getPriority(), ticket.getTicketType()).fetchOne();
-				}
-
 				if (sla != null) {
 					ticket.setSlaPolicy(sla);
 					try {
@@ -129,7 +120,6 @@ public class TicketService {
 	
 	public void setEmptySLA(Ticket ticket) {
 
-		ticket.setDeadline(null);
 		ticket.setSlaPolicy(null);
 	}
 	
