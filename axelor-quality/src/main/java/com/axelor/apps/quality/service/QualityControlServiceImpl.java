@@ -54,6 +54,7 @@ public class QualityControlServiceImpl  implements QualityControlService {
 					point.setNotes(model.getNotes());
 					point.setMessageIfFailure(model.getMessageIfFailure());
 					point.setControlFrequency(model.getControlFrequency());
+					point.setControlPointDate(qualityControl.getStartDate());
 					point.setQualityControl(qualityControl);
 					controlPointRepo.save(point);
 					qualityControl.addControlPoint(point);
