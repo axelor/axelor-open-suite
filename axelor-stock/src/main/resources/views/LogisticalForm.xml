@@ -60,6 +60,7 @@
     </action-record>
 
     <action-group name="action-logistical-form-change-status">
+        <action name="action-logistical-form-save" />
         <action name="save" />
         <action name="action-logistical-form-record-change-status" />
         <action name="save" />
