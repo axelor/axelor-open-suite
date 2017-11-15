@@ -23,7 +23,6 @@ import javax.inject.Inject;
 
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
-import com.axelor.apps.helpdesk.service.TicketService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -32,21 +31,18 @@ public class TicketController {
 	
 	@Inject
 	private TicketRepository ticketRepo;
-	
-	@Inject
-	private TicketService ticketService;
 
 	public void assignToMeTicket(ActionRequest request, ActionResponse response)  {
 		
 		if(request.getContext().get("id") != null){
 			Ticket ticket = ticketRepo.find((Long)request.getContext().get("id"));
 			ticket.setAssignedTo(AuthUtils.getUser());
-			ticketService.saveTicket(ticket);
+			ticketRepo.save(ticket);
 		}
 		else if(!((List<?>)request.getContext().get("_ids")).isEmpty()){
 			for(Ticket ticket : ticketRepo.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
 				ticket.setAssignedTo(AuthUtils.getUser());
-				ticketService.saveTicket(ticket);
+				ticketRepo.save(ticket);
 			}
 		}
 		response.setReload(true);
