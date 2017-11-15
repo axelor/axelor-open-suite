@@ -4,14 +4,19 @@
 
 	
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
-		<field name="fullName"/>
-		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<hilite background="primary" if="isProject &amp;&amp; projectTypeSelect == 1"/>
+		<hilite background="info" if="isProject &amp;&amp; projectTypeSelect == 2"/>
+		<field name="code"/>
+		<field name="name"/>
+        <field name="parentProject"/>
+		<field name="clientPartner"/>
+		<field name="assignedTo"/>
 		<field name="fromDate" />
 		<field name="toDate" />
 		<field name="dueDate" />
-		<field name="statusSelect"/>
-		<field name="progress" widget="Progress" aggregate="avg"/>
 		<button name="openGantt" title="Gantt" icon="fa-tasks" onClick="action-project-open-gantt"/>
+		<field name="isProject" hidden="true"/>
+		<field name="projectTypeSelect" hidden="true"/>
 	</grid>
 	
 	<form name="project-form" title="Project" model="com.axelor.apps.project.db.Project" onNew="action-project-group-on-new-project" width="large"
@@ -60,7 +65,7 @@
 			<spacer colSpan="10"/>
 			<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="isProject" showIf="!$readonly()"/>
 			<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="isBusinessProject" showIf="!$readonly()"/>
-			<field name="projectTypeSelect" showIf="isProject"/>
+			<field name="projectTypeSelect" showIf="isProject" requiredIf="isProject" onChange="action-project-record-empty-parent-project"/>
 			<field name="parentProject" showIf="isProject &amp;&amp; projectTypeSelect == 2"/>
 			<!--
 				<field name="statusSelect" widget="NavSelect" colSpan="6"/>
@@ -142,7 +147,7 @@
 	</form>
 	
 	
-	<form name="folder-project-form" title="Project" model="com.axelor.apps.project.db.Project" onNew="action-project-group-on-new-project"
+	<form name="folder-project-form" title="Project" model="com.axelor.apps.project.db.Project" onNew="action-project-group-on-new-project,action-project-record-init-type"
 	onLoad="action-project-method-set-visible-duration,action-project-attrs-duration-title,action-project-method-set-visible-duration-log-times,action-project-attrs-scale-and-precision,save">
 		<toolbar>
 			<button name="printProject" title="Reporting folder" onClick="save,action-project-method-print-project" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
@@ -341,8 +346,15 @@
 	<action-attrs name="action-attrs-project-set-project-type" model="com.axelor.apps.project.db.Project">
 		<attribute name="readonly" for="isProject" expr="eval:_fromProject"/>
 		<attribute name="readonly" for="isBusinessProject" expr="eval:_fromBusinessProject"/>
-		<attribute name="value" for="projectTypeSelect" if="isProject" expr="eval: _xProjectTypeSelect"/>
 	</action-attrs>
+
+	<action-record name="action-project-record-init-type" model="com.axelor.apps.project.db.Project">
+		<field name="projectTypeSelect" expr="eval: _xProjectTypeSelect"/>
+	</action-record>
+
+	<action-record name="action-project-record-empty-parent-project" model="com.axelor.apps.project.db.Project">
+		<field name="parentProject" expr="eval: null"/>
+	</action-record>
 	
 	<action-view name="action-project-task-view" title="Tasks" model="com.axelor.team.db.TeamTask">
     	<view type="form" name="team-task-form"/>

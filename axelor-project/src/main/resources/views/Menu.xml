@@ -31,7 +31,7 @@
 		<context name="_xProjectTypeSelect" expr="1"/>
 	</action-view>
 
-	<menuitem name="project-phases" parent="menu-project-root" title="Phases" action="all.phases" order="15"/>
+	<menuitem name="project-phases" parent="menu-project-root" title="Project phases" action="all.phases" order="15"/>
 	<action-view name="all.phases" title="Project phases" model="com.axelor.apps.project.db.Project">
 		<view type="grid" name="project-grid"/>
 		<view type="form" name="project-form"/>
