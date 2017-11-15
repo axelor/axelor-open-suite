@@ -28,6 +28,7 @@
 		<view type="kanban" name="project-kanban"/>
 		<domain>self.isProject = true</domain>
 		<context name="_fromProject" expr="eval:true"/>
+		<context name="_xProjectTypeSelect" expr="1"/>
 	</action-view>
 
 	<menuitem name="project-phases" parent="menu-project-root" title="Phases" action="all.phases" order="15"/>
