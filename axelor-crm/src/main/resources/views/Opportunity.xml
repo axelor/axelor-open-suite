@@ -79,7 +79,7 @@
         <field name="user" form-view="user-form" grid-view="user-grid"/>
     </grid>
 	
-    <form   name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" onNew="action-opportunity-group-new">
+    <form name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" onNew="action-opportunity-group-new">
 		<toolbar>
 			<button name="previous-stage" readonlyIf="salesStageSelect &lt; 2" icon="fa-chevron-circle-left" onClick="action-opportunity-set-previous-stage,save"/>
 			<button name="next-stage" readonlyIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" onClick="action-opportunity-set-next-stage,save"/>
@@ -182,11 +182,32 @@
     
     <action-group name="action-opportunity-group-new">
     	<action name="action-opportunity-record-currency" if="_lead == null &amp;&amp; _partner == null"/>
-    	<action name="action-opportunity-record-default" if="_lead == null &amp;&amp; _partner == null"/>
     	<action name="action-opportunity-record-from-partner" if="_partner != null"/>
     	<action name="action-opportunity-record-new"/>
     	<action name="action-opportunity-record-from-lead" if="_lead != null"/>
     </action-group>
+    
+    <action-record name="action-opportunity-record-currency" model="com.axelor.apps.crm.db.Opportunity">
+	    <field name="currency" expr="eval: company?.currency"/>
+	</action-record>
+	
+    <action-record name="action-opportunity-record-from-partner" model="com.axelor.apps.crm.db.Opportunity">
+    	<field name="partner" expr="eval: _partner"/>
+    	<field name="description" expr="eval: _partnerDescription"/>
+    	<field name="source" expr="eval: _partnerSource"/>
+    	<field name="user" expr="eval: _partnerUser"/>
+    	<field name="team" expr="eval: _partnerTeam"/>
+    	<field name="currency" expr="eval: _partnerCurrency"/>
+    </action-record>
+	
+    <action-record name="action-opportunity-record-new" model="com.axelor.apps.crm.db.Opportunity">
+    	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+    	<field name="salesStageSelect" expr="1"/>
+    	<field name="user" expr="eval:__user__" if="!user"/>
+    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()" if="!team"/>
+    	<field name="lead" expr="eval: _parent" if="_parent?._model == 'com.axelor.apps.crm.db.Lead'"/>
+    </action-record>
     
     <action-record name="opportunity.kanban.on.new" model="com.axelor.apps.crm.db.Opportunity">
 		<field name="name" expr="#{_value}"/>
@@ -207,40 +228,6 @@
     	<action name="action-opportunity-set-closed-lost"/>
     	<action name="save"/>
     </action-group>
-    
-    <action-record name="action-opportunity-record-new" model="com.axelor.apps.crm.db.Opportunity">
-    	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
-    	<field name="user" expr="eval:__user__"/>
-    	<field name="salesStageSelect" expr="1"/>
-    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-    	<field name="lead" expr="eval: _parent" if="_parent?._model == 'com.axelor.apps.crm.db.Lead' " />
-    	<field name="partner" expr="eval: _partner"/>
-    </action-record>
-    
-    <action-record name="action-opportunity-record-currency" model="com.axelor.apps.crm.db.Opportunity">
-	    <field name="currency" expr="eval: company?.currency"/>
-	</action-record>
-	
-	<action-record name="action-opportunity-record-default" model="com.axelor.apps.crm.db.Opportunity">
-    	<field name="user" expr="eval:__user__"/>
-    	<field name="_partner" expr="eval: _customer"/>
-    	<field name="lead" expr="eval: _leadName"/>
-    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-	</action-record>
-    
-    <action-record name="action-opportunity-record-from-partner" model="com.axelor.apps.crm.db.Opportunity">
-    	<field name="partner" expr="eval: _partner" if="_partner.isContact == false"/>
-    	<field name="partner" expr="eval: _partner.mainPartner" if="_partner.isContact == true"/>
-    	<field name="description" expr="eval: _partner.description"/>
-    	<field name="source" expr="eval: _partner.source"/>
-    	<field name="user" expr="eval: _partner.user"/>
-    	<field name="team" expr="eval: _partner.team"/>
-    	<field name="salesStageSelect" expr="1"/>
-    	<field name="currency" expr="eval: _partner.currency"/>
-    	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
-    </action-record>
     
     <search-filters name="opportunity-filters" model="com.axelor.apps.crm.db.Opportunity" title="Opportunities filters">
         <field name="name" />
