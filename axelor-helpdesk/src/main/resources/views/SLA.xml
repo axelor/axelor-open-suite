@@ -6,7 +6,7 @@
 	<grid name="SLA-grid" title="All SLA" model="com.axelor.apps.helpdesk.db.SLA">
 		<field name="name"/>
 		<field name="team"/>
-		<field name="category"/>
+		<field name="ticketType"/>
 		<field name="reachStage" />
 		<field name="priority"/>
 	</grid>
@@ -14,18 +14,16 @@
 	<form model="com.axelor.apps.helpdesk.db.SLA" title="SLA" name="SLA-form">
 	
 		<panel>
-			<panel colSpan="12">
-				<field name="reachStage" colSpan="12" widget="NavSelect"/>
-			</panel>
 			<field name="name" colSpan="12"/>
 			
 			<panel name="applyOn" title="Apply on" colSpan="12">
 				<field name="team" form-view="team-form" grid-view="team-grid"/>
 				<field name="priority"/>
-				<field name="category"/>
+				<field name="ticketType"/>
 			</panel>
 			
 			<panel name="target" title="Target" colSpan="12">
+				<field name="reachStage"/>
 				<field name="reachIn" title="Reach in">
 					<viewer>
 					<![CDATA[
@@ -34,8 +32,8 @@
 					]]>	
 					</viewer>
 					<editor>
-						<field name="days" colSpan="2"/>
-						<field name="hours" colSpan="2"/>
+						<field name="days" colSpan="3"/>
+						<field name="hours" colSpan="3"/>
 					</editor>
 				</field>
 				<field name="isWorkingDays"/>
