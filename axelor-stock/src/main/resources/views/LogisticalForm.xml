@@ -49,7 +49,8 @@
                         colSpan="2" readonlyIf="!stockMove" />
                 </panel>
                 <panel-related field="logisticalFormLineList" grid-view="logistical-form-line-grid"
-                    form-view="logistical-form-line-form" colSpan="12" canMove="true" orderBy="sequence" editable="true" />
+                    form-view="logistical-form-line-form" colSpan="12" canMove="true" orderBy="sequence" editable="true"
+                    height="17" />
             </panel>
         </panel-tabs>
     </form>
