@@ -162,7 +162,7 @@
 					<panel colSpan="6">
 						<field name="partnerCategory" widget="SuggestBox" colSpan="6" form-view="partner-category-form" grid-view="partner-category-grid"/>
 						<field name="industrySector" colSpan="6" widget="SuggestBox" hideIf="partnerTypeSelect== 2"/>
-						<field name="source" colSpan="6" widget="SuggestBox" form-view="source-form" grid-view="source-grid"/>
+						<field name="source" canEdit="false" colSpan="6" widget="SuggestBox" form-view="source-form" grid-view="source-grid"/>
 						<field name="department" colSpan="6" hideIf="partnerTypeSelect== 2"/>
 					</panel>
 					<panel  colSpan="6">
@@ -255,7 +255,7 @@
 	        <panel name="information" title="Informations">
 	            <panel title="Partner details" colSpan="12"  hideIf="partnerTypeSelect == 2">
 	                <field name="department" form-view="department-form" grid-view="department-grid"/>
-	                <field name="source" hideIf="isContact" form-view="source-form" grid-view="source-grid"/>
+	                <field name="source" canEdit="false" hideIf="isContact" form-view="source-form" grid-view="source-grid"/>
 	            </panel>
 	            <panel colSpan="12" name="postalAddresses" title="Postal addresses" hideIf="isContact">
 	                <field name="partnerAddressList" colSpan="12">
