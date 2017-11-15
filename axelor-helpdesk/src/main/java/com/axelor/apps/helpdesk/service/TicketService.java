@@ -18,24 +18,37 @@
 package com.axelor.apps.helpdesk.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import com.axelor.apps.base.db.AppHelpdesk;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.repo.AppHelpdeskRepository;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.helpdesk.db.SLA;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.repo.SLARepository;
+import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
+import com.google.common.base.Strings;
+import com.google.inject.persist.Transactional;
 
 public class TicketService {
 	
 	@Inject
+	private SequenceService sequenceService;
+	
+	@Inject
 	private AppHelpdeskRepository appHelpdeskRepo;
 
+	@Inject
+	private TicketRepository ticketRepo;
+	
 	@Inject
 	private SLARepository slaRepo;
 
@@ -46,6 +59,14 @@ public class TicketService {
 	private WeeklyPlanningService weeklyPlanningService;
 	
 	private LocalDateTime toDate;
+	
+	public void computeSeq(Ticket ticket) {
+		
+		if (Strings.isNullOrEmpty(ticket.getTicketSeq())) {
+			String ticketSeq = sequenceService.getSequenceNumber(IAdministration.TICKET, null);
+			ticket.setTicketSeq(ticketSeq);
+		}
+	}
 
 	public void computeSLA(Ticket ticket) {
 		
@@ -135,6 +156,23 @@ public class TicketService {
 				ticket.setSlaCompleted(true);
 			} else {
 				ticket.setSlaCompleted(false);
+			}
+		}
+	}
+	
+	@Transactional
+	public void assignToMeTicket(Long id, List<?> ids) {
+
+		if (id != null) {
+			Ticket ticket = ticketRepo.find(id);
+			ticket.setAssignedTo(AuthUtils.getUser());
+			ticketRepo.save(ticket);
+
+		} else if (!ids.isEmpty()) {
+			
+			for (Ticket ticket : ticketRepo.all().filter("id in ?1", ids).fetch()) {
+				ticket.setAssignedTo(AuthUtils.getUser());
+				ticketRepo.save(ticket);
 			}
 		}
 	}

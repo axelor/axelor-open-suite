@@ -19,35 +19,21 @@ package com.axelor.apps.helpdesk.db.repo;
 
 import javax.inject.Inject;
 
-import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.service.TicketService;
-import com.google.common.base.Strings;
 
 public class TicketManagementRepository extends TicketRepository {
 	
 	@Inject
 	private TicketService ticketService;
-	
-	@Inject
-	private SequenceService sequenceService;
 
 	@Override
 	public Ticket save(Ticket ticket) {
-		
-		computeSeq(ticket);
+
+		ticketService.computeSeq(ticket);
 		ticketService.computeSLA(ticket);
 		ticketService.checkSLAcompleted(ticket);
 		return super.save(ticket);
-	}
-
-	public void computeSeq(Ticket ticket) {
-		
-		if (Strings.isNullOrEmpty(ticket.getTicketSeq())) {
-			String ticketSeq = sequenceService.getSequenceNumber(IAdministration.TICKET, null);
-			ticket.setTicketSeq(ticketSeq);
-		}
 	}
 
 }
