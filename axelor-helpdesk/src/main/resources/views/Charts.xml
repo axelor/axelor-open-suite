@@ -29,7 +29,7 @@
       			AND status_select = 2 
 		</dataset>
   	<category key="_status" type="text" title="Status"/>
-	<series key="total_row" type="bar" groupBy="_status" title="Tickets"/>
+	<series key="total_row" type="bar" title="Tickets"/>
 	</chart>
 	
 	<chart name="chart.ticket.no.of.solved.my.team.ticket" title="My team tickets" onInit="action.ticket.chart.set.date.1m">
@@ -74,7 +74,7 @@
     			AND _ticket.status_select = 2
 		</dataset>
 		<category key="_status" type="text" title="Status"/>
-		<series key="total_row" groupBy="_status" type="bar" title="Tickets"/>
+		<series key="total_row" type="bar" title="Tickets"/>
 	</chart>
 
 	
@@ -102,7 +102,7 @@
       			AND status_select = 2 
 		</dataset>
 		<category key="_status" type="text" title="Status"/>
-		<series key="total_row" type="bar" groupBy="_status" title="Tickets"/>
+		<series key="total_row" type="bar" title="Tickets"/>
 	</chart>
 	
 	<action-record model="com.axelor.apps.helpdesk.db.Ticket" name="action.ticket.chart.set.date.1m">

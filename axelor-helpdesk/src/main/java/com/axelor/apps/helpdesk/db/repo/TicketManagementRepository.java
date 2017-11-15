@@ -68,7 +68,7 @@ public class TicketManagementRepository extends TicketRepository {
 						if (ticket.getAssignedTo() != null) {
 
 							if (sla.getTeam() == ticket.getAssignedTo().getActiveTeam()
-									&& sla.getCategory() == ticket.getCategory()) {
+									&& sla.getTicketType() == ticket.getTicketType()) {
 
 								ticket.setSlaPolicy(sla);
 								try {
@@ -90,7 +90,7 @@ public class TicketManagementRepository extends TicketRepository {
 
 							if (sla.getPriority() == ticket.getPriority()
 									&& sla.getTeam() == ticket.getAssignedTo().getActiveTeam()
-									&& sla.getCategory() == ticket.getCategory()) {
+									&& sla.getTicketType() == ticket.getTicketType()) {
 
 								ticket.setSlaPolicy(sla);
 								try {
