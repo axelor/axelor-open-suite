@@ -28,8 +28,10 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectPlanningRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectService;
+import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.AuthUtils;
@@ -40,10 +42,15 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
-public class ProjectBusinessService extends ProjectService{
+public class ProjectBusinessService extends ProjectServiceImpl {
 
 	@Inject
 	protected AppBusinessProjectService appBusinessProjectService;
+
+	@Inject
+	public ProjectBusinessService(ProjectPlanningRepository projectPlanningRepo) {
+		super(projectPlanningRepo);
+	}
 
 	public Project generateProject(SaleOrder saleOrder){
 		Project project = this.generateProject(null, saleOrder.getFullName()+"_project", saleOrder.getSalemanUser(), saleOrder.getCompany(), saleOrder.getClientPartner());
