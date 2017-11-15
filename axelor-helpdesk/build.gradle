@@ -1,0 +1,18 @@
+apply plugin: "com.axelor.app-module"
+
+apply {
+	version = "5.0.0-SNAPSHOT"
+}
+
+axelor {
+	title "Axelor :: Helpdesk"
+	description "Axelor Helpdesk Module"
+
+	removable true
+}
+
+dependencies {
+	compile project(":modules:axelor-crm")
+	compile project(":modules:axelor-project")
+	compile project(":modules:axelor-human-resource")
+}

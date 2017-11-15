@@ -6,9 +6,9 @@
 
    <form name="product-production-form" title="Product" model="com.axelor.apps.base.db.Product">
        <panel colSpan="12">
-           	<field name="defaultBillOfMaterial" onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
+           	<field name="defaultBillOfMaterial" canEdit="false" onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
 			<field name="lastProductionPrice" readonly="true"/>
-		  	<field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
+		  	<field name="costSheetGroup" canEdit="false" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
 			<button name="createProductionOrder" title="Create production order"  onClick="save,action-product-view-create-production-order"/>
 			<panel-dashlet action="action-product-view-show-bill-of-material" colSpan="12"/>
        </panel>

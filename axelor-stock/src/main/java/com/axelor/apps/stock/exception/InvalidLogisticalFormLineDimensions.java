@@ -20,6 +20,7 @@ package com.axelor.apps.stock.exception;
 import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 
 public class InvalidLogisticalFormLineDimensions extends AxelorException {
 
@@ -27,7 +28,7 @@ public class InvalidLogisticalFormLineDimensions extends AxelorException {
 
 	public InvalidLogisticalFormLineDimensions(LogisticalFormLine logisticalFormLine) {
 		super(logisticalFormLine, IException.CONFIGURATION_ERROR,
-				IExceptionMessage.LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS, logisticalFormLine.getSequence() + 1);
+				I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS), logisticalFormLine.getSequence() + 1);
 	}
 
 }
