@@ -341,6 +341,7 @@
 	<action-attrs name="action-attrs-project-set-project-type" model="com.axelor.apps.project.db.Project">
 		<attribute name="readonly" for="isProject" expr="eval:_fromProject"/>
 		<attribute name="readonly" for="isBusinessProject" expr="eval:_fromBusinessProject"/>
+		<attribute name="value" for="projectTypeSelect" if="isProject" expr="eval: _xProjectTypeSelect"/>
 	</action-attrs>
 	
 	<action-view name="action-project-task-view" title="Tasks" model="com.axelor.team.db.TeamTask">
