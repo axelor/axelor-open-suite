@@ -488,7 +488,7 @@
 		<view type="form" name="interbank-code-form"/>
 	</action-view>
 	
-	<menuitem name="admin-root-batch-accounting" parent="admin-root-batch"
+	<menuitem name="admin-root-batch-accounting" parent="admin-root-batch" if="__config__.app.isApp('account')" if-module="axelor-account"
 		title="Accounting batches" action="admin.root.batch.accounting" />
 
 	<action-view name="admin.root.batch.accounting" title="Accounting batches"

@@ -25,7 +25,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.SupplierCatalog;
+import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;

@@ -331,7 +331,7 @@
 		<context name="_productTypeSelect" expr="storable"/>
 	</action-view>
 	
-	<menuitem name="admin-root-batch-hr" parent="admin-root-batch"
+	<menuitem name="admin-root-batch-hr" parent="admin-root-batch" if="__config__.app.isApp('employee')" if-module="axelor-human-resource" 
 		title="HR batches" action="admin.root.batch.hr" />
 
 	<action-view name="admin.root.batch.hr" title="HR batches"

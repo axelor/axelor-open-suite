@@ -490,13 +490,13 @@
     <action-attrs name="action-purchase-order-attrs-hide-contact-partner">
         <attribute name="hidden" for="contactPartner" expr="eval:supplierPartner != null &amp;&amp; supplierPartner.partnerTypeSelect == 2" />
     </action-attrs>
-    
+
     <action-view name="action-purchase-order-show-invoice" title="Supplier invoices"
 		model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
-		<domain>self.operationTypeSelect = 1 and self.purchaseOrder.id = :poId</domain>
-		<context name="operationTypeSelect" expr="1"/>
+		<domain>self.operationTypeSelect = :_operationTypeSelect and self.purchaseOrder.id = :poId</domain>
+		<context name="_operationTypeSelect" expr="eval: __repo__(Invoice).OPERATION_TYPE_SUPPLIER_PURCHASE"/>
 		<context name="poId" expr="eval:id"/>
 	</action-view>
 

@@ -40,6 +40,7 @@
     <action-view name="action-partner-view-create-opportunity" title="Create opportunity (${ fullName })" model="com.axelor.apps.crm.db.Opportunity">
     	<view type="form" name="opportunity-form"/>
     	<context name="_partner" expr="eval: __this__"/>
+		<context name="_internalUserId" expr="eval: __user__.id"/>
     </action-view>
     
     <!--     PORTLET -->
