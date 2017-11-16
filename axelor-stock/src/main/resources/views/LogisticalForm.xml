@@ -24,14 +24,15 @@
             <field name="deliveryNumber" />
             <field name="company" onChange="action-logistical-form-company-change" />
             <field name="deliverToCustomer" domain="self.isCustomer = TRUE AND :company MEMBER OF self.companySet"
-                onChange="action-logistical-form-partner-change" />
+                onChange="action-logistical-form-partner-change" form-view="partner-customer-form" />
             <field name="collectionDate" />
         </panel>
         <panel-tabs colSpan="12" readonlyIf="statusSelect > 1">
             <panel title="General">
                 <field name="statusSelect" colSpan="12" widget="NavSelect" />
-                <field name="carrier" domain="self.isCarrier = TRUE AND :company MEMBER OF self.companySet" />
-                <field name="forwarder" domain=":company MEMBER OF self.companySet" />
+                <field name="carrier" domain="self.isCarrier = TRUE AND :company MEMBER OF self.companySet"
+                    form-view="partner-form" />
+                <field name="forwarder" domain=":company MEMBER OF self.companySet" form-view="partner-form" />
                 <field name="incoterm" />
                 <field name="tracking" />
                 <field name="totalGrossWeight" colSpan="4" />
