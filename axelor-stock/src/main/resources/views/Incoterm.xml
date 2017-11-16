@@ -13,6 +13,7 @@
 			<field name="code" required="true" colSpan="4"/>
 			<field name="fullname" readonly="true" colSpan="4" x-bind="{{code+' - '+name}}"/>
 		</panel>
+
     	
     	<panel name="allocationsOfCosts" title="Allocations of costs">
     		<field name="exportCustomsDeclaration"/>

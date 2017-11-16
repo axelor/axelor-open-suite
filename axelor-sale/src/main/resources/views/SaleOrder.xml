@@ -188,7 +188,7 @@
 		<field name="interco" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 	  </panel>
 	  <panel name="customerInformation" title="Customer information" hideIf="company == null">
-	      <field name="clientPartner" onChange="action-sale-order-group-client-partner-change" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect == 3"/>
+	      <field name="clientPartner" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect == 3"/>
    	      <field name="contactPartner" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 		  <panel stacked="true">
 			  <field name="mainInvoicingAddress" canNew="true"
@@ -311,7 +311,7 @@
 		<field name="cancelReasonStr" title="Cancel Reason" readonly="true" colSpan="12" css="red" hidden="true" showIf="cancelReason != null &amp;&amp; cancelReasonStr != null">
 			<viewer><![CDATA[{{cancelReasonStr}}]]></viewer>
 		</field>
-		<field name="standardDelay" readonly="true" if-module="axelor-supplychain" hidden="true" showIf="standardDelay &gt; 0" />
+		<field name="standardDelay" readonly="true" if-module="axelor-supplychain"   if="__config__.app.isApp('supplychain')" hidden="true" showIf="standardDelay &gt; 0" />
 	  </panel>
 
         <panel sidebar="true" readonly="true"  colSpan="4"  hideIf="clientPartner == null">

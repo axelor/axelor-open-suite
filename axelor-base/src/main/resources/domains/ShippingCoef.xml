@@ -8,7 +8,6 @@
   <entity name="ShippingCoef" lang="java">
       <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
       <decimal name="shippingCoef" title="Shipping Coef."/>
-      <many-to-one name="supplierCatalog" ref="com.axelor.apps.base.db.SupplierCatalog"/>
   </entity>
 
 </domain-models>

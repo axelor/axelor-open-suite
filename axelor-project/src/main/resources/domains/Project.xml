@@ -25,6 +25,7 @@
 		<string name="code" title="Code" />
 		<many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
 		<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+		<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Customer Contact"/>
 		
 		<datetime name="fromDate" title="From Date"/>
 		<datetime name="toDate" title="To Date"/>

@@ -21,6 +21,7 @@
 		<context name="user_id" expr="eval:__user__" />
 		<context name="searchFields" expr="name;firstName"/>
 		<context name="_isCustomer" expr="true"/>
+		<context name="_domain" expr="self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)"/>
 	</action-view>
 	
 	<menuitem name="sc-root-sale-contacts" parent="sc-root-sale" order="10"
@@ -33,6 +34,7 @@
 		<view type="form" name="partner-contact-form" />
 	  	<view-param name="limit" value="39"/>
 		<domain>self.isContact = true AND self.mainPartner.isCustomer = true</domain>
+		<context name="_domain" expr="self.isContact = true AND self.mainPartner.isCustomer = true"/>
 	</action-view>
 	
 	<menuitem name="sc-root-sale-products" parent="sc-root-sale" order="15"
@@ -214,8 +216,8 @@
 
 <!-- ADMINISTRATION -->
 
-	<menuitem name="admin-root-batch-sale" parent="admin-root-batch" hidden="true"
-		title="Sale batches" action="admin.root.batch.sale" />
+	<menuitem name="admin-root-batch-sale" parent="admin-root-batch" if="__config__.app.isApp('sale')" if-module="axelor-sale" 
+	title="Sale batches" action="admin.root.batch.sale" />
 
 	<action-view name="admin.root.batch.sale" title="Sale batches"
 		model="com.axelor.apps.sale.db.SaleBatch" >

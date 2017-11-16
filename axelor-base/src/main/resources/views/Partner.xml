@@ -105,7 +105,10 @@
 					<![CDATA[
 					    <div>
 			    			<img width="50%" ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
-          					<img width="50%" ng-show="!record.picture" src="img/company-default.jpg" />
+          					<img width="50%" ng-show="!record.picture && record.partnerTypeSelect != 2" src="img/company-default.jpg" />
+          					<img width="50%" ng-show="!record.picture && record.partnerTypeSelect == 2 && record.titleSelect == 1" src="img/partner-m-default.png" />
+          					<img width="50%" ng-show="!record.picture && record.partnerTypeSelect == 2 && record.titleSelect == 2" src="img/partner-w-default.png" />
+        					<img width="50%" ng-show="!record.picture && record.partnerTypeSelect == 2 && (record.titleSelect > 2 || !record.titleSelect)" src="img/partner-default.png" />
      					</div>
 					]]>
 					</viewer>
@@ -251,8 +254,8 @@
             </panel>
             <panel name="customer" title="Customer" if-module="axelor-sale" showIf="isCustomer" if="__config__.app.isApp('sale')">
                 <field name="saleOrderInformation"/>
-                <field name="payerQuality" hideIf="isEmployee"/>
-                <field name="salePriceList" canNew="true" domain="self.typeSelect = 1" if-module="axelor-account" form-view="sale-price-list-form" grid-view="price-list-grid"/>
+                <field name="payerQuality" if-module="axelor-account"  if="__config__.app.isApp('account')" hideIf="isEmployee"/>
+                <field name="salePriceList" canNew="true" domain="self.typeSelect = 1" if-module="axelor-account" if="__config__.app.getApp('account') ||  __config__.app.getApp('sale')" form-view="sale-price-list-form" grid-view="price-list-grid"/>
                 <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
                 <field name="chargeBackPurchase" colSpan="3" showIf="chargeBackPurchaseSelect == 3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
                 <panel name="clientPortalAccess" title="Client portal access" if-module="axelor-client-portal" if="__config__.app.isApp('portal')">
@@ -262,8 +265,8 @@
             </panel>
             <panel name="supplier" title="Supplier" if-module="axelor-purchase" showIf="isSupplier" if="__config__.app.isApp('purchase')">
                 <field name="purchaseOrderInformation"/>
-                <field name="purchasePriceList" canNew="true" domain="self.typeSelect = 2" if-module="axelor-account" form-view="purchase-price-list-form" grid-view="price-list-grid"/>
-                <field name="supplierCatalogList" colSpan="12" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid"/>
+                <field name="purchasePriceList" canNew="true" domain="self.typeSelect = 2" if-module="axelor-account"  if="__config__.app.getApp('account') ||  __config__.app.getApp('purchase')" form-view="purchase-price-list-form" grid-view="price-list-grid"/>
+                <field name="supplierCatalogList" colSpan="12" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
                 <field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false" colSpan="3"/>
 				<field name="supplierArrivalProductQty" colSpan="3"/>
 				<spacer/>
@@ -465,12 +468,17 @@
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" />
 		<field name="partnerCategory" />
+        <field name="partnerTypeSelect" />
+		<field name="titleSelect" />
 		<template><![CDATA[
 		    <div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
 			  <div class="span4 card-image">
-			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" />
-                <img ng-show="!picture" src="img/company-default.jpg" />
+                <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" />
+                <img ng-show="!picture && partnerTypeSelect != 2" src="img/company-default.jpg" />
+                <img ng-show="!picture && partnerTypeSelect == 2 && titleSelect == 1" src="img/partner-m-default.png" />
+                <img ng-show="!picture && partnerTypeSelect == 2 && titleSelect == 2" src="img/partner-w-default.png" />
+                <img ng-show="!picture && partnerTypeSelect == 2 && (titleSelect > 2 || !titleSelect)" src="img/partner-default.png" />
 			  </div>
 			  <div class="span8">
 			  	<address>

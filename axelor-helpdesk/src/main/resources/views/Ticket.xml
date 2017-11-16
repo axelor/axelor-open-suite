@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	
+	<grid name="ticket-grid" title="All tickets" model="com.axelor.apps.helpdesk.db.Ticket">
+		<toolbar>
+			<button name="takeCharge" icon="fa-suitcase" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket"/>
+		</toolbar>
+		<field name="ticketSeq"/>
+		<field name="subject"/>
+		<field name="ticketType"/>
+		<field name="startDate"/>
+		<field name="endDate"/>
+		<field name="assignedTo"/>
+		<field name="priority"/>
+		<field name="statusSelect"/>
+		<field name="progressSelect" widget="SelectProgress"/>
+		<button name="takeCharge" icon="fa-suitcase" readonlyIf="assignedTo.id == _user.id" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket"/>
+		<button name="startTicket" icon="fa-play" readonlyIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" onClick="action-record-to-set-status,save"/>
+		<button name="validateTicket" icon="fa-check" readonlyIf="statusSelect == 2 || statusSelect == 3" onClick="action-record-to-set-status,action-record-to-set-progress-select,save"/>
+		<button name="finishTicket" icon="fa-power-off" readonlyIf="statusSelect == 3" onClick="action-record-to-set-status,save"/>
+	</grid>
+	
+	<form model="com.axelor.apps.helpdesk.db.Ticket" title="Ticket" name="ticket-form" onNew="action-record-to-fill-dates">
+	
+		<toolbar>
+			<button name="takeCharge" icon="fa-suitcase" readonlyIf="assignedTo.id == _user.id" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket"/>
+			<button name="startTicket" icon="fa-play" readonlyIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" onClick="action-record-to-set-status,save"/>
+			<button name="validateTicket" icon="fa-check" readonlyIf="statusSelect == 2 || statusSelect == 3" onClick="action-record-to-set-status,action-record-to-set-progress-select,save"/>
+			<button name="finishTicket" icon="fa-power-off" readonlyIf="statusSelect == 3" onClick="action-record-to-set-status,save"/>
+		</toolbar>
+		
+		<panel>
+			<field name="ticketSeq"/>
+			<field name="subject"/>
+			<field name="slaPolicy" showTitle="false" readonly="true" hideIf="statusSelect >= slaPolicy.reachStage">
+				<viewer>
+					<![CDATA[
+			
+					<h3>
+			        	<span class="label label-important">{{record.slaPolicy.name}}</span>
+			        </h3>
+			
+					]]>
+				</viewer>
+			</field>
+		</panel>
+		
+		<panel name="context" title="Context">
+			<field name="project" onChange="action-record-value-on-customer-and-contact" form-view="project-form" grid-view="project-grid" if-module="axelor-project" if="__config__.app.isApp('project')"/>
+			<field name="customer" domain="self.isCustomer = true" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="contact" onSelect="action-ticket-domain-on-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="lead" form-view="lead-form" grid-view="lead-grid"/>
+			<field name="assignedTo" form-view="user-form" grid-view="user-grid"/>
+			<field name="responsible" form-view="user-form" grid-view="user-grid"/>
+			<field name="slaCompleted" hidden="true"/>
+			<panel colSpan="12">
+				<field name="startDate" colSpan="3"/>
+				<field name="duration" colSpan="3"/>
+				<field name="endDate" colSpan="3"/>
+				<field name="deadline" colSpan="3"/>
+			</panel>
+		</panel>
+		<panel colSpan="12">
+				<field name="description" showTitle="false" colSpan="12" widget="html"/>
+		</panel>
+		
+		<panel name="attributes" title="Attributes" sidebar="true">
+			<field name="statusSelect" colSpan="3" onChange="action-record-to-set-progress-select"/>
+			<field name="priority" colSpan="3"/>
+			<field name="ticketType" colSpan="6"/>
+			<field name="progressSelect" widget="SelectProgress"/>
+		</panel>
+		
+		<panel-mail>
+	    	<mail-messages limit="4"/>
+	    	<mail-followers/>
+	  	</panel-mail>
+		
+	</form>
+	
+	<calendar name="ticket-calendar" model="com.axelor.apps.helpdesk.db.Ticket" 
+	eventStart="startDate"
+	eventStop="endDate"
+	title="All tickets"
+	colorBy="assignedTo">
+		<field name="subject"/>
+		<field name="statusSelect"/>
+	</calendar>
+	
+	<action-record name="action-record-value-on-customer-and-contact" model="com.axelor.apps.helpdesk.db.Ticket">
+		<field name="customer" expr="eval: project.clientPartner"/>
+		<field name="contact" expr="eval: project.contactPartner"/>
+	</action-record>
+	
+	<action-record name="action-record-to-set-status" model="com.axelor.apps.helpdesk.db.Ticket">
+		<field name="statusSelect" expr="1" if="__self__.statusSelect == 0"/>
+		<field name="statusSelect" expr="2" if="__self__.statusSelect == 1"/>
+		<field name="statusSelect" expr="3" if="__self__.statusSelect == 2"/>
+	</action-record>
+	
+	<action-record name="action-record-to-set-progress-select" model="com.axelor.apps.helpdesk.db.Ticket">
+		<field name="progressSelect" expr="100" if="statusSelect == 2"/>
+		<field name="progressSelect" expr="0" if="statusSelect != 2"/>
+	</action-record>
+	
+	<action-record name="action-record-to-fill-dates" model="com.axelor.apps.helpdesk.db.Ticket">
+		<field name="startDate" expr="eval: LocalDateTime.now()"/>
+	</action-record>
+	
+	<action-attrs name="action-ticket-domain-on-contact-partner">
+		<attribute for="contact" if="customer != null &amp;&amp; !customer.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (${customer.contactPartnerSet?.collect{it.id}.join(',')})&quot;"/>
+ 		<attribute for="contact" if="customer != null &amp;&amp; customer.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (0)&quot;"/>
+ 		<attribute for="contact" if="customer == null" name="domain" expr="eval: &quot;self.isContact = true&quot;"/>
+	</action-attrs>
+    
+</object-views>
