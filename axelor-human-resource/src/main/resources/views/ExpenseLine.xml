@@ -7,14 +7,17 @@
 		  model="com.axelor.apps.hr.db.ExpenseLine"
 		  onNew="action-expense-line-default, action-kilometric-allowance-record-default" orderBy="expenseDate">
 		<field name="projectTask" requiredIf="toInvoice" canView="false" onSelect="action-expense-line-attrs-domain-project-task" widget="SuggestBox"/>
-		<field name="expenseProduct" canView="false" onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
+		<field name="expenseProduct" canView="false" onChange="action-expense-line-attrs-expense-product-onchange" onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
 		<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
 		<field name="user" hidden="true" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company"/>
 		<field name="totalAmount" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount"/>
-		<field name="totalTax"  readonlyIf="$get('expenseProduct.blockExpenseTax')" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
+		<field name="totalTax" readonlyIf="(!$hasBeenChanged &amp;&amp; $get('expenseProduct.blockExpenseTax')) || ($expenseProductBlockExpenseTax &amp;&amp; $hasBeenChanged)" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
 		<field name="comments"/>
 		<field name="untaxedAmount" hidden="true"/>
-		<field name="expenseProduct.blockExpenseTax" hidden="true" />
+        <!-- dummy fields to make totalTax readonlyIf work (not needed in future versions) -->
+		<field name="$expenseProductBlockExpenseTax" hidden="true"/>
+		<field name="$hasBeenChanged" hidden="true"/>
+		<field name="expenseProduct.blockExpenseTax" hidden="true"/>
 	</grid>
 	
 	<grid name="expense-line-kilometric-grid" 
@@ -151,4 +154,11 @@
 		<attribute name="domain" for="expenseProduct" expr="eval: &quot;self.expense = true&quot;" if="!_parent.setMultipleUsers"/>
 		<attribute name="domain" for="expenseProduct" expr="eval: &quot;self.expense = true and self.personalExpense = false&quot;" if="_parent.setMultipleUsers"/>
 	</action-attrs>
+
+	<action-attrs name="action-expense-line-attrs-expense-product-onchange">
+		<attribute name="value" expr="eval: expenseProduct?.blockExpenseTax" for="$expenseProductBlockExpenseTax"/>
+		<attribute if="expenseProduct?.blockExpenseTax" name="value" expr="eval: null" for="totalTax"/>
+		<attribute for="$hasBeenChanged" name="value" expr="eval: true"/>
+	</action-attrs>
+
 </object-views>
