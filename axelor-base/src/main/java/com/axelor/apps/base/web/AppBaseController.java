@@ -122,12 +122,13 @@ public class AppBaseController {
 		if(fields.size() > 0){
 			LOG.debug("Duplicate record joinList: {}", fields);
 			String selectedRecored =  String.valueOf((request.getContext().get("_ids")));
+			String filter = request.getContext().get("_domain_").toString().replace("self", "m");
 			if(selectedRecored.equals("null") || selectedRecored.isEmpty()) {
 				selectedRecored = null;
 			} else {
 				selectedRecored = selectedRecored.substring(1, selectedRecored.length()-1);
 			}
-			String ids = findDuplicateRecords(fields,model,selectedRecored);
+			String ids = findDuplicateRecords(fields,model,selectedRecored,filter);
 			if(ids.isEmpty())
 				response.setFlash(I18n.get(IExceptionMessage.GENERAL_1));
 			else{
@@ -164,10 +165,10 @@ public class AppBaseController {
 		}
 	}
 	
-	private String findDuplicateRecords(List<String> fieldList,String object,String selectedRecored){
+	private String findDuplicateRecords(List<String> fieldList,String object,String selectedRecored,String filter){
 		
 		
-		List<List<String>> allRecords = getAllRecords(fieldList, object,selectedRecored);
+		List<List<String>> allRecords = getAllRecords(fieldList, object,selectedRecored,filter);
 		
 		Map<String, List<String>> recordMap = new HashMap<String, List<String>>();
 		
@@ -195,7 +196,7 @@ public class AppBaseController {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private List<List<String>> getAllRecords(List<String> fieldList,String object,String selectedRecored){
+	private List<List<String>> getAllRecords(List<String> fieldList,String object,String selectedRecored,String filter){
 		
 		String query = "SELECT new List( CAST ( m.id AS string )";
 		
@@ -204,9 +205,9 @@ public class AppBaseController {
 		}
 		List<List<Object>> resultList = new ArrayList<>();
 		if(selectedRecored == null || selectedRecored.isEmpty()) {
-			resultList = JPA.em().createQuery(query + ") FROM " + object + " m").getResultList();
+			resultList = JPA.em().createQuery(query + ") FROM " + object + " m WHERE " + filter).getResultList();
 		} else {
-			resultList = JPA.em().createQuery(query + ") FROM " + object + " m where m.id in("+selectedRecored+")").getResultList();
+			resultList = JPA.em().createQuery(query + ") FROM " + object + " m where m.id in("+selectedRecored+") AND " + filter).getResultList();
 		}
 		
 		List<List<String>> records = new ArrayList<List<String>>();
