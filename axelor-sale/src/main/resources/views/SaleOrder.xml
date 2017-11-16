@@ -311,7 +311,7 @@
 		<field name="cancelReasonStr" title="Cancel Reason" readonly="true" colSpan="12" css="red" hidden="true" showIf="cancelReason != null &amp;&amp; cancelReasonStr != null">
 			<viewer><![CDATA[{{cancelReasonStr}}]]></viewer>
 		</field>
-		<field name="standardDelay" readonly="true" if-module="axelor-supplychain" hidden="true" showIf="standardDelay &gt; 0" />
+		<field name="standardDelay" readonly="true" if-module="axelor-supplychain"   if="__config__.app.isApp('supplychain')" hidden="true" showIf="standardDelay &gt; 0" />
 	  </panel>
 
         <panel sidebar="true" readonly="true"  colSpan="4"  hideIf="clientPartner == null">
