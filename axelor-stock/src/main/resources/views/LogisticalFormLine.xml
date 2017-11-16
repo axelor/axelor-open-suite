@@ -6,7 +6,7 @@
         <hilite strong="true" color="default" if="$contains([1, 2], typeSelect)" />
         <field name="typeSelect" onChange="action-logistical-form-line-type-change" />
         <field name="stockMoveLine" onSelect="action-logistical-form-line-stock-move-line-domain" onChange="action-logistical-form-line-stock-move-line-change"
-            readonlyIf="typeSelect != 3" />
+            readonlyIf="typeSelect != 3" form-view="stock-move-line-form" grid-view="stock-move-line-sale-order-grid" />
         <field name="stockMoveLine.stockMove" />
         <field name="stockMoveLine.product.code" title="Product code" />
         <field name="stockMoveLine.product.name" title="Product description" />
@@ -19,7 +19,8 @@
         <field name="parcelPalletNumber" readonlyIf="typeSelect == 3" />
         <field name="grossWeight" readonlyIf="typeSelect == 3" />
         <field name="dimensions" readonlyIf="typeSelect == 3" />
-        <field name="logisticalForm.deliverToCustomer" hidden="true" />
+        <field name="logisticalForm.deliverToCustomer" form-view="partner-customer-form" grid-view="partner-customer-grid"
+            hidden="true" />
     </grid>
 
     <form model="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging line" name="logistical-form-line-form"
@@ -41,7 +42,8 @@
             <field name="parcelPalletNumber" hideIf="typeSelect == 3" />
             <field name="grossWeight" hideIf="typeSelect == 3" />
             <field name="dimensions" hideIf="typeSelect == 3" />
-            <field name="logisticalForm.deliverToCustomer" hidden="true" />
+            <field name="logisticalForm.deliverToCustomer" form-view="partner-customer-form" grid-view="partner-customer-grid"
+                hidden="true" />
         </panel>
     </form>
 
