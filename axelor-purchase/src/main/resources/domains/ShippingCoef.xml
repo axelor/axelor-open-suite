@@ -4,10 +4,9 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
-
+  
   <entity name="ShippingCoef" lang="java">
-      <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-      <decimal name="shippingCoef" title="Shipping Coef."/>
+      <many-to-one name="supplierCatalog" ref="com.axelor.apps.purchase.db.SupplierCatalog"/>
   </entity>
 
 </domain-models>

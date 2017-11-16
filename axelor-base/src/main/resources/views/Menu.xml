@@ -93,6 +93,7 @@
 		<domain>self.isContact != true</domain>
 		<context name="user_id" expr="eval:__user__" />
 		<context name="json-enhance" expr="eval:true" />
+		<context name="_domain" expr="self.isContact != true"/>
 	</action-view>
 	
 	<menuitem name="referential-root-contacts" parent="referential-root"
@@ -105,6 +106,7 @@
 		<view type="form" name="partner-contact-form" />
 	  	<view-param name="limit" value="39"/>
 		<domain>self.isContact = true</domain>
+		<context name="_domain" expr="self.isContact = true"/>
 	</action-view>
 	
 	<menuitem name="referential-root-product-root" title="Products" order="30" parent="referential-root"/>
@@ -173,7 +175,8 @@
 		<context name="_isModel" expr="true"/>
 	</action-view>
 	
-	<menuitem name="referential-root-price-list" parent="referential-root"
+	<menuitem name="referential-root-price-list" parent="referential-root" 
+		if="__config__.app.isApp('account') || __config__.app.isApp('sale') || __config__.app.isApp('purchase')" 
 		title="Price lists" action="referential.root.price.list"  order="95" />
 
 	<action-view name="referential.root.price.list" title="Price lists"

@@ -15,25 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.helpdesk.db.repo;
+package com.axelor.apps.purchase.service;
 
-import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.util.Map;
 
-import com.axelor.apps.helpdesk.db.Ticket;
-import com.axelor.apps.helpdesk.service.TicketService;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductVariant;
+import com.axelor.apps.base.db.ProductVariantConfig;
+import com.axelor.apps.base.db.ProductVariantValue;
+import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.exception.AxelorException;
+import com.google.inject.persist.Transactional;
 
-public class TicketManagementRepository extends TicketRepository {
+public interface PurchaseProductService {
 	
-	@Inject
-	private TicketService ticketService;
-
-	@Override
-	public Ticket save(Ticket ticket) {
-
-		ticketService.computeSeq(ticket);
-		ticketService.computeSLA(ticket);
-		ticketService.checkSLAcompleted(ticket);
-		return super.save(ticket);
-	}
+	public Map<String, Object> getDiscountsFromCatalog(SupplierCatalog supplierCatalog,BigDecimal price);	
 
 }

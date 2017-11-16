@@ -51,11 +51,16 @@
 	<kanban columnBy="statusSelect" sequenceBy="sequence"
 	 name="quality-control-kanban" title="Quality control" model="com.axelor.apps.quality.db.QualityControl">
 		<field name="fullName"/>
+		<field name="team"/>
+		<field name="responsible"/>
 		<template>
             <![CDATA[
-            <div class="card-body">{{fullName}}</div>
-            ]]>
+            <h4>{{fullName}}</h4>
+            <div class="card-body">{{team.name}}</div>
+            <div class="card-body">{{responsible.name}}</div>
+    		]]>
         </template>
+
 	</kanban>
     
     <action-attrs name="action-quality-control-attrs-hide-quality-control-on-grid">

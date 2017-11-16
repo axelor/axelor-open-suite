@@ -30,8 +30,8 @@
         <panel-tabs colSpan="12" readonlyIf="statusSelect > 1">
             <panel title="General">
                 <field name="statusSelect" colSpan="12" widget="NavSelect" />
-                <field name="carrier" domain="self.isCarrier = TRUE" />
-                <field name="forwarder" />
+                <field name="carrier" domain="self.isCarrier = TRUE AND :company MEMBER OF self.companySet" />
+                <field name="forwarder" domain=":company MEMBER OF self.companySet" />
                 <field name="incoterm" />
                 <field name="tracking" />
                 <field name="totalGrossWeight" colSpan="4" />
