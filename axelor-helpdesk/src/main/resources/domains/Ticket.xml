@@ -17,7 +17,7 @@
 		<many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
 		<many-to-one name="responsible" ref="com.axelor.auth.db.User" title="User in charge of the issue"/>
 		<integer name="statusSelect" selection="helpdesk.ticket.status.select" title="Status" default="0"/>
-		<many-to-one name="category" ref="com.axelor.apps.helpdesk.db.TicketType" title="Category"/>
+		<many-to-one name="ticketType" ref="com.axelor.apps.helpdesk.db.TicketType" title="Ticket type"/>
 		<datetime name="startDate" title="Start date"/>
 		<datetime name="endDate" title="End date"/>
 		<datetime name="deadline" title="Deadline"/>
