@@ -10,8 +10,10 @@
         <field name="stockMoveLine.stockMove" />
         <field name="stockMoveLine.product.code" title="Product code" />
         <field name="stockMoveLine.product.name" title="Product description" />
-        <field name="stockMoveLine.stockMove.saleOrder.saleOrderSeq" title="Sale order number" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
-        <field name="stockMoveLine.stockMove.saleOrder.externalReference" title="Customer reference" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+        <field name="stockMoveLine.stockMove.saleOrder.saleOrderSeq" title="Sale order number" if-module="axelor-supplychain"
+            if="__config__.app.isApp('supplychain')" />
+        <field name="stockMoveLine.stockMove.saleOrder.externalReference" title="Customer reference" if-module="axelor-supplychain"
+            if="__config__.app.isApp('supplychain')" />
         <field name="stockMoveLine.netWeight" title="Unit net weight" />
         <field name="qty" readonlyIf="typeSelect != 3" />
         <field name="parcelPalletNumber" readonlyIf="typeSelect == 3" />
@@ -25,14 +27,14 @@
         <panel>
             <field name="typeSelect" onChange="action-logistical-form-line-type-change" />
             <field name="stockMoveLine" onSelect="action-logistical-form-line-stock-move-line-domain" onChange="action-logistical-form-line-stock-move-line-change"
-                hideIf="typeSelect != 3" />
+                hideIf="typeSelect != 3" form-view="stock-move-line-form" grid-view="stock-move-line-sale-order-grid" />
             <field name="stockMoveLine.stockMove" hideIf="typeSelect != 3" />
             <field name="stockMoveLine.product.code" title="Product code" hideIf="typeSelect != 3" />
             <field name="stockMoveLine.product.name" title="Product description" hideIf="typeSelect != 3" />
             <field name="stockMoveLine.stockMove.saleOrder.saleOrderSeq" title="Sale order number" hideIf="typeSelect != 3"
                 if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
             <field name="stockMoveLine.stockMove.saleOrder.externalReference" title="Customer reference" hideIf="typeSelect != 3"
-                if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+                if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
             <field name="stockMoveLine.netWeight" title="Unit net weight" hideIf="typeSelect != 3" />
             <field name="qty" hideIf="typeSelect != 3" />
             <field name="parcelPalletNumber" hideIf="typeSelect == 3" />
@@ -49,8 +51,8 @@
     </action-group>
 
     <action-group name="action-logistical-form-line-type-parcel-pallet">
-        <action name="action-logistical-form-line-type-init-parcel-pallet"/>
-        <action name="action-logistical-form-line-type-parcel-pallet-attrs"/>
+        <action name="action-logistical-form-line-type-init-parcel-pallet" />
+        <action name="action-logistical-form-line-type-parcel-pallet-attrs" />
     </action-group>
 
     <action-record name="action-logistical-form-line-record-type-reset" model="com.axelor.apps.stock.db.LogisticalFormLine">

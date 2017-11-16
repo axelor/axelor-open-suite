@@ -22,18 +22,20 @@
         </toolbar>
         <panel colSpan="12" readonlyIf="statusSelect > 1">
             <field name="deliveryNumber" />
-            <field name="company" onChange="action-logistical-form-company-change" />
+            <field name="company" onChange="action-logistical-form-company-change" form-view="company-form"
+                grid-view="company-grid" />
             <field name="deliverToCustomer" domain="self.isCustomer = TRUE AND :company MEMBER OF self.companySet"
-                onChange="action-logistical-form-partner-change" form-view="partner-customer-form" />
+                onChange="action-logistical-form-partner-change" form-view="partner-customer-form" grid-view="partner-customer-grid" />
             <field name="collectionDate" />
         </panel>
         <panel-tabs colSpan="12" readonlyIf="statusSelect > 1">
             <panel title="General">
                 <field name="statusSelect" colSpan="12" widget="NavSelect" />
                 <field name="carrier" domain="self.isCarrier = TRUE AND :company MEMBER OF self.companySet"
-                    form-view="partner-form" />
-                <field name="forwarder" domain=":company MEMBER OF self.companySet" form-view="partner-form" />
-                <field name="incoterm" />
+                    form-view="partner-form" grid-view="partner-grid" />
+                <field name="forwarder" domain=":company MEMBER OF self.companySet" form-view="partner-form"
+                    grid-view="partner-grid" />
+                <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" />
                 <field name="tracking" />
                 <field name="totalGrossWeight" colSpan="4" />
                 <field name="totalNetWeight" colSpan="4" />
