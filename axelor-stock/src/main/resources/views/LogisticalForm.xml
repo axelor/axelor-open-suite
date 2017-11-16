@@ -14,7 +14,7 @@
         width="large" onNew="action-logistical-form-new" onSave="action-logistical-form-save">
         <toolbar>
             <button name="carrierValidatedBtn" title="Carrier validated" showIf="statusSelect == 1" readonlyIf="!logisticalFormLineList.length"
-                onClick="action-logistical-form-change-status" icon="fa-check-square" />
+                onClick="action-logistical-form-change-status" icon="fa-check" />
             <button name="collectedBtn" title="Collected" showIf="statusSelect == 2" readonlyIf="!logisticalFormLineList.length"
                 onClick="action-logistical-form-change-status" icon="fa-truck" />
             <button name="packagingListBtn" title="Print packaging list" showIf="statusSelect > 1" readonlyIf="!logisticalFormLineList.length"
@@ -38,9 +38,9 @@
                     grid-view="partner-grid" canEdit="false" />
                 <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
                 <field name="tracking" />
-                <field name="totalGrossWeight" colSpan="4" />
-                <field name="totalNetWeight" colSpan="4" />
-                <field name="totalVolume" colSpan="4" />
+                <field name="totalGrossWeight" colSpan="3" />
+                <field name="totalNetWeight" colSpan="3" />
+                <field name="totalVolume" colSpan="6" />
                 <field name="internalDeliveryComment" />
                 <field name="externalDeliveryComment" />
             </panel>
