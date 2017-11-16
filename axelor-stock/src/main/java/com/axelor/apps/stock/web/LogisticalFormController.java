@@ -21,9 +21,10 @@ import java.util.Map;
 
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.LogisticalFormLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.LogisticalFormWarning;
 import com.axelor.apps.stock.exception.LogisticalFormError;
+import com.axelor.apps.stock.exception.LogisticalFormWarning;
 import com.axelor.apps.stock.service.LogisticalFormService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
@@ -43,7 +44,15 @@ public class LogisticalFormController {
 
 				if (stockMove.getStockMoveLineList() != null) {
 					LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
-					Beans.get(LogisticalFormService.class).addDetailLines(logisticalForm, stockMove);
+					LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
+
+					if (logisticalForm.getLogisticalFormLineList() == null
+							|| logisticalForm.getLogisticalFormLineList().isEmpty()) {
+						logisticalFormService.addParcelPalletLine(logisticalForm,
+								LogisticalFormLineRepository.TYPE_PARCEL);
+					}
+
+					logisticalFormService.addDetailLines(logisticalForm, stockMove);
 					response.setValue("logisticalFormLineList", logisticalForm.getLogisticalFormLineList());
 					response.setValue("stockMove", null);
 				}
