@@ -126,7 +126,7 @@
 				<field name="leadDelay" hidden="true"/>
 			</panel>
 			<panel name="configurations" title="Configurations">
-				<field name="productSet" if-module="axelor-human-resource" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12" widget="TagSelect"/>
+				<field name="productSet" if-module="axelor-human-resource"  if="__config__.app.isApp('employee')" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12" widget="TagSelect"/>
 				<field name="categorySet" colSpan="12" widget="TagSelect"/>
 				<field name="projectFolderSet" colSpan="12" widget="TagSelect"/>
 				<spacer/>

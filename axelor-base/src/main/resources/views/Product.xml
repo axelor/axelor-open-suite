@@ -70,7 +70,7 @@
 			        <field name="isActivity" showIf="productTypeSelect == 'service'"  if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
 			        <field name="periodicitySelect" showIf="productTypeSelect == 'subscriptable'" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 			        <field name="saleSupplySelect" colSpan="12" onChange="action-product-validate-sale-supply-select"/>
-			        <field name="standardDelay" colSpan="12" showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true" if-module="axelor-supplychain" />
+			        <field name="standardDelay" colSpan="12" showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain')"/>
       			</panel>
 		      	<panel name="categorization" title="Categorization" colSpan="6" colWidths="30%,70%">
 		        	<field name="productFamily" canEdit="false"  colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
@@ -228,7 +228,7 @@
 			        <field name="diameter" readonlyIf="length > 0 || width > 0" onChange="action-product-record-calculate-volume-diameter"/>
 			        <field name="articleVolume" readonly="true"/>
 			      </panel>
-				  <field name="customsCodeNomenclature" canEdit="false" if-module="axelor-stock"/>
+				  <field name="customsCodeNomenclature" canEdit="false" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
   			</panel>
   			<panel-related field="packLines" showIf="isPack" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" />
   		</panel-tabs>
