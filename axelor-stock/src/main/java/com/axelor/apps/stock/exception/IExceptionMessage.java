@@ -112,5 +112,8 @@ public interface IExceptionMessage {
 	String LOGISTICAL_FORM_MISSING_SEQUENCE = /*$$(*/ "Missing logistical form sequence for company %s" /*)*/;
 	String LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS = /*$$(*/ "Invalid dimensions on packaging line No. %d" /*)*/;
 	String LOGISTICAL_FORM_LINES_INCONSISTENT_QUANTITY = /*$$(*/ "Total quantity for %s: %s (expected: %s)" /*)*/;
+	String LOGISTICAL_FORM_LINES_EMPTY_PARCEL = /*$$(*/ "Parcel %d is empty." /*)*/;
+	String LOGISTICAL_FORM_LINES_EMPTY_PALLET = /*$$(*/ "Pallet %d is empty." /*)*/;
+	String LOGISTICAL_FORM_LINES_ORPHAN_DETAIL = /*$$(*/ "Detail line(s) not inside a parcel/pallet" /*)*/;
 
 }

@@ -22,8 +22,8 @@ import java.util.Map;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.InconsistentLogisticalFormLines;
-import com.axelor.apps.stock.exception.InvalidLogisticalFormLineDimensions;
+import com.axelor.apps.stock.exception.LogisticalFormWarning;
+import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.apps.stock.service.LogisticalFormService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
@@ -60,7 +60,7 @@ public class LogisticalFormController {
 			response.setValue("totalNetWeight", logisticalForm.getTotalNetWeight());
 			response.setValue("totalGrossWeight", logisticalForm.getTotalGrossWeight());
 			response.setValue("totalVolume", logisticalForm.getTotalVolume());
-		} catch (InvalidLogisticalFormLineDimensions e) {
+		} catch (LogisticalFormError e) {
 			response.setError(e.getLocalizedMessage());
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
@@ -72,11 +72,12 @@ public class LogisticalFormController {
 			LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
 			LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
 
-			logisticalFormService.checkInconsistentLines(logisticalForm);
 			logisticalFormService.checkInvalidLineDimensions(logisticalForm);
-		} catch (InconsistentLogisticalFormLines e) {
+			logisticalFormService.sortLines(logisticalForm);
+			logisticalFormService.checkLines(logisticalForm);
+		} catch (LogisticalFormWarning e) {
 			response.setAlert(e.getLocalizedMessage());
-		} catch (InvalidLogisticalFormLineDimensions e) {
+		} catch (LogisticalFormError e) {
 			response.setError(e.getLocalizedMessage());
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);

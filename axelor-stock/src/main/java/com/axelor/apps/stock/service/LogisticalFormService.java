@@ -24,9 +24,13 @@ import java.util.Map;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.exception.InconsistentLogisticalFormLines;
-import com.axelor.apps.stock.exception.InvalidLogisticalFormLineDimensions;
+import com.axelor.apps.stock.exception.LogisticalFormWarning;
+import com.axelor.apps.stock.exception.LogisticalFormError;
 
+/**
+ * @author axelor
+ *
+ */
 public interface LogisticalFormService {
 
 	/**
@@ -49,26 +53,26 @@ public interface LogisticalFormService {
 	 * Compute totals.
 	 * 
 	 * @param logisticalForm
-	 * @throws InvalidLogisticalFormLineDimensions
+	 * @throws LogisticalFormError
 	 */
-	void computeTotals(LogisticalForm logisticalForm) throws InvalidLogisticalFormLineDimensions;
+	void computeTotals(LogisticalForm logisticalForm) throws LogisticalFormError;
 
 	/**
-	 * Check for inconsistent lines.
+	 * Check lines.
 	 * 
 	 * @param logisticalForm
-	 * @throws InconsistentLogisticalFormLines
-	 * @throws InvalidLogisticalFormLineDimensions
+	 * @throws LogisticalFormWarning
+	 * @throws LogisticalFormError 
 	 */
-	void checkInconsistentLines(LogisticalForm logisticalForm) throws InconsistentLogisticalFormLines;
+	void checkLines(LogisticalForm logisticalForm) throws LogisticalFormWarning, LogisticalFormError;
 
 	/**
 	 * Check for invalid dimensions in lines.
 	 * 
 	 * @param logisticalForm
-	 * @throws InvalidLogisticalFormLineDimensions
+	 * @throws LogisticalFormError
 	 */
-	void checkInvalidLineDimensions(LogisticalForm logisticalForm) throws InvalidLogisticalFormLineDimensions;
+	void checkInvalidLineDimensions(LogisticalForm logisticalForm) throws LogisticalFormError;
 
 	/**
 	 * Get list of full spread stock move lines.
@@ -110,5 +114,12 @@ public interface LogisticalFormService {
 	 * @return
 	 */
 	int getNextLineSequence(LogisticalForm logisticalForm);
+
+	/**
+	 * Sort lines by sequence.
+	 * 
+	 * @param logisticalForm
+	 */
+	void sortLines(LogisticalForm logisticalForm);
 
 }
