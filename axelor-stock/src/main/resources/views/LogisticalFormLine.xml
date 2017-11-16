@@ -10,8 +10,8 @@
         <field name="stockMoveLine.stockMove" />
         <field name="stockMoveLine.product.code" title="Product code" />
         <field name="stockMoveLine.product.name" title="Product description" />
-        <field name="stockMoveLine.stockMove.saleOrder.saleOrderSeq" title="Sale order number" if-module="axelor-supplychain" />
-        <field name="stockMoveLine.stockMove.saleOrder.externalReference" title="Customer reference" if-module="axelor-supplychain" />
+        <field name="stockMoveLine.stockMove.saleOrder.saleOrderSeq" title="Sale order number" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+        <field name="stockMoveLine.stockMove.saleOrder.externalReference" title="Customer reference" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
         <field name="stockMoveLine.netWeight" title="Unit net weight" />
         <field name="qty" readonlyIf="typeSelect != 3" />
         <field name="parcelPalletNumber" readonlyIf="typeSelect == 3" />
@@ -30,9 +30,9 @@
             <field name="stockMoveLine.product.code" title="Product code" hideIf="typeSelect != 3" />
             <field name="stockMoveLine.product.name" title="Product description" hideIf="typeSelect != 3" />
             <field name="stockMoveLine.stockMove.saleOrder.saleOrderSeq" title="Sale order number" hideIf="typeSelect != 3"
-                if-module="axelor-supplychain" />
+                if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
             <field name="stockMoveLine.stockMove.saleOrder.externalReference" title="Customer reference" hideIf="typeSelect != 3"
-                if-module="axelor-supplychain" />
+                if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
             <field name="stockMoveLine.netWeight" title="Unit net weight" hideIf="typeSelect != 3" />
             <field name="qty" hideIf="typeSelect != 3" />
             <field name="parcelPalletNumber" hideIf="typeSelect == 3" />

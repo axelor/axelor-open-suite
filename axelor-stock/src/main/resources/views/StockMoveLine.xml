@@ -120,7 +120,7 @@
 	        <field name="totalNetWeight" readonly="true" showIf="totalNetWeight != 0"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
 	        <field name="stockMove.statusSelect" hidden="true"/>
-	        <field name="businessProject" if-module="axelor-business-project" domain="self.isBusinessProject = true AND self.projectTypeSelect = 1" form-view="project-form" grid-view="project-grid"/>
+	        <field name="businessProject" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" domain="self.isBusinessProject = true AND self.projectTypeSelect = 1" form-view="project-form" grid-view="project-grid"/>
 	        <field name="description" colSpan="12" widget="html" />
         </panel>
     </form>
