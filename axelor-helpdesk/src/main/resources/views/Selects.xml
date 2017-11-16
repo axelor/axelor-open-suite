@@ -17,13 +17,6 @@
 		<option value="3">Closed</option>
 	</selection>
 	
-	<selection name="helpdesk.SLA.priority.select">
-		<option value="1">Low</option>
-		<option value="2">Normal</option>
-		<option value="3">High</option>
-		<option value="4">Urgent</option>
-	</selection>
-	
 	<selection name="helpdesk.ticket.progress.select">
 		<option value="0">0 %</option>
 		<option value="10">10 %</option>
