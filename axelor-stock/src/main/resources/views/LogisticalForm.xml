@@ -23,19 +23,20 @@
         <panel colSpan="12" readonlyIf="statusSelect > 1">
             <field name="deliveryNumber" />
             <field name="company" onChange="action-logistical-form-company-change" form-view="company-form"
-                grid-view="company-grid" />
+                grid-view="company-grid" canEdit="false" />
             <field name="deliverToCustomer" domain="self.isCustomer = TRUE AND :company MEMBER OF self.companySet"
-                onChange="action-logistical-form-partner-change" form-view="partner-customer-form" grid-view="partner-customer-grid" />
+                onChange="action-logistical-form-partner-change" form-view="partner-customer-form" grid-view="partner-customer-grid"
+                canEdit="false" />
             <field name="collectionDate" />
         </panel>
         <panel-tabs colSpan="12" readonlyIf="statusSelect > 1">
             <panel title="General">
                 <field name="statusSelect" colSpan="12" widget="NavSelect" />
                 <field name="carrier" domain="self.isCarrier = TRUE AND :company MEMBER OF self.companySet"
-                    form-view="partner-form" grid-view="partner-grid" />
+                    form-view="partner-form" grid-view="partner-grid" canEdit="false" />
                 <field name="forwarder" domain=":company MEMBER OF self.companySet" form-view="partner-form"
-                    grid-view="partner-grid" />
-                <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" />
+                    grid-view="partner-grid" canEdit="false" />
+                <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
                 <field name="tracking" />
                 <field name="totalGrossWeight" colSpan="4" />
                 <field name="totalNetWeight" colSpan="4" />
@@ -47,7 +48,7 @@
                 <panel colSpan="12" hideIf="$readonly()">
                     <field name="stockMove" title="Stock move" type="reference" widget="many-to-one"
                         target="com.axelor.apps.stock.db.StockMove" grid-view="stock-move-out-grid" form-view="stock-move-form"
-                        colSpan="10" onSelect="action-logistical-form-stock-move-domain" />
+                        colSpan="10" onSelect="action-logistical-form-stock-move-domain" canEdit="false" />
                     <button name="addStockMoveBtn" title="Add" onClick="action-logistical-form-add-stock-move"
                         colSpan="2" readonlyIf="!stockMove" />
                 </panel>
