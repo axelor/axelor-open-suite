@@ -17,12 +17,15 @@
  */
 package com.axelor.apps.base.web;
 
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +36,7 @@ import com.axelor.apps.base.service.DuplicateObjectsService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.schema.actions.ActionView;
@@ -135,6 +139,25 @@ public class DuplicateObjectsController {
 		}
 		
 		response.setAttr("$duplicateObjects", "value", duplicateObj);
+	}
+	
+	/*
+	 * set fields on wizard
+	 */
+	public Set<MetaField> setFields(String model) throws IOException {
+		LOG.debug("Model: {}",model);
+		Set<MetaField> fieldSet = new HashSet<MetaField>();
+		List<String> fields = new ArrayList<String>();
+
+		MetaFieldRepository metaFieldRepository = Beans.get(MetaFieldRepository.class);
+
+		for(MetaField field : metaFieldRepository.all().filter("metaModel.fullName = ?1 AND (relationship = null OR relationship = 'ManyToOne')",model).fetch()){
+			fieldSet.add(field);
+			fields.add(field.getName());
+		}
+
+		LOG.debug("Fields set: {}",fields);
+		return fieldSet;
 	}
 	
 	/**

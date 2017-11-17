@@ -17,17 +17,10 @@
  */
 package com.axelor.apps.base.web;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import java.time.LocalDate;
 import org.slf4j.Logger;
@@ -42,19 +35,12 @@ import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.ExportDbObjectService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.tool.StringTool;
-import com.axelor.db.JPA;
-import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
 public class AppBaseController {
@@ -75,22 +61,6 @@ public class AppBaseController {
 	
 	@Inject
 	private AppBaseService appBaseService;
-
-	public Set<MetaField> setFields(String model) throws IOException {
-		LOG.debug("Model: {}",model);
-		Set<MetaField> fieldSet = new HashSet<MetaField>();
-		List<String> fields = new ArrayList<String>();
-
-		MetaFieldRepository metaFieldRepository = Beans.get(MetaFieldRepository.class);
-
-		for(MetaField field : metaFieldRepository.all().filter("metaModel.fullName = ?1 AND (relationship = null OR relationship = 'ManyToOne')",model).fetch()){
-			fieldSet.add(field);
-			fields.add(field.getName());
-		}
-
-		LOG.debug("Fields set: {}",fields);
-		return fieldSet;
-	}
 
 	public void exportObjects(ActionRequest request, ActionResponse response){
 		MetaFile metaFile = eos.exportObject();
