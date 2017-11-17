@@ -46,7 +46,7 @@
 
 		<panel if-module="axelor-production" if="__config__.app.getApp('production').getEnableConfigurator()">
 			<panel title="Configurator BoM" if-module="axelor-production" colSpan="12" hideIf="id == null || $hideBOMConfigurator">
-	            <field name="configuratorBom" if-module="axelor-production"  if="__config__.app.getApp('production')" colSpan="12">
+	            <field name="configuratorBom" if-module="axelor-production"  if="__config__.app.isApp('production')" colSpan="12">
 	                <editor>
 	                    <field name="company"/>
 	                    <panel title="Label">
