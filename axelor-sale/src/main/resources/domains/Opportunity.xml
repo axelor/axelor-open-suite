@@ -7,7 +7,7 @@
 
   <entity name="Opportunity" lang="java">
   
-    <many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale Order"/>
+    <many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order"/>
   
   </entity>
 

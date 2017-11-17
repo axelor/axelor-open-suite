@@ -25,7 +25,7 @@
 		<series key="charge" groupBy="machine" type="bar"/>
 	</chart>
 	
-	<chart name="chart.wastes.by.product" title="Products Wastes ">
+	<chart name="chart.wastes.by.product" title="Products Wastes">
 		<search-fields>
 			<field name="name" title="Product" type="reference" target="com.axelor.apps.base.db.Product" x-required="true"/>
 		</search-fields>

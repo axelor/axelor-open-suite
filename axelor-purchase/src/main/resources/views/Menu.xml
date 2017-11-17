@@ -292,9 +292,9 @@
 	</action-view>
 	
 	<menuitem name="menu-purchase-dashboard-3" parent="sc-root-purchase-report"  
-		title="Purchase Orders"  action="purchase.purchase.dashboard.3" />	
+		title="Purchase orders"  action="purchase.purchase.dashboard.3" />
 		
-	<action-view name="purchase.purchase.dashboard.3" title="Purchase Orders Details">
+	<action-view name="purchase.purchase.dashboard.3" title="Purchase orders Details">
 		<view type="dashboard" name="purchase.dashboard.3" />	    
 	</action-view>
 	

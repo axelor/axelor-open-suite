@@ -68,7 +68,7 @@
       <field name="purchaseOrderSeq" />
       <field name="supplierPartner" />
       <field name="statusSelect" on="UPDATE"/>
-      <message if="true" on="CREATE">Purchase Order created</message>
+      <message if="true" on="CREATE">Purchase order created</message>
       <message if="statusSelect == 1" tag="important">Draft</message>
       <message if="statusSelect == 2" tag="important">Requested</message>
       <message if="statusSelect == 3" tag="info">Validated</message>
