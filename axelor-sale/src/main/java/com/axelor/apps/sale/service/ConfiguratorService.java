@@ -50,14 +50,6 @@ public interface ConfiguratorService {
             throws AxelorException;
 
     /**
-     * Test a formula, with the script variables defined
-     * in the values map.
-     * @param groovyFormula
-     * @param values
-     */
-    void testFormula(String groovyFormula, ScriptBindings values) throws AxelorException;
-
-    /**
      * Generate the product, and the bill of material
      * if we are in the right module
      * @param configurator

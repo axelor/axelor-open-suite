@@ -133,15 +133,15 @@
 		
 	  <menubar>
 	  	<menu title="Reports">
-	  		<item action="save,action-sale-order-method-show-sale-order" title="Print"/>
-	  		<item action="save,action-sale-order-method-print-proforma-invoice" title="Print proforma invoice"/>
-	  		<item action="save,action-sale-order-method-export-sale-order-excel" title="Excel Export"/>
-	  		<item action="save,action-sale-order-method-export-sale-order-word" title="Word Export"/>
+	  		<item action="save,action-sale-order-method-show-sale-order" title="Print" hideIf="clientPartner == null"/>
+	  		<item action="save,action-sale-order-method-print-proforma-invoice" title="Print proforma invoice" hideIf="clientPartner == null"/>
+	  		<item action="save,action-sale-order-method-export-sale-order-excel" title="Excel Export" hideIf="clientPartner == null"/>
+	  		<item action="save,action-sale-order-method-export-sale-order-word" title="Word Export" hideIf="clientPartner == null"/>
 	  	</menu>
 	    <menu title="Tools">
-		    <item title="Schedule Event" action="action-sale-order-view-schedule-event"/>
-            <item action="save,action-send-by-email-with-template" title="Send email"/>
-		    <item action="save,action-sale-order-method-generate-template" title="Define as template"/>
+		    <item title="Schedule Event" action="action-sale-order-view-schedule-event" hideIf="clientPartner == null"/>
+            <item action="save,action-send-by-email-with-template" title="Send email" hideIf="clientPartner == null"/>
+		    <item action="save,action-sale-order-method-generate-template" title="Define as template" hideIf="clientPartner == null"/>
 		</menu>
 	  </menubar>
 	  <panel title="Status">
@@ -218,7 +218,7 @@
       </panel>
 	  <panel-tabs hideIf="clientPartner == null">
 	    <panel name="content" title="Content">
-	    	<panel-related field="saleOrderLineList" form-view="sale-order-line-form" colSpan="12" onChange="action-sale-order-line-change-group" readonlyIf="clientPartner == null || statusSelect == 3 || statusSelect == 4" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence"/>
+	    	<panel-related field="saleOrderLineList" title="Details Lines" form-view="sale-order-line-form" colSpan="12" onChange="action-sale-order-line-change-group" readonlyIf="clientPartner == null || statusSelect == 3 || statusSelect == 4" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence"/>
 	    	<panel-related field="saleOrderLineTaxList" colSpan="12" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
 	    	<panel title="Description to display" colSpan="12">
 	        	<field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12"/>
@@ -383,9 +383,7 @@
 		onLoad="action-group-sale-saleorder-onload">
 	  
 	  <panel>
-        <field name="statusSelect" colSpan="12" hidden="true" />
 	  	<field name="clientPartner.saleOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="clientPartner == null || clientPartner.saleOrderInformation == null"/>
-	    <field name="saleOrderSeq" css="label-bold bold"/>
 	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" />
 	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect == 3"/>
 	    <field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect == 3"/>
@@ -423,7 +421,7 @@
       </panel>
 	  <panel-tabs>
 	    <panel name="content" title="Content">
-	    	<panel-related field="saleOrderLineList" colSpan="12" onChange="action-sale-order-method-compute" form-view="sale-order-line-form" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence"/>
+	    	<panel-related field="saleOrderLineList" colSpan="12" onChange="action-sale-order-method-compute" form-view="sale-order-line-template-form" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence"/>
 	    	<panel-related field="saleOrderLineTaxList" colSpan="12" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
 	    </panel>
 	    <panel name="otherInformations" title="Other informations" showTitle="false">
@@ -465,9 +463,6 @@
 	    <field name="orderNumber" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="shipmentDate" colSpan="6" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 	    <field name="duration" widget="SuggestBox" canNew="true" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date" readonlyIf="statusSelect == 3"/>
-	    <field name="endOfValidityDate" colSpan="6" readonly="true">
-	    	<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
-	    </field>
 	  </panel>
 
         <panel sidebar="true" readonly="true"  colSpan="4">
