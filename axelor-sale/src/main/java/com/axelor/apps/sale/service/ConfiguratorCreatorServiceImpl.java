@@ -27,6 +27,7 @@ import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.User;
+import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
@@ -42,10 +43,12 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
 
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
@@ -107,34 +110,89 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     }
 
     @Override
-    public void testCreator(ConfiguratorCreator creator,
-                            ScriptBindings testingValues)
-            throws AxelorException  {
-        List<ConfiguratorFormula> formulas = creator.getConfiguratorFormulaList();
-        if (formulas == null) {
-            //nothing to test
-            return;
-        }
-        ConfiguratorService configuratorService =
-                Beans.get(ConfiguratorService.class);
-        for (ConfiguratorFormula formula : formulas) {
-            configuratorService.testFormula(formula.getFormula(), testingValues);
-        }
-    }
-
-    @Override
     public ScriptBindings getTestingValues(ConfiguratorCreator creator) throws AxelorException {
         Map<String, Object> attributesValues = new HashMap<>();
         List<MetaJsonField> attributes = creator.getAttributes();
         if (attributes != null) {
             for (MetaJsonField attribute : attributes) {
-                if (attribute.getDefaultValue() == null) {
-                    throw new AxelorException(creator, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_MISSING_VALUES));
+                Object defaultAttribute = getAttributesDefaultValue(attribute);
+                if (defaultAttribute != null) {
+                    attributesValues.put(attribute.getName(), getAttributesDefaultValue(attribute));
                 }
-                attributesValues.put(attribute.getName(), attribute.getDefaultValue());
             }
         }
         return new ScriptBindings(attributesValues);
+    }
+
+    /**
+     * Get a default value to test a script.
+     * @param attribute
+     * @return
+     */
+    protected Object getAttributesDefaultValue(MetaJsonField attribute) {
+        switch (attribute.getType()) {
+            case "string":
+                return "a";
+            case "integer":
+                return 1;
+            case "decimal":
+                return BigDecimal.ONE;
+            case "boolean":
+                return true;
+            case "datetime":
+                return LocalDateTime.of(LocalDate.now(), LocalTime.now());
+            case "date":
+                return LocalDate.now();
+            case "time":
+                return LocalTime.now();
+            case "panel":
+                return null;
+            case "enum":
+                return null;
+            case "button":
+                return null;
+            case "separator":
+                return null;
+            case "many-to-one":
+                return getAttributeRelationalField(attribute, "many-to-one");
+            case "many-to-many":
+                return getAttributeRelationalField(attribute, "many-to-many");
+            case "one-to-many":
+                return getAttributeRelationalField(attribute, "one-to-many");
+            case "json-many-to-one":
+                return null;
+            case "json-many-to-many":
+                return null;
+            case "json-one-to-many":
+                return null;
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * Get a default value to test a script for a relational field.
+     * @param attribute
+     * @param relation
+     * @return
+     */
+    protected Object getAttributeRelationalField(MetaJsonField attribute, String relation) {
+        try {
+            Class targetClass = Class.forName(attribute.getTargetModel());
+            if (relation.equals("many-to-one")) {
+                return JPA.all(targetClass).fetchOne();
+            } else if (relation.equals("one-to-many")) {
+                return JPA.all(targetClass).fetch(1);
+            } else if (relation.equals("many-to-many")) {
+                return new HashSet(JPA.all(targetClass).fetch(1));
+            }
+            else {
+                return null;
+            }
+        } catch (Exception e) {
+            TraceBackService.trace(e);
+            return null;
+        }
     }
 
     /**

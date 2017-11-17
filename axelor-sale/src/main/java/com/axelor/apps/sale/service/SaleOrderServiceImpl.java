@@ -186,8 +186,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	/**
 	 * Compute the sale order total amounts
 	 *
-	 * @param invoice
-	 * @param vatLines
+	 * @param saleOrder
 	 * @throws AxelorException
 	 */
 	@Override
@@ -492,6 +491,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		SaleOrder copy = saleOrderRepo.copy(context, true);
 		copy.setTemplate(false);
 		copy.setTemplateUser(null);
+		copy.setCreationDate(appSaleService.getTodayDate());
+		this.computeEndOfValidityDate(copy);
 		return copy;
 	}
 
