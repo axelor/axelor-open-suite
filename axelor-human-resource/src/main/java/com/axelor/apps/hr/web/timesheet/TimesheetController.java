@@ -19,10 +19,14 @@ package com.axelor.apps.hr.web.timesheet;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.text.Bidi;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.HRMenuValidateService;
+import com.axelor.apps.hr.service.employee.EmployeeService;
+import com.axelor.auth.AuthLdap;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -371,5 +375,17 @@ public class TimesheetController {
 		response.setView(ActionView
 				.define(name)
 				.add("html", fileLink).map());	
+	}
+
+	public void timesheetPeriodTotalController(ActionRequest request, ActionResponse response) {
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		User user = timesheet.getUser();
+
+		BigDecimal periodTotal = timesheetServiceProvider.get().computePeriodTotal(timesheet);
+
+		response.setAttr("periodTotal","value",periodTotal);
+		response.setAttr("$periodTotalConvert","hidden",false);
+		response.setAttr("$periodTotalConvert","value",Beans.get(EmployeeService.class).getUserDuration(periodTotal,user,false));
+		response.setAttr("$periodTotalConvert","title",timesheetServiceProvider.get().getPeriodTotalConvertTitleByUserPref(user));
 	}
 }
