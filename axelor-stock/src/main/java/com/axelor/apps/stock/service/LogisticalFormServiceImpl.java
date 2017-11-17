@@ -20,6 +20,8 @@ package com.axelor.apps.stock.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -35,10 +37,11 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LogisticalFormLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
-import com.axelor.apps.stock.exception.InconsistentLogisticalFormLines;
-import com.axelor.apps.stock.exception.InvalidLogisticalFormLineDimensions;
+import com.axelor.apps.stock.exception.LogisticalFormError;
+import com.axelor.apps.stock.exception.LogisticalFormWarning;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
@@ -84,31 +87,81 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 	}
 
 	@Override
-	public void checkInconsistentLines(LogisticalForm logisticalForm) throws InconsistentLogisticalFormLines {
+	public void checkLines(LogisticalForm logisticalForm) throws LogisticalFormWarning, LogisticalFormError {
+		List<String> warningMessageList = new ArrayList<>();
+
+		checkEmptyParcelPalletLines(logisticalForm, warningMessageList);
+		checkInconsistentQties(logisticalForm, warningMessageList);
+
+		if (!warningMessageList.isEmpty()) {
+			String errorMessage = String.format("<ul>%s</ul>", warningMessageList.stream()
+					.map(message -> String.format("<li>%s</li>", message)).collect(Collectors.joining("\n")));
+			throw new LogisticalFormWarning(logisticalForm, errorMessage);
+		}
+	}
+
+	protected void checkInconsistentQties(LogisticalForm logisticalForm, List<String> errorMessageList) {
 		Map<StockMoveLine, BigDecimal> stockMoveLineMap = getStockMoveLineQtyMap(logisticalForm);
-		List<String> errorMessageList = new ArrayList<>();
 
 		for (Entry<StockMoveLine, BigDecimal> entry : stockMoveLineMap.entrySet()) {
 			StockMoveLine stockMoveLine = entry.getKey();
 			BigDecimal qty = entry.getValue();
 
 			if (qty.compareTo(stockMoveLine.getRealQty()) != 0) {
-				String errorMessage = String.format(
-						IExceptionMessage.LOGISTICAL_FORM_LINES_INCONSISTENT_QUANTITY, String.format("%s (%s)",
-								stockMoveLine.getProductName(), stockMoveLine.getStockMove().getStockMoveSeq()),
-						qty, stockMoveLine.getRealQty());
+				String errorMessage = String
+						.format(I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINES_INCONSISTENT_QUANTITY),
+								String.format("%s (%s)", stockMoveLine.getProductName(),
+										stockMoveLine.getStockMove().getStockMoveSeq()),
+								qty, stockMoveLine.getRealQty());
 				errorMessageList.add(errorMessage);
 			}
 		}
+	}
 
-		if (!errorMessageList.isEmpty()) {
-			String errorMessage = errorMessageList.stream().collect(Collectors.joining("<br />"));
-			throw new InconsistentLogisticalFormLines(logisticalForm, errorMessage);
+	protected void checkEmptyParcelPalletLines(LogisticalForm logisticalForm, List<String> errorMessageList)
+			throws LogisticalFormError {
+		if (logisticalForm.getLogisticalFormLineList() == null) {
+			return;
+		}
+
+		Map<LogisticalFormLine, BigDecimal> qtyMap = new HashMap<>();
+		LogisticalFormLine currentLine = null;
+
+		for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
+			if (logisticalFormLine.getTypeSelect() != LogisticalFormLineRepository.TYPE_DETAIL) {
+				currentLine = logisticalFormLine;
+				qtyMap.put(currentLine, BigDecimal.ZERO);
+			} else {
+				if (currentLine == null) {
+					throw new LogisticalFormError(logisticalForm,
+							I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINES_ORPHAN_DETAIL));
+				}
+				qtyMap.merge(currentLine, logisticalFormLine.getQty(), BigDecimal::add);
+			}
+		}
+
+		for (Entry<LogisticalFormLine, BigDecimal> entry : qtyMap.entrySet()) {
+			LogisticalFormLine logisticalFormLine = entry.getKey();
+
+			BigDecimal qty = entry.getValue();
+
+			if (qty.signum() <= 0) {
+				String msg;
+
+				if (logisticalFormLine.getTypeSelect() == LogisticalFormLineRepository.TYPE_PARCEL) {
+					msg = I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINES_EMPTY_PARCEL);
+				} else {
+					msg = I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINES_EMPTY_PALLET);
+				}
+
+				String errorMessage = String.format(msg, logisticalFormLine.getParcelPalletNumber());
+				errorMessageList.add(errorMessage);
+			}
 		}
 	}
 
 	@Override
-	public void checkInvalidLineDimensions(LogisticalForm logisticalForm) throws InvalidLogisticalFormLineDimensions {
+	public void checkInvalidLineDimensions(LogisticalForm logisticalForm) throws LogisticalFormError {
 		if (logisticalForm.getLogisticalFormLineList() != null) {
 			LogisticalFormLineService logisticalFormLineService = Beans.get(LogisticalFormLineService.class);
 			for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
@@ -226,7 +279,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 	}
 
 	@Override
-	public void computeTotals(LogisticalForm logisticalForm) throws InvalidLogisticalFormLineDimensions {
+	public void computeTotals(LogisticalForm logisticalForm) throws LogisticalFormError {
 		BigDecimal totalNetWeight = BigDecimal.ZERO;
 		BigDecimal totalGrossWeight = BigDecimal.ZERO;
 		BigDecimal totalVolume = BigDecimal.ZERO;
@@ -279,6 +332,13 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 		}
 
 		return domainList.stream().map(domain -> String.format("(%s)", domain)).collect(Collectors.joining(" AND "));
+	}
+
+	@Override
+	public void sortLines(LogisticalForm logisticalForm) {
+		if (logisticalForm.getLogisticalFormLineList() != null) {
+			logisticalForm.getLogisticalFormLineList().sort(Comparator.comparing(LogisticalFormLine::getSequence));
+		}
 	}
 
 }

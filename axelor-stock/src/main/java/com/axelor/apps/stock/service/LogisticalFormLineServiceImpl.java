@@ -28,8 +28,10 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.exception.InvalidLogisticalFormLineDimensions;
+import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.script.ScriptHelper;
 import com.google.common.base.Strings;
@@ -82,16 +84,18 @@ public class LogisticalFormLineServiceImpl implements LogisticalFormLineService 
 	}
 
 	@Override
-	public void validateDimensions(LogisticalFormLine logisticalFormLine) throws InvalidLogisticalFormLineDimensions {
+	public void validateDimensions(LogisticalFormLine logisticalFormLine) throws LogisticalFormError {
 		String dimensions = logisticalFormLine.getDimensions();
 		if (!Strings.isNullOrEmpty(dimensions) && !DIMENSIONS_PATTERN.matcher(dimensions).matches()) {
-			throw new InvalidLogisticalFormLineDimensions(logisticalFormLine);
+			throw new LogisticalFormError(logisticalFormLine,
+					I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS),
+					logisticalFormLine.getSequence() + 1);
 		}
 	}
 
 	@Override
 	public BigDecimal evalVolume(LogisticalFormLine logisticalFormLine, ScriptHelper scriptHelper)
-			throws InvalidLogisticalFormLineDimensions {
+			throws LogisticalFormError {
 		validateDimensions(logisticalFormLine);
 		String script = logisticalFormLine.getDimensions();
 

@@ -32,8 +32,10 @@ public class LogisticalFormLineController {
 	public void setQty(ActionRequest request, ActionResponse response) {
 		try {
 			LogisticalFormLine logisticalFormLine = getLogisticalFormLine(request);
-			BigDecimal qty = Beans.get(LogisticalFormLineService.class).getUnspreadQty(logisticalFormLine);
-			response.setValue("qty", qty);
+			if (logisticalFormLine.getQty() == null) {
+				BigDecimal qty = Beans.get(LogisticalFormLineService.class).getUnspreadQty(logisticalFormLine);
+				response.setValue("qty", qty);
+			}
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
