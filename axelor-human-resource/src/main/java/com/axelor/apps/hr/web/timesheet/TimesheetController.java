@@ -265,6 +265,9 @@ public class TimesheetController {
                 .define(I18n.get("Timesheet"))
                 .model(Timesheet.class.getName())
                 .add("form", "timesheet-form")
+				.add("grid", "timesheet-grid")
+				.domain("self.user = :_user")
+				.context("_user", AuthUtils.getUser())
                 .map());
     }
 
