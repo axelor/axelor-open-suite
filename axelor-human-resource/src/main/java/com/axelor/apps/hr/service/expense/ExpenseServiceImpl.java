@@ -574,8 +574,9 @@ public class ExpenseServiceImpl implements ExpenseService {
 	@Transactional
 	public void insertExpenseLine(ActionRequest request, ActionResponse response) {
 		User user = AuthUtils.getUser();
-		Project project = Beans.get(ProjectRepository.class).find(new Long(request.getData().get("project").toString()));
-		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("expenseType").toString()));
+		Map<String, Object> requestData = request.getData();
+		Project project = Beans.get(ProjectRepository.class).find(new Long(requestData.get("project").toString()));
+		Product product = Beans.get(ProductRepository.class).find(new Long(requestData.get("expenseType").toString()));
 		if (user != null) {
 			Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
 			if (expense == null) {
@@ -585,16 +586,16 @@ public class ExpenseServiceImpl implements ExpenseService {
 				expense.setStatusSelect(ExpenseRepository.STATUS_DRAFT);
 			}
 			ExpenseLine expenseLine = new ExpenseLine();
-			expenseLine.setExpenseDate(LocalDate.parse(request.getData().get("date").toString(), DateTimeFormatter.ISO_DATE));
-			expenseLine.setComments(request.getData().get("comments").toString());
+			expenseLine.setExpenseDate(LocalDate.parse(requestData.get("date").toString(), DateTimeFormatter.ISO_DATE));
+			expenseLine.setComments(requestData.get("comments").toString());
 			expenseLine.setExpenseProduct(product);
-			expenseLine.setToInvoice(new Boolean(request.getData().get("toInvoice").toString()));
 			expenseLine.setProject(project);
 			expenseLine.setUser(user);
-			expenseLine.setTotalAmount(new BigDecimal(request.getData().get("unTaxTotal").toString()));
-			expenseLine.setTotalTax(new BigDecimal(request.getData().get("taxTotal").toString()));
+			expenseLine.setTotalAmount(new BigDecimal(requestData.get("unTaxTotal").toString()));
+			expenseLine.setTotalTax(new BigDecimal(requestData.get("taxTotal").toString()));
 			expenseLine.setUntaxedAmount(expenseLine.getTotalAmount().subtract(expenseLine.getTotalTax()));
-			String justification  = (String) request.getData().get("justification");
+			expenseLine.setToInvoice(new Boolean(requestData.get("toInvoice").toString()));
+			String justification  = (String) requestData.get("justification");
 			if (!Strings.isNullOrEmpty(justification)) {
 				expenseLine.setJustification(Base64.decodeBase64(justification));
 			}

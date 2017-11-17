@@ -73,23 +73,41 @@ public class TicketService {
 		AppHelpdesk helpdesk = appHelpdeskRepo.all().fetchOne();
 
 		if (helpdesk.getIsSLApolicies()) {
-
-			if (ticket.getAssignedTo() != null) {
 				
-				SLA sla = slaRepo.all().filter("self.team = ?1 and self.ticketType = ?2 and (self.priority = ?3 or self.priority = 4)",
-						ticket.getAssignedTo().getActiveTeam(), ticket.getTicketType(), ticket.getPriority()).fetchOne();
+			SLA sla = slaRepo.all().filter("self.team = ?1 AND self.priority = ?2 AND self.ticketType = ?3",
+					ticket.getAssignedTo() == null ? null : ticket.getAssignedTo().getActiveTeam(), ticket.getPriority(), ticket.getTicketType()).fetchOne();
+			
+			if (sla == null) {
 				
-				if (sla != null) {
-					ticket.setSlaPolicy(sla);
-					try {
-						this.computeDuration(ticket, sla);
-					} catch (AxelorException e) {
-						e.printStackTrace();
-					}
-				} else {
-					this.setEmptySLA(ticket);
+				sla = slaRepo.all()
+						.filter("self.team = ?1 AND self.priority = ?2 AND self.ticketType = null OR "
+								+ "(self.team = null AND self.priority = ?2 AND self.ticketType = ?3) OR "
+								+ "(self.team = ?1 AND self.priority = null AND self.ticketType = ?3)",
+								ticket.getAssignedTo() == null ? null : ticket.getAssignedTo().getActiveTeam(), ticket.getPriority(), ticket.getTicketType()).fetchOne();
+			}
+			
+			if (sla == null) {
+			
+				sla = slaRepo.all()
+						.filter("self.team = ?1 OR self.priority = ?2 OR self.ticketType = ?3",
+								ticket.getAssignedTo() == null ? null : ticket.getAssignedTo().getActiveTeam(), ticket.getPriority(), ticket.getTicketType()).fetchOne();
+			}
+			
+			if (sla == null) {
+				
+				sla = slaRepo.all()
+						.filter("self.team = null AND self.priority = null AND self.ticketType = null").fetchOne();
+			}
+			
+			if (sla != null) {
+				ticket.setSlaPolicy(sla);
+				try {
+					this.computeDuration(ticket, sla);
+				} catch (AxelorException e) {
+					e.printStackTrace();
 				}
 			} else {
+				
 				this.setEmptySLA(ticket);
 			}
 		}
@@ -97,28 +115,25 @@ public class TicketService {
 	
 	public void computeDuration(Ticket ticket, SLA sla) throws AxelorException {
 
-		if (sla.getIsWorkingDays()) {
-
-			if (ticket.getAssignedTo().getEmployee() != null) {
+		if (sla.getIsWorkingDays() && ticket.getAssignedTo() != null && ticket.getAssignedTo().getEmployee() != null) {
+			
+			if (sla.getDays() > 0) {
+				LocalDateTime fromDate = ticket.getStartDate().plusDays(1);
+				this.checkWorkingDays(fromDate, ticket.getAssignedTo().getEmployee(), sla.getDays());
+				ticket.setDeadline(toDate.plusHours(sla.getHours()));
 				
-				if (sla.getDays() > 0) {
-					LocalDateTime fromDate = ticket.getStartDate().plusDays(1);
-					this.checkWorkingDays(fromDate, ticket.getAssignedTo().getEmployee(), sla.getDays());
-					ticket.setDeadline(toDate.plusHours(sla.getHours()));
-					
-				} else {
-					ticket.setDeadline(ticket.getStartDate().plusHours(sla.getHours()));
-				}
 			} else {
-				LocalDateTime localDateTime = ticket.getStartDate().plusDays(sla.getDays());
-				localDateTime = localDateTime.plusHours(sla.getHours());
-				ticket.setDeadline(localDateTime);
+				ticket.setDeadline(ticket.getStartDate().plusHours(sla.getHours()));
 			}
 		} else {
-			LocalDateTime localDateTime = ticket.getStartDate().plusDays(sla.getDays());
-			localDateTime = localDateTime.plusHours(sla.getHours());
-			ticket.setDeadline(localDateTime);
+			this.calculateDuration(ticket, sla);
 		}
+	}
+	
+	public void calculateDuration(Ticket ticket, SLA sla) {
+		LocalDateTime localDateTime = ticket.getStartDate().plusDays(sla.getDays());
+		localDateTime = localDateTime.plusHours(sla.getHours());
+		ticket.setDeadline(localDateTime);
 	}
 	
 	public void checkWorkingDays(LocalDateTime fromDate, Employee employee, int days) throws AxelorException {
