@@ -28,6 +28,9 @@ public class QualityAlertManagementRepository extends QualityAlertRepository {
 	@Inject
 	private SequenceService sequenceService;
 	
+	/*
+	 * Generate and set sequence in reference with predefined prefix
+	 */
 	@Override
 	public QualityAlert save(QualityAlert qualityAlert) {
 			if (Strings.isNullOrEmpty(qualityAlert.getReference()))

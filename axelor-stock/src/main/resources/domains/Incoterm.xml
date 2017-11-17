@@ -6,8 +6,9 @@
 
 	<entity name="Incoterm" lang="java">
 	
-		<string name="name" title="Incoterm Name"/>
-		<string name="code" title="Incoterm Code"/>
+		<string name="name" title="Incoterm Name" required="true"/>
+		<string name="code" title="Incoterm Code" required="true"/>
+		<string name="fullname" title="Fullname" namecolumn="true"/>
 		
 		<string name="exportCustomsDeclaration" title="Export customs declaration" selection="stock.incoterm.allocation.select"/>
 		<string name="carriageToPortOfExport" title="Carriage to port of export" selection="stock.incoterm.allocation.select"/>

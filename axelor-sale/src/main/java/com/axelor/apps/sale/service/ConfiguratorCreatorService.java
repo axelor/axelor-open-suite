@@ -41,15 +41,6 @@ public interface ConfiguratorCreatorService {
     void updateIndicators(ConfiguratorCreator creator);
 
     /**
-     * Test all the formulas included in the creator
-     * @param creator
-     * @param testingValues the values used to do the test
-     * @throws AxelorException
-     */
-    void testCreator(ConfiguratorCreator creator,
-                     ScriptBindings testingValues) throws AxelorException;
-
-    /**
      * Get the testing values in {@link ConfiguratorCreator#attributes}
      * @param creator
      * @return
