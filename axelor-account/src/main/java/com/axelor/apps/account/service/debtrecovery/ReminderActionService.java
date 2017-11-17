@@ -145,6 +145,9 @@ public class ReminderActionService {
 	}
 
 	public ReminderHistory getReminderHistory(Reminder reminder)  {
+		if (reminder.getReminderHistoryList() == null) {
+			return null;
+		}
 	    return Collections.max(reminder.getReminderHistoryList(), new Comparator<ReminderHistory>() {
 			@Override
 			public int compare(ReminderHistory reminderHistory, ReminderHistory t1) {
