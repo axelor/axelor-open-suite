@@ -132,7 +132,7 @@ public class WkfService {
 		
 		MetaJsonField panel = getJsonField("wkfPanel", "panel");
 		panel.setSequence(-103);
-		panel.setHiddenInGrid(true);
+		panel.setVisibleInGrid(false);
 		panel.setIsWkf(true);
 		panel.setWidgetAttrs("{\"colSpan\": \"12\"}");
 		saveJsonField(panel);
@@ -154,12 +154,12 @@ public class WkfService {
 		trackFlow.setWidgetAttrs("{\"colSpan\": \"2\"}");
 		trackFlow.setOnClick(WkfTrackingService.ACTION_OPEN_TRACK);
 		trackFlow.setIsWkf(true);
-		trackFlow.setHiddenInGrid(true);
+		trackFlow.setVisibleInGrid(false);
 		saveJsonField(trackFlow);
 		
 		MetaJsonField wkfEnd = getJsonField("wkfSeparator", "separator");
 		wkfEnd.setSequence(-1);
-		wkfEnd.setHiddenInGrid(true);
+		wkfEnd.setVisibleInGrid(false);
 		wkfEnd.setIsWkf(true);
 		wkfEnd.setWidgetAttrs("{\"colSpan\": \"12\"}");
 		saveJsonField(panel);

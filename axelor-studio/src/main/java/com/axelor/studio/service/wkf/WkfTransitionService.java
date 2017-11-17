@@ -198,7 +198,7 @@ class WkfTransitionService {
 		button.setTitle(title);;
 		button.setShowIf(condition);
 		button.setSequence(sequence);
-		button.setHiddenInGrid(true);
+		button.setVisibleInGrid(false);
 		button.setIsWkf(true);
 		button.setWidgetAttrs("{\"colSpan\": \"3\"}");
 		button.setOnClick(addButtonActions(transition, name));
