@@ -46,7 +46,7 @@
 					<field name="irrecoverableJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
 					<field name="autoMiscOpeJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
 					<field name="manualMiscOpeJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
-					<field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company" if-module="axelor-human-resource" if="__config__.app.getApp('expense')" grid-view="journal-grid" form-view="journal-form"/>
+					<field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company" if-module="axelor-human-resource" if="__config__.app.isApp('expense')" grid-view="journal-grid" form-view="journal-form"/>
 				</panel>
 				<panel name="accounts" title="Accounts" colSpan="12">
 					<field name="customerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
@@ -240,8 +240,8 @@
 	  			<field name="displayProductCodeOnPrinting"/>
 	  			<field name="displayTaxDetailOnPrinting"/>
 		 		<field name="invoiceClientBox" widget="html" x-lite="true" colSpan="12"/>
-		 		<field name="displayTimesheetOnPrinting" if-module="axelor-business-project"  if="__config__.app.getApp('business-project') &amp;&amp;  __config__.app.getApp('timesheet')"/>
-		 		<field name="displayExpenseOnPrinting" if-module="axelor-business-project" if="__config__.app.getApp('business-project') &amp;&amp;  __config__.app.getApp('expense')"/>
+		 		<field name="displayTimesheetOnPrinting" if-module="axelor-business-project"  if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('timesheet')"/>
+		 		<field name="displayExpenseOnPrinting" if-module="axelor-business-project" if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('expense')"/>
 		  	</panel>
 			<panel name="products" title="Products">
 				<field name="invoicingProduct"/>
