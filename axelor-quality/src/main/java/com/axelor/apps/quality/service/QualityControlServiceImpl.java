@@ -31,6 +31,9 @@ public class QualityControlServiceImpl  implements QualityControlService {
 	@Inject
 	ControlPointRepository controlPointRepo;
 	
+	/*
+	 * copy control point model to control point and set it to the quality control
+	 */
 	@Override
 	@Transactional
 	public void preFillOperations(QualityControl qualityControl) throws AxelorException {
@@ -38,9 +41,9 @@ public class QualityControlServiceImpl  implements QualityControlService {
 		if (qualityControl.getQualityProcess() != null) {
 			QualityProcess process = qualityControl.getQualityProcess();
 			
-			if (process != null && process.getControlPointModel() != null) {
-				qualityControl.getControlPoint().clear();
-				for(ControlPointModel model : process.getControlPointModel() ) {
+			if (process != null && process.getControlPointModelList() != null) {
+				qualityControl.getControlPointList().clear();
+				for(ControlPointModel model : process.getControlPointModelList() ) {
 					ControlPoint point = new ControlPoint();
 					point.setStatus(1);
 					point.setName(model.getName());
@@ -57,7 +60,7 @@ public class QualityControlServiceImpl  implements QualityControlService {
 					point.setControlPointDate(qualityControl.getStartDate());
 					point.setQualityControl(qualityControl);
 					controlPointRepo.save(point);
-					qualityControl.addControlPoint(point);
+					qualityControl.addControlPointListItem(point);
 				}
 			}
 		}
