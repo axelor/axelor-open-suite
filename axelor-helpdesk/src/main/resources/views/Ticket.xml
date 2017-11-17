@@ -10,8 +10,8 @@
 		<field name="ticketSeq"/>
 		<field name="subject"/>
 		<field name="ticketType"/>
-		<field name="startDate"/>
-		<field name="endDate"/>
+		<field name="startDateT"/>
+		<field name="endDateT"/>
 		<field name="assignedTo"/>
 		<field name="priority"/>
 		<field name="statusSelect"/>
@@ -54,12 +54,12 @@
 			<field name="lead" form-view="lead-form" grid-view="lead-grid"/>
 			<field name="assignedTo" form-view="user-form" grid-view="user-grid"/>
 			<field name="responsible" form-view="user-form" grid-view="user-grid"/>
-			<field name="slaCompleted" hidden="true"/>
+			<field name="isSlaCompleted" hidden="true"/>
 			<panel colSpan="12">
-				<field name="startDate" colSpan="3"/>
+				<field name="startDateT" colSpan="3"/>
 				<field name="duration" colSpan="3"/>
-				<field name="endDate" colSpan="3"/>
-				<field name="deadline" colSpan="3"/>
+				<field name="endDateT" colSpan="3"/>
+				<field name="deadlineDateT" colSpan="3"/>
 			</panel>
 		</panel>
 		<panel colSpan="12">
@@ -81,8 +81,8 @@
 	</form>
 	
 	<calendar name="ticket-calendar" model="com.axelor.apps.helpdesk.db.Ticket" 
-	eventStart="startDate"
-	eventStop="endDate"
+	eventStart="startDateT"
+	eventStop="endDateT"
 	title="All tickets"
 	colorBy="assignedTo">
 		<field name="subject"/>
@@ -106,7 +106,7 @@
 	</action-record>
 	
 	<action-record name="action-record-to-fill-dates" model="com.axelor.apps.helpdesk.db.Ticket">
-		<field name="startDate" expr="eval: LocalDateTime.now()"/>
+		<field name="startDateT" expr="eval: LocalDateTime.now()"/>
 	</action-record>
 	
 	<action-attrs name="action-ticket-domain-on-contact-partner">

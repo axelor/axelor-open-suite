@@ -3,14 +3,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
    
-	<selection name="helpdesk.ticket.priority.select">
+	<selection name="helpdesk.priority.select">
 		<option value="1">Low</option>
 		<option value="2">Normal</option>
 		<option value="3">High</option>
 		<option value="4">Urgent</option>
 	</selection>
 	
-	<selection name="helpdesk.ticket.status.select">
+	<selection name="helpdesk.status.select">
 		<option value="0">New</option>
 		<option value="1">In progress</option>
 		<option value="2">Resolved</option>

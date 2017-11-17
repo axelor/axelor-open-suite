@@ -21,19 +21,25 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import com.axelor.apps.helpdesk.service.TicketService;
+import com.axelor.apps.helpdesk.service.TicketServiceImpl;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
 public class TicketController {
-	
+
 	@Inject
-	private TicketService ticketService;
-	
-	public void assignToMeTicket(ActionRequest request, ActionResponse response)  {
-		
-		Long id = (Long)request.getContext().get("id");
-		List<?> ids = (List<?>)request.getContext().get("_ids");
+	private TicketServiceImpl ticketService;
+
+	/**
+	 * Ticket assign to the current user.
+	 * 
+	 * @param request
+	 * @param response
+	 */
+	public void assignToMeTicket(ActionRequest request, ActionResponse response) {
+
+		Long id = (Long) request.getContext().get("id");
+		List<?> ids = (List<?>) request.getContext().get("_ids");
 		ticketService.assignToMeTicket(id, ids);
 
 		response.setReload(true);
