@@ -122,7 +122,7 @@ public class AppBaseController {
 		if(fields.size() > 0){
 			LOG.debug("Duplicate record joinList: {}", fields);
 			String selectedRecored =  String.valueOf((request.getContext().get("_ids")));
-			String filter = request.getContext().get("_domain_").toString().replace("self", "m");
+			String filter = request.getContext().get("_domain_").toString();
 			if(selectedRecored.equals("null") || selectedRecored.isEmpty()) {
 				selectedRecored = null;
 			} else {
@@ -198,16 +198,16 @@ public class AppBaseController {
 	@SuppressWarnings("unchecked")
 	private List<List<String>> getAllRecords(List<String> fieldList,String object,String selectedRecored,String filter){
 		
-		String query = "SELECT new List( CAST ( m.id AS string )";
+		String query = "SELECT new List( CAST ( self.id AS string )";
 		
 		for(String field : fieldList) {
-			query += ", m." + field;
+			query += ", self." + field;
 		}
 		List<List<Object>> resultList = new ArrayList<>();
 		if(selectedRecored == null || selectedRecored.isEmpty()) {
-			resultList = JPA.em().createQuery(query + ") FROM " + object + " m WHERE " + filter).getResultList();
+			resultList = JPA.em().createQuery(query + ") FROM " + object + " self WHERE " + filter).getResultList();
 		} else {
-			resultList = JPA.em().createQuery(query + ") FROM " + object + " m where m.id in("+selectedRecored+") AND " + filter).getResultList();
+			resultList = JPA.em().createQuery(query + ") FROM " + object + " self where self.id in("+selectedRecored+") AND " + filter).getResultList();
 		}
 		
 		List<List<String>> records = new ArrayList<List<String>>();
