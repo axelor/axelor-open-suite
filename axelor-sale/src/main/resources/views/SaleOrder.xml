@@ -133,15 +133,15 @@
 		
 	  <menubar>
 	  	<menu title="Reports">
-	  		<item action="save,action-sale-order-method-show-sale-order" title="Print"/>
-	  		<item action="save,action-sale-order-method-print-proforma-invoice" title="Print proforma invoice"/>
-	  		<item action="save,action-sale-order-method-export-sale-order-excel" title="Excel Export"/>
-	  		<item action="save,action-sale-order-method-export-sale-order-word" title="Word Export"/>
+	  		<item action="save,action-sale-order-method-show-sale-order" title="Print" hideIf="clientPartner == null"/>
+	  		<item action="save,action-sale-order-method-print-proforma-invoice" title="Print proforma invoice" hideIf="clientPartner == null"/>
+	  		<item action="save,action-sale-order-method-export-sale-order-excel" title="Excel Export" hideIf="clientPartner == null"/>
+	  		<item action="save,action-sale-order-method-export-sale-order-word" title="Word Export" hideIf="clientPartner == null"/>
 	  	</menu>
 	    <menu title="Tools">
-		    <item title="Schedule Event" action="action-sale-order-view-schedule-event"/>
-            <item action="save,action-send-by-email-with-template" title="Send email"/>
-		    <item action="save,action-sale-order-method-generate-template" title="Define as template"/>
+		    <item title="Schedule Event" action="action-sale-order-view-schedule-event" hideIf="clientPartner == null"/>
+            <item action="save,action-send-by-email-with-template" title="Send email" hideIf="clientPartner == null"/>
+		    <item action="save,action-sale-order-method-generate-template" title="Define as template" hideIf="clientPartner == null"/>
 		</menu>
 	  </menubar>
 	  <panel title="Status">
