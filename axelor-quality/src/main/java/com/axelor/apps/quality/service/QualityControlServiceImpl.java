@@ -31,6 +31,9 @@ public class QualityControlServiceImpl  implements QualityControlService {
 	@Inject
 	ControlPointRepository controlPointRepo;
 	
+	/*
+	 * copy control point model to control point and set it to the quality control
+	 */
 	@Override
 	@Transactional
 	public void preFillOperations(QualityControl qualityControl) throws AxelorException {
