@@ -136,7 +136,7 @@ public class SaleOrderController{
 				List<SaleOrderLine> saleOrderLinesSelected = JPA.all(SaleOrderLine.class).filter("self.id IN (:saleOderLineIdList)").bind("saleOderLineIdList", saleOrderLineIdSelected).fetch();
 				PurchaseOrder purchaseOrder = Beans.get(SaleOrderPurchaseService.class).createPurchaseOrder(partner, saleOrderLinesSelected, saleOrderRepo.find(saleOrder.getId()));
 				response.setView(ActionView
-						.define(I18n.get("Purchase Order"))
+						.define(I18n.get("Purchase order"))
 						.model(PurchaseOrder.class.getName())
 						.add("form", "purchase-order-form")
 						.param("forceEdit", "true")
@@ -294,7 +294,7 @@ public class SaleOrderController{
 		}
 		if(listId.size() == 1){
 			response.setView(ActionView
-		            .define(I18n.get("Subscription Sale Orders"))
+		            .define(I18n.get("Subscription Sale orders"))
 		            .model(SaleOrder.class.getName())
 		            .add("grid", "sale-order-subscription-grid")
 		            .add("form", "sale-order-form")
@@ -302,7 +302,7 @@ public class SaleOrderController{
 		            .map());
 		}
 		response.setView(ActionView
-	            .define(I18n.get("Subscription Sale Orders"))
+	            .define(I18n.get("Subscription Sale orders"))
 	            .model(SaleOrder.class.getName())
 	            .add("grid", "sale-order-subscription-grid")
 	            .add("form", "sale-order-form")
@@ -552,7 +552,7 @@ public class SaleOrderController{
 			if (saleOrder != null){
 				//Open the generated sale order in a new tab
 				response.setView(ActionView
-						.define("Sale Order")
+						.define("Sale order")
 						.model(SaleOrder.class.getName())
 						.add("grid", "sale-order-grid")
 						.add("form", "sale-order-form")

@@ -308,7 +308,7 @@ public class PurchaseOrderController {
 			if (purchaseOrder != null){
 				//Open the generated purchase order in a new tab
 				response.setView(ActionView
-						.define("Purchase Order")
+						.define("Purchase order")
 						.model(PurchaseOrder.class.getName())
 						.add("grid", "purchase-order-grid")
 						.add("form", "purchase-order-form")

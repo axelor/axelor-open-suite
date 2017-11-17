@@ -215,7 +215,7 @@ public class SaleOrderController {
 		SaleOrder context = request.getContext().asType(SaleOrder.class);
 		context = saleOrderRepo.find(context.getId());
 		response.setView(ActionView
-	            .define("Sale Order")
+	            .define("Sale order")
 	            .model(SaleOrder.class.getName())
 	            .add("form", "sale-order-form-wizard")
 	            .context("_idCopy", context.getId().toString())
@@ -408,7 +408,7 @@ public class SaleOrderController {
 			if (saleOrder != null){
 				//Open the generated sale order in a new tab
 				response.setView(ActionView
-						.define("Sale Order")
+						.define("Sale order")
 						.model(SaleOrder.class.getName())
 						.add("grid", "sale-order-grid")
 						.add("form", "sale-order-form")

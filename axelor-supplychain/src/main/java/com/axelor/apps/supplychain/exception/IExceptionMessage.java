@@ -26,20 +26,20 @@ package com.axelor.apps.supplychain.exception;
  */
 public interface IExceptionMessage {
 	/**
-	 * Purchase Order Invoice Service and controller
+	 * Purchase order Invoice Service and controller
 	 */
 
 	static final String PO_INVOICE_1 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
 	static final String PO_INVOICE_2 = /*$$(*/ "Invoice created" /*)*/;
 
 	/**
-	 * Purchase Order Service
+	 * Purchase order Service
 	 */
 	static final String PURCHASE_ORDER_1 = /*$$(*/ "%s please configure a virtual supplier stock location for the company %s" /*)*/;
 	static final String PURCHASE_ORDER_2 = /*$$(*/ "Error : you have exceeded the budget %s for this period" /*)*/;
 
 	/**
-	 * Sale Order Invoice Service
+	 * Sale order Invoice Service
 	 */
 	static final String SO_INVOICE_6 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
 	static final String SO_INVOICE_NO_LINES_SELECTED = /*$$(*/ "There are no lines to invoice" /*)*/;
@@ -51,7 +51,7 @@ public interface IExceptionMessage {
 
 
 	/**
-	 * Sale Order Purchase Service
+	 * Sale order Purchase Service
 	 */
 	static final String SO_PURCHASE_1 = /*$$(*/ "Please, select a supplier for the line %s" /*)*/;
 	static final String SO_LINE_PURCHASE_AT_LEAST_ONE = /*$$(*/ "At least one sale order line must be selected" /*)*/;
@@ -80,16 +80,16 @@ public interface IExceptionMessage {
 	/**
 	 * Batch Outgoing stock move invoicing
 	 */
-	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_REPORT = /*$$(*/ "Outgoing stock move invoicing report: " /*)*/;
-	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_SINGULAR = /*$$(*/ "%d outgoing stock move processed successfully, " /*)*/;
-	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_PLURAL = /*$$(*/ "%d outgoing stock moves processed successfully, " /*)*/;
+	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_REPORT = /*$$(*/ "Outgoing stock move invoicing report:" /*)*/;
+	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_SINGULAR = /*$$(*/ "%d outgoing stock move processed successfully," /*)*/;
+	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_PLURAL = /*$$(*/ "%d outgoing stock moves processed successfully," /*)*/;
 
 	/**
 	 * Batch Order invoicing
 	 */
-	String BATCH_ORDER_INVOICING_REPORT = /*$$(*/ "Order invoicing report: " /*)*/;
-	String BATCH_ORDER_INVOICING_DONE_SINGULAR = /*$$(*/ "%d order invoiced successfully, " /*)*/;
-	String BATCH_ORDER_INVOICING_DONE_PLURAL = /*$$(*/ "%d orders invoiced successfully, " /*)*/;
+	String BATCH_ORDER_INVOICING_REPORT = /*$$(*/ "Order invoicing report:" /*)*/;
+	String BATCH_ORDER_INVOICING_DONE_SINGULAR = /*$$(*/ "%d order invoiced successfully," /*)*/;
+	String BATCH_ORDER_INVOICING_DONE_PLURAL = /*$$(*/ "%d orders invoiced successfully," /*)*/;
 
 	/**
 	 * Mrp Line Service
@@ -100,7 +100,7 @@ public interface IExceptionMessage {
 
 
 	/**
-	 * Sale Order Stock Service Implement
+	 * Sale order Stock Service Implement
 	 */
 	static final String SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/ "No delivery stock move to generate for this sale order" /*)*/;
 	static final String SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXIST = /*$$(*/ "An active stock move already exists for the sale order %s" /*)*/;
