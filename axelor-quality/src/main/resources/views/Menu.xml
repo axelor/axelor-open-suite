@@ -21,7 +21,7 @@
 		<view type="grid" name="quality-control-grid"/>
 		<view type="form" name="quality-control-form"/>
 		<view-param name="search-filters" value="quality-control-filters"/>
-		<context name="_id" expr="eval:__user__.id"/>
+		<context name="_userId" expr="eval:__user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 	</action-view>
 		     	
@@ -39,7 +39,7 @@
 		<view type="grid" name="quality-alert-grid"/>
 		<view type="form" name="quality-alert-form"/>
 		<view-param name="search-filters" value="quality-alert-filters"/>
-		<context name="_id" expr="eval:__user__.id"/>
+		<context name="_userId" expr="eval:__user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 	</action-view>
 	 
