@@ -71,7 +71,6 @@ public class ExportPrestaShop extends BatchStrategyExport {
 				
 			} catch (Exception e) {
 				incrementAnomaly();
-				
 				LOG.error("Bug(Anomalie) généré(e) pour le rappel de l'évènement {}", batch.getId());
 				
 			} finally {
@@ -93,6 +92,5 @@ public class ExportPrestaShop extends BatchStrategyExport {
 		
 		super.stop();
 		addComment(comment);
-		
 	}
 }

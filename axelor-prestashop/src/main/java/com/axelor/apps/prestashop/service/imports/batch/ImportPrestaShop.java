@@ -26,7 +26,6 @@ import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.imports.PrestaShopServiceImport;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.persist.Transactional;
@@ -47,7 +46,6 @@ public class ImportPrestaShop extends BatchStrategyImport {
 		super.start();
 		
 	}
-
 	
 	@Override
 	@Transactional
@@ -63,7 +61,6 @@ public class ImportPrestaShop extends BatchStrategyImport {
 				
 			} catch (Exception e) {
 				incrementAnomaly();
-				
 				LOG.error("Bug(Anomalie) généré(e) pour le rappel de l'évènement {}", batch.getId());
 				
 			} finally {
@@ -85,6 +82,5 @@ public class ImportPrestaShop extends BatchStrategyImport {
 		
 		super.stop();
 		addComment(comment);
-		
 	}
 }

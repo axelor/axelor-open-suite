@@ -18,49 +18,11 @@
 
 package com.axelor.apps.prestashop.app;
 
-import java.util.HashMap;
 import com.axelor.apps.base.db.AppPrestashop;
-import com.axelor.apps.prestashop.service.PSWebServiceClient;
 
-public class AppPrestaShopService {
+public interface AppPrestaShopService {
 
-	public boolean connection(AppPrestashop ps) {
-		
-		String shopUrl = ps.getPrestaShopUrl();
-		String key = ps.getPrestaShopKey();
-		
-		try {
-			char end = shopUrl.charAt(shopUrl.length() - 1);
-
-			if (end == '/') {
-				return false;
-			}
-			PSWebServiceClient ws = new PSWebServiceClient(shopUrl + "/api", key);
-			HashMap<String, Object> opt = new HashMap<String, Object>();
-			opt.put("url", shopUrl + "/api");
-			ws.get(opt);
-			return true;
-		} catch (Exception e) {
-			
-			return false;
-		}
-	}
+	public boolean connection(AppPrestashop ps);
 	
-	public boolean urlTest(AppPrestashop ps) {
-		
-		String url = null; 
-		url = ps.getPrestaShopUrl();		
-		
-		if (url == null) {
-			return true;
-		}
-		
-		char end = url.charAt(url.length() - 1);
-
-		if(end == '/') {
-			return true;
-		}
-		return false;
-	}
-
+	public boolean urlTest(AppPrestashop ps);
 }
