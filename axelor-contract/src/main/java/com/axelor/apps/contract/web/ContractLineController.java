@@ -20,9 +20,18 @@ public class ContractLineController {
 	
 	public void changeProduct(ActionRequest request, ActionResponse response) {
 		ContractLine contractLine = request.getContext().asType(ContractLine.class);
-		
-		if(contractLine == null || contractLine.getProduct() == null) {
-			this.resetProductInformation(response);
+		Partner partner = null;
+		Company company = null;
+		if(request.getContext().getParentContext().getContextClass() == Contract.class){
+			Contract contract = request.getContext().getParentContext().asType(Contract.class);
+			partner = contract.getPartner();
+			company = contract.getCompany();
+		}else if (request.getContext().getParentContext().getContextClass() == ContractVersion.class){
+			ContractVersion contractVersion = request.getContext().getParentContext().asType(ContractVersion.class);
+			Contract contract = contractVersion.getContract();
+			partner = contract.getPartner();
+			company = contract.getCompany();
+		}else {
 			return;
 		}
 		
