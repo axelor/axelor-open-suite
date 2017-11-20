@@ -111,7 +111,7 @@
 	</selection>
 
 	<selection name='iinvoice.operation.sub.type.select'>
-		<option value="1">Default</option>
+		<option value="1">Classic invoice</option>
 		<option value="2">Advance payment invoice</option>
 		<option value="3">Balance invoice</option>
 	</selection>
