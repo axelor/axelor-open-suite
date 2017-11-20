@@ -17,40 +17,15 @@
  */
 package com.axelor.apps.sale.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Query;
-
-import com.axelor.apps.base.service.AddressService;
-import com.axelor.apps.sale.db.AdvancePayment;
-import com.axelor.apps.sale.db.CancelReason;
-import com.google.common.base.Strings;
-import java.time.LocalDate;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.db.AppSale;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
-import com.axelor.team.db.Team;
+import com.axelor.apps.base.db.*;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.sale.db.ISaleOrder;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.SaleOrderLineTax;
+import com.axelor.apps.sale.db.*;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
@@ -62,8 +37,20 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.team.db.Team;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.Query;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
 
@@ -508,12 +495,11 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 	@Override
 	public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder)  {
-
-		saleOrder.setEndOfValidityDate(
-				Beans.get(DurationService.class).computeDuration(saleOrder.getDuration(), saleOrder.getCreationDate()));
-
+		if (saleOrder.getDuration() != null && saleOrder.getCreationDate() != null) {
+			saleOrder.setEndOfValidityDate(
+					Beans.get(DurationService.class).computeDuration(saleOrder.getDuration(), saleOrder.getCreationDate()));
+		}
 		return saleOrder;
-
 	}
 	
 	@Override
