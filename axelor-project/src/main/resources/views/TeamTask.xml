@@ -75,6 +75,7 @@
             <field name="salePrice" colSpan="6"/>
             <field name="quantity" colSpan="6"/>
             <field name="unit" form-view="unit-form" grid-view="unit-grid" colSpan="6"/>
+			<field name="currency" colSpan="6"/>
         </panel>
 
 		<panel sidebar="true" name="attributes" title="Attributes">
@@ -104,8 +105,8 @@
 	<action-view name="action-view-show-task-tree" title="Task Tree" model="com.axelor.team.db.TeamTask">	
 		<view type="tree" name="task-tree"/>
     	<view type="form" name="team-task-form"/>
-    	<domain>self.task.id = :id</domain>
-     	<context name="id" expr="eval: id"/>
+    	<domain>self.id = :_id</domain>
+     	<context name="_id" expr="eval: id"/>
 	</action-view>
 	
 	<tree name="task-tree" title="Tasks">
@@ -113,8 +114,8 @@
     	<column name="name" type="string"/>
     	<column name="assignedTo" type="reference"/>
     	<column name="progress" type="decimal"/>
-		
-		<node model="com.axelor.team.db.TeamTask" domain="self.task.id = :id" onClick="action-task-view">
+
+		<node model="com.axelor.team.db.TeamTask" domain="self.id = :_id" onClick="action-task-view">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progress" as="progress" />

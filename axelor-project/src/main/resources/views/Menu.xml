@@ -26,10 +26,9 @@
 		<view type="form" name="project-form"/>
 		<view type="calendar" name="project-calendar"/>
 		<view type="kanban" name="project-kanban"/>
-		<domain>self.isProject = true and self.projectType = :projectTypeName</domain>
+		<domain>self.isProject = true and self.projectType = :_projectTypeName</domain>
 		<context name="_fromProject" expr="eval:true"/>
-		<context name="projectTypeName" expr="eval: com.axelor.apps.project.db.ProjectType.PROJECT.name()"/>
-		<context name="_xProjectType" expr="eval: com.axelor.apps.project.db.ProjectType.PROJECT"/>
+		<context name="_projectTypeName" expr="eval: com.axelor.apps.project.db.ProjectType.PROJECT.name()"/>
 	</action-view>
 
 	<menuitem name="project-phases" parent="menu-project-root" title="Project phases" action="all.phases" order="15"/>
@@ -38,10 +37,9 @@
 		<view type="form" name="project-form"/>
 		<view type="calendar" name="project-calendar"/>
 		<view type="kanban" name="project-kanban"/>
-		<domain>self.isProject = true and self.projectType = :projectTypeName</domain>
+		<domain>self.isProject = true and self.projectType = :_projectTypeName</domain>
 		<context name="_fromProject" expr="eval:true"/>
-		<context name="projectTypeName" expr="eval: com.axelor.apps.project.db.ProjectType.PHASE.name()"/>
-		<context name="_xProjectType" expr="eval: com.axelor.apps.project.db.ProjectType.PHASE"/>
+		<context name="_projectTypeName" expr="eval: com.axelor.apps.project.db.ProjectType.PHASE.name()"/>
 	</action-view>
 
 	<menuitem name="project-tasks" parent="menu-project-root" title="Tasks" action="all.tasks" order="20"/>

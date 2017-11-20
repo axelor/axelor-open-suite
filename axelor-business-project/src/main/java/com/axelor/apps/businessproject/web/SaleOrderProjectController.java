@@ -78,14 +78,14 @@ public class SaleOrderProjectController {
 			switch (saleOrder.getProject().getGenProjTypePerOrderLine()) {
 				case PHASE_BY_LINE:
 					actionView = ActionView
-							.define("Project generated")
+							.define(String.format("Project%s generated", (models.size() > 1 ? "s" : "")))
 							.model(Project.class.getName())
 							.add("grid", "project-grid")
 							.add("form", "project-form");
 					break;
 				case TASK_BY_LINE:
 					actionView = ActionView
-							.define("Task generated")
+							.define(String.format("Task%s generated", (models.size() > 1 ? "s" : "")))
 							.model(TeamTask.class.getName())
 							.add("grid", "team-task-grid")
 							.add("form", "team-task-form");

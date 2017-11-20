@@ -351,7 +351,8 @@
 	</action-attrs>
 
 	<action-record name="action-project-record-init-type" model="com.axelor.apps.project.db.Project">
-		<field name="projectType" expr="eval: _xProjectType" if="_xProjectType != null"/>
+		<field if="_projectTypeName == 'PHASE'" name="projectType" expr="eval: com.axelor.apps.project.db.ProjectType.PHASE"/>
+		<field if="_projectTypeName == 'PROJECT'" name="projectType" expr="eval: com.axelor.apps.project.db.ProjectType.PROJECT"/>
 	</action-record>
 
 	<action-record name="action-project-record-empty-parent-project" model="com.axelor.apps.project.db.Project">

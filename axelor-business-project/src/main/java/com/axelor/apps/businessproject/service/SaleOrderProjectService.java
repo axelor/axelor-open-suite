@@ -17,11 +17,7 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.AppBusinessProjectRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
@@ -32,7 +28,6 @@ import com.axelor.apps.project.service.TeamTaskService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -42,6 +37,9 @@ import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SaleOrderProjectService {
 
@@ -113,12 +111,12 @@ public class SaleOrderProjectService {
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	private List<TeamTask> generateProjectTasks(SaleOrder saleOrder) throws AxelorException {
+	private List<TeamTask> generateProjectTasks(SaleOrder saleOrder) {
 		List<TeamTask> tasks = new ArrayList<>();
 		for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 			Product product = saleOrderLine.getProduct();
 			if(ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()) && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE){
-			    TeamTask task = teamTaskService.create(product.getFullName(), saleOrder.getProject(), saleOrderLine);
+			    TeamTask task = teamTaskService.create(saleOrderLine, saleOrder.getProject(), saleOrder.getProject().getAssignedTo());
 			    teamTaskRepository.save(task);
 				tasks.add(task);
 			}
@@ -127,7 +125,7 @@ public class SaleOrderProjectService {
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	private List<Project> generateProjectPhases(SaleOrder saleOrder) throws AxelorException {
+	private List<Project> generateProjectPhases(SaleOrder saleOrder) {
 		List<Project> projects = new ArrayList<>();
 		for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 			Product product = saleOrderLine.getProduct();
