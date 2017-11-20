@@ -29,7 +29,6 @@
    		<string name="description" title="Description" />
     	<string name="correctiveActions" title="Corrective actions" />
     	<string name="preventiveActions" title="Preventive actions"/>
-    	<track/>
   	</entity>
   
 </domain-models>
