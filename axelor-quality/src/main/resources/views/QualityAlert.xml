@@ -90,7 +90,7 @@
 	
 	<search-filters name="quality-alert-filters" model="com.axelor.apps.quality.db.QualityAlert" title="Quality alert filters">	
 		<filter title="My alerts">
-			<domain>self.responsible.user.id = :_id</domain>
+			<domain>self.responsible.user.id = :_userId</domain>
 		</filter>
 		<filter title="My team alerts">
 			<domain>self.responsible.user.activeTeam = :_myActiveTeam</domain>
