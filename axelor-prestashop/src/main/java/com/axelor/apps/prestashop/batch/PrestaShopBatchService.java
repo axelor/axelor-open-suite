@@ -20,9 +20,6 @@ package com.axelor.apps.prestashop.batch;
 
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.crm.db.CrmBatch;
-import com.axelor.apps.crm.db.ICrmBatch;
-import com.axelor.apps.crm.db.repo.CrmBatchRepository;
 import com.axelor.apps.db.IPrestaShopBatch;
 import com.axelor.apps.prestashop.db.PrestaShopBatch;
 import com.axelor.apps.prestashop.db.repo.PrestaShopBatchRepository;
@@ -44,7 +41,6 @@ import com.google.inject.Inject;
  */
 public class PrestaShopBatchService {
 
-	
 	@Inject
 	protected PrestaShopBatchRepository prestaShopBatchRepo;
 	
@@ -58,6 +54,7 @@ public class PrestaShopBatchService {
 	 * 
 	 * @throws AxelorException
 	 */
+	@SuppressWarnings("deprecation")
 	public Batch run(String batchCode) throws AxelorException {
 				
 		Batch batch;
@@ -84,16 +81,19 @@ public class PrestaShopBatchService {
 		return batch;
 	}
 	
-	
+	/**
+	 * Batch run import prestashop to ABS
+	*/
 	public Batch importPrestaShop(PrestaShopBatch prestaShopBatch) {
-		
+
 		return Beans.get(ImportPrestaShop.class).run(prestaShopBatch);
-		
 	}
 	
+	/**
+	 * Batch run export ABS to prestashop
+	*/
 	public Batch exportPrestaShop(PrestaShopBatch prestaShopBatch) {
 		
 		return Beans.get(ExportPrestaShop.class).run(prestaShopBatch);
-		
 	}
 }

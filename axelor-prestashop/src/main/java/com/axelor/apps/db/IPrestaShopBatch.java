@@ -25,13 +25,10 @@ package com.axelor.apps.db;
  */
 public interface IPrestaShopBatch {
 
-
 	/**
-	 * Static select in CrmBatch
+	 * Static select in PrestaShopBatch
 	 */
-
 	// ACTION TYPE
 	static final int BATCH_IMPORT = 1;
 	static final int BATCH_EXPORT = 2;
-	
 }

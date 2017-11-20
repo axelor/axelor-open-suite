@@ -31,8 +31,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.xml.transform.TransformerException;
-
-import org.apache.poi.hssf.record.ScenarioProtectRecord;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -70,11 +68,11 @@ import com.google.inject.persist.Transactional;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
-public class PrestaShopServiceImplExport {
-
+public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
+	
 	@Inject
 	private MetaFiles metaFiles;
-
+	
 	@Inject
 	private CountryRepository countryRepo;
 	
@@ -95,7 +93,7 @@ public class PrestaShopServiceImplExport {
 	
 	@Inject
 	private SaleOrderLineRepository saleOrderLineRepo;
-
+	
 	File exportFile = File.createTempFile("Export Log", ".txt");
 	FileWriter fwExport = null;
 	BufferedWriter bwExport = null;
@@ -109,19 +107,62 @@ public class PrestaShopServiceImplExport {
 	PSWebServiceClient ws;
 	HashMap<String, Object> opt;
 	Document schema;
-
-	public PrestaShopServiceImplExport() throws IOException {
+	
+	/**
+	 * Initialize constructor.  
+	 * 
+	 * @throws IOException
+	 */
+	public PrestaShopServiceExportImpl() throws IOException {
 
 		AppPrestashop prestaShopObj = Beans.get(AppPrestashopRepository.class).all().fetchOne();
 		shopUrl = prestaShopObj.getPrestaShopUrl();
 		key = prestaShopObj.getPrestaShopKey();
 		isStatus = prestaShopObj.getIsOrderStatus();
-		saleOrderStatus = prestaShopObj.getSaleOrderStatus();
+		saleOrderStatus = prestaShopObj.getSaleOrderStatusList();
 		ws = new PSWebServiceClient(shopUrl, key);
 		fwExport = new FileWriter(exportFile);
 		bwExport = new BufferedWriter(fwExport);
 	}
+	
+	/**
+	 * Export Axelor base module (Currency, Country, Partners/Contact, Product Category, Product).
+	 * 
+	 * @param endDate which are get as per last batch executed
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 * @throws TransformerException 
+	 * @throws IOException
+	 */
+	public void exportAxelorBase(ZonedDateTime endDate) throws PrestaShopWebserviceException, TransformerException, IOException {
+		
+		exportAxelorCurrencies(endDate);
+		exportAxelorCountries(endDate);
+		exportAxelorPartners(endDate);
+		exportAxelorPartnerAddresses(endDate);
+		exportAxelorProductCategories(endDate);
+		exportAxelorProducts(endDate);
+	}	
 
+	/**
+	 * Export Axelor Base, SaleOrder, SaleOrderLine module.
+	 */
+	public MetaFile exportPrestShop(ZonedDateTime endDate) throws PrestaShopWebserviceException, TransformerException, IOException {
+		
+		this.exportAxelorBase(endDate);
+		exportAxelorSaleOrders(endDate);
+		exportAxelorSaleOrderLines();
+		
+		File exportFile = closeLog();
+		MetaFile exporMetatFile = metaFiles.upload(exportFile);
+		return exporMetatFile;
+	}
+	
+	/**
+	 * Initialize title/header for export log file.
+	 * 
+	 * @param objectName an Object name as title in log file
+	 * @throws IOException
+	 */
 	public void exportLogObjectHeder(String objectName) throws IOException {
 		bwExport.newLine();
 		bwExport.write("--------------");
@@ -130,19 +171,38 @@ public class PrestaShopServiceImplExport {
 		bwExport.newLine();
 		bwExport.write("--------------");
 	}
-
+	
+	/**
+	 * Log error/bug in export log file.
+	 * 
+	 * @param id id print id of current object
+	 * @param msg display message/log which are executed
+	 * @throws IOException
+	 */
 	public void exportLog(String id, String msg) throws IOException {
 		bwExport.newLine();
 		bwExport.write("Id - " + id + " " + msg);
 	}
-
+	
+	/**
+	 * Close export log file.
+	 * 
+	 * @return export log file object 
+	 * @throws IOException
+	 */
 	public File closeLog() throws IOException {
 		bwExport.close();
 		fwExport.close();
 
 		return exportFile;
 	}
-
+	
+	/**
+	 * Initialize new connection with prestashop for perticular object.
+	 * 
+	 * @param apiName particular API name with which we set up connection
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 */
 	public void exportNewConnection(String apiName) throws PrestaShopWebserviceException {
 		ws = new PSWebServiceClient(shopUrl + "/api/" + apiName + "?schema=blank", key);
 		opt = new HashMap<String, Object>();
@@ -150,6 +210,13 @@ public class PrestaShopServiceImplExport {
 		schema = ws.get(opt);
 	}
 
+	/**
+	 * Initialize update connection with prestashop for perticular object.
+	 * 
+	 * @param resource particular API/resource name with which we set up connection for update
+	 * @param id  particular id of resource/API
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 */
 	public void exportUpdateConnection(String resource, String id) throws PrestaShopWebserviceException {
 		ws = new PSWebServiceClient(shopUrl, key);
 		opt = new HashMap<String, Object>();
@@ -157,7 +224,15 @@ public class PrestaShopServiceImplExport {
 		opt.put("id", id);
 		schema = ws.get(opt);
 	}
-
+	
+	/**
+	 * Add new record to prestashop.
+	 * @param resource particular API/resource name with which we can add new record
+	 * @param schemaObj schema design of resource
+	 * @return schema of resource
+	 * @throws TransformerException
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 */
 	public Document addRecord(String resource, Document schemaObj)
 			throws TransformerException, PrestaShopWebserviceException {
 		opt.put("resource", resource);
@@ -166,6 +241,15 @@ public class PrestaShopServiceImplExport {
 		return document;
 	}
 
+	/**
+	 * Update new record to prestashop.
+	 * 
+	 * @param resource particular API/resource name with which we can add update record
+	 * @param schemaObj schema design of resource
+	 * @param id on which update should be done
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 * @throws TransformerException
+	 */
 	public void updatRecord(String resource, Document schemaObj, String id)
 			throws PrestaShopWebserviceException, TransformerException {
 		HashMap<String, Object> updateOpt = new HashMap<String, Object>();
@@ -175,6 +259,14 @@ public class PrestaShopServiceImplExport {
 		ws.edit(updateOpt);
 	}
 
+	/**
+	 * Fetch prestashop API ids for perticular object/resource.
+	 * 
+	 * @param resources particular API/resource name with we can get all ids of them
+	 * @param node child node of resource
+	 * @return list of ids of resource
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 */
 	public List<String> fetchApiIds(String resources, String node) throws PrestaShopWebserviceException {
 
 		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
@@ -190,6 +282,16 @@ public class PrestaShopServiceImplExport {
 		return ids;
 	}
 	
+	/**
+	 * Add new images to prestashop.
+	 * 
+	 * @param productPicture meta file of image
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 * @throws TransformerException
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
+	@SuppressWarnings("static-access")
 	public void addImages(MetaFile productPicture)
 			throws PrestaShopWebserviceException, TransformerException, MalformedURLException, IOException {
 
@@ -210,30 +312,14 @@ public class PrestaShopServiceImplExport {
 		ws = new PSWebServiceClient(shopUrl, key);
 		ws.addImg(path.toUri().toString(), productId);
 	}
-
-	public String fetchCategories(String catName) throws PrestaShopWebserviceException {
-
-		String cat_id = "";
-		List<String> categoriesIds = fetchApiIds("categories", "category");
-
-		for (String id : categoriesIds) {
-			PSWebServiceClient ws = new PSWebServiceClient(shopUrl + "/api/categories/" + id, key);
-			opt = new HashMap<String, Object>();
-			opt.put("resource", "categories");
-			Document catSchema = ws.get(opt);
-			NodeList list = catSchema.getChildNodes();
-
-			for (int i = 0; i < list.getLength(); i++) {
-				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
-					Element element = (Element) list.item(i);
-					if (element.getElementsByTagName("name").item(0).getTextContent().toString().equals(catName)) {
-						cat_id = element.getElementsByTagName("id").item(0).getTextContent().toString();
-					}
-				}
-			}
-		}
-		return cat_id;
-	}
+	
+	/**
+	 * Check is currency is already on prestashop ! if it is the return Id of that currency.
+	 * 
+	 * @param currencyCode unique code of currency
+	 * @return prestashop's id
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 */
 	
 	public String isCurrency(String currencyCode) throws PrestaShopWebserviceException {
 		
@@ -259,6 +345,13 @@ public class PrestaShopServiceImplExport {
 		return prestaShopId;
 	}
 	
+	/**
+	 * Check is country is already on prestashop ! if it is the return Id of that country.
+	 * 
+	 * @param countryCode unique code of country
+	 * @return prestashop's id
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 */
 	public String isCountry(String countryCode) throws PrestaShopWebserviceException {
 		
 		String prestaShopId = null;
@@ -283,6 +376,12 @@ public class PrestaShopServiceImplExport {
 		return prestaShopId;
 	}
 	
+	/**
+	 * Reset/Remove SaleOrderLine/OrderDetail of prestashop.
+	 * 
+	 * @param orderId saleOrder id which are on prestashop
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 */
 	public void exportResetOrderDetails(String orderId) throws PrestaShopWebserviceException {
 		
 		String orderDetailId = null;
@@ -296,7 +395,7 @@ public class PrestaShopServiceImplExport {
 		
 		NodeList list = str.getElementsByTagName("order_details");
 		for(int i = 0; i < list.getLength(); i++) {
-		    Element element = (Element) list.item(i);
+			Element element = (Element) list.item(i);
 		    NodeList nodeList = element.getElementsByTagName("order_detail");
 		    for(int j = 0; j < nodeList.getLength(); j++) {
 		    	Node order = nodeList.item(j);
@@ -309,17 +408,23 @@ public class PrestaShopServiceImplExport {
 			    	opt.put("id", orderDetailId);
 			    	ws.delete(opt);
 			    }
-		    	
 		    }
 		}
 	}
 	
+	/**
+	 * Add new Partner/Customer to prestashop.
+	 * 
+	 * @param partner particular object on which done operation
+	 * @return object with added details
+	 * @throws IOException
+	 */
 	@SuppressWarnings("deprecation")
 	public Partner addPartner(Partner partner) throws IOException {
 		
 		try {
-
-			if (partner.getPartnerTypeSelect() == 1) {
+			
+			if (partner.getPartnerTypeSelect() == 1) {	
 
 				if (partner.getContactPartnerSet().size() != 0) {
 					schema.getElementsByTagName("company").item(0).setTextContent(partner.getName());
@@ -365,28 +470,16 @@ public class PrestaShopServiceImplExport {
 			cnt++;
 			exportLog(partner.getId().toString(), e.getMessage());
 		}
-		
-		
 		return partner;
 	}
 	
-	public String getCustomerId() throws PrestaShopWebserviceException {
-		
-		ws = new PSWebServiceClient(shopUrl, key);
-		opt = new HashMap<String, Object>();
-		opt.put("resource", "customers");
-		schema = ws.get(opt);
-		NodeList customersNodeList = schema.getElementsByTagName("customer");
-		List<Long> sortIds = new ArrayList<>();
-
-		for (int x = 0; x < customersNodeList.getLength(); x++) {
-			sortIds.add(Long.parseLong(customersNodeList.item(x).getAttributes().getNamedItem("id").getNodeValue()));
-		}
-
-		Collections.sort(sortIds);
-		return sortIds.get(sortIds.size() - 1).toString();
-	}
-	
+	/**
+	 * Add new ProductCategory to prestashop.
+	 * 
+	 * @param category particular object on which done operation
+	 * @return object with added details
+	 * @throws PrestaShopWebserviceException
+	 */
 	public ProductCategory addCategory(ProductCategory category) throws PrestaShopWebserviceException {
 		
 		String id_parent = "";
@@ -405,25 +498,26 @@ public class PrestaShopServiceImplExport {
 		name.appendChild(schema.createCDATASection(category.getName()));
 		name.setAttribute("id", "1");
 		name.setAttribute("xlink:href", shopUrl + "/api/languages/" + 1);
-
-		Element link_rewrite = (Element) schema.getElementsByTagName("link_rewrite").item(0)
-				.getFirstChild();
+		Element link_rewrite = (Element) schema.getElementsByTagName("link_rewrite").item(0).getFirstChild();
 		link_rewrite.setTextContent(null);
 		link_rewrite.appendChild(schema.createCDATASection(category.getCode()));
 		link_rewrite.setAttribute("id", "1");
 		link_rewrite.setAttribute("xlink:href", shopUrl + "/api/languages/" + 1);
 		
 		return category;
-				
 	}
 	
+	/**
+	 * Add new Product to prestashop.
+	 * 
+	 * @param product particular object on which done operation
+	 * @return object with added details
+	 */
 	public Product addProduct(Product product) {
 		
 		ProductCategory productCategory = productCategoryRepo.findByName(product.getProductCategory().getName());
 		String prestaShopCategoryId = productCategory.getPrestaShopId().toString();
-		
 		schema.getElementsByTagName("id_category_default").item(0).setTextContent(prestaShopCategoryId);
-		
 		Node categoriesRows = schema.getElementsByTagName("categories").item(0);
 		Node defaultRow;
 		Integer totalCategoryRow = schema.getElementsByTagName("category").getLength();
@@ -461,6 +555,14 @@ public class PrestaShopServiceImplExport {
 		return product;
 	}
 	
+	/**
+	 * Add quantities to product of prestashop.
+	 * 
+	 * @param id of stock available object
+	 * @param quantity number of qty which we add in object
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 * @throws TransformerException
+	 */
 	public void addStock(String id, String quantity) throws PrestaShopWebserviceException, TransformerException {
 		
 		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
@@ -468,40 +570,49 @@ public class PrestaShopServiceImplExport {
 		opt.put("resource", "stock_availables");
 		opt.put("id", id);
 		Document stockSchema = ws.get(opt);
-		
-			stockSchema.getElementsByTagName("quantity").item(0).setTextContent(quantity);
-			
+		stockSchema.getElementsByTagName("quantity").item(0).setTextContent(quantity);
 		HashMap<String, Object> updateOpt = new HashMap<String, Object>();
 		updateOpt.put("resource", "stock_availables");
 		updateOpt.put("putXml", ws.DocumentToString(stockSchema));
 		updateOpt.put("id", id);
 		ws.edit(updateOpt);	
-			
 	}
 	
+	/**
+	 * Find perticular cart id for perticular saleOrder/Order.
+	 * 
+	 * @param saleOrder object of ABS
+	 * @return cart id of current sale order which are on prestashop
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 */
 	public String getCartId(SaleOrder saleOrder) throws PrestaShopWebserviceException {
 			
 		String cart_id = "";
+		ws = new PSWebServiceClient(shopUrl + "/api/orders/" + saleOrder.getPrestaShopId(),key);
+		opt = new HashMap<String, Object>();
+		opt.put("resource", "orders");
+		schema = ws.get(opt);
+		NodeList list = schema.getChildNodes();
 
-			ws = new PSWebServiceClient(shopUrl + "/api/orders/" + saleOrder.getPrestaShopId(),key);
-			opt = new HashMap<String, Object>();
-			opt.put("resource", "orders");
-			schema = ws.get(opt);
-			NodeList list = schema.getChildNodes();
-
-			for (int i = 0; i < list.getLength(); i++) {
-				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
-					Element element = (Element) list.item(i);
-					if (element.getElementsByTagName("id").item(0).getTextContent().toString()
-							.equals(saleOrder.getPrestaShopId())) {
-						cart_id = element.getElementsByTagName("id_cart").item(0).getTextContent().toString();
-					}
+		for (int i = 0; i < list.getLength(); i++) {
+			if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
+				Element element = (Element) list.item(i);
+				if (element.getElementsByTagName("id").item(0).getTextContent().toString()
+						.equals(saleOrder.getPrestaShopId())) {
+					cart_id = element.getElementsByTagName("id_cart").item(0).getTextContent().toString();
 				}
 			}
-		
+		}
 		return cart_id;
 	}
 	
+	/**
+	 * Add products to Cart of prestashop.
+	 * 
+	 * @param saleOrder object name with we can get details of order lines
+	 * @param saleOrder_product_id array of product ids
+	 * @param id_address_delivery set delivery address on cart's delivery address
+	 */
 	public void addCartProduct(SaleOrder saleOrder, String[] saleOrder_product_id, String id_address_delivery) {
 		
 		Node cartRows = schema.getElementsByTagName("cart_rows").item(0);
@@ -536,8 +647,23 @@ public class PrestaShopServiceImplExport {
 		}
 	}
 	
+	/**
+	 * Create new Order/Saleorder on prestashop.
+	 * 
+	 * @param saleOrder object of sale order which are use to get details of saleOrder
+	 * @param id_address_delivery id of delivery address which are on prestashop
+	 * @param id_address_invoice id of invoice address which are on prestashop
+	 * @param cartId id of cart which are on prestashop
+	 * @param cart_id id of cart which are on prestashop
+	 * @param id_currency id of currency which are on prestashop
+	 * @param id_customer id of customer which are on prestashop
+	 * @param saleOrder_product_id id of product which are on prestashop
+	 * @param endDate get as per last batch executed
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 * @throws TransformerException
+	 */
 	public void createOrder(SaleOrder saleOrder, String id_address_delivery, String id_address_invoice,
-								String cartId, String cart_id, String id_currency, String id_customer, String[] saleOrder_product_id, ZonedDateTime endDate) throws PrestaShopWebserviceException, TransformerException {
+			String cartId, String cart_id, String id_currency, String id_customer, String[] saleOrder_product_id, ZonedDateTime endDate) throws PrestaShopWebserviceException, TransformerException {
 		
 		if (saleOrder.getPrestaShopId() == null) {
 			exportNewConnection("orders");
@@ -622,52 +748,21 @@ public class PrestaShopServiceImplExport {
 		saleOrderRepo.save(saleOrder);
 	}
 	
-	public List<String> getOrderDetailsIds(String orderId) throws PrestaShopWebserviceException {
-		
-		List<String> orderDetailsIds = new ArrayList<String>();
-		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
-		HashMap<String, String> orderDetailMap = new HashMap<String, String>();
-		orderDetailMap.put("id_order", orderId);
-		opt = new HashMap<String, Object>();
-		opt.put("resource", "order_details");
-		opt.put("filter", orderDetailMap);
-		Document str =  ws.get(opt);
-		
-		NodeList list = str.getElementsByTagName("order_details");
-		for(int i = 0; i < list.getLength(); i++) {
-		    Element element = (Element) list.item(i);
-		    NodeList nodeList = element.getElementsByTagName("order_detail");
-		    for(int j = 0; j < nodeList.getLength(); j++) {
-		    	Node order_detail = nodeList.item(j);
-		    	
-		    	if(nodeList.getLength() > 0) {
-		    		orderDetailsIds.add(order_detail.getAttributes().getNamedItem("id").getNodeValue());
-			    }
-		    	
-		    }
-		}
-		return orderDetailsIds;
-	}
-	
-	@Transactional
-	public void updateOrderStatus(SaleOrder saleOrder, String orderId) throws PrestaShopWebserviceException, TransformerException {
-		
-		exportNewConnection("order_histories");
-		schema.getElementsByTagName("id_order").item(0).setTextContent(orderId);
-		schema.getElementsByTagName("id_order_state").item(0).setTextContent("1");
-		opt.put("resource", "db_order_history");
-		opt.put("postXml", ws.DocumentToString(schema));
-		ws.add(opt);
-		
-		saleOrderRepo.save(saleOrder);
-	}
-	
+	/**
+	 * Add/Update Currency to prestashop.
+	 * 
+	 * @param endDate get as per last batch executed
+	 * @throws IOException
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 * @throws TransformerException
+	 */
 	@SuppressWarnings("deprecation")
 	@Transactional
 	public void exportAxelorCurrencies(ZonedDateTime endDate) throws IOException, PrestaShopWebserviceException, TransformerException {
 
 		this.exportLogObjectHeder("Currency");
 		List<Currency> currencies = null;
+		String prestaShopId = null;
 		
 		if(endDate == null) {
 			currencies = Beans.get(CurrencyRepository.class).all().fetch();
@@ -676,51 +771,58 @@ public class PrestaShopServiceImplExport {
 		}
 
 		for (Currency currency : currencies) {
-				try {
-					String prestaShopId = this.isCurrency(currency.getCode()); 
+			try {
+				prestaShopId = this.isCurrency(currency.getCode()); 
+				
+				if (currency.getPrestaShopId() == null) {
+					if(prestaShopId != null) {
+						this.exportUpdateConnection("currencies", prestaShopId);
+						currency.setPrestaShopId(prestaShopId);
+					} else {
+						this.exportNewConnection("currencies");
+					}
 					
-					if (currency.getPrestaShopId() == null) {
-						if(prestaShopId != null) {
-							this.exportUpdateConnection("currencies", prestaShopId);
-							currency.setPrestaShopId(prestaShopId);
-						} else {
-							this.exportNewConnection("currencies");
-						}
-						
-					} else {
-						this.exportUpdateConnection("currencies", currency.getPrestaShopId());
-					}
-
-					if (currency.getCode() != null && currency.getName() != null) {
-						schema.getElementsByTagName("name").item(0).setTextContent(currency.getName());
-						schema.getElementsByTagName("iso_code").item(0).setTextContent(currency.getCode());
-						schema.getElementsByTagName("conversion_rate").item(0).setTextContent("1.00");
-						schema.getElementsByTagName("deleted").item(0).setTextContent("0");
-						schema.getElementsByTagName("active").item(0).setTextContent("1");
-						
-					} else {
-						throw new AxelorException(String.format("Currency code /name is null or invalid"),IException.NO_VALUE);
-					}
-
-					if (currency.getPrestaShopId() == null) {
-						Document document = this.addRecord("currencies", schema);
-						currency.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
-						currencyRepo.save(currency);
-					} else {
-						this.updatRecord("currencies", schema, currency.getPrestaShopId());
-					}
-					currencyRepo.save(currency);
-					
-				} catch (AxelorException e) {
-					this.exportLog(currency.getId().toString(), e.getMessage());
-					continue;
-				} catch (Exception e) {
-					this.exportLog(currency.getId().toString(), e.getMessage());
-					continue;
+				} else {
+					this.exportUpdateConnection("currencies", currency.getPrestaShopId());
 				}
+
+				if (currency.getCode() != null && currency.getName() != null) {
+					schema.getElementsByTagName("name").item(0).setTextContent(currency.getName());
+					schema.getElementsByTagName("iso_code").item(0).setTextContent(currency.getCode());
+					schema.getElementsByTagName("conversion_rate").item(0).setTextContent("1.00");
+					schema.getElementsByTagName("deleted").item(0).setTextContent("0");
+					schema.getElementsByTagName("active").item(0).setTextContent("1");
+						
+				} else {
+					throw new AxelorException(String.format("Currency code /name is null or invalid"),IException.NO_VALUE);
+				}
+
+				if (currency.getPrestaShopId() == null) {
+					Document document = this.addRecord("currencies", schema);
+					currency.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
+					currencyRepo.save(currency);
+				} else {
+					this.updatRecord("currencies", schema, currency.getPrestaShopId());
+				}
+				currencyRepo.save(currency);
+					
+			} catch (AxelorException e) {
+				this.exportLog(currency.getId().toString(), e.getMessage());
+				continue;
+			} catch (Exception e) {
+				this.exportLog(currency.getId().toString(), e.getMessage());
+				continue;
 			}
-	}
+		}
+	}	
 	
+	/**
+	 * Add/Update Country to prestashop.
+	 * 
+	 * @param endDate get as per last batch executed
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 * @throws IOException
+	 */
 	@SuppressWarnings("deprecation")
 	public void exportAxelorCountries(ZonedDateTime endDate) throws PrestaShopWebserviceException, IOException {
 		
@@ -775,6 +877,13 @@ public class PrestaShopServiceImplExport {
 		}
 	}
 
+	/**
+	 * Add/Update Partner/Customer to prestashop.
+	 * 
+	 * @param endDate get as per last batch executed
+	 * @throws IOException
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 */
 	@Transactional
 	public void exportAxelorPartners(ZonedDateTime endDate) throws IOException, PrestaShopWebserviceException {
 
@@ -788,37 +897,46 @@ public class PrestaShopServiceImplExport {
 			partners = Beans.get(PartnerRepository.class).all().filter("isCustomer = true AND (self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null)", endDate, endDate).fetch();
 		}
 		
-			for (Partner partnerObj : partners) {
-				
-				try {
-					if (partnerObj.getPrestaShopId() == null) {
-						this.exportNewConnection("customers");
-					} else {
-						this.exportUpdateConnection("customers", partnerObj.getPrestaShopId());
-					}
+		for (Partner partnerObj : partners) {
+			
+			try {
+				if (partnerObj.getPrestaShopId() == null) {
+					this.exportNewConnection("customers");
+				} else {
+					this.exportUpdateConnection("customers", partnerObj.getPrestaShopId());
+				}	
 
-					partnerObj = this.addPartner(partnerObj);
+				partnerObj = this.addPartner(partnerObj);
 					
-					if (partnerObj.getPrestaShopId() == null) {
-						Document document = this.addRecord("customers", schema);
-						prestaShopId = document.getElementsByTagName("id").item(0).getTextContent();
-						partnerObj.setPrestaShopId(prestaShopId);
-						partnerRepo.save(partnerObj);
-					} else {
-						this.updatRecord("customers", schema, partnerObj.getPrestaShopId());
-					}
+				if (partnerObj.getPrestaShopId() == null) {
+					Document document = this.addRecord("customers", schema);
+					prestaShopId = document.getElementsByTagName("id").item(0).getTextContent();
+					partnerObj.setPrestaShopId(prestaShopId);
+					partnerRepo.save(partnerObj);
+				} else {
+					this.updatRecord("customers", schema, partnerObj.getPrestaShopId());
+				}
 
-				} catch (Exception e) {
-					if(cnt > 0) {
-                        cnt = 0;
-                        continue;
-                    }
-					this.exportLog(partnerObj.getId().toString(), e.getMessage());
+			} catch (Exception e) {
+				if(cnt > 0) {
+					cnt = 0;
 					continue;
 				}
+				this.exportLog(partnerObj.getId().toString(), e.getMessage());
+				continue;
 			}
+		}
 	}
 	
+
+	/**
+	 * Add/Update Address to prestashop.
+	 * 
+	 * @param endDate get as per last batch executed
+	 * @throws TransformerException
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 * @throws IOException
+	 */
 	@SuppressWarnings("deprecation")
 	@Transactional
 	public void exportAxelorPartnerAddresses(ZonedDateTime endDate) throws TransformerException, PrestaShopWebserviceException, IOException {
@@ -832,81 +950,89 @@ public class PrestaShopServiceImplExport {
 			partnerAddresses = Beans.get(PartnerAddressRepository.class).all().filter("(self.createdOn > ?1 OR self.updatedOn > ?2 OR self.address.updatedOn > ?3 OR self.address.prestaShopId = null) AND self.partner.prestaShopId != null", endDate, endDate, endDate).fetch();
 		}
 		
-			for (PartnerAddress partnerAddress : partnerAddresses) {
+		for (PartnerAddress partnerAddress : partnerAddresses) {
+			
+			try {
+				if (partnerAddress.getAddress().getPrestaShopId() == null) {
+					this.exportNewConnection("addresses");
+				} else {
+					this.exportUpdateConnection("addresses", partnerAddress.getAddress().getPrestaShopId());
+				}
 				
-				try {
-						if (partnerAddress.getAddress().getPrestaShopId() == null) {
-							this.exportNewConnection("addresses");
-						} else {
-							this.exportUpdateConnection("addresses", partnerAddress.getAddress().getPrestaShopId());
-						}
+				schema.getElementsByTagName("id_customer").item(0).setTextContent(partnerAddress.getPartner().getPrestaShopId());
+					
+				if(partnerAddress.getPartner().getPartnerTypeSelect() == 1) {
+					
+					if(!partnerAddress.getPartner().getContactPartnerSet().isEmpty()) {
 						
-						schema.getElementsByTagName("id_customer").item(0).setTextContent(partnerAddress.getPartner().getPrestaShopId());
-						
-						if(partnerAddress.getPartner().getPartnerTypeSelect() == 1) {
+						if (partnerAddress.getPartner().getContactPartnerSet().iterator().next().getName() != null && 
+								partnerAddress.getPartner().getContactPartnerSet().iterator().next().getFirstName() != null) {
 							
-							if(!partnerAddress.getPartner().getContactPartnerSet().isEmpty()) {
-								
-								if (partnerAddress.getPartner().getContactPartnerSet().iterator().next().getName() != null && 
-										partnerAddress.getPartner().getContactPartnerSet().iterator().next().getFirstName() != null) {
-									
-									schema.getElementsByTagName("company").item(0).setTextContent(partnerAddress.getPartner().getName());
-									schema.getElementsByTagName("firstname").item(0).setTextContent(partnerAddress.getPartner().getContactPartnerSet().iterator().next().getFirstName());
-									schema.getElementsByTagName("lastname").item(0).setTextContent(partnerAddress.getPartner().getContactPartnerSet().iterator().next().getName());
-									
-								} else {
-									throw new AxelorException(String.format("Company/Firstname is null or invalid"),IException.NO_VALUE);
-								}
-							} else {
-								throw new AxelorException(String.format("Contact is null or invalid"),IException.NO_VALUE);
-							}
+							schema.getElementsByTagName("company").item(0).setTextContent(partnerAddress.getPartner().getName());
+							schema.getElementsByTagName("firstname").item(0).setTextContent(partnerAddress.getPartner().getContactPartnerSet().iterator().next().getFirstName());
+							schema.getElementsByTagName("lastname").item(0).setTextContent(partnerAddress.getPartner().getContactPartnerSet().iterator().next().getName());
 							
 						} else {
-							if (partnerAddress.getPartner().getName() != null && partnerAddress.getPartner().getFirstName() != null) {
-								schema.getElementsByTagName("firstname").item(0).setTextContent(partnerAddress.getPartner().getFirstName());
-								schema.getElementsByTagName("lastname").item(0).setTextContent(partnerAddress.getPartner().getName());
-							} else {
-								throw new AxelorException(String.format("Company/Firstname is null or invalid"),IException.NO_VALUE);
-							}
+							throw new AxelorException(String.format("Company/Firstname is null or invalid"),IException.NO_VALUE);
 						}
-						
-						schema.getElementsByTagName("id_country").item(0).setTextContent(partnerAddress.getAddress().getAddressL7Country().getPrestaShopId());
-						schema.getElementsByTagName("alias").item(0).setTextContent("Main Addresses");
-						
-						if (partnerAddress.getAddress().getCity() != null) {
-							
-							String postCode = null;
-							String addString = partnerAddress.getAddress().getAddressL6();
-							String[] words = addString.split("\\s");
-							
-							if(partnerAddress.getAddress().getCity().getHasZipOnRight()) {
-								postCode = words[1];
-							} else {
-								postCode = words[0];
-							}
-							
-							schema.getElementsByTagName("address1").item(0).setTextContent(partnerAddress.getAddress().getAddressL4());
-							schema.getElementsByTagName("address2").item(0).setTextContent(partnerAddress.getAddress().getAddressL5());
-							schema.getElementsByTagName("postcode").item(0).setTextContent(postCode);
-							schema.getElementsByTagName("city").item(0).setTextContent(partnerAddress.getAddress().getCity().getName());
-						} else {
-							throw new AxelorException(String.format("City is null"), IException.NO_VALUE);
-						}
-
-						if (partnerAddress.getAddress().getPrestaShopId() == null) {
-							Document document = this.addRecord("addresses", schema);
-							partnerAddress.getAddress().setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
-							partnerRepo.save(partnerAddress.getPartner());
-						} else {
-							this.updatRecord("addresses", schema, partnerAddress.getAddress().getPrestaShopId());
-						}
-						
-					} catch (AxelorException e) {
-						this.exportLog(partnerAddress.getAddress().getId().toString(), e.getMessage());
+					} else {
+						throw new AxelorException(String.format("Contact is null or invalid"),IException.NO_VALUE);
 					}
+					
+				} else {
+					if (partnerAddress.getPartner().getName() != null && partnerAddress.getPartner().getFirstName() != null) {
+						schema.getElementsByTagName("firstname").item(0).setTextContent(partnerAddress.getPartner().getFirstName());
+						schema.getElementsByTagName("lastname").item(0).setTextContent(partnerAddress.getPartner().getName());
+					} else {
+						throw new AxelorException(String.format("Company/Firstname is null or invalid"),IException.NO_VALUE);
+					}
+				}
+					
+				schema.getElementsByTagName("id_country").item(0).setTextContent(partnerAddress.getAddress().getAddressL7Country().getPrestaShopId());
+				schema.getElementsByTagName("alias").item(0).setTextContent("Main Addresses");
+				
+				if (partnerAddress.getAddress().getCity() != null) {
+					
+					String postCode = null;
+					String addString = partnerAddress.getAddress().getAddressL6();
+					String[] words = addString.split("\\s");
+					
+					if(partnerAddress.getAddress().getCity().getHasZipOnRight()) {
+						postCode = words[1];
+					} else {
+						postCode = words[0];
+					}
+					
+					schema.getElementsByTagName("address1").item(0).setTextContent(partnerAddress.getAddress().getAddressL4());
+					schema.getElementsByTagName("address2").item(0).setTextContent(partnerAddress.getAddress().getAddressL5());
+					schema.getElementsByTagName("postcode").item(0).setTextContent(postCode);
+					schema.getElementsByTagName("city").item(0).setTextContent(partnerAddress.getAddress().getCity().getName());
+				} else {
+					throw new AxelorException(String.format("City is null"), IException.NO_VALUE);
+				}		
+
+				if (partnerAddress.getAddress().getPrestaShopId() == null) {
+					Document document = this.addRecord("addresses", schema);
+					partnerAddress.getAddress().setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
+					partnerRepo.save(partnerAddress.getPartner());
+				} else {
+					this.updatRecord("addresses", schema, partnerAddress.getAddress().getPrestaShopId());
+				}
+						
+			} catch (AxelorException e) {
+				this.exportLog(partnerAddress.getAddress().getId().toString(), e.getMessage());
 			}
 		}
-	
+	}
+
+	/**
+	 * Add/Update ProductCategory to prestashop.
+	 * 
+	 * @param endDate get as per last batch executed
+	 * @throws IOException
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 * @throws TransformerException
+	 */
 	@SuppressWarnings("deprecation")
 	@Transactional
 	public void exportAxelorProductCategories(ZonedDateTime endDate) throws IOException, PrestaShopWebserviceException, TransformerException {
@@ -921,49 +1047,57 @@ public class PrestaShopServiceImplExport {
 		}
 		
 		for (ProductCategory category : categories) {
+			
+			try {
 				
-				try {
-					
-					if (category.getPrestaShopId() == null) {
-						this.exportNewConnection("categories");
-					} else {
-						if(category.getPrestaShopId().equals("1") || category.getPrestaShopId().equals("2")) {
-							continue;
-						}
-						this.exportUpdateConnection("categories", category.getPrestaShopId());
-						Node categoryRoot = schema.getElementsByTagName("category").item(0);
-						Node level_depth = schema.getElementsByTagName("level_depth").item(0);
-						Node nb_products_recursive = schema.getElementsByTagName("nb_products_recursive").item(0);
-						categoryRoot.removeChild(level_depth);
-						categoryRoot.removeChild(nb_products_recursive);
+				if (category.getPrestaShopId() == null) {
+					this.exportNewConnection("categories");
+				} else {
+					if(category.getPrestaShopId().equals("1") || category.getPrestaShopId().equals("2")) {
+						continue;
 					}
-
-					if (!category.getName().equals("") && !category.getCode().equals("")) {
-
-						category = this.addCategory(category);
-						if (category.getPrestaShopId() == null) {
-							Document document = this.addRecord("categories", schema);
-							category.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
-							productCategoryRepo.save(category);
-						} else {
-							this.updatRecord("categories", schema, category.getPrestaShopId());
-						}
-
-					} else {
-						throw new AxelorException(String.format("Product Category is null or invalid"),	IException.NO_VALUE);
-					}
-
-				} catch (AxelorException e) {
-					this.exportLog(category.getId().toString(), e.getMessage());
-					continue;
-
-				} catch (Exception e) {
-					this.exportLog(category.getId().toString(), e.getMessage());
-					continue;
+					this.exportUpdateConnection("categories", category.getPrestaShopId());
+					Node categoryRoot = schema.getElementsByTagName("category").item(0);
+					Node level_depth = schema.getElementsByTagName("level_depth").item(0);
+					Node nb_products_recursive = schema.getElementsByTagName("nb_products_recursive").item(0);
+					categoryRoot.removeChild(level_depth);
+					categoryRoot.removeChild(nb_products_recursive);
 				}
+
+				if (!category.getName().equals("") && !category.getCode().equals("")) {
+					
+					category = this.addCategory(category);
+					if (category.getPrestaShopId() == null) {
+						Document document = this.addRecord("categories", schema);
+						category.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
+						productCategoryRepo.save(category);
+					} else {
+						this.updatRecord("categories", schema, category.getPrestaShopId());
+					}
+
+				} else {
+					throw new AxelorException(String.format("Product Category is null or invalid"),	IException.NO_VALUE);
+				}
+
+			} catch (AxelorException e) {
+				this.exportLog(category.getId().toString(), e.getMessage());
+				continue;
+
+			} catch (Exception e) {
+				this.exportLog(category.getId().toString(), e.getMessage());
+				continue;
+			}
 		}
 	}
 
+	/**
+	 * Add/Update Product to prestashop.
+	 * 
+	 * @param endDate get as per last batch executed
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 * @throws IOException
+	 * @throws TransformerException
+	 */
 	@SuppressWarnings("deprecation")
 	@Transactional
 	public void exportAxelorProducts(ZonedDateTime endDate) throws PrestaShopWebserviceException, IOException, TransformerException {
@@ -977,69 +1111,77 @@ public class PrestaShopServiceImplExport {
 			products = Beans.get(ProductRepository.class).all().filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null", endDate, endDate).fetch();
 		}
 		
-			for (Product product : products) {
-				
-				try {
-					if (product.getPrestaShopId() == null) {
-						this.exportNewConnection("products");
-					} else {
-						exportUpdateConnection("products", product.getPrestaShopId());
-						Node productRoot = schema.getElementsByTagName("product").item(0);
-						Node manufacturer_name = schema.getElementsByTagName("manufacturer_name").item(0);
-						Node quantity = schema.getElementsByTagName("quantity").item(0);
-						productRoot.removeChild(manufacturer_name);
-						productRoot.removeChild(quantity);
-					}
-
-					if (!product.getName().equals("")) {
-						this.addProduct(product);
-						
-						if (product.getPrestaShopId() == null) {
-							Document document = addRecord("products", schema);
-							product.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
-							if (product.getPicture() != null) {
-								this.addImages(product.getPicture());
-							}
-							
-							NodeList nodeList = document.getElementsByTagName("stock_availables").item(0).getChildNodes();
-							String stock_id = null;
-							for (int i = 0; i < nodeList.getLength(); i++) {
-								if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
-									Element element = (Element) nodeList.item(i);
-										stock_id = element.getElementsByTagName("id").item(0).getTextContent().toString();
-								}
-							}
-							
-							List<StockMoveLine> moveLine = Beans.get(StockMoveLineRepository.class).all().filter("self.stockMove.statusSelect = 3 and (self.stockMove.fromLocation.typeSelect = 1 or self.stockMove.toLocation.typeSelect = 1) and self.product = ?", product).fetch();
-							BigDecimal totalRealQty = BigDecimal.ZERO;
-							
-							if(!moveLine.isEmpty()) {
-								
-								for(int i=0 ; i<moveLine.size(); i++) {
-									totalRealQty =  totalRealQty.add(moveLine.get(i).getRealQty());
-								}
-								this.addStock(stock_id, totalRealQty.setScale(0, RoundingMode.HALF_UP).toString());
-							}
-							
-							productRepo.save(product);
-							
-						} else {
-							this.updatRecord("products", schema, product.getPrestaShopId());
-						}
-
-					} else {
-						throw new AxelorException(String.format("Product Name is null or invalid"), IException.NO_VALUE);
-					}
-				} catch (AxelorException e) {
-					this.exportLog(product.getId().toString(), e.getMessage());
-					continue;
-				} catch (Exception e) {
-					this.exportLog(product.getId().toString(), e.getMessage());
-					continue	;
+		for (Product product : products) {
+			
+			try {
+				if (product.getPrestaShopId() == null) {
+					this.exportNewConnection("products");
+				} else {
+					exportUpdateConnection("products", product.getPrestaShopId());
+					Node productRoot = schema.getElementsByTagName("product").item(0);
+					Node manufacturer_name = schema.getElementsByTagName("manufacturer_name").item(0);
+					Node quantity = schema.getElementsByTagName("quantity").item(0);
+					productRoot.removeChild(manufacturer_name);
+					productRoot.removeChild(quantity);
 				}
+
+				if (!product.getName().equals("")) {
+					this.addProduct(product);
+					
+					if (product.getPrestaShopId() == null) {
+						Document document = addRecord("products", schema);
+						product.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
+						if (product.getPicture() != null) {
+							this.addImages(product.getPicture());
+						}
+						
+						NodeList nodeList = document.getElementsByTagName("stock_availables").item(0).getChildNodes();
+						String stock_id = null;
+						for (int i = 0; i < nodeList.getLength(); i++) {
+							if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
+								Element element = (Element) nodeList.item(i);
+								stock_id = element.getElementsByTagName("id").item(0).getTextContent().toString();
+							}
+						}
+						
+						List<StockMoveLine> moveLine = Beans.get(StockMoveLineRepository.class).all().filter("self.stockMove.statusSelect = 3 and (self.stockMove.fromLocation.typeSelect = 1 or self.stockMove.toLocation.typeSelect = 1) and self.product = ?", product).fetch();
+						BigDecimal totalRealQty = BigDecimal.ZERO;
+							
+						if(!moveLine.isEmpty()) {
+								
+							for(int i=0 ; i<moveLine.size(); i++) {
+								totalRealQty =  totalRealQty.add(moveLine.get(i).getRealQty());
+							}
+							this.addStock(stock_id, totalRealQty.setScale(0, RoundingMode.HALF_UP).toString());
+						}
+						
+						productRepo.save(product);
+						
+					} else {
+						this.updatRecord("products", schema, product.getPrestaShopId());
+					}	
+					
+				} else {
+					throw new AxelorException(String.format("Product Name is null or invalid"), IException.NO_VALUE);
+				}
+			} catch (AxelorException e) {
+				this.exportLog(product.getId().toString(), e.getMessage());
+				continue;
+			} catch (Exception e) {
+				this.exportLog(product.getId().toString(), e.getMessage());
+				continue;
 			}
+		}
 	}
 	
+	/**
+	 * Add/Update SaleOrder to prestashop.
+	 * 
+	 * @param endDate get as per last batch executed
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 * @throws TransformerException
+	 * @throws IOException
+	 */
 	@SuppressWarnings("deprecation")
 	@Transactional
 	public void exportAxelorSaleOrders(ZonedDateTime endDate) throws PrestaShopWebserviceException, TransformerException, IOException {
@@ -1134,53 +1276,59 @@ public class PrestaShopServiceImplExport {
 			}
 	}
 	
+	/**
+	 * Add/Update SaleOrderLine to prestashop.
+	 * 
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 * @throws TransformerException
+	 * @throws IOException
+	 */
 	@SuppressWarnings("deprecation")
 	public void exportAxelorSaleOrderLines() throws PrestaShopWebserviceException, TransformerException, IOException {
 			
-			this.exportLogObjectHeder("SaleOrderLines");
-			List<SaleOrderLine> saleOrderLines = null;
-			
-			if(isStatus == true) {
-				saleOrderLines = Beans.get(SaleOrderLineRepository.class).all().filter("self.saleOrder.prestaShopId != null").fetch();
-			} else {
-				saleOrderLines = Beans.get(SaleOrderLineRepository.class).all().filter("self.saleOrder.statusSelect = 1 AND self.saleOrder.prestaShopId != null").fetch();
-			}
-			
-			for(SaleOrderLine orderLine : saleOrderLines) {
-				this.exportResetOrderDetails(orderLine.getSaleOrder().getPrestaShopId());
-			}
-			
-			for(SaleOrderLine orderLine : saleOrderLines) {
-				try {
+		this.exportLogObjectHeder("SaleOrderLines");
+		List<SaleOrderLine> saleOrderLines = null;
+		
+		if(isStatus == true) {
+			saleOrderLines = Beans.get(SaleOrderLineRepository.class).all().filter("self.saleOrder.prestaShopId != null").fetch();
+		} else {
+			saleOrderLines = Beans.get(SaleOrderLineRepository.class).all().filter("self.saleOrder.statusSelect = 1 AND self.saleOrder.prestaShopId != null").fetch();
+		}
+		
+		for(SaleOrderLine orderLine : saleOrderLines) {
+			this.exportResetOrderDetails(orderLine.getSaleOrder().getPrestaShopId());
+		}
+		
+		for(SaleOrderLine orderLine : saleOrderLines) {
+			try {
+				
+				if(orderLine.getProduct() != null && orderLine.getSaleOrder().getPrestaShopId() != null) {
 					
-					if(orderLine.getProduct() != null && orderLine.getSaleOrder().getPrestaShopId() != null) {
-						
-						this.exportNewConnection("order_details");
-						
-						schema.getElementsByTagName("id_order").item(0).setTextContent(orderLine.getSaleOrder().getPrestaShopId());
-						schema.getElementsByTagName("product_id").item(0).setTextContent(orderLine.getProduct().getPrestaShopId());
-						schema.getElementsByTagName("product_name").item(0).setTextContent(orderLine.getProduct().getName());
-						schema.getElementsByTagName("product_quantity").item(0).setTextContent(orderLine.getQty().setScale(0, RoundingMode.HALF_UP).toString());
-						schema.getElementsByTagName("unit_price_tax_incl").item(0).setTextContent(orderLine.getPrice().setScale(2, RoundingMode.HALF_UP).toString());
-						schema.getElementsByTagName("unit_price_tax_excl").item(0).setTextContent(orderLine.getPrice().setScale(2, RoundingMode.HALF_UP).toString());
-						schema.getElementsByTagName("product_price").item(0).setTextContent(orderLine.getPrice().setScale(2, RoundingMode.HALF_UP).toString());
-						schema.getElementsByTagName("id_warehouse").item(0).setTextContent("0");
-						schema.getElementsByTagName("id_shop").item(0).setTextContent("1");
-						
-						Document document = this.addRecord("order_details", schema);
-						orderLine.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
-						saleOrderLineRepo.save(orderLine);
-
-					} else {
-						throw new AxelorException(String.format("This order is not on prestashop or invalid product"),IException.NO_VALUE);
-					}
-				} catch (AxelorException e) {
-					this.exportLog(orderLine.getId().toString(), e.getMessage());
-					continue;
-				} catch (Exception e) {
-					this.exportLog(orderLine.getId().toString(), e.getMessage());
-					continue;
+					this.exportNewConnection("order_details");
+					schema.getElementsByTagName("id_order").item(0).setTextContent(orderLine.getSaleOrder().getPrestaShopId());
+					schema.getElementsByTagName("product_id").item(0).setTextContent(orderLine.getProduct().getPrestaShopId());
+					schema.getElementsByTagName("product_name").item(0).setTextContent(orderLine.getProduct().getName());
+					schema.getElementsByTagName("product_quantity").item(0).setTextContent(orderLine.getQty().setScale(0, RoundingMode.HALF_UP).toString());
+					schema.getElementsByTagName("unit_price_tax_incl").item(0).setTextContent(orderLine.getPrice().setScale(2, RoundingMode.HALF_UP).toString());
+					schema.getElementsByTagName("unit_price_tax_excl").item(0).setTextContent(orderLine.getPrice().setScale(2, RoundingMode.HALF_UP).toString());
+					schema.getElementsByTagName("product_price").item(0).setTextContent(orderLine.getPrice().setScale(2, RoundingMode.HALF_UP).toString());
+					schema.getElementsByTagName("id_warehouse").item(0).setTextContent("0");
+					schema.getElementsByTagName("id_shop").item(0).setTextContent("1");
+					
+					Document document = this.addRecord("order_details", schema);
+					orderLine.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
+					saleOrderLineRepo.save(orderLine);
+					
+				} else {
+					throw new AxelorException(String.format("This order is not on prestashop or invalid product"),IException.NO_VALUE);
 				}
+			} catch (AxelorException e) {
+				this.exportLog(orderLine.getId().toString(), e.getMessage());
+				continue;
+			} catch (Exception e) {
+				this.exportLog(orderLine.getId().toString(), e.getMessage());
+				continue;
 			}
 		}
+	}
 }

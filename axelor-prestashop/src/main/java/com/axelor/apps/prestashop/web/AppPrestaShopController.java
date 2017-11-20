@@ -31,10 +31,17 @@ public class AppPrestaShopController {
 	@Inject
 	private AppPrestaShopService service;
 	
+	/**
+	 * Test connection with prestashop
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws PrestaShopWebserviceException 
+	 * @throws TransformerException
+	 */
 	public void testConnection(ActionRequest request, ActionResponse response) throws PrestaShopWebserviceException, TransformerException {
 		
 		AppPrestashop ps = request.getContext().asType(AppPrestashop.class);
-		
 		boolean test = service.connection(ps);
 		
 		if(test) {
@@ -44,6 +51,12 @@ public class AppPrestaShopController {
 		}
 	}
 	
+	/**
+	 * Validate url which are set in configuration
+	 * 
+	 * @param request
+	 * @param response
+	 */
 	public void validUrl(ActionRequest request, ActionResponse response) {
 		
 		AppPrestashop ps = request.getContext().asType(AppPrestashop.class);

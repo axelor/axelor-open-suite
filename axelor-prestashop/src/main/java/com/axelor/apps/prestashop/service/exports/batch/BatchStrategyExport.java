@@ -19,9 +19,11 @@ package com.axelor.apps.prestashop.service.exports.batch;
 
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.prestashop.service.exports.PrestaShopServiceExport;
+import com.google.inject.Inject;
 
 public abstract class BatchStrategyExport extends AbstractBatch {
-
+	
+	@Inject
 	protected PrestaShopServiceExport prestaShopServiceExport;
 	
 	protected BatchStrategyExport(PrestaShopServiceExport prestaShopServiceExport) {

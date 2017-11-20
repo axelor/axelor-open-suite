@@ -11,7 +11,7 @@
     </grid>
     
    <form name="prestashop-batch-form" title="PrestaShop Batch Import/Export" model="com.axelor.apps.prestashop.db.PrestaShopBatch" 
-   onLoad="action-prestashop-button-visiblity" onNew="action-prestashop-default-data,action-prestashop-button-visiblity">
+  		 onLoad="action-prestashop-button-visiblity" onNew="action-prestashop-default-data,action-prestashop-button-visiblity">
 	   	<panel name="main" >
 	   		<field name="actionSelect" onChange="action-prestashop-button-visiblity"/>
 	    	<field name="code"/>
