@@ -70,6 +70,7 @@ import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.prestashop.db.SaleOrderStatus;
+import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.PSWebServiceClient;
 import com.axelor.apps.prestashop.service.PrestaShopWebserviceException;
 import com.axelor.apps.sale.db.CancelReason;
@@ -382,7 +383,7 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 	public MetaFile importProductImages(String productId, String imgId) throws IOException {
 
 		String path = AppSettings.get().get("file.upload.dir");
-		String imageUrl = "http://localhost/prestashop/api/images/products/" + productId + "/" + imgId;
+		String imageUrl = shopUrl + "/api/images/products/" + productId + "/" + imgId;
 		String destinationFile = path + File.separator + productId + ".jpg";
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpGet httpGet = new HttpGet(imageUrl);
@@ -529,7 +530,7 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 							currency.setCode(code);
 							currency.setName(name);
 						} else {
-							throw new AxelorException(String.format("Currency code / name is null or invalid"), IException.NO_VALUE);
+							throw new AxelorException(IExceptionMessage.INVALID_CURRENCY, IException.NO_VALUE);
 						}
 						currencyRepo.save(currency);
 						
@@ -571,7 +572,7 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 						alpha2Code = element.getElementsByTagName("iso_code").item(i).getTextContent();
 						
 						if(name.isEmpty()) {
-							throw new AxelorException(String.format("Country is null or invalid"), IException.NO_VALUE);
+							throw new AxelorException(IExceptionMessage.INVALID_COUNTRY, IException.NO_VALUE);
 						}
 						
 						Country country = Beans.get(CountryRepository.class).all().filter("self.alpha2Code = ?", alpha2Code).fetchOne();
@@ -690,7 +691,7 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 								}
 							}
 						} else {
-							throw new AxelorException(String.format("Firstname / Lastname / Company is null or invalid"), IException.NO_VALUE);
+							throw new AxelorException(IExceptionMessage.INVALID_COMPANY, IException.NO_VALUE);
 						}
 
 						partner.setTitleSelect(titleSelect);
@@ -770,7 +771,7 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 					
 					try {
 						if(partnerId == null || partnerId.equals("0"))
-							throw new AxelorException(String.format("Partner Address is null or invalid"), IException.NO_VALUE);
+							throw new AxelorException(IExceptionMessage.INVALID_ADDRESS, IException.NO_VALUE);
 						
 						addressId = element.getElementsByTagName("id").item(i).getTextContent();
 						addressL4 = element.getElementsByTagName("address1").item(i).getTextContent();
@@ -788,7 +789,7 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 						
 						Country country = Beans.get(CountryRepository.class).all().filter("self.prestaShopId = ?", countryId).fetchOne();
 						if(country == null)
-							throw new AxelorException(String.format("Country is null or invalid"), IException.NO_VALUE);
+							throw new AxelorException(IExceptionMessage.INVALID_COUNTRY, IException.NO_VALUE);
 							
 						if(address == null) {
 							address = new Address();
@@ -899,7 +900,7 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 						}
 
 						if (name.equals(null) || code.equals(null)) {
-							throw new AxelorException(String.format("Null Category"), IException.NO_VALUE);
+							throw new AxelorException(IExceptionMessage.INVALID_PRODUCT_CATEGORY, IException.NO_VALUE);
 						}
 
 						productCategory.setCode(code);
@@ -971,7 +972,7 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 						if (!element.getElementsByTagName("name").item(0).getFirstChild().getTextContent().equals(null)) {
 							name = element.getElementsByTagName("name").item(0).getFirstChild().getTextContent();
 						} else {
-							throw new AxelorException(String.format("Product name is null or invalid"), IException.NO_VALUE);
+							throw new AxelorException(IExceptionMessage.INVALID_PRODUCT, IException.NO_VALUE);
 						}
 						
 						if (!name.equals(null)) {
@@ -1047,7 +1048,7 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 						if (!element.getElementsByTagName("id_customer").item(0).getTextContent().isEmpty()) {
 							clientPartner = Long.parseLong(element.getElementsByTagName("id_customer").item(0).getTextContent());
 						} else {
-							throw new AxelorException(String.format("Customer in order null or invalid"), IException.NO_VALUE);
+							throw new AxelorException(IExceptionMessage.INVALID_CUSTOMER, IException.NO_VALUE);
 						}
 
 						partner = Beans.get(PartnerRepository.class).all().filter("self.prestaShopId = ?", clientPartner).fetchOne();
@@ -1055,10 +1056,10 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 						currency = Beans.get(CurrencyRepository.class).all().filter("self.prestaShopId = ?" , element.getElementsByTagName("id_currency").item(0).getTextContent()).fetchOne();
 						
 						if(partner == null)
-							throw new AxelorException(String.format("Customer is null or invalid"),IException.NO_VALUE);
+							throw new AxelorException(IExceptionMessage.INVALID_CUSTOMER, IException.NO_VALUE);
 						
 						if(currency == null)
-							throw new AxelorException(String.format("Currency is null or invalid"),IException.NO_VALUE);
+							throw new AxelorException(IExceptionMessage.INVALID_CURRENCY, IException.NO_VALUE);
 						
 						String deliveryAddressId = element.getElementsByTagName("id_address_delivery").item(0).getTextContent();
 						String invoiceAddressId = element.getElementsByTagName("id_address_invoice").item(0).getTextContent();
@@ -1139,7 +1140,7 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 						SaleOrderLine saleOrderLine = Beans.get(SaleOrderLineRepository.class).all().filter("self.prestaShopId = ?", id).fetchOne();
 						
 						if(saleOrder == null)
-							throw new AxelorException(String.format("Order null or invalid"), IException.NO_VALUE);
+							throw new AxelorException(IExceptionMessage.INVALID_ORDER, IException.NO_VALUE);
 						
 						if(saleOrderLine == null) {
 							isNewSaleOrderLine = true;
@@ -1147,7 +1148,7 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 						}
 						
 						if(product == null)
-							throw new AxelorException(String.format("Product null or invalid"), IException.NO_VALUE);
+							throw new AxelorException(IExceptionMessage.INVALID_PRODUCT, IException.NO_VALUE);
 						
 						saleOrderLine.setProduct(product);	
 						saleOrderLine.setProductName(element.getElementsByTagName("product_name").item(i).getTextContent());
