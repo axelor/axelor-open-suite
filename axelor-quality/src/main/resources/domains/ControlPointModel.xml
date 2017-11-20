@@ -17,7 +17,6 @@
 		<string name="notes" title="Notes"/>
 		<string name="messageIfFailure" title="Message if failure"/>
 		<many-to-one name="qualityProcess" title="counter" ref="QualityProcess"/>
-		<track/>
 	</entity>
 
 </domain-models>
