@@ -2,7 +2,8 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-    <grid model="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging lines" name="logistical-form-line-grid">
+    <grid model="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging lines" name="logistical-form-line-grid"
+        orderBy="sequence">
         <hilite strong="true" color="default" if="$contains([1, 2], typeSelect)" />
         <field name="typeSelect" onChange="action-logistical-form-line-type-change" />
         <field name="stockMoveLine" onSelect="action-logistical-form-line-stock-move-line-domain" onChange="action-logistical-form-line-stock-move-line-change"
@@ -20,6 +21,7 @@
         <field name="grossWeight" readonlyIf="typeSelect == 3" />
         <field name="dimensions" readonlyIf="typeSelect == 3" />
         <field name="logisticalForm.deliverToCustomerPartner" form-view="partner-customer-form" hidden="true" />
+        <field name="sequence" hidden="true" />
     </grid>
 
     <form model="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging line" name="logistical-form-line-form"

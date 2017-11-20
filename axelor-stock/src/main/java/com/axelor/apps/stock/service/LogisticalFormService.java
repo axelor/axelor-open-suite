@@ -131,4 +131,12 @@ public interface LogisticalFormService {
 	 */
 	void sortLines(LogisticalForm logisticalForm);
 
+	/**
+	 * Get the list of logistical form IDs for the given stock move.
+	 * 
+	 * @param stockMove
+	 * @return
+	 */
+	List<Long> getIdList(StockMove stockMove);
+
 }

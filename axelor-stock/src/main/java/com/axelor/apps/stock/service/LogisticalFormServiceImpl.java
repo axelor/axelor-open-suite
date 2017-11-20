@@ -32,6 +32,8 @@ import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.TypedQuery;
+
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.axelor.apps.stock.db.LogisticalForm;
@@ -44,12 +46,14 @@ import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.apps.stock.exception.LogisticalFormWarning;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
+import com.google.common.collect.Lists;
 
 public class LogisticalFormServiceImpl implements LogisticalFormService {
 
@@ -389,6 +393,18 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 		if (logisticalForm.getLogisticalFormLineList() != null) {
 			logisticalForm.getLogisticalFormLineList().sort(Comparator.comparing(LogisticalFormLine::getSequence));
 		}
+	}
+
+	@Override
+	public List<Long> getIdList(StockMove stockMove) {
+		TypedQuery<LogisticalForm> query = JPA.em().createQuery("SELECT DISTINCT self FROM LogisticalForm self "
+				+ "JOIN self.logisticalFormLineList logisticalFormLine "
+				+ "WHERE logisticalFormLine.stockMoveLine.stockMove = :stockMove", LogisticalForm.class);
+		query.setParameter("stockMove", stockMove);
+		List<LogisticalForm> resultList = query.getResultList();
+
+		return resultList.isEmpty() ? Lists.newArrayList(0L)
+				: resultList.stream().map(LogisticalForm::getId).collect(Collectors.toList());
 	}
 
 }

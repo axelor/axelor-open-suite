@@ -107,7 +107,8 @@
 	  </panel>
 	  <panel-tabs>
 	    <panel-related name="stockMoveLineListPanel" title="Stock move line" field="stockMoveLineList" onChange="action-stock-move-method-compute, action-stock-move-line-method-change-conformity" readonlyIf="statusSelect == 3" form-view="stock-move-line-form" grid-view="stock-move-line-grid"/>
-	    <panel name="configuration" title="Configuration"  if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" >
+	    <panel-dashlet action="action-stock-move-view-logistical-forms" showIf="typeSelect == 2" title="Logistical forms" />
+        <panel name="configuration" title="Configuration"  if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" >
 	      <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="sale-order-form" grid-view="sale-order-grid"/>
 	      <field name="purchaseOrder" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
 	      <field name="invoice" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="invoice-form" grid-view="invoice-grid"/>
@@ -392,7 +393,15 @@
 	    <error message="Please fill in the source (from) location address to get the delivery itinerary." if="fromLocation?.address == null"/>
 	    <error message="Please fill in the delivery (to) address to get the delivery itinerary." if="toAddress == null"/>
 	</action-validate>
-	
+
+    <action-view name="action-stock-move-view-logistical-forms" title="Logistical forms"
+        model="com.axelor.apps.stock.db.LogisticalForm">
+        <view type="grid" name="logistical-form-stock-move-grid" />
+        <view type="form" name="logistical-form-form" />
+        <domain>self.id IN (:logisticalFormIdList)</domain>
+        <context name="logisticalFormIdList" expr="call: com.axelor.apps.stock.service.LogisticalFormService:getIdList(__this__)" />
+    </action-view>
+
 	<search-filters name="customer-deliveries-filters" model="com.axelor.apps.stock.db.StockMove" title="Customer deliveries filters">
 		<filter title="Deliveries to prepare">
 			<domain>self.statusSelect = 2</domain>
