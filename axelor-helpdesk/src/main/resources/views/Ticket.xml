@@ -12,6 +12,7 @@
 		<field name="ticketType"/>
 		<field name="startDateT"/>
 		<field name="endDateT"/>
+		<field name="deadlineDateT"/>
 		<field name="assignedTo"/>
 		<field name="priority"/>
 		<field name="statusSelect"/>
@@ -106,7 +107,7 @@
 	</action-record>
 	
 	<action-record name="action-record-to-fill-dates" model="com.axelor.apps.helpdesk.db.Ticket">
-		<field name="startDateT" expr="eval: LocalDateTime.now()"/>
+		<field name="startDateT" expr="eval: __datetime__"/>
 	</action-record>
 	
 	<action-attrs name="action-ticket-domain-on-contact-partner">
