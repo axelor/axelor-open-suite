@@ -7,11 +7,12 @@
     <entity name="LogisticalForm">
         <string name="deliveryNumber" namecolumn="true" />
         <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" />
-        <many-to-one name="deliverToCustomer" ref="com.axelor.apps.base.db.Partner" required="true" />
+        <many-to-one name="deliverToCustomerPartner" ref="com.axelor.apps.base.db.Partner" required="true"
+            title="Deliver to customer" />
         <date name="collectionDate" required="true" />
 
-        <many-to-one name="carrier" ref="com.axelor.apps.base.db.Partner" />
-        <many-to-one name="forwarder" ref="com.axelor.apps.base.db.Partner" />
+        <many-to-one name="carrierPartner" ref="com.axelor.apps.base.db.Partner" title="Carrier" />
+        <many-to-one name="forwarderPartner" ref="com.axelor.apps.base.db.Partner" title="Forwarder" />
         <many-to-one name="incoterm" ref="com.axelor.apps.stock.db.Incoterm" />
         <string name="tracking" />
         <decimal name="totalGrossWeight" readonly="true" precision="19" scale="3" />
