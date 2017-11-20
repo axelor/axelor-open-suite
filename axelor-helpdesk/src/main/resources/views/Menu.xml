@@ -74,7 +74,7 @@
 	<action-view name="helpdesk.report.ticket" title="Ticket Details">
 		<view type="dashboard" name="helpdesk.ticket.dashboard"/>
 		<context name="_user_id" expr="eval:__user__.id" />
-		<context name="_myActiveTeam" expr="eval:__user__.activeTeam.id"/>
+		<context name="_myActiveTeam" expr="eval:__user__.activeTeam != null ? __user__.activeTeam.id : 0"/>
 	</action-view>
 	
 	<menuitem title="SLA" name="helpdesk-report-sla" action="helpdesk.report.sla" parent="helpdesk-reporting" if="__config__.app.getApp('helpdesk').getIsSla()"/>
