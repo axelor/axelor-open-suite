@@ -4,8 +4,8 @@
 
     <grid model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical forms" name="logistical-form-grid">
         <field name="deliveryNumber" />
-        <field name="company" />
-        <field name="deliverToCustomer" />
+        <field name="company" form-view="company-form" grid-view="company-grid" />
+        <field name="deliverToCustomer" form-view="partner-customer-form" grid-view="partner-customer-grid" />
         <field name="collectionDate" />
         <field name="statusSelect" />
     </grid>
@@ -14,42 +14,47 @@
         width="large" onNew="action-logistical-form-new" onSave="action-logistical-form-save">
         <toolbar>
             <button name="carrierValidatedBtn" title="Carrier validated" showIf="statusSelect == 1" readonlyIf="!logisticalFormLineList.length"
-                onClick="action-logistical-form-change-status" />
+                onClick="action-logistical-form-change-status" icon="fa-check" />
             <button name="collectedBtn" title="Collected" showIf="statusSelect == 2" readonlyIf="!logisticalFormLineList.length"
-                onClick="action-logistical-form-change-status" />
+                onClick="action-logistical-form-change-status" icon="fa-truck" />
             <button name="packagingListBtn" title="Print packaging list" showIf="statusSelect > 1" readonlyIf="!logisticalFormLineList.length"
                 onClick="action-logistical-form-print-packaging-list" icon="fa-print" if-module="axelor-supplychain" />
         </toolbar>
         <panel colSpan="12" readonlyIf="statusSelect > 1">
             <field name="deliveryNumber" />
-            <field name="company" onChange="action-logistical-form-company-change" />
+            <field name="company" onChange="action-logistical-form-company-change" form-view="company-form"
+                grid-view="company-grid" canEdit="false" />
             <field name="deliverToCustomer" domain="self.isCustomer = TRUE AND :company MEMBER OF self.companySet"
-                onChange="action-logistical-form-partner-change" />
+                onChange="action-logistical-form-partner-change" form-view="partner-customer-form" grid-view="partner-customer-grid"
+                canEdit="false" />
             <field name="collectionDate" />
         </panel>
         <panel-tabs colSpan="12" readonlyIf="statusSelect > 1">
             <panel title="General">
                 <field name="statusSelect" colSpan="12" widget="NavSelect" />
-                <field name="carrier" domain="self.isCarrier = TRUE AND :company MEMBER OF self.companySet" />
-                <field name="forwarder" domain=":company MEMBER OF self.companySet" />
-                <field name="incoterm" />
+                <field name="carrier" domain="self.isCarrier = TRUE AND :company MEMBER OF self.companySet"
+                    form-view="partner-form" grid-view="partner-grid" canEdit="false" />
+                <field name="forwarder" domain=":company MEMBER OF self.companySet" form-view="partner-form"
+                    grid-view="partner-grid" canEdit="false" />
+                <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
                 <field name="tracking" />
-                <field name="totalGrossWeight" colSpan="4" />
-                <field name="totalNetWeight" colSpan="4" />
-                <field name="totalVolume" colSpan="4" />
+                <field name="totalGrossWeight" colSpan="3" />
+                <field name="totalNetWeight" colSpan="3" />
+                <field name="totalVolume" colSpan="6" />
                 <field name="internalDeliveryComment" />
                 <field name="externalDeliveryComment" />
             </panel>
             <panel title="Lines">
-                <panel colSpan="12">
+                <panel colSpan="12" hideIf="$readonly()">
                     <field name="stockMove" title="Stock move" type="reference" widget="many-to-one"
                         target="com.axelor.apps.stock.db.StockMove" grid-view="stock-move-out-grid" form-view="stock-move-form"
-                        colSpan="10" onSelect="action-logistical-form-stock-move-domain" />
+                        colSpan="10" onSelect="action-logistical-form-stock-move-domain" canEdit="false" />
                     <button name="addStockMoveBtn" title="Add" onClick="action-logistical-form-add-stock-move"
                         colSpan="2" readonlyIf="!stockMove" />
                 </panel>
                 <panel-related field="logisticalFormLineList" grid-view="logistical-form-line-grid"
-                    form-view="logistical-form-line-form" colSpan="12" canMove="true" orderBy="sequence" editable="true" />
+                    form-view="logistical-form-line-form" colSpan="12" canMove="true" orderBy="sequence" editable="true"
+                    height="17" />
             </panel>
         </panel-tabs>
     </form>
@@ -60,6 +65,7 @@
     </action-record>
 
     <action-group name="action-logistical-form-change-status">
+        <action name="action-logistical-form-save" />
         <action name="save" />
         <action name="action-logistical-form-record-change-status" />
         <action name="save" />

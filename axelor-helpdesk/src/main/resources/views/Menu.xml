@@ -53,7 +53,7 @@
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
-		<domain>self.deadline &lt; :_date</domain>
+		<domain>self.deadlineDateT &lt; :_date</domain>
 		<context name="_date" expr="eval: __date__"/>
 		<context name="_user" expr="eval: __user__"/>
 	</action-view>
@@ -77,9 +77,16 @@
 		<context name="_myActiveTeam" expr="eval:__user__.activeTeam.id"/>
 	</action-view>
 	
+	<menuitem title="SLA" name="helpdesk-report-sla" action="helpdesk.report.sla" parent="helpdesk-reporting"/>
+	
+	<action-view name="helpdesk.report.sla" title="SLA Details">
+	  <view name="helpdesk.sla.dashboard" type="dashboard"/>
+	  <context name="_user_id" expr="eval:__user__.id"/>
+	</action-view>
+	
 	<menuitem title="Configuration" name="helpdesk-config" order="-10" parent="helpdesk-root"/>
 	
-	<menuitem title="SLA policies" name="helpdesk-sla-policies-all" action="helpdesk.sla.policies.all" parent="helpdesk-config" if="__config__.app.getApp('helpdesk').getIsSLApolicies()"/>
+	<menuitem title="SLA policies" name="helpdesk-sla-policies-all" action="helpdesk.sla.policies.all" parent="helpdesk-config" if="__config__.app.getApp('helpdesk').getIsSla()"/>
 	
 	<action-view name="helpdesk.sla.policies.all" title="SLA policies" model="com.axelor.apps.helpdesk.db.SLA">
 		<view type="grid" name="SLA-grid"/>

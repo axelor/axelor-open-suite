@@ -18,8 +18,8 @@
 			<field name="location" type="string"/>
 			<field name="moveLine" type="string"/>
 			<field name="date" type="date"/>
-			<field name="saleOrder" title="Sale Order" type="string"/>
-			<field name="purchaseOrder" title="Purchase Order" type="string"/>
+			<field name="saleOrder" title="Sale order" type="string"/>
+			<field name="purchaseOrder" title="Purchase order" type="string"/>
 		</result-fields>
 
 		<select model="com.axelor.apps.stock.db.StockMove" title="Stock Move">

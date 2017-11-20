@@ -17,18 +17,21 @@
  */
 package com.axelor.apps.stock.exception;
 
+import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
 
-public class InvalidLogisticalFormLineDimensions extends AxelorException {
+public class LogisticalFormError extends AxelorException {
 
 	private static final long serialVersionUID = 354779411257144849L;
 
-	public InvalidLogisticalFormLineDimensions(LogisticalFormLine logisticalFormLine) {
-		super(logisticalFormLine, IException.CONFIGURATION_ERROR,
-				I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS), logisticalFormLine.getSequence() + 1);
+	public LogisticalFormError(LogisticalForm logisticalForm, String message, Object... messageArgs) {
+		super(logisticalForm, IException.CONFIGURATION_ERROR, message, messageArgs);
+	}
+
+	public LogisticalFormError(LogisticalFormLine logisticalFormLine, String message, Object... messageArgs) {
+		super(logisticalFormLine, IException.CONFIGURATION_ERROR, message, messageArgs);
 	}
 
 }

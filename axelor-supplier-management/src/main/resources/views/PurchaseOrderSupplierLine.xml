@@ -36,7 +36,7 @@
     	 <field name="price"/>
     	 <field name="estimatedDelivDate"/>
   	   </panel>
-  	   <panel name="purchaseOrderDetails" title="Purchase Order Details" readOnly="true">
+  	   <panel name="purchaseOrderDetails" title="Purchase order Details" readOnly="true">
   	   	 <field name="purchaseOrderLine"/>
   		 <field name="purchaseOrderLine.product"/>
     	 <field name="purchaseOrderLine.qty" title="Ordered quantity"/>

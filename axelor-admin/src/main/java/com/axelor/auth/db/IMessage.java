@@ -27,7 +27,7 @@ public interface IMessage {
 	
 	static final public String BAD_FILE = /*$$(*/ "Bad import file" /*)*/;
 	static final public String NO_HEADER = /*$$(*/ "No header row found" /*)*/;
-	static final public String BAD_HEADER = /*$$(*/ "Bad header row: " /*)*/;
+	static final public String BAD_HEADER = /*$$(*/ "Bad header row:" /*)*/;
 	static final public String NO_GROUP = /*$$(*/ "Groups not found: %s" /*)*/;
 	static final public String NO_ROLE = /*$$(*/ "Roles not found: %s" /*)*/;
 	static final public String NO_OBJECT = /*$$(*/ "Object not found: %s" /*)*/;

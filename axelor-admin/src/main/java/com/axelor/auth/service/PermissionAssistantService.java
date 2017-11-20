@@ -373,7 +373,7 @@ public class PermissionAssistantService {
 				errorLog =  I18n.get(IMessage.NO_HEADER);
 			}
 			if(!checkHeaderRow(headerRow)){
-				errorLog =  I18n.get(IMessage.BAD_HEADER)+Arrays.asList(headerRow);
+				errorLog =  I18n.get(IMessage.BAD_HEADER)+" "+Arrays.asList(headerRow);
 			}
 
 			if(!errorLog.equals("")){
