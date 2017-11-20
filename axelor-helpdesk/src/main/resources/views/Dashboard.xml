@@ -8,5 +8,12 @@
 		<dashlet action="chart:chart.ticket.no.of.solved.my.team.ticket" colSpan="6"/>
 		<dashlet action="chart:chart.ticket.no.of.solved.all.ticket" colSpan="12"/>
 	</dashboard>
+	
+	<dashboard name="helpdesk.sla.dashboard" title="SLA dashboard">
+	  <dashlet action="chart:chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.team" colSpan="6" />
+	  <dashlet action="chart:chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.user" colSpan="6" />
+	  <dashlet action="chart:chart.SLA.number.of.ticket.solved.not.solved.in.time.per.SLA.per.team" colSpan="6" />
+	  <dashlet action="chart:chart.SLA.number.of.ticket.solved.not.solved.in.time.per.SLA.per.user" colSpan="6" />
+	</dashboard>
 		
 </object-views>

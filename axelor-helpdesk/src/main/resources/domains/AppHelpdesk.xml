@@ -5,7 +5,7 @@
 	<module name="base" package="com.axelor.apps.base.db"/>
 
 	<entity name="AppHelpdesk" lang="java" cachable="true" extends="App" >
-		<boolean name="isSLApolicies" title="SLA policies" default="false"/>
+		<boolean name="isSla" title="SLA" default="false"/>
 	</entity>
 
 </domain-models>
