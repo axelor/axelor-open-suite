@@ -52,7 +52,7 @@ public class LogisticalFormController {
 
 					logisticalFormService.addDetailLines(logisticalForm, stockMove);
 					response.setValue("logisticalFormLineList", logisticalForm.getLogisticalFormLineList());
-					response.setValue("stockMove", null);
+					response.setValue("$stockMove", null);
 				}
 			}
 		} catch (Exception e) {
@@ -95,7 +95,7 @@ public class LogisticalFormController {
 		try {
 			LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
 			String domain = Beans.get(LogisticalFormService.class).getStockMoveDomain(logisticalForm);
-			response.setAttr("stockMove", "domain", domain);
+			response.setAttr("$stockMove", "domain", domain);
 
 			if (logisticalForm.getDeliverToCustomerPartner() == null) {
 				response.setNotify(I18n.get("Deliver to customer is not set."));

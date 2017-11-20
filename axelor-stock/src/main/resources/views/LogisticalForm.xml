@@ -46,11 +46,11 @@
             </panel>
             <panel title="Lines">
                 <panel colSpan="12" hideIf="$readonly()">
-                    <field name="stockMove" title="Stock move" type="reference" widget="many-to-one"
+                    <field name="$stockMove" title="Stock move" type="reference" widget="many-to-one"
                         target="com.axelor.apps.stock.db.StockMove" grid-view="stock-move-out-grid" form-view="stock-move-form"
                         colSpan="10" onSelect="action-logistical-form-stock-move-domain" canEdit="false" />
                     <button name="addStockMoveBtn" title="Add" onClick="action-logistical-form-add-stock-move"
-                        colSpan="2" readonlyIf="!stockMove" />
+                        colSpan="2" readonlyIf="!$stockMove" />
                 </panel>
                 <panel-related field="logisticalFormLineList" grid-view="logistical-form-line-grid"
                     form-view="logistical-form-line-form" colSpan="12" canMove="true" orderBy="sequence" editable="true"
