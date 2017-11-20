@@ -53,7 +53,7 @@
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
-		<domain>self.deadline &lt; :_date</domain>
+		<domain>self.deadlineDateT &lt; :_date</domain>
 		<context name="_date" expr="eval: __date__"/>
 		<context name="_user" expr="eval: __user__"/>
 	</action-view>
