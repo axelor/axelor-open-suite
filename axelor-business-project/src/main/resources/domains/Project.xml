@@ -17,7 +17,8 @@
 		<decimal name="totalSaleOrdersFinalized" title="Finalized Orders Total" readonly="true"/>
 		<decimal name="totalSaleOrdersConfirmed" title="Confirmed Orders Total" readonly="true"/>
 		<decimal name="totalSaleOrdersInvoiced" title="Invoiced Orders Total" readonly="true"/>
-		
+		<many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
+
 		<decimal name="totalPurchaseOrdersFinalized" title="Finalized Orders Total" readonly="true"/>
 		<decimal name="totalPurchaseOrdersConfirmed" title="Confirmed Orders Total" readonly="true"/>
 		<decimal name="totalPurchaseOrdersInvoiced" title="Invoiced Orders Total" readonly="true"/>
@@ -54,6 +55,9 @@
 			public static final int INVOICING_TYPE_TIME_BASED = 2;
 			public static final int INVOICING_TYPE_FLAT_RATE = 3;
 		
+   			public static final int TASK_PER_LINE_ALONE = 1;
+   			public static final int TASK_PER_LINE_PHASE = 2;
+   			public static final int TASK_PER_LINE_TASK = 3;
 		]]></extra-code>
 		
 		

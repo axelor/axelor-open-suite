@@ -7,6 +7,7 @@
 		<panel>
 			<field name="generateProjectOrder" widget="boolean-switch"/>
 			<field name="automaticProject" widget="boolean-switch"/>
+			<field name="generatedElementTypeSelect"/>
 			<field name="projectSaleOrderLines" widget="boolean-switch"/>
 			<field name="projectPurchaseOrderLines" widget="boolean-switch"/>
 			<field name="projectInvoiceLines" widget="boolean-switch"/>

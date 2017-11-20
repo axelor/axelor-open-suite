@@ -538,7 +538,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	}
 
 	public void computeParentTimeSpent(Project project){
-		Project parentProject = project.getProject();
+		Project parentProject = project.getParentProject();
 		if(parentProject == null){
 			return;
 		}

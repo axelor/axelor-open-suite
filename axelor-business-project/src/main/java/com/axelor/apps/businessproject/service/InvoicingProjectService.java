@@ -367,11 +367,11 @@ public class InvoicingProjectService {
 	
 	
 	public Company getRootCompany(Project project){
-		if(project.getProject() == null){
+		if(project.getParentProject() == null){
 			return project.getCompany();
 		}
 		else{
-			return getRootCompany(project.getProject());
+			return getRootCompany(project.getParentProject());
 		}
 	}
 

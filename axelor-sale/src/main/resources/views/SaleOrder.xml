@@ -242,8 +242,10 @@
 	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" showIf="statusSelect >= 3"/>  
 	    <panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
       		  <field name="project" domain="self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid" colSpan="12"/>
-	          <button name="generateProject" title="Generate Project" if="!__config__.app.getApp('business-project').getAutomaticProject()" showIf="project == null" hidden="true" onClick="save,action-sale-order-method-generate-project"/>
-	          <button name="generateTasks" title="Generate Tasks" if="__config__.app.getApp('business-project').getProjectSaleOrderLines()" showIf="project != null" hidden="true" onClick="save,action-sale-order-method-generate-tasks,action-sale-order-attrs-hide-generate-tasks"/>
+			  <field name="$genProjTypePerOrderLine" x-enum-type="com.axelor.apps.project.db.GenProjTypePerOrderLine" showIf="project == null"/>
+              <field name="project.genProjTypePerOrderLine" showIf="project != null"/>
+	          <button name="generateProject" title="Generate Project/Business" if="!__config__.app.getApp('business-project').getAutomaticProject()" showIf="project == null" hidden="true" onClick="save,action-sale-order-method-generate-project"/>
+	          <button name="generateTypePerOrderLine" title="Generate Types" if="__config__.app.getApp('business-project').getProjectSaleOrderLines()" showIf="project != null" hidden="true" onClick="save,action-sale-order-method-generate-type-per-order-line,action-sale-order-attrs-hide-generate-tasks"/>
        	</panel>
        	<panel name="generateSubscriptions" title="Generate Subscriptions" if-module="axelor-supplychain" showIf="subscription"  if="__config__.app.isApp('supplychain')">   
 			<field name="periodicity" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
@@ -830,8 +832,8 @@
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="exportSaleOrderWord"/>
 	</action-method>
 
-	<action-method name="action-sale-order-method-generate-tasks">
-		<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="generateProjects"/>
+	<action-method name="action-sale-order-method-generate-type-per-order-line">
+		<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="generateTypePerOrderLineForProject"/>
 	</action-method>
     
     <action-record name="action-sale-record-newVersion" model="com.axelor.apps.sale.db.SaleOrder">

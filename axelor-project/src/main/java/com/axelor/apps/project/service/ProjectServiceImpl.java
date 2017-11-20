@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanning;
+import com.axelor.apps.project.db.ProjectType;
 import com.axelor.apps.project.db.repo.ProjectPlanningRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.exception.IExceptionMessage;
@@ -40,7 +41,6 @@ import com.google.inject.persist.Transactional;
 
 import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,19 +59,24 @@ public class ProjectServiceImpl implements ProjectService {
 	public Project generateProject(Project parentProject, String fullName, User assignedTo, Company company, Partner clientPartner){
 		Project project = new Project();
 		project.setStatusSelect(ProjectRepository.STATE_PLANNED);
-		project.setProject(parentProject);
-		project.setName(fullName);
-		if(Strings.isNullOrEmpty(fullName)){
-			project.setName("project");
+		project.setParentProject(parentProject);
+		if (project.getParentProject() != null) {
+			project.setProjectType(ProjectType.PHASE);
+		} else {
+			project.setProjectType(ProjectType.PROJECT);
 		}
+		if(Strings.isNullOrEmpty(fullName)) {
+		    fullName = "project";
+		}
+		project.setName(fullName);
 		project.setFullName(project.getName());
 		project.setCompany(company);
 		project.setClientPartner(clientPartner);
 		project.setAssignedTo(assignedTo);
 		project.setProgress(BigDecimal.ZERO);
+		project.setProjectType(ProjectType.PROJECT);
 		return project;
 	}
-
 
 	@Override
 	public Partner getClientPartnerFromProject(Project project) throws AxelorException{
@@ -79,7 +84,7 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	private Partner getClientPartnerFromProject(Project project, int counter) throws AxelorException{
-		if (project.getProject() == null){
+		if (project.getParentProject() == null){
 			//it is a root project, can get the client partner
 			if(project.getClientPartner() == null){
 				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PROJECT_CUSTOMER_PARTNER));
@@ -90,7 +95,7 @@ public class ProjectServiceImpl implements ProjectService {
 			if (counter > MAX_LEVEL_OF_PROJECT){
 				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PROJECT_DEEP_LIMIT_REACH));
 			}else{
-				return this.getClientPartnerFromProject(project.getProject(), counter + 1);
+				return this.getClientPartnerFromProject(project.getParentProject(), counter + 1);
 			}
 		}
 	}

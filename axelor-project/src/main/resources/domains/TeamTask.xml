@@ -24,7 +24,8 @@
 		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
 		<decimal name="quantity" title="Quantity"/>
 		<decimal name="salePrice" title="Sale Price" />
-		
+		<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" index="false"/>
+
 		<!-- Gantt view fields -->
 		
 		<decimal name="plannedProgress" title="Planned progress" />
