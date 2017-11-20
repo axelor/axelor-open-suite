@@ -522,4 +522,53 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				stockMove, trackingNumber);
 	}
 
+	@Override
+	public boolean computeFullySpreadOverLogisticalFormLinesFlag(StockMoveLine stockMoveLine) {
+		return computeSpreadableQtyOverLogisticalFormLines(stockMoveLine).signum() <= 0;
+	}
+
+	@Override
+	public BigDecimal computeSpreadableQtyOverLogisticalFormLines(StockMoveLine stockMoveLine) {
+		return computeSpreadableQtyOverLogisticalFormLines(stockMoveLine, stockMoveLine.getLogisticalFormLineList());
+	}
+
+	@Override
+	public BigDecimal computeSpreadableQtyOverLogisticalFormLines(StockMoveLine stockMoveLine,
+			LogisticalForm logisticalForm) {
+
+		if (logisticalForm == null) {
+			return computeSpreadableQtyOverLogisticalFormLines(stockMoveLine,
+					stockMoveLine.getLogisticalFormLineList());
+		}
+
+		List<LogisticalFormLine> updatedLogisticalFormLineList = new ArrayList<>();
+
+		if (stockMoveLine.getLogisticalFormLineList() != null) {
+			for (LogisticalFormLine logisticalFormLine : stockMoveLine.getLogisticalFormLineList()) {
+				if (!logisticalForm.equals(logisticalFormLine.getLogisticalForm())) {
+					updatedLogisticalFormLineList.add(logisticalFormLine);
+				}
+			}
+		}
+
+		if (logisticalForm.getLogisticalFormLineList() != null) {
+			for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
+				if (stockMoveLine.equals(logisticalFormLine.getStockMoveLine())) {
+					updatedLogisticalFormLineList.add(logisticalFormLine);
+				}
+			}
+		}
+
+		return computeSpreadableQtyOverLogisticalFormLines(stockMoveLine, updatedLogisticalFormLineList);
+	}
+
+	private BigDecimal computeSpreadableQtyOverLogisticalFormLines(StockMoveLine stockMoveLine,
+			List<LogisticalFormLine> logisticalFormLineList) {
+		BigDecimal qtySpreadOverLogisticalMoveLines = logisticalFormLineList != null
+				? logisticalFormLineList.stream().map(LogisticalFormLine::getQty).reduce(BigDecimal.ZERO,
+						BigDecimal::add)
+				: BigDecimal.ZERO;
+		return stockMoveLine.getRealQty().subtract(qtySpreadOverLogisticalMoveLines);
+	}
+
 }

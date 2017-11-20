@@ -17,6 +17,22 @@
  */
 package com.axelor.apps.stock.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
@@ -34,6 +50,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
@@ -41,6 +58,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.LogisticalFormLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -54,18 +72,6 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class StockMoveServiceImpl implements StockMoveService {
 
@@ -861,4 +867,23 @@ public class StockMoveServiceImpl implements StockMoveService {
 			throw new AxelorException(stockMove, IException.INCONSISTENCY, I18n.get(IExceptionMessage.STOCK_MOVE_10));
 		}
 	}
+
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove) {
+		stockMove.setFullySpreadOverLogisticalFormsFlag(computeFullySpreadOverLogisticalFormsFlag(stockMove));
+	}
+
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void updateFullySpreadOverLogisticalFormsFlags(Collection<StockMove> stockMoveCollection) {
+		stockMoveCollection.forEach(this::updateFullySpreadOverLogisticalFormsFlag);
+	}
+
+	protected boolean computeFullySpreadOverLogisticalFormsFlag(StockMove stockMove) {
+		return stockMove.getStockMoveLineList() != null ? stockMove.getStockMoveLineList().stream().allMatch(
+				stockMoveLine -> stockMoveLineService.computeFullySpreadOverLogisticalFormLinesFlag(stockMoveLine))
+				: true;
+	}
+
 }

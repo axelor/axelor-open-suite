@@ -40,6 +40,8 @@
     <many-to-one name="customsCodeNomenclature" ref="com.axelor.apps.stock.db.CustomsCodeNomenclature"/>
     <string name="customsCode"/>
 
+    <one-to-many name="logisticalFormLineList" ref="com.axelor.apps.stock.db.LogisticalFormLine" mappedBy="stockMoveLine" title="Logistical form lines" />
+
     <extra-code><![CDATA[
         // CONFORMITY SELECT
         public static final int CONFORMITY_NONE = 1;

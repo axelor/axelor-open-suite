@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.stock.web;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMove;
@@ -26,8 +28,10 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.apps.stock.exception.LogisticalFormWarning;
 import com.axelor.apps.stock.service.LogisticalFormService;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -45,12 +49,6 @@ public class LogisticalFormController {
 				if (stockMove.getStockMoveLineList() != null) {
 					LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
 					LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
-
-					if (logisticalForm.getLogisticalFormLineList() == null
-							|| logisticalForm.getLogisticalFormLineList().isEmpty()) {
-						logisticalFormService.addParcelPalletLine(logisticalForm,
-								LogisticalFormLineRepository.TYPE_PARCEL);
-					}
 
 					logisticalFormService.addDetailLines(logisticalForm, stockMove);
 					response.setValue("logisticalFormLineList", logisticalForm.getLogisticalFormLineList());
@@ -98,6 +96,37 @@ public class LogisticalFormController {
 			LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
 			String domain = Beans.get(LogisticalFormService.class).getStockMoveDomain(logisticalForm);
 			response.setAttr("stockMove", "domain", domain);
+
+			if (logisticalForm.getDeliverToCustomerPartner() == null) {
+				response.setNotify(I18n.get("Deliver to customer is not set."));
+			}
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+
+	public void updateFullySpreadOverLogisticalFormsFlags(ActionRequest request, ActionResponse response) {
+		try {
+			LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+
+			if (logisticalForm.getLogisticalFormLineList() == null) {
+				return;
+			}
+
+			Set<StockMove> stockMoveViewSet = new HashSet<>();
+
+			logisticalForm.getLogisticalFormLineList().stream().filter(
+					logisticalFormLine -> logisticalFormLine.getTypeSelect() == LogisticalFormLineRepository.TYPE_DETAIL
+							&& logisticalFormLine.getStockMoveLine() != null
+							&& logisticalFormLine.getStockMoveLine().getStockMove() != null)
+					.forEach(logisticalFormLine -> stockMoveViewSet
+							.add(logisticalFormLine.getStockMoveLine().getStockMove()));
+
+			Set<StockMove> stockMoveSet = new HashSet<>();
+			StockMoveRepository stockMoveRepo = Beans.get(StockMoveRepository.class);
+			StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+			stockMoveViewSet.forEach(stockMove -> stockMoveSet.add(stockMoveRepo.find(stockMove.getId())));
+			stockMoveService.updateFullySpreadOverLogisticalFormsFlags(stockMoveSet);
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}

@@ -24,11 +24,15 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
@@ -52,19 +56,29 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 	@Override
 	public void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove) {
 		if (stockMove.getStockMoveLineList() != null) {
-			Map<StockMoveLine, BigDecimal> stockMoveLineMap = getStockMoveLineQtyMap(logisticalForm);
+			StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
+			List<Pair<StockMoveLine, BigDecimal>> toAddList = new ArrayList<>();
 
 			for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-				BigDecimal qty = stockMoveLineMap.getOrDefault(stockMoveLine, BigDecimal.ZERO);
-				if (qty.compareTo(stockMoveLine.getRealQty()) >= 0) {
+				BigDecimal spreadableQty = stockMoveLineService
+						.computeSpreadableQtyOverLogisticalFormLines(stockMoveLine, logisticalForm);
+
+				if (spreadableQty.signum() <= 0) {
 					continue;
 				}
 
 				if (testForDetailLine(stockMoveLine)) {
-					LogisticalFormLine logisticalFormLine = createDetailLine(logisticalForm, stockMoveLine,
-							stockMoveLine.getRealQty().subtract(qty));
-					logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
+					toAddList.add(Pair.of(stockMoveLine, spreadableQty));
 				}
+			}
+
+			if (!toAddList.isEmpty()) {
+				if (logisticalForm.getLogisticalFormLineList() == null
+						|| logisticalForm.getLogisticalFormLineList().isEmpty()) {
+					addParcelPalletLine(logisticalForm, LogisticalFormLineRepository.TYPE_PARCEL);
+				}
+
+				toAddList.forEach(item -> addDetailLine(logisticalForm, item.getLeft(), item.getRight()));
 			}
 		}
 	}
@@ -78,12 +92,6 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 	@SuppressWarnings("all")
 	protected boolean testForDetailLine(StockMoveLine stockMoveLine) {
 		return true;
-	}
-
-	@Override
-	public void addParcelPalletLine(LogisticalForm logisticalForm, int typeSelect) {
-		LogisticalFormLine logisticalFormLine = createParcelPalletLine(logisticalForm, typeSelect);
-		logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
 	}
 
 	@Override
@@ -101,18 +109,21 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 	}
 
 	protected void checkInconsistentQties(LogisticalForm logisticalForm, List<String> errorMessageList) {
-		Map<StockMoveLine, BigDecimal> stockMoveLineMap = getStockMoveLineQtyMap(logisticalForm);
+		Map<StockMoveLine, BigDecimal> spreadableQtyMap = getSpreadableQtyMap(logisticalForm);
+		Map<StockMoveLine, BigDecimal> spreadQtyMap = getSpreadQtyMap(logisticalForm);
 
-		for (Entry<StockMoveLine, BigDecimal> entry : stockMoveLineMap.entrySet()) {
+		for (Entry<StockMoveLine, BigDecimal> entry : spreadableQtyMap.entrySet()) {
 			StockMoveLine stockMoveLine = entry.getKey();
-			BigDecimal qty = entry.getValue();
+			BigDecimal spreadableQty = entry.getValue();
 
-			if (qty.compareTo(stockMoveLine.getRealQty()) != 0) {
-				String errorMessage = String
-						.format(I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINES_INCONSISTENT_QUANTITY),
-								String.format("%s (%s)", stockMoveLine.getProductName(),
-										stockMoveLine.getStockMove().getStockMoveSeq()),
-								qty, stockMoveLine.getRealQty());
+			if (spreadableQty.signum() != 0) {
+				BigDecimal spreadQty = spreadQtyMap.getOrDefault(stockMoveLine, BigDecimal.ZERO);
+				BigDecimal expectedQty = spreadQty.add(spreadableQty);
+				String errorMessage = String.format(
+						I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINES_INCONSISTENT_QUANTITY),
+						String.format("%s (%s)", stockMoveLine.getProductName(),
+								stockMoveLine.getStockMove().getStockMoveSeq()),
+						spreadQty, expectedQty);
 				errorMessageList.add(errorMessage);
 			}
 		}
@@ -173,13 +184,13 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 	@Override
 	public List<StockMoveLine> getFullySpreadStockMoveLineList(LogisticalForm logisticalForm) {
 		List<StockMoveLine> stockMoveLineList = new ArrayList<>();
-		Map<StockMoveLine, BigDecimal> stockMoveLineMap = getStockMoveLineQtyMap(logisticalForm);
+		Map<StockMoveLine, BigDecimal> spreadableQtyMap = getSpreadableQtyMap(logisticalForm);
 
-		for (Entry<StockMoveLine, BigDecimal> entry : stockMoveLineMap.entrySet()) {
+		for (Entry<StockMoveLine, BigDecimal> entry : spreadableQtyMap.entrySet()) {
 			StockMoveLine stockMoveLine = entry.getKey();
-			BigDecimal qty = entry.getValue();
+			BigDecimal spreadableQty = entry.getValue();
 
-			if (qty.compareTo(stockMoveLine.getRealQty()) >= 0) {
+			if (spreadableQty.signum() <= 0) {
 				stockMoveLineList.add(stockMoveLine);
 			}
 		}
@@ -187,7 +198,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 		return stockMoveLineList;
 	}
 
-	protected List<StockMove> getFullSpreadStockMoveList(LogisticalForm logisticalForm) {
+	protected List<StockMove> getFullySpreadStockMoveList(LogisticalForm logisticalForm) {
 		List<StockMove> fullySpreadStockMoveList = new ArrayList<>();
 		List<StockMoveLine> fullySpreadStockMoveLineList = getFullySpreadStockMoveLineList(logisticalForm);
 
@@ -207,8 +218,40 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 	}
 
 	@Override
-	public Map<StockMoveLine, BigDecimal> getStockMoveLineQtyMap(LogisticalForm logisticalForm) {
-		Map<StockMoveLine, BigDecimal> stockMoveLineMap = new LinkedHashMap<>();
+	public Map<StockMoveLine, BigDecimal> getSpreadableQtyMap(LogisticalForm logisticalForm) {
+		Set<StockMove> stockMoveSet = new LinkedHashSet<>();
+		Map<StockMoveLine, BigDecimal> spreadableQtyMap = new LinkedHashMap<>();
+
+		if (logisticalForm.getLogisticalFormLineList() != null) {
+			StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
+
+			logisticalForm.getLogisticalFormLineList().stream().filter(
+					logisticalFormLine -> logisticalFormLine.getTypeSelect() == LogisticalFormLineRepository.TYPE_DETAIL
+							&& logisticalFormLine.getStockMoveLine() != null
+							&& logisticalFormLine.getStockMoveLine().getStockMove() != null)
+					.forEach(logisticalFormLine -> stockMoveSet
+							.add(logisticalFormLine.getStockMoveLine().getStockMove()));
+
+			for (StockMove stockMove : stockMoveSet) {
+				if (stockMove.getStockMoveLineList() == null) {
+					continue;
+				}
+
+				for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+					BigDecimal spreadableQty = stockMoveLineService
+							.computeSpreadableQtyOverLogisticalFormLines(stockMoveLine, logisticalForm);
+					spreadableQtyMap.put(stockMoveLine, spreadableQty);
+				}
+			}
+		}
+
+		return spreadableQtyMap;
+
+	}
+
+	@Override
+	public Map<StockMoveLine, BigDecimal> getSpreadQtyMap(LogisticalForm logisticalForm) {
+		Map<StockMoveLine, BigDecimal> spreadQtyMap = new LinkedHashMap<>();
 
 		if (logisticalForm.getLogisticalFormLineList() != null) {
 			logisticalForm.getLogisticalFormLineList().stream()
@@ -217,30 +260,31 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 					.forEach(logisticalFormLine -> {
 						StockMoveLine stockMoveLine = logisticalFormLine.getStockMoveLine();
 						if (stockMoveLine != null && logisticalFormLine.getQty() != null) {
-							stockMoveLineMap.merge(stockMoveLine, logisticalFormLine.getQty(), BigDecimal::add);
+							spreadQtyMap.merge(stockMoveLine, logisticalFormLine.getQty(), BigDecimal::add);
 						}
 					});
+
 		}
 
-		return stockMoveLineMap;
+		return spreadQtyMap;
 	}
 
-	protected LogisticalFormLine createDetailLine(LogisticalForm logisticalForm, StockMoveLine stockMoveLine,
-			BigDecimal qty) {
+	protected void addDetailLine(LogisticalForm logisticalForm, StockMoveLine stockMoveLine, BigDecimal qty) {
 		LogisticalFormLine logisticalFormLine = new LogisticalFormLine();
 		logisticalFormLine.setTypeSelect(LogisticalFormLineRepository.TYPE_DETAIL);
 		logisticalFormLine.setStockMoveLine(stockMoveLine);
 		logisticalFormLine.setQty(qty);
 		logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
-		return logisticalFormLine;
+		logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
 	}
 
-	protected LogisticalFormLine createParcelPalletLine(LogisticalForm logisticalForm, int typeSelect) {
+	@Override
+	public void addParcelPalletLine(LogisticalForm logisticalForm, int typeSelect) {
 		LogisticalFormLine logisticalFormLine = new LogisticalFormLine();
 		logisticalFormLine.setTypeSelect(typeSelect);
 		logisticalFormLine.setParcelPalletNumber(getNextParcelPalletNumber(logisticalForm, typeSelect));
 		logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
-		return logisticalFormLine;
+		logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
 	}
 
 	@Override
@@ -272,10 +316,14 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
 	@Override
 	public int getNextLineSequence(LogisticalForm logisticalForm) {
-		return logisticalForm.getLogisticalFormLineList() != null
-				? logisticalForm.getLogisticalFormLineList().stream().mapToInt(LogisticalFormLine::getSequence).max()
-						.orElse(1)
-				: 1;
+		if (logisticalForm.getLogisticalFormLineList() == null) {
+			return 0;
+		}
+
+		OptionalInt max = logisticalForm.getLogisticalFormLineList().stream().mapToInt(LogisticalFormLine::getSequence)
+				.max();
+
+		return max.isPresent() ? max.getAsInt() + 1 : 0;
 	}
 
 	@Override
@@ -321,10 +369,12 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 	public String getStockMoveDomain(LogisticalForm logisticalForm) {
 		List<String> domainList = new ArrayList<>();
 
-		domainList.add("self.partner = :deliverToCustomer");
+		domainList.add("self.partner = :deliverToCustomerPartner");
 		domainList.add(String.format("self.typeSelect = %d", StockMoveRepository.TYPE_OUTGOING));
+		domainList.add(
+				"self.fullySpreadOverLogisticalFormsFlag IS NULL OR self.fullySpreadOverLogisticalFormsFlag = FALSE");
 
-		List<StockMove> fullySpreadStockMoveList = getFullSpreadStockMoveList(logisticalForm);
+		List<StockMove> fullySpreadStockMoveList = getFullySpreadStockMoveList(logisticalForm);
 
 		if (!fullySpreadStockMoveList.isEmpty()) {
 			String idListString = StringTool.getIdListString(fullySpreadStockMoveList);
