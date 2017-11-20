@@ -4,39 +4,39 @@
   
   <json-model name="ProductCategory" title="Product category" appBuilder="PRD">
   	<fields>
-		<field name="name" title="Name" required="true" type="string" sequence="1"/>
-		<field name="code" title="Code" type="string" sequence="2"/>
+		<field name="name" title="Name" required="true" type="string" sequence="1" visibleInGrid="true"/>
+		<field name="code" title="Code" type="string" sequence="2" visibleInGrid="true"/>
   	</fields>
   </json-model> 
   
   <json-model name="Product" title="Product" appBuilder="PRD">
   	<fields>
-		<field name="name" title="Name" required="true" type="string" sequence="1"/>
-		<field name="code" title="Code" type="string" sequence="2"/>
-		<field name="price" title="Price" type="decimal" sequence="3"/>
+		<field name="name" title="Name" required="true" type="string" sequence="1" visibleInGrid="true"/>
+		<field name="code" title="Code" type="string" sequence="2" visibleInGrid="true"/>
+		<field name="price" title="Price" type="decimal" sequence="3" visibleInGrid="true"/>
 		<field name="launchDate" title="Launch Date" type="date" sequence="4"/>
 		<field name="supplier" title="Supplier" type="many-to-one" target-model="com.axelor.apps.base.db.Partner" sequence="5"/>
-		<field name="category" title="Main Category" type="json-many-to-one" target-json-model="ProductCategory" sequence="6"/>
+		<field name="category" title="Main Category" type="json-many-to-one" target-json-model="ProductCategory" sequence="6" visibleInGrid="true"/>
   	</fields>
   </json-model>
   
   <json-model name="ProductOrderLine" title="Product order line" appBuilder="PRD">
   	<fields>
-  		<field name="product" title="Product" type="json-many-to-one" target-json-model="Product"  sequence="1" onChange="action-product-order-line-get-product-details,action-product-order-line-update-total"/>
-  		<field name="price" title="Price" type="decimal" sequence="2" onChange="action-product-order-line-update-total"/>
-  		<field name="qty" title="Qty" type="integer" sequence="3" onChange="action-product-order-line-update-total"/>
-		<field name="total" title="Total" type="decimal" sequence="4"/>
+  		<field name="product" title="Product" type="json-many-to-one" target-json-model="Product"  sequence="1"  onChange="action-product-order-line-get-product-details,action-product-order-line-update-total" visibleInGrid="true"/>
+  		<field name="price" title="Price" type="decimal" sequence="2" onChange="action-product-order-line-update-total" visibleInGrid="true"/>
+  		<field name="qty" title="Qty" type="integer" sequence="3" onChange="action-product-order-line-update-total" visibleInGrid="true"/>
+		<field name="total" title="Total" type="decimal" sequence="4" visibleInGrid="true"/>
   	</fields>
   </json-model> 
   
   <json-model name="ProductOrder" title="Product order" appBuilder="PRD">
   	<fields>
-		<field name="reference" title="Ref" type="string" sequence="1"/>
-		<field name="customer" title="Customer" type="many-to-one" target-model="com.axelor.apps.base.db.Partner" domain="isCustomer = true" sequence="2"/>
-		<field name="orderDate" title="Order Date" type="date" sequence="3"/>
-		<field name="total" title="Total" type="decimal" sequence="4"/>
+		<field name="reference" title="Ref" type="string" sequence="1" visibleInGrid="true"/>
+		<field name="customer" title="Customer" type="many-to-one" target-model="com.axelor.apps.base.db.Partner" domain="isCustomer = true" sequence="2" visibleInGrid="true"/>
+		<field name="orderDate" title="Order Date" type="date" sequence="3" visibleInGrid="true"/>
+		<field name="total" title="Total" type="decimal" sequence="4" visibleInGrid="true"/>
 		<field name="lines" title="Lines" type="json-one-to-many" target-json-model="ProductOrderLine" sequence="5" onChange="action-product-order-update-total"/>
-		<field name="status" title="Status" type="integer" sequence="6"/>
+		<field name="status" title="Status" type="integer" sequence="6" visibleInGrid="true"/>
   	</fields>
   </json-model>
   
