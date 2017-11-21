@@ -7,7 +7,7 @@
 		icon="fa-user" icon-background="#2fa042"/>
 	
 	<menuitem name="crm-root-customers" parent="crm-root" 
-		title="Customers" action="crm.root.customers" />
+		title="Customers" action="crm.root.customers" order="5"/>
 
 	<action-view name="crm.root.customers" title="Customers"
 		model="com.axelor.apps.base.db.Partner" >
@@ -24,7 +24,7 @@
 	</action-view>
 	
 	<menuitem name="crm-root-contacts" parent="crm-root"
-		title="Contacts" action="crm.root.contacts" />
+		title="Contacts" action="crm.root.contacts" order="10"/>
 
 	<action-view name="crm.root.contacts" title="Contacts"
 		model="com.axelor.apps.base.db.Partner" >
@@ -36,8 +36,16 @@
 		<context name="_domain" expr="self.isContact = true AND self.mainPartner.isCustomer = true"/>
 	</action-view>
 	
+	<menuitem name="crm-root-projects" title="Projects" order="12"
+			  parent="crm-root" action="crm.root.projects"/>
+
+	<action-view name="crm.root.projects" title="Projects" model="com.axelor.apps.project.db.Project">
+        <view type="grid" name="crm-project-grid"/>
+		<view type="form" name="crm-project-form"/>
+	</action-view>
+	
 	<menuitem name="crm-root-event" parent="crm-root"
-		title="Events" action="crm.root.event" />
+		title="Events" action="crm.root.event" order="15"/>
 
 	<action-view name="crm.root.event" title="Events"
 		model="com.axelor.apps.crm.db.Event" >
@@ -53,7 +61,7 @@
 	</action-view>
 	
 	<menuitem name="crm-root-lead" parent="crm-root"
-		title="Leads" action="crm.root.lead" />
+		title="Leads" action="crm.root.lead" order="20"/>
 
 	<action-view name="crm.root.lead" title="Leads"
 		model="com.axelor.apps.crm.db.Lead" >
@@ -66,7 +74,7 @@
 	</action-view>
 	
 	<menuitem name="crm-root-opportunity" parent="crm-root"
-		title="Opportunities" action="crm.root.opportunity" />
+		title="Opportunities" action="crm.root.opportunity" order="25"/>
 
 	<action-view name="crm.root.opportunity" title="Opportunities"
 		model="com.axelor.apps.crm.db.Opportunity" >
@@ -80,7 +88,7 @@
 	</action-view>
 			
 	<menuitem name="crm-root-meeting-my-calendar" parent="crm-root"
-		title="My Calendar" action="crm.root.meeting.my.calendar" />
+		title="My Calendar" action="crm.root.meeting.my.calendar" order="30"/>
 	
 	
 	<action-method name="crm.root.meeting.my.calendar">
@@ -88,23 +96,23 @@
 	</action-method>
 	
 	<menuitem name="crm-root-meeting-team-calendar" parent="crm-root"
-		title="Team Calendar" action="crm.root.meeting.team.calendar"/>
+		title="Team Calendar" action="crm.root.meeting.team.calendar" order="35"/>
 		
 	<action-method name="crm.root.meeting.team.calendar">
 		<call class="com.axelor.apps.crm.web.CalendarController" method="showTeamEvents"/>
 	</action-method>
 	
 	<menuitem name="crm-root-meeting-sharedm-calendar" parent="crm-root"
-		title="Shared Calendar" action="crm.root.meeting.shared.calendar"/>
+		title="Shared Calendar" action="crm.root.meeting.shared.calendar" order="40"/>
 		
 	<action-method name="crm.root.meeting.shared.calendar">
 		<call class="com.axelor.apps.crm.web.CalendarController" method="showSharedEvents"/>
 	</action-method>
 	
 	
-	<menuitem name="crm-root-report" parent="crm-root" title="Reportings"/>
+	<menuitem name="crm-root-report" parent="crm-root" title="Reportings" order="45"/>
 				
-	<menuitem name="crm-conf" parent="crm-root" title="Configuration"/>
+	<menuitem name="crm-conf" parent="crm-root" title="Configuration" order="50"/>
 	
 	<menuitem name="crm-conf-lead-source" parent="crm-conf"
 		title="Leads Source" action="crm.conf.lead.source" />
