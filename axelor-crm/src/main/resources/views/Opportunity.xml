@@ -247,13 +247,13 @@
         <field name="partner.fixedPhone" title="Customer fixed phone" />
         <field name="partner.mobilePhone" title="Customer mobile phone" />
         <field name="amount" />
-		<filter title="My Opportunities">
+		<filter title="My opportunities">
 			<domain>self.user.id = :_internalUserId</domain>
 		</filter>
-		<filter title="Unassigned Opportunities">
+		<filter title="Unassigned opportunities">
 			<domain>self.user IS NULL</domain>
 		</filter>
-		<filter title="My Team Opportunities">
+		<filter title="My team opportunities">
 			<domain>self.team = :_myActiveTeam</domain>
 		</filter>
 	</search-filters>
