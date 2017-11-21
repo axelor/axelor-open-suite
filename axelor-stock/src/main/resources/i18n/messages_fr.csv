@@ -260,6 +260,7 @@
 "Partial stock move (From","Reliquat (Du",,
 "Partner","Tiers",,
 "Partner is missing.","Le tiers est manquant.",,
+"Partner mismatch: %s","Incohérence de tiers : %s",,
 "Partner product quality rating","Qualité des produits",,
 "Partner product quality ratings","Qualités des produits",,
 "Perishable expiration date","Date de péremption",,

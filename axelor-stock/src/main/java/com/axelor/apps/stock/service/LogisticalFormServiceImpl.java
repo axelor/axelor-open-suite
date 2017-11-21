@@ -28,6 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -48,6 +49,8 @@ import com.axelor.apps.stock.exception.LogisticalFormWarning;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
@@ -58,32 +61,44 @@ import com.google.common.collect.Lists;
 public class LogisticalFormServiceImpl implements LogisticalFormService {
 
 	@Override
-	public void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove) {
-		if (stockMove.getStockMoveLineList() != null) {
-			StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
-			List<Pair<StockMoveLine, BigDecimal>> toAddList = new ArrayList<>();
+	public void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove) throws AxelorException {
+		Objects.requireNonNull(logisticalForm);
+		Objects.requireNonNull(stockMove);
 
-			for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-				BigDecimal spreadableQty = stockMoveLineService
-						.computeSpreadableQtyOverLogisticalFormLines(stockMoveLine, logisticalForm);
+		if (logisticalForm.getDeliverToCustomerPartner() != null
+				&& !logisticalForm.getDeliverToCustomerPartner().equals(stockMove.getPartner())) {
+			throw new AxelorException(logisticalForm, IException.INCONSISTENCY,
+					I18n.get(IExceptionMessage.LOGISTICAL_FORM_PARTNER_MISMATCH),
+					logisticalForm.getDeliverToCustomerPartner().getName());
+		}
 
-				if (spreadableQty.signum() <= 0) {
-					continue;
-				}
+		if (stockMove.getStockMoveLineList() == null) {
+			return;
+		}
 
-				if (testForDetailLine(stockMoveLine)) {
-					toAddList.add(Pair.of(stockMoveLine, spreadableQty));
-				}
+		StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
+		List<Pair<StockMoveLine, BigDecimal>> toAddList = new ArrayList<>();
+
+		for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+			BigDecimal spreadableQty = stockMoveLineService.computeSpreadableQtyOverLogisticalFormLines(stockMoveLine,
+					logisticalForm);
+
+			if (spreadableQty.signum() <= 0) {
+				continue;
 			}
 
-			if (!toAddList.isEmpty()) {
-				if (logisticalForm.getLogisticalFormLineList() == null
-						|| logisticalForm.getLogisticalFormLineList().isEmpty()) {
-					addParcelPalletLine(logisticalForm, LogisticalFormLineRepository.TYPE_PARCEL);
-				}
-
-				toAddList.forEach(item -> addDetailLine(logisticalForm, item.getLeft(), item.getRight()));
+			if (testForDetailLine(stockMoveLine)) {
+				toAddList.add(Pair.of(stockMoveLine, spreadableQty));
 			}
+		}
+
+		if (!toAddList.isEmpty()) {
+			if (logisticalForm.getLogisticalFormLineList() == null
+					|| logisticalForm.getLogisticalFormLineList().isEmpty()) {
+				addParcelPalletLine(logisticalForm, LogisticalFormLineRepository.TYPE_PARCEL);
+			}
+
+			toAddList.forEach(item -> addDetailLine(logisticalForm, item.getLeft(), item.getRight()));
 		}
 	}
 
