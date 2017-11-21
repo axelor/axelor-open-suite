@@ -68,6 +68,7 @@ public class ExportPrestaShop extends BatchStrategyExport {
 				batch.getPrestaShopBatch().setPrestaShopBatchLog(exportFile);
 				batchRepo.save(batch);
 				i++;
+				incrementDone();
 				
 			} catch (Exception e) {
 				incrementAnomaly();
