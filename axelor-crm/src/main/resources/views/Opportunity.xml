@@ -167,8 +167,8 @@
                 <p>{{description}}</p>
                 <dl>
                     <dt ng-show="record.partner.name" x-translate>Customer</dt><dd ng-show="record.partner.name">{{partner.name}}</dd>
-                    <dt ng-show="record.partner.fixedPhone" x-translate>Fixed phone</dt><dd ng-show="record.partner.fixedPhone">{{partner.fixedPhone}}</dd>
-                    <dt ng-show="record.partner.mobilePhone" x-translate>Mobile phone</dt><dd ng-show="record.partner.mobilePhone">{{partner.mobilePhone}}</dd>
+                    <dt ng-show="record.partner.fixedPhone" x-translate>Fixed phone</dt><dd ng-show="record.partner.fixedPhone"><a href="tel:{{partner.fixedPhone}}">{{partner.fixedPhone}}</a></dd>
+                    <dt ng-show="record.partner.mobilePhone" x-translate>Mobile phone</dt><dd ng-show="record.partner.mobilePhone"><a href="tel:{{partner.mobilePhone}}">{{partner.mobilePhone}}</a></dd>
                     <dt ng-show="record.amount" x-translate>Amount</dt><dd ng-show="record.amount">{{amount | currency : currency.symbol}}</dd>
                 </dl>
             </div>
