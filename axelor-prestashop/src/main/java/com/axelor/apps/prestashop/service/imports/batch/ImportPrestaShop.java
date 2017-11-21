@@ -59,6 +59,7 @@ public class ImportPrestaShop extends BatchStrategyImport {
 				batch.getPrestaShopBatch().setPrestaShopBatchLog(importFile);
 				batchRepo.save(batch);
 				i++;
+				incrementDone();
 				
 			} catch (Exception e) {
 				incrementAnomaly();
