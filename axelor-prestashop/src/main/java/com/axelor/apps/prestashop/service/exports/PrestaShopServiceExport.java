@@ -21,8 +21,8 @@ package com.axelor.apps.prestashop.service.exports;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import javax.xml.transform.TransformerException;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.prestashop.service.PrestaShopWebserviceException;
-import com.axelor.meta.db.MetaFile;
 
 public interface PrestaShopServiceExport {
 	
@@ -35,5 +35,5 @@ public interface PrestaShopServiceExport {
 	 * @throws TransformerException
 	 * @throws IOException
 	 */
-	public MetaFile exportPrestShop(ZonedDateTime endDate) throws PrestaShopWebserviceException, TransformerException, IOException;
+	public Batch exportPrestShop(ZonedDateTime endDate, Batch batch) throws PrestaShopWebserviceException, TransformerException, IOException;
 }
