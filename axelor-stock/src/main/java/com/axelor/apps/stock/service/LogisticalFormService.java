@@ -35,6 +35,7 @@ public interface LogisticalFormService {
 
 	/**
 	 * Add detail lines from the stock move.
+	 * If there were no lines, add a parcel line first.
 	 * 
 	 * @param logisticalForm
 	 * @param stockMove
@@ -62,7 +63,7 @@ public interface LogisticalFormService {
 	 * 
 	 * @param logisticalForm
 	 * @throws LogisticalFormWarning
-	 * @throws LogisticalFormError 
+	 * @throws LogisticalFormError
 	 */
 	void checkLines(LogisticalForm logisticalForm) throws LogisticalFormWarning, LogisticalFormError;
 
@@ -83,12 +84,20 @@ public interface LogisticalFormService {
 	List<StockMoveLine> getFullySpreadStockMoveLineList(LogisticalForm logisticalForm);
 
 	/**
+	 * Get map of spreadable quantity for each stock move line.
+	 * 
+	 * @param logisticalForm
+	 * @return
+	 */
+	Map<StockMoveLine, BigDecimal> getSpreadableQtyMap(LogisticalForm logisticalForm);
+
+	/**
 	 * Get map of spread quantity for each stock move line.
 	 * 
 	 * @param logisticalForm
 	 * @return
 	 */
-	Map<StockMoveLine, BigDecimal> getStockMoveLineQtyMap(LogisticalForm logisticalForm);
+	Map<StockMoveLine, BigDecimal> getSpreadQtyMap(LogisticalForm logisticalForm);
 
 	/**
 	 * Get domain for stock move.
@@ -121,5 +130,13 @@ public interface LogisticalFormService {
 	 * @param logisticalForm
 	 */
 	void sortLines(LogisticalForm logisticalForm);
+
+	/**
+	 * Get the list of logistical form IDs for the given stock move.
+	 * 
+	 * @param stockMove
+	 * @return
+	 */
+	List<Long> getIdList(StockMove stockMove);
 
 }

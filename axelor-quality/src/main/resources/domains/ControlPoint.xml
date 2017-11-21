@@ -19,7 +19,6 @@
 		<string name="notes" title="Notes"/>
 		<string name="messageIfFailure" title="Message if failure"/>
 		<date name="controlPointDate" title="Date"/>
-		<track/>
 	</entity>
 
 </domain-models>

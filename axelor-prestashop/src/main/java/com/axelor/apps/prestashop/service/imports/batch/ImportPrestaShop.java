@@ -22,11 +22,11 @@ import java.lang.invoke.MethodHandles;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.axelor.apps.crm.exception.IExceptionMessage;
+
+import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.imports.PrestaShopServiceImport;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.persist.Transactional;
@@ -47,7 +47,6 @@ public class ImportPrestaShop extends BatchStrategyImport {
 		super.start();
 		
 	}
-
 	
 	@Override
 	@Transactional
@@ -63,7 +62,6 @@ public class ImportPrestaShop extends BatchStrategyImport {
 				
 			} catch (Exception e) {
 				incrementAnomaly();
-				
 				LOG.error("Bug(Anomalie) généré(e) pour le rappel de l'évènement {}", batch.getId());
 				
 			} finally {
@@ -79,12 +77,11 @@ public class ImportPrestaShop extends BatchStrategyImport {
 	@Override
 	protected void stop() {
 
-		String comment = I18n.get(IExceptionMessage.BATCH_TARGET_2);
-		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_TARGET_3)+"\n", batch.getDone());
-		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+		String comment = I18n.get(IExceptionMessage.BATCH_IMPORT);
+		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_DONE)+"\n", batch.getDone());
+		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_ANOMALY), batch.getAnomaly());
 		
 		super.stop();
 		addComment(comment);
-		
 	}
 }

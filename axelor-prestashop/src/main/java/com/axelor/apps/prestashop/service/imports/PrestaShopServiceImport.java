@@ -18,41 +18,20 @@
 
 package com.axelor.apps.prestashop.service.imports;
 
-import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
-import javax.xml.transform.TransformerException;
+
 import com.axelor.apps.prestashop.service.PrestaShopWebserviceException;
-import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.google.inject.Inject;
 
-public class PrestaShopServiceImport {
+public interface PrestaShopServiceImport {
 	
-	@Inject
-	private PrestaShopServiceImplImport psImport;
+	/**
+	 * Import prestashop details or object to ABS
+	 * 
+	 * @return import log file object
+	 * @throws IOException
+	 * @throws PrestaShopWebserviceException
+	 */
+	public MetaFile importPrestShop() throws IOException, PrestaShopWebserviceException;
 	
-	@Inject
-	private MetaFiles metaFiles;
-	
-	public void importAxelorBase() throws IOException, PrestaShopWebserviceException {
-		
-		psImport.importAxelorCurrencies();
-		psImport.importAxelorCountries();
-		psImport.importAxelorPartners();
-		psImport.importAxelorPartnerAddresses();
-		psImport.importAxelorProductCategories();
-		psImport.importAxelorProducts();
-	}
-	
-	public MetaFile importPrestShop() throws PrestaShopWebserviceException, ParseException, TransformerException, IOException {
-
-		this.importAxelorBase();
-		psImport.importAxelorSaleOrders();
-		psImport.importAxelorSaleOrderLines();
-		
-		File importFile = psImport.closeLog();
-		MetaFile importMetaFile = metaFiles.upload(importFile);
-		return importMetaFile;
-	}
 }

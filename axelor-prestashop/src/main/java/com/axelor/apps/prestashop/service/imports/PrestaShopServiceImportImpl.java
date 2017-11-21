@@ -33,9 +33,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder.In;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -43,7 +40,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.regexp.recompile;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -73,9 +69,10 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.prestashop.db.SaleOrderStatus;
+import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.PSWebServiceClient;
 import com.axelor.apps.prestashop.service.PrestaShopWebserviceException;
-import com.axelor.apps.prestashop.db.SaleOrderStatus;
 import com.axelor.apps.sale.db.CancelReason;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -85,14 +82,15 @@ import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import com.ibm.icu.text.MessagePattern.Part;
 
-public class PrestaShopServiceImplImport {
+@SuppressWarnings("deprecation")
+public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 	
 	@Inject
 	private SaleOrderService saleOrderService;
@@ -114,9 +112,6 @@ public class PrestaShopServiceImplImport {
 	
 	@Inject
 	private CountryRepository countryRepo;
-	
-	@Inject
-	private AddressRepository addressRepo;
 	
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
@@ -143,21 +138,58 @@ public class PrestaShopServiceImplImport {
     PSWebServiceClient ws;
     HashMap<String,Object> opt;
     Document schema;
-
-	public PrestaShopServiceImplImport() throws IOException {
+	
+   /**
+    * Initialize constructor. 
+    * 
+    * @throws IOException
+    */
+    public PrestaShopServiceImportImpl() throws IOException {
 
 		AppPrestashop prestaShopObj = Beans.get(AppPrestashopRepository.class).all().fetchOne();
 		shopUrl = prestaShopObj.getPrestaShopUrl();
 		key = prestaShopObj.getPrestaShopKey();
 		isStatus = prestaShopObj.getIsOrderStatus();
-		saleOrderStatus = prestaShopObj.getSaleOrderStatus();
+		saleOrderStatus = prestaShopObj.getSaleOrderStatusList();
 		paymentMode = prestaShopObj.getPaymentMode();
 		ws = new PSWebServiceClient(shopUrl, key);
 		fwImport = new FileWriter(importFile, true);
 		bwImport = new BufferedWriter(fwImport);
-
+	}
+    
+    /**
+	 * Import Axelor base module (Currency, Country, Partners/Contact, Product Category, Product).  
+	*/
+    public void importAxelorBase() throws IOException, PrestaShopWebserviceException {
+		
+		importAxelorCurrencies();
+		importAxelorCountries();
+		importAxelorPartners();
+		importAxelorPartnerAddresses();
+		importAxelorProductCategories();
+		importAxelorProducts();
 	}
 	
+    /**
+     * Import Axelor Base, SaleOrder, SaleOrderLine module.
+     */
+    @Override
+	public MetaFile importPrestShop() throws IOException, PrestaShopWebserviceException {
+
+		this.importAxelorBase();
+		importAxelorSaleOrders();
+		importAxelorSaleOrderLines();
+		File importFile = closeLog();
+		MetaFile importMetaFile = metaFiles.upload(importFile);
+		return importMetaFile;
+	}
+    
+	/**
+	 * Initialize title/header for import log file. 
+	 * 
+	 * @param objectName an Object name as title in log file
+	 * @throws IOException
+	 */
 	public void importLogObjectHeder(String objectName) throws IOException {
 		bwImport.newLine();
 		bwImport.write("--------------");
@@ -167,18 +199,37 @@ public class PrestaShopServiceImplImport {
 		bwImport.write("--------------");
 	}
 	
+	/**
+	 *  Log error/bug in import log file. 
+	 *  
+	 * @param id print id of current object
+	 * @param msg display message/log which are executed
+	 * @throws IOException
+	 */
 	public void importLog(String id, String msg) throws IOException {
 		bwImport.newLine();
 		bwImport.write("Id - " + id + " " + msg);
 	}
 	
+	/**
+	 * Close export log file.
+	 * 
+	 * @return import log file object 
+	 * @throws IOException
+	 */
 	public File closeLog() throws IOException {
 		bwImport.close();
 		fwImport.close();
-		
 		return importFile;
 	}
 	
+	/**
+	 * Initialize new connection with prestashop for perticular object.
+	 * 
+	 * @param resource particular resource/object of prestashop
+	 * @param id particular id of resource/object
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 */
 	public void importConnection(String resource, String id) throws PrestaShopWebserviceException {
 		ws = new PSWebServiceClient(shopUrl + "/api/"+ resource + "/"+ id,key);
 		opt = new HashMap<String, Object>();
@@ -186,15 +237,14 @@ public class PrestaShopServiceImplImport {
 		schema = ws.get(opt);
 	}
 	
-	public boolean check(Integer st) {
-		
-		if((st == 2 || st == 3 || st == 4 || st == 5 || st == 7 || st == 9 || st == 11) && isStatus == true) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
+	/**
+	 * Fetch prestashop API ids for perticular object/resource.
+	 * 
+	 * @param resources resource particular resource/object of prestashop
+	 * @param node resource child node
+	 * @return list of ids of particular resources
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 */
 	public List<String> fetchApiIds(String resources, String node) throws PrestaShopWebserviceException {
 
 		ws = new PSWebServiceClient(shopUrl, key);
@@ -210,6 +260,12 @@ public class PrestaShopServiceImplImport {
 		return ids;
 	}
 	
+	/**
+	 * Fetch only draft status prestashop API ids for perticular object/resource.
+	 * 
+	 * @return list of order ids which are in draft state
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 */
 	public List<String> getDraftOrderIds() throws PrestaShopWebserviceException {
 		
 		List<String> orderIds = new ArrayList<String>();
@@ -243,7 +299,6 @@ public class PrestaShopServiceImplImport {
 			    	if(nodeList.getLength() > 0) {
 			    		orderIds.add(order.getAttributes().getNamedItem("id").getNodeValue());
 				    }
-			    	
 			    }
 			}
 		}
@@ -251,6 +306,13 @@ public class PrestaShopServiceImplImport {
 		return orderIds;
 	}
 	
+	/**
+	 * Fetch only OrderDetail/SaleOrderLine prestashop API ids for perticular object/resource.
+	 * 
+	 * @param orderIds list of order ids
+	 * @return return order details of particular order id
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 */
 	public List<String> getOrderLineIds(List<String> orderIds) throws PrestaShopWebserviceException {
 		
 		List<String> orderDetailIds = new ArrayList<String>();
@@ -283,6 +345,13 @@ public class PrestaShopServiceImplImport {
 		return orderDetailIds;
 	}
 	
+	/**
+	 * Fetch only OrderDetail/SaleOrderLine prestashop API ids for perticular object/resource
+	 * 
+	 * @param id of category
+	 * @return category details
+	 * @throws PrestaShopWebserviceException
+	 */
 	public String[] getParentCategoryName(String id) throws PrestaShopWebserviceException {
 		
 		PSWebServiceClient ws = new PSWebServiceClient(shopUrl + "/api/categories/" + id,key);
@@ -303,12 +372,20 @@ public class PrestaShopServiceImplImport {
 		return category;
 	}
 	
+	/**
+	 * Import product image to ABS
+	 * 
+	 * @param productId on which product image should be add
+	 * @param imgId of images
+	 * @return object of metafile
+	 * @throws IOException
+	 */
+	@SuppressWarnings("resource")
 	public MetaFile importProductImages(String productId, String imgId) throws IOException {
 
 		String path = AppSettings.get().get("file.upload.dir");
-		String imageUrl = "http://localhost/prestashop/api/images/products/" + productId + "/" + imgId;
+		String imageUrl = shopUrl + "/api/images/products/" + productId + "/" + imgId;
 		String destinationFile = path + File.separator + productId + ".jpg";
-
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpGet httpGet = new HttpGet(imageUrl);
 		httpGet.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(key, ""), "UTF-8", false));
@@ -316,7 +393,6 @@ public class PrestaShopServiceImplImport {
 		HttpEntity responseEntity = httpResponse.getEntity();
 		InputStream is = responseEntity.getContent();
 		OutputStream os = new FileOutputStream(destinationFile);
-
 		byte[] b = new byte[2048];
 		int length;
 
@@ -331,93 +407,76 @@ public class PrestaShopServiceImplImport {
 		return imgUpload;
 	}
 	
-	public Address getAddress(String addressL4, String addressL6, String city) {
-
-		Address addressObj = new Address();
-		List<Address> addresses = addressRepo.all().fetch();
-		String fullName = addressL4 + addressL6;
-		Integer cnt = 0;
-
-		for (Address address : addresses) {
-			if (address.getAddressL4().equals(addressL4) && address.getAddressL6().equals(addressL6)) {
-				addressObj = addressRepo.find(address.getId());
-				cnt++;
-				break;
-			}
-		}
-
-		if (cnt == 0) {
-			addressObj.setAddressL4(addressL4);
-			addressObj.setAddressL6(addressL6);
-			addressObj.setFullName(fullName);
-		}
-
-		City c = cityRepo.findByName(city);
-		if (c == null) {
-			City city2 = new City();
-			city2.setName(city);
-			addressObj.setCity(city2);
-		} else {
-			addressObj.setCity(c);
-		}
-		return addressObj;
-	}
-	
+	/**
+	 * Update particular order by status
+	 * 
+	 * @param order object of SaleOrder
+	 * @param status like draft, finalize, order confirm, finished, cancel
+	 * @return complete saleOrder with updated staus
+	 * @throws Exception
+	 */
 	public SaleOrder updateOrderStatus(SaleOrder order, int status) throws Exception {
 		
 		for(SaleOrderStatus saleOrderStatus : saleOrderStatus) {
-						if(status == saleOrderStatus.getPrestaShopStatus()) {
-							if(saleOrderStatus.getAbsStatus() == 1) {
-								order.setStatusSelect(saleOrderStatus.getAbsStatus());
-								
-							} else if (saleOrderStatus.getAbsStatus() == 2) {
-								order.setManualUnblock(true);
-								saleOrderService.finalizeSaleOrder(order);
-								order.setStatusSelect(saleOrderStatus.getAbsStatus());
-								
-							} else if (saleOrderStatus.getAbsStatus() == 3) {
-								order.setManualUnblock(true);
-								saleOrderService.finalizeSaleOrder(order);
-								saleOrderService.confirmSaleOrder(order);
-								order.setStatusSelect(saleOrderStatus.getAbsStatus());
-								
-							} else if (saleOrderStatus.getAbsStatus() == 4) {
-								order.setManualUnblock(true);
-								saleOrderService.finalizeSaleOrder(order);
-								saleOrderService.confirmSaleOrder(order);
-								order.setStatusSelect(saleOrderStatus.getAbsStatus());
-								
-							} else if (saleOrderStatus.getAbsStatus() == 5) {
-								CancelReason cancelReason = new CancelReason();
-								cancelReason.setName("From prestashop");
-								order.setCancelReason(cancelReason);
-								order.setCancelReasonStr("From prestashop");
-								saleOrderService.cancelSaleOrder(order, order.getCancelReason(), order.getCancelReasonStr());
-								order.setStatusSelect(saleOrderStatus.getAbsStatus());
-								
-							} else {
-								order.setStatusSelect(1);
-							}
-						}
-			}
+			if(status == saleOrderStatus.getPrestaShopStatus()) {
+				if(saleOrderStatus.getAbsStatus() == 1) {
+					order.setStatusSelect(saleOrderStatus.getAbsStatus());
+						
+				} else if (saleOrderStatus.getAbsStatus() == 2) {
+					order.setManualUnblock(true);
+					saleOrderService.finalizeSaleOrder(order);
+					order.setStatusSelect(saleOrderStatus.getAbsStatus());
 					
+				} else if (saleOrderStatus.getAbsStatus() == 3) {
+					order.setManualUnblock(true);
+					saleOrderService.finalizeSaleOrder(order);
+					saleOrderService.confirmSaleOrder(order);
+					order.setStatusSelect(saleOrderStatus.getAbsStatus());
+					
+				} else if (saleOrderStatus.getAbsStatus() == 4) {
+					order.setManualUnblock(true);
+					saleOrderService.finalizeSaleOrder(order);
+					saleOrderService.confirmSaleOrder(order);
+					order.setStatusSelect(saleOrderStatus.getAbsStatus());
+					
+				} else if (saleOrderStatus.getAbsStatus() == 5) {
+					CancelReason cancelReason = new CancelReason();
+					cancelReason.setName("From prestashop");
+					order.setCancelReason(cancelReason);
+					order.setCancelReasonStr("From prestashop");
+					saleOrderService.cancelSaleOrder(order, order.getCancelReason(), order.getCancelReasonStr());
+					order.setStatusSelect(saleOrderStatus.getAbsStatus());
+					
+				} else {
+					order.setStatusSelect(1);
+				}
+			}
+		}
 		return order;
 	}
 	
-	public SaleOrder manageAddresses(String id_delivery_address, String id_invoice_address, SaleOrder order) {
+	/**
+	 * Set delivery and invoice address of saleOrder
+	 * 
+	 * @param deliveryAddressId contains id of prestashop's address
+	 * @param invoiceAddressId contains id of prestashop's address
+	 * @param order object required for add address
+	 * @return order with add/updated new address
+	 */
+	public SaleOrder manageAddresses(String deliveryAddressId, String invoiceAddressId, SaleOrder order) {
 
 		Address deliveryAddress = null;
 		Address invoiceAddress = null;
 		
-		if (id_delivery_address != null) {
-			deliveryAddress = Beans.get(AddressRepository.class).all().filter("self.prestaShopId = ?" , id_delivery_address).fetchOne(); 
+		if (deliveryAddressId != null) {
+			deliveryAddress = Beans.get(AddressRepository.class).all().filter("self.prestaShopId = ?" , deliveryAddressId).fetchOne(); 
 			order.setDeliveryAddress(deliveryAddress);
 			order.setDeliveryAddressStr(deliveryAddress.getAddressL4() + "\n" + deliveryAddress.getAddressL5() 
 				+ "\n" + deliveryAddress.getAddressL6() + "\n" + deliveryAddress.getAddressL7Country().getName());
 		}
 		
-		if(id_invoice_address != null) {
-			invoiceAddress = Beans.get(AddressRepository.class).all().filter("self.prestaShopId = ?" , id_invoice_address).fetchOne();
+		if(invoiceAddressId != null) {
+			invoiceAddress = Beans.get(AddressRepository.class).all().filter("self.prestaShopId = ?" , invoiceAddressId).fetchOne();
 			order.setMainInvoicingAddress(invoiceAddress);
 			order.setMainInvoicingAddressStr(invoiceAddress.getAddressL4() + "\n" + invoiceAddress.getAddressL5() 
 				+ "\n" + invoiceAddress.getAddressL6() + "\n" + invoiceAddress.getAddressL7Country().getName());
@@ -426,7 +485,12 @@ public class PrestaShopServiceImplImport {
 		return order;
 	}
 	
-	@SuppressWarnings("deprecation")
+	/**
+	 *	Add/update currency to ABS	
+	 * 
+	 * @throws IOException
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 */
 	@Transactional
 	public void importAxelorCurrencies() throws IOException, PrestaShopWebserviceException {
 		
@@ -438,24 +502,24 @@ public class PrestaShopServiceImplImport {
 			this.importConnection("currencies", id);
 			NodeList list = schema.getChildNodes();
 			Currency currency = null;
-			String code = "";
-			String name = "";
+			String code = null;
+			String name = null;
+			String prestashopId = null;
 			
 			for (int i = 0; i < list.getLength(); i++) {
 				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
 					try {
 						Element element = (Element) list.item(i);
-						String prestashop_id = element.getElementsByTagName("id").item(0).getTextContent();
-						currency = Beans.get(CurrencyRepository.class).all().filter("self.prestaShopId = ?", prestashop_id).fetchOne();
+						prestashopId = element.getElementsByTagName("id").item(0).getTextContent();
+						currency = Beans.get(CurrencyRepository.class).all().filter("self.prestaShopId = ?", prestashopId).fetchOne();
 						
 						if(currency == null) {
 							currency = currencyRepo.findByCode(element.getElementsByTagName("iso_code").item(0).getTextContent());
-							
 							if(currency == null) {
 								currency = new Currency();
-								currency.setPrestaShopId(prestashop_id);
+								currency.setPrestaShopId(prestashopId);
 							} else {
-								currency.setPrestaShopId(prestashop_id);
+								currency.setPrestaShopId(prestashopId);
 							}
 						}
 						
@@ -466,11 +530,9 @@ public class PrestaShopServiceImplImport {
 							name = element.getElementsByTagName("name").item(0).getTextContent();
 							currency.setCode(code);
 							currency.setName(name);
-							
 						} else {
-							throw new AxelorException(String.format("Currency code / name is null or invalid"), IException.NO_VALUE);
+							throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CURRENCY), IException.NO_VALUE);
 						}
-
 						currencyRepo.save(currency);
 						
 					} catch (AxelorException e) {
@@ -483,39 +545,41 @@ public class PrestaShopServiceImplImport {
 				}
 			}
 		}
-
 	}
 	
-	@SuppressWarnings("deprecation")
+	/**
+	 * Add/Update Country to ABS. 
+	 * 
+	 * @throws IOException
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 */
 	public void importAxelorCountries() throws IOException, PrestaShopWebserviceException {
 		
 		this.importLogObjectHeder("Country");
 		List<String> countryIds = this.fetchApiIds("countries", "country");
 
 		for (String id : countryIds) {
-			
 			this.importConnection("countries", id);
 			NodeList list = schema.getChildNodes();
+			String name = null;
+			String alpha2Code = null;
 			
 			for (int i = 0; i < list.getLength(); i++) {
 
 				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
 					try {
 						Element element = (Element) list.item(i);
-						
-						String name = element.getElementsByTagName("name").item(i).getFirstChild().getTextContent();
-						String alpha2Code = element.getElementsByTagName("iso_code").item(i).getTextContent();
+						name = element.getElementsByTagName("name").item(i).getFirstChild().getTextContent();
+						alpha2Code = element.getElementsByTagName("iso_code").item(i).getTextContent();
 						
 						if(name.isEmpty()) {
-							throw new AxelorException(String.format("Country is null or invalid"), IException.NO_VALUE);
+							throw new AxelorException(I18n.get(IExceptionMessage.INVALID_COUNTRY), IException.NO_VALUE);
 						}
 						
 						Country country = Beans.get(CountryRepository.class).all().filter("self.alpha2Code = ?", alpha2Code).fetchOne();
-						
 						if(country == null) {
 							country = new Country();
 						}
-
 						country.setName(name);
 						country.setAlpha2Code(alpha2Code);
 						country.setPrestaShopId(id);
@@ -528,13 +592,17 @@ public class PrestaShopServiceImplImport {
 						this.importLog(id, e.getMessage());
 						continue;
 					}
-					
 				}
 			}
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
+	/**
+	 * Add/Update Partner/Customer to prestashop
+	 * 
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 * @throws IOException
+	 */
 	@Transactional
 	public void importAxelorPartners() throws PrestaShopWebserviceException, IOException {
 
@@ -546,12 +614,12 @@ public class PrestaShopServiceImplImport {
 			this.importConnection("customers", id);
 			NodeList list = schema.getChildNodes();
 			Integer titleSelect;
-			String emailName = "";
-			String firstName = "";
-			String name = "";
-			String email = "";
-			String website = "";
-			String company = "";
+			String emailName = null;
+			String firstName = null;
+			String name = null;
+			String email = null;
+			String website = null;
+			String company = null;
 			boolean flag = false; 
 			Partner partner = null;
 			Partner contactPartner = null;
@@ -572,7 +640,7 @@ public class PrestaShopServiceImplImport {
 						
 						if (!element.getElementsByTagName("firstname").item(0).getTextContent().isEmpty() && 
 								!element.getElementsByTagName("lastname").item(0).getTextContent().isEmpty()) {
-
+							
 							titleSelect = Integer.parseInt(element.getElementsByTagName("id_gender").item(0).getTextContent());
 							firstName = element.getElementsByTagName("firstname").item(0).getTextContent();
 							name = element.getElementsByTagName("lastname").item(0).getTextContent();
@@ -580,64 +648,63 @@ public class PrestaShopServiceImplImport {
 							website = element.getElementsByTagName("website").item(0).getTextContent();
 							company = element.getElementsByTagName("company").item(0).getTextContent();
 							
-								if(!element.getElementsByTagName("company").item(0).getTextContent().isEmpty()) {
-									
-									partner.setPartnerTypeSelect(1);
-									partner.setName(company);
-									
-									if(flag) {
-										contactPartner = new Partner();
-									} else {
-										contactPartner = partner.getContactPartnerSet().iterator().next();
-									}
-									
-									partner.setFullName(company);
-									contactPartner.setName(name);
-									contactPartner.setFirstName(firstName);
-									contactPartner.setIsContact(true);
-									contactPartner.setMainPartner(partner);
-									
-									if(name != null && firstName != null) {
-										contactPartner.setFullName(name + " " + firstName);
-									} else if (name != null && firstName == null) {
-										contactPartner.setFullName(name);
-									} else if (name == null && firstName != null) {
-										contactPartner.setFullName(firstName);
-									}
-									
-									if(flag) {
-										partner.addContactPartnerSetItem(contactPartner);
-									}
-									
-									
+							if(!element.getElementsByTagName("company").item(0).getTextContent().isEmpty()) {
+								
+								partner.setPartnerTypeSelect(1);
+								partner.setName(company);
+								
+								if(flag) {
+									contactPartner = new Partner();
 								} else {
-									partner.setPartnerTypeSelect(2);
-									partner.setFirstName(firstName);
-									partner.setName(name);
-									
-									if(name != null && firstName != null) {
-										partner.setFullName(name + " " + firstName);
-									} else if (name != null && firstName == null) {
-										partner.setFullName(name);
-									} else if (name == null && firstName != null) {
-										partner.setFullName(firstName);
-									}
+									contactPartner = partner.getContactPartnerSet().iterator().next();
 								}
-							
+									
+								partner.setFullName(company);
+								contactPartner.setName(name);
+								contactPartner.setFirstName(firstName);
+								contactPartner.setIsContact(true);
+								contactPartner.setMainPartner(partner);
+								
+								if(name != null && firstName != null) {
+									contactPartner.setFullName(name + " " + firstName);
+								} else if (name != null && firstName == null) {
+									contactPartner.setFullName(name);
+								} else if (name == null && firstName != null) {
+									contactPartner.setFullName(firstName);
+								}
+									
+								if(flag) {
+									partner.addContactPartnerSetItem(contactPartner);
+								}
+									
+							} else {
+								
+								partner.setPartnerTypeSelect(2);
+								partner.setFirstName(firstName);
+								partner.setName(name);
+
+								if(name != null && firstName != null) {
+									partner.setFullName(name + " " + firstName);
+								} else if (name != null && firstName == null) {
+									partner.setFullName(name);
+								} else if (name == null && firstName != null) {
+									partner.setFullName(firstName);
+								}
+							}
 						} else {
-							throw new AxelorException(String.format("Firstname / Lastname / Company is null or invalid"), IException.NO_VALUE);
+							throw new AxelorException(I18n.get(IExceptionMessage.INVALID_COMPANY), IException.NO_VALUE);
 						}
 
 						partner.setTitleSelect(titleSelect);
 						EmailAddress emailAddress = new EmailAddress();
 						emailAddress.setAddress(email);
 
-						if (partner != null) {
+						if (partner != null)
 							emailName = partner.getFullName();
-						}
-						if (emailAddress.getAddress() != null) {
+						
+						if (emailAddress.getAddress() != null)
 							emailName = emailAddress.getAddress();
-						}
+						
 						if(flag) {
 							partner.addCompanySetItem(AuthUtils.getUser().getActiveCompany());
 							flag = false;
@@ -647,7 +714,6 @@ public class PrestaShopServiceImplImport {
 						partner.setEmailAddress(emailAddress);
 						partner.setWebSite(website);
 						partner.setIsCustomer(true);
-						
 						partnerRepo.persist(partner);
 						partnerRepo.save(partner);
 
@@ -663,7 +729,12 @@ public class PrestaShopServiceImplImport {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
+	/**
+	 * Add/Update Address to ABS.
+	 * 
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 * @throws IOException
+	 */
 	@Transactional
 	public void importAxelorPartnerAddresses() throws PrestaShopWebserviceException, IOException {
 		
@@ -671,7 +742,7 @@ public class PrestaShopServiceImplImport {
 		List<String> addressesIds = this.fetchApiIds("addresses", "address");
 		String partnerId = null;
 		String deletedId = null;
-		String id_address = null;
+		String addressId = null;
 		String addressL4 = null;
 		String addressL5 = null;
 		String postcode = null;
@@ -684,7 +755,6 @@ public class PrestaShopServiceImplImport {
 		
 		
 		for (String id : addressesIds) {
-
 			ws = new PSWebServiceClient(shopUrl + "/api/addresses/" + id, key);
 			opt.put("resource", "addresses");
 			schema = ws.get(opt);
@@ -694,163 +764,159 @@ public class PrestaShopServiceImplImport {
 
 				if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
 					Element element = (Element) nodeList.item(i);
+					deletedId = element.getElementsByTagName("deleted").item(i).getTextContent();
+					partnerId = element.getElementsByTagName("id_customer").item(i).getTextContent();
 						
-						deletedId = element.getElementsByTagName("deleted").item(i).getTextContent();
-						partnerId = element.getElementsByTagName("id_customer").item(i).getTextContent();
+					if(deletedId.equals("1"))
+						continue;
+					
+					try {
+						if(partnerId == null || partnerId.equals("0"))
+							throw new AxelorException(I18n.get(IExceptionMessage.INVALID_ADDRESS), IException.NO_VALUE);
 						
-						if(deletedId.equals("1")) {
-							continue;
+						addressId = element.getElementsByTagName("id").item(i).getTextContent();
+						addressL4 = element.getElementsByTagName("address1").item(i).getTextContent();
+						addressL5 = element.getElementsByTagName("address2").item(i).getTextContent();
+						cityName = element.getElementsByTagName("city").item(i).getTextContent();
+						postcode = element.getElementsByTagName("postcode").item(i).getTextContent();
+						countryId = element.getElementsByTagName("id_country").item(i).getTextContent();
+						partner = Beans.get(PartnerRepository.class).all().filter("self.prestaShopId = ?", partnerId).fetchOne();
+						address = Beans.get(AddressRepository.class).all().filter("self.prestaShopId = ?", id).fetchOne(); 
+						city = cityRepo.findByName(cityName);
+
+						if(city == null) {
+							city = new City();
 						}
 						
-						try {
-							if(partnerId == null || partnerId.equals("0")) {
-								throw new AxelorException(String.format("Partner Address is null or invalid"), IException.NO_VALUE);
-							}
-							id_address = element.getElementsByTagName("id").item(i).getTextContent();
-							addressL4 = element.getElementsByTagName("address1").item(i).getTextContent();
-							addressL5 = element.getElementsByTagName("address2").item(i).getTextContent();
-							cityName = element.getElementsByTagName("city").item(i).getTextContent();
-							postcode = element.getElementsByTagName("postcode").item(i).getTextContent();
-							countryId = element.getElementsByTagName("id_country").item(i).getTextContent();
-							partner = Beans.get(PartnerRepository.class).all().filter("self.prestaShopId = ?", partnerId).fetchOne();
-							address = Beans.get(AddressRepository.class).all().filter("self.prestaShopId = ?", id).fetchOne(); 
+						Country country = Beans.get(CountryRepository.class).all().filter("self.prestaShopId = ?", countryId).fetchOne();
+						if(country == null)
+							throw new AxelorException(I18n.get(IExceptionMessage.INVALID_COUNTRY), IException.NO_VALUE);
 							
-							city = cityRepo.findByName(cityName);
-							if(city == null) {
-								city = new City();
-							}
+						if(address == null) {
+							address = new Address();
+							address.setAddressL4(addressL4);
+							address.setAddressL5(addressL5);
+							city.setName(cityName);
+							city.setHasZipOnRight(false);
+							address.setAddressL6(cityName + " " + postcode);
+							address.setFullName(address.getAddressL4().toString() + " " + address.getAddressL6().toString());
+							address.setCity(city);
+							address.setAddressL7Country(country);
+							partnerAddress = new PartnerAddress();
+							partnerAddress.setIsDeliveryAddr(true);
+							partnerAddress.setIsInvoicingAddr(true);
+							partnerAddress.setIsDefaultAddr(true);
+							partnerAddress.setAddress(address);
+							partnerAddress.setPartner(partner);
+							address.setPrestaShopId(addressId);
+							partner.addPartnerAddressListItem(partnerAddress);
 							
-							Country country = Beans.get(CountryRepository.class).all().filter("self.prestaShopId = ?", countryId).fetchOne();
-							
-							if(country == null) {
-								throw new AxelorException(String.format("Country is null or invalid"), IException.NO_VALUE);
-							}
-							
-							
-							if(address == null) {
-								
-								address = new Address();
-								address.setAddressL4(addressL4);
-								address.setAddressL5(addressL5);
-								city.setName(cityName);
-								city.setHasZipOnRight(false);
-								address.setAddressL6(cityName + " " + postcode);
-								address.setFullName(address.getAddressL4().toString() + " " + address.getAddressL6().toString());
-								address.setCity(city);
-								address.setAddressL7Country(country);
-								
-								partnerAddress = new PartnerAddress();
-								partnerAddress.setIsDeliveryAddr(true);
-								partnerAddress.setIsInvoicingAddr(true);
-								partnerAddress.setIsDefaultAddr(true);
-								partnerAddress.setAddress(address);
-								partnerAddress.setPartner(partner);
-								address.setPrestaShopId(id_address);
-								partner.addPartnerAddressListItem(partnerAddress);
-								
-							} else {
-								
-								address.setAddressL4(addressL4);
-								address.setAddressL5(addressL5);
-								city.setName(cityName);
-								city.setHasZipOnRight(false);
-								address.setAddressL6(cityName + " " + postcode);
-								address.setFullName(address.getAddressL4().toString() + " " + address.getAddressL6().toString());
-								address.setAddressL7Country(country);
-								address.setPrestaShopId(id_address);
-								address.setCity(city);
-							}
-							partnerRepo.save(partner);
-							
-						} catch (AxelorException e) {
-							this.importLog(id, e.getMessage());
-							continue;
-						} catch (Exception e) {
-							this.importLog(id, e.getMessage());
-							continue;
+						} else {
+							address.setAddressL4(addressL4);
+							address.setAddressL5(addressL5);
+							city.setName(cityName);
+							city.setHasZipOnRight(false);
+							address.setAddressL6(cityName + " " + postcode);
+							address.setFullName(address.getAddressL4().toString() + " " + address.getAddressL6().toString());
+							address.setAddressL7Country(country);
+							address.setPrestaShopId(addressId);
+							address.setCity(city);
 						}
+						partnerRepo.save(partner);
+					} catch (AxelorException e) {
+						this.importLog(id, e.getMessage());
+						continue;
+					} catch (Exception e) {
+						this.importLog(id, e.getMessage());
+						continue;
 					}
+				}
 			}
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
+	/**
+	 * Add/Update ProductCategory to ABS
+	 * 
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 * @throws DOMException
+	 * @throws IOException
+	 */
 	@Transactional
 	public void importAxelorProductCategories() throws PrestaShopWebserviceException, DOMException, IOException {
 
 		this.importLogObjectHeder("Product Category");
 		List<String> categoryIds = this.fetchApiIds("categories", "category");
-		String prestashop_id = "";
+		String prestashopId = null;
+		
 		for (String id : categoryIds) {
-
 			this.importConnection("categories", id);
 			NodeList list = schema.getChildNodes();
 			
 			for (int i = 0; i < list.getLength(); i++) {
-
+				
 				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
 					Element element = (Element) list.item(i);
 					try {
 						ProductCategory productCategory = null;
 						String name = element.getElementsByTagName("name").item(i).getFirstChild().getTextContent();
 						String code = element.getElementsByTagName("link_rewrite").item(i).getFirstChild().getTextContent();
-						String id_parent = element.getElementsByTagName("id_parent").item(i).getTextContent();
+						String parentId = element.getElementsByTagName("id_parent").item(i).getTextContent();
 						ProductCategory categoryObj = productCategoryRepo.findByName(name);
 						ProductCategory parentProductCategory = null;
+						String[] parentCategoryData = new String[2];
 						
 						if(categoryObj != null) {
 							categoryObj.setPrestaShopId(id);
-							parentProductCategory = Beans.get(ProductCategoryRepository.class).all().filter("self.prestaShopId = ?", id_parent).fetchOne();
+							parentProductCategory = Beans.get(ProductCategoryRepository.class).all().filter("self.prestaShopId = ?", parentId).fetchOne();
 							categoryObj.setParentProductCategory(parentProductCategory);
 							productCategoryRepo.save(categoryObj);
 							continue;
 						}
 						
-						String[] parent_category = new String[2];
-						prestashop_id = element.getElementsByTagName("id").item(i).getTextContent();
-						productCategory = Beans.get(ProductCategoryRepository.class).all().filter("self.prestaShopId = ?", prestashop_id).fetchOne();
+						prestashopId = element.getElementsByTagName("id").item(i).getTextContent();
+						productCategory = Beans.get(ProductCategoryRepository.class).all().filter("self.prestaShopId = ?", prestashopId).fetchOne();
 						
 						if(productCategory == null) {
 							productCategory = productCategoryRepo.findByCode(element.getElementsByTagName("link_rewrite").item(0).getTextContent());
-							
 							if(productCategory == null) {
 								productCategory = new ProductCategory();
-								productCategory.setPrestaShopId(prestashop_id);
+								productCategory.setPrestaShopId(prestashopId);
 							} else {
-								productCategory.setPrestaShopId(prestashop_id);
+								productCategory.setPrestaShopId(prestashopId);
 							}
 						}
 
 						ProductCategory parentCategory = null;
 						
-						if(!id_parent.equals("0")) {
-							parent_category = getParentCategoryName(id_parent);
-							parentCategory = productCategoryRepo.findByName(parent_category[0]);
+						if(!parentId.equals("0")) {
+							parentCategoryData = this.getParentCategoryName(parentId);
+							parentCategory = productCategoryRepo.findByName(parentCategoryData[0]);
 							
 							if(parentCategory == null) {
 								parentCategory = new ProductCategory();
-								parentCategory.setName(parent_category[0]);
-								parentCategory.setCode(parent_category[1]);
+								parentCategory.setName(parentCategoryData[0]);
+								parentCategory.setCode(parentCategoryData[1]);
 							}
 						}
 
 						if (name.equals(null) || code.equals(null)) {
-							throw new AxelorException(String.format("Null Category"), IException.NO_VALUE);
+							throw new AxelorException(I18n.get(IExceptionMessage.INVALID_PRODUCT_CATEGORY), IException.NO_VALUE);
 						}
 
 						productCategory.setCode(code);
 						productCategory.setName(name);
-						if(!id_parent.equals("0")) {
+						if(!parentId.equals("0")) {
 							productCategory.setParentProductCategory(parentCategory);
 						}
 						
 						productCategoryRepo.save(productCategory);
 						
 					} catch (AxelorException e) {
-						this.importLog(prestashop_id, e.getMessage());
+						this.importLog(prestashopId, e.getMessage());
 						continue;
 					} catch (Exception e) {
-						this.importLog(prestashop_id, e.getMessage());
+						this.importLog(prestashopId, e.getMessage());
 						continue;
 					}
 				}
@@ -858,18 +924,22 @@ public class PrestaShopServiceImplImport {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
+	/**
+	 * Add/Update Product to ABS. 
+	 * 
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 * @throws IOException
+	 */
 	@Transactional
 	public void importAxelorProducts() throws PrestaShopWebserviceException, IOException {
 
 		this.importLogObjectHeder("Product");
-		String prestashop_id = "";
-		String name = "";
+		String prestashopId = null;
 		List<String> productsIds = this.fetchApiIds("products", "product");
 
 		for (String id : productsIds) {
+		
 			try {
-
 				this.importConnection("products", id);
 				NodeList list = schema.getChildNodes();
 
@@ -878,76 +948,74 @@ public class PrestaShopServiceImplImport {
 					if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
 						Element element = (Element) list.item(i);
 						Product product = null;
-						String id_category_default = element.getElementsByTagName("id_category_default").item(0).getTextContent();
-						prestashop_id = element.getElementsByTagName("id").item(0).getTextContent();
-
-						product = Beans.get(ProductRepository.class).all().filter("self.prestaShopId = ?", prestashop_id).fetchOne();
+						String name = null;
+						String categoryDefaultId = element.getElementsByTagName("id_category_default").item(0).getTextContent();
+						prestashopId = element.getElementsByTagName("id").item(0).getTextContent();
+						String imgId = element.getElementsByTagName("id_default_image").item(0).getTextContent();
+						MetaFile img = this.importProductImages(prestashopId, imgId);
+						BigDecimal price = new BigDecimal((element.getElementsByTagName("price").item(0).getTextContent().isEmpty() ? "000.00"
+										: element.getElementsByTagName("price").item(0).getTextContent()));
+						BigDecimal width = new BigDecimal((element.getElementsByTagName("width").item(0).getTextContent().isEmpty()) ? "000.00"
+										: element.getElementsByTagName("width").item(0).getTextContent());
+						Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+								.parse(element.getElementsByTagName("date_add").item(0).getTextContent());
+						String formattedDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
+						LocalDate startDate = LocalDate.parse(formattedDate);
+						String description = element.getElementsByTagName("description").item(0).getTextContent();
+						String productTypeSelect = element.getElementsByTagName("link_rewrite").item(0).getTextContent();
+						product = Beans.get(ProductRepository.class).all().filter("self.prestaShopId = ?", prestashopId).fetchOne();
 						
 						if(product == null) {
 							product = new Product();
-							product.setPrestaShopId(prestashop_id);
+							product.setPrestaShopId(prestashopId);
 						}
 
 						if (!element.getElementsByTagName("name").item(0).getFirstChild().getTextContent().equals(null)) {
 							name = element.getElementsByTagName("name").item(0).getFirstChild().getTextContent();
 						} else {
-							throw new AxelorException(String.format("Product name is null or invalid"), IException.NO_VALUE);
+							throw new AxelorException(I18n.get(IExceptionMessage.INVALID_PRODUCT), IException.NO_VALUE);
 						}
-
-						String imgId = element.getElementsByTagName("id_default_image").item(0).getTextContent();
-						MetaFile img = importProductImages(prestashop_id, imgId);
-						BigDecimal price = new BigDecimal(
-								(element.getElementsByTagName("price").item(0).getTextContent().isEmpty() ? "000.00"
-										: element.getElementsByTagName("price").item(0).getTextContent()));
-						BigDecimal width = new BigDecimal(
-								(element.getElementsByTagName("width").item(0).getTextContent().isEmpty()) ? "000.00"
-										: element.getElementsByTagName("width").item(0).getTextContent());
-						Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-								.parse(element.getElementsByTagName("date_add").item(0).getTextContent());
-						String formattedDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
-						LocalDate start_date = LocalDate.parse(formattedDate);
-						String description = element.getElementsByTagName("description").item(0).getTextContent();
-						String productTypeSelect = element.getElementsByTagName("link_rewrite").item(0).getTextContent();
 						
 						if (!name.equals(null)) {
 							product.setCode(name);
 							product.setName(name);
 						}
 						
-						ProductCategory category = Beans.get(ProductCategoryRepository.class).all().filter("self.prestaShopId = ?", id_category_default).fetchOne();
-						
+						ProductCategory category = Beans.get(ProductCategoryRepository.class).all().filter("self.prestaShopId = ?", categoryDefaultId).fetchOne();
 						product.setPicture(img);
 						product.setProductCategory(category);
 						product.setSalePrice(price);
 						product.setWidth(width);
-						product.setStartDate(start_date);
+						product.setStartDate(startDate);
 						product.setDescription(description);
 						product.setFullName(name);
 						product.setProductTypeSelect(productTypeSelect);
-						
 						productRepo.save(product);
 					}
 				}
-
 			} catch (AxelorException e) {
-				this.importLog(prestashop_id, e.getMessage());
+				this.importLog(prestashopId, e.getMessage());
 				continue;
 			} catch (Exception e) {
-				this.importLog(prestashop_id, e.getMessage());
+				this.importLog(prestashopId, e.getMessage());
 				continue;
 			}
 		}
-
 	}
 
-	@SuppressWarnings("deprecation")
+	/**
+	 * Add/Update SaleOrder to ABS. 
+	 * 
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 * @throws IOException
+	 */
 	@Transactional
 	public void importAxelorSaleOrders() throws PrestaShopWebserviceException, IOException {
 
 		this.importLogObjectHeder("SaleOrder");
 		List<String> orderIds = null;
-		Long client_partner = 0l;
-		String prestashop_id = "";
+		Long clientPartner = 0l;
+		String prestashopId = null;
 		
 		if(isStatus == true) {
 			orderIds = this.fetchApiIds("orders", "order");
@@ -966,42 +1034,39 @@ public class PrestaShopServiceImplImport {
 				for (int i = 0; i < list.getLength(); i++) {
 					if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
 						Element element = (Element) list.item(i);
-						prestashop_id = element.getElementsByTagName("id").item(i).getTextContent();
+						prestashopId = element.getElementsByTagName("id").item(i).getTextContent();
 						SaleOrder order = null;
 						Partner partner = null;
 						Integer status = null;
 						Currency currency = null;
-						order = Beans.get(SaleOrderRepository.class).all().filter("self.prestaShopId = ?", prestashop_id).fetchOne();
+						order = Beans.get(SaleOrderRepository.class).all().filter("self.prestaShopId = ?", prestashopId).fetchOne();
 
 						if(order == null) {
 							order = new SaleOrder();
-							order.setPrestaShopId(prestashop_id);
+							order.setPrestaShopId(prestashopId);
 						}
 						
 						if (!element.getElementsByTagName("id_customer").item(0).getTextContent().isEmpty()) {
-							client_partner = Long.parseLong(element.getElementsByTagName("id_customer").item(0).getTextContent());
+							clientPartner = Long.parseLong(element.getElementsByTagName("id_customer").item(0).getTextContent());
 						} else {
-							throw new AxelorException(String.format("Customer in order null or invalid"), IException.NO_VALUE);
+							throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CUSTOMER), IException.NO_VALUE);
 						}
 
-						partner = Beans.get(PartnerRepository.class).all().filter("self.prestaShopId = ?", client_partner).fetchOne();
+						partner = Beans.get(PartnerRepository.class).all().filter("self.prestaShopId = ?", clientPartner).fetchOne();
 						status = Integer.parseInt(element.getElementsByTagName("current_state").item(0).getTextContent());
 						currency = Beans.get(CurrencyRepository.class).all().filter("self.prestaShopId = ?" , element.getElementsByTagName("id_currency").item(0).getTextContent()).fetchOne();
 						
-						if(partner == null) {
-							throw new AxelorException(String.format("Customer is null or invalid"),IException.NO_VALUE);
-						}
+						if(partner == null)
+							throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CUSTOMER), IException.NO_VALUE);
 						
-						if(currency == null) {
-							throw new AxelorException(String.format("Currency is null or invalid"),IException.NO_VALUE);
-						}
+						if(currency == null)
+							throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CURRENCY), IException.NO_VALUE);
 						
-						String id_delivery_address = element.getElementsByTagName("id_address_delivery").item(0).getTextContent();
-						String id_invoice_address = element.getElementsByTagName("id_address_invoice").item(0).getTextContent();
+						String deliveryAddressId = element.getElementsByTagName("id_address_delivery").item(0).getTextContent();
+						String invoiceAddressId = element.getElementsByTagName("id_address_invoice").item(0).getTextContent();
 						String paymentCondition = element.getElementsByTagName("payment").item(0).getTextContent();
 						Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(element.getElementsByTagName("date_add").item(0).getTextContent());
 						String formattedDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
-						
 						PaymentCondition paymentConditionObj = paymentConditionRepo.findByName(paymentCondition);
 						
 						if(paymentConditionObj == null) {
@@ -1011,7 +1076,7 @@ public class PrestaShopServiceImplImport {
 						}
 						
 						order.setClientPartner(partner);
-						order = this.manageAddresses(id_delivery_address, id_invoice_address, order);
+						order = this.manageAddresses(deliveryAddressId, invoiceAddressId, order);
 						order.setExTaxTotal(new BigDecimal(element.getElementsByTagName("total_paid_tax_excl").item(0).getTextContent()).setScale(2, RoundingMode.HALF_UP));
 						order.setTaxTotal(new BigDecimal(element.getElementsByTagName("total_wrapping_tax_incl").item(0).getTextContent()).setScale(2, RoundingMode.HALF_UP));
 						order.setInTaxTotal(new BigDecimal(element.getElementsByTagName("total_paid").item(0).getTextContent()).setScale(2, RoundingMode.HALF_UP));
@@ -1024,23 +1089,26 @@ public class PrestaShopServiceImplImport {
 						order.setCompany(company);
 						order.setCurrency(currency);
 						order = this.updateOrderStatus(order, status);
-						
 						saleOrderRepo.persist(order);
 						saleOrderRepo.save(order);
 					}
 				}
-
 			} catch (AxelorException e) {
-				this.importLog(prestashop_id, e.getMessage());
+				this.importLog(prestashopId, e.getMessage());
 				continue;
 			} catch (Exception e) {
-				this.importLog(prestashop_id, e.getMessage());
+				this.importLog(prestashopId, e.getMessage());
 				continue;
 			}
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
+	/**
+	 * Add/Update SaleOrderLine to ABS.
+	 * 
+	 * @throws PrestaShopWebserviceException display exception which are handled by prestashop
+	 * @throws IOException
+	 */
 	@Transactional
 	public void importAxelorSaleOrderLines() throws PrestaShopWebserviceException, IOException {
 		
@@ -1066,24 +1134,22 @@ public class PrestaShopServiceImplImport {
 				
 				for (int i = 0; i < list.getLength(); i++) {
 					if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
-						Element element = (Element) list.item(i);
 						
+						Element element = (Element) list.item(i);
 						SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).all().filter("self.prestaShopId = ?", element.getElementsByTagName("id_order").item(i).getTextContent()).fetchOne();
 						Product product = Beans.get(ProductRepository.class).all().filter("self.prestaShopId = ?", element.getElementsByTagName("product_id").item(i).getTextContent()).fetchOne();
 						SaleOrderLine saleOrderLine = Beans.get(SaleOrderLineRepository.class).all().filter("self.prestaShopId = ?", id).fetchOne();
 						
-						if(saleOrder == null) {
-							throw new AxelorException(String.format("Order null or invalid"), IException.NO_VALUE);
-						}
+						if(saleOrder == null)
+							throw new AxelorException(I18n.get(IExceptionMessage.INVALID_ORDER), IException.NO_VALUE);
 						
 						if(saleOrderLine == null) {
 							isNewSaleOrderLine = true;
 							saleOrderLine = new SaleOrderLine();
 						}
 						
-						if(product == null) {
-							throw new AxelorException(String.format("Product null or invalid"), IException.NO_VALUE);
-						}
+						if(product == null)
+							throw new AxelorException(I18n.get(IExceptionMessage.INVALID_PRODUCT), IException.NO_VALUE);
 						
 						saleOrderLine.setProduct(product);	
 						saleOrderLine.setProductName(element.getElementsByTagName("product_name").item(i).getTextContent());
@@ -1097,12 +1163,10 @@ public class PrestaShopServiceImplImport {
 							saleOrder.addSaleOrderLineListItem(saleOrderLine);
 							isNewSaleOrderLine = false;
 						}
-
 						saleOrderRepo.persist(saleOrder);
 						saleOrderRepo.save(saleOrder);
 					}
 				}
-				
 			} catch (AxelorException e) {
 				this.importLog(id, e.getMessage());
 				continue;
@@ -1110,7 +1174,6 @@ public class PrestaShopServiceImplImport {
 				this.importLog(id, e.getMessage());
 				continue;
 			}
-				
 		}
 	}
 }

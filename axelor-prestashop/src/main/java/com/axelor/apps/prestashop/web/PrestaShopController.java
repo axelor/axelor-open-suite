@@ -40,10 +40,18 @@ public class PrestaShopController {
 	@Inject
 	private PrestaShopBatchRepository prestaShopBatchRepo;
 	
+	/**
+	 * Import objects/resources from prestashop to ABS
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws PrestaShopWebserviceException
+	 * @throws ParseException
+	 * @throws TransformerException
+	 */
 	public void importPrestShop(ActionRequest request, ActionResponse response) throws PrestaShopWebserviceException, ParseException, TransformerException{
 		
 		PrestaShopBatch prestaShopBatch = request.getContext().asType(PrestaShopBatch.class);
-		
 		Batch batch = prestaShopBatchService.importPrestaShop(prestaShopBatchRepo.find(prestaShopBatch.getId()));
 		response.setValue("prestaShopBatchLog", batch.getPrestaShopBatch().getPrestaShopBatchLog());
 		
@@ -52,6 +60,19 @@ public class PrestaShopController {
 		response.setReload(true);
 	}
 	
+	/**
+	 * Export objects/resources from ABS to prestashop
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws PrestaShopWebserviceException
+	 * @throws TransformerException
+	 * @throws NumberFormatException
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 */
 	public void exportPrestShop(ActionRequest request, ActionResponse response) throws PrestaShopWebserviceException, TransformerException, NumberFormatException, MalformedURLException, IOException, SAXException, ParserConfigurationException{
 
 		PrestaShopBatch prestaShopBatch = request.getContext().asType(PrestaShopBatch.class);

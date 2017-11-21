@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -30,6 +31,7 @@ import com.google.inject.persist.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -153,4 +155,19 @@ public interface StockMoveService {
 	String printStockMove(StockMove stockMove,
 						  List<Integer> lstSelectedMove,
 						  boolean isPicking) throws AxelorException;
+
+	/**
+	 * Update fully spread over logistical forms flag on stock move.
+	 * 
+	 * @param stockMove
+	 */
+	void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove);
+
+	/**
+	 * Update fully spread over logistical forms flags on a collection of stock moves.
+	 * 
+	 * @param stockMoveCollection
+	 */
+	void updateFullySpreadOverLogisticalFormsFlags(Collection<StockMove> stockMoveCollection);
+
 }

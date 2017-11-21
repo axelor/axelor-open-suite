@@ -1,43 +1,63 @@
-"key","message","comment","context"
-"Action",,,
-"App prestashop",,,
-"Awaiting Cash On Delivery validation",,,
-"Awaiting bank wire payment",,,
-"Awaiting check payment",,,
-"Batchs",,,
-"Canceled",,,
-"Code",,,
-"Company",,,
-"Created by",,,
-"Created on",,,
-"Default payment mode",,,
-"Deleted sale order line",,,
-"Delivered",,,
-"Description",,,
-"Export",,,
-"Import",,,
-"Information",,,
-"Logs",,,
-"Manage Sales Flow",,,
-"On backorder (not paid)",,,
-"On backorder (paid)",,,
-"Payment Mode",,,
-"Payment accepted",,,
-"Payment error",,,
-"Presta shop",,,
-"Presta shop batch",,,
-"Presta shop batch log",,,
-"PrestaShop",,,
-"PrestaShop Batch Import/Export",,,
-"PrestaShop Import/Export",,,
-"PrestaShop Key",,,
-"PrestaShop Sale order status",,,
-"PrestaShop URL",,,
-"PrestaShop batch",,,
-"PrestaShop batches",,,
-"Processing in progress",,,
-"Refunded",,,
-"Remote payment accepted payment",,,
-"Sale order status",,,
-"Shipped",,,
-"Test",,,
+"key";"message";"comment";"context"
+"Action";;;
+"Address in Order null or invalid";;;
+"App prestashop";;;
+"Awaiting Cash On Delivery validation";;;
+"Awaiting bank wire payment";;;
+"Awaiting check payment";;;
+"Batch %s unknown";;;
+"Batchs";;;
+"Canceled";;;
+"City is null or invalid";;;
+"Code";;;
+"Company";;;
+"Company/Firstname is null or invalid";;;
+"Contact is null or invalid";;;
+"Country is null or invalid";;;
+"Created by";;;
+"Created on";;;
+"Currency code /name is null or invalid";;;
+"Customer is null or invalid";;;
+"Default payment mode";;;
+"Deleted sale order line";;;
+"Delivered";;;
+"Description";;;
+"Email is null or invalid";;;
+"Export";;;
+"Export prestashop operation";;;
+"Import";;;
+"Import prestashop operation";;;
+"Individual is null or invalid";;;
+"Information";;;
+"Logs";;;
+"Manage Sales Flow";;;
+"On backorder (not paid)";;;
+"On backorder (paid)";;;
+"Order is null or invalid";;;
+"Payment Mode";;;
+"Payment accepted";;;
+"Payment error";;;
+"Presta shop";;;
+"Presta shop batch";;;
+"Presta shop batch log";;;
+"PrestaShop";;;
+"PrestaShop Batch Import/Export";;;
+"PrestaShop Import/Export";;;
+"PrestaShop Key";;;
+"PrestaShop Sale order status";;;
+"PrestaShop URL";;;
+"PrestaShop batch";;;
+"PrestaShop batches";;;
+"Processing in progress";;;
+"Product Category is null or invalid";;;
+"Product Name is null or invalid";;;
+"Refunded";;;
+"Remote payment accepted payment";;;
+"Sale Order Status";;;
+"Sale order status";;;
+"Shipped";;;
+"Test";;;
+"This order is not on prestashop or invalid product";;;
+"Unknown action %s for the %s prestashop";;;
+"anomaly";;;
+"sucessfully";;;

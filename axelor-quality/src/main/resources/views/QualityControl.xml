@@ -101,7 +101,7 @@
 	
 	<search-filters name="quality-control-filters" model="com.axelor.apps.quality.db.QualityControl" title="Quality control filters">
 		<filter title="My quality controls">
-			<domain>self.responsible.user.id = :_id</domain>
+			<domain>self.responsible.user.id = :_userId</domain>
 		</filter>
 		<filter title="My team quality controls">
 			<domain>self.responsible.user.activeTeam = :_myActiveTeam</domain>
