@@ -7,8 +7,7 @@
 	<entity name="AppProduction" lang="java" cachable="true" extends="App">
 
 		<boolean name="manageBusinessProduction" title="Manage business production" />
-		<boolean name="showProductionOrderRelatedToProject" title="Show production orders related to the project" />
-		
+
 	</entity>
 
 </domain-models>
