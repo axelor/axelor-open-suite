@@ -50,6 +50,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.prestashop.db.SaleOrderStatus;
+import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.PSWebServiceClient;
 import com.axelor.apps.prestashop.service.PrestaShopWebserviceException;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -60,6 +61,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -291,7 +293,6 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 */
-	@SuppressWarnings("static-access")
 	public void addImages(MetaFile productPicture)
 			throws PrestaShopWebserviceException, TransformerException, MalformedURLException, IOException {
 
@@ -308,7 +309,7 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 		Collections.sort(sortIds);
 		Integer productId = Integer.parseInt(sortIds.get(sortIds.size() - 1).toString());
 
-		Path path = metaFiles.getPath(productPicture);
+		Path path = MetaFiles.getPath(productPicture);
 		ws = new PSWebServiceClient(shopUrl, key);
 		ws.addImg(path.toUri().toString(), productId);
 	}
@@ -433,11 +434,11 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 						schema.getElementsByTagName("firstname").item(0).setTextContent(partner.getContactPartnerSet().iterator().next().getFirstName());
 						schema.getElementsByTagName("lastname").item(0).setTextContent(partner.getContactPartnerSet().iterator().next().getName());
 					} else {
-						throw new AxelorException(String.format("Contact is null or invalid"), IException.NO_VALUE);
+						throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CONTACT), IException.NO_VALUE);
 					}
 					
 				} else {
-					throw new AxelorException(String.format("Contact is null or invalid"), IException.NO_VALUE);
+					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CONTACT), IException.NO_VALUE);
 				}
 
 			} else {
@@ -446,7 +447,7 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 					schema.getElementsByTagName("firstname").item(0).setTextContent(partner.getFirstName());
 					schema.getElementsByTagName("lastname").item(0).setTextContent(partner.getName());
 				} else {
-					throw new AxelorException(String.format("Individual is null or invalid"),IException.NO_VALUE);
+					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_INDIVIDUAL),IException.NO_VALUE);
 				}
 			}
 				
@@ -458,7 +459,7 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 			if (partner.getEmailAddress() != null) {
 				schema.getElementsByTagName("email").item(0).setTextContent(partner.getEmailAddress().getAddress());
 			} else {
-				throw new AxelorException(String.format("Email is null or invalid"), IException.NO_VALUE);
+				throw new AxelorException(I18n.get(IExceptionMessage.INVALID_EMAIL), IException.NO_VALUE);
 			}
 			
 			schema.getElementsByTagName("id_gender").item(0).setTextContent(partner.getTitleSelect().toString());
@@ -794,7 +795,7 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 					schema.getElementsByTagName("active").item(0).setTextContent("1");
 						
 				} else {
-					throw new AxelorException(String.format("Currency code /name is null or invalid"),IException.NO_VALUE);
+					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CURRENCY),IException.NO_VALUE);
 				}
 
 				if (currency.getPrestaShopId() == null) {
@@ -855,7 +856,7 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 					schema.getElementsByTagName("display_tax_label").item(0).setTextContent("1");
 					schema.getElementsByTagName("active").item(0).setTextContent("1");
 				} else {
-					throw new AxelorException(String.format("Country is null or invalid"), IException.NO_VALUE);		
+					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_COUNTRY), IException.NO_VALUE);		
 				}
 
 				if (prestaShopId == null) {
@@ -973,10 +974,10 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 							schema.getElementsByTagName("lastname").item(0).setTextContent(partnerAddress.getPartner().getContactPartnerSet().iterator().next().getName());
 							
 						} else {
-							throw new AxelorException(String.format("Company/Firstname is null or invalid"),IException.NO_VALUE);
+							throw new AxelorException(I18n.get(IExceptionMessage.INVALID_COMPANY), IException.NO_VALUE);
 						}
 					} else {
-						throw new AxelorException(String.format("Contact is null or invalid"),IException.NO_VALUE);
+						throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CONTACT), IException.NO_VALUE);
 					}
 					
 				} else {
@@ -984,7 +985,7 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 						schema.getElementsByTagName("firstname").item(0).setTextContent(partnerAddress.getPartner().getFirstName());
 						schema.getElementsByTagName("lastname").item(0).setTextContent(partnerAddress.getPartner().getName());
 					} else {
-						throw new AxelorException(String.format("Company/Firstname is null or invalid"),IException.NO_VALUE);
+						throw new AxelorException(I18n.get(IExceptionMessage.INVALID_COMPANY), IException.NO_VALUE);
 					}
 				}
 					
@@ -1008,7 +1009,7 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 					schema.getElementsByTagName("postcode").item(0).setTextContent(postCode);
 					schema.getElementsByTagName("city").item(0).setTextContent(partnerAddress.getAddress().getCity().getName());
 				} else {
-					throw new AxelorException(String.format("City is null"), IException.NO_VALUE);
+					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CITY), IException.NO_VALUE);
 				}		
 
 				if (partnerAddress.getAddress().getPrestaShopId() == null) {
@@ -1076,7 +1077,7 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 					}
 
 				} else {
-					throw new AxelorException(String.format("Product Category is null or invalid"),	IException.NO_VALUE);
+					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_PRODUCT_CATEGORY),	IException.NO_VALUE);
 				}
 
 			} catch (AxelorException e) {
@@ -1162,7 +1163,7 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 					}	
 					
 				} else {
-					throw new AxelorException(String.format("Product Name is null or invalid"), IException.NO_VALUE);
+					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_PRODUCT), IException.NO_VALUE);
 				}
 			} catch (AxelorException e) {
 				this.exportLog(product.getId().toString(), e.getMessage());
@@ -1237,7 +1238,7 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 						schema.getElementsByTagName("id_lang").item(0).setTextContent("1");
 						
 						if(id_address_delivery == null) {
-							throw new AxelorException(String.format("Address in Order null or invalid"),IException.NO_VALUE);
+							throw new AxelorException(I18n.get(IExceptionMessage.INVALID_ADDRESS), IException.NO_VALUE);
 						} else {
 							schema.getElementsByTagName("id_address_delivery").item(0).setTextContent(id_address_delivery);
 						}
@@ -1320,7 +1321,7 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 					saleOrderLineRepo.save(orderLine);
 					
 				} else {
-					throw new AxelorException(String.format("This order is not on prestashop or invalid product"),IException.NO_VALUE);
+					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_ORDER_LINE),IException.NO_VALUE);
 				}
 			} catch (AxelorException e) {
 				this.exportLog(orderLine.getId().toString(), e.getMessage());
