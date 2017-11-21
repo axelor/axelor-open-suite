@@ -92,7 +92,7 @@
 			<field name="totalPlannedHrs" if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
 		</panel>
 		<panel title="Members">
-			<field name="membersUserSet" form-view="user-form" grid-view="user-grid" widget="TagSelect" colSpan="12" showTitle="false" canNew="false"/>
+			<field name="membersUserSet" onSelect="action-project-attrs-members-domain" form-view="user-form" grid-view="user-grid" widget="TagSelect" colSpan="12" showTitle="false" canNew="false"/>
 		</panel>
 		<panel-tabs>
 		
@@ -133,9 +133,11 @@
 				<spacer/>
 				<field name="childProjectList" hidden="true"/>
 				<button name="computeDurationFromChildren" title="Compute duration" showIf="childProjectList.length > 0" colSpan="3" onClick="save,action-method-project-compute-duration-fromchildren,save"/>
-				<button name="addTeam" title="Add / Select a team" onClick="action-project-view-select-team" colSpan="3" />
-				<field name="synchronisable" widget="boolean-switch" colSpan="3" />
 				<field name="sequence" hidden="true"/>
+				<spacer/>
+                <field name="team" title="Team" colSpan="6" canNew="true" onChange="action-project-method-clear-members"/>
+				<field name="synchronisable" widget="boolean-switch" colSpan="3" />
+				<button name="selectTeam" title="Select a team" onClick="save,action-project-method-select-team" colSpan="3" showIf="team != null"/>
 			</panel>
 		</panel-tabs>
 		<panel>
@@ -368,11 +370,6 @@
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
     	
-    <action-view name="action-project-view-create-team" title="Create a team" model="com.axelor.team.db.Team">
-    	<view type="form" name="team-form"/>
-    
-    </action-view>
-	    	
     <action-attrs name="action-project-attrs-duration-title">
 	    <attribute name="title" for="timesheetLineList.visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
 		<attribute name="title" for="$visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Duration(Days)') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Duration(Minutes)') : com.axelor.i18n.I18n.get('Duration(Hours)')"/>
@@ -392,7 +389,7 @@
 		<domain>self.typeSelect = 'task' AND self.project.id = :id</domain>
 	</action-view>
 	
-	<action-view name="action-project-view-select-team" model="com.axelor.team.db.Team" title="Team">
+	<action-view name="action-project-view-create-team" model="com.axelor.team.db.Team" title="Team">
 	  <view name="team-grid" type="grid"/>
 	  <view name="team-form" type="form"/>
 	  <view-param name="popup" value="reload"/>
@@ -495,6 +492,18 @@
 	<action-method name="action-project-method-generate-quotation">
 		<call class="com.axelor.apps.project.web.ProjectController" method="generateQuotation"/>
 	</action-method>
-	
-	
+
+	<action-method name="action-project-method-select-team">
+		<call class="com.axelor.apps.project.web.ProjectController" method="selectTeam"/>
+	</action-method>
+
+	<action-attrs name="action-project-attrs-members-domain">
+		<attribute if="team?.members" name="domain" expr="eval: &quot;self.id IN (${team.members.collect{ it.id }.join(&quot;,&quot;)}) &quot;" for="membersUserSet"/>
+		<attribute if="!team?.members" name="domain" expr="eval: &quot;self.id = 0 &quot;" for="membersUserSet"/>
+	</action-attrs>
+
+	<action-method name="action-project-method-clear-members">
+		<call class="com.axelor.apps.project.web.ProjectController" method="clearMembers"/>
+	</action-method>
+
 </object-views>

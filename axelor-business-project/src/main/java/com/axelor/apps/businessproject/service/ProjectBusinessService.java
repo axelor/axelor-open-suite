@@ -41,8 +41,8 @@ public class ProjectBusinessService extends ProjectServiceImpl {
 	protected AppBusinessProjectService appBusinessProjectService;
 
 	@Inject
-	public ProjectBusinessService(ProjectPlanningRepository projectPlanningRepo) {
-		super(projectPlanningRepo);
+	public ProjectBusinessService(ProjectPlanningRepository projectPlanningRepo, ProjectRepository projectRepository) {
+		super(projectPlanningRepo, projectRepository);
 	}
 
 	/**

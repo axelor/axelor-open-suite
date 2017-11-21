@@ -58,6 +58,8 @@
         <enum name="projectType" ref="ProjectType" default="PROJECT"/>
       	<enum name="genProjTypePerOrderLine" ref="GenProjTypePerOrderLine" default="PROJECT_ALONE"/>
 
+      	<finder-method name="findAllByParentProject" using="parentProject" all="true"/>
+
 	   <extra-code>
    		<![CDATA[
    			public static final String TYPE_PROJECT = "project";

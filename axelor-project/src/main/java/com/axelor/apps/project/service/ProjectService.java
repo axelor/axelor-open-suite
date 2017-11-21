@@ -24,6 +24,7 @@ import com.axelor.apps.project.db.ProjectPlanning;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.team.db.Team;
 import com.axelor.team.db.TeamTask;
 
 import java.math.BigDecimal;
@@ -36,4 +37,5 @@ public interface ProjectService {
 	List<ProjectPlanning> createPlanning(Project project);
 	ProjectPlanning createPlanning(Project project, TeamTask task);
 	SaleOrder generateQuotation(Project project) throws AxelorException;
+	void cascadeUpdateTeam(Project project, Team team, Boolean synchronisingMembers) throws AxelorException;
 }

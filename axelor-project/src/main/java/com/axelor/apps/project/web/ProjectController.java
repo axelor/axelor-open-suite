@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanning;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.auth.AuthUtils;
@@ -32,6 +33,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.team.db.Team;
 import com.google.inject.Inject;
 
 import java.math.BigDecimal;
@@ -89,5 +91,25 @@ public class ProjectController {
 			TraceBackService.trace(response, e);
 		}
 	}
-	
+
+	public void selectTeam(ActionRequest request, ActionResponse response) {
+	    Project project = request.getContext().asType(Project.class);
+		project = Beans.get(ProjectRepository.class).find(project.getId());
+		try {
+			projectService.cascadeUpdateTeam(project, project.getTeam(), project.getSynchronisable());
+			response.setReload(true);
+		} catch (Exception e) {
+		    TraceBackService.trace(response, e);
+		}
+	}
+
+	public void clearMembers(ActionRequest request, ActionResponse response) {
+		Project project = request.getContext().asType(Project.class);
+		if (project.getMembersUserSet() != null) {
+			project.getMembersUserSet().clear();
+		}
+		project.addMembersUserSetItem(project.getAssignedTo());
+		response.setValue("membersUserSet", project.getMembersUserSet());
+	}
+
 }

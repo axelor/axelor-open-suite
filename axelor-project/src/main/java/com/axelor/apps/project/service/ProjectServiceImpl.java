@@ -34,6 +34,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.team.db.Team;
 import com.axelor.team.db.TeamTask;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -49,10 +50,12 @@ public class ProjectServiceImpl implements ProjectService {
 	public static final int MAX_LEVEL_OF_PROJECT = 10;
 	
 	private ProjectPlanningRepository projectPlanningRepo;
+	private ProjectRepository projectRepository;
 
 	@Inject
-	public ProjectServiceImpl(ProjectPlanningRepository projectPlanningRepo) {
+	public ProjectServiceImpl(ProjectPlanningRepository projectPlanningRepo, ProjectRepository projectRepository) {
 		this.projectPlanningRepo = projectPlanningRepo;
+		this.projectRepository = projectRepository;
 	}
 
 	@Override
@@ -176,5 +179,24 @@ public class ProjectServiceImpl implements ProjectService {
 		SaleOrder order = Beans.get(SaleOrderService.class).createSaleOrder(project.getCompany());
 		order.setClientPartner(project.getClientPartner());
 		return Beans.get(SaleOrderRepository.class).save(order);
+	}
+
+	@Override
+	@Transactional
+	public void cascadeUpdateTeam(Project project, Team team, Boolean synchronisingMembers) throws AxelorException {
+		if (team == null) {
+			throw new AxelorException(project, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PROJECT_NO_TEAM));
+		}
+	    project.setTeam(team);
+		project.setSynchronisable(synchronisingMembers);
+	    if (synchronisingMembers) {
+	    	team.getMembers().parallelStream().forEach(project::addMembersUserSetItem);
+		}
+		projectRepository.save(project);
+
+		List<Project> phases = projectRepository.findAllByParentProject(project).fetch();
+	    for (Project phase : phases) {
+	    	cascadeUpdateTeam(phase, project.getTeam(), synchronisingMembers);
+		}
 	}
 }
