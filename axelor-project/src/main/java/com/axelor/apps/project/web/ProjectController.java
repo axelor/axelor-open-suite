@@ -17,25 +17,29 @@
  */
 package com.axelor.apps.project.web;
 
-import java.math.BigDecimal;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanning;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectService;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.team.db.Team;
 import com.google.inject.Inject;
+
+import java.math.BigDecimal;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProjectController {
 
@@ -73,5 +77,39 @@ public class ProjectController {
 				.map());
 				
 	}
-	
+
+	public void generateQuotation(ActionRequest request, ActionResponse response) {
+		Project project = request.getContext().asType(Project.class);
+		try {
+			SaleOrder order = projectService.generateQuotation(project);
+			response.setView(ActionView
+					.define("Sale Order")
+					.model(SaleOrder.class.getName())
+					.add("form", "sale-order-form")
+					.context("_showRecord", String.valueOf(order.getId())).map());
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+
+	public void selectTeam(ActionRequest request, ActionResponse response) {
+	    Project project = request.getContext().asType(Project.class);
+		project = Beans.get(ProjectRepository.class).find(project.getId());
+		try {
+			projectService.cascadeUpdateTeam(project, project.getTeam(), project.getSynchronisable());
+			response.setReload(true);
+		} catch (Exception e) {
+		    TraceBackService.trace(response, e);
+		}
+	}
+
+	public void clearMembers(ActionRequest request, ActionResponse response) {
+		Project project = request.getContext().asType(Project.class);
+		if (project.getMembersUserSet() != null) {
+			project.getMembersUserSet().clear();
+		}
+		project.addMembersUserSetItem(project.getAssignedTo());
+		response.setValue("membersUserSet", project.getMembersUserSet());
+	}
+
 }

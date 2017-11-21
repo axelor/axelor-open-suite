@@ -6,7 +6,6 @@
 	<form name="app-project-config-form" title="App project" model="com.axelor.apps.base.db.AppProject" canDelete="false" canNew="false" width="large">
 		<panel>
 			<field name="projectLabel"/>
-			<field name="generatedElementTypeSelect"/>
 			<field name="resourceManagement" widget="boolean-switch" />
 		</panel>
 	</form>
