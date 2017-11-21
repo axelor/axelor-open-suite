@@ -124,41 +124,40 @@
 				</panel>
 			</panel>
 			<panel colSpan="9">
-				<field name="fullName" colSpan="9" showTitle="false">
-					<hilite strong="true" if="true" color="primary"/>
-					<editor x-show-titles="false">
-						<field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="4"/>
-						<spacer colSpan="8"/>
-						<field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
-						<field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="3"/>
-						<field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
-					</editor>
-				</field>
-				<panel colSpan="3" hideIf="!$readonly()">
-					<button name="$balance" title="Balance" colSpan="12" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button"/>
-				</panel>
-				<panel hideIf="isContact" colOffset="9" colSpan="3">
-					<field name="isProspect" hideIf="$readonly()" onChange="action-partner-attrs-unset-customer"/>
-					<field name="isEmployee" showIf="!$readonly() &amp;&amp; !isCustomer &amp;&amp; !isSupplier &amp;&amp; partnerTypeSelect== 2" onChange="action-partner-account-attrs-hide-employee-account"/>
-					<field name="isCustomer" hideIf="$readonly() || isEmployee" onChange="action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account,action-partner-attrs-unset-prospect"/>
-					<field name="isSupplier" hideIf="$readonly() || isEmployee" onChange="action-partner-account-attrs-hide-supplier-account"/>
-					<field name="isFactor" hideIf="$readonly() || isEmployee" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
-					<field name="isCarrier" hideIf="$readonly() || isEmployee" if="__config__.app.isApp('stock')"/>
-					<field name="$viewerPartnerType" showTitle="false" hideIf="!$readonly()" colSpan="12">
-						<viewer depends="isProspect,isEmployee,isCustomer,isSupplier,isFactor,isCarrier">
-							<![CDATA[
-                                <h4 style="text-align: right;">
-                                    <span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
-                                    <span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
-                                    <span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
-                                    <span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
-                                    <span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
-                                    <span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
-                                </h4>
-                            ]]>
-						</viewer>
+				<panel colSpan="12">
+					<field name="fullName" colSpan="9" showTitle="false">
+						<hilite strong="true" if="true" color="primary"/>
+						<editor x-show-titles="false">
+							<field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="4"/>
+							<spacer colSpan="8"/>
+							<field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
+							<field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="3"/>
+							<field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
+						</editor>
 					</field>
+					<button name="$balance" title="Balance" colSpan="3" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button" hideIf="!$readonly()"/>
 				</panel>
+				<field name="isProspect"  colSpan="2" widget="InlineCheckbox" hideIf="$readonly()" onChange="action-partner-attrs-unset-customer"/>
+				<field name="isEmployee" colSpan="2" widget="InlineCheckbox" hideIf="$readonly() || isCustomer || !isSupplier || partnerTypeSelect != 2" onChange="action-partner-account-attrs-hide-employee-account"/>
+				<field name="isCustomer" colSpan="2" widget="InlineCheckbox" hideIf="$readonly() || isEmployee" onChange="action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account,action-partner-attrs-unset-prospect"/>
+				<field name="isSupplier" colSpan="2" widget="InlineCheckbox" hideIf="$readonly() || isEmployee" onChange="action-partner-account-attrs-hide-supplier-account"/>
+				<field name="isFactor" colSpan="2" widget="InlineCheckbox" hideIf="$readonly() || isEmployee" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
+				<field name="isCarrier" colSpan="2" widget="InlineCheckbox" hideIf="$readonly() || isEmployee" if="__config__.app.isApp('stock')"/>
+				<field name="$viewerPartnerType" hideIf="!$readonly()" showTitle="false" colSpan="12">
+					<viewer depends="isProspect,isEmployee,isCustomer,isSupplier,isFactor,isCarrier">
+						<![CDATA[
+							<h4 style="text-align: right;">
+								<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
+								<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
+								<span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
+								<span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
+								<span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
+								<span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
+							</h4>
+                        ]]>
+					</viewer>
+				</field>
+				<field name="isContact" hidden="true" colSpan="12" />
 				<!-- Waiting for '$moment()' helper to work on AngularJS expressions.
                 <panel hideIf="!$readonly()" colOffset="9" colSpan="3">
                     <field name="$activeBlockings" showTitle="false" colSpan="12">
@@ -170,7 +169,6 @@
                     </field>
                 </panel>
                 -->
-				<field name="isContact" hidden="true" colSpan="12" />
 			</panel>
 		</panel>
 		<panel-related field="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
