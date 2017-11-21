@@ -28,7 +28,7 @@
 		<view type="kanban" name="project-kanban"/>
 		<domain>self.isProject = true and self.projectType = :_projectTypeName</domain>
 		<context name="_fromProject" expr="eval:true"/>
-		<context name="_projectTypeName" expr="eval: com.axelor.apps.project.db.ProjectType.PROJECT.name()"/>
+		<context name="_projectTypeName" expr="PROJECT"/>
 	</action-view>
 
 	<menuitem name="project-phases" parent="menu-project-root" title="Project phases" action="all.phases" order="15"/>
@@ -39,7 +39,7 @@
 		<view type="kanban" name="project-kanban"/>
 		<domain>self.isProject = true and self.projectType = :_projectTypeName</domain>
 		<context name="_fromProject" expr="eval:true"/>
-		<context name="_projectTypeName" expr="eval: com.axelor.apps.project.db.ProjectType.PHASE.name()"/>
+		<context name="_projectTypeName" expr="PHASE"/>
 	</action-view>
 
 	<menuitem name="project-tasks" parent="menu-project-root" title="Tasks" action="all.tasks" order="20"/>
