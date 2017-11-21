@@ -649,7 +649,22 @@ public class ExpenseServiceImpl implements ExpenseService {
 		LocalDate expenseDate = expenseLine.getExpenseDate();
 
 		for (EmployeeVehicle vehicle : vehicleList) {
-			if (expenseDate.compareTo(vehicle.getStartDate())>=0 && expenseDate.compareTo(vehicle.getEndDate())<=0) {
+		    if (vehicle.getKilometricAllowParam() == null) {
+		    	break;
+			}
+		    LocalDate startDate = vehicle.getStartDate();
+			LocalDate endDate = vehicle.getEndDate();
+			if (startDate == null) {
+			    if (endDate == null) {
+					kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
+				} else if(expenseDate.compareTo(endDate)<=0) {
+					kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
+				}
+			} else if (endDate == null) {
+				if (expenseDate.compareTo(startDate)>=0) {
+					kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
+				}
+			} else if (expenseDate.compareTo(startDate)>=0 && expenseDate.compareTo(endDate)<=0) {
 				kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
 			}
 		}
