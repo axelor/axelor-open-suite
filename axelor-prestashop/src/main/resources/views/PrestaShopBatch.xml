@@ -16,14 +16,13 @@
 	   		<field name="actionSelect" onChange="action-prestashop-button-visiblity"/>
 	    	<field name="code"/>
 	    	<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-	    	<field name="prestaShopBatchLog" title="Logs" widget="binary-link"></field>
 	  </panel>
 	  <panel-tabs>
 	    <panel name="information" title="Information" >
 	      <field name="createdOn" title="Created on"/>
 	      <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
 	      <field name="description" colSpan="12" />
-	      <panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+	      <panel-related field="batchList" colSpan="12" form-view="prestashop-base-batch-form" grid-view="prestashop-base-batch-grid" readonly="true"/>
 	    </panel>
 	  </panel-tabs>
 	  <panel sidebar="true">

@@ -4,14 +4,19 @@
 
 	
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
-		<field name="fullName"/>
-		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<hilite background="primary" if="isProject &amp;&amp; projectTypeSelect == 1"/>
+		<hilite background="info" if="isProject &amp;&amp; projectTypeSelect == 2"/>
+		<field name="code"/>
+		<field name="name"/>
+        <field name="parentProject"/>
+		<field name="clientPartner"/>
+		<field name="assignedTo"/>
 		<field name="fromDate" />
 		<field name="toDate" />
 		<field name="dueDate" />
-		<field name="statusSelect"/>
-		<field name="progress" widget="Progress" aggregate="avg"/>
 		<button name="openGantt" title="Gantt" icon="fa-tasks" onClick="action-project-open-gantt"/>
+		<field name="isProject" hidden="true"/>
+		<field name="projectTypeSelect" hidden="true"/>
 	</grid>
 	
 	<form name="project-form" title="Project" model="com.axelor.apps.project.db.Project" onNew="action-project-group-on-new-project" width="large"
@@ -24,9 +29,10 @@
 	            <item title="Planification and costs" action="save,action-project-method-print-planif-and-cost" if-module="axelor-business-project" />
 	        </menu>
 		 <menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
-	            <item title="Gantt" action="action-project-open-gantt" />
-	            <item title="Book resource" action="save,action-project-book-resource" />
-	            <item title="Planning the project" action="save,action-project-method-create-planning" showIf="!excludePlanning" />
+	            <item title="Gantt" action="action-project-open-gantt" showIf="isProject"/>
+	            <item title="Book resource" action="save,action-project-book-resource" showIf="isProject"/>
+	            <item title="Planning the project" action="save,action-project-method-create-planning" showIf="!excludePlanning &amp;&amp; isProject" />
+			 	<item title="Generate quotation" action="action-project-method-generate-quotation" showIf="isBusinessProject"/>
 	     </menu>
 		</menubar>
 		
@@ -38,15 +44,36 @@
 					<field name="name" showTitle="false" css="label-bold bold large" colSpan="9"/>
 				</editor>
 			</field>
-			
-			<field name="isProject" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
-			<field name="isBusinessProject" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
-			<!-- 
+			<field showTitle="false" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="isProject" showIf="isProject &amp;&amp; $readonly()" colSpan="1">
+				<viewer>
+					<![CDATA[
+                       <h4 style="text-align: right;">
+                       		<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProject" x-translate>Project/Phase</span>
+                       </h4>
+					]]>
+				</viewer>
+			</field>
+			<field showTitle="false" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="isBusinessProject" showIf="isBusinessProject &amp;&amp; $readonly()" colSpan="1">
+				<viewer>
+					<![CDATA[
+                       <h4 style="text-align: right;">
+                       		<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isBusinessProject" x-translate>Affaire</span>
+                       </h4>
+					]]>
+				</viewer>
+			</field>
+			<spacer colSpan="10"/>
+			<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="isProject" showIf="!$readonly()"/>
+			<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="isBusinessProject" showIf="!$readonly()"/>
+			<field name="projectType" showIf="isProject" requiredIf="isProject" onChange="action-project-record-empty-parent-project"/>
+			<field name="parentProject" showIf="isProject &amp;&amp; projectType == 'PHASE'"/>
+			<!--
 				<field name="statusSelect" widget="NavSelect" colSpan="6"/>
 				<field name="project" onChange="action-project-record-inv-type-select,action-project-record-bind-customer-project" colSpan="6" title="Parent Project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 			 -->
 			 <field name="company" requiredIf="project == null" hideIf="project != null" form-view="company-form" grid-view="company-grid"/>
 			<field name="clientPartner" showIf="isBusinessProject" readonlyIf="project != null" domain="self.isCustomer = true" form-view="partner-form" grid-view="partner-grid" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
+			<field name="priceList" showIf="isBusinessProject &amp;&amp; priceList != null" if-module="axelor-business-project" readonly="true"/>
 			<field name="contactPartner" showIf="isBusinessProject" readonlyIf="project != null" onSelect="action-attrs-domain-on-contact-partner" form-view="partner-form" grid-view="partner-grid" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
 			<field name="assignedTo" title="Person In Charge" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
 			<field name="saleOrder" showIf="isBusinessProject"  domain="self.clientPartner = :clientPartner" form-view="sale-order-form" grid-view="sale-order-grid" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
@@ -65,13 +92,10 @@
 			<field name="totalPlannedHrs" if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
 		</panel>
 		<panel title="Members">
-			<field name="membersUserSet" form-view="user-form" grid-view="user-grid" widget="TagSelect" colSpan="12" showTitle="false" canNew="false"/>
+			<field name="membersUserSet" onSelect="action-project-attrs-members-domain" form-view="user-form" grid-view="user-grid" widget="TagSelect" colSpan="12" showTitle="false" canNew="false"/>
 		</panel>
 		<panel-tabs>
 		
-			<panel name="projectPhase" title="Project Phase" showIf="projectTypeSelect == 2">
-				<field name="project" colSpan="12"/>
-			</panel>
 			<panel title="Task Tree" showIf="isProject">
 				<button name="addTask" title="+ New" onClick="save,action-project-add-task" colSpan="3"/>
 				<panel-dashlet action="action-view-show-project-task-tree" colSpan="12" title="Task Tree" />
@@ -83,11 +107,13 @@
   				<field name="unit" requiredIf="projInvTypeSelect == 3"/>
   				<field name="exTaxTotal" readonly="true"/>
 			</panel>
-			<panel title="Related elements" showIf="isBusinessProject" if="eval:  __config__.app.isApp('business-project') &amp;&amp; (__config__.app.getApp('business-project').getShowPurchaseOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowExpenseLineRelatedToProject() || __config__.app.getApp('production').getShowProductionOrderRelatedToProject() &amp;&amp; __config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction())">
+			<panel title="Related elements" showIf="isBusinessProject" if="eval:  __config__.app.isApp('business-project') &amp;&amp; (__config__.app.getApp('business-project').getShowPurchaseOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowExpenseLineRelatedToProject() || __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject() &amp;&amp; __config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction())">
 				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" if-module="axelor-business-project" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowPurchaseOrderLineRelatedToProject()"/>
 				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject()" />
 				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.app.isApp('business-project') &amp;&amp;  __config__.app.getApp('business-project').getShowExpenseLineRelatedToProject()" />
-				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval:  __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('production').getShowProductionOrderRelatedToProject()  &amp;&amp;  __config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction()" />
+				<panel-related field="invoiceLineList" title="Purchase invoice lines" domain="self.operationTypeSelect = 1" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval:  __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()" />
+				<panel-related field="invoiceLineList" title="Sale invoice lines" domain="self.operationTypeSelect = 3" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval:  __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()" />
+				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval:  __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject()" />
 			</panel>
 			<panel name="otherElementsToInvoice" showIf="isBusinessProject" title="Other elements to invoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" >
 				<panel-related field="elementsToInvoiceList" colSpan="12"/>
@@ -105,15 +131,15 @@
 			<panel name="configurations" title="Configurations">
 				<field name="productSet" if-module="axelor-human-resource"  if="__config__.app.isApp('employee')" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12" widget="TagSelect"/>
 				<field name="categorySet" colSpan="12" widget="TagSelect"/>
-				<field name="projectFolderSet" colSpan="12" widget="TagSelect"/>
-				<field name="projectTypeSelect" />
-				<field name="projectParent" hideIf="projectTypeSelect == 1"/>
+				<field name="projectFolderSet" readonly="true" colSpan="12" widget="TagSelect"/>
 				<spacer/>
 				<field name="childProjectList" hidden="true"/>
 				<button name="computeDurationFromChildren" title="Compute duration" showIf="childProjectList.length > 0" colSpan="3" onClick="save,action-method-project-compute-duration-fromchildren,save"/>
-				<button name="addTeam" title="Add / Select a team" onClick="action-project-view-select-team" colSpan="3" />
-				<field name="synchronisable" widget="boolean-switch" colSpan="3" />
 				<field name="sequence" hidden="true"/>
+				<spacer/>
+                <field name="team" title="Team" colSpan="6" canNew="true" onChange="action-project-method-clear-members"/>
+				<field name="synchronisable" widget="boolean-switch" colSpan="3" />
+				<button name="selectTeam" title="Select a team" onClick="save,action-project-method-select-team" colSpan="3" showIf="team != null"/>
 			</panel>
 		</panel-tabs>
 		<panel>
@@ -278,6 +304,7 @@
 		<action name="action-project-attrs-duration-title"/>
 		<action name="action-project-attrs-scale-and-precision"/>
 		<action name="action-attrs-project-set-project-type" if="__config__.app.isApp('business-project')" />
+		<action name="action-project-record-init-type"/>
 	</action-group>
 	
 	<action-group name="action-project-on-load-group">
@@ -326,6 +353,15 @@
 		<attribute name="readonly" for="isProject" expr="eval:_fromProject"/>
 		<attribute name="readonly" for="isBusinessProject" expr="eval:_fromBusinessProject"/>
 	</action-attrs>
+
+	<action-record name="action-project-record-init-type" model="com.axelor.apps.project.db.Project">
+		<field if="_projectTypeName == 'PHASE'" name="projectType" expr="eval: com.axelor.apps.project.db.ProjectType.PHASE"/>
+		<field if="_projectTypeName == 'PROJECT'" name="projectType" expr="eval: com.axelor.apps.project.db.ProjectType.PROJECT"/>
+	</action-record>
+
+	<action-record name="action-project-record-empty-parent-project" model="com.axelor.apps.project.db.Project">
+		<field name="parentProject" expr="eval: null"/>
+	</action-record>
 	
 	<action-view name="action-project-task-view" title="Tasks" model="com.axelor.team.db.TeamTask">
     	<view type="form" name="team-task-form"/>
@@ -336,11 +372,6 @@
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
     	
-    <action-view name="action-project-view-create-team" title="Create a team" model="com.axelor.team.db.Team">
-    	<view type="form" name="team-form"/>
-    
-    </action-view>
-	    	
     <action-attrs name="action-project-attrs-duration-title">
 	    <attribute name="title" for="timesheetLineList.visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
 		<attribute name="title" for="$visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Duration(Days)') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Duration(Minutes)') : com.axelor.i18n.I18n.get('Duration(Hours)')"/>
@@ -360,7 +391,7 @@
 		<domain>self.typeSelect = 'task' AND self.project.id = :id</domain>
 	</action-view>
 	
-	<action-view name="action-project-view-select-team" model="com.axelor.team.db.Team" title="Team">
+	<action-view name="action-project-view-create-team" model="com.axelor.team.db.Team" title="Team">
 	  <view name="team-grid" type="grid"/>
 	  <view name="team-form" type="form"/>
 	  <view-param name="popup" value="reload"/>
@@ -459,6 +490,22 @@
 	<action-method name="action-project-method-create-planning">
 		<call class="com.axelor.apps.project.web.ProjectController" method="createPlanning"/>
 	</action-method>
-	
-	
+
+	<action-method name="action-project-method-generate-quotation">
+		<call class="com.axelor.apps.project.web.ProjectController" method="generateQuotation"/>
+	</action-method>
+
+	<action-method name="action-project-method-select-team">
+		<call class="com.axelor.apps.project.web.ProjectController" method="selectTeam"/>
+	</action-method>
+
+	<action-attrs name="action-project-attrs-members-domain">
+		<attribute if="team?.members" name="domain" expr="eval: &quot;self.id IN (${team.members.collect{ it.id }.join(&quot;,&quot;)}) &quot;" for="membersUserSet"/>
+		<attribute if="!team?.members" name="domain" expr="eval: &quot;self.id = 0 &quot;" for="membersUserSet"/>
+	</action-attrs>
+
+	<action-method name="action-project-method-clear-members">
+		<call class="com.axelor.apps.project.web.ProjectController" method="clearMembers"/>
+	</action-method>
+
 </object-views>

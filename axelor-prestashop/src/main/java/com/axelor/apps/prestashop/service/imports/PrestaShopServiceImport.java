@@ -20,8 +20,8 @@ package com.axelor.apps.prestashop.service.imports;
 
 import java.io.IOException;
 
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.prestashop.service.PrestaShopWebserviceException;
-import com.axelor.meta.db.MetaFile;
 
 public interface PrestaShopServiceImport {
 	
@@ -32,6 +32,6 @@ public interface PrestaShopServiceImport {
 	 * @throws IOException
 	 * @throws PrestaShopWebserviceException
 	 */
-	public MetaFile importPrestShop() throws IOException, PrestaShopWebserviceException;
+	public Batch importPrestShop(Batch batch) throws IOException, PrestaShopWebserviceException;
 	
 }
