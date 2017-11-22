@@ -8,12 +8,16 @@
         <field name="toTax" form-view="tax-form" grid-view="tax-grid"/>
     </grid>
 
-    <form name="tax-equiv-form" title="Tax equivalence" model="com.axelor.apps.account.db.TaxEquiv"  >
+    <form name="tax-equiv-form" title="Tax equivalence" model="com.axelor.apps.account.db.TaxEquiv" onLoad="action-tax-equiv-attrs-hide-specific-note" >
         <panel name="main">
         	<field name="fromTax" form-view="tax-form" grid-view="tax-grid"/>
         	<field name="toTax" form-view="tax-form" grid-view="tax-grid"/>
-            <field name="specificNote" colSpan="12"/>
+            <field name="specificNote" colSpan="12" hidden="true"/>
         </panel>
     </form>
+
+    <action-attrs name="action-tax-equiv-attrs-hide-specific-note">
+        <attribute for="specificNote" name="hidden" expr="eval: __parent__?.customerSpecificNote"/>
+    </action-attrs>
 
 </object-views>
