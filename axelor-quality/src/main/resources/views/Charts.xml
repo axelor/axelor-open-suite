@@ -17,7 +17,7 @@
 			FROM
 				quality_control_point AS self
 			LEFT JOIN
-				quality_quality_team AS _team
+				team_team AS _team
 				ON self.team = _team.id
 						
 			JOIN
