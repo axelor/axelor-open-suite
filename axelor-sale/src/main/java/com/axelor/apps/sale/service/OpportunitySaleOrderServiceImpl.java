@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -39,14 +40,26 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException  {
+		Currency currency;
+		if (opportunity.getCurrency() != null) {
+			currency = opportunity.getCurrency();
+		} else if (opportunity.getPartner() != null && opportunity.getPartner().getCurrency() != null) {
+			currency = opportunity.getPartner().getCurrency();
+		} else {
+			currency = opportunity.getCompany().getCurrency();
+		}
 
-		SaleOrder saleOrder = saleOrderService.createSaleOrder(opportunity.getUser(), opportunity.getCompany(), null, opportunity.getCurrency(), null, opportunity.getName(), null,
-				appBaseService.getTodayDate(), opportunity.getPartner().getSalePriceList(), opportunity.getPartner(), opportunity.getTeam());
+		SaleOrder saleOrder = createSaleOrder(opportunity, currency);
 
+		opportunity.addSaleOrderListItem(saleOrder);
 		saleOrderRepo.save(saleOrder);
 
 		return saleOrder;
 	}
 
+	protected SaleOrder createSaleOrder(Opportunity opportunity, Currency currency) throws AxelorException {
+		return saleOrderService.createSaleOrder(opportunity.getUser(), opportunity.getCompany(), null, currency, null, opportunity.getName(), null,
+				appBaseService.getTodayDate(), opportunity.getPartner().getSalePriceList(), opportunity.getPartner(), opportunity.getTeam());
+	}
 
 }
