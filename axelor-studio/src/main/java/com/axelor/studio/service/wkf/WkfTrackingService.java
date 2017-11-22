@@ -92,6 +92,7 @@ public class WkfTrackingService {
 	 *            Current wkfStatus of record.
 	 * @throws ClassNotFoundException 
 	 */
+	@SuppressWarnings("unchecked")
 	public void track(Object object) throws ClassNotFoundException {
 			
 		if (object != null) {

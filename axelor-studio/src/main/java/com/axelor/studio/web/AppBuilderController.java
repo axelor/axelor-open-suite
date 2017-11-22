@@ -55,6 +55,7 @@ public class AppBuilderController {
 			FileOutputStream fout = new FileOutputStream(configFile);
 			IOUtil.copyCompletely(inputStream, fout);
 			
+			@SuppressWarnings("rawtypes")
 			Path path = MetaFiles.getPath((String) ((Map) request.getContext().get("dataFile")).get("filePath"));
 			File tempDir = Files.createTempDir();
 			File importFile = new File(tempDir, "bpm.xml");
@@ -90,6 +91,7 @@ public class AppBuilderController {
 			
 			FileUtils.forceDelete(path.toFile());
 			
+			@SuppressWarnings("unchecked")
 			Object metaFileId =  ((Map<String,Object>) request.getContext().get("dataFile")).get("id");
 			
 			if (metaFileId != null) {

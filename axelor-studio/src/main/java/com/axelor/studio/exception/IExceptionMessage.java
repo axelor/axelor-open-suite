@@ -1,4 +1,4 @@
-/*
+/**
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -15,29 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.studio.db.repo;
+package com.axelor.studio.exception;
 
-import com.axelor.studio.db.Wkf;
-import com.axelor.studio.db.repo.WkfRepository;
-import com.axelor.studio.service.wkf.WkfService;
-import com.google.inject.Inject;
-
-public class StudioWkfRepository extends WkfRepository {
-
-	@Inject
-	private WkfService wkfService;
+public interface IExceptionMessage {
 	
 	/**
-	 * Overridden to remove changes related with workflow. Like to remove buttons
-	 * and status field from view and model.
+	 * Check if app builder code is not conflicting with existing app. 
 	 */
-	@Override
-	public void remove(Wkf wkf) {
-		
-		wkfService.clearWkf(wkf);
-		
-		super.remove(wkf);
-	}
-
-
+	static final String APP_BUILDER_1 = /*$$(*/ "Please provide unique code. The code '%s' is already used" /*)*/;
+	
+	/**
+	 * Check if chart name doesn't contains any space.
+	 */
+	static final String CHART_BUILDER_1= /*$$(*/ "Name must not contains space" /*)*/;
+	
+	/**
+	 * Message to display on click of edit icon of node or transition if workflow is not saved.
+	 */
+	static final String WKF_1 = /*$$(*/ "Workflow is not saved" /*)*/;
+	
 }
