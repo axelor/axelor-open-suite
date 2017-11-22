@@ -9,6 +9,7 @@
   
   	<string name="importId"/>
     <string name="code" title="Code"/>
+    <string name="typeSelect" title="Type" selection="team.type.select"/>
 
   </entity>
 

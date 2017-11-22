@@ -424,5 +424,9 @@
 		<option value="com.axelor.apps.base.service.batch.BaseBatchService">com.axelor.apps.base.service.batch.BaseBatchService</option>
 		<option value="com.axelor.apps.base.service.batch.MailBatchService">com.axelor.apps.base.service.batch.MailBatchService</option>
 	</selection>
+	
+	<selection name="team.type.select">
+		<option value="general">General</option>
+	</selection>
 
 </object-views>
