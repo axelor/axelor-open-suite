@@ -12,12 +12,6 @@
 		    <field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 		</panel>
 		<panel>
-			<field name="productionVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="location-form" grid-view="location-grid"/>
-		</panel>
-		<panel>
-			<field name="wasteLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" />
-		</panel>
-		<panel>
 			<field name="stockMoveRealizeOrderSelect"/>
 		</panel>
     </form>

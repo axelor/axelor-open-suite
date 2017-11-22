@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -17,26 +17,31 @@
  */
 package com.axelor.apps.production.service.config;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockConfig;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 
-public class ProductionConfigService {
-	
-	public ProductionConfig getProductionConfig(Company company) throws AxelorException  {
-		
-		ProductionConfig productionConfig = company.getProductionConfig(); 
-		
-		if(productionConfig == null)  {
-			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_CONFIG_1), company.getName());
-		}
-		
-		return productionConfig;
-		
-	}
+public class StockConfigProductionService extends StockConfigService {
+
+    public Location getProductionVirtualLocation(StockConfig stockConfig) throws AxelorException {
+
+        if (stockConfig.getProductionVirtualLocation() == null) {
+            throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_CONFIG_2), stockConfig.getCompany().getName());
+        }
+
+        return stockConfig.getProductionVirtualLocation();
+
+    }
+
+    public Location getWasteLocation(StockConfig stockConfig) throws AxelorException {
+        if (stockConfig.getWasteLocation() == null) {
+            throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_CONFIG_3), stockConfig.getCompany().getName());
+        }
+        return stockConfig.getWasteLocation();
+    }
 
 }

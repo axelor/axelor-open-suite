@@ -15,12 +15,14 @@
 	    <field name="customerVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="location-form" grid-view="location-grid"/>
 	    <field name="supplierVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="location-form" grid-view="location-grid"/>
 	    <field name="inventoryVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="location-form" grid-view="location-grid"/>
+		  <field name="productionVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 	  </panel>
 	  <panel name="stockMoveInformations" title="Stock move informations">
 	    <field name="hasOutSmForStorableProduct"/>
 	    <field name="hasOutSmForNonStorableProduct"/>
 	    <field name="hasInSmForStorableProduct"/>
 	    <field name="hasInSmForNonStorableProduct"/>
+		  <field name="wasteLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 	  </panel>
 	  <panel name="customsInformation" title="Customs">
 	  	<field name="customsWeightUnit" domain="self.unitTypeSelect = 1"/>
