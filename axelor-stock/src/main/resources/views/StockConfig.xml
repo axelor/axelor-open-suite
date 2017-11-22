@@ -18,11 +18,19 @@
 		  <field name="productionVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 	  </panel>
 	  <panel name="stockMoveInformations" title="Stock move informations">
-	    <field name="hasOutSmForStorableProduct"/>
-	    <field name="hasOutSmForNonStorableProduct"/>
-	    <field name="hasInSmForStorableProduct"/>
-	    <field name="hasInSmForNonStorableProduct"/>
-		  <field name="wasteLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
+		  <panel colSpan="12">
+			  <field name="hasOutSmForStorableProduct"/>
+			  <field name="hasOutSmForNonStorableProduct"/>
+			  <field name="hasInSmForStorableProduct"/>
+			  <field name="hasInSmForNonStorableProduct"/>
+		  </panel>
+		  <panel colSpan="12">
+			  <field name="receiptLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+			  <field name="pickupLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+			  <field name="wasteLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
+			  <field name="componentLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
+			  <field name="finishedProductsLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
+		  </panel>
 	  </panel>
 	  <panel name="customsInformation" title="Customs">
 	  	<field name="customsWeightUnit" domain="self.unitTypeSelect = 1"/>

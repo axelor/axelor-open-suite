@@ -114,5 +114,11 @@ public interface IExceptionMessage {
 	 * Ventilate State Service
 	 */
 	String VENTILATE_STATE_MISSING_ADVANCE_ACCOUNT = /*$$(*/ "Please configure the advance payment account for the company %s" /*)*/;
+
+	/**
+	 * Stock Config
+	 */
+	String STOCK_CONFIG_SUPPLYCHAIN_RECEIPT = /*$$(*/ "You must configure a receipt location for company %s" /*)*/;
+	String STOCK_CONFIG_SUPPLYCHAIN_PICKUP = /*$$(*/ "You must configure a pickup location for company %s." /*)*/;
 }
 

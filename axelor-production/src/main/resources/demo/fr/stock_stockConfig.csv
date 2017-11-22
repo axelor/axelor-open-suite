@@ -1,2 +1,2 @@
-"importId";"productionVirtualLocation.importId";"wasteLocation.importId"
-1;5;6
+"importId";"productionVirtualLocation.importId";"wasteLocation.importId";"componentLocation.importId";"finishedProductsLocation.importId"
+1;5;6;1;1
