@@ -81,50 +81,52 @@ public class EventServiceImpl implements EventService {
 	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	
 	private static final DateTimeFormatter MONTH_FORMAT = DateTimeFormatter.ofPattern("dd/MM");
-	
-	@Inject
+
 	private EventAttendeeService eventAttendeeService;
-	
-	@Inject
+
 	private PartnerService partnerService;
 	
-	@Inject
 	private EventRepository eventRepo;
 	
-	@Inject
-	protected MailFollowerRepository mailFollowerRepo;
+	private MailFollowerRepository mailFollowerRepo;
 	
-	@Inject
 	private ICalendarService icalService;
-	
-	static final String REQUEST = "REQUEST";
+
+	private MessageService messageService;
+
+	private TemplateMessageService templateMessageService;
+
+	@Inject
+	public EventServiceImpl(EventAttendeeService eventAttendeeService, PartnerService partnerService, EventRepository eventRepository,
+							MailFollowerRepository mailFollowerRepo, ICalendarService iCalendarService, MessageService messageService,
+							TemplateMessageService templateMessageService) {
+		this.eventAttendeeService = eventAttendeeService;
+		this.partnerService = partnerService;
+		this.eventRepo = eventRepository;
+		this.mailFollowerRepo = mailFollowerRepo;
+		this.icalService = iCalendarService;
+		this.messageService = messageService;
+		this.templateMessageService = templateMessageService;
+	}
 
 	@Override
 	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
-
 		return Duration.between(startDateTime, endDateTime);
-
 	}
 
 	@Override
 	public int getDuration(Duration duration)  {
-
-		return new Integer(new Long(duration.getSeconds()).toString());
-
+		return new Integer(Long.toString(duration.getSeconds()));
 	}
 
 	@Override
 	public LocalDateTime computeStartDateTime(int duration, LocalDateTime endDateTime)  {
-
 		return endDateTime.minusSeconds(duration);
-
 	}
 
 	@Override
 	public LocalDateTime computeEndDateTime(LocalDateTime startDateTime, int duration)  {
-
 		return startDateTime.plusSeconds(duration);
-
 	}
 
 	@Override
@@ -137,10 +139,8 @@ public class EventServiceImpl implements EventService {
 	@Override
 	@Transactional
 	public void addLeadAttendee(Event event, Lead lead, Partner contactPartner)  {
-
 		event.addEventAttendeeListItem(eventAttendeeService.createEventAttendee(event, lead, contactPartner));
 		eventRepo.save(event);
-
 	}
 
 	@Override
@@ -211,63 +211,35 @@ public class EventServiceImpl implements EventService {
 		if(deletedGuestsTemplate == null || addedGuestsTemplate == null || changedDateTemplate == null){
 			throw new AxelorException(event, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CRM_CONFIG_TEMPLATES), event.getUser().getActiveCompany());
 		}
+
+		List<EmailAddress> emailAddresses = new ArrayList<>();
+
 		if(!event.getEndDateTime().isEqual(previousEvent.getEndDateTime())){
-			for (Partner partner : contactSet) {
-				Message message = Beans.get(TemplateMessageService.class).generateMessage(event, changedDateTemplate);
-				if(message.getFromEmailAddress() == null){
-					message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
-				}
-				message.addToEmailAddressSetItem(partner.getEmailAddress());
-				Beans.get(MessageService.class).sendByEmail(message);
-			}
-			for (User user : userSet) {
-				Message message = Beans.get(TemplateMessageService.class).generateMessage(event, changedDateTemplate);
-				if(message.getFromEmailAddress() == null){
-					message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
-				}
-				message.addToEmailAddressSetItem(user.getPartner().getEmailAddress());
-				message = Beans.get(MessageService.class).sendByEmail(message);
-			}
-			Message message = Beans.get(TemplateMessageService.class).generateMessage(event, changedDateTemplate);
+			contactSet.forEach(p -> emailAddresses.add(p.getEmailAddress()));
+			userSet.forEach(u -> emailAddresses.add(u.getPartner().getEmailAddress()));
+
+			Message message = templateMessageService.generateMessage(event, changedDateTemplate);
 			if(message.getFromEmailAddress() == null){
 				message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
 			}
 			message.addToEmailAddressSetItem(event.getUser().getPartner().getEmailAddress());
-			message = Beans.get(MessageService.class).sendByEmail(message);
+			messageService.sendByEmail(message);
+		}
 
-		}
-		for (Partner partner : addedContacts) {
-			Message message = Beans.get(TemplateMessageService.class).generateMessage(event, addedGuestsTemplate);
+		addedContacts.forEach(p -> emailAddresses.add(p.getEmailAddress()));
+		deletedContacts.forEach(p -> emailAddresses.add(p.getEmailAddress()));
+		addedUsers.forEach(u -> emailAddresses.add(u.getPartner().getEmailAddress()));
+		deletedUsers.forEach(u -> emailAddresses.add(u.getPartner().getEmailAddress()));
+
+		for (EmailAddress emailAddress: emailAddresses) {
+			Message message = templateMessageService.generateMessage(event, addedGuestsTemplate);
 			if(message.getFromEmailAddress() == null){
 				message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
 			}
-			message.addToEmailAddressSetItem(partner.getEmailAddress());
-			message = Beans.get(MessageService.class).sendByEmail(message);
+			message.addToEmailAddressSetItem(emailAddress);
+			messageService.sendByEmail(message);
 		}
-		for (Partner partner : deletedContacts) {
-			Message message = Beans.get(TemplateMessageService.class).generateMessage(event, deletedGuestsTemplate);
-			if(message.getFromEmailAddress() == null){
-				message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
-			}
-			message.addToEmailAddressSetItem(partner.getEmailAddress());
-			message = Beans.get(MessageService.class).sendByEmail(message);
-		}
-		for (User user : addedUsers) {
-			Message message = Beans.get(TemplateMessageService.class).generateMessage(event, addedGuestsTemplate);
-			if(message.getFromEmailAddress() == null){
-				message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
-			}
-			message.addToEmailAddressSetItem(user.getPartner().getEmailAddress());
-			message = Beans.get(MessageService.class).sendByEmail(message);
-		}
-		for (User user : deletedUsers) {
-			Message message = Beans.get(TemplateMessageService.class).generateMessage(event, deletedGuestsTemplate);
-			if(message.getFromEmailAddress() == null){
-				message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
-			}
-			message.addToEmailAddressSetItem(user.getPartner().getEmailAddress());
-			message = Beans.get(MessageService.class).sendByEmail(message);
-		}
+
 		return event;
 	}
 
