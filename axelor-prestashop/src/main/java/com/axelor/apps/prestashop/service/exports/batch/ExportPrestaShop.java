@@ -23,13 +23,13 @@ import java.time.ZonedDateTime;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.prestashop.db.PrestaShopBatch;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.exports.PrestaShopServiceExport;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.db.MetaFile;
 import com.google.inject.persist.Transactional;
 
 public class ExportPrestaShop extends BatchStrategyExport {
@@ -57,16 +57,15 @@ public class ExportPrestaShop extends BatchStrategyExport {
 			try {
 				PrestaShopBatch prestaShopBatch = (PrestaShopBatch) model;
 				Integer size = prestaShopBatch.getBatchList().size();
-				MetaFile exportFile;
+				Batch batchObj;
 				
 				if(size == 1) {
-					exportFile = prestaShopServiceExport.exportPrestShop(null);
+					batchObj = prestaShopServiceExport.exportPrestShop(null, batch);
 				} else {
 					ZonedDateTime endDate = prestaShopBatch.getBatchList().get(size - 2).getEndDate();
-					exportFile = prestaShopServiceExport.exportPrestShop(endDate);
+					batchObj = prestaShopServiceExport.exportPrestShop(endDate, batch);
 				}
-				batch.getPrestaShopBatch().setPrestaShopBatchLog(exportFile);
-				batchRepo.save(batch);
+				batchRepo.save(batchObj);
 				i++;
 				
 			} catch (Exception e) {

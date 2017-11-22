@@ -51,6 +51,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentConditionRepository;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AppPrestashop;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Country;
@@ -138,6 +139,8 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
     PSWebServiceClient ws;
     HashMap<String,Object> opt;
     Document schema;
+    Integer totalDone = 0;
+    Integer totalAnomaly = 0;
 	
    /**
     * Initialize constructor. 
@@ -174,14 +177,17 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
      * Import Axelor Base, SaleOrder, SaleOrderLine module.
      */
     @Override
-	public MetaFile importPrestShop() throws IOException, PrestaShopWebserviceException {
-
+	public Batch importPrestShop(Batch batch) throws IOException, PrestaShopWebserviceException {
+    	
 		this.importAxelorBase();
 		importAxelorSaleOrders();
 		importAxelorSaleOrderLines();
 		File importFile = closeLog();
 		MetaFile importMetaFile = metaFiles.upload(importFile);
-		return importMetaFile;
+		batch.setPrestaShopBatchLog(importMetaFile);
+		batch.setDone(totalDone);
+		batch.setAnomaly(totalAnomaly);
+		return batch;
 	}
     
 	/**
@@ -192,11 +198,23 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 	 */
 	public void importLogObjectHeder(String objectName) throws IOException {
 		bwImport.newLine();
-		bwImport.write("--------------");
+		bwImport.write("-----------------------------------------------");
 		bwImport.newLine();
-		bwImport.write(objectName + " object");
+		bwImport.write(objectName);
+	}
+	
+	/**
+	 * 
+	 * @param done number of succeed 
+	 * @param anomaly number of error
+	 * @throws IOException
+	 */
+	public void importLogObjectHederDetails(Integer done, Integer anomaly) throws IOException {
+		totalDone += done;
+		totalAnomaly += anomaly;
 		bwImport.newLine();
-		bwImport.write("--------------");
+		bwImport.newLine();
+		bwImport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);
 	}
 	
 	/**
@@ -208,6 +226,7 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 	 */
 	public void importLog(String id, String msg) throws IOException {
 		bwImport.newLine();
+		bwImport.newLine();
 		bwImport.write("Id - " + id + " " + msg);
 	}
 	
@@ -218,6 +237,8 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 	 * @throws IOException
 	 */
 	public File closeLog() throws IOException {
+		bwImport.newLine();
+		bwImport.write("-----------------------------------------------");
 		bwImport.close();
 		fwImport.close();
 		return importFile;
@@ -494,6 +515,8 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 	@Transactional
 	public void importAxelorCurrencies() throws IOException, PrestaShopWebserviceException {
 		
+		Integer done = 0;
+		Integer anomaly = 0;
 		this.importLogObjectHeder("Currency");
 		List<String> currencyIds = this.fetchApiIds("currencies", "currency");
 		
@@ -534,17 +557,23 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 							throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CURRENCY), IException.NO_VALUE);
 						}
 						currencyRepo.save(currency);
+						done++;
 						
 					} catch (AxelorException e) {
+						
 						this.importLog(id, e.getMessage());
+						anomaly++;
 						continue;
 					} catch (Exception e) {
+
 						this.importLog(id, e.getMessage());
+						anomaly++;
 						continue;
 					}
 				}
 			}
 		}
+		this.importLogObjectHederDetails(done, anomaly);
 	}
 	
 	/**
@@ -555,6 +584,8 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 	 */
 	public void importAxelorCountries() throws IOException, PrestaShopWebserviceException {
 		
+		Integer done = 0;
+		Integer anomaly = 0;
 		this.importLogObjectHeder("Country");
 		List<String> countryIds = this.fetchApiIds("countries", "country");
 
@@ -584,17 +615,21 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 						country.setAlpha2Code(alpha2Code);
 						country.setPrestaShopId(id);
 						countryRepo.save(country);
+						done++;
 						
 					} catch (AxelorException e) {
 						this.importLog(id, e.getMessage());
+						anomaly++;
 						continue;
 					} catch (Exception e) {
 						this.importLog(id, e.getMessage());
+						anomaly++;
 						continue;
 					}
 				}
 			}
 		}
+		this.importLogObjectHederDetails(done, anomaly);
 	}
 	
 	/**
@@ -605,7 +640,9 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 	 */
 	@Transactional
 	public void importAxelorPartners() throws PrestaShopWebserviceException, IOException {
-
+		
+		Integer done = 0;
+		Integer anomaly = 0;
 		this.importLogObjectHeder("Partner(Customer)");
 		List<String> customerIds = this.fetchApiIds("customers", "customer");
 		
@@ -716,17 +753,21 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 						partner.setIsCustomer(true);
 						partnerRepo.persist(partner);
 						partnerRepo.save(partner);
+						done++;
 
 					} catch (AxelorException e) {
 						this.importLog(id, e.getMessage());
+						anomaly++;
 						continue;
 					} catch (Exception e) {
 						this.importLog(id, e.getMessage());
+						anomaly++;
 						continue;
 					}
 				}
 			}
 		}
+		this.importLogObjectHederDetails(done, anomaly);
 	}
 	
 	/**
@@ -738,6 +779,8 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 	@Transactional
 	public void importAxelorPartnerAddresses() throws PrestaShopWebserviceException, IOException {
 		
+		Integer done = 0;
+		Integer anomaly = 0;
 		this.importLogObjectHeder("Partner(Customer) Address");
 		List<String> addressesIds = this.fetchApiIds("addresses", "address");
 		String partnerId = null;
@@ -823,16 +866,21 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 							address.setCity(city);
 						}
 						partnerRepo.save(partner);
+						done++;
+						
 					} catch (AxelorException e) {
 						this.importLog(id, e.getMessage());
+						anomaly++;
 						continue;
 					} catch (Exception e) {
 						this.importLog(id, e.getMessage());
+						anomaly++;
 						continue;
 					}
 				}
 			}
 		}
+		this.importLogObjectHederDetails(done, anomaly);
 	}
 	
 	/**
@@ -844,7 +892,9 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 	 */
 	@Transactional
 	public void importAxelorProductCategories() throws PrestaShopWebserviceException, DOMException, IOException {
-
+		
+		Integer done = 0;
+		Integer anomaly = 0;
 		this.importLogObjectHeder("Product Category");
 		List<String> categoryIds = this.fetchApiIds("categories", "category");
 		String prestashopId = null;
@@ -871,6 +921,7 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 							parentProductCategory = Beans.get(ProductCategoryRepository.class).all().filter("self.prestaShopId = ?", parentId).fetchOne();
 							categoryObj.setParentProductCategory(parentProductCategory);
 							productCategoryRepo.save(categoryObj);
+							done++;
 							continue;
 						}
 						
@@ -911,17 +962,21 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 						}
 						
 						productCategoryRepo.save(productCategory);
+						done++;
 						
 					} catch (AxelorException e) {
 						this.importLog(prestashopId, e.getMessage());
+						anomaly++;
 						continue;
 					} catch (Exception e) {
 						this.importLog(prestashopId, e.getMessage());
+						anomaly++;
 						continue;
 					}
 				}
 			}
 		}
+		this.importLogObjectHederDetails(done, anomaly);
 	}
 
 	/**
@@ -933,6 +988,8 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 	@Transactional
 	public void importAxelorProducts() throws PrestaShopWebserviceException, IOException {
 
+		Integer done = 0;
+		Integer anomaly = 0;
 		this.importLogObjectHeder("Product");
 		String prestashopId = null;
 		List<String> productsIds = this.fetchApiIds("products", "product");
@@ -991,16 +1048,20 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 						product.setFullName(name);
 						product.setProductTypeSelect(productTypeSelect);
 						productRepo.save(product);
+						done++;
 					}
 				}
 			} catch (AxelorException e) {
 				this.importLog(prestashopId, e.getMessage());
+				anomaly++;
 				continue;
 			} catch (Exception e) {
 				this.importLog(prestashopId, e.getMessage());
+				anomaly++;
 				continue;
 			}
 		}
+		this.importLogObjectHederDetails(done, anomaly);
 	}
 
 	/**
@@ -1011,7 +1072,9 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 	 */
 	@Transactional
 	public void importAxelorSaleOrders() throws PrestaShopWebserviceException, IOException {
-
+		
+		Integer done = 0;
+		Integer anomaly = 0;
 		this.importLogObjectHeder("SaleOrder");
 		List<String> orderIds = null;
 		Long clientPartner = 0l;
@@ -1091,16 +1154,20 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 						order = this.updateOrderStatus(order, status);
 						saleOrderRepo.persist(order);
 						saleOrderRepo.save(order);
+						done++;
 					}
 				}
 			} catch (AxelorException e) {
 				this.importLog(prestashopId, e.getMessage());
+				anomaly++;
 				continue;
 			} catch (Exception e) {
 				this.importLog(prestashopId, e.getMessage());
+				anomaly++;
 				continue;
 			}
 		}
+		this.importLogObjectHederDetails(done, anomaly);
 	}
 	
 	/**
@@ -1112,6 +1179,8 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 	@Transactional
 	public void importAxelorSaleOrderLines() throws PrestaShopWebserviceException, IOException {
 		
+		Integer done = 0;
+		Integer anomaly = 0;
 		this.importLogObjectHeder("OrderLine");
 		List<String> orderIds = null;
 		List<String> orderLineIds = null;
@@ -1165,15 +1234,19 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 						}
 						saleOrderRepo.persist(saleOrder);
 						saleOrderRepo.save(saleOrder);
+						done++;
 					}
 				}
 			} catch (AxelorException e) {
 				this.importLog(id, e.getMessage());
+				anomaly++;
 				continue;
 			} catch (Exception e) {
 				this.importLog(id, e.getMessage());
+				anomaly++;
 				continue;
 			}
 		}
+		this.importLogObjectHederDetails(done, anomaly);
 	}
 }
