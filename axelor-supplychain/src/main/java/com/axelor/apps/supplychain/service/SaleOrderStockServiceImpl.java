@@ -70,14 +70,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 		
 	}
 
-
-	public Location getLocation(Company company)  {
-
-		return locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3",
-				company, true, LocationRepository.TYPE_INTERNAL).fetchOne();
-	}
-
-
 	@Override
 	public StockMove createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
@@ -109,13 +101,11 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
 	@Override
 	public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException  {
+	    StockConfig stockConfig = stockConfigService.getStockConfig(company);
+	    Location toLocation = stockConfig.getDefaultLocation();
 
-		Location toLocation = locationRepo.all()
-				.filter("self.isDefaultLocation = true and self.company = ?1 and self.typeSelect = ?2", company, LocationRepository.TYPE_EXTERNAL)
-				.fetchOne();
-		
 		if (toLocation == null) {
-			toLocation = stockConfigService.getCustomerVirtualLocation(stockConfigService.getStockConfig(company));
+			toLocation = stockConfigService.getCustomerVirtualLocation(stockConfig);
 		}
 
 		StockMove stockMove = stockMoveService.createStockMove(null, saleOrder.getDeliveryAddress(), company,

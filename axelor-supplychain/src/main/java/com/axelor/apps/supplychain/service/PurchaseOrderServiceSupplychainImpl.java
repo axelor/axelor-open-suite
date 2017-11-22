@@ -222,13 +222,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		return stockMoveId;
 	}
 
-
-	public Location getLocation(Company company)  {
-
-		return Beans.get(LocationRepository.class).all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", company, true, LocationRepository.TYPE_INTERNAL).fetchOne();
-	}
-
-
 	public void cancelReceipt(PurchaseOrder purchaseOrder) throws AxelorException  {
 
 		List<StockMove> stockMoveList = Beans.get(StockMoveRepository.class).all().filter("self.purchaseOrder = ?1 AND self.statusSelect = 2", purchaseOrder).fetch();

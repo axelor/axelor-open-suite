@@ -142,6 +142,7 @@ public class SupplychainModule extends AxelorModule {
         bind(LogisticalFormServiceImpl.class).to(LogisticalFormSupplychainServiceImpl.class);
         bind(LogisticalFormSupplychainService.class).to(LogisticalFormSupplychainServiceImpl.class);
         bind(PurchaseProductService.class).to(PurchaseProductServiceImpl.class);
+        bind(LocationLineServiceImpl.class).to(LocationLineServiceSupplychainImpl.class);
         bind(StockConfigService.class).to(StockConfigSupplychainService.class);
     }
 }

@@ -32,6 +32,9 @@
 			  <field name="finishedProductsLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 		  </panel>
 	  </panel>
+		<panel>
+            <field name="defaultLocation" domain="self.company = company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid"/>
+		</panel>
 	  <panel name="customsInformation" title="Customs">
 	  	<field name="customsWeightUnit" domain="self.unitTypeSelect = 1"/>
 	  </panel>

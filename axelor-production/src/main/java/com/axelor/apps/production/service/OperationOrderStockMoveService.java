@@ -24,6 +24,7 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LocationRepository;
@@ -86,7 +87,8 @@ public class OperationOrderStockMoveService {
 	private StockMove _createToConsumeStockMove(OperationOrder operationOrder, Company company) throws AxelorException  {
 
 		StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
-		Location virtualLocation = stockConfigService.getProductionVirtualLocation(stockConfigService.getStockConfig(company));
+		StockConfig stockConfig = stockConfigService.getStockConfig(company);
+		Location virtualLocation = stockConfigService.getProductionVirtualLocation(stockConfig);
 
 		Location fromLocation;
 
@@ -96,7 +98,7 @@ public class OperationOrderStockMoveService {
 		} else if (!operationOrder.getManufOrder().getIsConsProOnOperation() && prodProcessLine != null && prodProcessLine.getProdProcess() != null && prodProcessLine.getProdProcess().getLocation() != null) {
 			fromLocation = prodProcessLine.getProdProcess().getLocation();
 		} else {
-			fromLocation = locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", company, true, LocationRepository.TYPE_INTERNAL).fetchOne();
+			fromLocation = stockConfigService.getDefaultLocation(stockConfig);
 		}
 
 		return stockMoveService.createStockMove(null, null, company, null, fromLocation, virtualLocation,

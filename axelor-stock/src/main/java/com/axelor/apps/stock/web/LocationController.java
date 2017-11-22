@@ -48,22 +48,7 @@ public class LocationController {
 	
 	@Inject
 	private LocationRepository locationRepo;
-	
-	public void checkIsDefaultLocation(ActionRequest request, ActionResponse response){
-		
-		Location location = request.getContext().asType(Location.class);
-		
-		if(location != null && location.getIsDefaultLocation() && location.getCompany() != null && location.getTypeSelect() != null) {
-			
-			Location findLocation = locationRepo.all().filter("company = ? and typeSelect = ? and isDefaultLocation = ?", location.getCompany(),location.getTypeSelect(),location.getIsDefaultLocation()).fetchOne();
-			
-			if(findLocation != null) {
-				response.setFlash(I18n.get(IExceptionMessage.LOCATION_1)+" "+findLocation.getName());
-				response.setValue("isDefaultLocation", false);
-			}
-		}
-	}
-	
+
 	/**
 	 * Method that generate inventory as a pdf
 	 *

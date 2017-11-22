@@ -31,9 +31,7 @@ public interface SaleOrderStockService {
 		NOT_DELIVERY, PARTIAL_DELIVERY, ALL_DELIVERY
 	}
 
-	public Location getLocation(Company company);
-
-	/**
+    /**
 	 * Create a delivery stock move from a sale order.
 	 * 
 	 * @param saleOrder

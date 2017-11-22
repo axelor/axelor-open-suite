@@ -17,24 +17,27 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class LocationServiceImpl implements LocationService{
 	
@@ -46,12 +49,17 @@ public class LocationServiceImpl implements LocationService{
 	
 	@Inject
 	ProductRepository productRepo;
-	
-	@Override
-	public Location getDefaultLocation() {
-		return locationRepo.all().filter("self.isDefaultLocation = true AND self.typeSelect = ?1", LocationRepository.TYPE_INTERNAL).fetchOne();
+
+	public Location getLocation(Company company) {
+		try {
+			StockConfigService stockConfigService = Beans.get(StockConfigService.class);
+			StockConfig stockConfig = stockConfigService.getStockConfig(company);
+			return stockConfig.getDefaultLocation();
+		} catch (AxelorException e) {
+			return null;
+		}
 	}
-	
+
 	public List<Location> getNonVirtualLocations() {
 		return locationRepo.all().filter("self.typeSelect != ?1", LocationRepository.TYPE_VIRTUAL).fetch();
 	}
@@ -67,7 +75,7 @@ public class LocationServiceImpl implements LocationService{
 						LocationLine locationLine = locationLineService.getLocationLine(locationRepo.find(location.getId()), productRepo.find(productId));
 						
 						if (locationLine != null) {
-							qty = qty.add(qtyType == "real" ? locationLine.getCurrentQty() : locationLine.getFutureQty());
+							qty = qty.add(qtyType.equals("real") ? locationLine.getCurrentQty() : locationLine.getFutureQty());
 						}
 					}
 					return qty;
@@ -76,7 +84,7 @@ public class LocationServiceImpl implements LocationService{
 				LocationLine locationLine = locationLineService.getLocationLine(locationRepo.find(locationId), productRepo.find(productId));
 				
 				if (locationLine != null) {
-					return qtyType == "real" ? locationLine.getCurrentQty() : locationLine.getFutureQty();
+					return qtyType.equals("real") ? locationLine.getCurrentQty() : locationLine.getFutureQty();
 				}
 			}
 		}

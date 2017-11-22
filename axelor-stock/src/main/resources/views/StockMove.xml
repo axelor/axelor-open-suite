@@ -288,9 +288,9 @@
 	    <field name="isWithBackorder" expr="eval:true" />
 	    <field name="estimatedDate" expr="eval:__config__.app.getTodayDate()"/>
 	    <field name="typeSelect" expr="eval: _typeSelect"/>
-	    <field if="_typeSelect == '3'" name="toLocation" expr="eval:__repo__(Location).all().filter('company.id = ? AND isDefaultLocation = true AND typeSelect = 1',__user__.activeCompany?.id).fetchOne()"/>
+	    <field if="_typeSelect == '3'" name="toLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.defaultLocation"/>
 		<field if="_typeSelect == '3'" name="fromLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierVirtualLocation"/>
-		<field if="_typeSelect == '2'" name="fromLocation" expr="eval:__repo__(Location).all().filter('company.id = ? AND isDefaultLocation = true AND typeSelect = 1',__user__.activeCompany?.id).fetchOne()"/>
+		<field if="_typeSelect == '2'" name="fromLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.defaultLocation"/>
 		<field if="_typeSelect == '2'" name="toLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.customerVirtualLocation"/>
 	</action-record>
 	
@@ -303,9 +303,9 @@
 	</action-record>
 	
 	<action-record name="action-stock-move-set-default-locations" model="com.axelor.apps.stock.db.StockMove">
-	    <field if="typeSelect == 2" name="fromLocation" expr="eval:__repo__(Location).all().filter('company.id = ? AND isDefaultLocation = true AND typeSelect = 1',company != null ? company.id :__user__.activeCompany?.id).fetchOne()"/>
+	    <field if="typeSelect == 2" name="fromLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.defaultLocation"/>
   		<field if="typeSelect == 2" name="toLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.customerVirtualLocation"/>
-  		<field if="typeSelect == 3" name="toLocation" expr="eval:__repo__(Location).all().filter('company.id = ? AND isDefaultLocation = true AND typeSelect = 1',company != null ? company.id : __user__.activeCompany?.id).fetchOne()"/>
+  		<field if="typeSelect == 3" name="toLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.defaultLocation"/>
   		<field if="typeSelect == 3" name="fromLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.supplierVirtualLocation"/>
 	</action-record>
 	

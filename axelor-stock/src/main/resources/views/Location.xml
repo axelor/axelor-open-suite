@@ -13,7 +13,6 @@
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="address" form-view="address-form" grid-view="address-grid"/>
         <field name="typeSelect"/>
-        <field name="isDefaultLocation"/>
     </grid>
     
 	<form name="location-form" title="Stock Location" model="com.axelor.apps.stock.db.Location" onNew="action-location-record-new" width="large">
@@ -23,10 +22,9 @@
 		</toolbar>
 		<panel name="main">
 			<field name="name"/>
-			<field name="typeSelect" onChange="action-location-is-default-location" colSpan="3"/>
-			<field name="isDefaultLocation" onChange="action-location-is-default-location" colSpan="3"/>
+			<field name="typeSelect" colSpan="3"/>
 			<field name="parentLocation" form-view="location-form" grid-view="location-grid"/>
-			<field name="company" widget="SuggestBox" onChange="action-location-is-default-location" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="address" form-view="address-form" grid-view="address-grid"/>
 		</panel>    
@@ -49,10 +47,6 @@
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 	</action-record>
     
-    <action-method name="action-location-is-default-location">
-   		<call class="com.axelor.apps.stock.web.LocationController" method="checkIsDefaultLocation"/>
-	</action-method>
-	
     <action-view name="action-location-view-create-inventory" title="Create inventory" model="com.axelor.apps.stock.db.Inventory">
 		<view type="form" name="inventory-form"/>
   		<view type="grid" name="inventory-grid"/>
