@@ -15,6 +15,7 @@
     <decimal name="companyTaxTotal" scale="2" precision="20" title="Amount Tax in Acc. currency" hidden="true"/>
     <decimal name="companyInTaxTotal" scale="2" precision="20" title="Amount A.T.I. in Acc. currency" hidden="true"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
+    <boolean name="reverseCharged"/>
   
   </entity>
 
