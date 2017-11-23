@@ -86,6 +86,19 @@
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
 
+    <grid name="sale-order-opportunity-grid" title="Quotations" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
+        <hilite background="warning" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 3)"/>
+        <hilite background="danger" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 2)"/>
+        <field name="endOfValidityDate" hidden="true"/>
+        <field name="saleOrderSeq"/>
+        <field name="externalReference"/>
+        <field name="creationDate"/>
+        <field name="inTaxTotal" aggregate="sum"/>
+        <field name="statusSelect"/>
+        <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
+        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+    </grid>
+
     <calendar name="sale-order-calendar" model="com.axelor.apps.sale.db.SaleOrder" eventStart="creationDate"
         eventLength="24" mode="month" title="Sale quotations/orders" colorBy="statusSelect" editable="false">
         <field name="fullName" />
