@@ -71,6 +71,8 @@ public class ChartBuilderService {
 //	private List<RecordField> onNewFields;
 	
 	private List<String> joins;
+	
+	private String categType;
 
 	@Inject
 	private MetaModelRepository metaModelRepo;
@@ -103,6 +105,7 @@ public class ChartBuilderService {
 		searchFields = new ArrayList<String>();
 //		onNewFields = new ArrayList<RecordField>();
 		joins = new ArrayList<String>();
+		categType = "text";
 
 		String[] queryString = prepareQuery(chartBuilder);
 //		setOnNewAction(chartBuilder);
@@ -146,7 +149,7 @@ public class ChartBuilderService {
 		xml += "\t<dataset type=\"sql\"><![CDATA[";
 		xml += Tab2 + queryString[0];
 		xml += Tab2 + " ]]></dataset>";
-		xml += Tab1 + "<category key=\"group_field\" type=\"text\" title=\""
+		xml += Tab1 + "<category key=\"group_field\" type=\"" + categType +  "\" title=\""
 				+ groupLabel  + "\" />";
 		xml += Tab1 + "<series key=\"sum_field\" type=\""
 				+ chartBuilder.getChartType() + "\" title=\""
@@ -283,7 +286,6 @@ public class ChartBuilderService {
 		
 		if (dateType != null && typeName != null && dateTypes.contains(typeName.toUpperCase())) {
 			group = getDateTypeGroup(dateType, typeName, group);
-
 		} 
 		
 		return group;
@@ -291,10 +293,6 @@ public class ChartBuilderService {
 
 	private String getDateTypeGroup(String dateType, String typeName, String group) {
 		
-//		String dtype = "timestamp";
-//		if ("Date,date,LocalDate,LocalDateTime,ZonedDateTime".contains(typeName)) {
-//			dtype = "date";
-//		}
 		switch (dateType) {
 		case "year":
 			group = "to_char(cast(" + group + " as date), 'yyyy')";
@@ -302,6 +300,8 @@ public class ChartBuilderService {
 		case "month":
 			group =  "to_char(cast(" + group + " as date), 'yyyy-mm')";
 			break;
+		default:
+			categType = "date";
 		}
 		
 		return group;
