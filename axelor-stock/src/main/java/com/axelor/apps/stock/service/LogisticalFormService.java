@@ -138,7 +138,8 @@ public interface LogisticalFormService {
 	 * 
 	 * @param stockMove
 	 * @return
+	 * @throws AxelorException
 	 */
-	List<Long> getIdList(StockMove stockMove);
+	List<Long> getIdList(StockMove stockMove) throws AxelorException;
 
 }

@@ -112,7 +112,7 @@
 	  </panel>
 	  <panel-tabs>
 	    <panel-related name="stockMoveLineListPanel" title="Stock move line" field="stockMoveLineList" onChange="action-stock-move-method-compute, action-stock-move-line-method-change-conformity" readonlyIf="statusSelect == 3" form-view="stock-move-line-form" grid-view="stock-move-line-grid"/>
-	    <panel-dashlet action="action-stock-move-view-logistical-forms" showIf="typeSelect == 2" title="Logistical forms" />
+	    <panel-dashlet action="action-stock-move-view-logistical-forms" showIf="id &amp;&amp; typeSelect == 2" title="Logistical forms" />
         <panel name="configuration" title="Configuration"  if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" >
 	      <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="sale-order-form" grid-view="sale-order-grid"/>
 	      <field name="purchaseOrder" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
