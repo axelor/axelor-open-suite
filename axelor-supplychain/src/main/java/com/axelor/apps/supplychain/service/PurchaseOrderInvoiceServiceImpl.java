@@ -17,17 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Query;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -47,6 +36,15 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.Query;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceService {
 
@@ -83,7 +81,9 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
 		Invoice invoice = invoiceGenerator.generate();
 
-		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, purchaseOrder.getPurchaseOrderLineList()));
+		List<InvoiceLine> invoiceLineList = this.createInvoiceLines(invoice, purchaseOrder.getPurchaseOrderLineList());
+
+		invoiceGenerator.populate(invoice, invoiceLineList);
 		return invoice;
 	}
 
@@ -94,7 +94,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PO_INVOICE_1), purchaseOrder.getPurchaseOrderSeq()), IException.CONFIGURATION_ERROR);
 		}
 
-		InvoiceGenerator invoiceGenerator = new InvoiceGeneratorSupplyChain(purchaseOrder) {
+		return new InvoiceGeneratorSupplyChain(purchaseOrder) {
 
 			@Override
 			public Invoice generate() throws AxelorException {
@@ -102,12 +102,10 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 				return super.createInvoiceHeader();
 			}
 		};
-
-		return invoiceGenerator;
 	}
 
 	@Override
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<PurchaseOrderLine> purchaseOrderLineList) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<PurchaseOrderLine> purchaseOrderLineList) throws AxelorException {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 
@@ -115,11 +113,15 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
 			//Lines of subscription type are invoiced directly from purchase order line or from the subscription batch
 			if (!ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(purchaseOrderLine.getProduct().getProductTypeSelect())){
-				invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
-				purchaseOrderLine.setInvoiced(true);
+				processPurchaseOrderLine(invoice, invoiceLineList, purchaseOrderLine);
 			}
 		}
 		return invoiceLineList;
+	}
+
+	protected void processPurchaseOrderLine(Invoice invoice, List<InvoiceLine> invoiceLineList, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
+		invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
+		purchaseOrderLine.setInvoiced(true);
 	}
 
 	@Override

@@ -149,13 +149,13 @@ public class TaxInvoiceLine extends TaxGenerator {
 			BigDecimal exTaxBase = (invoiceLineTax.getReverseCharged()) ? invoiceLineTax.getExTaxBase().negate() : invoiceLineTax.getExTaxBase();
 			BigDecimal taxTotal = computeAmount(exTaxBase, invoiceLineTax.getTaxLine().getValue());
 			invoiceLineTax.setTaxTotal(taxTotal);
-			invoiceLineTax.setInTaxTotal(exTaxBase.add(taxTotal));
+			invoiceLineTax.setInTaxTotal(invoiceLineTax.getExTaxBase().add(taxTotal));
 
 			// Dans la devise de la société
 			BigDecimal companyExTaxBase = (invoiceLineTax.getReverseCharged()) ? invoiceLineTax.getCompanyExTaxBase().negate() : invoiceLineTax.getCompanyExTaxBase();
 			BigDecimal companyTaxTotal = computeAmount(companyExTaxBase, invoiceLineTax.getTaxLine().getValue());
 			invoiceLineTax.setCompanyTaxTotal(companyTaxTotal);
-			invoiceLineTax.setCompanyInTaxTotal(companyExTaxBase.add(companyTaxTotal));
+			invoiceLineTax.setCompanyInTaxTotal(invoiceLineTax.getCompanyExTaxBase().add(companyTaxTotal));
 
 			invoiceLineTaxList.add(invoiceLineTax);
 
