@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
+import com.axelor.apps.stock.service.LocationService;
 import org.eclipse.birt.core.exception.BirtException;
 
 import org.slf4j.Logger;
@@ -46,8 +47,12 @@ public class LocationController {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
-	@Inject
 	private LocationRepository locationRepo;
+
+	@Inject
+	public LocationController(LocationRepository locationRepo) {
+		this.locationRepo = locationRepo;
+	}
 
 	/**
 	 * Method that generate inventory as a pdf

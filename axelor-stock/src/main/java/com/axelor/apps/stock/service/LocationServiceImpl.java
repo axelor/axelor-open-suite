@@ -41,14 +41,18 @@ import java.util.List;
 
 public class LocationServiceImpl implements LocationService{
 	
-	@Inject
-	LocationRepository locationRepo;
+	protected LocationRepository locationRepo;
 	
-	@Inject
-	LocationLineService locationLineService;
+	protected LocationLineService locationLineService;
 	
+	protected ProductRepository productRepo;
+
 	@Inject
-	ProductRepository productRepo;
+	public LocationServiceImpl(LocationRepository locationRepo, LocationLineService locationLineService, ProductRepository productRepo) {
+		this.locationRepo = locationRepo;
+		this.locationLineService = locationLineService;
+		this.productRepo = productRepo;
+	}
 
 	public Location getLocation(Company company) {
 		try {
@@ -145,8 +149,8 @@ public class LocationServiceImpl implements LocationService{
 		for (LocationLine locationLine : locationLineList) {
 			StockRules stockRules = Beans.get(StockRulesRepository.class).all()
 					.filter("self.location = ?1 AND self.product = ?2", locationLine.getLocation(), locationLine.getProduct()).fetchOne();
-			if (stockRules != null)
-			if (locationLine.getFutureQty().compareTo(stockRules.getMinQty()) < 0) {
+			if (stockRules != null
+					&& locationLine.getFutureQty().compareTo(stockRules.getMinQty()) < 0) {
 				idList.add(locationLine.getId());
 			}
 		}
