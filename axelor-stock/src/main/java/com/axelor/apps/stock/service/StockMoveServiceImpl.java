@@ -24,10 +24,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -50,7 +49,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.Location;
-import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
@@ -58,7 +56,6 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.LocationRepository;
-import com.axelor.apps.stock.db.repo.LogisticalFormLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -229,15 +226,20 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 		}
 
-		// Set the sequence
-		if(stockMove.getStockMoveSeq() == null || stockMove.getStockMoveSeq().isEmpty())  {
-			stockMove.setStockMoveSeq(
-					this.getSequenceStockMove(stockMove.getTypeSelect(), stockMove.getCompany()));
-		}
+        String draftSeq;
 
-		if(stockMove.getName() == null || stockMove.getName().isEmpty())  {
-			stockMove.setName(stockMove.getStockMoveSeq());
-		}
+        // Set the sequence.
+        if (sequenceService.isEmptyOrDraftSequenceNumber(stockMove.getStockMoveSeq())) {
+            draftSeq = stockMove.getStockMoveSeq();
+            stockMove.setStockMoveSeq(getSequenceStockMove(stockMove.getTypeSelect(), stockMove.getCompany()));
+        } else {
+            draftSeq = null;
+        }
+
+        if (Strings.isNullOrEmpty(stockMove.getName())
+                || draftSeq != null && stockMove.getName().startsWith(draftSeq)) {
+            stockMove.setName(computeName(stockMove));
+        }
 
 		stockMoveLineService.updateLocations(
 				fromLocation,
@@ -469,7 +471,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 		newStockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
 		newStockMove.setRealDate(null);
 		newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
-		newStockMove.setName(newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_7) + " " + stockMove.getStockMoveSeq() + " )" );
+		newStockMove.setName(computeName(newStockMove, newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_7) + " "
+                + stockMove.getStockMoveSeq() + " )"));
 
 		return stockMoveRepo.save(newStockMove);
 
@@ -515,7 +518,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 		newStockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
 		newStockMove.setRealDate(null);
 		newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
-		newStockMove.setName(newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_8) + " " + stockMove.getStockMoveSeq() + " )" );
+		newStockMove.setName(computeName(newStockMove, newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_8) + " "
+                + stockMove.getStockMoveSeq() + " )"));
 
 		return stockMoveRepo.save(newStockMove);
 
@@ -885,5 +889,34 @@ public class StockMoveServiceImpl implements StockMoveService {
 				stockMoveLine -> stockMoveLineService.computeFullySpreadOverLogisticalFormLinesFlag(stockMoveLine))
 				: true;
 	}
+
+    @Override
+    public String computeName(StockMove stockMove) {
+        return computeName(stockMove, null);
+    }
+
+    @Override
+    public String computeName(StockMove stockMove, String name) {
+        Objects.requireNonNull(stockMove);
+        StringBuilder nameBuilder = new StringBuilder();
+
+        if (Strings.isNullOrEmpty(name)) {
+            if (!Strings.isNullOrEmpty(stockMove.getStockMoveSeq())) {
+                nameBuilder.append(stockMove.getStockMoveSeq());
+            }
+        } else {
+            nameBuilder.append(name);
+        }
+
+        if (stockMove.getPartner() != null && !Strings.isNullOrEmpty(stockMove.getPartner().getFullName())) {
+            if (nameBuilder.length() > 0) {
+                nameBuilder.append(" - ");
+            }
+
+            nameBuilder.append(stockMove.getPartner().getFullName());
+        }
+
+        return nameBuilder.toString();
+    }
 
 }
