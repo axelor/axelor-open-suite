@@ -62,6 +62,7 @@ public class FilterSqlService {
 	public String getColumn(String model, String field) {
 		
 		SessionImpl sessionImpl = (SessionImpl) JPA.em().getDelegate();
+		@SuppressWarnings("deprecation")
 		AbstractEntityPersister aep=((AbstractEntityPersister)sessionImpl
 					.getSession().getSessionFactory().getClassMetadata(model));
 		String[] columns = aep.getPropertyColumnNames(field);

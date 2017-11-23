@@ -59,6 +59,7 @@
 		model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="cards" name="sale-order-quotation-cards" />
 		<view type="grid" name="sale-order-quotation-grid" />
+        <view type="calendar" name="sale-order-calendar" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
 		<view-param name="forceTitle" value="true" />
@@ -75,6 +76,7 @@
 		model="com.axelor.apps.sale.db.SaleOrder" >
 		<view type="cards" name="sale-order-cards" />
 		<view type="grid" name="sale-order-grid" />
+        <view type="calendar" name="sale-order-calendar" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
 		<domain>self.template = false and self.statusSelect = 3</domain>
@@ -93,6 +95,7 @@
 		model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="cards" name="sale-order-cards" />
 		<view type="grid" name="sale-order-grid" />
+        <view type="calendar" name="sale-order-calendar" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
 		<view-param name="forceTitle" value="true" />
@@ -110,6 +113,7 @@
 		model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="cards" name="sale-order-cards" />
 		<view type="grid" name="sale-order-grid" />
+        <view type="calendar" name="sale-order-calendar" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
 		<view-param name="forceTitle" value="true" />
@@ -237,6 +241,7 @@
 		model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="cards" name="sale-order-quotation-cards" />
 		<view type="grid" name="sale-order-quotation-grid" />
+        <view type="calendar" name="sale-order-calendar" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
 		<view-param name="forceTitle" value="true" />
@@ -253,6 +258,7 @@
 		model="com.axelor.apps.sale.db.SaleOrder" >
 		<view type="cards" name="sale-order-cards" />
 		<view type="grid" name="sale-order-grid" />
+        <view type="calendar" name="sale-order-calendar" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
 		<domain>self.template = false and self.statusSelect &gt; 2</domain>

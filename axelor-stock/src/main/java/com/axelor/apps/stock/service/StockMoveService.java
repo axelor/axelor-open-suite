@@ -17,24 +17,23 @@
  */
 package com.axelor.apps.stock.service;
 
-import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.stock.db.FreightCarrierMode;
-import com.axelor.apps.stock.db.Location;
-import com.axelor.apps.stock.db.LogisticalForm;
-import com.axelor.apps.stock.db.ShipmentMode;
-import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.stock.db.FreightCarrierMode;
+import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.ShipmentMode;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.exception.AxelorException;
+import com.google.inject.persist.Transactional;
 
 public interface StockMoveService {
 
@@ -169,5 +168,24 @@ public interface StockMoveService {
 	 * @param stockMoveCollection
 	 */
 	void updateFullySpreadOverLogisticalFormsFlags(Collection<StockMove> stockMoveCollection);
+
+
+    /**
+     * Compute stock move name.
+     * 
+     * @param stockMove
+     * @return
+     */
+    String computeName(StockMove stockMove);
+
+
+    /**
+     * Compute stock move name with the given name.
+     * 
+     * @param stockMove
+     * @param name
+     * @return
+     */
+    String computeName(StockMove stockMove, String name);
 
 }

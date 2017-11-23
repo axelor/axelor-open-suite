@@ -18,25 +18,15 @@
 package com.axelor.studio.web;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.JAXBException;
-
-import com.axelor.meta.db.MetaAction;
-import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.repo.MetaMenuRepository;
-import com.axelor.meta.loader.XMLViews;
-import com.axelor.meta.schema.ObjectViews;
-import com.axelor.meta.schema.actions.Action;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.ActionBuilder;
-import com.axelor.studio.db.ActionBuilderLine;
-import com.axelor.studio.db.ActionBuilderView;
+import com.axelor.studio.service.builder.MenuBuilderService;
 import com.google.inject.Inject;
 
 public class MenuBuilderController {
@@ -44,6 +34,10 @@ public class MenuBuilderController {
 	@Inject
 	private MetaMenuRepository metaMenuRepo;
 	
+	@Inject
+	private MenuBuilderService menuBuilderService;
+	
+	@SuppressWarnings("unchecked")
 	public void fetchMenu(ActionRequest request, ActionResponse response) {
 		
 		Context context = request.getContext();
@@ -86,7 +80,7 @@ public class MenuBuilderController {
 		values.put("hidden", menu.getHidden());
 		
 		if (menu.getAction() != null && menu.getAction().getType().contentEquals("action-view")) {
-			ActionBuilder actionBuilder = createActionBuilder(menu.getAction());
+			ActionBuilder actionBuilder = menuBuilderService.createActionBuilder(menu.getAction());
 			if (actionBuilder != null) {
 				values.put("actionBuilder", actionBuilder);
 				values.put("showAction", true);
@@ -96,62 +90,7 @@ public class MenuBuilderController {
 		return values;
 	}
 
-	private ActionBuilder createActionBuilder(MetaAction metaAction) {
-		
-		try {
-			ObjectViews objectViews = XMLViews.fromXML(metaAction.getXml());
-			List<Action> actions = objectViews.getActions();
-			if (actions != null && !actions.isEmpty()) {
-				ActionView action = (ActionView) actions.get(0);
-				if (action.getModel() != null && action.getModel().contentEquals(MetaJsonRecord.class.getName())) {
-					return null;
-				}
-				ActionBuilder actionBuilder = new ActionBuilder(action.getName());
-				actionBuilder.setTitle(action.getTitle());
-				actionBuilder.setModel(action.getModel());
-				actionBuilder.setTypeSelect(3);
-				String domain = action.getDomain();
-				actionBuilder.setDomainCondition(domain);
-				for (ActionView.View view : action.getViews()) {
-					ActionBuilderView builderView = new ActionBuilderView();
-					builderView.setViewType(view.getType());
-					builderView.setViewName(view.getName());
-					actionBuilder.addActionBuilderView(builderView);
-				}
-				if (action.getParams() != null) {
-					for (ActionView.Param param : action.getParams()) {
-						ActionBuilderLine paramLine = new ActionBuilderLine();
-						paramLine.setName(param.getName());
-						paramLine.setValue(param.getValue());
-						actionBuilder.addViewParam(paramLine);
-					}
-				}
-				if (action.getContext() != null) {
-					for (ActionView.Context ctx : (List<ActionView.Context>)action.getContext()) {
-						ActionBuilderLine ctxLine = new ActionBuilderLine();
-						ctxLine.setName(ctx.getName());
-						if (ctx.getName().contentEquals("jsonModel") && domain != null && domain.contains("self.jsonModel = :jsonModel") ) {
-							actionBuilder.setIsJson(true);
-							actionBuilder.setModel(ctx.getExpression());
-						}
-						ctxLine.setValue(ctx.getExpression());
-						actionBuilder.addLine(ctxLine);
-					}
-				}
-				
-				return actionBuilder;
-				
-			}
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
-		
-		
-		
-		
-		return null;
-	}
-
+	
 	private Map<String, Object> getEmptyMenu() {
 		
 		Map<String, Object> values = new HashMap<String, Object>();
