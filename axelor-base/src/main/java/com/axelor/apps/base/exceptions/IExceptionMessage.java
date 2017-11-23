@@ -207,6 +207,10 @@ public interface IExceptionMessage {
 	 */
 	static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;
 	static final String IMPORT_CALENDAR = /*$$(*/ "Import calendar" /*)*/;
-	
-	
+
+    /**
+     * Sequence service
+     */
+    String SEQUENCE_NOT_SAVED_RECORD = /*$$(*/ "Can't generate draft sequence number on an unsaved record." /*)*/;
+
 }
