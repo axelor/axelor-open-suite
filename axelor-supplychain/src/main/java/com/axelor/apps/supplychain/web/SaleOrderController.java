@@ -22,14 +22,18 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
@@ -40,6 +44,7 @@ import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
@@ -78,6 +83,9 @@ public class SaleOrderController{
 
 	@Inject
 	private StockMoveRepository stockMoveRepo;
+
+	@Inject
+	private SaleOrderStockService saleOrderStockService;
 
 
 	public void createStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -569,5 +577,22 @@ public class SaleOrderController{
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		saleOrderServiceSupplychain.updateAmountToBeSpreadOverTheTimetable(saleOrder);
 		response.setValue("amountToBeSpreadOverTheTimetable" , saleOrder.getAmountToBeSpreadOverTheTimetable());
+	}
+
+	public void checkAllSaleOrderLineIsDelivery(ActionRequest request, ActionResponse response) {
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		if (saleOrder.getId() == null) {
+			return;
+		}
+		switch (saleOrderStockService.checkAllSaleOrderLineIsDelivery(saleOrder)) {
+			case PARTIAL_DELIVERY:
+				response.setValue("$stockMoveState", 1);
+				break;
+			case ALL_DELIVERY:
+				response.setValue("$stockMoveState", 2);
+				break;
+			default:
+				response.setValue("$stockMoveState", 0);
+        }
 	}
 }

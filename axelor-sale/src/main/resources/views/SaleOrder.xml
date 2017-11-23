@@ -218,6 +218,14 @@
       </panel>
 	  <panel-tabs hideIf="clientPartner == null">
 	    <panel name="content" title="Content">
+			<field name="$stockMoveState" showTitle="false" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+				<viewer><![CDATA[
+				<h4>
+					<span ng-show="record.$stockMoveState == 1" class="label label-important">Partial stock move shipped</span>
+         			<span ng-show="record.$stockMoveState == 2" class="label label-important">Stock move shipped</span>
+    			</h4>
+        		]]></viewer>
+			</field>
 	    	<panel-related field="saleOrderLineList" title="Details Lines" form-view="sale-order-line-form" colSpan="12" onChange="action-sale-order-line-change-group" readonlyIf="clientPartner == null || statusSelect == 3 || statusSelect == 4" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence"/>
 	    	<panel-related field="saleOrderLineTaxList" colSpan="12" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
 	    	<panel title="Description to display" colSpan="12">
