@@ -9,8 +9,6 @@
 
 	<one-to-one name="accountConfig" ref="com.axelor.apps.account.db.AccountConfig" title="Accounting configuration" mappedBy="company"/>
 
-	<many-to-one name="factor" ref="com.axelor.apps.base.db.Partner" />
-
   </entity>
   
 </domain-models>

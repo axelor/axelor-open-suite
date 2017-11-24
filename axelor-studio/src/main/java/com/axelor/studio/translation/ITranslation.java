@@ -62,5 +62,8 @@ public interface ITranslation {
 	public static final String EDITOR_PROP = /*$$(*/ "Properties"; /*)*/
 	
 	public static final String WKF_TRACK = /*$$(*/ "Track flow"; /*)*/
+	public static final String WKF_EDIT_NODE = /*$$(*/ "Edit Node"; /*)*/
+	public static final String WKF_EDIT_TRANSITION = /*$$(*/ "Edit Transition"; /*)*/
+	
 
 }

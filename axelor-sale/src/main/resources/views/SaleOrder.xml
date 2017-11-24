@@ -85,7 +85,25 @@
         <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
-    
+
+    <grid name="sale-order-opportunity-grid" title="Quotations" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
+        <hilite background="warning" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 3)"/>
+        <hilite background="danger" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 2)"/>
+        <field name="endOfValidityDate" hidden="true"/>
+        <field name="saleOrderSeq"/>
+        <field name="externalReference"/>
+        <field name="creationDate"/>
+        <field name="inTaxTotal" aggregate="sum"/>
+        <field name="statusSelect"/>
+        <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
+        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+    </grid>
+
+    <calendar name="sale-order-calendar" model="com.axelor.apps.sale.db.SaleOrder" eventStart="creationDate"
+        eventLength="24" mode="month" title="Sale quotations/orders" colorBy="statusSelect" editable="false">
+        <field name="fullName" />
+    </calendar>
+
     <form name="sale-order-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge sale orders" width="large">
 		<panel-related field="$saleOrderToMerge" form-view="sale-order-form" title="Sale orders to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.sale.db.SaleOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false" grid-view="sale-order-grid"/>
 		<panel sidebar="true" title="Actions">
@@ -96,7 +114,7 @@
     <form name="sale-quotation-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge quotations" width="large">
 		<panel-related field="$saleQuotationToMerge" form-view="sale-order-form" title="Quotations to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.sale.db.SaleOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false" grid-view="sale-order-quotation-grid"/>
 		<panel sidebar="true" title="Actions">
-			<button name="generateMergedSaleOrder" title="Merge into single quotation" onClick="action-validate-sale-order-check-selection,action-group-sale-order-merge-action"/>
+			<button name="generateMergedSaleOrder" title="Merge into single quotation" onClick="action-validate-sale-quotation-check-selection,action-group-sale-order-merge-action"/>
 	  	</panel>
     </form>
 
@@ -719,8 +737,8 @@
 	</action-attrs>
 
 	<action-group name="action-group-sale-order-merge-action">
-	    <action name="action-sale-order-method-merge-sale" if="__repo__(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
-	    <action name="action-sale-order-method-merge-supplychain"/>
+	    <action name="action-sale-order-method-merge-sale" if="!__config__.app.isApp('supplychain')"/>
+	    <action name="action-sale-order-method-merge-supplychain" if="__config__.app.isApp('supplychain')"/>
 	</action-group>
 
     <action-group name="action-sale-group-onchange-company">
@@ -1037,7 +1055,11 @@
 	</action-validate>
 	
 	<action-validate name="action-validate-sale-order-check-selection">
-		<error message="You have to choose at least one sale order" if="saleOrderToMerge == null || saleOrderToMerge.size() == 0"/>
+		<error message="You have to choose at least one sale order" if="saleOrderToMerge == null || (saleOrderToMerge != null &amp;&amp; saleOrderToMerge.size() == 0)"/>
+	</action-validate>
+
+	<action-validate name="action-validate-sale-quotation-check-selection">
+		<error message="You have to choose at least one sale quotation" if="saleQuotationToMerge == null || (saleQuotationToMerge != null &amp;&amp; saleQuotationToMerge.size() == 0)"/>
 	</action-validate>
 	
 	<action-record name="action-saleorder-record-template" model="com.axelor.apps.sale.db.SaleOrder">

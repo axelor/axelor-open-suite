@@ -27,10 +27,11 @@ public class QualityControlManagementRepository extends QualityControlRepository
 	
 	@Inject
 	private SequenceService sequenceService;
-	
 
-	/*
-	 * Generate and set sequence in reference with predefined prefix
+	/**
+	 * Generate and set sequence in reference with predefined prefix.
+	 * @param qualityControl  Overridden quality control object to set reference on onSave event.
+	 * 
 	 */
 	@Override
 	public QualityControl save(QualityControl qualityControl) {

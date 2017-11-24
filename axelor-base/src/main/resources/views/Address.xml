@@ -19,7 +19,7 @@
 			<field name="addressL3" x-bind="{{addressL3|uppercase}}" placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
 			<field name="addressL4" x-bind="{{addressL4|uppercase}}"/>
 			<field name="addressL5" x-bind="{{addressL5|uppercase}}" placeholder="e.g. POB 254"/>
-			<field name="city" canNew="true" onChange="action-address-change-city" form-view="city-form" grid-view="city-grid"/>
+			<field name="city" canEdit="false" canNew="true" onChange="action-address-change-city" form-view="city-form" grid-view="city-grid"/>
 			<field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true"/>
 			<field name="addressL7Country" required="true" canEdit="false" form-view="country-form" grid-view="country-grid"/>
 			<button-group colSpan="6">
@@ -45,7 +45,7 @@
 			<field name="addressL3" x-bind="{{addressL3|uppercase}}" placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
 			<field name="addressL4" x-bind="{{addressL4|uppercase}}"/>
 			<field name="addressL5" x-bind="{{addressL5|uppercase}}" placeholder="e.g. POB 254"/>
-			<field name="city" canNew="true" onChange="action-address-change-city" form-view="city-form" grid-view="city-grid"/>
+			<field name="city" canEdit="false" canNew="true" onChange="action-address-change-city" form-view="city-form" grid-view="city-grid"/>
 			<field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true"/>
 			<field name="addressL7Country" required="true" canEdit="false" form-view="country-form" grid-view="country-grid"/>
 			<field name="isInvoicingAddr" type="boolean" showIf="$popup() &amp;&amp; id == null" title="Invoicing address" />

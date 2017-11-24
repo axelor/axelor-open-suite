@@ -17,14 +17,13 @@
  */
 package com.axelor.apps.base.service.administration;
 
-import com.axelor.meta.db.MetaSelectItem;
-import com.axelor.meta.db.repo.MetaSelectItemRepository;
-import org.apache.commons.lang.StringUtils;
+import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.IsoFields;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,17 +32,25 @@ import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.SequenceVersion;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.SequenceVersionRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.StringTool;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaSelectItem;
+import com.axelor.meta.db.repo.MetaSelectItemRepository;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-import java.lang.invoke.MethodHandles;
-
 public class SequenceService {
 
-	private final static String
+    private static final String DRAFT_PREFIX = "#";
+
+    private final static String
 		PATTERN_FULL_YEAR = "%YYYY",	
 		PATTERN_YEAR = "%YY",
 		PATTERN_MONTH = "%M",
@@ -257,5 +264,47 @@ public class SequenceService {
 
 		return item.getTitle();
 	}
-	
+
+    /**
+     * Get draft sequence number.
+     * 
+     * @param model
+     * @return
+     * @throws AxelorException
+     */
+    public String getDraftSequenceNumber(Model model) throws AxelorException {
+        if (model.getId() == null) {
+            throw new AxelorException(model, IException.INCONSISTENCY, I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
+        }
+        return String.format("%s%d", DRAFT_PREFIX, model.getId());
+    }
+
+    /**
+     * Get draft sequence number with leading zeros.
+     * 
+     * @param model
+     * @param padding
+     * @return
+     */
+    public String getDraftSequenceNumber(Model model, int zeroPadding) throws AxelorException {
+        if (model.getId() == null) {
+            throw new AxelorException(model, IException.INCONSISTENCY, I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
+        }
+        return String.format("%s%s", DRAFT_PREFIX,
+                StringTool.fillStringLeft(String.valueOf(model.getId()), '0', zeroPadding));
+    }
+
+    /**
+     * Check whether a sequence number is empty or draft.
+     * 
+     * Also consider '*' as draft character for backward compatibility.
+     * 
+     * @param sequenceNumber
+     * @return
+     */
+    public boolean isEmptyOrDraftSequenceNumber(String sequenceNumber) {
+        return Strings.isNullOrEmpty(sequenceNumber)
+                || sequenceNumber.matches(String.format("[\\%s\\*]\\d+", DRAFT_PREFIX));
+    }
+
 }

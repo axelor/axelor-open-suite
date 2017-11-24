@@ -5,7 +5,7 @@
 
 	<grid model="com.axelor.apps.account.db.Notification" title="Notifications"
 		name="notification-grid" orderBy="-paymentDate,-subrogationRelease">
-		<field name="factor" />
+		<field name="factorPartner" />
 		<field name="paymentDate" />
 		<field name="subrogationRelease" />
 		<field name="statusSelect" />
@@ -16,11 +16,11 @@
 
 		<panel readonlyIf="statusSelect > 1">
 			<field name="statusSelect" widget="NavSelect" colSpan="12" />
-			<field name="factor" colSpan="4" domain="self.isFactor = TRUE"
+			<field name="factorPartner" colSpan="4" domain="self.isFactor = TRUE"
 				onChange="action-notification-factor-onchange" />
 			<field name="paymentDate" colSpan="4" />
 			<field name="subrogationRelease" colSpan="4"
-				domain="self.company.factor = :factor AND self.statusSelect = 3"
+				domain="self.company.accountConfig.factorPartner = :factorPartner AND self.statusSelect = 3"
 				onChange="action-notification-subrogation-release-onchange" />
 			<panel-related field="notificationItemList" grid-view="notification-item-grid"
 				form-view="notification-item-form" colSpan="12" editable="true"
@@ -35,7 +35,7 @@
 
 	<action-record name="action-notification-onnew"
 		model="com.axelor.apps.account.db.Notification">
-		<field name="factor" expr="eval: __user__.getActiveCompany()?.getFactor()" />
+		<field name="factorPartner" expr="eval: __user__.activeCompany?.accountConfig?.factorPartner" />
 		<field name="paymentDate" expr="eval: __date__" />
 	</action-record>
 

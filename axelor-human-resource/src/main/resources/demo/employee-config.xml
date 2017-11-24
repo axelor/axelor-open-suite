@@ -13,7 +13,7 @@
 	
 	<input file="hr_publicHolidayDay.csv" type="com.axelor.apps.hr.db.PublicHolidayDay" separator=";" search="self.importId = :importId"/>
 	
-	<input file="hr_leaveReason.csv" type="com.axelor.apps.hr.db.LeaveReason" separator=";"/>
+	<input file="hr_leaveReason.csv" type="com.axelor.apps.hr.db.LeaveReason" separator=";" search="self.importId  = :importId"/>
 	
 	<input file="hr_hrConfig.csv" type="com.axelor.apps.hr.db.HRConfig" separator=";" search="self.importId = :importId"/>
 	
