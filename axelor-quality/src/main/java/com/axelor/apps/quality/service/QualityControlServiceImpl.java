@@ -31,8 +31,11 @@ public class QualityControlServiceImpl  implements QualityControlService {
 	@Inject
 	ControlPointRepository controlPointRepo;
 	
-	/*
-	 * copy control point model to control point and set it to the quality control
+	/**
+	 * Copy control point model to control point and set it to the quality control.
+	 * @param qualityControl Set control point model to control point of this object.
+	 * @throws AxelorException
+	 * 
 	 */
 	@Override
 	@Transactional

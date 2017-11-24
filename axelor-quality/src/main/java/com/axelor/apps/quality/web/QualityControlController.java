@@ -36,8 +36,11 @@ public class QualityControlController {
 	@Inject
 	private QualityControlService qualityControlService;
 
-	/*
-	 * open control point in new tab from quality control.
+	/**
+	 * Open control point in new tab from quality control.
+	 * 
+	 * @param request
+	 * @param response
 	 */
 	public void openControlPoints(ActionRequest request, ActionResponse response) {
 		response.setView(ActionView
@@ -50,9 +53,14 @@ public class QualityControlController {
 				);
 	}
 	
-	/*
-	 * copy control point model to control point of selected quality process
+	/**
+	 * Copy control point model to control point of selected quality process.
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws AxelorException
 	 */
+	
 	public void preFillOperations(ActionRequest request, ActionResponse response) throws AxelorException {
 		QualityControl qualityControl =  request.getContext().asType( QualityControl.class );
 		qualityControl = qualityControlRepo.find(qualityControl.getId());

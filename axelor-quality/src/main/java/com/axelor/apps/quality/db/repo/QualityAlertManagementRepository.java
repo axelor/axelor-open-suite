@@ -27,9 +27,10 @@ public class QualityAlertManagementRepository extends QualityAlertRepository {
 	
 	@Inject
 	private SequenceService sequenceService;
-	
-	/*
-	 * Generate and set sequence in reference with predefined prefix
+
+	/**
+	 * Generate and set sequence in reference with predefined prefix.
+	 * @param qualityAlert  Overridden quality alert object to set reference on onSave event.
 	 */
 	@Override
 	public QualityAlert save(QualityAlert qualityAlert) {
