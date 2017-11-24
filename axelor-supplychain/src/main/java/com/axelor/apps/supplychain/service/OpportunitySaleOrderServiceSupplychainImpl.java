@@ -17,43 +17,22 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.OpportunitySaleOrderServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 public class OpportunitySaleOrderServiceSupplychainImpl extends OpportunitySaleOrderServiceImpl {
 
 	@Inject
 	private SaleOrderServiceSupplychainImpl saleOrderServiceSupplychainImpl;
 
-	@Inject
-	protected AppBaseService appBaseService;
-
 	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException{
-		
-		Currency currency;
-		if (opportunity.getCurrency() != null) {
-			currency = opportunity.getCurrency();
-		} else if (opportunity.getPartner() != null && opportunity.getPartner().getCurrency() != null) {
-			currency = opportunity.getPartner().getCurrency();
-		} else {
-			currency = opportunity.getCompany().getCurrency();
-		}
-
-		SaleOrder saleOrder = saleOrderServiceSupplychainImpl.createSaleOrder(opportunity.getUser(), opportunity.getCompany(), null, currency, null, opportunity.getName(), null,
+	protected SaleOrder createSaleOrder(Opportunity opportunity, Currency currency) throws AxelorException {
+		return saleOrderServiceSupplychainImpl.createSaleOrder(opportunity.getUser(), opportunity.getCompany(), null, currency, null, opportunity.getName(), null,
 				null, appBaseService.getTodayDate(), opportunity.getPartner().getSalePriceList(), opportunity.getPartner(), opportunity.getTeam());
-		
-
-		saleOrderRepo.save(saleOrder);
-
-		return saleOrder;
 	}
 
 }

@@ -22,13 +22,12 @@ import java.lang.invoke.MethodHandles;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.imports.PrestaShopServiceImport;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.db.MetaFile;
 import com.google.inject.persist.Transactional;
 
 public class ImportPrestaShop extends BatchStrategyImport {
@@ -55,12 +54,12 @@ public class ImportPrestaShop extends BatchStrategyImport {
 			int i = 0;
 			
 			try {
-				MetaFile importFile = prestaShopServiceImport.importPrestShop();
-				batch.getPrestaShopBatch().setPrestaShopBatchLog(importFile);
-				batchRepo.save(batch);
+				Batch batchObj = prestaShopServiceImport.importPrestShop(batch);
+				batchRepo.save(batchObj);
 				i++;
 				
 			} catch (Exception e) {
+			
 				incrementAnomaly();
 				LOG.error("Bug(Anomalie) généré(e) pour le rappel de l'évènement {}", batch.getId());
 				

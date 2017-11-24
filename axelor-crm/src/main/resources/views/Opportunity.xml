@@ -115,11 +115,12 @@
 		<panel name="description" title="Description">
 			<field name="description" colSpan="12" showTitle="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" />
 		</panel>
-		
+
+        <panel-include view="convert-opportunity-form" from="axelor-sale" if-module="axelor-sale"  if="__config__.app.isApp('sale')" />
+
 		<panel name="linkedTo" title="Linked to" sidebar="true">
 			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
 			<field name="lead" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" form-view="lead-form" grid-view="lead-grid"/>
-			<panel-include view="convert-opportunity-form" from="axelor-sale" if-module="axelor-sale"  if="__config__.app.isApp('sale')" />
 		</panel>
 		
 		<panel name="assignedTo" title="Assigned to" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" sidebar="true">
@@ -150,6 +151,11 @@
 		<field name="expectedCloseDate"/>
 		<field name="user"/>
 		<field name="salesStageSelect"/>
+        <field name="partner.name" />
+        <field name="partner.fixedPhone" />
+        <field name="partner.mobilePhone" />
+        <field name="amount" />
+        <field name="currency.symbol" />
 		<hilite color="danger" if="probability &lt;= 25"/>
 		<hilite color="success" if="probability &gt;= 75"/>
 		<hilite color="info" if="probability &gt;= 50"/>
@@ -158,7 +164,15 @@
             <![CDATA[
             <h4>{{name}}</h4>
             <img ng-if="user" ng-src="{{$image('user', 'image')}}">
-            <div class="card-body">{{description}}</div>
+            <div class="card-body">
+                <p>{{description}}</p>
+                <dl>
+                    <dt ng-show="record.partner.name" x-translate>Customer</dt><dd ng-show="record.partner.name">{{partner.name}}</dd>
+                    <dt ng-show="record.partner.fixedPhone" x-translate>Fixed phone</dt><dd ng-show="record.partner.fixedPhone"><a href="tel:{{partner.fixedPhone}}">{{partner.fixedPhone}}</a></dd>
+                    <dt ng-show="record.partner.mobilePhone" x-translate>Mobile phone</dt><dd ng-show="record.partner.mobilePhone"><a href="tel:{{partner.mobilePhone}}">{{partner.mobilePhone}}</a></dd>
+                    <dt ng-show="record.amount" x-translate>Amount</dt><dd ng-show="record.amount">{{amount | currency : currency.symbol}}</dd>
+                </dl>
+            </div>
             <div class="card-footer">
                 <i class='fa fa-clock-o'></i> <span>{{expectedCloseDate|date:'dd/MM/yyyy'}}</span>
             </div>
@@ -229,13 +243,18 @@
     </action-record>
     
     <search-filters name="opportunity-filters" model="com.axelor.apps.crm.db.Opportunity" title="Opportunities filters">
-		<filter title="My Opportunities">
-			<domain>self.user.internalUser.id = :_internalUserId</domain>
+        <field name="name" />
+        <field name="partner.name" title="Customer name" />
+        <field name="partner.fixedPhone" title="Customer fixed phone" />
+        <field name="partner.mobilePhone" title="Customer mobile phone" />
+        <field name="amount" />
+		<filter title="My opportunities">
+			<domain>self.user.id = :_internalUserId</domain>
 		</filter>
-		<filter title="Unassigned Opportunities">
+		<filter title="Unassigned opportunities">
 			<domain>self.user IS NULL</domain>
 		</filter>
-		<filter title="My Team Opportunities">
+		<filter title="My team opportunities">
 			<domain>self.team = :_myActiveTeam</domain>
 		</filter>
 	</search-filters>

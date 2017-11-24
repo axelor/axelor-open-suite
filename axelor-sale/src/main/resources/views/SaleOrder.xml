@@ -85,7 +85,25 @@
         <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
-    
+
+    <grid name="sale-order-opportunity-grid" title="Quotations" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
+        <hilite background="warning" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 3)"/>
+        <hilite background="danger" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 2)"/>
+        <field name="endOfValidityDate" hidden="true"/>
+        <field name="saleOrderSeq"/>
+        <field name="externalReference"/>
+        <field name="creationDate"/>
+        <field name="inTaxTotal" aggregate="sum"/>
+        <field name="statusSelect"/>
+        <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
+        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+    </grid>
+
+    <calendar name="sale-order-calendar" model="com.axelor.apps.sale.db.SaleOrder" eventStart="creationDate"
+        eventLength="24" mode="month" title="Sale quotations/orders" colorBy="statusSelect" editable="false">
+        <field name="fullName" />
+    </calendar>
+
     <form name="sale-order-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge sale orders" width="large">
 		<panel-related field="$saleOrderToMerge" form-view="sale-order-form" title="Sale orders to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.sale.db.SaleOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false" grid-view="sale-order-grid"/>
 		<panel sidebar="true" title="Actions">
@@ -96,7 +114,7 @@
     <form name="sale-quotation-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge quotations" width="large">
 		<panel-related field="$saleQuotationToMerge" form-view="sale-order-form" title="Quotations to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.sale.db.SaleOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false" grid-view="sale-order-quotation-grid"/>
 		<panel sidebar="true" title="Actions">
-			<button name="generateMergedSaleOrder" title="Merge into single quotation" onClick="action-validate-sale-order-check-selection,action-group-sale-order-merge-action"/>
+			<button name="generateMergedSaleOrder" title="Merge into single quotation" onClick="action-validate-sale-quotation-check-selection,action-group-sale-order-merge-action"/>
 	  	</panel>
     </form>
 
@@ -242,8 +260,10 @@
 	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" showIf="statusSelect >= 3"/>  
 	    <panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
       		  <field name="project" domain="self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid" colSpan="12"/>
-	          <button name="generateProject" title="Generate Project" if="!__config__.app.getApp('business-project').getAutomaticProject()" showIf="project == null" hidden="true" onClick="save,action-sale-order-method-generate-project"/>
-	          <button name="generateTasks" title="Generate Tasks" if="__config__.app.getApp('business-project').getProjectSaleOrderLines()" showIf="project != null" hidden="true" onClick="save,action-sale-order-method-generate-tasks,action-sale-order-attrs-hide-generate-tasks"/>
+			  <field name="$genProjTypePerOrderLine" title="Type of project's elements generated" x-enum-type="com.axelor.apps.project.db.GenProjTypePerOrderLine" showIf="project == null"/>
+              <field name="project.genProjTypePerOrderLine" title="Type of project's elements generated" showIf="project != null"/>
+	          <button name="generateProject" title="Generate Project/Business" if="!__config__.app.getApp('business-project').getAutomaticProject()" showIf="project == null" hidden="true" onClick="save,action-sale-order-method-generate-project"/>
+	          <button name="generateTypePerOrderLine" title="Generate Elements" if="__config__.app.getApp('business-project').getProjectSaleOrderLines()" showIf="project != null" hidden="true" onClick="save,action-sale-order-method-generate-type-per-order-line,action-sale-order-attrs-hide-generate-tasks"/>
        	</panel>
        	<panel name="generateSubscriptions" title="Generate Subscriptions" if-module="axelor-supplychain" showIf="subscription"  if="__config__.app.isApp('supplychain')">   
 			<field name="periodicity" colSpan="3" onChange="action-supplychain-record-set-dateSubTo"/>
@@ -717,8 +737,8 @@
 	</action-attrs>
 
 	<action-group name="action-group-sale-order-merge-action">
-	    <action name="action-sale-order-method-merge-sale" if="__repo__(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
-	    <action name="action-sale-order-method-merge-supplychain"/>
+	    <action name="action-sale-order-method-merge-sale" if="!__config__.app.isApp('supplychain')"/>
+	    <action name="action-sale-order-method-merge-supplychain" if="__config__.app.isApp('supplychain')"/>
 	</action-group>
 
     <action-group name="action-sale-group-onchange-company">
@@ -751,6 +771,7 @@
     	<action name="action-sale-order-attrs-in-ati"/>
 		<action name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
+		<action name="action-sale-order-attrs-project"/>
     </action-group>
 
     <action-group name="action-sale-group-confirmed">
@@ -825,8 +846,8 @@
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="exportSaleOrderWord"/>
 	</action-method>
 
-	<action-method name="action-sale-order-method-generate-tasks">
-		<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="generateProjects"/>
+	<action-method name="action-sale-order-method-generate-type-per-order-line">
+		<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="generateTypePerOrderLineForProject"/>
 	</action-method>
     
     <action-record name="action-sale-record-newVersion" model="com.axelor.apps.sale.db.SaleOrder">
@@ -1034,7 +1055,11 @@
 	</action-validate>
 	
 	<action-validate name="action-validate-sale-order-check-selection">
-		<error message="You have to choose at least one sale order" if="saleOrderToMerge == null || saleOrderToMerge.size() == 0"/>
+		<error message="You have to choose at least one sale order" if="saleOrderToMerge == null || (saleOrderToMerge != null &amp;&amp; saleOrderToMerge.size() == 0)"/>
+	</action-validate>
+
+	<action-validate name="action-validate-sale-quotation-check-selection">
+		<error message="You have to choose at least one sale quotation" if="saleQuotationToMerge == null || (saleQuotationToMerge != null &amp;&amp; saleQuotationToMerge.size() == 0)"/>
 	</action-validate>
 	
 	<action-record name="action-saleorder-record-template" model="com.axelor.apps.sale.db.SaleOrder">

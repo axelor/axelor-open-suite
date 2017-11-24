@@ -86,6 +86,7 @@
 
     <action-record name="action-logistical-form-partner-change" model="com.axelor.apps.stock.db.LogisticalForm">
         <field name="logisticalFormLineList" expr="eval: null" />
+        <field name="$stockMove" expr="eval: null" />
     </action-record>
 
     <action-record name="action-logistical-form-record-change-status" model="com.axelor.apps.stock.db.LogisticalForm">

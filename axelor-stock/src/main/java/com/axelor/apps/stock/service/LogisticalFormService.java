@@ -25,6 +25,7 @@ import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.exception.LogisticalFormWarning;
+import com.axelor.exception.AxelorException;
 import com.axelor.apps.stock.exception.LogisticalFormError;
 
 /**
@@ -39,8 +40,9 @@ public interface LogisticalFormService {
 	 * 
 	 * @param logisticalForm
 	 * @param stockMove
+	 * @throws AxelorException
 	 */
-	void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove);
+	void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove) throws AxelorException;
 
 	/**
 	 * Add parcel or pallet line.
@@ -136,7 +138,8 @@ public interface LogisticalFormService {
 	 * 
 	 * @param stockMove
 	 * @return
+	 * @throws AxelorException
 	 */
-	List<Long> getIdList(StockMove stockMove);
+	List<Long> getIdList(StockMove stockMove) throws AxelorException;
 
 }

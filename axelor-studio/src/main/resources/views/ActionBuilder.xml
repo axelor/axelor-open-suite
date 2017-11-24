@@ -32,6 +32,8 @@
 		      <field name="targetModel"  requiredIf="typeSelect == 0 &amp;&amp; !isJson" showIf="typeSelect == 0 &amp;&amp; !isJson" widget="ref-text" 
 		      		x-target-name="fullName" x-target="com.axelor.meta.db.MetaModel"/>
 		  </panel>
+		  <field name="openRecord" showIf="typeSelect == 0" colSpan="4" />
+		  <field name="displayMsg" showIf="typeSelect == 0" colSpan="8"/>
       	  <field name="title" colSpan="12" showIf="typeSelect == 3" requiredIf="typeSelect == 3"/>
       	  <field name="actionBuilderViews"  showIf="typeSelect == 3" colSpan="12">
       	  	<editor>

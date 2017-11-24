@@ -260,6 +260,7 @@
 "Partial stock move (From",,,
 "Partner",,,
 "Partner is missing.",,,
+"Partner mismatch: %s",,,
 "Partner product quality rating",,,
 "Partner product quality ratings",,,
 "Perishable expiration date",,,

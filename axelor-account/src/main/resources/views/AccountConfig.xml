@@ -139,9 +139,10 @@
 				</panel>
 			</panel>
 			<panel name="receivablesRecovery" title="Receivables recovery" >
+                <field name="factorPartner" colSpan="12" domain="self.isFactor = TRUE" if="__config__.app.getApp('account')?.manageFactors" />
 				<field name="mailTransitTime" colSpan="12"/>
 				<field name="debtRecoveryConfigLineList" showTitle="false" colSpan="12" grid-view="debt-recovery-config-line-grid" form-view="debt-recovery-config-line-form">
-				<!-- TODO:Check weather editor works or not -->
+				<!-- TODO:Check whether editor works or not -->
 				<editor x-show-titles="false" x-layout="table">
 					<field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
 				    <field name="debtRecoveryMethod" grid-view="debt-recovery-method-grid" form-view="debt-recovery-method-form"/>
@@ -214,7 +215,7 @@
 				<field name="profitAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 				<field name="standardRateTax" grid-view="tax-grid" form-view="tax-form"/>
 				<field name="clearanceAccountSet" domain="self.useForPartnerBalance = 'true' AND self.company = :company" colSpan="12" grid-view="account-grid" form-view="account-form">
-					<!-- TODO:Check weather this Editor works or not -->
+					<!-- TODO:Check whether this Editor works or not -->
 					<editor x-show-titles="false" x-layout="table">
 						<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="12"/>
 						<field name="name" colSpan="6"/>

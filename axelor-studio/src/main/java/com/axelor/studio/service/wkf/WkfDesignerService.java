@@ -89,7 +89,7 @@ public class WkfDesignerService {
 
 	/**
 	 * Method parse xml doc to create workflow nodes from it. It set incoming
-	 * and outgoing tranistions of node.
+	 * and outgoing transitions of node.
 	 * 
 	 * @param doc
 	 */

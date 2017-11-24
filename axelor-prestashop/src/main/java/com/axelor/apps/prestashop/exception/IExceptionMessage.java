@@ -29,8 +29,8 @@ public interface IExceptionMessage {
 	/**
 	 * Batch operation
 	 */
-	static final String BATCH_IMPORT = /*$$(*/ "Import prestashop operation" /*)*/;
-	static final String BATCH_EXPORT = /*$$(*/ "Export prestashop operation" /*)*/;
+	static final String BATCH_IMPORT = /*$$(*/ "Import completed with" /*)*/;
+	static final String BATCH_EXPORT = /*$$(*/ "Export completed with" /*)*/;
 
 	/**
 	 * Base batch service
@@ -41,8 +41,8 @@ public interface IExceptionMessage {
 	/**
 	 * Batch status
 	 */
-	static final String BATCH_DONE = /*$$(*/ "sucessfully" /*)*/;
-	static final String BATCH_ANOMALY = /*$$(*/ "anomaly" /*)*/;
+	static final String BATCH_DONE = /*$$(*/ "succeeded." /*)*/;
+	static final String BATCH_ANOMALY = /*$$(*/ "anomalies." /*)*/;
 	
 	/**
 	 * Batch status
@@ -56,7 +56,7 @@ public interface IExceptionMessage {
 	static final String INVALID_CITY = /*$$(*/ "City is null or invalid" /*)*/;
 	static final String INVALID_PRODUCT_CATEGORY = /*$$(*/ "Product Category is null or invalid" /*)*/;
 	static final String INVALID_PRODUCT = /*$$(*/ "Product Name is null or invalid" /*)*/;
-	static final String INVALID_ADDRESS = /*$$(*/ "Address in Order null or invalid" /*)*/;
+	static final String INVALID_ADDRESS = /*$$(*/ "Address is null or invalid" /*)*/;
 	static final String INVALID_ORDER = /*$$(*/ "Order is null or invalid" /*)*/;
 	static final String INVALID_ORDER_LINE = /*$$(*/ "This order is not on prestashop or invalid product" /*)*/;
 	static final String INVALID_CUSTOMER = /*$$(*/ "Customer is null or invalid" /*)*/;

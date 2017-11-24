@@ -36,6 +36,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import com.axelor.apps.base.db.AppPrestashop;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -109,6 +110,8 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	PSWebServiceClient ws;
 	HashMap<String, Object> opt;
 	Document schema;
+	Integer totalDone = 0;
+    Integer totalAnomaly = 0;
 	
 	/**
 	 * Initialize constructor.  
@@ -148,7 +151,7 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	/**
 	 * Export Axelor Base, SaleOrder, SaleOrderLine module.
 	 */
-	public MetaFile exportPrestShop(ZonedDateTime endDate) throws PrestaShopWebserviceException, TransformerException, IOException {
+	public Batch exportPrestShop(ZonedDateTime endDate, Batch batch) throws PrestaShopWebserviceException, TransformerException, IOException {
 		
 		this.exportAxelorBase(endDate);
 		exportAxelorSaleOrders(endDate);
@@ -156,7 +159,10 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 		
 		File exportFile = closeLog();
 		MetaFile exporMetatFile = metaFiles.upload(exportFile);
-		return exporMetatFile;
+		batch.setPrestaShopBatchLog(exporMetatFile);
+		batch.setAnomaly(totalAnomaly);
+		batch.setDone(totalDone);
+		return batch;
 	}
 	
 	/**
@@ -167,11 +173,9 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	 */
 	public void exportLogObjectHeder(String objectName) throws IOException {
 		bwExport.newLine();
-		bwExport.write("--------------");
+		bwExport.write("-----------------------------------------------");
 		bwExport.newLine();
 		bwExport.write(objectName + " object");
-		bwExport.newLine();
-		bwExport.write("--------------");
 	}
 	
 	/**
@@ -183,7 +187,22 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	 */
 	public void exportLog(String id, String msg) throws IOException {
 		bwExport.newLine();
+		bwExport.newLine();
 		bwExport.write("Id - " + id + " " + msg);
+	}
+	
+	/**
+	 * 
+	 * @param done number of succeed 
+	 * @param anomaly number of error
+	 * @throws IOException
+	 */
+	public void exportLogObjectHederDetails(Integer done, Integer anomaly) throws IOException {
+		totalDone += done;
+		totalAnomaly += anomaly;
+		bwExport.newLine();
+		bwExport.newLine();
+		bwExport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);
 	}
 	
 	/**
@@ -193,9 +212,10 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	 * @throws IOException
 	 */
 	public File closeLog() throws IOException {
+		bwExport.newLine();
+		bwExport.write("-----------------------------------------------");
 		bwExport.close();
 		fwExport.close();
-
 		return exportFile;
 	}
 	
@@ -760,7 +780,9 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	@SuppressWarnings("deprecation")
 	@Transactional
 	public void exportAxelorCurrencies(ZonedDateTime endDate) throws IOException, PrestaShopWebserviceException, TransformerException {
-
+		
+		Integer done = 0;
+		Integer anomaly = 0;
 		this.exportLogObjectHeder("Currency");
 		List<Currency> currencies = null;
 		String prestaShopId = null;
@@ -801,20 +823,24 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 				if (currency.getPrestaShopId() == null) {
 					Document document = this.addRecord("currencies", schema);
 					currency.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
-					currencyRepo.save(currency);
 				} else {
 					this.updatRecord("currencies", schema, currency.getPrestaShopId());
 				}
 				currencyRepo.save(currency);
+				done++;
 					
 			} catch (AxelorException e) {
 				this.exportLog(currency.getId().toString(), e.getMessage());
+				anomaly++;
 				continue;
 			} catch (Exception e) {
 				this.exportLog(currency.getId().toString(), e.getMessage());
+				anomaly++;
 				continue;
 			}
 		}
+		
+		this.exportLogObjectHederDetails(done, anomaly);
 	}	
 	
 	/**
@@ -827,6 +853,8 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	@SuppressWarnings("deprecation")
 	public void exportAxelorCountries(ZonedDateTime endDate) throws PrestaShopWebserviceException, IOException {
 		
+		Integer done = 0;
+		Integer anomaly = 0;
 		this.exportLogObjectHeder("Country");
 		List<Country> countries = null;
 		
@@ -867,15 +895,20 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 					this.updatRecord("countries", schema, country.getPrestaShopId());
 				}
 				countryRepo.save(country);
+				done++;
 				
 			} catch (AxelorException e) {
 				this.exportLog(country.getId().toString(), e.getMessage());
+				anomaly++;
 				continue;
 			} catch (Exception e) {
 				this.exportLog(country.getId().toString(), e.getMessage());
+				anomaly++;
 				continue;
 			}
 		}
+		
+		this.exportLogObjectHederDetails(done, anomaly);
 	}
 
 	/**
@@ -887,7 +920,9 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	 */
 	@Transactional
 	public void exportAxelorPartners(ZonedDateTime endDate) throws IOException, PrestaShopWebserviceException {
-
+		
+		Integer done = 0;
+		Integer anomaly = 0;
 		this.exportLogObjectHeder("Partner");
 		String prestaShopId = null;
 		List<Partner> partners = null;
@@ -917,16 +952,21 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 				} else {
 					this.updatRecord("customers", schema, partnerObj.getPrestaShopId());
 				}
+				done++;
 
 			} catch (Exception e) {
 				if(cnt > 0) {
+					anomaly++;
 					cnt = 0;
 					continue;
 				}
 				this.exportLog(partnerObj.getId().toString(), e.getMessage());
+				anomaly++;
 				continue;
 			}
 		}
+		
+		this.exportLogObjectHederDetails(done, anomaly);
 	}
 	
 
@@ -942,6 +982,8 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	@Transactional
 	public void exportAxelorPartnerAddresses(ZonedDateTime endDate) throws TransformerException, PrestaShopWebserviceException, IOException {
 		
+		Integer done = 0;
+		Integer anomaly = 0;
 		this.exportLogObjectHeder("Address");
 		List<PartnerAddress> partnerAddresses = null;
 		
@@ -1019,11 +1061,19 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 				} else {
 					this.updatRecord("addresses", schema, partnerAddress.getAddress().getPrestaShopId());
 				}
+				done++;
 						
 			} catch (AxelorException e) {
 				this.exportLog(partnerAddress.getAddress().getId().toString(), e.getMessage());
+				anomaly++;
+			} catch (Exception e) {
+				this.exportLog(partnerAddress.getAddress().getId().toString(), e.getMessage());
+				anomaly++;
+				continue;
 			}
 		}
+		
+		this.exportLogObjectHederDetails(done, anomaly);
 	}
 
 	/**
@@ -1037,7 +1087,9 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	@SuppressWarnings("deprecation")
 	@Transactional
 	public void exportAxelorProductCategories(ZonedDateTime endDate) throws IOException, PrestaShopWebserviceException, TransformerException {
-
+		
+		Integer done = 0;
+		Integer anomaly = 0;
 		this.exportLogObjectHeder("Product Category");
 		List<ProductCategory> categories = null;
 		
@@ -1079,16 +1131,21 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 				} else {
 					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_PRODUCT_CATEGORY),	IException.NO_VALUE);
 				}
+				done++;
 
 			} catch (AxelorException e) {
 				this.exportLog(category.getId().toString(), e.getMessage());
+				anomaly++;
 				continue;
 
 			} catch (Exception e) {
 				this.exportLog(category.getId().toString(), e.getMessage());
+				anomaly++;
 				continue;
 			}
 		}
+		
+		this.exportLogObjectHederDetails(done, anomaly);
 	}
 
 	/**
@@ -1102,7 +1159,9 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	@SuppressWarnings("deprecation")
 	@Transactional
 	public void exportAxelorProducts(ZonedDateTime endDate) throws PrestaShopWebserviceException, IOException, TransformerException {
-		
+
+		Integer done = 0;
+		Integer anomaly = 0;
 		this.exportLogObjectHeder("Product");
 		List<Product> products = null;
 		
@@ -1165,14 +1224,21 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 				} else {
 					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_PRODUCT), IException.NO_VALUE);
 				}
+				
+				done++;
+				
 			} catch (AxelorException e) {
 				this.exportLog(product.getId().toString(), e.getMessage());
+				anomaly++;
 				continue;
 			} catch (Exception e) {
 				this.exportLog(product.getId().toString(), e.getMessage());
+				anomaly++;
 				continue;
 			}
 		}
+		
+		this.exportLogObjectHederDetails(done, anomaly);
 	}
 	
 	/**
@@ -1187,6 +1253,8 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	@Transactional
 	public void exportAxelorSaleOrders(ZonedDateTime endDate) throws PrestaShopWebserviceException, TransformerException, IOException {
 		
+		Integer done = 0;
+		Integer anomaly = 0;
 		String cart_id = "";
 		this.exportLogObjectHeder("SaleOrder");
 		List<SaleOrder> orders = null;
@@ -1267,14 +1335,20 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 						this.createOrder(saleOrder, id_address_delivery, id_address_invoice, cartId, cart_id, id_currency, id_customer, saleOrder_product_id, endDate);
 					}
 					
+					done++;
+					
 				} catch (AxelorException e) {
 					this.exportLog(saleOrder.getId().toString(), e.getMessage());
+					anomaly++;
 					continue;
 				} catch (Exception e) {
 					this.exportLog(saleOrder.getId().toString(), e.getMessage());
+					anomaly++;
 					continue;
 				}
 			}
+		
+		this.exportLogObjectHederDetails(done, anomaly);
 	}
 	
 	/**
@@ -1287,6 +1361,8 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	@SuppressWarnings("deprecation")
 	public void exportAxelorSaleOrderLines() throws PrestaShopWebserviceException, TransformerException, IOException {
 			
+		Integer done = 0;
+		Integer anomaly = 0;
 		this.exportLogObjectHeder("SaleOrderLines");
 		List<SaleOrderLine> saleOrderLines = null;
 		
@@ -1323,13 +1399,20 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 				} else {
 					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_ORDER_LINE),IException.NO_VALUE);
 				}
+				
+				done++;
+				
 			} catch (AxelorException e) {
 				this.exportLog(orderLine.getId().toString(), e.getMessage());
+				anomaly++;
 				continue;
 			} catch (Exception e) {
 				this.exportLog(orderLine.getId().toString(), e.getMessage());
+				anomaly++;
 				continue;
 			}
 		}
+		
+		this.exportLogObjectHederDetails(done, anomaly);
 	}
 }

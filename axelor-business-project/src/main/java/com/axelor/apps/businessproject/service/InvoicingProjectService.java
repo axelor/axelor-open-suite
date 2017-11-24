@@ -54,6 +54,7 @@ import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectService;
+import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -301,7 +302,7 @@ public class InvoicingProjectService {
 	public void setLines(InvoicingProject invoicingProject,Project project, int counter){
 		
 		
-		if(counter > ProjectService.MAX_LEVEL_OF_PROJECT)  {  return;  }
+		if(counter > ProjectServiceImpl.MAX_LEVEL_OF_PROJECT)  {  return;  }
 		counter++;
 		
 		this.fillLines(invoicingProject, project);
@@ -366,11 +367,11 @@ public class InvoicingProjectService {
 	
 	
 	public Company getRootCompany(Project project){
-		if(project.getProject() == null){
+		if(project.getParentProject() == null){
 			return project.getCompany();
 		}
 		else{
-			return getRootCompany(project.getProject());
+			return getRootCompany(project.getParentProject());
 		}
 	}
 

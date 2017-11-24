@@ -22,7 +22,7 @@
 			<field name="name"/>
 			<field name="priority"/>
 			<field name="product"  readonly="true"/>
-			<field name="team"/>
+			<field name="team" domain="self.typeSelect = 'quality'"/>
 			<field name="responsible"/>
 			<field name="controlType" readonly="true"/>
 			<field name="testType" readonly="true"/>

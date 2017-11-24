@@ -7,6 +7,7 @@
 
   <entity name="Batch" lang="java" sequential="true">
   	<many-to-one name="prestaShopBatch" ref="com.axelor.apps.prestashop.db.PrestaShopBatch"/>
+  	<many-to-one name="prestaShopBatchLog" ref="com.axelor.meta.db.MetaFile"/>
   </entity>
 
 </domain-models>

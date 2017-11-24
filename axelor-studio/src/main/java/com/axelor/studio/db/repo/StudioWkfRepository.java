@@ -26,11 +26,11 @@ public class StudioWkfRepository extends WkfRepository {
 
 	@Inject
 	private WkfService wkfService;
+	
 	/**
 	 * Overridden to remove changes related with workflow. Like to remove buttons
 	 * and status field from view and model.
 	 */
-	
 	@Override
 	public void remove(Wkf wkf) {
 		

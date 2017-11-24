@@ -27,7 +27,7 @@
 			<field name="reference"/>
 			<field name="product"/>
 			<field name="workCenter"/>
-			<field name="team"/>
+			<field name="team" domain="self.typeSelect = 'quality'"/>
 			<field name="responsible"/>
 			<field name="rootCause"/>
 			<field name="priority"/>
@@ -93,7 +93,7 @@
 			<domain>self.responsible.user.id = :_userId</domain>
 		</filter>
 		<filter title="My team alerts">
-			<domain>self.responsible.user.activeTeam = :_myActiveTeam</domain>
+			<domain>self.team.id = :_myActiveTeamId</domain>
 		</filter>
 	</search-filters>
 	

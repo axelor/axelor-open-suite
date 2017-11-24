@@ -17,11 +17,6 @@
  */
 package com.axelor.studio.db.repo;
 
-import java.lang.invoke.MethodHandles;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.meta.MetaStore;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.MenuBuilder;
@@ -30,8 +25,6 @@ import com.axelor.studio.service.builder.MenuBuilderService;
 import com.google.inject.Inject;
 
 public class MenuBuilderRepo extends MenuBuilderRepository {
-	
-	private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	
 	@Inject
 	private MenuBuilderService menuBuilderService;
