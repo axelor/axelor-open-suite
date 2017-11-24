@@ -392,25 +392,30 @@ public class SaleOrderController{
 		List<SaleOrder> saleOrderList = new ArrayList<SaleOrder>();
 		List<Long> saleOrderIdList = new ArrayList<Long>();
 		boolean fromPopup = false;
+		String lineToMerge;
+		if (request.getContext().get("saleQuotationToMerge") != null){
+			lineToMerge = "saleQuotationToMerge";
+		} else {
+			lineToMerge = "saleOrderToMerge";
+		}
 		
-		if (request.getContext().get("saleOrderToMerge") != null){
+		if (request.getContext().get(lineToMerge) != null){
 			
-			if (request.getContext().get("saleOrderToMerge") instanceof List){
+			if (request.getContext().get(lineToMerge) instanceof List){
 				//No confirmation popup, sale orders are content in a parameter list
-				List<Map> saleOrderMap = (List<Map>)request.getContext().get("saleOrderToMerge");
+				List<Map> saleOrderMap = (List<Map>)request.getContext().get(lineToMerge);
 				for (Map map : saleOrderMap) {
 					saleOrderIdList.add(new Long((Integer)map.get("id")));
 				}
 			} else {
 				//After confirmation popup, sale order's id are in a string separated by ","
-				String saleOrderIdListStr = (String)request.getContext().get("saleOrderToMerge");
+				String saleOrderIdListStr = (String)request.getContext().get(lineToMerge);
 				for (String saleOrderId : saleOrderIdListStr.split(",")) {
 					saleOrderIdList.add(new Long(saleOrderId));
 				}
 				fromPopup = true;
 			}
 		}
-		
 		//Check if currency, clientPartner and company are the same for all selected sale orders
 		Currency commonCurrency = null;
 		Partner commonClientPartner = null;
@@ -540,7 +545,7 @@ public class SaleOrderController{
 				confirmView.context("contextLocationToCheck", "true");
 			}
 
-			confirmView.context("saleOrderToMerge", Joiner.on(",").join(saleOrderIdList));
+			confirmView.context(lineToMerge, Joiner.on(",").join(saleOrderIdList));
 
 			response.setView(confirmView.map());
 
