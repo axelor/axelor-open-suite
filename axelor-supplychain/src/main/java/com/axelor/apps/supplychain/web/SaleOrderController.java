@@ -362,31 +362,7 @@ public class SaleOrderController{
 	            .context("_showRecord",String.valueOf(invoice.getId()))
 	            .map());
 	}
-	
-	@Transactional
-	public void updateSaleOrderOnCancel(ActionRequest request, ActionResponse response) throws AxelorException{
-		
-		StockMove stockMove = request.getContext().asType(StockMove.class);
-		SaleOrder so = saleOrderRepo.find(stockMove.getSaleOrder().getId());
-		
-		List<StockMove> stockMoveList = Lists.newArrayList();
-		stockMoveList = stockMoveRepo.all().filter("self.saleOrder = ?1", so).fetch();
-		so.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
-		for (StockMove stock : stockMoveList){
-			if (stock.getStatusSelect() != StockMoveRepository.STATUS_CANCELED && !stock.getId().equals(stockMove.getId())){ 
-				so.setDeliveryState(SaleOrderRepository.STATE_PARTIALLY_DELIVERED);
-				break;
-			}
-		}
-		
-		if (so.getStatusSelect() == ISaleOrder.STATUS_FINISHED  && appSupplychainService.getAppSupplychain().getTerminateSaleOrderOnDelivery()){
-			so.setStatusSelect(ISaleOrder.STATUS_ORDER_CONFIRMED);
-		}
-		
-		saleOrderRepo.save(so);
-		
-	}
-	
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void mergeSaleOrder(ActionRequest request, ActionResponse response)  {
 		List<SaleOrder> saleOrderList = new ArrayList<SaleOrder>();
