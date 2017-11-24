@@ -32,7 +32,8 @@
     
    	<form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead" 
 		onLoad="action-lead-attrs-readonly-other-address,action-lead-method-set-social-network-url" 
-		onNew="action-group-crm-lead-onnew" >
+		onNew="action-group-crm-lead-onnew"
+		onSave="action-crm-lead-method-check-name">
 
 		<menubar>
 			<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
