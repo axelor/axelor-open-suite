@@ -1,15 +1,15 @@
-"id";"code";"name";"navigation";"permissions";"technicalStaff";"roles"
-1;"admins";"ADMINS";;;"true";
-2;"users";"Users";;;"false";
-3;"BPM";"BPM";;;"false";
-4;"CLT";"Client";"hidden";"perms.user";"false";"role.client"
-5;"CST";"Consultant";;;"false";"role.consultant"
-6;"CRM";"CRM";;;"false";"role.crm"
-7;"ERP";"ERP";;;"false";"role.manager"
-8;"SALE";"Sales";;;"false";"role.supplychain"
-9;"PURCH";"Purchases";;;"false";"role.supplychain"
-10;"ACCO";"Accounting";;;"false";"role.accounting"
-11;"HRSC";"Human Resources";;;"false";"role.hr"
-12;"OPTS";"Operations";;;"false";"role.operations"
-13;"MNGT";"Management";;;"false";"role.manager"
-14;"SUP";"Supplier";"hidden";"perms.user";"false";"role.supplier"
+"id";"code";"name";"navigation";"permissions";"technicalStaff";"roles";isClient;isSupplier
+1;"admins";"ADMINS";;;"true";;false;false
+2;"users";"Users";;;"false";;false;false
+3;"BPM";"BPM";;;"false";;false;false
+4;"CLT";"Client";"hidden";"perms.user";"false";"role.client";true;false
+5;"CST";"Consultant";;;"false";"role.consultant";false;false
+6;"CRM";"CRM";;;"false";"role.crm";false;false
+7;"ERP";"ERP";;;"false";"role.manager";false;false
+8;"SALE";"Sales";;;"false";"role.supplychain";false;false
+9;"PURCH";"Purchases";;;"false";"role.supplychain";false;false
+10;"ACCO";"Accounting";;;"false";"role.accounting";false;false
+11;"HRSC";"Human Resources";;;"false";"role.hr";false;false
+12;"OPTS";"Operations";;;"false";"role.operations";false;false
+13;"MNGT";"Management";;;"false";"role.manager";false;false
+14;"SUP";"Supplier";"hidden";"perms.user";"false";"role.supplier";false;true
