@@ -33,7 +33,7 @@
 		</panel>
 
 		<panel name="paymentRejected" title="Payment Rejected">
-			<!-- TODO:check weather this Editor is working or not -->
+			<!-- TODO:check whether this Editor is working or not -->
 			<field readonlyIf="partner == null" name="paymentVoucher"
 				onChange="action-group-account-cheque-rejection-paymentvoucher-onchange"
 				onSelect="action-cheque-rejection-attrs-domain-payment-voucher"
