@@ -135,8 +135,7 @@
 		title="Configurators" if="__config__.app.getApp('production').getEnableConfigurator()"/>
 
 	<menuitem name="manufacturing-conf-configurators-creator" parent="manufacturing-conf-configurators" order="10"
-			  title="Configurator creators" action="manufacturing.conf.configurator.creator"
-			  if="__config__.app.getApp('sale').getEnableConfigurator()"/>
+			  title="Configurator creators" action="manufacturing.conf.configurator.creator"/>
 
 	<action-view name="manufacturing.conf.configurator.creator" title="Configurator creators"
 				 model="com.axelor.apps.sale.db.ConfiguratorCreator" >
@@ -145,8 +144,7 @@
 	</action-view>
 
 	<menuitem name="manufacturing-conf-configurators-configurators" parent="manufacturing-conf-configurators" order="20"
-			  title="Configurators" action="manufacturing.conf.configurator.configurators"
-			  if="__config__.app.getApp('sale').getEnableConfigurator()"/>
+			  title="Configurators" action="manufacturing.conf.configurator.configurators"/>
 
 	<action-view name="manufacturing.conf.configurator.configurators" title="Configurators"
 				 model="com.axelor.apps.sale.db.Configurator" >
