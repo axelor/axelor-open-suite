@@ -55,27 +55,22 @@
 	 	
 	 	<boolean name="isProject" title="Project/Phase" default="true" />
 
-        <enum name="projectType" ref="ProjectType" default="PROJECT"/>
+        <integer name="projectTypeSelect" selection="project.project.project.type.select" default="1"/>
       	<enum name="genProjTypePerOrderLine" ref="GenProjTypePerOrderLine" default="PROJECT_ALONE"/>
 
       	<finder-method name="findAllByParentProject" using="parentProject" all="true"/>
 
 	   <extra-code>
    		<![CDATA[
-   			public static final String TYPE_PROJECT = "project";
-   			public static final String TYPE_TASK = "task";
-   			
+   			public static final Integer TYPE_PROJECT = 1;
+   			public static final Integer TYPE_PHASE = 2;
+
    			public static final Integer STATE_PLANNED = 1;
    			public static final Integer STATE_IN_PROGRESS = 2;
    			public static final Integer STATE_FINISHED = 3;
    		]]>
    	</extra-code>
   </entity>
-
-	<enum name="ProjectType">
-        <item name="PROJECT" title="Project"/>
-		<item name="PHASE" title="Project phase"/>
-	</enum>
 
 	<enum name="GenProjTypePerOrderLine">
 		<item name="PROJECT_ALONE" title="Project alone"/>
