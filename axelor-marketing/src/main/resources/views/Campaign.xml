@@ -39,8 +39,8 @@
 		  <panel title="Target List" name="targetList">
 		  	<panel-related field="targetModelSet" colSpan="12"/>
 		  	<button name="generateTargets" title="Generate Targets" onClick="save,action-campaign-generate-targets,save" colSpan="3"/>
-		  	<panel-related field="partnerSet" colSpan="12" form-view="partner-form"/>
-		  	<panel-related field="leadSet" colSpan="12"/>
+		  	<panel-related field="partnerSet" colSpan="12" grid-view="partner-grid" form-view="partner-form"/>
+		  	<panel-related field="leadSet" colSpan="12" grid-view="lead-grid" form-view="lead-form" />
 		  </panel>
 		  <panel title="Attendees">
 		  	<panel-related field="leads" colSpan="12" grid-view="lead-grid" form-view="lead-form"/>

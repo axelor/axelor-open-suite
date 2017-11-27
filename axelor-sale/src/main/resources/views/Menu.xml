@@ -198,7 +198,10 @@
 		<view type="form" name="tax-form"/>
 	</action-view>
 
-	<menuitem name="sale-conf-configurators-creator" parent="sc-root-sale-conf"
+	<menuitem name="sale-conf-configurators" parent="sc-root-sale-conf" order="20"
+			  title="Configurators" if="__config__.app.getApp('sale').getEnableConfigurator()"/>
+
+	<menuitem name="sale-conf-configurators-creator" parent="sale-conf-configurators"
 			  title="Configurator creators" action="sale.conf.configurator.creator"
 			  if="__config__.app.getApp('sale').getEnableConfigurator()"/>
 
@@ -208,7 +211,7 @@
 		<view type="form" name="configurator-creator-form" />
 	</action-view>
 
-	<menuitem name="sale-conf-configurators-configurators" parent="sc-root-sale-conf" order="20"
+	<menuitem name="sale-conf-configurators-configurators" parent="sale-conf-configurators"
 			  title="Configurators" action="sale.conf.configurator.configurators"
 			  if="__config__.app.getApp('sale').getEnableConfigurator()"/>
 

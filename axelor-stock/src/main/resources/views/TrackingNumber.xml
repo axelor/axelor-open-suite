@@ -48,7 +48,7 @@
 			<field name="futureQty" title="Expected/Future Quantity" type="decimal"/>
 			<field name="currentQty" title="Real/Current Quantity" type="decimal"/>
 			<field name="location" title="Stock location" type="string"/>
-			<field name="moveLine" title="Move line" type="string"/>
+			<field name="moveLine" title="Stock move line" type="string"/>
 			<field name="date" type="date"/>
 		</result-fields>
 

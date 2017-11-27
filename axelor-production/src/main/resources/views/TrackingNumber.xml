@@ -16,7 +16,7 @@
 			<field name="futureQty" title="Expected/Future Quantity" type="decimal"/>
 			<field name="currentQty" title="Real/Current Quantity" type="decimal"/>
 			<field name="location" title="Stock location" type="string"/>
-			<field name="moveLine" title="Move line" type="string"/>
+			<field name="moveLine" title="Stock move line" type="string"/>
 			<field name="date" type="date"/>
 			<field name="saleOrder" title="Sale order" type="string"/>
 			<field name="purchaseOrder" title="Purchase order" type="string"/>

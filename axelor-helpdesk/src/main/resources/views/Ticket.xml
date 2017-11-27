@@ -17,10 +17,10 @@
 		<field name="priority"/>
 		<field name="statusSelect"/>
 		<field name="progressSelect" widget="SelectProgress"/>
-		<button name="takeCharge" icon="fa-suitcase" readonlyIf="assignedTo.id == _user.id" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket"/>
-		<button name="startTicket" icon="fa-play" readonlyIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" onClick="action-record-to-set-status,save"/>
-		<button name="validateTicket" icon="fa-check" readonlyIf="statusSelect == 2 || statusSelect == 3" onClick="action-record-to-set-status,action-record-to-set-progress-select,save"/>
-		<button name="finishTicket" icon="fa-power-off" readonlyIf="statusSelect == 3" onClick="action-record-to-set-status,save"/>
+		<button name="takeCharge" icon="fa-suitcase" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket"/>
+		<button name="startTicket" icon="fa-play" readonlyIf="statusSelect > 0" onClick="action-ticket-record-set-start-status,save"/>
+		<button name="validateTicket" icon="fa-check" readonlyIf="statusSelect > 1" onClick="action-ticket-record-set-validate-status,action-record-to-set-progress-select,save"/>
+		<button name="finishTicket" icon="fa-power-off" readonlyIf="statusSelect > 2" onClick="action-ticket-record-set-closed-status,save"/>
 	</grid>
 	
 	<form model="com.axelor.apps.helpdesk.db.Ticket" title="Ticket" name="ticket-form" onNew="action-record-to-fill-startDate" onLoad="action-ticket-attrs-readonly-to-takeCharge-btn">

@@ -25,14 +25,15 @@
 		<field name="contactDate"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
         <field name="statusSelect"/>
-        <button name="grabLead" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" readonlyIf="user.id == _internalUserId"/>
+        <button name="grabLead" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
 		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-lead-view-schedule-event"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
    	<form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead" 
 		onLoad="action-lead-attrs-readonly-other-address,action-lead-method-set-social-network-url" 
-		onNew="action-group-crm-lead-onnew" >
+		onNew="action-group-crm-lead-onnew"
+		onSave="action-crm-lead-method-check-name">
 
 		<menubar>
 			<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
@@ -132,12 +133,10 @@
 			<field name="referredBy" colSpan="6"/>
 			<field name="opportunityAmount" colSpan="6"/>
 		</panel>
-		
-		<panel-related field="eventList" colSpan="12" grid-view="lead-event-grid" form-view="event-form"/>
-		<panel-related field="opportunitiesList" colSpan="12" grid-view="opportunity-grid" form-view="opportunity-form"/>
      
  		<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 6" itemSpan="12">
-			<panel-dashlet action="action-lead-view-opportunity"/>
+ 			<panel-related field="eventList" colSpan="12" grid-view="lead-event-grid" form-view="event-form"/>
+			<panel-related field="opportunitiesList" colSpan="12" grid-view="opportunity-grid" form-view="opportunity-form"/>
 			<panel-dashlet action="action-lead-view-emails"/>
 			<panel-dashlet action="action-lead-view-marketing-campaigns" if-module="axelor-marketing" if="__config__.app.isApp('marketing')"/>
  		</panel>
@@ -245,13 +244,6 @@
    	
 <!--    	PORTLET -->
    	
-   	<action-view name="action-lead-view-opportunity" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
-		<view type="grid" name="opportunity-dashlet-grid"/>
-		<view type="form" name="opportunity-form"/>
-		<domain>self.lead.id = :id</domain>
-		<context name="id" expr="eval: id"/>
-	</action-view>
-	
 	<action-view name="action-lead-view-emails" title="Emails" model="com.axelor.apps.message.db.Message">
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
