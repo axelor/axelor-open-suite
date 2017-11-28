@@ -26,15 +26,12 @@ import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.team.db.Team;
-import com.google.inject.Inject;
 
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
@@ -43,17 +40,14 @@ import java.util.stream.Collectors;
 
 public class ProjectController {
 
-	@Inject
-	protected ProjectService projectService;
-
 	public void generateProjectFromPartner(ActionRequest request, ActionResponse response){
 		Partner partner = Beans.get(PartnerRepository.class).find(Long.valueOf(request.getContext().get("_idPartner").toString()));
 		User user = AuthUtils.getUser();
-		Project project = projectService.generateProject(null, partner.getName()+" project", user, user.getActiveCompany(), partner);
+		Project project = Beans.get(ProjectService.class).generateProject(null, partner.getName()+" project", user, user.getActiveCompany(), partner);
 		response.setValues(project);
 	}
-	
-	public void setDurationDays(ActionRequest request, ActionResponse response){
+
+	public void setDuration(ActionRequest request, ActionResponse response){
 		Project project = request.getContext().asType(Project.class);
 		long diffInDays = ChronoUnit.DAYS.between(project.getFromDate(),project.getToDate());
 		BigDecimal duration = new BigDecimal(diffInDays);
@@ -65,7 +59,7 @@ public class ProjectController {
 		
 		Project project = request.getContext().asType(Project.class);
 		
-		List<ProjectPlanning> projectPlannings = projectService.createPlanning(project);
+		List<ProjectPlanning> projectPlannings = Beans.get(ProjectService.class).createPlanning(project);
 		
 		response.setView(ActionView.define(I18n.get("Project Planning"))
 				.model(ProjectPlanning.class.getName())
@@ -81,7 +75,7 @@ public class ProjectController {
 	public void generateQuotation(ActionRequest request, ActionResponse response) {
 		Project project = request.getContext().asType(Project.class);
 		try {
-			SaleOrder order = projectService.generateQuotation(project);
+			SaleOrder order = Beans.get(ProjectService.class).generateQuotation(project);
 			response.setView(ActionView
 					.define("Sale Order")
 					.model(SaleOrder.class.getName())
@@ -96,20 +90,11 @@ public class ProjectController {
 	    Project project = request.getContext().asType(Project.class);
 		project = Beans.get(ProjectRepository.class).find(project.getId());
 		try {
-			projectService.cascadeUpdateTeam(project, project.getTeam(), project.getSynchronisable());
+			Beans.get(ProjectService.class).cascadeUpdateTeam(project, project.getTeam(), project.getSynchronisable());
 			response.setReload(true);
 		} catch (Exception e) {
 		    TraceBackService.trace(response, e);
 		}
-	}
-
-	public void clearMembers(ActionRequest request, ActionResponse response) {
-		Project project = request.getContext().asType(Project.class);
-		if (project.getMembersUserSet() != null) {
-			project.getMembersUserSet().clear();
-		}
-		project.addMembersUserSetItem(project.getAssignedTo());
-		response.setValue("membersUserSet", project.getMembersUserSet());
 	}
 
 }

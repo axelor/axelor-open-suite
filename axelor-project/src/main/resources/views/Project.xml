@@ -65,7 +65,6 @@
 				<field name="projectTypeSelect" onChange="action-project-record-empty-parent-project" requiredIf="isProject"/>
 				<field name="excludePlanning"/>
 				<field name="parentProject" domain="self.isProject = true AND self.projectTypeSelect = 1" showIf="projectTypeSelect == 2"/>
-
 			</panel>
 			<panel if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="business" title=" " showIf="isBusinessProject" colSpan="12">
 				<field name="saleOrder" domain="self.clientPartner = :clientPartner" form-view="sale-order-form" grid-view="sale-order-grid"/>
@@ -76,22 +75,22 @@
 				<field name="priceList" showIf="priceList != null" readonly="true"/>
 			</panel>
 			<panel name="date" title=" " colSpan="12">
-				<field name="fromDate"/>
-				<field name="toDate" onChange="action-project-method-set-duration"/>
-				<field name="$visibleDuration" title="Duration" colSpan="6" type="decimal" onChange="action-project-method-set-stored-duration,action-attrs-project-compute-leadDelay"/>
-				<field name="$visibleTimeSpent" title="Time Spent" readonly="true" colSpan="6" type="decimal" onChange="action-project-method-set-stored-time-spent"/>
-				<field name="dueDate" showIf="isProject"/>
-				<field name="progress" showIf="isProject" widget="SelectProgress" onChange="action-attrs-project-compute-leadDelay"/>
-				<field name="$visibleLeadDelay" title="Lead/Delay" showIf="isProject" colSpan="6" type="decimal" onChange="action-project-method-set-stored-lead-delay, action-method-project-compute-progress"/>
+				<field name="fromDate" colSpan="4"/>
+				<field name="toDate" colSpan="4"/>
+				<field name="dueDate" colSpan="4" showIf="isProject"/>
+				<field name="$visibleDuration" title="Duration" onChange="action-project-method-set-stored-duration,action-attrs-project-compute-leadDelay"/>
+				<field name="progress" widget="Progress" showIf="isProject" onChange="action-attrs-project-compute-leadDelay"/>
+				<field name="$visibleLeadDelay" title="Lead/Delay" readonly="true" showIf="isProject" type="decimal" onChange="action-project-method-set-stored-lead-delay, action-method-project-compute-progress"/>
+				<field name="$visibleTimeSpent" title="Time Spent" readonly="true"  type="decimal" onChange="action-project-method-set-stored-time-spent"/>
 			</panel>
 			<panel if="__config__.app.isApp('employee')" if-module="axelor-human-resource" name="humanResource" title=" " colSpan="12">
 				<field name="imputable" widget="boolean-switch"/>
-				<field name="totalPlannedHrs"/>
+				<field name="totalPlannedHrs" readonly="true"/>
 			</panel>
 		</panel>
 		<panel title="Members">
-			<field name="membersUserSet" showTitle="false" colSpan="12" widget="TagSelect" canNew="false" onSelect="action-project-attrs-members-domain" form-view="user-form" grid-view="user-grid"/>
-			<field name="team" title="Team" colSpan="6" canNew="true" onChange="action-project-method-clear-members"/>
+			<field name="membersUserSet" readonlyIf="synchronisable == true" showTitle="false" colSpan="12" widget="TagSelect" canNew="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="team" title="Team" colSpan="6" canNew="true" canEdit="false"/>
 			<field name="synchronisable" colSpan="3" widget="boolean-switch"/>
 			<button name="selectTeam" title="Select a team" showIf="team != null" colSpan="3" onClick="save,action-project-method-select-team"/>
 		</panel>
@@ -312,7 +311,7 @@
 		<action name="action-project-attrs-scale-and-precision" />
 		<action name="action-attrs-project-set-project-type"  if="__config__.app.isApp('business-project')" />
 	</action-group>
-	
+
 	<action-method name="action-project-generate-project-from-partner">
 		<call class="com.axelor.apps.project.web.ProjectController" method="generateProjectFromPartner"/>
 	</action-method>
@@ -320,11 +319,7 @@
 	<action-record name="action-project-record-inv-type-select" model="com.axelor.apps.project.db.Project">
 		<field name="projInvTypeSelect" expr="eval: project?.projInvTypeSelect"/>
 	</action-record>
-	
-<!-- 	<action-attrs name="action-project-attrs-filter-project-parent"> -->
-<!-- 		<attribute name="domain" for="projectParent" expr="eval: &quot; self.id IN (${projectFolder?.project?.collect{it.id}.join(',')})&quot;"/> -->
-<!-- 	</action-attrs> -->
-	
+
 	<action-attrs name="action-project-attrs-hide-invoicing-panel">
 		<attribute name="hidden" for="invoicingPanel" expr="eval: projInvTypeSelect != 3"/>
 	</action-attrs>
@@ -471,7 +466,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-attrs-project-compute-leadDelay" model="com.axelor.apps.project.db.Project">
-	    <attribute name="value" for="$visibleLeadDelay" expr="eval: new BigDecimal(visibleTimeSpent).subtract(new BigDecimal(visibleDuration).multiply(progress).divide(100))" if="visibleDuration != ''"/>
+	    <attribute name="value" for="$visibleLeadDelay" expr="eval: new BigDecimal(visibleDuration).subtract(new BigDecimal(visibleTimeSpent).multiply(progress).divide(100))" if="visibleDuration != ''"/>
 	</action-attrs>
 	
 	<action-attrs name="action-attrs-domain-on-contact-partner">
@@ -481,9 +476,9 @@
 	</action-attrs>
 	
 	<action-method name="action-project-method-set-duration">
-		<call class="com.axelor.apps.project.web.ProjectController" method="setDurationDays"/>
+		<call class="com.axelor.apps.project.web.ProjectController" method="setDuration"/>
 	</action-method>
-	
+
 	<action-method name="action-project-method-create-planning">
 		<call class="com.axelor.apps.project.web.ProjectController" method="createPlanning"/>
 	</action-method>
@@ -494,15 +489,6 @@
 
 	<action-method name="action-project-method-select-team">
 		<call class="com.axelor.apps.project.web.ProjectController" method="selectTeam"/>
-	</action-method>
-
-	<action-attrs name="action-project-attrs-members-domain">
-		<attribute if="team?.members" name="domain" expr="eval: &quot;self.id IN (${team.members.collect{ it.id }.join(&quot;,&quot;)}) &quot;" for="membersUserSet"/>
-		<attribute if="!team?.members" name="domain" expr="eval: &quot;self.id = 0 &quot;" for="membersUserSet"/>
-	</action-attrs>
-
-	<action-method name="action-project-method-clear-members">
-		<call class="com.axelor.apps.project.web.ProjectController" method="clearMembers"/>
 	</action-method>
 
 </object-views>

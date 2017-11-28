@@ -147,7 +147,7 @@
 	<action-view name="action-team-task-edit-task" title="Task" model="com.axelor.team.db.TeamTask">
     	<view type="form" name="team-task-form"/>
         <view-param name="popup" value="reload"/>
-		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-toolbar" value="true"/>
 		<view-param name="forceEdit" value="true" />
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
