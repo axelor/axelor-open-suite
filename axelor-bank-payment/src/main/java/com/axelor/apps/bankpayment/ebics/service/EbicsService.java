@@ -30,6 +30,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Date;
+import java.util.List;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jdom.JDOMException;
@@ -284,7 +285,18 @@ public class EbicsService {
     public void sendFULRequest(EbicsUser transportUser, EbicsUser signatoryUser, EbicsProduct product, File file,
             BankOrderFileFormat format, File signature) throws AxelorException {
         Preconditions.checkNotNull(transportUser);
-        String ebicsCodification = findEbicsCodification(transportUser.getEbicsPartner(), format);
+        Preconditions.checkNotNull(transportUser.getEbicsPartner());
+        Preconditions.checkNotNull(format);
+        List<EbicsPartnerService> ebicsPartnerServiceList = transportUser.getEbicsPartner()
+                .getEbicsPartnerServiceList();
+        String ebicsCodification;
+
+        if (ebicsPartnerServiceList == null || ebicsPartnerServiceList.isEmpty()) {
+            ebicsCodification = format.getOrderFileFormatSelect();
+        } else {
+            ebicsCodification = findEbicsCodification(transportUser.getEbicsPartner(), format);
+        }
+
         sendFULRequest(transportUser, signatoryUser, product, file, ebicsCodification, signature);
     }
 
