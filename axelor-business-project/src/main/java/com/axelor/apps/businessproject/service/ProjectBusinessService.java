@@ -22,15 +22,12 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectType;
 import com.axelor.apps.project.db.repo.ProjectPlanningRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 import java.math.BigDecimal;
@@ -85,7 +82,7 @@ public class ProjectBusinessService extends ProjectServiceImpl {
 		project.setPrice(saleOrderLine.getPrice());
 		project.setUnit(saleOrderLine.getUnit());
 		project.setExTaxTotal(saleOrderLine.getCompanyExTaxTotal());
-		project.setProjectType(ProjectType.PHASE);
+		project.setProjectTypeSelect(ProjectRepository.TYPE_PHASE);
 		saleOrderLine.setProject(project);
 		return project;
 	}

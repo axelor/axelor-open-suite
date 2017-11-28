@@ -23,7 +23,7 @@
 		<boolean name="generateProjectOrder" title="Generate/Select Project for Order"/>
 		<boolean name="automaticProject" title="Automatic Project"/>
 
-		<integer name="generatedElementTypeSelect" title="Generated element type" selection="business.project.config.generated.element.type"/>
+		<integer name="generatedElementTypeSelect" title="Generated element type" default="3" selection="business.project.config.generated.element.type"/>
 
 		<boolean name="projectSaleOrderLines" title="Project in Sale order lines"/>
 		<boolean name="projectPurchaseOrderLines" title="Project in Purchase order lines"/>
