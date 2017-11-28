@@ -12,7 +12,6 @@
 	      <field name="defaultValue" />
 	      <field name="help" />
 	      <field name="sequence" />
-	      <field name="includedInCost" widget="inline-checkbox" />
 	      <field name="model" hidden="true" />
 	      <field name="modelField" hidden="true" />
 	    </panel>
@@ -78,7 +77,7 @@
 			<field name="required" widget="inline-checkbox" />
 			<field name="nameField" widget="inline-checkbox" showIf="type === 'string'" />
 			<field name="hidden" widget="inline-checkbox" />
-			<field name="hiddenInGrid" widget="inline-checkbox" />
+			<field name="visibleInGrid" widget="inline-checkbox" />
 		</panel>
 		<panel title="Widget Attributes" sidebar="true">
 			<field name="widgetAttrs" widget="json-raw" />

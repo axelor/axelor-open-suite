@@ -323,9 +323,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		if (purchaseOrder.getStatusSelect() == IPurchaseOrder.STATUS_FINISHED  && appSupplychainService.getAppSupplychain().getTerminatePurchaseOrderOnReceipt()){
 			purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
 		}
-		
-		purchaseOrderRepo.save(purchaseOrder);
-		
 	}
 
 	public void updateAmountToBeSpreadOverTheTimetable(PurchaseOrder purchaseOrder) {

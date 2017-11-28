@@ -11,5 +11,13 @@
     <many-to-one name="purchaseOrderLine" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order line"/>
 
     <decimal name="reservedQty" title="Reserved Qty"/>
+
+    <finder-method name="findAllBySaleOrder"
+                   using="com.axelor.apps.sale.db.SaleOrder:saleOrder" all="true"
+                   filter="self.stockMove.saleOrder = :saleOrder"/>
+
+    <finder-method name="findAllBySaleOrderAndStatusSelect"
+                   using="com.axelor.apps.sale.db.SaleOrder:saleOrder,Integer:statusSelect" all="true"
+                   filter="self.stockMove.saleOrder = :saleOrder AND self.stockMove.statusSelect = :statusSelect"/>
   </entity>
 </domain-models>

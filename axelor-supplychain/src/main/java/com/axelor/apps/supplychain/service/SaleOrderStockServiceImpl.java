@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -34,6 +31,7 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
@@ -42,7 +40,13 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
@@ -207,6 +211,46 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 	public boolean existActiveStockMoveForSaleOrder(SaleOrder saleOrder){
 		long nbStockMove = stockMoveRepo.all().filter("self.saleOrder = ? AND self.statusSelect <> ?", saleOrder, StockMoveRepository.STATUS_CANCELED).count();
 		return nbStockMove > 0;
+	}
+
+	@Override
+	public StockMoveDeliveryStatus checkAllSaleOrderLineIsDelivery(SaleOrder saleOrder) {
+		Map<Product, BigDecimal> saleOrderLineProducts = new HashMap<>();
+		SaleOrderLineRepository saleOrderLineRepository = Beans.get(SaleOrderLineRepository.class);
+		for (SaleOrderLine saleOrderLine: saleOrderLineRepository.findAllBySaleOrder(saleOrder).fetch()) {
+			if (!saleOrderLineProducts.containsKey(saleOrderLine.getProduct())) {
+				saleOrderLineProducts.put(saleOrderLine.getProduct(), saleOrderLine.getQty());
+			}
+			else {
+				saleOrderLineProducts.replace(saleOrderLine.getProduct(),
+						saleOrderLineProducts.get(saleOrderLine.getProduct()).add(saleOrderLine.getQty()));
+			}
+		}
+		if (saleOrderLineProducts.isEmpty()) {
+			return StockMoveDeliveryStatus.NOT_DELIVERY;
+		}
+
+		Map<Product, BigDecimal> stockMoveLineProducts = new HashMap<>();
+		StockMoveLineRepository stockMoveLineRepository = Beans.get(StockMoveLineRepository.class);
+		for (StockMoveLine stockMoveLine: stockMoveLineRepository.findAllBySaleOrderAndStatusSelect(saleOrder, StockMoveRepository.STATUS_REALIZED).fetch()) {
+			if (!stockMoveLineProducts.containsKey(stockMoveLine.getProduct())) {
+				stockMoveLineProducts.put(stockMoveLine.getProduct(), stockMoveLine.getQty());
+			}
+			else {
+				stockMoveLineProducts.replace(stockMoveLine.getProduct(),
+						stockMoveLineProducts.get(stockMoveLine.getProduct()).add(stockMoveLine.getQty()));
+			}
+		}
+		if (stockMoveLineProducts.isEmpty()) {
+			return StockMoveDeliveryStatus.NOT_DELIVERY;
+		}
+
+		for (Map.Entry<Product, BigDecimal> product: stockMoveLineProducts.entrySet()) {
+			if (!saleOrderLineProducts.get(product.getKey()).equals(product.getValue())) {
+				return StockMoveDeliveryStatus.PARTIAL_DELIVERY;
+			}
+		}
+		return StockMoveDeliveryStatus.ALL_DELIVERY;
 	}
 }
 

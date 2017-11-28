@@ -91,12 +91,12 @@ public class StockMoveController {
 	
 
 	public void cancel(ActionRequest request, ActionResponse response)  {
-
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 
 		try {
+			stockMoveService.applyCancelReason(stockMove, stockMove.getCancelReason());
 			stockMoveService.cancel(stockMoveRepo.find(stockMove.getId()));
-			response.setReload(true);
+			response.setCanClose(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}

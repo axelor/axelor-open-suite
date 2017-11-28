@@ -50,6 +50,8 @@
 
     <boolean name="fullySpreadOverLogisticalFormsFlag" default="false" title="Fully spread over logistical forms" />
 
+    <many-to-one name="cancelReason" title="Cancel reason" ref="com.axelor.apps.base.db.CancelReason"/>
+
     <unique-constraint columns="stockMoveSeq,company"/>
     
     <extra-code><![CDATA[

@@ -300,5 +300,15 @@
         <view type="grid" name="logistical-form-grid" />
         <view type="form" name="logistical-form-form" />
     </action-view>
+	
+	<menuitem name="stock-root-conf-cancel-reason" title="Cancel reason" parent="stock-root-conf"
+			  action="action.stock.view.cancel.reason"/>
+
+	<action-view name="action.stock.view.cancel.reason" title="Cancel reason" model="com.axelor.apps.base.db.CancelReason">
+        <view type="form" name="cancel-reason-form"/>
+		<view type="grid" name="cancel-reason-grid"/>
+		<domain>self.applicationType = :_xApplicationType</domain>
+		<context name="_xApplicationType" expr="eval: com.axelor.apps.stock.db.StockMove"/>
+	</action-view>
 
 </object-views>
