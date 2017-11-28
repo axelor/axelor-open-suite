@@ -76,7 +76,7 @@
 			<button name="loadMoveLines" title="Search elements to pay" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines,save" colSpan="6"/>
 		</panel>
 		
-		<panel readonlyIf="statusSelect == 3 || payboxPaidOk" colSpan="12">
+		<panel hidden="true" readonlyIf="statusSelect == 3 || payboxPaidOk" colSpan="12">
 		 	<field name="paidAmount" colSpan="4"/>
 			<field name="currency" canEdit="false" colSpan="4" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="remainingAmount" readonly="true" colSpan="4"/>

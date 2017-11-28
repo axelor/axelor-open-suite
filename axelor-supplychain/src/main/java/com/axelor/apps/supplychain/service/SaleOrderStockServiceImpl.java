@@ -145,13 +145,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 
-	    //check external location
-	    Optional<Location> candidateExternalLocation = candidateLocations
+	    //check external or internal location
+	    Optional<Location> candidateNonVirtualLocation = candidateLocations
 				.stream()
-				.filter(location -> location.getTypeSelect() == LocationRepository.TYPE_EXTERNAL)
+				.filter(location -> location.getTypeSelect() == LocationRepository.TYPE_EXTERNAL
+						|| location.getTypeSelect() == LocationRepository.TYPE_INTERNAL)
 				.findAny();
-	    if (candidateExternalLocation.isPresent()) {
-	    	return candidateExternalLocation.get();
+	    if (candidateNonVirtualLocation.isPresent()) {
+	    	return candidateNonVirtualLocation.get();
 		} else {
 	    	//no external location found, search for virtual
 	    	return candidateLocations
