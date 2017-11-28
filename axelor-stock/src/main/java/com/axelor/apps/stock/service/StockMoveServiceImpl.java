@@ -871,7 +871,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 					.generate()
 					.getFileLink();
 		} else {
-			throw new AxelorException(stockMove, IException.INCONSISTENCY, I18n.get(IExceptionMessage.STOCK_MOVE_10));
+			throw new AxelorException(StockMove.class, IException.INCONSISTENCY, I18n.get(IExceptionMessage.STOCK_MOVE_10));
 		}
 	}
 
