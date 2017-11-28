@@ -274,20 +274,23 @@
     	
     	<column name="name" type="string"/>
     	<column name="assignedTo" type="reference"/>
-    	<column name="progress" type="decimal"/>
+    	<column name="progress" type="integer"/>
+		<column name="openTask" type="button"/>
 		<column name="editTask" type="button"/>
 		
-		<node model="com.axelor.team.db.TeamTask" domain="self.project.id = :_id" onClick="action-project-task-view">
+		<node model="com.axelor.team.db.TeamTask" domain="self.project.id = :_id" onClick="action-team-task-view-task">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
-			<field name="progress" as="progress"/>
+			<field name="progressSelect" as="progress"/>
+			<button name="openTask" title="Open task" onClick="action-team-task-open-task"/>
 			<button name="editTask" title="Edit" onClick="action-team-task-edit-task"/>
 		</node>    	
 		
-		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-project-task-view">
+		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-team-task-view-task">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
-			<field name="progress" as="progress"/>
+			<field name="progressSelect" as="progress"/>
+			<button name="openTask" title="Open task" onClick="action-team-task-open-task"/>
 			<button name="editTask" title="Edit" onClick="action-team-task-edit-task"/>
 		</node>
     

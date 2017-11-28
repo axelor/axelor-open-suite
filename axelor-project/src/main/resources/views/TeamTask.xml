@@ -34,13 +34,13 @@
                 </editor>
             </field>
 			<field name="parentTask" colSpan="6" readonlyIf="project == null" onSelect="action-task-attrs-project-parent-task-configurations"/>
-			<field name="project" colSpan="6" onChange="action-task-record-project-configurations" required="true"/>
+			<field name="project" canEdit="false" colSpan="6" onChange="action-task-record-project-configurations" required="true"/>
 		</panel>
 		
 		<panel>
 			<panel name="context" title="Context" colSpan="12">
 				<field name="team" form-view="team-form" grid-view="grid-form" colSpan="6" readonly="true"/>
-				<field name="assignedTo" form-view="user-form" grid-view="user-grid" colSpan="6" readonlyIf="project == null" required="true" onSelect="action-task-attrs-project-assigned-to-configurations"/>
+				<field name="assignedTo" canEdit="false" form-view="user-form" grid-view="user-grid" colSpan="6" readonlyIf="project == null" required="true" onSelect="action-task-attrs-project-assigned-to-configurations"/>
 				<spacer/>
 				<field name="createdBy" readonly="true" title="Created By" colSpan="6"/>
 				<field name="createdOn" title="Created on" colSpan="6"/>
@@ -115,22 +115,22 @@
     	<column name="assignedTo" type="reference"/>
     	<column name="progress" type="decimal"/>
 
-		<node model="com.axelor.team.db.TeamTask" domain="self.id = :_id" onClick="action-task-view">
+		<node model="com.axelor.team.db.TeamTask" domain="self.id = :_id" onClick="action-team-task-view-task">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progress" as="progress" />
 		</node>    	
 		
-		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-task-view">
+		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-team-task-view-task">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progress" as="progress"/>
 		</node>
-		
-    
+
+
 	</tree>
-	
-	<action-view name="action-task-view" title="Tasks" model="com.axelor.team.db.TeamTask">
+
+	<action-view name="action-team-task-view-task" title="Tasks" model="com.axelor.team.db.TeamTask">
     	<view type="form" name="team-task-form"/>
         <view-param name="popup" value="reload"/>
         <view-param name="show-toolbar" value="false"/>
@@ -138,10 +138,17 @@
 	  	<view-param name="popup-save" value="false"/>
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
-    
-    <action-view name="action-team-task-edit-task" title="Task" model="com.axelor.team.db.TeamTask">
+
+	<action-view name="action-team-task-open-task" title="Task" model="com.axelor.team.db.TeamTask">
+		<view type="form" name="team-task-form"/>
+		<context name="_showRecord" expr="eval: id"/>
+	</action-view>
+
+	<action-view name="action-team-task-edit-task" title="Task" model="com.axelor.team.db.TeamTask">
     	<view type="form" name="team-task-form"/>
         <view-param name="popup" value="reload"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="forceEdit" value="true" />
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
 	
