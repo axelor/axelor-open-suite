@@ -118,13 +118,13 @@
 		<node model="com.axelor.team.db.TeamTask" domain="self.id = :_id" onClick="action-team-task-view-task">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
-			<field name="progress" as="progress" />
+			<field name="progressSelect" as="progress" />
 		</node>    	
 		
 		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-team-task-view-task">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
-			<field name="progress" as="progress"/>
+			<field name="progressSelect" as="progress"/>
 		</node>
 
 
