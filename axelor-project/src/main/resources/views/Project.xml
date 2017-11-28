@@ -406,7 +406,7 @@
 		<view type="gantt" name="task-gantt" />
 		<view type="grid" name="team-task-grid" />
 		<view type="form" name="team-task-form" />
-		<domain>self.project.id = :_id OR self.project.project.id = :_id</domain>
+		<domain>self.project.id = :_id OR self.project.parentProject.id = :_id</domain>
 	</action-view>
 	
 	<action-view name="action-project-book-resource" title="Book resource" model="com.axelor.apps.project.db.ResourceBooking">
