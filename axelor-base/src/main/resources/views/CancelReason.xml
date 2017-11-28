@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <grid name="cancel-reason-grid" title="Cancel Reasons" model="com.axelor.apps.base.db.CancelReason">
+        <field name="name"/>
+    </grid>
+
+    <form name="cancel-reason-form" title="Cancel Reason" model="com.axelor.apps.base.db.CancelReason"
+          onNew="action-cancel-reason-attrs-fill-application-type">
+        <panel name="main" >
+            <field name="name"/>
+            <field name="applicationType" hidden="true"/>
+        </panel>
+    </form>
+
+    <action-attrs name="action-cancel-reason-attrs-fill-application-type">
+        <attribute if="_xApplicationType" for="applicationType" name="value" expr="eval: _xApplicationType"/>
+        <attribute for="applicationType" name="hidden" expr="eval: _xApplicationType != null"/>
+    </action-attrs>
+
+</object-views>

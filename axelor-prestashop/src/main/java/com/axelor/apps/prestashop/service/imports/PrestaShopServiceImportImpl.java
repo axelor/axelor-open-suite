@@ -74,7 +74,7 @@ import com.axelor.apps.prestashop.db.SaleOrderStatus;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.PSWebServiceClient;
 import com.axelor.apps.prestashop.service.PrestaShopWebserviceException;
-import com.axelor.apps.sale.db.CancelReason;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;

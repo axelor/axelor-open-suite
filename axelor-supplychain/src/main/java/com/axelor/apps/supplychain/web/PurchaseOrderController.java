@@ -278,16 +278,6 @@ public class PurchaseOrderController {
 			response.setFlash(ae.getLocalizedMessage());
 		}
 	}
-	
-	public void updatePurchaseOrderOnCancel(ActionRequest request, ActionResponse response) throws AxelorException{
-		
-		StockMove stockMove = request.getContext().asType(StockMove.class);
-		PurchaseOrder purchaseOrder = purchaseOrderRepo.find(stockMove.getPurchaseOrder().getId());
-		
-		purchaseOrderServiceSupplychain.updatePurchaseOrderOnCancel(stockMove, purchaseOrder);
-		
-		
-	}
 
 	public void updateAmountToBeSpreadOverTheTimetable(ActionRequest request, ActionResponse response) {
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);

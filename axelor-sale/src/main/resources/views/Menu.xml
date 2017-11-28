@@ -163,9 +163,11 @@
 		title="Cancel Reasons" action="sale.conf.cancelreason" />
 
 	<action-view name="sale.conf.cancelreason"
-		title="Cancel Reason" model="com.axelor.apps.sale.db.CancelReason" >
+		title="Cancel Reason" model="com.axelor.apps.base.db.CancelReason" >
 		<view type="grid" name="cancel-reason-grid" />
 		<view type="form" name="cancel-reason-form" />
+        <domain>self.applicationType = :_xApplicationType</domain>
+		<context name="_xApplicationType" expr="eval: com.axelor.apps.sale.db.SaleOrder"/>
 	</action-view>
 	
 	<menuitem name="sale-conf-duration" parent="sc-root-sale-conf"

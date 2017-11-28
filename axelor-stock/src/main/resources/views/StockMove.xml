@@ -80,7 +80,8 @@
 		 </menubar>
 		 
 	  <panel title="Status">
-		<field name="statusSelect" widget="NavSelect" colSpan="8"/>		  
+		  <field name="statusSelect" widget="NavSelect" colSpan="8"/>
+		  <field name="cancelReason" canView="false" showIf="statusSelect == 4 &amp;&amp; cancelReason != null" readonly="true" colSpan="4"/>
 	  </panel>
 	  <panel name="main">
 		  <field name="typeSelect" title="Type" colSpan="4" onChange="action-stock-move-set-default-locations, action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1"/>
@@ -119,14 +120,14 @@
 	      <field name="invoice" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="invoice-form" grid-view="invoice-grid"/>
 	    </panel>
 	  </panel-tabs>
-	  
+
 	  <panel sidebar="true" name="actions" title="Actions">
 			<button name="plan" title="Plan" icon="fa-calendar" showIf="statusSelect == 1" onClick="action-group-stock-stockmove-plan-click"/>
 			<button name="realize" title="Realize" icon="fa-check" showIf="statusSelect == 2" prompt="Are you sure you want to realize this stock move?" onClick="action-group-stock-stockmove-realize-click"/>
-			<button name="cancel" title="Cancel" icon="fa-times-circle" showIf="statusSelect != 4" onClick="action-group-stock-stockmove-cancel-click"/>
-			<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
 			<button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3"/>
 			<button name="generateReversion" title="Generate reversion" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3"/>
+		  	<button name="cancel" title="Cancel" icon="fa-times-circle" showIf="id != null &amp;&amp; statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 4" onClick="action.stock.move.view.cancel"/>
+		  	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
     </panel>
 	<panel sidebar="true" title="Freight Carrier">
 		<field name="shipmentMode" colSpan="12" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
@@ -228,14 +229,6 @@
     	<action name="action-stock-move-method-realize"/>
     	<action name="save"/>
 	</action-group>
-	
-	<action-group name="action-group-stock-stockmove-cancel-click">
-	  	<action name="save"/>
-	  	<action name="action-supply-chain-method-update-so-on-cancel" if="saleOrder != null &amp;&amp; statusSelect == 3"/>
-	  	<action name="action-supply-chain-method-update-po-on-cancel" if="purchaseOrder != null &amp;&amp; statusSelect == 3"/>
-    	<action name="action-stock-move-method-cancel"/>
-    	<action name="save"/>
-    </action-group>
 
   	<action-group name="action-group-stock-stockmove-draft-click">
 	  	<action name="save"/>
@@ -448,5 +441,23 @@
 			<domain>self.statusSelect = 4</domain>
 		</filter>
 	</search-filters>
-	
+
+	<action-view name="action.stock.move.view.cancel" title="Cancellation" model="com.axelor.apps.stock.db.StockMove">
+		<view type="form" name="stock-move-cancel-wizard-form"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="false"/>
+		<view-param name="forceEdit" value="true" />
+		<context name="_showRecord" expr="eval: __this__.id" />
+		<context name="_xApplicationType" expr="eval: __this__.getClass().getCanonicalName()"/>
+	</action-view>
+
+	<form name="stock-move-cancel-wizard-form" model="com.axelor.apps.stock.db.StockMove" title="Cancellation confirmation" >
+		<panel name="main">
+			<field name="cancelReason" domain="self.applicationType = :_xApplicationType" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false"/>
+			<button readonlyIf="cancelReason == null" name="cancelConfirm" title="Confirm cancellation" onClick="action-stock-move-method-cancel" colOffset="4" colSpan="4"/>
+		</panel>
+	</form>
+
 </object-views>

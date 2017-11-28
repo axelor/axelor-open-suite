@@ -27,7 +27,7 @@ import javax.persistence.Query;
 
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.sale.db.AdvancePayment;
-import com.axelor.apps.sale.db.CancelReason;
+import com.axelor.apps.base.db.CancelReason;
 import com.google.common.base.Strings;
 import java.time.LocalDate;
 

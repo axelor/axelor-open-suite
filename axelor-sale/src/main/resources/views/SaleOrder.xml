@@ -132,7 +132,7 @@
     
     <form name="sale-order-cancel-wizard-form" model="com.axelor.apps.sale.db.SaleOrder" title="Cancellation confirmation" >
 		<panel name="main">
-			<field name="cancelReason" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false" onChange="action-attrs-sale-other-reason"/>
+			<field name="cancelReason" domain="self.applicationType = :_xApplicationType" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false" onChange="action-attrs-sale-other-reason"/>
 			<field name="cancelReasonStr" colOffset="4" colSpan="4" hidden="true"/>
 			<button name="cancelConfirm" title="Confirm cancellation" onClick="action-sale-order-cancel-reason-check,action-sale-order-method-confirm-cancel" colOffset="4" colSpan="4"/>
 		</panel>
@@ -880,6 +880,7 @@
   	  	<view-param name="popup-save" value="false"/>
 	  	<view-param name="forceEdit" value="true" />
 	  	<context name="_showRecord" expr="eval: __this__.id" />
+        <context name="_xApplicationType" expr="eval: __this__.getClass().getCanonicalName()"/>
 	</action-view>
 	
     <action-condition name="action-sale-order-cancel-reason-check">
