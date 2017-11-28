@@ -43,7 +43,10 @@
 		</panel>
 		
 		<panel-related field="bankDetailsSet" colSpan="12" canNew="true" showIf="ebicsBank" hidden="true" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-ebics-partner-method-bank-details-set-domain"/>
-		
+
+        <panel-related field="ebicsPartnerServiceList" colSpan="12" canNew="true" grid-view="ebics-partner-service-grid"
+            form-view="ebics-partner-service-form" editable="true" />
+
 		<panel-dashlet action="action-ebics-partner-view-ebics-users"/>
 
 	</form>

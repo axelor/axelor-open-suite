@@ -333,7 +333,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		EbicsUser signatoryEbicsUser = bankOrder.getSignatoryEbicsUser();
 		
 		ebicsService.sendFULRequest(signatoryEbicsUser.getEbicsPartner().getTransportEbicsUser(), signatoryEbicsUser, null, dataFileToSend,
-				bankOrder.getBankOrderFileFormat().getOrderFileFormatSelect(), signatureFileToSend);
+				bankOrder.getBankOrderFileFormat(), signatureFileToSend);
 
 	}
 
