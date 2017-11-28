@@ -236,7 +236,7 @@
       </panel>
 	  <panel-tabs hideIf="clientPartner == null">
 	    <panel name="content" title="Content">
-			<field name="$stockMoveState" showTitle="false" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+			<field name="$stockMoveState" readonly="true" showTitle="false" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 				<viewer><![CDATA[
 				<h4>
 					<span ng-show="record.$stockMoveState == 1" class="label label-important">Partial stock move shipped</span>
