@@ -19,6 +19,6 @@ package com.axelor.apps.quality.translation;
 
 public interface ITranslation {
 
-	public static final String CONTROL_POINT_RESPONSIBLE = /*$$(*/ "control.point.responsible"; /*)*/	
+	public static final String QUALITY_RESPONSIBLE = /*$$(*/ "quality.responsible"; /*)*/	
 
 }
