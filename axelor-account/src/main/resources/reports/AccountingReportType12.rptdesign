@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -81,9 +81,6 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">1</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -97,9 +94,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-business-suite</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -151,8 +145,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
-            <property name="odaUser">axelor</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -451,12 +444,12 @@ left outer join	(select sum(MoveLine.credit - MoveLine.debit) as diff_vat, MoveL
 					from public.account_move_line as MoveLine  
 					left outer join public.account_accounting_report as AccountingReport on (AccountingReport.id = ?)
 					left outer join public.account_account as TaxMoveLineAccount on (MoveLine.account = TaxMoveLineAccount.id)
-					where TaxMoveLineAccount.code like '4457%' and MoveLine.date_val <= AccountingReport.date_to and MoveLine.date_val >= AccountingReport.date_from 
+					where TaxMoveLineAccount.code like '445%' and MoveLine.date_val <= AccountingReport.date_to and MoveLine.date_val >= AccountingReport.date_from 
 					and MoveLine.date_val <= AccountingReport.date_val group by MoveLine.tax_line) as TaxMoveLine 
 					on ( TaxMoveLine.tax_line2 = TaxLine.id) 
 left outer join public.account_invoice as Invoice on (Invoice.id = Move.invoice) 										
 where AccountingReport.year = period.year 
-and ((Account.code like '7%'  or Account.code like '6%' or Account.code like '4%') AND Account.code not like '41%' AND Account.code not like '4457%')
+and ((Account.code like '7%'  or Account.code like '6%' or Account.code like '4%') AND Account.code not like '41%' AND Account.code not like '445%')
 group by MoveLine.account_code, MoveLine.account_name, TaxLine.value, Tax.name, TaxMoveLine, move_id, TaxLine.id
 order by MoveLine.account_code desc]]></xml-property>
         </oda-data-set>
