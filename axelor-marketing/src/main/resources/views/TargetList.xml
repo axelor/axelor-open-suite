@@ -11,7 +11,9 @@
 		<panel name="main" >
 		  <field name="name"/>
 		  <panel title="Partners" colSpan="12">
-		  	<field name="partnerFilterList" colSpan="12" layout="table">
+		  	<field name="partnerQueryTypeSelect"/>
+		  	<field name="partnerQuery" colSpan="12" showIf="partnerQueryTypeSelect == 1"/>
+		  	<field name="partnerFilterList" colSpan="12" layout="table" showIf="partnerQueryTypeSelect == 0">
 		  	 	<editor x-show-titles="false">
 	            <field name="metaField" onSelect="action-target-list-partner-filters-field-domain" colSpan="3" widget="SuggestBox" required="true" onChange="action-filter-method-update-target-field" target-name="label"/>
 	            <field name="targetField" colSpan="3" showIf="metaField.relationship != null" requiredIf="metaField.relationship != null" onChange="action-filter-method-update-target-type"/>
@@ -27,7 +29,9 @@
 		  	<panel-related field="partnerSet" colSpan="12" onSelect="action-target-list-lead-partner-set-domain"/>
 		  </panel>
 		  <panel title="Leads" colSpan="12">
-		  	<field name="leadFilterList" colSpan="12" layout="table">
+		  	<field name="leadQueryTypeSelect"/>
+		  	<field name="leadQuery" colSpan="12" showIf="leadQueryTypeSelect == 1"/>
+      		<field name="leadFilterList" colSpan="12" layout="table" showIf="leadQueryTypeSelect == 0">
 		  	 	<editor x-show-titles="false">
 	            <field name="metaField" onSelect="action-target-list-lead-filters-field-domain" colSpan="3" widget="SuggestBox" required="true" onChange="action-filter-method-update-target-field" target-name="label"/>
 	            <field name="targetField"  colSpan="3" showIf="metaField.relationship != null" requiredIf="metaField.relationship != null" onChange="action-filter-method-update-target-type"/>
