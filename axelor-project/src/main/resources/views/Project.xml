@@ -84,7 +84,9 @@
 				<field name="dueDate" colSpan="4" showIf="isProject"/>
 				<field name="$visibleDuration" title="Duration" onChange="action-project-method-set-stored-duration,action-attrs-project-compute-leadDelay"/>
 				<field name="progress" widget="Progress" showIf="isProject" onChange="action-attrs-project-compute-leadDelay"/>
-				<field name="$visibleLeadDelay" title="Lead/Delay" readonly="true" showIf="isProject" type="decimal" onChange="action-project-method-set-stored-lead-delay, action-method-project-compute-progress"/>
+			</panel>
+            <panel name="timesheet" colSpan="12" if-module="axelor-human-resource" if="__config__.app.isApp('timesheet')">
+				<field name="$visibleLeadDelay" title="Lead/Delay" readonly="true" showIf="isProject" type="decimal" onChange="action-project-method-set-stored-lead-delay,action-method-project-compute-progress"/>
 				<field name="$visibleTimeSpent" title="Time Spent" readonly="true"  type="decimal" onChange="action-project-method-set-stored-time-spent"/>
 			</panel>
 			<panel if="__config__.app.isApp('employee')" if-module="axelor-human-resource" name="humanResource" title=" " colSpan="12">
