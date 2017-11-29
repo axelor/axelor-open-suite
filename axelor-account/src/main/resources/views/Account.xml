@@ -20,15 +20,18 @@
     <tree name="account-tree" title="Accounting account">
         <column name="name" type="string"/>
          <column name="code" type="string"/>
+         <column name="company" type="string"/>
          
         <node model="com.axelor.apps.account.db.Account" domain="self.parent is null">
             <field as="name" name="name"/>
              <field as="code" name="code"/>
+             <field as="company" name="company.name"/>
         </node>
         
         <node model="com.axelor.apps.account.db.Account" parent="parent" draggable="true" onClick="action-account-view-account-onchange-view" >
             <field as="name" name="name"/>
             <field as="code" name="code"/>
+            <field as="company" name="company.name"/>
         </node>
     </tree>
 
