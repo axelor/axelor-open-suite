@@ -16,10 +16,10 @@
 	
 	<form title="Task" id="project-team-task-grid" name="team-task-form"  model="com.axelor.team.db.TeamTask" onNew="action-task-defaults">
 		<toolbar>
-			<button name="grabEvent" icon="fa-suitcase" />
-			<button name="start" icon="fa-play"/>
-			<button name="accept" icon="fa-check"/>
-			<button name="stop" icon="fa-power-off"/>
+			<button name="grabEvent" icon="fa-suitcase" onClick="action-team-task-record-assigned-yourself,save"/>
+			<button name="start" icon="fa-play" onClick="action-team-task-record-status-in-progress,save"/>
+			<button name="accept" icon="fa-check" onClick="action-team-task-record-status-closed,save"/>
+			<button name="stop" icon="fa-power-off" onClick="action-team-task-record-status-canceled,save"/>
 		</toolbar>
 		<menubar>
 	        <menu title="Tools">   
@@ -206,5 +206,20 @@
 		<context name="_task" expr="eval:__self__"/>
 	</action-view>
 	
+	<action-record name="action-team-task-record-assigned-yourself" model="com.axelor.team.db.TeamTask">
+		<field name="assignedTo" expr="eval: __user__"/>
+	</action-record>
 	
+	<action-record name="action-team-task-record-status-in-progress" model="com.axelor.team.db.TeamTask">
+		<field name="status" expr="in-progress"/>
+	</action-record>
+
+	<action-record name="action-team-task-record-status-closed" model="com.axelor.team.db.TeamTask">
+		<field name="status" expr="closed"/>
+	</action-record>
+
+	<action-record name="action-team-task-record-status-canceled" model="com.axelor.team.db.TeamTask">
+		<field name="status" expr="canceled"/>
+	</action-record>
+
 </object-views>
