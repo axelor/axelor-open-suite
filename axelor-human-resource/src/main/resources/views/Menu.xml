@@ -290,7 +290,7 @@
 	<menuitem name="extra-hours-root" parent="hr-root" if="__config__.app.isApp('exthrs')" 
     	title="Extra hours" icon="fa-hourglass-end" icon-background="#84429f"/>
 	
-	<menuitem name="edit-extra-hours" parent="extra-hours-root" title="Enter extra hours" action="edit.extra.hours"/>
+	<menuitem name="edit-extra-hours" parent="extra-hours-root" title="Request extra hours" action="edit.extra.hours"/>
 	
 	<action-method name="edit.extra.hours">
 		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="editExtraHours"/>
