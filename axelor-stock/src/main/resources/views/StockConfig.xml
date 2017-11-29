@@ -25,11 +25,11 @@
 			  <field name="hasInSmForNonStorableProduct"/>
 		  </panel>
 		  <panel colSpan="12">
-			  <field name="receiptLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
-			  <field name="pickupLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+			  <field name="receiptDefaultLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+			  <field name="pickupDefaultLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 			  <field name="wasteLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
-			  <field name="componentLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
-			  <field name="finishedProductsLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
+			  <field name="componentDefaultLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
+			  <field name="finishedProductsDefaultLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 		  </panel>
 	  </panel>
 		<panel>

@@ -50,7 +50,7 @@ public class LocationSaveService {
 				.fetch();
 		for (PartnerDefaultLocation partnerDefaultLocation : partnerDefaultLocations) {
 			Partner partnerToClean = partnerDefaultLocation.getPartner();
-			partnerToClean.removeDefaultLocation(partnerDefaultLocation);
+			partnerToClean.removePartnerDefaultLocationListItem(partnerDefaultLocation);
 		}
 
 	}

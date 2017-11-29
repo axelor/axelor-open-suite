@@ -8,8 +8,8 @@
   <entity name="StockConfig" lang="java" cachable="true">
       <many-to-one name="productionVirtualLocation" ref="com.axelor.apps.stock.db.Location" title="Production virtual location"/>
       <many-to-one name="wasteLocation" ref="com.axelor.apps.stock.db.Location" title="Waste location"/>
-      <many-to-one name="componentLocation" ref="com.axelor.apps.stock.db.Location" title="Components location"/>
-      <many-to-one name="finishedProductsLocation" ref="com.axelor.apps.stock.db.Location" title="Finished products location"/>
+      <many-to-one name="componentDefaultLocation" ref="com.axelor.apps.stock.db.Location" title="Components default location"/>
+      <many-to-one name="finishedProductsDefaultLocation" ref="com.axelor.apps.stock.db.Location" title="Finished products default location"/>
   </entity>
 
 </domain-models>

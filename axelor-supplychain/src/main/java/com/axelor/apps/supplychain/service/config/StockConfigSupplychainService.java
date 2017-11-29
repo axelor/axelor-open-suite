@@ -29,19 +29,19 @@ public class StockConfigSupplychainService extends StockConfigService {
 
     public Location getReceiptLocation(StockConfig stockConfig) throws AxelorException {
 
-        if (stockConfig.getReceiptLocation() == null) {
+        if (stockConfig.getReceiptDefaultLocation() == null) {
             throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_SUPPLYCHAIN_RECEIPT), stockConfig.getCompany().getName());
         }
 
-        return stockConfig.getReceiptLocation();
+        return stockConfig.getReceiptDefaultLocation();
 
     }
 
     public Location getPickupLocation(StockConfig stockConfig) throws AxelorException {
-        if (stockConfig.getPickupLocation() == null) {
+        if (stockConfig.getPickupDefaultLocation() == null) {
             throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_SUPPLYCHAIN_PICKUP), stockConfig.getCompany().getName());
         }
-        return stockConfig.getPickupLocation();
+        return stockConfig.getPickupDefaultLocation();
     }
 
 }

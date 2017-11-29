@@ -133,7 +133,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 	    if (partner == null || company == null) {
 	    	return null;
 		}
-		List<PartnerDefaultLocation> defaultLocations = partner.getDefaultLocations();
+		List<PartnerDefaultLocation> defaultLocations = partner.getPartnerDefaultLocationList();
 	    if (defaultLocations == null) {
 	    	return null;
 		}

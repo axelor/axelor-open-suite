@@ -6,8 +6,8 @@
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="StockConfig" lang="java" cachable="true">
-      <many-to-one name="receiptLocation" ref="com.axelor.apps.stock.db.Location" title="Receipt location"/>
-      <many-to-one name="pickupLocation" ref="com.axelor.apps.stock.db.Location" title="Pickup location"/>
+      <many-to-one name="receiptDefaultLocation" ref="com.axelor.apps.stock.db.Location" title="Receipt default location"/>
+      <many-to-one name="pickupDefaultLocation" ref="com.axelor.apps.stock.db.Location" title="Pickup default location"/>
   </entity>
 
 </domain-models>
