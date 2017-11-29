@@ -671,9 +671,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	Unit.label_to_printing as unit_label
 from stock_logistical_form as LogisticalForm
 left join base_company as Company on LogisticalForm.company = Company.id
-left join base_partner as Customer on LogisticalForm.deliver_to_customer = Customer.id
---left join base_partner as Carrier on LogisticalForm.carrier = Carrier.id
---left join base_partner as Forwarder on LogisticalForm.forwarder = Forwarder.id
+left join base_partner as Customer on LogisticalForm.deliver_to_customer_partner = Customer.id
+--left join base_partner as Carrier on LogisticalForm.carrier_partner = Carrier.id
+--left join base_partner as Forwarder on LogisticalForm.forwarder_partner = Forwarder.id
 --left join stock_incoterm as Incoterm on LogisticalForm.incoterm = Incoterm.id
 left join base_address as CompanyAddress on Company.address = CompanyAddress.id
 left join base_country as CompanyCountry on CompanyAddress.addressl7country = CompanyCountry.id
