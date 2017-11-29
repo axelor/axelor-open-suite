@@ -65,9 +65,10 @@
    			public static final Integer TYPE_PROJECT = 1;
    			public static final Integer TYPE_PHASE = 2;
 
-   			public static final Integer STATE_PLANNED = 1;
+   			public static final Integer STATE_NEW = 1;
    			public static final Integer STATE_IN_PROGRESS = 2;
    			public static final Integer STATE_FINISHED = 3;
+   			public static final Integer STATE_CANCELED = 4;
    		]]>
    	</extra-code>
   </entity>

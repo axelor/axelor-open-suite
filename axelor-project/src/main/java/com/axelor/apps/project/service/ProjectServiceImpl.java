@@ -60,7 +60,7 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public Project generateProject(Project parentProject, String fullName, User assignedTo, Company company, Partner clientPartner){
 		Project project = new Project();
-		project.setStatusSelect(ProjectRepository.STATE_PLANNED);
+		project.setStatusSelect(ProjectRepository.STATE_NEW);
 		project.setParentProject(parentProject);
 		if (parentProject != null) {
 			parentProject.addChildProjectListItem(project);

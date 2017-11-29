@@ -9,9 +9,10 @@
 	</selection>
 	
 	<selection name="project.status.select">
-		<option value="1">Planned</option>
+		<option value="1">New</option>
 		<option value="2">In Progress</option>
 		<option value="3">Finished</option>
+		<option value="4">Canceled</option>
 	</selection>
 	
 	<selection name="message.related.to.select" id="project.message.related.to.select">

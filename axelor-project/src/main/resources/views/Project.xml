@@ -21,6 +21,9 @@
 
 	<form name="project-form" title="Project" model="com.axelor.apps.project.db.Project" width="large" onLoad="action-project-on-load-group,save" onNew="action-project-group-on-new-project">
 		<toolbar>
+			<button name="start" icon="fa-play" onClick="action-project-record-status-in-progress,save"/>
+			<button name="done" icon="fa-check" onClick="action-project-record-status-finished,save"/>
+			<button name="canceled" icon="fa-power-off" onClick="action-project-record-status-canceled,save"/>
 			<button if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="printProject" title="Reporting folder" showIf="isBusinessProject" onClick="save,action-project-method-print-project"/>
 		</toolbar>
 		<menubar>
@@ -55,6 +58,7 @@
                      </h4>
 		]]></viewer>
 			</field>
+			<field name="statusSelect" widget="NavSelect" colSpan="12" readonly="true" showTitle="false"/>
 			<panel name="overview" title="Overview" colSpan="12">
 				<field name="company" form-view="company-form" grid-view="company-grid"/>
 				<field name="assignedTo" title="Person In Charge" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
@@ -427,5 +431,17 @@
 	<action-method name="action-project-method-select-team">
 		<call class="com.axelor.apps.project.web.ProjectController" method="selectTeam"/>
 	</action-method>
+	
+	<action-record name="action-project-record-status-in-progress" model="com.axelor.apps.project.db.Project">
+		<field name="statusSelect" expr="eval: __repo__(Project).STATE_IN_PROGRESS"/>
+	</action-record>
+
+	<action-record name="action-project-record-status-finished" model="com.axelor.apps.project.db.Project">
+		<field name="statusSelect" expr="eval: __repo__(Project).STATE_FINISHED"/>
+	</action-record>
+
+	<action-record name="action-project-record-status-canceled" model="com.axelor.apps.project.db.Project">
+		<field name="statusSelect" expr="eval: __repo__(Project).STATE_CANCELED"/>
+	</action-record>
 
 </object-views>
