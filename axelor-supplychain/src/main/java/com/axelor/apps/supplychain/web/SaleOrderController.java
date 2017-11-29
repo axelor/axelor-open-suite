@@ -35,6 +35,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.LocationService;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -118,7 +119,7 @@ public class SaleOrderController{
 
 		if(saleOrder != null) {
 
-			Location location = Beans.get(SaleOrderStockService.class).getLocation(saleOrder.getCompany());
+			Location location = Beans.get(LocationService.class).getLocation(saleOrder.getCompany());
 
 			if(location != null) {
 				response.setValue("location", location);

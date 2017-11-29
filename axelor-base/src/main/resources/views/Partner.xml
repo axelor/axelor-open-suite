@@ -276,23 +276,26 @@
 			<panel name="carrier" title="Carrier" showIf="isCarrier">
 				<field name="freightCarrierModeList" title="Freight Carrier Mode" form-view="freight-carrier-mode-freight-carrier-form" grid-view="freight-carrier-mode-freight-carrier-grid" colSpan="12"/>
 			</panel>
-			<panel name="delivery" title="Delivery" showIf="isSupplier || isCustomer">
-				<field name="deliveryDelay" showIf="isSupplier"/>
-				<spacer/>
-				<field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-partner-record-empty-freight-carrier-mode" title="Shipment Mode" if="__config__.app.isApp('stock')" />
-				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode" if="__config__.app.isApp('stock')" />
-				<field name="freightCarrier" if-module="axelor-stock" form-view="partner-form" grid-view="partner-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
-			</panel>
-		</panel-tabs>
-		<panel>
-			<field name="partnerAttrs" colSpan="12" />
-		</panel>
-		<panel-mail>
-			<mail-messages limit="4" />
-			<mail-followers />
-		</panel-mail>
-	</form>
-
+            <panel name="delivery" title="Delivery" showIf="isSupplier || isCustomer">
+                <field name="deliveryDelay" showIf="isSupplier"/>
+                <spacer/>
+                <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-partner-record-empty-freight-carrier-mode" title="Shipment Mode" if="__config__.app.isApp('stock')" />
+                <field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode" if="__config__.app.isApp('stock')" />
+                <field name="freightCarrier" if-module="axelor-stock" form-view="partner-form" grid-view="partner-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
+            <field name="partnerDefaultLocationList" if-module="axelor-stock"  colSpan="12"
+					   form-view="partner-default-location-form" grid-view="partner-default-location-grid"
+					   if="__config__.app.isApp('stock')"/>
+            </panel>
+        </panel-tabs>
+        <panel>
+            <field name="partnerAttrs" colSpan="12" />
+        </panel>
+        <panel-mail>
+            <mail-messages limit="4" />
+            <mail-followers />
+        </panel-mail>
+    </form>
+	
 	<grid name="partner-light-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
 		<field name="fullName"/>
 		<field name="fixedPhone"/>

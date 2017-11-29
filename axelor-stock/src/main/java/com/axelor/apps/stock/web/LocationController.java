@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
+import com.axelor.apps.stock.service.LocationService;
 import org.eclipse.birt.core.exception.BirtException;
 
 import org.slf4j.Logger;
@@ -46,24 +47,13 @@ public class LocationController {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
-	@Inject
 	private LocationRepository locationRepo;
-	
-	public void checkIsDefaultLocation(ActionRequest request, ActionResponse response){
-		
-		Location location = request.getContext().asType(Location.class);
-		
-		if(location != null && location.getIsDefaultLocation() && location.getCompany() != null && location.getTypeSelect() != null) {
-			
-			Location findLocation = locationRepo.all().filter("company = ? and typeSelect = ? and isDefaultLocation = ?", location.getCompany(),location.getTypeSelect(),location.getIsDefaultLocation()).fetchOne();
-			
-			if(findLocation != null) {
-				response.setFlash(I18n.get(IExceptionMessage.LOCATION_1)+" "+findLocation.getName());
-				response.setValue("isDefaultLocation", false);
-			}
-		}
+
+	@Inject
+	public LocationController(LocationRepository locationRepo) {
+		this.locationRepo = locationRepo;
 	}
-	
+
 	/**
 	 * Method that generate inventory as a pdf
 	 *

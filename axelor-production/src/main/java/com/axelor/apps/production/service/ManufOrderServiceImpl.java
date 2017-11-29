@@ -31,11 +31,14 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -336,14 +339,14 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 			return wasteStockMove;
 		}
 
-		ProductionConfigService productionConfigService = Beans.get(ProductionConfigService.class);
+		StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
 		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
 		StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
 		AppBaseService appBaseService = Beans.get(AppBaseService.class);
 
-		ProductionConfig productionConfig = productionConfigService.getProductionConfig(company);
-		Location virtualLocation = productionConfigService.getProductionVirtualLocation(productionConfig);
-		Location wasteLocation = productionConfigService.getWasteLocation(productionConfig);
+		StockConfig stockConfig = stockConfigService.getStockConfig(company);
+		Location virtualLocation = stockConfigService.getProductionVirtualLocation(stockConfig);
+		Location wasteLocation = stockConfigService.getWasteLocation(stockConfig);
 
 		wasteStockMove = stockMoveService.createStockMove(virtualLocation.getAddress(), wasteLocation.getAddress(),
 				company, company.getPartner(), virtualLocation, wasteLocation, null, appBaseService.getTodayDate(),

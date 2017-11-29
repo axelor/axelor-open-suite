@@ -1,2 +1,2 @@
-"importId";"name";"code";"company.importId";"customerVirtualLocation.id";"supplierVirtualLocation.id";"inventoryVirtualLocation.id";"hasOutSmForStorableProduct";"hasInSmForStorableProduct";"customsWeightUnit.importId"
-"1";"Axelor";"AXE";1;2;3;4;"true";"true";306
+"importId";"name";"code";"company.importId";"customerVirtualLocation.importId";"supplierVirtualLocation.importId";"inventoryVirtualLocation.importId";"hasOutSmForStorableProduct";"hasInSmForStorableProduct";"customsWeightUnit.importId";"defaultLocation.importId"
+"1";"Axelor";"AXE";1;2;3;4;"true";"true";306;1

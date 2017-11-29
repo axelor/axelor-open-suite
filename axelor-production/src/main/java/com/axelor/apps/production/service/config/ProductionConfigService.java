@@ -38,26 +38,5 @@ public class ProductionConfigService {
 		return productionConfig;
 		
 	}
-	
-	
-	
-	/******************************** LOCATION ********************************************/
-	
-	public Location getProductionVirtualLocation(ProductionConfig productionConfig) throws AxelorException  {
-		
-		if(productionConfig.getProductionVirtualLocation() == null)  {
-			throw new AxelorException(productionConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_CONFIG_2), productionConfig.getCompany().getName());
-		}
-		
-		return productionConfig.getProductionVirtualLocation();
-		
-	}
-	
-	public Location getWasteLocation(ProductionConfig productionConfig) throws AxelorException {
-		if (productionConfig.getWasteLocation() == null) {
-			throw new AxelorException(productionConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_CONFIG_3), productionConfig.getCompany().getName());
-		}
-		return productionConfig.getWasteLocation();
-	}
 
 }

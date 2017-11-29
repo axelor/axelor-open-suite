@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -15,32 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.service;
+package com.axelor.apps.stock.db.repo;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.service.LocationSaveService;
+import com.axelor.inject.Beans;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-public interface LocationService {
+public class LocationStockRepository extends LocationRepository {
 
     /**
-     * Get the default location of the given company
-     * @param company
-     * @return the default location or null
+     * Override to remove incompatible locations in partners
+     * @param entity
+     * @return
      */
-    public Location getLocation(Company company);
-
-	public BigDecimal getQty(Long productId, Long locationId, String qtyType);
-	
-	public BigDecimal getRealQty(Long productId, Long locationId);
-	
-	public BigDecimal getFutureQty(Long productId, Long locationId);
-
-	public void computeAvgPriceForProduct(Product product);
-
-	public List<Long> getBadLocationLineId();
-	
+    @Override
+    public Location save(Location entity) {
+        Beans.get(LocationSaveService.class).removeForbiddenDefaultLocation(entity);
+        return super.save(entity);
+    }
 }

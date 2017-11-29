@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import java.time.LocalDate;
+
+import com.axelor.apps.stock.service.LocationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -163,7 +165,7 @@ public class PurchaseOrderSupplierService {
 				null,
 				parentPurchaseOrder.getPurchaseOrderSeq(),
 				parentPurchaseOrder.getExternalReference(),
-				purchaseOrderServiceSupplychainImpl.getLocation(parentPurchaseOrder.getCompany()),
+				Beans.get(LocationService.class).getLocation(parentPurchaseOrder.getCompany()),
 				today,
 				supplierPartner.getPurchasePriceList(),
 				supplierPartner);

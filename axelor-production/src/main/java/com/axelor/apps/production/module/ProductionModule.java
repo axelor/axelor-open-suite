@@ -53,11 +53,14 @@ import com.axelor.apps.production.service.StockRulesServiceProductionImpl;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.app.AppProductionServiceImpl;
 import com.axelor.apps.production.service.app.ConfiguratorServiceProductionImpl;
+import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.sale.service.ConfiguratorServiceImpl;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.config.StockConfigSupplychainService;
 
 public class ProductionModule extends AxelorModule {
 
@@ -79,6 +82,7 @@ public class ProductionModule extends AxelorModule {
 		bind(SaleOrderServiceSupplychainImpl.class).to(SaleOrderServiceProductionImpl.class);
 		bind(StockRulesServiceSupplychainImpl.class).to(StockRulesServiceProductionImpl.class);
 		bind(BillOfMaterialRepository.class).to(BillOfMaterialManagementRepository.class);
+		bind(StockConfigSupplychainService.class).to(StockConfigProductionService.class);
 		bind(ConfiguratorBomService.class).to(ConfiguratorBomServiceImpl.class);
 		bind(ConfiguratorProdProcessService.class).to(ConfiguratorProdProcessServiceImpl.class);
 		bind(ConfiguratorProdProcessLineService.class).to(ConfiguratorProdProcessLineServiceImpl.class);
