@@ -135,6 +135,7 @@
 		</panel>
      
  		<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 6" itemSpan="12">
+ 			<button name="showAllEvents" title="Show all events" onClick="action-lead-view-events" readonlyIf="id == null"/>
  			<panel-related field="eventList" colSpan="12" grid-view="lead-event-grid" form-view="event-form"/>
 			<panel-related field="opportunitiesList" colSpan="12" grid-view="opportunity-grid" form-view="opportunity-form"/>
 			<panel-dashlet action="action-lead-view-emails"/>
@@ -252,6 +253,12 @@
 					OR (self.fromEmailAddress.id = :idEmail))</domain>
 		<context name="id" expr="eval: id"/>
 		<context name="idEmail" expr="eval: emailAddress?.id"/>
+	</action-view>
+	
+	<action-view name="action-lead-view-events" title="Events" model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="list-event-grid"/>
+		<view type="form" name="event-form"/>
+		<domain>self.lead.id = :_id</domain>
 	</action-view>
 	
 	<action-method name="action-show-leads-on-map-page">
