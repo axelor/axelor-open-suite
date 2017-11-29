@@ -364,7 +364,7 @@
 
         </panel>
       
-      <panel sidebar="true" itemSpan="6" title="Margin"  hideIf="clientPartner == null">
+      <panel sidebar="true" itemSpan="6" title="Margin"  hideIf="clientPartner == null" readonly="true">
       		<field name="totalCostPrice"/>
       		<field name="totalGrossMargin"/>
       		<field name="marginRate"/>
