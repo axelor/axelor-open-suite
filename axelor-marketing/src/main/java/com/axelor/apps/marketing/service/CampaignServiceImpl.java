@@ -25,11 +25,9 @@ import java.util.Set;
 import javax.mail.MessagingException;
 
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.EventRepository;
-import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.apps.marketing.db.TargetList;
 import com.axelor.apps.marketing.exception.IExceptionMessage;
@@ -39,7 +37,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.studio.service.filter.FilterJpqlService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -52,16 +49,11 @@ public class CampaignServiceImpl implements CampaignService {
 	private MetaFiles metaFiles;
 	
 	@Inject
-	private FilterJpqlService filterJpqlService;
-	
-	@Inject
-	private PartnerRepository partnerRepo;
-	
-	@Inject
-	private LeadRepository leadRepo;
-	
-	@Inject
 	private EventRepository eventRepo;
+	
+	@Inject
+	private TargetListService targetListService;
+	
 	
 	public MetaFile sendEmail(Campaign campaign) {
 		
@@ -155,7 +147,7 @@ public class CampaignServiceImpl implements CampaignService {
 		return null;
 	}
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generateEvents(Campaign campaign) {
 		
 		for(Partner partner : campaign.getPartnerSet()) {
@@ -185,29 +177,14 @@ public class CampaignServiceImpl implements CampaignService {
 		}
 	}
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generateTargets(Campaign campaign) {
 		
 		Set<Partner> partnerSet= new HashSet<>();
 		Set<Lead> leadSet = new HashSet<>();
-		
-		for(TargetList target : campaign.getTargetModelSet()) {
-			String filter = filterJpqlService.getJpqlFilters(target.getPartnerFilterList());
-			if (filter != null) {
-				partnerSet.addAll(partnerRepo.all().filter(filter).fetch());
-			}
-			for(Partner partner : target.getPartnerSet()) {
-				partnerSet.add(partner);
-			}
-			
-			filter = filterJpqlService.getJpqlFilters(target.getLeadFilterList());
-			if (filter != null) {
-				leadSet.addAll(leadRepo.all().filter(filter).fetch());
-			}
-			for(Lead lead : target.getLeadSet()) {
-				leadSet.add(lead);
-			}
-		}
+
+		leadSet = targetListService.getAllLeads(campaign.getTargetModelSet());
+		partnerSet = targetListService.getAllPartners(campaign.getTargetModelSet());
 		
 		campaign.setPartnerSet(partnerSet);
 		campaign.setLeadSet(leadSet);

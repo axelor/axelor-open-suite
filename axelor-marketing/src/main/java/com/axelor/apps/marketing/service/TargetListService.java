@@ -15,19 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.marketing.module;
+package com.axelor.apps.marketing.service;
 
-import com.axelor.app.AxelorModule;
-import com.axelor.apps.marketing.service.CampaignService;
-import com.axelor.apps.marketing.service.CampaignServiceImpl;
-import com.axelor.apps.marketing.service.TargetListService;
-import com.axelor.apps.marketing.service.TargetListServiceImpl;
+import java.util.Set;
 
-public class MarketingModule extends AxelorModule{
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.marketing.db.TargetList;
 
-	@Override
-	protected void configure() {
-		bind(CampaignService.class).to(CampaignServiceImpl.class);
-		bind(TargetListService.class).to(TargetListServiceImpl.class);
-	}
+public interface TargetListService {
+
+	public String getPartnerQuery(TargetList targetList);
+
+	public String getLeadQuery(TargetList targetList);
+
+	public Set<Partner> getAllPartners(Set<TargetList> targetListSet);
+
+	public Set<Lead> getAllLeads(Set<TargetList> targetListSet);
 }
+ 
