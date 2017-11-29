@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
@@ -48,8 +47,13 @@ public interface SaleOrderStockService {
 	 * @param saleOrder
 	 * @return
 	 */
-	public boolean existActiveStockMoveForSaleOrder(SaleOrder saleOrder);
+    public boolean activeStockMoveForSaleOrderExists(SaleOrder saleOrder);
+
+    /**
+     * Update delivery state by checking delivery states on the sale order lines.
+     * 
+     * @param saleOrder
+     */
+    void updateDeliveryState(SaleOrder saleOrder);
+
 }
-
-
-

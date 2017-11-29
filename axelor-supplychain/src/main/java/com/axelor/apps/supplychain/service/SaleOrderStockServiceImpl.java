@@ -41,7 +41,6 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LocationRepository;
-import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
@@ -50,12 +49,8 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
@@ -82,8 +77,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 	@Override
 	public StockMove createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
-		if (this.existActiveStockMoveForSaleOrder(saleOrder)) {
-			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXIST), saleOrder.getSaleOrderSeq()); 
+		if (this.activeStockMoveForSaleOrderExists(saleOrder)) {
+			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXISTS), saleOrder.getSaleOrderSeq()); 
 		}
 		
 		Company company = saleOrder.getCompany();
@@ -247,10 +242,36 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 		return false;
 	}
 
-	public boolean existActiveStockMoveForSaleOrder(SaleOrder saleOrder){
-		long nbStockMove = stockMoveRepo.all().filter("self.saleOrder = ? AND self.statusSelect <> ?", saleOrder, StockMoveRepository.STATUS_CANCELED).count();
-		return nbStockMove > 0;
-	}
+    public boolean activeStockMoveForSaleOrderExists(SaleOrder saleOrder) {
+        return saleOrder.getStockMoveList() != null ? saleOrder.getStockMoveList().stream()
+                .anyMatch(stockMove -> stockMove.getStatusSelect() <= StockMoveRepository.STATUS_PLANNED) : false;
+    }
+
+    @Override
+    @Transactional
+    public void updateDeliveryState(SaleOrder saleOrder) {
+        saleOrder.setDeliveryState(computeDeliveryState(saleOrder));
+    }
+
+    private int computeDeliveryState(SaleOrder saleOrder) {
+        if (saleOrder.getSaleOrderLineList() == null) {
+            return 0;
+        }
+
+        int deliveryState = SaleOrderRepository.STATE_DELIVERED;
+
+        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+            if (saleOrderLine.getDeliveryState() != SaleOrderRepository.STATE_DELIVERED) {
+                if (saleOrderLine.getDeliveryState() == SaleOrderRepository.STATE_PARTIALLY_DELIVERED) {
+                    return SaleOrderRepository.STATE_PARTIALLY_DELIVERED;
+                }
+
+                deliveryState = SaleOrderRepository.STATE_NOT_DELIVERED;
+            }
+        }
+
+        return deliveryState;
+    }
 
 }
 
