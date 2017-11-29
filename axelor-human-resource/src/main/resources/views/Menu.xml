@@ -12,6 +12,7 @@
     	action="employee.all"/>
 
 	<action-view name="employee.all" title="Employee" model="com.axelor.apps.hr.db.Employee">
+		<view type="cards" name="employee-card"/>
     	<view type="grid" name="employee-grid"/>
 	    <view type="form" name="employee-form"/>
 	</action-view>
