@@ -218,22 +218,19 @@
     	<column name="assignedTo" type="reference"/>
     	<column name="progress" type="integer"/>
 		<column name="openTask" type="button"/>
-		<column name="editTask" type="button"/>
-		
+
 		<node model="com.axelor.team.db.TeamTask" domain="self.project.id = :_id" onClick="action-team-task-view-task">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
 			<button name="openTask" title="Open task" onClick="action-team-task-open-task"/>
-			<button name="editTask" title="Edit" onClick="action-team-task-edit-task"/>
-		</node>    	
+		</node>
 		
 		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-team-task-view-task">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
 			<button name="openTask" title="Open task" onClick="action-team-task-open-task"/>
-			<button name="editTask" title="Edit" onClick="action-team-task-edit-task"/>
 		</node>
     
 	</tree>
