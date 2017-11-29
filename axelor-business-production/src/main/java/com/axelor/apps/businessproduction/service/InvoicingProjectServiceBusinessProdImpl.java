@@ -40,7 +40,7 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
 		counter++;
 		
 		this.fillLines(invoicingProject, project);
-		List<Project> projectChildrenList = Beans.get(ProjectRepository.class).all().filter("self.project = ?1", project).fetch();
+		List<Project> projectChildrenList = Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
 
 		for (Project projectChild : projectChildrenList) {
 			this.setLines(invoicingProject, projectChild, counter);
