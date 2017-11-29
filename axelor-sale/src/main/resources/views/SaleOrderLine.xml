@@ -38,10 +38,8 @@
     
 	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
 	onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client" onNew="action-group-sale-saleorderline-onnew" width="large">
-		<panel>
-		    <field name="typeSelect"  onChange="action-sale-order-line-method-empty-line" selection-in="[0,1]" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
-		    <field name="typeSelect"  onChange="action-sale-order-line-method-empty-line" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
-			<field name="productName" showIf="typeSelect == 1" title="Title"/>
+		<panel showIf="typeSelect == 1">
+			<field name="productName"  title="Title"/>
 		</panel>
 		<panel hideIf="typeSelect == 1">
 		   	<field name="product" onChange="action-group-sale-saleorderline-product-onchange,action-sale-order-line-compute-total-pack,action-method-sale-order-line-available-stock" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid"/>
@@ -69,6 +67,10 @@
 		<panel name="discount" title="Discount" hideIf="typeSelect != 0">
 		   	<field name="discountTypeSelect" onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title,action-sale-order-line-method-compute-analytic-distribution"/>
 		   	<field name="discountAmount" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 3"/>
+		</panel>
+		<panel>
+		<field name="typeSelect"  onChange="action-sale-order-line-method-empty-line" selection-in="[0,1]" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
+		    <field name="typeSelect"  onChange="action-sale-order-line-method-empty-line" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
 		</panel>
 		<panel-tabs hideIf="typeSelect == 1" name="allPanelTabs">
 			<panel name="pack" title="Pack lines" showIf="typeSelect == 2" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" >
