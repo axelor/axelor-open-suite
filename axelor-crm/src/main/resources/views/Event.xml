@@ -17,6 +17,15 @@
         <field name="user" form-view="user-form"  grid-view="user-grid"/>
     </grid>
     
+    <grid name="list-event-grid" title="Events" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime"  x-row-height="80">
+		<field name="typeSelect"/>
+		<field name="statusSelect" />
+		<field name="startDateTime"/>
+		<field name="user"/>
+		<field name="subject"/>
+		<field name="description" widget="html"/>
+	</grid>
+    
     <calendar name="event-calendar-color-by-user" title="Meetings" mode="month" colorBy="user" editable="false"
     	eventStart="startDateTime" eventStop="endDateTime" eventLength="1" model="com.axelor.apps.crm.db.Event"
     	onChange="action-event-method-compute-from-calendar">
