@@ -29,6 +29,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,23 +77,24 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	@Inject
 	protected StockMoveLineService stockMoveLineService;
-
-	@Inject
 	private SequenceService sequenceService;
-
-	@Inject
 	private  StockMoveLineRepository stockMoveLineRepo;
+	protected AppBaseService appBaseService;
+	protected StockMoveRepository stockMoveRepo;
+	protected PartnerProductQualityRatingService partnerProductQualityRatingService;
 
 	@Inject
-	protected AppBaseService appBaseService;
-	
-	@Inject
-	protected StockMoveRepository stockMoveRepo;
-	
-	@Inject
-	protected PartnerProductQualityRatingServiceImpl partnerProductQualityRatingService;
+	public StockMoveServiceImpl(StockMoveLineService stockMoveLineService, SequenceService sequenceService,
+								StockMoveLineRepository stockMoveLineRepository, AppBaseService appBaseService,
+								StockMoveRepository stockMoveRepository, PartnerProductQualityRatingService partnerProductQualityRatingService) {
+	    this.stockMoveLineService = stockMoveLineService;
+	    this.sequenceService = sequenceService;
+	    this.stockMoveLineRepo = stockMoveLineRepository;
+	    this.appBaseService = appBaseService;
+	    this.stockMoveRepo = stockMoveRepository;
+	    this.partnerProductQualityRatingService = partnerProductQualityRatingService;
+	}
 
 	
 	@Override
@@ -528,7 +532,6 @@ public class StockMoveServiceImpl implements StockMoveService {
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel(StockMove stockMove) throws AxelorException  {
-
 		LOG.debug("Annulation du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
 
 		stockMoveLineService.updateLocations(
@@ -868,7 +871,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 					.generate()
 					.getFileLink();
 		} else {
-			throw new AxelorException(stockMove, IException.INCONSISTENCY, I18n.get(IExceptionMessage.STOCK_MOVE_10));
+			throw new AxelorException(StockMove.class, IException.INCONSISTENCY, I18n.get(IExceptionMessage.STOCK_MOVE_10));
 		}
 	}
 
@@ -918,5 +921,19 @@ public class StockMoveServiceImpl implements StockMoveService {
 
         return nameBuilder.toString();
     }
+
+	@Override
+    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void applyCancelReason(StockMove stockMove, CancelReason cancelReason) throws AxelorException {
+		stockMove = stockMoveRepo.find(stockMove.getId());
+		if (cancelReason == null) {
+			throw new AxelorException(stockMove, IException.MISSING_FIELD, I18n.get(IExceptionMessage.CANCEL_REASON_MISSING));
+		}
+		if (cancelReason.getApplicationType() == null &&
+				!(cancelReason.getApplicationType().equals(StockMove.class.getCanonicalName()))) {
+			throw new AxelorException(stockMove, IException.MISSING_FIELD, I18n.get(IExceptionMessage.CANCEL_REASON_BAD_TYPE));
+		}
+		stockMove.setCancelReason(cancelReason);
+	}
 
 }

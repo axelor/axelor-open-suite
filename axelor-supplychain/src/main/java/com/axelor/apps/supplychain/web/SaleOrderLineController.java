@@ -83,7 +83,9 @@ public class SaleOrderLineController {
 				return;
 			}
 			//Use the unit to get the right quantity
-			Unit unit = saleOrderLine.getProduct().getUnit();
+			Unit unit = null;
+			if (saleOrderLine.getProduct() != null)
+				unit = saleOrderLine.getProduct().getUnit();
 			BigDecimal qty = saleOrderLine.getQty();
 			if(unit != null && !unit.equals(saleOrderLine.getUnit())){
 				qty = Beans.get(UnitConversionService.class).convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());

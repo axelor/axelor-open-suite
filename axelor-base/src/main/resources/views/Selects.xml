@@ -429,4 +429,9 @@
 		<option value="general">General</option>
 	</selection>
 
+	<selection name="base.cancel.reason.application.type.select">
+		<option value="com.axelor.apps.sale.db.SaleOrder">Sale order</option>
+        <option value="com.axelor.apps.stock.db.StockMove">Stock move</option>
+	</selection>
+
 </object-views>

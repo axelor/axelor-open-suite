@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.FreightCarrierMode;
@@ -89,7 +90,7 @@ public interface StockMoveService {
 	public StockMove copyAndSplitStockMoveReverse(StockMove stockMove, boolean split) throws AxelorException;
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancel(StockMove stockMove) throws AxelorException;
+	void cancel(StockMove stockMove) throws AxelorException;
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty);
@@ -188,4 +189,5 @@ public interface StockMoveService {
      */
     String computeName(StockMove stockMove, String name);
 
+	void applyCancelReason(StockMove stockMove, CancelReason cancelReason) throws AxelorException;
 }
