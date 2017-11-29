@@ -865,27 +865,6 @@ where Lead.id in (@INJECTID)]]></xml-property>
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>cash_register_address_email</design:name>
-              <design:position>6</design:position>
-            </design:identifier>
-            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
-            <design:precision>255</design:precision>
-            <design:scale>0</design:scale>
-            <design:nullability>Nullable</design:nullability>
-            <design:uiHints>
-              <design:displayName>cash_register_address_email</design:displayName>
-            </design:uiHints>
-          </design:attributes>
-          <design:usageHints>
-            <design:label>cash_register_address_email</design:label>
-            <design:formattingHints>
-              <design:displaySize>255</design:displaySize>
-            </design:formattingHints>
-          </design:usageHints>
-        </design:resultColumnDefinitions>
-        <design:resultColumnDefinitions>
-          <design:attributes>
-            <design:identifier>
               <design:name>code</design:name>
               <design:position>7</design:position>
             </design:identifier>
@@ -2306,27 +2285,6 @@ where Lead.id in (@INJECTID)]]></xml-property>
           </design:attributes>
           <design:usageHints>
             <design:label>cash_position_variation_account</design:label>
-            <design:formattingHints>
-              <design:displaySize>20</design:displaySize>
-            </design:formattingHints>
-          </design:usageHints>
-        </design:resultColumnDefinitions>
-        <design:resultColumnDefinitions>
-          <design:attributes>
-            <design:identifier>
-              <design:name>cash_register_template</design:name>
-              <design:position>75</design:position>
-            </design:identifier>
-            <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-            <design:precision>19</design:precision>
-            <design:scale>0</design:scale>
-            <design:nullability>Nullable</design:nullability>
-            <design:uiHints>
-              <design:displayName>cash_register_template</design:displayName>
-            </design:uiHints>
-          </design:attributes>
-          <design:usageHints>
-            <design:label>cash_register_template</design:label>
             <design:formattingHints>
               <design:displaySize>20</design:displaySize>
             </design:formattingHints>

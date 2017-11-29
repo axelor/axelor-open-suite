@@ -42,8 +42,6 @@
     <boolean name="autoReconcileOnInvoice" title="Authorize auto reconcile on invoice"/>
     <boolean name="autoReconcileOnPayment" title="Authorize auto reconcile on payment"/>
    	
-   	<many-to-one name="cashRegisterTemplate" ref="com.axelor.apps.message.db.Template" title="Cashier email template"/>
-   	<string name="cashRegisterAddressEmail" title="Cashier email address"/>
    	<many-to-one name="payingBackTax" ref="com.axelor.apps.account.db.Tax" title="Tax for management fee"/>
 
 	<!-- Default Payment Modes -->
