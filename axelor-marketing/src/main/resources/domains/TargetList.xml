@@ -11,9 +11,13 @@
   	<one-to-many name="partnerFilterList" ref="com.axelor.studio.db.Filter" title="Partner filters" />
   	<integer name="partnerTypeSelect" title="Select type" selection="target.partner.type.select" />
   	<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Select Partner/Contacts" />
+  	<string name="partnerQuery" title="Partner Query"/>
+  	<integer name="partnerQueryTypeSelect" title="Select Query type" selection="marketing.target.list.query.type.select" default="0" />
+  	
   	<one-to-many name="leadFilterList" ref="com.axelor.studio.db.Filter" title="Lead filters" />
   	<many-to-many name="leadSet" ref="com.axelor.apps.crm.db.Lead" title="Select leads" />
-  
+  	<string name="leadQuery" title="Lead Query"/>
+  	<integer name="leadQueryTypeSelect" title="Select Query type" selection="marketing.target.list.query.type.select" default="0" />
   </entity>
 
 </domain-models>
