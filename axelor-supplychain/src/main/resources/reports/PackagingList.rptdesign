@@ -2925,7 +2925,7 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                         <data id="286">
                                             <structure name="numberFormat">
                                                 <property name="category">Fixed</property>
-                                                <property name="pattern">###0.000{RoundingMode=HALF_UP}</property>
+                                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
                                             </structure>
                                             <property name="resultSetColumn">Aggregation</property>
                                         </data>
@@ -2952,7 +2952,7 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
 switch (row["type_select"]) {
 case 1:
 case 2:
-  var gross_weight = row["gross_weight"] ? Formatter.format(row["gross_weight"],  "#,##0.000") : "N/A";
+  var gross_weight = row["gross_weight"] ? Formatter.format(row["gross_weight"],  "#,##0.00") : "N/A";
   String.myFormat(row["line_format"], row["parcel_pallet_number"], row["dimensions"] || "N/A", row._outer["unit_label"], gross_weight);
   break;
 default:
@@ -2993,7 +2993,7 @@ default:
                                     <data id="195">
                                         <structure name="numberFormat">
                                             <property name="category">Fixed</property>
-                                            <property name="pattern">#,##0.000{RoundingMode=HALF_UP}</property>
+                                            <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                                         </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">net_weight</property>
@@ -3047,7 +3047,7 @@ default:
                                         </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>
-var total_gross_weight = row._outer._outer["total_gross_weight"] ? Formatter.format(row._outer._outer["total_gross_weight"],  "#,##0.000") : "N/A";
+var total_gross_weight = row._outer._outer["total_gross_weight"] ? Formatter.format(row._outer._outer["total_gross_weight"],  "#,##0.00") : "N/A";
 String.myFormat(row["translation"], row._outer["ParcelPalletCount"], row._outer._outer["unit_label"], total_gross_weight);
 </VALUE-OF>]]></text-property>
                                     </text>
@@ -3111,7 +3111,7 @@ String.myFormat(row["translation"], row._outer["ParcelPalletCount"], row._outer.
                                         <property name="fontWeight">bold</property>
                                         <structure name="numberFormat">
                                             <property name="category">Fixed</property>
-                                            <property name="pattern">#,##0.000{RoundingMode=HALF_UP}</property>
+                                            <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                                         </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">TotalNetWeight</property>
