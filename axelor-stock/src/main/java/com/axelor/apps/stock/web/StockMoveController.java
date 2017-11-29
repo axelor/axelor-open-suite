@@ -91,12 +91,12 @@ public class StockMoveController {
 	
 
 	public void cancel(ActionRequest request, ActionResponse response)  {
-
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 
 		try {
+			stockMoveService.applyCancelReason(stockMove, stockMove.getCancelReason());
 			stockMoveService.cancel(stockMoveRepo.find(stockMove.getId()));
-			response.setReload(true);
+			response.setCanClose(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
@@ -108,16 +108,19 @@ public class StockMoveController {
 	 * @param request
 	 * @param response
 	 */
-	public void printStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void printStockMove(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 		@SuppressWarnings("unchecked")
 		List<Integer> lstSelectedMove = (List<Integer>) request.getContext().get("_ids");
 
-		String fileLink =  stockMoveService.printStockMove(stockMove, lstSelectedMove, false);
-
-		response.setView(ActionView
-				.define(I18n.get("Stock move"))
-				.add("html", fileLink).map());
+		try {
+			String fileLink = stockMoveService.printStockMove(stockMove, lstSelectedMove, false);
+			response.setView(ActionView
+					.define(I18n.get("Stock move"))
+					.add("html", fileLink).map());
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 
 	/**
@@ -125,18 +128,20 @@ public class StockMoveController {
 	 * Print one or more stock move as PDF
 	 * @param request
 	 * @param response
-	 * @throws AxelorException
 	 */
-	public void printPickingStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void printPickingStockMove(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 		@SuppressWarnings("unchecked")
 		List<Integer> lstSelectedMove = (List<Integer>) request.getContext().get("_ids");
 
-		String fileLink =  stockMoveService.printStockMove(stockMove, lstSelectedMove, true);
-
-		response.setView(ActionView
-				.define(I18n.get("Stock move"))
-				.add("html", fileLink).map());
+		try {
+			String fileLink = stockMoveService.printStockMove(stockMove, lstSelectedMove, true);
+			response.setView(ActionView
+					.define(I18n.get("Stock move"))
+					.add("html", fileLink).map());
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 
 
