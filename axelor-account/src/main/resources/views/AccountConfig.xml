@@ -65,10 +65,6 @@
 					<field name="exportPath"/>
 <!-- 					<field name="exportFileName"/> -->
 				</panel>
-				<panel name="cashiers" title="Cashiers" colSpan="12">
-					<field name="cashRegisterTemplate" form-view="template-form" grid-view="template-grid"/>
-					<field name="cashRegisterAddressEmail"/>
-				</panel>
 				<panel name="shiftToIrrecoverable" title="Shift to irrecoverable" colSpan="12">
 					<field name="irrecoverableReasonPassage"/>
 					<field name="irrecoverableStandardRateTax" grid-view="tax-grid" form-view="tax-form"/>
