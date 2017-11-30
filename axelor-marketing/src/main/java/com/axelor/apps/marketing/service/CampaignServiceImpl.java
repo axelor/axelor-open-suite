@@ -158,6 +158,7 @@ public class CampaignServiceImpl implements CampaignService {
 			event.setTypeSelect(campaign.getEventType());
 			event.setStartDateTime(campaign.getEventStartDateTime());
 			event.setDuration(campaign.getDuration());
+			event.setTeam(campaign.getTeam());
 			event.setCampaign(campaign);
 			event.setStatusSelect(1);
 			eventRepo.save(event);
@@ -171,6 +172,7 @@ public class CampaignServiceImpl implements CampaignService {
 			event.setTypeSelect(campaign.getEventType());
 			event.setStartDateTime(campaign.getEventStartDateTime());
 			event.setDuration(campaign.getDuration());
+			event.setTeam(campaign.getTeam());
 			event.setCampaign(campaign);
 			event.setStatusSelect(1);
 			eventRepo.save(event);
