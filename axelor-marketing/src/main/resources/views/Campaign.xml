@@ -27,7 +27,8 @@
 			</panel>
 			<field name="generateEventPerTarget" title="Generate event per target" widget="inline-checkbox"/>
 			<panel showIf="generateEventPerTarget" colSpan="12">
-				<field name="eventUser" showIf="generateEventPerTarget" />
+				<field name="team" onChange="action-campaign-attrs-team-value-fill"/>
+				<field name="eventUser" showIf="generateEventPerTarget" onChange="action-campaign-record-set-team" onSelect="action-campaign-attrs-eventuser-domain" />
 		  		<field name="subject" requiredIf="generateEventPerTarget" showIf="generateEventPerTarget" />
 		  		<field name="eventType" domain="self.value IN ('0','1','2','3')"  placeholder="Event Type" required="true" showIf="generateEventPerTarget" />
 		  		<field name="eventStartDateTime" requiredIf="generateEventPerTarget" showIf="generateEventPerTarget" />
@@ -67,7 +68,19 @@
 	]]></template>
 	</kanban>
 
+	<action-attrs name="action-campaign-attrs-eventuser-domain">
+  		<attribute name="domain" if="team != null" expr = "eval: &quot; self.activeTeam.id IN (${team.id}) &quot;" for="eventUser"/>
+  		<attribute name="domain" if="team == null" expr = "eval: null" for="eventUser"/>
+	</action-attrs>
 	
+	<action-attrs name="action-campaign-attrs-team-value-fill">
+  		<attribute  name="value" if="eval: team != null &amp;&amp; eventUser != null &amp;&amp; team != eventUser.activeTeam" expr="eval: null" for="eventUser"/>
+	</action-attrs>
+	
+	<action-record name="action-campaign-record-set-team" model="com.axelor.apps.marketing.db.Campaign">
+  		<field name="team" expr="eval: eventUser != null ? eventUser.activeTeam : null "/>
+	</action-record>
+
 	<action-method name="action-campaign-method-send-email">
 		<call class="com.axelor.apps.marketing.web.CampaignController" method="sendEmail"/>
 	</action-method>
