@@ -1,6 +1,5 @@
 "key","message","comment","context"
 "${supplierPartner.purchaseOrderInformation}",,,
-"%s : You must configure Purchase module for the company %s","%s : Veuillez configurer le module Achat pour la société %s",,
 "50 Latest Supplier Orders","50 dernières commandes clients",,
 "A tax line is missing","Il manque une ligne de taxe",,
 "ATI",,,
@@ -123,7 +122,6 @@
 "Order Date","Date de commande",,
 "Ordered ?","Commandé ? ",,
 "Orders","Commandes",,
-
 "Other Information","Autres informations",,
 "Overview","Vue d'ensemble",,
 "PO Lines","Lignes de Cmde",,
@@ -285,6 +283,7 @@
 "Version Number","Numéro de la version",,
 "WT",,,
 "You have to choose at least one purchase order","Vous devez choisir au moins une commande fournisseur",,
+"You must configure Purchase module for the company %s","Vous devez configurer le module Purchase pour la compagnie %s",,
 "important",,,
 "info",,,
 "success",,,

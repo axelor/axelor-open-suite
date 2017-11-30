@@ -326,7 +326,6 @@
 "Terminate purchase order on Receipt",,,
 "Terminate sale order on delivery",,,
 "The client is required and must be the same for all sale orders",,,
-"The company %s have not purchase configuration.",,,
 "The company is required and must be the same for all purchase orders",,,
 "The company is required and must be the same for all sale orders",,,
 "The currency is required and must be the same for all sale orders",,,
