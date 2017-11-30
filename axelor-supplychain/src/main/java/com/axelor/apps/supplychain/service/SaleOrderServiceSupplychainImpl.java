@@ -22,7 +22,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.axelor.apps.base.db.repo.CancelReasonRepository;
+import com.axelor.apps.base.service.app.AppService;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.LocationService;
+import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.exception.db.IException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -292,6 +299,25 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 			total = total.add(advance.getAmountPaid());
 		}
 		return total;
+	}
+
+	@Override
+	@Transactional(rollbackOn = {Exception.class, AxelorException.class})
+	public void enableEditOrder(SaleOrder saleOrder) throws AxelorException {
+		super.enableEditOrder(saleOrder);
+
+		List<StockMove> stockMoves = Beans.get(StockMoveRepository.class).findAllBySaleOrderAndStatus(saleOrder, StockMoveRepository.STATUS_PLANNED).fetch();
+		if (!stockMoves.isEmpty()) {
+			StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+			CancelReason cancelReason = Beans.get(AppSupplychainService.class).getAppSupplychain().getDefaultCancelReasonOnChangingSaleOrder();
+			if (cancelReason == null) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, IExceptionMessage.SUPPLYCHAIN_MISSING_DEFAULT_CANCEL);
+			}
+			for (StockMove stockMove : stockMoves) {
+			    stockMoveService.applyCancelReason(stockMove, cancelReason);
+			    stockMoveService.cancel(stockMove);
+			}
+		}
 	}
 
 }

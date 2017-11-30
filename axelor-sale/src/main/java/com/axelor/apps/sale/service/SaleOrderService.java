@@ -129,6 +129,8 @@ public interface SaleOrderService {
 	 * @return  total price from the sale order lines
 	 */
 	public BigDecimal getTotalSaleOrderPrice(SaleOrder saleOrder);
+
+	void enableEditOrder(SaleOrder saleOrder) throws AxelorException;
 }
 
 

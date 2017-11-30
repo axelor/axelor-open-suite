@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.CancelReason;
 import com.google.common.base.Strings;
 import java.time.LocalDate;
 
+import org.bouncycastle.jce.provider.JDKKeyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -571,6 +572,12 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 			);
 		}
 		return price;
+	}
+
+	@Override
+    @Transactional(rollbackOn = {Exception.class})
+	public void enableEditOrder(SaleOrder saleOrder) throws AxelorException {
+		saleOrder.setOrderBeingEdited(true);
 	}
 }
 

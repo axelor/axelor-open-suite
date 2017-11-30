@@ -464,4 +464,15 @@ public class SaleOrderController {
 				.getDefaultCompanyBankDetails(company, paymentMode, partner);
 		response.setValue("companyBankDetails", defaultBankDetails);
 	}
+
+	public void enableEditOrder(ActionRequest request, ActionResponse response) {
+	    SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(request.getContext().asType(SaleOrder.class).getId());
+
+		try {
+			Beans.get(SaleOrderService.class).enableEditOrder(saleOrder);
+			response.setReload(true);
+		} catch (Exception e) {
+		    TraceBackService.trace(response, e);
+		}
+	}
 }
