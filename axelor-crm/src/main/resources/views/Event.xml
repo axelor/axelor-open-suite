@@ -90,7 +90,7 @@
 			<panel colSpan="12" hideIf="typeSelect == 1">
 				<field name="description" widget="html" colSpan="12"/>
 			</panel>
-			<panel name="guests" title="Guests" colSpan="12" showIf="typeSelect == 2">
+			<panel name="guests" title="Guests" colSpan="12" showIf="typeSelect == 0 || typeSelect == 1 || typeSelect == 2">
 				<field name="attendees" canNew="false" canSelect="false" showTitle="true" colSpan="12">
 					<editor layout="table" x-show-titles="false">
 						<field name="name" readonly="true"/>
