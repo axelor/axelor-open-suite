@@ -25,6 +25,8 @@ import java.util.Map;
 
 import java.time.LocalDate;
 
+import com.axelor.apps.purchase.db.PurchaseConfig;
+import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.stock.service.LocationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,7 +136,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 				supplierPartner.getPurchasePriceList(),
 				supplierPartner);
 
-		Integer atiChoice = Beans.get(PurchaseConfigRepository.class).all().filter("self.company = ?1", saleOrder.getCompany()).fetchOne().getPurchaseOrderInAtiSelect();
+		Integer atiChoice =  Beans.get(PurchaseConfigService.class).getPurchaseConfig(saleOrder.getCompany()).getPurchaseOrderInAtiSelect();
 		if(atiChoice == 2 || atiChoice == 4){
 			purchaseOrder.setInAti(true);
 		}
