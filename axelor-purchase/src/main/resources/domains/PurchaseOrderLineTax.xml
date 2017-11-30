@@ -10,6 +10,7 @@
     <decimal name="exTaxBase" scale="2" precision="20" title="Base W.T."/>
     <decimal name="taxTotal" scale="2" precision="20" title="Tax amount"/>
     <decimal name="inTaxTotal" scale="2" precision="20" title="Amount A.T.I."/>
+    <boolean name="reverseCharged"/>
 
   </entity>
 

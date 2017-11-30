@@ -22,13 +22,14 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
+import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
@@ -167,9 +168,17 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		invoiceLine.setQty(qty);
 		invoiceLine.setUnit(unit);
 		
-		if(taxLine == null)  {
+		if(taxLine == null) {
 			this.determineTaxLine();
 		}
+
+		boolean isPurchase = Beans.get(InvoiceLineService.class).isPurchase(invoice);
+
+		Tax tax = Beans.get(AccountManagementService.class).getProductTax(Beans.get(AccountManagementService.class).getAccountManagement(product, invoice.getCompany()), isPurchase);
+		TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
+
+		invoiceLine.setTaxEquiv(taxEquiv);
+
 		invoiceLine.setTaxLine(taxLine);
 		
 		if(taxLine != null)  {

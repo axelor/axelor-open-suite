@@ -202,7 +202,7 @@
 				showIf="statusSelect == 3 || statusSelect == 4" onClick="action-purchase-order-show-invoice"
 				if-module="axelor-supplychain" />
 			<button name="generateControlInvoice" title="Generate control invoice"
-				showIf="statusSelect == 3" onClick="save,action-purchase-order-method-generate-control-invoice" />
+				showIf="statusSelect == 3" onClick="save,action-purchase-order-method-generate-control-invoice" if-module="axelor-supplychain"/>
 			<button name="cancelReceipt" title="Cancel receipt" showIf="statusSelect &gt;= 3"
 				onClick="save,action-purchase-order-method-cancel-receipt" />
 			<button name="generateSupplierStockMove" title="Generate supplier arrival"
