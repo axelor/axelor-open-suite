@@ -130,7 +130,7 @@
 			</panel>
 			<panel name="budgetDistribution" title="Budget distribution" if="__config__.app.isApp('budget')" if-module="axelor-supplychain">
 				<field name="budget"/>
-				<button name="applyToAll" title="Apply to all" onClick="save,action-purchase-order-budget-distribution-apply-to-all"/>
+				<button name="applyToAll" title="Apply to all" onClick="save,action-purchase-order-budget-distribution-apply-to-all" readonlyIf="!budget"/>
 			</panel>
 			<panel name="otherInformation" title="Other Information" hideIf="statusSelect &gt; 2">
 				<field name="priceDisplay" colSpan="12"/>
