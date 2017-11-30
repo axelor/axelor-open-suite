@@ -21,6 +21,7 @@ import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
@@ -122,7 +123,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 					incrementAnomaly();
 					anomalyList.add(expense.getId());
 					query.bind("anomalyList", anomalyList);
-					TraceBackService.trace(ex);
+					TraceBackService.trace(ex, IException.CREDIT_TRANSFER, batch.getId());
 					ex.printStackTrace();
 					log.error(String.format("Credit transfer batch for expense payment: anomaly for expense %s",
 							expense.getExpenseSeq()));

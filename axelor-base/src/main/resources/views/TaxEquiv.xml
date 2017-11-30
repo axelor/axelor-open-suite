@@ -6,12 +6,15 @@
     <grid name="tax-equiv-grid" title="Taxes equivalences" model="com.axelor.apps.account.db.TaxEquiv">
         <field name="fromTax" form-view="tax-form" grid-view="tax-grid"/>
         <field name="toTax" form-view="tax-form" grid-view="tax-grid"/>
+        <field name="reverseCharge"/>
     </grid>
 
     <form name="tax-equiv-form" title="Tax equivalence" model="com.axelor.apps.account.db.TaxEquiv" onLoad="action-tax-equiv-attrs-hide-specific-note" >
         <panel name="main">
         	<field name="fromTax" form-view="tax-form" grid-view="tax-grid"/>
         	<field name="toTax" form-view="tax-form" grid-view="tax-grid"/>
+            <field name="reverseCharge"/>
+            <field name="reverseChargeTax" form-view="tax-form" grid-view="tax-grid" hidden="true" showIf="reverseCharge"/>
             <field name="specificNote" colSpan="12" hidden="true"/>
         </panel>
     </form>

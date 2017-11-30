@@ -71,11 +71,11 @@
 				<field name="statusSelect" widget="NavSelect" colSpan="6"/>
 				<field name="project" onChange="action-project-record-inv-type-select,action-project-record-bind-customer-project" colSpan="6" title="Parent Project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 			 -->
-			 <field name="company" requiredIf="project == null" hideIf="project != null" form-view="company-form" grid-view="company-grid"/>
+			 <field name="company" canEdit="false" requiredIf="project == null" hideIf="project != null" form-view="company-form" grid-view="company-grid"/>
 			<field name="clientPartner" showIf="isBusinessProject" readonlyIf="project != null" domain="self.isCustomer = true" form-view="partner-form" grid-view="partner-grid" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
 			<field name="priceList" showIf="isBusinessProject &amp;&amp; priceList != null" if-module="axelor-business-project" readonly="true"/>
 			<field name="contactPartner" showIf="isBusinessProject" readonlyIf="project != null" onSelect="action-attrs-domain-on-contact-partner" form-view="partner-form" grid-view="partner-grid" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
-			<field name="assignedTo" title="Person In Charge" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
+			<field name="assignedTo" canEdit="false" title="Person In Charge" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
 			<field name="saleOrder" showIf="isBusinessProject"  domain="self.clientPartner = :clientPartner" form-view="sale-order-form" grid-view="sale-order-grid" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
 			<spacer/>
 			<field name="fromDate" />
@@ -92,7 +92,7 @@
 			<field name="totalPlannedHrs" if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
 		</panel>
 		<panel title="Members">
-			<field name="membersUserSet" onSelect="action-project-attrs-members-domain" form-view="user-form" grid-view="user-grid" widget="TagSelect" colSpan="12" showTitle="false" canNew="false"/>
+			<field name="membersUserSet" canEdit="false" onSelect="action-project-attrs-members-domain" form-view="user-form" grid-view="user-grid" widget="TagSelect" colSpan="12" showTitle="false" canNew="false"/>
 		</panel>
 		<panel-tabs>
 		
@@ -129,7 +129,7 @@
 				<field name="leadDelay" hidden="true"/>
 			</panel>
 			<panel name="configurations" title="Configurations">
-				<field name="productSet" if-module="axelor-human-resource"  if="__config__.app.isApp('employee')" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12" widget="TagSelect"/>
+				<field name="productSet" canEdit="false" if-module="axelor-human-resource"  if="__config__.app.isApp('employee')" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12" widget="TagSelect"/>
 				<field name="categorySet" colSpan="12" widget="TagSelect"/>
 				<field name="projectFolderSet" readonly="true" colSpan="12" widget="TagSelect"/>
 				<spacer/>

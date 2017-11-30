@@ -228,7 +228,7 @@
 	
 	<menuitem name="conf-expense-type" parent="expense-root-conf" title="Expense Type" action="conf.expense.type"/>
 	
-	<action-view name="conf.expense.type" title="Expense Type" model="com.axelor.apps.base.db.Product">
+	<action-view name="conf.expense.type" title="Expense types" model="com.axelor.apps.base.db.Product">
     	<view type="grid" name="product-expense-grid"/>
 	    <view type="form" name="product-expense-form"/>
 	    <view-param name="search-filters" value="products-filters"/>

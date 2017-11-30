@@ -25,7 +25,7 @@
 		<panel name="main" >
 			<field name="name"/>
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" />
-			<field name="company" readonlyIf="statusSelect == 1 || statusSelect == 2" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" readonlyIf="statusSelect == 1 || statusSelect == 2" form-view="company-form" grid-view="company-grid"/>
 			<field name="type" grid-view="journal-type-grid" form-view="journal-type-form"/>
 			<field name="isObsolete" onChange="account-journal-record-status-archived"/>
 		</panel>

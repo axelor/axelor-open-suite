@@ -91,7 +91,7 @@
 	    <panel title="Stock move reference" name="stockMoveRef">
 	      <field name="stockMoveSeq" colSpan="12"/>
 	      <field name="name" colSpan="12" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
-	      <field name="company" widget="SuggestBox" form-view="company-form" colSpan="12" readonlyIf="statusSelect != 1" grid-view="company-grid"/>
+	      <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" colSpan="12" readonlyIf="statusSelect != 1" grid-view="company-grid"/>
 	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12" readonlyIf="statusSelect != 1" onChange="action-stock-move-record-partner-delivery-informations"/>
 	    </panel>
 	    <panel title="Stock move informations" name="stockMoveInformation">

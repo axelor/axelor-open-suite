@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+
+    <module name="bank-payment" package="com.axelor.apps.bankpayment.db" />
+
+    <entity name="EbicsPartnerService">
+        <many-to-one name="ebicsPartner" ref="com.axelor.apps.bankpayment.db.EbicsPartner" />
+        <many-to-one name="bankOrderFileFormat" ref="com.axelor.apps.bankpayment.db.BankOrderFileFormat"
+            required="true" />
+        <string name="ebicsCodification" required="true" />
+    </entity>
+
+</domain-models>

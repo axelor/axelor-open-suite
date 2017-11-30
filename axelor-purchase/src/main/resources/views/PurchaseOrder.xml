@@ -79,18 +79,28 @@
 			</menu>
 		</menubar>
 		<panel title="Status">
-			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
+			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" readonly="true"/>
 		</panel>
 	  
 		<panel name="main" readonlyIf="statusSelect == 4">
-			<field name="supplierPartner.purchaseOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="supplierPartner == null || supplierPartner.purchaseOrderInformation == null"/>
+			<field name="supplierPartner.purchaseOrderInformation" css="bold red" 
+				colSpan="12" showTitle="false" 
+				hideIf="supplierPartner == null || supplierPartner.purchaseOrderInformation == null"/>
 			<field name="purchaseOrderSeq" css="label-bold bold" colSpan="6"/>
-			<field name="receiptState" css="label-bold bold" showIf="statusSelect == 3 || statusSelect == 4" /> 
-			<field name="company" widget="SuggestBox" onChange="action-group-purchase-order-company-change-actions" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect >= 3 || supplierPartner != null" />
-			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect >= 3"/>
-			<field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
-			<field name="versionNumber" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
-			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-domain-company-bank-details" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management"/>
+			<field name="receiptState" css="label-bold bold" 
+				showIf="statusSelect == 3 || statusSelect == 4" /> 
+			<field name="company" canEdit="false" widget="SuggestBox" 
+				onChange="action-group-purchase-order-company-change-actions" 
+				form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect >= 3 || supplierPartner != null" />
+			<field name="currency" canEdit="false" form-view="currency-form" 
+				grid-view="currency-grid" readonlyIf="statusSelect >= 3"/>
+			<field name="buyerUser" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="versionNumber" 
+				if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
+			<field name="companyBankDetails" widget="SuggestBox" 
+					onSelect="action-invoice-attrs-domain-company-bank-details" 
+					form-view="bank-details-form" grid-view="bank-details-grid" 
+					if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management"/>
 			<field name="inAti" onChange="action-purchase-order-attrs-in-ati"/>   
 			<field name="contract" if-module="axelor-contract" if="__config__.app.isApp('contract')" domain="self.typeSelect = 2"  />
 			<field name="interco" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
@@ -164,7 +174,7 @@
 				<field name="internalReference"/>
 			</panel>
 			<panel readonly="true">
-				<field name="validatedByUser" form-view="user-form" grid-view="user-grid"/>
+				<field name="validatedByUser" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 				<field name="validationDate"/>
 	    	</panel>
 		</panel>

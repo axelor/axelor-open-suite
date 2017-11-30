@@ -24,7 +24,7 @@
 			<field name="name"/>
 			<field name="typeSelect" colSpan="3"/>
 			<field name="parentLocation" form-view="location-form" grid-view="location-grid"/>
-			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="address" form-view="address-form" grid-view="address-grid"/>
 		</panel>    

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bankpayment.service;
+package com.axelor.apps.bankpayment.service.bankstatement;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,32 +23,20 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
-import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 
-public class BankStatementService {
+public class BankStatementCreateService {
 
-	protected MoveService moveService;
-	protected MoveRepository moveRepository;
-	protected MoveLineService moveLineService;
-	protected BankReconciliationRepository bankReconciliationRepository;
 	
 	@Inject
-	public BankStatementService(MoveService moveService, MoveRepository moveRepository, MoveLineService moveLineService, BankReconciliationRepository bankReconciliationRepository)  {
+	public BankStatementCreateService()  {
 		
-		this.moveService = moveService;
-		this.moveRepository = moveRepository;
-		this.moveLineService = moveLineService;
-		this.bankReconciliationRepository = bankReconciliationRepository;
 	}
 
 	public BankStatement createBankStatement(File file, LocalDate fromDate, LocalDate toDate, 
@@ -67,7 +55,7 @@ public class BankStatementService {
 		
 	}
 	
-	private String computeName(BankStatement bankStatement)  {
+	protected String computeName(BankStatement bankStatement)  {
 		
 		String name = "";
 
@@ -92,6 +80,7 @@ public class BankStatementService {
 		return name;
 		
 	}
+	
 	
 	
 

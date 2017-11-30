@@ -60,9 +60,9 @@
 	onNew="action-hr-default-timesheet-line-project,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-to-invoice-parent"
 	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration,action-timesheet-line-attrs-set-visible-duration-title" width="large">
 		<panel name="overview" title="Overview">
-			<field name="user" form-view="user-form" grid-view="user-grid"/>
+			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="date" />
-			<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+			<field name="product" canEdit="false" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 			<field name="visibleDuration" width="62%" colSpan="3" onChange="action-timesheet-line-record-set-stored-duration" min="0.01"/>
 			<label name="durationLabel" colSpan="1"/>
 			<field name="durationStored" hidden="true" />
@@ -79,14 +79,14 @@
 		<panel name="overview" title="Overview">
 			<field name="project" onChange="action-timesheet-line-group-project-onchange" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 			<field name="date" />
-			<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+			<field name="product" canEdit="false" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 			<field name="visibleDuration" width="62%" colSpan="3" onChange="action-timesheet-line-record-set-stored-duration" min="0.01"/>
 			<label name="durationLabel" colSpan="1"/>
 			<field name="durationStored" hidden="true" />
 			<field name="toInvoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="enableEditor" />
 			<field name="comments" />
-			<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
+			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
 		</panel>
 	</form>
 	
@@ -96,7 +96,7 @@
 		<panel name="overview" title="Overview">
 			<field name="project" onChange="action-timesheet-line-group-project-onchange" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 			<field name="date" />
-			<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+			<field name="product" canEdit="false" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 			<field name="visibleDuration" width="62%" colSpan="2" onChange="action-timesheet-line-record-set-stored-duration" min="0.01"/>
 			<label name="durationLabel" colSpan="1"/>
 			<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
@@ -104,7 +104,7 @@
 			<field name="toInvoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="comments" />
 			<field name="enableEditor" />
-			<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
+			<field name="user" canEdit="false"  form-view="user-form" grid-view="user-grid" hidden="true"/>
 		</panel>
 	</form>
 

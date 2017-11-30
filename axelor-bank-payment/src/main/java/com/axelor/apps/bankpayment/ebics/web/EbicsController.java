@@ -219,7 +219,7 @@ public class EbicsController {
 					testSignatureFile = MetaFiles.getPath(testSignatureMetaFile).toFile();
 				}
 				
-				ebicsService.sendFULRequest(ebicsUser, ebicsUser.getTestSignatoryEbicsUser(), null, MetaFiles.getPath(testDataMetaFile).toFile(), bankOrderFileFormat.getOrderFileFormatSelect(), testSignatureFile);
+				ebicsService.sendFULRequest(ebicsUser, ebicsUser.getTestSignatoryEbicsUser(), null, MetaFiles.getPath(testDataMetaFile).toFile(), bankOrderFileFormat, testSignatureFile);
 			}
 			else  {
 				response.setFlash(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));

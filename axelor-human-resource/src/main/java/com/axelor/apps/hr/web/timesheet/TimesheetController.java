@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.hr.service.HRMenuValidateService;
+import com.axelor.apps.hr.service.employee.EmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -271,6 +272,9 @@ public class TimesheetController {
                 .define(I18n.get("Timesheet"))
                 .model(Timesheet.class.getName())
                 .add("form", "timesheet-form")
+				.add("grid", "timesheet-grid")
+				.domain("self.user = :_user")
+				.context("_user", AuthUtils.getUser())
                 .map());
     }
 
@@ -405,4 +409,16 @@ public class TimesheetController {
 
 	}
 	
+
+	public void timesheetPeriodTotalController(ActionRequest request, ActionResponse response) {
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		User user = timesheet.getUser();
+
+		BigDecimal periodTotal = timesheetServiceProvider.get().computePeriodTotal(timesheet);
+
+		response.setAttr("periodTotal","value",periodTotal);
+		response.setAttr("$periodTotalConvert","hidden",false);
+		response.setAttr("$periodTotalConvert","value",Beans.get(EmployeeService.class).getUserDuration(periodTotal,user,false));
+		response.setAttr("$periodTotalConvert","title",timesheetServiceProvider.get().getPeriodTotalConvertTitleByUserPref(user));
+	}
 }

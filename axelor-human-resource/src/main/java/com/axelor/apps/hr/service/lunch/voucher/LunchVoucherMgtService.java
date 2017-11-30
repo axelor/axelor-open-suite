@@ -35,8 +35,8 @@ public interface LunchVoucherMgtService {
 	public void validate(LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
 
 	@Transactional
-	public LunchVoucherMgt updateStock(LunchVoucherMgt lunchVoucherMgt,
-                     List<LunchVoucherMgtLine> oldLunchVoucherMgtLines)
+	public int updateStock(List<LunchVoucherMgtLine> newLunchVoucherMgtLines,
+						   List<LunchVoucherMgtLine> oldLunchVoucherMgtLines, Company company)
             throws AxelorException;
 
 	@Transactional

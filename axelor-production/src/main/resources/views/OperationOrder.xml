@@ -123,7 +123,6 @@
 		
 		<panel name="informationPanel" title="Information" sidebar="true" colSpan="12" showIf="id">
 			<panel-related field="operationOrderDurationList" canNew="false" canEdit="false" canRemove="false"/>
-			<field name="barCode"/>
 		</panel>
 		
 <!--	    <panel-related field="timesheetLineList" title="Timesheet lines" form-view="timesheet-line-production-form" grid-view="timesheet-line-production-grid" colSpan="12"/>  --> 

@@ -24,8 +24,8 @@
 	        <field name="bankDetailsList" colSpan="12" showTitle="false" >
                 <viewer depends="isDefault,fullName,bankCode,sortCode,accountNbr,bbanKey"><![CDATA[
                     <dl>
-                        <dd ng-if="!record.isDefault"> {{fullName}} </dd>
-                        <dd ng-if="record.isDefault"> <b>{{fullName}}</b> </dd>
+                      <dd ng-if="!record.isDefault" ng-style="!record.active && {'color':'orange'}"> {{fullName}} </dd>
+                      <dd ng-if="record.isDefault" ng-style="!record.active && {'color':'orange'}"> <b>{{fullName}}</b> </dd>
                     </dl>
                 ]]></viewer>
 			    <editor onNew="action-set-default-partner" x-show-on-new="false">
@@ -37,6 +37,7 @@
 						   canNew="true" form-view="bank-address-form"/>
 					<field name="label"/>
 					<field name="isDefault" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star" x-exclusive="true" />
+                    <field name="active" widget="boolean-switch"/>
 					<field name="ibanBic" hidden="true" x-bind="{{iban + ' ' + bank.code}}"/>
 			    </editor>
 			</field>

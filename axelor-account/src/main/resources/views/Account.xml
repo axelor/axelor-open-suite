@@ -38,7 +38,7 @@
 			<field name="name" colSpan="9" css="bold"/>
 			<panel name="settings" title="Settings" colSpan="12">
 				<field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/>
-				<field name="company" widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-form" grid-view="company-grid"/>
+				<field name="company" canEdit="false" widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-form" grid-view="company-grid"/>
 				<field name="parentAccount" onChange="action-group-account-account-onchange-common" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
 				<spacer colSpan="6"/>
 				<field name="useForPartnerBalance" colSpan="3"/>
@@ -53,7 +53,7 @@
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
 			<field name="name" colSpan="9" css="bold"/>
 			<field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/>
-			<field name="company" widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false"  widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-form" grid-view="company-grid"/>
 			<field name="parentAccount" onChange="action-group-account-account-onchange-common" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
 			<spacer colSpan="6"/>
 			<field name="useForPartnerBalance" colSpan="3"/>

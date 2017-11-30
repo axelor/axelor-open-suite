@@ -119,8 +119,8 @@
 		</panel>
 	
 		<panel sidebar="true" name="followUp" title="Follow-up" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
-			<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"/>
-			<field name="team" colSpan="6" form-view="team-form" grid-view="team-grid"/>
+			<field name="user" canEdit="false" colSpan="6" form-view="user-form" grid-view="user-grid"/>
+			<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
 			<button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
 			<field name="createdBy" colSpan="6"/>
 			<field name="createdOn" colSpan="6"/>
@@ -129,7 +129,7 @@
 		</panel>
 		
 		<panel sidebar="true" name="marketing" title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 6" colSpan="12">
-			<field name="source" colSpan="6" form-view="source-form" grid-view="source-grid"/>
+			<field name="source" canEdit="false" colSpan="6" form-view="source-form" grid-view="source-grid"/>
 			<field name="referredBy" colSpan="6"/>
 			<field name="opportunityAmount" colSpan="6"/>
 		</panel>

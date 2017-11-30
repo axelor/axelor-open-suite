@@ -174,7 +174,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 			Unit unit = saleOrderLine.getProduct().getUnit();
 			BigDecimal qty = saleOrderLine.getQty();
 			BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
-			if(!unit.equals(saleOrderLine.getUnit())){
+			if(unit != null && !unit.equals(saleOrderLine.getUnit())){
 				qty = unitConversionService.convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
 				priceDiscounted = unitConversionService.convertWithProduct(saleOrderLine.getUnit(), unit, priceDiscounted, saleOrderLine.getProduct());
 			}

@@ -15,7 +15,7 @@
     <form name="inventory-line-form" title="Inventory line" model="com.axelor.apps.stock.db.InventoryLine"
     	onLoad="action-inventory-line-attrs-tracking-number">
     	<panel name="main">
-	        <field name="product" onChange="action-inventory-line-attrs-tracking-number,action-inventory-line-method-on-change-product"
+	        <field name="product" canEdit="false" onChange="action-inventory-line-attrs-tracking-number,action-inventory-line-method-on-change-product"
 	        	domain="self.expense = false and self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty" readonly="true"/>
 	        <field name="realQty"/>

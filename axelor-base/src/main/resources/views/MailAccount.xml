@@ -21,7 +21,7 @@
         	<field name="password" widget="password"/>
         </panel>
 		<panel name="user" title="User" sidebar="true" if="__config__.app.getApp('base').getMailAccountByUser()">
-        	<field name="user" required="true" showTitle="false" colSpan="12" form-view="user-form" grid-view="user-grid"/>
+        	<field name="user" canEdit="false" required="true" showTitle="false" colSpan="12" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 		<panel sidebar="true" >
 			<button name="testConnection" onClick="save,action-method-mail-account-validate,save" title="Test connection" colSpan="10"/>
