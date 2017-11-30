@@ -326,6 +326,7 @@
 "Terminate purchase order on Receipt","Terminer les cmdes fournisseurs lors de la réception",,
 "Terminate sale order on delivery","Terminer les cmdes clients lors de la livraison",,
 "The client is required and must be the same for all sale orders","Le client est obligatoire et doit être le même pour toutes les cmdes client",,
+"The company %s have not purchase configuration.","La company %s n'a pas de configuration d'achat.",,
 "The company is required and must be the same for all purchase orders","La société est obligatoire et doit être la même pour toutes les cmdes d'achat",,
 "The company is required and must be the same for all sale orders","La société est obligatoire et doit être la même pour toutes les cmdes client",,
 "The currency is required and must be the same for all sale orders","La devise est obligatoire et doit être la même pour toutes les cmdes client",,

@@ -120,5 +120,10 @@ public interface IExceptionMessage {
 	 */
 	String STOCK_CONFIG_SUPPLYCHAIN_RECEIPT = /*$$(*/ "You must configure a receipt location for company %s" /*)*/;
 	String STOCK_CONFIG_SUPPLYCHAIN_PICKUP = /*$$(*/ "You must configure a pickup location for company %s." /*)*/;
+
+	/**
+	 * Purchase Order
+	 */
+	String PURCHASE_ORDER_MISSING_CONFIG = /*$$(*/ "The company %s have not purchase configuration." /*)*/;
 }
 
