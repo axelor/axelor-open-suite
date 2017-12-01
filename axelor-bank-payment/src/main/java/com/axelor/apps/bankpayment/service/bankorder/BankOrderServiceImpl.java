@@ -34,6 +34,7 @@ import java.time.LocalDateTime;
 import com.axelor.apps.bankpayment.db.*;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.db.AppBankPayment;
+import com.axelor.apps.base.service.app.AppService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -254,7 +255,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		
 		setSequenceOnBankOrderLines(bankOrder);
 
-		if (Beans.get(AppBankPayment.class).getEnableModuleEBICS()) {
+		if (Beans.get(AppService.class).isApp("bank-payment") && Beans.get(AppBankPayment.class).getEnableModuleEBICS()) {
 			generateFile(bankOrder);
 
 			setSequenceOnBankOrderLines(bankOrder);

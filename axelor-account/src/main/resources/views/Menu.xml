@@ -59,7 +59,7 @@
 	</action-view>	
 		
 		
-	<menuitem name="account-root-payment-schedule" title="Payment Schedule"
+	<menuitem name="account-root-payment-schedule" title="Payment Schedule" if-module="axelor-bank-payment"
               parent="invoice-root" if="__config__.app.getApp('bank-payment').getManageDirectDebitPayment()"/>
 
     <menuitem name="account-root-payment-schedule-payment-schedule"

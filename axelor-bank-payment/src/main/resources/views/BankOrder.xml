@@ -18,7 +18,7 @@
         <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
         <field name="nbOfLines"/>
-        <field name="signatoryEbicsUser" if="eval: __config__.app.getApp('bank-payment').getEnableModuleEBICS()"/>
+        <field name="signatoryEbicsUser" if-module="axelor-bank-payment" if="eval: __config__.app.getApp('bank-payment').getEnableModuleEBICS()"/>
         <field name="statusSelect"/>
     </grid>
     
@@ -37,7 +37,7 @@
         <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
         <field name="nbOfLines"/>
-        <field name="signatoryEbicsUser" if="eval: __config__.app.getApp('bank-payment').getEnableModuleEBICS()"/>
+        <field name="signatoryEbicsUser" if-module="axelor-bank-payment" if="eval: __config__.app.getApp('bank-payment').getEnableModuleEBICS()"/>
         <field name="statusSelect"/>
     </grid>
     
@@ -81,7 +81,7 @@
 	        </panel>
 	        <panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 3">  
 		        <field name="signatoryUser" form-view="user-form" grid-view="user-grid" hidden="true"/>
-		        <field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" onChange="action-bank-order-record-fill-signatory-user" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.userTypeSelect = 1" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').getEnableModuleEBICS()"/>
+		        <field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" onChange="action-bank-order-record-fill-signatory-user" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.userTypeSelect = 1" showIf="senderBankDetails" if-module="axelor-bank-payment" if="eval: __config__.app.getApp('bank-payment').getEnableModuleEBICS()"/>
 	    		<field name="isMultiDate" hidden="true"/>
 	    		<field name="isMultiCurrency" hidden="true"/>
 	  		</panel>
