@@ -131,7 +131,8 @@
 			<field name="contactPartner" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<field name="lead" onChange="action-meeting-set-location-lead" form-view="lead-form" grid-view="lead-grid"/>
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
-			<field name="campaign" form-view="campaign-form" grid-view="campaign-grid"/>	
+			<field name="relatedToSelectId" hidden="true"/>
+			<field name="campaign" form-view="campaign-form" grid-view="campaign-grid"/>
 			<field name="supplierPartner" domain="self.isSupplier = true" form-view="partner-supplier-form" grid-view="partner-supplier-grid" />
 			<field name="relatedToSelectId" hidden="true" />
 		</panel>
