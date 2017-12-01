@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.ISaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
@@ -103,13 +104,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 					Beans.get(SaleOrderServiceImpl.class).finishSaleOrder(saleOrder);
 				}
 			}
-			
-			for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-				if (stockMoveLine.getSaleOrderLine() != null) {
-					stockMoveLine.getSaleOrderLine().setDeliveredQuantities(stockMoveLine.getRealQty());
-				}
-			}
-			
+			updateSaleOrderLines(stockMove, true);
+
 			Beans.get(SaleOrderRepository.class).save(saleOrder);
 		}else if (stockMove.getPurchaseOrder() != null){
 			//Update linked purchaseOrder receipt state depending on BackOrder's existence
@@ -159,6 +155,29 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 
 		if (so.getStatusSelect() == ISaleOrder.STATUS_FINISHED  && Beans.get(AppSupplychainService.class).getAppSupplychain().getTerminateSaleOrderOnDelivery()){
 			so.setStatusSelect(ISaleOrder.STATUS_ORDER_CONFIRMED);
+		}
+		updateSaleOrderLines(stockMove, false);
+	}
+
+	private void updateSaleOrderLines(StockMove stockMove, boolean realize) {
+		for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+			if (stockMoveLine.getSaleOrderLine() != null) {
+				SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
+				if (realize) {
+					saleOrderLine.setDeliveredQuantities(saleOrderLine.getDeliveredQuantities().add(stockMoveLine.getRealQty()));
+				} else {
+					saleOrderLine.setDeliveredQuantities(saleOrderLine.getDeliveredQuantities().subtract(stockMoveLine.getRealQty()));
+				}
+				if (saleOrderLine.getDeliveredQuantities().signum() == 0) {
+					saleOrderLine.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
+				}
+				else if (saleOrderLine.getDeliveredQuantities().compareTo(saleOrderLine.getQty()) < 0) {
+					saleOrderLine.setDeliveryState(SaleOrderRepository.STATE_PARTIALLY_DELIVERED);
+				}
+				else {
+					saleOrderLine.setDeliveryState(SaleOrderRepository.STATE_DELIVERED);
+				}
+			}
 		}
 	}
 

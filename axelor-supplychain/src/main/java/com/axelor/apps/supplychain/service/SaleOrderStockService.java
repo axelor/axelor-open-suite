@@ -27,10 +27,6 @@ import com.axelor.exception.AxelorException;
 
 public interface SaleOrderStockService {
 
-	enum StockMoveDeliveryStatus {
-		NOT_DELIVERY, PARTIAL_DELIVERY, ALL_DELIVERY
-	}
-
     /**
 	 * Create a delivery stock move from a sale order.
 	 * 
@@ -53,8 +49,6 @@ public interface SaleOrderStockService {
 	 * @return
 	 */
 	public boolean existActiveStockMoveForSaleOrder(SaleOrder saleOrder);
-
-	StockMoveDeliveryStatus checkAllSaleOrderLineIsDelivery(SaleOrder saleOrder);
 }
 
 

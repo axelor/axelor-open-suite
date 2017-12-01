@@ -52,7 +52,6 @@
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
 		<action name="action-sale-order-attrs-interco"/>
 		<action name="save"/>
-		<action name="action-supplychain-check-all-sale-order-line-is-delivery"/>
 	</action-group>
 
 	<action-method name="action-supplychain-sale-order-method-get-location">
@@ -124,9 +123,5 @@
     <action-condition name="action-supplychain-so-generate-po-check-supplier-partner">
 		<check error="A supplier partner must be selected" field="supplierPartnerSelect" if="supplierPartnerSelect == null"/>
 	</action-condition>
-	
-	<action-method name="action-supplychain-check-all-sale-order-line-is-delivery">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="checkAllSaleOrderLineIsDelivery"/>
-	</action-method>
-	
+
 </object-views>

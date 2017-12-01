@@ -4,6 +4,10 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="sale-order-line-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
+		<hilite background="danger" if="deliveryState == 1"/>
+		<hilite background="warning" if="deliveryState == 2"/>
+		<hilite background="success" if="deliveryState == 3"/>
+		<field name="deliveryState" hidden="true"/>
 		<field name="productName"/>
 		<field name="qty" aggregate="sum"/>
         <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"/>
@@ -42,6 +46,15 @@
 			<field name="productName"  title="Title"/>
 		</panel>
 		<panel hideIf="typeSelect == 1">
+			<field name="deliveryState" showTitle="false" colSpan="12" showIf="deliveryState > 0">
+				<viewer><![CDATA[
+                <h3>
+                    <span ng-show="record.deliveryState == 1" class="label label-important" x-translate>Stock move not delivery</span>
+                    <span ng-show="record.deliveryState == 2" class="label label-warning" x-translate>Partial stock move delivery</span>
+                    <span ng-show="record.deliveryState == 3" class="label label-success" x-translate>Stock move delivery</span>
+                </h3>
+				]]></viewer>
+			</field>
 		   	<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange,action-sale-order-line-compute-total-pack,action-method-sale-order-line-available-stock" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid"/>
 		   	<field name="productName"/>
 		   	<field name="qty"  hideIf="typeSelect == 2" onChange="action-group-sale-saleorderline-qty-onchange" readonlyIf="typeSelect == 2"/>
