@@ -28,12 +28,11 @@
 			</panel>
 		</panel-tabs>
 	</form>
-	
-	
+
 	<action-method name="action-app-account-method-payer-quality-process">
 		<call class="com.axelor.apps.account.web.AppAccountController" method="payerQualityProcess" />
 	</action-method>
-	
+
 	<action-view name="admin.root.conf.account.config" title="Account configurations"
 		model="com.axelor.apps.account.db.AccountConfig" >
 		<view type="grid" name="account-config-grid"/>

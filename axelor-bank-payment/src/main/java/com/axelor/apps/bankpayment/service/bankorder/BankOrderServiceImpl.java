@@ -30,6 +30,11 @@ import javax.xml.datatype.DatatypeConfigurationException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import com.axelor.apps.bankpayment.db.*;
+import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
+import com.axelor.apps.base.db.AppBankPayment;
+import com.axelor.apps.base.service.app.AppService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,11 +44,6 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
-import com.axelor.apps.bankpayment.db.BankOrder;
-import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
-import com.axelor.apps.bankpayment.db.BankOrderLine;
-import com.axelor.apps.bankpayment.db.EbicsPartner;
-import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
@@ -56,7 +56,6 @@ import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100103Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160ICTService;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB320XCTService;
-import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Sequence;
@@ -83,7 +82,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 	protected InvoicePaymentToolService invoicePaymentToolService;
 
 	@Inject
-	private AccountConfigBankPaymentService accountConfigBankPaymentService;
+	private BankPaymentConfigService bankPaymentConfigService;
 
 	@Inject
 	private SequenceService sequenceService;
@@ -256,12 +255,18 @@ public class BankOrderServiceImpl implements BankOrderService {
 		
 		setSequenceOnBankOrderLines(bankOrder);
 
-		generateFile(bankOrder);
+		if (Beans.get(AppService.class).isApp("bank-payment") && Beans.get(AppBankPayment.class).getEnableModuleEBICS()) {
+			generateFile(bankOrder);
 
-		bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
-		makeEbicsUserFollow(bankOrder);
+			setSequenceOnBankOrderLines(bankOrder);
+			bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
+			makeEbicsUserFollow(bankOrder);
 
-		bankOrderRepo.save(bankOrder);
+			bankOrderRepo.save(bankOrder);
+		}
+		else {
+			validate(bankOrder);
+		}
 	}
 
 	@Override
@@ -284,10 +289,12 @@ public class BankOrderServiceImpl implements BankOrderService {
 	
 	public void realize(BankOrder bankOrder) throws AxelorException {
 
-		if (bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTransportEbicsUser() == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.EBICS_MISSING_USER_TRANSPORT), IException.MISSING_FIELD);
+		if (Beans.get(AppBankPayment.class).getEnableModuleEBICS()) {
+			if (bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTransportEbicsUser() == null) {
+				throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.EBICS_MISSING_USER_TRANSPORT));
+			}
+			sendBankOrderFile(bankOrder);
 		}
-		sendBankOrderFile(bankOrder);
 		realizeBankOrder(bankOrder);
 
 	}
@@ -552,30 +559,30 @@ public class BankOrderServiceImpl implements BankOrderService {
 	}
 
 	protected Sequence getSequence(BankOrder bankOrder) throws AxelorException {
-		AccountConfig accountConfig = Beans.get(AccountConfigService.class)
-				.getAccountConfig(bankOrder.getSenderCompany());
+		BankPaymentConfig bankPaymentConfig = Beans.get(BankPaymentConfigService.class)
+				.getBankPaymentConfig(bankOrder.getSenderCompany());
 
 		switch (bankOrder.getOrderTypeSelect()) {
 		case BankOrderRepository.ORDER_TYPE_SEPA_DIRECT_DEBIT:
-			return accountConfigBankPaymentService.getSepaDirectDebitSequence(accountConfig);
+			return bankPaymentConfigService.getSepaDirectDebitSequence(bankPaymentConfig);
 
 		case BankOrderRepository.ORDER_TYPE_SEPA_CREDIT_TRANSFER:
-			return accountConfigBankPaymentService.getSepaCreditTransSequence(accountConfig);
+			return bankPaymentConfigService.getSepaCreditTransSequence(bankPaymentConfig);
 
 		case BankOrderRepository.ORDER_TYPE_INTERNATIONAL_DIRECT_DEBIT:
-			return accountConfigBankPaymentService.getIntDirectDebitSequence(accountConfig);
+			return bankPaymentConfigService.getIntDirectDebitSequence(bankPaymentConfig);
 
 		case BankOrderRepository.ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER:
-			return accountConfigBankPaymentService.getIntCreditTransSequence(accountConfig);
+			return bankPaymentConfigService.getIntCreditTransSequence(bankPaymentConfig);
 
 		case BankOrderRepository.ORDER_TYPE_NATIONAL_TREASURY_TRANSFER:
-			return accountConfigBankPaymentService.getNatTreasuryTransSequence(accountConfig);
+			return bankPaymentConfigService.getNatTreasuryTransSequence(bankPaymentConfig);
 
 		case BankOrderRepository.ORDER_TYPE_INTERNATIONAL_TREASURY_TRANSFER:
-			return accountConfigBankPaymentService.getIntTreasuryTransSequence(accountConfig);
+			return bankPaymentConfigService.getIntTreasuryTransSequence(bankPaymentConfig);
 
 		default:
-			return accountConfigBankPaymentService.getOtherBankOrderSequence(accountConfig);
+			return bankPaymentConfigService.getOtherBankOrderSequence(bankPaymentConfig);
 		}
 	}
 

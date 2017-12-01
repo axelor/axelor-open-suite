@@ -511,7 +511,7 @@ public class BankOrderFile00800101Service extends BankOrderFileService {
             party2Choice.getPrvtId().add(personIdentification3);
             GenericIdentification4 genericIdentification4 = factory.createGenericIdentification4();
             personIdentification3.setOthrId(genericIdentification4);
-            genericIdentification4.setId(senderCompany.getAccountConfig().getIcsNumber());
+            genericIdentification4.setId(senderCompany.getBankPaymentConfig().getIcsNumber());
             genericIdentification4.setIdTp("SEPA");
 
             /*

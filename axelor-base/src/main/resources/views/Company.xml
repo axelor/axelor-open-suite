@@ -26,7 +26,8 @@
 	  
 	  	<panel sidebar="true" name="modulesConfigurations" title="Modules configurations" hideIf="$popup()">
 	  		<button name="accountConfigButton" title="Account config" width="100%" colSpan="6" onClick="action-company-view-account-config" if-module="axelor-account" if="__config__.app.isApp('account')"/>
-	    	<button name="saleConfigButton" title="Sale config" width="100%" colSpan="6" onClick="action-company-view-sale-config" if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
+			<button name="bankPaymentConfigButton" title="Bank payment config" width="100%" colSpan="6" onClick="action-company-view-bank-payment-config" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')"/>
+			<button name="saleConfigButton" title="Sale config" width="100%" colSpan="6" onClick="action-company-view-sale-config" if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
 	    	<button name="stockConfigButton" title="Stock config" width="100%" colSpan="6" onClick="action-company-view-stock-config" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
 	    	<button name="purchaseConfigButton" title="Purchase config" width="100%" colSpan="6" onClick="action-company-view-purchase-config" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
 	    	<button name="productionConfigButton" title="Production config" width="100%" colSpan="6" onClick="action-company-view-production-config" if-module="axelor-production" if="__config__.app.isApp('production')"/>

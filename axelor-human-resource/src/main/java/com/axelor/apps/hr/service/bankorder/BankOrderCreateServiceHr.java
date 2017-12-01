@@ -21,6 +21,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.axelor.apps.account.service.config.AccountConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,6 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
-import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -47,9 +47,9 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
 
 	@Inject
 	public BankOrderCreateServiceHr(BankOrderRepository bankOrderRepo, BankOrderService bankOrderService,
-			AccountConfigBankPaymentService accountConfigBankPaymentService, BankOrderLineService bankOrderLineService,
-			InvoiceService invoiceService) {
-		super(bankOrderRepo, bankOrderService, accountConfigBankPaymentService, bankOrderLineService, invoiceService);
+									AccountConfigService accountConfigService, BankOrderLineService bankOrderLineService,
+									InvoiceService invoiceService) {
+		super(bankOrderRepo, bankOrderService, accountConfigService, bankOrderLineService, invoiceService);
 	}
 
 	/**

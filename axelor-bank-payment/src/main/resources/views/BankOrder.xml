@@ -18,7 +18,7 @@
         <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
         <field name="nbOfLines"/>
-        <field name="signatoryEbicsUser"/>
+        <field name="signatoryEbicsUser" if-module="axelor-bank-payment" if="eval: __config__.app.getApp('bank-payment').getEnableModuleEBICS()"/>
         <field name="statusSelect"/>
     </grid>
     
@@ -37,7 +37,7 @@
         <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
         <field name="nbOfLines"/>
-        <field name="signatoryEbicsUser"/>
+        <field name="signatoryEbicsUser" if-module="axelor-bank-payment" if="eval: __config__.app.getApp('bank-payment').getEnableModuleEBICS()"/>
         <field name="statusSelect"/>
     </grid>
     
@@ -80,8 +80,8 @@
 		        <field name="generatedMetaFile" widget="binary-link" showIf="statusSelect &gt;= 2"/>
 	        </panel>
 	        <panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 3">  
-		        <field name="signatoryUser" canEdit="false" form-view="user-form" grid-view="user-grid" canView="false" hidden="true"/>
-		        <field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" canView="false" onChange="action-bank-order-record-fill-signatory-user" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.userTypeSelect = 1" showIf="senderBankDetails"/>
+		        <field name="signatoryUser" form-view="user-form" grid-view="user-grid" hidden="true"/>
+		        <field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" onChange="action-bank-order-record-fill-signatory-user" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.userTypeSelect = 1" showIf="senderBankDetails" if-module="axelor-bank-payment" if="eval: __config__.app.getApp('bank-payment').getEnableModuleEBICS()"/>
 	    		<field name="isMultiDate" hidden="true"/>
 	    		<field name="isMultiCurrency" hidden="true"/>
 	  		</panel>
@@ -204,8 +204,8 @@
 				<field name="senderBankDetails" canView="false" grid-view="bank-details-grid" form-view="bank-details-form" colSpan="6" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
 			</panel>
 	        <panel colSpan="12" readonlyIf="statusSelect &gt;= 3">  	
-				<field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" requiredIf="statusSelect == 2" onChange="action-bank-order-record-fill-signatory-user" colSpan="6" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet" showIf="senderBankDetails"/>
-				<field name="signatoryUser" canEdit="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
+				<field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" requiredIf="statusSelect == 2" onChange="action-bank-order-record-fill-signatory-user" colSpan="6" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').getEnableModuleEBICS()"/>
+				<field name="signatoryUser" form-view="user-form" grid-view="user-grid" hidden="true"/>
 			</panel>
 		</panel>
 		<panel name="action" title="Action" itemSpan="12" sidebar="true" hideIf="statusSelect == 4 || statusSelect == 5">
@@ -232,7 +232,7 @@
 				<field name="companyCurrencyTotalAmount" colSpan="8"/>
 				<field name="companyCurrency" canView="false" grid-view="currency-grid" form-view="currency-form" colSpan="4"/>
 			</panel>
-    		<field name="signatoryEbicsUser" title="Ebics User" widget="SuggestBox" colOffset="1" canEdit="false" colSpan="6" required="true" grid-view="ebics-user-grid" form-view="ebics-user-form" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet"/>
+    		<field name="signatoryEbicsUser" title="Ebics User" widget="SuggestBox" colOffset="1" canEdit="false" colSpan="6" required="true" grid-view="ebics-user-grid" form-view="ebics-user-form" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet" />
     		<field name="$password" title="Password" widget="password" colOffset="1"  colSpan="6" required="true"/>
     		<button name="validate" title="Validate" colOffset="1"  colSpan="6" onClick="save,action-bank-order-method-validate,close"/>
     		<field name="isMultiCurrency" hidden="true"/>

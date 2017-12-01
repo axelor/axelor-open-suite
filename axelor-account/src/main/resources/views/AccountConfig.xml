@@ -101,7 +101,7 @@
 				</panel>
 			</panel>
 
-			<panel name="cfonb" title="CFONB" if="__config__.app.getApp('account').getManageDirectDebitPayment()">
+			<panel name="cfonb" title="CFONB" if="__config__.app.getApp('bank-payment').getManageDirectDebitPayment()">
 				<field name="cfonbConfig" showTitle="false" colSpan="12" >
 					<editor itemSpan="6">
 						<field name="name" colSpan="8"/>
@@ -152,31 +152,6 @@
 			<panel name="paybox" title="Paybox">
 			  <field name="payboxConfig" showTitle="false" grid-view="paybox-config-grid" form-view="paybox-config-form"/>
 			</panel>
-			
-			<panel name="bankOrder" title="Bank Order" if-module="axelor-bank-payment">
-                <panel colSpan="12">
-                    <field name="generateMoveOnBankOrderValidation" if-module="axelor-bank-payment"/>
-                    <field name="icsNumber" if="__config__.app.getApp('account').getManageDirectDebitPayment()" if-module="axelor-bank-payment"/>
-                    <field name="internalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-                    <field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-                </panel>
-				<panel name="creditTransferBankOrderSequences" title="Credit transfer bank orders sequences" colSpan="4">
-					<field name="sepaCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
-					<field name="intCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
-				</panel>
-				<panel name="directDebitBankOrderSequences" title="Direct debit bank orders sequences" colSpan="4">
-					<field name="sepaDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
-					<field name="intDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
-				</panel>
-				<panel name="treasuryTransferBankOrderSequences" title="Treasury transfer Bank orders sequences" colSpan="4">
-					<field name="natTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
-					<field name="intTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
-				</panel>
-                <panel name="other" title="Other" colSpan="12">
-                    <field name="otherBankOrderSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
-                </panel>
-			</panel>
-		
 			<panel name="reimbursement" title="Reimbursement">
 				<panel name="reimbursements" title="Reimbursements" colSpan="12">
 					<field name="reimbursementExportFolderPath" />
@@ -197,7 +172,7 @@
 				<field name="sixMonthDebtPassReason"/>
 				<field name="threeMonthDebtPassReason"/>
 			</panel>
-			<panel name="directDebit" title="Direct debit" if="__config__.app.getApp('account').getManageDirectDebitPayment()" >
+			<panel name="directDebit" title="Direct debit" if="__config__.app.getApp('bank-payment').getManageDirectDebitPayment()" >
 				<panel name="directDebits" title="Direct debits" colSpan="12">
 					<field name="paymentScheduleExportFolderPathCFONB"/>
 					<field name="directDebitPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
