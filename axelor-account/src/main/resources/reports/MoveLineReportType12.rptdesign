@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Génération &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -81,9 +81,6 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">1</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -197,7 +194,62 @@ row["from_ttl"];
                     <property name="dataType">boolean</property>
                 </structure>
             </list-property>
-            <list-property name="columnHints"/>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">vatname</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">vatname</text-property>
+                    <text-property name="heading">vatname</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">vatvalue</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">vatvalue</text-property>
+                    <text-property name="heading">vatvalue</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">accountcode</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">accountcode</text-property>
+                    <text-property name="heading">accountcode</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">accountname</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">accountname</text-property>
+                    <text-property name="heading">accountname</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">from_ttl</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">from_ttl</text-property>
+                    <text-property name="heading">from_ttl</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">to_ttl</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">to_ttl</text-property>
+                    <text-property name="heading">to_ttl</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">vat_ttl</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">vat_ttl</text-property>
+                    <text-property name="heading">vat_ttl</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">move_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">move_id</text-property>
+                    <text-property name="heading">move_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">vat_line_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">vat_line_id</text-property>
+                    <text-property name="heading">vat_line_id</text-property>
+                </structure>
+            </list-property>
             <list-property name="filter">
                 <structure>
                     <property name="operator">is-not-null</property>
@@ -222,7 +274,7 @@ row["from_ttl"];
                     <property name="paramName">MoveLineReportId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                     <property name="position">2</property>
                     <property name="isOptional">false</property>
                     <property name="isInput">true</property>
@@ -311,54 +363,63 @@ row["from_ttl"];
                     <property name="name">vatname</property>
                     <property name="nativeName">vatname</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">vatvalue</property>
                     <property name="nativeName">vatvalue</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">accountcode</property>
                     <property name="nativeName">accountcode</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">accountname</property>
                     <property name="nativeName">accountname</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">from_ttl</property>
                     <property name="nativeName">from_ttl</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">to_ttl</property>
                     <property name="nativeName">to_ttl</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">vat_ttl</property>
                     <property name="nativeName">vat_ttl</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">move_id</property>
                     <property name="nativeName">move_id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">vat_line_id</property>
                     <property name="nativeName">vat_line_id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[Select Tax.name as VatName, TaxLine.value as VatValue, Account.code as AccountCode, Account.name as AccountName, 
@@ -368,6 +429,7 @@ sum(TaxMoveLine.diff_vat) as vat_ttl, Move.id as move_id, TaxLine.id as vat_line
 from public.account_move_line_report as MoveLineReport 
 left outer join public.account_move_line as MoveLine on (MoveLineReport.id = ?)
 left outer join public.account_account as Account on (MoveLine.account = Account.id)
+left outer join public.account_account_type as AccountType on (Account.account_type = AccountType.id)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
 left outer join public.base_period as Period on (Move.period = Period.id)
 left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLine.id) 
@@ -384,12 +446,13 @@ left outer join	(select sum(MoveLine.credit - MoveLine.debit) as diff_vat, MoveL
 					from public.account_move_line as MoveLine  
 					left outer join public.account_move_line_report as MoveLineReport on (MoveLineReport.id = ?)
 					left outer join public.account_account as TaxMoveLineAccount on (MoveLine.account = TaxMoveLineAccount.id)
-					where TaxMoveLineAccount.code like '4457%' and MoveLine.date_val <= MoveLineReport.date_to and MoveLine.date_val >= MoveLineReport.date_from 
+					left outer join public.account_account_type as TaxAccountType on (TaxMoveLineAccount.account_type = TaxAccountType.id)
+					where TaxAccountType.technical_type_select = 'tax' and MoveLine.date_val <= MoveLineReport.date_to and MoveLine.date_val >= MoveLineReport.date_from 
 					and MoveLine.date_val <= MoveLineReport.date_val group by MoveLine.tax_line) as TaxMoveLine 
 					on ( TaxMoveLine.tax_line2 = TaxLine.id) 
 left outer join public.account_invoice as Invoice on (Invoice.id = Move.invoice) 										
 where MoveLineReport.year = period.year 
-and ((Account.code like '7%'  or Account.code like '6%' or Account.code like '4%') AND Account.code not like '41%' AND Account.code not like '4457%')
+and (AccountType.technical_type_select = 'income' or AccountType.technical_type_select = 'charge')
 group by Account.code, Account.name, TaxLine.value, Tax.name, TaxMoveLine, move_id, TaxLine.id
 order by Account.code desc]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -409,9 +472,6 @@ order by Account.code desc]]></xml-property>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
         </design:attributes>
-        <design:inputAttributes>
-          <design:elementAttributes/>
-        </design:inputAttributes>
       </design:ParameterDefinition>
     </parameter>
   </DataSetParameters>
