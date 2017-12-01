@@ -260,8 +260,7 @@ left outer join	(select sum(MoveLine.credit - MoveLine.debit) as diff_vat, MoveL
 left outer join public.account_invoice as Invoice on (Invoice.id = Move.invoice) 										
 where AccountingReport.year = period.year 
 and (AccountType.technical_type_select = 'income'
-        or AccountType.technical_type_select = 'charge' 
-        or AccountType.technical_type_select = 'payable')
+        or AccountType.technical_type_select = 'charge')
 group by MoveLine.account_code, MoveLine.account_name, TaxLine.value, Tax.name, TaxMoveLine, move_id, TaxLine.id
 order by MoveLine.account_code desc]]></xml-property>
         </oda-data-set>
