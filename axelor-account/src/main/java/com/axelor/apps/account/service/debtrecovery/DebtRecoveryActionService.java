@@ -143,12 +143,11 @@ public class DebtRecoveryActionService {
 
 
 	public DebtRecoveryHistory getDebtRecoveryHistory(DebtRecovery detDebtRecovery)  {
-	    return Collections.max(detDebtRecovery.getDebtRecoveryHistoryList(), new Comparator<DebtRecoveryHistory>() {
-			@Override
-			public int compare(DebtRecoveryHistory debtRecoveryHistory, DebtRecoveryHistory t1) {
-			    return debtRecoveryHistory.getDebtRecoveryDate().compareTo(t1.getDebtRecoveryDate());
-			}
-		});
+		if (detDebtRecovery.getDebtRecoveryHistoryList() == null) {
+			return null;
+		}
+	    return Collections.max(detDebtRecovery.getDebtRecoveryHistoryList(),
+				Comparator.comparing(DebtRecoveryHistory::getDebtRecoveryDate));
 	}
 
 
