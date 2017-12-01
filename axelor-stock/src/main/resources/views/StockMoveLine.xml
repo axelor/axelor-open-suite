@@ -50,7 +50,7 @@
 		<field name="conformitySelect" readonly="true"/>
 	</grid>
     
-    <grid name="stock-move-line-sale-order-grid" model="com.axelor.apps.stock.db.StockMoveLine" title="Stock Move line">
+    <grid name="stock-move-line-sale-order-grid" model="com.axelor.apps.stock.db.StockMoveLine" title="Stock move lines" orderBy="-stockMove.estimatedDate">
     	<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
         <field name="productName" required="true" />
         <field name="product" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
