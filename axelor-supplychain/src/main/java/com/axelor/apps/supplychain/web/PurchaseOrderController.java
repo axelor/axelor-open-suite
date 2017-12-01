@@ -287,7 +287,7 @@ public class PurchaseOrderController {
 		response.setValue("amountToBeSpreadOverTheTimetable" , purchaseOrder.getAmountToBeSpreadOverTheTimetable());
 	}
 	
-	public void applyToallBudgetDistribution(ActionRequest request, ActionResponse response) {
+	public void applyToAllBudgetDistribution(ActionRequest request, ActionResponse response) {
 		
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 		purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());

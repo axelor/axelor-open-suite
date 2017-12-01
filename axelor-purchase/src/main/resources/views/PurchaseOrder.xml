@@ -138,7 +138,7 @@
 				<field name="amountToBeSpreadOverTheTimetable" colSpan="12"/>
 				<panel-related field="timetableList" colSpan="12" grid-view="timetable-grid" form-view="timetable-form" onChange="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable" if-module="axelor-supplychain"/>
 			</panel>
-			<panel name="budgetDistribution" title="Budget distribution" if="__config__.app.isApp('budget')" if-module="axelor-supplychain">
+			<panel name="budgetDistribution" title="Budget distribution" if="__config__.app.isApp('budget')" showIf="statusSelect &lt;= 2" if-module="axelor-supplychain">
 				<field name="budget"/>
 				<button name="applyToAll" title="Apply to all" onClick="save,action-purchase-order-budget-distribution-apply-to-all" readonlyIf="!budget"/>
 			</panel>
@@ -388,7 +388,7 @@
     </action-method>
     
     <action-method name="action-purchase-order-budget-distribution-apply-to-all">
-    	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="applyToallBudgetDistribution"/>
+    	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="applyToAllBudgetDistribution"/>
     </action-method>
     
     <action-attrs name="action-purchase-order-attrs-in-ati">

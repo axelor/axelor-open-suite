@@ -19,7 +19,6 @@ package com.axelor.apps.marketing.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.mail.MessagingException;
@@ -29,7 +28,6 @@ import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.marketing.db.Campaign;
-import com.axelor.apps.marketing.db.TargetList;
 import com.axelor.apps.marketing.exception.IExceptionMessage;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
@@ -59,15 +57,13 @@ public class CampaignServiceImpl implements CampaignService {
 		
 		String errorPartners = "";
 		String errorLeads = "";
-		for (TargetList target : campaign.getTargetModelSet()) {
 			
-			if(campaign.getPartnerTemplate() != null){
-				errorPartners = sendToPartners(target.getPartnerSet(), campaign.getPartnerTemplate());
-			} else if(campaign.getLeadTemplate() != null) {
-				errorLeads = sendToLeads(target.getLeadSet(), campaign.getLeadTemplate());
-			}
+		if(campaign.getPartnerTemplate() != null){
+			errorPartners = sendToPartners(campaign.getPartnerSet(), campaign.getPartnerTemplate());
+		} else if(campaign.getLeadTemplate() != null) {
+			errorLeads = sendToLeads(campaign.getLeads(), campaign.getLeadTemplate());
 		}
-		
+	
 		if (errorPartners.isEmpty() && errorLeads.isEmpty()) {
 			return null;
 		}

@@ -336,7 +336,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		
 		for(PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
 			BudgetDistribution newBudgetDistribution = new BudgetDistribution();
-			newBudgetDistribution.setAmount(purchaseOrder.getExTaxTotal());
+			newBudgetDistribution.setAmount(purchaseOrderLine.getExTaxTotal());
 			newBudgetDistribution.setBudget(purchaseOrder.getBudget());
 			newBudgetDistribution.setPurchaseOrderLine(purchaseOrderLine);
 			budgetDistributionRepo.save(newBudgetDistribution);
