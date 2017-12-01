@@ -527,7 +527,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 	public BigDecimal computeSubTimeSpent(Project project){
 		BigDecimal sum = BigDecimal.ZERO;
-		List<Project> subProjectList = Beans.get(ProjectRepository.class).all().filter("self.project = ?1", project).fetch();
+		List<Project> subProjectList = Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
 		if(subProjectList == null || subProjectList.isEmpty()){
 			return project.getTimeSpent();
 		}
