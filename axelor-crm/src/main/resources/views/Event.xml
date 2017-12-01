@@ -9,7 +9,7 @@
     	<hilite color="success" if="statusSelect == 2"/>
     	<hilite color="danger" if="statusSelect == 3"/>
     	<field name="startDateTime"/>
-    	<field name="clientPartner" />
+    	<field name="partner" />
     	<field name="lead" />
     	<field name="typeSelect"/>
     	<field name="subject"/>
@@ -127,7 +127,7 @@
 		</panel>
 		
 		<panel sidebar="true" title="Linked to" name="meetingLinked">
-			<field name="clientPartner" onChange="action-meeting-set-location-partner,action-partner-attrs-hide-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="partner" domain="(self.isCustomer = true OR self.isSupplier = true OR self.isCarrier = true) AND self.isEmployee = false" onChange="action-meeting-set-location-partner,action-partner-attrs-hide-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<field name="lead" onChange="action-meeting-set-location-lead" form-view="lead-form" grid-view="lead-grid"/>
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
@@ -220,13 +220,13 @@
 	
 	<action-view name="action-event-view-create-opportunity" title="Create opportunity" model="com.axelor.apps.crm.db.Opportunity">
     	<view type="form" name="opportunity-form"/>
-    	<context name="_customer" expr="eval: clientPartner"/>
+    	<context name="_customer" expr="eval: partner"/>
     	<context name="_leadName" expr="eval: lead"/>
     </action-view>
     
     <action-view name="action-event-view-create-event" title="Create event" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="event-form"/>
-    	<context name="_clientPartner" expr="eval: clientPartner"/>
+    	<context name="_partner" expr="eval: partner"/>
     	<context name="_contactPartner" expr="eval: contactPartner"/>
     	<context name="_eventLead" expr="eval: lead"/>
     </action-view>
@@ -268,11 +268,11 @@
     </action-attrs>
     
     <action-attrs name="action-event-attrs-contact-partner-domain">
-    	<attribute name="domain" for="contactPartner" expr="eval: &quot;self.isContact = true AND self.id IN (${(clientPartner?.contactPartnerSet != null &amp;&amp; !clientPartner.contactPartnerSet.empty)?clientPartner.contactPartnerSet.collect{it.id}.join(','):'null,null'})&quot;" if="clientPartner"/>
+    	<attribute name="domain" for="contactPartner" expr="eval: &quot;self.isContact = true AND self.id IN (${(partner?.contactPartnerSet != null &amp;&amp; !partner.contactPartnerSet.empty)?partner.contactPartnerSet.collect{it.id}.join(','):'null,null'})&quot;" if="partner"/>
     </action-attrs>
     
     <action-attrs name="action-attrs-client-partner">
-    	<attribute name="value" for="clientPartner" expr="eval: contactPartner?.mainPartner"/>
+    	<attribute name="value" for="partner" expr="eval: contactPartner?.mainPartner"/>
     </action-attrs>
 <!--     ACTION RECORD -->
 
@@ -282,7 +282,7 @@
     	<field name="callTypeSelect" expr="2" if="_typeSelect == '1'"/>
     	<field name="relatedToSelectId" expr="eval:_relatedToSelectId"/>
     	<field name="relatedToSelect" expr="eval:_relatedToSelect"/>
-    	<field name="clientPartner" expr="eval: _clientPartner"/>
+    	<field name="partner" expr="eval: _partner"/>
     	<field name="contactPartner" expr="eval: _contactPartner"/>
     	<field name="lead" expr="eval: _parent" if="_parent?._model == 'com.axelor.apps.crm.db.Lead' " />
     </action-record>
@@ -309,15 +309,15 @@
     </action-record>
     
     <action-record model="com.axelor.apps.crm.db.Event" name="action-event-record-event-from-sale-order">
-	    <field name="clientPartner" expr="eval:_clientPartner?.id != null ? __repo__(Partner).find(_clientPartner.id) : _clientPartner"/>
+	    <field name="partner" expr="eval:_partner?.id != null ? __repo__(Partner).find(_partner.id) : _partner"/>
 		<field name="contactPartner" expr="eval:_contactPartner?.id != null ? __repo__(Partner).find(_contactPartner.id) : _contactPartner"/>
 	    <field if="_saleOrder.id != null" name="relatedToSelect" expr="eval:'com.axelor.apps.sale.db.SaleOrder'"/>
 	    <field name="relatedToSelectId" expr="eval:_saleOrder.id" />
 	</action-record>
     
     <action-record name="action-event-record-event-from-partner" model="com.axelor.apps.crm.db.Event">
-    	<field name="clientPartner" expr="eval: _partner" if="_partner.isContact == false &amp;&amp; _partner.isCustomer == true"/>
-    	<field name="clientPartner" expr="eval: _partner.mainPartner" if="_partner.isContact == true"/>
+    	<field name="partner" expr="eval: _partner" if="_partner.isContact == false &amp;&amp; _partner.isCustomer == true"/>
+    	<field name="partner" expr="eval: _partner.mainPartner" if="_partner.isContact == true"/>
     	<field name="contactPartner" expr="eval: _partner" if="_partner.isContact == true"/>
     	<field name="description" expr="eval: _partner.description"/>
     	<field name="user" expr="eval: __repo__(User).find(_partner.user.id)" if="_partner.user != null" />
@@ -326,7 +326,7 @@
     </action-record>
     
     <action-record name="action-meeting-set-location-partner" model="com.axelor.apps.crm.db.Event">
-		<field name="location" expr="call:com.axelor.apps.crm.service.EventService:getInvoicingAddressFullName(clientPartner)"/>
+		<field name="location" expr="call:com.axelor.apps.crm.service.EventService:getInvoicingAddressFullName(partner)"/>
 	</action-record>
 
 	<action-record name="action-meeting-set-location-contact" model="com.axelor.apps.crm.db.Event">

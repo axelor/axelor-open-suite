@@ -12,7 +12,7 @@
 		<panel>
 			<field name="name" colSpan="12"/>
 			<field name="description" colSpan="12" widget="html"/>
-			<field name="projectSet" colSpan="12" form-view="folder-project-form" grid="project-grid"/>
+			<field name="projectSet" colSpan="12" form-view="project-form" grid="project-grid" edit-window="blank"/>
 		</panel>
 	</form>
 	

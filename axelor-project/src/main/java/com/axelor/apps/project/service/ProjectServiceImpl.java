@@ -21,7 +21,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanning;
-import com.axelor.apps.project.db.ProjectType;
 import com.axelor.apps.project.db.repo.ProjectPlanningRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.exception.IExceptionMessage;
@@ -61,12 +60,14 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public Project generateProject(Project parentProject, String fullName, User assignedTo, Company company, Partner clientPartner){
 		Project project = new Project();
-		project.setStatusSelect(ProjectRepository.STATE_PLANNED);
+		project.setStatusSelect(ProjectRepository.STATE_NEW);
 		project.setParentProject(parentProject);
-		if (project.getParentProject() != null) {
-			project.setProjectType(ProjectType.PHASE);
-		} else {
-			project.setProjectType(ProjectType.PROJECT);
+		if (parentProject != null) {
+			parentProject.addChildProjectListItem(project);
+			project.setProjectTypeSelect(ProjectRepository.TYPE_PHASE);
+		}
+		else {
+			project.setProjectTypeSelect(ProjectRepository.TYPE_PROJECT);
 		}
 		if(Strings.isNullOrEmpty(fullName)) {
 		    fullName = "project";
@@ -77,7 +78,6 @@ public class ProjectServiceImpl implements ProjectService {
 		project.setClientPartner(clientPartner);
 		project.setAssignedTo(assignedTo);
 		project.setProgress(BigDecimal.ZERO);
-		project.setProjectType(ProjectType.PROJECT);
 		return project;
 	}
 
