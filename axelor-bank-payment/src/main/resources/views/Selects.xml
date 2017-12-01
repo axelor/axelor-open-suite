@@ -17,7 +17,7 @@
 	
 	<selection name="bankpayment.bank.statement.status.select">
 		<option value="1">Received</option>
-		<option value="2">Checked</option>
+		<option value="2">Imported</option>
 	</selection>
 
 	<selection name="bankpayment.bank.order.type.select">
@@ -179,5 +179,27 @@
 		<option value="2">Payment schedules</option>
 		<option value="3">Monthly payment schedules</option>
 	</selection>
+	
+	<selection name="bankpayment.bank.statement.line.afb.120.line.type.select">
+        <option value="1">Initial balance</option>
+        <option value="2">Movement</option>
+        <option value="3">Final balance</option>
+    </selection>
+    
+	<selection name="bankpayment.bank.statement.line.afb.120.unavailability.index.select">
+        <option value="0">Available</option>
+        <option value="1">Unavailable</option>
+    </selection>
+    
+    <selection name="bankpayment.bank.statement.line.afb.120.commission.exemption.index.select">
+        <option value="0">Not exempt</option>
+        <option value="1">Exempt</option>
+    </selection>
+
+    <selection name="bankpayment.order.debit.type.select">
+        <option value="1">Order overall debit</option>
+        <option value="2">Unit debit by operation</option>
+        <option value="3">Overall debit by transfer currency</option>
+    </selection>
 
 </object-views>

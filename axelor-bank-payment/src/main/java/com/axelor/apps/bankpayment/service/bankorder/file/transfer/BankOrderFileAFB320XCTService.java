@@ -31,7 +31,7 @@ import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
-import com.axelor.apps.bankpayment.service.bankorder.file.cfonb.CfonbToolService;
+import com.axelor.apps.bankpayment.service.cfonb.CfonbToolService;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Country;
@@ -54,6 +54,19 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 	protected PartnerService partnerService;
 	protected int sequence = 1;
 	protected static final int NB_CHAR_PER_LINE = 320;
+	
+	/**
+	 *  "Remises informatisées d'ordres de paiement international au format 320 caractères" révisée (code opération "PI")
+	 */
+	protected static final String OPERATION_CODE_PI = "PI";
+	/**
+	 * "Remises informatisées d'ordres de paiement déplacé au format 320 caractères" (code opération "RF")
+	 */
+	protected static final String OPERATION_CODE_RF = "RF";
+	/**
+	 * "Remises informatisées d'ordres de virement national France au format 320 caractères" (code opération "VF")
+	 */
+	protected static final String OPERATION_CODE_VF = "VF";
 
 	
 	@Inject
@@ -136,7 +149,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			String senderRecord = cfonbToolService.createZone("1", "03", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2);
 			
 			// Zone 2 : Code opération
-			senderRecord += cfonbToolService.createZone("2", "RF", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
+			senderRecord += cfonbToolService.createZone("2", OPERATION_CODE_PI, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
 			
 			// Zone 3 : Numéro séquentiel
 			senderRecord += cfonbToolService.createZone("3", sequence++, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
@@ -192,8 +205,8 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			// Zone 17-4 : Zone réservée 
 			senderRecord += cfonbToolService.createZone("17-4", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 8);
 			
-			// Zone 18 : Zone non utilisée 
-			senderRecord += cfonbToolService.createZone("18", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);
+			// Zone 18 : Indice type de débit de la remise
+			senderRecord += cfonbToolService.createZone(I18n.get("18 - Order debit type index"), bankOrderFileFormat.getOrderDebitTypeSelect(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);
 			
 			// Zone 19 : Indice type de remises :
 			// "1" : mono date et mono devise : La date et la devise sont prises dans l'enregistrement "En-tête".
@@ -255,16 +268,16 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 		
 		switch (bankDetails.getBank().getBankDetailsTypeSelect()) {
 		case BankRepository.BANK_IDENTIFIER_TYPE_IBAN:
-			return StringTool.fillStringLeft(bankDetails.getIban(), ' ', 34);
+			return StringTool.fillStringRight(bankDetails.getIban(), ' ', 34);
 		
 		case BankRepository.BANK_IDENTIFIER_TYPE_NATIONAL:
-			return StringTool.fillStringLeft(StringTool.fillString(' ', 4) + bankDetails.getIban(), ' ', 34);
+			return StringTool.fillStringRight(StringTool.fillString(' ', 4) + bankDetails.getIban(), ' ', 34);
 			
 		case BankRepository.BANK_IDENTIFIER_TYPE_OTHER:
-			return StringTool.fillStringLeft(StringTool.fillString(' ', 4) + bankDetails.getIban(), ' ', 34);
+			return StringTool.fillStringRight(StringTool.fillString(' ', 4) + bankDetails.getIban(), ' ', 34);
 		
 		default:
-			return StringTool.fillStringLeft(bankDetails.getIban(), ' ', 34);
+			return StringTool.fillStringRight(bankDetails.getIban(), ' ', 34);
 		}
 		
 	}
@@ -308,7 +321,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			String detailRecord = cfonbToolService.createZone("1", "04", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2);
 		
 			// Zone 2 : Code opération
-			detailRecord += cfonbToolService.createZone("2", "RF", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
+			detailRecord += cfonbToolService.createZone("2", OPERATION_CODE_PI, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
 			
 			// Zone 3 : Numéro séquentiel
 			detailRecord += cfonbToolService.createZone("3", sequence++, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
@@ -431,7 +444,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			String totalRecord = cfonbToolService.createZone("1", "05", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2);
 			
 			// Zone 2 : Code opération
-			totalRecord += cfonbToolService.createZone("2", "RF", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
+			totalRecord += cfonbToolService.createZone("2", OPERATION_CODE_PI, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
 			
 			// Zone 3 : Numéro séquentiel 
 			totalRecord += cfonbToolService.createZone("3", sequence++, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
@@ -494,7 +507,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			String totalRecord = cfonbToolService.createZone("1", "07", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2);
 			
 			// Zone 2 : Code opération
-			totalRecord += cfonbToolService.createZone("2", "RF", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
+			totalRecord += cfonbToolService.createZone("2", OPERATION_CODE_PI, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
 			
 			// Zone 3 : Numéro séquentiel 
 			totalRecord += cfonbToolService.createZone("3", sequence++, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);
@@ -603,7 +616,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			String totalRecord = cfonbToolService.createZone("1", "08", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2);
 			
 			// Zone 2 : Code opération
-			totalRecord += cfonbToolService.createZone("2", "RF", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
+			totalRecord += cfonbToolService.createZone("2", OPERATION_CODE_PI, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 2);
 			
 			// Zone 3 : Numéro séquentiel 
 			totalRecord += cfonbToolService.createZone("3", sequence, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 6);

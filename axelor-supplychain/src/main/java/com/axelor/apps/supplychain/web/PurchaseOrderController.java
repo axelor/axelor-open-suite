@@ -28,8 +28,10 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.service.LocationService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.exception.service.TraceBackService;
 import com.google.common.base.Joiner;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.exception.AxelorException;
@@ -90,7 +92,7 @@ public class PurchaseOrderController {
 
 		if(purchaseOrder.getCompany() != null) {
 
-			response.setValue("location", purchaseOrderServiceSupplychain.getLocation(purchaseOrder.getCompany()));
+			response.setValue("location", Beans.get(LocationService.class).getLocation(purchaseOrder.getCompany()));
 		}
 	}
 
@@ -285,7 +287,7 @@ public class PurchaseOrderController {
 		response.setValue("amountToBeSpreadOverTheTimetable" , purchaseOrder.getAmountToBeSpreadOverTheTimetable());
 	}
 	
-	public void applyToallBudgetDistribution(ActionRequest request, ActionResponse response) {
+	public void applyToAllBudgetDistribution(ActionRequest request, ActionResponse response) {
 		
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 		purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());

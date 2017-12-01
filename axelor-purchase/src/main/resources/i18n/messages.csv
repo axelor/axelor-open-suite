@@ -1,6 +1,5 @@
 "key","message","comment","context"
 "${supplierPartner.purchaseOrderInformation}",,,
-"%s : You must configure Purchase module for the company %s",,,
 "50 Latest Supplier Orders",,,
 "A tax line is missing",,,
 "ATI",,,
@@ -284,6 +283,7 @@
 "Version Number",,,
 "WT",,,
 "You have to choose at least one purchase order",,,
+"You must configure Purchase module for the company %s",,,
 "important",,,
 "info",,,
 "success",,,

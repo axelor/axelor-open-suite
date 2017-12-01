@@ -693,6 +693,30 @@ public class TimesheetServiceImpl implements TimesheetService{
 		
 		
 		return lines;
-		
+	}	
+
+	@Override
+	public BigDecimal computePeriodTotal(Timesheet timesheet) {
+		BigDecimal periodTotal = BigDecimal.ZERO;
+
+		List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
+
+		for (TimesheetLine timesheetLine : timesheetLines) {
+			periodTotal = periodTotal.add(timesheetLine.getDurationStored());
+		}
+
+		return periodTotal;
+	}
+
+	@Override
+	public String getPeriodTotalConvertTitleByUserPref(User user) {
+		String title;
+		if (user.getEmployee() != null) {
+			if (user.getEmployee().getTimeLoggingPreferenceSelect() != null) {
+				title = user.getEmployee().getTimeLoggingPreferenceSelect().equals("days") ? I18n.get("Days") : user.getEmployee().getTimeLoggingPreferenceSelect().equals("minutes") ? I18n.get("Minutes") : I18n.get("Hours");
+				return title;
+			}
+		}
+		return null;
 	}
 }

@@ -15,11 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bankpayment.service.bankorder.file.cfonb;
+package com.axelor.apps.bankpayment.service.cfonb;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.tool.StringTool;
@@ -29,6 +33,8 @@ import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 
 public class CfonbToolService {
+	
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 
 	/**
@@ -217,6 +223,62 @@ public class CfonbToolService {
 		return this.createZone(numOfZone, this.normalizeNumber(value), status, format, length);
 		
 	}
+	
+	
+	public String readZone(String numOfZone, String lineContent, String status, String format, int position, int length) throws AxelorException  {
+		
+		String zone = lineContent.substring(position - 1, position + length - 1);
+		
+		/** la colonne "Statut" correspond au statut des données et peut prendre les valeurs : **/
+		switch (status) {
+		
+		case STATUS_MANDATORY :
+			this.checkFilled(zone, numOfZone);
+			
+			break;
+			
+		case STATUS_OPTIONAL :
+			
+			if(zone.replaceAll(" ", "").isEmpty())  {  return null;  }
+			break;
+			
+		case STATUS_DEPENDENT:
+			
+			if(zone.replaceAll(" ", "").isEmpty())  {  return null;  }
+			break;
+			
+		case STATUS_NOT_USED:
+			return null;
+
+		default:
+			break;
+		}
+		
+		/** la colonne "Format" correspond au format des données et peut prendre les valeurs : **/
+		switch (format) {
+		
+		case FORMAT_ALPHA_NUMERIC:
+			zone = zone.trim();
+			break;
+
+		case FORMAT_NUMERIC:
+			this.testDigital(zone.trim(), numOfZone);
+			break;
+
+		case FORMAT_ALPHA:
+			zone = zone.trim();
+			break;
+
+		default:
+			break;
+		}
+		
+		log.debug("Read zone : {}, status : {}, format : {}, position : {}, length : {}, result : {}", numOfZone, status, format, position, length, zone);
+		
+		return zone;
+		
+	}
+
 
 	/**
 	 * Fonction permettant de créer le CFONB

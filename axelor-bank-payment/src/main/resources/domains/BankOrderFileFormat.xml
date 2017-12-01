@@ -20,27 +20,27 @@
 	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Default Currency"/>
 	
 	
-<!-- 	 AFB320 -->
+    <!-- 	 AFB320 -->
 	<string name="qualifyingOfDate" title="Qualifying of date"/>
-	<boolean name="isMultiDate" title="Multi dates"/>
-	<boolean name="isMultiCurrency" title="Multi currencies"/>
+	<boolean name="isMultiDate" title="Multidate"/>
+	<boolean name="isMultiCurrency" title="Multicurrency"/>
+    <integer name="orderDebitTypeSelect" title="Order debit type" selection="bankpayment.order.debit.type.select" nullable="true" />
+
+  	<boolean name="displayAdditionnalInformations" title="Display additional information?"/>
 	
-  	
-  	<boolean name="displayAdditionnalInformations" title="Display additional informations ?"/>
-	
-  	<boolean name="displayBankOrderEconomicReason" title="Display economic reason ?"/>
+  	<boolean name="displayBankOrderEconomicReason" title="Display economic reason?"/>
 	<many-to-one name="bankOrderEconomicReason" ref="com.axelor.apps.bankpayment.db.BankOrderEconomicReason" title="Default economic reason" index="idx_bankpayment_bank_order_file_format_economic_reason"/>
 	
-	<boolean name="displayReceiverCountry" title="Display receiver country ?"/>
+	<boolean name="displayReceiverCountry" title="Display receiver country?"/>
   	<many-to-one name="receiverCountry" ref="com.axelor.apps.base.db.Country" title="Default receiver country"/>
 	
-  	<boolean name="displayPaymentModeSelect" title="Display payment Mode ?"/>
+  	<boolean name="displayPaymentModeSelect" title="Display payment mode?"/>
   	<integer name="paymentModeSelect" title="Default payment Mode" selection="bankpayment.bank.order.line.payment.mode.select"/>
   	
-  	<boolean name="displayFeesImputationModeSelect" title="Display fees imputation ?"/>
+  	<boolean name="displayFeesImputationModeSelect" title="Display fees imputation?"/>
   	<integer name="feesImputationModeSelect" title="Default fees imputation" selection="bankpayment.bank.order.line.fees.imputation.mode.select"/>
   	
-	<boolean name="displayFurtherInformations" title="Display further informations ?"/>
+	<boolean name="displayFurtherInformations" title="Display further information?"/>
   	
 	 
  	<extra-code><![CDATA[
@@ -76,6 +76,10 @@
 		public static final String FILE_FORMAT_PAIN_XXX_PAYORD912_ICT = "pain.xxx.payord912.ict";
 		public static final String FILE_FORMAT_PAIN_XXX_VCOM400_VCT = "pain.xxx.vcom400.vct";
 
+        // ORDER DEBIT TYPE SELECT
+        public static final int ORDER_DEBIT_TYPE_ORDER_OVERALL_DEBIT = 1;
+        public static final int ORDER_DEBIT_TYPE_UNIT_DEBIT_BY_OPERATION = 2;
+        public static final int ORDER_DEBIT_TYPE_OVERALL_DEBIT_BY_TRANSFER_CURRENCY = 3;
 	]]></extra-code>
 
   </entity>

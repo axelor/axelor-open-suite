@@ -14,7 +14,7 @@
 	<integer name="operationTypeSelect" title="Document Type" required="true" selection="iinvoice.operation.type.select"/>
     <integer name="operationSubTypeSelect" title="Document Subtype" required="true" default="1" selection="iinvoice.operation.sub.type.select"/>
     
-    <!-- Legal informations -->
+    <!-- Legal information -->
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" required="true" title="Partner" />
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
@@ -34,7 +34,7 @@
     <date name="invoiceDate" title="Invoice Date" />
     <date name="dueDate" title="Due Date"/>
     
-    <!-- Accounting informations -->
+    <!-- Accounting information -->
     <boolean name="schedulePaymentOk" title="Belong to a payment schedule ?" default="false"/>
     <many-to-one name="paymentSchedule" ref="com.axelor.apps.account.db.PaymentSchedule" title="Payment Schedule" readonly="true"/>
     <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"/>
@@ -58,7 +58,7 @@
     <many-to-one name="standardInvoice" ref="Invoice" title="Standard Invoice" />
   	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     
-    <!-- Blocking informations -->
+    <!-- Blocking information -->
     <boolean name="debitBlockingOk" title="Direct debit blocking"/>
     <many-to-one name="debitBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
     <date name="debitBlockingToDate" title="Blocking until"/>

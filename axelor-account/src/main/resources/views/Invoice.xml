@@ -159,10 +159,18 @@
 					   </viewer>
 				</field>
 			</panel>
-			<field name="company" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1 || partner != null"/>
-			<field name="companyBankDetails" widget="SuggestBox" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="currency" canEdit="false" onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
-			<field name="project" if-module="axelor-business-project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')"/>
+			<field name="company" canEdit="false" widget="SuggestBox" 
+				onChange="action-group-account-invoice-company-onchange" 
+				form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1 || partner != null"/>
+			<field name="companyBankDetails" widget="SuggestBox" 
+				onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" 
+				form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="currency" canEdit="false" 
+				onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1" 
+				form-view="currency-form" grid-view="currency-grid"/>
+			<field name="project" if-module="axelor-business-project" 
+				onSelect="action-invoice-attrs-domain-project" form-view="project-form" 
+				grid-view="project-grid" if="__config__.app.isApp('project')"/>
 			<field name="interco"/>
 			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
 			<field name="isSubscription" hidden="true"/>
@@ -219,16 +227,18 @@
 					</panel>
 				</panel>
 			</panel>
-			<panel name="blockings" title="Blockings" showIf="statusSelect == 3" showTitle="false">
+			<panel name="blockings" title="Blockings" showIf="statusSelect == 3" 
+				showTitle="false">
 				<field name="debitBlockingOk"/>
 				<field name="debtRecoveryBlockingOk"/>
 				<panel name="debitBlockingGroup" title="Direct debit blocking"  showIf="debitBlockingOk" colSpan="12">
-					<field name="debitBlockingByUser" form-view="user-form" grid-view="user-grid"/>
+					<field name="debitBlockingByUser" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 					<field name="debitBlockingToDate" />
 					<field name="debitBlockingReason" form-view="stop-reason-form" grid-view="stop-reason-grid" />
 				</panel>
-				<panel showIf="debtRecoveryBlockingOk" name="debtRecoveryBlocking" title="Debt recovery blocking" colSpan="12">
-					<field name="debtRecoveryBlockingByUser" form-view="user-form" grid-view="user-grid"/>
+				<panel showIf="debtRecoveryBlockingOk" name="debtRecoveryBlocking"
+					title="Debt recovery blocking" colSpan="12">
+					<field name="debtRecoveryBlockingByUser" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 					<field name="debtRecoveryBlockingToDate"/>
 					<field name="debtRecoveryBlockingReason" form-view="stop-reason-form" grid-view="stop-reason-grid" />
 				</panel>
@@ -278,7 +288,7 @@
             <button name="addPayment" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <button name="addPayment" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment-voucher" if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <field name="statusSelect"/>
-            <field name="validatedByUser" grid-view="user-grid" form-view="user-form"/>
+            <field name="validatedByUser" canEdit="false" grid-view="user-grid" form-view="user-form"/>
         </panel>
 
         <panel-stack sidebar="true" hideIf="partner == null">

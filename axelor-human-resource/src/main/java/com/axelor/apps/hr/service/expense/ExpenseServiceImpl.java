@@ -315,8 +315,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 	public Move ventilate(Expense expense) throws AxelorException {
 
 	    Move move = null;
-		HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
-		setExpenseSeq(expense, hrConfigService.getExpenseSequence(hrConfig));
+		setExpenseSeq(expense);
 
 		if (expense.getInTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
 			move = createAndSetMove(expense);
@@ -459,6 +458,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 		if (paymentMode.getGenerateBankOrder()) {
 			BankOrder bankOrder = Beans.get(BankOrderCreateServiceHr.class).createBankOrder(expense, bankDetails);
 			expense.setBankOrder(bankOrder);
+			bankOrder = Beans.get(BankOrderRepository.class).save(bankOrder);
 		}
 
 		if (paymentMode.getAutomaticTransmission()) {
@@ -485,14 +485,13 @@ public class ExpenseServiceImpl implements ExpenseService {
                 throw new AxelorException(IException.FUNCTIONNAL, I18n.get(IExceptionMessage.EXPENSE_PAYMENT_CANCEL));
             } else {
                 Beans.get(BankOrderService.class).cancelBankOrder(bankOrder);
-
-                expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
-                expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
-                expense.setPaymentDate(null);
-                expense.setPaymentAmount(BigDecimal.ZERO);
-                expenseRepository.save(expense);
-            }
-        }
+			}
+		}
+		expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
+		expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
+		expense.setPaymentDate(null);
+		expense.setPaymentAmount(BigDecimal.ZERO);
+		expenseRepository.save(expense);
     }
 
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException {
@@ -549,6 +548,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 				}
 			};
 		}
+		
 		return invoiceLineGenerator.creates();
 	}
 
@@ -699,13 +699,16 @@ public class ExpenseServiceImpl implements ExpenseService {
 		return "*" + expense.getId();
 	}
 
-	private void setExpenseSeq(Expense expense, Sequence sequence) throws AxelorException {
+	private void setExpenseSeq(Expense expense) throws AxelorException {
 		if (!Strings.isNullOrEmpty(expense.getExpenseSeq()) && !expense.getExpenseSeq().contains("*")) {
 			return;
 		}
-
+		
+		 HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
+		 Sequence sequence = hrConfigService.getExpenseSequence(hrConfig);
+		
 		if (sequence != null) {
-			expense.setExpenseSeq(Beans.get(SequenceService.class).setRefDate(expense.getSentDate()).getSequenceNumber(sequence));
+			expense.setExpenseSeq(Beans.get(SequenceService.class).getSequenceNumber(sequence, expense.getSentDate()));
 
 			if (expense.getExpenseSeq() != null) {
 				return;
@@ -739,13 +742,19 @@ public class ExpenseServiceImpl implements ExpenseService {
 		
 
 		for (EmployeeVehicle vehicle : vehicleList) {
-			LocalDate startDate = vehicle.getStartDate();
+		    LocalDate startDate = vehicle.getStartDate();
 			LocalDate endDate = vehicle.getEndDate();
-			if (startDate != null 
-					&& expenseDate.compareTo(startDate)>=0  
-					&& endDate != null 
-					&& expenseDate.compareTo(endDate)<=0) { 
-					
+			if (startDate == null) {
+			    if (endDate == null) {
+					kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
+				} else if(expenseDate.compareTo(endDate)<=0) {
+					kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
+				}
+			} else if (endDate == null) {
+				if (expenseDate.compareTo(startDate)>=0) {
+					kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
+				}
+			} else if (expenseDate.compareTo(startDate)>=0 && expenseDate.compareTo(endDate)<=0) {
 				kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
 			}
 		}

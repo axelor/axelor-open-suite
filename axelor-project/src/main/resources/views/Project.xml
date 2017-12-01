@@ -54,7 +54,7 @@
 			<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="isBusinessProject" showTitle="false" showIf="isBusinessProject &amp;&amp; $readonly()" colSpan="1">
 				<viewer><![CDATA[
                      <h4 style="text-align: right;">
-                     		<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isBusinessProject" x-translate>Affaire</span>
+                     		<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isBusinessProject" x-translate>Business</span>
                      </h4>
 		]]></viewer>
 			</field>
@@ -133,7 +133,7 @@
 				<field name="leadDelay" hidden="true"/>
 			</panel>
 			<panel name="configurations" title="Configurations">
-				<field if="__config__.app.isApp('employee')" if-module="axelor-human-resource" name="productSet" colSpan="12" widget="TagSelect" domain="self.isActivity = true" form-view="product-activity-form" grid-view="product-activity-grid"/>
+				<field name="productSet" canEdit="false" if-module="axelor-human-resource"  if="__config__.app.isApp('employee')" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12" widget="TagSelect"/>
 				<field name="categorySet" colSpan="12" widget="TagSelect"/>
 				<field name="projectFolderSet" readonly="true" colSpan="12" widget="TagSelect"/>
 				<spacer/>

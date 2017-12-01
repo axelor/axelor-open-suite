@@ -83,14 +83,14 @@
 			<field name="duration" widget="duration" colSpan="2" onChange="action-event-method-compute-from-duration" x-big="true"/>
 			<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time" hideIf="typeSelect == 1"/>
 			<field name="limitDateT" colSpan="4" showIf="typeSelect == 3"/>
-			<field name="user" form-view="user-form" grid-view="user-grid"/>
-			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid"/>
+			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="team" canEdit="false" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
 			<field name="disponibilitySelect" widget="RadioSelect" readonlyIf="calendar != null"/>
 			<field name="visibilitySelect" widget="RadioSelect" readonlyIf="calendar != null"/>
 			<panel colSpan="12" hideIf="typeSelect == 1">
 				<field name="description" widget="html" colSpan="12"/>
 			</panel>
-			<panel name="guests" title="Guests" colSpan="12" showIf="typeSelect == 2">
+			<panel name="guests" title="Guests" colSpan="12" showIf="typeSelect == 0 || typeSelect == 1 || typeSelect == 2">
 				<field name="attendees" canNew="false" canSelect="false" showTitle="true" colSpan="12">
 					<editor layout="table" x-show-titles="false">
 						<field name="name" readonly="true"/>
@@ -108,7 +108,7 @@
 			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false"/>
 		</panel>
 		<panel title="Add Guests" name="addGuests" sidebar="true">
-			<field name="$guestUser" title="Existing user" colSpan="9" type="many-to-one" target="com.axelor.auth.db.User"/>
+			<field name="$guestUser" title="Existing user" colSpan="9" type="many-to-one" target="com.axelor.auth.db.User" canEdit="false"/>
 			<button name="addNewGuestUser" title="Add" colSpan="3" onClick="save, action-event-method-add-user-guest"/>
 			<field name="$guestPartner" title="Existing customer/supplier/contact" colSpan="9" type="many-to-one" target="com.axelor.apps.base.db.Partner"/>
 			<button name="addNewGuestPartner" title="Add" colSpan="3" onClick="save, action-event-method-add-partner-guest"/>
@@ -169,11 +169,9 @@
     	<call class="com.axelor.apps.crm.web.EventController" method="changeCreator"/>
     </action-method>
     
-    
     <action-method name="action-method-crm-event-assign-tome">
     	<call class="com.axelor.apps.crm.web.EventController" method="assignToMeEvent"/>
     </action-method>
-    
     
     <action-method name="action-event-method-add-email-guest">
     	<call class="com.axelor.apps.crm.web.EventController" method="addEmailGuest"/>

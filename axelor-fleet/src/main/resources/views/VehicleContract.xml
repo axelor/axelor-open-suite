@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="vehicle-contract-grid" title="Vehicle Contract" model="com.axelor.apps.fleet.db.VehicleContract">
-       <field name="name" />
+       <field name="vehicle" />
        <field name="dateStart" />
        <field name="expiryDate" />
        <field name="typeSelect" />
@@ -16,17 +16,18 @@
 			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>      	
       </panel>
        <panel>
-     		<field name="name" />
-     		<field name="vehicle" title="Vehicle">
-      			<editor>
-        			<field name="name"/>
-        			<field name="vehicleOdometer"/>
-      			</editor>
-    		</field>
+     		<field name="name" hidden="true"/>
+     		<field name="vehicle" title="Vehicle" onChange="action-fleet-record-fill-contract-name">
+		      <editor>
+		        <field name="name" colSpan="12"/>
+		        <field name="vehicleOdometer"/>
+		      </editor>
+		    </field>
     		<panel title="Contract details" itemSpan="12">
 	     		<field name="typeSelect"/>
 	     		<field name="activationCost"/>
-	     		<field name="costFrequencySelect"/>	
+	     		<field name="costFrequencySelect"/>
+	     		<field name="recurringCost" showIf="costFrequencySelect > 0"/>
 	   		</panel>
 	  		<panel itemSpan="12">
 	   			<field name="invoiceDate"/>
@@ -47,10 +48,11 @@
 			<panel title="Terms and Conditions">
 				<field name="notes" widget="html" colSpan="12" showTitle="false" />
 			</panel>
-			<panel title="Recurring Cost Generated">
-				<field name="recurringCost" colSpan="12"/>
-			</panel>
 	   </panel-tabs>
     </form>
-     
+    
+    <action-record name="action-fleet-record-fill-contract-name" model="com.axelor.apps.fleet.db.VehicleContract">
+    	<field name="name" expr="eval: vehicle != null ? vehicle.name : null"/>
+    </action-record>
+    
 </object-views>

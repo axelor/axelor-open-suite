@@ -15,7 +15,7 @@
 	  	<panel name="main">
 		    <field name="actionSelect"/>
 		    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-		    <field name="company"/>
+		    <field name="company" canEdit="false"/>
 		</panel>
 		<panel-tabs>
 			<panel name="leaveManagementPage" title="Leave management page" hidden="true" showIf="$contains([1, 5], actionSelect)">

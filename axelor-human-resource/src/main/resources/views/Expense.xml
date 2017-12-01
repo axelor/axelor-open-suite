@@ -28,7 +28,7 @@
 		<hilite background="danger" if="$moment(sentDate).diff(todayDate,'days') &lt;= 0"/>
 		<hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7"/>
 		<field name="expenseSeq"/>
-		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"/>
 		<field name="sentDate"/>
 		<field name="period" form-view="period-form" grid-view="period-grid"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
@@ -54,7 +54,7 @@
 	    	<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    	<button name="addPaymentButton" title="Register payment" onClick="action-expense-method-add-payment" showIf="statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)" readonlyIf="move == null"/>
 	    	<button name="cancelPaymentButton" title="Cancel payment"
-					showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3) &amp;&amp; !bankOrder"
+					showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3)"
 					onClick="action-expense-method-cancel-payment"/>
 	    </panel>
 		<panel>
@@ -72,8 +72,8 @@
 			</panel>
 			
 			<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
-			<field name="company" form-view="company-form" grid-view="company-grid" readonlyIf="ventilated"/>
-			<field name="user" form-view="user-form" grid-view="user-grid"/>
+			<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" readonlyIf="ventilated"/>
+			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()"/>
 			<field name="period" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" readonlyIf="ventilated"/>
 			<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb" readonlyIf="ventilated"/>
@@ -83,7 +83,7 @@
 		</panel>
 		<panel-tabs>
 			<panel-related field="expenseLineList" height="20" title="General expenses" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" colSpan="12" />
-			<panel title="Kilometric Allowances">
+			<panel title="Kilometric Allowances" showIf="!setMultipleUsers">
 				<field name="kilometricExpenseLineList" readonlyIf="statusSelect &gt; 1" colSpan="12" showTitle="false" onChange="action-expense-method-compute" >
 				<editor x-show-on-new="false" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4" onNew="action-kilometric-allowance-record-default,action-expense-line-method-fill-kilometric-expense-product" >
 					<field name="expenseDate" title="Date" onChange="action-kilometric-allowance-method-compute,action-kilometric-allowance-method-update-kap" />
@@ -101,7 +101,7 @@
 				</editor>
 				</field>
 			</panel>
-			<panel-related field="employeeAdvanceUsageList" title="Employee advance list" readonly="false" canNew="false" canSelect="false" canEdit="true" editable="true" form-view="employee-advance-usage-expense-form" grid-view="employee-advance-usage-expense-grid" />
+			<panel-related showIf="!setMultipleUsers" field="employeeAdvanceUsageList" title="Employee advance list" readonly="false" canNew="false" canSelect="false" canEdit="true" editable="true" form-view="employee-advance-usage-expense-form" grid-view="employee-advance-usage-expense-grid" />
 		</panel-tabs>
 		<panel showIf="statusSelect == 3 || statusSelect == 4">
 			<panel title="Account information" showIf="move">
@@ -117,9 +117,9 @@
 		</panel>
 		<panel showIf="sentDate">
 			<field name="sentDate" hidden="true" colSpan="4" showIf="sentDate"/>
-			<field name="validatedBy" hidden="true" form-view="user-form" grid-view="user-grid" showIf="validatedBy" colSpan="4"/>
+			<field name="validatedBy" canEdit="false" hidden="true" form-view="user-form" grid-view="user-grid" showIf="validatedBy" colSpan="4"/>
 			<field name="validationDate" hidden="true" showIf="validationDate" colSpan="4"/>
-			<field name="refusedBy" hidden="true" form-view="user-form" grid-view="user-grid" showIf="refusedBy" colSpan="4"/>
+			<field name="refusedBy" canEdit="false" hidden="true" form-view="user-form" grid-view="user-grid" showIf="refusedBy" colSpan="4"/>
 			<field name="refusalDate" hidden="true" showIf="refusalDate"/>
 			<field name="groundForRefusal" hidden="true" showIf="statusSelect == 5" colSpan="12" readonly="true"/>
 			<field name="moveDate" hidden="true" colSpan="4" showIf="statusSelect == 3 || statusSelect == 4" readonlyIf="ventilated"/>

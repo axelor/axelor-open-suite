@@ -35,7 +35,7 @@
         <panel-stack>
 			<panel>
 			  <field name="employee" canSuggest="false" hideIf="$popup()" requiredIf="!$popup()"/>
-			  <field name="payCompany" canSuggest="false" onChange="action-employment-contract-paycompany-onchange"/>
+			  <field name="payCompany" canEdit="false" canSuggest="false" onChange="action-employment-contract-paycompany-onchange"/>
 			  <field name="companyDepartment" onSelect="action-employment-contract-attrs-department-domain"/>
 			  <field name="employmentContractVersion" canSuggest="false"/>
 			  <field name="employmentContractTemplate" readonlyIf="!payCompany" widget="SuggestBox" domain=":payCompany MEMBER OF self.companySet" />
@@ -52,6 +52,7 @@
 				   form-view="employment-contract-type-form" colSpan="4"
 				   onChange="action-employment-contract-record-contract-type-on-change"/>
 			<field name="executiveStatusSelect" colSpan="4"/>
+			<field name="employment" colSpan="4"/>
 			<panel name="organization" title="Organization" colSpan="12">
 				<field name="startDate" colSpan="3"/>
 				<field name="trialPeriodDuration" colSpan="3"/>

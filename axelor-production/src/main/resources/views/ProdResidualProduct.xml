@@ -11,7 +11,7 @@
     
     <form name="prod-residual-product-form" title="Residual product" model="com.axelor.apps.production.db.ProdResidualProduct">
 		<panel name="main">        
-	        <field name="product" form-view="product-form" grid-view="product-grid" onChange="action-prod-residual-product-record-product" domain="self.productTypeSelect = 'storable'"/>
+	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid" onChange="action-prod-residual-product-record-product" domain="self.productTypeSelect = 'storable'"/>
 	        <field name="qty"/>
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         </panel>

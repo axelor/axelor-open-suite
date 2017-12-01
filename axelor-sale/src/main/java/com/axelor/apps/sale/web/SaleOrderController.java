@@ -32,7 +32,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.inject.Beans;
-
+import com.axelor.rpc.Context;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -235,14 +235,18 @@ public class SaleOrderController {
 
 	public void createSaleOrder(ActionRequest request, ActionResponse response)  {
 		SaleOrder origin = saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
-		SaleOrder copy = saleOrderService.createSaleOrder(origin);
-		response.setValues(copy);
+		if (origin != null) {
+			SaleOrder copy = saleOrderService.createSaleOrder(origin);
+			response.setValues(copy);
+		}
 	}
 
 	public void createTemplate(ActionRequest request, ActionResponse response)  {
-		if (request.getContext().get("_idCopy") != null) {
-			SaleOrder origin = saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
-			SaleOrder copy = saleOrderService.createTemplate(origin);
+	    Context context = request.getContext();
+	    if (context.get("_idCopy") != null) {
+	    	String idCopy = context.get("_idCopy").toString();
+			SaleOrder origin = saleOrderRepo.find(Long.parseLong(idCopy));
+			SaleOrder copy = saleOrderService.createSaleOrder(origin);
 			response.setValues(copy);
 		}
 	}

@@ -79,18 +79,28 @@
 			</menu>
 		</menubar>
 		<panel title="Status">
-			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
+			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" readonly="true"/>
 		</panel>
 	  
 		<panel name="main" readonlyIf="statusSelect == 4">
-			<field name="supplierPartner.purchaseOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="supplierPartner == null || supplierPartner.purchaseOrderInformation == null"/>
+			<field name="supplierPartner.purchaseOrderInformation" css="bold red" 
+				colSpan="12" showTitle="false" 
+				hideIf="supplierPartner == null || supplierPartner.purchaseOrderInformation == null"/>
 			<field name="purchaseOrderSeq" css="label-bold bold" colSpan="6"/>
-			<field name="receiptState" css="label-bold bold" showIf="statusSelect == 3 || statusSelect == 4" /> 
-			<field name="company" widget="SuggestBox" onChange="action-group-purchase-order-company-change-actions" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect >= 3 || supplierPartner != null" />
-			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect >= 3"/>
-			<field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
-			<field name="versionNumber" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
-			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-domain-company-bank-details" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management"/>
+			<field name="receiptState" css="label-bold bold" 
+				showIf="statusSelect == 3 || statusSelect == 4" /> 
+			<field name="company" canEdit="false" widget="SuggestBox" 
+				onChange="action-group-purchase-order-company-change-actions" 
+				form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect >= 3 || supplierPartner != null" />
+			<field name="currency" canEdit="false" form-view="currency-form" 
+				grid-view="currency-grid" readonlyIf="statusSelect >= 3"/>
+			<field name="buyerUser" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="versionNumber" 
+				if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
+			<field name="companyBankDetails" widget="SuggestBox" 
+					onSelect="action-invoice-attrs-domain-company-bank-details" 
+					form-view="bank-details-form" grid-view="bank-details-grid" 
+					if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management"/>
 			<field name="inAti" onChange="action-purchase-order-attrs-in-ati"/>   
 			<field name="contract" if-module="axelor-contract" if="__config__.app.isApp('contract')" domain="self.typeSelect = 2"  />
 			<field name="interco" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
@@ -128,9 +138,9 @@
 				<field name="amountToBeSpreadOverTheTimetable" colSpan="12"/>
 				<panel-related field="timetableList" colSpan="12" grid-view="timetable-grid" form-view="timetable-form" onChange="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable" if-module="axelor-supplychain"/>
 			</panel>
-			<panel name="budgetDistribution" title="Budget distribution" if="__config__.app.isApp('budget')" if-module="axelor-supplychain">
+			<panel name="budgetDistribution" title="Budget distribution" if="__config__.app.isApp('budget')" showIf="statusSelect &lt;= 2" if-module="axelor-supplychain">
 				<field name="budget"/>
-				<button name="applyToAll" title="Apply to all" onClick="save,action-purchase-order-budget-distribution-apply-to-all"/>
+				<button name="applyToAll" title="Apply to all" onClick="save,action-purchase-order-budget-distribution-apply-to-all" readonlyIf="!budget"/>
 			</panel>
 			<panel name="otherInformation" title="Other Information" hideIf="statusSelect &gt; 2">
 				<field name="priceDisplay" colSpan="12"/>
@@ -164,7 +174,7 @@
 				<field name="internalReference"/>
 			</panel>
 			<panel readonly="true">
-				<field name="validatedByUser" form-view="user-form" grid-view="user-grid"/>
+				<field name="validatedByUser" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 				<field name="validationDate"/>
 	    	</panel>
 		</panel>
@@ -378,7 +388,7 @@
     </action-method>
     
     <action-method name="action-purchase-order-budget-distribution-apply-to-all">
-    	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="applyToallBudgetDistribution"/>
+    	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="applyToAllBudgetDistribution"/>
     </action-method>
     
     <action-attrs name="action-purchase-order-attrs-in-ati">

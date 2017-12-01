@@ -145,21 +145,27 @@
 		<panel-include view="sale-order-form"/>
 	</form>
 
-	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form"
-		onNew="action-group-sale-saleorder-onnew"
-		onLoad="action-group-sale-saleorder-onload">
-		
+	<form name="sale-order-form" title="Sale order" 
+		model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form"
+		onNew="action-group-sale-saleorder-onnew" onLoad="action-group-sale-saleorder-onload">
 	  <menubar>
 	  	<menu title="Reports">
-	  		<item action="save,action-sale-order-method-show-sale-order" title="Print" hideIf="clientPartner == null"/>
-	  		<item action="save,action-sale-order-method-print-proforma-invoice" title="Print proforma invoice" hideIf="clientPartner == null"/>
-	  		<item action="save,action-sale-order-method-export-sale-order-excel" title="Excel Export" hideIf="clientPartner == null"/>
-	  		<item action="save,action-sale-order-method-export-sale-order-word" title="Word Export" hideIf="clientPartner == null"/>
+	  		<item action="save,action-sale-order-method-show-sale-order"
+	  		 	title="Print" hideIf="clientPartner == null"/>
+	  		<item action="save,action-sale-order-method-print-proforma-invoice" 
+	  			title="Print proforma invoice" hideIf="clientPartner == null"/>
+	  		<item action="save,action-sale-order-method-export-sale-order-excel"
+	  			title="Excel Export" hideIf="clientPartner == null"/>
+	  		<item action="save,action-sale-order-method-export-sale-order-word"
+	  			title="Word Export" hideIf="clientPartner == null"/>
 	  	</menu>
 	    <menu title="Tools">
-		    <item title="Schedule Event" action="action-sale-order-view-schedule-event" hideIf="clientPartner == null"/>
-            <item action="save,action-send-by-email-with-template" title="Send email" hideIf="clientPartner == null"/>
-		    <item action="save,action-sale-order-method-generate-template" title="Define as template" hideIf="clientPartner == null"/>
+		    <item title="Schedule Event" action="action-sale-order-view-schedule-event"
+		    	hideIf="clientPartner == null"/>
+            <item action="save,action-send-by-email-with-template" title="Send email"
+            	hideIf="clientPartner == null"/>
+		    <item action="save,action-sale-order-method-generate-template"
+		    	title="Define as template" hideIf="clientPartner == null"/>
 		</menu>
 	  </menubar>
 	  <panel title="Status">
@@ -183,7 +189,7 @@
 				</div>
 	    	]]></viewer>
 	    </field>
-	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect == 3 || clientPartner != null" />
+	    <field name="company" canEdit="false" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect == 3 || clientPartner != null" />
 	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" >
 	    	<viewer><![CDATA[
 		  		<div>
@@ -364,7 +370,7 @@
 
         </panel>
       
-      <panel sidebar="true" itemSpan="6" title="Margin"  hideIf="clientPartner == null">
+      <panel sidebar="true" itemSpan="6" title="Margin"  hideIf="clientPartner == null" readonly="true">
       		<field name="totalCostPrice"/>
       		<field name="totalGrossMargin"/>
       		<field name="marginRate"/>
@@ -374,7 +380,9 @@
       <panel sidebar="true"  hideIf="clientPartner == null">
       	<panel name="salesFollowUp" title="Sales follow-up" colSpan="12">
 	        <field name="salemanUser" grid-view="user-grid" form-view="user-form"/>
-	        <field name="team" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid"/>
+	        <field name="team" onSelect="action-sale-order-domain-on-team" 
+	        	form-view="team-form" grid-view="team-grid"
+	        	if="__config__.app.getApp('base').getTeamManagement()" />
 	    </panel>
 	    <panel name="financialTerms" title="Financial terms" colSpan="12" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" >   
 	        <field name="paymentMode" onChange="action-sale-order-method-fill-company-bank-details" domain="self.inOutSelect = 1"  form-view="payment-mode-form" grid-view="payment-mode-grid"/>
@@ -400,7 +408,7 @@
     </grid>
     
     <form name="sale-order-template-form-wizard" title="Template" model="com.axelor.apps.sale.db.SaleOrder"
-		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
+		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template"
 		onLoad="action-group-sale-saleorder-onload">
 		
 		<panel-include view="sale-order-template-form"/>
@@ -409,11 +417,10 @@
 	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder"
 		onNew="action-group-sale-saleorder-onnew"
 		onLoad="action-group-sale-saleorder-onload">
-	  
 	  <panel>
 	  	<field name="clientPartner.saleOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="clientPartner == null || clientPartner.saleOrderInformation == null"/>
 	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" />
-	    <field name="company" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect == 3"/>
+	    <field name="company" canEdit="false" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect == 3"/>
 	    <field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect == 3"/>
 	    <field name="templateUser" form-view="user-form" grid-view="user-grid"/>
 	  </panel>
@@ -538,7 +545,7 @@
 	  </toolbar>
 	  <panel name="main" readonly="true">
 	    <field name="saleOrderSeq" css="highlight"/>
-	    <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+	    <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 	    <field name="externalReference"/>
 	    <field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 	  </panel>
@@ -1084,10 +1091,6 @@
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="generateViewSaleOrder"/>
 	</action-method>
 
-	<action-method name="action-sale-order-method-create-template">
-		<call class="com.axelor.apps.sale.web.SaleOrderController" method="createTemplate"/>
-	</action-method>
-	
 	<action-method name="action-sale-order-method-create-order">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="createSaleOrder"/>
 	</action-method>

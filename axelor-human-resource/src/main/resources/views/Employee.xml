@@ -3,9 +3,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee">
-		 <field name="contactPartner" grid-view="partner-contact-grid" form-view="partner-contact-form"/>
-		 <field name="hourlyRate" />
-		 <field name="timeLoggingPreferenceSelect" />
+		 <field name="contactPartner.fullName"/>
+		 <field name="contactPartner.fixedPhone" />
+		 <field name="contactPartner.mobilePhone" />
 		 <field name="manager" form-view="user-form" grid-view="user-grid" />
 		 <field name="mainEmploymentContract.companyDepartment" form-view="company-department-form" grid-view="company-department-grid"/>
 		 <field name="mainEmploymentContract.payCompany"/>
@@ -26,14 +26,28 @@
 	    <panel name="contact" title="Contact">
             <field name="contactPartner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-contact-grid" form-view="partner-contact-form" colSpan="12" showTitle="false">
 	            <editor x-viewer="true">
-					<field name="titleSelect" css="bold" colSpan="2"/>
-					<field name="name" title="Name"  css="bold" onChange="action-partner-record-full-name" colSpan="5"/>
-					<field name="firstName"  css="bold" onChange="action-partner-record-full-name" colSpan="5"/>
-		            <field name="emailAddress" form-view="email-address-simple-form" canNew="true" />
-					<field name="fax" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
-					<field name="fixedPhone"  placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
-					<field name="mobilePhone" placeholder="+33600000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
-		           	<field name="webSite"/>
+		            <panel colSpan="3">
+						<field name="picture" showTitle="false" widget="Image" colSpan="12"/>
+						<panel colSpan="8" showIf="fullName != null">
+							<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+							<label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
+							<label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
+							<label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
+							<label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
+						</panel>
+					</panel>
+					<panel colSpan="9">
+						<panel colSpan="12">
+							<field name="titleSelect" css="bold" colSpan="2"/>
+							<field name="name" title="Name"  css="bold" onChange="action-partner-record-full-name" colSpan="5"/>
+							<field name="firstName"  css="bold" onChange="action-partner-record-full-name" colSpan="5"/>
+				            <field name="emailAddress" form-view="email-address-simple-form" canNew="true" />
+							<field name="fax" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
+							<field name="fixedPhone"  placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
+							<field name="mobilePhone" placeholder="+33600000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
+				           	<field name="webSite"/>
+				         </panel>
+			        </panel>
 	            </editor>
             </field>
         </panel>
@@ -61,13 +75,14 @@
 						<editor x-viewer="true">
 							<field name="payCompany"/>
 							<field name="executiveStatusSelect"/>
+							<field name="employment"/>
 						</editor>
 					</field>
         			<field name="bonusCoef" colSpan="4" />
       			</panel>
       			<panel name="rhInfo" title="HR Info." colSpan="12">
         			<field if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" name="bankDetails" colSpan="4" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-        			<field name="manager" colSpan="4" form-view="user-form" grid-view="user-grid"/>
+        			<field name="manager" canEdit="false" colSpan="4" form-view="user-form" grid-view="user-grid"/>
         			<field name="mainEmploymentContract.companyDepartment" colSpan="4" form-view="company-department-form" grid-view="company-department-grid"/>
         			<field name="timesheetReminder" colSpan="4"/>
         			<field name="external" colSpan="4"/>
@@ -90,7 +105,7 @@
 			<panel name="timesheets" title="Timesheets"
 				   if="__config__.app.isApp('timesheet')">
 				<field name="timeLoggingPreferenceSelect" colSpan="4"/>
-				<field name="product" colSpan="4" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
+				<field name="product" canEdit="false" colSpan="4" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
 				<field name="timesheetReminder" colSpan="4"/>
 				<panel-dashlet action="action-employee-view-user-timesheets"
 							   colSpan="12"/>
@@ -141,6 +156,29 @@
 			<button name="showAnnualReport" title="Show expenses annual report" readonlyIf="year == null" onClick="action-employee-method-show-annual-report" />
 		</panel>
 	</form>
+	
+	<cards name="employee-card" title="Employee" model="com.axelor.apps.hr.db.Employee" css="rect-image" orderBy="name">
+		<field name="contactPartner.picture" />
+		<field name="contactPartner.fullName" />
+		<field name="contactPartner.fixedPhone" />
+		<field name="contactPartner.mobilePhone" />
+		<template><![CDATA[
+			<div>
+			  <div class="span4 card-image">
+			    <img ng-src="{{$image('contactPartner.picture', 'content')}}" />
+			  </div>
+			  <div class="span8">
+			  	<span>
+				<strong>{{contactPartner.fullName}}</strong></br>
+			    FP : {{contactPartner.fixedPhone}}</br>
+			    MP : {{contactPartner.mobilePhone}}
+			    </span>
+			  </div>
+			</div>
+		]]>
+		</template>
+	</cards> 
+
 	
 	<action-record name="action-employee-record-default" model="com.axelor.apps.hr.db.Employee">
 		<field name="timeLoggingPreferenceSelect" expr="eval:__config__.app.getApp('base').getTimeLoggingPreferenceSelect()"/>

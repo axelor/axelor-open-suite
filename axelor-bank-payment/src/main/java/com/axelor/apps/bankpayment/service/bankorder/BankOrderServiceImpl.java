@@ -185,9 +185,11 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	@Override
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public BankOrder generateSequence(BankOrder bankOrder) {
+	public BankOrder generateSequence(BankOrder bankOrder) throws AxelorException {
 		if (bankOrder.getBankOrderSeq() == null && bankOrder.getId() != null) {
-			bankOrder.setBankOrderSeq("*" + StringTool.fillStringLeft(Long.toString(bankOrder.getId()), '0', 6));
+
+			Sequence sequence = getSequence(bankOrder);
+			setBankOrderSeq(bankOrder, sequence);
 			bankOrderRepo.save(bankOrder);
 		}
 		return bankOrder;
@@ -250,15 +252,12 @@ public class BankOrderServiceImpl implements BankOrderService {
 			checkLines(bankOrder);
 		}
 
-		Sequence sequence = getSequence(bankOrder);
-		setBankOrderSeq(bankOrder, sequence);
-
-
 		setNbOfLines(bankOrder);
+		
+		setSequenceOnBankOrderLines(bankOrder);
 
 		generateFile(bankOrder);
 
-		setSequenceOnBankOrderLines(bankOrder);
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
 		makeEbicsUserFollow(bankOrder);
 
@@ -329,7 +328,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		EbicsUser signatoryEbicsUser = bankOrder.getSignatoryEbicsUser();
 		
 		ebicsService.sendFULRequest(signatoryEbicsUser.getEbicsPartner().getTransportEbicsUser(), signatoryEbicsUser, null, dataFileToSend,
-				bankOrder.getBankOrderFileFormat().getOrderFileFormatSelect(), signatureFileToSend);
+				bankOrder.getBankOrderFileFormat(), signatureFileToSend);
 
 	}
 
@@ -582,7 +581,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	protected void setBankOrderSeq(BankOrder bankOrder, Sequence sequence) throws AxelorException {
 		bankOrder.setBankOrderSeq(
-				(sequenceService.setRefDate(bankOrder.getBankOrderDate()).getSequenceNumber(sequence)));
+				(sequenceService.getSequenceNumber(sequence, bankOrder.getBankOrderDate())));
 
 		if (bankOrder.getBankOrderSeq() != null) {
 			return;

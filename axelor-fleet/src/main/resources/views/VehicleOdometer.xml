@@ -16,7 +16,7 @@
      	   <field name="date" />
 	       <field name="vehicle"/>
 	       <field name="value" />
-	       <field name="unit" />
+	       <field name="unit" domain="self.name IN ('Kilometer','Miles')"/>
 	   </panel>
     </form>
     

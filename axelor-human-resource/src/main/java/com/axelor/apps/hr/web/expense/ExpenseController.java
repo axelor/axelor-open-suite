@@ -502,14 +502,18 @@ public class ExpenseController {
 		}
 		
 		List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
-		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdListString(kilometricAllowParamList)+ ")");
+		if (kilometricAllowParamList == null || kilometricAllowParamList.isEmpty()) {
+			response.setAttr("kilometricAllowParam", "domain", "self.id IN (0)");
+		} else {
+			response.setAttr("kilometricAllowParam", "domain", "self.id IN (" + StringTool.getIdListString(kilometricAllowParamList) + ")");
+		}
 
 		KilometricAllowParam currentKilometricAllowParam = expenseLine.getKilometricAllowParam();
 		boolean vehicleOk = false;
 
-		if (kilometricAllowParamList.size() == 1) {
+		if (kilometricAllowParamList != null && kilometricAllowParamList.size() == 1) {
 			response.setValue("kilometricAllowParam", kilometricAllowParamList.get(0));
-		} else {
+		} else if (kilometricAllowParamList != null) {
 			for (KilometricAllowParam kilometricAllowParam : kilometricAllowParamList) {
 				if (currentKilometricAllowParam != null && currentKilometricAllowParam.equals(kilometricAllowParam)) {
 					expenseLine.setKilometricAllowParam(kilometricAllowParam);

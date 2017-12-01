@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.axelor.apps.stock.service.LocationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,7 +135,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 				externalReference, orderDate, priceList, clientPartner, team);
 
 		if(location == null)  {
-			location = saleOrderStockService.getLocation(company);
+			location = Beans.get(LocationService.class).getLocation(company);
 		}
 		
 		saleOrder.setLocation(location);

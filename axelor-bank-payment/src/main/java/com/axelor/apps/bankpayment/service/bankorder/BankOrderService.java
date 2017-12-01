@@ -54,7 +54,7 @@ public interface BankOrderService {
 	public File generateFile(BankOrder bankOrder) throws JAXBException, IOException, AxelorException, DatatypeConfigurationException;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public BankOrder generateSequence(BankOrder bankOrder);
+	public BankOrder generateSequence(BankOrder bankOrder) throws AxelorException;
 
 	public void setSequenceOnBankOrderLines(BankOrder bankOrder);
 

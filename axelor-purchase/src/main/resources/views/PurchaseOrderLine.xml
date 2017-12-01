@@ -63,7 +63,7 @@
 			<field name="productName" showIf="isTitleLine" title="Title"/>
 		</panel>
 		<panel hideIf="isTitleLine">
-			<field name="product" onChange="action-group-purchase-purchase-orderline-product-onchange"
+			<field name="product"  canEdit="false" onChange="action-group-purchase-purchase-orderline-product-onchange"
 				   domain="self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true"  form-view="product-form" grid-view="product-grid"/>
 			<field name="productName"/>
 			<field name="productCode"/>
@@ -91,7 +91,7 @@
 		</panel>
 		<panel-tabs hideIf="isTitleLine">
 			<panel name="details" title="Details">
-				<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
+				<field name="createdBy" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 				<field name="createdOn"/>
 			</panel>
 			<panel name="notes" title="Notes">
