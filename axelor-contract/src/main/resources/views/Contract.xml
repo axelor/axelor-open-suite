@@ -46,18 +46,17 @@
                 <viewer depends="contractId,versionNumber">
                     <![CDATA[
 			 			<h3>
-			             <span>{{ contractId }} <span ng-show="record.versionNumber &gt; 0"> - {{ versionNumber }}</span></span>
-			             <span class="label label-default" x-translate ng-show="record.statusSelect == 1">Draft</span>
-			             <span class="label label-info" x-translate ng-show="record.statusSelect == 2">Active</span>
-			             <span class="label label-important" x-translate ng-show="record.statusSelect == 3">Closed</span>
+			             <span>{{ contractId }} <span ng-show="versionNumber &gt; 0"> - {{ versionNumber }}</span></span>
+			             <span class="label label-default" x-translate ng-show="statusSelect == 1">Draft</span>
+			             <span class="label label-info" x-translate ng-show="statusSelect == 2">Active</span>
+			             <span class="label label-important" x-translate ng-show="statusSelect == 3">Closed</span>
 			           </h3>
 					]]>
                 </viewer>
             </field>
-            <field name="contractId" hidden="true"/>
-            <field name="versionNumber" hidden="true"/>
         </panel>
         <panel sidebar="true">
+        	<field name="nextVersion" hidden="true"/>
             <button name="newVersionBtn" title="New version" onClick="save,action-view-contract-add-version" showIf="id &amp;&amp; nextVersion == null &amp;&amp; currentVersion.statusSelect == 3"/>
             <button name="showNextVersionBtn" title="Show next version" onClick="save,action-view-contract-show-version" showIf="id &amp;&amp; nextVersion != null"/>
             <button name="deleteNextVersionBtn" title="Delete next version" onClick="save,com.axelor.apps.contract.web.ContractController:deleteNextVersion" showIf="id &amp;&amp; nextVersion != null"/>

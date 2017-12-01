@@ -40,5 +40,8 @@
 		<attribute name="readonly" for="purchasable" expr="eval:true"/>
 	</action-attrs>
 	
+	<action-method name="action-product-method-supplier-catalog-coeff">
+		<call class="com.axelor.apps.purchase.web.PurchaseProductController" method="fillShippingCoeff"/>
+	</action-method>
 	
 </object-views>

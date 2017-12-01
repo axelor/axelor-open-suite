@@ -40,14 +40,13 @@
 		<panel-related field="configuratorFormulaList" form-view="configurator-formula-form" grid-view="configurator-formula-grid" hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save"/>
 
 		<panel title="Authorizations" hideIf="id == null">
-			<field name="authorizedUserSet" form-view="user-form" grid-view="user-grid" canNew="false" canSelect="true" colSpan="12"/>
-            <field name="authorizedGroupSet" form-view="group-form" grid-view="group-grid" canNew="false" canSelect="true" colSpan="12"/>
+			<field name="authorizedUserSet" widget="TagSelect" canEdit="false" canNew="false" form-view="user-form" grid-view="user-grid" colSpan="12"/>
+            <field name="authorizedGroupSet" widget="TagSelect" canEdit="false" canNew="false" form-view="group-form" grid-view="group-grid" colSpan="12"/>
 		</panel>
 
-		<panel>
-			<field name="$hideBOMConfigurator" type="boolean" title="Hide BOM Configurator"/>
+		<panel if-module="axelor-production" if="__config__.app.getApp('production').getEnableConfigurator()">
 			<panel title="Configurator BoM" if-module="axelor-production" colSpan="12" hideIf="id == null || $hideBOMConfigurator">
-	            <field name="configuratorBom" if-module="axelor-production" colSpan="12">
+	            <field name="configuratorBom" if-module="axelor-production"  if="__config__.app.isApp('production')" colSpan="12">
 	                <editor>
 	                    <field name="company"/>
 	                    <panel title="Label">

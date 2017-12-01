@@ -152,6 +152,7 @@
 			
 			<panel name="others" title="Others" showIf="id &amp;&amp; move.statusSelect &gt; 1">
 				<field name="exportedDirectDebitOk" colSpan="12"/>
+				<field name="move" hidden="true"/>
 			</panel>
 			<panel-include view="incl-analytic-distribution-move-line-form" />
 		</panel-tabs>

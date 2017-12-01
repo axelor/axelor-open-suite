@@ -5,7 +5,7 @@
     
     <grid name="move-grid" orderBy="-date" title="Account moves" model="com.axelor.apps.account.db.Move" canDelete="false">
         <toolbar>
-            <button name="validateMove" title="Validate" if="__repo__(AccountConfig).findByCompany(__user__.getActiveCompany()).getAccountingDaybook()" prompt=" The validation of a move brings irrevocable integration of a move in Moves book" onClick="action-move-method-validate-multiple-moves"/>
+            <button name="validateMove" title="Validate" if="__repo__(AccountConfig).findByCompany(__user__.getActiveCompany()).getAccountingDaybook()" prompt="The validation of a move brings irrevocable integration of a move in Moves book" onClick="action-move-method-validate-multiple-moves"/>
             <button name="deleteMoves" title="Delete" prompt="Only 'Draft' moves can be deleted" icon="fa-trash" onClick="action-move-method-delete-multiple-moves"/>
         	<button name="moveLines" title="See Move Lines" onClick="account.root.move.move.line" />
         </toolbar>
@@ -35,7 +35,7 @@
 			<field name="reference" colSpan="12"/>
 			<panel readonlyIf="moveLineList.length &gt; 0" colSpan="12" itemSpan="6">
 				<field name="journal" domain="self.statusSelect = 1 AND self.company = :company" canNew="false" form-view="journal-form" grid-view="journal-grid"/>
-				<field name="company" widget="SuggestBox" onSelect="action-move-attrs-set-domain-company" onChange="action-move-method-get-period" form-view="company-form" grid-view="company-grid"/>
+				<field name="company" canEdit="false" widget="SuggestBox" onSelect="action-move-attrs-set-domain-company" onChange="action-move-method-get-period" form-view="company-form" grid-view="company-grid"/>
 				<field name="date" onChange="action-move-method-get-period" hideIf="statusSelect == 3"/>
 				<field name="period" form-view="period-form" grid-view="period-grid"/>
 			</panel>
@@ -54,7 +54,7 @@
 				<viewer>
 					<![CDATA[
 						<h4 style="text-align: right;">
-							<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record."adjustingMove"" x-translate>Adjusting Move</span>
+							<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.adjustingMove" x-translate>Adjusting Move</span>
 						</h4>
 					]]>
 				</viewer>

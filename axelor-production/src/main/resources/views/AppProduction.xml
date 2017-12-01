@@ -7,12 +7,13 @@
 		<panel name="productionConfiguration" colSpan="12">
 			<field name="prodOrderMgtOnSO" readonlyIf="productionOrderGenerationAuto" colSpan="4" widget="boolean-switch"/>
 			<field name="productionOrderGenerationAuto" showIf="prodOrderMgtOnSO" colSpan="4" widget="boolean-switch"/>
+			<field name="enableConfigurator" widget="boolean-switch"/>
 			<panel name="billOfMaterial" title="Bill of material">
 				<field name="manageBillOfMaterialVersion" colSpan="4" widget="boolean-switch"/>
 			    <field name="manageResidualProductOnBom" widget="boolean-switch"/>
 			</panel>
 			<panel name="manufacturingProcess" title="Manufacturing process">
-   				<field name="workCenterProduct" form-view="product-form" grid-view="product-grid"/>
+   				<field name="workCenterProduct" form-view="product-form" grid-view="product-grid" canEdit="false"/>
 			</panel>
 			<panel name="costSheet" title="Cost sheet">
 			    <field name="productCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
@@ -27,7 +28,11 @@
 				</panel>
 			</panel>
 		</panel>
-		<panel-dashlet action="admin.root.conf.production.config"  colSpan="12"/>
+		<panel>
+			<button name="generateProductionConfigurations" colSpan="4" title="Generate production configurations" onClick="save,com.axelor.apps.production.web.AppProductionController:generateProductionConfigurations"/>
+			<panel-dashlet action="admin.root.conf.production.config"  colSpan="12"/>
+		</panel>
+		
 	</form>
 	
 	<action-view name="admin.root.conf.production.config" title="Production configurations"

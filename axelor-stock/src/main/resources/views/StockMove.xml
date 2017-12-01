@@ -56,7 +56,12 @@
         <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
         <button name="viewDirection" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
     </grid>
-    
+
+    <calendar name="stock-move-calendar" model="com.axelor.apps.stock.db.StockMove" eventStart="estimatedDate"
+        eventLength="24" mode="month" colorBy="statusSelect" editable="false" title="Stock moves">
+        <field name="name" />
+    </calendar>
+
 	<form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove"
 		 onLoad="action-stock-move-attrs-typeselect-change,action-stock-move-hide-reserved-qty" onNew="action-group-stock-stockmove-onnew">
 		 
@@ -75,7 +80,8 @@
 		 </menubar>
 		 
 	  <panel title="Status">
-		<field name="statusSelect" widget="NavSelect" colSpan="8"/>		  
+		  <field name="statusSelect" widget="NavSelect" colSpan="8"/>
+		  <field name="cancelReason" canView="false" showIf="statusSelect == 4 &amp;&amp; cancelReason != null" readonly="true" colSpan="4"/>
 	  </panel>
 	  <panel name="main">
 		  <field name="typeSelect" title="Type" colSpan="4" onChange="action-stock-move-set-default-locations, action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1"/>
@@ -85,7 +91,7 @@
 	    <panel title="Stock move reference" name="stockMoveRef">
 	      <field name="stockMoveSeq" colSpan="12"/>
 	      <field name="name" colSpan="12" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
-	      <field name="company" widget="SuggestBox" form-view="company-form" colSpan="12" readonlyIf="statusSelect != 1" grid-view="company-grid"/>
+	      <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" colSpan="12" readonlyIf="statusSelect != 1" grid-view="company-grid"/>
 	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12" readonlyIf="statusSelect != 1" onChange="action-stock-move-record-partner-delivery-informations"/>
 	    </panel>
 	    <panel title="Stock move informations" name="stockMoveInformation">
@@ -107,20 +113,21 @@
 	  </panel>
 	  <panel-tabs>
 	    <panel-related name="stockMoveLineListPanel" title="Stock move line" field="stockMoveLineList" onChange="action-stock-move-method-compute, action-stock-move-line-method-change-conformity" readonlyIf="statusSelect == 3" form-view="stock-move-line-form" grid-view="stock-move-line-grid"/>
-	    <panel name="configuration" title="Configuration"  if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" >
+	    <panel-dashlet action="action-stock-move-view-logistical-forms" showIf="id &amp;&amp; typeSelect == 2" title="Logistical forms" />
+        <panel name="configuration" title="Configuration"  if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" >
 	      <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="sale-order-form" grid-view="sale-order-grid"/>
 	      <field name="purchaseOrder" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
 	      <field name="invoice" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="invoice-form" grid-view="invoice-grid"/>
 	    </panel>
 	  </panel-tabs>
-	  
+
 	  <panel sidebar="true" name="actions" title="Actions">
 			<button name="plan" title="Plan" icon="fa-calendar" showIf="statusSelect == 1" onClick="action-group-stock-stockmove-plan-click"/>
 			<button name="realize" title="Realize" icon="fa-check" showIf="statusSelect == 2" prompt="Are you sure you want to realize this stock move?" onClick="action-group-stock-stockmove-realize-click"/>
-			<button name="cancel" title="Cancel" icon="fa-times-circle" showIf="statusSelect != 4" onClick="action-group-stock-stockmove-cancel-click"/>
-			<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
 			<button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3"/>
 			<button name="generateReversion" title="Generate reversion" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3"/>
+		  	<button name="cancel" title="Cancel" icon="fa-times-circle" showIf="id != null &amp;&amp; statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 4" onClick="action.stock.move.view.cancel"/>
+		  	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
     </panel>
 	<panel sidebar="true" title="Freight Carrier">
 		<field name="shipmentMode" colSpan="12" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
@@ -129,6 +136,7 @@
 		<field name="numOfPackages" readonlyIf="statusSelect == 3 || statusSelect == 4" />
 		<field name="numOfPalettes" readonlyIf="statusSelect == 3 || statusSelect == 4" />
 		<field name="grossWeight" readonlyIf="statusSelect == 3 || statusSelect == 4" />
+		<field name="saleOrder.specificPackage" readonly="true"/>
 	</panel>
 	   
 	   <panel sidebar="true" readonly="true"  colSpan="4">  
@@ -221,14 +229,6 @@
     	<action name="action-stock-move-method-realize"/>
     	<action name="save"/>
 	</action-group>
-	
-	<action-group name="action-group-stock-stockmove-cancel-click">
-	  	<action name="save"/>
-	  	<action name="action-supply-chain-method-update-so-on-cancel" if="saleOrder != null &amp;&amp; statusSelect == 3"/>
-	  	<action name="action-supply-chain-method-update-po-on-cancel" if="purchaseOrder != null &amp;&amp; statusSelect == 3"/>
-    	<action name="action-stock-move-method-cancel"/>
-    	<action name="save"/>
-    </action-group>
 
   	<action-group name="action-group-stock-stockmove-draft-click">
 	  	<action name="save"/>
@@ -288,9 +288,9 @@
 	    <field name="isWithBackorder" expr="eval:true" />
 	    <field name="estimatedDate" expr="eval:__config__.app.getTodayDate()"/>
 	    <field name="typeSelect" expr="eval: _typeSelect"/>
-	    <field if="_typeSelect == '3'" name="toLocation" expr="eval:__repo__(Location).all().filter('company.id = ? AND isDefaultLocation = true AND typeSelect = 1',__user__.activeCompany?.id).fetchOne()"/>
+	    <field if="_typeSelect == '3'" name="toLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.defaultLocation"/>
 		<field if="_typeSelect == '3'" name="fromLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierVirtualLocation"/>
-		<field if="_typeSelect == '2'" name="fromLocation" expr="eval:__repo__(Location).all().filter('company.id = ? AND isDefaultLocation = true AND typeSelect = 1',__user__.activeCompany?.id).fetchOne()"/>
+		<field if="_typeSelect == '2'" name="fromLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.defaultLocation"/>
 		<field if="_typeSelect == '2'" name="toLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.customerVirtualLocation"/>
 	</action-record>
 	
@@ -303,9 +303,9 @@
 	</action-record>
 	
 	<action-record name="action-stock-move-set-default-locations" model="com.axelor.apps.stock.db.StockMove">
-	    <field if="typeSelect == 2" name="fromLocation" expr="eval:__repo__(Location).all().filter('company.id = ? AND isDefaultLocation = true AND typeSelect = 1',company != null ? company.id :__user__.activeCompany?.id).fetchOne()"/>
+	    <field if="typeSelect == 2" name="fromLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.defaultLocation"/>
   		<field if="typeSelect == 2" name="toLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.customerVirtualLocation"/>
-  		<field if="typeSelect == 3" name="toLocation" expr="eval:__repo__(Location).all().filter('company.id = ? AND isDefaultLocation = true AND typeSelect = 1',company != null ? company.id : __user__.activeCompany?.id).fetchOne()"/>
+  		<field if="typeSelect == 3" name="toLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.defaultLocation"/>
   		<field if="typeSelect == 3" name="fromLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.supplierVirtualLocation"/>
 	</action-record>
 	
@@ -391,7 +391,15 @@
 	    <error message="Please fill in the source (from) location address to get the delivery itinerary." if="fromLocation?.address == null"/>
 	    <error message="Please fill in the delivery (to) address to get the delivery itinerary." if="toAddress == null"/>
 	</action-validate>
-	
+
+    <action-view name="action-stock-move-view-logistical-forms" title="Logistical forms"
+        model="com.axelor.apps.stock.db.LogisticalForm">
+        <view type="grid" name="logistical-form-stock-move-grid" />
+        <view type="form" name="logistical-form-form" />
+        <domain>self.id IN (:logisticalFormIdList)</domain>
+        <context name="logisticalFormIdList" expr="call: com.axelor.apps.stock.service.LogisticalFormService:getIdList(__this__)" />
+    </action-view>
+
 	<search-filters name="customer-deliveries-filters" model="com.axelor.apps.stock.db.StockMove" title="Customer deliveries filters">
 		<filter title="Deliveries to prepare">
 			<domain>self.statusSelect = 2</domain>
@@ -433,5 +441,23 @@
 			<domain>self.statusSelect = 4</domain>
 		</filter>
 	</search-filters>
-	
+
+	<action-view name="action.stock.move.view.cancel" title="Cancellation" model="com.axelor.apps.stock.db.StockMove">
+		<view type="form" name="stock-move-cancel-wizard-form"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="false"/>
+		<view-param name="forceEdit" value="true" />
+		<context name="_showRecord" expr="eval: __this__.id" />
+		<context name="_xApplicationType" expr="eval: __this__.getClass().getCanonicalName()"/>
+	</action-view>
+
+	<form name="stock-move-cancel-wizard-form" model="com.axelor.apps.stock.db.StockMove" title="Cancellation confirmation" >
+		<panel name="main">
+			<field name="cancelReason" domain="self.applicationType = :_xApplicationType" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false"/>
+			<button readonlyIf="cancelReason == null" name="cancelConfirm" title="Confirm cancellation" onClick="action-stock-move-method-cancel" colOffset="4" colSpan="4"/>
+		</panel>
+	</form>
+
 </object-views>

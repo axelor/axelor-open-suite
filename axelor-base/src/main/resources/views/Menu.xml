@@ -93,6 +93,7 @@
 		<domain>self.isContact != true</domain>
 		<context name="user_id" expr="eval:__user__" />
 		<context name="json-enhance" expr="eval:true" />
+		<context name="_domain" expr="self.isContact != true"/>
 	</action-view>
 	
 	<menuitem name="referential-root-contacts" parent="referential-root"
@@ -105,6 +106,7 @@
 		<view type="form" name="partner-contact-form" />
 	  	<view-param name="limit" value="39"/>
 		<domain>self.isContact = true</domain>
+		<context name="_domain" expr="self.isContact = true"/>
 	</action-view>
 	
 	<menuitem name="referential-root-product-root" title="Products" order="30" parent="referential-root"/>
@@ -173,7 +175,8 @@
 		<context name="_isModel" expr="true"/>
 	</action-view>
 	
-	<menuitem name="referential-root-price-list" parent="referential-root"
+	<menuitem name="referential-root-price-list" parent="referential-root" 
+		if="__config__.app.isApp('account') || __config__.app.isApp('sale') || __config__.app.isApp('purchase')" 
 		title="Price lists" action="referential.root.price.list"  order="95" />
 
 	<action-view name="referential.root.price.list" title="Price lists"
@@ -561,4 +564,54 @@
 		<view type="form" name="calendar-configuration-form"/>
 	</action-view>
 	
+	<action-view id="base.team.tasks.due" name="team.tasks.due" model="com.axelor.team.db.TeamTask" title="Tasks due">
+	  <view name="team-task-grid" type="grid"/>
+	  <view name="team-task-calendar" type="calendar"/>
+	  <view name="team-task-form" type="form"/>
+	  <view-param name="details-view" value="true"/>
+	  <domain>
+	    (self.assignedTo = :__user__  AND self.status NOT IN :closed_status) AND
+	    (self.taskDeadline &lt;= current_date)
+	  </domain>
+	  <context name="closed_status" expr="#{['closed', 'canceled']}"/>
+	</action-view>
+	
+	<action-view id="base.team.tasks.todo" name="team.tasks.todo" model="com.axelor.team.db.TeamTask" title="Tasks todo">
+	  <view name="team-task-grid" type="grid"/>
+	  <view name="team-task-calendar" type="calendar"/>
+	  <view name="team-task-form" type="form"/>
+	  <view-param name="details-view" value="true"/>
+	  <domain>
+	    (self.assignedTo = :__user__ AND self.status NOT IN :closed_status) AND
+	    (self.taskDeadline &lt;= current_date OR self.taskDate &lt;= current_date)
+	  </domain>
+	  <context name="closed_status" expr="#{['closed', 'canceled']}"/>
+	</action-view>
+	
+	<action-view id="base.team.tasks.open" name="team.tasks.open" model="com.axelor.team.db.TeamTask" title="My open tasks">
+	  <view name="team-task-grid" type="grid"/>
+	  <view name="team-task-calendar" type="calendar"/>
+	  <view name="team-task-form" type="form"/>
+	  <view-param name="details-view" value="true"/>
+	  <domain>self.assignedTo = :__user__ AND self.status NOT IN :closed_status</domain>
+	  <context name="closed_status" expr="#{['closed', 'canceled']}"/>
+	</action-view>
+	
+	<action-view id="base.team.tasks.assigned" name="team.tasks.assigned" model="com.axelor.team.db.TeamTask" title="Tasks assigned to me">
+	  <view name="team-task-grid" type="grid"/>
+	  <view name="team-task-calendar" type="calendar"/>
+	  <view name="team-task-form" type="form"/>
+	  <view-param name="details-view" value="true"/>
+	  <domain>self.assignedTo = :__user__</domain>
+	</action-view>
+	
+	<action-view id="base.team.tasks.created" name="team.tasks.created" model="com.axelor.team.db.TeamTask" title="Tasks created by me">
+	  <view name="team-task-grid" type="grid"/>
+	  <view name="team-task-calendar" type="calendar"/>
+	  <view name="team-task-form" type="form"/>
+	  <view-param name="details-view" value="true"/>
+	  <domain>self.createdBy = :__user__ AND self.status NOT IN :closed_status</domain>
+	  <context name="closed_status" expr="#{['closed', 'canceled']}"/>
+	</action-view>
+
 </object-views>

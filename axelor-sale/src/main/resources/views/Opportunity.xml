@@ -5,7 +5,7 @@
 	
 	<form name="convert-opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity">
 		<panel colSpan="12">
-			<field name="saleOrder" title="Sale Order" hideIf="saleOrder == null" form-view="sale-order-form" grid-view="sale-order-grid"/>
+			<field name="saleOrderList" title="Sale quotations/orders" showIf="saleOrderList &amp;&amp; saleOrderList.length" form-view="sale-order-form" grid-view="sale-order-opportunity-grid" colSpan="12" />
 		</panel>
 	</form>
 	

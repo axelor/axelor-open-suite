@@ -39,7 +39,7 @@
 				\n\t\t\t<formView>${field.formView}</formView>
 				\n\t\t\t<gridView>${field.gridView}</gridView>
 				\n\t\t\t<hidden>${field.hidden}</hidden>
-				\n\t\t\t<hiddenInGrid>${field.hiddenInGrid}</hiddenInGrid>
+				\n\t\t\t<visibleInGrid>${field.visibleInGrid}</visibleInGrid>
 				\n\t\t\t<hideIf>${field.hideIf}</hideIf>
 				\n\t\t\t<isWkf>${field.isWkf}</isWkf>
 				\n\t\t\t<maxSize>${field.maxSize}</maxSize>

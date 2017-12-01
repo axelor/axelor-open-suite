@@ -73,5 +73,14 @@ public class StockConfigService
 		return stockConfig.getCustomerVirtualLocation();
 		
 	}
-	
+
+	public Location getDefaultLocation(StockConfig stockConfig) throws AxelorException  {
+
+		if (stockConfig.getDefaultLocation() == null) {
+			throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_5), stockConfig.getCompany().getName());
+		}
+
+		return stockConfig.getDefaultLocation();
+
+	}
 }

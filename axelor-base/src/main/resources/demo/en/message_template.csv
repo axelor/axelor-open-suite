@@ -2,7 +2,7 @@
 1;"Expense sent";;;"$Expense.user.partner.emailAddress.address$";"Expense submission by $Expense.user.name$";"<p>Hello,</p>
 <p><br></p>
 <p>An expense has been submitted to you by $Expense.user.name$.</p>
-<a href=""http://localhost:8080/abs-webapp/#/ds/expense.validate/edit/$Expense.id$"">Please log in to consult it.</a>
+<a href=S""http://localhost:8080/abs-webapp/#/ds/expense.validate/edit/$Expense.id$"">Please log in to consult it.</a>
 
 <div>
 <br><p>You may reject or validate it.</p>

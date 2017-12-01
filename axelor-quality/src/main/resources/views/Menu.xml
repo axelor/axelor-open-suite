@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<menuitem name="menu-quality-root" order="-105" if="__config__.app.isApp('quality')"
+	title="Quality" icon="fa-tasks" icon-background="#3f6bb9"/>
+	     
+	<menuitem name="quality-controls-root" parent="menu-quality-root" title="Quality controls" />
+	     
+	<menuitem name="quality-processes" parent="quality-controls-root" title="Quality processes" action="quality.processes"/>
+	     	
+	<action-view name="quality.processes" title="Quality processes" model="com.axelor.apps.quality.db.QualityProcess">
+		<view type="grid" name="quality-process-grid"/>
+		<view type="form" name="quality-process-form"/>
+	</action-view>
+	     	
+	<menuitem name="quality-controls" parent="quality-controls-root" title="Quality controls" action="quality.controls"/>
+	     
+	<action-view name="quality.controls" title="Quality controls" model="com.axelor.apps.quality.db.QualityControl">
+		<view type="kanban" name="quality-control-kanban"/>	
+		<view type="grid" name="quality-control-grid"/>
+		<view type="form" name="quality-control-form"/>
+		<view-param name="search-filters" value="quality-control-filters"/>
+		<context name="_userId" expr="eval:__user__.id"/>
+		<context name="_myActiveTeamId" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeamId()"/>
+	</action-view>
+		     	
+	<menuitem name="quality-control-points" parent="quality-controls-root" title="Control points" action="quality.controls.points"/>
+	     		
+	<action-view name="quality.controls.points" title="Control points" model="com.axelor.apps.quality.db.ControlPoint">
+		<view type="grid" name="control-point-grid"/>
+		<view type="form" name="control-point-form"/>
+	</action-view>
+		         	
+	<menuitem name="quality-alerts" parent="menu-quality-root" title="Quality alerts" action="quality.alerts"/>
+	     
+	<action-view name="quality.alerts" title="Quality alerts" model="com.axelor.apps.quality.db.QualityAlert">
+		<view type="kanban" name="quality-alert-kanban"/>
+		<view type="grid" name="quality-alert-grid"/>
+		<view type="form" name="quality-alert-form"/>
+		<view-param name="search-filters" value="quality-alert-filters"/>
+		<context name="_userId" expr="eval:__user__.id"/>
+		<context name="_myActiveTeamId" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeamId()"/>
+	</action-view>
+	 
+	<menuitem name="quality-calendar" parent="menu-quality-root" title="Calendar" />
+	    	
+	<menuitem name="quality-alert-calendar" parent="quality-calendar" title="Alert calendar" action="quality.alert.calendar" />
+	    	
+	<action-view name="quality.alert.calendar" title="Alert calendar" model="com.axelor.apps.quality.db.QualityAlert" > 
+ 		<view type="calendar" name="quality-alert-calendar" />
+	</action-view>
+		 	
+	<menuitem name="quality-control-calendar" parent="quality-calendar" title="Quality control calendar" action="quality.control.calendar" />
+	    	
+	<action-view name="quality.control.calendar" title="Quality control calendar" model="com.axelor.apps.quality.db.QualityControl" > 
+ 		<view type="calendar" name="quality-control-calendar" />
+ 		<domain>self.statusSelect &gt; 2</domain>
+	</action-view>
+	    
+	<menuitem name="quality-reportings" parent="menu-quality-root" title="Reportings" />
+	
+	<menuitem name="quality-reportings-dashboard" parent="quality-reportings" title="Quality Dashboard" action="quality.dashboard.view" />
+	 
+	<action-view name="quality.dashboard.view" title="Quality Dashboard" > 
+ 		<view type="dashboard" name="quality.dashboard" />
+	</action-view>
+	     
+	<menuitem name="quality-configurations" parent="menu-quality-root" title="Configurations" />
+	     	
+	<menuitem name="quality-teams" parent="quality-configurations" title="Quality teams" action="quality.teams"/>
+	     	
+	<action-view name="quality.teams" title="Quality teams" model="com.axelor.team.db.Team">
+		<view type="grid" name="team-grid"/>
+		<view type="form" name="team-form"/>
+		<domain>self.typeSelect = 'quality'</domain>
+		<context name="_typeSelect" expr="eval: 'quality'"/>
+	</action-view>
+	     	
+	<menuitem name="quality-root-causes" parent="quality-configurations" title="Root causes" action="quality.root.causes" />
+	     	
+	<action-view name="quality.root.causes" title="Root causes" model="com.axelor.apps.quality.db.RootCause">
+		<view type="grid" name="root-cause-grid"/>
+		<view type="form" name="root-cause-form"/>
+	</action-view>
+	
+	<menuitem name="quality-tags" parent="quality-configurations" title="Tags" action="quality.tags" />
+	     	
+	<action-view name="quality.tags" title="Tags" model="com.axelor.apps.quality.db.QualityTag">
+		<view type="grid" name="quality-tag-grid"/>
+		<view type="form" name="quality-tag-form"/>
+	</action-view>
+			  	
+</object-views>

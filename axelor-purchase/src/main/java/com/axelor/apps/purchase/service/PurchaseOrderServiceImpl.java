@@ -135,6 +135,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	public void _computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
 
 		purchaseOrder.setExTaxTotal(BigDecimal.ZERO);
+		purchaseOrder.setCompanyExTaxTotal(BigDecimal.ZERO);
 		purchaseOrder.setTaxTotal(BigDecimal.ZERO);
 		purchaseOrder.setInTaxTotal(BigDecimal.ZERO);
 		

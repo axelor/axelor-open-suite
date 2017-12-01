@@ -33,6 +33,7 @@
 				<bind to="modelField" eval="'attrs'" />
 				<bind node="@sequence" to="sequence"/>
 				<bind node="@onChange" to="onChange" />
+				<bind node="@visibleInGrid" to="visibleInGrid" />
 			</bind>
 		</bind>
 		

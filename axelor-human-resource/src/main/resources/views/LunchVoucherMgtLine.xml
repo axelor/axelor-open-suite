@@ -17,6 +17,7 @@
         <field name="givenToEmployee" title="Given"/>
         <field name="lunchVoucherFormatSelect"/>
         <field name="statusSelect"/>
+        <field name="lunchVoucherMgt" hidden="true"/>
         <field name="lunchVoucherMgt.statusSelect" hidden="true"/>
         <field name="daysWorkedNbr" hidden="true"/>
     </grid>
@@ -31,6 +32,7 @@
         <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
         <field name="givenToEmployee" title="Given"/>
         <field name="lunchVoucherMgt.statusSelect"/>
+        <field name="lunchVoucherMgt" hidden="true"/>
     </grid>
     
     <grid name="lunch-voucher-mgt-line-payroll-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" orderBy="-lunchVoucherMgt.payPeriod.fromDate">

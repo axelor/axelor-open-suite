@@ -15,6 +15,12 @@
         </panel-tabs>
     </form>
 
+    <action-view name="action-company-view-bank-payment-config" title="Bank payment config (${ name })" model="com.axelor.apps.bankpayment.db.BankPaymentConfig">
+        <view type="form" name="bank-payment-config-form"/>
+        <context name="_showRecord" expr="eval: __self__.bankPaymentConfig?.id"/>
+        <context name="_company" expr="eval: __this__"/>
+    </action-view>
+
     <action-view name="admin.root.conf.bank.payment.config" title="Bank payment configurations"
                  model="com.axelor.apps.bankpayment.db.BankPaymentConfig" >
         <view type="grid" name="bank-payment-config-grid"/>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+		
+	<dashboard title="Ticket dashboard" name="helpdesk.ticket.dashboard">
+		<dashlet action="chart:chart.ticket.no.of.solved.my.ticket" colSpan="6" />
+		<dashlet action="chart:chart.ticket.no.of.solved.my.team.ticket" colSpan="6"/>
+		<dashlet action="chart:chart.ticket.no.of.solved.all.ticket" colSpan="12"/>
+	</dashboard>
+	
+	<dashboard name="helpdesk.sla.dashboard" title="SLA dashboard">
+	  <dashlet action="chart:chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.team" colSpan="6" />
+	  <dashlet action="chart:chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.user" colSpan="6" />
+	  <dashlet action="chart:chart.SLA.number.of.ticket.solved.not.solved.in.time.per.SLA.per.team" colSpan="6" />
+	  <dashlet action="chart:chart.SLA.number.of.ticket.solved.not.solved.in.time.per.SLA.per.user" colSpan="6" />
+	</dashboard>
+		
+</object-views>

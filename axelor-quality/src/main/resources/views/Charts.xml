@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<chart onInit="action.quality.chart.set.date" name="chart.quality.control.points" title="Control Points">
+  		<search-fields> 	        
+		    <field type="date" name="fromDateT" title="From Date" x-required="true"/>
+		    <field type="date" name="toDateT" title="To Date" x-required="true"/>
+		</search-fields>
+  		<dataset type="sql">
+  			<![CDATA[
+	    	SELECT    
+				COUNT(self.id) AS _passed,
+				_team.name AS _team_name,
+				_meta._select_title AS _status
+			FROM
+				quality_control_point AS self
+			LEFT JOIN
+				team_team AS _team
+				ON self.team = _team.id
+						
+			JOIN
+				(SELECT 
+					cast(_item.value as int) AS _select_value,
+				    _item.title AS _select_title
+				FROM	
+					meta_select AS _selection		
+				JOIN
+					meta_select_item AS _item
+					ON _selection.name = 'quality.control.points.status.select'
+					AND _item.select_id = _selection.id	
+				) AS _meta
+			ON
+				_meta._select_value = self.status
+			WHERE
+				(
+					self.status = 2 
+					OR
+					self.status = 3
+				)
+			AND
+				DATE(self.created_on) BETWEEN DATE(:fromDateT) AND DATE(:toDateT)	
+			GROUP BY
+				_team_name, _status
+			ORDER BY
+				_team_name, _passed ASC
+    		]]>
+    	</dataset>
+  		<category key="_team_name" type="text" title="Team"/>
+  		<series key="_passed" type="bar" groupBy="_status" title="Result" />
+	</chart>
+
+	<chart onInit="action.quality.chart.set.date" name="chart.quality.controls.total.numbers" title="Number of quality controls">
+		<search-fields> 	        
+		    <field type="date" name="fromDateT" title="From Date" x-required="true"/>
+		    <field type="date" name="toDateT" title="To Date" x-required="true"/>
+		</search-fields>
+		<dataset type="jpql">
+			<![CDATA[		   		
+		   	SELECT
+				COUNT(*) AS _controls,
+ 				self.team.name AS _team
+    		FROM
+				QualityControl self
+			WHERE
+				DATE(self.createdOn) BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
+			GROUP BY
+				self.team.name
+			ORDER BY
+				self.team.name
+			]]>
+	    </dataset>
+	    <category key="_team" type="text"/>
+	    <series key="_controls"  type="bar"/>
+	</chart>
+	
+	<chart name="chart.quality.alerts.total.numbers" title="Number of quality alerts" onInit="action.quality.chart.set.date">
+  		<search-fields>
+    		<field name="fromDateT" title="From Date" type="date" x-required="true"/>
+    		<field name="toDateT" title="To Date" type="date" x-required="true"/>
+  		</search-fields>
+  		<dataset type="jpql">
+  			<![CDATA[
+    		SELECT
+				COUNT(*) AS _alerts,
+ 				self.team.name AS _team
+    		FROM
+				QualityAlert self
+			WHERE
+				DATE(self.createdOn) BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
+			GROUP BY
+				self.team.name
+			ORDER BY
+				self.team.name
+   			]]>
+   		</dataset>
+  		<category key="_team" type="text"/>
+  		<series key="_alerts" type="bar"/>
+	</chart>
+
+	<chart onInit="action.quality.chart.set.date" name="chart.quality.alerts.solved.total.numbers" title="Number of solved quality alerts">
+		<search-fields> 	        
+		    <field type="date" name="fromDateT" title="From Date" x-required="true"/>
+		    <field type="date" name="toDateT" title="To Date" x-required="true"/>
+		</search-fields>
+		<dataset type="jpql">
+			<![CDATA[		    	
+		    SELECT
+				COUNT(*) AS _alerts,
+ 				self.team.name AS _team
+    		FROM
+				QualityAlert self
+			WHERE
+				DATE(self.createdOn) BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
+			AND 
+				self.statusSelect = 4 
+			GROUP BY
+				self.team.name
+			ORDER BY
+				self.team.name	       
+			]]>
+	    </dataset>
+	    <category key="_team" type="text"/>
+	    <series key="_alerts"  type="bar"/>
+	</chart>
+			  
+	<action-record model="com.axelor.apps.quality.db.ControlPoint" name="action.quality.chart.set.date">
+	  <field name="toDateT" expr="eval: __date__"/>
+	  <field name="fromDateT" expr="eval:__date__.withDayOfMonth(1).withMonth(1)"/>
+	</action-record>
+	 	
+</object-views>

@@ -21,8 +21,8 @@
     	onNew="action-stock-move-line-record-new" onLoad="action-stock-move-line-group-onload" width="large">
         <panel name="main" >
             <field name="productName" />
-	        <field name="product" domain="self.expense = false" onChange="action-stock-move-line-tracking-number-attrs,action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
-	        <field name="productModel" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
+	        <field name="product" canEdit="false" domain="self.expense = false" onChange="action-stock-move-line-tracking-number-attrs,action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
+	        <field name="productModel" canEdit="false" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
 	        <field name="qty" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price" colSpan="3"/>
 	        <field name="realQty" colSpan="3"/>
 			<field name="reservedQty" onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
@@ -108,8 +108,8 @@
         </panel>
         <panel name="moveDetails" title="Move details">
             <field name="productName" required="true"/>
-	        <field name="product" domain="self.expense = false" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
-	        <field name="productModel" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
+	        <field name="product" canEdit="false" domain="self.expense = false" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
+	        <field name="productModel" canEdit="false" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
 	        <field name="stockMove.partner"/>
 			<field name="qty" colSpan="3" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price"/>
 	        <field name="realQty" colSpan="3"/>
@@ -120,7 +120,7 @@
 	        <field name="totalNetWeight" readonly="true" showIf="totalNetWeight != 0"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
 	        <field name="stockMove.statusSelect" hidden="true"/>
-	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true AND self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
+	        <field name="businessProject" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" domain="self.isBusinessProject = true AND self.projectTypeSelect = 1" form-view="project-form" grid-view="project-grid"/>
 	        <field name="description" colSpan="12" widget="html" />
         </panel>
     </form>
@@ -139,8 +139,8 @@
     	onNew="action-group-stock-stockmoveline-production-onnew" onLoad="action-stock-move-line-attrs-scale-and-precision" width="large">
 		<panel name="main">
 		    <field name="productName" required="true" />
-	        <field name="product" domain="self.expense = false" onChange="action-stock-move-line-set-product-info" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
-	        <field name="productModel" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
+	        <field name="product" canEdit="false" domain="self.expense = false" onChange="action-stock-move-line-set-product-info" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
+	        <field name="productModel" canEdit="false" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
 	        <field name="qty" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price" title="Consumed quantity"/>
 	        <field name="unitPriceUntaxed"/>
         	<field name="unitPriceTaxed" hidden="true"/>

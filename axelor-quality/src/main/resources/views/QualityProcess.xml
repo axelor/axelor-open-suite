@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="quality-process-grid" title="Quality process" model="com.axelor.apps.quality.db.QualityProcess">
+		<field name="name"/>
+		<field name="code"/>
+		<field name="product"/>
+	</grid>
+	
+	<form name="quality-process-form" title="Quality process" model="com.axelor.apps.quality.db.QualityProcess">		
+		<panel name="main">
+			<field name="name"/>
+			<field name="code"/>
+			<field name="product"/>
+		</panel>
+		<panel name="control-point-model">
+			<panel-related field="controlPointModelList" colSpan="12" grid-view="control-point-model-grid" form-view="control-point-model-form" />
+		</panel>
+	</form>
+		
+</object-views>

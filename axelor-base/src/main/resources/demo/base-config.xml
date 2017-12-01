@@ -80,8 +80,6 @@
 	
 	<input file="base_partnerCategory.csv" separator=";" type="com.axelor.apps.base.db.PartnerCategory" search="self.importId = :importId"  />
 	
-	<input file="base_scheduler.csv" separator=";" type="com.axelor.apps.base.db.Scheduler" search="self.importId = :importId"  />
-	
 	<input file="base_duration.csv" separator=";" type="com.axelor.apps.base.db.Duration" />
 	
 	<!-- A BESOIN de paymentMode, fichier vide actuellement, il faudra faire un update -->
@@ -157,8 +155,6 @@
 	   	</bind>
 	</input>
 	
-	<input file="base_supplierCatalog.csv" separator=";" type="com.axelor.apps.base.db.SupplierCatalog"/>
-	
  	<input file="base_partner.csv" separator=";" search="self.importId = :importId" update="true" type="com.axelor.apps.base.db.Partner">
 		<bind column="companySet_importId" to="companySet" search="self.importId in :companySet_importId" eval="companySet_importId.split('\\|') as List" update="true"/>
 		<bind to="mainPartner" search="self.importId = :mainPartner_importId" update="true" />
@@ -183,11 +179,6 @@
 <!-- 		<bind column="bankDetailsSet_id" to="bankDetailsSet" search="self.importId in :bankDetailsSet_id" update="true" /> -->
 <!-- 	</input>  -->
 	
-	<input file="base_freightCarrier.csv" separator=";" type="com.axelor.apps.stock.db.FreightCarrier" search="self.importId = :importId"/>
-    
-    <input file="base_shipmentMode.csv" separator=";" type="com.axelor.apps.stock.db.ShipmentMode" search="self.importId = :importId"/>
-    
-    <input file="base_freightCarrierMode.csv" separator=";" type="com.axelor.apps.stock.db.FreightCarrierMode" search="self.importId = :importId"/>
 
 	<input file="base_period.csv" separator=";" type="com.axelor.apps.base.db.Period" />
 	

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -145,6 +145,7 @@ public interface IExceptionMessage {
 	static final String MOVE_5 = /*$$(*/ "Journal %s does not have any account move sequence configured" /*)*/ ;
 	static final String MOVE_6 = /*$$(*/ "Move account sens %s can't be determined" /*)*/ ;
 	static final String MOVE_7 = /*$$(*/ "Account move %s has a total debit different than total credit : %s <> %s" /*)*/ ;
+	static final String MOVE_8 = /*$$(*/ "A move cannot be empty" /*)*/ ;
 
 	/**
 	 * Payment schedule export service

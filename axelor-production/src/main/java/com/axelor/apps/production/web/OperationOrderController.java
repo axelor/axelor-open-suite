@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.axelor.app.production.db.IManufOrder;
+import com.axelor.apps.production.service.OperationOrderService;
+import com.axelor.exception.service.TraceBackService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -412,18 +414,29 @@ public class OperationOrderController {
 		response.setData(dataList);
 	}
 
-	public void startManufOrder (ActionRequest request, ActionResponse response) throws AxelorException {
+	public void startManufOrder(ActionRequest request, ActionResponse response) throws AxelorException {
 		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
-		operationOrder =operationOrderRepo.find(operationOrder.getId());
+		operationOrder = operationOrderRepo.find(operationOrder.getId());
 		Beans.get(OperationOrderWorkflowService.class).start(operationOrder);
 		response.setReload(true);
 	}
 
-	public void start (ActionRequest request, ActionResponse response) throws AxelorException {
+	public void start(ActionRequest request, ActionResponse response) throws AxelorException {
 		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
 		operationOrder = operationOrderRepo.find(operationOrder.getId());
 		Beans.get(OperationOrderWorkflowService.class).start(operationOrder);
 		response.setReload(true);
 	}
+
+	public void updateDiffProdProductList(ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+		try {
+		    Beans.get(OperationOrderService.class).updateDiffProdProductList(operationOrder);
+			response.setValue("diffConsumeProdProductList", operationOrder.getDiffConsumeProdProductList());
+		} catch (AxelorException e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+
 }
 

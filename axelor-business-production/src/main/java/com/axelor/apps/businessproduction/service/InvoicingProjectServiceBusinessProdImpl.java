@@ -17,19 +17,18 @@
  */
 package com.axelor.apps.businessproduction.service;
 
-import java.util.HashSet;
-import java.util.List;
-
-import java.time.LocalDateTime;
-
-import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
+import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.project.service.ProjectService;
+import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.inject.Beans;
+
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
 
 public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectService{
 	
@@ -37,11 +36,11 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
 	@Override
 	public void setLines(InvoicingProject invoicingProject,Project project, int counter){
 		
-		if(counter > ProjectService.MAX_LEVEL_OF_PROJECT)  {  return;  }
+		if(counter > ProjectServiceImpl.MAX_LEVEL_OF_PROJECT)  {  return;  }
 		counter++;
 		
 		this.fillLines(invoicingProject, project);
-		List<Project> projectChildrenList = Beans.get(ProjectRepository.class).all().filter("self.project = ?1", project).fetch();
+		List<Project> projectChildrenList = Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
 
 		for (Project projectChild : projectChildrenList) {
 			this.setLines(invoicingProject, projectChild, counter);

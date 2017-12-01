@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -68,4 +68,20 @@ public class ITranslation {
     public static final String MRP_LIST_MIN_QTY = /*$$(*/ "MrpList.minQty"; /*)*/
     public static final String MRP_LIST_MAX_LEVEL = /*$$(*/ "MrpList.maxLevel"; /*)*/
     public static final String MRP_LIST_RELATED_TO = /*$$(*/ "MrpList.relatedTo"; /*)*/
+
+    /*
+     * Packaging list
+     */
+    public static final String PACKAGING_LIST_PACKAGING_NUMBER = /*$$(*/ "Packaging number:" /*)*/;
+    public static final String PACKAGING_LIST_DATE = /*$$(*/ "Date:" /*)*/;
+    public static final String PACKAGING_LIST_CUSTOMER_CODE = /*$$(*/ "Customer code:" /*)*/;
+    public static final String PACKAGING_LIST_CUSTOMER_NAME = /*$$(*/ "Customer name:" /*)*/;
+    public static final String PACKAGING_LIST_ITEM = /*$$(*/ "Item" /*)*/;
+    public static final String PACKAGING_LIST_ITEM_DESCRIPTION = /*$$(*/ "Item description" /*)*/;
+    public static final String PACKAGING_LIST_PARCEL_LINE_FORMAT = /*$$(*/ "Parcel No. <strong>{0}</strong> - Dimensions (cm): <strong>{1}</strong> - Gross weight ({2}): <strong>{3}</strong>" /*)*/;
+    public static final String PACKAGING_LIST_PALLET_LINE_FORMAT = /*$$(*/ "Pallet No. <strong>{0}</strong> - Dimensions (cm): <strong>{1}</strong> - Gross weight ({2}): <strong>{3}</strong>" /*)*/;
+    public static final String PACKAGING_LIST_DETAIL_LINE_FORMAT = /*$$(*/ "Stock move No. {0} / Ref. No. {1}" /*)*/;
+    public static final String PACKAGING_LIST_TOTAL_NET_WEIGHT = /*$$(*/ "Total net weight" /*)*/;
+    public static final String PACKAGING_LIST_TOTAL_FORMAT = /*$$(*/ "Number of parcels/pallets: {0} - Total gross weight ({1}): {2}" /*)*/;
+
 }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <grid name="group-grid" id="base-group-grid" title="Groups" model="com.axelor.auth.db.Group">
+        <field name="name" />
+        <field name="code" />
+        <field name="navigation" />
+        <field name="isClient"/>
+        <field name="isSupplier"/>
+    </grid>
+
+    <form name="group-form" id="base-group-form" title="Group" model="com.axelor.auth.db.Group">
+        <toolbar>
+            <button name="showPermissions" title="Show permissions" onClick="action-group-view-permissions" hideIf="permissions == null || permissions.length == 0" />
+        </toolbar>
+        <panel title="Overview">
+            <field name="name" onChange="action-condition-group-validName" validIf="name.length >= 2"/>
+            <field name="code" onChange="action-condition-group-validCode" validIf="code.length >= 2" readonlyIf="id &amp;&amp; code == 'admins'"/>
+            <field name="navigation"/>
+            <panel stacked="true">
+                <field name="homeAction" hidden="true" x-bind="{{__actionSelect.name}}"/>
+                <field name="__actionSelect" title="Action" widget="SuggestBox" canNew="false" target="com.axelor.meta.db.MetaAction" target-name="name" domain="self.type = 'action-view' and self.home = true"/>
+            </panel>
+            <field name="technicalStaff" colSpan="4"/>
+            <field name="isClient" colSpan="4"/>
+            <field name="isSupplier" colSpan="4"/>
+        </panel>
+        <panel-tabs>
+            <panel-related field="roles" form-view="role-form" grid-view="role-grid"/>
+            <panel-related field="permissions" grid-view="simple-permission-grid" form-view="permission-form"/>
+            <panel-related field="metaPermissions"/>
+            <panel-related field="menus" grid-view="simple-meta-menu-grid" form-view="meta-menu-form"/>
+            <panel-related field="views" grid-view="simple-meta-view-grid" form-view="meta-view-form"/>
+        </panel-tabs>
+    </form>
+
+</object-views>

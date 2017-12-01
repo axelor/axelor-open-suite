@@ -21,6 +21,7 @@
 		<context name="user_id" expr="eval:__user__" />
 		<context name="searchFields" expr="name;firstName"/>
 		<context name="_isSupplier" expr="true"/>
+		<context name="_domain" expr="self.isContact = false AND self.isSupplier = true"/>
 	</action-view>
 	
 	<menuitem name="sc-root-purchase-contacts" parent="sc-root-purchase" order="10"
@@ -33,6 +34,7 @@
 		<view type="form" name="partner-contact-form" />
 	  	<view-param name="limit" value="39"/>
 		<domain>self.isContact = true AND self.mainPartner.isSupplier = true</domain>
+		<context name="_domain" expr="self.isContact = true AND self.mainPartner.isSupplier = true"/>
 	</action-view>
 	
 	<menuitem name="sc-root-purchase-products" parent="sc-root-purchase" order="15"
@@ -290,9 +292,9 @@
 	</action-view>
 	
 	<menuitem name="menu-purchase-dashboard-3" parent="sc-root-purchase-report"  
-		title="Purchase Orders"  action="purchase.purchase.dashboard.3" />	
+		title="Purchase orders"  action="purchase.purchase.dashboard.3" />
 		
-	<action-view name="purchase.purchase.dashboard.3" title="Purchase Orders Details">
+	<action-view name="purchase.purchase.dashboard.3" title="Purchase orders Details">
 		<view type="dashboard" name="purchase.dashboard.3" />	    
 	</action-view>
 	

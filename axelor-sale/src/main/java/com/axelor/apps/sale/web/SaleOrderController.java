@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -23,30 +23,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.birt.core.exception.BirtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.axelor.i18n.I18n;
 
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.inject.Beans;
+import com.axelor.rpc.Context;
+import org.eclipse.birt.core.exception.BirtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
@@ -214,7 +215,7 @@ public class SaleOrderController {
 		SaleOrder context = request.getContext().asType(SaleOrder.class);
 		context = saleOrderRepo.find(context.getId());
 		response.setView(ActionView
-	            .define("Sale Order")
+	            .define("Sale order")
 	            .model(SaleOrder.class.getName())
 	            .add("form", "sale-order-form-wizard")
 	            .context("_idCopy", context.getId().toString())
@@ -234,14 +235,20 @@ public class SaleOrderController {
 
 	public void createSaleOrder(ActionRequest request, ActionResponse response)  {
 		SaleOrder origin = saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
-		SaleOrder copy = saleOrderService.createSaleOrder(origin);
-		response.setValues(copy);
+		if (origin != null) {
+			SaleOrder copy = saleOrderService.createSaleOrder(origin);
+			response.setValues(copy);
+		}
 	}
 
 	public void createTemplate(ActionRequest request, ActionResponse response)  {
-		SaleOrder origin = saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
-		SaleOrder copy = saleOrderService.createTemplate(origin);
-		response.setValues(copy);
+	    Context context = request.getContext();
+	    if (context.get("_idCopy") != null) {
+	    	String idCopy = context.get("_idCopy").toString();
+			SaleOrder origin = saleOrderRepo.find(Long.parseLong(idCopy));
+			SaleOrder copy = saleOrderService.createSaleOrder(origin);
+			response.setValues(copy);
+		}
 	}
 
 	public void computeEndOfValidityDate(ActionRequest request, ActionResponse response)  {
@@ -260,18 +267,24 @@ public class SaleOrderController {
 		List<SaleOrder> saleOrderList = new ArrayList<SaleOrder>();
 		List<Long> saleOrderIdList = new ArrayList<Long>();
 		boolean fromPopup = false;
+		String lineToMerge;
+		if (request.getContext().get("saleQuotationToMerge") != null){
+			lineToMerge = "saleQuotationToMerge";
+		} else {
+			lineToMerge = "saleOrderToMerge";
+		}
 		
-		if (request.getContext().get("saleOrderToMerge") != null){
+		if (request.getContext().get(lineToMerge) != null){
 			
-			if (request.getContext().get("saleOrderToMerge") instanceof List){
+			if (request.getContext().get(lineToMerge) instanceof List){
 				//No confirmation popup, sale orders are content in a parameter list
-				List<Map> saleOrderMap = (List<Map>)request.getContext().get("saleOrderToMerge");
+				List<Map> saleOrderMap = (List<Map>)request.getContext().get(lineToMerge);
 				for (Map map : saleOrderMap) {
 					saleOrderIdList.add(new Long((Integer)map.get("id")));
 				}
 			} else {
 				//After confirmation popup, sale order's id are in a string separated by ","
-				String saleOrderIdListStr = (String)request.getContext().get("saleOrderToMerge");
+				String saleOrderIdListStr = (String)request.getContext().get(lineToMerge);
 				for (String saleOrderId : saleOrderIdListStr.split(",")) {
 					saleOrderIdList.add(new Long(saleOrderId));
 				}
@@ -393,7 +406,7 @@ public class SaleOrderController {
 				confirmView.context("contextTeamToCheck", "true");
 			}
 
-			confirmView.context("saleOrderToMerge", Joiner.on(",").join(saleOrderIdList));
+			confirmView.context(lineToMerge, Joiner.on(",").join(saleOrderIdList));
 
 			response.setView(confirmView.map());
 
@@ -405,7 +418,7 @@ public class SaleOrderController {
 			if (saleOrder != null){
 				//Open the generated sale order in a new tab
 				response.setView(ActionView
-						.define("Sale Order")
+						.define("Sale order")
 						.model(SaleOrder.class.getName())
 						.add("grid", "sale-order-grid")
 						.add("form", "sale-order-form")

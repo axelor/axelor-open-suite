@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -22,6 +22,11 @@ import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import org.iban4j.CountryCode;
+import org.iban4j.IbanFormatException;
+import org.iban4j.IbanUtil;
+import org.iban4j.InvalidCheckDigitException;
+import org.iban4j.UnsupportedCountryException;
 
 public interface BankDetailsService {
 
@@ -75,5 +80,14 @@ public interface BankDetailsService {
 	 * @return default value for the field companyBankDetails
 	 */
 	BankDetails getDefaultCompanyBankDetails(Company company, PaymentMode paymentMode, Partner partner);
+
+	/**
+	 * ABS method to validate a iban.
+	 * @param iban
+	 * @throws IbanFormatException
+	 * @throws InvalidCheckDigitException
+	 * @throws UnsupportedCountryException
+	 */
+	void validateIban(String iban) throws IbanFormatException, InvalidCheckDigitException, UnsupportedCountryException ;
 
 }

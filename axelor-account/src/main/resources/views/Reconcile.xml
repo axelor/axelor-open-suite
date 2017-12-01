@@ -27,7 +27,8 @@
     <form name="reconcile-form" title="Reconcile" model="com.axelor.apps.account.db.Reconcile"  >
 		
 		<panel name="main">
-			<field name="company"/>
+			<field name="company" canEdit="false"/>
+			<spacer/>
 			<field name="debitMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3" onSelect="action-reconcile-attrs-domain-debit" form-view="move-line-form" grid-view="move-line-grid"/>
 			<field name="creditMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3" onSelect="action-reconcile-attrs-domain-credit" form-view="move-line-form" grid-view="move-line-grid"/>
 			<field name="debitMoveLine.amountRemaining" title="Debit remaining"/>

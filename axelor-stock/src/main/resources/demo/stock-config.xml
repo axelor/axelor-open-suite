@@ -37,5 +37,16 @@
 		type="com.axelor.apps.stock.db.CustomsCodeNomenclature">
 		<bind to="parentCustomsCode" search="self.code = :parentCode" if="parentCode" />
 	</input>
+	
+	<input file="stock_incoterm.csv" separator=";" type="com.axelor.apps.stock.db.Incoterm">
+		<bind to="fullname" eval="code+' - '+name"/>
+	</input>
 
+	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId">
+		<bind to="isCarrier" eval="true"/>
+	</input>
+  
+    <input file="stock_shipmentMode.csv" separator=";" type="com.axelor.apps.stock.db.ShipmentMode" search="self.importId = :importId"/>
+
+    <input file="stock_freightCarrierMode.csv" separator=";" type="com.axelor.apps.stock.db.FreightCarrierMode" search="self.importId = :importId"/>
 </csv-inputs>

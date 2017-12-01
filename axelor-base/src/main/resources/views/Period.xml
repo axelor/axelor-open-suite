@@ -60,7 +60,7 @@
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 			<field name="fromDate" onChange="action-period-year-on-change-from-date-validate" colSpan="4"/>
 			<field name="toDate" onChange="action-period-year-on-change-to-date-validate" colSpan="4"/>
-			<field name="allowExpenseCreation" if-module="axelor-human-resource" colSpan="4"/>
+			<field name="allowExpenseCreation" if-module="axelor-human-resource"  if="__config__.app.isApp('expense')" colSpan="4"/>
 		</panel>
 		<panel>
 			<panel colSpan="6">

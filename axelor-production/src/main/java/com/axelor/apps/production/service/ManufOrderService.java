@@ -72,4 +72,11 @@ public interface ManufOrderService {
 
 	public ManufOrder updateQty(ManufOrder manufOrder);
 
+	/**
+	 * Updates the diff prod product list.
+	 * @param manufOrder
+	 * @return the updated manufOrder
+	 * @throws AxelorException
+	 */
+    ManufOrder updateDiffProdProductList(ManufOrder manufOrder) throws AxelorException;
 }

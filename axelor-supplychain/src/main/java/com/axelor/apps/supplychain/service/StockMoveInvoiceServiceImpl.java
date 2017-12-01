@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -230,7 +230,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 				}
 			}
 			SaleOrder saleOrder = stockMove.getSaleOrder();
-			if (count == 1){
+			if (saleOrder != null && count == 1){
 				invoiceCurrency = saleOrder.getCurrency();
 				invoiceClientPartner = saleOrder.getClientPartner();
 				invoiceCompany = saleOrder.getCompany();
@@ -467,7 +467,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 				}
 			}
 			PurchaseOrder purchaseOrder = stockMove.getPurchaseOrder();
-			if (count == 1){
+			if (purchaseOrder != null && count == 1){
 				invoiceCompany = purchaseOrder.getCompany();
 				invoiceSupplierPartner = purchaseOrder.getSupplierPartner();
 				invoiceContactPartner = purchaseOrder.getContactPartner();

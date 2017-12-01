@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<selection name="quality.alert.priority.select">
+		<option value="1">Low</option>
+		<option value="2">Normal</option>
+		<option value="3">High</option>
+		<option value="4">Urgent</option>
+	</selection>
+	
+	<selection name="quality.alert.status.select">
+		<option value="1">New</option>
+		<option value="2">Confirmed</option>
+		<option value="3">Action proposed</option>
+		<option value="4">Solved</option>
+	</selection>
+	
+	<selection name="quality.control.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Canceled</option>
+		<option value="3">Planned</option>
+		<option value="4">In progress</option>
+		<option value="5">Standby</option>
+		<option value="6">Finished</option>
+	</selection>
+	
+	<selection name="quality.control.points.control.type.select">
+		<option value="1">All operations</option>
+		<option value="2">Randomly</option>
+		<option value="3">Periodically</option>
+	</selection>
+	
+	<selection name="quality.control.points.test.type.select">
+		<option value="1">Pass-fail</option>
+		<option value="2">Measure</option>
+		<option value="3">Dummy</option>
+		<option value="4">Take a picture</option>
+	</selection>
+	
+	<selection name="quality.control.points.status.select">
+		<option value="1">To do</option>
+		<option value="2">Passed</option>
+		<option value="3">Failed</option>
+	</selection>
+	
+	<selection name="quality.control.point.model.period">
+		<option value="1">Week(s)</option>
+	</selection>
+	
+	<selection name="sequence.generic.code.select" id="quality.sequence.generic.code.select">
+		<option value="qualityAlert">Quality alert</option>
+		<option value="qualityControl">Quality control</option>
+	</selection>
+	
+	<selection name="team.type.select" id="quality.team.type.select">
+		<option value="quality">Quality</option>
+	</selection>
+	
+</object-views>

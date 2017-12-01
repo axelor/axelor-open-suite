@@ -12,7 +12,7 @@
 		  <button name="showInvoice" title="Invoices" onClick="save,action-company-view-invoice"/>
 		</toolbar>
 		<panel name="main" >
-		  <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+		  <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 	
 		  <field name="accountChart" readonlyIf="hasChartImported" colSpan="8" form-view="account-chart-form" grid-view="account-chart-grid"/>
 		  <button name="installTemplate" title="Import a chart" readonlyIf="hasChartImported || company == null || accountChart == null" colSpan="4" icon="fa-import" onClick="action-group-account-config-installchart-click"/>
@@ -46,7 +46,7 @@
 					<field name="irrecoverableJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
 					<field name="autoMiscOpeJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
 					<field name="manualMiscOpeJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
-					<field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company" if-module="axelor-human-resource" grid-view="journal-grid" form-view="journal-form"/>
+					<field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company" if-module="axelor-human-resource" if="__config__.app.isApp('expense')" grid-view="journal-grid" form-view="journal-form"/>
 				</panel>
 				<panel name="accounts" title="Accounts" colSpan="12">
 					<field name="customerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
@@ -139,9 +139,10 @@
 				</panel>
 			</panel>
 			<panel name="receivablesRecovery" title="Receivables recovery" >
+                <field name="factorPartner" colSpan="12" domain="self.isFactor = TRUE" if="__config__.app.getApp('account')?.manageFactors" />
 				<field name="mailTransitTime" colSpan="12"/>
 				<field name="debtRecoveryConfigLineList" showTitle="false" colSpan="12" grid-view="debt-recovery-config-line-grid" form-view="debt-recovery-config-line-form">
-				<!-- TODO:Check weather editor works or not -->
+				<!-- TODO:Check whether editor works or not -->
 				<editor x-show-titles="false" x-layout="table">
 					<field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
 				    <field name="debtRecoveryMethod" grid-view="debt-recovery-method-grid" form-view="debt-recovery-method-form"/>
@@ -189,14 +190,14 @@
 				<field name="profitAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 				<field name="standardRateTax" grid-view="tax-grid" form-view="tax-form"/>
 				<field name="clearanceAccountSet" domain="self.useForPartnerBalance = 'true' AND self.company = :company" colSpan="12" grid-view="account-grid" form-view="account-form">
-					<!-- TODO:Check weather this Editor works or not -->
+					<!-- TODO:Check whether this Editor works or not -->
 					<editor x-show-titles="false" x-layout="table">
 						<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="12"/>
 						<field name="name" colSpan="6"/>
 						<field name="accountType" colSpan="6" form-view="account-type-form" grid-view="account-type-grid"/>
 						<field name="reconcileOk" colSpan="6"/>
 						<field name="parentAccount" colSpan="6" grid-view="account-grid" form-view="account-form"/>
-						<field name="company" widget="SuggestBox" colSpan="6" form-view="company-form" grid-view="company-grid"/>
+						<field name="company" canEdit="false" widget="SuggestBox" colSpan="6" form-view="company-form" grid-view="company-grid"/>
 				    </editor>
 				</field>
 			</panel>
@@ -215,8 +216,8 @@
 	  			<field name="displayProductCodeOnPrinting"/>
 	  			<field name="displayTaxDetailOnPrinting"/>
 		 		<field name="invoiceClientBox" widget="html" x-lite="true" colSpan="12"/>
-		 		<field name="displayTimesheetOnPrinting" if-module="axelor-business-project" />
-		 		<field name="displayExpenseOnPrinting" if-module="axelor-business-project" />
+		 		<field name="displayTimesheetOnPrinting" if-module="axelor-business-project"  if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('timesheet')"/>
+		 		<field name="displayExpenseOnPrinting" if-module="axelor-business-project" if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('expense')"/>
 		  	</panel>
 			<panel name="products" title="Products">
 				<field name="invoicingProduct"/>
@@ -250,5 +251,11 @@
 		<domain>self.company.id = :id</domain>
 		<context name="id" expr="eval: company.id"/>
 	</action-view>
+	
+	<action-view name="action-company-view-account-config" title="Account config (${ name })" model="com.axelor.apps.account.db.AccountConfig">
+    	<view type="form" name="account-config-form"/>
+    	<context name="_showRecord" expr="eval: __self__.accountConfig?.id"/>
+    	<context name="_company" expr="eval: __this__"/>
+    </action-view>
 	
 </object-views>

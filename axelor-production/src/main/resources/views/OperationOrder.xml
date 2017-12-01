@@ -103,8 +103,8 @@
 		<panel name="stockMoves" title="Stock moves" colSpan="12" readonlyIf="statusSelect == 6">
 			<field name="inStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 			<panel name="consumedProductPage" title="Consumed products" colSpan="12" readonlyIf="statusSelect == 6">
-				<panel-related field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 4" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
-				<panel-related field="consumedStockMoveLineList" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid" colSpan="12"/>
+				<panel-related field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 3" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
+				<panel-related field="consumedStockMoveLineList" onChange="action-operation-order-method-compute-diff-prod-product-list" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid" colSpan="12"/>
 				<panel-related field="diffConsumeProdProductList" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
 			</panel>
 		</panel>
@@ -123,7 +123,6 @@
 		
 		<panel name="informationPanel" title="Information" sidebar="true" colSpan="12" showIf="id">
 			<panel-related field="operationOrderDurationList" canNew="false" canEdit="false" canRemove="false"/>
-			<field name="barCode"/>
 		</panel>
 		
 <!--	    <panel-related field="timesheetLineList" title="Timesheet lines" form-view="timesheet-line-production-form" grid-view="timesheet-line-production-grid" colSpan="12"/>  --> 
@@ -206,8 +205,12 @@
     <action-method name="action-operation-order-method-machine-change">
     	<call class="com.axelor.apps.production.web.OperationOrderController" method="machineChange"/>
     </action-method>
-    
-    <action-attrs name="action-operation-order-attrs-is-cons-pro-on-operation">
+
+	<action-method name="action-operation-order-method-compute-diff-prod-product-list">
+		<call class="com.axelor.apps.production.web.OperationOrderController" method="updateDiffProdProductList"/>
+	</action-method>
+
+	<action-attrs name="action-operation-order-attrs-is-cons-pro-on-operation">
     	<attribute name="hidden" for="consumedProductPage" expr="eval: !manufOrder?.isConsProOnOperation"/>
     	<attribute name="hidden" for="stockMoves" expr="eval: !manufOrder?.isConsProOnOperation"/>
     	<attribute name="hidden" for="consumedProductPage" expr="eval: !_parent?.isConsProOnOperation"/>

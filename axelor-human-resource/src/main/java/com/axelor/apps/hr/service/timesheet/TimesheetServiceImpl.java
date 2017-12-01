@@ -527,7 +527,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 	public BigDecimal computeSubTimeSpent(Project project){
 		BigDecimal sum = BigDecimal.ZERO;
-		List<Project> subProjectList = Beans.get(ProjectRepository.class).all().filter("self.project = ?1", project).fetch();
+		List<Project> subProjectList = Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
 		if(subProjectList == null || subProjectList.isEmpty()){
 			return project.getTimeSpent();
 		}
@@ -538,7 +538,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	}
 
 	public void computeParentTimeSpent(Project project){
-		Project parentProject = project.getProject();
+		Project parentProject = project.getParentProject();
 		if(parentProject == null){
 			return;
 		}
@@ -693,6 +693,30 @@ public class TimesheetServiceImpl implements TimesheetService{
 		
 		
 		return lines;
-		
+	}	
+
+	@Override
+	public BigDecimal computePeriodTotal(Timesheet timesheet) {
+		BigDecimal periodTotal = BigDecimal.ZERO;
+
+		List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
+
+		for (TimesheetLine timesheetLine : timesheetLines) {
+			periodTotal = periodTotal.add(timesheetLine.getDurationStored());
+		}
+
+		return periodTotal;
+	}
+
+	@Override
+	public String getPeriodTotalConvertTitleByUserPref(User user) {
+		String title;
+		if (user.getEmployee() != null) {
+			if (user.getEmployee().getTimeLoggingPreferenceSelect() != null) {
+				title = user.getEmployee().getTimeLoggingPreferenceSelect().equals("days") ? I18n.get("Days") : user.getEmployee().getTimeLoggingPreferenceSelect().equals("minutes") ? I18n.get("Minutes") : I18n.get("Hours");
+				return title;
+			}
+		}
+		return null;
 	}
 }

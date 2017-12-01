@@ -6,5 +6,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 public interface AppProductionService extends AppBaseService {
 	
 	public AppProduction getAppProduction();
+	
+	public void generateProductionConfigurations();
 
 }

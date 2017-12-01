@@ -70,8 +70,6 @@
     <string name="orderNumber" title="Order Number"/>
     
 <!--     Onglet scheduler -->
-<!-- 	<many-to-one name="scheduler" ref="com.axelor.apps.base.db.Scheduler" title="Scheduler"/> -->
-	<one-to-one name="schedulerInstance" ref="com.axelor.apps.base.db.SchedulerInstance" title="Scheduler instance"/>
 	<date name="subscriptionStartDate" title="Subscription start date"/>
 	<date name="invoicedFirstDate" title="Invoiced first date"/>
 	<date name="nextInvPeriodStartDate" title="Next invoiced period start date" readonly="true"/>
@@ -81,7 +79,7 @@
     
     <boolean name="template" title="Template" hidden="true"/>
     <integer name="versionNumber" title="Version Number" readonly="true" default="1"/>
-    <many-to-one name="cancelReason" title="Cancel reason" ref="com.axelor.apps.sale.db.CancelReason"/>
+    <many-to-one name="cancelReason" title="Cancel reason" ref="com.axelor.apps.base.db.CancelReason"/>
 	<string name="cancelReasonStr" title="Cancel Reason" large="true"/>
     <integer name="deliveryState" title="Delivery State" selection="sale.order.delivery.state" readonly="true" default="1"/>
     <many-to-one name="templateUser" ref="com.axelor.auth.db.User" title="Template created by" readonly="true"/>
@@ -90,6 +88,7 @@
     
 	<date name="deliveryDate" title="Delivery date"/>
 	<string name="deliveryCondition" title="Delivery conditions" large="true" multiline="true"/>
+	<string name="specificPackage" title="Specific package" large="true" multiline="true"/>
 	
 	<one-to-many name="advancePaymentList" ref="com.axelor.apps.sale.db.AdvancePayment" mappedBy="saleOrder" title="Advance Payments"/>
 	
@@ -97,7 +96,9 @@
 	
 	<!-- Impression -->
     <string name="specificNotes" title="Specific notes" large="true"/>
-	
+
+    <many-to-one name="opportunity" ref="com.axelor.apps.crm.db.Opportunity" />
+
  	<unique-constraint columns="saleOrderSeq,company"/>
 
  	//TODO move into supplychain ?
@@ -116,7 +117,7 @@
       <field name="creationDate" on="CREATE" />
       <field name="confirmationDate" on="UPDATE"/>
       <field name="inTaxTotal" />
-      <message if="true" on="CREATE">Sale Order created</message>
+      <message if="true" on="CREATE">Sale order created</message>
       <message if="statusSelect == 1" tag="important">Draft</message>
       <message if="statusSelect == 2" tag="info">Finalize</message>
       <message if="statusSelect == 3" tag="success">Order confirmed</message>

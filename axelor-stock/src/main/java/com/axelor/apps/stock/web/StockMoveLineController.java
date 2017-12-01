@@ -24,6 +24,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 
 public class StockMoveLineController {
@@ -35,9 +36,13 @@ public class StockMoveLineController {
 		StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
 		StockMove stockMove = stockMoveLine.getStockMove();
 		if(stockMove == null){
-			stockMove = request.getContext().getParentContext().asType(StockMove.class);
+			Context parentContext = request.getContext().getParentContext();
+			if (parentContext.getContextClass().equals(StockMove.class)) {
+				stockMove = parentContext.asType(StockMove.class);
+			} else {
+				return;
+			}
 		}
-		stockMoveLine.getStockMove();
 		stockMoveLine = stockMoveLineService.compute(stockMoveLine, stockMove);
 		response.setValue("unitPriceUntaxed", stockMoveLine.getUnitPriceUntaxed());
 		response.setValue("unitPriceTaxed", stockMoveLine.getUnitPriceTaxed());

@@ -93,6 +93,7 @@
 	<selection name='iadministration.export.type.select'>
 		<option value="pdf">PDF</option>
 		<option value="xlsx">XLS</option>
+		<option value="csv">CSV</option>
 	</selection>
 	
 	<selection name="sequence.generic.code.select">
@@ -128,6 +129,7 @@
 		<option value="expense">Expense</option>
 		<option value="subrogationRelease">Subrogation release</option>
         <option value="depositSlip">Deposit slip</option>
+        <option value="logisticalForm">Logistical form</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">
@@ -421,6 +423,15 @@
 	<selection name="meta.schedule.batch.service.select" id="base.meta.schedule.batch.service.select">
 		<option value="com.axelor.apps.base.service.batch.BaseBatchService">com.axelor.apps.base.service.batch.BaseBatchService</option>
 		<option value="com.axelor.apps.base.service.batch.MailBatchService">com.axelor.apps.base.service.batch.MailBatchService</option>
+	</selection>
+	
+	<selection name="team.type.select">
+		<option value="general">General</option>
+	</selection>
+
+	<selection name="base.cancel.reason.application.type.select">
+		<option value="com.axelor.apps.sale.db.SaleOrder">Sale order</option>
+        <option value="com.axelor.apps.stock.db.StockMove">Stock move</option>
 	</selection>
 
 </object-views>

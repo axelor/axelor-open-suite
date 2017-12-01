@@ -12,6 +12,7 @@
     	action="employee.all"/>
 
 	<action-view name="employee.all" title="Employee" model="com.axelor.apps.hr.db.Employee">
+		<view type="cards" name="employee-card"/>
     	<view type="grid" name="employee-grid"/>
 	    <view type="form" name="employee-form"/>
 	</action-view>
@@ -227,7 +228,7 @@
 	
 	<menuitem name="conf-expense-type" parent="expense-root-conf" title="Expense Type" action="conf.expense.type"/>
 	
-	<action-view name="conf.expense.type" title="Expense Type" model="com.axelor.apps.base.db.Product">
+	<action-view name="conf.expense.type" title="Expense types" model="com.axelor.apps.base.db.Product">
     	<view type="grid" name="product-expense-grid"/>
 	    <view type="form" name="product-expense-form"/>
 	    <view-param name="search-filters" value="products-filters"/>
@@ -290,7 +291,7 @@
 	<menuitem name="extra-hours-root" parent="hr-root" if="__config__.app.isApp('exthrs')" 
     	title="Extra hours" icon="fa-hourglass-end" icon-background="#84429f"/>
 	
-	<menuitem name="edit-extra-hours" parent="extra-hours-root" title="Enter extra hours" action="edit.extra.hours"/>
+	<menuitem name="edit-extra-hours" parent="extra-hours-root" title="Request extra hours" action="edit.extra.hours"/>
 	
 	<action-method name="edit.extra.hours">
 		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="editExtraHours"/>
@@ -331,7 +332,7 @@
 		<context name="_productTypeSelect" expr="storable"/>
 	</action-view>
 	
-	<menuitem name="admin-root-batch-hr" parent="admin-root-batch"
+	<menuitem name="admin-root-batch-hr" parent="admin-root-batch" if="__config__.app.isApp('employee')" if-module="axelor-human-resource" 
 		title="HR batches" action="admin.root.batch.hr" />
 
 	<action-view name="admin.root.batch.hr" title="HR batches"

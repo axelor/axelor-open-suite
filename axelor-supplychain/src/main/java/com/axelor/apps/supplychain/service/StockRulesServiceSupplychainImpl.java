@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -24,7 +24,7 @@ import java.util.List;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.SupplierCatalog;
+import com.axelor.apps.purchase.db.SupplierCatalog;
 
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;

@@ -7,7 +7,7 @@
 		name="subrogation-release-grid" orderBy="-sequenceNumber">
 		<field name="sequenceNumber" />
 		<field name="company" />
-		<field name="company.factor" />
+		<field name="company.accountConfig.factorPartner" />
 		<field name="statusSelect" />
 	</grid>
 
@@ -15,7 +15,7 @@
 		name="subrogation-release-form" onNew="action-subrogation-release-onnew">
 
 		<menubar>
-			<menu title="Print/Export">
+			<menu title="Print/Export" icon="fa-print">
 				<item action="action-subrogation-release-print-to-pdf" title="Print to PDF"
 					readonlyIf="statusSelect &lt; 2" />
 				<item action="action-subrogation-release-export-to-csv" title="Export to CSV"
@@ -27,7 +27,7 @@
 			<field name="sequenceNumber" />
 			<field name="statusSelect" widget="NavSelect" colSpan="12" />
 			<field name="company" form-view="company-form" />
-			<field name="company.factor" readonly="true" form-view="partner-form" />
+			<field name="company.accountConfig.factorPartner" readonly="true" form-view="partner-form" />
 			<panel-related field="invoiceSet" grid-view="invoice-release-details-grid"
 				form-view="invoice-form" colSpan="12" canNew="false" />
 		</panel>

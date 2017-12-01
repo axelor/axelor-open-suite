@@ -201,7 +201,7 @@ The conversion is done with conversion unit lines or with a formule on Product f
 - Company logo became a MetaFile instead of a path
 - MoveLine and move is generated during ventilation of invoice only if the amount on line or invoice is not null.
 - Controle on sequence and date for customer invoice only
-- Improve translations for printing (Purchase Order) and Lead
+- Improve translations for printing (Purchase order) and Lead
 - Attribute 'x-show-titles' updated in 'editor' according ADK improvement
 - Change management of manageCustomerCredit field
 - No check of account config if amount if null on a line of invoice during ventilation

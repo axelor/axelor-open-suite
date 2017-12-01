@@ -28,6 +28,7 @@
 			<field name="bankDepositDate" showIf="paymentMode.typeSelect == 7"/>
 			<field name="chequeNumber" showIf="paymentMode.typeSelect == 7"/>
 			<field name="paymentMode.typeSelect" hidden="true"/>
+            <field name="invoice" hidden="true" />
 		</panel>
 		<panel showIf="id">
 			<field name="move" form-view="move-form" grid-view="move-grid"/>

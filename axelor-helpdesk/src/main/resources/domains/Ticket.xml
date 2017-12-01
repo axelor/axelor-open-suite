@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="helpdesk" package="com.axelor.apps.helpdesk.db"/>
+
+  <entity name="Ticket">
+      
+		<string name="ticketSeq" title="Ticket Number" readonly="true" />
+		<string name="subject" title="Subject" required="true"/>
+		<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+		<many-to-one name="customer" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+		<many-to-one name="contact" ref="com.axelor.apps.base.db.Partner" title="Customer contact"/>
+		<many-to-one name="slaPolicy" ref="com.axelor.apps.helpdesk.db.SLA" title="SLA Policy"/>
+		<many-to-one name="lead" ref="com.axelor.apps.crm.db.Lead" title="Lead"/>
+		<many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
+		<many-to-one name="responsible" ref="com.axelor.auth.db.User" title="User in charge of the issue"/>
+		<integer name="statusSelect" selection="helpdesk.status.select" title="Status"/>
+		<many-to-one name="ticketType" ref="com.axelor.apps.helpdesk.db.TicketType" title="Ticket type"/>
+		<datetime name="startDateT" title="Start date"/>
+		<datetime name="endDateT" title="End date"/>
+		<datetime name="deadlineDateT" title="Deadline"/>
+		<boolean name="isSlaCompleted" title="SLA completed" default="false"/>
+		<long name="duration" title="Duration"/>
+		<string name="description" title="Description" large="true"/>
+		<integer name="progressSelect" title="Progress (%)" selection="helpdesk.ticket.progress.select"/>
+		<integer name="priority" title="Priority" selection="helpdesk.priority.select" default="2"/>
+		
+		<track>
+		  <field name="ticketSeq"/>
+	      <field name="subject" />
+	      <field name="statusSelect" on="UPDATE"/>
+	      <message if="true" on="CREATE">Ticket created</message>
+	      <message if="statusSelect == 1" tag="info">Ticket In Progress</message>
+	      <message if="statusSelect == 2" tag="success">Ticket In Resolved</message>
+	      <message if="statusSelect == 3" tag="info">Ticket Closed</message>
+    	</track>
+		
+  </entity>
+  
+</domain-models>

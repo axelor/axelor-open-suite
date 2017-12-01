@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="stock" package="com.axelor.apps.stock.db"/>
+
+	<entity name="Incoterm" lang="java">
+	
+		<string name="name" title="Incoterm Name" required="true"/>
+		<string name="code" title="Incoterm Code" required="true"/>
+		<string name="fullname" title="Fullname" namecolumn="true"/>
+		
+		<string name="exportCustomsDeclaration" title="Export customs declaration" selection="stock.incoterm.allocation.select"/>
+		<string name="carriageToPortOfExport" title="Carriage to port of export" selection="stock.incoterm.allocation.select"/>
+		<string name="unloadingOfTruckInPortOfExport" title="Unloading of truck in port of export" selection="stock.incoterm.allocation.select"/>
+		<string name="loadingInPortOfExport" title="Loading on vessel/airplane in port of export" selection="stock.incoterm.allocation.select"/>
+		<string name="carriageToPortOfImport" title="Carriage (Sea/Air) to port of import" selection="stock.incoterm.allocation.select"/>
+		<string name="insurance" title="Insurance" selection="stock.incoterm.allocation.select"/>
+		<string name="unloadingInPortOfImport" title="Unloading in port of import" selection="stock.incoterm.allocation.select"/>
+		<string name="loadingOnTruckInPortOfImport" title="Loading on truck in port of import" selection="stock.incoterm.allocation.select"/>
+		<string name="carriageToPlaceOfDestination" title="Carriage to place of destination" selection="stock.incoterm.allocation.select"/>
+		<string name="importCustomsClearance" title="Import customs clearance" selection="stock.incoterm.allocation.select"/>
+		<string name="importDutiesAndTaxes" title="Import duties and taxes" selection="stock.incoterm.allocation.select"/>
+		
+	</entity>
+
+</domain-models>

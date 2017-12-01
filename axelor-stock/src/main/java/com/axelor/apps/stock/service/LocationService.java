@@ -17,17 +17,22 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.stock.db.Location;
+
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.Location;
-import com.axelor.apps.stock.db.LocationLine;
-
 public interface LocationService {
-	
-	public Location getDefaultLocation();
-	
+
+    /**
+     * Get the default location of the given company
+     * @param company
+     * @return the default location or null
+     */
+    public Location getLocation(Company company);
+
 	public BigDecimal getQty(Long productId, Long locationId, String qtyType);
 	
 	public BigDecimal getRealQty(Long productId, Long locationId);

@@ -19,6 +19,7 @@
  		<bind to="estimatedDelivDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(estimatedDelivDate)" column="estimatedDelivDate"/>
  	</input>
  	
+	<input file="purchase_supplierCatalog.csv" separator=";" type="com.axelor.apps.purchase.db.SupplierCatalog"/>
 	
 </csv-inputs>
 

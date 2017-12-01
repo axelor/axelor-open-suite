@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -80,39 +80,54 @@ public class TaxInvoiceLine extends TaxGenerator {
 			for (InvoiceLine invoiceLine : invoiceLines) {
 					
 				TaxLine taxLine = invoiceLine.getTaxLine();
+                TaxEquiv taxEquiv = invoiceLine.getTaxEquiv();
+                TaxLine taxLineRC = (taxEquiv != null && taxEquiv.getReverseCharge()) ? taxEquiv.getReverseChargeTax().getActiveTaxLine() : null;
+
 				if(taxLine != null)  {
 					LOG.debug("TVA {}", taxLine);
 
 					if (map.containsKey(taxLine)) {
-
 						InvoiceLineTax invoiceLineTax = map.get(taxLine);
 
 						// Dans la devise de la facture
 						invoiceLineTax.setExTaxBase(invoiceLineTax.getExTaxBase().add(invoiceLine.getExTaxTotal()));
-
 						// Dans la devise de la société
 						invoiceLineTax.setCompanyExTaxBase(invoiceLineTax.getCompanyExTaxBase().add(invoiceLine.getCompanyExTaxTotal()).setScale(2, RoundingMode.HALF_UP));
-
-					}
-					else {
-
+					} else {
 						InvoiceLineTax invoiceLineTax = new InvoiceLineTax();
 						invoiceLineTax.setInvoice(invoice);
 
 						// Dans la devise de la facture
 						invoiceLineTax.setExTaxBase(invoiceLine.getExTaxTotal());
-
 						// Dans la devise de la comptabilité du tiers
 						invoiceLineTax.setCompanyExTaxBase(invoiceLine.getCompanyExTaxTotal().setScale(2, RoundingMode.HALF_UP));
 
 						invoiceLineTax.setTaxLine(taxLine);
 						map.put(taxLine, invoiceLineTax);
-
 					}
+
+					if (taxLineRC != null && map.containsKey(taxLineRC)) {
+                        InvoiceLineTax invoiceLineTaxRC = map.get(taxEquiv.getReverseChargeTax().getActiveTaxLine());
+
+                        // Dans la devise de la facture
+                        invoiceLineTaxRC.setExTaxBase(invoiceLineTaxRC.getExTaxBase().subtract(invoiceLine.getExTaxTotal()));
+                        // Dans la devise de la comptabilité du tiers
+                        invoiceLineTaxRC.setCompanyExTaxBase(invoiceLineTaxRC.getCompanyExTaxBase().subtract(invoiceLine.getCompanyExTaxTotal()).setScale(2, RoundingMode.HALF_UP));
+                    } else {
+                        InvoiceLineTax invoiceLineTaxRC = new InvoiceLineTax();
+                        invoiceLineTaxRC.setInvoice(invoice);
+
+                        // Dans la devise de la facture
+                        invoiceLineTaxRC.setExTaxBase(invoiceLine.getExTaxTotal().negate());
+                        // Dans la devise de la comptabilité du tiers
+                        invoiceLineTaxRC.setCompanyExTaxBase(invoiceLine.getCompanyExTaxTotal().setScale(2, RoundingMode.HALF_UP).negate());
+
+                        invoiceLineTaxRC.setTaxLine(taxLineRC);
+                        map.put(taxLineRC, invoiceLineTaxRC);
+                    }
 				}
 
 				if (!customerSpecificNote) {
-                    TaxEquiv taxEquiv = invoiceLine.getTaxEquiv();
                     if (taxEquiv != null && taxEquiv.getSpecificNote() != null) {
                         specificNotes.add(taxEquiv.getSpecificNote());
                     }
@@ -123,13 +138,13 @@ public class TaxInvoiceLine extends TaxGenerator {
 		for (InvoiceLineTax invoiceLineTax : map.values()) {
 
 			// Dans la devise de la facture
-			BigDecimal exTaxBase = invoiceLineTax.getExTaxBase();
+			BigDecimal exTaxBase = invoiceLineTax.getExTaxBase().negate();
 			BigDecimal taxTotal = computeAmount(exTaxBase, invoiceLineTax.getTaxLine().getValue());
 			invoiceLineTax.setTaxTotal(taxTotal);
 			invoiceLineTax.setInTaxTotal(exTaxBase.add(taxTotal));
 
 			// Dans la devise de la société
-			BigDecimal companyExTaxBase = invoiceLineTax.getCompanyExTaxBase();
+			BigDecimal companyExTaxBase = invoiceLineTax.getCompanyExTaxBase().negate();
 			BigDecimal companyTaxTotal = computeAmount(companyExTaxBase, invoiceLineTax.getTaxLine().getValue());
 			invoiceLineTax.setCompanyTaxTotal(companyTaxTotal);
 			invoiceLineTax.setCompanyInTaxTotal(companyExTaxBase.add(companyTaxTotal));

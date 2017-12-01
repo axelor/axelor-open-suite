@@ -12,11 +12,10 @@
     </grid>
 
 	<form name="bill-of-material-form" title="Bill of material"
-		model="com.axelor.apps.production.db.BillOfMaterial" onSave="action-bill-of-material-record-name,action-bill-of-material-method-validate-prod-process"
+		model="com.axelor.apps.production.db.BillOfMaterial" onSave="save,action-bill-of-material-record-name,action-bill-of-material-method-validate-prod-process"
 		onNew="action-bill-of-material-default-record" onLoad="action-bill-of-material-attrs-price-digits" width="large">
 		<toolbar>
 			<button name="newVersion" title="Generate new version"  if="__config__.app.getApp('production').manageBillOfMaterialVersion" onClick="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"/>
-			<button name="archive" prompt="Do you really wish to archive this bill of material ?" title="Archive" if="__config__.app.getApp('production').manageBillOfMaterialVersion" onClick="action-bill-of-material-archive,save" />
 		</toolbar>
 		<menubar>
 			<menu title="Reports">
@@ -26,9 +25,9 @@
 		<panel name="main">
 			<field name="fullName" hidden="true" showIf="$readonly()" colSpan="12" showTitle="false" css="label-bold bold large"/>
 			<field name="name" hidden="true" showIf="!$readonly()" colSpan="12"/>
-			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process" domain="self.product = :product AND self.company = :company"/>
-			<field name="product" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
+			<field name="product" canEdit="false" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" colSpan="3"/>
 			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
 		</panel>
@@ -65,21 +64,21 @@
 
 	<form name="bill-of-material-line-form" title="Bill of material"
 		model="com.axelor.apps.production.db.BillOfMaterial"
-		onSave="action-bill-of-material-record-name" onLoad="action-bill-of-material-attrs-product-def-sub-bom"
+		onSave="save,action-bill-of-material-record-name" onLoad="action-bill-of-material-attrs-product-def-sub-bom"
 		onNew="action-bill-of-material-line-default-record" width="large">
 		<panel name="main">
-			<field name="product" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
+			<field name="product" canEdit="false" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
 			<field name="defineSubBillOfMaterial" colSpan="3"/>
 			<field name="hasNoManageStock" colSpan="3"/>
 			<field name="qty" colSpan="3"/>
 			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
-			<panel name="subProcessConfiguration" title="Sub-process configuration" hideIf="defineSubBillOfMaterial" colSpan="12">
+			<panel name="subProcessConfiguration" title="Sub-process configuration" showIf="defineSubBillOfMaterial" colSpan="12">
 				<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
 				<field name="priority"/>
 			</panel>
 		</panel>
 
-		<panel-tabs hideIf="defineSubBillOfMaterial">
+		<panel-tabs showIf="defineSubBillOfMaterial">
 			<panel-related title="Components" field="billOfMaterialSet" domain="self.defineSubBillOfMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
 		</panel-tabs>
 	</form>
@@ -106,7 +105,7 @@
     
      <action-record name="action-bill-of-material-line-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="qty" expr="1"/>
-    	<field name="priority" expr="eval:__parent__?.billOfMaterialSet?.max{ it.getPriority() }.getPriority() + 10"/>
+    	<field name="priority" if = "__parent__?.billOfMaterialSet?.size() > 0" expr="eval:__parent__?.billOfMaterialSet?.max{ it.getPriority() }.getPriority() + 10"/>
     	<field name="defineSubBillOfMaterial" expr="eval:true" />
     </action-record>
     
@@ -115,11 +114,7 @@
     </action-record>
     
      <action-record name="action-bill-of-material-record-name" model="com.axelor.apps.production.db.BillOfMaterial">
-    	<field name="name" expr="eval: product.name + ' - ' + qty + unit.code + ' - ' + id" if="name == null"/>
-    </action-record>
-    
-    <action-record name="action-bill-of-material-archive" model="com.axelor.apps.production.db.BillOfMaterial">
-    	<field name="archived" expr="eval: true"/>
+    	<field name="name" expr="eval: product.name + ' - ' + qty + unit.name + ' - ' + id" if="name == null"/>
     </action-record>
     
     <action-method name="action-bill-of-material-method-compute-cost-price">
@@ -156,7 +151,9 @@
 
 	<action-attrs name="action-bill-of-material-attrs-product-def-sub-bom">
 		<attribute name="value" for="defineSubBillOfMaterial" expr="eval: false" if="product.productSubTypeSelect == 3"/>
+		<attribute name="value" for="defineSubBillOfMaterial" expr="eval: true" if="product.productSubTypeSelect != 3"/>
 		<attribute name="hidden" for="defineSubBillOfMaterial" expr="eval: true" if="product.productSubTypeSelect == 3"/>
+		<attribute name="hidden" for="defineSubBillOfMaterial" expr="eval: false" if="product.productSubTypeSelect != 3"/>
 	</action-attrs>
 	
 </object-views>

@@ -10,7 +10,7 @@
         <field name="amountThreshold"/>
         <field name="dateThreshold"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
-        <field name="statusSelect"/>
+        <field name="statusSelect" />
     </grid>
     
 	<form name="account-clearance-form" title="Account clearance" model="com.axelor.apps.account.db.AccountClearance"
@@ -19,8 +19,8 @@
 		<panel name="general" title="General">
 			<field name="name"/>
 			<field name="dateTime"/>
-			<field name="user" form-view="user-form" grid-view="user-grid"/>
-			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="company" widget="SuggestBox" form-view="company-form" canEdit="false" grid-view="company-grid"/>
 			<field name="statusSelect"/>
 		</panel>
 		

@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -55,6 +55,7 @@ public class AppBuilderController {
 			FileOutputStream fout = new FileOutputStream(configFile);
 			IOUtil.copyCompletely(inputStream, fout);
 			
+			@SuppressWarnings("rawtypes")
 			Path path = MetaFiles.getPath((String) ((Map) request.getContext().get("dataFile")).get("filePath"));
 			File tempDir = Files.createTempDir();
 			File importFile = new File(tempDir, "bpm.xml");
@@ -90,6 +91,7 @@ public class AppBuilderController {
 			
 			FileUtils.forceDelete(path.toFile());
 			
+			@SuppressWarnings("unchecked")
 			Object metaFileId =  ((Map<String,Object>) request.getContext().get("dataFile")).get("id");
 			
 			if (metaFileId != null) {

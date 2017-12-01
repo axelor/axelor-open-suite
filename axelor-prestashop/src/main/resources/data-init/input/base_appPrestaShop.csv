@@ -1,0 +1,2 @@
+"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+"PrestaShop";"prestashop";25;"PrestaShop configuration";"prestashop.png";"axelor-prestashop";"sale";3

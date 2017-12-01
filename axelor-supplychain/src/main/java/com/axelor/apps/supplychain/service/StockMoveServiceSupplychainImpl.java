@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -20,7 +20,16 @@ package com.axelor.apps.supplychain.service;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
+import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.sale.db.ISaleOrder;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
+import com.axelor.apps.stock.service.StockMoveLineService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +56,18 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 	
 	@Inject
 	private AppSupplychainService appSupplyChainService;
-	
+
+	@Inject
+	protected PurchaseOrderRepository purchaseOrderRepo;
+
+	@Inject
+	private PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychain;
+
+	@Inject
+	public StockMoveServiceSupplychainImpl(StockMoveLineService stockMoveLineService, SequenceService sequenceService, StockMoveLineRepository stockMoveLineRepository, AppBaseService appBaseService, StockMoveRepository stockMoveRepository, PartnerProductQualityRatingService partnerProductQualityRatingService) {
+		super(stockMoveLineService, sequenceService, stockMoveLineRepository, appBaseService, stockMoveRepository, partnerProductQualityRatingService);
+	}
+
 	@Override
 	public BigDecimal compute(StockMove stockMove){
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
@@ -107,6 +127,39 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 		}
 
 		return newStockSeq;
+	}
+
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void cancel(StockMove stockMove) throws AxelorException  {
+		if (stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED) {
+			if (stockMove.getSaleOrder() != null) {
+				updateSaleOrderOnCancel(stockMove);
+			}
+			if (stockMove.getPurchaseOrder() != null) {
+				PurchaseOrder purchaseOrder = purchaseOrderRepo.find(stockMove.getPurchaseOrder().getId());
+				purchaseOrderServiceSupplychain.updatePurchaseOrderOnCancel(stockMove, purchaseOrder);
+			}
+		}
+		super.cancel(stockMove);
+	}
+
+	@Transactional(rollbackOn = {Exception.class})
+	public void updateSaleOrderOnCancel(StockMove stockMove) {
+		SaleOrder so = Beans.get(SaleOrderRepository.class).find(stockMove.getSaleOrder().getId());
+
+		List<StockMove> stockMoveList = stockMoveRepo.all().filter("self.saleOrder = ?1", so).fetch();
+		so.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
+		for (StockMove stock : stockMoveList){
+			if (stock.getStatusSelect() != StockMoveRepository.STATUS_CANCELED && !stock.getId().equals(stockMove.getId())){
+				so.setDeliveryState(SaleOrderRepository.STATE_PARTIALLY_DELIVERED);
+				break;
+			}
+		}
+
+		if (so.getStatusSelect() == ISaleOrder.STATUS_FINISHED  && Beans.get(AppSupplychainService.class).getAppSupplychain().getTerminateSaleOrderOnDelivery()){
+			so.setStatusSelect(ISaleOrder.STATUS_ORDER_CONFIRMED);
+		}
 	}
 
 }

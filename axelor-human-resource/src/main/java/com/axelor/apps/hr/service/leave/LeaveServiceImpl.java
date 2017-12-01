@@ -471,7 +471,8 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	@Transactional
 	public void insertLeave(ActionRequest request, ActionResponse response) throws AxelorException{
 		User user = AuthUtils.getUser();
-		LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(new Long(request.getData().get("leaveReason").toString()));
+		Map<String, Object> requestData = request.getData();
+		LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(new Long(requestData.get("leaveReason").toString()));
 		if (user.getEmployee() == null) {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), user.getName());
 		}
@@ -485,18 +486,18 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			}
 			leave.setLeaveLine(leaveLine);
 			leave.setRequestDate(appBaseService.getTodayDate());
-			if (request.getData().get("fromDate") != null) {
-				leave.setFromDate(LocalDate.parse(request.getData().get("fromDate").toString(), DateTimeFormatter.ISO_DATE));
+			if (requestData.get("fromDate") != null) {
+				leave.setFromDate(LocalDate.parse(requestData.get("fromDate").toString(), DateTimeFormatter.ISO_DATE));
 			}
-			leave.setStartOnSelect(new Integer(request.getData().get("startOn").toString()));
-			if (request.getData().get("toDate") != null) {
-				leave.setToDate(LocalDate.parse(request.getData().get("toDate").toString(), DateTimeFormatter.ISO_DATE));
+			leave.setStartOnSelect(new Integer(requestData.get("startOn").toString()));
+			if (requestData.get("toDate") != null) {
+				leave.setToDate(LocalDate.parse(requestData.get("toDate").toString(), DateTimeFormatter.ISO_DATE));
 			}
-			leave.setEndOnSelect(new Integer(request.getData().get("endOn").toString()));
+			leave.setEndOnSelect(new Integer(requestData.get("endOn").toString()));
 			leave.setDuration(this.computeDuration(leave));
 			leave.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
-			if(request.getData().get("comments") != null){
-				leave.setComments(request.getData().get("comments").toString());
+			if(requestData.get("comments") != null){
+				leave.setComments(requestData.get("comments").toString());
 			}
 			leave = Beans.get(LeaveRequestRepository.class).save(leave);
 			response.setTotal(1);

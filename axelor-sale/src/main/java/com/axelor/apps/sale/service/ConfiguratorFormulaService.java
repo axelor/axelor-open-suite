@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -18,6 +18,7 @@
 package com.axelor.apps.sale.service;
 
 import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaField;
 
 public interface ConfiguratorFormulaService {
@@ -28,5 +29,11 @@ public interface ConfiguratorFormulaService {
     * @return
     */
    MetaField getMetaField(ConfiguratorFormula configuratorFormula);
+
+   /**
+    * Check if the written formula is valid.
+    * @param formula
+    */
+   void checkFormula(ConfiguratorFormula formula) throws AxelorException;
 
 }

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="quality-alert-grid" title="Quality alerts" model="com.axelor.apps.quality.db.QualityAlert">
+		<field name="reference"/>
+		<field name="reference"/>
+		<field name="product"/>
+		<field name="workCenter"/>
+		<field name="team"/>
+		<field name="responsible"/>
+		<field name="qualityTagSet"/>
+		<field name="rootCause"/>
+		<field name="priority"/>
+	</grid>
+	
+	<calendar name="quality-alert-calendar" title="Alert calendar" mode="month" colorBy="priority" 
+    	eventStart="startDate" eventStop="endDate" eventLength="1" model="com.axelor.apps.quality.db.QualityAlert">
+    	<field name="fullName" />
+ 	</calendar>
+	
+	<form name="quality-alert-form" title="Quality alerts" model="com.axelor.apps.quality.db.QualityAlert" onNew="action-quality-alert-record-default">
+		<panel title="Status">
+			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" />
+		</panel>
+		<panel>
+			<field name="reference"/>
+			<field name="product"/>
+			<field name="workCenter"/>
+			<field name="team" domain="self.typeSelect = 'quality'"/>
+			<field name="responsible"/>
+			<field name="rootCause"/>
+			<field name="priority"/>
+			<field name="startDate"/>
+			<field name="endDate"/>
+			<field name="deadLine"/>
+			<field name="qualityTagSet" widget="TagSelect" colSpan="12"/>
+		</panel>
+		<panel name="description">
+			<field name="description" colSpan="12" height="6" widget="html" showTitle="false"/>
+		</panel>
+		<panel name="correctiveActions">
+			<field name="correctiveActions" colSpan="12" height="6" widget="html" showTitle="false"/>
+		</panel>
+		<panel name="preventiveActions">
+			<field name="preventiveActions" colSpan="12" height="6" widget="html" showTitle="false"/>
+		</panel>
+		<panel sidebar="true" name="actions" title="Actions" hideIf="statusSelect == 4">
+			<button name="confirm" title="Confirm" showIf="statusSelect == 1" onClick="action-quality-alert-record-status-confirm,save"/>
+			<button name="proposeAction" title="Propose action" showIf="statusSelect == 2" onClick="action-quality-alert-record-status-proposed,save"/>
+			<button name="solve" title="Solve" showIf="statusSelect == 3" onClick="action-quality-alert-record-status-solved,save"/>
+		</panel>
+		<panel-mail>
+		  <mail-messages />
+	    </panel-mail>
+	</form>	
+	
+	<kanban columnBy="statusSelect" sequenceBy="priority" limit="10"
+	 name="quality-alert-kanban" title="Quality alerts" model="com.axelor.apps.quality.db.QualityAlert">
+		<field name="fullName"/>
+		<field name="team"/>
+		<field name="responsible"/>
+		<template>
+            <![CDATA[
+            <h4>{{fullName}}</h4>
+            <div class="card-body">{{team.name}}</div>
+            <div class="card-body">{{responsible.name}}</div>
+    		]]>
+        </template>
+	</kanban>
+    
+	<action-record name="action-quality-alert-record-default" model="com.axelor.apps.quality.db.QualityAlert">
+		<field name="statusSelect" expr="eval: 1"/>
+		<field name="priority" expr="eval: 1"/>
+		<field name="product" expr="eval: _product" if="eval: _product != null"/>
+		<field name="team" expr="eval: _team" if="eval: _team != null"/>
+	</action-record>
+	
+	<action-record name="action-quality-alert-record-status-confirm" model="com.axelor.apps.quality.db.QualityAlert">
+		<field name="statusSelect" expr="eval: 2"/>
+	</action-record>
+	
+	<action-record name="action-quality-alert-record-status-proposed" model="com.axelor.apps.quality.db.QualityAlert">
+		<field name="statusSelect" expr="eval: 3"/>
+	</action-record>
+	
+	<action-record name="action-quality-alert-record-status-solved" model="com.axelor.apps.quality.db.QualityAlert">
+		<field name="statusSelect" expr="eval: 4"/>
+	</action-record>
+	
+	<search-filters name="quality-alert-filters" model="com.axelor.apps.quality.db.QualityAlert" title="Quality alert filters">	
+		<filter title="My alerts">
+			<domain>self.responsible.user.id = :_userId</domain>
+		</filter>
+		<filter title="My team alerts">
+			<domain>self.team.id = :_myActiveTeamId</domain>
+		</filter>
+	</search-filters>
+	
+</object-views>

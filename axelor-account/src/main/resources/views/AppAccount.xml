@@ -22,7 +22,10 @@
 				<button name="payerQualityProcess" title="Compute payers quality" colSpan="2" onClick="action-app-account-method-payer-quality-process"/>
 				<field name="payerQualityConfigLineList" colSpan="12" grid-view="payer-quality-config-line-grid" form-view="payer-quality-config-line-form"/>
 			</panel>
-			<panel-dashlet action="admin.root.conf.account.config" colSpan="12" title="Account configurations" />
+			<panel title="Account configurations">
+				<button name="generateAccountConfigurations" title="Generate account configurations" colSpan="4" onClick="save,com.axelor.apps.account.web.AppAccountController:generateAccountConfigurations"/>
+				<panel-dashlet action="admin.root.conf.account.config" colSpan="12" title="Account configurations" />
+			</panel>
 		</panel-tabs>
 	</form>
 

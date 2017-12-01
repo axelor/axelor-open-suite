@@ -20,7 +20,7 @@
 	    	<field name="name"/>
 	    	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	        <field name="location" required="true" grid-view="location-grid" form-view="location-form" onChange="action-prod-process-record-set-second-location"/>
-	        <field name="product" grid-view="product-grid" form-view="product-form"/>
+	        <field name="product" canEdit="false" grid-view="product-grid" form-view="product-form"/>
 	        <field name="producedProductLocation" grid-view="location-grid" form-view="location-form"/>
 	        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"/>
 	        <field name="outsourcing" onChange="action-prod-process-method-change-prodprocesslist-outsourcing"/>

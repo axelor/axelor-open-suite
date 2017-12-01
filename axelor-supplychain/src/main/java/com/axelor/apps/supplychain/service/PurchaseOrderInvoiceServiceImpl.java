@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -88,6 +88,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 		Invoice invoice = invoiceGenerator.generate();
 
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, purchaseOrder.getPurchaseOrderLineList()));
+
+		invoice.setPurchaseOrder(purchaseOrder);
 		return invoice;
 	}
 
@@ -157,15 +159,16 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 	/**
 	 * Return the remaining amount to invoice for the purchaseOrder in parameter
 	 *
-	 * @param purchaseOrder
-	 *
-	 * @param currentInvoiceId
 	 * In the case of invoice ventilation or cancellation, the invoice status isn't modify in database but it will be integrated in calculation
 	 * For ventilation, the invoice should be integrated in calculation
 	 * For cancellation,  the invoice shouldn't be integrated in calculation
 	 *
-	 * @param includeInvoice
 	 * To know if the invoice should be or not integrated in calculation
+	 *
+	 * @param purchaseOrder
+	 * @param currentInvoiceId
+	 * @param excludeCurrentInvoice
+	 * @return
 	 */
 	@Override
 	public BigDecimal getInvoicedAmount(PurchaseOrder purchaseOrder, Long currentInvoiceId, boolean excludeCurrentInvoice)  {

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -197,7 +197,11 @@ public class MoveLineService {
 		}
 		
 		if(currencyRate == null)  {
-			currencyRate = amountInCompanyCurrency.divide(amountInSpecificMoveCurrency, 5, RoundingMode.HALF_EVEN);
+			if (amountInSpecificMoveCurrency.compareTo(BigDecimal.ZERO) == 0) {
+				currencyRate = BigDecimal.ONE;
+			} else {
+				currencyRate = amountInCompanyCurrency.divide(amountInSpecificMoveCurrency, 5, RoundingMode.HALF_EVEN);
+			}
 		}
 
 		return new MoveLine(move, partner, account, date, dueDate, counter, debit, credit, 

@@ -9,9 +9,10 @@
 	</selection>
 	
 	<selection name="project.status.select">
-		<option value="1">Planned</option>
+		<option value="1">New</option>
 		<option value="2">In Progress</option>
 		<option value="3">Finished</option>
+		<option value="4">Canceled</option>
 	</selection>
 	
 	<selection name="message.related.to.select" id="project.message.related.to.select">
@@ -36,10 +37,9 @@
 		<option value="100">100 %</option>
 	</selection>
 	
-	<selection name="project.config.generated.element.type">
-		<option value="1">Task</option>
-		<option value="2">Project Phase</option>
-		<option value="3">Free</option>
+	<selection name="project.project.project.type.select">
+		<option value="1">Project</option>
+		<option value="2">Project phase</option>
 	</selection>
-	
+
 </object-views>

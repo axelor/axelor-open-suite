@@ -8,6 +8,7 @@
 		<boolean name="manageSaleOrderVersion" title="Manage sale order versions" default="false"/>
 		<boolean name="manageSalesUnits" title="Manage sales unit on products"/>
 		<boolean name="productPackMgt" title="Product Pack Management" />
+		<boolean name="enableConfigurator" title="Enable business configurator"/>
 	</entity>
 
 </domain-models>

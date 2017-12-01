@@ -25,7 +25,7 @@
 	</selection>
 	
 	<selection name="business.project.default.invoice.type.select">
-		<option value="1">Order</option>
+		<option value="1">BusinessProject.Order</option>
 		<option value="2">Timesheet</option>
 		<option value="3">Expense</option>
 	</selection>
@@ -38,5 +38,11 @@
 		<option value="4">Invoiced</option>
 		<option value="5">Canceled</option>
 	</selection>
-	
+
+	<selection name="business.project.config.generated.element.type">
+		<option value="1">Task</option>
+		<option value="2">Project Phase</option>
+		<option value="3">Free</option>
+	</selection>
+
 </object-views>

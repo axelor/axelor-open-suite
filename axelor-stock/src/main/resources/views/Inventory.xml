@@ -37,8 +37,9 @@
 			<button name="draft" title="Draft" showIf="statusSelect == 6" onClick="action-group-stock-inventory-draft-click"/>
 		</panel>
 		<panel name="export" title="Export" showIf="statusSelect >= 2 &amp;&amp; statusSelect &lt;= 5" sidebar="true">
-			<field name="formatSelect" colSpan="6"/>
-			<button name="showInventory" title="Export" readonlyIf="formatSelect == null" colSpan="6" onClick="save,action-inventory-method-show-inventory"/>
+			<field name="formatSelect" colSpan="12"/>
+			<button name="showInventory" title="Export" readonlyIf="formatSelect == null" colSpan="12" onClick="save,action-inventory-method-show-inventory" showIf="formatSelect != 'csv'"/>
+			<button name="showInventory" title="Export" readonlyIf="formatSelect == null" colSpan="12" onClick="save,action-inventory-method-export-inventory" showIf="formatSelect == 'csv'"/>
 		</panel>
 		<panel name="import" title="Import" showIf="statusSelect == 2" sidebar="true">
 			<field name="importFile" widget="binary-link"/>
@@ -122,6 +123,10 @@
 
 	<action-method name="action-inventory-method-show-inventory">
 		<call class="com.axelor.apps.stock.web.InventoryController" method="showInventory"/>
+	</action-method>
+
+	<action-method name="action-inventory-method-export-inventory">
+		<call class="com.axelor.apps.stock.web.InventoryController" method="exportInventory"/>
 	</action-method>
 	
 	<action-method name="action-inventory-method-import-file">

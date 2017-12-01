@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	
+	<grid name="ticket-grid" title="All tickets" model="com.axelor.apps.helpdesk.db.Ticket">
+		<toolbar>
+			<button name="takeCharge" title="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket"/>
+		</toolbar>
+		<field name="ticketSeq"/>
+		<field name="subject"/>
+		<field name="ticketType"/>
+		<field name="startDateT"/>
+		<field name="endDateT"/>
+		<field name="deadlineDateT"/>
+		<field name="assignedTo"/>
+		<field name="priority"/>
+		<field name="statusSelect"/>
+		<field name="progressSelect" widget="SelectProgress"/>
+		<button name="takeCharge" icon="fa-suitcase" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket"/>
+		<button name="startTicket" icon="fa-play" readonlyIf="statusSelect > 0" onClick="action-ticket-record-set-start-status,save"/>
+		<button name="validateTicket" icon="fa-check" readonlyIf="statusSelect > 1" onClick="action-ticket-record-set-validate-status,action-record-to-set-progress-select,save"/>
+		<button name="finishTicket" icon="fa-power-off" readonlyIf="statusSelect > 2" onClick="action-ticket-record-set-closed-status,save"/>
+	</grid>
+	
+	<form model="com.axelor.apps.helpdesk.db.Ticket" title="Ticket" name="ticket-form" onNew="action-record-to-fill-startDate" onLoad="action-ticket-attrs-readonly-to-takeCharge-btn">
+		
+		<panel>
+			<field name="ticketSeq"/>
+			<field name="subject"/>
+			<field name="slaPolicy" showTitle="false" readonly="true" hideIf="statusSelect >= slaPolicy.reachStage">
+				<viewer>
+					<![CDATA[
+			
+					<h3>
+			        	<span class="label label-important" ng-if="record.slaPolicy">{{record.slaPolicy.name}}</span>
+			        </h3>
+			
+					]]>
+				</viewer>
+			</field>
+		</panel>
+		
+		<panel name="context" title="Context">
+			<field name="project" onChange="action-record-value-on-customer-and-contact" form-view="project-form" grid-view="project-grid" if-module="axelor-project" if="__config__.app.isApp('project')"/>
+			<field name="customer" domain="self.isCustomer = true" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="contact" onSelect="action-ticket-domain-on-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="lead" form-view="lead-form" grid-view="lead-grid"/>
+			<field name="assignedTo" form-view="user-form" grid-view="user-grid" onChange="action-ticket-attrs-readonly-to-takeCharge-btn"/>
+			<field name="responsible" form-view="user-form" grid-view="user-grid"/>
+			<field name="isSlaCompleted" hidden="true"/>
+			<panel colSpan="12">
+				<field name="startDateT" colSpan="3"/>
+				<field name="duration" colSpan="3"/>
+				<field name="endDateT" colSpan="3"/>
+				<field name="deadlineDateT" colSpan="3"/>
+			</panel>
+		</panel>
+		<panel colSpan="12">
+				<field name="description" showTitle="false" colSpan="12" widget="html"/>
+		</panel>
+		
+		<panel name="actions" title="Actions" sidebar="true">
+			<button name="takeCharge" title="Assign to me" icon="fa-suitcase" onClick="save,com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket,action-ticket-attrs-readonly-to-takeCharge-btn"/>
+			<button name="startTicket" title="Start" icon="fa-play" readonlyIf="statusSelect > 0" onClick="action-ticket-record-set-start-status,save"/>
+			<button name="validateTicket" title="Resolve" icon="fa-check" readonlyIf="statusSelect > 1" onClick="action-ticket-record-set-validate-status,action-record-to-set-progress-select,save"/>
+			<button name="finishTicket" title="Close" icon="fa-power-off" readonlyIf="statusSelect > 2" onClick="action-ticket-record-set-closed-status,action-ticket-attrs-readonly-to-takeCharge-btn,save"/>
+		</panel>
+		
+		<panel name="attributes" title="Attributes" sidebar="true">
+			<field name="statusSelect" colSpan="3" onChange="action-record-to-set-progress-select,action-ticket-attrs-readonly-to-takeCharge-btn"/>
+			<field name="priority" colSpan="3"/>
+			<field name="ticketType" colSpan="6"/>
+			<field name="progressSelect" widget="SelectProgress"/>
+		</panel>
+		
+		<panel-mail>
+	    	<mail-messages limit="4"/>
+	    	<mail-followers/>
+	  	</panel-mail>
+		
+	</form>
+	
+	<calendar name="ticket-calendar" model="com.axelor.apps.helpdesk.db.Ticket" 
+	eventStart="startDateT"
+	eventStop="endDateT"
+	title="All tickets"
+	colorBy="assignedTo">
+		<field name="subject"/>
+		<field name="statusSelect"/>
+	</calendar>
+	
+	<action-record name="action-record-value-on-customer-and-contact" model="com.axelor.apps.helpdesk.db.Ticket">
+		<field name="customer" expr="eval: project.clientPartner"/>
+		<field name="contact" expr="eval: project.contactPartner"/>
+	</action-record>
+	
+	<action-record name="action-ticket-record-set-start-status" model="com.axelor.apps.helpdesk.db.Ticket">
+		<field name="statusSelect" expr="1"/>
+	</action-record>
+	
+	<action-record name="action-ticket-record-set-validate-status" model="com.axelor.apps.helpdesk.db.Ticket">
+		<field name="statusSelect" expr="2"/>
+	</action-record>
+	
+	<action-record name="action-ticket-record-set-closed-status" model="com.axelor.apps.helpdesk.db.Ticket">
+		<field name="statusSelect" expr="3"/>
+	</action-record>
+	
+	<action-record name="action-record-to-set-progress-select" model="com.axelor.apps.helpdesk.db.Ticket">
+		<field name="progressSelect" expr="100" if="statusSelect == 2"/>
+		<field name="progressSelect" expr="0" if="statusSelect != 2"/>
+	</action-record>
+	
+	<action-record name="action-record-to-fill-startDate" model="com.axelor.apps.helpdesk.db.Ticket">
+		<field name="startDateT" expr="eval: __datetime__"/>
+	</action-record>
+	
+	<action-attrs name="action-ticket-attrs-readonly-to-takeCharge-btn">
+		<attribute if="(assignedTo != null &amp;&amp; assignedTo.id == _user.id) || statusSelect == 3" name="readonly" expr="true" for="takeCharge"/>
+		<attribute if="(assignedTo == null || assignedTo.id != _user.id) &amp;&amp; statusSelect &lt; 3" name="readonly" expr="false" for="takeCharge"/>
+	</action-attrs>
+	
+	<action-attrs name="action-ticket-domain-on-contact-partner">
+		<attribute for="contact" if="customer != null &amp;&amp; !customer.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (${customer.contactPartnerSet?.collect{it.id}.join(',')})&quot;"/>
+ 		<attribute for="contact" if="customer != null &amp;&amp; customer.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (0)&quot;"/>
+ 		<attribute for="contact" if="customer == null" name="domain" expr="eval: &quot;self.isContact = true&quot;"/>
+	</action-attrs>
+    
+</object-views>

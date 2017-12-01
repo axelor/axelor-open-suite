@@ -84,4 +84,7 @@ public interface TimesheetService {
 	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet);
 	
 	public List<Map<String, Object>> createDefaultLines(Timesheet timesheet);
+
+	public BigDecimal computePeriodTotal(Timesheet timesheet);
+	public String getPeriodTotalConvertTitleByUserPref(User user);
 }

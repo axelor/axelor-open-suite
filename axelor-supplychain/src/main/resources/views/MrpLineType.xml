@@ -21,7 +21,7 @@
         	<field name="sequence"/>
         	<field name="statusSelect" widget="MultiSelect" selection="purchase.purchase.order.status.select" showIf="elementSelect == 2"/>
         	<field name="statusSelect" widget="MultiSelect" selection="sale.order.status.select" showIf="elementSelect == 3"/>
-        	<field name="statusSelect" widget="MultiSelect" selection="production.manuf.order.status.select" showIf="elementSelect == 6" if-module="axelor-production"/>
+        	<field name="statusSelect" widget="MultiSelect" selection="production.manuf.order.status.select" showIf="elementSelect == 6" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 	    </panel>
 	 </form>
 	 

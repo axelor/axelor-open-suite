@@ -1,17 +1,17 @@
-/**
+/*
  * Axelor Business Solutions
- * <p>
+ *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
- * <p>
+ *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
  * as published by the Free Software Foundation.
- * <p>
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * <p>
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -19,7 +19,16 @@ package com.axelor.apps.sale.service;
 
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
+import com.axelor.script.GroovyScriptHelper;
+import com.axelor.script.ScriptBindings;
+
+import static com.axelor.apps.sale.exception.IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR;
 
 public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaService {
 
@@ -35,5 +44,16 @@ public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaServic
         } else {
             return configuratorFormula.getSaleOrderLineMetaField();
         }
+    }
+
+    @Override
+    public void checkFormula(ConfiguratorFormula formula) throws AxelorException {
+        ScriptBindings defaultValueBindings = Beans.get(ConfiguratorCreatorService.class).getTestingValues(formula.getCreator());
+        Object result = new GroovyScriptHelper(defaultValueBindings).eval(formula.getFormula());
+        if (result == null) {
+            throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR), formula);
+        }
+
+
     }
 }

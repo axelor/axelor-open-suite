@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<form name="app-prestashop-config-form" title="App prestashop" model="com.axelor.apps.base.db.AppPrestashop" canDelete="false" canNew="false" width="large">
+		<panel title="PrestaShop">
+			<field name="prestaShopUrl" onChange="com.axelor.apps.prestashop.web.AppPrestaShopController:validUrl"/>
+			<field name="prestaShopKey"/>
+			<button name="btnTest" title="Test" onClick="save,com.axelor.apps.prestashop.web.AppPrestaShopController:testConnection"/>
+		</panel>
+		<panel>
+			<field name="isOrderStatus" widget="boolean-switch"/>
+			<field name="paymentMode" canNew="true" canEdit="true" form-view="prestaShop-payment-mode-form" grid-view="prestaShop-payment-mode-grid"/>	
+			<panel-related colSpan="12" field="saleOrderStatusList" form-view="prestaShop-sale-order-status-form" grid-view="prestaShop-sale-order-status-grid"/>			
+		</panel>
+	</form>
+	
+</object-views>

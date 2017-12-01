@@ -171,7 +171,7 @@ public class BankOrderLineService {
 		if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
 			if (bankOrderLine.getReceiverCompany() != null) {
 
-			    bankDetailsIds = StringTool.getIdFromCollection(bankOrderLine.getReceiverCompany().getBankDetailsSet());
+			    bankDetailsIds = StringTool.getIdListString(bankOrderLine.getReceiverCompany().getBankDetailsSet());
 
 				if(bankOrderLine.getReceiverCompany().getDefaultBankDetails() != null) {
 					bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
@@ -184,7 +184,7 @@ public class BankOrderLineService {
 
 		//case where the bank order is for a partner
 		else if (bankOrderLine.getPartner() != null) {
-		    bankDetailsIds = StringTool.getIdFromCollection(bankOrderLine.getPartner().getBankDetailsList());
+		    bankDetailsIds = StringTool.getIdListString(bankOrderLine.getPartner().getBankDetailsList());
 		}
 
 		if (bankDetailsIds.equals("")) {
@@ -204,7 +204,7 @@ public class BankOrderLineService {
 
 		if (ebicsPartnerIsFiltering(ebicsPartner, bankOrder.getOrderTypeSelect())) {
 		    domain += " AND self.id IN (" +
-					StringTool.getIdFromCollection(ebicsPartner.getReceiverBankDetailsSet()) +
+					StringTool.getIdListString(ebicsPartner.getReceiverBankDetailsSet()) +
 					")";
 		}
 

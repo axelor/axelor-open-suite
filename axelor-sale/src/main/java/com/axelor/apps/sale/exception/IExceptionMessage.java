@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -52,10 +52,8 @@ public interface IExceptionMessage {
 	 * Configurator generator
 	 */
 
-	static final String CONFIGURATOR_GENERATED = /*$$(*/ "The configurator is generated. Please check the configurators menu." /*)*/;
-	String CONFIGURATOR_CREATOR_MISSING_VALUES = /*$$(*/ "Please fill the default values in the attribute list in order to test this configurator creator." /*)*/;
-	String CONFIGURATOR_CREATOR_SCRIPT_ERROR = /*$$(*/ "At least one script has errors, please see the logs for more details." /*)*/;
-	String CONFIGURATOR_CREATOR_SCRIPT_WORKING = /*$$(*/ "All scripts are working." /*)*/;
+	String CONFIGURATOR_CREATOR_SCRIPT_ERROR = /*$$(*/ "This script has errors, please see server logs for more details." /*)*/;
+	String CONFIGURATOR_CREATOR_SCRIPT_WORKING = /*$$(*/ "The script is working." /*)*/;
 
 	/**
 	 * Configurator Service

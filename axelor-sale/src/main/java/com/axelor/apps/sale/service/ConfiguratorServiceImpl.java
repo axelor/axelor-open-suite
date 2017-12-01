@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -26,20 +26,17 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.JsonContext;
 import com.axelor.script.GroovyScriptHelper;
-import com.axelor.script.ScriptBindings;
 import com.axelor.script.ScriptHelper;
 import com.google.inject.persist.Transactional;
 import groovy.lang.MissingPropertyException;
@@ -211,15 +208,6 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         ScriptHelper scriptHelper = new GroovyScriptHelper(values);
 
         return scriptHelper.eval(groovyFormula);
-    }
-
-    @Override
-    public void testFormula(String groovyFormula, ScriptBindings values)
-            throws AxelorException {
-        ScriptHelper scriptHelper = new GroovyScriptHelper(values);
-        if (scriptHelper.eval(groovyFormula) == null) {
-            throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR));
-        }
     }
 
     /**

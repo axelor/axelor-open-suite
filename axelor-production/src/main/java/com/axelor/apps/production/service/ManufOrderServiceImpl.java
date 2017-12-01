@@ -17,39 +17,28 @@
  */
 package com.axelor.apps.production.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.ProductVariantService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.production.db.BillOfMaterial;
-import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.ProdProcess;
-import com.axelor.apps.production.db.ProdProcessLine;
-import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.production.db.ProdResidualProduct;
-import com.axelor.apps.production.db.ProductionConfig;
+import com.axelor.apps.production.db.*;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -59,6 +48,13 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class ManufOrderServiceImpl implements  ManufOrderService  {
 
@@ -339,30 +335,22 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		StockMove wasteStockMove = null;
 		Company company = manufOrder.getCompany();
 
-		if (manufOrder.getWasteProdProductList() == null || company == null) {
+		if (manufOrder.getWasteProdProductList() == null || company == null || manufOrder.getWasteProdProductList().isEmpty()) {
 			return wasteStockMove;
 		}
 
-		ProductionConfigService productionConfigService = Beans.get(ProductionConfigService.class);
+		StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
 		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
 		StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
 		AppBaseService appBaseService = Beans.get(AppBaseService.class);
 
-		ProductionConfig productionConfig = productionConfigService.getProductionConfig(company);
-		Location virtualLocation = productionConfigService.getProductionVirtualLocation(productionConfig);
-		Location wasteLocation = productionConfigService.getWasteLocation(productionConfig);
+		StockConfig stockConfig = stockConfigService.getStockConfig(company);
+		Location virtualLocation = stockConfigService.getProductionVirtualLocation(stockConfig);
+		Location wasteLocation = stockConfigService.getWasteLocation(stockConfig);
 
-		wasteStockMove = stockMoveService.createStockMove(
-				virtualLocation.getAddress(),
-				wasteLocation.getAddress(),
-				company,
-				company.getPartner(),
-				virtualLocation,
-				wasteLocation,
-				appBaseService.getTodayDate(),
-				manufOrder.getWasteProdDescription(),
-				null,
-				null);
+		wasteStockMove = stockMoveService.createStockMove(virtualLocation.getAddress(), wasteLocation.getAddress(),
+				company, company.getPartner(), virtualLocation, wasteLocation, null, appBaseService.getTodayDate(),
+				manufOrder.getWasteProdDescription(), null, null);
 
 		for (ProdProduct prodProduct : manufOrder.getWasteProdProductList()) {
 			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
@@ -394,6 +382,45 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 
 		manufOrderRepo.save(manufOrder);
 
+		return manufOrder;
+	}
+
+	public ManufOrder updateDiffProdProductList(ManufOrder manufOrder) throws AxelorException {
+	    List<ProdProduct> toConsumeList = manufOrder.getToConsumeProdProductList();
+	    List<StockMoveLine> consumedList = manufOrder.getConsumedStockMoveLineList();
+		List<ProdProduct> diffConsumeList = new ArrayList<>();
+	    BigDecimal consumedQty;
+	    if (toConsumeList == null || consumedList == null) {
+	    	return manufOrder;
+		}
+	    for (ProdProduct prodProduct : toConsumeList) {
+	    	Product product = prodProduct.getProduct();
+	    	Unit newUnit = prodProduct.getUnit();
+	    	Optional<StockMoveLine> stockMoveLineOpt = consumedList.stream()
+					.filter(stockMoveLine1 -> stockMoveLine1.getProduct() != null)
+					.filter(stockMoveLine1 -> stockMoveLine1.getProduct().equals(product))
+					.findAny();
+	    	if (!stockMoveLineOpt.isPresent()) {
+	    		continue;
+			}
+			StockMoveLine stockMoveLine = stockMoveLineOpt.get();
+	    	if (stockMoveLine.getUnit() != null && prodProduct.getUnit() != null) {
+				consumedQty = Beans.get(UnitConversionService.class)
+						.convertWithProduct(stockMoveLine.getUnit(), prodProduct.getUnit(), stockMoveLine.getQty(), product);
+			} else {
+	    		consumedQty = stockMoveLine.getQty();
+			}
+	    	BigDecimal diffQty = consumedQty.subtract(prodProduct.getQty());
+	    	if (diffQty.compareTo(BigDecimal.ZERO) != 0) {
+	    		ProdProduct diffProdProduct = new ProdProduct();
+	    		diffProdProduct.setQty(diffQty);
+	    		diffProdProduct.setProduct(product);
+	    		diffProdProduct.setUnit(newUnit);
+	    		diffProdProduct.setDiffConsumeManufOrder(manufOrder);
+	    		diffConsumeList.add(diffProdProduct);
+			}
+		}
+		manufOrder.setDiffConsumeProdProductList(diffConsumeList);
 		return manufOrder;
 	}
 

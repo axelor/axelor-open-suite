@@ -22,7 +22,9 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LocationRepository;
@@ -30,6 +32,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 import java.math.BigDecimal;
@@ -83,7 +86,9 @@ public class OperationOrderStockMoveService {
 
 	private StockMove _createToConsumeStockMove(OperationOrder operationOrder, Company company) throws AxelorException  {
 
-		Location virtualLocation = productionConfigService.getProductionVirtualLocation(productionConfigService.getProductionConfig(company));
+		StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
+		StockConfig stockConfig = stockConfigService.getStockConfig(company);
+		Location virtualLocation = stockConfigService.getProductionVirtualLocation(stockConfig);
 
 		Location fromLocation;
 
@@ -93,22 +98,12 @@ public class OperationOrderStockMoveService {
 		} else if (!operationOrder.getManufOrder().getIsConsProOnOperation() && prodProcessLine != null && prodProcessLine.getProdProcess() != null && prodProcessLine.getProdProcess().getLocation() != null) {
 			fromLocation = prodProcessLine.getProdProcess().getLocation();
 		} else {
-			fromLocation = locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", company, true, LocationRepository.TYPE_INTERNAL).fetchOne();
+			fromLocation = stockConfigService.getDefaultLocation(stockConfig);
 		}
 
-		StockMove stockMove = stockMoveService.createStockMove(
-				null,
-				null,
-				company,
-				null,
-				fromLocation,
-				virtualLocation,
-				operationOrder.getPlannedStartDateT().toLocalDate(),
-				null,
-				null,
-				null);
+		return stockMoveService.createStockMove(null, null, company, null, fromLocation, virtualLocation,
+				null, operationOrder.getPlannedStartDateT().toLocalDate(), null, null, null);
 
-		return stockMove;
 	}
 
 

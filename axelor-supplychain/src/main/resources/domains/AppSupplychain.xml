@@ -10,7 +10,7 @@
 		<boolean name="customerStockMoveGenerationAuto" title="Generate customer deliveries automatically" default="false"/>
 		<boolean name="supplStockMoveMgtOnSO" title="Supplier arrivals management" default="false"/>
 		<boolean name="supplierStockMoveGenerationAuto" title="Generate supplier arrivals automatically" default="false"/>
-		<boolean name="allowSusbcriptionSaleOrder" title="Allow Subscriptions for Sale Orders" default="false"/>
+		<boolean name="allowSusbcriptionSaleOrder" title="Allow Subscriptions for Sale orders" default="false"/>
 		<boolean name="checkSaleStocks" title="Check stocks in a sale order" default="false"/>
 		<boolean name="generateInvoiceFromStockMove" title="Generate invoice from stock move" default="false"/>
 		
@@ -24,6 +24,7 @@
 
 		<boolean name="intercoFromPurchase" title="Interco from purchase" default="false"/>
 		<boolean name="intercoFromSale" title="Interco from sale" default="false"/>
+		<boolean name="intercoFromInvoice" title="Interco from invoice" default="false"/>
 
 		<integer name="intercoPurchaseCreatingStatusSelect"
 				 title="Create sale counterpart on this status"

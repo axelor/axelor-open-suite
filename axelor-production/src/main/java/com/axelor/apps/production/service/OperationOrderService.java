@@ -41,7 +41,16 @@ public interface OperationOrderService {
 	
 	
 	public String computeName(ManufOrder manufOrder, int priority, String operationName);
-	
+
+
+	/**
+	 * Updates the diff prod product list.
+	 * @param operationOrder
+	 * @return the updated operation order
+	 * @throws AxelorException
+	 */
+	OperationOrder updateDiffProdProductList(OperationOrder operationOrder) throws AxelorException;
+
 	
 //	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 //	public void generateWaste(OperationOrder operationOrder)  {

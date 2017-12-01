@@ -40,6 +40,7 @@
     <action-view name="action-partner-view-create-opportunity" title="Create opportunity (${ fullName })" model="com.axelor.apps.crm.db.Opportunity">
     	<view type="form" name="opportunity-form"/>
     	<context name="_partner" expr="eval: __this__"/>
+		<context name="_internalUserId" expr="eval: __user__.id"/>
     </action-view>
     
     <!--     PORTLET -->
@@ -47,7 +48,7 @@
     <action-view name="action-partner-view-upcoming-events" title="Upcoming events" model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
-		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) and self.startDateTime &gt; :_todayTime</domain>
+		<domain>(self.partner.id = :id OR self.contactPartner.id = :id) and self.startDateTime &gt; :_todayTime</domain>
 		<context name="id" expr="eval: id"/>
 		<context name="_todayTime" expr="eval: __datetime__"/>
 	</action-view>
@@ -63,7 +64,7 @@
 	<action-view name="action-partner-view-historical-events-completed" title="Historical events completed" model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
-		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) and self.endDateTime &lt; :_todayTime</domain>
+		<domain>(self.partner.id = :id OR self.contactPartner.id = :id) and self.endDateTime &lt; :_todayTime</domain>
 		<context name="id" expr="eval: id"/>
 		<context name="_todayTime" expr="eval: __datetime__"/>
 	</action-view>
@@ -82,6 +83,17 @@
 		<domain>self.partner.id = :id</domain>
 		<context name="id" expr="eval: id"/>
 	</action-view>
+		
+   	<action-view name="action-partner-view-events" title="Events" model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="list-event-grid"/>
+		<view type="form" name="event-form"/>
+	  	<domain>self.clientPartner.id = :_id</domain>
+	</action-view>
+	
+	<action-view name="action-contact-view-events" title="Events" model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="list-event-grid"/>
+		<view type="form" name="event-form"/>
+		<domain>self.contactPartner.id = :_id</domain>
+	</action-view>
    	
-
 </object-views>

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -21,5 +21,6 @@ public interface IReport {
 
 	public static final String MRP_WEEKS = "MrpWeeks.rptdesign";
 	public static final String MRP_LIST = "MrpList.rptdesign";
+	public static final String PACKAGING_LIST = "PackagingList.rptdesign";
 
 }

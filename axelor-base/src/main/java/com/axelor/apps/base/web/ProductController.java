@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -22,7 +22,6 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import com.axelor.apps.base.db.ShippingCoef;
-import com.axelor.apps.base.db.SupplierCatalog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -141,26 +140,4 @@ public class ProductController {
 				.define(name)
 				.add("html", fileLink).map());	
 	}
-
-	public void fillShippingCoeff(ActionRequest request, ActionResponse response) throws AxelorException {
-	    Product product = request.getContext().asType(Product.class);
-	    if (!product.getDefShipCoefByPartner()) {
-	    	return;
-		}
-	    product = productRepo.find(product.getId());
-		BigDecimal productShippingCoef = null;
-	    for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
-	    	if (!supplierCatalog.getSupplierPartner().equals(product.getDefaultSupplierPartner()) ||
-					supplierCatalog.getShippingCoefList() == null) {
-	    		continue;
-			}
-	    	for(ShippingCoef shippingCoef : supplierCatalog.getShippingCoefList()) {
-	    	    if (shippingCoef.getCompany() == Beans.get(UserService.class).getUserActiveCompany()) {
-	    	        productShippingCoef = shippingCoef.getShippingCoef();
-	    	        break;
-				}
-			}
-		}
-	    response.setValue("$shippingCoef", productShippingCoef);
-    }
 }

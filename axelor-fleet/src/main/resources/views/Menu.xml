@@ -28,13 +28,6 @@
 		<view type="form" name="vehicle-contract-form"/>
 	</action-view>
 	
-	<menuitem name="fleet-vehicle-make-all" title="Vehicle makes" action="fleet.vehicle.makes.all" parent="fleet-root" />
-	
-	<action-view name="fleet.vehicle.makes.all" title="Vehicle makes" model="com.axelor.apps.fleet.db.VehicleMake">
-		<view type="grid" name="vehicle-make-grid"/>
-		<view type="form" name="vehicle-make-form"/>
-	</action-view>
-	
 	<menuitem name="fleet-vehicle-fuel-log-all" title="Vehicle fuel log" action="fleet.vehicle.fuel.log.all" parent="fleet-root" />
 	
 	<action-view name="fleet.vehicle.fuel.log.all" title="Vehicle fuel log" model="com.axelor.apps.fleet.db.VehicleFuelLog">
@@ -58,13 +51,19 @@
 	
 	<menuitem name="fleet-vehicle-config" title="Configuration" parent="fleet-root" />
 	
-	<menuitem name="fleet-vehicle-recurring-cost-all" title="Recurring Cost" action="fleet.vehicle.recurring.cost.all" parent="fleet-vehicle-config" />
+	<menuitem name="fleet-vehicle-recurring-cost-all" title="Recurring Costs" action="fleet.vehicle.recurring.cost.all" parent="fleet-vehicle-config" />
 	
-	<action-view name="fleet.vehicle.recurring.cost.all" title="Recurring Cost" model="com.axelor.apps.fleet.db.RecurringCost">
+	<action-view name="fleet.vehicle.recurring.cost.all" title="Recurring Costs" model="com.axelor.apps.fleet.db.RecurringCost">
 		<view type="grid" name="vehicle-recurring-cost-grid"/>
 		<view type="form" name="vehicle-recurring-cost-form"/>
 	</action-view>
 	
+	<menuitem name="fleet-vehicle-make-all" title="Vehicle makes" action="fleet.vehicle.makes.all" parent="fleet-vehicle-config" />
+	
+	<action-view name="fleet.vehicle.makes.all" title="Vehicle makes" model="com.axelor.apps.fleet.db.VehicleMake">
+		<view type="grid" name="vehicle-make-grid"/>
+		<view type="form" name="vehicle-make-form"/>
+	</action-view>
 	
 	<menuitem name="fleet-vehicle-odometer-all" title="Vehicle odometer" action="fleet.vehicle.odometer.all" parent="fleet-vehicle-config" />
 	

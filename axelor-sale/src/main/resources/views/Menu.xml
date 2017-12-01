@@ -21,6 +21,7 @@
 		<context name="user_id" expr="eval:__user__" />
 		<context name="searchFields" expr="name;firstName"/>
 		<context name="_isCustomer" expr="true"/>
+		<context name="_domain" expr="self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)"/>
 	</action-view>
 	
 	<menuitem name="sc-root-sale-contacts" parent="sc-root-sale" order="10"
@@ -33,6 +34,7 @@
 		<view type="form" name="partner-contact-form" />
 	  	<view-param name="limit" value="39"/>
 		<domain>self.isContact = true AND self.mainPartner.isCustomer = true</domain>
+		<context name="_domain" expr="self.isContact = true AND self.mainPartner.isCustomer = true"/>
 	</action-view>
 	
 	<menuitem name="sc-root-sale-products" parent="sc-root-sale" order="15"
@@ -57,6 +59,7 @@
 		model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="cards" name="sale-order-quotation-cards" />
 		<view type="grid" name="sale-order-quotation-grid" />
+        <view type="calendar" name="sale-order-calendar" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
 		<view-param name="forceTitle" value="true" />
@@ -67,12 +70,13 @@
 	</action-view>	
 	
 	<menuitem name="sc-root-sale-orders" parent="sc-root-sale" order="25"
-		 title="Sale orders" action="sc.root.sale.orders" />
+		 title="Sale orders menu" action="sc.root.sale.orders" />
 	
-	<action-view name="sc.root.sale.orders" title="Sale orders"
+	<action-view name="sc.root.sale.orders" title="Sale orders menu"
 		model="com.axelor.apps.sale.db.SaleOrder" >
 		<view type="cards" name="sale-order-cards" />
 		<view type="grid" name="sale-order-grid" />
+        <view type="calendar" name="sale-order-calendar" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
 		<domain>self.template = false and self.statusSelect = 3</domain>
@@ -91,6 +95,7 @@
 		model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="cards" name="sale-order-cards" />
 		<view type="grid" name="sale-order-grid" />
+        <view type="calendar" name="sale-order-calendar" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
 		<view-param name="forceTitle" value="true" />
@@ -108,6 +113,7 @@
 		model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="cards" name="sale-order-cards" />
 		<view type="grid" name="sale-order-grid" />
+        <view type="calendar" name="sale-order-calendar" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
 		<view-param name="forceTitle" value="true" />
@@ -149,18 +155,19 @@
 	
 	<menuitem name="sale-maps-partner-prospects" parent="sc-root-sale-maps" 
 		title="Prospects" action="action-show-prospects-on-map-page"/>
-	
-	
+
 	<menuitem name="sc-root-sale-conf" parent="sc-root-sale"
 		title="Configuration"  order="45"/>
-	
+
 	<menuitem name="sale-conf-cancelreason" parent="sc-root-sale-conf"
 		title="Cancel Reasons" action="sale.conf.cancelreason" />
 
 	<action-view name="sale.conf.cancelreason"
-		title="Cancel Reason" model="com.axelor.apps.sale.db.CancelReason" >
+		title="Cancel Reason" model="com.axelor.apps.base.db.CancelReason" >
 		<view type="grid" name="cancel-reason-grid" />
 		<view type="form" name="cancel-reason-form" />
+        <domain>self.applicationType = :_xApplicationType</domain>
+		<context name="_xApplicationType" expr="eval: com.axelor.apps.sale.db.SaleOrder"/>
 	</action-view>
 	
 	<menuitem name="sale-conf-duration" parent="sc-root-sale-conf"
@@ -190,12 +197,36 @@
 		<view type="grid" name="tax-grid"/>
 		<view type="form" name="tax-form"/>
 	</action-view>
-	
+
+	<menuitem name="sale-conf-configurators" parent="sc-root-sale-conf" order="20"
+			  title="Configurators" if="__config__.app.getApp('sale').getEnableConfigurator()"/>
+
+	<menuitem name="sale-conf-configurators-creator" parent="sale-conf-configurators"
+			  title="Configurator creators" action="sale.conf.configurator.creator"
+			  if="__config__.app.getApp('sale').getEnableConfigurator()"/>
+
+	<action-view name="sale.conf.configurator.creator" title="Configurator creators"
+				 model="com.axelor.apps.sale.db.ConfiguratorCreator" >
+		<view type="grid" name="configurator-creator-grid" />
+		<view type="form" name="configurator-creator-form" />
+	</action-view>
+
+	<menuitem name="sale-conf-configurators-configurators" parent="sale-conf-configurators"
+			  title="Configurators" action="sale.conf.configurator.configurators"
+			  if="__config__.app.getApp('sale').getEnableConfigurator()"/>
+
+	<action-view name="sale.conf.configurator.configurators" title="Configurators"
+				 model="com.axelor.apps.sale.db.Configurator" >
+		<view type="grid" name="configurator-grid" />
+		<view type="form" name="configurator-form" />
+		<domain>:__user__ IN self.configuratorCreator.authorizedUserSet OR :groupId IN self.configuratorCreator.authorizedGroupSet</domain>
+		<context name="groupId" expr="eval: __user__.group.id"/>
+	</action-view>
 
 <!-- ADMINISTRATION -->
 
-	<menuitem name="admin-root-batch-sale" parent="admin-root-batch" hidden="true"
-		title="Sale batches" action="admin.root.batch.sale" />
+	<menuitem name="admin-root-batch-sale" parent="admin-root-batch" if="__config__.app.isApp('sale')" if-module="axelor-sale" 
+	title="Sale batches" action="admin.root.batch.sale" />
 
 	<action-view name="admin.root.batch.sale" title="Sale batches"
 		model="com.axelor.apps.sale.db.SaleBatch" >
@@ -215,6 +246,7 @@
 		model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="cards" name="sale-order-quotation-cards" />
 		<view type="grid" name="sale-order-quotation-grid" />
+        <view type="calendar" name="sale-order-calendar" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
 		<view-param name="forceTitle" value="true" />
@@ -231,6 +263,7 @@
 		model="com.axelor.apps.sale.db.SaleOrder" >
 		<view type="cards" name="sale-order-cards" />
 		<view type="grid" name="sale-order-grid" />
+        <view type="calendar" name="sale-order-calendar" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
 		<domain>self.template = false and self.statusSelect &gt; 2</domain>

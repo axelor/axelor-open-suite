@@ -183,9 +183,11 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	@Override
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public BankOrder generateSequence(BankOrder bankOrder) {
+	public BankOrder generateSequence(BankOrder bankOrder) throws AxelorException {
 		if (bankOrder.getBankOrderSeq() == null && bankOrder.getId() != null) {
-			bankOrder.setBankOrderSeq("*" + StringTool.fillStringLeft(Long.toString(bankOrder.getId()), '0', 6));
+
+			Sequence sequence = getSequence(bankOrder);
+			setBankOrderSeq(bankOrder, sequence);
 			bankOrderRepo.save(bankOrder);
 		}
 		return bankOrder;
@@ -248,11 +250,9 @@ public class BankOrderServiceImpl implements BankOrderService {
 			checkLines(bankOrder);
 		}
 
-		Sequence sequence = getSequence(bankOrder);
-		setBankOrderSeq(bankOrder, sequence);
-
-
 		setNbOfLines(bankOrder);
+		
+		setSequenceOnBankOrderLines(bankOrder);
 
 		if (Beans.get(AppBankPayment.class).getEnableModuleEBICS()) {
 			generateFile(bankOrder);
@@ -334,7 +334,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		EbicsUser signatoryEbicsUser = bankOrder.getSignatoryEbicsUser();
 		
 		ebicsService.sendFULRequest(signatoryEbicsUser.getEbicsPartner().getTransportEbicsUser(), signatoryEbicsUser, null, dataFileToSend,
-				bankOrder.getBankOrderFileFormat().getOrderFileFormatSelect(), signatureFileToSend);
+				bankOrder.getBankOrderFileFormat(), signatureFileToSend);
 
 	}
 
@@ -391,7 +391,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		String domain = "";
 		if (bankOrder.getSenderCompany() != null) {
 
-			String bankDetailsIds = StringTool.getIdFromCollection(bankOrder.getSenderCompany().getBankDetailsSet());
+			String bankDetailsIds = StringTool.getIdListString(bankOrder.getSenderCompany().getBankDetailsSet());
 
 			if (bankOrder.getSenderCompany().getDefaultBankDetails() != null) {
 				bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
@@ -587,7 +587,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	protected void setBankOrderSeq(BankOrder bankOrder, Sequence sequence) throws AxelorException {
 		bankOrder.setBankOrderSeq(
-				(sequenceService.setRefDate(bankOrder.getBankOrderDate()).getSequenceNumber(sequence)));
+				(sequenceService.getSequenceNumber(sequence, bankOrder.getBankOrderDate())));
 
 		if (bankOrder.getBankOrderSeq() != null) {
 			return;

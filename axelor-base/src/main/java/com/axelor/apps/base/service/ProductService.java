@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
-import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -69,8 +68,5 @@ public interface ProductService {
 
 	public ProductVariant createProductVariant(ProductVariantConfig productVariantConfig, ProductVariantValue productVariantValue1, ProductVariantValue productVariantValue2,
 			ProductVariantValue productVariantValue3, ProductVariantValue productVariantValue4);
-
-	public Map<String, Object> getDiscountsFromCatalog(SupplierCatalog supplierCatalog,BigDecimal price);
-	
 
 }

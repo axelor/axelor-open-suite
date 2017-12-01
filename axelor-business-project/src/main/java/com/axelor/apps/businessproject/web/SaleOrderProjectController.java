@@ -17,11 +17,6 @@
  */
 package com.axelor.apps.businessproject.web;
 
-import java.util.List;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
@@ -29,16 +24,23 @@ import com.axelor.apps.businessproject.service.SaleOrderProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.db.AuditableModel;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.base.Joiner;
+import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
 public class SaleOrderProjectController {
+
+	private static final String CONTEXT_SHOW_RECORD = "_showRecord";
 
 	@Inject
 	protected SaleOrderProjectService saleOrderProjectService;
@@ -52,62 +54,67 @@ public class SaleOrderProjectController {
 	public void generateProject(ActionRequest request, ActionResponse response){
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		saleOrder = saleOrderRepo.find(saleOrder.getId());
-		Project project = saleOrderProjectService.generateProject(saleOrder);
-
-		response.setReload(true);
-		response.setView(ActionView
-				.define("Project")
-				.model(Project.class.getName())
-				.add("form", "project-form")
-				.param("forceEdit", "true")
-				.context("_showRecord", String.valueOf(project.getId())).map());
-	}
-
-	public void generateProjects(ActionRequest request, ActionResponse response) throws AxelorException{
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		saleOrder = saleOrderRepo.find(saleOrder.getId());
-		if (saleOrder.getProject() == null) {
-			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALE_ORDER_NO_PROJECT));
-		}
-		List<Long> listId = saleOrderProjectService.generateProjects(saleOrder);
-		if (listId == null || listId.isEmpty()) {
-			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALE_ORDER_NO_LINES));
-		}
-		response.setReload(true);
-		if(listId.size() == 1){
+		String genProjTypePerOrderLine = (String)request.getContext().get("genProjTypePerOrderLine");
+		try {
+			Project project = saleOrderProjectService.generateProject(saleOrder, genProjTypePerOrderLine);
 			response.setReload(true);
 			response.setView(ActionView
-					.define("Tasks generated")
+					.define("Project")
 					.model(Project.class.getName())
-					.add("grid","task-grid")
-					.add("form", "task-form")
+					.add("form", "project-form")
 					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(listId.get(0))).map());
-		} else {
-			response.setView(ActionView
-					.define("Tasks generated")
-					.model(Project.class.getName())
-					.add("grid","task-grid")
-					.add("form", "task-form")
-					.param("forceEdit", "true")
-					.domain("self.id in ("+Joiner.on(",").join(listId)+")").map());
+					.context(CONTEXT_SHOW_RECORD, String.valueOf(project.getId())).map());
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
 		}
-
 	}
-	
-	public void generateInvoicingProject(ActionRequest request, ActionResponse response){
-		
+
+	public void generateTypePerOrderLineForProject(ActionRequest request, ActionResponse response) {
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		saleOrder = saleOrderRepo.find(saleOrder.getId());
+		try {
+			List<? extends AuditableModel> models = saleOrderProjectService.generateProjectTypePerOrderLine(saleOrder);
+			ActionView.ActionViewBuilder actionView;
+			switch (saleOrder.getProject().getGenProjTypePerOrderLine()) {
+				case PHASE_BY_LINE:
+					actionView = ActionView
+							.define(String.format("Project%s generated", (models.size() > 1 ? "s" : "")))
+							.model(Project.class.getName())
+							.add("grid", "project-grid")
+							.add("form", "project-form");
+					break;
+				case TASK_BY_LINE:
+					actionView = ActionView
+							.define(String.format("Task%s generated", (models.size() > 1 ? "s" : "")))
+							.model(TeamTask.class.getName())
+							.add("grid", "team-task-grid")
+							.add("form", "team-task-form");
+					break;
+				default:
+				    actionView = ActionView
+							.define("Model generated")
+							.model(models.getClass().getName());
+			}
+			if (models.size() == 1) {
+				actionView.context(CONTEXT_SHOW_RECORD, String.valueOf(models.get(0).getId()));
+			} else {
+				actionView.domain(String.format("self.id in (%s)", StringTool.getIdListString(models)));
+			}
+			actionView.param("forceEdit", "true");
+			response.setReload(true);
+			response.setView(actionView.map());
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+
+	public void generateInvoicingProject(ActionRequest request, ActionResponse response) {
 		SaleOrder saleOrder = saleOrderRepo.find( Long.valueOf( request.getContext().get("_id").toString() ) );
-		
 		LocalDate deadline= null;
 		if (request.getContext().get("deadline") != null) {
 			deadline = LocalDate.parse(request.getContext().get("deadline").toString(), DateTimeFormatter.ISO_DATE);
 		}
-		
 		InvoicingProject invoicingProject = invoicingProjectService.createInvoicingProject(saleOrder, deadline, Integer.valueOf( request.getContext().get("invoicingTypeSelect").toString() ));
-		
-		
-		
 		if (invoicingProject != null ){
 			response.setCanClose(true);
 			response.setFlash(I18n.get(IExceptionMessage.INVOICING_PROJECT_GENERATION));
@@ -116,11 +123,8 @@ public class SaleOrderProjectController {
 	            .model(InvoicingProject.class.getName())
 	            .add("form", "invoicing-project-form")
 	            .add("grid", "invoicing-project-grid")
-	            .context("_showRecord",String.valueOf(invoicingProject.getId()))
+	            .context(CONTEXT_SHOW_RECORD, String.valueOf(invoicingProject.getId()))
 	            .map());
 		}
-		
-		
-		
 	}
 }

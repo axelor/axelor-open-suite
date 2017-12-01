@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.repo.AppRepository;
+import com.axelor.apps.base.exceptions.IAppExceptionMessages;
 import com.axelor.common.FileUtils;
 import com.axelor.common.Inflector;
 import com.axelor.data.Importer;
@@ -46,6 +47,8 @@ import com.axelor.data.csv.CSVImporter;
 import com.axelor.data.csv.CSVInput;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaScanner;
 import com.axelor.meta.db.MetaModel;
@@ -86,12 +89,13 @@ public class AppServiceImpl implements AppService {
 	@Override
 	public String importDataDemo(App app) {
 		app = appRepo.find(app.getId());
-
+		
+		log.debug("Demo import: App code: {}, App lang: {}", app.getCode(), app.getLanguageSelect());
 		importParentData(app);
 		
 		String lang = getLanguage(app);
 		if (lang == null) {
-			return I18n.get("No application language set. Please set 'application.locale' property.");
+			return I18n.get(IAppExceptionMessages.NO_LANGAUAGE_SELECTED);
 		}
 		
 		importData(app, DIR_DEMO);
@@ -101,7 +105,7 @@ public class AppServiceImpl implements AppService {
 		
 		saveApp(app);
 		
-		return I18n.get("Demo data loaded successfully");
+		return I18n.get(IAppExceptionMessages.DEMO_DATA_SUCCESS);
 	}
 	
 	private void importData(App app, String dataDir) {
@@ -136,10 +140,10 @@ public class AppServiceImpl implements AppService {
 
 	private String getLanguage(App app) {
 		
-		String lang = AppSettings.get().get("application.locale");
+		String lang = app.getLanguageSelect();
 		
-		if (app.getLanguageSelect() != null) {
-			lang = app.getLanguageSelect();
+		if (app.getLanguageSelect() == null) {
+			lang = AppSettings.get().get("application.locale");
 		}
 		
 		return lang;
@@ -151,7 +155,6 @@ public class AppServiceImpl implements AppService {
 		for (App parent : depends) {
 			parent = appRepo.find(parent.getId());
 			if (!parent.getDemoDataLoaded()) {
-				log.debug("Importing demo data for parent app: {}", parent.getName());
 				importDataDemo(parent);
 			}
 		}
@@ -289,7 +292,7 @@ public class AppServiceImpl implements AppService {
 		List<App> apps = new ArrayList<App>();
 		
 		for (App depend : app.getDependsOnSet()) {
-			if (depend.getActive() == active) {
+			if (depend.getActive().equals(active)) {
 				apps.add(depend);
 			}
 		}
@@ -464,6 +467,21 @@ public class AppServiceImpl implements AppService {
 		}
 		
 		return app;
+	}
+
+	@Override
+	@Transactional
+	public App unInstallApp(App app) throws AxelorException {
+		
+		List<App> children = getChildren(app, true);
+		if (!children.isEmpty()) {
+			List<String> childrenNames = getNames(children);
+			throw new AxelorException(IException.INCONSISTENCY, IAppExceptionMessages.APP_IN_USE, childrenNames);
+		}
+		
+		app.setActive(false);
+		
+		return appRepo.save(app);
 	}
 
 }

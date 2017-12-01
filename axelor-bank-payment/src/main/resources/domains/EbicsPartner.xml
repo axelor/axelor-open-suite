@@ -30,7 +30,10 @@
 	<boolean name="filterReceiverBD" default="false" title="Filter receiver bank details?"/>
 	<integer name="orderTypeSelect" selection="bankpayment.bank.order.type.select" title="Order type to filter"/>
 	<many-to-many name="receiverBankDetailsSet" ref="com.axelor.apps.base.db.BankDetails" title="Authorized Bank Accounts"/>
-	
+
+    <one-to-many name="ebicsPartnerServiceList" ref="com.axelor.apps.bankpayment.db.EbicsPartnerService"
+        mappedBy="ebicsPartner" title="Services" />
+
 	<extra-code><![CDATA[
 	
 	   	// BANK STATEMENT GET MODE SELECT

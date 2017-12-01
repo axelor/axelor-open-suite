@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -41,26 +41,6 @@ public class ConfiguratorCreatorController {
         this.configuratorCreatorRepo = configuratorCreatorRepo;
         this.configuratorCreatorService = configuratorCreatorService;
     }
-
-    /*    public void testCreator(ActionRequest request, ActionResponse response) {
-        ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
-
-        creator = configuratorCreatorRepo.find(creator.getId());
-        try {
-            ScriptBindings testingValues =
-                    configuratorCreatorService.getTestingValues(creator);
-            try {
-                configuratorCreatorService.testCreator(creator, testingValues);
-                response.setFlash(
-                        I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_WORKING)
-                );
-            } catch (Exception e) {
-                response.setAlert(e.getMessage());
-            }
-        } catch (AxelorException e) {
-            response.setAlert(e.getMessage());
-        }
-    }*/
 
     /**
      * Called from the sale order generate configurator wizard form.

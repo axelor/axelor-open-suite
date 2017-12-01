@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -29,7 +29,6 @@ import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
-import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -382,16 +381,4 @@ public class ProductServiceImpl implements ProductService  {
 				false);
 
 	}
-
-
-	@Override
-	public Map<String, Object> getDiscountsFromCatalog(SupplierCatalog supplierCatalog,BigDecimal price){
-		Map<String, Object> discounts = new HashMap<String, Object>();
-
-		discounts.put("discountAmount", supplierCatalog.getPrice().subtract(price));
-		discounts.put("discountTypeSelect", 2);
-
-		return discounts;
-	}
-
 }

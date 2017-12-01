@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -26,12 +26,12 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.SupplierCatalog;
+import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.SupplierCatalogRepository;
+import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.ProductService;
+import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.stock.db.Location;
@@ -56,7 +56,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 	protected PriceListService priceListService;
 	
 	@Inject
-	private ProductService productService;
+	private PurchaseProductService productService;
 	
 	@Override
 	public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException{

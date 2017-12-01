@@ -10,7 +10,7 @@
    
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
-  	<integer name="purchaseOrderInAtiSelect" title="Purchase Orders ATI/WT" selection="base.in.ati.select" default="1"/>
+  	<integer name="purchaseOrderInAtiSelect" title="Purchase orders ATI/WT" selection="base.in.ati.select" default="1"/>
   	
   	<boolean name="priceDisplay" title="Display price on requested purchase printing" />
   	

@@ -67,6 +67,7 @@
 	<!-- DebtRecovery -->
    	<one-to-many name="debtRecoveryConfigLineList" ref="com.axelor.apps.account.db.DebtRecoveryConfigLine" mappedBy="accountConfig"  title="Debt recovery configuration table"/>
    	<integer name="mailTransitTime" title="Mail transit time"/>
+    <many-to-one name="factorPartner" ref="com.axelor.apps.base.db.Partner" title="Factor" />
 
 	<!-- Reimbursement -->
    	<string name="reimbursementExportFolderPathCFONB" title="Path for reimbursement files (CFONB)"/>

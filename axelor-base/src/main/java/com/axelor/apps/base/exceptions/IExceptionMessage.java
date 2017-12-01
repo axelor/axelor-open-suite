@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -28,8 +28,9 @@ public interface IExceptionMessage {
 	static final public String NOT_IMPLEMENTED_METHOD = /*$$(*/ "Not implemented yet!" /*)*/;
 	
 	static final String BIRT_EXTERNAL_REPORT_NO_URL = /*$$(*/ "Impossible to generate report, url toward Birt viewer is not correctly configured (%s)" /*)*/;
-	
-	
+
+	static final String RECORD_UNSAVED = /*$$(*/ "Unsaved record" /*)*/;
+
 	/**
 	 * Currency service and controller
 	 */
@@ -145,11 +146,6 @@ public interface IExceptionMessage {
 	static final public String QUERIE_3 = /*$$(*/ "Valid query." /*)*/;
 	
 	/**
-	 * Scheduler service
-	 */
-	static final public String SCHEDULER_1 = /*$$(*/ "Please enter a periodicity for the scheduler %s" /*)*/;
-	
-	/**
 	 * Tax service
 	 */
 	static final public String TAX_1 = /*$$(*/ "Please enter a tax version for the tax %s" /*)*/;
@@ -212,6 +208,10 @@ public interface IExceptionMessage {
 	 */
 	static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;
 	static final String IMPORT_CALENDAR = /*$$(*/ "Import calendar" /*)*/;
-	
-	
+
+    /**
+     * Sequence service
+     */
+    String SEQUENCE_NOT_SAVED_RECORD = /*$$(*/ "Can't generate draft sequence number on an unsaved record." /*)*/;
+
 }

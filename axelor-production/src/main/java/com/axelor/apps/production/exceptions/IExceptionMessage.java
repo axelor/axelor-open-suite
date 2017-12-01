@@ -79,7 +79,7 @@ public interface IExceptionMessage {
 	static final String OPERATION_ORDER_1 = /*$$(*/ "Please select the Operation order(s) to print." /*)*/;
 
 	/**
-	 * Sale Order Line Controller
+	 * Sale order line Controller
 	 */
 	static final String SALE_ORDER_LINE_1 = /*$$(*/ "Personalized nomenclature created" /*)*/;
 

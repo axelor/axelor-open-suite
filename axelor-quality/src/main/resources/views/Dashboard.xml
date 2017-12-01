@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<dashboard title="Quality Dashboard" name="quality.dashboard">
+		<dashlet action="chart:chart.quality.control.points" height="350" canSearch="true" />
+		<dashlet action="chart:chart.quality.controls.total.numbers" height="350" canSearch="true" />
+		<dashlet action="chart:chart.quality.alerts.total.numbers" height="350" canSearch="true" />
+		<dashlet action="chart:chart.quality.alerts.solved.total.numbers" height="350" canSearch="true" />
+	</dashboard>
+	
+</object-views>

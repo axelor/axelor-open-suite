@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -96,7 +96,7 @@ public class InvoicePaymentController  {
 			response.setAttr("companyBankDetails", "domain", "self.id IN (0)");
 		}
 		else {
-		    String idList = StringTool.getIdFromCollection(bankDetailsList);
+		    String idList = StringTool.getIdListString(bankDetailsList);
 			response.setAttr("companyBankDetails", "domain", "self.id IN (" + idList + ")");
 		}
 	}

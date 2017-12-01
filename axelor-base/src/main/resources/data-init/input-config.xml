@@ -43,8 +43,6 @@
 	
 <!-- 	<input file="base_partnerCategory.csv" separator=";" type="com.axelor.apps.base.db.PartnerCategory" search="self.importId = :importId"  /> -->
 	
-	<input file="base_scheduler.csv" separator=";" type="com.axelor.apps.base.db.Scheduler" search="self.importId = :importId" />
-	
 <!-- 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId"  > -->
 <!-- 		<bind to="partnerSeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.PARTNER)" /> -->
 <!-- 		<bind to="emailAddress" search="self.address = :email" if="email != null &amp;&amp; !email.empty"> -->

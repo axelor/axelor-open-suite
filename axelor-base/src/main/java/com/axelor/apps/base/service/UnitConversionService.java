@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -71,56 +71,13 @@ public class UnitConversionService {
 	 * @throws AxelorException Les unités demandés ne se trouvent pas dans la liste de conversion
 	 */
 	public BigDecimal getCoefficient(List<? extends UnitConversion> unitConversionList, Unit startUnit, Unit endUnit) throws AxelorException {
-		/* Looking for the start unit and the end unit in the unitConversionList to get the coefficient */
-		for (UnitConversion unitConversion : unitConversionList){
-
-			if (unitConversion.getStartUnit().equals(startUnit) && unitConversion.getEndUnit().equals(endUnit)) {
-				return unitConversion.getCoef();
-			}
-
+		BigDecimal coeff;
+	    try {
+	    	coeff = getCoefficient(unitConversionList, startUnit, endUnit, null);
+		} catch (Exception e) {
+	    	throw new AxelorException(e, IException.TECHNICAL);
 		}
-		/* The endUnit become the start unit and the startUnit become the end unit */
-		for (UnitConversion unitConversion : unitConversionList){
-
-			if (unitConversion.getStartUnit().equals(endUnit) && unitConversion.getEndUnit().equals(startUnit) && unitConversion.getCoef().compareTo(BigDecimal.ZERO) != 0) { 
-				return BigDecimal.ONE.divide(unitConversion.getCoef(), appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN); }
-		
-		}
-		/* If there is no startUnit and endUnit in the UnitConversion list so we throw an exception */
-		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.UNIT_CONVERSION_1), startUnit.getName(), endUnit.getName());
-
-	}
-
-	/**
-	 * Convertir la valeur passée en paramètre en fonction des unités.
-	 *
-	 * @param unitConversionList
-	 * 				La liste des unités de conversion.
-	 *
-	 * @param startUnit
-	 * 				L'unité de départ.
-	 *
-	 * @param endUnit
-	 * 				L'unité d'arrivée.
-	 *
-	 * @param value
-	 * 				La valeur à convertir.
-	 *
-	 * @return Le coefficient de conversion.
-	 * @throws AxelorException Les unités demandés ne se trouvent pas dans la liste de conversion
-	 */
-	public BigDecimal convert(List<UnitConversion> unitConversionList, Unit startUnit, Unit endUnit, BigDecimal value) throws AxelorException {
-
-		if (startUnit == null || endUnit == null)
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.UNIT_CONVERSION_2));
-
-		if (startUnit.equals(endUnit))
-			return value;
-		else {
-			BigDecimal coefficient = this.getCoefficient(unitConversionList, startUnit, endUnit);
-
-			return value.multiply(coefficient).setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
-		}
+	    return coeff;
 	}
 
 
@@ -167,10 +124,7 @@ public class UnitConversionService {
 
 				return value.multiply(coefficient).setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
 			}
-			catch(IOException e){
-				e.printStackTrace();
-			}
-			catch(ClassNotFoundException e){
+			catch(IOException|ClassNotFoundException e){
 				e.printStackTrace();
 			}
 		}
@@ -179,15 +133,17 @@ public class UnitConversionService {
 	
 	public BigDecimal getCoefficient(List<? extends UnitConversion> unitConversionList, Unit startUnit, Unit endUnit, Product product) throws AxelorException, CompilationFailedException, ClassNotFoundException, IOException {
 		/* Looking for the start unit and the end unit in the unitConversionList to get the coefficient */
-		this.maker = new TemplateMaker( Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
-		this.maker.setContext(product, "Product");
+		if (product != null) {
+			this.maker = new TemplateMaker(Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+			this.maker.setContext(product, "Product");
+		}
 		String eval = null;
 		for (UnitConversion unitConversion : unitConversionList){
 
 			if (unitConversion.getStartUnit().equals(startUnit) && unitConversion.getEndUnit().equals(endUnit)) { 
 				if(unitConversion.getTypeSelect() == UnitConversionRepository.TYPE_COEFF){
 					return unitConversion.getCoef(); 
-				} else {
+				} else if (product != null) {
 					maker.setTemplate(unitConversion.getFormula());
 					eval = maker.make();
 					CompilerConfiguration conf = new CompilerConfiguration();
@@ -200,14 +156,12 @@ public class UnitConversionService {
 				}
 			}
 
-		}
 		/* The endUnit become the start unit and the startUnit become the end unit */
-		for (UnitConversion unitConversion : unitConversionList){
 
 			if (unitConversion.getStartUnit().equals(endUnit) && unitConversion.getEndUnit().equals(startUnit)) { 
 				if(unitConversion.getTypeSelect() == UnitConversionRepository.TYPE_COEFF && unitConversion.getCoef().compareTo(BigDecimal.ZERO) != 0){
 					return BigDecimal.ONE.divide(unitConversion.getCoef(), appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);  
-				} else {
+				} else if (product != null) {
 					maker.setTemplate(unitConversion.getFormula());
 					eval = maker.make();
 					CompilerConfiguration conf = new CompilerConfiguration();

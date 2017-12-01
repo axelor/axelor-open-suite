@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -22,15 +22,20 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.LocationService;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -40,6 +45,7 @@ import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
@@ -79,6 +85,9 @@ public class SaleOrderController{
 	@Inject
 	private StockMoveRepository stockMoveRepo;
 
+	@Inject
+	private SaleOrderStockService saleOrderStockService;
+
 
 	public void createStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -110,7 +119,7 @@ public class SaleOrderController{
 
 		if(saleOrder != null) {
 
-			Location location = Beans.get(SaleOrderStockService.class).getLocation(saleOrder.getCompany());
+			Location location = Beans.get(LocationService.class).getLocation(saleOrder.getCompany());
 
 			if(location != null) {
 				response.setValue("location", location);
@@ -120,67 +129,71 @@ public class SaleOrderController{
 
 
 	@SuppressWarnings("rawtypes")
-	public void generatePurchaseOrdersFromSelectedSOLines(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void generatePurchaseOrdersFromSelectedSOLines(ActionRequest request, ActionResponse response) {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		if(saleOrder.getId() != null) {
+		try {
+			if (saleOrder.getId() != null) {
 
-			if (request.getContext().get("supplierPartnerSelect") != null){
-				Partner partner = JPA.em().find(Partner.class, new Long((Integer)((Map)request.getContext().get("supplierPartnerSelect")).get("id")));
-				List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
-				String saleOrderLineIdSelectedStr = (String)request.getContext().get("saleOrderLineIdSelected");
-				for (String saleOrderId : saleOrderLineIdSelectedStr.split(",")) {
-					saleOrderLineIdSelected.add(new Long(saleOrderId));
-				}
-				List<SaleOrderLine> saleOrderLinesSelected = JPA.all(SaleOrderLine.class).filter("self.id IN (:saleOderLineIdList)").bind("saleOderLineIdList", saleOrderLineIdSelected).fetch();
-				PurchaseOrder purchaseOrder = Beans.get(SaleOrderPurchaseService.class).createPurchaseOrder(partner, saleOrderLinesSelected, saleOrderRepo.find(saleOrder.getId()));
-				response.setView(ActionView
-						.define(I18n.get("Purchase Order"))
-						.model(PurchaseOrder.class.getName())
-						.add("form", "purchase-order-form")
-						.param("forceEdit", "true")
-						.context("_showRecord", String.valueOf(purchaseOrder.getId()))
-						.map());
-				response.setCanClose(true);
-			}else{
-				Partner supplierPartner = null;
-				List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
+				if (request.getContext().get("supplierPartnerSelect") != null) {
+					Partner partner = JPA.em().find(Partner.class, new Long((Integer) ((Map) request.getContext().get("supplierPartnerSelect")).get("id")));
+					List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
+					String saleOrderLineIdSelectedStr = (String) request.getContext().get("saleOrderLineIdSelected");
+					for (String saleOrderId : saleOrderLineIdSelectedStr.split(",")) {
+						saleOrderLineIdSelected.add(new Long(saleOrderId));
+					}
+					List<SaleOrderLine> saleOrderLinesSelected = JPA.all(SaleOrderLine.class).filter("self.id IN (:saleOderLineIdList)").bind("saleOderLineIdList", saleOrderLineIdSelected).fetch();
+					PurchaseOrder purchaseOrder = Beans.get(SaleOrderPurchaseService.class).createPurchaseOrder(partner, saleOrderLinesSelected, saleOrderRepo.find(saleOrder.getId()));
+					response.setView(ActionView
+							.define(I18n.get("Purchase order"))
+							.model(PurchaseOrder.class.getName())
+							.add("form", "purchase-order-form")
+							.param("forceEdit", "true")
+							.context("_showRecord", String.valueOf(purchaseOrder.getId()))
+							.map());
+					response.setCanClose(true);
+				} else {
+					Partner supplierPartner = null;
+					List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
 
-				//Check if supplier partners of each sale order line are the same. If it is, send the partner id to view to load this partner by default into select
-				for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-					if (saleOrderLine.isSelected()){
-						if (supplierPartner == null){
-							supplierPartner = saleOrderLine.getSupplierPartner();
-						}else{
-							if (!supplierPartner.equals(saleOrderLine.getSupplierPartner())){
-								supplierPartner = null;
-								break;
+					//Check if supplier partners of each sale order line are the same. If it is, send the partner id to view to load this partner by default into select
+					for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+						if (saleOrderLine.isSelected()) {
+							if (supplierPartner == null) {
+								supplierPartner = saleOrderLine.getSupplierPartner();
+							} else {
+								if (!supplierPartner.equals(saleOrderLine.getSupplierPartner())) {
+									supplierPartner = null;
+									break;
+								}
 							}
+							saleOrderLineIdSelected.add(saleOrderLine.getId());
 						}
-						saleOrderLineIdSelected.add(saleOrderLine.getId());
+					}
+
+					if (saleOrderLineIdSelected.isEmpty()) {
+						response.setFlash(I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
+					} else {
+						response.setView(ActionView
+								.define("SaleOrder")
+								.model(SaleOrder.class.getName())
+								.add("form", "sale-order-generate-po-select-supplierpartner-form")
+								.param("popup", "true")
+								.param("show-toolbar", "false")
+								.param("show-confirm", "false")
+								.param("popup-save", "false")
+								.param("forceEdit", "true")
+								.context("_showRecord", String.valueOf(saleOrder.getId()))
+								.context("supplierPartnerId", ((supplierPartner != null) ? String.valueOf(supplierPartner.getId()) : "NULL"))
+								.context("saleOrderLineIdSelected", Joiner.on(",").join(saleOrderLineIdSelected))
+								.map());
 					}
 				}
 
-				if (saleOrderLineIdSelected.isEmpty()){
-					response.setFlash(I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
-				}else{
-					response.setView(ActionView
-									.define("SaleOrder")
-									.model(SaleOrder.class.getName())
-									.add("form", "sale-order-generate-po-select-supplierpartner-form")
-									.param("popup", "true")
-									.param("show-toolbar", "false")
-									.param("show-confirm", "false")
-									.param("popup-save", "false")
-									.param("forceEdit", "true")
-									.context("_showRecord", String.valueOf(saleOrder.getId()))
-									.context("supplierPartnerId", ((supplierPartner != null) ? String.valueOf(supplierPartner.getId()) : "NULL"))
-									.context("saleOrderLineIdSelected", Joiner.on(",").join(saleOrderLineIdSelected))
-									.map());
-				}
 			}
-
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
 		}
 	}
 
@@ -294,7 +307,7 @@ public class SaleOrderController{
 		}
 		if(listId.size() == 1){
 			response.setView(ActionView
-		            .define(I18n.get("Subscription Sale Orders"))
+		            .define(I18n.get("Subscription Sale orders"))
 		            .model(SaleOrder.class.getName())
 		            .add("grid", "sale-order-subscription-grid")
 		            .add("form", "sale-order-form")
@@ -302,7 +315,7 @@ public class SaleOrderController{
 		            .map());
 		}
 		response.setView(ActionView
-	            .define(I18n.get("Subscription Sale Orders"))
+	            .define(I18n.get("Subscription Sale orders"))
 	            .model(SaleOrder.class.getName())
 	            .add("grid", "sale-order-subscription-grid")
 	            .add("form", "sale-order-form")
@@ -362,55 +375,36 @@ public class SaleOrderController{
 	            .context("_showRecord",String.valueOf(invoice.getId()))
 	            .map());
 	}
-	
-	@Transactional
-	public void updateSaleOrderOnCancel(ActionRequest request, ActionResponse response) throws AxelorException{
-		
-		StockMove stockMove = request.getContext().asType(StockMove.class);
-		SaleOrder so = saleOrderRepo.find(stockMove.getSaleOrder().getId());
-		
-		List<StockMove> stockMoveList = Lists.newArrayList();
-		stockMoveList = stockMoveRepo.all().filter("self.saleOrder = ?1", so).fetch();
-		so.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
-		for (StockMove stock : stockMoveList){
-			if (stock.getStatusSelect() != StockMoveRepository.STATUS_CANCELED && !stock.getId().equals(stockMove.getId())){ 
-				so.setDeliveryState(SaleOrderRepository.STATE_PARTIALLY_DELIVERED);
-				break;
-			}
-		}
-		
-		if (so.getStatusSelect() == ISaleOrder.STATUS_FINISHED  && appSupplychainService.getAppSupplychain().getTerminateSaleOrderOnDelivery()){
-			so.setStatusSelect(ISaleOrder.STATUS_ORDER_CONFIRMED);
-		}
-		
-		saleOrderRepo.save(so);
-		
-	}
-	
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void mergeSaleOrder(ActionRequest request, ActionResponse response)  {
 		List<SaleOrder> saleOrderList = new ArrayList<SaleOrder>();
 		List<Long> saleOrderIdList = new ArrayList<Long>();
 		boolean fromPopup = false;
+		String lineToMerge;
+		if (request.getContext().get("saleQuotationToMerge") != null){
+			lineToMerge = "saleQuotationToMerge";
+		} else {
+			lineToMerge = "saleOrderToMerge";
+		}
 		
-		if (request.getContext().get("saleOrderToMerge") != null){
+		if (request.getContext().get(lineToMerge) != null){
 			
-			if (request.getContext().get("saleOrderToMerge") instanceof List){
+			if (request.getContext().get(lineToMerge) instanceof List){
 				//No confirmation popup, sale orders are content in a parameter list
-				List<Map> saleOrderMap = (List<Map>)request.getContext().get("saleOrderToMerge");
+				List<Map> saleOrderMap = (List<Map>)request.getContext().get(lineToMerge);
 				for (Map map : saleOrderMap) {
 					saleOrderIdList.add(new Long((Integer)map.get("id")));
 				}
 			} else {
 				//After confirmation popup, sale order's id are in a string separated by ","
-				String saleOrderIdListStr = (String)request.getContext().get("saleOrderToMerge");
+				String saleOrderIdListStr = (String)request.getContext().get(lineToMerge);
 				for (String saleOrderId : saleOrderIdListStr.split(",")) {
 					saleOrderIdList.add(new Long(saleOrderId));
 				}
 				fromPopup = true;
 			}
 		}
-		
 		//Check if currency, clientPartner and company are the same for all selected sale orders
 		Currency commonCurrency = null;
 		Partner commonClientPartner = null;
@@ -540,7 +534,7 @@ public class SaleOrderController{
 				confirmView.context("contextLocationToCheck", "true");
 			}
 
-			confirmView.context("saleOrderToMerge", Joiner.on(",").join(saleOrderIdList));
+			confirmView.context(lineToMerge, Joiner.on(",").join(saleOrderIdList));
 
 			response.setView(confirmView.map());
 
@@ -552,7 +546,7 @@ public class SaleOrderController{
 			if (saleOrder != null){
 				//Open the generated sale order in a new tab
 				response.setView(ActionView
-						.define("Sale Order")
+						.define("Sale order")
 						.model(SaleOrder.class.getName())
 						.add("grid", "sale-order-grid")
 						.add("form", "sale-order-form")
@@ -569,5 +563,22 @@ public class SaleOrderController{
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		saleOrderServiceSupplychain.updateAmountToBeSpreadOverTheTimetable(saleOrder);
 		response.setValue("amountToBeSpreadOverTheTimetable" , saleOrder.getAmountToBeSpreadOverTheTimetable());
+	}
+
+	public void checkAllSaleOrderLineIsDelivery(ActionRequest request, ActionResponse response) {
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		if (saleOrder.getId() == null) {
+			return;
+		}
+		switch (saleOrderStockService.checkAllSaleOrderLineIsDelivery(saleOrder)) {
+			case PARTIAL_DELIVERY:
+				response.setValue("$stockMoveState", 1);
+				break;
+			case ALL_DELIVERY:
+				response.setValue("$stockMoveState", 2);
+				break;
+			default:
+				response.setValue("$stockMoveState", 0);
+        }
 	}
 }

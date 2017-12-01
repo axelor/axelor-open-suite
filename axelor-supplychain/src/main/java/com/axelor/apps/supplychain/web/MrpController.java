@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -31,8 +31,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
-
-import java.time.temporal.WeekFields;
 
 public class MrpController {
 	
@@ -79,7 +77,7 @@ public class MrpController {
 			String fileLink = ReportFactory.createReport(IReport.MRP_WEEKS, name)
 					.addParam("mrpId", mrp.getId())
 					.addParam("Locale", AuthUtils.getUser().getLanguage())
-					.addParam("endDate", mrpService.findMrpEndDate(mrp).get(WeekFields.ISO.weekOfWeekBasedYear()))
+					.addParam("endDate", mrpService.findMrpEndDate(mrp).atStartOfDay().toString())
 					.addFormat(ReportSettings.FORMAT_PDF)
 					.generate()
 					.getFileLink();

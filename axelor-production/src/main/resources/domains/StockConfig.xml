@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="stock" package="com.axelor.apps.stock.db"/>
+
+  <entity name="StockConfig" lang="java" cachable="true">
+      <many-to-one name="productionVirtualLocation" ref="com.axelor.apps.stock.db.Location" title="Production virtual location"/>
+      <many-to-one name="wasteLocation" ref="com.axelor.apps.stock.db.Location" title="Waste location"/>
+      <many-to-one name="componentDefaultLocation" ref="com.axelor.apps.stock.db.Location" title="Components default location"/>
+      <many-to-one name="finishedProductsDefaultLocation" ref="com.axelor.apps.stock.db.Location" title="Finished products default location"/>
+  </entity>
+
+</domain-models>

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -48,14 +48,6 @@ public interface ConfiguratorService {
      */
     Object computeFormula(String groovyFormula, JsonContext values)
             throws AxelorException;
-
-    /**
-     * Test a formula, with the script variables defined
-     * in the values map.
-     * @param groovyFormula
-     * @param values
-     */
-    void testFormula(String groovyFormula, ScriptBindings values) throws AxelorException;
 
     /**
      * Generate the product, and the bill of material

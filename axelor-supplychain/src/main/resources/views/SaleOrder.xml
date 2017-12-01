@@ -24,7 +24,7 @@
 	</form>
 	
 	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-template-form"
-		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
+		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template"
 		onLoad="action-group-sale-saleorder-onload">
 		<panel-include view="sale-order-template-form" from="axelor-sale"/>
 	</form>
@@ -52,22 +52,18 @@
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
 		<action name="action-sale-order-attrs-interco"/>
 		<action name="save"/>
+		<action name="action-supplychain-check-all-sale-order-line-is-delivery"/>
 	</action-group>
 
 	<action-method name="action-supplychain-sale-order-method-get-location">
     	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
     </action-method>
     
-    
-    <!--   azeaeaeaeae -->
-
     <action-group name="action-supplychain-sale-order-group-generate-invoice">
     	<action name="action-supplychain-sale-order-view-invoicing-wizard"
 				if="eval: !__config__.app.isApp('business-project') ||  !__config__.app.getApp('business-project').getEnableToInvoiceExpense() &amp;&amp; !__config__.app.getApp('business-project').getEnableToInvoiceTimesheet()" />
     	<action name="action-business-project-sale-order-view-invoicing-wizard" if="eval: __config__.app.isApp('business-project') &amp;&amp; (__config__.app.getApp('business-project').getEnableToInvoiceExpense() || __config__.app.getApp('business-project').getEnableToInvoiceTimesheet())" />
     </action-group>
-    
-    <!--   azeaeaeaeae -->
     
 	<action-method name="action-supplychain-sale-order-create-stock-move" >
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createStockMove"/>
@@ -128,5 +124,9 @@
     <action-condition name="action-supplychain-so-generate-po-check-supplier-partner">
 		<check error="A supplier partner must be selected" field="supplierPartnerSelect" if="supplierPartnerSelect == null"/>
 	</action-condition>
+	
+	<action-method name="action-supplychain-check-all-sale-order-line-is-delivery">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="checkAllSaleOrderLineIsDelivery"/>
+	</action-method>
 	
 </object-views>

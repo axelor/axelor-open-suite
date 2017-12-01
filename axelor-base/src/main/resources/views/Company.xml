@@ -20,7 +20,6 @@
 			    <field name="code" x-bind="{{code|unaccent|uppercase}}" />
 			    <field name="parent" form-view="company-form" grid-view="company-grid"/>
 			    <field name="partner" canNew="true" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-			    <field name="factor" domain="self.isFactor = TRUE" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
 		    </panel>
 		    <field name="address" canNew="true" colSpan="12" form-view="address-form" grid-view="address-grid"/>
 	  	</panel>
@@ -61,54 +60,6 @@
 	    	</panel>
 	  	</panel-tabs>
    	</form>
-    
-    <action-view name="action-company-view-account-config" title="Account config (${ name })" model="com.axelor.apps.account.db.AccountConfig">
-    	<view type="form" name="account-config-form"/>
-    	<context name="_showRecord" expr="eval: __self__.accountConfig?.id"/>
-    	<context name="_company" expr="eval: __this__"/>
-    </action-view>
-
-	<action-view name="action-company-view-bank-payment-config" title="Bank payment config (${ name })" model="com.axelor.apps.bankpayment.db.BankPaymentConfig">
-		<view type="form" name="bank-payment-config-form"/>
-		<context name="_showRecord" expr="eval: __self__.bankPaymentConfig?.id"/>
-		<context name="_company" expr="eval: __this__"/>
-	</action-view>
-    
-    <action-view name="action-company-view-purchase-config" title="Purchase config (${ name })" model="com.axelor.apps.purchase.db.PurchaseConfig">
-    	<view type="form" name="purchase-config-form"/>
-    	<context name="_showRecord" expr="eval: __self__.purchaseConfig?.id"/>
-    	<context name="_company" expr="eval: __this__"/>
-    </action-view>
-    
-    <action-view name="action-company-view-sale-config" title="Sale config (${ name })" model="com.axelor.apps.sale.db.SaleConfig">
-    	<view type="form" name="sale-config-form"/>
-    	<context name="_showRecord" expr="eval: __self__.saleConfig?.id"/>
-    	<context name="_company" expr="eval: __this__"/>
-    </action-view>
-    
-    <action-view name="action-company-view-stock-config" title="Stock config (${ name })" model="com.axelor.apps.stock.db.StockConfig">
-    	<view type="form" name="stock-config-form"/>
-    	<context name="_showRecord" expr="eval: __self__.stockConfig?.id"/>
-    	<context name="_company" expr="eval: __this__"/>
-    </action-view>
-    
-    <action-view name="action-company-view-production-config" title="Production config (${ name })" model="com.axelor.apps.production.db.ProductionConfig">
-    	<view type="form" name="production-config-form"/>
-    	<context name="_showRecord" expr="eval: __self__.productionConfig?.id"/>
-    	<context name="_company" expr="eval: __this__"/>
-    </action-view>
-    
-    <action-view name="action-company-view-hr-config" title="Human Resource config (${ name })" model="com.axelor.apps.hr.db.HRConfig">
-    	<view type="form" name="hr-config-form"/>
-    	<context name="_showRecord" expr="eval: __self__.hrConfig?.id"/>
-    	<context name="_company" expr="eval: __this__"/>
-    </action-view>
-    
-    <action-view name="action-company-view-crm-config" title="CRM config (${ name })" model="com.axelor.apps.crm.db.CrmConfig">
-    	<view type="form" name="crm-config-form"/>
-    	<context name="_showRecord" expr="eval: __self__.crmConfig?.id"/>
-    	<context name="_company" expr="eval: __this__"/>
-    </action-view>
     
 	<action-attrs name="action-company-attrs-default-bank-details-domain">
 		<attribute name="domain" for="defaultBankDetails" if="bankDetailsSet &amp;&amp; !bankDetailsSet.isEmpty()"

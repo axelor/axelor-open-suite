@@ -18,18 +18,19 @@
 package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
-import java.time.LocalDate;
-
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.TrackingNumber;
-import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.LogisticalForm;
+import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.exception.AxelorException;
 
 public interface StockMoveLineService {
@@ -140,5 +141,31 @@ public interface StockMoveLineService {
 	 * @return
 	 */
 	StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList);
+
+	/**
+	 * Check whether a stock move line is fully spread over logistical form lines.
+	 * 
+	 * @param stockMoveLine
+	 * @return
+	 */
+	boolean computeFullySpreadOverLogisticalFormLinesFlag(StockMoveLine stockMoveLine);
+
+	/**
+	 * Get the quantity spreadable over logistical form lines.
+	 * 
+	 * @param stockMoveLine
+	 * @return
+	 */
+	BigDecimal computeSpreadableQtyOverLogisticalFormLines(StockMoveLine stockMoveLine);
+
+	/**
+	 * Get the quantity spreadable over logistical form lines.
+	 * Take into account the lines from the specified logistical form.
+	 * 
+	 * @param stockMoveLine
+	 * @param logisticalForm
+	 * @return
+	 */
+	BigDecimal computeSpreadableQtyOverLogisticalFormLines(StockMoveLine stockMoveLine, LogisticalForm logisticalForm);
 
 }

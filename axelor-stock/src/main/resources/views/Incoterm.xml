@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="incoterm-grid" title="Incoterms" model="com.axelor.apps.stock.db.Incoterm">
+    	<field name="fullname" x-bind="{{code+' - '+name}}"/>
+    </grid>
+    
+    <form name="incoterm-form" title="Incoterm" model="com.axelor.apps.stock.db.Incoterm">
+		<panel>
+			<field name="name" required="true" colSpan="4"/>
+			<field name="code" required="true" colSpan="4"/>
+			<field name="fullname" readonly="true" colSpan="4" x-bind="{{code+' - '+name}}"/>
+		</panel>
+    	
+    	<panel name="allocationsOfCosts" title="Allocations of costs">
+    		<field name="exportCustomsDeclaration"/>
+    		<field name="carriageToPortOfExport"/>
+    		<field name="unloadingOfTruckInPortOfExport"/>
+    		<field name="loadingInPortOfExport"/>
+    		<field name="carriageToPortOfImport"/>
+    		<field name="insurance"/>
+    		<field name="unloadingInPortOfImport"/>
+    		<field name="loadingOnTruckInPortOfImport"/>
+    		<field name="carriageToPlaceOfDestination"/>
+    		<field name="importCustomsClearance"/>
+    		<field name="importDutiesAndTaxes"/>
+		</panel>    	
+    	
+    </form>
+    
+ </object-views>

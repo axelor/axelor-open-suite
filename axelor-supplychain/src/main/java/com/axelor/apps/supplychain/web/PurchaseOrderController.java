@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -28,8 +28,10 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.service.LocationService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.exception.service.TraceBackService;
 import com.google.common.base.Joiner;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.exception.AxelorException;
@@ -90,7 +92,7 @@ public class PurchaseOrderController {
 
 		if(purchaseOrder.getCompany() != null) {
 
-			response.setValue("location", purchaseOrderServiceSupplychain.getLocation(purchaseOrder.getCompany()));
+			response.setValue("location", Beans.get(LocationService.class).getLocation(purchaseOrder.getCompany()));
 		}
 	}
 
@@ -266,7 +268,7 @@ public class PurchaseOrderController {
 			if (purchaseOrder != null){
 				//Open the generated purchase order in a new tab
 				response.setView(ActionView
-						.define("Purchase Order")
+						.define("Purchase order")
 						.model(PurchaseOrder.class.getName())
 						.add("grid", "purchase-order-grid")
 						.add("form", "purchase-order-form")
@@ -278,16 +280,6 @@ public class PurchaseOrderController {
 			response.setFlash(ae.getLocalizedMessage());
 		}
 	}
-	
-	public void updatePurchaseOrderOnCancel(ActionRequest request, ActionResponse response) throws AxelorException{
-		
-		StockMove stockMove = request.getContext().asType(StockMove.class);
-		PurchaseOrder purchaseOrder = purchaseOrderRepo.find(stockMove.getPurchaseOrder().getId());
-		
-		purchaseOrderServiceSupplychain.updatePurchaseOrderOnCancel(stockMove, purchaseOrder);
-		
-		
-	}
 
 	public void updateAmountToBeSpreadOverTheTimetable(ActionRequest request, ActionResponse response) {
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
@@ -295,7 +287,7 @@ public class PurchaseOrderController {
 		response.setValue("amountToBeSpreadOverTheTimetable" , purchaseOrder.getAmountToBeSpreadOverTheTimetable());
 	}
 	
-	public void applyToallBudgetDistribution(ActionRequest request, ActionResponse response) {
+	public void applyToAllBudgetDistribution(ActionRequest request, ActionResponse response) {
 		
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 		purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());

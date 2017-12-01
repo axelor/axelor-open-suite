@@ -21,8 +21,14 @@
 		<field name="recordId" />
 		<field name="recordName" />
 	</grid>
-
-  
+	
+	<form model="com.axelor.apps.base.db.Wizard" title="Check duplicate" name="wizard-check-duplicate-form" onNew="action-check-duplicate-on-new-attrs">
+		<panel-related field="$fieldsSet" title="Fields" readonly="true" colSpan="12" type="many-to-many" target="com.axelor.meta.db.MetaField" grid-view="meta-field-light-grid"/>
+  		<panel name="main" >
+    		<button name="showDuplicate" title="Show" colSpan="6" onClick="action-base-method-show-duplicate"/>
+  		</panel>
+	</form>
+	
 	<action-view name="action-duplicate-object-wizard-open" model="com.axelor.apps.base.db.Wizard"  title="Remove duplicates">
 			<view type="form" name="duplicate-object-wizard-form"/>
 			<view-param name="popup" value="reload"/>
@@ -32,7 +38,21 @@
 	     <context name="_ids" expr="eval:_ids"/>
 	     <context name="_modelName" expr="eval:_model"/>
 	</action-view>
+	
+	<action-view name="action-general-check-duplicate-records" title="Check duplicate" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="wizard-check-duplicate-form" />
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="width" value="500" />
+		<view-param name="popup" value="true" />  
+		<context name="object" expr="eval:_model"/>
+		<context name="_domain_" expr="eval:_domain"/>
+		<context name="_ids" expr="eval:_ids"/>
+	</action-view>
    
+   <action-attrs name="action-check-duplicate-on-new-attrs" model="com.axelor.apps.base.db.Wizard">
+    	<attribute name="value" for="$fieldsSet" expr="call:com.axelor.apps.base.web.DuplicateObjectsController:setFields(object)" />
+    </action-attrs>
+    
 	<action-method name="action-default-object-name">
 			<call class="com.axelor.apps.base.web.DuplicateObjectsController" method="defaultObjects"/>
 	</action-method>
@@ -45,6 +65,10 @@
 		<call class="com.axelor.apps.base.web.DuplicateObjectsController" method="addOriginal"/>
 	</action-method>
 	
+	<action-method name="action-base-method-show-duplicate">
+		<call method="showDuplicate" class="com.axelor.apps.base.web.DuplicateObjectsController"/>
+	</action-method>
+	
 	<action-validate name="action-validate-select-object-message">
 		<error message="Please select multiple records" if="_ids.size() &lt; 2" />
 	</action-validate>
@@ -52,5 +76,5 @@
 	<action-validate name="action-validate-replace-object-message">
 		<alert message="Are you sure wants to replace ?"  />
 	</action-validate>
-
+	
 </object-views>

@@ -63,10 +63,6 @@
 		<date name="endDate" title="Product pulled off market Date"
 			initParam="true" />
 
-		<one-to-many name="supplierCatalogList"
-			ref="com.axelor.apps.base.db.SupplierCatalog" mappedBy="product"
-			title="Supplier Catalog Lines" />
-
 		<boolean name="hasWarranty" title="Warranty ?" />
 		<boolean name="isPerishable" title="Perishable ?" />
 		<integer name="warrantyNbrOfMonths" title="Warranty length (in months)" />

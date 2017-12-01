@@ -51,6 +51,13 @@ public interface LocationLineService {
 	
 	public void checkStockMin(LocationLine locationLine, boolean isDetailLocationLine) throws AxelorException;
 
+	/**
+	 * Check if the location has more than qty units of the product
+	 * @param location
+	 * @param product
+	 * @param qty
+	 * @throws AxelorException if there is not enough qty in stock
+	 */
 	public void checkIfEnoughStock(Location location, Product product, BigDecimal qty) throws AxelorException;
 
 	public LocationLine updateLocation(LocationLine locationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement,

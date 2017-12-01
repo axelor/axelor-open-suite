@@ -18,9 +18,6 @@
     <string name="firstName" title="First Name"/>
     <string name="jobTitle" title="Function"/>
     <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Photo" index="false"/>
-
-    <one-to-many name="supplierCatalogList" ref="com.axelor.apps.base.db.SupplierCatalog" mappedBy="supplierPartner" title="Supplier Catalog Lines" />
-
     <boolean name="isCustomer" title="Customer?"/>
     <boolean name="isProspect" title="Prospect?"/>
     <boolean name="isSupplier" title="Supplier?"/>

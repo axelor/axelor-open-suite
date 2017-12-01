@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -27,7 +27,7 @@ import javax.persistence.Query;
 
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.sale.db.AdvancePayment;
-import com.axelor.apps.sale.db.CancelReason;
+import com.axelor.apps.base.db.CancelReason;
 import com.google.common.base.Strings;
 import java.time.LocalDate;
 
@@ -186,14 +186,14 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	/**
 	 * Compute the sale order total amounts
 	 *
-	 * @param invoice
-	 * @param vatLines
+	 * @param saleOrder
 	 * @throws AxelorException
 	 */
 	@Override
 	public void _computeSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
 		saleOrder.setExTaxTotal(BigDecimal.ZERO);
+		saleOrder.setCompanyExTaxTotal(BigDecimal.ZERO);
 		saleOrder.setTaxTotal(BigDecimal.ZERO);
 		saleOrder.setInTaxTotal(BigDecimal.ZERO);
 		
@@ -491,6 +491,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		SaleOrder copy = saleOrderRepo.copy(context, true);
 		copy.setTemplate(false);
 		copy.setTemplateUser(null);
+		copy.setCreationDate(appSaleService.getTodayDate());
+		this.computeEndOfValidityDate(copy);
 		return copy;
 	}
 

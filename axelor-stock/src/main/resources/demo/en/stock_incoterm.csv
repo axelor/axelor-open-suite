@@ -1,0 +1,12 @@
+"name";"code";"exportCustomsDeclaration";"carriageToPortOfExport";"unloadingOfTruckInPortOfExport";"loadingInPortOfExport";"carriageToPortOfImport";"insurance";"unloadingInPortOfImport";"loadingOnTruckInPortOfImport";"carriageToPlaceOfDestination";"importCustomsClearance";"importDutiesAndTaxes"
+"EX Works… named place";"EXW";1;1;1;1;1;1;1;1;1;1;1
+"Free Carrier… named place";"FCA";2;2;1;1;1;1;1;1;1;1;1
+"Free AlongSide ship… named port of shipment";"FAS";2;2;2;1;1;1;1;1;1;1;1
+"Free On Board… named port of shipment";"FOB";2;2;2;2;1;1;1;1;1;1;1
+"Carriage Paid To… named port of destination";"CPT";2;2;2;2;2;1;3;3;2;1;1
+"Cost and Freight… named port of destination";"CFR";2;2;2;2;2;1;3;1;1;1;1
+"Cost, Insurance, Freight… named port of destination";"CIF";2;2;2;2;2;2;3;1;1;1;1
+"Carriage and Insurance Paid to… named place of destination";"CIP";2;2;2;2;2;2;3;3;2;1;1
+"Delivered At Terminal... named port of destination";"DAT";2;2;2;2;2;3;2;1;1;1;1
+"Delivered at Place… named port of destination";"DAP";2;2;2;2;2;3;2;2;2;1;1
+"Delivered Duty Paid… named place of destination";"DDP";2;2;2;2;2;3;2;2;2;2;2

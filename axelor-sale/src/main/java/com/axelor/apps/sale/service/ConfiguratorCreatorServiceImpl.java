@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2017 Axelor (<http://axelor.com>).
@@ -15,13 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.axelor.apps.sale.service;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Configurator;
@@ -33,8 +27,12 @@ import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.User;
+import com.axelor.db.JPA;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -44,6 +42,13 @@ import com.axelor.script.ScriptBindings;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
 
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
@@ -66,28 +71,11 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         }
 
         for (MetaJsonField field : creator.getAttributes()) {
-            //update showIf
-            String condition = "$record.configuratorCreator.id == " + creator.getId();
-            String showIf = field.getShowIf();
-            if (!Strings.isNullOrEmpty(showIf)) {
-                if (!showIf.contains(condition)) {
-                    field.setShowIf(condition + " && (" + showIf + ")");
-                }
-            } else {
-                field.setShowIf(condition);
-            }
+            setContextToJsonField(creator, field);
 
-            //update onChange
-
-            String onChange = field.getOnChange();
-            if (onChange == null
-                    || !onChange.contains("save,action-configurator-update-indicators,save")) {
-
-                String modifiedOnChange = "save,action-configurator-update-indicators,save";
-                if (!Strings.isNullOrEmpty(onChange)) {
-                    modifiedOnChange = modifiedOnChange + "," + onChange;
-                }
-                field.setOnChange(modifiedOnChange);
+            //fill onChange if empty
+            if (Strings.isNullOrEmpty(field.getOnChange())) {
+                field.setOnChange("save,action-configurator-update-indicators,save");
             }
         }
         configuratorCreatorRepo.save(creator);
@@ -122,34 +110,89 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     }
 
     @Override
-    public void testCreator(ConfiguratorCreator creator,
-                            ScriptBindings testingValues)
-            throws AxelorException  {
-        List<ConfiguratorFormula> formulas = creator.getConfiguratorFormulaList();
-        if (formulas == null) {
-            //nothing to test
-            return;
-        }
-        ConfiguratorService configuratorService =
-                Beans.get(ConfiguratorService.class);
-        for (ConfiguratorFormula formula : formulas) {
-            configuratorService.testFormula(formula.getFormula(), testingValues);
-        }
-    }
-
-    @Override
     public ScriptBindings getTestingValues(ConfiguratorCreator creator) throws AxelorException {
         Map<String, Object> attributesValues = new HashMap<>();
         List<MetaJsonField> attributes = creator.getAttributes();
         if (attributes != null) {
             for (MetaJsonField attribute : attributes) {
-                if (attribute.getDefaultValue() == null) {
-                    throw new AxelorException(creator, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_MISSING_VALUES));
+                Object defaultAttribute = getAttributesDefaultValue(attribute);
+                if (defaultAttribute != null) {
+                    attributesValues.put(attribute.getName(), getAttributesDefaultValue(attribute));
                 }
-                attributesValues.put(attribute.getName(), attribute.getDefaultValue());
             }
         }
         return new ScriptBindings(attributesValues);
+    }
+
+    /**
+     * Get a default value to test a script.
+     * @param attribute
+     * @return
+     */
+    protected Object getAttributesDefaultValue(MetaJsonField attribute) {
+        switch (attribute.getType()) {
+            case "string":
+                return "a";
+            case "integer":
+                return 1;
+            case "decimal":
+                return BigDecimal.ONE;
+            case "boolean":
+                return true;
+            case "datetime":
+                return LocalDateTime.of(LocalDate.now(), LocalTime.now());
+            case "date":
+                return LocalDate.now();
+            case "time":
+                return LocalTime.now();
+            case "panel":
+                return null;
+            case "enum":
+                return null;
+            case "button":
+                return null;
+            case "separator":
+                return null;
+            case "many-to-one":
+                return getAttributeRelationalField(attribute, "many-to-one");
+            case "many-to-many":
+                return getAttributeRelationalField(attribute, "many-to-many");
+            case "one-to-many":
+                return getAttributeRelationalField(attribute, "one-to-many");
+            case "json-many-to-one":
+                return null;
+            case "json-many-to-many":
+                return null;
+            case "json-one-to-many":
+                return null;
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * Get a default value to test a script for a relational field.
+     * @param attribute
+     * @param relation
+     * @return
+     */
+    protected Object getAttributeRelationalField(MetaJsonField attribute, String relation) {
+        try {
+            Class targetClass = Class.forName(attribute.getTargetModel());
+            if (relation.equals("many-to-one")) {
+                return JPA.all(targetClass).fetchOne();
+            } else if (relation.equals("one-to-many")) {
+                return JPA.all(targetClass).fetch(1);
+            } else if (relation.equals("many-to-many")) {
+                return new HashSet(JPA.all(targetClass).fetch(1));
+            }
+            else {
+                return null;
+            }
+        } catch (Exception e) {
+            TraceBackService.trace(e);
+            return null;
+        }
     }
 
     /**
@@ -269,11 +312,9 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         }
         if (formula.getShowOnConfigurator()) {
             indicator.setHidden(false);
-            indicator.setShowIf("$record.configuratorCreator.id == "
-                    + creator.getId());
+            setContextToJsonField(creator, indicator);
         } else {
             indicator.setHidden(true);
-            indicator.setShowIf("");
         }
         if (configuratorFormulaService.getMetaField(formula)
                 .getTypeName().equals("BigDecimal")) {
@@ -302,7 +343,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         );
 
         return "self.id in ("
-                + StringTool.getIdFromCollection(configuratorCreatorList)
+                + StringTool.getIdListString(configuratorCreatorList)
                 + ")";
     }
 
@@ -316,6 +357,37 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     @Transactional
     public void activate(ConfiguratorCreator creator) {
         creator.setIsActive(true);
+    }
+
+    /**
+     * Set the context field to a json field. Allows to limit the json field
+     * to the configurator having the right configurator creator.
+     * @param creator
+     * @param field
+     */
+    protected void setContextToJsonField(ConfiguratorCreator creator,
+                                         MetaJsonField field) {
+        final String fieldName = "configuratorCreator";
+        final Class<?> modelClass;
+        final String modelName = field.getModel();
+
+        try {
+            modelClass = Class.forName(modelName);
+        } catch (ClassNotFoundException e) {
+            // this should not happen
+            TraceBackService.trace(e);
+            return;
+        }
+        final Mapper mapper = Mapper.of(modelClass);
+        final Property property = mapper.getProperty(fieldName);
+        final String target = property == null ? null : property.getTarget().getName();
+        final String targetName = property == null ? null : property.getTargetName();
+
+        field.setContextField(fieldName);
+        field.setContextFieldTarget(target);
+        field.setContextFieldTargetName(targetName);
+        field.setContextFieldValue(creator.getId().toString());
+        field.setContextFieldTitle(creator.getName());
     }
 
 }

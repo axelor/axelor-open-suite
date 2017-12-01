@@ -12,10 +12,11 @@
     
     <form name="vehicle-odometer-form" title="Odometer" model="com.axelor.apps.fleet.db.VehicleOdometer" width="large">
        <panel>
+       	   <field name="name"/>
      	   <field name="date" />
 	       <field name="vehicle"/>
 	       <field name="value" />
-	       <field name="unit" />
+	       <field name="unit" domain="self.name IN ('Kilometer','Miles')"/>
 	   </panel>
     </form>
     
