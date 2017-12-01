@@ -7,7 +7,8 @@
         <hilite strong="true" color="default" if="$contains([1, 2], typeSelect)" />
         <field name="typeSelect" onChange="action-logistical-form-line-type-change" />
         <field name="stockMoveLine" onSelect="action-logistical-form-line-stock-move-line-domain" onChange="action-logistical-form-line-stock-move-line-change"
-            readonlyIf="typeSelect != 3" form-view="stock-move-line-form" grid-view="stock-move-line-sale-order-grid" />
+            readonlyIf="typeSelect != 3" form-view="stock-move-line-form" grid-view="stock-move-line-sale-order-grid"
+            canEdit="false" />
         <field name="stockMoveLine.stockMove" form-view="stock-move-form" />
         <field name="stockMoveLine.product.code" title="Product code" />
         <field name="stockMoveLine.product.name" title="Product description" />
@@ -15,7 +16,8 @@
             if="__config__.app.isApp('supplychain')" />
         <field name="stockMoveLine.stockMove.saleOrder.orderNumber" title="Order number" if-module="axelor-supplychain"
             if="__config__.app.isApp('supplychain')" />
-        <field name="stockMoveLine.netWeight" title="Unit net weight" />
+        <!-- <field name="stockMoveLine.netWeight" title="Unit net weight" /> --> <!-- Should be null when stockMoveLine is null -->
+        <field name="unitNetWeight" />
         <field name="qty" readonlyIf="typeSelect != 3" />
         <field name="parcelPalletNumber" readonlyIf="typeSelect == 3" />
         <field name="grossWeight" readonlyIf="typeSelect == 3" />
@@ -64,6 +66,7 @@
         <field name="parcelPalletNumber" expr="eval: null" />
         <field name="grossWeight" expr="eval: null" />
         <field name="dimensions" expr="eval: null" />
+        <field name="unitNetWeight" expr="eval: null" />
     </action-record>
 
     <action-attrs name="action-logistical-form-line-type-parcel-pallet-attrs">
@@ -76,7 +79,16 @@
         <attribute name="required" for="qty" expr="eval: true" />
     </action-attrs>
 
-    <action-method name="action-logistical-form-line-stock-move-line-change">
+    <action-group name="action-logistical-form-line-stock-move-line-change">
+        <action name="action-logistical-form-line-record-set-unit-net-weight" />
+        <action name="action-logistical-form-line-method-set-qty" />
+    </action-group>
+
+    <action-record name="action-logistical-form-line-record-set-unit-net-weight" model="com.axelor.apps.stock.db.LogisticalFormLine">
+        <field name="unitNetWeight" expr="eval: stockMoveLine?.netWeight" />
+    </action-record>
+
+    <action-method name="action-logistical-form-line-method-set-qty">
         <call class="com.axelor.apps.stock.web.LogisticalFormLineController" method="setQty" />
     </action-method>
 

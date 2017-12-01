@@ -56,6 +56,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 public class LogisticalFormServiceImpl implements LogisticalFormService {
@@ -289,11 +290,15 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     }
 
     protected void addDetailLine(LogisticalForm logisticalForm, StockMoveLine stockMoveLine, BigDecimal qty) {
+        Preconditions.checkNotNull(logisticalForm);
+        Preconditions.checkNotNull(stockMoveLine);
+
         LogisticalFormLine logisticalFormLine = new LogisticalFormLine();
         logisticalFormLine.setTypeSelect(LogisticalFormLineRepository.TYPE_DETAIL);
         logisticalFormLine.setStockMoveLine(stockMoveLine);
         logisticalFormLine.setQty(qty);
         logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
+        logisticalFormLine.setUnitNetWeight(stockMoveLine.getNetWeight());
         logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
     }
 
