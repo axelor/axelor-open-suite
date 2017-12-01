@@ -565,20 +565,4 @@ public class SaleOrderController{
 		response.setValue("amountToBeSpreadOverTheTimetable" , saleOrder.getAmountToBeSpreadOverTheTimetable());
 	}
 
-	public void checkAllSaleOrderLineIsDelivery(ActionRequest request, ActionResponse response) {
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		if (saleOrder.getId() == null) {
-			return;
-		}
-		switch (saleOrderStockService.checkAllSaleOrderLineIsDelivery(saleOrder)) {
-			case PARTIAL_DELIVERY:
-				response.setValue("$stockMoveState", 1);
-				break;
-			case ALL_DELIVERY:
-				response.setValue("$stockMoveState", 2);
-				break;
-			default:
-				response.setValue("$stockMoveState", 0);
-        }
-	}
 }
