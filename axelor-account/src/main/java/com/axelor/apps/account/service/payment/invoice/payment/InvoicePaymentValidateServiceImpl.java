@@ -179,7 +179,8 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 
 		MoveLine customerMoveLine = moveLineService.createMoveLine(move, partner, customerAccount,
 				paymentAmount, !isDebitInvoice, paymentDate, null, 2, "");
-		
+		customerMoveLine.setTaxAmount(invoice.getTaxTotal());
+
 		move.addMoveLineListItem(customerMoveLine);
 		
 		moveService.getMoveValidateService().validate(move);
