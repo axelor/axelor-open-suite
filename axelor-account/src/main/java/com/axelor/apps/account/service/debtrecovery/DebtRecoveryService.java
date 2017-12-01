@@ -360,6 +360,7 @@ public class DebtRecoveryService {
 	public DebtRecovery createDebtRecovery(AccountingSituation accountingSituation)  {
 		DebtRecovery debtRecovery = new DebtRecovery();
 		debtRecovery.setAccountingSituation(accountingSituation);
+		accountingSituation.setDebtRecovery(debtRecovery);
 		debtRecoveryRepo.save(debtRecovery);
 		return debtRecovery;
 	}
