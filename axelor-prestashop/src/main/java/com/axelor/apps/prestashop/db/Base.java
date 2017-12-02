@@ -16,24 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.axelor.apps.prestashop.service.exports;
+package com.axelor.apps.prestashop.db;
 
-import java.io.IOException;
-import java.time.ZonedDateTime;
-import javax.xml.transform.TransformerException;
-import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.prestashop.service.PrestaShopWebserviceException;
-
-public interface PrestaShopServiceExport {
+public class Base {
 	
-	/**
-	 * Export ABS object's details to prestashop
-	 * 
-	 * @param endDate get as par last batch executed
-	 * @return exported log file object
-	 * @throws PrestaShopWebserviceException
-	 * @throws TransformerException
-	 * @throws IOException
-	 */
-	public Batch exportPrestShop(ZonedDateTime endDate, Batch batch) throws PrestaShopWebserviceException, TransformerException, IOException;
+	private String id;
+	
+	public Base() {}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	@Override
+	public String toString() {
+		return "Base [id=" + id + "]";
+	}
 }

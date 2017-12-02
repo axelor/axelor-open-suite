@@ -18,7 +18,7 @@
 package com.axelor.apps.prestashop.service.imports.batch;
 
 import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.prestashop.service.imports.PrestaShopServiceImport;
+import com.axelor.apps.prestashop.imports.PrestaShopServiceImport;
 import com.google.inject.Inject;
 
 public abstract class BatchStrategyImport extends AbstractBatch {

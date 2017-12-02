@@ -20,7 +20,7 @@ package com.axelor.apps.prestashop.app;
 
 import java.util.HashMap;
 import com.axelor.apps.base.db.AppPrestashop;
-import com.axelor.apps.prestashop.service.PSWebServiceClient;
+import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
 
 public class AppPrestaShopServiceImpl implements AppPrestaShopService {
 	

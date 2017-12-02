@@ -16,22 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.axelor.apps.prestashop.service.imports;
+package com.axelor.apps.prestashop.imports.service;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.TransformerException;
+import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 
-import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.prestashop.service.PrestaShopWebserviceException;
+import wslite.json.JSONException;
 
-public interface PrestaShopServiceImport {
+public interface ImportCurrencyService {
 	
 	/**
-	 * Import prestashop details or object to ABS
+	 * Import currencies from prestashop.
 	 * 
-	 * @return import log file object
+	 * @param bwImport object of import logfile
+	 * @return object import log file
 	 * @throws IOException
 	 * @throws PrestaShopWebserviceException
+	 * @throws TransformerException
+	 * @throws JAXBException
+	 * @throws JSONException
 	 */
-	public Batch importPrestShop(Batch batch) throws IOException, PrestaShopWebserviceException;
-	
+	public BufferedWriter importCurrency(BufferedWriter bwImport) throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException;
 }

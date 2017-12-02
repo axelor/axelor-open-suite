@@ -21,7 +21,7 @@ import javax.xml.transform.TransformerException;
 
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.prestashop.app.AppPrestaShopService;
-import com.axelor.apps.prestashop.service.PrestaShopWebserviceException;
+import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;

@@ -29,8 +29,8 @@ public interface IExceptionMessage {
 	/**
 	 * Batch operation
 	 */
-	static final String BATCH_IMPORT = /*$$(*/ "Import completed with" /*)*/;
-	static final String BATCH_EXPORT = /*$$(*/ "Export completed with" /*)*/;
+	static final String BATCH_IMPORT = /*$$(*/ "Import completed" /*)*/;
+	static final String BATCH_EXPORT = /*$$(*/ "Export completed" /*)*/;
 
 	/**
 	 * Base batch service
@@ -39,13 +39,7 @@ public interface IExceptionMessage {
 	static final public String PRESTASHOP_BATCH_2 = /*$$(*/ "Batch %s unknown" /*)*/;
 	
 	/**
-	 * Batch status
-	 */
-	static final String BATCH_DONE = /*$$(*/ "succeeded." /*)*/;
-	static final String BATCH_ANOMALY = /*$$(*/ "anomalies." /*)*/;
-	
-	/**
-	 * Batch status
+	 * Batch log
 	 */
 	static final String INVALID_CURRENCY = /*$$(*/ "Currency code /name is null or invalid" /*)*/;
 	static final String INVALID_COUNTRY = /*$$(*/ "Country is null or invalid" /*)*/;

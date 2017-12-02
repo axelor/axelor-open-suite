@@ -27,7 +27,7 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.prestashop.batch.PrestaShopBatchService;
 import com.axelor.apps.prestashop.db.PrestaShopBatch;
 import com.axelor.apps.prestashop.db.repo.PrestaShopBatchRepository;
-import com.axelor.apps.prestashop.service.PrestaShopWebserviceException;
+import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.axelor.apps.prestashop.service;
+package com.axelor.apps.prestashop.service.library;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -28,8 +28,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -64,6 +66,10 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
+import wslite.json.JSONArray;
+import wslite.json.JSONException;
+import wslite.json.JSONObject;
 
 public class PSWebServiceClient {
     
@@ -316,7 +322,74 @@ public class PSWebServiceClient {
             throw new PrestaShopWebserviceException("Response XML Parse exception: "+ex.toString());
         }            
             
-    }    
+    }   
+    
+    @SuppressWarnings({ "rawtypes", "deprecation" })
+	public JSONObject getJson(Map<String,Object> opt) throws PrestaShopWebserviceException, JSONException
+    {
+        String completeUrl;
+        boolean flag = false;
+        
+            if (opt.containsKey("url")){
+                    completeUrl = (String) opt.get("url");
+            }
+            else if (opt.containsKey("resource"))
+            {
+            	completeUrl = this.url +"/api/"+ opt.get("resource");
+                    if (opt.containsKey("id"))
+                            completeUrl += "/"+opt.get("id");
+                    
+                    String[] params = new String[]{"filter", "display", "sort", "limit", "id_shop", "id_group_shop"};
+                    for (String p : params)
+                        if (opt.containsKey(p))
+                            try {
+                            	flag = true;
+                            	Object param = opt.get(p);
+                            	
+                            	if (param instanceof HashMap) {
+                            		Map xparams = (HashMap) param;
+                            		Iterator it = xparams.entrySet().iterator();
+                            	    while (it.hasNext()) {
+                            	        Map.Entry pair = (Map.Entry)it.next();
+                            	        completeUrl += "?"+p+"["+pair.getKey()+"]="+URLEncoder.encode((String)pair.getValue(), "UTF-8")+"&";
+                            	        it.remove(); // avoids a ConcurrentModificationException
+                            	    }
+                            	} else {
+                            		completeUrl += "?"+p+"="+URLEncoder.encode((String)opt.get(p), "UTF-8")+"&";
+                            	}
+                            } catch (UnsupportedEncodingException ex) {
+                                throw new PrestaShopWebserviceException("URI encodin excepton: "+ex.toString());
+                            }
+                      
+            }else{
+                throw new PrestaShopWebserviceException("Bad parameters given");
+            }
+        
+            if(flag) {
+            	completeUrl += "output_format=JSON";
+            } else {
+            	completeUrl += "?output_format=JSON";
+            }
+            
+        HttpGet httpget = new HttpGet(completeUrl);
+        HashMap<String,Object> resoult = this.executeRequest(httpget);
+        this.checkStatusCode((int) resoult.get("status_code"));// check the response validity
+
+        try {  
+        	String jsonStr = IOUtils.toString((InputStream) resoult.get("response"));
+        	JSONObject json = null;
+        
+        	if(!jsonStr.equals("[]")) {
+        		json = new JSONObject(jsonStr);
+        	}
+            response.close();
+            return json;
+            
+        } catch (IOException ex) {
+            throw new PrestaShopWebserviceException("Response JSON Parse exception: "+ex.toString());
+        }            
+            
+    }   
     
     /**
      * Head method (HEAD) a resource
@@ -379,10 +452,10 @@ public class PSWebServiceClient {
             String completeUrl;
             if (opt.containsKey("url"))
                     completeUrl = (String) opt.get("url");
-            else if (((opt.containsKey("resource") && opt.containsKey("id"))  || opt.containsKey("url")) && opt.containsKey("putXml"))
+            else if (((opt.containsKey("resource") && opt.containsKey("id"))  || opt.containsKey("url")) && opt.containsKey("postXml"))
             {
                     completeUrl = (opt.containsKey("url")) ? (String)opt.get("url") : this.url+"/api/"+opt.get("resource")+"/"+opt.get("id") ;
-                    xml = (String) opt.get("putXml");
+                    xml = (String) opt.get("postXml");
                     if (opt.containsKey("id_shop"))
                             completeUrl += "&id_shop="+opt.get("id_shop");
                     if (opt.containsKey("id_group_shop"))
@@ -519,5 +592,22 @@ public class PSWebServiceClient {
         
         return xmlString;
     }
-   
+    
+    public List<Integer> fetchApiIds(String resources) throws PrestaShopWebserviceException, JSONException {
+
+    	new PSWebServiceClient(this.url, this.key);
+    	HashMap<String, Object> opt = new HashMap<String, Object>();
+		opt.put("resource", resources);
+		JSONObject schema = this.getJson(opt);
+		List<Integer> ids = new ArrayList<Integer>();
+		
+		JSONArray jsonMainArr = schema.getJSONArray(resources); 
+		
+		for (int i = 0; i < jsonMainArr.length(); i++) { 
+		     JSONObject childJSONObject = jsonMainArr.getJSONObject(i);
+		     ids.add(childJSONObject.getInt("id"));
+		}
+		
+		return ids;
+	}
 }

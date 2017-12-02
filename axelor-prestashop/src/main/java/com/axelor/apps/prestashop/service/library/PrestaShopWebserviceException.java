@@ -15,19 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.prestashop.service.exports.batch;
+package com.axelor.apps.prestashop.service.library;
 
-import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.prestashop.exports.PrestaShopServiceExport;
-import com.google.inject.Inject;
-
-public abstract class BatchStrategyExport extends AbstractBatch {
-	
-	@Inject
-	protected PrestaShopServiceExport prestaShopServiceExport;
-	
-	protected BatchStrategyExport(PrestaShopServiceExport prestaShopServiceExport) {
-		super();
-		this.prestaShopServiceExport = prestaShopServiceExport;
-	}
+@SuppressWarnings("serial")
+public class PrestaShopWebserviceException extends Exception {
+    
+    public PrestaShopWebserviceException(String massage){
+        super(massage);
+    }
+    
+    public PrestaShopWebserviceException(String massage,PSWebServiceClient ws) {
+        super(massage + '\n'+ws.getResponseContent());
+    }
 }
