@@ -51,8 +51,6 @@
 					    <field name="companySet"  widget="TagSelect" canNew="false" grid-view="company-grid" form-view="company-form"/>
 					    <field name="user" form-view="user-form" grid-view="user-grid"/>
 					    <field name="team" form-view="team-form" grid-view="team-grid"/>
-		
-			
 					</editor>
 				</field>
 			</panel>
