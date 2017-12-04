@@ -375,6 +375,7 @@
 	        <field name="team" onSelect="action-sale-order-domain-on-team" 
 	        	form-view="team-form" grid-view="team-grid"
 	        	if="__config__.app.getApp('base').getTeamManagement()" />
+	        <field name="opportunity" colSpan="12" readonly="true" form-view="opportunity-form" grid-view="opportunity-grid" />
 	    </panel>
 	    <panel name="financialTerms" title="Financial terms" colSpan="12" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" >   
 	        <field name="paymentMode" onChange="action-sale-order-method-fill-company-bank-details" domain="self.inOutSelect = 1"  form-view="payment-mode-form" grid-view="payment-mode-grid"/>
