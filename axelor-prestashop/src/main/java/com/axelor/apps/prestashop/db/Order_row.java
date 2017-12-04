@@ -15,19 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.prestashop.service.exports.batch;
 
-import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.prestashop.exports.PrestaShopServiceExport;
-import com.google.inject.Inject;
+package com.axelor.apps.prestashop.db;
 
-public abstract class BatchStrategyExport extends AbstractBatch {
+public class Order_row {
+
+	private String product_id;
 	
-	@Inject
-	protected PrestaShopServiceExport prestaShopServiceExport;
+
+	public String getProduct_id ()
+	{
+		return product_id;
+	}
 	
-	protected BatchStrategyExport(PrestaShopServiceExport prestaShopServiceExport) {
-		super();
-		this.prestaShopServiceExport = prestaShopServiceExport;
+	public void setProduct_id (String product_id)
+	{
+		this.product_id = product_id;
+	}
+
+	@Override
+	public String toString() {
+		return "Order_row [product_id=" + product_id + "]";
 	}
 }

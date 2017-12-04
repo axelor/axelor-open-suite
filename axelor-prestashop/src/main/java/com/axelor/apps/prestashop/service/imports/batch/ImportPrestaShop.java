@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
-import com.axelor.apps.prestashop.service.imports.PrestaShopServiceImport;
+import com.axelor.apps.prestashop.imports.PrestaShopServiceImport;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -59,7 +59,7 @@ public class ImportPrestaShop extends BatchStrategyImport {
 				i++;
 				
 			} catch (Exception e) {
-			
+
 				incrementAnomaly();
 				LOG.error("Bug(Anomalie) généré(e) pour le rappel de l'évènement {}", batch.getId());
 				
@@ -77,8 +77,6 @@ public class ImportPrestaShop extends BatchStrategyImport {
 	protected void stop() {
 
 		String comment = I18n.get(IExceptionMessage.BATCH_IMPORT);
-		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_DONE)+"\n", batch.getDone());
-		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_ANOMALY), batch.getAnomaly());
 		
 		super.stop();
 		addComment(comment);

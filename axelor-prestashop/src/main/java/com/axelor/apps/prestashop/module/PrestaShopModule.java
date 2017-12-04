@@ -20,10 +20,42 @@ package com.axelor.apps.prestashop.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.prestashop.app.AppPrestaShopService;
 import com.axelor.apps.prestashop.app.AppPrestaShopServiceImpl;
-import com.axelor.apps.prestashop.service.exports.PrestaShopServiceExport;
-import com.axelor.apps.prestashop.service.exports.PrestaShopServiceExportImpl;
-import com.axelor.apps.prestashop.service.imports.PrestaShopServiceImport;
-import com.axelor.apps.prestashop.service.imports.PrestaShopServiceImportImpl;
+import com.axelor.apps.prestashop.exports.PrestaShopServiceExport;
+import com.axelor.apps.prestashop.exports.PrestaShopServiceExportImpl;
+import com.axelor.apps.prestashop.exports.service.ExportAddressService;
+import com.axelor.apps.prestashop.exports.service.ExportAddressServiceImpl;
+import com.axelor.apps.prestashop.exports.service.ExportCategoryService;
+import com.axelor.apps.prestashop.exports.service.ExportCategoryServiceImpl;
+import com.axelor.apps.prestashop.exports.service.ExportCountryService;
+import com.axelor.apps.prestashop.exports.service.ExportCountryServiceImpl;
+import com.axelor.apps.prestashop.exports.service.ExportCurrencyService;
+import com.axelor.apps.prestashop.exports.service.ExportCurrencyServiceImpl;
+import com.axelor.apps.prestashop.exports.service.ExportCustomerService;
+import com.axelor.apps.prestashop.exports.service.ExportCustomerServiceImpl;
+import com.axelor.apps.prestashop.exports.service.ExportOrderDetailService;
+import com.axelor.apps.prestashop.exports.service.ExportOrderDetailServiceImpl;
+import com.axelor.apps.prestashop.exports.service.ExportOrderService;
+import com.axelor.apps.prestashop.exports.service.ExportOrderServiceImpl;
+import com.axelor.apps.prestashop.exports.service.ExportProductService;
+import com.axelor.apps.prestashop.exports.service.ExportProductServiceImpl;
+import com.axelor.apps.prestashop.imports.PrestaShopServiceImport;
+import com.axelor.apps.prestashop.imports.PrestaShopServiceImportImpl;
+import com.axelor.apps.prestashop.imports.service.ImportAddressService;
+import com.axelor.apps.prestashop.imports.service.ImportAddressServiceImpl;
+import com.axelor.apps.prestashop.imports.service.ImportCategoryService;
+import com.axelor.apps.prestashop.imports.service.ImportCategoryServiceImpl;
+import com.axelor.apps.prestashop.imports.service.ImportCountryService;
+import com.axelor.apps.prestashop.imports.service.ImportCountryServiceImpl;
+import com.axelor.apps.prestashop.imports.service.ImportCurrencyService;
+import com.axelor.apps.prestashop.imports.service.ImportCurrencyServiceImpl;
+import com.axelor.apps.prestashop.imports.service.ImportCustomerService;
+import com.axelor.apps.prestashop.imports.service.ImportCustomerServiceImpl;
+import com.axelor.apps.prestashop.imports.service.ImportOrderDetailService;
+import com.axelor.apps.prestashop.imports.service.ImportOrderDetailServiceImpl;
+import com.axelor.apps.prestashop.imports.service.ImportOrderService;
+import com.axelor.apps.prestashop.imports.service.ImportOrderServiceImpl;
+import com.axelor.apps.prestashop.imports.service.ImportProductService;
+import com.axelor.apps.prestashop.imports.service.ImportProductServiceImpl;
 
 public class PrestaShopModule extends AxelorModule {
 
@@ -32,5 +64,22 @@ public class PrestaShopModule extends AxelorModule {
     	bind(AppPrestaShopService.class).to(AppPrestaShopServiceImpl.class);
         bind(PrestaShopServiceImport.class).to(PrestaShopServiceImportImpl.class);
         bind(PrestaShopServiceExport.class).to(PrestaShopServiceExportImpl.class);
+        bind(ExportCurrencyService.class).to(ExportCurrencyServiceImpl.class);
+        bind(ExportCountryService.class).to(ExportCountryServiceImpl.class);
+        bind(ExportCustomerService.class).to(ExportCustomerServiceImpl.class);
+        bind(ExportAddressService.class).to(ExportAddressServiceImpl.class);
+        bind(ExportCategoryService.class).to(ExportCategoryServiceImpl.class);
+        bind(ExportProductService.class).to(ExportProductServiceImpl.class);
+        bind(ExportOrderService.class).to(ExportOrderServiceImpl.class);
+        bind(ExportOrderDetailService.class).to(ExportOrderDetailServiceImpl.class);
+       
+        bind(ImportCurrencyService.class).to(ImportCurrencyServiceImpl.class);
+        bind(ImportCountryService.class).to(ImportCountryServiceImpl.class);
+        bind(ImportCustomerService.class).to(ImportCustomerServiceImpl.class);
+        bind(ImportAddressService.class).to(ImportAddressServiceImpl.class);
+        bind(ImportCategoryService.class).to(ImportCategoryServiceImpl.class);
+        bind(ImportProductService.class).to(ImportProductServiceImpl.class);
+        bind(ImportOrderService.class).to(ImportOrderServiceImpl.class);
+        bind(ImportOrderDetailService.class).to(ImportOrderDetailServiceImpl.class);
     }
 }

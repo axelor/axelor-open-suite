@@ -15,19 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.prestashop.service.exports.batch;
 
-import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.prestashop.exports.PrestaShopServiceExport;
-import com.google.inject.Inject;
+package com.axelor.apps.prestashop.db;
 
-public abstract class BatchStrategyExport extends AbstractBatch {
+public class Language {
 	
-	@Inject
-	protected PrestaShopServiceExport prestaShopServiceExport;
+	private LanguageDetails language;
+
+	public LanguageDetails getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(LanguageDetails language) {
+		this.language = language;
+	}
 	
-	protected BatchStrategyExport(PrestaShopServiceExport prestaShopServiceExport) {
-		super();
-		this.prestaShopServiceExport = prestaShopServiceExport;
+	@Override
+	public String toString() {
+		return "Language [language=" + language + "]";
 	}
 }

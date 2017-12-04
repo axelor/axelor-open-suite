@@ -15,19 +15,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.prestashop.service.exports.batch;
+package com.axelor.apps.prestashop.db;
 
-import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.prestashop.exports.PrestaShopServiceExport;
-import com.google.inject.Inject;
+public class Order_histories {
+	
+	private String id_order;
+	
+	private String id_order_state;
 
-public abstract class BatchStrategyExport extends AbstractBatch {
-	
-	@Inject
-	protected PrestaShopServiceExport prestaShopServiceExport;
-	
-	protected BatchStrategyExport(PrestaShopServiceExport prestaShopServiceExport) {
-		super();
-		this.prestaShopServiceExport = prestaShopServiceExport;
+	public String getId_order() {
+		return id_order;
+	}
+
+	public void setId_order(String id_order) {
+		this.id_order = id_order;
+	}
+
+	public String getId_order_state() {
+		return id_order_state;
+	}
+
+	public void setId_order_state(String id_order_state) {
+		this.id_order_state = id_order_state;
+	}
+
+	@Override
+	public String toString() {
+		return "Order_histories [id_order=" + id_order + ", id_order_state=" + id_order_state + "]";
 	}
 }
