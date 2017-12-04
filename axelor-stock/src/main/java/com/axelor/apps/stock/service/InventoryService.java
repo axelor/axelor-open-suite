@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -30,14 +32,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.app.AppSettings;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.MetaFile;
-import com.axelor.meta.db.repo.MetaFileRepository;
-import com.google.common.base.Joiner;
-import com.google.common.base.Throwables;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
@@ -63,10 +62,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class InventoryService {
 
@@ -487,7 +485,8 @@ public class InventoryService {
 
 		log.debug("File Located at: {}" , path);
 
-		CsvTool.csvWriter(filePath,fileName,',','"',null,list);
+		String[] headers = {"product.name", "product.code", "", "trackingNumber.trackingNumberSeq", "currentQty", "", "realQty", "description"};
+		CsvTool.csvWriter(filePath, fileName, ';', '"', headers, list);
 
 		try (InputStream is = new FileInputStream(file)) {
 			Beans.get(MetaFiles.class).attach(is, fileName, inventory);

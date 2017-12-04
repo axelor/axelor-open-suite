@@ -36,6 +36,7 @@ import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -92,14 +93,17 @@ public class InventoryController {
 
 	}
 
-	public void exportInventory(ActionRequest request, ActionResponse response) throws IOException {
+	public void exportInventory(ActionRequest request, ActionResponse response) {
+		try {
+			Inventory inventory = request.getContext().asType(Inventory.class);
+			inventory = inventoryRepo.find(inventory.getId());
 
-		Inventory inventory = request.getContext().asType(Inventory.class);
-		inventory = inventoryRepo.find(inventory.getId());
+			inventoryService.exportInventoryAsCSV(inventory);
 
-		inventoryService.exportInventoryAsCSV(inventory);
-
-		response.setReload(true);
+			response.setReload(true);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 	
 	public void importFile(ActionRequest request, ActionResponse response) throws IOException, AxelorException {
