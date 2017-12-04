@@ -21,12 +21,16 @@
               method="createWizardDomain"/>
     </action-method>
 
-
     <action-view name="action-generate-configurator-creator-view-show-configurator"
                  model="com.axelor.apps.sale.db.Configurator"
                  title="Show Configurator">
         <view type="form" name="configurator-wizard-form"/>
+        <view-param name="popup" value="reload"/>
+		<view-param name="popup-save" value="false"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="false"/>
         <context name="_configuratorCreator" expr="eval: configuratorCreator"/>
         <context name="_saleOrderId" expr="eval: _saleOrderId"/>
     </action-view>
+    
 </object-views>

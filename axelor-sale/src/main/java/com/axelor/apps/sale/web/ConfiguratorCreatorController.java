@@ -19,15 +19,11 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
-import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.ConfiguratorCreatorService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.script.ScriptBindings;
 import com.google.inject.Inject;
 
 public class ConfiguratorCreatorController {

@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.sale.service;
 
-import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.auth.db.User;

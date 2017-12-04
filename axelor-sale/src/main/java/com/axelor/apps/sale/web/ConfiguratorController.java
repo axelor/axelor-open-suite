@@ -114,7 +114,7 @@ public class ConfiguratorController {
         try {
             configuratorService.addLineToSaleOrder(configurator, saleOrder,
                     jsonAttributes, jsonIndicators);
-            response.setSignal("refresh-app",true);
+            response.setCanClose(true);
         } catch (Exception e) {
             TraceBackService.trace(response, e);
         }
