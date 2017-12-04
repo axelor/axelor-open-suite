@@ -128,20 +128,15 @@
 		
 		<panel sidebar="true" title="Linked to" name="meetingLinked">
 			<field name="partner"  domain="(self.isCustomer = true OR self.isSupplier = true OR self.isCarrier = true) AND self.isEmployee = false"
-				onChange="action-meeting-set-location-partner, action-partner-attrs-hide-contact-partner, action-event-record-set-main-partner"
+				onChange="action-meeting-set-location-partner, action-partner-attrs-hide-contact-partner"
 				form-view="partner-form" grid-view="partner-grid"/>
-			<field name="contactPartner" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+			<field name="contactPartner" onChange="action-event-group-set-partner" onSelect="action-event-attrs-contact-partner-domain"
+				domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<field name="lead" onChange="action-meeting-set-location-lead" form-view="lead-form" grid-view="lead-grid"/>
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
 			<field name="campaign" form-view="campaign-form" grid-view="campaign-grid"/>	
 			<field name="supplierPartner" domain="self.isSupplier = true" form-view="partner-supplier-form" grid-view="partner-supplier-grid" />
 			<field name="relatedToSelectId" hidden="true" />
-			<field name="mainPartner" type="many-to-one" target="com.axelor.apps.base.db.Partner" hidden="true"/>
-			<field name="mainPartner.description" hidden="true"/>
-			<field name="mainPartner.source" hidden="true"/>
-			<field name="mainPartner.user" hidden="true"/>
-			<field name="mainPartner.team" hidden="true"/>
-			<field name="mainPartner.currency" hidden="true"/>
 		</panel>
 		
 		<panel>
@@ -156,7 +151,6 @@
 	</action-group>
 	
 	<action-group name="action-group-crm-event-onload">
-		<action name="action-event-record-set-main-partner"/>
 		<action name="action-partner-attrs-hide-contact-partner"/>
 		<action name="action-partner-method-check-rights" if="calendar != null"/>
 		<action name="action-event-hide-private" if="typeSelect == 2" />
@@ -186,7 +180,7 @@
     	<call class="com.axelor.apps.crm.web.EventController" method="addEmailGuest"/>
     </action-method>
     
-    <action-group name="action-group-crm-meeting-contactpartner-onchange">
+    <action-group name="action-event-group-set-partner">
     	<action name="action-attrs-client-partner"/>
     	<action name="action-meeting-set-location-contact"/>
     </action-group>
@@ -227,18 +221,14 @@
 	    <context name="_idEvent" expr="eval: id"/>
 	</action-view>
 	
-	<action-record name="action-event-record-set-main-partner" model="com.axelor.apps.crm.db.Event">
-		<field name="mainPartner" expr="eval: clientPartner.isContact ? clientPartner.mainPartner : clientPartner"/>
-	</action-record>
-	
 	<action-view name="action-event-view-create-opportunity" title="Create opportunity" model="com.axelor.apps.crm.db.Opportunity">
     	<view type="form" name="opportunity-form"/>
-    	<context name="_partner" expr="eval: mainPartner"/>
-    	<context name="_partnerDescription" expr="eval: mainPartner.description"/>
-    	<context name="_partnerSource" expr="eval: mainPartner.source"/>
-    	<context name="_partnerUser" expr="eval: mainPartner.user"/>
-    	<context name="_partnerTeam" expr="eval: mainPartner.team"/>
-    	<context name="_partnerCurrency" expr="eval: mainPartner.currency"/>
+    	<context name="_partner" expr="eval: partner != null ? partner : contactPartner.mainPartner"/>
+    	<context name="_partnerDescription" expr="eval: partner != null ? partner.description : contactPartner.mainPartner.description"/>
+    	<context name="_partnerSource" expr="eval: partner != null ? partner.source : contactPartner.mainPartner.source"/>
+    	<context name="_partnerUser" expr="eval: partner != null ? partner.user : contactPartner.mainPartner.user"/>
+    	<context name="_partnerTeam" expr="eval: partner != null ? partner.team : contactPartner.mainPartner.team"/>
+    	<context name="_partnerCurrency" expr="eval: partner != null ? partner.currency : contactPartner.mainPartner.currency"/>
     	<context name="_lead" expr="eval: lead"/>
     </action-view>
     
