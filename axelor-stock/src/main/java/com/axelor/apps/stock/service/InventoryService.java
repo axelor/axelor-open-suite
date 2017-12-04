@@ -206,7 +206,8 @@ public class InventoryService {
 		if (data == null || data.isEmpty()) {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
 		}
-
+		
+		data.remove(0); /* Skip headers */
 		return data;
 
 

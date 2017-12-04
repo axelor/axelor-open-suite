@@ -110,7 +110,7 @@ public class InventoryController {
 		
 		Inventory inventory = inventoryRepo.find( request.getContext().asType(Inventory.class).getId() );
 		MetaFile importFile = inventory.getImportFile();
-		char separator = ',';
+		char separator = ';';
 		
 		inventoryService.importFile(PATH + System.getProperty("file.separator") + importFile.getFilePath() , separator, inventory);
 		response.setFlash(String.format(I18n.get(IExceptionMessage.INVENTORY_8),importFile.getFilePath()));
