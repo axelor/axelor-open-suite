@@ -55,7 +55,7 @@ public class PartnerService {
 		partner.setFirstName(firstName);
 		partner.setFullName(this.computeFullName(partner));
 		partner.setPartnerTypeSelect(IPartner.PARTNER_TYPE_SELECT_ENTERPRISE);
-		partner.setIsCustomer(true);
+		partner.setIsProspect(true);
 		partner.setFixedPhone(fixedPhone);
 		partner.setMobilePhone(mobilePhone);
 		partner.setEmailAddress(emailAddress);
