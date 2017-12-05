@@ -14,7 +14,7 @@
 		onLoad="action-payroll-preparation-method-fill-in-leaves">
 		<panel name="main" >
 			<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" colSpan="4"/>
-			 <field name="employee" colSpan="4" onChange="action-payroll-preparation-record-delete-contract, action-payroll-preparation-group-fill-in"/>
+			 <field name="employee" colSpan="4" onChange="action-payroll-preparation-record-fill-contract, action-payroll-preparation-group-fill-in"/>
 			 <field name="employmentContract" colSpan="4" domain="self.employee = :employee" onChange="action-payroll-preparation-group-fill-in"/> 
 			 <field name="period" onChange="action-payroll-preparation-group-fill-in" colSpan="4"/>
 			 <button name="refreshButton" title="Refresh" onClick="action-payroll-preparation-group-fill-in,save" colSpan="4" colOffset="4"/>
@@ -73,8 +73,8 @@
 		<field name="company" expr="eval: __user__.activeCompany"/>
 	</action-record>
 	
-	<action-record name="action-payroll-preparation-record-delete-contract" model="com.axelor.apps.hr.db.PayrollPreparation">
-		<field name="employmentContract" expr="eval: null" if="employee == null"/>
+	<action-record name="action-payroll-preparation-record-fill-contract" model="com.axelor.apps.hr.db.PayrollPreparation">
+		<field name="employmentContract" expr="eval: employee != null ? employee.mainEmploymentContract : null"/>
 	</action-record>
 	
 	<action-record name="action-payroll-preparation-record-total" model="com.axelor.apps.hr.db.PayrollPreparation">
