@@ -104,7 +104,10 @@ public class TimesheetController {
 			logTime = new BigDecimal(context.get("logTime").toString());
 		
 		Map<String, Object> projectTaskContext = (Map<String, Object>) context.get("projectTask");
-		ProjectTask projectTask = projectTaskRepoProvider.get().find(((Integer) projectTaskContext.get("id")).longValue());
+		ProjectTask  projectTask = null;
+		if (projectTaskContext != null) {
+			projectTask = projectTaskRepoProvider.get().find(((Integer) projectTaskContext.get("id")).longValue());
+		}
 		
 		Map<String, Object> productContext = (Map<String, Object>) context.get("product");
 		Product product = null;
