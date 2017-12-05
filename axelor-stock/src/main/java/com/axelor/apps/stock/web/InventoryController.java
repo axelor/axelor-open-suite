@@ -19,6 +19,7 @@ package com.axelor.apps.stock.web;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.nio.file.Paths;
 
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
@@ -110,9 +111,8 @@ public class InventoryController {
 		
 		Inventory inventory = inventoryRepo.find( request.getContext().asType(Inventory.class).getId() );
 		MetaFile importFile = inventory.getImportFile();
-		char separator = ';';
-		
-		inventoryService.importFile(PATH + System.getProperty("file.separator") + importFile.getFilePath() , separator, inventory);
+
+		inventoryService.importFile(Paths.get(PATH, importFile.getFilePath()), inventory);
 		response.setFlash(String.format(I18n.get(IExceptionMessage.INVENTORY_8),importFile.getFilePath()));
 
 		response.setReload(true);
