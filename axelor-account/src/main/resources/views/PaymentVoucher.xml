@@ -35,7 +35,7 @@
 			<button name="printPaymentVoucher" title="Print receipt" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher" showIf="statusSelect == 3"/>
 		</panel>
 		
-		<panel sidebar="true" name="payboxGroup" title="Paybox" readonlyIf="statusSelect == 3">
+		<panel sidebar="true" hidden="true" name="payboxGroup" title="Paybox" readonlyIf="statusSelect == 3">
 			<panel name="payboxEmail" title="Add an email for payment through Paybox" hidden="true">
 				<label title="The payer doesn't have email attached. Please input/provide the email to use."/>
 				<field name="email" widget="Email"/>
@@ -59,7 +59,7 @@
 		<panel name="payer" title="Payer" itemSpan="12" readonlyIf="statusSelect >= 2">
 			<field name="partner" form-view="partner-form" grid-view="partner-grid" colSpan="4" onChange="action-pv-record-default-partner-inf" onSelect="action-payment-voucher-set-partner-domain" />
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" colSpan="4" widget="SuggestBox" onChange="action-group-account-payment-voucher-paymentmode-onchange" onSelect="action-set-payment-mode-domain"/>
-			<field name="companyBankDetails" form-view="bank-details-form" grid-view="bank-details-grid" colSpan="4" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"/>
+			<field name="companyBankDetails" hidden="true" form-view="bank-details-form" grid-view="bank-details-grid" colSpan="4" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"/>
 
             <field name="paymentMode.typeSelect" colSpan="12" hidden="true" />
             <panel colSpan="12" title="Cheque" showIf="paymentMode.typeSelect == 7">
@@ -76,7 +76,7 @@
 			<button name="loadMoveLines" title="Search elements to pay" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines,save" colSpan="6"/>
 		</panel>
 		
-		<panel hidden="true" readonlyIf="statusSelect == 3 || payboxPaidOk" colSpan="12">
+		<panel readonlyIf="statusSelect == 3 || payboxPaidOk" colSpan="12">
 		 	<field name="paidAmount" colSpan="4"/>
 			<field name="currency" canEdit="false" colSpan="4" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="remainingAmount" readonly="true" colSpan="4"/>
