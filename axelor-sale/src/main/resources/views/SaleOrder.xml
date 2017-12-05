@@ -1047,11 +1047,9 @@
   		<context name="_status" expr="eval: status"/>
 	</action-view>
 	
-	<action-view name="action-sale-order-view-generate-line"
-				 model="com.axelor.apps.base.db.Wizard"
-				 title="Generate configurator">
-        <view type="form" name="generate-configurator-wizard-form"/>
-		<view-param name="popup" value="true"/>
+	<action-view name="action-sale-order-view-generate-line" title="Generate configurator" model="com.axelor.apps.sale.db.Configurator">
+        <view type="form" name="generate-configurator-form"/>
+		<view-param name="popup" value="reload"/>
 		<view-param name="popup-save" value="false"/>
 		<view-param name="show-toolbar" value="false"/>
 		<view-param name="show-confirm" value="false"/>

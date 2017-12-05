@@ -36,32 +36,31 @@
         </panel>
     </form>
 
-    <form name="configurator-wizard-form" title="Configurator" readonlyIf="productId"
-          model="com.axelor.apps.sale.db.Configurator"
-          onNew="action-configurator-record-on-new"
-          onLoad="action-configurator-update-indicators,save">
-        <panel>
-            <field name="productId" readonly="true" showTitle="false"
-                   showIf="productId" colSpan="12">
-                <viewer>
-                    <![CDATA[
-			 			<h3>
-			             <span class="label label-important" x-translate>Product generated</span>
-			           </h3>
-					]]>
-                </viewer>
-            </field>
-            <field name="configuratorCreator" domain="self.isActive = true"/>
+    <form name="generate-configurator-form" model="com.axelor.apps.sale.db.Configurator" title="Generate configurator">
+        <panel name="main">
+            <field name="configuratorCreator" form-view="configurator-creator-form" grid-view="configurator-creator-grid"
+                   onSelect="action-configurator-method-creator-domain"/>
+            <button name="generate" title="Generate"
+            		onClick="action-configurator-group-create-configurator"/>
+        </panel>
+        <panel name="configurator" hidden="true" colSpan="12">
+       		<field name="configuratorCreator" readonly="true" css="bold"/>
+       		<button name="validate" title="Validate and generate the line" colSpan="6"
+            		onClick="save,action-configurator-method-generate"/>
+       	</panel>
+       	<panel name="attributes" hidden="true">
             <field name="attributes" colSpan="12"/>
         </panel>
-        <panel readonly="true">
-            <field name="indicators" colSpan="12"/>
-        </panel>
-        <panel>
-            <button name="validate" title="Validate and generate the line"
-                    onClick="save,action-configurator-wizard-method-generate"/>
+       	<panel name="indicators" hidden="true">
+            <field name="indicators" colSpan="12" readonly="true"/>
         </panel>
     </form>
+    
+    <action-group name="action-configurator-group-create-configurator">
+    	<action name="action-configurator-attrs-create-configurator"/>
+    	<action name="save"/>
+    	<action name="action-configurator-update-indicators"/>
+    </action-group>
 
     <action-method name="action-configurator-update-indicators">
         <call class="com.axelor.apps.sale.web.ConfiguratorController" method="updateIndicators"/>
@@ -86,12 +85,19 @@
     </action-attrs>
 
     <action-method name="action-configurator-method-creator-domain">
-        <call class="com.axelor.apps.sale.web.ConfiguratorController"
-              method="createDomainForCreator"/>
+        <call class="com.axelor.apps.sale.web.ConfiguratorController" method="createDomainForCreator"/>
     </action-method>
 
-    <action-method name="action-configurator-wizard-method-generate">
+    <action-method name="action-configurator-method-generate">
         <call class="com.axelor.apps.sale.web.ConfiguratorController" method="generateForSaleOrder"/>
     </action-method>
+    
+    <action-attrs name="action-configurator-attrs-create-configurator">
+    	<attribute name="hidden" for="configurator" expr="false"/>
+    	<attribute name="hidden" for="attributes" expr="false"/>
+    	<attribute name="hidden" for="indicators" expr="false"/>
+    	<attribute name="hidden" for="main" expr="true"/>
+    	<attribute name="title" for="generate-configurator-form" expr="configuratorCreator"/>
+    </action-attrs>
 
 </object-views>

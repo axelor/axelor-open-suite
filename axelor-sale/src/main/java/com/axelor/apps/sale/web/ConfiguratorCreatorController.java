@@ -39,19 +39,6 @@ public class ConfiguratorCreatorController {
     }
 
     /**
-     * Called from the sale order generate configurator wizard form.
-     * @param request
-     * @param response
-     */
-    public void createWizardDomain(ActionRequest request, ActionResponse response) {
-        response.setAttr(
-                "configuratorCreator",
-                "domain",
-                configuratorCreatorService.getConfiguratorCreatorDomain()
-        );
-    }
-
-    /**
      * Called from the configurator creator form on attributes changes
      * @param request
      * @param response
