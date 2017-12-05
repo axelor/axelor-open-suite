@@ -60,27 +60,32 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 	protected LocationRepository locationRepo;
 	protected StockMoveRepository stockMoveRepo;
 	protected UnitConversionService unitConversionService;
-	
-	@Inject
-	public SaleOrderStockServiceImpl(StockMoveService stockMoveService, StockMoveLineService stockMoveLineService, StockConfigService stockConfigService,
-			LocationRepository locationRepo, StockMoveRepository stockMoveRepo, UnitConversionService unitConversionService)  {
-		
-		this.stockMoveService = stockMoveService;
-		this.stockMoveLineService = stockMoveLineService;
-		this.stockConfigService = stockConfigService;
-		this.locationRepo = locationRepo;
-		this.stockMoveRepo = stockMoveRepo;
-		this.unitConversionService = unitConversionService;
-		
-	}
+	protected SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain;
+
+    @Inject
+    public SaleOrderStockServiceImpl(StockMoveService stockMoveService, StockMoveLineService stockMoveLineService,
+            StockConfigService stockConfigService, LocationRepository locationRepo, StockMoveRepository stockMoveRepo,
+            UnitConversionService unitConversionService,
+            SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain) {
+
+        this.stockMoveService = stockMoveService;
+        this.stockMoveLineService = stockMoveLineService;
+        this.stockConfigService = stockConfigService;
+        this.locationRepo = locationRepo;
+        this.stockMoveRepo = stockMoveRepo;
+        this.unitConversionService = unitConversionService;
+        this.saleOrderLineServiceSupplyChain = saleOrderLineServiceSupplyChain;
+    }
 
 	@Override
 	public StockMove createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
-		if (this.activeStockMoveForSaleOrderExists(saleOrder)) {
-			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXISTS), saleOrder.getSaleOrderSeq()); 
+	    Optional<StockMove> activeStockMove = findActiveStockMoveForSaleOrder(saleOrder);
+
+		if (activeStockMove.isPresent()) {
+			throw new AxelorException(activeStockMove.get(), IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXISTS), saleOrder.getSaleOrderSeq()); 
 		}
-		
+
 		Company company = saleOrder.getCompany();
 
 		if(saleOrder.getSaleOrderLineList() != null && company != null) {
@@ -89,7 +94,11 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
 			for(SaleOrderLine saleOrderLine: saleOrder.getSaleOrderLineList()) {
 				if(saleOrderLine.getProduct() != null || saleOrderLine.getTypeSelect().equals(SaleOrderLineRepository.TYPE_PACK)) {
-					this.createStockMoveLine(stockMove, saleOrderLine, company);
+				    BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
+
+				    if (qty.signum() > 0) {
+	                    createStockMoveLine(stockMove, saleOrderLine, qty);
+				    }
 				}
 			}
 
@@ -160,8 +169,13 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 		}
 	}
 
+	@Override
+    public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine) throws AxelorException  {
+        return createStockMoveLine(stockMove, saleOrderLine, saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine));
+    }
 
-	public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine, Company company) throws AxelorException  {
+    @Override
+	public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine, BigDecimal qty) throws AxelorException  {
 
 		Product product = saleOrderLine.getProduct();
 
@@ -169,7 +183,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 				&& !ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(product.getProductTypeSelect())) {
 			
 			Unit unit = saleOrderLine.getProduct().getUnit();
-			BigDecimal qty = saleOrderLine.getQty();
 			BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
 			if(unit != null && !unit.equals(saleOrderLine.getUnit())){
 				qty = unitConversionService.convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
@@ -192,12 +205,16 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 					stockMove,
 					StockMoveLineService.TYPE_SALES, saleOrderLine.getSaleOrder().getInAti(), taxRate);
 
-			saleOrderLine.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
-			stockMoveLine.setSaleOrderLine(saleOrderLine);
-			stockMoveLine.setReservedQty(saleOrderLine.getReservedQty());
-			if(stockMoveLine != null) {
-				stockMove.addStockMoveLineListItem(stockMoveLine);
+			if (saleOrderLine.getDeliveryState() == 0) {
+	            saleOrderLine.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
 			}
+
+			if (stockMoveLine != null) {
+	            stockMoveLine.setSaleOrderLine(saleOrderLine);
+	            stockMoveLine.setReservedQty(saleOrderLine.getReservedQty());
+	            stockMove.addStockMoveLineListItem(stockMoveLine);
+			}
+
 			return stockMoveLine;
 		}
 		else if(saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK){
@@ -242,9 +259,16 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 		return false;
 	}
 
+    @Override
     public boolean activeStockMoveForSaleOrderExists(SaleOrder saleOrder) {
         return saleOrder.getStockMoveList() != null ? saleOrder.getStockMoveList().stream()
                 .anyMatch(stockMove -> stockMove.getStatusSelect() <= StockMoveRepository.STATUS_PLANNED) : false;
+    }
+
+    @Override
+    public Optional<StockMove> findActiveStockMoveForSaleOrder(SaleOrder saleOrder) {
+        return saleOrder.getStockMoveList() != null ? saleOrder.getStockMoveList().stream()
+                .filter(stockMove -> stockMove.getStatusSelect() <= StockMoveRepository.STATUS_PLANNED).findFirst() : Optional.empty();
     }
 
     @Override

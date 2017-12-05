@@ -93,6 +93,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 		String newStockSeq = super.realize(stockMove, check);
 		AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
 		if (stockMove.getSaleOrder() != null){
+            updateSaleOrderLines(stockMove, true);
 			//Update linked saleOrder delivery state depending on BackOrder's existence
 			SaleOrder saleOrder = stockMove.getSaleOrder();
 			if (newStockSeq != null){
@@ -105,7 +106,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
                     Beans.get(SaleOrderServiceImpl.class).finishSaleOrder(saleOrder);
                 }
             }
-			updateSaleOrderLines(stockMove, true);
 
 			Beans.get(SaleOrderRepository.class).save(saleOrder);
 		}else if (stockMove.getPurchaseOrder() != null){
@@ -165,14 +165,14 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 			if (stockMoveLine.getSaleOrderLine() != null) {
 				SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
 				if (realize) {
-					saleOrderLine.setDeliveredQuantities(saleOrderLine.getDeliveredQuantities().add(stockMoveLine.getRealQty()));
+					saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().add(stockMoveLine.getRealQty()));
 				} else {
-					saleOrderLine.setDeliveredQuantities(saleOrderLine.getDeliveredQuantities().subtract(stockMoveLine.getRealQty()));
+					saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().subtract(stockMoveLine.getRealQty()));
 				}
-				if (saleOrderLine.getDeliveredQuantities().signum() == 0) {
+				if (saleOrderLine.getDeliveredQty().signum() == 0) {
 					saleOrderLine.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
 				}
-				else if (saleOrderLine.getDeliveredQuantities().compareTo(saleOrderLine.getQty()) < 0) {
+				else if (saleOrderLine.getDeliveredQty().compareTo(saleOrderLine.getQty()) < 0) {
 					saleOrderLine.setDeliveryState(SaleOrderRepository.STATE_PARTIALLY_DELIVERED);
 				}
 				else {

@@ -32,6 +32,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
 import java.math.BigDecimal;
@@ -68,8 +69,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, BigDecimal unitPrice, Unit unit, StockMove stockMove, int type , boolean taxed, BigDecimal taxRate) throws AxelorException {
 
 		if(product != null) {
-			BigDecimal unitPriceUntaxed = BigDecimal.ZERO;
-			BigDecimal unitPriceTaxed = BigDecimal.ZERO;
+			BigDecimal unitPriceUntaxed;
+			BigDecimal unitPriceTaxed;
 			if(taxed){
 				unitPriceTaxed = unitPrice.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 				unitPriceUntaxed = unitPrice.divide(taxRate.add(BigDecimal.ONE), appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
@@ -174,6 +175,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	 */
 	@Override
 	public StockMoveLine createStockMoveLine(Product product, String  productName, String description, BigDecimal quantity, BigDecimal unitPriceUntaxed, BigDecimal unitPriceTaxed, Unit unit, StockMove stockMove, TrackingNumber trackingNumber) {
+        Preconditions.checkArgument(quantity != null && quantity.signum() > 0);
 
 		StockMoveLine stockMoveLine = new StockMoveLine();
 		stockMoveLine.setStockMove(stockMove);

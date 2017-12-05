@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.math.BigDecimal;
+import java.util.Optional;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -37,7 +40,9 @@ public interface SaleOrderStockService {
 
 	public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException;
 	
-	public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine, Company company) throws AxelorException;
+	public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine) throws AxelorException;
+
+	public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine, BigDecimal qty) throws AxelorException;
 
 	public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException;
 
@@ -48,6 +53,14 @@ public interface SaleOrderStockService {
 	 * @return
 	 */
     public boolean activeStockMoveForSaleOrderExists(SaleOrder saleOrder);
+
+    /**
+     * Find active stock move for sale order.
+     * 
+     * @param saleOrder
+     * @return
+     */
+    Optional<StockMove> findActiveStockMoveForSaleOrder(SaleOrder saleOrder);
 
     /**
      * Update delivery state by checking delivery states on the sale order lines.
