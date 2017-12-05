@@ -44,9 +44,15 @@
             		onClick="action-configurator-group-create-configurator"/>
         </panel>
         <panel name="configurator" hidden="true" colSpan="12">
-       		<field name="configuratorCreator" readonly="true" css="bold"/>
-       		<button name="validate" title="Validate and generate the line" colSpan="6"
-            		onClick="save,action-configurator-method-generate"/>
+       		<field name="configuratorCreator" readonly="true" showTitle="false">
+       			<viewer depends="configuratorCreator.name">
+       				<![CDATA[
+			 			<h3>{{configuratorCreator.name}}</h3>
+					]]>
+       			</viewer>
+       		</field>
+       		<button name="validate" title="Validate and generate the line" colSpan="4" colOffset="8"
+            		onClick="save,action-configurator-method-generate"/>   
        	</panel>
        	<panel name="attributes" hidden="true">
             <field name="attributes" colSpan="12"/>
@@ -54,6 +60,10 @@
        	<panel name="indicators" hidden="true">
             <field name="indicators" colSpan="12" readonly="true"/>
         </panel>
+<!--         <panel name="validate" hidden="true" > -->
+<!-- 			<button name="validate" title="Validate and generate the line" colSpan="6" colOffset="6" -->
+<!--             		onClick="save,action-configurator-method-generate"/>         -->
+<!--         </panel> -->
     </form>
     
     <action-group name="action-configurator-group-create-configurator">
@@ -96,6 +106,7 @@
     	<attribute name="hidden" for="configurator" expr="false"/>
     	<attribute name="hidden" for="attributes" expr="false"/>
     	<attribute name="hidden" for="indicators" expr="false"/>
+    	<attribute name="hidden" for="validate" expr="false"/>
     	<attribute name="hidden" for="main" expr="true"/>
     	<attribute name="title" for="generate-configurator-form" expr="configuratorCreator"/>
     </action-attrs>
