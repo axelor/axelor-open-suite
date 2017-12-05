@@ -92,7 +92,7 @@
 	<form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner"
 		  onNew="action-group-base-partner-onnew"
 		  onLoad="action-group-partner-onload"
-		  onSave="action-partner-method-check-name,action-partner-iban-check-on-save" width="large">
+		  onSave="action-partner-iban-check-on-save" width="large">
 		<menubar>
 			<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
 				<item title="Print Informations" action="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
@@ -130,11 +130,12 @@
 						<editor x-show-titles="false">
 							<field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="4"/>
 							<spacer colSpan="8"/>
-							<field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
-							<field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="3"/>
+							<field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
+							<field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="3"/>
 							<field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
 						</editor>
 					</field>
+					<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
 					<button name="$balance" title="Balance" colSpan="3" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button" hideIf="!$readonly()"/>
 				</panel>
 				<field name="isProspect"  colSpan="2" widget="InlineCheckbox" hideIf="isContact || $readonly()" onChange="action-partner-attrs-unset-customer,action-partner-record-unset-factor"/>
@@ -357,8 +358,8 @@
 
 	<form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner"
 		  onNew="action-partner-contact-record-default"
-		  onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url"
-		  onSave="action-partner-method-check-same-name,save,action-partner-method-set-user-partner,action-partner-method-add-contact-partner">
+		  onLoad="action-partner-method-check-contact-name,action-partner-attrs-change-name,action-partner-method-set-social-network-url"
+		  onSave="save,action-partner-method-set-user-partner,action-partner-method-add-contact-partner">
 		<toolbar>
 			<button name="convertToIndividualPartner" title="Convert into an individual partner" icon="fa-user" onClick="action-convert-into-individual-partner,close" showIf="id != null &amp;&amp; isContact == true &amp;&amp; mainPartner == null"/>
 		</toolbar>
@@ -395,10 +396,11 @@
 				<field name="fullName" css="bold" showTitle="false" colSpan="12">
 					<editor x-show-titles="false">
 						<field name="titleSelect" placeholder="Civility" colSpan="2"/>
-						<field name="name" css="highlight" placeholder="Name"   onChange="action-partner-method-check-same-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5"/>
-						<field name="firstName" css="highlight" placeholder="First name"  onChange="action-partner-method-check-same-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5"/>
+						<field name="name" css="highlight" placeholder="Name"   onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5"/>
+						<field name="firstName" css="highlight" placeholder="First name"  onChange="action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5"/>
 					</editor>
 				</field>
+				<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
 				<panel name="company" title="Company" colSpan="12" >
 					<field name="mainPartner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 				</panel>
@@ -616,6 +618,7 @@
 		<action name="action-partner-record-set-balance"/>
 		<action name="action-partner-attrs-name-balance"/>
 		<action name="action-partner-attrs-partner-seq-editable"/>
+        <action name="action-partner-method-check-name"/>
 	</action-group>
 
 	<action-group name="action-group-base-partner-onnew">
@@ -631,7 +634,7 @@
 		<action name="action-partner-record-full-name"/>
 	</action-group>
 
-	<action-method name="action-partner-method-check-same-name">
+	<action-method name="action-partner-method-check-contact-name">
 		<call class="com.axelor.apps.base.web.PartnerController" method="checkContactName"/>
 	</action-method>
 

@@ -291,4 +291,58 @@ public class PartnerService {
 		addPartnerAddress(partner, partner.getContactAddress(), true, false, false);
 		partner.setContactAddress(null);
 	}
+
+	/**
+	 * Check if the partner in view has a duplicate.
+	 * @param partner a context partner object
+	 * @return if there is a duplicate partner
+	 */
+	public boolean isThereDuplicatePartner(Partner partner) {
+		String newName = partner.getName();
+		if (Strings.isNullOrEmpty(newName)) {
+		    return false;
+		}
+		Long partnerId = partner.getId();
+		if (partnerId == null) {
+			Partner existingPartner = partnerRepo.all()
+					.filter("self.isContact = false and lower(self.name) = lower(?1)", newName)
+					.fetchOne();
+			return existingPartner != null;
+		} else {
+			Partner existingPartner = partnerRepo.all()
+					.filter("self.isContact = false " +
+							"and lower(self.name) = lower(?1) " +
+							"and self.id != ?2", newName, partnerId)
+					.fetchOne();
+			return existingPartner != null;
+		}
+	}
+
+	/**
+	 * Check if the contact partner in view has a duplicate.
+	 * @param partner a context partner object
+	 * @return if there is a duplicate partner
+	 */
+	public boolean isThereDuplicateContactPartner(Partner partner) {
+		String newName = partner.getName();
+		if (Strings.isNullOrEmpty(newName)) {
+			return false;
+		}
+		Long partnerId = partner.getId();
+		if (partnerId == null) {
+			Partner existingPartner = partnerRepo.all()
+					.filter("self.isContact = true and lower(self.name) = lower(?1) and lower(self.firstName) = lower(?2)", partner.getName(), partner.getFirstName())
+					.fetchOne();
+			return existingPartner != null;
+		} else {
+			Partner existingPartner = partnerRepo.all()
+					.filter("self.isContact = true " +
+							"and lower(self.name) = lower(?1) " +
+							"and lower(self.firstName) = lower(?2) " +
+							"and self.id != ?3",
+							partner.getName(), partner.getFirstName(), partnerId)
+					.fetchOne();
+			return existingPartner != null;
+		}
+	}
 }
