@@ -134,11 +134,11 @@ public class InventoryService {
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void importFile(String filePath, char separator, Inventory inventory) throws IOException, AxelorException {
+	public Path importFile(Inventory inventory) throws IOException, AxelorException {
 
 		List<InventoryLine> inventoryLineList = inventory.getInventoryLineList();
-
-		List<String[]> data = this.getDatas(filePath, separator);
+		Path filePath = MetaFiles.getPath(inventory.getImportFile());
+		List<String[]> data = this.getDatas(filePath);
 
 		HashMap<String,InventoryLine> inventoryLineMap = this.getInventoryLines(inventory);
 
@@ -147,16 +147,17 @@ public class InventoryService {
 				throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
 
 			String code = line[1].replace("\"", "");
+			String rack = line[2].replace("\"", "");
 			String trackingNumberSeq = line[3].replace("\"", "");
 
 			BigDecimal realQty;
 			try {
-				realQty = new BigDecimal(line[6].replace("\"", ""));
+				realQty = new BigDecimal(line[5].replace("\"", ""));
 			} catch (NumberFormatException e) {
 				throw new AxelorException(e.getCause(), inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
 			}
 
-			String description = line[7].replace("\"", "");
+			String description = line[6].replace("\"", "");
 
 			if (inventoryLineMap.containsKey(code)) {
 				inventoryLineMap.get(code).setRealQty(realQty);
@@ -181,6 +182,7 @@ public class InventoryService {
 					throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_4)+" "+code);
 				inventoryLine.setProduct(product);
 				inventoryLine.setInventory(inventory);
+				inventoryLine.setRack(rack);
 				inventoryLine.setCurrentQty(currentQty);
 				inventoryLine.setRealQty(realQty);
 				inventoryLine.setDescription(description);
@@ -191,14 +193,16 @@ public class InventoryService {
 		inventory.setInventoryLineList(inventoryLineList);
 
 		inventoryRepo.save(inventory);
+		return filePath;
 	}
 
 
-	public List<String[]> getDatas(String filePath, char separator) throws AxelorException  {
+	public List<String[]> getDatas(Path filePath) throws AxelorException  {
 
 		List<String[]> data = null;
+		char separator = ';';
 		try {
-			data = CsvTool.cSVFileReader(filePath, separator);	
+			data = CsvTool.cSVFileReader(filePath.toString(), separator);
 		} catch (Exception e) {
 			throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_5));
 		}
@@ -206,7 +210,8 @@ public class InventoryService {
 		if (data == null || data.isEmpty()) {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
 		}
-
+		
+		data.remove(0); /* Skip headers */
 		return data;
 
 
@@ -465,16 +470,15 @@ public class InventoryService {
 		List<String[]> list = new ArrayList<String[]>();
 
 		for (InventoryLine inventoryLine:inventory.getInventoryLineList()) {
-			String item[] = new String[8];
+			String item[] = new String[7];
 			
 			item[0] = (inventoryLine.getProduct() == null) ? "" : inventoryLine.getProduct().getName();
 			item[1] = (inventoryLine.getProduct() == null) ? "" : inventoryLine.getProduct().getCode();
-			item[2] = "";
+			item[2] = (inventoryLine.getRack() == null) ? "" : inventoryLine.getRack();
 			item[3] = (inventoryLine.getTrackingNumber() == null) ? "" : inventoryLine.getTrackingNumber().getTrackingNumberSeq();
 			item[4] = inventoryLine.getCurrentQty().toString();
-			item[5] = "";
-			item[6] = inventoryLine.getRealQty().toString();
-			item[7] = (inventoryLine.getDescription() == null) ? "" : inventoryLine.getDescription();
+			item[5] = inventoryLine.getRealQty().toString();
+			item[6] = (inventoryLine.getDescription() == null) ? "" : inventoryLine.getDescription();
 			list.add(item);
 		}
 
@@ -485,7 +489,8 @@ public class InventoryService {
 
 		log.debug("File Located at: {}" , path);
 
-		CsvTool.csvWriter(filePath,fileName,',','"',null,list);
+		String[] headers = {"Product Name", "Product Code", "Rack", "Tracking Number", "Current Quantity", "Real Quantity", "Description"};
+		CsvTool.csvWriter(filePath, fileName, ';', '"', headers, list);
 
 		try (InputStream is = new FileInputStream(file)) {
 			Beans.get(MetaFiles.class).attach(is, fileName, inventory);

@@ -16,11 +16,11 @@
 		</panel>
 		<panel name="main">
 			<field name="inventorySeq" readOnly="true" colSpan="4"/>    
-			<field name="dateT" colSpan="4" readonlyIf="statusSelect >= 3"/>
-			<field name="location" onSelect="action-inventory-attrs-set-location-domain" colSpan="8" readonlyIf="statusSelect >= 3"  form-view="location-form" grid-view="location-grid"/>
+			<field name="dateT" colSpan="4" readonlyIf="statusSelect >= 2"/>
+			<field name="location" onSelect="action-inventory-attrs-set-location-domain" colSpan="4" readonlyIf="statusSelect >= 2"  form-view="location-form" grid-view="location-grid"/>
 			<field name="description" colSpan="12" height="3"/>
 		</panel>  
-		<panel name="fillInventoryWith" title="Fill inventory with" hideIf="statusSelect >= 3 || location == null">
+		<panel name="fillInventoryWith" title="Fill inventory with" hideIf="statusSelect >= 2 || location == null">
 			<field name="productFamily" form-view="product-family-form" grid-view="product-family-grid" onChange="action-inventory-on-change-product-family"/>
 			<field name="productCategory" form-view="product-category-form" grid-view="product-category-grid" onSelect="action-inventory-on-select-product-category" onChange="action-inventory-on-change-product-category"/>
 			<field name="excludeOutOfStock"/>
@@ -41,7 +41,7 @@
 			<button name="showInventory" title="Export" readonlyIf="formatSelect == null" colSpan="12" onClick="save,action-inventory-method-show-inventory" showIf="formatSelect != 'csv'"/>
 			<button name="showInventory" title="Export" readonlyIf="formatSelect == null" colSpan="12" onClick="save,action-inventory-method-export-inventory" showIf="formatSelect == 'csv'"/>
 		</panel>
-		<panel name="import" title="Import" showIf="statusSelect == 2" sidebar="true">
+		<panel name="import" title="Import" showIf="statusSelect == 3 || statusSelect == 4" sidebar="true">
 			<field name="importFile" widget="binary-link"/>
 			<button name="importFile" title="Import" readonlyIf="importFile == null" colSpan="6" onClick="action-group-stock-inventory-importfile-click"/>
 		</panel>
