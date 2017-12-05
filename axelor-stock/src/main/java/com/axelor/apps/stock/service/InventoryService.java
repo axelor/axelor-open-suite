@@ -486,7 +486,7 @@ public class InventoryService {
 
 		log.debug("File Located at: {}" , path);
 
-		String[] headers = {"product.name", "product.code", "", "trackingNumber.trackingNumberSeq", "currentQty", "", "realQty", "description"};
+		String[] headers = {"Product Name", "Product Code", "", "Tracking Number", "Current Quantity", "", "Real Quantity", "Description"};
 		CsvTool.csvWriter(filePath, fileName, ';', '"', headers, list);
 
 		try (InputStream is = new FileInputStream(file)) {
