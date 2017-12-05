@@ -19,6 +19,7 @@ package com.axelor.apps.stock.web;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.eclipse.birt.core.exception.BirtException;
@@ -40,7 +41,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -110,10 +110,9 @@ public class InventoryController {
 	public void importFile(ActionRequest request, ActionResponse response) throws IOException, AxelorException {
 		
 		Inventory inventory = inventoryRepo.find( request.getContext().asType(Inventory.class).getId() );
-		MetaFile importFile = inventory.getImportFile();
 
-		inventoryService.importFile(Paths.get(PATH, importFile.getFilePath()), inventory);
-		response.setFlash(String.format(I18n.get(IExceptionMessage.INVENTORY_8),importFile.getFilePath()));
+		Path filePath = inventoryService.importFile(inventory);
+		response.setFlash(String.format(I18n.get(IExceptionMessage.INVENTORY_8), filePath.toString()));
 
 		response.setReload(true);
 	}

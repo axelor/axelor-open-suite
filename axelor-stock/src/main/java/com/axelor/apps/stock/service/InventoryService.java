@@ -134,10 +134,10 @@ public class InventoryService {
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void importFile(Path filePath, Inventory inventory) throws IOException, AxelorException {
+	public Path importFile(Inventory inventory) throws IOException, AxelorException {
 
 		List<InventoryLine> inventoryLineList = inventory.getInventoryLineList();
-
+		Path filePath = MetaFiles.getPath(inventory.getImportFile());
 		List<String[]> data = this.getDatas(filePath);
 
 		HashMap<String,InventoryLine> inventoryLineMap = this.getInventoryLines(inventory);
@@ -193,6 +193,7 @@ public class InventoryService {
 		inventory.setInventoryLineList(inventoryLineList);
 
 		inventoryRepo.save(inventory);
+		return filePath;
 	}
 
 
