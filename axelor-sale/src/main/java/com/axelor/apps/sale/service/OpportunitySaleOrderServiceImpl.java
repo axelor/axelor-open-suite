@@ -20,6 +20,7 @@ package com.axelor.apps.sale.service;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
@@ -36,6 +37,9 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
 
 	@Inject
 	protected AppBaseService appBaseService;
+
+	@Inject
+	protected OpportunityRepository opportunityRepository;
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

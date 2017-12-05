@@ -114,7 +114,9 @@
 	        </panel>
 	    	
 		    <panel name="others" title="Others" readonly="true">
-		        <field name="taxLine" grid-view="tax-line-grid" form-view="tax-line-form"/>
+				<field name="taxLine" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge'"
+					   colSpan="6" grid-view="tax-line-grid" form-view="tax-line-form"/>
+				<field name="account.accountType.technicalTypeSelect" hidden="true"/>
 		        <field name="exportedDirectDebitOk" showIf="id &amp;&amp; move.statusSelect &gt; 1"/>
 		        <field name="reimbursementStatusSelect" showIf="id &amp;&amp; move.statusSelect &gt; 1"/>
 		    </panel>
@@ -135,7 +137,10 @@
 				<field name="amountRemaining" colSpan="3"/>
 				<field name="amountPaid" colSpan="3"/>
 				<field name="origin" colSpan="6" />
+				<field name="taxLine" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge'"
+					   colSpan="6" grid-view="tax-line-grid" form-view="tax-line-form"/>
 				<field name="description" colSpan="12" />
+                <field name="account.accountType.technicalTypeSelect" hidden="true"/>
 			</panel>
 			<panel name="rejectReason" title="Reject reason" colSpan="12" showIf="interbankCodeLine">
 				<field name="interbankCodeLine" showTitle="false" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form"/>
