@@ -23,6 +23,7 @@ public class OpportunityManagementRepository extends OpportunityRepository {
 	@Override
 	public Opportunity copy(Opportunity entity, boolean deep) {
 		entity.setSalesStageSelect(1);
+		entity.setLostReason(null);
 		return super.copy(entity, deep);
 	}
 }
