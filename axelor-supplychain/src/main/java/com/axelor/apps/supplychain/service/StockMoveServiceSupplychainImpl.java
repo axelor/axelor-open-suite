@@ -22,28 +22,27 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-import com.axelor.apps.base.db.CancelReason;
-import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.sale.db.ISaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
-import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
-import com.axelor.apps.stock.service.StockMoveLineService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.AppSupplychain;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
+import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
+import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
@@ -86,25 +85,27 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 		}
 		return exTaxTotal.setScale(2, RoundingMode.HALF_UP);
 	}
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	@Override
-	public String realize(StockMove stockMove) throws AxelorException  {
+
+    @Override
+    @Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public String realize(StockMove stockMove, boolean check) throws AxelorException  {
 		LOG.debug("Réalisation du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
-		String newStockSeq = super.realize(stockMove);
+		String newStockSeq = super.realize(stockMove, check);
 		AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
 		if (stockMove.getSaleOrder() != null){
+            updateSaleOrderLines(stockMove, true);
 			//Update linked saleOrder delivery state depending on BackOrder's existence
 			SaleOrder saleOrder = stockMove.getSaleOrder();
 			if (newStockSeq != null){
 				saleOrder.setDeliveryState(SaleOrderRepository.STATE_PARTIALLY_DELIVERED);
-			}else{
-				saleOrder.setDeliveryState(SaleOrderRepository.STATE_DELIVERED);
-				if (appSupplychain.getTerminateSaleOrderOnDelivery()){
-					Beans.get(SaleOrderServiceImpl.class).finishSaleOrder(saleOrder);
-				}
-			}
-			updateSaleOrderLines(stockMove, true);
+            } else {
+                Beans.get(SaleOrderStockService.class).updateDeliveryState(saleOrder);
+
+                if (saleOrder.getDeliveryState() == SaleOrderRepository.STATE_DELIVERED
+                        && appSupplychain.getTerminateSaleOrderOnDelivery()) {
+                    Beans.get(SaleOrderServiceImpl.class).finishSaleOrder(saleOrder);
+                }
+            }
 
 			Beans.get(SaleOrderRepository.class).save(saleOrder);
 		}else if (stockMove.getPurchaseOrder() != null){
@@ -164,14 +165,14 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 			if (stockMoveLine.getSaleOrderLine() != null) {
 				SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
 				if (realize) {
-					saleOrderLine.setDeliveredQuantities(saleOrderLine.getDeliveredQuantities().add(stockMoveLine.getRealQty()));
+					saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().add(stockMoveLine.getRealQty()));
 				} else {
-					saleOrderLine.setDeliveredQuantities(saleOrderLine.getDeliveredQuantities().subtract(stockMoveLine.getRealQty()));
+					saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().subtract(stockMoveLine.getRealQty()));
 				}
-				if (saleOrderLine.getDeliveredQuantities().signum() == 0) {
+				if (saleOrderLine.getDeliveredQty().signum() == 0) {
 					saleOrderLine.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
 				}
-				else if (saleOrderLine.getDeliveredQuantities().compareTo(saleOrderLine.getQty()) < 0) {
+				else if (saleOrderLine.getDeliveredQty().compareTo(saleOrderLine.getQty()) < 0) {
 					saleOrderLine.setDeliveryState(SaleOrderRepository.STATE_PARTIALLY_DELIVERED);
 				}
 				else {

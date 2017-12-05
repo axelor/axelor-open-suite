@@ -301,8 +301,8 @@
 	    <button name="finalize" title="Finalize" showIf="statusSelect == 1" colSpan="12" onClick="save,action-sale-order-method-finalize"/>
 	    <button name="newVersion" title="New version" if="__config__.app.getApp('sale').getManageSaleOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
 	    <button name="generateCustomerStockMove" title="Generate customer deliveries" colSpan="12" showIf="statusSelect == 3"
-	    	if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getCustStockMoveMgtOnSO() &amp;&amp; !__config__.app.getApp('supplychain').getCustomerStockMoveGenerationAuto()"
-	    	if-module="axelor-supplychain" onClick="save, action-supplychain-sale-order-create-stock-move"/>
+	    	if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain').customerStockMoveGenerationAuto"
+	    	onClick="save, action-supplychain-sale-order-create-stock-move"/>
 	    <button name="confirmOrder" title="Confirm order" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed"/>
 	    <button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3" colSpan="12" onClick="save,action-supplychain-sale-order-group-generate-invoice" if-module="axelor-supplychain"/>
 	    <button name="generatePO" title="Generate purchase order"  colSpan="12" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getPurchaseOrderGenerationAuto()" showIf="statusSelect == 2 || statusSelect == 3" onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>

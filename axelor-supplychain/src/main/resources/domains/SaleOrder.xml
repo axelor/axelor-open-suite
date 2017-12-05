@@ -26,10 +26,12 @@
         <boolean name="createdByInterco" default="false"/>
         <date name="expectedRealisationDate" title="Expected realisation date"/>
         <integer name="standardDelay" title="Standard delay (days)" default="0"  />
+        <one-to-many name="stockMoveList" ref="com.axelor.apps.stock.db.StockMove" mappedBy="saleOrder" title="Stock moves" />
+
         <extra-code>
             <![CDATA[
-                public static final Integer SUBSCRIPTION_PERIOD_BEGINNING = 1;
-                public static final Integer SUBSCRIPTION_PERIOD_ENDING = 2;
+                public static final int SUBSCRIPTION_PERIOD_BEGINNING = 1;
+                public static final int SUBSCRIPTION_PERIOD_ENDING = 2;
 
                 public static final int INVOICE_ALL = 1;
                 public static final int INVOICE_PART = 2;

@@ -54,7 +54,7 @@
   	
 <!--   	Devis-commande fournisseur -->
 	<date name="deliveryDate" title="Delivery date"/>
-	<decimal name="deliveredQuantities" title="Delivered quantities"/>
+	<decimal name="deliveredQty" title="Delivered quantity"/>
 
 <!--   	Champ technique non affiché, utilisé pour les reportings -->
   	<decimal name="companyExTaxTotal" title="Total W.T. in company currency" hidden="true"/>

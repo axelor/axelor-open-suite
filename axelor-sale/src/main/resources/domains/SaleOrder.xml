@@ -104,9 +104,9 @@
  	//TODO move into supplychain ?
     <extra-code>
    		<![CDATA[
-   			public static final Integer STATE_NOT_DELIVERED = 1;
-   			public static final Integer STATE_PARTIALLY_DELIVERED = 2;
-   			public static final Integer STATE_DELIVERED = 3;
+   			public static final int STATE_NOT_DELIVERED = 1;
+   			public static final int STATE_PARTIALLY_DELIVERED = 2;
+   			public static final int STATE_DELIVERED = 3;
    		]]>
    	</extra-code>
    	

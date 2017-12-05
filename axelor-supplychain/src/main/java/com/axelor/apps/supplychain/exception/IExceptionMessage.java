@@ -103,7 +103,7 @@ public interface IExceptionMessage {
 	 * Sale order Stock Service Implement
 	 */
 	static final String SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/ "No delivery stock move to generate for this sale order" /*)*/;
-	static final String SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXIST = /*$$(*/ "An active stock move already exists for the sale order %s" /*)*/;
+	static final String SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXISTS = /*$$(*/ "An active stock move already exists for the sale order %s" /*)*/;
 
 	/**
 	 * Timetable Controller
