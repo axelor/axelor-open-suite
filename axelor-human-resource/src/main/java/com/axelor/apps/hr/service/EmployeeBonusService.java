@@ -123,7 +123,7 @@ public class EmployeeBonusService {
 
 				line.setSeniorityDate( employee.getSeniorityDate() );
 				line.setCoef( employee.getBonusCoef() );
-				line.setPresence( employee.getPlanning() );
+				line.setWeeklyPlanning(employee.getPlanning());
 
 				maker.setTemplate( formula );
 				eval = maker.make();

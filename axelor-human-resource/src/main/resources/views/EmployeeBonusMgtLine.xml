@@ -7,7 +7,7 @@
 		<field name="employee" />
 		<field name="amount" />
 		<field name="coef" />
-		<field name="presence" />
+		<field name="weeklyPlanning" />
 		<field name="seniorityDate" />
 		<field name="statusSelect"/>
     </grid>
@@ -17,7 +17,7 @@
 		<field name="employeeBonusMgt.payPeriod" />
 		<field name="employeeBonusMgt.employeeBonusType" />
 		<field name="coef" />
-		<field name="presence" />
+		<field name="weeklyPlanning" />
 		<field name="employeeBonusMgt" hidden="true" />
     </grid>
 
@@ -26,7 +26,7 @@
     		<field name="employee" />
 			<field name="amount" />
 			<field name="coef" />
-			<field name="presence" />
+			<field name="weeklyPlanning" />
 			<field name="seniorityDate" />
         </panel>
     </form>
@@ -37,7 +37,7 @@
 			<field name="coef" />
 			<field name="employeeBonusMgt.payPeriod" />
 			<field name="employeeBonusMgt.employeeBonusType" />
-			<field name="presence" />
+			<field name="weeklyPlanning" />
 			<field name="seniorityDate" />
 			<field name="employeeBonusMgt" hidden="true" />
         </panel>
