@@ -66,7 +66,7 @@ public class EmployeeBonusService {
 			employeeStatus.put(line.getEmployee(), line);
 		}
 
-		List<Employee> allEmployee = Beans.get(EmployeeRepository.class).all().filter("self.user.activeCompany = ?1", bonus.getCompany()).fetch();
+		List<Employee> allEmployee = Beans.get(EmployeeRepository.class).all().filter("self.mainEmploymentContract.payCompany = ?1", bonus.getCompany()).fetch();
 		TemplateMaker maker = new TemplateMaker( Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
 		String eval = "";
 		CompilerConfiguration conf = new CompilerConfiguration();
