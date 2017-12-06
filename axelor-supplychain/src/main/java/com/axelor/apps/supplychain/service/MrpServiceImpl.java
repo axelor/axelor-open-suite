@@ -369,7 +369,7 @@ public class MrpServiceImpl implements MrpService  {
 	
 	protected void consolidateMrp()  {
 		
-		List<MrpLine> mrpLineList = mrpLineRepository.all().filter("self.mrp = ?1", mrp).order("self.product.code").order("maturityDate").order("mrpLineType.typeSelect").order("mrpLineType.sequence").order("id").fetch();
+		List<MrpLine> mrpLineList = mrpLineRepository.all().filter("self.mrp = ?1", mrp).order("product.code").order("maturityDate").order("mrpLineType.typeSelect").order("mrpLineType.sequence").order("id").fetch();
 
 		Map<List<Object>, MrpLine> map = Maps.newHashMap();
 		MrpLine consolidateMrpLine = null;

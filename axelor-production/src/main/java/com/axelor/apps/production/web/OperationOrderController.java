@@ -138,7 +138,7 @@ public class OperationOrderController {
 		if(operationOrder != null && operationOrder.getStatusSelect() == IOperationOrder.STATUS_PLANNED){
 			operationOrder = operationOrderWorkflowService.replan(operationOrder);
 			List<OperationOrder> operationOrderList = operationOrderRepo.all().filter("self.manufOrder = ?1 AND self.priority >= ?2 AND self.statusSelect = 3 AND self.id != ?3",
-					operationOrder.getManufOrder(), operationOrder.getPriority(), operationOrder.getId()).order("self.priority").order("self.plannedEndDateT").fetch();
+					operationOrder.getManufOrder(), operationOrder.getPriority(), operationOrder.getId()).order("priority").order("plannedEndDateT").fetch();
 			for (OperationOrder operationOrderIt : operationOrderList) {
 				operationOrderIt = operationOrderWorkflowService.replan(operationOrderIt);
 			}
