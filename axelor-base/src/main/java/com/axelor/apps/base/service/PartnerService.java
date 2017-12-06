@@ -298,49 +298,27 @@ public class PartnerService {
 	 * @return if there is a duplicate partner
 	 */
 	public boolean isThereDuplicatePartner(Partner partner) {
-		String newName = partner.getName();
+		String newName = this.computeFullName(partner);
 		if (Strings.isNullOrEmpty(newName)) {
 		    return false;
 		}
 		Long partnerId = partner.getId();
 		if (partnerId == null) {
 			Partner existingPartner = partnerRepo.all()
-					.filter("self.isContact = false and lower(self.name) = lower(?1)", newName)
+					.filter("lower(self.fullName) = lower(:newName) " +
+							"and self.partnerTypeSelect = :_partnerTypeSelect")
+					.bind("newName", newName)
+					.bind("_partnerTypeSelect", partner.getPartnerTypeSelect())
 					.fetchOne();
 			return existingPartner != null;
 		} else {
 			Partner existingPartner = partnerRepo.all()
-					.filter("self.isContact = false " +
-							"and lower(self.name) = lower(?1) " +
-							"and self.id != ?2", newName, partnerId)
-					.fetchOne();
-			return existingPartner != null;
-		}
-	}
-
-	/**
-	 * Check if the contact partner in view has a duplicate.
-	 * @param partner a context partner object
-	 * @return if there is a duplicate partner
-	 */
-	public boolean isThereDuplicateContactPartner(Partner partner) {
-		String newName = partner.getName();
-		if (Strings.isNullOrEmpty(newName)) {
-			return false;
-		}
-		Long partnerId = partner.getId();
-		if (partnerId == null) {
-			Partner existingPartner = partnerRepo.all()
-					.filter("self.isContact = true and lower(self.name) = lower(?1) and lower(self.firstName) = lower(?2)", partner.getName(), partner.getFirstName())
-					.fetchOne();
-			return existingPartner != null;
-		} else {
-			Partner existingPartner = partnerRepo.all()
-					.filter("self.isContact = true " +
-							"and lower(self.name) = lower(?1) " +
-							"and lower(self.firstName) = lower(?2) " +
-							"and self.id != ?3",
-							partner.getName(), partner.getFirstName(), partnerId)
+					.filter("lower(self.fullName) = lower(:newName) " +
+							"and self.id != :partnerId " +
+							"and self.partnerTypeSelect = :_partnerTypeSelect")
+					.bind("newName", newName)
+					.bind("partnerId", partnerId)
+					.bind("_partnerTypeSelect", partner.getPartnerTypeSelect())
 					.fetchOne();
 			return existingPartner != null;
 		}

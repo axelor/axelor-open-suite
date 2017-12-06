@@ -328,17 +328,4 @@ public class PartnerController {
 				!partnerService.isThereDuplicatePartner(partner));
 	}
 
-	/**
-	 * Called from contact partner view on name change.
-	 * Call {@link PartnerService#isThereDuplicateContactPartner(Partner)}
-	 * @param request
-	 * @param response
-	 */
-	public void checkContactName(ActionRequest request, ActionResponse response) {
-		Partner partner = request.getContext().asType(Partner.class);
-		response.setAttr("duplicatePartnerText",
-				"hidden",
-				!partnerService.isThereDuplicateContactPartner(partner));
-	}
-
 }
