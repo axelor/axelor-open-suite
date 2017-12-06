@@ -83,6 +83,7 @@
 - PICKING ORDER : printing modification.
 - ProdProcess: Add massUpdate to stock move realize order select.
 - PRODUCT : Set duplicate product fields
+- EmployeeBonusMgt: update key for translation and set panel to readonly.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
