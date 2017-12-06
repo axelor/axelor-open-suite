@@ -133,7 +133,7 @@ public class OperationOrderWorkflowService {
 	public LocalDateTime getLastOperationOrder(OperationOrder operationOrder)  {
 
 		OperationOrder lastOperationOrder = operationOrderRepo.all().filter("self.manufOrder = ?1 AND self.priority <= ?2 AND self.statusSelect >= 3 AND self.statusSelect < 6 AND self.id != ?3",
-				operationOrder.getManufOrder(), operationOrder.getPriority(), operationOrder.getId()).order("-self.priority").order("-self.plannedEndDateT").fetchOne();
+				operationOrder.getManufOrder(), operationOrder.getPriority(), operationOrder.getId()).order("-priority").order("-plannedEndDateT").fetchOne();
 		
 		if(lastOperationOrder != null)  {
 			if(lastOperationOrder.getPriority() == operationOrder.getPriority())  {
