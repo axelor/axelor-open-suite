@@ -74,6 +74,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
@@ -718,5 +719,23 @@ public class TimesheetServiceImpl implements TimesheetService{
 			}
 		}
 		return null;
+	}
+	
+	@Override
+	public void createValidateDomainTimesheetLine(User user, Employee employee, ActionView.ActionViewBuilder actionView) {
+
+		actionView.domain("self.timesheet.company = :_activeCompany AND  self.timesheet.statusSelect = 2")
+				.context("_activeCompany", user.getActiveCompany());
+
+		if(employee == null || !employee.getHrManager())  {
+			if (employee == null || employee.getManager() == null) {
+				actionView.domain(actionView.get().getDomain() + " AND (self.timesheet.user = :_user OR self.timesheet.user.employee.manager = :_user)")
+						.context("_user", user);
+			}
+			else {
+				actionView.domain(actionView.get().getDomain() + " AND self.timesheet.user.employee.manager = :_user")
+						.context("_user", user);
+			}
+		}
 	}
 }

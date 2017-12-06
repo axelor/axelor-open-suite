@@ -40,6 +40,7 @@ import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.Timesheet;
+import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
@@ -167,6 +168,22 @@ public class TimesheetController {
 		response.setView(actionView.map());
 	}
 	
+	public void validateTimesheetLine(ActionRequest request, ActionResponse response){
+		
+		User user = AuthUtils.getUser();
+		Employee employee = user.getEmployee();
+		
+		ActionViewBuilder actionView = ActionView.define(I18n.get("See timesheet lines"))
+				   .model(TimesheetLine.class.getName())
+				   .add("grid","timesheet-line-grid")
+				   .add("form","timesheet-line-form")
+				   .context("todayDate", Beans.get(AppBaseService.class).getTodayDate());
+
+		timesheetServiceProvider.get().createValidateDomainTimesheetLine(user, employee, actionView);
+
+		response.setView(actionView.map());
+	}
+	
 	public void editTimesheetSelected(ActionRequest request, ActionResponse response){
 		Map timesheetMap = (Map)request.getContext().get("timesheetSelect");
 		Timesheet timesheet = Beans.get(TimesheetRepository.class).find(new Long((Integer)timesheetMap.get("id")));
@@ -194,6 +211,28 @@ public class TimesheetController {
 	
 		if(employee == null || !employee.getHrManager())  {
 			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
+			.context("_user", user);
+		}
+		
+		response.setView(actionView.map());
+		
+	}
+	
+public void historicTimesheetLine(ActionRequest request, ActionResponse response){
+		
+		User user = AuthUtils.getUser();
+		Employee employee = user.getEmployee();
+		
+		ActionViewBuilder actionView = ActionView.define(I18n.get("See timesheet lines"))
+				   .model(TimesheetLine.class.getName())
+				   .add("grid","timesheet-line-grid")
+				   .add("form","timesheet-line-form");
+
+		actionView.domain("self.timesheet.company = :_activeCompany AND (self.timesheet.statusSelect = 3 OR self.timesheet.statusSelect = 4)")
+		.context("_activeCompany", user.getActiveCompany());
+	
+		if(employee == null || !employee.getHrManager())  {
+			actionView.domain(actionView.get().getDomain() + " AND self.timesheet.user.employee.manager = :_user")
 			.context("_user", user);
 		}
 		

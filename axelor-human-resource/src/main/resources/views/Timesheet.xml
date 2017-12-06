@@ -3,6 +3,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false" groupBy="user" orderBy="user,-fromDate">
+		<toolbar>
+			<button name="seeTSLines" title="See timesheet lines" onClick="action-timesheet-method-timesheet-line-historic" />
+		</toolbar>
 		<hilite color="danger" if="statusSelect == 4"/>
 		<hilite color="success" if="statusSelect == 3"/>
 		<hilite color="warning" if="statusSelect == 2"/>
@@ -15,6 +18,9 @@
 	</grid>
 	
 	<grid name="my-timesheets-grid" title="My Timesheets" model="com.axelor.apps.hr.db.Timesheet" canNew="false" orderBy="-fromDate">
+		<toolbar>
+			<button name="seeTSLines" title="See timesheet lines" onClick="action-timesheet-see-timesheet-lines" />
+		</toolbar>
 		<hilite color="danger" if="statusSelect == 4"/>
 		<hilite color="success" if="statusSelect == 3"/>
 		<hilite color="warning" if="statusSelect == 2"/>
@@ -28,6 +34,7 @@
 	<grid name="timesheet-validate-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false" orderBy="user,-fromDate">
 		<toolbar>
 			<button name="showSubordinateTimesheetToValidate" title="Show timesheets to be validated by my subordinates" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:showSubordinateTimesheets"/>
+			<button name="seeTSLines" title="See timesheet lines" onClick="action-timesheet-method-timesheet-line-validate" />
 		</toolbar>
 		<hilite background="danger" if="$moment(fromDate).diff(todayDate,'days') &lt;= 0"/>
   		<hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7 || $moment(todayDate).diff(fromDate,'days') &gt;= 15"/> 
@@ -385,5 +392,22 @@
     <action-view name="action-timesheet-show-timesheet-line-editor" title="Timesheet lines">
     	<view type="html" name="hr/timesheet?timesheetId={{id}}&amp;showActivity={{$showActivity}}" />
     </action-view>
+    
+    <action-view name="action-timesheet-see-timesheet-lines" title="See timesheet lines" 
+		model="com.axelor.apps.hr.db.TimesheetLine">
+		<view type="grid" name="timesheet-line-grid"/>	
+		<view type="form" name="timesheet-line-form"/>
+		<domain>self.timesheet.user = :user_id AND self.timesheet.company = :company_id</domain>
+		<context name="user_id" expr="eval: user_id"/>
+		<context name="company_id" expr="eval: company_id"/>
+	</action-view>
+	
+	<action-method name="action-timesheet-method-timesheet-line-validate">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validateTimesheetLine"/>
+	</action-method>
+	
+	<action-method name="action-timesheet-method-timesheet-line-historic">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="historicTimesheetLine"/>
+	</action-method>
 	
 </object-views>
