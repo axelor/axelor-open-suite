@@ -193,9 +193,13 @@ public class LocationServiceImpl implements LocationService{
 		
 		List<Location> locations = new ArrayList<Location>();
 
-		locations.add(location);
-		locationIdSet.add(location.getId());
-		findLocationIds(locations);
+		if(location != null) {
+			locations.add(location);
+			locationIdSet.add(location.getId());
+			findLocationIds(locations);
+		} else {
+			locationIdSet.add(0l);
+		}
 		
 		return locationIdSet;
 	}
