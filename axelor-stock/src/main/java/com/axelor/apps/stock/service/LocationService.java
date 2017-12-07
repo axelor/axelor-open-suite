@@ -20,9 +20,9 @@ package com.axelor.apps.stock.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.Location;
-
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 public interface LocationService {
 
@@ -42,5 +42,7 @@ public interface LocationService {
 	public void computeAvgPriceForProduct(Product product);
 
 	public List<Long> getBadLocationLineId();
+	
+	public Set<Long> getContentLocationIds(Location location);
 	
 }
