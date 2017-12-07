@@ -455,8 +455,30 @@ public class ExpenseController {
 			}
 			response.setValue("kilometricExpenseLineList", expense.getKilometricExpenseLineList() );
 		}
+	}
+	
+	public void removeLines(ActionRequest request, ActionResponse response) {
 		
+		Expense expense = request.getContext().asType(Expense.class);
 		
+		List<ExpenseLine> removeKilometricLines = new ArrayList<>();
+		
+		try {
+			if (expense.getExpenseLineList() != null && !expense.getExpenseLineList().isEmpty()) {
+				for (ExpenseLine generalExpenseLine : expense.getExpenseLineList()) {
+					if (generalExpenseLine.getKilometricExpense() != null
+							&& !expense.getKilometricExpenseLineList().contains(generalExpenseLine)) {
+						
+						removeKilometricLines.add(generalExpenseLine);
+					}
+				}
+			}	
+			expense.getExpenseLineList().removeAll(removeKilometricLines);
+			
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+		response.setValue("expenseLineList", expense.getExpenseLineList());
 	}
 	
 	public void computeKilometricExpense(ActionRequest request, ActionResponse response) throws AxelorException {
