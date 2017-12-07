@@ -70,14 +70,6 @@ public interface LogisticalFormService {
 	void checkLines(LogisticalForm logisticalForm) throws LogisticalFormWarning, LogisticalFormError;
 
 	/**
-	 * Check for invalid dimensions in lines.
-	 * 
-	 * @param logisticalForm
-	 * @throws LogisticalFormError
-	 */
-	void checkInvalidLineDimensions(LogisticalForm logisticalForm) throws LogisticalFormError;
-
-	/**
 	 * Get list of full spread stock move lines.
 	 * 
 	 * @param logisticalForm
