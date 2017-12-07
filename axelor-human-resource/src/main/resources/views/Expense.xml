@@ -82,7 +82,7 @@
 			<field name="advanceAmount" hidden="true" />
 		</panel>
 		<panel-tabs>
-			<panel-related field="expenseLineList" height="20" title="General expenses" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" colSpan="12" />
+			<panel-related field="expenseLineList" height="20" title="General expenses" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute,action-expense-method-remove-lines" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" colSpan="12" />
 			<panel title="Kilometric Allowances" showIf="!setMultipleUsers">
 				<field name="kilometricExpenseLineList" readonlyIf="statusSelect &gt; 1" colSpan="12" showTitle="false" onChange="action-expense-method-compute" >
 				<editor x-show-on-new="false" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4" onNew="action-kilometric-allowance-record-default,action-expense-line-method-fill-kilometric-expense-product" >
@@ -280,6 +280,10 @@
     
     <action-method name="action-expense-method-compute-amounts">
     	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeAmounts"/>
+    </action-method>
+    
+    <action-method name="action-expense-method-remove-lines">
+    	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="removeLines"/>
     </action-method>
     
 </object-views>
