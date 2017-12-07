@@ -17,22 +17,14 @@
  */
 package com.axelor.apps.hr.service.batch;
 
-import com.axelor.apps.hr.service.batch.BatchStrategy;
-import com.axelor.apps.hr.service.leave.LeaveService;
-import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
-import com.axelor.auth.AuthUtils;
-import com.axelor.db.JPA;
-
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.WeeklyPlanning;
-import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.LeaveLine;
@@ -40,6 +32,11 @@ import com.axelor.apps.hr.db.LeaveManagement;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
+import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.service.leave.LeaveService;
+import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
@@ -76,7 +73,7 @@ public class BatchLeaveManagement extends BatchStrategy {
 	}
 
 	@Override
-	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
+	protected void start() throws IllegalAccessException, AxelorException {
 		
 		super.start();
 		
@@ -121,7 +118,7 @@ public class BatchLeaveManagement extends BatchStrategy {
 			query.add("self.planning.id IN (" + planningIds + ")");
 		}
 		
-		List<Employee> employeeList = Lists.newArrayList();
+		List<Employee> employeeList;
 		String liaison = query.isEmpty() ? "" : " AND";
 		if (hrBatch.getCompany() != null){
 			employeeList = JPA.all(Employee.class).filter(Joiner.on(" AND ").join(query) + liaison + " (EXISTS(SELECT u FROM User u WHERE :company MEMBER OF u.companySet AND self = u.employee) OR NOT EXISTS(SELECT u FROM User u WHERE self = u.employee))").bind("company", hrBatch.getCompany()).fetch();
@@ -182,15 +179,15 @@ public class BatchLeaveManagement extends BatchStrategy {
 	@Override
 	protected void stop() {
 		
-		String comment = String.format(I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_0) + '\n', total); 
+		String comment = String.format(I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_0), total) + '\n'; 
 		
-		comment += String.format(I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_1) + '\n', batch.getDone()); 
+		comment += String.format(I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_1), batch.getDone()) + '\n'; 
 		
 		if (confAnomaly > 0){
-			comment += String.format(I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_2) + '\n', confAnomaly); 
+			comment += String.format(I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_2), confAnomaly) + '\n'; 
 		}
 		if (noValueAnomaly > 0){
-			comment += String.format(I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_3) + '\n', noValueAnomaly); 
+			comment += String.format(I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_3), noValueAnomaly) + '\n'; 
 		}
 		
 		addComment(comment);
