@@ -190,6 +190,7 @@ public class PayrollPreparationService {
 		List<LunchVoucherMgtLine> lunchVoucherList = Beans.get(LunchVoucherMgtLineRepository.class).all().filter("self.employee = ?1 AND self.lunchVoucherMgt.statusSelect = 3 AND (self.payrollPreparation = null OR self.payrollPreparation.id = ?2) AND self.lunchVoucherMgt.payPeriod = ?3", payrollPreparation.getEmployee(), payrollPreparation.getId(), payrollPreparation.getPeriod()).fetch();
 		for (LunchVoucherMgtLine lunchVoucherMgtLine : lunchVoucherList) {
 			lunchVoucherNumber = lunchVoucherNumber.add(new BigDecimal(lunchVoucherMgtLine.getLunchVoucherNumber()) );
+			lunchVoucherNumber = lunchVoucherNumber.add(new BigDecimal(lunchVoucherMgtLine.getInAdvanceNbr()));
 			payrollPreparation.addLunchVoucherMgtLineListItem(lunchVoucherMgtLine);
 		}
 		return lunchVoucherNumber;
