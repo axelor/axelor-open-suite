@@ -34,10 +34,12 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class LocationServiceImpl implements LocationService{
 	
@@ -46,6 +48,8 @@ public class LocationServiceImpl implements LocationService{
 	protected LocationLineService locationLineService;
 	
 	protected ProductRepository productRepo;
+	
+	Set<Long> locationIdSet= new HashSet<Long>();
 
 	@Inject
 	public LocationServiceImpl(LocationRepository locationRepo, LocationLineService locationLineService, ProductRepository productRepo) {
@@ -160,5 +164,39 @@ public class LocationServiceImpl implements LocationService{
 		}
 
 		return idList;
+	}
+	
+	private void findLocationIds(List<Location> childLocations) {
+		
+		Long id = null;
+		
+		childLocations = Beans.get(LocationRepository.class).all().filter("self.parentLocation IN ?", childLocations).fetch();
+			
+		Iterator<Location> it = childLocations.iterator();
+		
+		while (it.hasNext()) {
+
+			id = it.next().getId();
+			if(locationIdSet.contains(id)) {
+				it.remove();
+			} else {
+				locationIdSet.add(id);
+			}
+		}
+
+		if(!childLocations.isEmpty()) 
+			findLocationIds(childLocations);
+	}
+	
+	@Override
+	public Set<Long> getContentLocationIds(Location location) {
+		
+		List<Location> locations = new ArrayList<Location>();
+
+		locations.add(location);
+		locationIdSet.add(location.getId());
+		findLocationIds(locations);
+		
+		return locationIdSet;
 	}
 }
