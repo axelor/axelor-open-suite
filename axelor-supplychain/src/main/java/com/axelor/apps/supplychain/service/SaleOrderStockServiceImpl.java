@@ -249,15 +249,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
 		Product product = saleOrderLine.getProduct();
 
-		if(product != null
-				&& ((ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()) && supplyChainConfig.getHasOutSmForNonStorableProduct())
-						|| (ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect()) && supplyChainConfig.getHasOutSmForStorableProduct())) 
-			)  {
-
-			return true;
-		}
-
-		return false;
+		return (product != null
+			&& ((ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()) && supplyChainConfig.getHasOutSmForNonStorableProduct() && !product.getIsShippingCostsProduct())
+				|| (ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect()) && supplyChainConfig.getHasOutSmForStorableProduct())) );
 	}
 
     @Override

@@ -218,8 +218,8 @@
 	</action-record>
 
 	<action-attrs name="action-stock-move-line-product-domain">
-		<attribute name="domain" for="product" expr="eval:&quot;self.isModel = false AND self.parentProduct.id = ${productModel.id}&quot;" if="productModel"/>
-		<attribute name="domain" for="product" expr="eval:&quot;self.isModel = false&quot;" if="!productModel"/>
+		<attribute name="domain" for="product" expr="eval:&quot;self.isModel = false AND self.isShippingCostsProduct = false AND self.parentProduct.id = ${productModel.id}&quot;" if="productModel"/>
+		<attribute name="domain" for="product" expr="eval:&quot;self.isModel = false AND self.isShippingCostsProduct = false&quot;" if="!productModel"/>
 	</action-attrs>
 	
 	<action-attrs name="action-stock-move-line-attrs-scale-and-precision">

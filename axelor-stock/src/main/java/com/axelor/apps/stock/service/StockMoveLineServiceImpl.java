@@ -68,7 +68,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	@Override
 	public StockMoveLine createStockMoveLine(Product product, String productName, String description, BigDecimal quantity, BigDecimal unitPrice, Unit unit, StockMove stockMove, int type , boolean taxed, BigDecimal taxRate) throws AxelorException {
 
-		if(product != null) {
+		if (product != null) {
 			BigDecimal unitPriceUntaxed;
 			BigDecimal unitPriceTaxed;
 			if(taxed){
