@@ -27,8 +27,8 @@
   					<field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
 		    		<field name="company" canEdit="false" colSpan="6" onChange="action-lunch-voucher-record-company-onchange" />
 		    		<spacer colSpan="6"/>
-		    		<field name="payPeriod"/>
-		        	<field name="leavePeriod"/>
+					<field name="payPeriod" domain="self.year.typeSelect = 2" grid-view="period-hr-grid" form-view="period-hr-form"/>
+					<field name="leavePeriod" domain="self.year.typeSelect = 2" grid-view="period-hr-grid" form-view="period-hr-form"/>
   				</panel>
 	        	<panel colSpan="12">
 	        		<button name="calculateBtn" title="Calculate" colSpan="6"
@@ -90,8 +90,8 @@
 		<field name="company" expr="eval:__user__.activeCompany"/>
 		<field name="lunchVoucherWageShare" expr="eval: __user__.activeCompany?.hrConfig?.lunchVoucherWageShare"/>
 		<field name="lunchVoucherEmployersShare" expr="eval: __user__.activeCompany?.hrConfig?.lunchVoucherEmployersShare"/>
-		<field name="payPeriod" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
-		<field name="leavePeriod" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
+		<field name="payPeriod" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.year.typeSelect = 2',__date__).fetchOne()"/>
+		<field name="leavePeriod" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.year.typeSelect = 2',__date__).fetchOne()"/>
 	</action-record>
 		
 	<action-record name="action-lunch-voucher-record-company-onchange" model="com.axelor.apps.hr.db.LunchVoucherMgt">
