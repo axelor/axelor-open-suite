@@ -388,6 +388,7 @@
     	<field name="purchaseCurrency" expr="eval: _activeCompany?.currency"/>
     	<field name="managPriceCoef" expr="1"/>
     	<field name="isModel" expr="eval: _isModel"/>
+    	<field name="isShippingCostsProduct" expr="eval: _isShippingCostsProduct"/>
     </action-record>
     
     <action-record name="action-product-record-sale-supply-select" model="com.axelor.apps.base.db.Product">

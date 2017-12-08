@@ -47,7 +47,7 @@
 		<view type="form" name="product-form" />
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = false AND self.sellable = true</domain>
+		<domain>self.isModel = false AND self.sellable = true AND self.isShippingCostsProduct = false</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_fromSale" expr="eval:true" />
 	</action-view>
@@ -177,6 +177,17 @@
 		title="Durations" model="com.axelor.apps.base.db.Duration" >
 		<view type="grid" name="duration-grid" />
 		<view type="form" name="duration-form" />
+	</action-view>
+	
+	<menuitem name="sale-conf-shipping-costs" parent="sc-root-sale-conf"
+		title="Shipping costs" action="sale.conf.shipping.costs"/>
+
+	<action-view name="sale.conf.shipping.costs"
+		title="Shipping costs" model="com.axelor.apps.base.db.Product">
+		<view type="grid" name="product-grid"/>
+		<view type="form" name="product-form"/>
+		<domain>self.isShippingCostsProduct = true</domain>
+		<context name="_isShippingCostsProduct" expr="true"/>
 	</action-view>
 		
 	<menuitem name="sc-root-sale-conf-price-list" parent="sc-root-sale-conf"
