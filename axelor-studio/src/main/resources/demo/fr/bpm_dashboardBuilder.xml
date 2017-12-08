@@ -6,7 +6,7 @@
   	<dashlets>
 		<dashlet name="Commande produit" sequence="0" viewType="grid" colspan="12" view="custom-model-ProductOrder-grid" />  	
   		<dashlet name="Commandes produit par mois" sequence="1" viewType="chart" colspan="6" view="product-order-chart" />
-  		<dashlet name="Commandes produit par auteur et catégorie" sequence="2" viewType="chart" colspan="6" view="product-order-per-author-per-category" />
+  		<dashlet name="Commandes produit par fournisseurs et catégorie" sequence="2" viewType="chart" colspan="6" view="product-order-per-author-per-category" />
   	</dashlets>
   </dashboard-builder>
   
