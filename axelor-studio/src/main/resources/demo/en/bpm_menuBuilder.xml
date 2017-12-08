@@ -30,8 +30,8 @@
   	</action>
   </menu-builder>
   
-  <menu-builder name="menu-json-model-ProductOrder" title="Product Order" parent="bpm-product-root" show-action="true" appBuilder="PRD">
-  	<action name="all.json.ProductOrder" title="Product Order" model="com.axelor.meta.db.MetaJsonRecord"
+  <menu-builder name="menu-json-model-ProductOrder" title="Product order" parent="bpm-product-root" show-action="true" appBuilder="PRD">
+  	<action name="all.json.ProductOrder" title="Product order" model="com.axelor.meta.db.MetaJsonRecord"
   		domain="self.jsonModel = :jsonModel" isJson="true">
   		<views>
   			<view type="grid" name="custom-model-ProductOrder-grid" />
@@ -43,8 +43,8 @@
   	</action>
   </menu-builder>
   
-  <menu-builder name="menu-json-model-ProductOrderLine" title="Product Order Line" parent="bpm-product-root" show-action="true" appBuilder="PRD" >
-  	<action name="all.json.ProductOrderLine" title="Product Order Line" model="com.axelor.meta.db.MetaJsonRecord"
+  <menu-builder name="menu-json-model-ProductOrderLine" title="Product order line" parent="bpm-product-root" show-action="true" appBuilder="PRD" >
+  	<action name="all.json.ProductOrderLine" title="Product order line" model="com.axelor.meta.db.MetaJsonRecord"
   		domain="self.jsonModel = :jsonModel" isJson="true">
   		<views>
   			<view type="grid" name="custom-model-ProductOrderLine-grid" />

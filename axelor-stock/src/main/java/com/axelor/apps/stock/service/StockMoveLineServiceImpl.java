@@ -564,13 +564,18 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		return computeSpreadableQtyOverLogisticalFormLines(stockMoveLine, updatedLogisticalFormLineList);
 	}
 
-	private BigDecimal computeSpreadableQtyOverLogisticalFormLines(StockMoveLine stockMoveLine,
-			List<LogisticalFormLine> logisticalFormLineList) {
-		BigDecimal qtySpreadOverLogisticalMoveLines = logisticalFormLineList != null
-				? logisticalFormLineList.stream().map(LogisticalFormLine::getQty).reduce(BigDecimal.ZERO,
-						BigDecimal::add)
-				: BigDecimal.ZERO;
-		return stockMoveLine.getRealQty().subtract(qtySpreadOverLogisticalMoveLines);
-	}
+    private BigDecimal computeSpreadableQtyOverLogisticalFormLines(StockMoveLine stockMoveLine,
+            List<LogisticalFormLine> logisticalFormLineList) {
+        if (logisticalFormLineList == null) {
+            return stockMoveLine.getRealQty();
+        }
+
+        BigDecimal qtySpreadOverLogisticalMoveLines = logisticalFormLineList.stream()
+                .map(logisticalFormLine -> logisticalFormLine.getQty() != null ? logisticalFormLine.getQty()
+                        : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return stockMoveLine.getRealQty().subtract(qtySpreadOverLogisticalMoveLines);
+    }
 
 }

@@ -19,6 +19,7 @@ package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -47,6 +49,7 @@ import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.apps.stock.exception.LogisticalFormWarning;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -118,6 +121,8 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     public void checkLines(LogisticalForm logisticalForm) throws LogisticalFormWarning, LogisticalFormError {
         List<String> warningMessageList = new ArrayList<>();
 
+        checkRequiredLineFields(logisticalForm);
+        checkInvalidLineDimensions(logisticalForm);
         checkEmptyParcelPalletLines(logisticalForm, warningMessageList);
         checkInconsistentQties(logisticalForm, warningMessageList);
 
@@ -128,9 +133,38 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         }
     }
 
+    protected void checkRequiredLineFields(LogisticalForm logisticalForm) throws LogisticalFormError {
+        if (logisticalForm.getLogisticalFormLineList() == null) {
+            return;
+        }
+
+        for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
+            if (logisticalFormLine.getTypeSelect() == 0) {
+                throw new LogisticalFormError(logisticalFormLine,
+                        I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINE_REQUIRED_TYPE),
+                        logisticalFormLine.getSequence() + 1);
+            }
+
+            if (logisticalFormLine.getTypeSelect() == LogisticalFormLineRepository.TYPE_DETAIL) {
+                if (logisticalFormLine.getStockMoveLine() == null) {
+                    throw new LogisticalFormError(logisticalFormLine,
+                            I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINE_REQUIRED_STOCK_MOVE_LINE),
+                            logisticalFormLine.getSequence() + 1);
+                }
+                if (logisticalFormLine.getQty() == null || logisticalFormLine.getQty().signum() <= 0) {
+                    throw new LogisticalFormError(logisticalFormLine,
+                            I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINE_REQUIRED_QUANTITY),
+                            logisticalFormLine.getSequence() + 1);
+                }
+            }
+        }
+    }
+
     protected void checkInconsistentQties(LogisticalForm logisticalForm, List<String> errorMessageList) {
         Map<StockMoveLine, BigDecimal> spreadableQtyMap = getSpreadableQtyMap(logisticalForm);
         Map<StockMoveLine, BigDecimal> spreadQtyMap = getSpreadQtyMap(logisticalForm);
+        Locale locale = new Locale(AuthUtils.getUser().getLanguage());
+        NumberFormat nf = NumberFormat.getInstance(locale);
 
         for (Entry<StockMoveLine, BigDecimal> entry : spreadableQtyMap.entrySet()) {
             StockMoveLine stockMoveLine = entry.getKey();
@@ -139,11 +173,11 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
             if (spreadableQty.signum() != 0) {
                 BigDecimal spreadQty = spreadQtyMap.getOrDefault(stockMoveLine, BigDecimal.ZERO);
                 BigDecimal expectedQty = spreadQty.add(spreadableQty);
-                String errorMessage = String.format(
+                String errorMessage = String.format(locale,
                         I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINES_INCONSISTENT_QUANTITY),
                         String.format("%s (%s)", stockMoveLine.getProductName(),
                                 stockMoveLine.getStockMove().getStockMoveSeq()),
-                        spreadQty, expectedQty);
+                        nf.format(spreadQty), nf.format(expectedQty));
                 errorMessageList.add(errorMessage);
             }
         }
@@ -191,8 +225,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         }
     }
 
-    @Override
-    public void checkInvalidLineDimensions(LogisticalForm logisticalForm) throws LogisticalFormError {
+    protected void checkInvalidLineDimensions(LogisticalForm logisticalForm) throws LogisticalFormError {
         if (logisticalForm.getLogisticalFormLineList() != null) {
             LogisticalFormLineService logisticalFormLineService = Beans.get(LogisticalFormLineService.class);
             for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
