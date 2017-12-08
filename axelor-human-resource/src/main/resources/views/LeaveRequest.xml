@@ -131,7 +131,7 @@
 	
 	<action-record name="action-leave-request-record-default" model="com.axelor.apps.hr.db.LeaveRequest">
 	    <field name="user" expr="eval:__user__"/>
-	    <field name="company" expr="eval: __user__.activeCompany"/>
+	    <field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-record>
 
 	<action-record name="action-leave-request-record-to-justify" model="com.axelor.apps.hr.db.LeaveRequest">

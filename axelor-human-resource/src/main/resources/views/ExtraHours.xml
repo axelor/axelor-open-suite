@@ -89,7 +89,7 @@
 	
 	<action-record name="action-extra-hours-record-default" model="com.axelor.apps.hr.db.ExtraHours">
 	    <field name="user" expr="eval:__user__"/>
-	    <field name="company" expr="eval: __user__.activeCompany"/>
+	    <field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-record>
 	
 	<action-record name="action-extra-hours-record-draft" model="com.axelor.apps.hr.db.ExtraHours">

@@ -127,7 +127,7 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 		List<Employee> employeeList = Lists.newArrayList();
 		String liaison = query.isEmpty() ? "" : " AND";
 		if (hrBatch.getCompany() != null){
-			employeeList = JPA.all(Employee.class).filter(Joiner.on(" AND ").join(query) + liaison + " (EXISTS(SELECT u FROM User u WHERE :company MEMBER OF u.companySet AND self = u.employee) OR NOT EXISTS(SELECT u FROM User u WHERE self = u.employee))").bind("company", hrBatch.getCompany()).fetch();
+			employeeList = JPA.all(Employee.class).filter(Joiner.on(" AND ").join(query) + liaison + " self.mainEmploymentContract.payCompany = :company").bind("company", hrBatch.getCompany()).fetch();
 		}
 		else{
 			employeeList = JPA.all(Employee.class).filter(Joiner.on(" AND ").join(query)).fetch();

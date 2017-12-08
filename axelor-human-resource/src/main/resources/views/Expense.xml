@@ -176,7 +176,7 @@
 	
 	<action-record name="action-expense-record-default" model="com.axelor.apps.hr.db.Expense">
 	    <field name="user" expr="eval:__user__"/>
-	    <field name="company" expr="eval: __user__.activeCompany"/>
+	    <field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	    <field name="period" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
 		<field name="exTaxTotal" expr="eval: 0"/>
     	<field name="taxTotal" expr="eval: 0"/>
