@@ -525,7 +525,7 @@
 				</viewer>
 			</field>
 			<field name="invoicePaymentList" colSpan="12" showTitle="false" readonly="true" css="order-subtotal" if="!__config__.app.getApp('account').paymentVouchersOnInvoice">
-				<viewer depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol"><![CDATA[
+				<viewer depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,paymentMode,companyBankDetails,move"><![CDATA[
 				  <span class="form-item-container">
         			<dl class="dl-horizontal">
                			<dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a>  <font x-translate>Paid on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
