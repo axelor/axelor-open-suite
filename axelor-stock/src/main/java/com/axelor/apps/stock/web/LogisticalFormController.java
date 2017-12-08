@@ -79,7 +79,6 @@ public class LogisticalFormController {
 			LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
 			LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
 
-			logisticalFormService.checkInvalidLineDimensions(logisticalForm);
 			logisticalFormService.sortLines(logisticalForm);
 			logisticalFormService.checkLines(logisticalForm);
 		} catch (LogisticalFormWarning e) {
