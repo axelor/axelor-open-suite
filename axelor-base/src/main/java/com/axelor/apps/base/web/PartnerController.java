@@ -17,28 +17,16 @@
  */
 package com.axelor.apps.base.web;
 
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.axelor.apps.base.db.*;
-import com.axelor.apps.base.service.BankDetailsService;
-import org.eclipse.birt.core.exception.BirtException;
-import org.iban4j.IbanFormatException;
-import org.iban4j.InvalidCheckDigitException;
-import org.iban4j.UnsupportedCountryException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
@@ -59,6 +47,20 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import org.eclipse.birt.core.exception.BirtException;
+import org.iban4j.IbanFormatException;
+import org.iban4j.InvalidCheckDigitException;
+import org.iban4j.UnsupportedCountryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class PartnerController {
 
@@ -313,30 +315,17 @@ public class PartnerController {
 		partnerService.convertToIndividualPartner(partner);
 	}
 
+	/**
+	 * Called from partner view on name change.
+	 * Call {@link PartnerService#isThereDuplicatePartner(Partner)}
+	 * @param request
+	 * @param response
+	 */
 	public void checkPartnerName(ActionRequest request, ActionResponse response) {
 		Partner partner = request.getContext().asType(Partner.class);
-
-		if (partner.getName() != null && !partner.getName().isEmpty()) {
-			Partner existingPartner = partnerRepo.all()
-					.filter("self.isContact = false and lower(self.name) = lower(?1)", partner.getName())
-					.fetchOne();
-			if (existingPartner != null) {
-				response.setAlert("There is already a partner with this name");
-			}
-		}
-	}
-
-	public void checkContactName(ActionRequest request, ActionResponse response) {
-		Partner partner = request.getContext().asType(Partner.class);
-
-		if (partner.getName() != null && partner.getFirstName() != null) {
-			Partner existingPartner = partnerRepo.all()
-					.filter("self.isContact = true and lower(self.name) = lower(?1) and lower(self.firstName) = lower(?2)", partner.getName(), partner.getFirstName())
-					.fetchOne();
-			if (existingPartner != null) {
-				response.setAlert("There is already a contact with these first name and last name");
-			}
-		}
+		response.setAttr("duplicatePartnerText",
+				"hidden",
+				!partnerService.isThereDuplicatePartner(partner));
 	}
 
 }

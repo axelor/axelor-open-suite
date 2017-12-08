@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<meta-translations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
+   <meta-translation key="Launch Date" message="Date de lancement" language="fr"/> 
+   <meta-translation key="Main Category" message="Catégorie principale" language="fr"/> 
+   <meta-translation key="Product order line" message="Ligne de commande produit" language="fr"/> 
+   <meta-translation key="Product order" message="Commande produit" language="fr"/>
+   <meta-translation key="Create product order" message="Créer commande produit" language="fr"/>		
+   <meta-translation key="Product dashboard" message="Tableau de bord produit" language="fr"/>
+   <meta-translation key="Product orders per month" message="Commandes produit par mois" language="fr"/>
+   <meta-translation key="Product orders per supplier per category" message="Commandes produit par fournisseurs et catégorie" language="fr"/>
+   <meta-translation key="Reset" message="Réinitialiser" language="fr"/>
+   <meta-translation key="Are you sure wants to validate." message="Êtes-vous sûr de vouloir valider cette commande?" language="fr"/>
+   <meta-translation key="Order validated" message="Commande validée" language="fr"/>
+   <meta-translation key="Are you sure wants to cancel ?" message="Êtes-vous sûr de vouloir annuler cette commande??" language="fr"/>
+   <meta-translation key="Order finished." message="Commande terminée" language="fr"/> 
+   <meta-translation key="Check/Uncheck 'to invoice'" message="Cocher/Décocher 'A facturer'" language="fr"/> 
+  
+</meta-translations>
+ 
+  

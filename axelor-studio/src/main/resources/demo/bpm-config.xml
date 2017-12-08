@@ -49,6 +49,7 @@
 			<bind node="@sequence" to="sequence"/>
 			<bind node="@onChange" to="onChange" />
 			<bind node="@appBuilder" to="appBuilder" search="self.code = :appBuilder"  />
+			<bind node="@showIf" to="showIf" />
 		</bind>
 	</input>
 	
@@ -223,5 +224,12 @@
 		</bind>
 	</input>
 	
+	<input file="bpm_translation.xml" root="meta-translations" >
+		<bind node="meta-translation" type="com.axelor.meta.db.MetaTranslation" search="self.key = :key and self.language = :language">
+			<bind node="@key" to="key" />
+			<bind node="@message" to="message" />
+			<bind node="@language" to="language"/>
+		</bind>
+	</input>
 	
 </xml-inputs>

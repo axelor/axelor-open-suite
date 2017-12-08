@@ -45,10 +45,12 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -243,16 +245,13 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
 	public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException  {
 
-		Company company = saleOrderLine.getSaleOrder().getCompany();
-
-		StockConfig stockConfig = stockConfigService.getStockConfig(company);
+		SupplyChainConfig supplyChainConfig = Beans.get(SupplyChainConfig.class);
 
 		Product product = saleOrderLine.getProduct();
 
 		return (product != null
-			&& ((ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()) && stockConfig.getHasOutSmForNonStorableProduct() && !product.getIsShippingCostsProduct())
-				|| (ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect()) && stockConfig.getHasOutSmForStorableProduct())) );
-
+			&& ((ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()) && supplyChainConfig.getHasOutSmForNonStorableProduct() && !product.getIsShippingCostsProduct())
+				|| (ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect()) && supplyChainConfig.getHasOutSmForStorableProduct())) );
 	}
 
     @Override

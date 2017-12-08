@@ -27,7 +27,7 @@
             <button name="collectedBtn" title="Collected" showIf="statusSelect == 2" readonlyIf="!logisticalFormLineList.length"
                 onClick="action-logistical-form-change-status,action-logistical-form-update-spread-flags" icon="fa-truck" />
             <button name="packagingListBtn" title="Print packaging list" showIf="statusSelect > 1" readonlyIf="!logisticalFormLineList.length"
-                onClick="action-logistical-form-print-packaging-list" icon="fa-print" if-module="axelor-supplychain" />
+                onClick="action-logistical-form-print-packaging-list" icon="fa-print" if="__config__.app.isApp('supplychain')" />
         </toolbar>
         <panel colSpan="12" readonlyIf="statusSelect > 1">
             <field name="deliveryNumber" />

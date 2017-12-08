@@ -83,6 +83,7 @@
 		    <panel>
 				<field name="company" colSpan="6" form-view="company-form" grid-view="company-grid"/>
 				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"/>
+				<field name="user.employee" hidden="true" />
 		    </panel>
 	    </panel>
 		<panel name="generateLinesPanel" title="Generate Lines automatically" hidden="true">
