@@ -19,12 +19,6 @@
 	  </panel>
 	  <panel name="stockMoveInformations" title="Stock move informations">
 		  <panel colSpan="12">
-			  <field name="hasOutSmForStorableProduct"/>
-			  <field name="hasOutSmForNonStorableProduct"/>
-			  <field name="hasInSmForStorableProduct"/>
-			  <field name="hasInSmForNonStorableProduct"/>
-		  </panel>
-		  <panel colSpan="12">
 			  <field name="receiptDefaultLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 			  <field name="pickupDefaultLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 			  <field name="wasteLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>

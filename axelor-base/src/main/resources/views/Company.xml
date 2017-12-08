@@ -32,6 +32,7 @@
 	    	<button name="productionConfigButton" title="Production config" width="100%" colSpan="6" onClick="action-company-view-production-config" if-module="axelor-production" if="__config__.app.isApp('production')"/>
     		<button name="hrConfigButton" title="Human Resources config" width="100%" colSpan="6" onClick="action-company-view-hr-config" if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
     		<button name="crmConfigButton" title="CRM config" width="100%" colSpan="6" onClick="action-company-view-crm-config" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
+    		<button name="supplyChainConfigButton" title="Supply Chain config" width="100%" colSpan="6" onClick="action-company-view-supply-chain-config" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
     	</panel>
 	  
 	  	<panel name="notes" title="Notes" showIf="$popup()" readonly="true">
