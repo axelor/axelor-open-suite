@@ -343,6 +343,7 @@
 "Shipment mode",,,
 "Shipped date",,,
 "Shipped qty",,,
+"Shipping costs products cannot be added to a stock move.",,,
 "Special split",,,
 "Split",,,
 "Split by unit",,,
