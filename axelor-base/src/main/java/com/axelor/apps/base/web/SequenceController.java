@@ -23,11 +23,14 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Strings;
 
 public class SequenceController {
     public void getDefaultTitle(ActionRequest request, ActionResponse response) {
         Sequence sequence = request.getContext().asType(Sequence.class);
-        String defautlTitle = Beans.get(SequenceService.class).getDefaultTitle(sequence);
-        response.setValue("name", I18n.get(defautlTitle));
+        if (!Strings.isNullOrEmpty(sequence.getCode())) {
+            String defautlTitle = Beans.get(SequenceService.class).getDefaultTitle(sequence);
+            response.setValue("name", I18n.get(defautlTitle));
+        }
     }
 }
