@@ -57,7 +57,7 @@
   		</panel>
     	<panel title="Line Stock quantity" readonlyIf="statusSelect &gt;= 3"
 			   canCollapse="true" collapseIf="true">
-   			<field name="stockLineQuantity" showTitle="false" colSpan="6" css="label-bold bold" onChange="action-lunch-voucher-method-update-total,action-lunch-voucher-method-check-stock"/>
+   			<field name="quantityForStock" showTitle="false" colSpan="6" css="label-bold bold" onChange="action-lunch-voucher-method-update-total,action-lunch-voucher-method-check-stock"/>
    			<field name="stockLineComment" colSpan="6"/>
    		</panel>
   		<panel-related field="lunchVoucherMgtLineList" form-view="lunch-voucher-mgt-line-form" grid-view="lunch-voucher-mgt-line-grid" canNew="false" canRemove="false" onChange="action-lunch-voucher-method-update-total,action-lunch-voucher-method-check-stock"/>
