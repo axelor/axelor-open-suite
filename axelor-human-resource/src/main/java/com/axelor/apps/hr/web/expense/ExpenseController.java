@@ -68,6 +68,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -494,6 +495,33 @@ public class ExpenseController {
 		}
 		
 		
+	}
+	
+	public void removeLines(ActionRequest request, ActionResponse response) {
+
+		Expense expense = request.getContext().asType(Expense.class);
+
+		List<ExpenseLine> expenseLineList = expense.getExpenseLineList();
+
+		try {
+			if (expenseLineList != null && !expenseLineList.isEmpty()) {
+				Iterator<ExpenseLine> expenseLineIter = expenseLineList.iterator();
+				while (expenseLineIter.hasNext()) {
+					ExpenseLine generalExpenseLine = expenseLineIter.next();
+
+					if (generalExpenseLine.getKilometricExpense() != null
+							&& (expense.getKilometricExpenseLineList() != null
+									&& !expense.getKilometricExpenseLineList().contains(generalExpenseLine)
+									|| expense.getKilometricExpenseLineList() == null)) {
+
+						expenseLineIter.remove();
+					}
+				}
+			}
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+		response.setValue("expenseLineList", expenseLineList);
 	}
 	
 	public void computeKilometricExpense(ActionRequest request, ActionResponse response) throws AxelorException {
