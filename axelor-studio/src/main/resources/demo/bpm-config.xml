@@ -223,5 +223,12 @@
 		</bind>
 	</input>
 	
+	<input file="bpm_translation.xml" root="meta-translations" >
+		<bind node="meta-translation" type="com.axelor.meta.db.MetaTranslation" search="self.key = :key">
+			<bind node="@key" to="key" />
+			<bind node="@message" to="message" />
+			<bind node="@language" to="language"/>
+		</bind>
+	</input>
 	
 </xml-inputs>
