@@ -135,8 +135,8 @@
 							<field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
 						</editor>
 					</field>
-					<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
 					<button name="$balance" title="Balance" colSpan="3" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button" hideIf="!$readonly()"/>
+					<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
 				</panel>
 				<field name="isProspect"  colSpan="2" widget="InlineCheckbox" hideIf="isContact || $readonly()" onChange="action-partner-attrs-unset-customer,action-partner-record-unset-factor"/>
 				<field name="isEmployee" colSpan="2" widget="InlineCheckbox" hideIf="isContact || $readonly() || isCustomer || !isSupplier || partnerTypeSelect != 2" onChange="action-partner-account-attrs-hide-employee-account,action-partner-record-unset-factor"/>
