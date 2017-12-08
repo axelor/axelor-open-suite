@@ -246,10 +246,10 @@ public class ForecastRecapService {
 	public void populateWithSalaries(ForecastRecap forecastRecap){
 		List<Employee> employeeList = new ArrayList<Employee>();
 		if(forecastRecap.getBankDetails() != null){
-			employeeList = Beans.get(EmployeeRepository.class).all().filter("self.user.activeCompany = ?1 AND self.bankDetails = ?2",forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
+			employeeList = Beans.get(EmployeeRepository.class).all().filter("self.mainEmploymentContract.payCompany = ?1 AND self.bankDetails = ?2",forecastRecap.getCompany(),forecastRecap.getBankDetails()).fetch();
 		}
 		else{
-			employeeList = Beans.get(EmployeeRepository.class).all().filter("self.user.activeCompany = ?1",forecastRecap.getCompany()).fetch();
+			employeeList = Beans.get(EmployeeRepository.class).all().filter("self.mainEmploymentContract.payCompany = ?1",forecastRecap.getCompany()).fetch();
 		}
 		LocalDate itDate = new LocalDate(forecastRecap.getFromDate());
 		while(!itDate.isAfter(forecastRecap.getToDate())){
