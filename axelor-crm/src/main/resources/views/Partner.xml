@@ -87,7 +87,7 @@
    	<action-view name="action-partner-view-events" title="Events" model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="list-event-grid"/>
 		<view type="form" name="event-form"/>
-	  	<domain>self.clientPartner.id = :_id</domain>
+	  	<domain>self.partner.id = :_id</domain>
 	</action-view>
 	
 	<action-view name="action-contact-view-events" title="Events" model="com.axelor.apps.crm.db.Event">
