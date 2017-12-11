@@ -28,6 +28,7 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
+import com.axelor.apps.base.db.Company;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -348,7 +349,12 @@ public class TimesheetServiceImpl implements TimesheetService{
 		Timesheet timesheet = new Timesheet();
 		
 		timesheet.setUser(user);
-		timesheet.setCompany(user.getActiveCompany());
+		Company company = null;
+		if (user.getEmployee() != null
+				&& user.getEmployee().getMainEmploymentContract() != null) {
+			company = user.getEmployee().getMainEmploymentContract().getPayCompany();
+		}
+		timesheet.setCompany(company);
 		timesheet.setFromDate(fromDate);
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
 		timesheet.setFullName(computeFullName(timesheet));

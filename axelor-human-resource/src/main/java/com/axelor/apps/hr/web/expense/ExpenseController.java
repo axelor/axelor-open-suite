@@ -449,13 +449,7 @@ public class ExpenseController {
 	 public void insertKMExpenses(ActionRequest request, ActionResponse response) throws AxelorException{
 	 	User user = AuthUtils.getUser();
 	 	if(user != null){
-	 		Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
-	 		if(expense == null){
-	 			expense = new Expense();
-	 			expense.setUser(user);
-	 			expense.setCompany(user.getActiveCompany());
-	 			expense.setStatusSelect(ExpenseRepository.STATUS_DRAFT);
-	 		}
+	 		Expense expense = expenseServiceProvider.get().getOrCreateExpense(user);
 	 		ExpenseLine expenseLine = new ExpenseLine();
 	 		expenseLine.setDistance(new BigDecimal(request.getData().get("kmNumber").toString()));
 	 		expenseLine.setFromCity(request.getData().get("locationFrom").toString());

@@ -90,7 +90,7 @@ public class KilometricService {
 		Year year = Beans.get(YearServiceImpl.class).getYear(date, employee.getMainEmploymentContract().getPayCompany());
 		
 		if (year == null){
-			throw new AxelorException( String.format( I18n.get(IExceptionMessage.KILOMETRIC_LOG_NO_YEAR), employee.getUser().getActiveCompany(), date)  , IException.CONFIGURATION_ERROR);
+			throw new AxelorException( String.format( I18n.get(IExceptionMessage.KILOMETRIC_LOG_NO_YEAR), employee.getMainEmploymentContract().getPayCompany(), date)  , IException.CONFIGURATION_ERROR);
 		}
 		
 		return createKilometricLog(employee, new BigDecimal("0.00"), year);

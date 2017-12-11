@@ -17,23 +17,6 @@
  */
 package com.axelor.apps.hr.service.expense;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.mail.MessagingException;
-
-import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
-
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
@@ -53,7 +36,10 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
@@ -91,6 +77,18 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.joda.time.LocalDate;
+
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ExpenseServiceImpl implements ExpenseService {
 
@@ -553,13 +551,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
 		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("expenseProduct").toString()));
 		if (user != null) {
-			Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
-			if (expense == null) {
-				expense = new Expense();
-				expense.setUser(user);
-				expense.setCompany(user.getActiveCompany());
-				expense.setStatusSelect(ExpenseRepository.STATUS_DRAFT);
-			}
+		    Expense expense = getOrCreateExpense(user);
 			ExpenseLine expenseLine = new ExpenseLine();
 			expenseLine.setExpenseDate(new LocalDate(request.getData().get("date").toString()));
 			expenseLine.setComments(request.getData().get("comments").toString());
@@ -575,6 +567,23 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 			Beans.get(ExpenseRepository.class).save(expense);
 		}
+	}
+
+	@Override
+	public Expense getOrCreateExpense(User user) {
+		Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
+		if (expense == null) {
+			expense = new Expense();
+			expense.setUser(user);
+			Company company = null;
+			if (user.getEmployee() != null
+					&& user.getEmployee().getMainEmploymentContract() != null) {
+				company = user.getEmployee().getMainEmploymentContract().getPayCompany();
+			}
+			expense.setCompany(company);
+			expense.setStatusSelect(ExpenseRepository.STATUS_DRAFT);
+		}
+		return expense;
 	}
 
 	public BigDecimal computePersonalExpenseAmount(Expense expense) {

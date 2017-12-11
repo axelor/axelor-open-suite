@@ -19,6 +19,7 @@ package com.axelor.apps.hr.service.batch;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -77,8 +78,9 @@ public class BatchLeaveManagement extends BatchStrategy {
 		
 		super.start();
 		
-		if (batch.getHrBatch().getDayNumber() == null || batch.getHrBatch().getDayNumber() == BigDecimal.ZERO || batch.getHrBatch().getLeaveReason() == null)
+		if (batch.getHrBatch().getDayNumber() == null || batch.getHrBatch().getDayNumber().compareTo(BigDecimal.ZERO) == 0 || batch.getHrBatch().getLeaveReason() == null) {
 			TraceBackService.trace(new AxelorException(I18n.get(IExceptionMessage.BATCH_MISSING_FIELD), IException.CONFIGURATION_ERROR), IException.LEAVE_MANAGEMENT, batch.getId());
+		}
 		total = 0;
 		noValueAnomaly = 0;
 		confAnomaly = 0;
@@ -168,7 +170,7 @@ public class BatchLeaveManagement extends BatchStrategy {
 			BigDecimal dayNumber = batch.getHrBatch().getUseWeeklyPlanningCoef() ? batch.getHrBatch().getDayNumber().multiply(employee.getPlanning().getLeaveCoef()) : batch.getHrBatch().getDayNumber();
 			dayNumber = dayNumber.subtract(new BigDecimal( publicHolidayService.getImposedDayNumber(employee, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate()) ));
 			LeaveManagement leaveManagement = leaveManagementService.createLeaveManagement(leaveLine, AuthUtils.getUser(), batch.getHrBatch().getComments(), null, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate(), dayNumber );
-			leaveLine.setQuantity(leaveLine.getQuantity().add(dayNumber).setScale(1));
+			leaveLine.setQuantity(leaveLine.getQuantity().add(dayNumber).setScale(1, RoundingMode.HALF_UP));
 			
 			leaveManagementRepository.save(leaveManagement);
 			leaveLineRepository.save(leaveLine);
