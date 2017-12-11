@@ -24,7 +24,7 @@
 		<one-to-many name="lunchVoucherMgtLineList" ref="com.axelor.apps.hr.db.LunchVoucherMgtLine" title="Lunch Voucher Lines" mappedBy="lunchVoucherMgt" orphanRemoval="true" />
 
 		<integer name="stockQuantityStatus" title="Stock quantity status" readonly="true" />
-		<integer name="stockLineQuantity" title="Stock Line quantity" />
+		<integer name="stockLineQuantity" title="Quantity" min="0"/>
 		<string name="stockLineComment" title="Comment" large="true" />
 
 		<date name="exportDate" title="Export date" />
