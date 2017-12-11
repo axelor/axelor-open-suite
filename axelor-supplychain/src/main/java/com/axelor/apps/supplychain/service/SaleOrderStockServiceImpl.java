@@ -37,7 +37,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.PartnerDefaultLocation;
-import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LocationRepository;
@@ -47,6 +46,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -245,7 +245,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
 	public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException  {
 
-		SupplyChainConfig supplyChainConfig = Beans.get(SupplyChainConfig.class);
+		Company company = saleOrderLine.getSaleOrder().getCompany();
+		
+		SupplyChainConfig supplyChainConfig = Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(company);
 
 		Product product = saleOrderLine.getProduct();
 
