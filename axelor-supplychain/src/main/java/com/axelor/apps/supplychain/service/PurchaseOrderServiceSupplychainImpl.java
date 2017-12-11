@@ -52,6 +52,7 @@ import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -144,8 +145,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		Long stockMoveId = null;
 		if(purchaseOrder.getPurchaseOrderLineList() != null && purchaseOrder.getCompany() != null) {
 			StockConfigService stockConfigService = Beans.get(StockConfigService.class);
-			SupplyChainConfig supplyChainConfig = Beans.get(SupplyChainConfig.class);
 			Company company = purchaseOrder.getCompany();
+			SupplyChainConfig supplyChainConfig = Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(company);
 
 			StockConfig stockConfig = stockConfigService.getStockConfig(company);
 
