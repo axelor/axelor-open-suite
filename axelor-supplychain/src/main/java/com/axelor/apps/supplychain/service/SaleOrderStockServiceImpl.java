@@ -84,9 +84,11 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
 	    Optional<StockMove> activeStockMove = findActiveStockMoveForSaleOrder(saleOrder);
 
-		if (activeStockMove.isPresent()) {
-			throw new AxelorException(activeStockMove.get(), IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXISTS), saleOrder.getSaleOrderSeq()); 
-		}
+        if (activeStockMove.isPresent()) {
+            throw new AxelorException(activeStockMove.get(), IException.CONFIGURATION_ERROR,
+                    I18n.get(IExceptionMessage.SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXISTS),
+                    activeStockMove.get().getName(), saleOrder.getSaleOrderSeq());
+        }
 
 		Company company = saleOrder.getCompany();
 

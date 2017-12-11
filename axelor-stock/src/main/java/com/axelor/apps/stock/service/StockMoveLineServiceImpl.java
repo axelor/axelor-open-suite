@@ -566,6 +566,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
     private BigDecimal computeSpreadableQtyOverLogisticalFormLines(StockMoveLine stockMoveLine,
             List<LogisticalFormLine> logisticalFormLineList) {
+
+        if (stockMoveLine.getProduct() == null
+                || !ProductRepository.PRODUCT_TYPE_STORABLE.equals(stockMoveLine.getProduct().getProductTypeSelect())) {
+            return BigDecimal.ZERO;
+        }
+
         if (logisticalFormLineList == null) {
             return stockMoveLine.getRealQty();
         }

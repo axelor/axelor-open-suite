@@ -428,6 +428,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
         domainList.add("self.partner = :deliverToCustomerPartner");
         domainList.add(String.format("self.typeSelect = %d", StockMoveRepository.TYPE_OUTGOING));
+        domainList.add(String.format("self.statusSelect = %d", StockMoveRepository.STATUS_PLANNED));
         domainList.add(
                 "self.fullySpreadOverLogisticalFormsFlag IS NULL OR self.fullySpreadOverLogisticalFormsFlag = FALSE");
 
