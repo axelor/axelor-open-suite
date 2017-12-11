@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -41,17 +40,18 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.LocationLineRepository;
-import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.supplychain.db.Mrp;
@@ -83,7 +83,7 @@ public class MrpServiceImpl implements MrpService  {
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	protected MrpRepository mrpRepository;
-	protected LocationRepository locationRepository;
+	protected StockLocationRepository stockLocationRepository;
 	protected ProductRepository productRepository;
 	protected LocationLineRepository locationLineRepository;
 	protected MrpLineTypeRepository mrpLineTypeRepository;
@@ -96,19 +96,19 @@ public class MrpServiceImpl implements MrpService  {
 	
 	protected LocalDate today;
 	
-	protected List<Location> locationList = Lists.newArrayList();
+	protected List<StockLocation> locationList = Lists.newArrayList();
 	protected Map<Product,Integer> productMap = Maps.newHashMap();
 	protected Mrp mrp;
 	
 	
 	@Inject
-	public MrpServiceImpl(AppBaseService appBaseService, MrpRepository mrpRepository, LocationRepository locationRepository, 
+	public MrpServiceImpl(AppBaseService appBaseService, MrpRepository mrpRepository, StockLocationRepository stockLocationRepository, 
 			ProductRepository productRepository, LocationLineRepository locationLineRepository, MrpLineTypeRepository mrpLineTypeRepository,
 			PurchaseOrderLineRepository purchaseOrderLineRepository, SaleOrderLineRepository saleOrderLineRepository, MrpLineRepository mrpLineRepository,
 			StockRulesService stockRulesService, MrpLineService mrpLineService, MrpForecastRepository mrpForecastRepository)  {
 		
 		this.mrpRepository = mrpRepository;
-		this.locationRepository = locationRepository;
+		this.stockLocationRepository = stockLocationRepository;
 		this.productRepository = productRepository;
 		this.locationLineRepository = locationLineRepository;
 		this.mrpLineTypeRepository = mrpLineTypeRepository;
@@ -268,7 +268,7 @@ public class MrpServiceImpl implements MrpService  {
 			
 			if(mrpLine.getMrpLineType().getElementSelect() != MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK 
 					&& (!isProposalElement || mrpLineType.getTypeSelect() == MrpLineTypeRepository.TYPE_OUT)
-					&& cumulativeQty.compareTo(mrpLine.getMinQty()) == -1)  {  
+					&& cumulativeQty.compareTo(mrpLine.getMinQty()) < 0)  {  
 					
 				log.debug("Cumulative qty ({} < {}) is insufficient for product ({}) at the maturity date ({})", cumulativeQty, minQty, product.getFullName(), mrpLine.getMaturityDate());
 				
@@ -297,7 +297,7 @@ public class MrpServiceImpl implements MrpService  {
 	}
 	
 	
-	public MrpLine getPreviousProposalMrpLine(Product product, MrpLineType mrpLineType, Location location, LocalDate maturityDate)  {
+	public MrpLine getPreviousProposalMrpLine(Product product, MrpLineType mrpLineType, StockLocation location, LocalDate maturityDate)  {
 		
 		LocalDate startPeriodDate = maturityDate;
 		
@@ -317,7 +317,7 @@ public class MrpServiceImpl implements MrpService  {
 	}
 	
 	
-	protected void createProposalMrpLine(Product product, MrpLineType mrpLineType, BigDecimal reorderQty, Location location, LocalDate maturityDate, List<MrpLineOrigin> mrpLineOriginList, String relatedToSelectName) throws AxelorException {
+	protected void createProposalMrpLine(Product product, MrpLineType mrpLineType, BigDecimal reorderQty, StockLocation location, LocalDate maturityDate, List<MrpLineOrigin> mrpLineOriginList, String relatedToSelectName) throws AxelorException {
 		
 		if(mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL)  {
 			maturityDate = maturityDate.minusDays(product.getSupplierDeliveryTime());
@@ -373,7 +373,7 @@ public class MrpServiceImpl implements MrpService  {
 
 		Map<List<Object>, MrpLine> map = Maps.newHashMap();
 		MrpLine consolidateMrpLine = null;
-		List<Object> keys = new ArrayList<Object>();
+		List<Object> keys = new ArrayList<>();
 
 		for (MrpLine mrpLine : mrpLineList){
 
@@ -594,7 +594,7 @@ public class MrpServiceImpl implements MrpService  {
 		
 		for(Product product : this.productMap.keySet())  {
 			
-			for(Location location : this.locationList)  {
+			for(StockLocation location : this.locationList)  {
 				
 				mrp.addMrpLineListItem(this.createAvailableStockMrpLine(product, location, availableStockMrpLineType));
 				
@@ -602,7 +602,7 @@ public class MrpServiceImpl implements MrpService  {
 		}
 	}
 	
-	protected MrpLine createAvailableStockMrpLine(Product product, Location location, MrpLineType availableStockMrpLineType)  {
+	protected MrpLine createAvailableStockMrpLine(Product product, StockLocation location, MrpLineType availableStockMrpLineType)  {
 		
 		BigDecimal qty = BigDecimal.ZERO;
 		
@@ -631,7 +631,7 @@ public class MrpServiceImpl implements MrpService  {
 	
 	}
 	
-	protected LocationLine getLocationLine(Product product, Location location)  {
+	protected LocationLine getLocationLine(Product product, StockLocation location)  {
 
 		return locationLineRepository.all().filter("self.location = ?1 AND self.product = ?2", location, product).fetchOne();
 		
@@ -713,7 +713,7 @@ public class MrpServiceImpl implements MrpService  {
 	}
 	
 	
-	protected MrpLine createMrpLine(Product product,  MrpLineType mrpLineType, BigDecimal qty, LocalDate maturityDate, BigDecimal cumulativeQty, Location location, Model... models)  {
+	protected MrpLine createMrpLine(Product product,  MrpLineType mrpLineType, BigDecimal qty, LocalDate maturityDate, BigDecimal cumulativeQty, StockLocation location, Model... models)  {
 		
 		return mrpLineService.createMrpLine(product, this.productMap.get(product), mrpLineType, qty, maturityDate, cumulativeQty, location, models);
 		
@@ -735,11 +735,11 @@ public class MrpServiceImpl implements MrpService  {
 	}
 	
 	
-	protected List<Location> getAllLocationAndSubLocation(Location location)  {
+	protected List<StockLocation> getAllLocationAndSubLocation(StockLocation location)  {
 	
-		List<Location> subLocationList =  locationRepository.all().filter("self.parentLocation = ?1", location).fetch();
+		List<StockLocation> subLocationList =  stockLocationRepository.all().filter("self.parentLocation = ?1", location).fetch();
 	
-		for(Location subLocation : subLocationList)  {
+		for(StockLocation subLocation : subLocationList)  {
 			
 			subLocationList.addAll(this.getAllLocationAndSubLocation(subLocation));
 		

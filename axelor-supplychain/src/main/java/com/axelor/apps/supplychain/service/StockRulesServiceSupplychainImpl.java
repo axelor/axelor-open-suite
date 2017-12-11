@@ -24,19 +24,18 @@ import java.util.List;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.purchase.db.SupplierCatalog;
-
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
-import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
@@ -75,7 +74,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException  {
 
-		Location location = locationLine.getLocation();
+		StockLocation location = locationLine.getLocation();
 
 		//TODO à supprimer après suppression des variantes
 		if(location == null)  {

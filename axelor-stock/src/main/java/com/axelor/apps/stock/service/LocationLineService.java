@@ -24,7 +24,7 @@ import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.TrackingNumber;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
@@ -32,12 +32,12 @@ import com.google.inject.persist.Transactional;
 public interface LocationLineService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
+	public void updateLocation(StockLocation location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
                                LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException;
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
+	public void updateLocation(StockLocation location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
 							   LocalDate lastFutureStockMoveDate, BigDecimal reservedQty) throws AxelorException;
 	
 	
@@ -45,7 +45,7 @@ public interface LocationLineService {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateDetailLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
+	public void updateDetailLocation(StockLocation location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
                                      LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException;
 	
 	
@@ -58,12 +58,12 @@ public interface LocationLineService {
 	 * @param qty
 	 * @throws AxelorException if there is not enough qty in stock
 	 */
-	public void checkIfEnoughStock(Location location, Product product, BigDecimal qty) throws AxelorException;
+	public void checkIfEnoughStock(StockLocation location, Product product, BigDecimal qty) throws AxelorException;
 
 	public LocationLine updateLocation(LocationLine locationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
 									   LocalDate lastFutureStockMoveDate, BigDecimal reservedQty);
 	
-	public LocationLine getLocationLine(Location location, Product product);
+	public LocationLine getLocationLine(StockLocation location, Product product);
 	
 	/**
 	 * Récupération de la ligne détaillée de stock :
@@ -80,7 +80,7 @@ public interface LocationLineService {
 	 * @return
 	 * 			Une ligne détaillée de stock
 	 */
-	public LocationLine getDetailLocationLine(Location detailLocation, Product product, TrackingNumber trackingNumber);
+	public LocationLine getDetailLocationLine(StockLocation detailLocation, Product product, TrackingNumber trackingNumber);
 	
 	
 	/**
@@ -119,7 +119,7 @@ public interface LocationLineService {
 	 * @return
 	 * 		La ligne de stock
 	 */
-	public LocationLine createLocationLine(Location location, Product product);
+	public LocationLine createLocationLine(StockLocation location, Product product);
 	
 	
 	/**
@@ -133,6 +133,6 @@ public interface LocationLineService {
 	 * @return
 	 * 		La ligne détaillée de stock
 	 */
-	public LocationLine createDetailLocationLine(Location location, Product product, TrackingNumber trackingNumber);
+	public LocationLine createDetailLocationLine(StockLocation location, Product product, TrackingNumber trackingNumber);
 		
 }

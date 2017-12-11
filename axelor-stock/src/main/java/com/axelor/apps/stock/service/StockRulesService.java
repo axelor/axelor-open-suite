@@ -20,7 +20,7 @@ package com.axelor.apps.stock.service;
 import java.math.BigDecimal;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.exception.AxelorException;
@@ -34,7 +34,7 @@ public interface StockRulesService {
 
 	boolean useMinStockRules(LocationLine locationLine, StockRules stockRules, BigDecimal qty, int type); 
 
-	StockRules getStockRules(Product product, Location location, int type, int useCase);
+	StockRules getStockRules(Product product, StockLocation location, int type, int useCase);
 
 	BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules, BigDecimal minReorderQty);
 	BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules);

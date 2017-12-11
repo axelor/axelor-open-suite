@@ -23,7 +23,7 @@ import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
@@ -59,7 +59,7 @@ public class StockRulesServiceImpl implements StockRulesService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException  {
 
-		Location location = locationLine.getLocation();
+		StockLocation location = locationLine.getLocation();
 
 		//TODO à supprimer après suppression des variantes
 		if(location == null)  {
@@ -162,7 +162,7 @@ public class StockRulesServiceImpl implements StockRulesService  {
 	}
 
 	@Override
-	public StockRules getStockRules(Product product, Location location, int type, int useCase)  {
+	public StockRules getStockRules(Product product, StockLocation location, int type, int useCase)  {
 
 		if (useCase == StockRulesRepository.USE_CASE_USED_FOR_MRP) {
 			return stockRuleRepo.all().filter("self.product = ?1 AND self.location = ?2 AND self.useCaseSelect = ?3", product, location, useCase).fetchOne();

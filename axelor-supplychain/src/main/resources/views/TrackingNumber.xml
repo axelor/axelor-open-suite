@@ -35,7 +35,7 @@
 				<input name="trackingNumber" field="stockMoveLineList[].trackingNumber"/>
 			</where>
 		</select>
-		<select model="com.axelor.apps.stock.db.Location" title="Stock Location">
+		<select model="com.axelor.apps.stock.db.StockLocation" title="Stock Location">
 			<field name="detailsLocationLineList[].trackingNumber" as="trackingNumber"/>
 			<field name="detailsLocationLineList[].product.name" as="product"/>
 			<field name="detailsLocationLineList[].location.name" as="location"/>

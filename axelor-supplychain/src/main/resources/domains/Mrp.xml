@@ -5,7 +5,7 @@
  
   <entity name="Mrp" lang="java">
   
-      <many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Stock Location" required="true"/>
+      <many-to-one name="location" ref="com.axelor.apps.stock.db.StockLocation" title="Stock Location" required="true"/>
       <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Products"/>
       <many-to-many name="productCategorySet" ref="com.axelor.apps.base.db.ProductCategory" title="Product categories"/>
       <many-to-many name="productFamilySet" ref="com.axelor.apps.base.db.ProductFamily" title="Product families"/>

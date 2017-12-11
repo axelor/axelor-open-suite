@@ -10,7 +10,7 @@
         <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
         <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
 
-        <many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Stock Location"/>
+        <many-to-one name="location" ref="com.axelor.apps.stock.db.StockLocation" title="Stock Location"/>
         <date name="shipmentDate" title="Date of shipment" />
         <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
         <boolean name="subscription" title="Subscription"/>

@@ -71,7 +71,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 	@Override
 	public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException  {
 
-		List<Long> productionOrderIdList = new ArrayList<Long>();
+		List<Long> productionOrderIdList = new ArrayList<>();
 		if(saleOrder.getSaleOrderLineList() != null)  {
 
 			ProductionOrder productionOrder = null;

@@ -188,7 +188,7 @@
 		title="Stock Locations" action="stock.root.location" />
 	
 	<action-view name="stock.root.location" title="Stock Locations"
-		model="com.axelor.apps.stock.db.Location" >
+		model="com.axelor.apps.stock.db.StockLocation" >
 		<view type="grid" name="location-grid"/>
 		<view type="form" name="location-form"/>
 	</action-view>

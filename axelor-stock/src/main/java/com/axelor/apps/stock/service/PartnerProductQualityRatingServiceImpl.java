@@ -29,10 +29,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.PartnerProductQualityRatingRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 

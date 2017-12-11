@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="location-grid" title="Stock Locations" model="com.axelor.apps.stock.db.Location">
+    <grid name="location-grid" title="Stock Locations" model="com.axelor.apps.stock.db.StockLocation">
         <toolbar>
     		<button name="print" title="Print" icon="fa-print" onClick="action-stock-location-method-print"/>
     	</toolbar>
@@ -15,7 +15,7 @@
         <field name="typeSelect"/>
     </grid>
     
-	<form name="location-form" title="Stock Location" model="com.axelor.apps.stock.db.Location" onNew="action-location-record-new" width="large">
+	<form name="location-form" title="Stock Location" model="com.axelor.apps.stock.db.StockLocation" onNew="action-location-record-new" width="large">
 		<toolbar>
 			<button name="createInventory" title="Create inventory" onClick="action-location-view-create-inventory"/>
 			<button name="print" title="Print" icon="fa-print" onClick="action-stock-location-method-print"/>
@@ -38,10 +38,10 @@
 	</form>
     
     <action-method name="action-stock-location-method-print">
-    	<call class="com.axelor.apps.stock.web.LocationController" method="print"></call>
+    	<call class="com.axelor.apps.stock.web.StockLocationController" method="print"/>
     </action-method>
         
-    <action-record name="action-location-record-new" model="com.axelor.apps.stock.db.Location">
+    <action-record name="action-location-record-new" model="com.axelor.apps.stock.db.StockLocation">
 	    <field name="typeSelect" expr="1"/>
 	    <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>

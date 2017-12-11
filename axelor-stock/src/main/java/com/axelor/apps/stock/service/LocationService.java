@@ -17,12 +17,13 @@
  */
 package com.axelor.apps.stock.service;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.Location;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
+
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.stock.db.StockLocation;
 
 public interface LocationService {
 
@@ -31,7 +32,7 @@ public interface LocationService {
      * @param company
      * @return the default location or null
      */
-    public Location getLocation(Company company);
+    public StockLocation getLocation(Company company);
 
 	public BigDecimal getQty(Long productId, Long locationId, String qtyType);
 	
@@ -43,6 +44,6 @@ public interface LocationService {
 
 	public List<Long> getBadLocationLineId();
 	
-	public Set<Long> getContentLocationIds(Location location);
+	public Set<Long> getContentLocationIds(StockLocation location);
 	
 }

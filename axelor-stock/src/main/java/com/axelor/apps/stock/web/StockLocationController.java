@@ -21,16 +21,14 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
-import com.axelor.apps.stock.service.LocationService;
 import org.eclipse.birt.core.exception.BirtException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.stock.db.Location;
-import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.auth.AuthUtils;
@@ -43,15 +41,15 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
-public class LocationController {
+public class StockLocationController {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
-	private LocationRepository locationRepo;
+	private StockLocationRepository stockLocationRepo;
 
 	@Inject
-	public LocationController(LocationRepository locationRepo) {
-		this.locationRepo = locationRepo;
+	public StockLocationController(StockLocationRepository stockLocationRepo) {
+		this.stockLocationRepo = stockLocationRepo;
 	}
 
 	/**
@@ -66,7 +64,7 @@ public class LocationController {
 	public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
 
-		Location location = request.getContext().asType(Location.class );
+		StockLocation location = request.getContext().asType(StockLocation.class );
 		String locationIds = "";
 
 		@SuppressWarnings("unchecked")
@@ -79,7 +77,7 @@ public class LocationController {
 			
 		if(!locationIds.equals("")){
 			locationIds = locationIds.substring(0, locationIds.length()-1);	
-			location = locationRepo.find(new Long(lstSelectedLocations.get(0)));
+			location = stockLocationRepo.find(new Long(lstSelectedLocations.get(0)));
 		}else if(location.getId() != null){
 			locationIds = location.getId().toString();			
 		}

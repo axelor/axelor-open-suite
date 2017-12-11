@@ -18,8 +18,8 @@
 package com.axelor.apps.production.service.config;
 
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockConfig;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.service.config.StockConfigSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -27,7 +27,7 @@ import com.axelor.i18n.I18n;
 
 public class StockConfigProductionService extends StockConfigSupplychainService {
 
-    public Location getProductionVirtualLocation(StockConfig stockConfig) throws AxelorException {
+    public StockLocation getProductionVirtualLocation(StockConfig stockConfig) throws AxelorException {
 
         if (stockConfig.getProductionVirtualLocation() == null) {
             throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_CONFIG_2), stockConfig.getCompany().getName());
@@ -37,7 +37,7 @@ public class StockConfigProductionService extends StockConfigSupplychainService 
 
     }
 
-    public Location getWasteLocation(StockConfig stockConfig) throws AxelorException {
+    public StockLocation getWasteLocation(StockConfig stockConfig) throws AxelorException {
         if (stockConfig.getWasteLocation() == null) {
             throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_CONFIG_3), stockConfig.getCompany().getName());
         }

@@ -49,14 +49,14 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.InventoryLine;
-import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockConfig;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
-import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -151,7 +151,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 
 	@Override
-	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException {
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, StockLocation fromLocation, StockLocation toLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException {
 
 		StockMove stockMove = new StockMove();
 		stockMove.setFromAddress(fromAddress);
@@ -173,15 +173,15 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 
 	@Override
-	public int getStockMoveType(Location fromLocation, Location toLocation)  {
+	public int getStockMoveType(StockLocation fromLocation, StockLocation toLocation)  {
 
-		if(fromLocation.getTypeSelect() == LocationRepository.TYPE_INTERNAL && toLocation.getTypeSelect() == LocationRepository.TYPE_INTERNAL) {
+		if(fromLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL && toLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL) {
 			return StockMoveRepository.TYPE_INTERNAL;
 		}
-		else if(fromLocation.getTypeSelect() != LocationRepository.TYPE_INTERNAL && toLocation.getTypeSelect() == LocationRepository.TYPE_INTERNAL) {
+		else if(fromLocation.getTypeSelect() != StockLocationRepository.TYPE_INTERNAL && toLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL) {
 			return StockMoveRepository.TYPE_INCOMING;
 		}
-		else if(fromLocation.getTypeSelect() == LocationRepository.TYPE_INTERNAL && toLocation.getTypeSelect() != LocationRepository.TYPE_INTERNAL) {
+		else if(fromLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL && toLocation.getTypeSelect() != StockLocationRepository.TYPE_INTERNAL) {
 			return StockMoveRepository.TYPE_OUTGOING;
 		}
 		return 0;
@@ -207,8 +207,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 			stockMove.setExTaxTotal(compute(stockMove));
 		}
 
-		Location fromLocation = stockMove.getFromLocation();
-		Location toLocation = stockMove.getToLocation();
+		StockLocation fromLocation = stockMove.getFromLocation();
+		StockLocation toLocation = stockMove.getToLocation();
 
 		if (fromLocation == null) {
 			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_5), stockMove.getName());
@@ -331,13 +331,13 @@ public class StockMoveServiceImpl implements StockMoveService {
 	 * @throws AxelorException
 	 */
 	private void checkOngoingInventory(StockMove stockMove) throws AxelorException {
-		List<Location> locationList = new ArrayList<>();
+		List<StockLocation> locationList = new ArrayList<>();
 
-		if (stockMove.getFromLocation().getTypeSelect() != LocationRepository.TYPE_VIRTUAL) {
+		if (stockMove.getFromLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
 			locationList.add(stockMove.getFromLocation());
 		}
 
-		if (stockMove.getToLocation().getTypeSelect() != LocationRepository.TYPE_VIRTUAL) {
+		if (stockMove.getToLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
 			locationList.add(stockMove.getToLocation());
 		}
 
@@ -630,8 +630,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 		//Copy this stock move
 		StockMove newStockMove = Beans.get(StockMoveManagementRepository.class).copy(originalStockMove, true);
 
-		List<StockMoveLine> newStockMoveLineToRemove = new ArrayList<StockMoveLine>();
-		List<StockMoveLine> originalStockMoveLineToRemove = new ArrayList<StockMoveLine>();
+		List<StockMoveLine> newStockMoveLineToRemove = new ArrayList<>();
+		List<StockMoveLine> originalStockMoveLineToRemove = new ArrayList<>();
 		int lineNumber = 0;
 		for(StockMoveLine moveLine : stockMoveLines){
 			if (BigDecimal.ZERO.compareTo(moveLine.getQty()) == 0){
@@ -698,11 +698,11 @@ public class StockMoveServiceImpl implements StockMoveService {
 	@Override
 	public List<Map<String,Object>> getStockPerDate(Long locationId, Long productId, LocalDate fromDate, LocalDate toDate) {
 		
-		List<Map<String,Object>> stock = new ArrayList<Map<String,Object>>();
+		List<Map<String,Object>> stock = new ArrayList<>();
 		
 		while(!fromDate.isAfter(toDate)) {
 			Double qty = getStock(locationId, productId, fromDate);
-			Map<String,Object> dateStock = new HashMap<String, Object>();
+			Map<String,Object> dateStock = new HashMap<>();
 			dateStock.put("$date",fromDate);
 			dateStock.put("$qty",new BigDecimal(qty));
 			stock.add(dateStock);

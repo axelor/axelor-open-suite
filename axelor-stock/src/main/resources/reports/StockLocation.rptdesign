@@ -259,7 +259,7 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT Location.id as location_id, MetaFile.file_path as logo_path, Location.name as location_name	
 FROM 
-	stock_location AS Location
+	stock_stock_location AS Location
 LEFT JOIN 
 	base_company AS Company ON (Company.id = Location.company)
 LEFT JOIN 
@@ -689,7 +689,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 		Product.code AS product_code, LocationLine.current_qty, Unit.name as unit_code, Product.sale_price,
 		Currency.code AS currency_code, Product.cost_price
 FROM 
-	stock_location as Location 
+	stock_stock_location as Location 
 LEFT OUTER JOIN 
 	stock_location_line as LocationLine ON (LocationLine.location = Location.id)
 LEFT JOIN 

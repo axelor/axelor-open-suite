@@ -46,8 +46,8 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
-import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
@@ -89,7 +89,7 @@ public class InventoryService {
 	private StockMoveRepository stockMoveRepo;
 	
 
-	public Inventory createInventory(LocalDate date, String description, Location location, boolean excludeOutOfStock, boolean includeObsolete,
+	public Inventory createInventory(LocalDate date, String description, StockLocation location, boolean excludeOutOfStock, boolean includeObsolete,
 			ProductFamily productFamily, ProductCategory productCategory) throws AxelorException  {
 
 		if (location == null) {
@@ -134,7 +134,7 @@ public class InventoryService {
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Path importFile(Inventory inventory) throws IOException, AxelorException {
+	public Path importFile(Inventory inventory) throws AxelorException {
 
 		List<InventoryLine> inventoryLineList = inventory.getInventoryLineList();
 		Path filePath = MetaFiles.getPath(inventory.getImportFile());
@@ -219,7 +219,7 @@ public class InventoryService {
 
 
 	public HashMap<String,InventoryLine> getInventoryLines(Inventory inventory)  {
-		HashMap<String,InventoryLine> inventoryLineMap = new HashMap<String,InventoryLine>();
+		HashMap<String,InventoryLine> inventoryLineMap = new HashMap<>();
 
 		for (InventoryLine line : inventory.getInventoryLineList()) {
 			String key = "";
@@ -319,7 +319,7 @@ public class InventoryService {
 
 	public StockMove generateStockMove(Inventory inventory) throws AxelorException {
 
-		Location toLocation = inventory.getLocation();
+		StockLocation toLocation = inventory.getLocation();
 		Company company = toLocation.getCompany();
 		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
 
@@ -379,7 +379,7 @@ public class InventoryService {
 	}
 
 
-	public StockMove createStockMoveHeader(Inventory inventory, Company company, Location toLocation, LocalDate inventoryDate, String name) throws AxelorException  {
+	public StockMove createStockMoveHeader(Inventory inventory, Company company, StockLocation toLocation, LocalDate inventoryDate, String name) throws AxelorException  {
 
 		StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(null, null, company, null,
 				stockConfigService.getInventoryVirtualLocation(stockConfigService.getStockConfig(company)), toLocation, inventoryDate, inventoryDate, null, null, null);
@@ -418,7 +418,7 @@ public class InventoryService {
 	public List<? extends LocationLine> getLocationLines(Inventory inventory)  {
 
 		String query = "(self.location = ? OR self.detailsLocation = ?)";
-		List<Object> params = new ArrayList<Object>();
+		List<Object> params = new ArrayList<>();
 
 		params.add(inventory.getLocation());
 		params.add(inventory.getLocation());
@@ -467,7 +467,7 @@ public class InventoryService {
 	@Transactional
 	public void exportInventoryAsCSV(Inventory inventory) throws IOException {
 
-		List<String[]> list = new ArrayList<String[]>();
+		List<String[]> list = new ArrayList<>();
 
 		for (InventoryLine inventoryLine:inventory.getInventoryLineList()) {
 			String item[] = new String[7];

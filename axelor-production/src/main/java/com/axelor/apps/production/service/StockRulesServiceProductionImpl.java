@@ -17,22 +17,22 @@
  */
 package com.axelor.apps.production.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
 public class StockRulesServiceProductionImpl extends StockRulesServiceSupplychainImpl {
 
 	public void generateOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException {
-		Location location = locationLine.getLocation();
+		StockLocation location = locationLine.getLocation();
 		if (location == null) {return;}
 		StockRules stockRules = this.getStockRules(product, location, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
 		if (stockRules == null) {return;}

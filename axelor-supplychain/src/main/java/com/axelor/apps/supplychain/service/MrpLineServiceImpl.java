@@ -36,7 +36,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesService;
@@ -103,7 +103,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 	protected void generatePurchaseProposal(MrpLine mrpLine, Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders) throws AxelorException  {
 		
 		Product product = mrpLine.getProduct();
-		Location location = mrpLine.getLocation();
+		StockLocation location = mrpLine.getLocation();
 		LocalDate maturityDate = mrpLine.getMaturityDate();
 		
 		Partner supplierPartner = product.getDefaultSupplierPartner();
@@ -168,7 +168,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 	}
 	
 	
-	public MrpLine createMrpLine(Product product, int maxLevel, MrpLineType mrpLineType, BigDecimal qty, LocalDate maturityDate, BigDecimal cumulativeQty, Location location, Model... models)  {
+	public MrpLine createMrpLine(Product product, int maxLevel, MrpLineType mrpLineType, BigDecimal qty, LocalDate maturityDate, BigDecimal cumulativeQty, StockLocation location, Model... models)  {
 		
 		MrpLine mrpLine = new MrpLine();
 
@@ -192,7 +192,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 		return mrpLine;
 	}
 	
-	protected BigDecimal getMinQty(Product product, Location location)  {
+	protected BigDecimal getMinQty(Product product, StockLocation location)  {
 		
 		StockRules stockRules = stockRulesService.getStockRules(product, location, StockRulesRepository.TYPE_FUTURE, StockRulesRepository.USE_CASE_USED_FOR_MRP);
 		

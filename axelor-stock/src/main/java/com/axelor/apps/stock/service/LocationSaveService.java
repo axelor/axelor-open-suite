@@ -17,16 +17,16 @@
  */
 package com.axelor.apps.stock.service;
 
+import java.util.List;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.PartnerDefaultLocation;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.PartnerDefaultLocationRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
-
-import java.util.List;
 
 public class LocationSaveService {
 
@@ -35,7 +35,7 @@ public class LocationSaveService {
 	 * @param location
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void removeForbiddenDefaultLocation(Location location) {
+	public void removeForbiddenDefaultLocation(StockLocation location) {
 	    Partner currentPartner = location.getPartner();
 		Company currentCompany = location.getCompany();
 	    Long partnerId = currentPartner != null ? currentPartner.getId() : 0L;

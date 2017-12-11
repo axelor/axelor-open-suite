@@ -26,18 +26,18 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
+import com.axelor.apps.purchase.service.PurchaseProductService;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.LocationServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
@@ -136,7 +136,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 	}
 
 	@Override
-	public void updateLocations(Location fromLocation, Location toLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList,
+	public void updateLocations(StockLocation fromLocation, StockLocation toLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList,
 								LocalDate lastFutureStockMoveDate, boolean realQty) throws AxelorException {
 		for (StockMoveLine stockMoveLine : stockMoveLineList) {
 
@@ -159,7 +159,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 					reservedQty = Beans.get(UnitConversionService.class).convertWithProduct(stockMoveLineUnit, productUnit, reservedQty, stockMoveLine.getProduct());
 				}
 
-				if (toLocation.getTypeSelect() != LocationRepository.TYPE_VIRTUAL) {
+				if (toLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
 					this.updateAveragePriceLocationLine(toLocation, stockMoveLine, toStatus);
 				}
 				this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,

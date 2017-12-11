@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.axelor.apps.stock.service.LocationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +30,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.AppSupplychain;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -39,7 +39,6 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -50,7 +49,8 @@ import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderLineTaxService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.service.LocationService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.AuthUtils;
@@ -125,7 +125,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	
 	
 	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
-			LocalDate deliveryDate, String internalReference, String externalReference, Location location, LocalDate orderDate,
+			LocalDate deliveryDate, String internalReference, String externalReference, StockLocation location, LocalDate orderDate,
 			PriceList priceList, Partner clientPartner, Team team) throws AxelorException  {
 
 		logger.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
@@ -179,7 +179,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	
 	@Transactional
 	public SaleOrder mergeSaleOrders(List<SaleOrder> saleOrderList, Currency currency,
-			Partner clientPartner, Company company, Location location, Partner contactPartner,
+			Partner clientPartner, Company company, StockLocation location, Partner contactPartner,
 			PriceList priceList, Team team) throws AxelorException{
 		String numSeq = "";
 		String externalRef = "";
