@@ -30,8 +30,8 @@
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
-   	<form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead" 
-		onLoad="action-lead-attrs-readonly-other-address,action-lead-method-set-social-network-url" 
+   	<form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead"
+		onLoad="action-group-crm-lead-onload"
 		onNew="action-group-crm-lead-onnew"
 		onSave="action-crm-lead-method-check-name">
 
@@ -59,6 +59,7 @@
 						<field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="12"/>
 					</editor>
 				</field>
+				<static name="duplicateLeadText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a lead with this name.</span>]]></static>
 				<field name="companyName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
 					<editor x-show-titles="false">
 						<field name="enterpriseName" colSpan="12" showIf="partner == null" placeholder="Enterprise name" onChange="action-lead-method-set-social-network-url"/>
@@ -187,6 +188,12 @@
 	<action-group name="action-group-crm-lead-iscopyaddress-onchange">
 		<action name="action-lead-record-other-address"/>
 		<action name="action-lead-attrs-readonly-other-address"/>
+	</action-group>
+
+	<action-group name="action-group-crm-lead-onload">
+		<action name="action-lead-attrs-readonly-other-address"/>
+        <action name="action-lead-method-set-social-network-url"/>
+        <action name="action-crm-lead-method-check-name"/>
 	</action-group>
 	
 	<action-method name="action-lead-event-add-attendee">
