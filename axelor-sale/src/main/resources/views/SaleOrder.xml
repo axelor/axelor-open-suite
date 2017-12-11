@@ -222,7 +222,7 @@
 					 form-view="address-partner-address-form"
 					 grid-view="address-grid"/>
 			  <field name="mainInvoicingAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
-				  <viewer>{{mainInvoicingAddressStr}}</viewer>
+				  <viewer>{{record.mainInvoicingAddressStr}}</viewer>
 			  </field>
 		  </panel>
 		  <panel stacked="true">
@@ -233,7 +233,7 @@
 					 form-view="address-partner-address-form"
 					 grid-view="address-grid"/>
 			  <field name="deliveryAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
-				  <viewer>{{deliveryAddressStr}}</viewer>
+				  <viewer>{{record.deliveryAddressStr}}</viewer>
 			  </field>
 		  </panel>
 	      <field name="priceList" domain="self.typeSelect = 1 and self.isActive = true" onChange="action-sale-order-record-hide-discount" form-view="price-list-form"  grid-view="price-list-grid" readonlyIf="statusSelect >= 3"/>
@@ -335,7 +335,7 @@
 	    </field>
         <field name="cancelReason" hidden="true"/>
 		<field name="cancelReasonStr" title="Cancel Reason" readonly="true" colSpan="12" css="red" hidden="true" showIf="cancelReason != null &amp;&amp; cancelReasonStr != null">
-			<viewer><![CDATA[{{cancelReasonStr}}]]></viewer>
+			<viewer><![CDATA[{{record.cancelReasonStr}}]]></viewer>
 		</field>
 		<field name="standardDelay" readonly="true" if-module="axelor-supplychain"   if="__config__.app.isApp('supplychain')" hidden="true" showIf="standardDelay &gt; 0" />
 	  </panel>
@@ -346,15 +346,15 @@
                     <![CDATA[
                     <dl class="dl-horizontal">
                         <dt x-translate>Total W.T.</dt>
-                        <dd>{{exTaxTotal}}  {{currency.symbol}}</dd>
+                        <dd>{{record.exTaxTotal}}  {{record.currency.symbol}}</dd>
                         <dt x-translate>Total tax</dt>
-                        <dd>{{taxTotal}}  {{currency.symbol}}</dd>
+                        <dd>{{record.taxTotal}}  {{record.currency.symbol}}</dd>
                         <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-                        <dd class="order-subtotal-total">{{inTaxTotal}}  {{currency.symbol}}</dd>
+                        <dd class="order-subtotal-total">{{record.inTaxTotal}}  {{record.currency.symbol}}</dd>
                         <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
-                        <dd ng-show="record.statusSelect >= 3">{{amountInvoiced}}  {{currency.symbol}}</dd>
+                        <dd ng-show="record.statusSelect >= 3">{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
                         <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment total</dt>
-                        <dd ng-show="record.statusSelect >= 2">{{advanceTotal}}  {{currency.symbol}}</dd>
+                        <dd ng-show="record.statusSelect >= 2">{{record.advanceTotal}}  {{record.currency.symbol}}</dd>
                     </dl>
                     ]]>
                 </viewer>
@@ -429,7 +429,7 @@
                      form-view="address-partner-address-form"
                      grid-view="address-grid"/>
 			  <field name="mainInvoicingAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
-				  <viewer>{{mainInvoicingAddressStr}}</viewer>
+				  <viewer>{{record.mainInvoicingAddressStr}}</viewer>
 			  </field>
           </panel>
           <panel stacked="true">
@@ -440,7 +440,7 @@
                      form-view="address-partner-address-form"
                      grid-view="address-grid"/>
 			  <field name="deliveryAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
-				  <viewer>{{deliveryAddressStr}}</viewer>
+				  <viewer>{{record.deliveryAddressStr}}</viewer>
 			  </field>
           </panel>
 	      <field name="priceList" domain="self.typeSelect = 1 and self.isActive = true" onChange="action-sale-order-record-hide-discount" form-view="price-list-form" grid-view="price-list-grid" readonlyIf="statusSelect == 3"/>
@@ -499,15 +499,15 @@
                     <![CDATA[
                     <dl class="dl-horizontal">
                         <dt x-translate>Total W.T.</dt>
-                        <dd>{{exTaxTotal}}</dd>
+                        <dd>{{record.exTaxTotal}}</dd>
                         <dt x-translate>Total tax</dt>
-                        <dd>{{taxTotal}}</dd>
+                        <dd>{{record.taxTotal}}</dd>
                         <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-                        <dd class="order-subtotal-total">{{inTaxTotal}}</dd>
+                        <dd class="order-subtotal-total">{{record.inTaxTotal}}</dd>
                         <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
-                        <dd ng-show="record.statusSelect >= 3">{{amountInvoiced}}  {{currency.symbol}}</dd>
+                        <dd ng-show="record.statusSelect >= 3">{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
                         <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment total</dt>
-                        <dd ng-show="record.statusSelect >= 2">{{advanceTotal}}  {{currency.symbol}}</dd>
+                        <dd ng-show="record.statusSelect >= 2">{{record.advanceTotal}}  {{record.currency.symbol}}</dd>
                     </dl>
                     ]]>
                 </viewer>
@@ -553,7 +553,7 @@
 						   form-view="address-partner-address-form"
 						   grid-view="address-grid"/>
 					<field name="mainInvoicingAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
-						<viewer>{{mainInvoicingAddressStr}}</viewer>
+						<viewer>{{record.mainInvoicingAddressStr}}</viewer>
 					</field>
 				</panel>
 
@@ -566,7 +566,7 @@
 						   form-view="address-partner-address-form"
 						   grid-view="address-grid"/>
 					<field name="deliveryAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
-						<viewer>{{deliveryAddressStr}}</viewer>
+						<viewer>{{record.deliveryAddressStr}}</viewer>
 					</field>
 				</panel>
 	      <panel colSpan="8">
@@ -587,15 +587,15 @@
                         <![CDATA[
                         <dl class="dl-horizontal">
                             <dt x-translate>Total W.T.</dt>
-                            <dd>{{exTaxTotal}} {{currency.symbol}}</dd>
+                            <dd>{{record.exTaxTotal}} {{record.currency.symbol}}</dd>
                             <dt x-translate>Total V.A.T.</dt>
-                            <dd>{{taxTotal}} {{currency.symbol}}</dd>
+                            <dd>{{record.taxTotal}} {{record.currency.symbol}}</dd>
                             <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-                            <dd class="order-subtotal-total">{{inTaxTotal}} {{currency.symbol}}</dd>
+                            <dd class="order-subtotal-total">{{record.inTaxTotal}} {{record.currency.symbol}}</dd>
                             <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
-                            <dd ng-show="record.statusSelect >= 3">{{amountInvoiced}}  {{currency.symbol}}</dd>
+                            <dd ng-show="record.statusSelect >= 3">{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
                             <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment total</dt>
-                            <dd ng-show="record.statusSelect >= 2">{{advanceTotal}}  {{currency.symbol}}</dd>
+                            <dd ng-show="record.statusSelect >= 2">{{record.advanceTotal}}  {{record.currency.symbol}}</dd>
                         </dl>
                         ]]>
                     </viewer>
