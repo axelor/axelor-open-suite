@@ -4,12 +4,11 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="prod-process-line-grid" title="Phases" model="com.axelor.apps.production.db.ProdProcessLine" orderBy="priority">
-    	<field name="priority"/>
+    	<field name="priority" width="75"/>
 		<field name="name"/>
         <field name="workCenter" grid-view="work-center-grid" form-view="work-center-form"/>
-        <field name="outsourcing"/>
+        <field name="outsourcing" width="115"/>
         <field name="description"/>
-        
     </grid>
     
     <form name="prod-process-line-form" title="Phase" model="com.axelor.apps.production.db.ProdProcessLine"
