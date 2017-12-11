@@ -316,7 +316,7 @@ public class PartnerController {
 	}
 
 	/**
-	 * Called from partner view on name change.
+	 * Called from partner view on name change and onLoad.
 	 * Call {@link PartnerService#isThereDuplicatePartner(Partner)}
 	 * @param request
 	 * @param response
