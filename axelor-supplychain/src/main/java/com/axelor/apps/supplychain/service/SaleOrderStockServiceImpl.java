@@ -107,6 +107,11 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 			}
 
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
+                if (!stockMove.getStockMoveLineList().stream().anyMatch(stockMoveLine -> stockMoveLine
+                        .getSaleOrderLine().getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL)) {
+                    stockMove.setFullySpreadOverLogisticalFormsFlag(true);
+                }
+
 				stockMoveService.plan(stockMove);
 				return stockMove;
 			}

@@ -30,7 +30,7 @@ public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceI
 	protected boolean testForDetailLine(StockMoveLine stockMoveLine) {
 		SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
 		Preconditions.checkNotNull(saleOrderLine);
-		return saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_TITLE;
+		return saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL;
 	}
 
 }
