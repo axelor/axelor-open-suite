@@ -279,6 +279,7 @@
     
     <action-record name="action-stock-move-record-draft" model="com.axelor.apps.stock.db.StockMove">
     	<field name="statusSelect" expr="eval: 1"/>
+		<field name="cancelReason" expr="eval: null"/>
     </action-record>
     
     <action-record name="action-stock-move-record-new" model="com.axelor.apps.stock.db.StockMove">
