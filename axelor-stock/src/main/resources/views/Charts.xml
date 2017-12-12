@@ -161,7 +161,7 @@
 		<series key="moves" type="bar" title="Stock Moves"/>
 	</chart>
 	  
-	<!-- This chart is used in location-form -->
+	<!-- This chart is used in stock-location-form -->
 	<chart name="chart.stockLocationLine.location.value" title="Location value">
 		<dataset type="jpql">
 			SELECT
