@@ -32,6 +32,9 @@
 	  <panel name="customsInformation" title="Customs">
 	  	<field name="customsWeightUnit" domain="self.unitTypeSelect = 1"/>
 	  </panel>
+      <panel title="Logistical forms">
+        <field name="realizeStockMovesUponParcelPalletCollection" />
+      </panel>
 	</form>
 	
 	<action-record name="action-stock-config-record-default" model="com.axelor.apps.stock.db.StockConfig">

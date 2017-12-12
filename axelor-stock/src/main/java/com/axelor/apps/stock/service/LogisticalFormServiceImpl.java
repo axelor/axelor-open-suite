@@ -41,13 +41,16 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
+import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LogisticalFormLineRepository;
+import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.apps.stock.exception.LogisticalFormWarning;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
@@ -61,6 +64,7 @@ import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.inject.persist.Transactional;
 
 public class LogisticalFormServiceImpl implements LogisticalFormService {
 
@@ -464,6 +468,40 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
         return resultList.isEmpty() ? Lists.newArrayList(0L)
                 : resultList.stream().map(LogisticalForm::getId).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(rollbackOn = { AxelorException.class, Exception.class })
+    public void processCollected(LogisticalForm logisticalForm) throws AxelorException {
+        if (logisticalForm.getLogisticalFormLineList() == null) {
+            return;
+        }
+
+        Set<StockMove> stockMoveSet = new HashSet<>();
+
+        logisticalForm.getLogisticalFormLineList().stream().filter(
+                logisticalFormLine -> logisticalFormLine.getTypeSelect() == LogisticalFormLineRepository.TYPE_DETAIL
+                        && logisticalFormLine.getStockMoveLine() != null
+                        && logisticalFormLine.getStockMoveLine().getStockMove() != null)
+                .forEach(logisticalFormLine -> stockMoveSet.add(logisticalFormLine.getStockMoveLine().getStockMove()));
+
+        StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+
+        stockMoveSet.forEach(stockMoveService::updateFullySpreadOverLogisticalFormsFlag);
+
+        StockConfigService stockConfigService = Beans.get(StockConfigService.class);
+        StockConfig stockConfig = stockConfigService.getStockConfig(logisticalForm.getCompany());
+
+        if (stockConfig.getRealizeStockMovesUponParcelPalletCollection()) {
+            for (StockMove stockMove : stockMoveSet) {
+                if (stockMove.getFullySpreadOverLogisticalFormsFlag()) {
+                    stockMoveService.realize(stockMove);
+                }
+            }
+
+        }
+
+        logisticalForm.setStatusSelect(LogisticalFormRepository.STATUS_COLLECTED);
     }
 
 }
