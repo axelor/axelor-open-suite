@@ -34,8 +34,8 @@ import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
-import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
@@ -72,22 +72,22 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException  {
+	public void generatePurchaseOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type) throws AxelorException  {
 
-		StockLocation location = locationLine.getLocation();
+		StockLocation stockLocation = stockLocationLine.getLocation();
 
 		//TODO à supprimer après suppression des variantes
-		if(location == null)  {
+		if(stockLocation == null)  {
 			return;
 		}
 
-		StockRules stockRules = this.getStockRules(product, location, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
+		StockRules stockRules = this.getStockRules(product, stockLocation, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
 
 		if(stockRules == null)  {
 			return;
 		}
 
-		if(this.useMinStockRules(locationLine, stockRules, qty, type))  {
+		if(this.useMinStockRules(stockLocationLine, stockRules, qty, type))  {
 
 			if(stockRules.getOrderAlertSelect() ==  StockRulesRepository.ORDER_ALERT_ALERT)  {
 
@@ -110,12 +110,12 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 			else if(stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PURCHASE_ORDER)  {
 
 				BigDecimal minReorderQty = getDefaultSupplierMinQty(product);
-				BigDecimal qtyToOrder = this.getQtyToOrder(qty, locationLine, type, stockRules, minReorderQty);
+				BigDecimal qtyToOrder = this.getQtyToOrder(qty, stockLocationLine, type, stockRules, minReorderQty);
 				Partner supplierPartner = product.getDefaultSupplierPartner();
 
 				if(supplierPartner != null)  {
 
-					Company company = location.getCompany();
+					Company company = stockLocation.getCompany();
 
 					PurchaseOrder purchaseOrder = purchaseOrderRepo.save(purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
 							this.user,
@@ -125,7 +125,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 							this.today.plusDays(supplierPartner.getDeliveryDelay()),
 							stockRules.getName(),
 							null,
-							location,
+							stockLocation,
 							this.today,
 							supplierPartner.getPurchasePriceList(),
 							supplierPartner));

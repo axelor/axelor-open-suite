@@ -18,13 +18,12 @@
 package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
-
 import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.auth.AuthUtils;
@@ -51,15 +50,15 @@ public class StockRulesServiceImpl implements StockRulesService  {
 	}
 
 
-	public void generateOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException{
-		this.generatePurchaseOrder(product, qty, locationLine, type);
+	public void generateOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type) throws AxelorException{
+		this.generatePurchaseOrder(product, qty, stockLocationLine, type);
 	}
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException  {
+	public void generatePurchaseOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type) throws AxelorException  {
 
-		StockLocation location = locationLine.getLocation();
+		StockLocation location = stockLocationLine.getLocation();
 
 		//TODO à supprimer après suppression des variantes
 		if(location == null)  {
@@ -72,7 +71,7 @@ public class StockRulesServiceImpl implements StockRulesService  {
 			return;
 		}
 
-		if(this.useMinStockRules(locationLine, stockRules, qty, type))  {
+		if(this.useMinStockRules(stockLocationLine, stockRules, qty, type))  {
 
 			if(stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_ALERT)  {
 
@@ -95,21 +94,21 @@ public class StockRulesServiceImpl implements StockRulesService  {
 	 * O = max(R, M - L)
 	 *
 	 * @param qty  the quantity of the stock move.
-	 * @param locationLine
+	 * @param stockLocationLine
 	 * @param type  current or future
 	 * @param stockRules
 	 * @param minReorderQty
 	 * @return the quantity to order
 	 */
 	@Override
-	public BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules, BigDecimal minReorderQty) {
+	public BigDecimal getQtyToOrder(BigDecimal qty, StockLocationLine stockLocationLine, int type, StockRules stockRules, BigDecimal minReorderQty) {
 		minReorderQty = minReorderQty.max(stockRules.getReOrderQty());
 
-		BigDecimal locationLineQty = (type == StockRulesRepository.TYPE_CURRENT) ? locationLine.getCurrentQty()
-				: locationLine.getFutureQty();
+		BigDecimal stockLocationLineQty = (type == StockRulesRepository.TYPE_CURRENT) ? stockLocationLine.getCurrentQty()
+				: stockLocationLine.getFutureQty();
 
 		// Get the quantity left in location line.
-		BigDecimal qtyToOrder = locationLineQty.subtract(qty);
+		BigDecimal qtyToOrder = stockLocationLineQty.subtract(qty);
 
 		// The quantity to reorder is the difference between the min/ideal
 		// quantity and the quantity left in the location.
@@ -123,7 +122,7 @@ public class StockRulesServiceImpl implements StockRulesService  {
 		// Limit the quantity to order in order to not exceed to max quantity
 		// rule.
 		if (stockRules.getUseMaxQty()) {
-			BigDecimal maxQtyToReorder = stockRules.getMaxQty().subtract(locationLineQty);
+			BigDecimal maxQtyToReorder = stockRules.getMaxQty().subtract(stockLocationLineQty);
 			qtyToOrder = qtyToOrder.min(maxQtyToReorder);
 		}
 
@@ -131,15 +130,15 @@ public class StockRulesServiceImpl implements StockRulesService  {
 	}
 
 	@Override
-	public BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules) {
-		return getQtyToOrder(qty, locationLine, type, stockRules, BigDecimal.ZERO);
+	public BigDecimal getQtyToOrder(BigDecimal qty, StockLocationLine stockLocationLine, int type, StockRules stockRules) {
+		return getQtyToOrder(qty, stockLocationLine, type, stockRules, BigDecimal.ZERO);
 	}
 
 	@Override
-	public boolean useMinStockRules(LocationLine locationLine, StockRules stockRules, BigDecimal qty, int type)  {
+	public boolean useMinStockRules(StockLocationLine stockLocationLine, StockRules stockRules, BigDecimal qty, int type)  {
 
-		BigDecimal currentQty = locationLine.getCurrentQty();
-		BigDecimal futureQty = locationLine.getFutureQty();
+		BigDecimal currentQty = stockLocationLine.getCurrentQty();
+		BigDecimal futureQty = stockLocationLine.getFutureQty();
 
 		BigDecimal minQty = stockRules.getMinQty();
 

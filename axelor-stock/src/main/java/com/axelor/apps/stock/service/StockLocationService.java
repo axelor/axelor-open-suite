@@ -25,7 +25,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
 
-public interface LocationService {
+public interface StockLocationService {
 
     /**
      * Get the default location of the given company

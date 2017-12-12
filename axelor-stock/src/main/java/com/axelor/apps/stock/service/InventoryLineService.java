@@ -22,8 +22,8 @@ import java.math.BigDecimal;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
-import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.inject.Beans;
 
@@ -49,11 +49,11 @@ public class InventoryLineService {
 		Product product = inventoryLine.getProduct();
 		
 		if (product != null) {
-			LocationLine locationLine = Beans.get(LocationLineService.class).getLocationLine(location, product);
+			StockLocationLine stockLocationLine = Beans.get(StockLocationLineService.class).getStockLocationLine(location, product);
 			
-			if (locationLine != null) {
-				inventoryLine.setCurrentQty(locationLine.getCurrentQty());
-				inventoryLine.setRack(locationLine.getRack());
+			if (stockLocationLine != null) {
+				inventoryLine.setCurrentQty(stockLocationLine.getCurrentQty());
+				inventoryLine.setRack(stockLocationLine.getRack());
 			} else {
 				inventoryLine.setCurrentQty(null);
 				inventoryLine.setRack(null);

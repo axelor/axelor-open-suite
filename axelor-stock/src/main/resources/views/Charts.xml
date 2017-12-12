@@ -162,7 +162,7 @@
 	</chart>
 	  
 	<!-- This chart is used in location-form -->
-	<chart name="chart.locationLine.location.value" title="Location value">
+	<chart name="chart.stockLocationLine.location.value" title="Location value">
 		<dataset type="jpql">
 			SELECT
 				SUM(
@@ -177,7 +177,7 @@
 				) AS value,
 				'Stock Value' AS label
 			FROM
-				LocationLine AS self
+				StockLocationLine AS self
 			WHERE
 				self.location.id =:id
 		</dataset>

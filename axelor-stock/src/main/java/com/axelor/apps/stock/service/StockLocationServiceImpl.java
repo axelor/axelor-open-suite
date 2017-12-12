@@ -29,11 +29,11 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
-import com.axelor.apps.stock.db.repo.LocationLineRepository;
+import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
@@ -42,20 +42,20 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
-public class LocationServiceImpl implements LocationService{
+public class StockLocationServiceImpl implements StockLocationService {
 	
 	protected StockLocationRepository stockLocationRepo;
 	
-	protected LocationLineService locationLineService;
+	protected StockLocationLineService stockLocationLineService;
 	
 	protected ProductRepository productRepo;
 	
 	Set<Long> locationIdSet= new HashSet<>();
 
 	@Inject
-	public LocationServiceImpl(StockLocationRepository stockLocationRepo, LocationLineService locationLineService, ProductRepository productRepo) {
+	public StockLocationServiceImpl(StockLocationRepository stockLocationRepo, StockLocationLineService stockLocationLineService, ProductRepository productRepo) {
 		this.stockLocationRepo = stockLocationRepo;
-		this.locationLineService = locationLineService;
+		this.stockLocationLineService = stockLocationLineService;
 		this.productRepo = productRepo;
 	}
 
@@ -81,19 +81,19 @@ public class LocationServiceImpl implements LocationService{
 				if (!locations.isEmpty()) {
 					BigDecimal qty = BigDecimal.ZERO;
 					for (StockLocation location : locations) {
-						LocationLine locationLine = locationLineService.getLocationLine(stockLocationRepo.find(location.getId()), productRepo.find(productId));
+						StockLocationLine stockLocationLine = stockLocationLineService.getStockLocationLine(stockLocationRepo.find(location.getId()), productRepo.find(productId));
 						
-						if (locationLine != null) {
-							qty = qty.add(qtyType.equals("real") ? locationLine.getCurrentQty() : locationLine.getFutureQty());
+						if (stockLocationLine != null) {
+							qty = qty.add(qtyType.equals("real") ? stockLocationLine.getCurrentQty() : stockLocationLine.getFutureQty());
 						}
 					}
 					return qty;
 				}
 			} else {
-				LocationLine locationLine = locationLineService.getLocationLine(stockLocationRepo.find(locationId), productRepo.find(productId));
+				StockLocationLine stockLocationLine = stockLocationLineService.getStockLocationLine(stockLocationRepo.find(locationId), productRepo.find(productId));
 				
-				if (locationLine != null) {
-					return qtyType.equals("real") ? locationLine.getCurrentQty() : locationLine.getFutureQty();
+				if (stockLocationLine != null) {
+					return qtyType.equals("real") ? stockLocationLine.getCurrentQty() : stockLocationLine.getFutureQty();
 				}
 			}
 		}
@@ -146,17 +146,17 @@ public class LocationServiceImpl implements LocationService{
 
 	public List<Long> getBadLocationLineId() {
 
-		List<LocationLine> locationLineList = Beans.get(LocationLineRepository.class)
+		List<StockLocationLine> stockLocationLineList = Beans.get(StockLocationLineRepository.class)
 				.all().filter("self.location.typeSelect = 1 OR self.location.typeSelect = 2").fetch();
 
 		List<Long> idList = new ArrayList<>();
 
-		for (LocationLine locationLine : locationLineList) {
+		for (StockLocationLine stockLocationLine : stockLocationLineList) {
 			StockRules stockRules = Beans.get(StockRulesRepository.class).all()
-					.filter("self.location = ?1 AND self.product = ?2", locationLine.getLocation(), locationLine.getProduct()).fetchOne();
+					.filter("self.location = ?1 AND self.product = ?2", stockLocationLine.getLocation(), stockLocationLine.getProduct()).fetchOne();
 			if (stockRules != null
-					&& locationLine.getFutureQty().compareTo(stockRules.getMinQty()) < 0) {
-				idList.add(locationLine.getId());
+					&& stockLocationLine.getFutureQty().compareTo(stockRules.getMinQty()) < 0) {
+				idList.add(stockLocationLine.getId());
 			}
 		}
 

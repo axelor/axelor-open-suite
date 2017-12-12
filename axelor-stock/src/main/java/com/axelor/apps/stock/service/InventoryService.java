@@ -46,13 +46,13 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
-import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
-import com.axelor.apps.stock.db.repo.LocationLineRepository;
+import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
@@ -278,28 +278,28 @@ public class InventoryService {
 			}
 		}
 
-		List<LocationLine> locationLineList = inventory.getLocation().getLocationLineList();
+		List<StockLocationLine> stockLocationLineList = inventory.getLocation().getLocationLineList();
 
-		if (locationLineList != null) {
-			for (LocationLine locationLine : locationLineList) {
-				Product product = locationLine.getProduct();
+		if (stockLocationLineList != null) {
+			for (StockLocationLine stockLocationLine : stockLocationLineList) {
+				Product product = stockLocationLine.getProduct();
 				BigDecimal realQty = consolidatedRealQties.get(product);
 				if (realQty != null) {
-					locationLine.setLastInventoryRealQty(realQty);
-					locationLine.setLastInventoryDateT(inventory.getDateT());
+					stockLocationLine.setLastInventoryRealQty(realQty);
+					stockLocationLine.setLastInventoryDateT(inventory.getDateT());
 				}
 				
 				String rack = realRacks.get(product);
 				if (rack != null) {
-					locationLine.setRack(rack);
+					stockLocationLine.setRack(rack);
 				}
 			}
 		}
 
-		List<LocationLine> detailsLocationLineList = inventory.getLocation().getDetailsLocationLineList();
+		List<StockLocationLine> detailsLocationLineList = inventory.getLocation().getDetailsLocationLineList();
 
 		if (detailsLocationLineList != null) {
-			for (LocationLine detailsLocationLine : detailsLocationLineList) {
+			for (StockLocationLine detailsLocationLine : detailsLocationLineList) {
 				Product product = detailsLocationLine.getProduct();
 				TrackingNumber trackingNumber = detailsLocationLine.getTrackingNumber();
 				BigDecimal realQty = realQties.get(Pair.of(product, trackingNumber));
@@ -400,12 +400,12 @@ public class InventoryService {
 
 		this.initInventoryLines(inventory);
 
-		List<? extends LocationLine> locationLineList = this.getLocationLines(inventory);
+		List<? extends StockLocationLine> stockLocationLineList = this.getStockLocationLines(inventory);
 
-		if (locationLineList != null) {
+		if (stockLocationLineList != null) {
 			Boolean succeed = false;
-			for (LocationLine locationLine : locationLineList) {
-				inventory.addInventoryLineListItem(this.createInventoryLine(inventory, locationLine));
+			for (StockLocationLine stockLocationLine : stockLocationLineList) {
+				inventory.addInventoryLineListItem(this.createInventoryLine(inventory, stockLocationLine));
 				succeed = true;
 			}
 			inventoryRepo.save(inventory);
@@ -415,7 +415,7 @@ public class InventoryService {
 	}
 
 
-	public List<? extends LocationLine> getLocationLines(Inventory inventory)  {
+	public List<? extends StockLocationLine> getStockLocationLines(Inventory inventory)  {
 
 		String query = "(self.location = ? OR self.detailsLocation = ?)";
 		List<Object> params = new ArrayList<>();
@@ -442,19 +442,19 @@ public class InventoryService {
 			params.add(inventory.getProductCategory());
 		}
 
-		return Beans.get(LocationLineRepository.class).all().filter(query, params.toArray()).fetch();
+		return Beans.get(StockLocationLineRepository.class).all().filter(query, params.toArray()).fetch();
 
 	}
 
 
-	public InventoryLine createInventoryLine(Inventory inventory, LocationLine locationLine)  {
+	public InventoryLine createInventoryLine(Inventory inventory, StockLocationLine stockLocationLine)  {
 
 		return inventoryLineService.createInventoryLine(
 				inventory,
-				locationLine.getProduct(),
-				locationLine.getCurrentQty(),
-				locationLine.getRack(),
-				locationLine.getTrackingNumber());
+				stockLocationLine.getProduct(),
+				stockLocationLine.getCurrentQty(),
+				stockLocationLine.getRack(),
+				stockLocationLine.getTrackingNumber());
 	}
 
 

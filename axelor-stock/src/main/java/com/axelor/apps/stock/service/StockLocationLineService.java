@@ -18,18 +18,17 @@
 package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
-import java.time.LocalDate;
-
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public interface LocationLineService {
+public interface StockLocationLineService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateLocation(StockLocation location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
@@ -41,7 +40,7 @@ public interface LocationLineService {
 							   LocalDate lastFutureStockMoveDate, BigDecimal reservedQty) throws AxelorException;
 	
 	
-	public void minStockRules(Product product, BigDecimal qty, LocationLine locationLine, boolean current, boolean future) throws AxelorException;
+	public void minStockRules(Product product, BigDecimal qty, StockLocationLine stockLocationLine, boolean current, boolean future) throws AxelorException;
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -49,7 +48,7 @@ public interface LocationLineService {
                                      LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException;
 	
 	
-	public void checkStockMin(LocationLine locationLine, boolean isDetailLocationLine) throws AxelorException;
+	public void checkStockMin(StockLocationLine stockLocationLine, boolean isDetailLocationLine) throws AxelorException;
 
 	/**
 	 * Check if the location has more than qty units of the product
@@ -60,10 +59,10 @@ public interface LocationLineService {
 	 */
 	public void checkIfEnoughStock(StockLocation location, Product product, BigDecimal qty) throws AxelorException;
 
-	public LocationLine updateLocation(LocationLine locationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
+	public StockLocationLine updateLocation(StockLocationLine stockLocationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
 									   LocalDate lastFutureStockMoveDate, BigDecimal reservedQty);
 	
-	public LocationLine getLocationLine(StockLocation location, Product product);
+	public StockLocationLine getStockLocationLine(StockLocation location, Product product);
 	
 	/**
 	 * Récupération de la ligne détaillée de stock :
@@ -80,19 +79,19 @@ public interface LocationLineService {
 	 * @return
 	 * 			Une ligne détaillée de stock
 	 */
-	public LocationLine getDetailLocationLine(StockLocation detailLocation, Product product, TrackingNumber trackingNumber);
+	public StockLocationLine getDetailLocationLine(StockLocation detailLocation, Product product, TrackingNumber trackingNumber);
 	
 	
 	/**
 	 * Permet de récupérer la ligne de stock d'un entrepot en fonction d'un produit donné.
-	 * @param locationLineList
+	 * @param stockLocationLineList
 	 * 		Une liste de ligne de stock
 	 * @param product
 	 * 		Un produit
 	 * @return
 	 * 		La ligne de stock
 	 */
-	public LocationLine getLocationLine(List<LocationLine> locationLineList, Product product);
+	public StockLocationLine getLocationLine(List<StockLocationLine> stockLocationLineList, Product product);
 	
 	
 	/**
@@ -106,7 +105,7 @@ public interface LocationLineService {
 	 * @return
 	 * 		Un ligne de stock
 	 */
-	public LocationLine getDetailLocationLine(List<LocationLine> detailLocationLineList, Product product, TrackingNumber trackingNumber);
+	public StockLocationLine getDetailLocationLine(List<StockLocationLine> detailLocationLineList, Product product, TrackingNumber trackingNumber);
 	
 	
 	
@@ -119,7 +118,7 @@ public interface LocationLineService {
 	 * @return
 	 * 		La ligne de stock
 	 */
-	public LocationLine createLocationLine(StockLocation location, Product product);
+	public StockLocationLine createLocationLine(StockLocation location, Product product);
 	
 	
 	/**
@@ -133,6 +132,6 @@ public interface LocationLineService {
 	 * @return
 	 * 		La ligne détaillée de stock
 	 */
-	public LocationLine createDetailLocationLine(StockLocation location, Product product, TrackingNumber trackingNumber);
+	public StockLocationLine createDetailLocationLine(StockLocation location, Product product, TrackingNumber trackingNumber);
 		
 }

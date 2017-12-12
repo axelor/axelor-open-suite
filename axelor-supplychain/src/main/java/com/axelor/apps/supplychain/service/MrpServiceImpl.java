@@ -47,10 +47,10 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
-import com.axelor.apps.stock.db.repo.LocationLineRepository;
+import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesService;
@@ -85,7 +85,7 @@ public class MrpServiceImpl implements MrpService  {
 	protected MrpRepository mrpRepository;
 	protected StockLocationRepository stockLocationRepository;
 	protected ProductRepository productRepository;
-	protected LocationLineRepository locationLineRepository;
+	protected StockLocationLineRepository stockLocationLineRepository;
 	protected MrpLineTypeRepository mrpLineTypeRepository;
 	protected PurchaseOrderLineRepository purchaseOrderLineRepository;
 	protected SaleOrderLineRepository saleOrderLineRepository;
@@ -103,14 +103,14 @@ public class MrpServiceImpl implements MrpService  {
 	
 	@Inject
 	public MrpServiceImpl(AppBaseService appBaseService, MrpRepository mrpRepository, StockLocationRepository stockLocationRepository, 
-			ProductRepository productRepository, LocationLineRepository locationLineRepository, MrpLineTypeRepository mrpLineTypeRepository,
+			ProductRepository productRepository, StockLocationLineRepository stockLocationLineRepository, MrpLineTypeRepository mrpLineTypeRepository,
 			PurchaseOrderLineRepository purchaseOrderLineRepository, SaleOrderLineRepository saleOrderLineRepository, MrpLineRepository mrpLineRepository,
 			StockRulesService stockRulesService, MrpLineService mrpLineService, MrpForecastRepository mrpForecastRepository)  {
 		
 		this.mrpRepository = mrpRepository;
 		this.stockLocationRepository = stockLocationRepository;
 		this.productRepository = productRepository;
-		this.locationLineRepository = locationLineRepository;
+		this.stockLocationLineRepository = stockLocationLineRepository;
 		this.mrpLineTypeRepository = mrpLineTypeRepository;
 		this.purchaseOrderLineRepository = purchaseOrderLineRepository;
 		this.saleOrderLineRepository = saleOrderLineRepository;
@@ -606,11 +606,11 @@ public class MrpServiceImpl implements MrpService  {
 		
 		BigDecimal qty = BigDecimal.ZERO;
 		
-		LocationLine locationLine = this.getLocationLine(product, location);
+		StockLocationLine stockLocationLine = this.getStockLocationLine(product, location);
 		
-		if(locationLine != null)  {
+		if(stockLocationLine != null)  {
 			
-			qty = locationLine.getCurrentQty();
+			qty = stockLocationLine.getCurrentQty();
 		}
 		
 		return this.createMrpLine(product, availableStockMrpLineType, qty, today, qty, location);
@@ -631,9 +631,9 @@ public class MrpServiceImpl implements MrpService  {
 	
 	}
 	
-	protected LocationLine getLocationLine(Product product, StockLocation location)  {
+	protected StockLocationLine getStockLocationLine(Product product, StockLocation stockLocation)  {
 
-		return locationLineRepository.all().filter("self.location = ?1 AND self.product = ?2", location, product).fetchOne();
+		return stockLocationLineRepository.all().filter("self.location = ?1 AND self.product = ?2", stockLocation, product).fetchOne();
 		
 	}
 		

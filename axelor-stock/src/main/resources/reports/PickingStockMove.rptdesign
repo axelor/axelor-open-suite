@@ -659,7 +659,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             <list-property name="resultSet"/>
             <xml-property name="queryText"><![CDATA[select StockMove.id as stock_move_id, StockMoveLine.id, Product.code as product_code, StockMoveLine.product_name as product_name,
 StockMoveLine.qty, Unit.name as unit_code, TrackingNumber.tracking_number_seq,
-StockMoveLine.description, LocationLine.rack, SaleOrderLine.picking_order_info,
+StockMoveLine.description, StockLocationLine.rack, SaleOrderLine.picking_order_info,
 ( SaleOrderLine.type_select = 2 or PurchaseOrderLine.is_title_line) as "isTitleLine", 
 (COALESCE(SaleOrderLine.sequence, 0) +  COALESCE(PurchaseOrderLine.sequence,0)) as "lineSequence"
 from stock_stock_move as StockMove
@@ -670,8 +670,8 @@ left join stock_tracking_number as TrackingNumber on (StockMoveLine.tracking_num
 left outer join sale_sale_order_line as SaleOrderLine on (SaleOrderLine.id = StockMoveLine.sale_order_line)
 left outer join purchase_purchase_order_line as PurchaseOrderLine on (PurchaseOrderLine.id = StockMoveLine.purchase_order_line)
 left join stock_stock_location as Location on (Location.id = StockMove.from_location)
-left join stock_location_line as LocationLine on (Location.id = LocationLine.location)
-where StockMove.id in (@INJECTID) AND LocationLine.product = Product.id]]></xml-property>
+left join stock_location_line as StockLocationLine on (Location.id = StockLocationLine.location)
+where StockMove.id in (@INJECTID) AND StockLocationLine.product = Product.id]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>

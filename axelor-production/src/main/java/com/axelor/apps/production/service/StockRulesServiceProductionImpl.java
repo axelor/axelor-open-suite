@@ -21,8 +21,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
@@ -31,22 +31,22 @@ import com.axelor.inject.Beans;
 
 public class StockRulesServiceProductionImpl extends StockRulesServiceSupplychainImpl {
 
-	public void generateOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException {
-		StockLocation location = locationLine.getLocation();
+	public void generateOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type) throws AxelorException {
+		StockLocation location = stockLocationLine.getLocation();
 		if (location == null) {return;}
 		StockRules stockRules = this.getStockRules(product, location, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
 		if (stockRules == null) {return;}
 	    if (stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER) {
-	    	this.generateProductionOrder(product, qty, locationLine, type, stockRules);
+	    	this.generateProductionOrder(product, qty, stockLocationLine, type, stockRules);
 		}
 		else {
-			this.generatePurchaseOrder(product, qty, locationLine, type);
+			this.generatePurchaseOrder(product, qty, stockLocationLine, type);
 		}
     }
 
-    public void generateProductionOrder(Product product, BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules) throws AxelorException {
-		if(this.useMinStockRules(locationLine, this.getStockRules(product, locationLine.getLocation(), type, StockRulesRepository.USE_CASE_STOCK_CONTROL), qty, type)) {
-			BigDecimal qtyToProduce = this.getQtyToOrder(qty, locationLine, type, stockRules);
+    public void generateProductionOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type, StockRules stockRules) throws AxelorException {
+		if(this.useMinStockRules(stockLocationLine, this.getStockRules(product, stockLocationLine.getLocation(), type, StockRulesRepository.USE_CASE_STOCK_CONTROL), qty, type)) {
+			BigDecimal qtyToProduce = this.getQtyToOrder(qty, stockLocationLine, type, stockRules);
 			Beans.get(ProductionOrderService.class).generateProductionOrder(product, null, qtyToProduce, LocalDateTime.now());
 		}
 	}

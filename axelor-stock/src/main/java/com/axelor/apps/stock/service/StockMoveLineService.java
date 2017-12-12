@@ -23,9 +23,9 @@ import java.util.List;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
@@ -80,7 +80,7 @@ public interface StockMoveLineService {
 
 
 
-	public List<? extends LocationLine> getLocationLines(Product product, StockLocation location) throws AxelorException;
+	public List<? extends StockLocationLine> getLocationLines(Product product, StockLocation location) throws AxelorException;
 
 
 

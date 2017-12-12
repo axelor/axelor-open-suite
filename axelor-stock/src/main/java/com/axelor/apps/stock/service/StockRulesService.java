@@ -21,21 +21,21 @@ import java.math.BigDecimal;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
 public interface StockRulesService {
-	void generateOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException;
+	void generateOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type) throws AxelorException;
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException; 
+	void generatePurchaseOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type) throws AxelorException; 
 
-	boolean useMinStockRules(LocationLine locationLine, StockRules stockRules, BigDecimal qty, int type); 
+	boolean useMinStockRules(StockLocationLine stockLocationLine, StockRules stockRules, BigDecimal qty, int type); 
 
 	StockRules getStockRules(Product product, StockLocation location, int type, int useCase);
 
-	BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules, BigDecimal minReorderQty);
-	BigDecimal getQtyToOrder(BigDecimal qty, LocationLine locationLine, int type, StockRules stockRules);
+	BigDecimal getQtyToOrder(BigDecimal qty, StockLocationLine stockLocationLine, int type, StockRules stockRules, BigDecimal minReorderQty);
+	BigDecimal getQtyToOrder(BigDecimal qty, StockLocationLine stockLocationLine, int type, StockRules stockRules);
 }

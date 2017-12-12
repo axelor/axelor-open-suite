@@ -19,18 +19,18 @@ package com.axelor.apps.stock.service;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.TrackingNumber;
-import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
-import com.axelor.apps.stock.db.repo.LocationLineRepository;
+import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
@@ -41,12 +41,12 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 
-public class LocationLineServiceImpl implements LocationLineService {
+public class StockLocationLineServiceImpl implements StockLocationLineService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
-	protected LocationLineRepository locationLineRepo;
+	protected StockLocationLineRepository stockLocationLineRepo;
 	
 	@Inject
 	protected StockRulesService stockRulesService;
@@ -68,52 +68,52 @@ public class LocationLineServiceImpl implements LocationLineService {
 	public void updateLocation(StockLocation location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
 							   LocalDate lastFutureStockMoveDate, BigDecimal reservedQty) throws AxelorException  {
 		
-		LocationLine locationLine = this.getLocationLine(location, product);
+		StockLocationLine stockLocationLine = this.getStockLocationLine(location, product);
 		
 		LOG.debug("Mise à jour du stock : Entrepot? {}, Produit? {}, Quantité? {}, Actuel? {}, Futur? {}, Incrément? {}, Date? {}, Num de suivi? {} ", 
 				new Object[] { location.getName(), product.getCode(), qty, current, future, isIncrement, lastFutureStockMoveDate });
 		
 		if (!isIncrement) {
-			minStockRules(product, qty, locationLine, current, future);
+			minStockRules(product, qty, stockLocationLine, current, future);
 		} else {
-			maxStockRules(product, qty, locationLine, current, future);
+			maxStockRules(product, qty, stockLocationLine, current, future);
 		}
 		
-		locationLine = this.updateLocation(locationLine, qty, current, future, isIncrement, lastFutureStockMoveDate, reservedQty);
+		stockLocationLine = this.updateLocation(stockLocationLine, qty, current, future, isIncrement, lastFutureStockMoveDate, reservedQty);
 		
-		this.checkStockMin(locationLine, false);
+		this.checkStockMin(stockLocationLine, false);
 		
-		locationLineRepo.save(locationLine);
+		stockLocationLineRepo.save(stockLocationLine);
 		
 	}
 	
 	
-	public void minStockRules(Product product, BigDecimal qty, LocationLine locationLine, boolean current, boolean future) throws AxelorException  {
+	public void minStockRules(Product product, BigDecimal qty, StockLocationLine stockLocationLine, boolean current, boolean future) throws AxelorException  {
 		
 		if(current)  {
-			stockRulesService.generateOrder(product, qty, locationLine, StockRulesRepository.TYPE_CURRENT);
+			stockRulesService.generateOrder(product, qty, stockLocationLine, StockRulesRepository.TYPE_CURRENT);
 		}
 		if(future)  {
-			stockRulesService.generateOrder(product, qty, locationLine, StockRulesRepository.TYPE_FUTURE);
+			stockRulesService.generateOrder(product, qty, stockLocationLine, StockRulesRepository.TYPE_FUTURE);
 		}
 		
 	}
 
-	public void maxStockRules(Product product, BigDecimal qty, LocationLine locationLine, boolean current,
+	public void maxStockRules(Product product, BigDecimal qty, StockLocationLine stockLocationLine, boolean current,
 			boolean future) throws AxelorException {
 
 		if (current) {
-			checkStockMax(product, qty, locationLine, StockRulesRepository.TYPE_CURRENT, locationLine.getCurrentQty());
+			checkStockMax(product, qty, stockLocationLine, StockRulesRepository.TYPE_CURRENT, stockLocationLine.getCurrentQty());
 		}
 
 		if (future) {
-			checkStockMax(product, qty, locationLine, StockRulesRepository.TYPE_FUTURE, locationLine.getFutureQty());
+			checkStockMax(product, qty, stockLocationLine, StockRulesRepository.TYPE_FUTURE, stockLocationLine.getFutureQty());
 		}
 
 	}
 
-	void checkStockMax(Product product, BigDecimal qty, LocationLine locationLine, int type, BigDecimal baseQty) throws AxelorException {
-		StockLocation location = locationLine.getLocation();
+	void checkStockMax(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type, BigDecimal baseQty) throws AxelorException {
+		StockLocation location = stockLocationLine.getLocation();
 		StockRules stockRules = stockRulesService.getStockRules(product, location, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
 
 		if (stockRules == null || !stockRules.getUseMaxQty()) {
@@ -121,8 +121,8 @@ public class LocationLineServiceImpl implements LocationLineService {
 		}
 
 		if (baseQty.add(qty).compareTo(stockRules.getMaxQty()) > 0) {
-			throw new AxelorException(locationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_3),
-					locationLine.getProduct().getName(), locationLine.getProduct().getCode());
+			throw new AxelorException(stockLocationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_3),
+					stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
 		}
 	}
 
@@ -130,7 +130,7 @@ public class LocationLineServiceImpl implements LocationLineService {
 	public void updateDetailLocation(StockLocation location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
 									 LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException  {
 		
-		LocationLine detailLocationLine = this.getDetailLocationLine(location, product, trackingNumber);
+		StockLocationLine detailLocationLine = this.getDetailLocationLine(location, product, trackingNumber);
 		
 		LOG.debug("Mise à jour du detail du stock : Entrepot? {}, Produit? {}, Quantité? {}, Actuel? {}, Futur? {}, Incrément? {}, Date? {}, Num de suivi? {} ", 
 				new Object[] { location.getName(), product.getCode(), qty, current, future, isIncrement, lastFutureStockMoveDate, trackingNumber});
@@ -139,74 +139,74 @@ public class LocationLineServiceImpl implements LocationLineService {
 		
 		this.checkStockMin(detailLocationLine, true);
 		
-		locationLineRepo.save(detailLocationLine);
+		stockLocationLineRepo.save(detailLocationLine);
 		
 	}
 	
 	
-	public void checkStockMin(LocationLine locationLine, boolean isDetailLocationLine) throws AxelorException  {
-		if (!isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) < 0 && locationLine.getLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-			throw new AxelorException(locationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), locationLine.getProduct().getName(), locationLine.getProduct().getCode());
+	public void checkStockMin(StockLocationLine stockLocationLine, boolean isDetailLocationLine) throws AxelorException  {
+		if (!isDetailLocationLine && stockLocationLine.getCurrentQty().compareTo(BigDecimal.ZERO) < 0 && stockLocationLine.getLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+			throw new AxelorException(stockLocationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
 		
-		} else if (isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) < 0 
-				&& ((locationLine.getLocation() != null && locationLine.getLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL)
-				    || (locationLine.getDetailsLocation() != null && locationLine.getDetailsLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL))) {
+		} else if (isDetailLocationLine && stockLocationLine.getCurrentQty().compareTo(BigDecimal.ZERO) < 0 
+				&& ((stockLocationLine.getLocation() != null && stockLocationLine.getLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL)
+				    || (stockLocationLine.getDetailsLocation() != null && stockLocationLine.getDetailsLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL))) {
 
 			String trackingNumber = "";
-			if (locationLine.getTrackingNumber() != null) {
-				trackingNumber = locationLine.getTrackingNumber().getTrackingNumberSeq();
+			if (stockLocationLine.getTrackingNumber() != null) {
+				trackingNumber = stockLocationLine.getTrackingNumber().getTrackingNumberSeq();
 			}
 			
-			throw new AxelorException(locationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_2), locationLine.getProduct().getName(), locationLine.getProduct().getCode(), trackingNumber);
+			throw new AxelorException(stockLocationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_2), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode(), trackingNumber);
 		}
 	}
 
 	public void checkIfEnoughStock(StockLocation location, Product product, BigDecimal qty) throws AxelorException{
-	    LocationLine locationLine = this.getLocationLine(location.getLocationLineList(), product);
+		StockLocationLine stockLocationLine = this.getLocationLine(location.getLocationLineList(), product);
 
-	    if(locationLine != null && locationLine.getCurrentQty().compareTo(qty) < 0) {
-			throw new AxelorException(locationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), locationLine.getProduct().getName(), locationLine.getProduct().getCode());
+	    if(stockLocationLine != null && stockLocationLine.getCurrentQty().compareTo(qty) < 0) {
+			throw new AxelorException(stockLocationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
 		}
 	}
 
-	public LocationLine updateLocation(LocationLine locationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
+	public StockLocationLine updateLocation(StockLocationLine stockLocationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
 									   LocalDate lastFutureStockMoveDate, BigDecimal reservedQty) {
 		
 		if(current)  {
 			if(isIncrement)  {
-				locationLine.setCurrentQty(locationLine.getCurrentQty().add(qty));
+				stockLocationLine.setCurrentQty(stockLocationLine.getCurrentQty().add(qty));
 			} else {
-				locationLine.setCurrentQty(locationLine.getCurrentQty().subtract(qty));
+				stockLocationLine.setCurrentQty(stockLocationLine.getCurrentQty().subtract(qty));
 			}
 			
 		}
 		if(future)  {
 			if(isIncrement)  {
-				locationLine.setFutureQty(locationLine.getFutureQty().add(qty));
+				stockLocationLine.setFutureQty(stockLocationLine.getFutureQty().add(qty));
 			} else {
-				locationLine.setFutureQty(locationLine.getFutureQty().subtract(qty));
+				stockLocationLine.setFutureQty(stockLocationLine.getFutureQty().subtract(qty));
 			}
-			locationLine.setLastFutureStockMoveDate(lastFutureStockMoveDate);
+			stockLocationLine.setLastFutureStockMoveDate(lastFutureStockMoveDate);
 		}
 		
-		return locationLine;
+		return stockLocationLine;
 	}
 	
 	
-	public LocationLine getLocationLine(StockLocation location, Product product)  {
+	public StockLocationLine getStockLocationLine(StockLocation location, Product product)  {
 		
-		LocationLine locationLine = this.getLocationLine(location.getLocationLineList(), product);
+		StockLocationLine stockLocationLine = this.getLocationLine(location.getLocationLineList(), product);
 		
-		if(locationLine == null)  {
-			locationLine = this.createLocationLine(location, product);
+		if(stockLocationLine == null)  {
+			stockLocationLine = this.createLocationLine(location, product);
 			
 		}
 		
 		LOG.debug("Récupération ligne de stock: Entrepot? {}, Produit? {}, Qté actuelle? {}, Qté future? {}, Date? {} ", 
-				new Object[] { locationLine.getLocation().getName(), product.getCode(), 
-				locationLine.getCurrentQty(), locationLine.getFutureQty(), locationLine.getLastFutureStockMoveDate() });
+				new Object[] { stockLocationLine.getLocation().getName(), product.getCode(), 
+				stockLocationLine.getCurrentQty(), stockLocationLine.getFutureQty(), stockLocationLine.getLastFutureStockMoveDate() });
 		
-		return locationLine;
+		return stockLocationLine;
 	}
 	
 	
@@ -226,9 +226,9 @@ public class LocationLineServiceImpl implements LocationLineService {
 	 * @return
 	 * 			Une ligne détaillée de stock
 	 */
-	public LocationLine getDetailLocationLine(StockLocation detailLocation, Product product, TrackingNumber trackingNumber)  {
+	public StockLocationLine getDetailLocationLine(StockLocation detailLocation, Product product, TrackingNumber trackingNumber)  {
 		
-		LocationLine detailLocationLine = this.getDetailLocationLine(detailLocation.getDetailsLocationLineList(), product, trackingNumber);
+		StockLocationLine detailLocationLine = this.getDetailLocationLine(detailLocation.getDetailsLocationLineList(), product, trackingNumber);
 		
 		if(detailLocationLine == null)  {
 			
@@ -246,19 +246,19 @@ public class LocationLineServiceImpl implements LocationLineService {
 	
 	/**
 	 * Permet de récupérer la ligne de stock d'un entrepot en fonction d'un produit donné.
-	 * @param locationLineList
+	 * @param stockLocationLineList
 	 * 		Une liste de ligne de stock
 	 * @param product
 	 * 		Un produit
 	 * @return
 	 * 		La ligne de stock
 	 */
-	public LocationLine getLocationLine(List<LocationLine> locationLineList, Product product)  {
+	public StockLocationLine getLocationLine(List<StockLocationLine> stockLocationLineList, Product product)  {
 		
-		for(LocationLine locationLine : locationLineList)  {
+		for(StockLocationLine stockLocationLine : stockLocationLineList)  {
 			
-			if(locationLine.getProduct().equals(product))  {
-				return locationLine;
+			if(stockLocationLine.getProduct().equals(product))  {
+				return stockLocationLine;
 			}
 			
 		}
@@ -278,9 +278,9 @@ public class LocationLineServiceImpl implements LocationLineService {
 	 * @return
 	 * 		Un ligne de stock
 	 */
-	public LocationLine getDetailLocationLine(List<LocationLine> detailLocationLineList, Product product, TrackingNumber trackingNumber)  {
+	public StockLocationLine getDetailLocationLine(List<StockLocationLine> detailLocationLineList, Product product, TrackingNumber trackingNumber)  {
 		
-		for(LocationLine detailLocationLine : detailLocationLineList)  {
+		for(StockLocationLine detailLocationLine : detailLocationLineList)  {
 			
 			if(detailLocationLine.getProduct().equals(product) 
 					&& detailLocationLine.getTrackingNumber().equals(trackingNumber))  {
@@ -303,19 +303,19 @@ public class LocationLineServiceImpl implements LocationLineService {
 	 * @return
 	 * 		La ligne de stock
 	 */
-	public LocationLine createLocationLine(StockLocation location, Product product)  {
+	public StockLocationLine createLocationLine(StockLocation location, Product product)  {
 		
 		LOG.debug("Création d'une ligne de stock : Entrepot? {}, Produit? {} ", new Object[] { location.getName(), product.getCode() });
 		
-		LocationLine locationLine = new LocationLine();
+		StockLocationLine stockLocationLine = new StockLocationLine();
 		
-		locationLine.setLocation(location);
-		location.addLocationLineListItem(locationLine);
-		locationLine.setProduct(product);
-		locationLine.setCurrentQty(BigDecimal.ZERO);
-		locationLine.setFutureQty(BigDecimal.ZERO);
+		stockLocationLine.setLocation(location);
+		location.addLocationLineListItem(stockLocationLine);
+		stockLocationLine.setProduct(product);
+		stockLocationLine.setCurrentQty(BigDecimal.ZERO);
+		stockLocationLine.setFutureQty(BigDecimal.ZERO);
 		
-		return locationLine;
+		return stockLocationLine;
 		
 	}
 	
@@ -331,12 +331,12 @@ public class LocationLineServiceImpl implements LocationLineService {
 	 * @return
 	 * 		La ligne détaillée de stock
 	 */
-	public LocationLine createDetailLocationLine(StockLocation location, Product product, TrackingNumber trackingNumber)  {
+	public StockLocationLine createDetailLocationLine(StockLocation location, Product product, TrackingNumber trackingNumber)  {
 		
 		LOG.debug("Création d'une ligne de détail de stock : Entrepot? {}, Produit? {}, Num de suivi? {} ", 
 				new Object[] { location.getName(), product.getCode(), trackingNumber.getTrackingNumberSeq() });
 		
-		LocationLine detailLocationLine = new LocationLine();
+		StockLocationLine detailLocationLine = new StockLocationLine();
 		
 		detailLocationLine.setDetailsLocation(location);
 		location.addDetailsLocationLineListItem(detailLocationLine);
