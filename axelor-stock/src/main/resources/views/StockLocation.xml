@@ -57,14 +57,14 @@
  		<view type="grid" name="stock-location-line-grid" />
  		<view type="form" name="stock-location-line-form" />
  		<domain>self.location.id IN :contentLocationIds</domain>
-   		<context name="contentLocationIds" expr="call:com.axelor.apps.stock.service.LocationService:getContentLocationIds(__self__)" />
+   		<context name="contentLocationIds" expr="call:com.axelor.apps.stock.service.StockLocationService:getContentLocationIds(__self__)" />
      </action-view>
 
      <action-view name="action-location-details-view-location-content" title="Location content details" model="com.axelor.apps.stock.db.StockLocationLine">
  		<view type="grid" name="stock-location-line-details-grid" />
  		<view type="form" name="stock-location-line-details-form" />
  		<domain>self.detailsLocation.id IN :contentLocationIds</domain>
-   		<context name="contentLocationIds" expr="call:com.axelor.apps.stock.service.LocationService:getContentLocationIds(__self__)" />
+   		<context name="contentLocationIds" expr="call:com.axelor.apps.stock.service.StockLocationService:getContentLocationIds(__self__)" />
      </action-view>
 
 </object-views>
