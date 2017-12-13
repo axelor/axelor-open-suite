@@ -305,8 +305,8 @@
 			  action="action.stock.view.cancel.reason"/>
 
 	<action-view name="action.stock.view.cancel.reason" title="Cancel reason" model="com.axelor.apps.base.db.CancelReason">
-        <view type="form" name="cancel-reason-form"/>
 		<view type="grid" name="cancel-reason-grid"/>
+		<view type="form" name="cancel-reason-form"/>
 		<domain>self.applicationType = :_xApplicationType</domain>
 		<context name="_xApplicationType" expr="eval: com.axelor.apps.stock.db.StockMove"/>
 	</action-view>

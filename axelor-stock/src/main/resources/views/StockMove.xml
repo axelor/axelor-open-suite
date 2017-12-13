@@ -81,7 +81,7 @@
 		 
 	  <panel title="Status">
 		  <field name="statusSelect" widget="NavSelect" colSpan="8"/>
-		  <field name="cancelReason" canView="false" showIf="statusSelect == 4 &amp;&amp; cancelReason != null" readonly="true" colSpan="4"/>
+		  <field name="cancelReason" canView="false" showIf="cancelReason != null" readonly="true" colSpan="4"/>
 	  </panel>
 	  <panel name="main">
 		  <field name="typeSelect" title="Type" colSpan="4" onChange="action-stock-move-set-default-locations, action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1"/>
