@@ -275,7 +275,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
             queryBuilder.bind("id", logisticalForm.getId());
         }
 
-        List<LogisticalForm> logisticalFormList = queryBuilder.create().fetch();
+        List<LogisticalForm> logisticalFormList = queryBuilder.build().fetch();
         logisticalFormList.add(logisticalForm);
 
         return logisticalFormList;
