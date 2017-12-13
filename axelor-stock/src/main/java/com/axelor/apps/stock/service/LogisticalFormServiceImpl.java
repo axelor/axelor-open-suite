@@ -51,6 +51,7 @@ import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.apps.stock.exception.LogisticalFormWarning;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
@@ -241,7 +242,11 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     @Override
     public List<StockMoveLine> getFullySpreadStockMoveLineList(LogisticalForm logisticalForm) {
         List<StockMoveLine> stockMoveLineList = new ArrayList<>();
-        Map<StockMoveLine, BigDecimal> spreadableQtyMap = getSpreadableQtyMap(logisticalForm);
+        Map<StockMoveLine, BigDecimal> spreadableQtyMap = new HashMap<>();
+
+        for (LogisticalForm item : findPendingLogisticalForms(logisticalForm)) {
+            spreadableQtyMap.putAll(getSpreadableQtyMap(item));
+        }
 
         for (Entry<StockMoveLine, BigDecimal> entry : spreadableQtyMap.entrySet()) {
             StockMoveLine stockMoveLine = entry.getKey();
@@ -253,6 +258,27 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         }
 
         return stockMoveLineList;
+    }
+
+    private List<LogisticalForm> findPendingLogisticalForms(LogisticalForm logisticalForm) {
+        Preconditions.checkNotNull(logisticalForm);
+        Preconditions.checkNotNull(logisticalForm.getDeliverToCustomerPartner());
+
+        QueryBuilder<LogisticalForm> queryBuilder = QueryBuilder.of(LogisticalForm.class);
+        queryBuilder.add("self.deliverToCustomerPartner = :deliverToCustomerPartner");
+        queryBuilder.bind("deliverToCustomerPartner", logisticalForm.getDeliverToCustomerPartner());
+        queryBuilder.add("self.statusSelect < :statusSelect");
+        queryBuilder.bind("statusSelect", LogisticalFormRepository.STATUS_COLLECTED);
+
+        if (logisticalForm.getId() != null) {
+            queryBuilder.add("self.id != :id");
+            queryBuilder.bind("id", logisticalForm.getId());
+        }
+
+        List<LogisticalForm> logisticalFormList = queryBuilder.create().fetch();
+        logisticalFormList.add(logisticalForm);
+
+        return logisticalFormList;
     }
 
     protected List<StockMove> getFullySpreadStockMoveList(LogisticalForm logisticalForm) {
