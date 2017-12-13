@@ -177,7 +177,7 @@
 	<action-record name="action-expense-record-default" model="com.axelor.apps.hr.db.Expense">
 	    <field name="user" expr="eval:__user__"/>
 	    <field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
-	    <field name="period" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
+	    <field name="period" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true',__date__).fetchOne()"/>
 		<field name="exTaxTotal" expr="eval: 0"/>
     	<field name="taxTotal" expr="eval: 0"/>
     	<field name="inTaxTotal" expr="eval: 0"/>
@@ -193,7 +193,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-expense-attrs-domain-period">
-		<attribute name="domain" for="period" expr="eval: &quot; self.fromDate &lt;= CURRENT_DATE AND self.statusSelect = 1 &quot;"/>
+		<attribute name="domain" for="period" expr="eval: &quot; self.fromDate &lt;= CURRENT_DATE AND self.statusSelect = 1 AND self.allowExpenseCreation = true&quot;"/>
 	</action-attrs>
 	
 	<action-method name="action-expense-method-compute">
