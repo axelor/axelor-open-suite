@@ -184,13 +184,13 @@
                     <![CDATA[
                     <dl class="dl-horizontal">
                         <dt x-translate>Total W.T.</dt>
-                        <dd>{{exTaxTotal}}  {{currency.symbol}}</dd>
+                        <dd>{{record.exTaxTotal}}  {{record.currency.symbol}}</dd>
                         <dt x-translate>Total tax</dt>
-                        <dd>{{taxTotal}}  {{currency.symbol}}</dd>
+                        <dd>{{record.taxTotal}}  {{record.currency.symbol}}</dd>
                         <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-                        <dd class="order-subtotal-total">{{inTaxTotal}}  {{currency.symbol}}</dd>
+                        <dd class="order-subtotal-total">{{record.inTaxTotal}}  {{record.currency.symbol}}</dd>
                         <dt x-translate>Amount invoiced W.T.</dt>
-                        <dd>{{amountInvoiced}}  {{currency.symbol}}</dd>
+                        <dd>{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
                     </dl>
                     ]]>
                 </viewer>
@@ -199,7 +199,7 @@
 	   <panel name="financialTerms" title="Financial terms" sidebar="true" colSpan="12">
 			<field name="paymentMode" domain="self.inOutSelect = 2"  onChange="action-purchase-order-method-fill-company-bank-details" if-module="axelor-account" form-view="payment-mode-form" grid-view="payment-mode-grid" if="__config__.app.isApp('supplychain')" colSpan="6">
 				<viewer depends="name,code"><![CDATA[
-					{{name}} [{{code}}]
+					{{record.name}} [{{record.code}}]
 				]]></viewer>
 			</field>
 			<field name="paymentCondition" if-module="axelor-account" form-view="payment-condition-form" grid-view="payment-condition-grid" if="__config__.app.isApp('supplychain')" colSpan="6"/>
