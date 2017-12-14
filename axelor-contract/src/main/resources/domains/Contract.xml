@@ -85,7 +85,7 @@
 		<boolean name="isTimeProratedInvoice" title="Protrate temporally" />
 		<boolean name="isVersionProratedInvoice" title="Prorate from versions" />
 
-		<one-to-many name="contractLineList" ref="com.axelor.apps.contract.db.ContractLine" title="Invoicing content"/>
+        <one-to-many name="contractLineList" ref="com.axelor.apps.contract.db.ContractLine" title="Invoicing content" mappedBy="contractVersion"/>
 		<one-to-many name="consumptionLineList" ref="com.axelor.apps.contract.db.ConsumptionLine" title="Consumptions"/>
 
 		<one-to-one name="contract" ref="com.axelor.apps.contract.db.Contract" title="Contract" mappedBy="currentVersion" copy="false"/>
@@ -148,6 +148,8 @@
 		<boolean name="isConsumptionLine" title="Invoice from consumption" default="false"/>
 		
 		<boolean name="isInvoiced" title="Is invoiced" />
+
+        <many-to-one name="contractVersion" ref="com.axelor.apps.contract.db.ContractVersion"/>
 		
 	</entity>
 
