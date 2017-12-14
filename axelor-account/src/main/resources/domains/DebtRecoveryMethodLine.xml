@@ -15,7 +15,7 @@
   	<many-to-one name="messageTemplate" ref="com.axelor.apps.message.db.Template" title="Message model"/>
   	<boolean name="manualValidationOk" title="Manual validation"/>
   	<many-to-one name="debtRecoveryMethod" ref="com.axelor.apps.account.db.DebtRecoveryMethod" title="Debt recovery method"/>
-    
+	<string name="printingMessage" title="Message on printing" large="true"/>
   </entity>
 
  
