@@ -5,7 +5,7 @@
 	
     <grid name="debt-recovery-history-line-grid" title="Debt recovery history" model="com.axelor.apps.account.db.DebtRecoveryHistory">
     	<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
-    	<field name="debt.recovery.accountingSituation.partner" form-view="partner-form" grid-view="partner-grid"/>
+    	<field name="debtRecovery.accountingSituation.partner" form-view="partner-form" grid-view="partner-grid"/>
     	<field name="debtRecoveryMethod" grid-view="debt-recovery-method-grid" form-view="debt-recovery-method-form"/>
     	<field name="setToIrrecoverableOK"/>
     	<field name="unknownAddressOK"/>
@@ -27,7 +27,7 @@
         	<field name="setToIrrecoverableOK"/>
     	</panel>
     	<panel name="partnerInformation" title="Partner information">
-        	<field name="debt.recovery.accountingSituation.partner" form-view="partner-form" grid-view="partner-grid"/>
+        	<field name="debtRecovery.accountingSituation.partner" form-view="partner-form" grid-view="partner-grid"/>
         	<field name="balanceDue"/>
         	<field name="balanceDueDebtRecovery"/>
         	<field name="referenceDate"/>
