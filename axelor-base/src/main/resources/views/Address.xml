@@ -15,13 +15,15 @@
 	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address" 
 	onSave="action-group-base-address-onsave,save,action-base-address-method-check-lat-lang"  onNew="default-address-record" width="large" >
 		<panel name="main" title="Address details" colSpan="12">
+			<field name="addressL7Country" onChange="action-address-record-clear-fields" required="true" canEdit="false" form-view="country-form" grid-view="country-grid" colSpan="12"/>
 			<field name="addressL2" x-bind="{{addressL2|uppercase}}" placeholder="e.g. Financial department, CEO"/>
 			<field name="addressL3" x-bind="{{addressL3|uppercase}}" placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
 			<field name="addressL4" x-bind="{{addressL4|uppercase}}"/>
 			<field name="addressL5" x-bind="{{addressL5|uppercase}}" placeholder="e.g. POB 254"/>
-			<field name="city" canEdit="false" canNew="true" onChange="action-address-change-city" form-view="city-form" grid-view="city-grid"/>
-			<field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true"/>
-			<field name="addressL7Country" required="true" canEdit="false" form-view="country-form" grid-view="country-grid"/>
+			<field name="zip"/>
+			<field name="city" onSelect="action-address-attrs-update-domain-city" canEdit="false" canNew="true" onChange="action-address-change-city" form-view="city-form" grid-view="city-grid"/>
+			<field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true" colSpan="12"/>
+			<static name="addressL6Text" colSpan="12">Notice: The Zip/City field is automatically filled when the city is selected. You can change it when the Zip/City pair is missing or in case of minor change.</static>
 			<button-group colSpan="6">
 				<button name="map" title="View map" icon="fa-map-marker" onClick="action-base-address-method-view-map" hideIf="$popup()"/>
 				<button name="directions" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction" hideIf="$popup()"/>
@@ -41,13 +43,15 @@
 	<form name="address-partner-address-form" title="Address" model="com.axelor.apps.base.db.Address" 
 	onSave="action-group-base-address-onsave,save,action-base-address-method-create-partner-address,action-base-address-method-check-lat-lang"  onNew="default-address-record" width="large" >
 		<panel name="main" title="Address details" colSpan="12">
+			<field name="addressL7Country" onChange="action-address-record-clear-fields" required="true" canEdit="false" form-view="country-form" grid-view="country-grid" colSpan="12"/>
 			<field name="addressL2" x-bind="{{addressL2|uppercase}}" placeholder="e.g. Financial department, CEO"/>
 			<field name="addressL3" x-bind="{{addressL3|uppercase}}" placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
 			<field name="addressL4" x-bind="{{addressL4|uppercase}}"/>
 			<field name="addressL5" x-bind="{{addressL5|uppercase}}" placeholder="e.g. POB 254"/>
-			<field name="city" canEdit="false" canNew="true" onChange="action-address-change-city" form-view="city-form" grid-view="city-grid"/>
-			<field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true"/>
-			<field name="addressL7Country" required="true" canEdit="false" form-view="country-form" grid-view="country-grid"/>
+            <field name="zip" />
+			<field name="city" onSelect="action-address-attrs-update-domain-city" canEdit="false" canNew="true" onChange="action-address-change-city" form-view="city-form" grid-view="city-grid"/>
+			<field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true" colSpan="12"/>
+			<static name="addressL6Text" colSpan="12">Notice: The Zip/City field is automatically filled when the city is selected. You can change it when the Zip/City pair is missing or in case of minor change.</static>
 			<field name="isInvoicingAddr" type="boolean" showIf="$popup() &amp;&amp; id == null" title="Invoicing address" />
 			<field name="isDeliveryAddr" type="boolean" showIf="$popup() &amp;&amp; id == null" title="Delivery address" />
 			<field name="isDefault" type="boolean" showIf="$popup() &amp;&amp; id == null" title="Default" />
@@ -80,6 +84,7 @@
 		<field name="addressL6" expr="eval:city.hasZipOnRight ? city.name+' '+city.zip :city.zip+' '+city.name"/>
 <!--   		<field name="addressL7Country" expr="eval:city.department==null?addressL7Country:city.department.region!=null?city.department.region.country:addressL7Country"/> -->
   		<field name="addressL7Country" expr="eval:city?.country"/>
+		<field name="zip" expr="eval: city.zip"/>
 	</action-record>
 	
 	<action-record name="default-address-country-record"
@@ -111,5 +116,15 @@
 	<action-method name="action-base-address-method-create-partner-address">
 		<call class="com.axelor.apps.base.web.AddressController" method="createPartnerAddress" />
 	</action-method>
+
+	<action-attrs name="action-address-attrs-update-domain-city">
+		<attribute name="domain" expr="eval: (addressL7Country?&quot;self.country = :addressL7Country&quot;:&quot;&quot;) +        (addressL7Country &amp;&amp; zip ? &quot; AND &quot; : &quot;&quot;) + (zip ? &quot;self.zip LIKE '${zip + '%'}' &quot; : &quot;&quot;)" for="city"/>
+	</action-attrs>
+
+	<action-record name="action-address-record-clear-fields" model="com.axelor.apps.base.db.Address">
+		<field name="city" expr="eval: null"/>
+		<field name="zip" expr="eval: null"/>
+        <field name="addressL6" expr="eval: null"/>
+	</action-record>
 
 </object-views>
