@@ -11,7 +11,7 @@
     		<field name="name"/>
     		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
        	</panel>
-       	<panel-related field="debtRecoveryMethodLineList" colSpan="12" form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid"/>
+       	<panel-related field="debtRecoveryMethodLineList" colSpan="12" orderBy="debtRecoveryLevel" form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid"/>
     </form>
 
 </object-views>
