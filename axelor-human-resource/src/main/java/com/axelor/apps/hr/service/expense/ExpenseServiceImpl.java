@@ -571,7 +571,12 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	@Override
 	public Expense getOrCreateExpense(User user) {
-		Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
+		Expense expense = Beans.get(ExpenseRepository.class).all()
+				.filter("self.statusSelect = ?1 AND self.user.id = ?2",
+						ExpenseRepository.STATUS_DRAFT,
+						user.getId())
+				.order("-id")
+				.fetchOne();
 		if (expense == null) {
 			expense = new Expense();
 			expense.setUser(user);
