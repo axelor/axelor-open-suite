@@ -25,7 +25,7 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.message.db.Message;
-import com.axelor.db.Model;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -34,7 +34,6 @@ import com.google.inject.persist.Transactional;
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.List;
 
 public interface ExpenseService  {
@@ -89,7 +88,13 @@ public interface ExpenseService  {
 	
 	@Transactional
 	public void insertExpenseLine(ActionRequest request, ActionResponse response);
-	
+
+	/**
+	 * Get the expense from user, if no expense is found create one.
+	 * @param user
+	 * @return
+	 */
+	public Expense getOrCreateExpense(User user);
 	public BigDecimal computePersonalExpenseAmount(Expense expense);
 	public BigDecimal computeAdvanceAmount(Expense expense);
 

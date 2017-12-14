@@ -26,6 +26,7 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
+import com.axelor.apps.base.db.Company;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
@@ -479,7 +480,12 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		if(user != null && leaveReason != null){
 			LeaveRequest leave = new LeaveRequest();
 			leave.setUser(user);
-			leave.setCompany(user.getActiveCompany());
+			Company company = null;
+			if (user.getEmployee() != null
+					&& user.getEmployee().getMainEmploymentContract() != null) {
+				company = user.getEmployee().getMainEmploymentContract().getPayCompany();
+			}
+			leave.setCompany(company);
 			LeaveLine leaveLine = leaveLineRepo.all().filter("self.employee = ?1 AND self.leaveReason = ?2", user.getEmployee(), leaveReason).fetchOne();
 			if(leaveLine == null){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_LINE),user.getEmployee().getName(), leaveReason.getLeaveReason()), IException.CONFIGURATION_ERROR);
