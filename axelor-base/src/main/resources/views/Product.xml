@@ -8,14 +8,14 @@
         	<button name="catalog" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
 			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 	    </toolbar>
-	    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-	    <field name="name" width="400"/>
+	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="100"/>
+	    <field name="name" width="300"/>
 	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
 	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
 	    <field name="productTypeSelect" width="100"/>
 	   	<field name="salePrice" x-scale="2" />
 	    <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
-	    <field name="internalDescription" widget="html"/>
+	    <field name="internalDescription" widget="html" width="400" />
 	    <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
     
