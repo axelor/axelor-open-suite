@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,14 +44,13 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.persist.Transactional;
@@ -68,26 +66,25 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
     protected void processPaymentScheduleLines(int paymentScheduleType) {
         AccountingBatch accountingBatch = batch.getAccountingBatch();
-        List<String> filterList = new ArrayList<>();
-        List<Pair<String, Object>> bindingList = new ArrayList<>();
+        QueryBuilder<PaymentScheduleLine> queryBuilder = QueryBuilder.of(PaymentScheduleLine.class);
 
-        filterList.add("self.paymentSchedule.statusSelect = :paymentScheduleStatusSelect");
-        bindingList.add(Pair.of("paymentScheduleStatusSelect", PaymentScheduleRepository.STATUS_CONFIRMED));
+        queryBuilder.add("self.paymentSchedule.statusSelect = :paymentScheduleStatusSelect");
+        queryBuilder.bind("paymentScheduleStatusSelect", PaymentScheduleRepository.STATUS_CONFIRMED);
 
-        filterList.add("self.paymentSchedule.typeSelect = :paymentScheduleTypeSelect");
-        bindingList.add(Pair.of("paymentScheduleTypeSelect", paymentScheduleType));
+        queryBuilder.add("self.paymentSchedule.typeSelect = :paymentScheduleTypeSelect");
+        queryBuilder.bind("paymentScheduleTypeSelect", paymentScheduleType);
 
-        filterList.add("self.statusSelect = :statusSelect");
-        bindingList.add(Pair.of("statusSelect", PaymentScheduleLineRepository.STATUS_IN_PROGRESS));
+        queryBuilder.add("self.statusSelect = :statusSelect");
+        queryBuilder.bind("statusSelect", PaymentScheduleLineRepository.STATUS_IN_PROGRESS);
 
         LocalDate dueDate = accountingBatch.getDueDate() != null ? accountingBatch.getDueDate()
                 : Beans.get(AppBaseService.class).getTodayDate();
-        filterList.add("self.scheduleDate <= :dueDate");
-        bindingList.add(Pair.of("dueDate", dueDate));
+        queryBuilder.add("self.scheduleDate <= :dueDate");
+        queryBuilder.bind("dueDate", dueDate);
 
         if (accountingBatch.getCompany() != null) {
-            filterList.add("self.paymentSchedule.company IS NULL OR self.paymentSchedule.company = :company");
-            bindingList.add(Pair.of("company", accountingBatch.getCompany()));
+            queryBuilder.add("self.paymentSchedule.company IS NULL OR self.paymentSchedule.company = :company");
+            queryBuilder.bind("company", accountingBatch.getCompany());
         }
 
         if (accountingBatch.getBankDetails() != null) {
@@ -97,18 +94,18 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
                 bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsSet());
             }
 
-            filterList.add(
+            queryBuilder.add(
                     "self.paymentSchedule.companyBankDetails IS NULL OR self.paymentSchedule.companyBankDetails IN (:bankDetailsSet)");
-            bindingList.add(Pair.of("bankDetailsSet", bankDetailsSet));
+            queryBuilder.bind("bankDetailsSet", bankDetailsSet);
         }
 
         if (accountingBatch.getPaymentMode() != null) {
-            filterList
+            queryBuilder
                     .add("self.paymentSchedule.paymentMode IS NULL OR self.paymentSchedule.paymentMode = :paymentMode");
-            bindingList.add(Pair.of("paymentMode", accountingBatch.getPaymentMode()));
+            queryBuilder.bind("paymentMode", accountingBatch.getPaymentMode());
         }
 
-        List<PaymentScheduleLine> paymentScheduleLineList = processQuery(filterList, bindingList);
+        List<PaymentScheduleLine> paymentScheduleLineList = processQuery(queryBuilder);
 
         if (!paymentScheduleLineList.isEmpty()) {
             try {
@@ -121,25 +118,14 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
     }
 
-    private List<PaymentScheduleLine> processQuery(List<String> filterList, List<Pair<String, Object>> bindingList) {
+    private List<PaymentScheduleLine> processQuery(QueryBuilder<PaymentScheduleLine> queryBuilder) {
         List<PaymentScheduleLine> doneList = new ArrayList<>();
 
         List<Long> anomalyList = Lists.newArrayList(0L);
-        filterList.add("self.id NOT IN (:anomalyList)");
-        bindingList.add(Pair.of("anomalyList", anomalyList));
+        queryBuilder.add("self.id NOT IN (:anomalyList)");
+        queryBuilder.bind("anomalyList", anomalyList);
 
-        String filter = Joiner.on(" AND ").join(Lists.transform(filterList, new Function<String, String>() {
-            @Override
-            public String apply(String input) {
-                return String.format("(%s)", input);
-            }
-        }));
-
-        Query<PaymentScheduleLine> query = Beans.get(PaymentScheduleLineRepository.class).all().filter(filter);
-
-        for (Pair<String, Object> binding : bindingList) {
-            query.bind(binding.getLeft(), binding.getRight());
-        }
+        Query<PaymentScheduleLine> query = queryBuilder.build();
 
         Set<Long> treatedSet = new HashSet<>();
         List<PaymentScheduleLine> paymentScheduleLineList;

@@ -149,7 +149,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
         queryBuilder.add("self.statusSelect = :statusSelect");
         queryBuilder.bind("statusSelect", PaymentVoucherRepository.STATUS_WAITING_FOR_DEPOSIT_SLIP);
 
-        return queryBuilder.create().fetch();
+        return queryBuilder.build().fetch();
     }
 
     private void checkPayments(DepositSlip depositSlip) throws AxelorException {
