@@ -541,6 +541,7 @@
 "The bank details currency is not compatible with the currency in bank order.",,,
 "The bank details is inactive.",,,
 "The bank details type is not compatible with the accepted types in file format.",,,
+"The bank order is not properly signed. Please correct it and sign it again.",,,
 "The company %s does not have bank order sequence",,,
 "The input to be zipped cannot be null",,,
 "The receiver bank details currency is not compatible with the currency in bank order.",,,

@@ -303,6 +303,11 @@ public class BankOrderServiceImpl implements BankOrderService {
 		File signatureFileToSend = null;
 
 		if(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+            if (bankOrder.getSignedMetaFile() == null) {
+                throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_NOT_PROPERLY_SIGNED),
+                        IException.NO_VALUE);
+            }
+
 			signatureFileToSend = MetaFiles.getPath(bankOrder.getSignedMetaFile()).toFile();
 		}
 		dataFileToSend = MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
