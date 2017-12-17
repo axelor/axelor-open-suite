@@ -879,12 +879,6 @@ public class StockMoveServiceImpl implements StockMoveService {
 		stockMove.setFullySpreadOverLogisticalFormsFlag(computeFullySpreadOverLogisticalFormsFlag(stockMove));
 	}
 
-	@Override
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void updateFullySpreadOverLogisticalFormsFlags(Collection<StockMove> stockMoveCollection) {
-		stockMoveCollection.forEach(this::updateFullySpreadOverLogisticalFormsFlag);
-	}
-
 	protected boolean computeFullySpreadOverLogisticalFormsFlag(StockMove stockMove) {
 		return stockMove.getStockMoveLineList() != null ? stockMove.getStockMoveLineList().stream().allMatch(
 				stockMoveLine -> stockMoveLineService.computeFullySpreadOverLogisticalFormLinesFlag(stockMoveLine))

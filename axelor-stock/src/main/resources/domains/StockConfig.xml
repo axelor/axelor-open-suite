@@ -18,6 +18,8 @@
     
 	<many-to-one name="customsWeightUnit" ref="com.axelor.apps.base.db.Unit" title="Unit of weight"/>
 
+    <boolean name="realizeStockMovesUponParcelPalletCollection" title="Realize stock moves upon parcel/pallet collection" />
+
   </entity>
   
 </domain-models>

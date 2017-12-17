@@ -64,6 +64,8 @@ public class LogisticalFormLineServiceImpl implements LogisticalFormLineService 
 
 		domainList.add(String.format("self.stockMove.partner.id = %d", partnerId));
 		domainList.add(String.format("self.stockMove.typeSelect = %d", StockMoveRepository.TYPE_OUTGOING));
+        domainList.add(String.format("self.stockMove.statusSelect = %d", StockMoveRepository.STATUS_PLANNED));
+        domainList.add("self.realQty > 0");
 		domainList.add(
 				"self.stockMove.fullySpreadOverLogisticalFormsFlag IS NULL OR self.stockMove.fullySpreadOverLogisticalFormsFlag = FALSE");
 

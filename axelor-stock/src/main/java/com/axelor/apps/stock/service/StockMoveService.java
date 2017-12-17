@@ -163,14 +163,6 @@ public interface StockMoveService {
 	 */
 	void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove);
 
-	/**
-	 * Update fully spread over logistical forms flags on a collection of stock moves.
-	 * 
-	 * @param stockMoveCollection
-	 */
-	void updateFullySpreadOverLogisticalFormsFlags(Collection<StockMove> stockMoveCollection);
-
-
     /**
      * Compute stock move name.
      * 
