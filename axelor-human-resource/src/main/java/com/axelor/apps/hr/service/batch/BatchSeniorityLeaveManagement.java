@@ -37,6 +37,7 @@ package com.axelor.apps.hr.service.batch;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Locale;
 
@@ -207,9 +208,9 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 					incrementDone();
 					return;
 				}
-				LeaveManagement leaveManagement = leaveManagementService.createLeaveManagement(leaveLine, AuthUtils.getUser(), batch.getHrBatch().getComments(), null, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate(), quantity.setScale(1) );
-				leaveLine.setQuantity(leaveLine.getQuantity().add(quantity.setScale(1)));
-				leaveLine.setTotalQuantity(leaveLine.getTotalQuantity().add(quantity.setScale(1)));
+				LeaveManagement leaveManagement = leaveManagementService.createLeaveManagement(leaveLine, AuthUtils.getUser(), batch.getHrBatch().getComments(), null, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate(), quantity.setScale(1, RoundingMode.HALF_UP) );
+				leaveLine.setQuantity(leaveLine.getQuantity().add(quantity.setScale(1, RoundingMode.HALF_UP)));
+				leaveLine.setTotalQuantity(leaveLine.getTotalQuantity().add(quantity.setScale(1, RoundingMode.HALF_UP)));
 				leaveManagementRepository.save(leaveManagement);
 				leaveLineRepository.save(leaveLine);
 				updateEmployee(employee);
