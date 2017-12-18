@@ -96,6 +96,7 @@
 - Tweaks in conformity certificate.
 - StockLocation: Move booleans into supplychain module.
 - Payroll Preparation: no refresh and edit once export is done.
+- Payroll Preparation: filter employee per company.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
