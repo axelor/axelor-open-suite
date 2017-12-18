@@ -70,6 +70,9 @@
 	  		public static final int STATUS_REIMBURSED = 4;
 	  		public static final int STATUS_REFUSED = 5;
 	  		public static final int STATUS_CANCELED = 6;
+
+            public static final int COMPANY_CB_PAYMENT_NO = 1;
+            public static final int COMPANY_CB_PAYMENT_COMPANYS_CREDIT_CARD = 2;
 	  ]]>
       </extra-code>
   </entity>

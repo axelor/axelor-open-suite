@@ -177,7 +177,19 @@ public class PayrollPreparationService {
 	
 	public BigDecimal computeExpenseAmount(PayrollPreparation payrollPreparation){
 		BigDecimal expenseAmount = BigDecimal.ZERO;
-		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user.employee = ?1 AND self.statusSelect = 3 AND (self.payrollPreparation = null OR self.payrollPreparation.id = ?2) AND self.companyCbSelect = 1 AND self.period = ?3", payrollPreparation.getEmployee(), payrollPreparation.getId(), payrollPreparation.getPeriod()).fetch();
+        List<Expense> expenseList = Beans.get(ExpenseRepository.class).all()
+                .filter("self.user.employee = ?1 "
+                        + "AND self.statusSelect = ?2 "
+                        + "AND (self.payrollPreparation IS NULL OR self.payrollPreparation.id = ?3) "
+                        + "AND self.companyCbSelect = ?4 "
+                        + "AND self.validationDate BETWEEN ?5 AND ?6",
+                        payrollPreparation.getEmployee(),
+                        ExpenseRepository.STATUS_VALIDATED,
+                        payrollPreparation.getId(),
+                        ExpenseRepository.COMPANY_CB_PAYMENT_NO,
+                        payrollPreparation.getPeriod().getFromDate(),
+                        payrollPreparation.getPeriod().getToDate())
+                .fetch();
 		for (Expense expense : expenseList) {
 			expenseAmount = expenseAmount.add(expense.getInTaxTotal());
 			payrollPreparation.addExpenseListItem(expense);
