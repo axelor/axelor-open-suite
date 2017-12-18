@@ -90,7 +90,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 				birtTemplate.getBirtTemplateParameterList());
 
 		try (InputStream is = new FileInputStream(file)) {
-			Beans.get(MetaFiles.class).attach(is, fileName, message);
+			Beans.get(MetaFiles.class).attach(is, fileName + "." + birtTemplate.getFormat(), message);
 		}
 
 	}
