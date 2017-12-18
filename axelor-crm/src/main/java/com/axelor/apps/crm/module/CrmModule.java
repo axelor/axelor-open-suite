@@ -20,6 +20,8 @@ package com.axelor.apps.crm.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
+import com.axelor.apps.crm.db.repo.CrmBatchCrmRepository;
+import com.axelor.apps.crm.db.repo.CrmBatchRepository;
 import com.axelor.apps.crm.db.repo.EventManagementRepository;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
@@ -39,5 +41,6 @@ public class CrmModule extends AxelorModule {
         bind(OpportunityRepository.class).to(OpportunityManagementRepository.class);
         bind(OpportunityService.class).to(OpportunityServiceImpl.class);
         bind(ICalendarService.class).to(CalendarService.class);
+        bind(CrmBatchRepository.class).to(CrmBatchCrmRepository.class);
     }
 }

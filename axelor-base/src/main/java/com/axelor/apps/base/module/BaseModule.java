@@ -20,12 +20,18 @@ package com.axelor.apps.base.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.base.db.repo.AddressBaseRepository;
 import com.axelor.apps.base.db.repo.AddressRepository;
+import com.axelor.apps.base.db.repo.AlarmEngineBatchBaseRepository;
+import com.axelor.apps.base.db.repo.AlarmEngineBatchRepository;
 import com.axelor.apps.base.db.repo.BankAddressBaseRepository;
 import com.axelor.apps.base.db.repo.BankAddressRepository;
 import com.axelor.apps.base.db.repo.BankBaseRepository;
 import com.axelor.apps.base.db.repo.BankRepository;
+import com.axelor.apps.base.db.repo.BaseBatchBaseRepository;
+import com.axelor.apps.base.db.repo.BaseBatchRepository;
 import com.axelor.apps.base.db.repo.DurationBaseRepository;
 import com.axelor.apps.base.db.repo.DurationRepository;
+import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
+import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
@@ -99,5 +105,8 @@ public class BaseModule extends AxelorModule {
         bind(BankAddressRepository.class).to(BankAddressBaseRepository.class);
         bind(UserRepository.class).to(UserBaseRepository.class);
         bind(BankDetailsService.class).to(BankDetailsServiceImpl.class);
+        bind(BaseBatchRepository.class).to(BaseBatchBaseRepository.class);
+        bind(MailBatchRepository.class).to(MailBatchBaseRepository.class);
+        bind(AlarmEngineBatchRepository.class).to(AlarmEngineBatchBaseRepository.class);
     }
 }
