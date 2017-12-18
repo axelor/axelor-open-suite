@@ -159,6 +159,8 @@ public class InvoiceLineController {
 			response.setValue("productName", invoiceLine.getProduct().getName());
 			response.setValue("unit", invoiceLineService.getUnit(invoiceLine.getProduct(), isPurchase));
 
+			response.setValue("description", invoiceLine.getProduct().getDescription());
+
 			// getting correct account for the product
 			AccountManagement accountManagement = accountManagementService.getAccountManagement(product, invoice.getCompany());
 			Account account = accountManagementService.getProductAccount(accountManagement, isPurchase);
