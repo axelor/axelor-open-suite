@@ -217,6 +217,7 @@
 	<action-view name="employee.all" title="Employee" model="com.axelor.apps.hr.db.Employee">
     	<view type="grid" name="employee-grid"/>
 	    <view type="form" name="employee-form"/>
+	    <view-param name="search-filters" value="employee-filters"/>
 	</action-view>
 	
 	<menuitem name="leave-reason-all" parent="hr-conf"
