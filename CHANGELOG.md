@@ -95,6 +95,7 @@
 - Sale Order: saving a sale order being edited does not change its status.
 - Tweaks in conformity certificate.
 - StockLocation: Move booleans into supplychain module.
+- Payroll Preparation: no refresh and edit once export is done.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
