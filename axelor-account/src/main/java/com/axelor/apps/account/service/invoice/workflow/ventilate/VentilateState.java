@@ -23,6 +23,7 @@ import java.util.List;
 
 import java.time.LocalDate;
 
+import com.axelor.apps.base.service.app.AppService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.axelor.inject.Beans;
@@ -126,7 +127,11 @@ public class VentilateState extends WorkflowInvoice {
 			Account account = InvoiceToolService.isPurchase(invoice) ? accountSituation.getSupplierAccount() : accountSituation.getCustomerAccount();
 
 			if (account == null) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_5));
+				AccountConfig accountConfigCompany = accountSituation.getCompany().getAccountConfig();
+				if (accountConfigCompany != null)
+					account = InvoiceToolService.isPurchase(invoice) ? accountConfigCompany.getSupplierAccount() : accountConfigCompany.getCustomerAccount();
+				if (account == null)
+					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_5));
 			}
 
 			invoice.setPartnerAccount(account);
