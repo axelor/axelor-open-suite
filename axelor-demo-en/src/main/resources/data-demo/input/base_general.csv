@@ -1,2 +1,2 @@
 "importId";"today";"defaultProjectUnit.importId";"isInvoiceMoveConsolidated";"transferAndDirectDebitInterbankCode.code";"chequeInterbankCode.code";"exceptionMailMsg";"defaultExemptionTax_code";"qasWsdlUrl";"currencyWsURL";"defaultPartnerLanguage";"unitMinutes.importId";"unitHours.importId";"manageBudget";"manageMultiBudget";"budgetStatusSelect";"allowSusbcriptionSaleOrder"
-1;;7;"false";"REJET1";"REJET2";;"X_C";;"http://quote.yahoo.com/d/quotes.csv?s=%s%s=X&f=l1&e=.csv";"en";100;101;"true";"false";"4";"true"
+1;;7;"false";"REJET1";"REJET2";;"X_C";;"https://api.fixer.io/latest?base=%s";"en";100;101;"true";"false";"4";"true"

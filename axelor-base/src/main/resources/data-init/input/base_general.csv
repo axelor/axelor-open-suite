@@ -1,2 +1,2 @@
 "importId";"today";"defaultProjectUnit.importId";"isInvoiceMoveConsolidated";"transferAndDirectDebitInterbankCode.code";"chequeInterbankCode.code";"defaultExemptionTax_code";"qasWsdlUrl";"currencyWsURL";"defaultPartnerLanguage";"manageBudget";"manageMultiBudget";"statusSelectBudget"
-1;;;"false";;;;;"http://download.finance.yahoo.com/d/quotes.csv?s=%s%s=X&f=l1&e=.csv";"en";"true";"false";4
+1;;;"false";;;;;"https://api.fixer.io/latest?base=%s";"en";"true";"false";4
