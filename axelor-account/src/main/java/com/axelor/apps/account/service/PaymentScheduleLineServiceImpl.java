@@ -192,11 +192,13 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 
 		MoveLine creditMoveLine = moveService.getMoveLineService().createMoveLine(move, partner, account, amount, false,
 				todayDate, 1, name);
+		move.addMoveLineListItem(creditMoveLine);
 		creditMoveLine = moveLineRepo.save(creditMoveLine);
 
 		Account paymentModeAccount = paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails);
 		MoveLine debitMoveLine = moveService.getMoveLineService().createMoveLine(move, partner, paymentModeAccount,
 				amount, true, todayDate, 2, null);
+		move.addMoveLineListItem(debitMoveLine);
 		debitMoveLine = moveLineRepo.save(debitMoveLine);
 
 		moveService.getMoveValidateService().validateMove(move);
