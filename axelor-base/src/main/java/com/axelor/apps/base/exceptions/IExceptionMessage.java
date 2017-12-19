@@ -121,6 +121,7 @@ public interface IExceptionMessage {
 	 */
 	static final public String IMPORTER_1 = /*$$(*/ "Error : Mapping file is unreachable." /*)*/;
 	static final public String IMPORTER_2 = /*$$(*/ "Error : Data file is unreachable." /*)*/;
+	static final public String IMPORTER_3 = /*$$(*/ "Error : Mapping file is not found." /*)*/;
 	
 	/**
 	 * Importer Listener 
