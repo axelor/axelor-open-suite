@@ -308,7 +308,7 @@
 	  <panel sidebar="true" name="actions" title="Actions" stacked="true" hideIf="clientPartner == null">
 	    <button name="finalize" title="Finalize" showIf="statusSelect == 1" colSpan="12" onClick="save,action-sale-order-method-finalize"/>
 	    <button name="newVersion" title="New version" if="__config__.app.getApp('sale').getManageSaleOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
-        <button name="editOrder" title="Edit order" if="__config__.app.getApp('sale').getAllowChangeInProgress()" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited == false" colSpan="12" onClick="action-sale-order-method-edit-order"/>
+        <button name="editOrder" title="Edit order" if="__config__.app.getApp('sale').allowPendingOrderModification" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited == false" colSpan="12" onClick="action-sale-order-method-edit-order"/>
         <button name="validateChanges" title="Validate changes" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited == true" colSpan="12" onClick="action-sale-order-record-validate-change,save"/>
 	    <button name="generateCustomerStockMove" title="Generate customer deliveries" colSpan="12" showIf="statusSelect == 3 &amp;&amp;&amp; orderBeingEdited == false"
 	    	if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain').customerStockMoveGenerationAuto"

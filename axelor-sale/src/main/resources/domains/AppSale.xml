@@ -9,7 +9,7 @@
 		<boolean name="manageSalesUnits" title="Manage sales unit on products"/>
 		<boolean name="productPackMgt" title="Product Pack Management" />
 		<boolean name="enableConfigurator" title="Enable business configurator"/>
-		<boolean name="allowChangeInProgress" title="Allow change in progress"/>
+		<boolean name="allowPendingOrderModification" />
 	</entity>
 
 </domain-models>
