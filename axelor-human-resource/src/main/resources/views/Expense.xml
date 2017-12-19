@@ -147,6 +147,10 @@
 			<field name="refusalDate" hidden="true" showIf="refusalDate" colSpan="4"/>
 			<field name="groundForRefusal" hidden="true" readonly="true" showIf="statusSelect == 5" colSpan="12"/>
 		</panel>
+        <panel title="Payroll preparation" sidebar="true" readonly="true" showIf="payrollPreparation">
+            <field name="payrollPreparation" showTitle="false" />
+            <field name="payrollPreparation.exported" />
+        </panel>
 	</form>
 	
 	<form name="popup-expense-refusal-form" title="Ground for refusal" model="com.axelor.apps.hr.db.Expense">

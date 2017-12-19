@@ -68,6 +68,10 @@
 		<panel name="comment" title="Comments">
 			<field name="comments" colSpan="12" showTitle="false" widget="Text"/>
 		</panel>
+        <panel title="Payroll preparation" sidebar="true" readonly="true" showIf="payrollPreparation">
+            <field name="payrollPreparation" showTitle="false" />
+            <field name="payrollPreparation.exported" />
+        </panel>
 	</form>
 	
 	<action-method name="action-lunch-voucher-mgt-line-compute">

@@ -29,6 +29,10 @@
 			<field name="weeklyPlanning" canEdit="false" />
 			<field name="seniorityDate" />
         </panel>
+        <panel title="Payroll preparation" sidebar="true" readonly="true" showIf="payrollPreparation">
+            <field name="payrollPreparation" showTitle="false" />
+            <field name="payrollPreparation.exported" />
+        </panel>
     </form>
     
     <form name="employee-bonus-mgt-line-employee-form" title="Employee bonus" model="com.axelor.apps.hr.db.EmployeeBonusMgtLine">
@@ -40,6 +44,10 @@
 			<field name="weeklyPlanning" canEdit="false" />
 			<field name="seniorityDate" />
 			<field name="employeeBonusMgt" hidden="true" />
+        </panel>
+        <panel title="Payroll preparation" sidebar="true" readonly="true" showIf="payrollPreparation">
+            <field name="payrollPreparation" showTitle="false" />
+            <field name="payrollPreparation.exported" />
         </panel>
     </form>
 

@@ -18,6 +18,10 @@
 			<field name="leaveReason" grid-view="leave-reason-grid" form-view="leave-reason-form" />
 			<field name="leaveRequest" grid-view="leave-request-grid" form-view="leave-request-form"/>
 		</panel>
+        <panel title="Payroll preparation" sidebar="true" readonly="true" showIf="payrollPreparation">
+            <field name="payrollPreparation" showTitle="false" />
+            <field name="payrollPreparation.exported" />
+        </panel>
 	</form>
 
 </object-views>
