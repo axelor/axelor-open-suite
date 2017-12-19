@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	<selection name="qms.improvementForm.status.select">
+		<option value="0">Canceled</option>
+		<option value="1">Created</option>
+		<option value="2">Confirmed</option>
+		<option value="3">Assigned</option>
+		<option value="4">Analyzed</option>
+		<option value="5">Corrected</option>
+		<option value="6">Assessed</option>
+		<option value="7">Closed</option>
+	</selection>
+
+	<selection name="sequence.generic.code.select" id="qms.sequence.generic.code.select">
+		<option value="improvementForm">Improvement form</option>
+	</selection>
+</object-views>

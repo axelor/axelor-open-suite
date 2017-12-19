@@ -1,0 +1,3 @@
+"name";"object";"canRead";"canWrite";"canCreate";"canRemove";"canExport";"condition";"conditionParams"
+"perm.qms.all";"com.axelor.apps.quality.db.*";"true";"true";"true";"true";"true";;
+"perm.qms.improvementForm.manage";"com.axelor.apps.quality.db.ImprovementForm";"true";"true";"true";"true";;

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="axelor-qms" package="com.axelor.apps.qms.db" />
+
+	<entity name="ImprovementForm" lang="java" cachable="true" sequential="true">
+		<!-- Internal status -->
+		<integer name="statusSelect" title="Status" selection="qms.improvementForm.status.select" readonly="true" />
+		<integer name="preCancelStatusSelect" title="Status before cancelation" hidden="true" readonly="true" />
+
+		<string name="reference" title="Reference" readonly="true" unique="true" />
+		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" />
+		<many-to-one name="origin" ref="com.axelor.apps.quality.db.RootCause" title="Origin" required="true" />
+		<!-- Can be customer or supplier -->
+		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" required="false" />
+		<many-to-many name="contactPartners" ref="com.axelor.apps.base.db.Partner" title="Contacts" required="false" />
+		<string name="title" title="Title" required="true" namecolumn="true" />
+		<string name="description" title="Description" required="true" multiline="true" />
+		<date name="confirmationDate" readonly="true" />
+
+		<many-to-many name="responsibles" ref="com.axelor.apps.hr.db.Employee" title="Responsibles" required="false" />
+		<date name="analysisDeadline" title="Analysis deadline" required="false" />
+		<date name="assignmentDate" readonly="true" title="Assigment date" />
+
+		<string name="analysis" required="false" />
+		<date name="analysisDate" title="Analysis date" readonly="true" />
+		<date name="correctionDeadline" title="Correction deadline" required="false" />
+
+		<string name="correctionDetails" title="Correction details" multiline="true" />
+		<date name="correctionDate" title="Effective correction date" readonly="true" />
+		<date name="postCorrectionAssessmentDeadline" title="Post-correction assessment deadline" required="false" />
+
+		<string name="postCorrectionAssessment" title="Post-correction assessment" multiline="true" />
+		<date name="postCorrectionAssessmentDate" title="Post-correction assessment date" readonly="true" />
+
+		<string name="closingComment" multiline="true" title="Closing Comment" />
+		<date name="closingDate" title="Closing date" readonly="true" />
+
+		<date name="cancelationDate" title="Cancelation date" readonly="true" />
+
+		<extra-code>
+		<![CDATA[
+			public static final Integer STATE_CANCELED = 0;
+			public static final Integer STATE_NEW = 1;
+			public static final Integer STATE_CONFIRMED = 2;
+			public static final Integer STATE_ASSIGNED = 3;
+			public static final Integer STATE_ANALYZED = 4;
+			public static final Integer STATE_CORRECTED = 5;
+			public static final Integer STATE_ASSESSED = 6;
+			public static final Integer STATE_CLOSED = 7;
+		]]>
+		</extra-code>
+
+		<!-- Handle logging in comment area. <field/>s are displayed in comment body (only if modified), messages as title -->
+		<track on="UPDATE">
+			<field name="reference" if="reference != null" />
+			<field name="statusSelect" />
+			<field name="title" />
+			<field name="partner"/>
+			<field name="contactPartners"/>
+			<field name="responsibles"/>
+			<message if="statusSelect == 0" tag="important">Canceled</message>
+			<message if="statusSelect == 1" tag="info">Created</message>
+			<message if="statusSelect == 2" tag="info">Confirmed</message>
+			<message if="statusSelect == 3" tag="info">Assigned</message>
+			<message if="statusSelect == 4" tag="info">Analyzed</message>
+			<message if="statusSelect == 5" tag="info">Corrected</message>
+			<message if="statusSelect == 6" tag="info">Assessed</message>
+			<message if="statusSelect == 7" tag="success">Closed</message>
+		</track>
+	</entity>
+
+</domain-models>

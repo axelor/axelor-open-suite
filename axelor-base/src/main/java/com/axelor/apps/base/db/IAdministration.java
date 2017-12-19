@@ -94,6 +94,5 @@ public interface IAdministration {
 	static final String QUALITY_CONTROL = "qualityControl";
 	static final String TICKET = "ticket";
 	static final String ANALYTIC_REPORT = "analyticReport";
-
-	
+	static final String QMS_IMPROVEMENT_FORM = "improvementForm";
 }

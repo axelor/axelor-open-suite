@@ -1,0 +1,3 @@
+"name";"description";"permissions"
+"role.admin";"Access to all objects for all modules";"perm.qms.all"
+"role.qms.manager";"Access to all QMS' objects";"perm.qms.all"

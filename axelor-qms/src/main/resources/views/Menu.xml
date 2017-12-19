@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<menuitem name="menu-qms-root" order="-100" if="__config__.app.isApp('qms')" title="QMS" icon="fa-check" icon-background="#3f6bb9"/>
+
+	<menuitem name="qms-improvement-forms" parent="menu-qms-root" title="Improvement forms" action="qms.improvementForms"/>
+
+	<action-view name="qms.improvementForms" title="Improvement forms" model="com.axelor.apps.qms.db.ImprovementForm">
+		<view type="grid" name="qms-improvement-form-grid"/>
+		<view type="form" name="qms-improvement-form-form"/>
+	</action-view>
+</object-views>

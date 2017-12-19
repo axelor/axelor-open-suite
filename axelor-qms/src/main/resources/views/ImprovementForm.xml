@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	<!-- Note: Sadly, hideIf & requiredIf are JavaScript expression and there seem to be no way to propagate java constants :( -->
+
+	<form name="qms-improvement-form-form" title="Improvement form" model="com.axelor.apps.qms.db.ImprovementForm" id="qms-improvement-form-form" onNew="action-qms-improvement-form-group-onnew">
+
+		<!-- TODO handle permissions properly, either by creating them in DB or putting action-valid tags checking for perms (not found right now) -->
+
+		<panel title="Status">
+			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" />
+		</panel>
+
+		<panel name="reference" showTitle="false" hideIf="reference == null">
+			<field name="reference" css="label-bold bold" hideIf="reference == null" />
+		</panel>
+
+		<panel name="openingInformation" title="General information" canCollapse="true" readonlyIf="statusSelect &gt;= 2">
+			<field name="origin" />
+			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" canEdit="false" readonlyIf="partner != null || contactPartners != null" />
+
+			<field name="title" colSpan="12" />
+			<field name="description" colSpan="12" height="8" widget="Html" />
+
+			<field name="partner" domain="(self.isCustomer = true or self.isSupplier = true) and self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12" hideIf="statusSelect &gt; 1 &amp;&amp; partner == null" onChange="action-qms-improvement-form-group-partner-change"/>
+			<field name="contactPartners" widget="tagSelect" domain="self.isContact = true" form-view="partner-form" grid-view="partner-grid" colSpan="12" hideIf="partner == null || (statusSelect &gt; 1 &amp;&amp; (contactPartners == null || contactPartners.length == 0))" onSelect="action-qms-improvement-form-attrs-domain-on-contact-partners"/>
+		</panel>
+
+		<panel name="assignmentInformation" title="Assignment" canCollapse="true" hideIf="statusSelect &lt; 2" readonlyIf="statusSelect &gt;= 3">
+			<field name="responsibles" canEdit="false" widget="TagSelect" colSpan="12" />
+			<field name="analysisDeadline" />
+		</panel>
+
+		<panel name="analysisInformation" title="Analysis" canCollapse="true" hideIf="statusSelect &lt; 3" readonlyIf="statusSelect &gt;= 4">
+			<field name="analysis" widget="Html" colSpan="12" />
+			<field name="correctionDeadline" title="Correction deadline" />
+			<field name="analysisDate" title="Analysis date" hideIf="analysisDate == null" />
+		</panel>
+
+		<panel name="correctionInformation" title="Correction" canCollapse="true" hideIf="statusSelect &lt; 4" readonlyIf="statusSelect &gt;= 5">
+			<field name="correctionDetails" widget="Html" colSpan="12" />
+			<field name="postCorrectionAssessmentDeadline" title="Post-correction assessment deadline" />
+			<field name="correctionDate" hideIf="correctionDate == null" />
+		</panel>
+
+		<panel name="postCorrectionAssessmentInformation" canCollapse="true" hideIf="statusSelect &lt; 5" readonlyIf="statusSelect &gt;= 6">
+			<field name="postCorrectionAssessment" widget="Html" colSpan="12" />
+		</panel>
+
+		<panel name="closingInformation" canCollapse="true" hideIf="statusSelect &lt; 6 || (statusSelect &gt;= 7 &amp;&amp; (closingComment == null || closingComment.isEmpty()))" readonlyIf="statusSelect &gt;= 7">
+			<field name="closingComment" widget="Html" colSpan="12" />
+		</panel>
+
+		<panel sidebar="true" name="timeline" title="Timeline">
+			<field name="createdOn" hideIf="createdOn == null" />
+			<field name="confirmationDate" hideIf="confirmationDate == null" />
+			<field name="assignmentDate" hideIf="assignmentDate == null" />
+			<field name="analysisDate" hideIf="analysisDate == null" />
+			<field name="correctionDate" hideIf="correctionDate == null" />
+			<field name="assessmentDate" hideIf="assessmentDate == null" />
+			<field name="closingDate" hideIf="closingDate == null" />
+			<field name="cancelationDate" hideIf="cancelationDate == null" />
+		</panel>
+
+		<panel sidebar="true" name="actions" title="Actions" stacked="true">
+			<button name="confirm" title="Confirm" showIf="statusSelect == 1" colSpan="12" onClick="save,action-qms-improvement-form-group-confirm" />
+			<button name="assign" title="Assign" showIf="statusSelect == 2" colSpan="12" onClick="save,action-qms-improvement-form-group-assign" />
+			<button name="analyse" title="Analyze" showIf="statusSelect == 3" colSpan="12" onClick="save,action-qms-improvement-form-group-analyze" />
+			<button name="correct" title="Correct" showIf="statusSelect == 4" colSpan="12" onClick="save,action-qms-improvement-form-group-correct" />
+			<button name="assess" title="Assess" showIf="statusSelect == 5" colSpan="12" onClick="save,action-qms-improvement-form-group-assess" />
+			<button name="close" title="Close" showIf="statusSelect == 6" colSpan="12" onClick="save,action-qms-improvement-form-group-close" />
+			<button name="reopen" title="Reopen" showIf="statusSelect == 0" colSpan="12" onClick="save,action-qms-improvement-form-group-reopen" />
+			<button name="cancel" title="Cancel" showIf="statusSelect != 0" colSpan="12" onClick="save,action-qms-improvement-form-group-cancel" />
+		</panel>
+
+		<panel-mail>
+			<mail-messages limit="4" />
+			<mail-followers />
+		</panel-mail>
+	</form>
+
+	<grid model="com.axelor.apps.qms.db.ImprovementForm" title="Improvement forms" name="qms-improvement-form-grid">
+		<!-- TODO highlight depending on status & dates -->
+		<field name="company" form-view="company-form" grid-view="company-grid" />
+		<field name="reference" />
+		<field name="title" />
+		<field name="description" widget="Html" />
+		<field name="partner" form-view="partner-form" grid-view="partner-grid" />
+		<field name="createdOn" />
+		<field name="statusSelect" />
+	</grid>
+
+
+	<action-group name="action-qms-improvement-form-group-onnew">
+		<action name="action-qms-improvement-form-record-default" />
+	</action-group>
+
+	<action-group name="action-qms-improvement-form-group-partner-change">
+		<action name="action-qms-improvement-form-record-clear-contact-partners"/>
+	</action-group>
+
+	<action-record name="action-qms-improvement-form-record-default" model="com.axelor.apps.qms.db.ImprovementForm">
+		<field name="company" expr="eval:__user__.activeCompany" if="__user__.activeCompany != null" />
+		<field name="company" expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1" />
+		<field name="statusSelect" expr="eval:com.axelor.apps.qms.db.repo.ImprovementFormRepository.STATE_NEW" />
+	</action-record>
+
+	<action-record name="action-qms-improvement-form-record-clear-contact-partners" model="com.axelor.apps.qms.db.ImprovementForm">
+		<field name="contactPartners" expr="eval:null"/>
+	</action-record>
+
+	<!-- Filters contacts based on selected partner -->
+	<action-attrs name="action-qms-improvement-form-attrs-domain-on-contact-partners">
+		<attribute for="contactPartners" if="partner != null &amp;&amp; !partner.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (${partner.contactPartnerSet?.collect{it.id}.join(',')})&quot;"/>
+		<attribute for="contactPartners" if="partner != null &amp;&amp; partner.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (0)&quot;"/>
+		<attribute for="contactPartners" if="partner == null" name="domain" expr="eval: &quot;self.isContact = true&quot;"/>
+	</action-attrs>
+
+	<action-group name="action-qms-improvement-form-group-confirm">
+		<action name="action-qms-improvement-form-method-confirm" />
+	</action-group>
+
+	<action-group name="action-qms-improvement-form-group-assign">
+		<action name="action-qms-improvement-form-valid-assign" />
+		<action name="action-qms-improvement-form-method-assign" />
+	</action-group>
+
+	<action-group name="action-qms-improvement-form-group-analyze">
+		<action name="action-qms-improvement-form-valid-analyze" />
+		<action name="action-qms-improvement-form-method-analyze" />
+	</action-group>
+
+	<action-group name="action-qms-improvement-form-group-correct">
+		<action name="action-qms-improvement-form-valid-correct" />
+		<action name="action-qms-improvement-form-method-correct" />
+	</action-group>
+
+	<action-group name="action-qms-improvement-form-group-assess">
+		<action name="action-qms-improvement-form-valid-assess" />
+		<action name="action-qms-improvement-form-method-assess" />
+	</action-group>
+
+	<action-group name="action-qms-improvement-form-group-close">
+		<action name="action-qms-improvement-form-method-close" />
+	</action-group>
+
+	<action-group name="action-qms-improvement-form-group-reopen">
+		<action name="action-qms-improvement-form-method-reopen" />
+	</action-group>
+
+	<action-group name="action-qms-improvement-form-group-cancel">
+		<action name="action-qms-improvement-form-valid-cancel" />
+		<action name="action-qms-improvement-form-method-cancel" />
+	</action-group>
+
+	<action-method name="action-qms-improvement-form-method-confirm" model="com.axelor.apps.qms.db.ImprovementForm">
+		<call class="com.axelor.apps.qms.web.ImprovementFormController" method="confirmImprovementForm" />
+	</action-method>
+
+	<action-method name="action-qms-improvement-form-method-assign" model="com.axelor.apps.qms.db.ImprovementForm">
+		<call class="com.axelor.apps.qms.web.ImprovementFormController" method="assignImprovementForm" />
+	</action-method>
+
+	<action-validate name="action-qms-improvement-form-valid-assign">
+		<error message="You have to select at least one responsible" if="responsibles.isEmpty()" />
+		<error message="You have to enter an analysis deadline" if="analysisDeadline == null" />
+		<error message="Analysis deadline cannot be before confirmation date" if="analysisDeadline.isBefore(confirmationDate)" />
+	</action-validate>
+
+	<action-method name="action-qms-improvement-form-method-analyze" model="com.axelor.apps.qms.db.ImprovementForm">
+		<call class="com.axelor.apps.qms.web.ImprovementFormController" method="analyzeImprovementForm" />
+	</action-method>
+
+	<action-validate name="action-qms-improvement-form-valid-analyze">
+		<error message="You have to enter a detailed analysis" if="analysis == null || analysis.isEmpty()" />
+		<error message="You have to enter a correction deadline" if="correctionDeadline == null" />
+		<error message="Correction deadline cannot be before assigment date" if="correctionDeadline.isBefore(assignmentDate)" />
+	</action-validate>
+
+	<action-method name="action-qms-improvement-form-method-correct" model="com.axelor.apps.qms.db.ImprovementForm">
+		<call class="com.axelor.apps.qms.web.ImprovementFormController" method="correctImprovementForm" />
+	</action-method>
+
+	<action-validate name="action-qms-improvement-form-valid-correct">
+		<error message="You have to enter correction details" if="correctionDetails == null || correctionDetails.isEmpty()" />
+		<error message="You have to enter a post-correction assessment deadline" if="postCorrectionAssessmentDeadline == null" />
+		<error message="Post-correction assessment deadline cannot be in the past" if="postCorrectionAssessmentDeadline.isBefore(__date__)"/>
+		<error message="Post-correction assessment deadline cannot be before analysis date" if="postCorrectionAssessmentDeadline.isBefore(analysisDate)"/>
+	</action-validate>
+
+	<action-method name="action-qms-improvement-form-method-assess" model="com.axelor.apps.qms.db.ImprovementForm">
+		<call class="com.axelor.apps.qms.web.ImprovementFormController" method="assessImprovementForm" />
+	</action-method>
+
+	<action-validate name="action-qms-improvement-form-valid-assess">
+		<error message="You have to enter post-correction assessment" if="postCorrectionAssessment == null || postCorrectionAssessment.isEmpty()" />
+	</action-validate>
+
+	<action-method name="action-qms-improvement-form-method-close" model="com.axelor.apps.qms.db.ImprovementForm">
+		<call class="com.axelor.apps.qms.web.ImprovementFormController" method="closeImprovementForm" />
+	</action-method>
+
+	<action-method name="action-qms-improvement-form-method-reopen" model="com.axelor.apps.qms.db.ImprovementForm">
+		<call class="com.axelor.apps.qms.web.ImprovementFormController" method="reopenImprovementForm" />
+	</action-method>
+
+	<action-method name="action-qms-improvement-form-method-cancel" model="com.axelor.apps.qms.db.ImprovementForm">
+		<call class="com.axelor.apps.qms.web.ImprovementFormController" method="cancelImprovementForm" />
+	</action-method>
+
+	<action-validate name="action-qms-improvement-form-valid-cancel">
+		<error message="You have to enter a cancelation reason" if="cancelationReason == null || cancelationReason.isEmpty()" />
+	</action-validate>
+</object-views>
