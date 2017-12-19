@@ -78,15 +78,18 @@
 		</panel-mail>
 	</form>
 
-	<grid model="com.axelor.apps.qms.db.ImprovementForm" title="Improvement forms" name="qms-improvement-form-grid">
-		<!-- TODO highlight depending on status & dates -->
-		<field name="company" form-view="company-form" grid-view="company-grid" />
+	<grid model="com.axelor.apps.qms.db.ImprovementForm" title="Improvement forms" name="qms-improvement-form-grid" freeSearch="all" editable="false">
+		<hilite if="statusSelect == 3 &amp;&amp; $moment(analysisDeadline).diff($moment(),'days') &lt; 0" color="danger"/>
+		<hilite if="statusSelect == 4 &amp;&amp; $moment(correctionDeadline).diff($moment(), 'days') &lt; 0" color="danger"/>
+		<hilite if="statusSelect == 5 &amp;&amp; $moment(postCorrectionAssessmentDeadline).diff($moment(), 'days') &lt; 0" color="danger"/>
+		<field name="company" />
 		<field name="reference" />
 		<field name="title" />
-		<field name="description" widget="Html" />
-		<field name="partner" form-view="partner-form" grid-view="partner-grid" />
-		<field name="createdOn" />
-		<field name="statusSelect" />
+		<field name="description"/>
+		<field name="analysisDeadline" hidden="true"/>
+		<field name="correctionDeadLine" hidden="true" />
+		<field name="postCorrectionAssessmentDeadLine" hidden="true" />
+		<field name="statusSelect"/>
 	</grid>
 
 
