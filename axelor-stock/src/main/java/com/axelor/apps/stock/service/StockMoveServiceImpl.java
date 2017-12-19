@@ -527,6 +527,13 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 	}
 
+    @Override
+    @Transactional(rollbackOn = { AxelorException.class, Exception.class })
+    public void cancel(StockMove stockMove, CancelReason cancelReason) throws AxelorException {
+        applyCancelReason(stockMove, cancelReason);
+        cancel(stockMove);
+    }
+
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel(StockMove stockMove) throws AxelorException  {
@@ -914,16 +921,13 @@ public class StockMoveServiceImpl implements StockMoveService {
         return nameBuilder.toString();
     }
 
-	@Override
     @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void applyCancelReason(StockMove stockMove, CancelReason cancelReason) throws AxelorException {
-		stockMove = stockMoveRepo.find(stockMove.getId());
+	protected void applyCancelReason(StockMove stockMove, CancelReason cancelReason) throws AxelorException {
 		if (cancelReason == null) {
 			throw new AxelorException(stockMove, IException.MISSING_FIELD, I18n.get(IExceptionMessage.CANCEL_REASON_MISSING));
 		}
-		if (cancelReason.getApplicationType() == null &&
-				!(cancelReason.getApplicationType().equals(StockMove.class.getCanonicalName()))) {
-			throw new AxelorException(stockMove, IException.MISSING_FIELD, I18n.get(IExceptionMessage.CANCEL_REASON_BAD_TYPE));
+        if (!StockMove.class.getCanonicalName().equals(cancelReason.getApplicationType())) {
+			throw new AxelorException(stockMove, IException.INCONSISTENCY, I18n.get(IExceptionMessage.CANCEL_REASON_BAD_TYPE));
 		}
 		stockMove.setCancelReason(cancelReason);
 	}

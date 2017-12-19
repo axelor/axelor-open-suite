@@ -314,8 +314,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 				throw new AxelorException(IException.CONFIGURATION_ERROR, IExceptionMessage.SUPPLYCHAIN_MISSING_DEFAULT_CANCEL);
 			}
 			for (StockMove stockMove : stockMoves) {
-			    stockMoveService.applyCancelReason(stockMove, cancelReason);
-			    stockMoveService.cancel(stockMove);
+			    stockMoveService.cancel(stockMove, cancelReason);
 			}
 		}
 	}
