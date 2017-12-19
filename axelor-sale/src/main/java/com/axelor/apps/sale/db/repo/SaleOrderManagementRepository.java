@@ -68,7 +68,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 			if((saleOrder.getSaleOrderSeq() == null || Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq())) && !saleOrder.getTemplate()){
 				
 				if ( saleOrder.getStatusSelect() == ISaleOrder.STATUS_DRAFT || saleOrder.getStatusSelect() == ISaleOrder.STATUS_FINALIZE ){
-					saleOrder.setSaleOrderSeq("*" + saleOrder.getId().toString());
+					saleOrder.setSaleOrderSeq("#" + saleOrder.getId().toString());
 				}else if(saleOrder.getVersionNumber() == 1) {
 					saleOrder.setSaleOrderSeq(Beans.get(SaleOrderService.class).getSequence(saleOrder.getCompany()));
 				}

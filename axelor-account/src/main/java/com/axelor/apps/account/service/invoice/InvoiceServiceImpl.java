@@ -282,7 +282,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	}
 	
 	protected String getDraftSequence(Invoice invoice)  {
-		return "*" + invoice.getId();
+		return "#" + invoice.getId();
 	}
 	
 	public void setDraftSequence(Invoice invoice)  {
