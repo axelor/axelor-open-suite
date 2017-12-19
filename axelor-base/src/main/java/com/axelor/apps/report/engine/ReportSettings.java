@@ -22,7 +22,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Objects;
 
@@ -99,8 +101,14 @@ public class ReportSettings {
 		
 		if(output == null)  {  return null;  }
 		
-		String fileLink = String.format("ws/files/report/%s?name=%s", output.getName(), fileName);
-		
+		String fileLink = "ws/files/report/" + output.getName();
+
+        try {
+            fileLink += "?name=" + URLEncoder.encode(fileName, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getLocalizedMessage());
+        }
+
 		logger.debug("URL : {}", fileLink);
 		
 		return fileLink;

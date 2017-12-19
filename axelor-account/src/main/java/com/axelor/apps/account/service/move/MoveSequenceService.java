@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
@@ -35,16 +36,11 @@ public class MoveSequenceService {
 		
 	}
 
-	
-	protected String getDraftSequence(Move move)  {		
-		return "*" + move.getId();		
-	}		
-			
-	public void setDraftSequence(Move move)  {		
+	public void setDraftSequence(Move move) throws AxelorException {
 			
 		if (move.getId() != null && Strings.isNullOrEmpty(move.getReference())
 			&& move.getStatusSelect() == MoveRepository.STATUS_DRAFT)  {		
-			move.setReference(this.getDraftSequence(move));		
+			move.setReference(sequenceService.getDraftSequenceNumber(move));
 		}		
 		
 	}		

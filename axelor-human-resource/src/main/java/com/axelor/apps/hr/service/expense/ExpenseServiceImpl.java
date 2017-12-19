@@ -619,20 +619,16 @@ public class ExpenseServiceImpl implements ExpenseService {
 		return advanceAmount;
 	}
 
-	public void setDraftSequence(Expense expense) {
+	public void setDraftSequence(Expense expense) throws AxelorException {
 		if (expense.getId() != null && Strings.isNullOrEmpty(expense.getExpenseSeq())) {
-			expense.setExpenseSeq(getDraftSequence(expense));
+			expense.setExpenseSeq(Beans.get(SequenceService.class).getDraftSequenceNumber(expense));
 		}
-	}
-
-	private String getDraftSequence(Expense expense) {
-		return "*" + expense.getId();
 	}
 
 	private void setExpenseSeq(Expense expense) throws AxelorException {
-		if (!Strings.isNullOrEmpty(expense.getExpenseSeq()) && !expense.getExpenseSeq().contains("*")) {
-			return;
-		}
+        if (!Beans.get(SequenceService.class).isEmptyOrDraftSequenceNumber(expense.getExpenseSeq())) {
+            return;
+        }
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 		Sequence sequence = hrConfigService.getExpenseSequence(hrConfig);

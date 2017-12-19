@@ -31,10 +31,16 @@ import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.SequenceVersion;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.SequenceVersionRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.tool.StringTool;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectItemRepository;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -51,6 +57,8 @@ public class SequenceService {
 		PATTERN_DAY = "%D",
 		PATTERN_WEEK = "%WY",
 		PADDING_STRING = "0";
+
+	private static final String DRAFT_PREFIX = "#";
 
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
@@ -241,5 +249,47 @@ public class SequenceService {
 
 		return item.getTitle();
 	}
-	
+
+	/**
+	 * Get draft sequence number.
+	 * 
+	 * @param model
+	 * @return
+     * @throws AxelorException
+	 */
+	public String getDraftSequenceNumber(Model model) throws AxelorException {
+	    if (model.getId() == null) {
+	        throw new AxelorException(I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD), IException.INCONSISTENCY);
+	    }
+	    return String.format("%s%d", DRAFT_PREFIX, model.getId());
+	}
+
+    /**
+     * Get draft sequence number with leading zeros.
+     * 
+     * @param model
+     * @param padding
+     * @return
+     */
+    public String getDraftSequenceNumber(Model model, int zeroPadding) throws AxelorException {
+        if (model.getId() == null) {
+            throw new AxelorException(I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD), IException.INCONSISTENCY);
+        }
+        return String.format("%s%s", DRAFT_PREFIX,
+                StringTool.fillStringLeft(String.valueOf(model.getId()), '0', zeroPadding));
+    }
+
+	/**
+	 * Check whether a sequence number is empty or draft.
+	 * 
+	 * Also consider '*' as draft character for backward compatibility.
+	 * 
+	 * @param sequenceNumber
+	 * @return
+	 */
+    public boolean isEmptyOrDraftSequenceNumber(String sequenceNumber) {
+        return Strings.isNullOrEmpty(sequenceNumber)
+                || sequenceNumber.matches(String.format("[\\%s\\*]\\d+", DRAFT_PREFIX));
+    }
+
 }
