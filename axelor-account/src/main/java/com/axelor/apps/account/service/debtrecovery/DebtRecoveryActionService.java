@@ -25,6 +25,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import java.time.LocalDate;
+
+import com.axelor.apps.message.service.MessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -186,7 +188,7 @@ public class DebtRecoveryActionService {
 	}
 
 	/**
-	 * Generates a message from a debtRecovery and saves it
+	 * Generate a message from a debtRecovery, save, and send it.
 	 * @param debtRecovery
 	 * @throws AxelorException
 	 * @throws ClassNotFoundException
@@ -198,6 +200,7 @@ public class DebtRecoveryActionService {
 	public void runMessage(DebtRecovery debtRecovery) throws AxelorException, ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
 		Message message = this.runStandardMessage(debtRecovery);
 		Beans.get(MessageRepository.class).save(message);
+		Beans.get(MessageService.class).sendMessage(message);
 		this.updateDebtRecoveryHistory(debtRecovery, message);
 	}
 

@@ -951,6 +951,7 @@
 "Merge into single cust. invoice","Fusionner en une seule facture client",,
 "Message",,,
 "Message model","Modèle de message",,
+"Message on printing","Message sur l'impression",,
 "Message template","Modèle de message",,
 "Method name","Nom",,
 "Min. amount (€)","Montant min. (€)",,

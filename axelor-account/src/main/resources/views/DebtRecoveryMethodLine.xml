@@ -11,26 +11,21 @@
         <field name="manualValidationOk"/>
     </grid>
 
-    <form   name="debt-recovery-method-line-form" title="Debt recovery method line" model="com.axelor.apps.account.db.DebtRecoveryMethodLine" width="large">
+	<form name="debt-recovery-method-line-form" title="Debt recovery method line" model="com.axelor.apps.account.db.DebtRecoveryMethodLine" width="large">
 		<panel name="debtRecoveryLevel" title="Debt recovery level" colSpan="6">
-<!-- 			<field name="debtRecoveryLevel" widget="NestedEditor" canSelect="true" onChange="action-debt-recovery-level-selected" edit-window="self" form-view="matrix-line-debt-recovery-form" summary-view="true"> -->
-			<field name="debtRecoveryLevel" canSelect="true" onChange="action-debt-recovery-level-selected">
-			 <!-- TODO: DONT KNOW WHHERE TO ADD THIS FORM ! -->
-			<!-- <form title="DebtRecoveryLevel">
-			  <field name="label" readonly="true"/>
-			</form>-->
-			</field>
-       		<field name="debtRecoveryLevelLabel" readonly="true"/>
+			<field name="debtRecoveryLevel" canSelect="true" onChange="action-debt-recovery-level-selected"/>
+			<field name="debtRecoveryLevelLabel" readonly="true"/>
 		</panel>
 		<panel name="conditions" title="Conditions" colSpan="6">
-		  <field name="standardDeadline"/>
-		  <field name="minThreshold"/>
-		  <field name="manualValidationOk"/>
+			<field name="standardDeadline"/>
+			<field name="minThreshold"/>
+			<field name="manualValidationOk"/>
 		</panel>
 		<panel name="actions" title="Actions">
-		  <field name="messageTemplate"/>
+			<field name="messageTemplate"/>
+			<field name="printingMessage" widget="HTML" colSpan="12"/>
 		</panel>
-</form>
+	</form>
 
     
     <action-record name="action-debt-recovery-level-selected" model="com.axelor.apps.account.db.DebtRecoveryMethodLine">
