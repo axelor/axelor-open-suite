@@ -18,6 +18,9 @@
 package com.axelor.apps.hr.service;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.*;
@@ -26,6 +29,7 @@ import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.tool.file.CsvTool;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -44,6 +48,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -229,7 +234,7 @@ public class PayrollPreparationService {
 		return employeeBonusAmount;
 	}
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public String exportSinglePayrollPreparation(PayrollPreparation payrollPreparation) throws IOException, AxelorException{
 		
 		List<String[]> list = new ArrayList<String[]>();
@@ -295,7 +300,7 @@ public class PayrollPreparationService {
 		return filePath + System.getProperty("file.separator") +fileName;
 	}
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void exportNibelis(PayrollPreparation payrollPreparation, List<String[]> list ) throws AxelorException{
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(payrollPreparation.getCompany());
@@ -388,5 +393,32 @@ public class PayrollPreparationService {
 		headers[6] = I18n.get("Value");
 		return headers;
 	}
-	
+
+	/**
+	 * If each employee's payroll preparation has been exported,
+	 * close the pay period.
+	 * @param payrollPreparation
+	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void closePayPeriodIfExported(PayrollPreparation payrollPreparation) {
+	    Company company = payrollPreparation.getCompany();
+	    Period payPeriod = payrollPreparation.getPeriod();
+	    long nbEmployee = Beans.get(EmployeeRepository.class)
+				.all()
+				.filter("self.employmentContractList.payCompany = :_company")
+				.bind("_company", company)
+                .count();
+	    long nbExportedPayroll = (long) JPA.em().createQuery("SELECT COUNT(DISTINCT self.employee) " +
+				"FROM PayrollPreparation self " +
+				"WHERE self.company = :_company AND self.exported = true")
+                .setParameter("_company", company)
+                .getSingleResult();
+
+	    if (nbEmployee == nbExportedPayroll) {
+	        payPeriod.setStatusSelect(PeriodRepository.STATUS_CLOSED);
+	        payPeriod.setClosureDateTime(Beans.get(GeneralService.class).getTodayDateTime().toLocalDateTime());
+		}
+		Beans.get(PeriodRepository.class).save(payPeriod);
+	}
+
 }

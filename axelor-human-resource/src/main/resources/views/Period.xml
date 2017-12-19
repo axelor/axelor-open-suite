@@ -21,7 +21,6 @@
 			<field name="fromDate" colSpan="3"/>
 			<field name="toDate" colSpan="3"/>
 			<field name="year" title="Payroll year" form-view="year-hr-form" grid-view="year-grid"/>
-			<field name="allowExpenseCreation"/>
 		</panel>
 		<panel>
 			<panel colSpan="6">
