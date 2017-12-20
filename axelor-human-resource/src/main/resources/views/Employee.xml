@@ -97,7 +97,7 @@
 	       	</panel>
 
             <panel title="Expenses">
-                <field name="companyCbSelect"/>
+                <field name="companyCbSelect" onChange="action-hr-record-reset-company-cb-details"/>
                 <field name="companyCbDetails" hidden="true" showIf="companyCbSelect > 1"/>
                 <panel-related field="employeeAdvanceList" title="Employee advances" colSpan="12" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" />
             </panel>
@@ -135,6 +135,10 @@
 		<field name="dailyWorkHours" expr="eval:__config__.general.getDailyWorkHours()"/>
 		<field name="negativeValueLeave" expr="eval:__config__.general.getAllowNegativeLeaveEmployees()"/>
 		<field name="publicHolidayPlanning" expr="eval: __user__.activeCompany?.hrConfig?.publicHolidayPlanning"/>
+	</action-record>
+
+	<action-record name="action-hr-record-reset-company-cb-details" model="com.axelor.apps.hr.db.Employee">
+		<field name="companyCbDetails" expr="eval: ''"/>
 	</action-record>
 	
 	<action-view name="action-hr-user-show-employee" title="Employee" model="com.axelor.apps.hr.db.Employee">
