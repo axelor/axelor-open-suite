@@ -20,4 +20,10 @@
 		<view name="qms-improvement-form-form" type="form"/>
 		<domain>self.createdBy = :__user__ OR (select employee.id from User u where u = :__user__) in (select id from self.responsibles)</domain>
 	</action-view>
+
+	<menuitem name="qms-improvement-forms-dashboard" parent="qms-improvement-forms-root" title="Dashboard" action="qms.improvementForm.dashboard"/>
+
+	<action-view name="qms.improvementForm.dashboard" title="Dashboard" model="com.axelor.apps.qms.db.ImprovementForm">
+        <view type="dashboard" name="qms.improvementForm.dashboard.1" />
+	</action-view>
 </object-views>
