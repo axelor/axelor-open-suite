@@ -288,6 +288,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
         }
 
         int deliveryState = SaleOrderRepository.STATE_DELIVERED;
+        int deliveredCount = 0;
 
         for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
             if (saleOrderLine.getDeliveryState() != SaleOrderRepository.STATE_DELIVERED) {
@@ -296,7 +297,13 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
                 }
 
                 deliveryState = SaleOrderRepository.STATE_NOT_DELIVERED;
+            } else {
+                ++deliveredCount;
             }
+        }
+
+        if (deliveryState == SaleOrderRepository.STATE_NOT_DELIVERED && deliveredCount > 0) {
+            deliveryState = SaleOrderRepository.STATE_PARTIALLY_DELIVERED;
         }
 
         return deliveryState;
