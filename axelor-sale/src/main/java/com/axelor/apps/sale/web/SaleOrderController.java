@@ -479,8 +479,7 @@ public class SaleOrderController {
         try {
             SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
             saleOrderService.validateChange(saleOrder);
-            response.setValue("orderBeingEdited", saleOrder.getOrderBeingEdited());
-            response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+            response.setValues(saleOrder);
         } catch (Exception e) {
             TraceBackService.trace(response, e);
         }
