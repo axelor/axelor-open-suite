@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -731,6 +731,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">lineSequence</text-property>
                     <text-property name="heading">lineSequence</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">isSubLine</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">isSubLine</text-property>
+                    <text-property name="heading">isSubLine</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters"/>
@@ -784,6 +790,11 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <structure>
                         <property name="position">10</property>
                         <property name="name">lineSequence</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">isSubLine</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -861,11 +872,19 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">isSubLine</property>
+                    <property name="nativeName">isSubLine</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select StockMove.id as stock_move_id, StockMoveLine.id, Product.code as product_code, StockMoveLine.product_name as product_name,
 StockMoveLine.qty, Unit.name as unit_code, TrackingNumber.tracking_number_seq, StockMoveLine.description, 
 ( SaleOrderLine.type_select = 2 or PurchaseOrderLine.is_title_line) as "isTitleLine", 
-(COALESCE(SaleOrderLine.sequence, 0) +  COALESCE(PurchaseOrderLine.sequence,0)) as "lineSequence"
+(COALESCE(SaleOrderLine.sequence, 0) +  COALESCE(PurchaseOrderLine.sequence,0)) as "lineSequence",
+SaleOrderLine.is_sub_line as "isSubLine"
 from stock_stock_move as StockMove
 inner join stock_stock_move_line as StockMoveLine on (StockMoveLine.stock_move = StockMove.id)
 left join base_product as Product on (StockMoveLine.product = Product.id)
@@ -1665,6 +1684,12 @@ row["first_name"]
                                     <expression name="expression" type="javascript">dataSetRow["lineSequence"]</expression>
                                     <property name="dataType">integer</property>
                                 </structure>
+                                <structure>
+                                    <property name="name">isSubLine</property>
+                                    <text-property name="displayName">isSubLine</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["isSubLine"]</expression>
+                                    <property name="dataType">integer</property>
+                                </structure>
                             </list-property>
                             <list-property name="filter">
                                 <structure>
@@ -1935,7 +1960,17 @@ row["first_name"]
                                             <text id="3821">
                                                 <property name="textAlign">center</property>
                                                 <property name="contentType">html</property>
-                                                <text-property name="content"><![CDATA[<VALUE-OF>row["product_code"]</VALUE-OF>]]></text-property>
+                                                <text-property name="content"><![CDATA[<FONT size="9pt"><I><VALUE-OF>
+if(row["isSubLine"] != 0) {
+	row["product_code"]
+}
+</VALUE-OF></I></FONT>
+
+<VALUE-OF>
+if(row["isSubLine"] == 0) {
+	row["product_code"]
+}
+</VALUE-OF>]]></text-property>
                                             </text>
                                         </cell>
                                         <cell id="3808">
@@ -1954,7 +1989,21 @@ row["first_name"]
                                             <text id="3457">
                                                 <property name="textAlign">left</property>
                                                 <property name="contentType">html</property>
-                                                <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF><br>
+                                                <text-property name="content"><![CDATA[<FONT size="9pt"><I><VALUE-OF>
+if(row["isSubLine"] != 0) {
+	row["product_name"]
+}
+</VALUE-OF></I></FONT>
+
+<VALUE-OF>
+if(row["isSubLine"] == 0) {
+	row["product_name"]
+}
+</VALUE-OF>
+
+
+
+<br>
 <VALUE-OF format="HTML">if(row["description"] != null) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
                                             </text>
                                         </cell>
@@ -1971,7 +2020,17 @@ row["first_name"]
                                             <text id="3459">
                                                 <property name="textAlign">right</property>
                                                 <property name="contentType">html</property>
-                                                <text-property name="content"><![CDATA[<VALUE-OF>row["Aggregation"]</VALUE-OF>]]></text-property>
+                                                <text-property name="content"><![CDATA[<FONT size="9pt"><I><VALUE-OF>
+if(row["isSubLine"] != 0) {
+	row["Aggregation"]
+}
+</VALUE-OF></I></FONT>
+
+<VALUE-OF>
+if(row["isSubLine"] == 0) {
+	row["Aggregation"]
+}
+</VALUE-OF>]]></text-property>
                                             </text>
                                         </cell>
                                         <cell id="3825">
@@ -1989,7 +2048,16 @@ row["first_name"]
                                                 <property name="marginLeft">0pt</property>
                                                 <property name="textAlign">left</property>
                                                 <property name="contentType">html</property>
-                                                <text-property name="content"><![CDATA[- <VALUE-OF>row["unit_code"]</VALUE-OF>]]></text-property>
+                                                <text-property name="content"><![CDATA[- <FONT size="9pt"><I><VALUE-OF>
+if(row["isSubLine"] != 0) {
+	row["unit_code"]
+}
+</VALUE-OF></I></FONT>
+<VALUE-OF>
+if(row["isSubLine"] == 0) {
+	row["unit_code"]
+}
+</VALUE-OF>]]></text-property>
                                             </text>
                                         </cell>
                                         <cell id="3811">
@@ -2008,7 +2076,17 @@ row["first_name"]
                                             <text id="3460">
                                                 <property name="textAlign">center</property>
                                                 <property name="contentType">html</property>
-                                                <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["TrackingNoList"]</VALUE-OF>]]></text-property>
+                                                <text-property name="content"><![CDATA[<FONT size="9pt"><I><VALUE-OF format="HTML">
+if(row["isSubLine"] != 0) {
+	row["TrackingNoList"]
+}
+</VALUE-OF></I></FONT>
+
+<VALUE-OF format="HTML">
+if(row["isSubLine"] == 0) {
+	row["TrackingNoList"]
+}
+</VALUE-OF>]]></text-property>
                                             </text>
                                         </cell>
                                     </row>

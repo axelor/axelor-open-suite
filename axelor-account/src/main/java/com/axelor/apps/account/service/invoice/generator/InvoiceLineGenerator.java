@@ -88,6 +88,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	protected BigDecimal exTaxTotal;
 	protected BigDecimal inTaxTotal;
 	protected boolean isTitleLine;
+	protected boolean isSubLine;
 
 	public static final int DEFAULT_SEQUENCE = 0;
 
@@ -104,7 +105,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
 
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
-			Unit unit, int sequence, boolean isTaxInvoice) {
+			Unit unit, int sequence, boolean isTaxInvoice, boolean isSubLine) {
 		
 		this(invoice);
 		
@@ -117,13 +118,14 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.isTaxInvoice = isTaxInvoice;
         this.today = Beans.get(AppAccountService.class).getTodayDate();
         this.currencyService = new CurrencyService(this.today);
+        this.isSubLine = isSubLine;
 	}
 	
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, BigDecimal priceDiscounted, String description, BigDecimal qty,
 			Unit unit, TaxLine taxLine, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal,
-			BigDecimal inTaxTotal, boolean isTaxInvoice) {
+			BigDecimal inTaxTotal, boolean isTaxInvoice, boolean isSubLine) {
 
-        this(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);
+        this(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice, isSubLine);
 		
         this.price = price;
         this.priceDiscounted = priceDiscounted;
@@ -132,7 +134,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.discountAmount = discountAmount;
         this.exTaxTotal = exTaxTotal;
         this.inTaxTotal = inTaxTotal;
-        
+        this.isSubLine = isSubLine;
     }
 
 
@@ -172,7 +174,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 		invoiceLine.setDescription(description);
 		invoiceLine.setPrice(price);
-
+		invoiceLine.setIsSubLine(isSubLine);
 		invoiceLine.setPriceDiscounted(priceDiscounted);
 		invoiceLine.setQty(qty);
 		invoiceLine.setUnit(unit);

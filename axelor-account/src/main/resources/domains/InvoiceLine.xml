@@ -45,6 +45,7 @@
         <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Account"/>
 
         <boolean name="isTitleLine" title="Title Line"/>
+		<boolean name="isSubLine" title="Sub line" readonly="true"/>
 
         <decimal name="taxRate" scale="3" precision="20" readonly="true"/>
         <string name="taxCode" readonly="true"/>

@@ -63,17 +63,17 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 										   BigDecimal qty, Unit unit, TaxLine taxLine,
 										   int sequence, BigDecimal discountAmount, int discountTypeSelect,
 										   BigDecimal exTaxTotal, BigDecimal inTaxTotal, boolean isTaxInvoice,
-										   SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMoveLine stockMoveLine) {
-		super(invoice, product, productName, price, priceDiscounted, description, qty, unit, taxLine, sequence, discountAmount, discountTypeSelect, exTaxTotal, inTaxTotal, isTaxInvoice);
+										   SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMoveLine stockMoveLine, boolean isSubLine) {
+		super(invoice, product, productName, price, priceDiscounted, description, qty, unit, taxLine, sequence, discountAmount, discountTypeSelect, exTaxTotal, inTaxTotal, isTaxInvoice, isSubLine);
 		this.saleOrderLine = saleOrderLine;
 		this.purchaseOrderLine = purchaseOrderLine;
 		this.stockMoveLine = stockMoveLine;
 	}
 
 	protected InvoiceLineGeneratorSupplyChain(Invoice invoice, Product product, String productName, String description, BigDecimal qty,
-											  Unit unit, int sequence, boolean isTaxInvoice, SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMoveLine stockMoveLine) throws AxelorException {
+											  Unit unit, int sequence, boolean isTaxInvoice, SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMoveLine stockMoveLine, Boolean isSubLine) throws AxelorException {
 
-		super(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);
+		super(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice, isSubLine);
 
 		this.saleOrderLine = saleOrderLine;
 		this.purchaseOrderLine = purchaseOrderLine;
@@ -86,6 +86,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.taxLine = saleOrderLine.getTaxLine();
 			this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
 			this.isTitleLine = saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK;
+			this.isSubLine = isSubLine;
 		} else if (purchaseOrderLine != null){
 			this.isTitleLine = purchaseOrderLine.getIsTitleLine();
 			this.purchaseOrderLine = purchaseOrderLine;
@@ -112,9 +113,9 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
 	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
 			Unit unit, int sequence, boolean isTaxInvoice, SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, 
-			StockMoveLine stockMoveLine, Subscription subscription) throws AxelorException {
+			StockMoveLine stockMoveLine, Subscription subscription, boolean isSubLine) throws AxelorException {
 
-		this(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice, saleOrderLine, purchaseOrderLine, stockMoveLine);
+		this(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice, saleOrderLine, purchaseOrderLine, stockMoveLine, isSubLine);
 
 		this.subscription = subscription;
     }
