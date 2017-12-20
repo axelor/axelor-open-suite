@@ -245,7 +245,7 @@
 			</panel>
 
 			<panel-related title="Payments details" field="invoicePaymentList" colSpan="12"  grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false" showIf="(statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2) ||statusSelect == 3 || statusSelect == 4"/>
-			<panel title="Advance payments" showIf="operationSubTypeSelect != 2"
+			<panel title="Advance payments" showIf="operationSubTypeSelect != 2 &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp; advancePaymentInvoiceSet.length > 0))"
 				   if="__config__.app.getApp('account').getManageAdvancePaymentInvoice()">
 				<field name="advancePaymentInvoiceSet" widget="TagSelect"
 					   canNew="false"
