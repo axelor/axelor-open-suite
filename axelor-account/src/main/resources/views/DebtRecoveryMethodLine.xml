@@ -2,12 +2,12 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-    <grid name="debt-recovery-method-line-grid" title="Debt recovery method lines" model="com.axelor.apps.account.db.DebtRecoveryMethodLine">
+
+    <grid name="debt-recovery-method-line-grid" orderBy="debtRecoveryLevel" title="Debt recovery method lines" model="com.axelor.apps.account.db.DebtRecoveryMethodLine">
         <field name="debtRecoveryLevel"/>
         <field name="debtRecoveryLevelLabel"/>
         <field name="standardDeadline"/>
         <field name="minThreshold"/>
-        <field name="messageTemplate"/>
         <field name="manualValidationOk"/>
     </grid>
 
@@ -22,7 +22,7 @@
 			<field name="manualValidationOk"/>
 		</panel>
 		<panel name="actions" title="Actions">
-			<field name="messageTemplate"/>
+			<field name="messageTemplateSet" form-view="template-form" grid-view="template-grid" colSpan="12"/>
 			<field name="printingMessage" widget="HTML" colSpan="12"/>
 		</panel>
 	</form>
