@@ -255,10 +255,10 @@
 					   form-view="invoice-form" grid-view="invoice-grid"/>
 			</panel>
 
-			<panel  name="directDebit" title="Direct debit" showIf="statusSelect == 3" showTitle="false">
+			<panel  name="directDebit" title="Direct debit" showIf="statusSelect == 3 &amp;&amp; schedulePaymentOk" showTitle="false">
 				<panel name="paymentSchedule" title="Payment schedule" colSpan="12" >
-					<field name="schedulePaymentOk" readonly="true" showIf="schedulePaymentOk"/>
-					<field name="paymentSchedule" readonly="true" showIf="schedulePaymentOk" domain="self.company = :company AND self.partner = :partner" form-view="payment-schedule-form" grid-view="payment-schedule-grid"/>
+					<field name="schedulePaymentOk" readonly="true"/>
+					<field name="paymentSchedule" readonly="true" domain="self.company = :company AND self.partner = :partner" form-view="payment-schedule-form" grid-view="payment-schedule-grid"/>
 				</panel>
 			</panel>
 			<panel title="Automatic mail" readonlyIf="statusSelect == 3">
