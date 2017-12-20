@@ -27,8 +27,8 @@
   					<field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
 		    		<field name="company" canEdit="false" colSpan="6" onChange="action-lunch-voucher-record-company-onchange" />
 		    		<spacer colSpan="6"/>
-					<field name="payPeriod" canEdit="false" domain="self.year.typeSelect = 2 AND self.statusSelect = 1" grid-view="period-hr-grid" form-view="period-hr-form"/>
-					<field name="leavePeriod" canEdit="false" domain="self.year.typeSelect = 2 AND self.statusSelect = 1" grid-view="period-hr-grid" form-view="period-hr-form"/>
+					<field name="payPeriod" onChange="action-lunch-voucher-method-check-pay-period" canEdit="false" domain="self.year.typeSelect = 2 AND self.statusSelect = 1" grid-view="period-hr-grid" form-view="period-hr-form"/>
+					<field name="leavePeriod" onChange="action-lunch-voucher-method-check-leave-period" canEdit="false" domain="self.year.typeSelect = 2 AND self.statusSelect = 1" grid-view="period-hr-grid" form-view="period-hr-form"/>
   				</panel>
 	        	<panel colSpan="12">
 	        		<button name="calculateBtn" title="Calculate" colSpan="6"
@@ -129,6 +129,14 @@
 
 	<action-method name="action-lunch-voucher-method-update-stock">
 		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="updateStock"/>
+	</action-method>
+
+	<action-method name="action-lunch-voucher-method-check-pay-period">
+		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="checkPayPeriod"/>
+	</action-method>
+
+	<action-method name="action-lunch-voucher-method-check-leave-period">
+		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="checkLeavePeriod"/>
 	</action-method>
 
 </object-views>

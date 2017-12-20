@@ -23,9 +23,14 @@
 	   	// STATUS SELECT
 		public static final int STATUS_OPENED = 1;
 		public static final int STATUS_CLOSED = 2;
-	
-	]]></extra-code>   
-  
+
+		// TYPE SELECT
+		public static final int TYPE_CIVIL = 0;
+		public static final int TYPE_FISCAL = 1;
+		public static final int TYPE_PAYROLL = 2;
+
+	]]></extra-code>
+
   </entity>
 
 </domain-models>
