@@ -45,6 +45,7 @@
 				<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
 				<field name="exTaxTotal" readonly="true"/>
 				<field name="inTaxTotal" readonly="true"/>
+				<field name="isSubLine" colSpan="4" />
 				<field name="invoice" hidden="true" />
 				<panel name="discount" title="Discount" colSpan="12">
 					<field name="discountTypeSelect" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>

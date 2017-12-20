@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706142203</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -181,7 +181,9 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite-wip</property>
+            <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">YXhlbG9y</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -1066,6 +1068,12 @@ where SaleOrder.id = ?]]></xml-property>
                     <text-property name="heading">id</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">is_sub_line</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">is_sub_line</text-property>
+                    <text-property name="heading">is_sub_line</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">description</property>
                     <property name="alias">description</property>
                     <property name="analysis">dimension</property>
@@ -1106,6 +1114,12 @@ where SaleOrder.id = ?]]></xml-property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">ex_tax_total</text-property>
                     <text-property name="heading">ex_tax_total</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">total_pack</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">total_pack</text-property>
+                    <text-property name="heading">total_pack</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">CurrencyCode</property>
@@ -1206,91 +1220,96 @@ where SaleOrder.id = ?]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">2</property>
+                        <property name="name">is_sub_line</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
                         <property name="name">description</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">3</property>
+                        <property name="position">4</property>
                         <property name="name">quantity</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">4</property>
+                        <property name="position">5</property>
                         <property name="name">UnitCode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">6</property>
                         <property name="name">ProductName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">7</property>
                         <property name="name">unit_price</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">8</property>
                         <property name="name">ex_tax_total</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">9</property>
                         <property name="name">total_pack</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">10</property>
                         <property name="name">CurrencyCode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">11</property>
                         <property name="name">tax_line</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">12</property>
                         <property name="name">productCode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">13</property>
                         <property name="name">totalDiscountAmount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">14</property>
                         <property name="name">sequence</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">15</property>
                         <property name="name">periodicity</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">16</property>
                         <property name="name">subscription</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">17</property>
                         <property name="name">from_period_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">18</property>
                         <property name="name">to_period_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">19</property>
                         <property name="name">product_type_select</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">20</property>
                         <property name="name">is_title_line</property>
                         <property name="dataType">integer</property>
                     </structure>
@@ -1303,118 +1322,145 @@ where SaleOrder.id = ?]]></xml-property>
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">description</property>
-                    <property name="nativeName">description</property>
-                    <property name="dataType">string</property>
+                    <property name="name">is_sub_line</property>
+                    <property name="nativeName">is_sub_line</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">quantity</property>
-                    <property name="nativeName">quantity</property>
-                    <property name="dataType">decimal</property>
+                    <property name="name">description</property>
+                    <property name="nativeName">description</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
-                    <property name="name">UnitCode</property>
-                    <property name="nativeName">UnitCode</property>
-                    <property name="dataType">string</property>
+                    <property name="name">quantity</property>
+                    <property name="nativeName">quantity</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">ProductName</property>
-                    <property name="nativeName">ProductName</property>
+                    <property name="name">UnitCode</property>
+                    <property name="nativeName">UnitCode</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
-                    <property name="name">unit_price</property>
-                    <property name="nativeName">unit_price</property>
-                    <property name="dataType">decimal</property>
+                    <property name="name">ProductName</property>
+                    <property name="nativeName">ProductName</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
-                    <property name="name">ex_tax_total</property>
-                    <property name="nativeName">ex_tax_total</property>
+                    <property name="name">unit_price</property>
+                    <property name="nativeName">unit_price</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
-                    <property name="name">total_pack</property>
-                    <property name="nativeName">total_pack</property>
+                    <property name="name">ex_tax_total</property>
+                    <property name="nativeName">ex_tax_total</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
-                    <property name="name">CurrencyCode</property>
-                    <property name="nativeName">CurrencyCode</property>
-                    <property name="dataType">string</property>
+                    <property name="name">total_pack</property>
+                    <property name="nativeName">total_pack</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
-                    <property name="name">tax_line</property>
-                    <property name="nativeName">tax_line</property>
-                    <property name="dataType">decimal</property>
+                    <property name="name">CurrencyCode</property>
+                    <property name="nativeName">CurrencyCode</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
-                    <property name="name">productCode</property>
-                    <property name="nativeName">productCode</property>
-                    <property name="dataType">string</property>
+                    <property name="name">tax_line</property>
+                    <property name="nativeName">tax_line</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
-                    <property name="name">totalDiscountAmount</property>
-                    <property name="nativeName">totalDiscountAmount</property>
-                    <property name="dataType">decimal</property>
+                    <property name="name">productCode</property>
+                    <property name="nativeName">productCode</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
-                    <property name="name">sequence</property>
-                    <property name="nativeName">sequence</property>
-                    <property name="dataType">integer</property>
+                    <property name="name">totalDiscountAmount</property>
+                    <property name="nativeName">totalDiscountAmount</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
-                    <property name="name">periodicity</property>
-                    <property name="nativeName">periodicity</property>
-                    <property name="dataType">string</property>
+                    <property name="name">sequence</property>
+                    <property name="nativeName">sequence</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
-                    <property name="name">subscription</property>
-                    <property name="nativeName">subscription</property>
-                    <property name="dataType">integer</property>
+                    <property name="name">periodicity</property>
+                    <property name="nativeName">periodicity</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
-                    <property name="name">from_period_date</property>
-                    <property name="nativeName">from_period_date</property>
-                    <property name="dataType">date</property>
+                    <property name="name">subscription</property>
+                    <property name="nativeName">subscription</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
-                    <property name="name">to_period_date</property>
-                    <property name="nativeName">to_period_date</property>
+                    <property name="name">from_period_date</property>
+                    <property name="nativeName">from_period_date</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
-                    <property name="name">product_type_select</property>
-                    <property name="nativeName">product_type_select</property>
-                    <property name="dataType">string</property>
+                    <property name="name">to_period_date</property>
+                    <property name="nativeName">to_period_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
+                    <property name="name">product_type_select</property>
+                    <property name="nativeName">product_type_select</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">20</property>
                     <property name="name">is_title_line</property>
                     <property name="nativeName">is_title_line</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 	SOLine.id, 
+	SOLine.is_sub_line, 
 	SOLine.description, 
 	SOLine.qty as "quantity", 
 	Unit.label_to_printing as "UnitCode", 
@@ -2245,7 +2291,7 @@ from base_app_base]]></xml-property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> <VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row._outer["saleOrderSeq"]</VALUE-OF> <VALUE-OF>if(row._outer["versionNumber"] > 1) {
 	"-"+row._outer["versionNumber"]
 }</VALUE-OF>]]></text-property>
-					</text>
+                    </text>
                 </cell>
                 <cell id="3367"/>
                 <cell id="4065"/>
@@ -2943,6 +2989,12 @@ row["ClientPartFirstName"]
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
+                                <property name="name">is_sub_line</property>
+                                <text-property name="displayName">is_sub_line</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["is_sub_line"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
                                 <property name="name">description</property>
                                 <text-property name="displayName">description</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["description"]</expression>
@@ -2953,7 +3005,6 @@ row["ClientPartFirstName"]
                                 <text-property name="displayName">quantity</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["quantity"]</expression>
                                 <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">UnitCode</property>
@@ -2980,16 +3031,16 @@ row["ClientPartFirstName"]
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
+                                <property name="name">total_pack</property>
+                                <text-property name="displayName">total_pack</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["total_pack"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
                                 <property name="name">CurrencyCode</property>
                                 <text-property name="displayName">CurrencyCode</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["CurrencyCode"]</expression>
                                 <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">quantity_1</property>
-                                <text-property name="displayName">quantity</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["quantity"]</expression>
-                                <property name="dataType">decimal</property>
                             </structure>
                             <structure>
                                 <property name="name">tax_line</property>
@@ -3008,69 +3059,6 @@ row["ClientPartFirstName"]
                                 <text-property name="displayName">totalDiscountAmount</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
                                 <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">nb_diff_tax_line</property>
-                                <text-property name="displayName">nb_diff_tax_line</text-property>
-                                <property name="dataType">integer</property>
-                                <property name="aggregateFunction">COUNTDISTINCT</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["tax_line"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sumDiscountLine</property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sumNegativeExTaxTotal</property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["ex_tax_total"]</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["ex_tax_total"] &lt; 0</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalDiscount</property>
-                                <expression name="expression" type="javascript">row["sumDiscountLine"]+row["sumNegativeExTaxTotal"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalExTaxTotalBeforeDiscount</property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["ex_tax_total"]-dataSetRow["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["ex_tax_total"]>=0</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalWithoutDiscount</property>
-                                <expression name="expression" type="javascript">row["totalExTaxTotalBeforeDiscount"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">sequence</property>
@@ -3103,287 +3091,16 @@ row["ClientPartFirstName"]
                                 <property name="dataType">date</property>
                             </structure>
                             <structure>
-                                <property name="name">number_subscriptions</property>
-                                <text-property name="displayName">number_subscriptions</text-property>
-                                <property name="dataType">integer</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>SaleOrderLine</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">COUNT</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["subscription"]</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["subscription"]</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
                                 <property name="name">product_type_select</property>
                                 <text-property name="displayName">product_type_select</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["product_type_select"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">Aggregation_nb_sub</property>
-                                <text-property name="displayName">nb_sub</text-property>
-                                <property name="dataType">integer</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>SaleOrderLine</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">COUNT</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["periodicity"]</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["product_type_select"]=='subscriptable'</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Column Binding_tot_sub</property>
-                                <text-property name="displayName">tot_sub</text-property>
-                                <expression name="expression" type="javascript">if(row["number_subscriptions"] != 0)row["ex_tax_total"]/row["number_subscriptions"]
-else row["ex_tax_total"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_start_sub</property>
-                                <text-property name="displayName">start_sub_date</text-property>
-                                <property name="dataType">date</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>SaleOrderLine</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">MIN</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["from_period_date"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_end_sub</property>
-                                <text-property name="displayName">end_sub_date</text-property>
-                                <property name="dataType">date</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>SaleOrderLine</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">MAX</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["to_period_date"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Column Binding_sub_label</property>
-                                <text-property name="displayName">sub_label</text-property>
-                                <expression name="expression" type="javascript">row["Aggregation_nb_sub"]+" "+row["Aggregation_start_sub"]+" "+row["Aggregation_end_sub"]</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sumDiscountLineNoSub</property>
-                                <text-property name="displayName">sumDiscountLineNoSub</text-property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["product_type_select"]!='subscriptable'</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sumDiscountLineSub</property>
-                                <text-property name="displayName">sumDiscountLineSub</text-property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["ex_tax_total"]-(dataSetRow["unit_price"]*dataSetRow["quantity"]*row["Aggregation_nb_sub"])</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["product_type_select"]=='subscriptable'</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sumNegativeExtaxTotalNoSub</property>
-                                <text-property name="displayName">sumNegativeExtaxTotalNoSub</text-property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["ex_tax_total"]</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["ex_tax_total"]&lt;0 &amp;&amp; dataSetRow["product_type_select"]!='subscriptable'</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sumNegativeExtaxTotalSub</property>
-                                <text-property name="displayName">sumNegativeExtaxTotalSub</text-property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["ex_tax_total"]</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["ex_tax_total"]&lt;0 &amp;&amp; dataSetRow["product_type_select"]=='subscriptable'</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalDiscountNoSub</property>
-                                <text-property name="displayName">totalDiscountNoSub</text-property>
-                                <expression name="expression" type="javascript">row["sumDiscountLineNoSub"]+row["sumNegativeExtaxTotalNoSub"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalDiscountSub</property>
-                                <text-property name="displayName">totalDiscountNoSub</text-property>
-                                <expression name="expression" type="javascript">row["sumDiscountLineSub"]+row["sumNegativeExtaxTotalSub"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sumExTaxTotalNoSub</property>
-                                <text-property name="displayName">sumExTaxTotalNoSub</text-property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["ex_tax_total"]</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["product_type_select"]!='subscriptable'</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sumExTaxTotalSub</property>
-                                <text-property name="displayName">sumExTaxTotalSub</text-property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["ex_tax_total"]</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["product_type_select"]=='subscriptable'</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totExTaxTotalNoSub</property>
-                                <text-property name="displayName">totExTaxTotalNoSub</text-property>
-                                <expression name="expression" type="javascript">row["sumExTaxTotalNoSub"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totExTaxTotalSub</property>
-                                <text-property name="displayName">totExTaxTotalNoSub</text-property>
-                                <expression name="expression" type="javascript">row["sumExTaxTotalSub"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">discount_sub</property>
-                                <text-property name="displayName">discount_sub</text-property>
-                                <expression name="expression" type="javascript">if(row["Aggregation_nb_sub"]!=0)dataSetRow["ex_tax_total"]/row["Aggregation_nb_sub"]-(dataSetRow["unit_price"]*dataSetRow["quantity"])
-else dataSetRow["ex_tax_total"] - (dataSetRow["unit_price"]*dataSetRow["quantity"])</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">tot_ex_tax_total_all_sub</property>
-                                <text-property name="displayName">tot_ex_tax_total_all_sub</text-property>
-                                <expression name="expression" type="javascript">row["Aggregation_tot_ett_sub"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_total_discount_sub</property>
-                                <text-property name="displayName">total_discount_sub</text-property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["discount_sub"]/row["number_subscriptions"]</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["product_type_select"]=='subscriptable'</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Column Binding_total_discount_sub</property>
-                                <text-property name="displayName">total_discount_sub</text-property>
-                                <expression name="expression" type="javascript">row["Aggregation_total_discount_sub"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_tot_ett_sub</property>
-                                <text-property name="displayName">tot_ett_sub</text-property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">if(row["number_subscriptions"]!=0)row["Column Binding_tot_sub"]/row["number_subscriptions"]
-else row["Column Binding_tot_sub"]</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["product_type_select"]=='subscriptable'</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
                                 <property name="name">is_title_line</property>
                                 <text-property name="displayName">is_title_line</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["is_title_line"]</expression>
                                 <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_tot_disc_no_sub</property>
-                                <text-property name="displayName">tot_disc_no_sub</text-property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["product_type_select"] != 'subscriptable'</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Column Binding_tot_all_sub</property>
-                                <text-property name="displayName">tot_all_sub</text-property>
-                                <expression name="expression" type="javascript">row["Aggregation_tot_disc_no_sub"]+row["Aggregation_total_discount_sub"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">total_pack</property>
-                                <text-property name="displayName">total_pack</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["total_pack"]</expression>
-                                <property name="dataType">decimal</property>
                             </structure>
                         </list-property>
                         <column id="3713">
@@ -3739,6 +3456,7 @@ else row["Column Binding_tot_sub"]</expression>
                                         <property name="borderRightWidth">thin</property>
                                         <text id="4149">
                                             <property name="fontSize">8pt</property>
+                                            <property name="fontStyle">italic</property>
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
@@ -3746,7 +3464,17 @@ else row["Column Binding_tot_sub"]</expression>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["productCode"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<FONT size="7pt"><I><VALUE-OF>
+if(row["is_sub_line"] != 0) {
+	row["productCode"]
+}
+</VALUE-OF></I></FONT>
+
+<VALUE-OF>
+if(row["is_sub_line"] == 0) {
+	row["productCode"]
+}
+</VALUE-OF>]]></text-property>
                                         </text>
                                         <text id="4303">
                                             <property name="fontSize">8pt</property>
@@ -3798,11 +3526,25 @@ else row["Column Binding_tot_sub"]</expression>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
-	row["translation"]
-} else {
+                                            <text-property name="content"><![CDATA[<FONT size="7pt"><I><VALUE-OF>
+if(row._outer["is_sub_line"] != 0) {
+	if(row["translation"] != null) {
+		row["translation"]
+	} else {
 	row._outer["ProductName"]
-}</VALUE-OF>]]></text-property>
+	}
+
+}</VALUE-OF></I></FONT>
+
+<VALUE-OF>
+if(row._outer["is_sub_line"] == 0) {
+	if(row["translation"] != null) {
+		row["translation"]
+	} else {
+	row._outer["ProductName"]
+	}
+}
+</VALUE-OF>]]></text-property>
                                         </text>
                                         <text id="4302">
                                             <property name="fontSize">8pt</property>
@@ -3900,7 +3642,18 @@ else 'Subscriptions'</value>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="###0.00%{RoundingMode=HALF_UP}">row["tax_line"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<FONT size="7pt"><I><VALUE-OF format="###0.00%{RoundingMode=HALF_UP}">
+if(row._outer["is_sub_line"] != 0) {
+	row["tax_line"]
+}</VALUE-OF></I></FONT>
+
+<VALUE-OF format="###0.00%{RoundingMode=HALF_UP}">
+if(row._outer["is_sub_line"] == 0) {
+	row["tax_line"]
+}
+</VALUE-OF>
+
+]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="3696">
@@ -3918,7 +3671,32 @@ else 'Subscriptions'</value>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["quantity"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["UnitCode"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<FONT size="7pt"><I><VALUE-OF format="#,##0.00">
+if(row["is_sub_line"] != 0) {
+	row["quantity"]
+}
+</VALUE-OF></I></FONT>
+
+<VALUE-OF format="#,##0.00">
+if(row["is_sub_line"] == 0) {
+	row["quantity"]
+}
+</VALUE-OF>
+
+ <VALUE-OF format="^">"  "</VALUE-OF>
+ 
+<FONT size="7pt"> 
+<I> <VALUE-OF>
+ if(row["is_sub_line"] != 0) {
+ 	row["UnitCode"]
+ }
+ </VALUE-OF></I></FONT>
+ 
+  <VALUE-OF>
+ if(row["is_sub_line"] == 0) {
+ 	row["UnitCode"]
+ }
+ </VALUE-OF>]]></text-property>
                                         </text>
                                         <text id="4182">
                                             <property name="fontSize">8pt</property>
@@ -3930,7 +3708,17 @@ else 'Subscriptions'</value>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["periodicity"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<FONT size="7pt" ><I><VALUE-OF>
+if(row["is_sub_line"] != 0) {
+	row["periodicity"]
+}
+</VALUE-OF></I></FONT>
+
+<VALUE-OF>
+if(row["is_sub_line"] != 0) {
+	row["periodicity"]
+}
+</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="3697">
@@ -3957,7 +3745,10 @@ else 'Subscriptions'</value>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["unit_price"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>
+if(row._outer["is_sub_line"] == 0) {
+	Formatter.format(row._outer["unit_price"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))
+}</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4152">
@@ -3975,7 +3766,11 @@ else 'Subscriptions'</value>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["totalDiscountAmount"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">
+if(row["is_sub_line"] == 0) {
+	row["totalDiscountAmount"]
+}
+</VALUE-OF>]]></text-property>
                                         </text>
                                         <data id="4282">
                                             <property name="fontSize">8pt</property>
@@ -4006,7 +3801,11 @@ else 'Subscriptions'</value>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">
+if(row["is_sub_line"] == 0) {
+	row["ex_tax_total"]
+}
+</VALUE-OF>]]></text-property>
                                         </text>
                                         <data id="4304">
                                             <property name="fontSize">8pt</property>
@@ -4051,7 +3850,11 @@ else 'Subscriptions'</value>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>
+if(row["is_sub_line"] == 0) {
+	row["CurrencyCode"]
+}
+</VALUE-OF>]]></text-property>
                                         </text>
                                         <text id="3668">
                                             <property name="fontSize">8pt</property>

@@ -101,9 +101,7 @@ public class SaleOrderLineController {
 	public void getProductInformation(ActionRequest request, ActionResponse response)  {
 
 		Context context = request.getContext();
-		
 		SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-
 		SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
 		
 		Product product = saleOrderLine.getProduct();
@@ -128,7 +126,12 @@ public class SaleOrderLineController {
 			if (saleOrderLine.getDiscountTypeSelect() != null) {
 				response.setValue("discountTypeSelect", saleOrderLine.getDiscountTypeSelect());
 			}
-			response.setValue("price", saleOrderLine.getPrice());
+			
+			if(saleOrderLine.getIsSubLine()) {
+				response.setValue("price", 0.00);
+			} else {
+				response.setValue("price", saleOrderLine.getPrice());
+			}
 
 		}
 		catch(Exception e)  {
