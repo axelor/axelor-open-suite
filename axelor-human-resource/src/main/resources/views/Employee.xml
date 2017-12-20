@@ -81,8 +81,8 @@
         			<field name="timesheetReminder" colSpan="4"/>
         			<field name="external" colSpan="4"/>
         			<field name="planning" colSpan="4" canNew="true" form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
-        			<field name="publicHolidayPlanning" colSpan="4" form-view="public-holiday-planning-form" grid-view="public-holiday-planning-grid"/>
-        			<field name="imposedDayPlanning" colSpan="4" form-view="public-holiday-planning-form" grid-view="public-holiday-planning-grid"/>
+        			<field name="publicHolidayPlanning" colSpan="4" form-view="public-holiday-planning-form" grid-view="public-holiday-planning-grid" canEdit="false"/>
+        			<field name="imposedDayPlanning" colSpan="4" form-view="public-holiday-planning-form" grid-view="public-holiday-planning-grid" canEdit="false"/>
         			<field name="negativeValueLeave" colSpan="4"/>
         			<field name="hrManager" colSpan="4"/>
         			<field name="exportCode" colSpan="4"/>
