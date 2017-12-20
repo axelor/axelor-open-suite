@@ -4,10 +4,20 @@
 
 	<menuitem name="menu-qms-root" order="-100" if="__config__.app.isApp('qms')" title="QMS" icon="fa-check" icon-background="#3f6bb9"/>
 
-	<menuitem name="qms-improvement-forms" parent="menu-qms-root" title="Improvement forms" action="qms.improvementForms"/>
+	<menuitem name="qms-improvement-forms-root" parent="menu-qms-root" title="Improvement forms" />
 
-	<action-view name="qms.improvementForms" title="Improvement forms" model="com.axelor.apps.qms.db.ImprovementForm">
+	<menuitem name="qms-improvement-forms-all" parent="qms-improvement-forms-root" title="Improvement forms list" action="qms.improvementForm.all"/>
+
+	<action-view name="qms.improvementForm.all" title="Improvement forms" model="com.axelor.apps.qms.db.ImprovementForm">
 		<view type="grid" name="qms-improvement-form-grid"/>
 		<view type="form" name="qms-improvement-form-form"/>
+	</action-view>
+
+	<menuitem name="qms-improvement-forms-mine" parent="qms-improvement-forms-root" title="My improvement forms" action="qms.improvementForm.mine"/>
+
+	<action-view name="qms.improvementForm.mine" model="com.axelor.apps.qms.db.ImprovementForm" title="My improvement forms">
+		<view name="qms-improvement-form-grid" type="grid"/>
+		<view name="qms-improvement-form-form" type="form"/>
+		<domain>self.createdBy = :__user__ OR (select employee.id from User u where u = :__user__) in (select id from self.responsibles)</domain>
 	</action-view>
 </object-views>
