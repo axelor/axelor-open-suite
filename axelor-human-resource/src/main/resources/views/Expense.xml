@@ -9,7 +9,7 @@
 		<field name="expenseSeq"/>
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="sentDate"/>
-		<field name="period" form-view="period-form" grid-view="period-grid"/>
+		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="statusSelect"/>
 		<field name="ventilated"/>
@@ -17,7 +17,7 @@
 	
 	<grid name="expense-payroll-preparation-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense" orderBy="-sentDate">
 		<field name="sentDate"/>
-		<field name="period" form-view="period-form" grid-view="period-grid"/>
+		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"/>
 		<field name="inTaxTotal" aggregate="sum"/>
 	</grid>
 	
@@ -30,7 +30,7 @@
 		<field name="expenseSeq"/>
 		<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"/>
 		<field name="sentDate"/>
-		<field name="period" form-view="period-form" grid-view="period-grid"/>
+		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="statusSelect"/>
 	</grid>
@@ -72,7 +72,7 @@
 			<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" readonlyIf="ventilated"/>
 			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()" if-module="axelor-cash-management"/>
-			<field name="period" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" readonlyIf="ventilated"/>
+			<field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" readonlyIf="ventilated"/>
 			<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb" readonlyIf="ventilated"/>
 			<field name="withdrawnCash" hidden="true" showIf="companyCbSelect > 1" />
 			<field name="personalExpenseAmount" hidden="true" />

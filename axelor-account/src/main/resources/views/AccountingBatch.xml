@@ -38,7 +38,7 @@
 			<field name="creditTransferTypeSelect"/>
 			<field name="customerReimbursementTypeSelect" showIf="$contains([3], creditTransferTypeSelect)" />
 			<field name="paymentMode" domain="self.typeSelect in (2,9)" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-			<field name="period" showIf="$contains([1], creditTransferTypeSelect)" form-view="period-form" grid-view="period-grid"/>
+			<field name="period" showIf="$contains([1], creditTransferTypeSelect)" form-view="period-form" grid-view="period-grid" canEdit="false"/>
 			<field name="dueDate" showIf="$contains([2, 3], creditTransferTypeSelect)" />
 			<field name="currency" showIf="$contains([2, 3], creditTransferTypeSelect)" />
 			<field name="includeOtherBankAccounts" showIf="$contains([1, 2, 3], creditTransferTypeSelect)" if="__config__.general.getManageMultiBanks()" />
