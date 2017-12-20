@@ -549,4 +549,16 @@ public class SaleOrderController{
 		response.setValue("amountToBeSpreadOverTheTimetable" , saleOrder.getAmountToBeSpreadOverTheTimetable());
 	}
 
+    public void onSave(ActionRequest request, ActionResponse response) {
+        try {
+            SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+            if (saleOrder.getOrderBeingEdited()) {
+                saleOrderServiceSupplychain.validateChange(saleOrder);
+                response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+            }
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
+
 }

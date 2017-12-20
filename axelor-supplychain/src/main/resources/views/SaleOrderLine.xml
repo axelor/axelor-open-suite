@@ -2,7 +2,15 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-	
+
+    <form name="sale-order-line-form" id="supplychain-sale-order-line-form" title="SO line"
+        model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client"
+        onNew="action-group-sale-saleorderline-onnew"
+        readonlyIf="saleOrder.statusSelect == 3 &amp;&amp; (!saleOrder.orderBeingEdited || deliveryState > 1) || saleOrder.statusSelect == 4"
+        width="large">
+        <panel-include view="sale-order-line-form" from="axelor-sale" />
+    </form>
+
 	<form name="subscription-sale-order-line-form" title="Subscription" model="com.axelor.apps.sale.db.SaleOrderLine" width="large">
 		<panel colSpan="12">
 			<field name="periodicity" colSpan="3" onChange="action-supplychain-record-set-dateSubTo, action-supplychain-record-set-subscription-price" readonlyIf="subscriptionList.length > 0"/>

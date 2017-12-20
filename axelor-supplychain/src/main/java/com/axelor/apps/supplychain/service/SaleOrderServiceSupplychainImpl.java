@@ -20,16 +20,9 @@ package com.axelor.apps.supplychain.service;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
-import com.axelor.apps.base.db.repo.CancelReasonRepository;
-import com.axelor.apps.base.service.app.AppService;
-import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.LocationService;
-import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
-import com.axelor.exception.db.IException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +31,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.AppSupplychain;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -46,7 +40,6 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -58,11 +51,17 @@ import com.axelor.apps.sale.service.SaleOrderLineTaxService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.LocationService;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.db.Timetable;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.google.inject.Inject;
@@ -309,14 +308,38 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		List<StockMove> stockMoves = Beans.get(StockMoveRepository.class).findAllBySaleOrderAndStatus(saleOrder, StockMoveRepository.STATUS_PLANNED).fetch();
 		if (!stockMoves.isEmpty()) {
 			StockMoveService stockMoveService = Beans.get(StockMoveService.class);
-			CancelReason cancelReason = Beans.get(AppSupplychainService.class).getAppSupplychain().getDefaultCancelReasonOnChangingSaleOrder();
+			CancelReason cancelReason = appSupplychain.getCancelReasonOnChangingSaleOrder();
 			if (cancelReason == null) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, IExceptionMessage.SUPPLYCHAIN_MISSING_DEFAULT_CANCEL);
+				throw new AxelorException(appSupplychain, IException.CONFIGURATION_ERROR, IExceptionMessage.SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_SALE_ORDER);
 			}
 			for (StockMove stockMove : stockMoves) {
 			    stockMoveService.cancel(stockMove, cancelReason);
 			}
 		}
 	}
+
+    @Override
+    public void validateChange(SaleOrder saleOrder) {
+        super.validateChange(saleOrder);
+        SaleOrder record = saleOrderRepo.find(saleOrder.getId());
+        List<SaleOrderLine> saleOrderLines = new ArrayList<>();
+
+        if (saleOrder.getSaleOrderLineList() != null) {
+            sortSaleOrderLineList(saleOrder);
+            saleOrder.getSaleOrderLineList().stream().filter(
+                    saleOrderLine -> saleOrderLine.getDeliveryState() <= SaleOrderRepository.STATE_NOT_DELIVERED)
+                    .forEach(saleOrderLines::add);
+        }
+
+        if (record.getSaleOrderLineList() != null) {
+            sortSaleOrderLineList(record);
+            record.getSaleOrderLineList().stream()
+                    .filter(saleOrderLine -> saleOrderLine.getDeliveryState() > SaleOrderRepository.STATE_NOT_DELIVERED)
+                    .forEach(saleOrderLines::add);
+        }
+
+        saleOrder.clearSaleOrderLineList();
+        saleOrderLines.forEach(saleOrder::addSaleOrderLineListItem);
+    }
 
 }

@@ -97,7 +97,7 @@
 	<!-- Impression -->
     <string name="specificNotes" title="Specific notes" large="true"/>
 
-	<boolean name="orderBeingEdited" default="false" nullable="false"/>
+	<boolean name="orderBeingEdited" />
 
     <many-to-one name="opportunity" ref="com.axelor.apps.crm.db.Opportunity" />
 

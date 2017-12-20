@@ -35,6 +35,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.PartnerDefaultLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -93,7 +94,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 		Company company = saleOrder.getCompany();
 
 		if(saleOrder.getSaleOrderLineList() != null && company != null) {
-
+		    Beans.get(SaleOrderService.class).sortSaleOrderLineList(saleOrder);
 			StockMove stockMove = this.createStockMove(saleOrder, company);
 
 			for(SaleOrderLine saleOrderLine: saleOrder.getSaleOrderLineList()) {
