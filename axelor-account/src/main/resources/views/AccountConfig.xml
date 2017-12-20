@@ -18,36 +18,15 @@
 		  <button name="installTemplate" title="Import a chart" readonlyIf="hasChartImported || company == null || accountChart == null" colSpan="4" icon="fa-import" onClick="action-group-account-config-installchart-click"/>
 	
 		  <field name="hasChartImported"/>
-		  <field name="allowCancelVentilatedInvoice"/>
 	   	  <field name="allowRemovalValidatedMove"/>
-	   	  <field name="generateMoveForInvoicePayment"/>
   	   	  <field name="generateMoveForAdvancePayment"/>
-	   	  <field name="invoiceInAtiSelect"/>
 			<field name="accountingDaybook"/>
-			<field name="invoiceAutomaticMail"/>
 			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
     
 		</panel>
 		
 		<panel-tabs>
 			<panel name="accounting" title="Accounting">
-				<panel name="journals" title="Journals" colSpan="12">
-					<field name="saleJournalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
-					<field name="purchaseJournalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
-					<field name="cashJournalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
-					<field name="creditNoteJournalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
-					<field name="customerSalesJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
-					<field name="customerCreditNoteJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
-					<field name="supplierPurchaseJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
-					<field name="supplierCreditNoteJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
-					<field name="rejectJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
-					<field name="reimbursementJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
-					<field name="accountClearanceJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
-					<field name="irrecoverableJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
-					<field name="autoMiscOpeJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
-					<field name="manualMiscOpeJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
-					<field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company" if-module="axelor-human-resource" if="__config__.app.isApp('expense')" grid-view="journal-grid" form-view="journal-form"/>
-				</panel>
 				<panel name="accounts" title="Accounts" colSpan="12">
 					<field name="customerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="supplierAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
@@ -89,13 +68,54 @@
 				<panel	name="expense" title="Expense" colSpan="12">
 					<field name="expenseTaxAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form" if="__config__.app.isApp('expense')"/>
 				</panel>
-				<panel name="invoicesSequences" title="Invoices sequences" colSpan="12">
-				    <field name="custInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
-   				    <field name="custRefSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
-   				    <field name="suppInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
-   				    <field name="suppRefSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
-				</panel>
 			</panel>
+
+            <panel title="Invoicing">
+                <field name="allowCancelVentilatedInvoice"/>
+                <field name="generateMoveForInvoicePayment"/>
+                <field name="invoiceInAtiSelect"/>
+                <field name="invoiceAutomaticMail"/>
+
+                <panel title="Invoices sequences" colSpan="12">
+                    <field name="custInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
+                    <field name="custRefSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
+                    <field name="suppInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
+                    <field name="suppRefSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
+                </panel>
+
+                <panel title="Products" colSpan="12">
+                    <field name="invoicingProduct"/>
+                    <field name="advancePaymentProduct"/>
+                </panel>
+
+                <panel title="Printing settings" colSpan="12">
+                    <field name="displayDelAddrOnPrinting"/>
+                    <field name="displayProductCodeOnPrinting"/>
+                    <field name="displayTaxDetailOnPrinting"/>
+                    <field name="displayTimesheetOnPrinting" if-module="axelor-business-project" if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('timesheet')"/>
+                    <field name="displayExpenseOnPrinting" if-module="axelor-business-project" if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('expense')"/>
+                    <field name="invoiceClientBox" widget="html" x-lite="true" colSpan="12"/>
+                    <field name="termsAndConditions" widget="html" colSpan="12"/>
+                </panel>
+            </panel>
+
+            <panel title="Journals">
+                <field name="saleJournalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
+                <field name="purchaseJournalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
+                <field name="cashJournalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
+                <field name="creditNoteJournalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
+                <field name="customerSalesJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
+                <field name="customerCreditNoteJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
+                <field name="supplierPurchaseJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
+                <field name="supplierCreditNoteJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
+                <field name="rejectJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
+                <field name="reimbursementJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
+                <field name="accountClearanceJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
+                <field name="irrecoverableJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
+                <field name="autoMiscOpeJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
+                <field name="manualMiscOpeJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
+                <field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company" if-module="axelor-human-resource" if="__config__.app.isApp('expense')" grid-view="journal-grid" form-view="journal-form"/>
+            </panel>
 
 			<panel name="cfonb" title="CFONB" if="__config__.app.getApp('account').getManageDirectDebitPayment()">
 				<field name="cfonbConfig" showTitle="false" colSpan="12" >
@@ -145,9 +165,6 @@
 				</editor>
 				</field>
 			</panel>
-			<panel name="paybox" title="Paybox">
-			  <field name="payboxConfig" showTitle="false" grid-view="paybox-config-grid" form-view="paybox-config-form"/>
-			</panel>
 			
 			<panel name="bankOrder" title="Bank Order" if-module="axelor-bank-payment">
                 <panel colSpan="12">
@@ -169,7 +186,7 @@
 					<field name="intTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 				</panel>
                 <panel name="other" title="Other" colSpan="12">
-                    <field name="otherBankOrderSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+                    <field name="otherBankOrderSequence" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
                 </panel>
 			</panel>
 		
@@ -232,21 +249,11 @@
 					<field name="tempInterbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
 				</panel>
 			</panel>
-			<panel name="printingSettings" title="Printing settings">
-	  			<field name="displayDelAddrOnPrinting"/>
-	  			<field name="displayProductCodeOnPrinting"/>
-	  			<field name="displayTaxDetailOnPrinting"/>
-		 		<field name="invoiceClientBox" widget="html" x-lite="true" colSpan="12"/>
-		 		<field name="displayTimesheetOnPrinting" if-module="axelor-business-project"  if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('timesheet')"/>
-		 		<field name="displayExpenseOnPrinting" if-module="axelor-business-project" if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('expense')"/>
-		  	</panel>
-			<panel name="products" title="Products">
-				<field name="invoicingProduct"/>
-				<field name="advancePaymentProduct"/>
-			</panel>
-			<panel name ="termsAndCondition" title="Terms and Conditions">
-				<field name="termsAndConditions" widget="html" colSpan="12" />
-			</panel>
+
+            <panel name="paybox" title="Paybox">
+                <field name="payboxConfig" showTitle="false" grid-view="paybox-config-grid" form-view="paybox-config-form"/>
+            </panel>
+
 		</panel-tabs>
 	 
 	</form>
