@@ -15,7 +15,7 @@
 		<panel name="main" >
 			<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" colSpan="4"/>
 			 <field name="employee" colSpan="4" onChange="action-payroll-preparation-record-fill-contract, action-payroll-preparation-group-fill-in"/>
-			 <field name="employmentContract" colSpan="4" domain="self.employee = :employee" onChange="action-payroll-preparation-group-fill-in"/> 
+			 <field name="employmentContract" colSpan="4" domain="self.employee = :employee" onChange="action-payroll-preparation-group-fill-in" canEdit="false"/> 
 			 <field name="period" canEdit="false" domain="self.year.typeSelect = 2" grid-view="period-hr-grid" form-view="period-hr-form" onChange="action-payroll-preparation-group-fill-in" colSpan="4"/>
 			 <button name="refreshButton" title="Refresh" onClick="action-payroll-preparation-group-fill-in,save" colSpan="4" colOffset="4"/>
 			 <field name="$payrollLeavesList" type="many-to-many" target="com.axelor.apps.hr.db.PayrollLeave" title="Leaves" readonly="true" colSpan="12"/>
