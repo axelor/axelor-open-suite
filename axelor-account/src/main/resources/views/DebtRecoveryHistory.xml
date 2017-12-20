@@ -13,7 +13,6 @@
     	<field name="balanceDueDebtRecovery"/>
     	<field name="referenceDate"/>
         <field name="userDebtRecovery" grid-view="user-grid" form-view="user-form"/>
-        <field name="debtRecoveryMessage" grid-view="message-grid" form-view="message-form"/>
     	<field name="debtRecoveryDate"/>
         <field name="debtRecoveryMethodLine" grid-view="debt-recovery-method-line-grid" form-view="debt-recovery-method-line-form"/>
     </grid>
@@ -35,7 +34,7 @@
         	<field name="debtRecoveryDate"/>
     	</panel>
     	<panel name="debtRecoveryContent" title="Debt recovery content">
-        	<field name="debtRecoveryMessage" grid-view="message-grid" form-view="message-form"/>
+        	<field name="debtRecoveryMessageSet" grid-view="message-grid" form-view="message-form" colSpan="12"/>
     	</panel>
 	</form>
     
@@ -47,7 +46,6 @@
     	<field name="balanceDueDebtRecovery"/>
     	<field name="referenceDate"/>
         <field name="userDebtRecovery" grid-view="user-grid" form-view="user-form"/>
-        <field name="debtRecoveryMessage" grid-view="message-grid" form-view="message-form"/>
     	<field name="debtRecoveryDate"/>
         <field name="debtRecoveryMethodLine" grid-view="debt-recovery-method-line-grid" form-view="debt-recovery-method-line-form"/>
     </grid>
@@ -62,7 +60,7 @@
 	        <field name="userDebtRecovery" canEdit="false" grid-view="user-grid" form-view="user-form"/>
 	        <field name="debtRecoveryDate"/>
 	        <field name="debtRecoveryMethodLine" grid-view="debt-recovery-method-line-grid" form-view="debt-recovery-method-line-form"/>
-	        <field name="debtRecoveryMessage" grid-view="message-grid" form-view="message-form"/>
+	        <field name="debtRecoveryMessageSet" grid-view="message-grid" form-view="message-form"/>
 	    </panel>
 	    
     </form>

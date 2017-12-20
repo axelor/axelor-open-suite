@@ -145,7 +145,8 @@ public class BatchDebtRecovery extends BatchStrategy {
 				if (debtRecoveryHistory == null) {
 					continue;
 				}
-				if (debtRecoveryHistory.getDebtRecoveryMessage() == null) {
+				if (debtRecoveryHistory.getDebtRecoveryMessageSet() == null
+						|| debtRecoveryHistory.getDebtRecoveryMessageSet().isEmpty()) {
 					Beans.get(DebtRecoveryActionService.class).runMessage(debtRecovery);
 				}
 			} catch (Exception e) {

@@ -12,7 +12,7 @@
   	<string name="debtRecoveryLevelLabel" namecolumn="true" title="Label"/>
   	<integer name="standardDeadline" title="Standard delay (days)"/> 
   	<decimal name="minThreshold" title="Min. amount (€)"/>
-  	<many-to-one name="messageTemplate" ref="com.axelor.apps.message.db.Template" title="Message model"/>
+  	<many-to-many name="messageTemplateSet" ref="com.axelor.apps.message.db.Template" title="Message models"/>
   	<boolean name="manualValidationOk" title="Manual validation"/>
   	<many-to-one name="debtRecoveryMethod" ref="com.axelor.apps.account.db.DebtRecoveryMethod" title="Debt recovery method"/>
 	<string name="printingMessage" title="Message on printing" large="true"/>
