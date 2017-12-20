@@ -59,14 +59,13 @@
 			<field name="partner"/>
 			<field name="contactPartners"/>
 			<field name="responsibles"/>
-			<message if="statusSelect == 0" tag="important">Canceled</message>
-			<message if="statusSelect == 1" tag="info">Created</message>
-			<message if="statusSelect == 2" tag="info">Confirmed</message>
-			<message if="statusSelect == 3" tag="info">Assigned</message>
-			<message if="statusSelect == 4" tag="info">Analyzed</message>
-			<message if="statusSelect == 5" tag="info">Corrected</message>
-			<message if="statusSelect == 6" tag="info">Assessed</message>
-			<message if="statusSelect == 7" tag="success">Closed</message>
+			<message if="statusSelect == 0" tag="important">Canceled message (IF)</message>
+			<message if="statusSelect == 2" tag="info">Confirmed message (IF)</message>
+			<message if="statusSelect == 3" tag="info">Assigned message (IF)</message>
+			<message if="statusSelect == 4" tag="info">Analyzed message (IF)</message>
+			<message if="statusSelect == 5" tag="info">Corrected message (IF)</message>
+			<message if="statusSelect == 6" tag="info">Assessed message (IF)</message>
+			<message if="statusSelect == 7" tag="success">Closed message (IF)</message>
 		</track>
 	</entity>
 

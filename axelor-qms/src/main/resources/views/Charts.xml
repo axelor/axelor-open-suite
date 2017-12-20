@@ -62,7 +62,7 @@
 		<category key="month" type="text"/>
 		<series key="confirmedcnt" type="bar" title="Confirmed forms"/>
 		<series key="assignedcnt" type="bar" title="Assigned forms"/>
-		<series key="analyzedcnt" type="bar" title="Analysed forms"/>
+		<series key="analyzedcnt" type="bar" title="Analyzed forms"/>
 		<series key="correctedcnt" type="bar" title="Corrected forms"/>
 		<series key="assessedcnt" type="bar" title="Assessed forms"/>
 		<series key="closedcnt" type="bar" title="Closed forms"/>
