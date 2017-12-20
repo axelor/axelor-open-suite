@@ -23,23 +23,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.i18n.I18n;
-
-import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.inject.Beans;
-import com.axelor.rpc.Context;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -48,10 +44,13 @@ import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
@@ -464,4 +463,26 @@ public class SaleOrderController {
 				.getDefaultCompanyBankDetails(company, paymentMode, partner);
 		response.setValue("companyBankDetails", defaultBankDetails);
 	}
+
+	public void enableEditOrder(ActionRequest request, ActionResponse response) {
+	    SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(request.getContext().asType(SaleOrder.class).getId());
+
+		try {
+			Beans.get(SaleOrderService.class).enableEditOrder(saleOrder);
+			response.setReload(true);
+		} catch (Exception e) {
+		    TraceBackService.trace(response, e);
+		}
+	}
+
+	public void validateChange(ActionRequest request, ActionResponse response) {
+        try {
+            SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+            saleOrderService.validateChange(saleOrder);
+            response.setValues(saleOrder);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+	}
+
 }

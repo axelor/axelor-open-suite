@@ -20,33 +20,31 @@ package com.axelor.apps.sale.service;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.persistence.Query;
-
-import com.axelor.apps.base.service.AddressService;
-import com.axelor.apps.sale.db.AdvancePayment;
-import com.axelor.apps.base.db.CancelReason;
-import com.google.common.base.Strings;
-import java.time.LocalDate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.AppSale;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.team.db.Team;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -62,6 +60,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.team.db.Team;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -572,7 +572,28 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		}
 		return price;
 	}
+
+	@Override
+    @Transactional(rollbackOn = {Exception.class})
+	public void enableEditOrder(SaleOrder saleOrder) throws AxelorException {
+	    if (saleOrder.getStatusSelect() == ISaleOrder.STATUS_FINISHED) {
+	        throw new AxelorException(saleOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.SALES_ORDER_FINISHED));
+	    }
+
+		saleOrder.setOrderBeingEdited(true);
+	}
+
+
+    @Override
+    public void validateChange(SaleOrder saleOrder) {
+        saleOrder.setOrderBeingEdited(false);
+    }
+
+    @Override
+    public void sortSaleOrderLineList(SaleOrder saleOrder) {
+        if (saleOrder.getSaleOrderLineList() != null) {
+            saleOrder.getSaleOrderLineList().sort(Comparator.comparing(SaleOrderLine::getSequence));
+        }
+    }
+
 }
-
-
-

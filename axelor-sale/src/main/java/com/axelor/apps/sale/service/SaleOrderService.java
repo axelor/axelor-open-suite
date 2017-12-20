@@ -129,7 +129,28 @@ public interface SaleOrderService {
 	 * @return  total price from the sale order lines
 	 */
 	public BigDecimal getTotalSaleOrderPrice(SaleOrder saleOrder);
+
+	/**
+	 * Enable edit order.
+	 * 
+	 * @param saleOrder
+	 * @throws AxelorException
+	 */
+	void enableEditOrder(SaleOrder saleOrder) throws AxelorException;
+
+    /**
+     * Validate change.
+     * 
+     * @param saleOrder
+     */
+    void validateChange(SaleOrder saleOrder);
+
+
+    /**
+     * Sort detail lines by sequence.
+     * 
+     * @param saleOrder
+     */
+    void sortSaleOrderLineList(SaleOrder saleOrder);
+
 }
-
-
-

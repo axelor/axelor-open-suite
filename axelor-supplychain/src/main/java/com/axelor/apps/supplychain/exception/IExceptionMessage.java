@@ -127,5 +127,7 @@ public interface IExceptionMessage {
 	
 	static final String SUPPLY_CHAIN_CONFIG = /*$$(*/ "You must configure a Supply chain module for the company %s" /*)*/;
 
+	String SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_SALE_ORDER = /*$$(*/ "You must configure a default cancel reason on changing order in app supplychain." /*)*/;
+
 }
 

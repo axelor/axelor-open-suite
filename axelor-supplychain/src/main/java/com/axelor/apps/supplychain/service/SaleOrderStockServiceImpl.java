@@ -35,6 +35,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.PartnerDefaultLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -93,7 +94,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 		Company company = saleOrder.getCompany();
 
 		if(saleOrder.getSaleOrderLineList() != null && company != null) {
-
+		    Beans.get(SaleOrderService.class).sortSaleOrderLineList(saleOrder);
 			StockMove stockMove = this.createStockMove(saleOrder, company);
 
 			for(SaleOrderLine saleOrderLine: saleOrder.getSaleOrderLineList()) {
@@ -287,6 +288,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
         }
 
         int deliveryState = SaleOrderRepository.STATE_DELIVERED;
+        int deliveredCount = 0;
 
         for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
             if (saleOrderLine.getDeliveryState() != SaleOrderRepository.STATE_DELIVERED) {
@@ -295,7 +297,13 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
                 }
 
                 deliveryState = SaleOrderRepository.STATE_NOT_DELIVERED;
+            } else {
+                ++deliveredCount;
             }
+        }
+
+        if (deliveryState == SaleOrderRepository.STATE_NOT_DELIVERED && deliveredCount > 0) {
+            deliveryState = SaleOrderRepository.STATE_PARTIALLY_DELIVERED;
         }
 
         return deliveryState;

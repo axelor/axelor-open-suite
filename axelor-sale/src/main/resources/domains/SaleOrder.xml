@@ -97,6 +97,8 @@
 	<!-- Impression -->
     <string name="specificNotes" title="Specific notes" large="true"/>
 
+	<boolean name="orderBeingEdited" />
+
     <many-to-one name="opportunity" ref="com.axelor.apps.crm.db.Opportunity" />
 
  	<unique-constraint columns="saleOrderSeq,company"/>

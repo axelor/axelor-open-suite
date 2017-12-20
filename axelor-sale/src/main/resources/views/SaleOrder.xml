@@ -175,6 +175,14 @@
 	  	<field name="clientPartner.saleOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="clientPartner == null || clientPartner.saleOrderInformation == null"/>
 	    <field name="bloqued" colSpan="4" readonly="true" showIf="bloqued"/>
 		<field name="manualUnblock" colSpan="4" showIf="bloqued == true"/>
+        <field name="orderBeingEdited" hidden="true"/>
+		<field name="$viewerOrderBeingEdited" showTitle="false" readonly="true" colSpan="9" showIf="orderBeingEdited">
+		  <viewer depends="orderBeingEdited"><![CDATA[
+	 		<h3 style="text-align: right;">
+	        	<span class="label label-important" ng-show="record.orderBeingEdited" x-translate>Order being edited</span>
+	        </h3>
+		  ]]></viewer>
+		</field>
 	    <field name="saleOrderSeq" css="label-bold bold"/>
 	    <field name="$invoicingState" title="Invoicing State" readonly="true" css="label-bold bold" showIf="statusSelect >= 3">
 	    	<viewer depends="amountInvoiced,exTaxTotal"><![CDATA[
@@ -242,7 +250,7 @@
       </panel>
 	  <panel-tabs hideIf="clientPartner == null">
 	    <panel name="content" title="Content">
-	    	<panel-related field="saleOrderLineList" title="Details Lines" form-view="sale-order-line-form" colSpan="12" onChange="action-sale-order-line-change-group" readonlyIf="clientPartner == null || statusSelect == 3 || statusSelect == 4" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence"/>
+	    	<panel-related field="saleOrderLineList" title="Details Lines" form-view="sale-order-line-form" colSpan="12" onChange="action-sale-order-line-change-group" readonlyIf="clientPartner == null || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence"/>
 	    	<panel-related field="saleOrderLineTaxList" colSpan="12" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
 	    	<panel title="Description to display" colSpan="12">
 	        	<field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12"/>
@@ -300,13 +308,15 @@
 	  <panel sidebar="true" name="actions" title="Actions" stacked="true" hideIf="clientPartner == null">
 	    <button name="finalize" title="Finalize" showIf="statusSelect == 1" colSpan="12" onClick="save,action-sale-order-method-finalize"/>
 	    <button name="newVersion" title="New version" if="__config__.app.getApp('sale').getManageSaleOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
-	    <button name="generateCustomerStockMove" title="Generate customer deliveries" colSpan="12" showIf="statusSelect == 3"
+        <button name="editOrder" title="Edit order" if="__config__.app.getApp('sale').allowPendingOrderModification" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited == false" colSpan="12" onClick="action-sale-order-method-edit-order"/>
+        <button name="validateChanges" title="Validate changes" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited" colSpan="12" onClick="action-sale-order-validate-change,save"/>
+	    <button name="generateCustomerStockMove" title="Generate customer deliveries" colSpan="12" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
 	    	if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain').customerStockMoveGenerationAuto"
 	    	onClick="save, action-supplychain-sale-order-create-stock-move"/>
 	    <button name="confirmOrder" title="Confirm order" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed"/>
-	    <button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3" colSpan="12" onClick="save,action-supplychain-sale-order-group-generate-invoice" if-module="axelor-supplychain"/>
-	    <button name="generatePO" title="Generate purchase order"  colSpan="12" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getPurchaseOrderGenerationAuto()" showIf="statusSelect == 2 || statusSelect == 3" onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
-	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" if="__config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp; !__config__.app.getApp('production')?.productionOrderGenerationAuto" showIf="statusSelect == 3" onClick="save,action-sale-order-method-create-production-order"/>
+	    <button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited == false" colSpan="12" onClick="save,action-supplychain-sale-order-group-generate-invoice" if-module="axelor-supplychain"/>
+	    <button name="generatePO" title="Generate purchase order"  colSpan="12" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getPurchaseOrderGenerationAuto()" showIf="(statusSelect == 2 || statusSelect == 3) &amp;&amp; orderBeingEdited == false" onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
+	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" if="__config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp; !__config__.app.getApp('production')?.productionOrderGenerationAuto" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited == false" onClick="save,action-sale-order-method-create-production-order"/>
 		<spacer/>
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-view-cancel"/>
 	  	<button name="addAdvancePayment" title="Register a deposit"
@@ -623,6 +633,7 @@
 		<field name="statusSelect"/>
 		<field name="deliveryState"/>
 		<field name="amountInvoiced" />
+        <field name="orderBeingEdited" />
 		<template><![CDATA[
 		    <div class="span12">
 		    	<strong><span x-translate>Sale order</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
@@ -655,6 +666,9 @@
 						<span class="label label-warning" ng-show="record.deliveryState > 0 && record.deliveryState == 2" x-translate>Partially delivered</span>
 						<span class="label label-success" ng-show="record.deliveryState > 0 && record.deliveryState == 3" x-translate>Delivered</span>
 					</h5>
+                    <h5>
+                        <span class="label label-important" ng-show="record.orderBeingEdited" x-translate>Order being edited</span>
+                    </h5>
 				  </div>
 				  <div class="span5">
 				    <span><strong><span x-translate>WT</span> : {{ $fmt('exTaxTotal') }} {{ currency.symbol }}</strong><br/>
@@ -1093,5 +1107,13 @@
 	<action-method name="action-sale-order-method-fill-company-bank-details">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="fillCompanyBankDetails"/>
  	</action-method>
+
+	<action-method name="action-sale-order-method-edit-order">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="enableEditOrder"/>
+	</action-method>
+
+    <action-method name="action-sale-order-validate-change">
+        <call class="com.axelor.apps.sale.web.SaleOrderController" method="validateChange" />
+    </action-method>
 
 </object-views>
