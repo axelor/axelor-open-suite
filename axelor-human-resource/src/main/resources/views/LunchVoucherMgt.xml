@@ -5,8 +5,8 @@
     
     <grid name="lunch-voucher-mgt-grid" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt">
         <field name="company"/>
-        <field name="payPeriod"/>
-        <field name="leavePeriod"/>
+        <field name="payPeriod" canEdit="false"/>
+        <field name="leavePeriod" canEdit="false"/>
         <field name="statusSelect"/>
         <field name="requestedLunchVouchers"/>
         <field name="lunchVoucherWageShare"/>
@@ -27,8 +27,8 @@
   					<field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
 		    		<field name="company" canEdit="false" colSpan="6" onChange="action-lunch-voucher-record-company-onchange" />
 		    		<spacer colSpan="6"/>
-					<field name="payPeriod" domain="self.year.typeSelect = 2" grid-view="period-hr-grid" form-view="period-hr-form"/>
-					<field name="leavePeriod" domain="self.year.typeSelect = 2" grid-view="period-hr-grid" form-view="period-hr-form"/>
+					<field name="payPeriod" canEdit="false" domain="self.year.typeSelect = 2" grid-view="period-hr-grid" form-view="period-hr-form"/>
+					<field name="leavePeriod" canEdit="false" domain="self.year.typeSelect = 2" grid-view="period-hr-grid" form-view="period-hr-form"/>
   				</panel>
 	        	<panel colSpan="12">
 	        		<button name="calculateBtn" title="Calculate" colSpan="6"
