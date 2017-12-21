@@ -144,7 +144,8 @@ public class WkfService {
 		status.setSelection(getSelectName());
 		status.setWidget(null);
 		status.setIsWkf(true);
-		status.setWidgetAttrs("{\"colSpan\": \"10\",\"readonly\": \"true\"}");
+		status.setReadonly(true);
+		status.setWidgetAttrs("{\"colSpan\": \"10\"}");
 		if (workflow.getDisplayTypeSelect() == 0) {
 			status.setWidget("NavSelect");
 		}
@@ -200,6 +201,7 @@ public class WkfService {
 			field.setIsWkf(false);
 			field.setSelection(null);
 			field.setSequence(0);
+			field.setReadonly(false);
 			jsonFieldRepo.save(field);
 		}
 		
