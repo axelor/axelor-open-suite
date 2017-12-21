@@ -75,7 +75,7 @@
 			<field name="period" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" readonlyIf="ventilated"/>
 			<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb" readonlyIf="ventilated"/>
 			<field name="withdrawnCash" hidden="true" showIf="companyCbSelect > 1" />
-            <field name="user.employee.companyCbDetails" colSpan="12" hidden="true" showIf="user != null &amp;&amp; user.employee != null &amp;&amp; companyCbSelect > 1"/>
+            <field name="user.employee.companyCbDetails" colSpan="12" hidden="true" showIf="user != null &amp;&amp; user.employee != null &amp;&amp; companyCbSelect &gt; 1"/>
 			<field name="personalExpenseAmount" hidden="true" />
 			<field name="advanceAmount" hidden="true" />
 		</panel>
