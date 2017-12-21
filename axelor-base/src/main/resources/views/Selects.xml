@@ -278,7 +278,6 @@
 	<selection name='iaccount.reject.import.type.select'>
 		<option value='0'>Direct debit</option>
 		<option value='1'>Reimbursement</option>
-		<option value='2'>Payment by IPO and IPO Cheque</option>
 	</selection>
 
 	<selection name='iaccount.interbank.account.order.import.state.select'>
@@ -655,8 +654,6 @@
 	<selection name="iaccount.payment.mode.type.select">
 		<option value="1">Other</option>
 		<option value="2">Direct debit</option>
-		<option value="3">IPO</option>
-		<option value="4">IPO + Cheque</option>
 		<option value="5">Cash</option>
 		<option value="6">Bank card</option>
 		<option value="7">Cheque</option>
