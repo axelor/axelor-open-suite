@@ -284,7 +284,12 @@
                 <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-partner-record-empty-freight-carrier-mode" title="Shipment Mode" if="__config__.app.isApp('stock')" />
                 <field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode" if="__config__.app.isApp('stock')" />
                 <field name="freightCarrier" if-module="axelor-stock" form-view="partner-form" grid-view="partner-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
-            	<field name="partnerDefaultStockLocationList" if-module="axelor-stock" colSpan="12"
+            <field name="stockMoveAutomaticMail" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
+				<field name="stockMoveMessageTemplate" if-module="axelor-stock"
+					   if="__config__.app.isApp('stock')"
+					   requiredIf="stockMoveAutomaticMail" showIf="stockMoveAutomaticMail"
+					   form-view="template-form" grid-view="template-grid"/>
+            <field name="partnerDefaultStockLocationList" if-module="axelor-stock"  colSpan="12"
 					   form-view="partner-default-stock-location-form" grid-view="partner-default-stock-location-grid"
 					   if="__config__.app.isApp('stock')"/>
             </panel>
@@ -630,6 +635,7 @@
 		<action name="action-partner-record-set-payment-modes"/>
 		<action name="action-partner-record-payment-condition"/>
 		<action name="action-partner-attrs-partner-seq-editable"/>
+		<action name="action-partner-record-set-stock-default" if="__config__.app.isApp('account')"/>
 	</action-group>
 
 	<action-group name="action-group-base-partner-contact-name-onchange">
@@ -774,6 +780,12 @@
 
 	<action-record name="action-partner-record-payment-condition" model="com.axelor.apps.base.db.Partner" if-module="axelor-account">
 		<field name="paymentCondition" expr="eval: __user__?.activeCompany?.accountConfig?.defPaymentCondition"/>
+	</action-record>
+
+	<action-record name="action-partner-record-set-stock-default" model="com.axelor.apps.base.db.Partner"
+				   if-module="axelor-stock">
+		<field name="stockMoveAutomaticMail" expr="eval: __user__?.activeCompany?.stockConfig?.stockMoveAutomaticMail"/>
+		<field name="stockMoveMessageTemplate" expr="eval: __user__?.activeCompany?.stockConfig?.stockMoveMessageTemplate"/>
 	</action-record>
 
 	<action-method name="action-print-compnay-phonebook" >

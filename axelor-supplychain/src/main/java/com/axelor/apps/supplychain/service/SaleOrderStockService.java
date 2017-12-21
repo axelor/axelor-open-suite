@@ -46,14 +46,6 @@ public interface SaleOrderStockService {
 
 	public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException;
 
-	/**
-	 * Check whether there is at least one stock move not canceled for the sale order.
-	 * 
-	 * @param saleOrder
-	 * @return
-	 */
-    public boolean activeStockMoveForSaleOrderExists(SaleOrder saleOrder);
-
     /**
      * Find active stock move for sale order.
      * 

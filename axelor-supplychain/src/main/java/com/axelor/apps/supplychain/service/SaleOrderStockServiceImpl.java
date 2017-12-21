@@ -108,8 +108,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 			}
 
 			if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
-				if (!stockMove.getStockMoveLineList().stream()
-						.anyMatch(stockMoveLine -> stockMoveLine.getSaleOrderLine() != null && stockMoveLine
+				if (stockMove.getStockMoveLineList().stream()
+						.noneMatch(stockMoveLine -> stockMoveLine.getSaleOrderLine() != null && stockMoveLine
 								.getSaleOrderLine().getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL)) {
 					stockMove.setFullySpreadOverLogisticalFormsFlag(true);
 				}
@@ -265,13 +265,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 				|| (ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect()) && supplyChainConfig.getHasOutSmForStorableProduct())) );
 	}
 
-    @Override
-    public boolean activeStockMoveForSaleOrderExists(SaleOrder saleOrder) {
-        return saleOrder.getStockMoveList() != null ? saleOrder.getStockMoveList().stream()
-                .anyMatch(stockMove -> stockMove.getStatusSelect() <= StockMoveRepository.STATUS_PLANNED) : false;
-    }
-
-    @Override
+	@Override
     public Optional<StockMove> findActiveStockMoveForSaleOrder(SaleOrder saleOrder) {
         return saleOrder.getStockMoveList() != null ? saleOrder.getStockMoveList().stream()
                 .filter(stockMove -> stockMove.getStatusSelect() <= StockMoveRepository.STATUS_PLANNED).findFirst() : Optional.empty();

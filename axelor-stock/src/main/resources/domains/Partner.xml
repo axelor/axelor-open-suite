@@ -16,6 +16,9 @@
     <one-to-many name="partnerProductQualityRatingList" ref="com.axelor.apps.stock.db.PartnerProductQualityRating" mappedBy="partner" title="Partner product quality rating"/>
     <one-to-many name="freightCarrierModeList" ref="com.axelor.apps.stock.db.FreightCarrierMode" mappedBy="freightCarrier"/>
     <one-to-many name="partnerDefaultStockLocationList" title="Default stock locations" ref="com.axelor.apps.stock.db.PartnerDefaultStockLocation" mappedBy="partner"/>
+
+    <boolean name="stockMoveAutomaticMail" title="Send email on stock move realization" default="false"/>
+    <many-to-one name="stockMoveMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
   </entity>
 
 </domain-models>
