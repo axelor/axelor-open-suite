@@ -130,6 +130,8 @@ public class WkfService {
 	
 	private void setView() {
 		
+		clearOldStatusField();
+		
 		MetaJsonField panel = getJsonField("wkfPanel", "panel");
 		panel.setSequence(-103);
 		panel.setVisibleInGrid(false);
@@ -168,6 +170,41 @@ public class WkfService {
 		
 	}
 	
+	@Transactional
+	public void clearOldStatusField() {
+		
+		MetaJsonField field  = null;
+		if (workflow.getIsJson()) {
+			field = jsonFieldRepo.all().filter("self.isWkf = true "
+					+ "and self.jsonModel.name = ?1 "
+					+ "and self.type in ('string','integer')", 
+					workflow.getModel()).fetchOne();
+		}
+		else {
+			field = jsonFieldRepo.all().filter("self.isWkf = true "
+					+ "and self.model = ?1 "
+					+ "and self.modelField = ?2 "
+					+ "and self.type in ('string','integer')", 
+					workflow.getModel(), workflow.getJsonField()).fetchOne();
+		}
+		
+		if (field != null) {
+			if (field.getSelection() != null) {
+				log.debug("Cleaning old status field: {}", field);
+				MetaSelect oldSelect = metaSelectRepo.findByName(field.getSelection());
+				if (oldSelect != null) {
+					log.debug("Removing old wkf selection: {}", oldSelect);
+					metaSelectRepo.remove(oldSelect);
+				}
+			}
+			field.setIsWkf(false);
+			field.setSelection(null);
+			field.setSequence(0);
+			jsonFieldRepo.save(field);
+		}
+		
+	}
+
 	public String getSelectName() {
 		
 		if (workflow != null) {
