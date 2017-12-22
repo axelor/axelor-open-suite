@@ -26,4 +26,13 @@
 	<action-view name="qms.improvementForm.dashboard" title="Dashboard" model="com.axelor.apps.qms.db.ImprovementForm">
         <view type="dashboard" name="qms.improvementForm.dashboard.1" />
 	</action-view>
+
+	<menuitem name="qms-config-root" parent="menu-qms-root" title="Configuration"/>
+
+	<menuitem name="qms-process-config" parent="qms-config-root" title="QMS Processes"  action="qms.process.all"/>
+
+	<action-view name="qms.process.all" title="QMS Processes" model="com.axelor.apps.qms.db.QMSProcess">
+		<view type="grid" name="qms-process-grid"/>
+		<view type="form" name="qms-process-form"/>
+	</action-view>
 </object-views>

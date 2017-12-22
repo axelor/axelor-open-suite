@@ -13,6 +13,12 @@
 		<option value="7">Closed status (IF)</option>
 	</selection>
 
+	<selection name="qms.process.type.select">
+		<option value="1">Management</option>
+		<option value="2">Realization</option>
+		<option value="3">Support</option>
+	</selection>
+
 	<selection name="sequence.generic.code.select" id="qms.sequence.generic.code.select">
 		<option value="improvementForm">Improvement form</option>
 	</selection>

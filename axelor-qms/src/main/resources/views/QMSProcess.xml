@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	<form name="qms-process-form" title="QMS Process" model="com.axelor.apps.qms.db.QMSProcess" id="qms-process-form">
+		<panel>
+			<field name="company" title="Company" readonlyIf="id != null" />
+			<spacer/>
+			<field name="typeSelect" title="Type" required="true" selection="qms.process.type.select" readonlyIf="id != null" />
+			<field name="code" title="Code" max="3" required="true" readonlyIf="id != null" />
+
+			<field name="title" title="	Title" nullable="false" required="true" colSpan="12" />
+
+			<field name="responsibles" title="Responsibles" widget="tagSelect" colSpan="12" />
+		</panel>
+	</form>
+
+	<grid model="com.axelor.apps.qms.db.QMSProcess" title="QMS processes" name="qms-process-grid" freeSearch="all" editable="false">
+		<field name="company" />
+		<field name="code" />
+		<field name="title" />
+	</grid>
+</object-views>
