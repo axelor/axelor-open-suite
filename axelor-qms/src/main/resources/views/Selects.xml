@@ -21,5 +21,6 @@
 
 	<selection name="sequence.generic.code.select" id="qms.sequence.generic.code.select">
 		<option value="improvementForm">Improvement form</option>
+		<option value="qmsDocument">Quality document</option>
 	</selection>
 </object-views>

@@ -27,6 +27,15 @@
         <view type="dashboard" name="qms.improvementForm.dashboard.1" />
 	</action-view>
 
+	<menuitem title="Documents" parent="menu-qms-root" name="qms-documents-root" />
+
+	<menuitem name="qms-document-all" parent="qms-documents-root" title="QMS Documents list"  action="qms.document.all"/>
+
+	<action-view name="qms.document.all" title="QMS Documents list" model="com.axelor.apps.qms.db.QMSDocument">
+		<view type="grid" name="qms-document-grid"/>
+		<view type="form" name="qms-document-form"/>
+	</action-view>
+
 	<menuitem name="qms-config-root" parent="menu-qms-root" title="Configuration"/>
 
 	<menuitem name="qms-process-config" parent="qms-config-root" title="QMS Processes"  action="qms.process.all"/>

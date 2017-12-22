@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<!--
+	Represents a document in the quality management system.
+	Documents handle versions with a file associated to each.
+	Detailed information are stored in the version, only constant
+	information are stored here.
+-->
+	<module name="axelor-qms" package="com.axelor.apps.qms.db" />
+
+	<entity name="QMSDocument" lang="java" cachable="true" sequential="true">
+		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"/>
+		<many-to-one name="process" ref="com.axelor.apps.qms.db.QMSProcess" required="true"/>
+		<many-to-one name="type" ref="com.axelor.apps.qms.db.QMSDocumentType" required="true" />
+		<string name="title" nullable="false" required="true" title="title"/>
+		<!-- [process code]-[type code]-[quality document sequence]
+		We cannot set nullable="false" since we generate it on save which is called after first
+		flush to DB (resource.save() → JPA.manage() → JPA.save()… then repository.save)-->
+		<string name="reference" title="Reference" readonly="true" unique="true"/>
+
+		<many-to-many name="responsibles" ref="com.axelor.apps.hr.db.Employee" title="Responsibles" required="true"/>
+	</entity>
+</domain-models>
