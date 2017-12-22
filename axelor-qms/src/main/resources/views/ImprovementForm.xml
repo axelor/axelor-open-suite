@@ -67,7 +67,7 @@
 			<button name="analyse" title="Analyze" showIf="statusSelect == 3" colSpan="12" onClick="save,action-qms-improvement-form-group-analyze" />
 			<button name="correct" title="Correct" showIf="statusSelect == 4" colSpan="12" onClick="save,action-qms-improvement-form-group-correct" />
 			<button name="assess" title="Assess" showIf="statusSelect == 5" colSpan="12" onClick="save,action-qms-improvement-form-group-assess" />
-			<button name="close" title="Close" showIf="statusSelect == 6" colSpan="12" onClick="save,action-qms-improvement-form-group-close" />
+			<button name="close" title="Close Improvement Form" showIf="statusSelect == 6" colSpan="12" onClick="save,action-qms-improvement-form-group-close" />
 			<button name="reopen" title="Reopen" showIf="statusSelect == 0" colSpan="12" onClick="save,action-qms-improvement-form-group-reopen" />
 			<button name="cancel" title="Cancel" showIf="statusSelect != 0" colSpan="12" onClick="save,action-qms-improvement-form-group-cancel" />
 		</panel>
