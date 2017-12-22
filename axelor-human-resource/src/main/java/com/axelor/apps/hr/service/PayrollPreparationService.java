@@ -403,20 +403,18 @@ public class PayrollPreparationService {
 	public void closePayPeriodIfExported(PayrollPreparation payrollPreparation) {
 	    Company company = payrollPreparation.getCompany();
 	    Period payPeriod = payrollPreparation.getPeriod();
-	    long nbEmployee = Beans.get(EmployeeRepository.class)
-				.all()
-				.filter("self.employmentContractList.payCompany = :_company")
-				.bind("_company", company)
-                .count();
-	    long nbExportedPayroll = (long) JPA.em().createQuery("SELECT COUNT(DISTINCT self.employee) " +
-				"FROM PayrollPreparation self " +
-				"WHERE self.company = :_company AND self.exported = true")
-                .setParameter("_company", company)
-                .getSingleResult();
 
-	    if (nbEmployee == nbExportedPayroll) {
-	        payPeriod.setStatusSelect(PeriodRepository.STATUS_CLOSED);
-	        payPeriod.setClosureDateTime(Beans.get(GeneralService.class).getTodayDateTime().toLocalDateTime());
+		long nbNotExportedPayroll = Beans.get(PayrollPreparationRepository.class)
+				.all()
+				.filter("self.company = :_company AND self.exported = false " +
+						"AND self.period = :_period")
+				.bind("_company", company)
+				.bind("_period", payPeriod)
+				.count();
+
+		if (nbNotExportedPayroll == 0) {
+			payPeriod.setStatusSelect(PeriodRepository.STATUS_CLOSED);
+			payPeriod.setClosureDateTime(Beans.get(GeneralService.class).getTodayDateTime().toLocalDateTime());
 		}
 		Beans.get(PeriodRepository.class).save(payPeriod);
 	}
