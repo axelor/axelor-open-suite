@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <grid name="partner-stock-move-mail-settings-grid"
+          title="Default locations" editable="true"
+          model="com.axelor.apps.stock.db.PartnerDefaultLocation">
+
+        <field name="company" form-view="company-form"
+               grid-view="company-grid"/>
+        <field name="stockMoveAutomaticMail"/>
+        <field name="stockMoveMessageTemplate"
+               requiredIf="stockMoveAutomaticMail"
+               showIf="stockMoveAutomaticMail"
+               form-view="template-form" grid-view="template-grid"/>
+    </grid>
+
+    <form name="partner-stock-move-mail-settings-form"
+          title="Default locations"
+          model="com.axelor.apps.stock.db.PartnerDefaultLocation">
+        <panel>
+            <field name="company" form-view="company-form"
+                   grid-view="company-grid"/>
+            <field name="stockMoveAutomaticMail"/>
+            <field name="stockMoveMessageTemplate"
+                   requiredIf="stockMoveAutomaticMail"
+                   showIf="stockMoveAutomaticMail"
+                   form-view="template-form" grid-view="template-grid"/>
+        </panel>
+    </form>
+
+</object-views>

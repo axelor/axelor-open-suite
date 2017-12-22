@@ -41,6 +41,8 @@ import com.axelor.apps.stock.service.LogisticalFormService;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingServiceImpl;
+import com.axelor.apps.stock.service.PartnerStockMoveMailSettingsService;
+import com.axelor.apps.stock.service.PartnerStockMoveMailSettingsServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
@@ -69,6 +71,7 @@ public class StockModule extends AxelorModule {
         bind(LogisticalFormLineService.class).to(LogisticalFormLineServiceImpl.class);
 		bind(LogisticalFormRepository.class).to(LogisticalFormStockRepository.class);
         bind(StockLocationRepository.class).to(StockLocationStockRepository.class);
+        bind(PartnerStockMoveMailSettingsService.class).to(PartnerStockMoveMailSettingsServiceImpl.class);
 		bind(AppStockService.class).to(AppStockServiceImpl.class);
         IPartner.modelPartnerFieldMap.put(StockMove.class.getName(), "partner");
     }

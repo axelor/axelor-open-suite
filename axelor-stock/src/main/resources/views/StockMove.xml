@@ -314,9 +314,9 @@
 
 	<action-record name="action-stock-move-record-auto-mail" model="com.axelor.apps.stock.db.StockMove">
 		<field name="stockMoveAutomaticMail" if="_typeSelect == '2'"
-			   expr="eval: partner?.stockMoveAutomaticMail"/>
+			   expr="eval: partner?.partnerStockMoveMailSettingsList?.find{it.company == company}?.stockMoveAutomaticMail"/>
 		<field name="stockMoveMessageTemplate" if="_typeSelect == '2'"
-			   expr="eval: partner?.stockMoveMessageTemplate"/>
+			   expr="eval: partner?.partnerStockMoveMailSettingsList?.find{it.company == company}?.stockMoveMessageTemplate"/>
 	</action-record>
 
 	<action-record name="action-stock-move-set-from-address" model="com.axelor.apps.stock.db.StockMove">
