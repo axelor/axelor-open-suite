@@ -104,6 +104,7 @@ public interface IExceptionMessage {
 	 */
 	static final String SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/ "No delivery stock move to generate for this sale order" /*)*/;
 	static final String SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXISTS = /*$$(*/ "An active stock move (%s) already exists for the sale order %s." /*)*/;
+	String SO_CANT_REMOVED_DELIVERED_LINE = /*$$(*/ "Can't remove delivered detail line %s." /*)*/;
 
 	/**
 	 * Timetable Controller
@@ -127,7 +128,7 @@ public interface IExceptionMessage {
 	
 	static final String SUPPLY_CHAIN_CONFIG = /*$$(*/ "You must configure a Supply chain module for the company %s" /*)*/;
 
-	String SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_SALE_ORDER = /*$$(*/ "You must configure a default cancel reason on changing order in app supplychain." /*)*/;
+	String SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_SALE_ORDER = /*$$(*/ "You must configure a cancel reason on changing sale order in app supplychain." /*)*/;
 
 }
 

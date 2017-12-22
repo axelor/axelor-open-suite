@@ -309,7 +309,7 @@
 	    <button name="finalize" title="Finalize" showIf="statusSelect == 1" colSpan="12" onClick="save,action-sale-order-method-finalize"/>
 	    <button name="newVersion" title="New version" if="__config__.app.getApp('sale').getManageSaleOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
         <button name="editOrder" title="Edit order" if="__config__.app.getApp('sale').allowPendingOrderModification" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="action-sale-order-method-edit-order"/>
-        <button name="validateChanges" title="Validate changes" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited" colSpan="12" onClick="action-sale-order-validate-change,save"/>
+        <button name="validateChanges" title="Validate changes" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited" colSpan="12" onClick="action-sale-order-validate-changes,save"/>
 	    <button name="generateCustomerStockMove" title="Generate customer deliveries" colSpan="12" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
 	    	if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain').customerStockMoveGenerationAuto"
 	    	onClick="save, action-supplychain-sale-order-create-stock-move"/>
@@ -1112,8 +1112,8 @@
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="enableEditOrder"/>
 	</action-method>
 
-    <action-method name="action-sale-order-validate-change">
-        <call class="com.axelor.apps.sale.web.SaleOrderController" method="validateChange" />
+    <action-method name="action-sale-order-validate-changes">
+        <call class="com.axelor.apps.sale.web.SaleOrderController" method="validateChanges" />
     </action-method>
 
 </object-views>
