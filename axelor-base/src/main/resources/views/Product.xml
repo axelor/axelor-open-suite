@@ -150,14 +150,14 @@
 				        <button name="showAllStockMoveLine" title="Show all stock move" colSpan="6" onClick="action-product-view-stock-move-line"/>
 						<field name="avgPrice"/>
 				        <spacer/>
-				        <panel-dashlet colSpan="12" action="action-product-view-stock"/>
-				        <panel-dashlet colSpan="12" action="action-stock-report-for-product"/>
-				        <panel-dashlet colSpan="12" action="action-stock-history-report-for-product"/>
+				        <panel-dashlet colSpan="12" action="action-product-view-stock" showIf="id" />
+				        <panel-dashlet colSpan="12" action="action-stock-report-for-product" showIf="id" />
+				        <panel-dashlet colSpan="12" action="action-stock-history-report-for-product" showIf="id" />
 	      			</panel>
 	    		</panel>
 	    		<panel name="productionInformations" title="Production information" showTitle="false" showIf="productTypeSelect == 'storable'" onTabSelect="action-product-attrs-readonly-create-production-order" if-module="axelor-production" if="__config__.app.isApp('production')" >
 	      			<panel-include view="product-production-form"/>
-	      			<panel-dashlet colSpan="12" action="action-product-view-production-process"/>
+	      			<panel-dashlet colSpan="12" action="action-product-view-production-process" showIf="id" />
 	    		</panel>
 	    		<panel name="trackingNumber" title="Tracking number" showTitle="false" showIf="productTypeSelect != 'service'" if-module="axelor-stock" if="__config__.app.isApp('stock')">
 	      			<panel colSpan="12">
@@ -187,7 +187,7 @@
 	        			</field>
 	        			<button name="generateProductVariant" title="Generate product variants" onClick="save,action-product-method-generate-product-variant"/>
 						<field name="manageVariantPrice"/>
-	        			<panel-dashlet colSpan="12" action="action-product-view-product-variant"/>
+	        			<panel-dashlet colSpan="12" action="action-product-view-product-variant" showIf="id" />
 	      			</panel>
 	      			<panel name="childVariant" showIf="parentProduct" colSpan="12">
 	        			<field name="productVariant" showTitle="false" canSelect="false">
@@ -203,18 +203,18 @@
 				          </editor>
 	        			</field>
 	        			<field name="parentProduct" canEdit="false" form-view="product-form" grid-view="product-grid"/>
-	        			<panel-dashlet colSpan="12" action="action-product-view-other-product-variant"/>
+	        			<panel-dashlet colSpan="12" action="action-product-view-other-product-variant" showIf="parentProduct" />
 	      			</panel>
 	      			<button name="updateProductsPrices" title="Update products prices" onClick="save,action-product-method-update-products-prices"/>
 	    		</panel>
 	    	<panel name="links" title="Links" if-module="axelor-stock" if="__config__.app.isApp('stock')" hideIf="isShippingCostsProduct">
-				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-incoming-planned"/>
-				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-planned"/>
-				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line"/>
+				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-incoming-planned" showIf="id" />
+				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-planned" showIf="id" />
+				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line" showIf="id" />
 <!--  				<panel-dashlet action="action-product-view-supplier-requests-historical" colSpan="12" if-module="axelor-supplier-management"/> -->
 <!--  				<panel-dashlet action="action-product-view-purchase-order-line-in-progress" colSpan="12" if-module="axelor-purchase"/> -->
 <!--  				<panel-dashlet action="action-product-view-purchase-order-line-historical" colSpan="12" if-module="axelor-purchase"/> -->
-				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-historical"/>
+				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-historical" showIf="id" />
 	    	</panel>
 	    	<panel name="packaging" title="Packaging" hideIf="isShippingCostsProduct">
 	  			<panel name="weight" title="Weight" colSpan="6">
