@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	<form name="qms-document-type-form" title="QMS Document Type" model="com.axelor.apps.qms.db.QMSDocumentType" id="qms-document-type-form">
+		<panel>
+			<field name="company" title="Company" readonlyIf="id != null" />
+			<field name="code" title="Code" max="3" required="true" readonlyIf="id != null"/>
+			
+			<field name="title" title="	Title" nullable="false" required="true" colSpan="12" />
+		</panel>
+	</form>
+
+	<grid model="com.axelor.apps.qms.db.QMSDocumentType" title="QMS Document types" name="qms-document-type-grid" freeSearch="all" editable="false">
+		<field name="company" />
+		<field name="code" />
+		<field name="title" />
+	</grid>
+</object-views>

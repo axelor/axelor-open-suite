@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<!--
+	Represents a QMS document type.
+	We could use a selection but that would be far less flexible
+	for users.
+-->
+	<module name="axelor-qms" package="com.axelor.apps.qms.db" />
+	<entity name="QMSDocumentType" lang="java" cachable="true" sequential="true">
+		<string name="code" max="3" nullable="false" required="true" />
+		<string name="title" nullable="false" required="true" namecolumn="true" />
+
+		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" />
+
+	</entity>
+</domain-models>

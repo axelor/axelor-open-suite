@@ -35,4 +35,11 @@
 		<view type="grid" name="qms-process-grid"/>
 		<view type="form" name="qms-process-form"/>
 	</action-view>
+
+	<menuitem name="qms-document-type-config" parent="qms-config-root" title="QMS Document Types"  action="qms.documentType.all"/>
+
+	<action-view name="qms.documentType.all" title="QMS Document Types" model="com.axelor.apps.qms.db.QMSDocumentType">
+		<view type="grid" name="qms-document-type-grid"/>
+		<view type="form" name="qms-document-type-form"/>
+	</action-view>
 </object-views>
