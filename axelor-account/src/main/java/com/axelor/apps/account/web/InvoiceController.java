@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.exception.db.IException;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import javax.annotation.Nullable;
@@ -269,29 +270,31 @@ public class InvoiceController {
 	 * Method to generate invoice as a Pdf
 	 */
 	@SuppressWarnings("unchecked")
-	public void showInvoice(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void showInvoice(ActionRequest request, ActionResponse response) {
 		Context context = request.getContext();
-		ReportSettings reportSetting = null;
-		
-		if(context.containsKey("_ids") && !ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
-			List<Long> ids = Lists.transform((List) request.getContext().get("_ids"), new Function<Object, Long>() {
-                @Nullable
-                @Override
-                public Long apply(@Nullable Object input) {
-                    return Long.parseLong(input.toString());
-                }
-            });
-            reportSetting = invoiceService.printInvoices(ids);
-		} else if(context.containsKey("id")) {
-			reportSetting = invoiceService.printInvoice(request.getContext().asType(Invoice.class), false);
-		} else {
-			response.setFlash(I18n.get(IExceptionMessage.INVOICE_3));
-			return;
-		}
+		ReportSettings reportSetting;
 
-		response.setView(ActionView
-				.define(reportSetting.getOutputName())
-				.add("html", reportSetting.getFileLink()).map());
+		try {
+			if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
+				List<Long> ids = Lists.transform((List) request.getContext().get("_ids"), new Function<Object, Long>() {
+					@Nullable
+					@Override
+					public Long apply(@Nullable Object input) {
+						return Long.parseLong(input.toString());
+					}
+				});
+				reportSetting = invoiceService.printInvoices(ids);
+			} else if (context.get("id") != null) {
+				reportSetting = invoiceService.printInvoice(request.getContext().asType(Invoice.class), false);
+			} else {
+				throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_3));
+			}
+			response.setView(ActionView
+					.define(reportSetting.getOutputName())
+					.add("html", reportSetting.getFileLink()).map());
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 
 	}
 
