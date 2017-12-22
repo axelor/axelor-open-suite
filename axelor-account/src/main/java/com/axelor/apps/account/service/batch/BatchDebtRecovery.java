@@ -96,7 +96,7 @@ public class BatchDebtRecovery extends BatchStrategy {
 		
 		int i = 0;
 		Company company = batch.getAccountingBatch().getCompany();
-		List<Partner> partnerList = partnerRepository.all().filter("self.isContact = false AND ?1 MEMBER OF self.companySet", company).fetch();
+		List<Partner> partnerList = partnerRepository.all().filter("self.isContact = false AND ?1 MEMBER OF self.companySet AND self.accountingSituationList IS NOT EMPTY", company).fetch();
 		
 		for (Partner partner : partnerList) {
 
