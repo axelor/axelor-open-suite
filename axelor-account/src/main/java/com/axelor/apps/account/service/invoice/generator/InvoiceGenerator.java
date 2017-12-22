@@ -17,15 +17,22 @@
  */
 package com.axelor.apps.account.service.invoice.generator;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoiceLineTax;
+import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -37,13 +44,17 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.account.service.payment.PaymentModeService;
-import com.axelor.apps.base.db.*;
+import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import java.lang.invoke.MethodHandles;
 
 public abstract class InvoiceGenerator  {
 	
@@ -288,10 +299,10 @@ public abstract class InvoiceGenerator  {
 
 		initCollections( invoice );
 
-		invoice.getInvoiceLineList().addAll(invoiceLines);
+	    invoiceLines.stream().forEach(invoice::addInvoiceLineListItem);
 
 		// create Tva lines
-		invoice.getInvoiceLineTaxList().addAll((new TaxInvoiceLine(invoice, invoiceLines)).creates());
+		(new TaxInvoiceLine(invoice, invoiceLines)).creates().stream().forEach(invoice::addInvoiceLineTaxListItem);
 
 		computeInvoice(invoice);
 
