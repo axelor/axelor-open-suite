@@ -9,7 +9,7 @@
   
     <integer name="importId"/>
     <string name="code" title="Code" unique="true"/>
-    <string name="name" title="Name" required="true" unique="true"/>
+    <string name="name" title="Name" required="true"/>
     <many-to-one name="type" ref="JournalType" title="Type"/>
     <string name="exportCode" title="Export code" />
     <boolean name="excessPaymentOk" title="Allow payments greater than due amount ?"/>
@@ -26,6 +26,8 @@
   	
   	<many-to-many name="validAccountTypeSet" ref="com.axelor.apps.account.db.AccountType" title="Compatible Account Types" help="true"/>
   	<many-to-many name="validAccountSet" ref="com.axelor.apps.account.db.Account" title="Compatible Accounts" help="true"/>
+
+	<unique-constraint columns="company,name"/>
   	
   	 <extra-code><![CDATA[
 	
