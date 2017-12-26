@@ -3,22 +3,23 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
-	<form name="stock-move-multi-sale-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Cust. Stock Move Invoicing" >
-		<panel-related field="$customerStockMoveToInvoice" title="Customer Stock Move to invoice" colSpan="12" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND self.typeSelect = 2" canNew="false" canEdit="false"/>
-		<panel sidebar="true" name="actions" title="Actions">
-			<button name="generateInvoiceConcatStockMove" title="Generate single invoice" onClick="action-validate-supplychain-outgoing-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-invoice"/>
-			<button name="generateMultiInvoice" title="Generate one invoice per outgoing stockMove" onClick="action-validate-supplychain-outgoing-stock-move-check-selection,action-supplychain-stock-move-method-generate-multi-invoice"/>
-	  	</panel>
-    </form>
+	<form name="stock-move-multi-sale-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Cust. Stock Move Invoicing" width="large" >
+		<panel name="actions" title="Actions">			
+			<button name="generateMultiInvoice" colSpan="6" title="Generate one invoice per outgoing stockMove" onClick="action-validate-supplychain-outgoing-stock-move-check-selection,action-supplychain-stock-move-method-generate-multi-invoice" readonlyIf="!customerStockMoveToInvoice || customerStockMoveToInvoice.length &lt; 2"/>
+			<button name="generateInvoiceConcatStockMove" colSpan="6" title="Generate single invoice" onClick="action-validate-supplychain-outgoing-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-invoice" readonlyIf="!customerStockMoveToInvoice || customerStockMoveToInvoice.length == 0"/>
+		</panel>
+		<panel-related height="17" title="Customer Stock Move to invoice" colSpan="12" field="customerStockMoveToInvoice" type="many-to-many" domain="self.statusSelect = 3 AND self.typeSelect = 2" target="com.axelor.apps.stock.db.StockMove" grid-view="stock-move-out-grid-mass" canNew="false" canEdit="false"/>
+	</form>
     
-    <form name="stock-move-multi-purchase-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Suppl. Stock Move Invoicing" >
-		<panel-related field="$supplierStockMoveToInvoice" title="Supplier Stock Move to invoice" colSpan="12" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND self.typeSelect = 3" canNew="false" canEdit="false"/>
-		<panel sidebar="true" name="actions" title="Actions">
-			<button name="generateInvoiceConcatStockMove" title="Generate single invoice" onClick="action-validate-supplychain-incoming-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-invoice"/>
-			<button name="generateMultiInvoice" title="Generate one invoice per incoming stockMove" onClick="action-validate-supplychain-incoming-stock-move-check-selection,action-supplychain-stock-move-method-generate-multi-invoice"/>
-	  	</panel>
-    </form>
-    
+    <form name="stock-move-multi-purchase-invoicing-form" title="Mass Suppl. Stock Move Invoicing" model="com.axelor.apps.stock.db.StockMove" width="large">
+		<panel name="actions" title="Actions">
+			<button name="generateMultiInvoice" title="Generate one invoice per incoming stockMove" readonlyIf="!supplierStockMoveToInvoice || supplierStockMoveToInvoice.length &lt; 2" colSpan="6" onClick="action-validate-supplychain-incoming-stock-move-check-selection,action-supplychain-stock-move-method-generate-multi-invoice"/>
+		  	<button name="generateInvoiceConcatStockMove" title="Generate single invoice" readonlyIf="!supplierStockMoveToInvoice || supplierStockMoveToInvoice.length == 0" colSpan="6" onClick="action-validate-supplychain-incoming-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-invoice"/>
+		</panel>
+ 		<panel-related height="17" title="Supplier Stock Move to invoice" colSpan="12" field="supplierStockMoveToInvoice" type="many-to-many" domain="self.statusSelect = 3 AND self.typeSelect = 3" target="com.axelor.apps.stock.db.StockMove" canNew="false" canEdit="false" grid-view="stock-move-in-grid-mass"/>
+	</form>
+	
+	    
     <form name="stock-move-supplychain-concat-invoice-confirm-form" model="com.axelor.apps.stock.db.StockMove" title="Confirmation" onNew="action-record-load-dummy-field-generate-invoice">
 		<panel name="main" >
 			<field name="$paymentCondition" title="Payment condition" target="com.axelor.apps.account.db.PaymentCondition" colSpan="12" width="200px" widget="SuggestBox" showIf="paymentConditionToCheck"/>
