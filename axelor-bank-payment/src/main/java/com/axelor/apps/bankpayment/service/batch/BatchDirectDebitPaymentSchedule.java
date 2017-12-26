@@ -177,9 +177,11 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
         BankOrderMergeService bankOrderMergeService = Beans.get(BankOrderMergeService.class);
         ReconcileRepository reconcileRepo = Beans.get(ReconcileRepository.class);
         InvoicePaymentRepository invoicePaymentRepo = Beans.get(InvoicePaymentRepository.class);
+        PaymentScheduleLineRepository paymentScheduleLineRepo = Beans.get(PaymentScheduleLineRepository.class);
         List<InvoicePayment> invoicePaymentList = new ArrayList<>();
 
         for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList) {
+            paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
             PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
             MoveLine creditMoveLine = paymentScheduleLine.getAdvanceMoveLine();
 
