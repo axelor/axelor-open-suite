@@ -23,7 +23,7 @@
 			    <field name="comments" colSpan="9"/>
 			    <field name="dayNumber" colSpan="3" requiredIf="actionSelect == 1"/>
 			    <field name="useWeeklyPlanningCoef" colSpan="3"/>
-   				<field name="planningSet" target="com.axelor.apps.base.db.WeeklyPlanning" grid-view="weekly-planning-grid" form-view="weekly-planning-form" widget="TagSelect"/>
+   				<field name="planningSet" grid-view="weekly-planning-grid" form-view="weekly-planning-form" widget="TagSelect"/>
 			    <field name="startDate" colSpan="3"/>
 			    <field name="endDate" colSpan="3"/>
 		   		<panel-related field="employeeSet" target="com.axelor.apps.hr.db.Employee" grid-view="employee-lite-grid" form-view="employee-form" canNew="false" colSpan="12"/>
@@ -39,7 +39,7 @@
 			</panel>
 			<panel name="payrollPreparationGenerationPage" title="Payroll preparation generation page" hidden="true" showIf="actionSelect == 3">
 			    <field name="period" domain="self.year.company = :company" colSpan="4" canEdit="false" />
-   				<field name="planningSet" target="com.axelor.apps.base.db.WeeklyPlanning" grid-view="weekly-planning-grid" form-view="weekly-planning-form" widget="TagSelect" colSpan="8"/>
+   				<field name="planningSet" grid-view="weekly-planning-grid" form-view="weekly-planning-form" widget="TagSelect" colSpan="8"/>
    			    <field name="comments" colSpan="12"/>
 		   		<panel-related field="employeeSet" target="com.axelor.apps.hr.db.Employee" grid-view="employee-lite-grid" form-view="employee-form" canNew="false" colSpan="12"/>
 				<button name="payrollPreparationGenerationBatch" readonlyIf="period == null" title="Payroll preparation generation batch" onClick="save,action-hrbatch-method-hr-batch"/>
