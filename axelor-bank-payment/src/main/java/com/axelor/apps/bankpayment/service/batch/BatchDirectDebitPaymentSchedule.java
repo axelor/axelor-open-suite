@@ -38,14 +38,17 @@ import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
+import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.QueryBuilder;
@@ -55,6 +58,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.persist.Transactional;
@@ -63,14 +67,22 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+    protected PaymentMode directDebitPaymentMode;
+    protected boolean generateBankOrderFlag;
+
+    @Override
+    protected void start() throws IllegalAccessException, AxelorException {
+        super.start();
+        directDebitPaymentMode = getDirectDebitPaymentMode();
+        generateBankOrderFlag = directDebitPaymentMode != null && directDebitPaymentMode.getGenerateBankOrder();
+    }
+
     @Override
     protected void process() {
         List<PaymentScheduleLine> paymentScheduleLineList = processPaymentScheduleLines(
                 PaymentScheduleRepository.TYPE_TERMS);
 
-        PaymentMode paymentMode = getDirectDebitPaymentMode();
-
-        if (!paymentScheduleLineList.isEmpty() && paymentMode != null && paymentMode.getGenerateBankOrder()) {
+        if (!paymentScheduleLineList.isEmpty() && generateBankOrderFlag) {
             try {
                 mergeBankOrders(paymentScheduleLineList);
             } catch (AxelorException e) {
@@ -147,6 +159,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
         Set<Long> treatedSet = new HashSet<>();
         List<PaymentScheduleLine> paymentScheduleLineList;
+        PaymentScheduleService paymentScheduleService = Beans.get(PaymentScheduleService.class);
         PaymentScheduleLineService paymentScheduleLineService = Beans.get(PaymentScheduleLineService.class);
         BankDetailsRepository bankDetailsRepo = Beans.get(BankDetailsRepository.class);
 
@@ -165,6 +178,18 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
                 treatedSet.add(paymentScheduleLine.getId());
 
                 try {
+                    if (generateBankOrderFlag) {
+                        PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
+                        paymentScheduleService.getBankDetails(paymentSchedule);
+
+                        if (directDebitPaymentMode
+                                .getOrderTypeSelect() == PaymentModeRepository.ORDER_TYPE_SEPA_DIRECT_DEBIT) {
+                            Partner partner = paymentSchedule.getPartner();
+                            Preconditions.checkNotNull(partner);
+                            Preconditions.checkNotNull(partner.getActiveUmr());
+                        }
+                    }
+
                     paymentScheduleLineService.createPaymentMove(paymentScheduleLine, companyBankDetails);
                     doneList.add(paymentScheduleLine);
                     incrementDone();

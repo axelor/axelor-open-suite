@@ -17,6 +17,15 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder.file.directdebit;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
@@ -51,14 +60,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import java.io.File;
-import java.io.IOException;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 public class BankOrderFile00800102Service extends BankOrderFileService {
 
@@ -295,11 +296,11 @@ public class BankOrderFile00800102Service extends BankOrderFileService {
              *        allowed in the same message.
              */
         switch (sepaType) {
-            case "CORE":
-                localInstrument2Choice.setCd("CORE");
+            case SEPA_TYPE_CORE:
+                localInstrument2Choice.setCd(SEPA_TYPE_CORE);
                 break;
-            case "B2B":
-                localInstrument2Choice.setCd("B2B");
+            case SEPA_TYPE_SBB:
+                localInstrument2Choice.setCd(SEPA_TYPE_SBB);
                 break;
             default:
                 throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_SEPA_TYPE));
