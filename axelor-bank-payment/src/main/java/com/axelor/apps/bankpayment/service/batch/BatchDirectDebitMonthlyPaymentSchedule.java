@@ -65,9 +65,7 @@ public class BatchDirectDebitMonthlyPaymentSchedule extends BatchDirectDebitPaym
         List<PaymentScheduleLine> paymentScheduleLineList = processPaymentScheduleLines(
                 PaymentScheduleRepository.TYPE_MONTHLY);
 
-        PaymentMode paymentMode = getDirectDebitPaymentMode();
-
-        if (!paymentScheduleLineList.isEmpty() && paymentMode != null && paymentMode.getGenerateBankOrder()) {
+        if (!paymentScheduleLineList.isEmpty() && generateBankOrderFlag) {
             try {
                 createBankOrder(paymentScheduleLineList);
             } catch (Exception e) {
@@ -88,7 +86,6 @@ public class BatchDirectDebitMonthlyPaymentSchedule extends BatchDirectDebitPaym
         BankOrderManagementRepository bankOrderRepo = Beans.get(BankOrderManagementRepository.class);
 
         AccountingBatch accountingBatch = batch.getAccountingBatch();
-        PaymentMode paymentMode = getDirectDebitPaymentMode();
         int partnerType = BankOrderRepository.PARTNER_TYPE_CUSTOMER;
         LocalDate bankOrderDate = accountingBatch.getDueDate() != null ? accountingBatch.getDueDate()
                 : appBaseService.getTodayDate();
@@ -97,8 +94,8 @@ public class BatchDirectDebitMonthlyPaymentSchedule extends BatchDirectDebitPaym
         Currency currency = companyBankDetails.getCurrency();
         String senderReference = null;
         String senderLabel = null;
-        
-        paymentMode = Beans.get(PaymentModeRepository.class).find(paymentMode.getId());
+
+        PaymentMode paymentMode = Beans.get(PaymentModeRepository.class).find(directDebitPaymentMode.getId());
         company = Beans.get(CompanyRepository.class).find(company.getId());
         companyBankDetails = Beans.get(BankDetailsRepository.class).find(companyBankDetails.getId());
         currency = Beans.get(CurrencyRepository.class).find(currency.getId());
