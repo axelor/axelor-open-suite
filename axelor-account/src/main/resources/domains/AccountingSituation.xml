@@ -8,7 +8,7 @@
   <entity name="AccountingSituation" lang="java">
 	
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Payer partner" />
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Customer" />
 	
 	
  	<many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account"/>

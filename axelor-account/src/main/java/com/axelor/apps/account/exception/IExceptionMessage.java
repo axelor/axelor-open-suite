@@ -279,10 +279,10 @@ public interface IExceptionMessage {
 	 */
 	static final String CFONB_EXPORT_1 = /*$$(*/ "You must configure a RIB for the reimbursement" /*)*/;
 	static final String CFONB_EXPORT_2 = /*$$(*/ "%s : Error detected during CFONB file's writing : %s" /*)*/;
-	static final String CFONB_EXPORT_3 = /*$$(*/ "%s : You must configure a Sort Code for the RIB %s of third-payer %s" /*)*/;
-	static final String CFONB_EXPORT_4 = /*$$(*/ "%s : You must configure a number's account for the RIB %s of third-payer %s" /*)*/;
-	static final String CFONB_EXPORT_5 = /*$$(*/ "%s : You must configure a Bank Code for the RIB %s of third-payer %s" /*)*/;
-	static final String CFONB_EXPORT_6 = /*$$(*/ "%s : You must configure a Bank Address for the RIB %s of third-payer %s" /*)*/;
+	static final String CFONB_EXPORT_3 = /*$$(*/ "%s : You must configure a Sort Code for the RIB %s of customer %s" /*)*/;
+	static final String CFONB_EXPORT_4 = /*$$(*/ "%s : You must configure a number's account for the RIB %s of customer %s" /*)*/;
+	static final String CFONB_EXPORT_5 = /*$$(*/ "%s : You must configure a Bank Code for the RIB %s of customer %s" /*)*/;
+	static final String CFONB_EXPORT_6 = /*$$(*/ "%s : You must configure a Bank Address for the RIB %s of customer %s" /*)*/;
 
 	/**
 	 * Cfonb import service
