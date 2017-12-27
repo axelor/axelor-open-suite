@@ -148,7 +148,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 * 
 	 * @throws AxelorException
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice compute(final Invoice invoice) throws AxelorException {
 
 		log.debug("Calcul de la facture");
