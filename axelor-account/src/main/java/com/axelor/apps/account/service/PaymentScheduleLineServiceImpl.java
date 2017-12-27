@@ -179,7 +179,6 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 		AccountConfig accountConfig = company.getAccountConfig();
 		PaymentMode paymentMode = accountConfig.getDirectDebitPaymentMode();
 		Partner partner = paymentSchedule.getPartner();
-		BankDetails bankDetails = paymentSchedule.getBankDetails();
 		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
 		BigDecimal amount = paymentScheduleLine.getInTaxAmount();
 		String name = paymentScheduleLine.getName();
