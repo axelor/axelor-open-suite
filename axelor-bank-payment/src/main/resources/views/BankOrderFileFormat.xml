@@ -51,8 +51,8 @@
 	</action-record>
 
     <action-record name="action-bank-order-file-format-reset-order-debit-type" model="com.axelor.apps.bankpayment.db.BankOrderFileFormat">
-        <field name="orderDebitTypeSelect" expr="eval: __repo__.of(BankOrderFileFormat).ORDER_DEBIT_TYPE_UNIT_DEBIT_BY_OPERATION"
-            if="'pain.xxx.cfonb320.xct'.equals(orderFileFormatSelect) &amp;&amp; (isMultiDate || isMultiCurrency &amp;&amp; orderDebitTypeSelect == __repo__.of(BankOrderFileFormat).ORDER_DEBIT_TYPE_ORDER_OVERALL_DEBIT)" />
+        <field name="orderDebitTypeSelect" expr="eval: __repo__(BankOrderFileFormat).ORDER_DEBIT_TYPE_UNIT_DEBIT_BY_OPERATION"
+            if="'pain.xxx.cfonb320.xct'.equals(orderFileFormatSelect) &amp;&amp; (isMultiDate || isMultiCurrency &amp;&amp; orderDebitTypeSelect == __repo__(BankOrderFileFormat).ORDER_DEBIT_TYPE_ORDER_OVERALL_DEBIT)" />
         <field name="orderDebitTypeSelect" expr="eval: null" if="!'pain.xxx.cfonb320.xct'.equals(orderFileFormatSelect)"/>
     </action-record>
 
