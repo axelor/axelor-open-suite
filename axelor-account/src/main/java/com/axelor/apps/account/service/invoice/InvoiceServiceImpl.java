@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.axelor.apps.account.db.AccountConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +68,7 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -632,23 +632,33 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	}
 
 	@Override
-	public BankDetails getBankDetails(Invoice invoice) {
-		BankDetails bankDetails = null;
+    public BankDetails getBankDetails(Invoice invoice) throws AxelorException {
+        BankDetails bankDetails;
 
-		if (invoice.getSchedulePaymentOk() && invoice.getPaymentSchedule() != null) {
-			bankDetails = invoice.getPaymentSchedule().getBankDetails();
-		}
+        if (invoice.getSchedulePaymentOk() && invoice.getPaymentSchedule() != null) {
+            bankDetails = invoice.getPaymentSchedule().getBankDetails();
+            if (bankDetails != null) {
+                return bankDetails;
+            }
+        }
 
-		if (bankDetails == null) {
-			bankDetails = invoice.getBankDetails();
-		}
+        bankDetails = invoice.getBankDetails();
 
-		if (bankDetails == null) {
-			bankDetails = Beans.get(BankDetailsRepository.class).findDefaultByPartner(invoice.getPartner());
-		}
+        if (bankDetails != null) {
+            return bankDetails;
+        }
 
-		return bankDetails;
-	}
+        Partner partner = invoice.getPartner();
+        Preconditions.checkNotNull(partner);
+        bankDetails = Beans.get(BankDetailsRepository.class).findDefaultByPartner(partner);
+
+        if (bankDetails != null) {
+            return bankDetails;
+        }
+
+        throw new AxelorException(invoice, IException.MISSING_FIELD,
+                I18n.get(IExceptionMessage.PARTNER_BANK_DETAILS_MISSING), partner.getName());
+    }
 
 }
 

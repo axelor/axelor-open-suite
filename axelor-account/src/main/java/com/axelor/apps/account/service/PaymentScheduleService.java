@@ -75,4 +75,13 @@ public interface PaymentScheduleService {
 
 	void toCancelPaymentSchedule(PaymentSchedule paymentSchedule);
 
+	/**
+	 * Get partner's bank details.
+	 * 
+	 * @param paymentSchedule
+	 * @return
+	 * @throws AxelorException
+	 */
+	BankDetails getBankDetails(PaymentSchedule paymentSchedule) throws AxelorException;
+
 }
