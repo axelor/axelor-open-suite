@@ -592,4 +592,9 @@ public interface IExceptionMessage {
 	static final String DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE = /*$$(*/ "Unsupported payment mode type" /*)*/;;
     static final String DEPOSIT_SLIP_MISSING_CHEQUE_INFORMATION = /*$$(*/ "Missing cheque information on payment %s" /*)*/;;
 
+    /*
+     * Partner
+     */
+    String PARTNER_BANK_DETAILS_MISSING = /*$$(*/ "Bank details are missing for partner %s." /*)*/;
+
 }

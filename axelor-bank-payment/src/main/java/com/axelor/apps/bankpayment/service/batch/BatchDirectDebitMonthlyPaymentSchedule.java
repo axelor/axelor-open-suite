@@ -35,6 +35,7 @@ import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
+import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderManagementRepository;
@@ -79,6 +80,7 @@ public class BatchDirectDebitMonthlyPaymentSchedule extends BatchDirectDebitPaym
     @Transactional(rollbackOn = { AxelorException.class, Exception.class })
     protected BankOrder createBankOrder(List<PaymentScheduleLine> paymentScheduleLineList)
             throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+        PaymentScheduleService paymentScheduleService = Beans.get(PaymentScheduleService.class);
         BankOrderCreateService bankOrderCreateService = Beans.get(BankOrderCreateService.class);
         BankOrderService bankOrderService = Beans.get(BankOrderService.class);
         BankOrderLineService bankOrderLineService = Beans.get(BankOrderLineService.class);
@@ -107,7 +109,7 @@ public class BatchDirectDebitMonthlyPaymentSchedule extends BatchDirectDebitPaym
         for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList) {
             PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
             Partner partner = paymentSchedule.getPartner();
-            BankDetails bankDetails = paymentSchedule.getBankDetails();
+            BankDetails bankDetails = paymentScheduleService.getBankDetails(paymentSchedule);
             BigDecimal amount = paymentScheduleLine.getInTaxAmount();
             String receiverReference = paymentScheduleLine.getName();
             String receiverLabel = paymentScheduleLine.getDebitNumber();
