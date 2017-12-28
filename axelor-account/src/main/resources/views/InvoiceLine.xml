@@ -13,6 +13,14 @@
     </grid>
     
     <grid name="invoice-line-menu-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
+		<toolbar>
+			<button name="new" title="" hidden="true"/>
+			<button name="edit" title="" hidden="true"/>
+			<button name="save" title="" hidden="true"/>
+			<button name="delete" title="" hidden="true"/>
+			<button name="copy" title="" hidden="true"/>
+			<button name="cancel" title="" hidden="true"/>
+		</toolbar>
     	<field name="invoice.partner"/>
     	<field name="invoice.invoiceId"/>
         <field name="productName"/>
@@ -22,6 +30,11 @@
         <field name="exTaxTotal" aggregate="sum"/>
 	    <field name="inTaxTotal" aggregate="sum"/>
     </grid>
+
+	<form title="Invoice line" name="invoice-line-menu-form" model="com.axelor.apps.account.db.InvoiceLine" width="large"
+		  canNew="false" canEdit="false" canSave="false" canDelete="false" canCopy="false" canArchive="false">
+		<panel-include view="invoice-line-form"/>
+	</form>
 
 	<form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" width="large"
 		  onNew="action-account-invoice-line-onnew-group"
