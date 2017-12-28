@@ -113,6 +113,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
                     stockMove.setFullySpreadOverLogisticalFormsFlag(true);
                 }
 
+                stockMove.setEstimatedDate(saleOrder.getDeliveryDate());
 				stockMoveService.plan(stockMove);
 				return stockMove;
 			}
