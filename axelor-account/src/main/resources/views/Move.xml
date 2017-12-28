@@ -66,6 +66,23 @@
 				<field name="moveLineReport" form-view="move-line-report-export-form" showIf="accountingOk" grid-view="move-line-report-grid"/>
 			</panel>
 			
+			<panel name="Currency" title="Currencies">
+				<field name="currency" readonly="true"/>
+				<field name="companyCurrency" readonly="true"/>
+				<field name="moveLineList" colSpan="12">
+					<viewer>
+					<![CDATA[
+						<span>{{ record.currencyRate }} </span> - <span>{{ record.currencyAmount }} </span> - <span>{{ record.move.currencyCode }} </span>	
+					]]>
+					</viewer>
+					<editor layout="table" x-show-titles="false" colSpan="12">
+						<field name="currencyRate" readonly="true"/>
+						<field name="currencyAmount" readonly="true"/>
+						<field name="move.currencyCode" readonly="true"/>
+					</editor>
+				</field>
+			</panel>
+
 			<panel name="others" title="Others">
 				<field name="ignoreInAccountingOk"/>
 				<field name="ignoreInReminderOk"/>
@@ -78,6 +95,7 @@
 	<!-- ACTION GROUPs -->
 	<action-group name="action-account-move-onnew-group">
 		<action name="default-move-record"/>
+		<action name="default-move-record-currency"/>
 		<action name="action-move-record-journal"/>
 		<action name="action-move-method-get-period"/>
 		<action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
@@ -98,6 +116,11 @@
 		<field name="technicalOriginSelect" expr="1"/>
     </action-record>
     
+    <action-record name="default-move-record-currency" model="com.axelor.apps.account.db.Move">
+		<field name="companyCurrency" expr="eval: company?.currency" />
+		<field name="currency" expr="eval: company?.currency" />
+    </action-record>
+
     <action-record name="action-move-record-journal" model="com.axelor.apps.account.db.Move">
     	<field name="journal" expr="eval: company?.accountConfig?.manualMiscOpeJournal"/>
     </action-record>
