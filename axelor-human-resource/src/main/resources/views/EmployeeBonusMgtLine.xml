@@ -21,7 +21,8 @@
 		<field name="employeeBonusMgt" hidden="true" />
     </grid>
 
-    <form name="employee-bonus-mgt-line-form" title="Employee bonus" model="com.axelor.apps.hr.db.EmployeeBonusMgtLine">
+    <form name="employee-bonus-mgt-line-form" title="Employee bonus" model="com.axelor.apps.hr.db.EmployeeBonusMgtLine"
+        onLoad="action-employee-bonus-mgt-line-attrs-payroll-preparation">
     	<panel name="main">
     		<field name="employee" />
 			<field name="amount" />
@@ -29,13 +30,15 @@
 			<field name="weeklyPlanning" canEdit="false" />
 			<field name="seniorityDate" />
         </panel>
-        <panel title="Payroll preparation" sidebar="true" readonly="true" showIf="payrollPreparation">
+        <panel name="payrollPreparationPanel" title="Payroll preparation" sidebar="true" readonly="true" showIf="payrollPreparation"
+            hidden="true">
             <field name="payrollPreparation" showTitle="false" />
             <field name="payrollPreparation.exported" />
         </panel>
     </form>
-    
-    <form name="employee-bonus-mgt-line-employee-form" title="Employee bonus" model="com.axelor.apps.hr.db.EmployeeBonusMgtLine">
+
+    <form name="employee-bonus-mgt-line-employee-form" title="Employee bonus" model="com.axelor.apps.hr.db.EmployeeBonusMgtLine"
+        onLoad="action-employee-bonus-mgt-line-attrs-payroll-preparation">
     	<panel name="main">
 			<field name="amount" />
 			<field name="coef" />
@@ -45,10 +48,15 @@
 			<field name="seniorityDate" />
 			<field name="employeeBonusMgt" hidden="true" />
         </panel>
-        <panel title="Payroll preparation" sidebar="true" readonly="true" showIf="payrollPreparation">
+        <panel name="payrollPreparationPanel" title="Payroll preparation" sidebar="true" readonly="true" showIf="payrollPreparation"
+            hidden="true">
             <field name="payrollPreparation" showTitle="false" />
             <field name="payrollPreparation.exported" />
         </panel>
     </form>
+
+    <action-attrs name="action-employee-bonus-mgt-line-attrs-payroll-preparation">
+        <attribute name="hidden" for="payrollPreparationPanel" expr="eval: !__user__.employee?.hrManager" />
+    </action-attrs>
 
 </object-views>

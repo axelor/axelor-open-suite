@@ -37,7 +37,7 @@
 
 	<form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large" canNew="false"
 	    onNew="action-expense-record-default,action-expense-attrs-buttons,action-expense-attrs-multiple-users" 
-	    onLoad="action-expense-attrs-buttons,action-expense-attrs-expense-company-cb,action-expense-attrs-multiple-users"
+	    onLoad="action-expense-attrs-buttons,action-expense-attrs-expense-company-cb,action-expense-attrs-multiple-users,action-expense-attrs-payroll-preparation"
 	    onSave="action-expense-method-validate-date,action-expense-method-compute-amounts,action-expense-method-compute" canCopy="false">
 		<toolbar>
 			<button name="printExpense" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-expense"/>
@@ -147,7 +147,7 @@
 			<field name="refusalDate" hidden="true" showIf="refusalDate" colSpan="4"/>
 			<field name="groundForRefusal" hidden="true" readonly="true" showIf="statusSelect == 5" colSpan="12"/>
 		</panel>
-        <panel title="Payroll preparation" sidebar="true" readonly="true" showIf="payrollPreparation">
+        <panel name="payrollPreparationPanel" title="Payroll preparation" sidebar="true" readonly="true" showIf="payrollPreparation" hidden="true">
             <field name="payrollPreparation" showTitle="false" />
             <field name="payrollPreparation.exported" />
         </panel>
@@ -252,7 +252,11 @@
 	<action-attrs name="action-expense-attrs-expense-company-cb">
 		<attribute name="hidden" for="expenseLineList.companyCbPaymentSelect" expr="eval: companyCbSelect == 1"/>
 	</action-attrs>
-	
+
+    <action-attrs name="action-expense-attrs-payroll-preparation">
+        <attribute name="hidden" for="payrollPreparationPanel" expr="eval: !__user__.employee?.hrManager" />
+    </action-attrs>
+
 	<action-validate name="action-expense-validate-period">
 		<error message="Period is closed" if="period?.statusSelect == 2"/>
 	</action-validate>

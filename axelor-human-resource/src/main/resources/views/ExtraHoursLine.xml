@@ -12,7 +12,7 @@
 
 	<form name="extra-hours-line-form" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHoursLine" cols="12" width="large"
 	    onNew="action-group-extra-hours-line-onnew"
-	    onLoad="action-extra-hours-line-attrs-title-project-task">
+	    onLoad="action-extra-hours-line-attrs-title-project-task,action-extra-hours-line-attrs-payroll-preparation">
 
 		<panel name="head">
 			<field name="date"/>
@@ -21,7 +21,8 @@
 			<field name="description" colSpan="12"/>
 			<field name="user" canEdit="false" hidden="true" form-view="user-form" grid-view="user-grid"/>
 		</panel>
-        <panel title="Payroll preparation" sidebar="true" readonly="true" showIf="payrollPreparation">
+        <panel name="payrollPreparationPanel" title="Payroll preparation" sidebar="true" readonly="true" showIf="payrollPreparation"
+            hidden="true">
             <field name="payrollPreparation" showTitle="false" />
             <field name="payrollPreparation.exported" />
         </panel>
@@ -32,6 +33,9 @@
 		<attribute name="title" for="projectTask" expr="eval: __config__.general.getProjectTaskLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.general.getProjectTaskLabel())"/>
 	</action-attrs>
 	
+    <action-attrs name="action-extra-hours-line-attrs-payroll-preparation">
+        <attribute name="hidden" for="payrollPreparationPanel" expr="eval: !__user__.employee?.hrManager" />
+    </action-attrs>
 
 	<action-record name="action-extra-hours-line-record-default" model="com.axelor.apps.hr.db.ExtraHoursLine">
 	    <field name="user" expr="eval: __user__"/>
