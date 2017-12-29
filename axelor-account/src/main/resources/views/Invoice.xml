@@ -700,6 +700,7 @@
         <action name="action-invoice-attrs-show-validate-button"/>
 		<action name="action-invoice-attrs-interco-supplychain"/>
 		<action name="action-invoice-record-interco-supplychain"/>
+		<action name="action-invoice-attrs-change-create-refund-title"/>
     </action-group>
     
     <action-group name="action-account-invoice-onload-group" >
@@ -711,6 +712,7 @@
 		<action name="action-invoice-attrs-ventilate"/>
         <action name="action-invoice-attrs-show-validate-button"/>
 		<action name="action-invoice-attrs-interco-supplychain"/>
+		<action name="action-invoice-attrs-change-create-refund-title"/>
     </action-group>
     
     <action-group name="action-group-account-invoice-operationtype-onchange">
@@ -877,6 +879,10 @@
         <attribute name="hidden" expr="eval: (statusSelect != null &amp;&amp; statusSelect != 1) || __config__.app.getApp('invoice').getIsVentilationSkipped()" for="validate"/>
         <attribute name="hidden" expr="eval: (statusSelect != null &amp;&amp; statusSelect != 1) || !__config__.app.getApp('invoice').getIsVentilationSkipped()" for="validateAndVentilate"/>
     </action-attrs>
+
+	<action-attrs name="action-invoice-attrs-change-create-refund-title">
+		<attribute name="title" for="createRefund" expr="eval: com.axelor.i18n.I18n.get('Generate invoice')" if="operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_CLIENT_REFUND"/>
+	</action-attrs>
 
 	<!-- DOMAIN -->
 	
