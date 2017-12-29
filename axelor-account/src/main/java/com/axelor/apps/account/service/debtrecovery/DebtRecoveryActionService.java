@@ -268,10 +268,7 @@ public class DebtRecoveryActionService {
 	public void updateDebtRecoveryHistory(DebtRecovery debtRecovery, Set<Message> debtRecoveryMessageSet)  {
 
 		if(!debtRecovery.getDebtRecoveryHistoryList().isEmpty())  {
-			debtRecovery.getDebtRecoveryHistoryList().sort(Comparator.comparing(debtRecoveryHistory ->
-					debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName()
-			));
-			DebtRecoveryHistory debtRecoveryHistory = debtRecovery.getDebtRecoveryHistoryList().get(debtRecovery.getDebtRecoveryHistoryList().size()-1);
+			DebtRecoveryHistory debtRecoveryHistory = getDebtRecoveryHistory(debtRecovery);
 			debtRecoveryHistory.clearDebtRecoveryMessageSet();
 			debtRecoveryMessageSet.forEach(debtRecoveryHistory::addDebtRecoveryMessageSetItem);
 		}
