@@ -69,18 +69,6 @@
 			<panel name="Currency" title="Currencies">
 				<field name="currency" readonly="true"/>
 				<field name="companyCurrency" readonly="true"/>
-				<field name="moveLineList" colSpan="12">
-					<viewer>
-					<![CDATA[
-						<span>{{ record.currencyRate }} </span> - <span>{{ record.currencyAmount }} </span> - <span>{{ record.move.currencyCode }} </span>	
-					]]>
-					</viewer>
-					<editor layout="table" x-show-titles="false" colSpan="12">
-						<field name="currencyRate" readonly="true"/>
-						<field name="currencyAmount" readonly="true"/>
-						<field name="move.currencyCode" readonly="true"/>
-					</editor>
-				</field>
 			</panel>
 
 			<panel name="others" title="Others">
