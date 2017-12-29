@@ -881,7 +881,7 @@
     </action-attrs>
 
 	<action-attrs name="action-invoice-attrs-change-create-refund-title">
-		<attribute name="title" for="createRefund" expr="eval: com.axelor.i18n.I18n.get('Generate invoice')" if="operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_CLIENT_REFUND"/>
+		<attribute name="title" for="createRefund" expr="eval: com.axelor.i18n.I18n.get('Generate invoice')" if="operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_CLIENT_REFUND || operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_SUPPLIER_REFUND"/>
 	</action-attrs>
 
 	<!-- DOMAIN -->
