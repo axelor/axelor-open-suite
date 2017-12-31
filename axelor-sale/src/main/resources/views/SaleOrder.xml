@@ -190,7 +190,7 @@
 				  <div class="span7">
 				  	<h5>
 						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
-						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && record.amountInvoiced < record.exTaxTotal" x-translate>Partially invoiced</span>
+						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
 						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
 					</h5>
 				  </div>
@@ -308,15 +308,15 @@
 	  <panel sidebar="true" name="actions" title="Actions" stacked="true" hideIf="clientPartner == null">
 	    <button name="finalize" title="Finalize" showIf="statusSelect == 1" colSpan="12" onClick="save,action-sale-order-method-finalize"/>
 	    <button name="newVersion" title="New version" if="__config__.app.getApp('sale').getManageSaleOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
-        <button name="editOrder" title="Edit order" if="__config__.app.getApp('sale').allowPendingOrderModification" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited == false" colSpan="12" onClick="action-sale-order-method-edit-order"/>
-        <button name="validateChanges" title="Validate changes" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited" colSpan="12" onClick="action-sale-order-validate-change,save"/>
+        <button name="editOrder" title="Edit order" if="__config__.app.getApp('sale').allowPendingOrderModification" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="action-sale-order-method-edit-order"/>
+        <button name="validateChanges" title="Validate changes" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited" colSpan="12" onClick="action-sale-order-validate-changes,save"/>
 	    <button name="generateCustomerStockMove" title="Generate customer deliveries" colSpan="12" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
 	    	if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain').customerStockMoveGenerationAuto"
 	    	onClick="save, action-supplychain-sale-order-create-stock-move"/>
 	    <button name="confirmOrder" title="Confirm order" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed"/>
-	    <button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited == false" colSpan="12" onClick="save,action-supplychain-sale-order-group-generate-invoice" if-module="axelor-supplychain"/>
-	    <button name="generatePO" title="Generate purchase order"  colSpan="12" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getPurchaseOrderGenerationAuto()" showIf="(statusSelect == 2 || statusSelect == 3) &amp;&amp; orderBeingEdited == false" onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
-	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" if="__config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp; !__config__.app.getApp('production')?.productionOrderGenerationAuto" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited == false" onClick="save,action-sale-order-method-create-production-order"/>
+	    <button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-supplychain-sale-order-group-generate-invoice" if-module="axelor-supplychain"/>
+	    <button name="generatePO" title="Generate purchase order"  colSpan="12" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getPurchaseOrderGenerationAuto()" showIf="(statusSelect == 2 || statusSelect == 3) &amp;&amp; !orderBeingEdited" onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
+	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" if="__config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp; !__config__.app.getApp('production')?.productionOrderGenerationAuto" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" onClick="save,action-sale-order-method-create-production-order"/>
 		<spacer/>
 	    <button name="cancel" title="Cancel" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-view-cancel"/>
 	  	<button name="addAdvancePayment" title="Register a deposit"
@@ -658,7 +658,7 @@
 				  <div class="span7">
 				  	<h5>
 						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
-						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && record.amountInvoiced < record.exTaxTotal" x-translate>Partially invoiced</span>
+						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
 						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
 					</h5>
 					<h5>
@@ -719,7 +719,7 @@
 				  <div class="span7">
 				  	<h5>
 						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
-						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && record.amountInvoiced < record.exTaxTotal" x-translate>Partially invoiced</span>
+						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
 						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
 					</h5>
 					<h5>
@@ -1112,8 +1112,8 @@
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="enableEditOrder"/>
 	</action-method>
 
-    <action-method name="action-sale-order-validate-change">
-        <call class="com.axelor.apps.sale.web.SaleOrderController" method="validateChange" />
+    <action-method name="action-sale-order-validate-changes">
+        <call class="com.axelor.apps.sale.web.SaleOrderController" method="validateChanges" />
     </action-method>
 
 </object-views>

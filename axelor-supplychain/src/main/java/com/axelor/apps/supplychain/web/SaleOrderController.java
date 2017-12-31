@@ -551,13 +551,14 @@ public class SaleOrderController{
 
     public void onSave(ActionRequest request, ActionResponse response) {
         try {
-            SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-            if (saleOrder.getOrderBeingEdited()) {
-                saleOrderServiceSupplychain.validateChange(saleOrder);
-                response.setValues(saleOrder);
+            SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);
+            if (saleOrderView.getOrderBeingEdited()) {
+                SaleOrder saleOrder = saleOrderRepo.find(saleOrderView.getId());
+                saleOrderServiceSupplychain.validateChanges(saleOrder, saleOrderView);
             }
         } catch (Exception e) {
             TraceBackService.trace(response, e);
+            response.setReload(true);
         }
     }
 

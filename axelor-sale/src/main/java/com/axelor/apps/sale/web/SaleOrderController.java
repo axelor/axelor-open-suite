@@ -475,14 +475,16 @@ public class SaleOrderController {
 		}
 	}
 
-	public void validateChange(ActionRequest request, ActionResponse response) {
+    public void validateChanges(ActionRequest request, ActionResponse response) {
         try {
-            SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-            saleOrderService.validateChange(saleOrder);
-            response.setValues(saleOrder);
+            SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);
+            SaleOrder saleOrder = saleOrderRepo.find(saleOrderView.getId());
+            saleOrderService.validateChanges(saleOrder, saleOrderView);
+            response.setValue("orderBeingEdited", false);
         } catch (Exception e) {
             TraceBackService.trace(response, e);
+            response.setReload(true);
         }
-	}
+    }
 
 }

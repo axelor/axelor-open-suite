@@ -303,7 +303,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
         }
 
         if (deliveryState == SaleOrderRepository.STATE_NOT_DELIVERED && deliveredCount > 0) {
-            deliveryState = SaleOrderRepository.STATE_PARTIALLY_DELIVERED;
+            return SaleOrderRepository.STATE_PARTIALLY_DELIVERED;
         }
 
         return deliveryState;
