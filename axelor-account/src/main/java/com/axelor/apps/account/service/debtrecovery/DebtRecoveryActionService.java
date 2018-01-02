@@ -269,7 +269,6 @@ public class DebtRecoveryActionService {
 
 		if(!debtRecovery.getDebtRecoveryHistoryList().isEmpty())  {
 			DebtRecoveryHistory debtRecoveryHistory = getDebtRecoveryHistory(debtRecovery);
-			debtRecoveryHistory.clearDebtRecoveryMessageSet();
 			debtRecoveryMessageSet.forEach(debtRecoveryHistory::addDebtRecoveryMessageSetItem);
 		}
 
