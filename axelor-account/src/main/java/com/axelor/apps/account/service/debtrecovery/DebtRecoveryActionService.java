@@ -144,7 +144,7 @@ public class DebtRecoveryActionService {
 
 
 	public DebtRecoveryHistory getDebtRecoveryHistory(DebtRecovery detDebtRecovery)  {
-		if (detDebtRecovery.getDebtRecoveryHistoryList() == null) {
+		if (detDebtRecovery.getDebtRecoveryHistoryList() == null || detDebtRecovery.getDebtRecoveryHistoryList().isEmpty()) {
 			return null;
 		}
 	    return Collections.max(detDebtRecovery.getDebtRecoveryHistoryList(),
