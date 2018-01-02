@@ -5,7 +5,7 @@
 	<grid name="expense-line-grid" 
 		  title="Expense lines" 
 		  model="com.axelor.apps.hr.db.ExpenseLine"
-		  onNew="action-expense-line-default, action-kilometric-allowance-record-default" orderBy="expenseDate">
+		  onNew="action-expense-line-default" orderBy="expenseDate">
 		<field name="projectTask" requiredIf="toInvoice" canView="false" onSelect="action-expense-line-attrs-domain-project-task" widget="SuggestBox"/>
 		<field name="expenseProduct" canView="false" onChange="action-expense-line-attrs-expense-product-onchange" onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
 		<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
@@ -23,7 +23,7 @@
 	<grid name="expense-line-kilometric-grid" 
 		  title="Kilometric Allowances" 
 		  model="com.axelor.apps.hr.db.ExpenseLine"
-		  onNew="action-kilometric-allowance-record-default,action-expense-line-method-fill-kilometric-expense-product" orderBy="expenseDate">
+		  onNew="action-expense-line-method-fill-kilometric-expense-product" orderBy="expenseDate">
 		<field name="projectTask" title="Project" requiredIf="toInvoice" canView="false" onSelect="action-expense-line-attrs-domain-project-task" widget="SuggestBox" grid-view="project-task-grid" width="100" hidden="true"/>
         <field name="expenseDate" title="Date" width="95"/>
 		<field name="kilometricAllowParam" onChange="action-kilometric-allowance-method-compute" width="70"/>
@@ -66,7 +66,7 @@
 	</form>
 	
 	<form name="expense-line-kilometric-form" title="Kilometric Allowance" model="com.axelor.apps.hr.db.ExpenseLine"
-		onNew="action-expense-line-default,action-kilometric-allowance-record-default,action-expense-line-method-fill-kilometric-expense-product"
+		onNew="action-expense-line-default,action-expense-line-method-fill-kilometric-expense-product"
 		onSave="action-expense-line-validate-expenseDate" width="large">
 
 			<panel name="kilometricAllowance" title="Kilometric Allowance">
@@ -117,10 +117,6 @@
 	<action-attrs name="action-expense-line-attrs-domain-project-task">
 		<attribute name="domain" for="projectTask" expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__user__.id} &quot;"/>
 	</action-attrs>
-
-	<action-record name="action-kilometric-allowance-record-default" model="com.axelor.apps.hr.db.ExpenseLine">
-    	<field name="kilometricAllowParam" expr="eval:  _parent?.user?.employee?.kilometricAllowParam"/>
-    </action-record>
 
     <action-method name="action-kilometric-allowance-method-compute">
     	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeKilometricExpense"/>
