@@ -51,11 +51,10 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     public void updateIndicators(Configurator configurator,
                                  JsonContext jsonAttributes,
                                  JsonContext jsonIndicators) throws AxelorException {
-        List<MetaJsonField> indicators =
-                configurator.getConfiguratorCreator().getIndicators();
         if (configurator.getConfiguratorCreator() == null) {
             return;
         }
+        List<MetaJsonField> indicators = configurator.getConfiguratorCreator().getIndicators();
         for (MetaJsonField indicator : indicators) {
             try {
                 Object calculatedValue = computeIndicatorValue(
@@ -92,9 +91,11 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         cleanIndicators(jsonIndicators);
         Mapper mapper = Mapper.of(Product.class);
         Product product = new Product();
-        for (String key : jsonIndicators.keySet()) {
-            mapper.set(product, key, jsonIndicators.get(key));
+        
+        for (Map.Entry<String, Object> entry : jsonIndicators.entrySet()) {
+            mapper.set(product, entry.getKey(), entry.getValue());
         }
+        
         fixRelationalFields(product);
         product.setProductTypeSelect(ProductRepository.PRODUCT_TYPE_STORABLE);
         product = Beans.get(ProductRepository.class).save(product);
