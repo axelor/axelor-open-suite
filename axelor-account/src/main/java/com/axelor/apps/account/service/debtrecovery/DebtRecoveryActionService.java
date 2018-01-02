@@ -132,7 +132,9 @@ public class DebtRecoveryActionService {
 		DebtRecoveryHistory debtRecoveryHistory = this.getDebtRecoveryHistory(debtRecovery);
 
 		for (Template template : templateSet) {
-			debtRecoveryHistory.addDebtRecoveryMessageSetItem(templateMessageService.generateMessage(debtRecoveryHistory, template));
+			Message message = templateMessageService.generateMessage(debtRecoveryHistory, template);
+			message.setPartner(debtRecoveryHistory.getDebtRecovery().getAccountingSituation().getPartner());
+			debtRecoveryHistory.addDebtRecoveryMessageSetItem(message);
 		}
 
 		return debtRecoveryHistory.getDebtRecoveryMessageSet();
