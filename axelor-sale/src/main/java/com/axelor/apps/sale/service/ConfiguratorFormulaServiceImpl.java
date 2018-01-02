@@ -28,8 +28,6 @@ import com.axelor.meta.db.MetaField;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptBindings;
 
-import static com.axelor.apps.sale.exception.IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR;
-
 public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaService {
 
     @Override
@@ -47,8 +45,8 @@ public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaServic
     }
 
     @Override
-    public void checkFormula(ConfiguratorFormula formula) throws AxelorException {
-        ScriptBindings defaultValueBindings = Beans.get(ConfiguratorCreatorService.class).getTestingValues(formula.getCreator());
+    public void checkFormula(ConfiguratorFormula formula, ConfiguratorCreator creator) throws AxelorException {
+        ScriptBindings defaultValueBindings = Beans.get(ConfiguratorCreatorService.class).getTestingValues(creator);
         Object result = new GroovyScriptHelper(defaultValueBindings).eval(formula.getFormula());
         if (result == null) {
             throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR), formula);
