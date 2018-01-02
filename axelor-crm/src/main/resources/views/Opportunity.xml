@@ -228,7 +228,7 @@
     
     <search-filters name="opportunity-filters" model="com.axelor.apps.crm.db.Opportunity" title="Opportunities filters">
 		<filter title="My Opportunities">
-			<domain>self.user.internalUser.id = :_internalUserId</domain>
+			<domain>self.user.id = :_internalUserId</domain>
 		</filter>
 		<filter title="Unassigned Opportunities">
 			<domain>self.user IS NULL</domain>
