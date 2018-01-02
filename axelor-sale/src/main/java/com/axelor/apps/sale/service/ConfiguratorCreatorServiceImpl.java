@@ -30,10 +30,13 @@ import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.script.ScriptBindings;
@@ -359,6 +362,53 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 	@Transactional
 	public void authorizeUser(ConfiguratorCreator creator, User user) {
 		creator.addAuthorizedUserSetItem(user);
+	}
+	
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void addRequiredFormulas(ConfiguratorCreator creator) throws AxelorException {
+		if (creator.getGenerateProduct()) {
+			creator.addConfiguratorFormulaListItem(createFormula("Product", "code"));
+			creator.addConfiguratorFormulaListItem(createFormula("Product", "name"));
+			creator.addConfiguratorFormulaListItem(createFormula("Product", "productTypeSelect", "'storable'"));
+			creator.addConfiguratorFormulaListItem(createFormula("Product", "productFamily", "__repo__(ProductFamily).all().filter('self.code = :_code').bind('_code', 'COMP')"));
+		} else {
+			creator.addConfiguratorFormulaListItem(createFormula("SaleOrderLine", "productName"));
+		}
+		configuratorCreatorRepo.save(creator);
+	}
+
+	private ConfiguratorFormula createFormula(String metaFieldType, String name) throws AxelorException {
+		return createFormula(metaFieldType, name, "' '");
+	}
+
+	/**
+	 * Create a configuratorFormula for the given MetaField.
+	 * 
+	 * @param metaFieldType
+	 * @param name
+	 * @param formula
+	 * @return
+	 * @throws AxelorException
+	 */
+	private ConfiguratorFormula createFormula(String metaFieldType, String name, String formula) throws AxelorException {
+		ConfiguratorFormula configuratorFormula = new ConfiguratorFormula();
+		configuratorFormula.setShowOnConfigurator(true);
+		configuratorFormula.setFormula(formula);
+
+		Long productModelId = JPA.all(MetaModel.class).filter("self.name = ?", metaFieldType).fetchOne().getId();
+		MetaField metaField = JPA.all(MetaField.class)
+				.filter("self.name = ? AND self.metaModel.id = ?", name, productModelId).fetchOne();
+		if (metaFieldType == "Product") {
+			configuratorFormula.setProductMetaField(metaField);
+		} else if (metaFieldType == "SaleOrderLine") {
+			configuratorFormula.setSaleOrderLineMetaField(metaField);
+		} else {
+			throw new AxelorException(ConfiguratorFormula.class, IException.NO_VALUE,
+					I18n.get(com.axelor.apps.sale.exception.IExceptionMessage.CONFIGURATOR_CREATOR_UNVALID_METAFIELD));
+		}
+
+		return configuratorFormula;
 	}
 
 	@Override

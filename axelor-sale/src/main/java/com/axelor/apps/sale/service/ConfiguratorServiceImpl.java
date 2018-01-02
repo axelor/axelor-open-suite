@@ -51,11 +51,11 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     public void updateIndicators(Configurator configurator,
                                  JsonContext jsonAttributes,
                                  JsonContext jsonIndicators) throws AxelorException {
-        List<MetaJsonField> indicators =
-                configurator.getConfiguratorCreator().getIndicators();
-        if (configurator.getConfiguratorCreator() == null) {
+    	if (configurator.getConfiguratorCreator() == null) {
             return;
         }
+    	List<MetaJsonField> indicators =
+                configurator.getConfiguratorCreator().getIndicators();
         for (MetaJsonField indicator : indicators) {
             try {
                 Object calculatedValue = computeIndicatorValue(
