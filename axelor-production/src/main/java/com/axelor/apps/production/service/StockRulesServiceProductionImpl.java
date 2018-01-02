@@ -32,7 +32,7 @@ import com.axelor.inject.Beans;
 public class StockRulesServiceProductionImpl extends StockRulesServiceSupplychainImpl {
 
 	public void generateOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type) throws AxelorException {
-		StockLocation location = stockLocationLine.getLocation();
+		StockLocation location = stockLocationLine.getStockLocation();
 		if (location == null) {return;}
 		StockRules stockRules = this.getStockRules(product, location, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
 		if (stockRules == null) {return;}
@@ -45,7 +45,7 @@ public class StockRulesServiceProductionImpl extends StockRulesServiceSupplychai
     }
 
     public void generateProductionOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type, StockRules stockRules) throws AxelorException {
-		if(this.useMinStockRules(stockLocationLine, this.getStockRules(product, stockLocationLine.getLocation(), type, StockRulesRepository.USE_CASE_STOCK_CONTROL), qty, type)) {
+		if(this.useMinStockRules(stockLocationLine, this.getStockRules(product, stockLocationLine.getStockLocation(), type, StockRulesRepository.USE_CASE_STOCK_CONTROL), qty, type)) {
 			BigDecimal qtyToProduce = this.getQtyToOrder(qty, stockLocationLine, type, stockRules);
 			Beans.get(ProductionOrderService.class).generateProductionOrder(product, null, qtyToProduce, LocalDateTime.now());
 		}

@@ -33,14 +33,15 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 public class StockLocationLineServiceSupplychainImpl extends StockLocationLineServiceImpl {
-
+	
+	@Override
     public void checkStockMin(StockLocationLine stockLocationLine, boolean isDetailLocationLine) throws AxelorException {
         super.checkStockMin(stockLocationLine, isDetailLocationLine);
-        if (!isDetailLocationLine && stockLocationLine.getCurrentQty().compareTo(stockLocationLine.getReservedQty()) < 0 && stockLocationLine.getLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+        if (!isDetailLocationLine && stockLocationLine.getCurrentQty().compareTo(stockLocationLine.getReservedQty()) < 0 && stockLocationLine.getStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
             throw new AxelorException(stockLocationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
 
         } else if (isDetailLocationLine && stockLocationLine.getCurrentQty().compareTo(stockLocationLine.getReservedQty()) < 0
-                && ((stockLocationLine.getLocation() != null && stockLocationLine.getLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL)
+                && ((stockLocationLine.getStockLocation() != null && stockLocationLine.getStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL)
                 || (stockLocationLine.getDetailsLocation() != null && stockLocationLine.getDetailsLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL))) {
 
             String trackingNumber = "";
@@ -52,6 +53,7 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
         }
     }
 
+	@Override
     public StockLocationLine updateLocation(StockLocationLine stockLocationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
                                        LocalDate lastFutureStockMoveDate, BigDecimal reservedQty) {
 
@@ -74,11 +76,12 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
         return stockLocationLine;
     }
 
+    @Override
     public void checkIfEnoughStock(StockLocation stockLocation, Product product, BigDecimal qty) throws AxelorException{
         super.checkIfEnoughStock(stockLocation, product, qty);
 
         if (Beans.get(AppSupplychainService.class).getAppSupplychain().getManageStockReservation()) {
-            StockLocationLine stockLocationLine = this.getLocationLine(stockLocation.getLocationLineList(), product);
+            StockLocationLine stockLocationLine = this.getLocationLine(stockLocation.getStockLocationLineList(), product);
             if (stockLocationLine != null && stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty()).compareTo(qty) < 0) {
                 throw new AxelorException(stockLocationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
             }

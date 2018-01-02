@@ -7,7 +7,7 @@
 
   <entity name="StockLocationLine" lang="java">
   
-  	<many-to-one name="location" ref="com.axelor.apps.stock.db.StockLocation" title="Stock Location"/>
+  	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock Location"/>
   	
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    
 	<decimal name="currentQty" title="Current Qty"/>

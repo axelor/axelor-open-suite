@@ -58,7 +58,7 @@ public class StockRulesServiceImpl implements StockRulesService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generatePurchaseOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type) throws AxelorException  {
 
-		StockLocation location = stockLocationLine.getLocation();
+		StockLocation location = stockLocationLine.getStockLocation();
 
 		//TODO à supprimer après suppression des variantes
 		if(location == null)  {

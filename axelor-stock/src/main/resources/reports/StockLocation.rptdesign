@@ -691,7 +691,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 FROM 
 	stock_stock_location as Location 
 LEFT OUTER JOIN 
-	stock_location_line as StockLocationLine ON (StockLocationLine.location = Location.id)
+	stock_location_line as StockLocationLine ON (StockLocationLine.stockLocation = Location.id)
 LEFT JOIN 
 	base_product AS Product ON (Product.id = StockLocationLine.product)	
 LEFT JOIN

@@ -29,7 +29,7 @@
 
     <grid name="stock-location-line-bad-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product,location">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
-        <field name="location" form-view="stock-location-form" grid-view="stock-location-grid"/>
+        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
         <field name="avgPrice" x-scale="2"/>
@@ -39,7 +39,7 @@
     <form name="stock-location-line-bad-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine">
         <panel name="main">
             <field name="product" form-view="product-form" grid-view="product-grid"/>
-            <field name="location" form-view="stock-location-form" grid-view="stock-location-grid"/>
+            <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
             <field name="currentQty" colSpan="4"/>
             <field name="futureQty" colSpan="4"/>
             <field name="avgPrice" x-scale="2" colSpan="4"/>
@@ -48,7 +48,7 @@
     </form>
     
     <grid name="stock-location-line-product-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine">
-        <field name="location" form-view="stock-location-form" grid-view="stock-location-grid"/>
+        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
         <field name="avgPrice" x-scale="2"/>
@@ -58,7 +58,7 @@
     
     <form name="stock-location-line-product-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine">
 		<panel name="main">
-	        <field name="location" form-view="stock-location-form" grid-view="stock-location-grid"/>
+	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
             <field name="avgPrice" x-scale="2"/>
@@ -72,7 +72,7 @@
     </form>
     
      <grid name="stock-location-line-product-group-by-variant-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" groupBy="product">
-        <field name="location" form-view="stock-location-form" grid-view="stock-location-grid"/>
+        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
         <field name="avgPrice" x-scale="2"/>

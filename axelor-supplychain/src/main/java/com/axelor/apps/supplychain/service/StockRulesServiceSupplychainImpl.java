@@ -74,7 +74,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generatePurchaseOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type) throws AxelorException  {
 
-		StockLocation stockLocation = stockLocationLine.getLocation();
+		StockLocation stockLocation = stockLocationLine.getStockLocation();
 
 		//TODO à supprimer après suppression des variantes
 		if(stockLocation == null)  {

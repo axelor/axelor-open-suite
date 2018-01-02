@@ -129,8 +129,8 @@
 	</action-view>
 
 	<!-- This portlet is used in stock-location-form -->
-	<action-view title="Location value" name="dashlet.stockLocationLine.location.value">
-	  <view type="chart" name="chart.stockLocationLine.location.value"/>
+	<action-view title="Location value" name="dashlet.stockLocationLine.stockLocation.value">
+	  <view type="chart" name="chart.stockLocationLine.stockLocation.value"/>
 	</action-view>
 
 	<!-- 	Product-form Actions Portlets -->

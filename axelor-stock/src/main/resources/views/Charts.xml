@@ -162,7 +162,7 @@
 	</chart>
 	  
 	<!-- This chart is used in stock-location-form -->
-	<chart name="chart.stockLocationLine.location.value" title="Location value">
+	<chart name="chart.stockLocationLine.stockLocation.value" title="Location value">
 		<dataset type="jpql">
 			SELECT
 				SUM(
@@ -179,7 +179,7 @@
 			FROM
 				StockLocationLine AS self
 			WHERE
-				self.location.id =:id
+				self.stockLocation.id =:id
 		</dataset>
 		<category key="label" type="text" title="Location"/>
 		<series key="value" type="bar" title="Value"/>

@@ -278,7 +278,7 @@ public class InventoryService {
 			}
 		}
 
-		List<StockLocationLine> stockLocationLineList = inventory.getLocation().getLocationLineList();
+		List<StockLocationLine> stockLocationLineList = inventory.getLocation().getStockLocationLineList();
 
 		if (stockLocationLineList != null) {
 			for (StockLocationLine stockLocationLine : stockLocationLineList) {
