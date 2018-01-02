@@ -543,10 +543,10 @@
 	<search-filters name="purchase-order-filters"
 		model="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchases Order filters">
 		<filter title="My RFQs">
-			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.buyerUser.internalUser.id = :_internalUser</domain>
+			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.buyerUser.id = :_internalUser</domain>
 		</filter>
 		<filter title="My Sales">
-			<domain>(self.statusSelect = 3 or self.statusSelect = 4) and self.buyerUser.internalUser.id = :_internalUser</domain>
+			<domain>(self.statusSelect = 3 or self.statusSelect = 4) and self.buyerUser.id = :_internalUser</domain>
 		</filter>
 	</search-filters>
 
