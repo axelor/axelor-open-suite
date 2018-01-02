@@ -18,7 +18,13 @@
 package com.axelor.apps.report.engine;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.lang.invoke.MethodHandles;
+import java.net.URLEncoder;
 import java.nio.file.Path;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
 import com.axelor.app.internal.AppFilter;
@@ -29,6 +35,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 
 public class ExternalReportSettings extends ReportSettings  {
+    private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	
 	protected static String BIRT_PATH = "birt";
 	protected String url = "";
@@ -78,7 +85,11 @@ public class ExternalReportSettings extends ReportSettings  {
 		
 		for(String param : params.keySet())  {
 			
-			this.url +=  this.computeParam(param);
+			try {
+                this.url +=  this.computeParam(param);
+            } catch (UnsupportedEncodingException e) {
+                logger.error(e.getLocalizedMessage());
+            }
 			
 		}
 		
@@ -86,9 +97,9 @@ public class ExternalReportSettings extends ReportSettings  {
 		
 	}	
 	
-	private String computeParam(String param)  {
+	private String computeParam(String param) throws UnsupportedEncodingException  {
 		
-		return "&" + param + "=" + params.get(param);
+		return "&" + param + "=" + URLEncoder.encode(params.get(param).toString(), "UTF-8");
 		
 	}
 	

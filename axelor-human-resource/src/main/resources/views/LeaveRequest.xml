@@ -48,7 +48,7 @@
 			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>	    	
 	    </panel>
 	    <panel hidden="true" showIf="leaveLine != null &amp;&amp; leaveLine.leaveReason != null &amp;&amp; leaveLine.leaveReason.instruction != null">
-	    	<field name="leaveLine.leaveReason.instruction" css="bold red" colSpan="12" showTitle="false"  />
+	    	<field name="leaveLine.leaveReason.instruction" widget="html" colSpan="12" showTitle="false"  />
 	    </panel>
 		<panel name="information">
 			<spacer/>
@@ -133,14 +133,13 @@
 		<action name="action-leave-request-attrs-draft-cancel"/>
 		<action name="action-leave-request-attrs-select"/>
 		<action name="action-leave-request-attrs-inject-change"/>
-		<action name="action-leave-request-method-leave-reason-to-justify"/>
 		<action name="action-leave-request-attrs-send"/>
 		<action name="action-leave-request-attrs-valid-refuse"/>
 	</action-group>
 	
 	<action-record name="action-leave-request-record-default" model="com.axelor.apps.hr.db.LeaveRequest">
 	    <field name="user" expr="eval:__user__"/>
-	    <field name="company" expr="eval: __user__.activeCompany"/>
+	    <field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-record>
 
 	<action-record name="action-leave-request-record-to-justify" model="com.axelor.apps.hr.db.LeaveRequest">

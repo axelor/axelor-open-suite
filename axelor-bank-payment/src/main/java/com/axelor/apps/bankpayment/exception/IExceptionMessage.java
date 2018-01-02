@@ -77,6 +77,7 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_BANK_DETAILS_NOT_ACTIVE = /*$$(*/ "The bank details is inactive." /*)*/;
 	static final String BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/ "The bank details type is not compatible with the accepted types in file format." /*)*/;
 	static final String BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/ "The bank details currency is not compatible with the currency in bank order." /*)*/;
+	static final String BANK_ORDER_NOT_PROPERLY_SIGNED = /*$$(*/ "The bank order is not properly signed. Please correct it and sign it again." /*)*/;
 
 	String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS = /*$$(*/ "Please fill the bank address in the receiver bank details." /*)*/;
 	String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK = /*$$(*/ "Please fill the bank in the receiver bank details." /*)*/;

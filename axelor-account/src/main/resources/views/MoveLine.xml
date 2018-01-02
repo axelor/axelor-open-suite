@@ -113,6 +113,21 @@
         		<button name="notPassInIrrecoverable" title="Do not shift into irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
 	        </panel>
 	    	
+	    	<panel name="currency" title="Currency">
+	    		<field name="currency" title="Currency and exchange rate">
+		    		<viewer>
+					<![CDATA[
+						<span>{{ record.currencyRate }} </span> x <span>{{ record.currencyAmount }}</span> <span>{{ record.move.currencyCode }} </span>	
+					]]>
+					</viewer>
+					<editor layout="table" x-show-titles="false" colSpan="12">
+						<field name="currencyRate" readonly="true"/>
+						<field name="currencyAmount" readonly="true"/>
+						<field name="move.currencyCode" readonly="true"/>
+					</editor>
+				</field>
+	    	</panel>
+
 		    <panel name="others" title="Others" readonly="true">
 				<field name="taxLine" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge'"
 					   colSpan="6" grid-view="tax-line-grid" form-view="tax-line-form"/>
@@ -155,6 +170,20 @@
 				<field name="dueDate" colSpan="3"/>
 			</panel>
 			
+			<panel name="currency" title="Currency">
+	    		<field name="currency" title="Currency and exchange rate">
+		    		<viewer>
+					<![CDATA[
+						<span>{{ record.currencyRate }} </span> x <span>{{ record.currencyAmount }}</span> <span>{{ record.move.currencyCode }} </span>	
+					]]>
+					</viewer>
+					<editor layout="table" x-show-titles="false" colSpan="12">
+						<field name="currencyRate" readonly="true"/>
+						<field name="currencyAmount" readonly="true"/>
+						<field name="move.currencyCode" readonly="true"/>
+					</editor>
+				</field>
+	    	</panel>
 			<panel name="others" title="Others" showIf="id &amp;&amp; move.statusSelect &gt; 1">
 				<field name="exportedDirectDebitOk" colSpan="12"/>
 				<field name="move" hidden="true"/>
