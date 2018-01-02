@@ -18,10 +18,12 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -279,8 +281,10 @@ public class PartnerController {
 		
 		if (bankDetailsList !=null && !bankDetailsList.isEmpty()){
 			for (BankDetails bankDetails : bankDetailsList) {
-				
-				if(bankDetails.getIban() != null) {
+				Bank bank = bankDetails.getBank();
+				if(bankDetails.getIban() != null && bank != null
+						&& bank.getBankDetailsTypeSelect()
+						== BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
 					LOG.debug("checking iban code : {}", bankDetails.getIban());
 					try {
 						Beans.get(BankDetailsService.class).validateIban(bankDetails.getIban());

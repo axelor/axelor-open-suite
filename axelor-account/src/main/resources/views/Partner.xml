@@ -30,7 +30,7 @@
                 ]]></viewer>
 			    <editor onNew="action-set-default-partner" x-show-on-new="false">
 					<field name="ownerName"/>
-					<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" min="14" max="34" />
+					<field name="iban" onChange="action-group-account-bankdetails-iban-onchange"/>
 					<field name="bank" onChange="action-group-account-bankdetails-iban-onchange" canNew="true"/>
 					<field name="bankAddress" showIf="bank" grid-view="bank-address-grid"
 						   onSelect="action-attrs-account-bankdetails-bank-set-address-domain"
