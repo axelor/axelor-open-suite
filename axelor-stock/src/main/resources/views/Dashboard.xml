@@ -69,11 +69,11 @@
 	</dashboard>
 
 	<action-view name="dashlet.location.line.bad.futur.stock.mini" title="Bad location lines"
-				 model="com.axelor.apps.stock.db.LocationLine">
-		<view type="grid" name="location-line-bad-line-grid"/>
-		<view type="form" name="location-line-bad-line-form"/>
-		<domain>self.id IN (:locationLineIdList)</domain>
-		<context name="locationLineIdList" expr="call:com.axelor.apps.stock.service.LocationService:getBadLocationLineId()"/>
+				 model="com.axelor.apps.stock.db.StockLocationLine">
+		<view type="grid" name="stock-location-line-bad-line-grid"/>
+		<view type="form" name="stock-location-line-bad-line-form"/>
+		<domain>self.id IN (:stockLocationLineIdList)</domain>
+		<context name="stockLocationLineIdList" expr="call:com.axelor.apps.stock.service.StockLocationService:getBadLocationLineId()"/>
 	</action-view>
 	
 	<action-view name="dashlet.stock.dashboard.upcoming.deliveries" title="Upcoming customer deliveries"
@@ -128,24 +128,24 @@
 	    <domain>self.id IN (SELECT outStockMove FROM ManufOrder WHERE statusSelect = 6)</domain>
 	</action-view>
 
-	<!-- This portlet is used in location-form -->
-	<action-view title="Location value" name="dashlet.locationLine.location.value">
-	  <view type="chart" name="chart.locationLine.location.value"/>
+	<!-- This portlet is used in stock-location-form -->
+	<action-view title="Location value" name="dashlet.stockLocationLine.stockLocation.value">
+	  <view type="chart" name="chart.stockLocationLine.stockLocation.value"/>
 	</action-view>
 
 	<!-- 	Product-form Actions Portlets -->
 	
-	<action-view name="action-product-view-stock" title="Stock" model="com.axelor.apps.stock.db.LocationLine">
-    	<view type="grid" name="location-line-product-grid"/>
-    	<view type="form" name="location-line-product-form"/>
+	<action-view name="action-product-view-stock" title="Stock" model="com.axelor.apps.stock.db.StockLocationLine">
+    	<view type="grid" name="stock-location-line-product-grid"/>
+    	<view type="form" name="stock-location-line-product-form"/>
     	<domain>self.product.id = :id and self.location.typeSelect != 3</domain>
     </action-view>
     
-    <action-view name="action-stock-report-for-product" title="Stock" model="com.axelor.apps.stock.db.LocationLine">
+    <action-view name="action-stock-report-for-product" title="Stock" model="com.axelor.apps.stock.db.StockLocationLine">
     	<view type="chart" name="chart.stock.report.for.product"/>
      </action-view>
   	
-  	 <action-view name="action-stock-history-report-for-product" title="Stock History" model="com.axelor.apps.stock.db.LocationLine">
+  	 <action-view name="action-stock-history-report-for-product" title="Stock History" model="com.axelor.apps.stock.db.StockLocationLine">
     	<view type="chart" name="chart.stock.history.report.for.product"/>
      </action-view>	
      

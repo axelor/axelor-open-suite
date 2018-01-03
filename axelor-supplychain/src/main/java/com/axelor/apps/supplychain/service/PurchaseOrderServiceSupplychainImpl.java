@@ -17,6 +17,17 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.BudgetLine;
@@ -39,11 +50,11 @@ import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
-import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockConfig;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
@@ -63,16 +74,6 @@ import com.axelor.inject.Beans;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImpl {
 
@@ -101,7 +102,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	}
 
 	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
-			LocalDate deliveryDate, String internalReference, String externalReference, Location location, LocalDate orderDate,
+			LocalDate deliveryDate, String internalReference, String externalReference, StockLocation location, LocalDate orderDate,
 			PriceList priceList, Partner supplierPartner) throws AxelorException  {
 
 		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
@@ -150,7 +151,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
 			StockConfig stockConfig = stockConfigService.getStockConfig(company);
 
-			Location startLocation = Beans.get(LocationRepository.class).findByPartner(purchaseOrder.getSupplierPartner());
+			StockLocation startLocation = Beans.get(StockLocationRepository.class).findByPartner(purchaseOrder.getSupplierPartner());
 
 			if (startLocation == null) {
 				startLocation = stockConfigService.getSupplierVirtualLocation(stockConfig);
@@ -261,7 +262,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	
 	@Transactional
 	public PurchaseOrder mergePurchaseOrders(List<PurchaseOrder> purchaseOrderList, Currency currency,
-			Partner supplierPartner, Company company, Location location, Partner contactPartner,
+			Partner supplierPartner, Company company, StockLocation location, Partner contactPartner,
 			PriceList priceList) throws AxelorException{
 		String numSeq = "";
 		String externalRef = "";
@@ -353,7 +354,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		if (appAccountService.isApp("budget") && appAccountService.getAppBudget().getCheckAvailableBudget()) {
 			List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
 
-			Map<Budget, BigDecimal> amountPerBudget = new HashMap<Budget, BigDecimal>();
+			Map<Budget, BigDecimal> amountPerBudget = new HashMap<>();
 			if (appAccountService.getAppBudget().getManageMultiBudget()) {
 				for (PurchaseOrderLine pol : purchaseOrderLines) {
 					for (BudgetDistribution bd : pol.getBudgetDistributionList()) {

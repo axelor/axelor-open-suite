@@ -25,7 +25,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
-import com.axelor.apps.stock.service.LocationLineService;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineSupplychainServiceImpl;
 import com.axelor.exception.AxelorException;
@@ -90,7 +90,7 @@ public class SaleOrderLineController {
 			if(unit != null && !unit.equals(saleOrderLine.getUnit())){
 				qty = Beans.get(UnitConversionService.class).convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
 			}
-			Beans.get(LocationLineService.class).checkIfEnoughStock(
+			Beans.get(StockLocationLineService.class).checkIfEnoughStock(
 					saleOrder.getLocation(),
 					saleOrderLine.getProduct(),
 					qty

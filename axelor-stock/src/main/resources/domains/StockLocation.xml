@@ -5,16 +5,16 @@
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="Location" lang="java">
+  <entity name="StockLocation" lang="java">
   	
   	<integer name="importId" />
     <string name="name" title="Name" required="true"/>
-    <many-to-one name="parentLocation" ref="com.axelor.apps.stock.db.Location" title="Parent location"/>
+    <many-to-one name="parentLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Parent location"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <integer name="typeSelect" title="Type" required="true" selection="stock.location.type.select"/>
-    <one-to-many name="locationLineList" ref="com.axelor.apps.stock.db.LocationLine" mappedBy="location" title="Location lines"/>
-    <one-to-many name="detailsLocationLineList" ref="com.axelor.apps.stock.db.LocationLine" mappedBy="detailsLocation" title="Details Location lines"/>
+    <one-to-many name="stockLocationLineList" ref="com.axelor.apps.stock.db.StockLocationLine" mappedBy="stockLocation" title="Stock location lines"/>
+    <one-to-many name="detailsLocationLineList" ref="com.axelor.apps.stock.db.StockLocationLine" mappedBy="detailsLocation" title="Details Location lines"/>
     <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
     
     <finder-method name="findByCompany" using="company"/>

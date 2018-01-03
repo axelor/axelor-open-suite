@@ -188,9 +188,9 @@
 		title="Stock Locations" action="stock.root.location" />
 	
 	<action-view name="stock.root.location" title="Stock Locations"
-		model="com.axelor.apps.stock.db.Location" >
-		<view type="grid" name="location-grid"/>
-		<view type="form" name="location-form"/>
+		model="com.axelor.apps.stock.db.StockLocation" >
+		<view type="grid" name="stock-location-grid"/>
+		<view type="form" name="stock-location-form"/>
 	</action-view>
 	
 	<menuitem name="stock-root-conf-stock-rules" parent="stock-root-conf"

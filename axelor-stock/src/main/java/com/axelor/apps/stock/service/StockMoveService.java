@@ -29,7 +29,7 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.FreightCarrierMode;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -65,10 +65,10 @@ public interface StockMoveService {
 	 * @return
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
-	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation,
-			Location toLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException;
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, StockLocation fromLocation,
+			StockLocation toLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException;
 
-	public int getStockMoveType(Location fromLocation, Location toLocation);
+	public int getStockMoveType(StockLocation fromLocation, StockLocation toLocation);
 
 	public void validate(StockMove stockMove) throws AxelorException;
 

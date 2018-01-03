@@ -278,7 +278,7 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select Mrp.created_on, Mrp.end_date, Location.name as "locationName"
 from supplychain_mrp as Mrp
-left join stock_location as Location on (Mrp.location = Location.id)
+left join stock_stock_location as Location on (Mrp.location = Location.id)
 where Mrp.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -507,7 +507,7 @@ from
 inner join
     supplychain_mrp as Mrp on (MrpLine.mrp = Mrp.id)
 left join
-    stock_location as Location on ( MrpLine.location = Location.id)
+    stock_stock_location as Location on ( MrpLine.location = Location.id)
 left join
     base_product as Product on (MrpLine.product = Product.id)
 left join

@@ -20,7 +20,6 @@ package com.axelor.apps.production.service.config;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.stock.db.Location;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;

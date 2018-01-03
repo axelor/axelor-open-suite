@@ -49,11 +49,8 @@ import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderLineTaxService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.stock.db.Location;
-import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.LocationService;
-import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -131,7 +128,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	
 	
 	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
-			LocalDate deliveryDate, String internalReference, String externalReference, Location location, LocalDate orderDate,
+			LocalDate deliveryDate, String internalReference, String externalReference, StockLocation location, LocalDate orderDate,
 			PriceList priceList, Partner clientPartner, Team team) throws AxelorException  {
 
 		logger.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
@@ -141,7 +138,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 				externalReference, orderDate, priceList, clientPartner, team);
 
 		if(location == null)  {
-			location = Beans.get(LocationService.class).getLocation(company);
+			location = Beans.get(StockLocationService.class).getLocation(company);
 		}
 		
 		saleOrder.setLocation(location);
@@ -185,7 +182,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	
 	@Transactional
 	public SaleOrder mergeSaleOrders(List<SaleOrder> saleOrderList, Currency currency,
-			Partner clientPartner, Company company, Location location, Partner contactPartner,
+			Partner clientPartner, Company company, StockLocation location, Partner contactPartner,
 			PriceList priceList, Team team) throws AxelorException{
 		String numSeq = "";
 		String externalRef = "";

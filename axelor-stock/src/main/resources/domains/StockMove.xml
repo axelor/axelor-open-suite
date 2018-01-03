@@ -11,8 +11,8 @@
 
 	<string name="stockMoveSeq" namecolumn="true" title="Ref." readonly="true"/>
     <string name="name" title="Name"/>
-    <many-to-one name="fromLocation" ref="com.axelor.apps.stock.db.Location" required="true" title="From location"/>
-    <many-to-one name="toLocation" ref="com.axelor.apps.stock.db.Location" required="true" title="To location"/>
+    <many-to-one name="fromLocation" ref="com.axelor.apps.stock.db.StockLocation" required="true" title="From location"/>
+    <many-to-one name="toLocation" ref="com.axelor.apps.stock.db.StockLocation" required="true" title="To location"/>
     
     <date name="estimatedDate" title="Estimated date"/>
     <date name="realDate" title="Move date" readonly="true"/>

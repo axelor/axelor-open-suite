@@ -18,16 +18,12 @@
 package com.axelor.apps.supplychain.service;
 
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import java.time.LocalDate;
-
-import com.axelor.apps.purchase.db.PurchaseConfig;
-import com.axelor.apps.purchase.service.config.PurchaseConfigService;
-import com.axelor.apps.stock.service.LocationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,10 +31,11 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.purchase.db.repo.PurchaseConfigRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -131,7 +128,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 				null,
 				saleOrder.getSaleOrderSeq(),
 				saleOrder.getExternalReference(),
-				Beans.get(LocationService.class).getLocation(saleOrder.getCompany()),
+				Beans.get(StockLocationService.class).getLocation(saleOrder.getCompany()),
 				today,
 				supplierPartner.getPurchasePriceList(),
 				supplierPartner);

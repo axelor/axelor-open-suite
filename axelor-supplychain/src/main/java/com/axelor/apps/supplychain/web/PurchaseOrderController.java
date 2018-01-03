@@ -17,6 +17,10 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -26,26 +30,21 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.service.LocationService;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.exception.service.TraceBackService;
-import com.google.common.base.Joiner;
-import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.axelor.exception.AxelorException;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class PurchaseOrderController {
 
@@ -92,7 +91,7 @@ public class PurchaseOrderController {
 
 		if(purchaseOrder.getCompany() != null) {
 
-			response.setValue("location", Beans.get(LocationService.class).getLocation(purchaseOrder.getCompany()));
+			response.setValue("location", Beans.get(StockLocationService.class).getLocation(purchaseOrder.getCompany()));
 		}
 	}
 
@@ -117,8 +116,8 @@ public class PurchaseOrderController {
 	//Generate single purchase order from several
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void mergePurchaseOrder(ActionRequest request, ActionResponse response)  {
-		List<PurchaseOrder> purchaseOrderList = new ArrayList<PurchaseOrder>();
-		List<Long> purchaseOrderIdList = new ArrayList<Long>();
+		List<PurchaseOrder> purchaseOrderList = new ArrayList<>();
+		List<Long> purchaseOrderIdList = new ArrayList<>();
 		boolean fromPopup = false;
 
 		if (request.getContext().get("purchaseOrderToMerge") != null){
@@ -149,7 +148,7 @@ public class PurchaseOrderController {
 		PriceList commonPriceList = null;
 		//Useful to determine if a difference exists between price lists of all purchase orders
 		boolean existPriceListDiff = false;
-		Location commonLocation = null;
+		StockLocation commonLocation = null;
 		//Useful to determine if a difference exists between locations of all purchase orders
 		boolean existLocationDiff = false;
 		
@@ -228,7 +227,7 @@ public class PurchaseOrderController {
 			commonContactPartner = JPA.em().find(Partner.class, new Long((Integer)((Map)request.getContext().get("contactPartner")).get("id")));
 		}
 		if (request.getContext().get("location") != null){
-			commonLocation = JPA.em().find(Location.class, new Long((Integer)((Map)request.getContext().get("location")).get("id")));
+			commonLocation = JPA.em().find(StockLocation.class, new Long((Integer)((Map)request.getContext().get("location")).get("id")));
 		}
 
 		if (!fromPopup

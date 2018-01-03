@@ -19,9 +19,9 @@ package com.axelor.apps.production.service;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,10 +37,10 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockRules;
-import com.axelor.apps.stock.db.repo.LocationLineRepository;
-import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.supplychain.db.Mrp;
@@ -67,14 +67,14 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 
 	
 	@Inject
-	public MrpServiceProductionImpl(AppProductionService appProductionService, MrpRepository mrpRepository, LocationRepository locationRepository, 
-			ProductRepository productRepository, LocationLineRepository locationLineRepository, MrpLineTypeRepository mrpLineTypeRepository,
+	public MrpServiceProductionImpl(AppProductionService appProductionService, MrpRepository mrpRepository, StockLocationRepository stockLocationRepository, 
+			ProductRepository productRepository, StockLocationLineRepository stockLocationLineRepository, MrpLineTypeRepository mrpLineTypeRepository,
 			PurchaseOrderLineRepository purchaseOrderLineRepository, SaleOrderLineRepository saleOrderLineRepository, MrpLineRepository mrpLineRepository,
 			StockRulesService stockRulesService, MrpLineService mrpLineService, MrpForecastRepository mrpForecastRepository,
 			BillOfMaterialRepository billOfMaterialRepository, ManufOrderRepository manufOrderRepository)  {
 		
 		
-		super(appProductionService, mrpRepository, locationRepository, productRepository, locationLineRepository, mrpLineTypeRepository, 
+		super(appProductionService, mrpRepository, stockLocationRepository, productRepository, stockLocationLineRepository, mrpLineTypeRepository, 
 				purchaseOrderLineRepository, saleOrderLineRepository, mrpLineRepository, stockRulesService, mrpLineService, mrpForecastRepository);
 		
 		this.billOfMaterialRepository = billOfMaterialRepository;
@@ -114,7 +114,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 		
 		for(ManufOrder manufOrder : manufOrderList)  {
 		
-			Location location = manufOrder.getProdProcess().getLocation();
+			StockLocation location = manufOrder.getProdProcess().getLocation();
 			
 			for(ProdProduct prodProduct : manufOrder.getToProduceProdProductList())  {
 				
@@ -163,7 +163,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 	}
 	
 	@Override
-	protected void createProposalMrpLine(Product product, MrpLineType mrpLineType, BigDecimal reorderQty, Location location, LocalDate maturityDate, List<MrpLineOrigin> mrpLineOriginList, String relatedToSelectName) throws AxelorException  {
+	protected void createProposalMrpLine(Product product, MrpLineType mrpLineType, BigDecimal reorderQty, StockLocation location, LocalDate maturityDate, List<MrpLineOrigin> mrpLineOriginList, String relatedToSelectName) throws AxelorException  {
 		
 		super.createProposalMrpLine(product, mrpLineType, reorderQty, location, maturityDate, mrpLineOriginList, relatedToSelectName);
 		

@@ -17,6 +17,18 @@
  */
 package com.axelor.apps.production.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -26,19 +38,22 @@ import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.production.db.*;
+import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.ProdProcess;
+import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.apps.production.db.ProdProduct;
+import com.axelor.apps.production.db.ProdResidualProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
-import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockConfig;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -48,13 +63,6 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.*;
 
 public class ManufOrderServiceImpl implements  ManufOrderService  {
 
@@ -345,8 +353,8 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		AppBaseService appBaseService = Beans.get(AppBaseService.class);
 
 		StockConfig stockConfig = stockConfigService.getStockConfig(company);
-		Location virtualLocation = stockConfigService.getProductionVirtualLocation(stockConfig);
-		Location wasteLocation = stockConfigService.getWasteLocation(stockConfig);
+		StockLocation virtualLocation = stockConfigService.getProductionVirtualLocation(stockConfig);
+		StockLocation wasteLocation = stockConfigService.getWasteLocation(stockConfig);
 
 		wasteStockMove = stockMoveService.createStockMove(virtualLocation.getAddress(), wasteLocation.getAddress(),
 				company, company.getPartner(), virtualLocation, wasteLocation, null, appBaseService.getTodayDate(),
