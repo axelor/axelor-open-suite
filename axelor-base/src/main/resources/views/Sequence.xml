@@ -28,8 +28,8 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
 			<label title="%WY : Week number" />
 		</panel>
 		<panel name="sequenceDefinition" title="Sequence Definition" colSpan="12">
-			<field name="prefixe"/>
-			<field name="suffixe"/>
+			<field name="prefixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$" />
+			<field name="suffixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$" />
 			<field name="padding"/>
 			<field name="toBeAdded"/>
 			<field name="yearlyResetOk" readonlyIf="monthlyResetOk" />
@@ -79,6 +79,8 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     	<error message="Prefix or suffix must contain %YY or %YYYY since yearly reset is true" if="!com.axelor.apps.base.service.administration.SequenceService.isYearValid(__this__)"/>
 		<error message="Prefix or suffix must contain %M or %FM, and %YY or %YYYY since monthly reset is true" if="!com.axelor.apps.base.service.administration.SequenceService.isMonthValid(__this__)"/>
 		<error message="Total sequence length must be less than 15 characters." if="!com.axelor.apps.base.service.administration.SequenceService.isSequenceLengthValid(__this__)"/>
+        <error message="Prefix or suffix must not contain characters forbidden in filenames." if="p = ~/^[^\/\\?*:\|&quot;&lt;>]*$/; prefixe &amp;&amp; !(prefixe ==~ p) || suffixe &amp;&amp; !(suffixe ==~ p)" />
+        <error message="Prefix cannot start with #." if="prefixe ==~ /^#.*$/" />
     </action-validate>
 
 	<action-method name="action-method-sequence-document-concerned-onchange">

@@ -139,12 +139,13 @@ public interface SaleOrderService {
 	void enableEditOrder(SaleOrder saleOrder) throws AxelorException;
 
     /**
-     * Validate change.
+     * Validate changes.
      * 
      * @param saleOrder
+     * @param saleOrderView
+     * @throws AxelorException
      */
-    void validateChange(SaleOrder saleOrder);
-
+    void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException;
 
     /**
      * Sort detail lines by sequence.

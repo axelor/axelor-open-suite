@@ -700,6 +700,7 @@
         <action name="action-invoice-attrs-show-validate-button"/>
 		<action name="action-invoice-attrs-interco-supplychain"/>
 		<action name="action-invoice-record-interco-supplychain"/>
+		<action name="action-invoice-attrs-change-create-refund-title"/>
     </action-group>
     
     <action-group name="action-account-invoice-onload-group" >
@@ -711,6 +712,7 @@
 		<action name="action-invoice-attrs-ventilate"/>
         <action name="action-invoice-attrs-show-validate-button"/>
 		<action name="action-invoice-attrs-interco-supplychain"/>
+		<action name="action-invoice-attrs-change-create-refund-title"/>
     </action-group>
     
     <action-group name="action-group-account-invoice-operationtype-onchange">
@@ -759,7 +761,7 @@
     </action-attrs>
     
     <action-attrs name="action-invoice-attrs-domain-project">
-    	<attribute name="domain" for="project" expr="eval: &quot; self.projectTypeSelect = 1 AND self.clientPartner.id = ${partner?.id} &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
+    	<attribute name="domain" for="project" expr="eval: &quot; self.projectTypeSelect = 1 AND self.clientPartner.id = ${partner?.id} AND self.isBusinessProject = true &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
     </action-attrs>
 
     <action-attrs name="action-invoice-attrs-ventilate">
@@ -805,6 +807,7 @@
 		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : bankDetails" />
     	<field name="contactPartner" expr="eval:null" />
     	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect"/>
+    	<field name="project" expr="eval: null"/>
     </action-record>
     
     <action-record name="action-invoice-record-due-date" model="com.axelor.apps.account.db.Invoice">
@@ -877,6 +880,10 @@
         <attribute name="hidden" expr="eval: (statusSelect != null &amp;&amp; statusSelect != 1) || __config__.app.getApp('invoice').getIsVentilationSkipped()" for="validate"/>
         <attribute name="hidden" expr="eval: (statusSelect != null &amp;&amp; statusSelect != 1) || !__config__.app.getApp('invoice').getIsVentilationSkipped()" for="validateAndVentilate"/>
     </action-attrs>
+
+	<action-attrs name="action-invoice-attrs-change-create-refund-title">
+		<attribute name="title" for="createRefund" expr="eval: com.axelor.i18n.I18n.get('Generate invoice')" if="operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_CLIENT_REFUND || operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_SUPPLIER_REFUND"/>
+	</action-attrs>
 
 	<!-- DOMAIN -->
 	

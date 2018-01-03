@@ -169,7 +169,7 @@
 	</action-view>
 		
 	<menuitem name="admin-root-batch-crm" parent="admin-root-batch"
-		title="CRM batches" action="admin.root.batch.crm" />
+		title="CRM batches" action="admin.root.batch.crm" if="__config__.app.isApp('crm')" />
 
 	<action-view name="admin.root.batch.crm" title="CRM batches"
 		model="com.axelor.apps.crm.db.CrmBatch" >

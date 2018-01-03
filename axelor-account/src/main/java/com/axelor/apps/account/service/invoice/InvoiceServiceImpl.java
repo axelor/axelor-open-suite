@@ -17,19 +17,6 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.axelor.apps.account.db.AccountConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
@@ -59,6 +46,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
@@ -72,6 +60,17 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * InvoiceService est une classe implémentant l'ensemble des services de
@@ -325,14 +324,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		
 	}
 	
-	protected String getDraftSequence(Invoice invoice)  {
-		return "*" + invoice.getId();
-	}
-	
-	public void setDraftSequence(Invoice invoice)  {
+    @Override
+	public void setDraftSequence(Invoice invoice) throws AxelorException {
 		
 		if (invoice.getId() != null && Strings.isNullOrEmpty(invoice.getInvoiceId()))  {
-			invoice.setInvoiceId(this.getDraftSequence(invoice));
+			invoice.setInvoiceId(Beans.get(SequenceService.class).getDraftSequenceNumber(invoice));
 		}
 		
 	}

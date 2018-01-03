@@ -308,4 +308,8 @@
 		<option value="2">Monthly payments</option>
 	</selection>
 
+	<selection name="message.related.to.select" id="account.message.related.to.select">
+		<option value="com.axelor.apps.account.db.DebtRecoveryHistory">Debt Recovery History</option>
+	</selection>
+
 </object-views>

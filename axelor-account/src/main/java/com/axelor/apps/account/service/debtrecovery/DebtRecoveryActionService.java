@@ -132,7 +132,10 @@ public class DebtRecoveryActionService {
 		DebtRecoveryHistory debtRecoveryHistory = this.getDebtRecoveryHistory(debtRecovery);
 
 		for (Template template : templateSet) {
-			debtRecoveryHistory.addDebtRecoveryMessageSetItem(templateMessageService.generateMessage(debtRecoveryHistory, template));
+			Message message = templateMessageService.generateMessage(debtRecoveryHistory, template);
+			message.setRelatedTo2Select(Partner.class.getCanonicalName());
+			message.setRelatedTo2SelectId(Math.toIntExact(debtRecoveryHistory.getDebtRecovery().getAccountingSituation().getPartner().getId()));
+			debtRecoveryHistory.addDebtRecoveryMessageSetItem(message);
 		}
 
 		return debtRecoveryHistory.getDebtRecoveryMessageSet();
@@ -141,7 +144,7 @@ public class DebtRecoveryActionService {
 
 
 	public DebtRecoveryHistory getDebtRecoveryHistory(DebtRecovery detDebtRecovery)  {
-		if (detDebtRecovery.getDebtRecoveryHistoryList() == null) {
+		if (detDebtRecovery.getDebtRecoveryHistoryList() == null || detDebtRecovery.getDebtRecoveryHistoryList().isEmpty()) {
 			return null;
 		}
 	    return Collections.max(detDebtRecovery.getDebtRecoveryHistoryList(),
@@ -268,7 +271,8 @@ public class DebtRecoveryActionService {
 	public void updateDebtRecoveryHistory(DebtRecovery debtRecovery, Set<Message> debtRecoveryMessageSet)  {
 
 		if(!debtRecovery.getDebtRecoveryHistoryList().isEmpty())  {
-			debtRecovery.getDebtRecoveryHistoryList().get(debtRecovery.getDebtRecoveryHistoryList().size()-1).setDebtRecoveryMessageSet(debtRecoveryMessageSet);
+			DebtRecoveryHistory debtRecoveryHistory = getDebtRecoveryHistory(debtRecovery);
+			debtRecoveryMessageSet.forEach(debtRecoveryHistory::addDebtRecoveryMessageSetItem);
 		}
 
 	}

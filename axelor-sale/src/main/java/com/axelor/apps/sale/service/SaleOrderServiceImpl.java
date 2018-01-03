@@ -574,7 +574,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	}
 
 	@Override
-    @Transactional(rollbackOn = {Exception.class})
+    @Transactional(rollbackOn = { Exception.class, AxelorException.class })
 	public void enableEditOrder(SaleOrder saleOrder) throws AxelorException {
 	    if (saleOrder.getStatusSelect() == ISaleOrder.STATUS_FINISHED) {
 	        throw new AxelorException(saleOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.SALES_ORDER_FINISHED));
@@ -583,10 +583,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		saleOrder.setOrderBeingEdited(true);
 	}
 
-
     @Override
-    public void validateChange(SaleOrder saleOrder) {
-        saleOrder.setOrderBeingEdited(false);
+    public void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException {
     }
 
     @Override
