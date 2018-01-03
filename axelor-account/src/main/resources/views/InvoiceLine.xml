@@ -11,25 +11,18 @@
         <field name="exTaxTotal" aggregate="sum"/>
 	    <field name="inTaxTotal" aggregate="sum"/>
     </grid>
-    
-    <grid name="invoice-line-menu-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
-		<toolbar>
-			<button name="new" title="" hidden="true"/>
-			<button name="edit" title="" hidden="true"/>
-			<button name="save" title="" hidden="true"/>
-			<button name="delete" title="" hidden="true"/>
-			<button name="copy" title="" hidden="true"/>
-			<button name="cancel" title="" hidden="true"/>
-		</toolbar>
-    	<field name="invoice.partner"/>
-    	<field name="invoice.invoiceId"/>
-        <field name="productName"/>
-        <field name="qty" aggregate="sum"/>
-        <field name="price" x-scale="2"/>
-        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="exTaxTotal" aggregate="sum"/>
-	    <field name="inTaxTotal" aggregate="sum"/>
-    </grid>
+
+	<grid name="invoice-line-menu-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine"
+		  canNew="false" canEdit="false" canSave="false" canDelete="false" canArchive="false">
+		<field name="invoice.partner"/>
+		<field name="invoice.invoiceId"/>
+		<field name="productName"/>
+		<field name="qty" aggregate="sum"/>
+		<field name="price" x-scale="2"/>
+		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+		<field name="exTaxTotal" aggregate="sum"/>
+		<field name="inTaxTotal" aggregate="sum"/>
+	</grid>
 
 	<form title="Invoice line" name="invoice-line-menu-form" model="com.axelor.apps.account.db.InvoiceLine" width="large"
 		  canNew="false" canEdit="false" canSave="false" canDelete="false" canCopy="false" canArchive="false">
