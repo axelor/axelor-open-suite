@@ -21,12 +21,16 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.AccountAccountRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountingBatchAccountRepository;
+import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.AccountingReportManagementRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.DepositSlipAccountRepository;
 import com.axelor.apps.account.db.repo.DepositSlipRepository;
+import com.axelor.apps.account.db.repo.InvoiceBatchAccountRepository;
+import com.axelor.apps.account.db.repo.InvoiceBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -104,7 +108,7 @@ public class AccountModule extends AxelorModule {
         bind(AddressServiceImpl.class).to(AddressServiceAccountImpl.class);
 
         bind(AccountManagementServiceImpl.class).to(AccountManagementServiceAccountImpl.class);
-        
+
         bind(AccountManagementAccountService.class).to(AccountManagementServiceAccountImpl.class);
 
         bind(FiscalPositionServiceImpl.class).to(FiscalPositionServiceAccountImpl.class);
@@ -156,6 +160,9 @@ public class AccountModule extends AxelorModule {
         bind(BankDetailsServiceImpl.class).to(BankDetailsServiceAccountImpl.class);
 
         bind(MoveLineExportService.class).to(MoveLineExportServiceImpl.class);
+
+        bind(AccountingBatchRepository.class).to(AccountingBatchAccountRepository.class);
+        bind(InvoiceBatchRepository.class).to(InvoiceBatchAccountRepository.class);
 
         bind(AccountRepository.class).to(AccountAccountRepository.class);
 

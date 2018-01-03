@@ -104,8 +104,7 @@
     <integer name="statusSelect" title="Status" selection="iaccount.invoice.status.select" readonly="true" default="1"/>
     
     <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/>
-    <string name="message" title="Message"/>
-    
+
     <boolean name="inAti" title="In ATI"/>
     
     <string name="supplierInvoiceNb" title="Supplier invoice number"/>

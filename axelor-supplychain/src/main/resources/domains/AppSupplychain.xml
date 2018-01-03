@@ -33,6 +33,7 @@
 				 title="Create purchase counterpart on this status"
 				 selection="sale.order.status.select"/>
 		<boolean name="manageStockReservation" title="Manage stock reservation"/>
+		<many-to-one name="cancelReasonOnChangingSaleOrder" ref="com.axelor.apps.base.db.CancelReason"/>
 	</entity>
 
 </domain-models>

@@ -5,7 +5,8 @@
 	
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form"
 	onNew="action-group-supplychain-saleorder-onnew"
-	onLoad="action-group-supplychain-saleorder-onload">
+	onLoad="action-group-supplychain-saleorder-onload"
+    onSave="action-supplychain-saleorder-onsave">
 		
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
@@ -53,6 +54,10 @@
 		<action name="action-sale-order-attrs-interco"/>
 		<action name="save"/>
 	</action-group>
+
+    <action-method name="action-supplychain-saleorder-onsave">
+        <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="onSave" />
+    </action-method>
 
 	<action-method name="action-supplychain-sale-order-method-get-location">
     	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>

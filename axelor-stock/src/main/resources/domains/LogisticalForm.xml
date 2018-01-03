@@ -28,9 +28,9 @@
 
         <extra-code>
 		<![CDATA[
-			public static int STATUS_PROVISION = 1;
-			public static int STATUS_CARRIER_VALIDATED = 2;
-			public static int STATUS_COLLECTED = 3;
+			public static final int STATUS_PROVISION = 1;
+			public static final int STATUS_CARRIER_VALIDATED = 2;
+			public static final int STATUS_COLLECTED = 3;
 		]]>
 		</extra-code>
 

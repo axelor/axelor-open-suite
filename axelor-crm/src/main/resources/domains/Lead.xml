@@ -12,7 +12,7 @@
  	<string name="titleSelect" title="Title" selection="partner.title.type.select"/>
     <string name="name" required="true" title="Last name"/>
     <string name="firstName" title="First name"/>
-    <string name="enterpriseName" title="Enterprise"/> 
+    <string name="enterpriseName" title="Enterprise"/>
     <string name="officeName" title="Office name"/>
   	<string name="jobTitle" title="Job Title"/>
     <string name="mobilePhone" title="Mobile N°"/>
@@ -43,7 +43,7 @@
 	<string name="description" title="Description" large="true"/>
 	<date name="contactDate" title="Contact date" />
 	
-	<integer name="statusSelect" title="Status" selection="crm.lead.status.select" default="1" required="true" massUpdate="true"/>  
+	<integer name="statusSelect" title="Status" selection="crm.lead.status.select" default="1" required="true" massUpdate="true"/>
 	<many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
   	<string name="statusDescription" title="Status description" large="true"/>
     <decimal name="opportunityAmount" title="Opportunity amount"/>
@@ -57,8 +57,8 @@
     
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to" massUpdate="true"/>
   	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"  massUpdate="true" />
-  	<many-to-one name="industrySector" title="Industry" ref="com.axelor.apps.base.db.IndustrySector" massUpdate="true"/>
-  	
+  	<many-to-one name="industrySector" title="Industry sector" ref="com.axelor.apps.base.db.IndustrySector" massUpdate="true"/>
+
   	<one-to-many name="eventList" ref="com.axelor.apps.crm.db.Event" title="Events" mappedBy="lead"/>
   	<one-to-many name="opportunitiesList" ref="com.axelor.apps.crm.db.Opportunity" title="Opportunities" mappedBy="lead"/>
   	<many-to-one name="lostReason" ref="LostReason" title="Lost reason" />

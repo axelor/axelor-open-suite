@@ -52,10 +52,13 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.db.Timetable;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.google.inject.Inject;
@@ -293,5 +296,41 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		}
 		return total;
 	}
+
+	@Override
+	@Transactional(rollbackOn = {Exception.class, AxelorException.class})
+	public void enableEditOrder(SaleOrder saleOrder) throws AxelorException {
+		super.enableEditOrder(saleOrder);
+
+		List<StockMove> stockMoves = Beans.get(StockMoveRepository.class).findAllBySaleOrderAndStatus(saleOrder, StockMoveRepository.STATUS_PLANNED).fetch();
+		if (!stockMoves.isEmpty()) {
+			StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+			CancelReason cancelReason = appSupplychain.getCancelReasonOnChangingSaleOrder();
+			if (cancelReason == null) {
+				throw new AxelorException(appSupplychain, IException.CONFIGURATION_ERROR, IExceptionMessage.SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_SALE_ORDER);
+			}
+			for (StockMove stockMove : stockMoves) {
+			    stockMoveService.cancel(stockMove, cancelReason);
+			}
+		}
+	}
+
+    @Override
+    public void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException {
+        super.validateChanges(saleOrder, saleOrderView);
+        if (saleOrder.getSaleOrderLineList() == null) {
+            return;
+        }
+
+        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+            if (saleOrderLine.getDeliveryState() > SaleOrderRepository.STATE_NOT_DELIVERED
+                    && saleOrderView.getSaleOrderLineList() == null
+                    || !saleOrderView.getSaleOrderLineList().contains(saleOrderLine)) {
+                throw new AxelorException(saleOrderView, IException.INCONSISTENCY,
+                        I18n.get(IExceptionMessage.SO_CANT_REMOVED_DELIVERED_LINE), saleOrderLine.getFullName());
+
+            }
+        }
+    }
 
 }

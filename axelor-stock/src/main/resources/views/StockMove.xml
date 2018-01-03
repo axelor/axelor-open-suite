@@ -81,7 +81,7 @@
 		 
 	  <panel title="Status">
 		  <field name="statusSelect" widget="NavSelect" colSpan="8"/>
-		  <field name="cancelReason" canView="false" showIf="statusSelect == 4 &amp;&amp; cancelReason != null" readonly="true" colSpan="4"/>
+		  <field name="cancelReason" canView="false" showIf="cancelReason != null" readonly="true" colSpan="4"/>
 	  </panel>
 	  <panel name="main">
 		  <field name="typeSelect" title="Type" colSpan="4" onChange="action-stock-move-set-default-locations, action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1"/>
@@ -103,11 +103,11 @@
 	      <field name="isWithBackorder" colSpan="6"/>
 	      <field name="fromAddress" showIf="!$readonly() &amp;&amp; statusSelect == 1 &amp;&amp; typeSelect == 3" colSpan="12" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str"  readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
             <field name="fromAddressStr" showIf="typeSelect == 3" readonlyIf="statusSelect &gt; 1" height="5" colSpan="12">
-				<viewer>{{fromAddressStr}}</viewer>
+				<viewer>{{record.fromAddressStr}}</viewer>
 			</field>
 	      <field name="toAddress" showIf="!$readonly() &amp;&amp; statusSelect == 1 &amp;&amp; typeSelect == 2" colSpan="12" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
 			<field name="toAddressStr" showIf="typeSelect == 2" readonlyIf="statusSelect &gt; 1" height="5" colSpan="12">
-				<viewer>{{toAddressStr}}</viewer>
+				<viewer>{{record.toAddressStr}}</viewer>
 			</field>
 	    </panel>
 	  </panel>
@@ -145,7 +145,7 @@
 	                  <![CDATA[
 	                <dl class="dl-horizontal">
 	                    <dt class="order-subtotal-total" x-translate>Total W.T.</dt>
-	                    <dd class="order-subtotal-total">{{exTaxTotal}}</dd>
+	                    <dd class="order-subtotal-total">{{record.exTaxTotal}}</dd>
 	                </dl>
 	                ]]>
 	            </viewer>

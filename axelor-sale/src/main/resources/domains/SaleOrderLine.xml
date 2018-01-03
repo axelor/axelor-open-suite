@@ -71,9 +71,9 @@
 
 	<extra-code>
 		<![CDATA[
-			public static final Integer TYPE_NORMAL = 0;
-			public static final Integer TYPE_TITLE = 1;
-			public static final Integer TYPE_PACK = 2;
+			public static final int TYPE_NORMAL = 0;
+			public static final int TYPE_TITLE = 1;
+			public static final int TYPE_PACK = 2;
 	  	]]>
 	</extra-code>
   	

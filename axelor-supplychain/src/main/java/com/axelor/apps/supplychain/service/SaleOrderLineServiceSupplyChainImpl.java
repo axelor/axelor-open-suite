@@ -149,13 +149,12 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     public BigDecimal computeUndeliveredQty(SaleOrderLine saleOrderLine) {
         Preconditions.checkNotNull(saleOrderLine);
         SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-        Product product = saleOrderLine.getProduct();
         Preconditions.checkNotNull(saleOrder);
-        Preconditions.checkNotNull(product);
-
-        BigDecimal deliveredQty = saleOrder.getSaleOrderLineList().stream()
-                .filter(line -> product.equals(line.getProduct()))
-                .reduce(BigDecimal.ZERO, (qty, line) -> qty.add(line.getDeliveredQty()), BigDecimal::add);
+        Product product = saleOrderLine.getProduct();
+        BigDecimal deliveredQty = product != null
+                ? saleOrder.getSaleOrderLineList().stream().filter(line -> product.equals(line.getProduct()))
+                        .reduce(BigDecimal.ZERO, (qty, line) -> qty.add(line.getDeliveredQty()), BigDecimal::add)
+                : BigDecimal.ZERO;
 
         return saleOrderLine.getQty().subtract(deliveredQty);
     }

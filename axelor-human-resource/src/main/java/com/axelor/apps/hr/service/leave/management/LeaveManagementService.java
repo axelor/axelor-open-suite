@@ -18,6 +18,7 @@
 package com.axelor.apps.hr.service.leave.management;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import java.time.LocalDate;
@@ -63,7 +64,7 @@ public class LeaveManagementService {
 		}
 		leaveManagement.setFromDate(fromDate);
 		leaveManagement.setToDate(toDate);
-		leaveManagement.setValue(value.setScale(1));
+		leaveManagement.setValue(value.setScale(1, RoundingMode.HALF_UP));
 		
 		return leaveManagement;
 	}

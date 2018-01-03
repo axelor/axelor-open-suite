@@ -40,8 +40,8 @@
                     <button name="runImport" title="Import" onClick="save,action-bank-statement-method-run-import" readonlyIf="!bankStatementFile" />
                 </panel>
             </panel>
-            <panel-dashlet action="action-bank-statement-view-bank-statement-lines" colSpan="12" height="500" canSearch="true" hideIf="bankStatementFileFormat.statementFileFormatSelect.startsWith(&quot;camt.xxx.cfonb120&quot;)"/>
-            <panel-dashlet action="action-bank-statement-view-bank-statement-lines-afb-120" colSpan="12" height="500" canSearch="true" showIf="bankStatementFileFormat.statementFileFormatSelect.startsWith(&quot;camt.xxx.cfonb120&quot;)"/>
+            <panel-dashlet action="action-bank-statement-view-bank-statement-lines" colSpan="12" height="500" canSearch="true" hideIf="bankStatementFileFormat.statementFileFormatSelect.indexOf(&quot;camt.xxx.cfonb120&quot;) == 0"/>
+            <panel-dashlet action="action-bank-statement-view-bank-statement-lines-afb-120" colSpan="12" height="500" canSearch="true" showIf="bankStatementFileFormat.statementFileFormatSelect.indexOf(&quot;camt.xxx.cfonb120&quot;) == 0"/>
         </panel>
 	</form>
 	

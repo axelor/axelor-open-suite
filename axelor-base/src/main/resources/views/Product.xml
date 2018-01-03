@@ -8,14 +8,14 @@
         	<button name="catalog" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
 			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 	    </toolbar>
-	    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-	    <field name="name" width="400"/>
+	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="100"/>
+	    <field name="name" width="300"/>
 	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
 	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
 	    <field name="productTypeSelect" width="100"/>
 	   	<field name="salePrice" x-scale="2" />
 	    <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
-	    <field name="internalDescription" widget="html"/>
+	    <field name="internalDescription" widget="html" width="400" />
 	    <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
     
@@ -66,8 +66,9 @@
     		<panel colSpan="10">
       
       			<panel name="productTypology" title="Product typology" colSpan="6" colWidths="30%,70%">
-			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange"/>
-			        <field name="productSubTypeSelect" colSpan="12"  showIf="productTypeSelect == 'storable'"/>
+			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange" selection-in="['service','storable']" if="!__config__.app.isApp('subscription')"/>
+			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange" if="__config__.app.isApp('subscription')"/>
+			        <field name="productSubTypeSelect" colSpan="12"  showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('production')"/>
            			<field name="isShippingCostsProduct" colSpan="4"/>
 			        <field name="isActivity" showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
 			        <field name="periodicitySelect" showIf="productTypeSelect == 'subscriptable'" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
@@ -134,7 +135,7 @@
 	      		<panel-related field="supplierCatalogList" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid" title="Suppliers catalog" showIf="purchasable" colSpan="12" 
 	      		if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
 	    	</panel>
-            <panel name="accounting" title="Accounting">
+            <panel name="accounting" title="Accounting" if="__config__.app.isApp('account')">
                 <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account" if="__config__.app.isApp('account')"/>
                 <panel-related field="accountManagementList" form-view="account-management-product-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
             </panel>
@@ -150,14 +151,14 @@
 				        <button name="showAllStockMoveLine" title="Show all stock move" colSpan="6" onClick="action-product-view-stock-move-line"/>
 						<field name="avgPrice"/>
 				        <spacer/>
-				        <panel-dashlet colSpan="12" action="action-product-view-stock"/>
-				        <panel-dashlet colSpan="12" action="action-stock-report-for-product"/>
-				        <panel-dashlet colSpan="12" action="action-stock-history-report-for-product"/>
+				        <panel-dashlet colSpan="12" action="action-product-view-stock" showIf="id" />
+				        <panel-dashlet colSpan="12" action="action-stock-report-for-product" showIf="id" />
+				        <panel-dashlet colSpan="12" action="action-stock-history-report-for-product" showIf="id" />
 	      			</panel>
 	    		</panel>
 	    		<panel name="productionInformations" title="Production information" showTitle="false" showIf="productTypeSelect == 'storable'" onTabSelect="action-product-attrs-readonly-create-production-order" if-module="axelor-production" if="__config__.app.isApp('production')" >
 	      			<panel-include view="product-production-form"/>
-	      			<panel-dashlet colSpan="12" action="action-product-view-production-process"/>
+	      			<panel-dashlet colSpan="12" action="action-product-view-production-process" showIf="id" />
 	    		</panel>
 	    		<panel name="trackingNumber" title="Tracking number" showTitle="false" showIf="productTypeSelect != 'service'" if-module="axelor-stock" if="__config__.app.isApp('stock')">
 	      			<panel colSpan="12">
@@ -187,7 +188,7 @@
 	        			</field>
 	        			<button name="generateProductVariant" title="Generate product variants" onClick="save,action-product-method-generate-product-variant"/>
 						<field name="manageVariantPrice"/>
-	        			<panel-dashlet colSpan="12" action="action-product-view-product-variant"/>
+	        			<panel-dashlet colSpan="12" action="action-product-view-product-variant" showIf="id" />
 	      			</panel>
 	      			<panel name="childVariant" showIf="parentProduct" colSpan="12">
 	        			<field name="productVariant" showTitle="false" canSelect="false">
@@ -203,18 +204,18 @@
 				          </editor>
 	        			</field>
 	        			<field name="parentProduct" canEdit="false" form-view="product-form" grid-view="product-grid"/>
-	        			<panel-dashlet colSpan="12" action="action-product-view-other-product-variant"/>
+	        			<panel-dashlet colSpan="12" action="action-product-view-other-product-variant" showIf="parentProduct" />
 	      			</panel>
 	      			<button name="updateProductsPrices" title="Update products prices" onClick="save,action-product-method-update-products-prices"/>
 	    		</panel>
 	    	<panel name="links" title="Links" if-module="axelor-stock" if="__config__.app.isApp('stock')" hideIf="isShippingCostsProduct">
-				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-incoming-planned"/>
-				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-planned"/>
-				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line"/>
+				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-incoming-planned" showIf="id" />
+				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-planned" showIf="id" />
+				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line" showIf="id" />
 <!--  				<panel-dashlet action="action-product-view-supplier-requests-historical" colSpan="12" if-module="axelor-supplier-management"/> -->
 <!--  				<panel-dashlet action="action-product-view-purchase-order-line-in-progress" colSpan="12" if-module="axelor-purchase"/> -->
 <!--  				<panel-dashlet action="action-product-view-purchase-order-line-historical" colSpan="12" if-module="axelor-purchase"/> -->
-				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-historical"/>
+				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-historical" showIf="id" />
 	    	</panel>
 	    	<panel name="packaging" title="Packaging" hideIf="isShippingCostsProduct">
 	  			<panel name="weight" title="Weight" colSpan="6">

@@ -121,6 +121,7 @@ public interface IExceptionMessage {
 	 */
 	static final public String IMPORTER_1 = /*$$(*/ "Error : Mapping file is unreachable." /*)*/;
 	static final public String IMPORTER_2 = /*$$(*/ "Error : Data file is unreachable." /*)*/;
+	static final public String IMPORTER_3 = /*$$(*/ "Error : Mapping file is not found." /*)*/;
 	
 	/**
 	 * Importer Listener 
@@ -155,7 +156,12 @@ public interface IExceptionMessage {
 	 * Template rule service
 	 */
 	static final public String TEMPLATE_RULE_1 = /*$$(*/ "Bean is not an instance of" /*)*/;
-	
+
+	/**
+	 * Sequence service
+	 */
+    static final public String SEQUENCE_NOT_SAVED_RECORD = /*$$(*/ "Can't generate draft sequence number on an unsaved record." /*)*/;
+
 	/**
 	 * Address controller
 	 */
@@ -208,10 +214,5 @@ public interface IExceptionMessage {
 	 */
 	static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;
 	static final String IMPORT_CALENDAR = /*$$(*/ "Import calendar" /*)*/;
-
-    /**
-     * Sequence service
-     */
-    String SEQUENCE_NOT_SAVED_RECORD = /*$$(*/ "Can't generate draft sequence number on an unsaved record." /*)*/;
 
 }

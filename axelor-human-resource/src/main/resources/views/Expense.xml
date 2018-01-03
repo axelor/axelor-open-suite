@@ -9,7 +9,7 @@
 		<field name="expenseSeq"/>
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="sentDate"/>
-		<field name="period" form-view="period-form" grid-view="period-grid"/>
+		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="statusSelect"/>
 		<field name="ventilated"/>
@@ -17,7 +17,7 @@
 	
 	<grid name="expense-payroll-preparation-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense" orderBy="-sentDate">
 		<field name="sentDate"/>
-		<field name="period" form-view="period-form" grid-view="period-grid"/>
+		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"/>
 		<field name="inTaxTotal" aggregate="sum"/>
 	</grid>
 	
@@ -30,7 +30,7 @@
 		<field name="expenseSeq"/>
 		<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"/>
 		<field name="sentDate"/>
-		<field name="period" form-view="period-form" grid-view="period-grid"/>
+		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="statusSelect"/>
 	</grid>
@@ -44,7 +44,7 @@
 		</toolbar>
 		<panel title="Status">
 			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
-		</panel>		
+		</panel>
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
 	    	<button name="sendExpenses" colSpan="4" title="Send Expenses" onClick="action-expense-group-send" readonlyIf="statusSelect &gt; 1"/>
 			<button name="ventilate" colSpan="4" title="Ventilate" onClick="action-expense-method-ventilate" readonlyIf="statusSelect != 3 || ventilated"/>
@@ -70,19 +70,20 @@
 					</viewer>
 				</field>
 			</panel>
-			
+
 			<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
 			<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" readonlyIf="ventilated"/>
 			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()"/>
-			<field name="period" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" readonlyIf="ventilated"/>
+			<field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" readonlyIf="ventilated"/>
 			<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb" readonlyIf="ventilated"/>
 			<field name="withdrawnCash" hidden="true" showIf="companyCbSelect > 1" />
+            <field name="user.employee.companyCbDetails" colSpan="12" hidden="true" showIf="user != null &amp;&amp; user.employee != null &amp;&amp; companyCbSelect &gt; 1"/>
 			<field name="personalExpenseAmount" hidden="true" />
 			<field name="advanceAmount" hidden="true" />
 		</panel>
 		<panel-tabs>
-			<panel-related field="expenseLineList" height="20" title="General expenses" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" colSpan="12" />
+			<panel-related field="expenseLineList" height="20" title="General expenses" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute,action-expense-method-remove-lines" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" colSpan="12" />
 			<panel title="Kilometric Allowances" showIf="!setMultipleUsers">
 				<field name="kilometricExpenseLineList" readonlyIf="statusSelect &gt; 1" colSpan="12" showTitle="false" onChange="action-expense-method-compute" >
 				<editor x-show-on-new="false" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4" onNew="action-kilometric-allowance-record-default,action-expense-line-method-fill-kilometric-expense-product" >
@@ -96,7 +97,7 @@
 			   	    <field name="project" title="Project" requiredIf="toInvoice" canView="false" domain="self.imputable = true" widget="SuggestBox" colSpan="4" grid-view="project-grid"/>
 			   	    <field name="comments" colSpan="6" height="2" />
 			   		<field name="untaxedAmount" hidden="true" />
-			   		<field name="expenseProduct" readonly="true" form-view="product-expense-form" grid-view="product-expense-grid" hidden="true"/> 
+			   		<field name="expenseProduct" readonly="true" form-view="product-expense-form" grid-view="product-expense-grid" hidden="true"/>
 					<field name="toInvoice" hidden="true"/>
 				</editor>
 				</field>
@@ -139,21 +140,21 @@
                     <![CDATA[
                     <dl class="dl-horizontal">
                         <dt x-translate>Total W.T.</dt>
-                        <dd>{{exTaxTotal}}</dd>
+                        <dd>{{record.exTaxTotal}}</dd>
                         <dt x-translate>Total tax</dt>
-                        <dd>{{taxTotal}}</dd>
+                        <dd>{{record.taxTotal}}</dd>
                         <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-                        <dd class="order-subtotal-total">{{inTaxTotal}}</dd>
+                        <dd class="order-subtotal-total">{{record.inTaxTotal}}</dd>
                         <dt ng-show="record.personalExpenseAmount != 0" x-translate>Personal expense</dt>
-                        <dd ng-show="record.personalExpenseAmount != 0"> -{{personalExpenseAmount | number:2}}</dd>
+                        <dd ng-show="record.personalExpenseAmount != 0"> -{{record.personalExpenseAmount | number:2}}</dd>
                         <dt ng-show="record.withdrawnCash != 0" x-translate>Withdrawn cash</dt>
-                        <dd ng-show="record.withdrawnCash != 0">-{{withdrawnCash | number:2}}</dd>
+                        <dd ng-show="record.withdrawnCash != 0">-{{record.withdrawnCash | number:2}}</dd>
                         <dt ng-show="record.advanceAmount != 0" x-translate>Advance</dt>
-                        <dd ng-show="record.advanceAmount != 0">-{{advanceAmount | number:2}}</dd>
+                        <dd ng-show="record.advanceAmount != 0">-{{record.advanceAmount | number:2}}</dd>
                         <dt ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}" x-translate>Payment</dt>
-                        <dd ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}">-{{paymentAmount  | number:2}}</dd>
+                        <dd ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}">-{{record.paymentAmount  | number:2}}</dd>
                         <dt class="order-subtotal-total" x-translate>TotalToRefund</dt>
-                        <dd class="order-subtotal-total">{{inTaxTotal - advanceAmount - withdrawnCash - personalExpenseAmount - paymentAmount | number:2}}</dd>
+                        <dd class="order-subtotal-total">{{record.inTaxTotal - record.advanceAmount - record.withdrawnCash - record.personalExpenseAmount - record.paymentAmount | number:2}}</dd>
                     </dl>
                     ]]>
                 </viewer>
@@ -194,8 +195,9 @@
 	
 	<action-record name="action-expense-record-default" model="com.axelor.apps.hr.db.Expense">
 	    <field name="user" expr="eval:__user__"/>
-	    <field name="company" expr="eval: __user__.activeCompany"/>
-	    <field name="period" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
+	    <field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
+        <field name="companyCbSelect" expr="eval: __user__.employee?.companyCbSelect"/>
+	    <field name="period" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true',__date__).fetchOne()"/>
 		<field name="exTaxTotal" expr="eval: 0"/>
     	<field name="taxTotal" expr="eval: 0"/>
     	<field name="inTaxTotal" expr="eval: 0"/>
@@ -211,7 +213,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-expense-attrs-domain-period">
-		<attribute name="domain" for="period" expr="eval: &quot; self.fromDate &lt;= CURRENT_DATE AND self.statusSelect = 1 &quot;"/>
+		<attribute name="domain" for="period" expr="eval: &quot; self.fromDate &lt;= CURRENT_DATE AND self.statusSelect = 1 AND self.allowExpenseCreation = true&quot;"/>
 	</action-attrs>
 	
 	<action-method name="action-expense-method-compute">
@@ -281,5 +283,9 @@
     <action-method name="action-expense-method-compute-amounts">
     	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeAmounts"/>
     </action-method>
-    
+
+    <action-method name="action-expense-method-remove-lines">
+    	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="removeLines"/>
+    </action-method>
+
 </object-views>

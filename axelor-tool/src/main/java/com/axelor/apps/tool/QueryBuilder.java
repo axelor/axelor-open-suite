@@ -72,11 +72,11 @@ public class QueryBuilder<T extends Model> {
     }
 
     /**
-     * Create query.
+     * Build the query.
      * 
      * @return
      */
-    public Query<T> create() {
+    public Query<T> build() {
         String filter = Joiner.on(" AND ").join(Lists.transform(filterList, input -> String.format("(%s)", input)));
         Query<T> query = Query.of(modelClass).filter(filter);
 
@@ -85,6 +85,14 @@ public class QueryBuilder<T extends Model> {
         }
 
         return query;
+    }
+
+    /**
+     * @deprecated (use build() instead)
+     */
+    @Deprecated
+    public Query<T> create() {
+        return build();
     }
 
 }

@@ -95,8 +95,8 @@
 	        	<field name="versionSelect" colSpan="12"/>
 	        </panel>
             <panel colSpan="8">
-				<field name="name" showTitle="false" css="label-bold bold" placeholder="Name"	colSpan="8"/>
-				<field name="code" x-bind="{{code|unaccent|uppercase}}"  showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4"/>
+                <field name="code" x-bind="{{code|unaccent|uppercase}}"  showTitle="false" css="label-bold bold" placeholder="Code" colSpan="3"/>
+				<field name="name" showTitle="false" css="label-bold bold" placeholder="Name" colSpan="9"/>
 				<panel title="Product typology" colSpan="6" colWidths="30%,70%">
 					<field name="inAti"/>
 					<field name="isAnalyticCapture" if-module="axelor-account"  if="__config__.app.isApp('account')" />

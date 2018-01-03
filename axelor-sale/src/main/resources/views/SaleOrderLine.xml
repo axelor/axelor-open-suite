@@ -105,7 +105,7 @@
 		   	</panel>
 		   	<panel name="deliveryPanel" title="Delivery"  hideIf="typeSelect == 2">
 		   		<field name="estimatedDelivDate"/>
-		   		<field name="deliveredQty"/>
+		   		<field name="deliveredQty" readonly="true"/>
 		   		<panel-dashlet name="sale.order.line.dashboard" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 		   	</panel>
 		   	<panel name="invoicingFollowUp" title="Invoicing follow-up"  hideIf="typeSelect == 2" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()">
@@ -129,6 +129,10 @@
 		<panel>
 			<field name="attrs" colSpan="12" />
 	  	</panel>
+        <panel hidden="true">
+            <field name="saleOrder.statusSelect" />
+            <field name="saleOrder.orderBeingEdited" />
+        </panel>
 	</form>
 
 	<form name="sale-order-line-template-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine"

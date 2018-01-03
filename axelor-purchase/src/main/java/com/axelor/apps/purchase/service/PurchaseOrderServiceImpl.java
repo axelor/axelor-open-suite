@@ -213,11 +213,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	}
 
 	@Override
-	public String getDraftSequence(Long purchaseOrderId){
-		return "*"+purchaseOrderId.toString();
-	}
-
-	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Partner validateSupplier(PurchaseOrder purchaseOrder)  {
 
@@ -339,10 +334,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	}
 
 	@Override
-	public void setDraftSequence(PurchaseOrder purchaseOrder) {
+	public void setDraftSequence(PurchaseOrder purchaseOrder) throws AxelorException {
 		
 		if(purchaseOrder.getId() != null && Strings.isNullOrEmpty(purchaseOrder.getPurchaseOrderSeq())){
-			purchaseOrder.setPurchaseOrderSeq(this.getDraftSequence(purchaseOrder.getId()));
+            purchaseOrder.setPurchaseOrderSeq(sequenceService.getDraftSequenceNumber(purchaseOrder));
 		}
 	}
 	

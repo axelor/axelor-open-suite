@@ -183,7 +183,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	 */
 	@Override
 	public StockMoveLine createStockMoveLine(Product product, String  productName, String description, BigDecimal quantity, BigDecimal unitPriceUntaxed, BigDecimal unitPriceTaxed, Unit unit, StockMove stockMove, TrackingNumber trackingNumber) {
-        Preconditions.checkArgument(quantity != null && quantity.signum() > 0);
+        Preconditions.checkArgument(quantity != null && quantity.signum() >= 0);
 
 		StockMoveLine stockMoveLine = new StockMoveLine();
 		stockMoveLine.setStockMove(stockMove);
@@ -573,6 +573,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
     private BigDecimal computeSpreadableQtyOverLogisticalFormLines(StockMoveLine stockMoveLine,
             List<LogisticalFormLine> logisticalFormLineList) {
+
+        if (stockMoveLine.getProduct() == null
+                || !ProductRepository.PRODUCT_TYPE_STORABLE.equals(stockMoveLine.getProduct().getProductTypeSelect())) {
+            return BigDecimal.ZERO;
+        }
+
         if (logisticalFormLineList == null) {
             return stockMoveLine.getRealQty();
         }
