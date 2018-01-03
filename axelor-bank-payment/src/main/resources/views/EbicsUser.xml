@@ -25,7 +25,7 @@
 	<form name="ebics-user-form" title="Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" onSave="save,action-ebics-user-method-generate-dn">
 		<panel title="General information" colSpan="12">
 			<field name="statusSelect" colSpan="12"/>
-			<field name="fullName" colSpan="12" canEdit="false"/>
+			<field name="fullName" colSpan="12" readonly="true"/>
 			<field name="name" colSpan="6" onChange="action-ebics-user-record-set-fullname"/>
 			<field name="associatedUser" colSpan="6" canEdit="False" onChange="action-ebics-user-record-set-fullname"/>
 			<field name="password" requiredIf="ebicsPartner.ebicsTypeSelect == 0"/>
@@ -91,7 +91,7 @@
 	</form>
 	
 	<action-record name="action-ebics-user-record-set-fullname" model="com.axelor.apps.bankpayment.db.EbicsUser">
-		<field name="fullName" expr="eval: (name ? name : '') + ' ' + (associatedUser?.fullName ? associatedUser?.fullName : '')"/>
+		<field name="fullName" expr="eval: (name ? name : '') + (associatedUser?.fullName ? ' - ' + associatedUser?.fullName : '')"/>
 	</action-record>
 
 	<action-method name="action-ebics-user-method-generate-certificates">
