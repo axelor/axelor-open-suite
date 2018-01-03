@@ -98,8 +98,8 @@ public class ManufOrderStockMoveService {
 
 	    StockLocation fromLocation;
 
-		if (manufOrder.getProdProcess() != null && manufOrder.getProdProcess().getLocation() != null) {
-			fromLocation = manufOrder.getProdProcess().getLocation();
+		if (manufOrder.getProdProcess() != null && manufOrder.getProdProcess().getStockLocation() != null) {
+			fromLocation = manufOrder.getProdProcess().getStockLocation();
 		} else {
 			fromLocation = stockConfigService.getDefaultLocation(stockConfig);
 		}

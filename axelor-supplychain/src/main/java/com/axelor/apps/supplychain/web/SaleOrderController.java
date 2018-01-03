@@ -103,10 +103,10 @@ public class SaleOrderController{
 
 		if(saleOrder != null) {
 
-			StockLocation location = Beans.get(StockLocationService.class).getLocation(saleOrder.getCompany());
+			StockLocation stockLocation = Beans.get(StockLocationService.class).getLocation(saleOrder.getCompany());
 
-			if(location != null) {
-				response.setValue("location", location);
+			if(stockLocation != null) {
+				response.setValue("stockLocation", stockLocation);
 			}
 		}
 	}
@@ -418,7 +418,7 @@ public class SaleOrderController{
 				commonContactPartner = saleOrderTemp.getContactPartner();
 				commonTeam = saleOrderTemp.getTeam();
 				commonPriceList = saleOrderTemp.getPriceList();
-				commonLocation = saleOrderTemp.getLocation();
+				commonLocation = saleOrderTemp.getStockLocation();
 			} else {
 				if (commonCurrency != null
 						&& !commonCurrency.equals(saleOrderTemp.getCurrency())){
@@ -448,7 +448,7 @@ public class SaleOrderController{
 					existPriceListDiff = true;
 				}
 				if (commonLocation != null
-						&& !commonLocation.equals(saleOrderTemp.getLocation())){
+						&& !commonLocation.equals(saleOrderTemp.getStockLocation())){
 					commonLocation = null;
 					existLocationDiff = true;
 				}
@@ -488,8 +488,8 @@ public class SaleOrderController{
 		if (request.getContext().get("team") != null){
 			commonTeam = JPA.em().find(Team.class, new Long((Integer)((Map)request.getContext().get("team")).get("id")));
 		}
-		if (request.getContext().get("location") != null){
-			commonLocation = JPA.em().find(StockLocation.class, new Long((Integer)((Map)request.getContext().get("location")).get("id")));
+		if (request.getContext().get("stockLocation") != null){
+			commonLocation = JPA.em().find(StockLocation.class, new Long((Integer)((Map)request.getContext().get("stockLocation")).get("id")));
 		}
 		
 		if (!fromPopup && (existContactPartnerDiff || existPriceListDiff || existTeamDiff)) {

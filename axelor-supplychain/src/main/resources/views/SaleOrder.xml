@@ -82,7 +82,7 @@
 	</action-method>
 
 	<action-validate name="action-supplychain-sale-order-validate-check-location">
-		<error message="The location must be filled." if="location == null"/>
+		<error message="The stock location must be filled." if="stockLocation == null"/>
 	</action-validate>
 	
 	<action-record name="action-record-load-dummy-supplier-partner" model="com.axelor.apps.sale.db.SaleOrder">

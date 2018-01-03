@@ -13,15 +13,15 @@
 				country.alpha3Code AS _country
 			FROM
 				StockMove self,    
-				Location location,    
+				StockLocation stockLocation,    
 				Address address,
 				Country country      
 			WHERE
 				self.typeSelect = 2 AND
 				self.statusSelect = 3 AND
 				self.company =:activeCompany AND    
-				self.toLocation = location AND
-				location.typeSelect = 2 AND
+				self.toLocation = stockLocation AND
+				stockLocation.typeSelect = 2 AND
 				self.toAddress = address AND
 				address.addressL7Country = country AND
 				self.realDate BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND DATE(:todayDate)
@@ -43,7 +43,7 @@
 			FROM
 				StockMoveLine self,    
 				StockMove stockMove,
-				Location location,
+				StockLocation stockLocation,
 				Address address,
 				Country country
 			WHERE
@@ -52,8 +52,8 @@
 				stockMove.company = :activeCompany AND
 				stockMove.realDate BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND DATE(:todayDate) AND
 				self.stockMove = stockMove AND
-				stockMove.toLocation = location AND
-				location.typeSelect = 2 AND
+				stockMove.toLocation = stockLocation AND
+				stockLocation.typeSelect = 2 AND
 				stockMove.toAddress = address AND
 				address.addressL7Country = country
 			GROUP BY
@@ -76,7 +76,7 @@
 			FROM
 				StockMoveLine self,    
 				StockMove stockMove,
-				Location location,
+				StockLocation stockLocation,
 				Address address,
 				Country country,
 				ProductFamily productFamily
@@ -86,8 +86,8 @@
 				stockMove.company = :activeCompany AND
 				stockMove.realDate BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND DATE(:todayDate) AND
 				self.stockMove = stockMove AND
-				stockMove.toLocation = location AND
-				location.typeSelect = 2 AND
+				stockMove.toLocation = stockLocation AND
+				stockLocation.typeSelect = 2 AND
 				stockMove.toAddress = address AND
 				address.addressL7Country = country AND
 				self.product.productFamily = productFamily
@@ -207,8 +207,8 @@
 							AND loc.id = location.id
 							AND (move.from_location = loc.id OR move.to_location = loc.id)
 							AND loc.type_select = 1) AS qty
-				FROM stock_location_line loc_line, stock_stock_location location
-				WHERE loc_line.location = location.id 
+				FROM stock_stock_location_line loc_line, stock_stock_location location
+				WHERE loc_line.stock_location = location.id 
 					AND location.type_select != 3
 					AND loc_line.product = :id
 				GROUP BY location.id) 
@@ -256,9 +256,9 @@
 				AND (move.from_location = loc.id OR move.to_location = loc.id)
 				AND loc.type_select = 1) AS qty
 		    FROM 
-		   		stock_location_line loc_line, stock_stock_location location
+		   		stock_stock_location_line loc_line, stock_stock_location location
 		    WHERE 
-		        loc_line.location = location.id 
+		        loc_line.stock_location = location.id 
 				AND location.type_select != 3
 				AND loc_line.product = :id
 		    GROUP BY 
@@ -346,10 +346,10 @@
 									AND loc.id = location.id
 									AND (move.from_location = loc.id OR move.to_location = loc.id)
 									AND loc.type_select = 1) AS qty
-						FROM stock_location_line loc_line, 
+						FROM stock_stock_location_line loc_line, 
 							 stock_stock_location location,
 							 base_product prod 
-						WHERE loc_line.location = location.id 
+						WHERE loc_line.stock_location = location.id 
 							AND location.type_select = 1 
 							AND loc_line.product = prod.id 
 							AND prod.parent_product = :id 
@@ -407,11 +407,11 @@
 				AND (move.from_location = loc.id OR move.to_location = loc.id)
 				AND loc.type_select = 1) AS qty
 		    FROM 
-		   		stock_location_line loc_line, 
+		   		stock_stock_location_line loc_line, 
 		   		stock_stock_location location,
 		   		base_product prod 
 		    WHERE 
-		        loc_line.location = location.id 
+		        loc_line.stock_location = location.id 
 				AND location.type_select = 1 
 				AND loc_line.product = prod.id
 				AND prod.parent_product = :id

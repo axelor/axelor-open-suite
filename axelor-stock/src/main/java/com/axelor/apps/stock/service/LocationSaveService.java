@@ -32,12 +32,12 @@ public class LocationSaveService {
 
 	/**
 	 * Remove default locations in partner that are not linked with this location anymore.
-	 * @param location
+	 * @param stockLocation
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void removeForbiddenDefaultLocation(StockLocation location) {
-	    Partner currentPartner = location.getPartner();
-		Company currentCompany = location.getCompany();
+	public void removeForbiddenDefaultLocation(StockLocation stockLocation) {
+	    Partner currentPartner = stockLocation.getPartner();
+		Company currentCompany = stockLocation.getCompany();
 	    Long partnerId = currentPartner != null ? currentPartner.getId() : 0L;
 		Long companyId = currentCompany != null ? currentCompany.getId() : 0L;
 	    PartnerDefaultLocationRepository partnerDefaultRepo = Beans.get(PartnerDefaultLocationRepository.class);
@@ -46,7 +46,7 @@ public class LocationSaveService {
 						+ " AND (self.location = :location)")
 				.bind("partnerId", partnerId)
 				.bind("companyId", companyId)
-				.bind("location", location)
+				.bind("stockLocation", stockLocation)
 				.fetch();
 		for (PartnerDefaultLocation partnerDefaultLocation : partnerDefaultLocations) {
 			Partner partnerToClean = partnerDefaultLocation.getPartner();

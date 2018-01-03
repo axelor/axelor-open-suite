@@ -173,7 +173,7 @@ public class InventoryController {
 			
 			if(inventory.getInventorySeq() ==  null) {
 				
-				StockLocation location = inventory.getLocation();
+				StockLocation location = inventory.getStockLocation();
 				
 				response.setValue("inventorySeq", inventoryService.getInventorySequence(location.getCompany()));
 			}

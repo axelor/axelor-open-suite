@@ -47,7 +47,7 @@
 			<field name="product" type="string"/>
 			<field name="futureQty" title="Expected/Future Quantity" type="decimal"/>
 			<field name="currentQty" title="Real/Current Quantity" type="decimal"/>
-			<field name="location" title="Stock location" type="string"/>
+			<field name="stockLocation" title="Stock location" type="string"/>
 			<field name="moveLine" title="Stock move line" type="string"/>
 			<field name="date" type="date"/>
 		</result-fields>
@@ -66,7 +66,7 @@
 		<select model="com.axelor.apps.stock.db.StockLocation" title="Stock Location">
 			<field name="detailsLocationLineList[].trackingNumber" as="trackingNumber"/>
 			<field name="detailsLocationLineList[].product.name" as="product"/>
-			<field name="detailsLocationLineList[].location.name" as="location"/>
+			<field name="detailsLocationLineList[].stockLocation.name" as="stockLocation"/>
 			<field name="detailsLocationLineList[].currentQty" as="currentQty"/>
 			<field name="detailsLocationLineList[].futureQty" as="futureQty"/>
 			<where>

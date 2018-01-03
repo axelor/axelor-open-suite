@@ -184,10 +184,10 @@
 		<view type="form" name="incoterm-form"/>
 	</action-view>
 	
-	<menuitem name="stock-root-location" parent="stock-root-conf"
-		title="Stock Locations" action="stock.root.location" />
+	<menuitem name="stock-root-stock-location" parent="stock-root-conf"
+		title="Stock Locations" action="stock.root.stock.location" />
 	
-	<action-view name="stock.root.location" title="Stock Locations"
+	<action-view name="stock.root.stock.location" title="Stock Locations"
 		model="com.axelor.apps.stock.db.StockLocation" >
 		<view type="grid" name="stock-location-grid"/>
 		<view type="form" name="stock-location-form"/>
@@ -200,7 +200,7 @@
 		model="com.axelor.apps.stock.db.StockRules" >
 		<view type="grid" name="stock-rules-grid" />
 		<view type="form" name="stock-rules-form" />
-		<context name="searchFields" expr="location;product"/>
+		<context name="searchFields" expr="stockLocation;product"/>
 	</action-view>
 	
 	<menuitem name="stock-root-conf-stock-tracking-numbers" parent="stock-root-conf"

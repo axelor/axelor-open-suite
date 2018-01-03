@@ -114,7 +114,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 		
 		for(ManufOrder manufOrder : manufOrderList)  {
 		
-			StockLocation location = manufOrder.getProdProcess().getLocation();
+			StockLocation location = manufOrder.getProdProcess().getStockLocation();
 			
 			for(ProdProduct prodProduct : manufOrder.getToProduceProdProductList())  {
 				

@@ -126,7 +126,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 		StockLocation toLocation = findSaleOrderToLocation(saleOrder);
 
 		StockMove stockMove = stockMoveService.createStockMove(null, saleOrder.getDeliveryAddress(), company,
-				saleOrder.getClientPartner(), saleOrder.getLocation(), toLocation, null, saleOrder.getShipmentDate(),
+				saleOrder.getClientPartner(), saleOrder.getStockLocation(), toLocation, null, saleOrder.getShipmentDate(),
 				saleOrder.getDescription(), saleOrder.getShipmentMode(), saleOrder.getFreightCarrierMode());
 
 		stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
@@ -156,15 +156,15 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 				.stream()
 				.filter(Objects::nonNull)
 				.filter(partnerDefaultLocation1 -> partnerDefaultLocation1.getCompany().equals(company))
-				.map(PartnerDefaultLocation::getLocation)
+				.map(PartnerDefaultLocation::getDefaultLocation)
 				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 
 	    //check external or internal location
 	    Optional<StockLocation> candidateNonVirtualLocation = candidateLocations
 				.stream()
-				.filter(location -> location.getTypeSelect() == StockLocationRepository.TYPE_EXTERNAL
-						|| location.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL)
+				.filter(stockLocation -> stockLocation.getTypeSelect() == StockLocationRepository.TYPE_EXTERNAL
+						|| stockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL)
 				.findAny();
 	    if (candidateNonVirtualLocation.isPresent()) {
 	    	return candidateNonVirtualLocation.get();
@@ -172,7 +172,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 	    	//no external location found, search for virtual
 	    	return candidateLocations
 					.stream()
-					.filter(location -> location.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL)
+					.filter(stockLocation -> stockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL)
 					.findAny()
 					.orElse(stockConfigService.getCustomerVirtualLocation(stockConfigService.getStockConfig(company)));
 		}
