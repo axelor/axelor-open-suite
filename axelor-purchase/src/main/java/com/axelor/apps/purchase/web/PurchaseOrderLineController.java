@@ -124,7 +124,7 @@ public class PurchaseOrderLineController {
 				price = BigDecimal.ZERO;
 				productName = "";
 				productCode = "";
-				response.setFlash(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG);
+				response.setFlash(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
 			}
 
 			response.setValue("unit", purchaseOrderLineService.getPurchaseUnit(purchaseOrderLine));
