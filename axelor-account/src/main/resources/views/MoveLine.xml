@@ -23,13 +23,13 @@
     </grid>
     
     <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" title="Move lines" editable="true" onNew="action-account-move-line-onnew-group">
-		<field name="counter" hidden="true" width="50"/>
+		<field name="counter" hidden="true" width="80"/>
 		<field name="date" width="100"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner"/>
-        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" width="120"/>
+        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200"/>
         <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" width="90"/>
         <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" width="90"/>
-		<field name="amountRemaining" hidden="true" width="100"/>
+		<field name="amountRemaining" hidden="true" width="150"/>
 	</grid>
     
     <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false"

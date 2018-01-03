@@ -18,14 +18,14 @@
 	
 	<grid name="timesheet-line-timesheet-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" 
 	onNew="action-hr-default-timesheet-line-timesheet" orderBy="date" >
-		<field name="project" onChange="action-timesheet-line-group-project-onchange" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
-		<field name="date" width="85%" onChange="action-timesheet-line-validate-date"/>
-		<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-		<field name="visibleDuration" width="62%" onChange="action-timesheet-line-record-set-stored-duration" aggregate="sum" min="0.01"/>
+		<field name="project" width="200" onChange="action-timesheet-line-group-project-onchange" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
+		<field name="date" width="100" onChange="action-timesheet-line-validate-date"/>
+		<field name="product" width="200" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+		<field name="visibleDuration" width="100" onChange="action-timesheet-line-record-set-stored-duration" aggregate="sum" min="0.01"/>
 		<field name="durationStored" hidden="true" />
-		<field name="toInvoice" width="88%" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
+		<field name="toInvoice" width="100" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
 		<field name="enableEditor" hidden="true" />
-		<field name="comments" />
+		<field name="comments" width="400"/>
 		<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
 	</grid>
 	
