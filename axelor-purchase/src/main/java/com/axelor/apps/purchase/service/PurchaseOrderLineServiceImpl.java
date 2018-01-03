@@ -100,7 +100,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 			String productCode = supplierCatalog.getProductSupplierCode();
 			return new String[]{ productName, productCode };
 		}
-		return null;
+		return new String[]{"",""};
 	}
 	
 	@Override
