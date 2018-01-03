@@ -102,7 +102,6 @@
 					form-view="bank-details-form" grid-view="bank-details-grid"
 					if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management"/>
 			<field name="inAti" onChange="action-purchase-order-attrs-in-ati"/>
-			<field name="contract" if-module="axelor-contract" if="__config__.app.isApp('contract')" domain="self.typeSelect = 2"  />
 			<field name="interco" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 		</panel>
 
