@@ -25,7 +25,7 @@
             <button name="carrierValidatedBtn" title="Carrier validated" showIf="statusSelect == 1" readonlyIf="!logisticalFormLineList.length"
                 onClick="action-logistical-form-change-status" icon="fa-check" />
             <button name="collectedBtn" title="Collected" showIf="statusSelect == 2" readonlyIf="!logisticalFormLineList.length"
-                onClick="action-logistical-form-change-status,action-logistical-form-update-spread-flags" icon="fa-truck" />
+                onClick="action-logistical-form-process-collected" icon="fa-truck" />
             <button name="packagingListBtn" title="Print packaging list" showIf="statusSelect > 1" readonlyIf="!logisticalFormLineList.length"
                 onClick="action-logistical-form-print-packaging-list" icon="fa-print" if="__config__.app.isApp('supplychain')" />
         </toolbar>
@@ -124,8 +124,8 @@
         <call class="com.axelor.apps.stock.web.LogisticalFormController" method="setStockMoveDomain" />
     </action-method>
 
-    <action-method name="action-logistical-form-update-spread-flags">
-        <call class="com.axelor.apps.stock.web.LogisticalFormController" method="updateFullySpreadOverLogisticalFormsFlags" />
+    <action-method name="action-logistical-form-process-collected">
+        <call class="com.axelor.apps.stock.web.LogisticalFormController" method="processCollected" />
     </action-method>
 
 </object-views>

@@ -183,7 +183,7 @@
 			<panel stacked="true">
 				<field name="address" hideIf="$readonly() || statusSelect &gt; 1" onSelect="action-invoice-attrs-domain-address" onChange="action-method-invoice-address-str" form-view="address-partner-address-form" canEdit="false" canNew="true"/>
 				<field name="addressStr" readonlyIf="statusSelect &gt; 1" height="5">
-					<viewer>{{addressStr}}</viewer>
+					<viewer>{{record.addressStr}}</viewer>
 				</field>
 			</panel>
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" onSelect="action-set-payment-mode-domain" onChange="action-invoice-method-fill-company-bank-details"/>
@@ -192,7 +192,6 @@
 			<field name="priceList" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-attrs-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
 			<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-group-saleorder-onchange" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="purchaseOrder" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
-			<field name="message" />
 			<field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
 		</panel>
 
@@ -245,7 +244,7 @@
 			</panel>
 
 			<panel-related title="Payments details" field="invoicePaymentList" colSpan="12"  grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false" showIf="(statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2) ||statusSelect == 3 || statusSelect == 4"/>
-			<panel title="Advance payments" showIf="operationSubTypeSelect != 2"
+			<panel title="Advance payments" showIf="operationSubTypeSelect != 2 &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp; advancePaymentInvoiceSet.length > 0))"
 				   if="__config__.app.getApp('account').getManageAdvancePaymentInvoice()">
 				<field name="advancePaymentInvoiceSet" widget="TagSelect"
 					   canNew="false"
@@ -255,10 +254,10 @@
 					   form-view="invoice-form" grid-view="invoice-grid"/>
 			</panel>
 
-			<panel  name="directDebit" title="Direct debit" showIf="statusSelect == 3" showTitle="false">
+			<panel  name="directDebit" title="Direct debit" showIf="statusSelect == 3 &amp;&amp; schedulePaymentOk" showTitle="false">
 				<panel name="paymentSchedule" title="Payment schedule" colSpan="12" >
-					<field name="schedulePaymentOk" readonly="true" showIf="schedulePaymentOk"/>
-					<field name="paymentSchedule" readonly="true" showIf="schedulePaymentOk" domain="self.company = :company AND self.partner = :partner" form-view="payment-schedule-form" grid-view="payment-schedule-grid"/>
+					<field name="schedulePaymentOk" readonly="true"/>
+					<field name="paymentSchedule" readonly="true" domain="self.company = :company AND self.partner = :partner" form-view="payment-schedule-form" grid-view="payment-schedule-grid"/>
 				</panel>
 			</panel>
 			<panel title="Automatic mail" readonlyIf="statusSelect == 3">
@@ -310,11 +309,11 @@
 				<viewer depends="exTaxTotal,currency.symbol,taxTotal"><![CDATA[
 		         <dl class="dl-horizontal">
 		           <dt x-translate>Total W.T.</dt>
-		           <dd>{{exTaxTotal}} {{currency.symbol}}</dd>
+		           <dd>{{record.exTaxTotal}} {{record.currency.symbol}}</dd>
 		           <dt x-translate>Total tax</dt>
-		           <dd>{{taxTotal}} {{currency.symbol}}</dd>
+		           <dd>{{record.taxTotal}} {{record.currency.symbol}}</dd>
 		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-		           <dd class="order-subtotal-total">{{inTaxTotal}} {{currency.symbol}}</dd>
+		           <dd class="order-subtotal-total">{{record.inTaxTotal}} {{record.currency.symbol}}</dd>
 		         </dl>]]>
 				</viewer>
 			</field>
@@ -322,26 +321,26 @@
 				<viewer depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,paymentMode,companyBankDetails,move"><![CDATA[
 				  <span class="form-item-container">
          			<dl class="dl-horizontal">
-               			<dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a>  <font x-translate>Paid on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+               			<dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a>  <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+           		 		<dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
               			
-              			<dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+              			<dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+           		 		<dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
               			
-              			<dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+              			<dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+           		 		<dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
               			
-              			<dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+              			<dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+           		 		<dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
               			
-              			<dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+              			<dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+           		 		<dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
 
-              			<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+              			<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+           		 		<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
 
-	           		 	<dd ng-if="record.statusSelect == 1">-{{amount}} {{currency.symbol}}</dd>
-	           		 	<dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{amount}} {{currency.symbol}})</dd>
+	           		 	<dd ng-if="record.statusSelect == 1">-{{record.amount}} {{record.currency.symbol}}</dd>
+	           		 	<dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{record.amount}} {{record.currency.symbol}})</dd>
 	           		</dl> 
            	      </span>]]>
 				</viewer>
@@ -356,26 +355,26 @@
                 <viewer depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol"><![CDATA[
                   <span class="form-item-container">
                     <dl class="dl-horizontal">
-                        <dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a>  <font x-translate>Paid on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a>  <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
                         
-                        <dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
                         
-                        <dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
                         
-                        <dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
                         
-                        <dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
 
-              			<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+              			<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+           		 		<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
 
-                        <dd ng-if="record.statusSelect == 1">-{{amount}} {{currency.symbol}}</dd>
-                        <dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{amount}} {{currency.symbol}})</dd>
+                        <dd ng-if="record.statusSelect == 1">-{{record.amount}} {{record.currency.symbol}}</dd>
+                        <dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{record.amount}} {{record.currency.symbol}})</dd>
                     </dl> 
                   </span>]]>
                 </viewer>
@@ -390,7 +389,7 @@
 				<viewer depends="amountRemaining,currency.symbol"><![CDATA[
 		         <dl class="dl-horizontal">
 		           <dt class="order-subtotal-total" x-translate>Amount due</dt>
-		           <dd class="order-subtotal-total">{{amountRemaining}} {{currency.symbol}}</dd>
+		           <dd class="order-subtotal-total">{{record.amountRemaining}} {{record.currency.symbol}}</dd>
 		         </dl>]]>
 				</viewer>
 			</field>
@@ -403,13 +402,13 @@
 				<viewer depends="companyExTaxTotal,company.currency.symbol,companyTaxTotal,companyInTaxTotal,companyInTaxTotalRemaining"><![CDATA[
 		         <dl class="dl-horizontal">
 		           <dt x-translate>Total W.T.</dt>
-		           <dd>{{companyExTaxTotal}} {{company.currency.symbol}}</dd>
+		           <dd>{{record.companyExTaxTotal}} {{record.company.currency.symbol}}</dd>
 		           <dt x-translate>Total tax</dt>
-		           <dd>{{companyTaxTotal}} {{company.currency.symbol}}</dd>
+		           <dd>{{record.companyTaxTotal}} {{record.company.currency.symbol}}</dd>
 		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-		           <dd class="order-subtotal-total">{{companyInTaxTotal}} {{company.currency.symbol}}</dd>
+		           <dd class="order-subtotal-total">{{record.companyInTaxTotal}} {{record.company.currency.symbol}}</dd>
 					<dt x-translate>Total Amount Remaining</dt>
-		           <dd class="order-subtotal-total">{{companyInTaxTotalRemaining}} {{company.currency.symbol}}</dd>
+		           <dd class="order-subtotal-total">{{record.companyInTaxTotalRemaining}} {{record.company.currency.symbol}}</dd>
 		         </dl>
 		       ]]></viewer>
 			</field>
@@ -466,7 +465,7 @@
 			<panel stacked="true">
 				<field name="address" hideIf="$readonly() || statusSelect &gt; 1" onSelect="action-invoice-attrs-domain-address" onChange="action-method-invoice-address-str" form-view="address-partner-address-form" canEdit="false" canNew="true"/>
 				<field name="addressStr" readonlyIf="statusSelect &gt; 1" height="5">
-					<viewer>{{addressStr}}</viewer>
+					<viewer>{{record.addressStr}}</viewer>
 				</field>
 			</panel>
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" onSelect="action-set-payment-mode-domain" onChange="action-invoice-method-fill-company-bank-details"/>
@@ -474,7 +473,6 @@
 			<field name="bankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-group-saleorder-onchange" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="purchaseOrder" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
-			<field name="message" />
 			<field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
 		</panel>
 
@@ -516,11 +514,11 @@
 				<viewer depends="exTaxTotal,currency.symbol,taxTotal,inTaxTotal"><![CDATA[
 		         <dl class="dl-horizontal">
 		           <dt x-translate>Total W.T.</dt>
-		           <dd>{{exTaxTotal}} {{currency.symbol}}</dd>
+		           <dd>{{record.exTaxTotal}} {{record.currency.symbol}}</dd>
 		           <dt x-translate>Total tax</dt>
-		           <dd>{{taxTotal}} {{currency.symbol}}</dd>
+		           <dd>{{record.taxTotal}} {{record.currency.symbol}}</dd>
 		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-		           <dd class="order-subtotal-total">{{inTaxTotal}} {{currency.symbol}}</dd>
+		           <dd class="order-subtotal-total">{{record.inTaxTotal}} {{record.currency.symbol}}</dd>
 		         </dl>]]>
 				</viewer>
 			</field>
@@ -528,26 +526,26 @@
 				<viewer depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,paymentMode,companyBankDetails,move"><![CDATA[
 				  <span class="form-item-container">
         			<dl class="dl-horizontal">
-               			<dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a>  <font x-translate>Paid on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+               			<dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a>  <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+           		 		<dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
 
-              			<dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+              			<dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+           		 		<dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
 
-              			<dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+              			<dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+           		 		<dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
               			
-              			<dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+              			<dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+           		 		<dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
               			
-              			<dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+              			<dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+           		 		<dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
 
-	              			<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+	              			<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+           		 		<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
 
-	           		 	<dd ng-if="record.statusSelect == 1">-{{amount}} {{currency.symbol}}</dd>
-	           		 	<dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{amount}} {{currency.symbol}})</dd>
+	           		 	<dd ng-if="record.statusSelect == 1">-{{record.amount}} {{record.currency.symbol}}</dd>
+	           		 	<dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{record.amount}} {{record.currency.symbol}})</dd>
 	           		</dl> 
            	      </span>]]>
 				</viewer>
@@ -562,26 +560,26 @@
                 <viewer depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol"><![CDATA[
                   <span class="form-item-container">
                     <dl class="dl-horizontal">
-                        <dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a>  <font x-translate>Paid on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a>  <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
 
-                        <dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
 
-                        <dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
                         
-                        <dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
                         
-                        <dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
 
-                        <dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+                        <dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
 
-                        <dd ng-if="record.statusSelect == 1">-{{amount}} {{currency.symbol}}</dd>
-                        <dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{amount}} {{currency.symbol}})</dd>
+                        <dd ng-if="record.statusSelect == 1">-{{record.amount}} {{record.currency.symbol}}</dd>
+                        <dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{record.amount}} {{record.currency.symbol}})</dd>
                     </dl> 
                   </span>]]>
                 </viewer>
@@ -596,7 +594,7 @@
 				<viewer depends="amountRemaining,currency.symbol"><![CDATA[
 		         <dl class="dl-horizontal">
 		           <dt class="order-subtotal-total" x-translate>Amount due</dt>
-		           <dd class="order-subtotal-total">{{amountRemaining}} {{currency.symbol}}</dd>
+		           <dd class="order-subtotal-total">{{record.amountRemaining}} {{record.currency.symbol}}</dd>
 		         </dl>]]>
 				</viewer>
 			</field>
@@ -692,7 +690,7 @@
 	
     <action-group name="action-account-invoice-onnew-group">
 	    <action name="action-invoice-record-default"/>
-		<action name="action-invoice-method-payment-mode-condition"/>
+		<action name="action-invoice-method-payment-mode-condition" if="company != null"/>
 	    <action name="action-invoice-method-fill-company-bank-details"/>
 	    <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
 	    <action name="action-invoice-record-in-ati"/>
@@ -702,6 +700,7 @@
         <action name="action-invoice-attrs-show-validate-button"/>
 		<action name="action-invoice-attrs-interco-supplychain"/>
 		<action name="action-invoice-record-interco-supplychain"/>
+		<action name="action-invoice-attrs-change-create-refund-title"/>
     </action-group>
     
     <action-group name="action-account-invoice-onload-group" >
@@ -713,6 +712,7 @@
 		<action name="action-invoice-attrs-ventilate"/>
         <action name="action-invoice-attrs-show-validate-button"/>
 		<action name="action-invoice-attrs-interco-supplychain"/>
+		<action name="action-invoice-attrs-change-create-refund-title"/>
     </action-group>
     
     <action-group name="action-group-account-invoice-operationtype-onchange">
@@ -761,7 +761,7 @@
     </action-attrs>
     
     <action-attrs name="action-invoice-attrs-domain-project">
-    	<attribute name="domain" for="project" expr="eval: &quot; self.projectTypeSelect = 1 AND self.clientPartner.id = ${partner?.id} &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
+    	<attribute name="domain" for="project" expr="eval: &quot; self.projectTypeSelect = 1 AND self.clientPartner.id = ${partner?.id} AND self.isBusinessProject = true &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
     </action-attrs>
 
     <action-attrs name="action-invoice-attrs-ventilate">
@@ -807,6 +807,7 @@
 		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : bankDetails" />
     	<field name="contactPartner" expr="eval:null" />
     	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect"/>
+    	<field name="project" expr="eval: null"/>
     </action-record>
     
     <action-record name="action-invoice-record-due-date" model="com.axelor.apps.account.db.Invoice">
@@ -879,6 +880,10 @@
         <attribute name="hidden" expr="eval: (statusSelect != null &amp;&amp; statusSelect != 1) || __config__.app.getApp('invoice').getIsVentilationSkipped()" for="validate"/>
         <attribute name="hidden" expr="eval: (statusSelect != null &amp;&amp; statusSelect != 1) || !__config__.app.getApp('invoice').getIsVentilationSkipped()" for="validateAndVentilate"/>
     </action-attrs>
+
+	<action-attrs name="action-invoice-attrs-change-create-refund-title">
+		<attribute name="title" for="createRefund" expr="eval: com.axelor.i18n.I18n.get('Generate invoice')" if="operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_CLIENT_REFUND || operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_SUPPLIER_REFUND"/>
+	</action-attrs>
 
 	<!-- DOMAIN -->
 	

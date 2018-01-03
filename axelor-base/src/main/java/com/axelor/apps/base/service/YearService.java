@@ -17,15 +17,18 @@
  */
 package com.axelor.apps.base.service;
 
-
+import com.axelor.apps.base.db.Period;
 import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Year;
+
+import java.util.List;
 
 public interface YearService {
 	
 	
 	public Year getYear(LocalDate date, Company company);
 
+	List<Period> generatePeriods(Year year);
 }

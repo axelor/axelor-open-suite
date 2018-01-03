@@ -89,8 +89,8 @@ public interface StockMoveService {
 
 	public StockMove copyAndSplitStockMoveReverse(StockMove stockMove, boolean split) throws AxelorException;
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	void cancel(StockMove stockMove) throws AxelorException;
+    void cancel(StockMove stockMove, CancelReason cancelReason) throws AxelorException;
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty);
@@ -163,14 +163,6 @@ public interface StockMoveService {
 	 */
 	void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove);
 
-	/**
-	 * Update fully spread over logistical forms flags on a collection of stock moves.
-	 * 
-	 * @param stockMoveCollection
-	 */
-	void updateFullySpreadOverLogisticalFormsFlags(Collection<StockMove> stockMoveCollection);
-
-
     /**
      * Compute stock move name.
      * 
@@ -189,5 +181,4 @@ public interface StockMoveService {
      */
     String computeName(StockMove stockMove, String name);
 
-	void applyCancelReason(StockMove stockMove, CancelReason cancelReason) throws AxelorException;
 }

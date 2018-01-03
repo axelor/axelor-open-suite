@@ -46,7 +46,7 @@
                 <viewer depends="contractId,versionNumber">
                     <![CDATA[
 			 			<h3>
-			             <span>{{ contractId }} <span ng-show="versionNumber &gt; 0"> - {{ versionNumber }}</span></span>
+			             <span>{{ record.contractId }} <span ng-show="versionNumber &gt; 0"> - {{ record.versionNumber }}</span></span>
 			             <span class="label label-default" x-translate ng-show="statusSelect == 1">Draft</span>
 			             <span class="label label-info" x-translate ng-show="statusSelect == 2">Active</span>
 			             <span class="label label-important" x-translate ng-show="statusSelect == 3">Closed</span>

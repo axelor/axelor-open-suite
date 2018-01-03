@@ -84,14 +84,16 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
 	    Optional<StockMove> activeStockMove = findActiveStockMoveForSaleOrder(saleOrder);
 
-		if (activeStockMove.isPresent()) {
-			throw new AxelorException(activeStockMove.get(), IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXISTS), saleOrder.getSaleOrderSeq()); 
-		}
+        if (activeStockMove.isPresent()) {
+            throw new AxelorException(activeStockMove.get(), IException.CONFIGURATION_ERROR,
+                    I18n.get(IExceptionMessage.SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXISTS),
+                    activeStockMove.get().getName(), saleOrder.getSaleOrderSeq());
+        }
 
 		Company company = saleOrder.getCompany();
 
 		if(saleOrder.getSaleOrderLineList() != null && company != null) {
-
+		    Beans.get(SaleOrderService.class).sortSaleOrderLineList(saleOrder);
 			StockMove stockMove = this.createStockMove(saleOrder, company);
 
 			for(SaleOrderLine saleOrderLine: saleOrder.getSaleOrderLineList()) {
@@ -105,6 +107,11 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 			}
 
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
+                if (!stockMove.getStockMoveLineList().stream().anyMatch(stockMoveLine -> stockMoveLine
+                        .getSaleOrderLine().getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL)) {
+                    stockMove.setFullySpreadOverLogisticalFormsFlag(true);
+                }
+
 				stockMoveService.plan(stockMove);
 				return stockMove;
 			}
@@ -280,6 +287,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
         }
 
         int deliveryState = SaleOrderRepository.STATE_DELIVERED;
+        int deliveredCount = 0;
 
         for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
             if (saleOrderLine.getDeliveryState() != SaleOrderRepository.STATE_DELIVERED) {
@@ -288,7 +296,13 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
                 }
 
                 deliveryState = SaleOrderRepository.STATE_NOT_DELIVERED;
+            } else {
+                ++deliveredCount;
             }
+        }
+
+        if (deliveryState == SaleOrderRepository.STATE_NOT_DELIVERED && deliveredCount > 0) {
+            return SaleOrderRepository.STATE_PARTIALLY_DELIVERED;
         }
 
         return deliveryState;

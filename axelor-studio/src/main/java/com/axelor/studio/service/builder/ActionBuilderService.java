@@ -381,7 +381,7 @@ public class ActionBuilderService {
 		
 		try {
 			if (jsonField != null && jsonField.getTargetModel() != null) {
-				if (!line.getValue().contentEquals("$." + jsonField.getName())) {
+				if (line.getValue() != null && !line.getValue().contentEquals("$." + jsonField.getName())) {
 					targetObject = filterSqlService.parseJsonField(jsonField, line.getValue().replace("$.", ""), null, null);
 				}
 				else {
@@ -391,7 +391,7 @@ public class ActionBuilderService {
 			
 			MetaField field = line.getValueField();
 			if (field != null && field.getTypeName() != null) {
-				if (!line.getValue().contentEquals("$." + field.getName())) {
+				if (line.getValue() != null && !line.getValue().contentEquals("$." + field.getName())) {
 					targetObject = filterSqlService.parseMetaField(field, line.getValue().replace("$.", ""), null, null, false);
 				}
 				else {

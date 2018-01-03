@@ -36,7 +36,7 @@
                     <![CDATA[
                     <dl class="dl-horizontal">
                         <dt class="order-subtotal-total" x-translate>Expected total Amount</dt>
-                        <dd class="order-subtotal-total">{{totalAmountExpected}}</dd>
+                        <dd class="order-subtotal-total">{{record.totalAmountExpected}}</dd>
                     </dl>
                     ]]>
                 </viewer>

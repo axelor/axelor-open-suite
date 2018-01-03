@@ -3,6 +3,41 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.0.xsd">
   	
+  	<input file="account_accountType.csv" separator=";" type="com.axelor.apps.account.db.AccountType"/>
+  	
+  	<input file="account_fiscalPosition.csv" separator=";" type="com.axelor.apps.account.db.FiscalPosition"/>
+  	
+  	<input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account" />
+  	
+  	<input file="account_accountEquiv.csv" separator=";" type="com.axelor.apps.account.db.AccountEquiv" />
+  	
+  	<input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"  search="self.importId = :importId" update="true">
+		<bind to="importId" column="importId" />
+		<bind to="parentAccount" search="self.code = :parent_code AND self.company.id = 1" update="true">
+			<bind to="code" column="parent_code" />
+		</bind>
+		<bind column="compatibleAccounts" to="compatibleAccountSet" search="self.code in :compatibleAccounts" eval="compatibleAccounts.split('\\|') as List"/>
+	</input>
+	
+	<!--  	TO DO Remplir le M2O activeTaxLine par un update en utilisant le code Tax  -->
+	<input file="account_tax.csv" separator=";" type="com.axelor.apps.account.db.Tax" search="self.code = :code" />
+  	
+  	<input file="account_taxLine.csv" separator=";" type="com.axelor.apps.account.db.TaxLine" search="self.importId = :importId and self.tax.code = :tax_code">
+		<bind to="tax" search="self.code = :tax_code" />
+	</input>	
+	
+	<input file="account_taxEquiv.csv" separator=";" type="com.axelor.apps.account.db.TaxEquiv" search="self.fiscalPosition.code = :fiscalPosition_code AND self.fromTax.code = :fromTax_code AND self.toTax.code = :toTax_code" />
+	
+	<input file="account_taxAccount.csv" separator=";" type="com.axelor.apps.account.db.TaxAccount">
+		<bind to="company" search="self.importId = :company_id" update="true" />
+       	<bind to="tax" search="self.code = :tax_code" update="true" />
+		<bind to="account" search="self.code = :account_code and self.company.id = :company_id" update="true" />
+	</input>
+	
+	<input file="account_tax.csv" separator=";" update="true" search="self.importId = :importId" type="com.axelor.apps.account.db.Tax">
+		<bind to="activeTaxLine" search="self.importId = :_activeTaxLine AND self.tax.code = :code" update="true" />
+	</input>
+  	
 	<input file="account_accountingBatch.csv" separator=";" type="com.axelor.apps.account.db.AccountingBatch" search="self.code = :code" >
 		<bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)" column="dueDate"/>
 		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
@@ -101,5 +136,5 @@
 	</input> 
  	
  	<input file="base_appAccount.csv" separator=";" search="self.code = :code" update="true" type="com.axelor.apps.base.db.AppAccount" />
-  	
+ 	
 </csv-inputs>

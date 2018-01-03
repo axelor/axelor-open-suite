@@ -76,7 +76,7 @@ public class PaymentScheduleController {
 		
 			if(num == null || num.isEmpty()) {
 				
-				response.setFlash(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5)+" "+paymentSchedule.getCompany().getName()); 
+				response.setError(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5), paymentSchedule.getCompany().getName())); 
 			}
 			else {
 				response.setValue("paymentScheduleSeq", num);			

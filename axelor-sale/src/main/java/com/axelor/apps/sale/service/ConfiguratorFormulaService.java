@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaField;
@@ -33,7 +34,8 @@ public interface ConfiguratorFormulaService {
    /**
     * Check if the written formula is valid.
     * @param formula
+    * @param creator
     */
-   void checkFormula(ConfiguratorFormula formula) throws AxelorException;
+   void checkFormula(ConfiguratorFormula formula, ConfiguratorCreator creator) throws AxelorException;
 
 }

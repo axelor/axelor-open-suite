@@ -41,13 +41,17 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
+import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LogisticalFormLineRepository;
+import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.apps.stock.exception.LogisticalFormWarning;
+import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
@@ -61,6 +65,7 @@ import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.inject.persist.Transactional;
 
 public class LogisticalFormServiceImpl implements LogisticalFormService {
 
@@ -237,7 +242,11 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     @Override
     public List<StockMoveLine> getFullySpreadStockMoveLineList(LogisticalForm logisticalForm) {
         List<StockMoveLine> stockMoveLineList = new ArrayList<>();
-        Map<StockMoveLine, BigDecimal> spreadableQtyMap = getSpreadableQtyMap(logisticalForm);
+        Map<StockMoveLine, BigDecimal> spreadableQtyMap = new HashMap<>();
+
+        for (LogisticalForm item : findPendingLogisticalForms(logisticalForm)) {
+            spreadableQtyMap.putAll(getSpreadableQtyMap(item));
+        }
 
         for (Entry<StockMoveLine, BigDecimal> entry : spreadableQtyMap.entrySet()) {
             StockMoveLine stockMoveLine = entry.getKey();
@@ -249,6 +258,27 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         }
 
         return stockMoveLineList;
+    }
+
+    private List<LogisticalForm> findPendingLogisticalForms(LogisticalForm logisticalForm) {
+        Preconditions.checkNotNull(logisticalForm);
+        Preconditions.checkNotNull(logisticalForm.getDeliverToCustomerPartner());
+
+        QueryBuilder<LogisticalForm> queryBuilder = QueryBuilder.of(LogisticalForm.class);
+        queryBuilder.add("self.deliverToCustomerPartner = :deliverToCustomerPartner");
+        queryBuilder.bind("deliverToCustomerPartner", logisticalForm.getDeliverToCustomerPartner());
+        queryBuilder.add("self.statusSelect < :statusSelect");
+        queryBuilder.bind("statusSelect", LogisticalFormRepository.STATUS_COLLECTED);
+
+        if (logisticalForm.getId() != null) {
+            queryBuilder.add("self.id != :id");
+            queryBuilder.bind("id", logisticalForm.getId());
+        }
+
+        List<LogisticalForm> logisticalFormList = queryBuilder.build().fetch();
+        logisticalFormList.add(logisticalForm);
+
+        return logisticalFormList;
     }
 
     protected List<StockMove> getFullySpreadStockMoveList(LogisticalForm logisticalForm) {
@@ -428,6 +458,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
         domainList.add("self.partner = :deliverToCustomerPartner");
         domainList.add(String.format("self.typeSelect = %d", StockMoveRepository.TYPE_OUTGOING));
+        domainList.add(String.format("self.statusSelect = %d", StockMoveRepository.STATUS_PLANNED));
         domainList.add(
                 "self.fullySpreadOverLogisticalFormsFlag IS NULL OR self.fullySpreadOverLogisticalFormsFlag = FALSE");
 
@@ -463,6 +494,40 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
         return resultList.isEmpty() ? Lists.newArrayList(0L)
                 : resultList.stream().map(LogisticalForm::getId).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(rollbackOn = { AxelorException.class, Exception.class })
+    public void processCollected(LogisticalForm logisticalForm) throws AxelorException {
+        if (logisticalForm.getLogisticalFormLineList() == null) {
+            return;
+        }
+
+        Set<StockMove> stockMoveSet = new HashSet<>();
+
+        logisticalForm.getLogisticalFormLineList().stream().filter(
+                logisticalFormLine -> logisticalFormLine.getTypeSelect() == LogisticalFormLineRepository.TYPE_DETAIL
+                        && logisticalFormLine.getStockMoveLine() != null
+                        && logisticalFormLine.getStockMoveLine().getStockMove() != null)
+                .forEach(logisticalFormLine -> stockMoveSet.add(logisticalFormLine.getStockMoveLine().getStockMove()));
+
+        StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+
+        stockMoveSet.forEach(stockMoveService::updateFullySpreadOverLogisticalFormsFlag);
+
+        StockConfigService stockConfigService = Beans.get(StockConfigService.class);
+        StockConfig stockConfig = stockConfigService.getStockConfig(logisticalForm.getCompany());
+
+        if (stockConfig.getRealizeStockMovesUponParcelPalletCollection()) {
+            for (StockMove stockMove : stockMoveSet) {
+                if (stockMove.getFullySpreadOverLogisticalFormsFlag()) {
+                    stockMoveService.realize(stockMove);
+                }
+            }
+
+        }
+
+        logisticalForm.setStatusSelect(LogisticalFormRepository.STATUS_COLLECTED);
     }
 
 }

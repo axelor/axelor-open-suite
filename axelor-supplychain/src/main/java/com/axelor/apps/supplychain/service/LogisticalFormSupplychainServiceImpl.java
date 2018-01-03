@@ -21,6 +21,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
+import com.google.common.base.Preconditions;
 
 public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceImpl
 		implements LogisticalFormSupplychainService {
@@ -28,7 +29,8 @@ public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceI
 	@Override
 	protected boolean testForDetailLine(StockMoveLine stockMoveLine) {
 		SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
-		return saleOrderLine == null || saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_TITLE;
+		Preconditions.checkNotNull(saleOrderLine);
+		return saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL;
 	}
 
 }
