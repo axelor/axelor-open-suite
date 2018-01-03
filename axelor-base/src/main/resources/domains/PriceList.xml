@@ -17,6 +17,8 @@
 			<integer name="basedOnSelect" title="Based on" selection="base.price.list.based.on.select"/>
 			<one-to-many name="historizedPriceList" ref="com.axelor.apps.base.db.PriceList" mappedBy="parentPriceList" title="Historized Price Lists" />
   			<many-to-one name="parentPriceList" ref="com.axelor.apps.base.db.PriceList" title="Parent Price List"/>
+			<date name="applicationBeginDate" title="Application begin date"/>
+			<date name="applicationEndDate" title="Application end date"/>
 		</entity>
 		
 </domain-models>

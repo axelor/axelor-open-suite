@@ -53,7 +53,9 @@
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" index="false" massUpdate="true"/>
   	<many-to-one name="salePriceList" ref="com.axelor.apps.base.db.PriceList" title="Sale Price List" index="false" massUpdate="true"/>
   	<many-to-one name="purchasePriceList" ref="com.axelor.apps.base.db.PriceList" title="Purchase Price List" index="false" massUpdate="true"/>
-   
+
+    <many-to-one name="salePartnerPriceList" ref="com.axelor.apps.base.db.PartnerPriceList" title="Sale price lists"/>
+    <many-to-one name="purchasePartnerPriceList" ref="com.axelor.apps.base.db.PartnerPriceList" title="Purchase price lists"/>
     <!-- PAGE Blocage -->
 	<one-to-many name="blockingList" ref="com.axelor.apps.base.db.Blocking" title="Blocking follow-up List" mappedBy="partner" orderBy="-blockingToDate"/>
 	
