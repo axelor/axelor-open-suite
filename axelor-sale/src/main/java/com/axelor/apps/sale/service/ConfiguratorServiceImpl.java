@@ -147,7 +147,9 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
      */
     protected void fillSaleOrderWithProduct(SaleOrderLine saleOrderLine) throws AxelorException {
         SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
-        saleOrderLineService.computeProductInformation(saleOrderLine, saleOrderLine.getSaleOrder());
+        if (saleOrderLine.getProduct() != null) {
+            saleOrderLineService.computeProductInformation(saleOrderLine, saleOrderLine.getSaleOrder());
+        }
     }
 
     protected void overwriteFieldToUpdate(Configurator configurator,
