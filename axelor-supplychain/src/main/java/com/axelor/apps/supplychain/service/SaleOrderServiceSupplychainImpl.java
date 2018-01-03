@@ -288,8 +288,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		
 		List<Invoice> advancePaymentInvoiceList =
 				Beans.get(InvoiceRepository.class).all()
-						.filter("self.saleOrder = :saleOrder AND self.operationSubTypeSelect = 2")
-						.bind("saleOrder", saleOrder)
+						.filter("self.saleOrder.id = :saleOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect")
+						.bind("saleOrderId", saleOrder.getId())
+						.bind("operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
 						.fetch();
 		if (advancePaymentInvoiceList == null || advancePaymentInvoiceList.isEmpty()) {
 			return total;
