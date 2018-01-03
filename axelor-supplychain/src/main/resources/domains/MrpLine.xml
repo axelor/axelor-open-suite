@@ -6,7 +6,7 @@
   <entity name="MrpLine" lang="java">
   
       	<many-to-one name="mrp" ref="com.axelor.apps.supplychain.db.Mrp" title="Mrp"/>
-     	<many-to-one name="location" ref="com.axelor.apps.stock.db.StockLocation" title="Stock Location"/>
+     	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock Location"/>
 		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
 		<decimal name="qty" title="Qty"/>
         <decimal name="cumulativeQty" title="Cumulative qty"/>

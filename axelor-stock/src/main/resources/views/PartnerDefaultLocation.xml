@@ -6,29 +6,25 @@
     <grid name="partner-default-location-grid"
           title="Default locations"
           model="com.axelor.apps.stock.db.PartnerDefaultLocation">
-        <field name="company" form-view="company-form"
-               grid-view="company-grid"/>
-        <field name="location" form-view="stock-location-form"
-               grid-view="stock-location-grid"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
+        <field name="defaultLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
     </grid>
 
     <form name="partner-default-stock-location-form"
           title="Default locations"
           model="com.axelor.apps.stock.db.PartnerDefaultLocation">
         <panel>
-            <field name="company" form-view="company-form"
-                   grid-view="company-grid"/>
-            <field name="location" form-view="stock-location-form"
-                   grid-view="stock-location-grid"
+            <field name="company" form-view="company-form" grid-view="company-grid"/>
+            <field name="defaultLocation" form-view="stock-location-form" grid-view="stock-location-grid"
                    onSelect="action-partner-default-stock-location-form-domain"/>
         </panel>
     </form>
 
     <action-attrs name="action-partner-default-stock-location-form-domain" model="com.axelor.apps.stock.db.PartnerDefaultLocation">
-        <attribute for="location" name="domain" expr="eval: 'self.id IN (0)'"/>
-        <attribute for="location" name="domain" if="__parent__"
+        <attribute for="defaultLocation" name="domain" expr="eval: 'self.id IN (0)'"/>
+        <attribute for="defaultLocation" name="domain" if="__parent__"
                    expr="eval: 'self.partner = :__parent__ AND self.company = :company AND (self.typeSelect = 2 OR self.typeSelect = 3)'"/>
-        <attribute for="location" name="domain" if="partner"
+        <attribute for="defaultLocation" name="domain" if="partner"
                    expr="eval: 'self.partner = :partner AND self.company = :company AND (self.typeSelect = 2 OR self.typeSelect = 3)'"/>
     </action-attrs>
 

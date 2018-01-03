@@ -89,16 +89,16 @@ public class InventoryService {
 	private StockMoveRepository stockMoveRepo;
 	
 
-	public Inventory createInventory(LocalDate date, String description, StockLocation location, boolean excludeOutOfStock, boolean includeObsolete,
+	public Inventory createInventory(LocalDate date, String description, StockLocation stockLocation, boolean excludeOutOfStock, boolean includeObsolete,
 			ProductFamily productFamily, ProductCategory productCategory) throws AxelorException  {
 
-		if (location == null) {
+		if (stockLocation == null) {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_1));
 		}
 
 		Inventory inventory = new Inventory();
 
-		inventory.setInventorySeq(this.getInventorySequence(location.getCompany()));
+		inventory.setInventorySeq(this.getInventorySequence(stockLocation.getCompany()));
 
 		inventory.setDateT(date.atStartOfDay(ZoneOffset.UTC));
 
@@ -106,7 +106,7 @@ public class InventoryService {
 
 		inventory.setFormatSelect(IAdministration.PDF);
 
-		inventory.setLocation(location);
+		inventory.setStockLocation(stockLocation);
 
 		inventory.setExcludeOutOfStock(excludeOutOfStock);
 
@@ -278,7 +278,7 @@ public class InventoryService {
 			}
 		}
 
-		List<StockLocationLine> stockLocationLineList = inventory.getLocation().getStockLocationLineList();
+		List<StockLocationLine> stockLocationLineList = inventory.getStockLocation().getStockLocationLineList();
 
 		if (stockLocationLineList != null) {
 			for (StockLocationLine stockLocationLine : stockLocationLineList) {
@@ -296,7 +296,7 @@ public class InventoryService {
 			}
 		}
 
-		List<StockLocationLine> detailsLocationLineList = inventory.getLocation().getDetailsLocationLineList();
+		List<StockLocationLine> detailsLocationLineList = inventory.getStockLocation().getDetailsLocationLineList();
 
 		if (detailsLocationLineList != null) {
 			for (StockLocationLine detailsLocationLine : detailsLocationLineList) {
@@ -319,7 +319,7 @@ public class InventoryService {
 
 	public StockMove generateStockMove(Inventory inventory) throws AxelorException {
 
-		StockLocation toLocation = inventory.getLocation();
+		StockLocation toLocation = inventory.getStockLocation();
 		Company company = toLocation.getCompany();
 		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
 
@@ -394,7 +394,7 @@ public class InventoryService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Boolean fillInventoryLineList(Inventory inventory) throws AxelorException {
 
-		if (inventory.getLocation() == null) {
+		if (inventory.getStockLocation() == null) {
 			throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_1));
 		}
 
@@ -420,8 +420,8 @@ public class InventoryService {
 		String query = "(self.location = ? OR self.detailsLocation = ?)";
 		List<Object> params = new ArrayList<>();
 
-		params.add(inventory.getLocation());
-		params.add(inventory.getLocation());
+		params.add(inventory.getStockLocation());
+		params.add(inventory.getStockLocation());
 
 		if (inventory.getExcludeOutOfStock()) {
 			query += " and self.currentQty > 0";

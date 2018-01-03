@@ -12,7 +12,7 @@
         <field name="cumulativeQty" css="bold"/>
         <field name="product.unit"/>
         <field name="minQty"/>
-        <field name="location"/>
+        <field name="stockLocation"/>
         <field name="maxLevel"/>
         <field name="relatedToSelectName"/>
         <field name="proposalGenerated" hidden="true"/>
@@ -29,7 +29,7 @@
         	<field name="cumulativeQty" css="bold" readonly="true"/>
         	<field name="product.unit" readonly="true"/>
    	        <field name="minQty" readonly="true"/>
-        	<field name="location" readonly="true"/>
+        	<field name="stockLocation" readonly="true"/>
         	<field name="maxLevel" readonly="true"/>
    	        <button name="generateProposal" title="Generate proposal" onClick="action-mrp-line-method-generate-proposal" showIf="!proposalGenerated &amp;&amp; [5,8].indexOf(mrpLineType.elementSelect) != -1"/>
             <field name="mrpLineType.elementSelect" hidden="true"/>

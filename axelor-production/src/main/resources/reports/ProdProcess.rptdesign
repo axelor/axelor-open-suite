@@ -1054,7 +1054,7 @@ where prod.to_consume_prod_process_line = ?;
                 <structure>
                     <property name="name">location</property>
                     <text-property name="displayName">location</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["location"]</expression>
+                    <expression name="expression" type="javascript">dataSetRow["stockLocation"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>

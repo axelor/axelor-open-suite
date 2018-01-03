@@ -76,7 +76,7 @@ public class ImportInventoryLine {
 				
 				trackingNumber = trackingNumberService.createTrackingNumber(
 						inventoryLine.getProduct(),
-						inventoryLine.getInventory().getLocation().getCompany(),
+						inventoryLine.getInventory().getStockLocation().getCompany(),
 						appBaseService.getTodayDate()
 						);
 				

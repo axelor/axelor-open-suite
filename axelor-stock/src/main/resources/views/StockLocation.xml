@@ -30,7 +30,7 @@
 		</panel>    
 		<panel-tabs>
 			<panel name="locationContent" title="Location Content">
-				<panel-dashlet title="Location Lines" field="locationLineList" canNew="false" colSpan="12" action="action-location-view-location-content" canSearch="true"/>
+				<panel-dashlet title="Location Lines" field="stockLocationLineList" canNew="false" colSpan="12" action="action-location-view-location-content" canSearch="true"/>
 			</panel> 
 			<panel-dashlet title="Stock Details" field="detailsLocationLineList" action="action-location-details-view-location-content" canSearch="true"/>
 		</panel-tabs>   

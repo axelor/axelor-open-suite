@@ -147,7 +147,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 	public List<Long> getBadLocationLineId() {
 
 		List<StockLocationLine> stockLocationLineList = Beans.get(StockLocationLineRepository.class)
-				.all().filter("self.location.typeSelect = 1 OR self.location.typeSelect = 2").fetch();
+				.all().filter("self.stockLocation.typeSelect = 1 OR self.stockLocation.typeSelect = 2").fetch();
 
 		List<Long> idList = new ArrayList<>();
 

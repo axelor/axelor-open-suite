@@ -74,7 +74,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
         prodProcessLine.setPriority(confProdProcessLine.getPriority());
         prodProcessLine.setWorkCenter(confProdProcessLine.getWorkCenter());
         prodProcessLine.setOutsourcing(confProdProcessLine.getOutsourcing());
-        prodProcessLine.setLocation(confProdProcessLine.getLocation());
+        prodProcessLine.setStockLocation(confProdProcessLine.getStockLocation());
         prodProcessLine.setDescription(confProdProcessLine.getDescription());
 
         prodProcessLine.setMinCapacityPerCycle(minCapacityPerCycle);

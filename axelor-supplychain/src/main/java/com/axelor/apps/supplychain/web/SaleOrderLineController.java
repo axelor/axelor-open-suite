@@ -75,7 +75,7 @@ public class SaleOrderLineController {
 	public void checkStocks(ActionRequest request, ActionResponse response) {
 	    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 		SaleOrder saleOrder = saleOrderLineServiceSupplyChainImpl.getSaleOrder(request.getContext());
-		if (saleOrder.getLocation() == null) {
+		if (saleOrder.getStockLocation() == null) {
 			return;
 		}
 		try {
@@ -91,7 +91,7 @@ public class SaleOrderLineController {
 				qty = Beans.get(UnitConversionService.class).convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
 			}
 			Beans.get(StockLocationLineService.class).checkIfEnoughStock(
-					saleOrder.getLocation(),
+					saleOrder.getStockLocation(),
 					saleOrderLine.getProduct(),
 					qty
 			);
@@ -105,7 +105,7 @@ public class SaleOrderLineController {
 		if (saleOrderLine.getSaleOrder() == null) {
 			return;
 		}
-		if (saleOrderLine.getProduct() != null && saleOrderLine.getSaleOrder().getLocation() != null) {
+		if (saleOrderLine.getProduct() != null && saleOrderLine.getSaleOrder().getStockLocation() != null) {
 			response.setValue("$availableStock", saleOrderLineServiceSupplyChainImpl.getAvailableStock(saleOrderLine));
 		}
 	}

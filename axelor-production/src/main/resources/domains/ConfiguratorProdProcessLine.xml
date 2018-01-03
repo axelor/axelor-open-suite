@@ -11,7 +11,7 @@
         <integer name="priority" title="Priority"/>
         <many-to-one required="true" name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
         <boolean name="outsourcing" title="Outsourcing"/>
-        <many-to-one name="location" ref="com.axelor.apps.stock.db.StockLocation" title="Stock Location"/>
+        <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock Location"/>
         <string name="description" title="Description" large="true"/>
 
         <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>

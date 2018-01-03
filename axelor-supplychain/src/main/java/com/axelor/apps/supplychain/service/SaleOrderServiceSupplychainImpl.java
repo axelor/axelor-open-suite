@@ -125,7 +125,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	
 	
 	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
-			LocalDate deliveryDate, String internalReference, String externalReference, StockLocation location, LocalDate orderDate,
+			LocalDate deliveryDate, String internalReference, String externalReference, StockLocation stockLocation, LocalDate orderDate,
 			PriceList priceList, Partner clientPartner, Team team) throws AxelorException  {
 
 		logger.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
@@ -134,11 +134,11 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		SaleOrder saleOrder = super.createSaleOrder(buyerUser, company, contactPartner, currency, deliveryDate, internalReference,
 				externalReference, orderDate, priceList, clientPartner, team);
 
-		if(location == null)  {
-			location = Beans.get(StockLocationService.class).getLocation(company);
+		if(stockLocation == null)  {
+			stockLocation = Beans.get(StockLocationService.class).getLocation(company);
 		}
 		
-		saleOrder.setLocation(location);
+		saleOrder.setStockLocation(stockLocation);
 
 		saleOrder.setPaymentMode(clientPartner.getInPaymentMode());
 		saleOrder.setPaymentCondition(clientPartner.getPaymentCondition());

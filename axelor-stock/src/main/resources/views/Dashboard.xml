@@ -57,7 +57,7 @@
 		<dashlet action="dashlet.production.stock.move.in.realized" canSearch="true" height="350" colSpan="12"/>	
 		<dashlet action="dashlet.production.stock.move.out.planned" canSearch="true" height="350" colSpan="12"/>	
 		<dashlet action="dashlet.production.stock.move.out.realized" canSearch="true" height="350" colSpan="12"/>
-		<dashlet action="dashlet.location.line.bad.futur.stock.mini" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.stock.location.line.bad.futur.stock.mini" canSearch="true" height="350" colSpan="12"/>
 	</dashboard>
 
 	<dashboard title="Dashboard" name="stock.dashboard.two"  >
@@ -68,7 +68,7 @@
   	    <dashlet action="dashlet.stockMove.average.delivery.time.delay" height="350"/>
 	</dashboard>
 
-	<action-view name="dashlet.location.line.bad.futur.stock.mini" title="Bad location lines"
+	<action-view name="dashlet.stock.location.line.bad.futur.stock.mini" title="Bad stock location lines"
 				 model="com.axelor.apps.stock.db.StockLocationLine">
 		<view type="grid" name="stock-location-line-bad-line-grid"/>
 		<view type="form" name="stock-location-line-bad-line-form"/>
@@ -138,7 +138,7 @@
 	<action-view name="action-product-view-stock" title="Stock" model="com.axelor.apps.stock.db.StockLocationLine">
     	<view type="grid" name="stock-location-line-product-grid"/>
     	<view type="form" name="stock-location-line-product-form"/>
-    	<domain>self.product.id = :id and self.location.typeSelect != 3</domain>
+    	<domain>self.product.id = :id and self.stockLocation.typeSelect != 3</domain>
     </action-view>
     
     <action-view name="action-stock-report-for-product" title="Stock" model="com.axelor.apps.stock.db.StockLocationLine">

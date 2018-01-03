@@ -19,7 +19,7 @@
 	    	<field name="priority" colSpan="3"/>
 	    	<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form" canNew="true" onChange="action-prod-process-line-group-work-center-onchange"/>
 	    	<field name="outsourcing"/>
-			<field name="location"/>
+			<field name="stockLocation"/>
 	    	<panel name="capacitySettings" title="Capacity settings" colSpan="12">
 	          <field name="minCapacityPerCycle" colSpan="3"/>
 	          <field name="maxCapacityPerCycle" colSpan="3"/>
@@ -49,12 +49,12 @@
     
     <action-record name="action-prod-process-line-record-default" model="com.axelor.apps.production.db.ProdProcessLine">
     	<field name="priority" expr="eval:__parent__?.prodProcessLineList?.max{ it.getPriority() }.getPriority() + 10"/>
-    	<field name="location" expr="eval:__parent__?.company?.getStockConfig().getProductionVirtualLocation()"/>
+    	<field name="stockLocation" expr="eval:__parent__?.company?.getStockConfig().getProductionVirtualLocation()"/>
     </action-record>
     
     <action-attrs name="action-prod-process-line-attrs-default">
     	<attribute name="hidden" for="toConsumeProdProductList" expr="eval: _parent != null ? !_parent.isConsProOnOperation : !prodProcess.isConsProOnOperation"/>
-		<attribute name="hidden" for="location" expr="eval: !__parent__.isConsProOnOperation"/>
+		<attribute name="hidden" for="stockLocation" expr="eval: !__parent__.isConsProOnOperation"/>
 		<attribute for="capacitySettings" name="hidden"
 				   expr="eval: workCenter?.workCenterTypeSelect == 1"/>
     </action-attrs>

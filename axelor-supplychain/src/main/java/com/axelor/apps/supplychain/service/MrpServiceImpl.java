@@ -165,7 +165,7 @@ public class MrpServiceImpl implements MrpService  {
 		
 		// Initialize 
 		this.mrp = mrp;
-		this.locationList = this.getAllLocationAndSubLocation(mrp.getLocation());
+		this.locationList = this.getAllLocationAndSubLocation(mrp.getStockLocation());
 		this.assignProductAndLevel(this.getProductList());
 		
 		// Get the stock for each product on each location
@@ -274,13 +274,13 @@ public class MrpServiceImpl implements MrpService  {
 				
 				BigDecimal reorderQty = minQty.subtract(cumulativeQty);
 				
-				StockRules stockRules = stockRulesService.getStockRules(product, mrpLine.getLocation(), StockRulesRepository.TYPE_FUTURE, StockRulesRepository.USE_CASE_USED_FOR_MRP);
+				StockRules stockRules = stockRulesService.getStockRules(product, mrpLine.getStockLocation(), StockRulesRepository.TYPE_FUTURE, StockRulesRepository.USE_CASE_USED_FOR_MRP);
 				
 				if(stockRules != null)  {   reorderQty = reorderQty.max(stockRules.getReOrderQty());  }
 				
 				MrpLineType mrpLineTypeProposal = this.getMrpLineTypeForProposal(stockRules);
 				
-				this.createProposalMrpLine(product, mrpLineTypeProposal, reorderQty, mrpLine.getLocation(), mrpLine.getMaturityDate(), mrpLine.getMrpLineOriginList(), mrpLine.getRelatedToSelectName());
+				this.createProposalMrpLine(product, mrpLineTypeProposal, reorderQty, mrpLine.getStockLocation(), mrpLine.getMaturityDate(), mrpLine.getMrpLineOriginList(), mrpLine.getRelatedToSelectName());
 				
 				doASecondPass = true;
 				
@@ -383,7 +383,7 @@ public class MrpServiceImpl implements MrpService  {
 			keys.add(mrpLineType);
 			keys.add(mrpLine.getProduct());
 			keys.add(mrpLine.getMaturityDate());
-			keys.add(mrpLine.getLocation());
+			keys.add(mrpLine.getStockLocation());
 
 			if (map.containsKey(keys))  {
 
@@ -488,7 +488,7 @@ public class MrpServiceImpl implements MrpService  {
 				if(!unit.equals(purchaseOrderLine.getUnit())){
 					qty = Beans.get(UnitConversionService.class).convertWithProduct(purchaseOrderLine.getUnit(), unit, qty, purchaseOrderLine.getProduct());
 				}
-				mrp.addMrpLineListItem(this.createMrpLine(purchaseOrderLine.getProduct(), purchaseProposalMrpLineType, qty, maturityDate, BigDecimal.ZERO, purchaseOrder.getLocation(), purchaseOrderLine));
+				mrp.addMrpLineListItem(this.createMrpLine(purchaseOrderLine.getProduct(), purchaseProposalMrpLineType, qty, maturityDate, BigDecimal.ZERO, purchaseOrder.getStockLocation(), purchaseOrderLine));
 			}
 		}
 	}
@@ -537,7 +537,7 @@ public class MrpServiceImpl implements MrpService  {
 				if(!unit.equals(saleOrderLine.getUnit())){
 					qty = Beans.get(UnitConversionService.class).convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
 				}
-				mrp.addMrpLineListItem(this.createMrpLine(saleOrderLine.getProduct(), saleForecastMrpLineType, qty, maturityDate, BigDecimal.ZERO, saleOrder.getLocation(), saleOrderLine));
+				mrp.addMrpLineListItem(this.createMrpLine(saleOrderLine.getProduct(), saleForecastMrpLineType, qty, maturityDate, BigDecimal.ZERO, saleOrder.getStockLocation(), saleOrderLine));
 			}
 			
 		}
@@ -571,7 +571,7 @@ public class MrpServiceImpl implements MrpService  {
 					qty = Beans.get(UnitConversionService.class).convertWithProduct(mrpForecast.getUnit(), unit, qty, mrpForecast.getProduct());
 				}
 				mrp.addMrpLineListItem(
-						this.createMrpLine(mrpForecast.getProduct(), saleForecastMrpLineType, qty, maturityDate, BigDecimal.ZERO, mrpForecast.getLocation(), mrpForecast));
+						this.createMrpLine(mrpForecast.getProduct(), saleForecastMrpLineType, qty, maturityDate, BigDecimal.ZERO, mrpForecast.getStockLocation(), mrpForecast));
 			}
 		}
 	}

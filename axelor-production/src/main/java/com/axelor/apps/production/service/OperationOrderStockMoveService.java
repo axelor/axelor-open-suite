@@ -93,10 +93,10 @@ public class OperationOrderStockMoveService {
 		StockLocation fromLocation;
 
 		ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
-		if (operationOrder.getManufOrder().getIsConsProOnOperation() && prodProcessLine != null && prodProcessLine.getLocation() != null) {
-			fromLocation = prodProcessLine.getLocation();
-		} else if (!operationOrder.getManufOrder().getIsConsProOnOperation() && prodProcessLine != null && prodProcessLine.getProdProcess() != null && prodProcessLine.getProdProcess().getLocation() != null) {
-			fromLocation = prodProcessLine.getProdProcess().getLocation();
+		if (operationOrder.getManufOrder().getIsConsProOnOperation() && prodProcessLine != null && prodProcessLine.getStockLocation() != null) {
+			fromLocation = prodProcessLine.getStockLocation();
+		} else if (!operationOrder.getManufOrder().getIsConsProOnOperation() && prodProcessLine != null && prodProcessLine.getProdProcess() != null && prodProcessLine.getProdProcess().getStockLocation() != null) {
+			fromLocation = prodProcessLine.getProdProcess().getStockLocation();
 		} else {
 			fromLocation = stockConfigService.getDefaultLocation(stockConfig);
 		}
