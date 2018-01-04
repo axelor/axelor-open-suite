@@ -32,7 +32,7 @@ public abstract class AbstractBatchService {
 	 * 
 	 * @return
 	 */
-	abstract protected Class<? extends Model> getModelClass();
+    protected abstract Class<? extends Model> getModelClass();
 
 	/**
 	 * Run a batch with the given batch model.
@@ -41,7 +41,7 @@ public abstract class AbstractBatchService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	abstract public Batch run(Model model) throws AxelorException;
+	public abstract Batch run(Model model) throws AxelorException;
 
 	/**
 	 * Run a batch from its code.
