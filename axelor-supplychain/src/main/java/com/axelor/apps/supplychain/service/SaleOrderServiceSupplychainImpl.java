@@ -50,7 +50,10 @@ import com.axelor.apps.sale.service.SaleOrderLineTaxService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -285,8 +288,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		
 		List<Invoice> advancePaymentInvoiceList =
 				Beans.get(InvoiceRepository.class).all()
-						.filter("self.saleOrder = :saleOrder AND self.operationSubTypeSelect = 2")
-						.bind("saleOrder", saleOrder)
+						.filter("self.saleOrder.id = :saleOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect")
+						.bind("saleOrderId", saleOrder.getId())
+						.bind("operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
 						.fetch();
 		if (advancePaymentInvoiceList == null || advancePaymentInvoiceList.isEmpty()) {
 			return total;
