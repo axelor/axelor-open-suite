@@ -193,6 +193,10 @@ public class LeaveController {
 			LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
 			leaveRequest = leaveRequestRepositoryProvider.get().find(leaveRequest.getId());
 
+			if(leaveRequest.getUser().getEmployee().getPlanning() == null) {
+				response.setAlert(String.format(IExceptionMessage.EMPLOYEE_PLANNING, leaveRequest.getUser().getEmployee().getName()));
+				return;
+			}
 			if(leaveRequest.getLeaveLine().getQuantity().subtract(leaveRequest.getDuration()).compareTo(BigDecimal.ZERO ) == -1 ){
 				if(!leaveRequest.getLeaveLine().getLeaveReason().getAllowNegativeValue() && !leaveService.willHaveEnoughDays(leaveRequest)){
 					String instruction = leaveRequest.getLeaveLine().getLeaveReason().getInstruction();
