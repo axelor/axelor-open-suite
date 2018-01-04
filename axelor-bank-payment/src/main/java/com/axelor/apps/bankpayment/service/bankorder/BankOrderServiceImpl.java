@@ -324,7 +324,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
 		
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
-
+		bankOrder.setTestMode(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTestMode());
 		bankOrderRepo.save(bankOrder);
 	}
 	
