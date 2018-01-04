@@ -23,6 +23,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -214,15 +216,6 @@ public abstract class InvoiceGenerator  {
 		invoice.setCurrency(currency);
 
 		invoice.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
-
-		if (priceList == null) {
-			if(InvoiceToolService.isPurchase(invoice))  {
-				priceList = partner.getPurchasePriceList();
-			}
-			else  {
-				priceList = partner.getSalePriceList();
-			}
-		}
 
 		invoice.setPriceList(priceList);
 
