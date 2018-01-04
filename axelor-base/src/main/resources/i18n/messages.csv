@@ -1137,6 +1137,7 @@
 "There is no matching address in the QAS base",,,
 "There is no sequence set for the partners",,,
 "This batch is not runnable!",,,
+"This code is already use by another batch.",,,
 "This may terminate any running jobs. Are you sure you want to continue?",,,
 "Time",,,
 "Time before expiry (in months)",,,

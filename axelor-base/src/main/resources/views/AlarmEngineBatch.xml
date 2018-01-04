@@ -14,7 +14,7 @@
 			<button name="run" title="Run" onClick="save,alarm-engine-batch-method-run" />
 		</toolbar>
 		<panel name="main" x-stack="true">
-			<field name="code" x-bind="{{code|unaccent|uppercase}}"  colSpan="4" />
+			<field name="code" x-bind="{{code|unaccent|uppercase}}"  colSpan="4" onChange="action-base-batch-condition-check-unique-code"/>
 		</panel>
 		<panel-tabs>
 			<panel name="configuration" title="Configuration">

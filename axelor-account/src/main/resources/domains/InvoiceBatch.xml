@@ -8,7 +8,7 @@
   <entity name="InvoiceBatch" lang="java">
   	
   	<!-- HEADER -->
-  	<string name="code" title="Code" namecolumn="true"/>
+  	<string name="code" title="Code" namecolumn="true" unique="true"/>
     <integer name="actionSelect" title="Action" required="true" selection="iinvoice.batch.action.select"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
     

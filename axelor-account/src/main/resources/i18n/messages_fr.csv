@@ -1459,7 +1459,6 @@
 "There's no accounting situation.","Pas de situation comptable.",,
 "This batch requires the bank payment module.","Ce batch nécessite le module des paiements bancaires.",,
 "This batch requires the human resources module.","Ce batch nécessite le module des ressources humaines.",,
-"This code is already use by another Accounting Batch.","Ce code est déjà utilisé par une autre routine comptable.",,
 "Tiers",,,
 "Timetable line %s","Ligne d'échéancier %s",,
 "Timetable's reject move's creation %s","Création de l'écriture de rejet de l'échéance %s",,
