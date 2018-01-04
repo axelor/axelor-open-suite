@@ -26,6 +26,19 @@
 		</string>
 
 		<many-to-many name="responsibles" ref="com.axelor.apps.hr.db.Employee" title="Responsibles" required="true"/>
+
+		<one-to-many name="versions" ref="com.axelor.apps.qms.db.QMSDocumentVersion" mappedBy="document" orderBy="length(versionIndex), versionIndex"/>
+		<one-to-one ref="com.axelor.apps.qms.db.QMSDocumentVersion" name="currentVersion" readonly="true" title="Last version">
+		<![CDATA[
+			List<QMSDocumentVersion> versions = getVersions();
+			if(versions == null || versions.size() == 0) return null;
+			for(java.util.ListIterator<QMSDocumentVersion> it = versions.listIterator(versions.size()) ; it.hasPrevious() ; ) {
+				QMSDocumentVersion version = it.previous();
+				if(version.getVersionApprover() != null && version.getVersionApprovalDate() != null) return version;
+			}
+			return null;
+		]]>
+		</one-to-one>
 		<unique-constraint columns="company,fullReference"/>
 	</entity>
 </domain-models>

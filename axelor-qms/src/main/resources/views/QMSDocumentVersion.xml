@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	<form name="qms-document-version-form" title="QMS Document Version" model="com.axelor.apps.qms.db.QMSDocumentVersion" id="qms-document-version-form" onNew="qms-document-version-record-default">
+		<panel>
+			<field name="document" title="Document" readonly="true" />
+			<field name="versionIndex" required="true" readonly="true"/>
+			
+			<field name="versionMetaFile" widget="binary-link" colSpan="12" />
+
+			<field name="versionCreator" title="Creator" required="true" readonlyIf="versionReviewer != null"/>
+			<field name="versionCreationDate" title="Creation date" required="true" readonlyIf="versionReviewer != null"/>
+			
+			<field name="versionReviewer" title="Reviewer" requiredIf="versionReviewDate != null" hideIf="versionCreator == null || versionCreationDate == null" readonlyIf="versionApprover != null" onChange="qms-document-version-validate-reviewer"/>
+			<field name="versionReviewDate" title="Review date" requiredIf="versionReviewer != null" hideIf="versionCreator == null || versionCreationDate == null" readonlyIf="versionApprover != null" onChange="qms-document-version-validate-review-date"/>
+			
+			<field name="versionApprover" title="Approver" requiredIf="versionApprovalDate != null" hideIf="versionReviewer == null || versionReviewDate == null" onChange="qms-document-version-validate-approver"/>
+			<field name="versionApprovalDate" title="Approval date" requiredIf="versionApprover != null" hideIf="versionReviewer == null || versionReviewDate == null" onChange="qms-document-version-validate-approval-date"/>
+		</panel>
+	</form>
+
+	<grid model="com.axelor.apps.qms.db.QMSDocumentVersion" title="QMS document versions" name="qms-document-version-grid" freeSearch="all" editable="false">
+		<field name="fullReference" />
+		<field name="versionCreator" />
+		<field name="versionReviewer" />
+		<field name="versionApprover" />
+		<field name="versionMetaFile" widget="binary-link" />
+	</grid>
+    
+    <action-record name="qms-document-version-record-default" model="com.axelor.apps.qms.db.QMSDocumentVersion">
+    	<field name="versionCreator" expr="eval:__user__.employee"/>
+    	<field name="versionCreationDate" expr="eval:__date__"/>
+    	<field name="document" expr="eval:__repo__(QMSDocument).find(_parent.id)" if="_parent != null &amp;&amp; _parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.qms.db.QMSDocument'"/>
+    	<field name="versionIndex" expr="call:com.axelor.apps.qms.service.QMSDocumentVersionService:getNextVersionIndex(__repo__(QMSDocument).find(_parent.id))" if="_parent != null &amp;&amp; _parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.qms.db.QMSDocument'"/>
+    </action-record>
+    
+    <action-validate name="qms-document-version-validate-reviewer">
+    	<error if="versionReviewer != null &amp;&amp; versionReviewer.id == versionCreator.id" message="Reviewer and author must be different" action="qms-document-version-record-clear-reviewer"/>
+    </action-validate>
+    
+    <action-validate name="qms-document-version-validate-approver">
+    	<error if="versionApprover != null &amp;&amp; (versionApprover.id == versionCreator.id || versionApprover.id == versionReviewer.id)" message="Approver, reviewer and author must be different" action="qms-document-version-record-clear-approver"/>
+    </action-validate>
+    
+    <action-record name="qms-document-version-record-clear-reviewer" model="com.axelor.apps.qms.db.QMSDocumentVersion">
+    	<field name="versionReviewer" expr="eval:null"/>
+    </action-record>
+    
+    <action-record name="qms-document-version-record-clear-approver" model="com.axelor.apps.qms.db.QMSDocumentVersion">
+    	<field name="versionApprover" expr="eval:null"/>
+    </action-record>
+    
+     <action-validate name="qms-document-version-validate-review-date">
+     	<error message="Review date cannot be before creation date" if="versionReviewDate != null &amp;&amp; versionReviewDate.isBefore(versionCreationDate)" action="qms-document-version-record-clear-review-date" />
+     </action-validate>
+     
+     <action-validate name="qms-document-version-validate-approval-date">
+     	<error message="Approval date cannot be before review date" if="versionApprovalDate != null &amp;&amp; versionApprovalDate.isBefore(versionReviewDate)" action="qms-document-version-record-clear-approval-date" />
+     </action-validate>
+    
+    <action-record name="qms-document-version-record-clear-review-date" model="com.axelor.apps.qms.db.QMSDocumentVersion">
+    	<field name="versionReviewDate" expr="eval:null"/>
+    </action-record>
+    
+    <action-record name="qms-document-version-record-clear-approval-date" model="com.axelor.apps.qms.db.QMSDocumentVersion">
+    	<field name="versionApprovalDate" expr="eval:null"/>
+    </action-record>
+</object-views>
