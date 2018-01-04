@@ -10,11 +10,12 @@
 	<entity name="QMSProcess" lang="java" cachable="true" sequential="true">
 		<integer name="selectType" selection="qms.process.type.select" required="true" nullable="false"/>
 
-		<string name="code" max="3" nullable="false" required="true" />
+		<string name="code" min="2" max="3" nullable="false" required="true"/>
 		<string name="title" nullable="false" required="true" namecolumn="true" />
 
 		<many-to-many name="responsibles" ref="com.axelor.apps.hr.db.Employee" title="Responsibles" required="true"/>
 		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" />
 
+		<unique-constraint columns="company,code"/>
 	</entity>
 </domain-models>

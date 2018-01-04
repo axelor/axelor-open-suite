@@ -5,11 +5,11 @@
 			<field name="company" title="Company" readonlyIf="id != null" />
 			<spacer/>
 			<field name="typeSelect" title="Type" required="true" selection="qms.process.type.select" readonlyIf="id != null" />
-			<field name="code" title="Code" max="3" required="true" readonlyIf="id != null" />
+			<field name="code" title="Code" required="true" readonlyIf="id != null" pattern="[A-Z0-9]{2,3}" help="Alphanumeric code (2 to 3 chars)"/>
 
 			<field name="title" title="	Title" nullable="false" required="true" colSpan="12" />
 
-			<field name="responsibles" title="Responsibles" widget="tagSelect" colSpan="12" />
+			<field name="responsibles" title="Responsibles" widget="tagSelect" colSpan="12" canNew="false"/>
 		</panel>
 	</form>
 

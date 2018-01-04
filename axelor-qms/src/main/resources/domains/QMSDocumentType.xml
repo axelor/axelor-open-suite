@@ -7,10 +7,11 @@
 -->
 	<module name="axelor-qms" package="com.axelor.apps.qms.db" />
 	<entity name="QMSDocumentType" lang="java" cachable="true" sequential="true">
-		<string name="code" max="3" nullable="false" required="true" />
-		<string name="title" nullable="false" required="true" namecolumn="true" />
+		<string name="code" min="2" max="3" nullable="false" required="true" />
+		<string name="title" title="Title" nullable="false" required="true" namecolumn="true" />
 
 		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" />
 
+		<unique-constraint columns="company,code"/>
 	</entity>
 </domain-models>

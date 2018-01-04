@@ -26,5 +26,6 @@
 		</string>
 
 		<many-to-many name="responsibles" ref="com.axelor.apps.hr.db.Employee" title="Responsibles" required="true"/>
+		<unique-constraint columns="company,fullReference"/>
 	</entity>
 </domain-models>
