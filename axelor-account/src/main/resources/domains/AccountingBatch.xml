@@ -49,6 +49,8 @@
 		default="1" required="true"
 		selection="iaccount.account.batch.transfer.customer.reimbursement.type.select" />
 
+    <unique-constraint columns="code"/>
+
   	<extra-code><![CDATA[
 	
 	   	// ACTION TYPE
