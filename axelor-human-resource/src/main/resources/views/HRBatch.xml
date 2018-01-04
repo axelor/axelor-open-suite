@@ -14,7 +14,7 @@
 	<form name="hr-batch-form" title="HR Batch" model="com.axelor.apps.hr.db.HrBatch" width="large" onNew="action-hr-batch-record-default">
 	  	<panel name="main">
 		    <field name="actionSelect"/>
-		    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+		    <field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
 		    <field name="company" canEdit="false"/>
 		</panel>
 		<panel-tabs>
