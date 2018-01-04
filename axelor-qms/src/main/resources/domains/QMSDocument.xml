@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 <!--
 	Represents a document in the quality management system.
@@ -12,11 +12,18 @@
 		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"/>
 		<many-to-one name="process" ref="com.axelor.apps.qms.db.QMSProcess" required="true"/>
 		<many-to-one name="type" ref="com.axelor.apps.qms.db.QMSDocumentType" required="true" />
-		<string name="title" nullable="false" required="true" title="title"/>
+		<string name="title" nullable="false" required="true" title="Title"/>
 		<!-- [process code]-[type code]-[quality document sequence]
 		We cannot set nullable="false" since we generate it on save which is called after first
 		flush to DB (resource.save() → JPA.manage() → JPA.save()… then repository.save)-->
 		<string name="reference" title="Reference" readonly="true" unique="true"/>
+
+		<!--  It seems that name columns cannot be transient -->
+		<string name="fullReference" namecolumn="true">
+		<![CDATA[
+			return String.format(com.axelor.i18n.I18n.get("%s - %s"), reference, title);
+		]]>
+		</string>
 
 		<many-to-many name="responsibles" ref="com.axelor.apps.hr.db.Employee" title="Responsibles" required="true"/>
 	</entity>
