@@ -147,9 +147,9 @@
 			<field name="refusalDate" hidden="true" showIf="refusalDate" colSpan="4"/>
 			<field name="groundForRefusal" hidden="true" readonly="true" showIf="statusSelect == 5" colSpan="12"/>
 		</panel>
-        <panel name="payrollPreparationPanel" title="Payroll preparation" sidebar="true" readonly="true" showIf="payrollPreparation" hidden="true">
-            <field name="payrollPreparation" showTitle="false" />
-            <field name="payrollPreparation.exported" />
+        <panel name="payrollPreparationPanel" title="Payroll preparation" sidebar="true" readonly="true" hidden="true">
+            <field name="payrollPreparation" showTitle="false" colSpan="8" />
+            <field name="payrollPreparation.exported" colSpan="4" />
         </panel>
 	</form>
 	
@@ -254,7 +254,7 @@
 	</action-attrs>
 
     <action-attrs name="action-expense-attrs-payroll-preparation">
-        <attribute name="hidden" for="payrollPreparationPanel" expr="eval: !__user__.employee?.hrManager" />
+        <attribute name="hidden" for="payrollPreparationPanel" expr="eval: !payrollPreparation" if="__user__.employee?.hrManager" />
     </action-attrs>
 
 	<action-validate name="action-expense-validate-period">

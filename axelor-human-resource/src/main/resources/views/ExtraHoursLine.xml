@@ -21,10 +21,9 @@
 			<field name="description" colSpan="12"/>
 			<field name="user" canEdit="false" hidden="true" form-view="user-form" grid-view="user-grid"/>
 		</panel>
-        <panel name="payrollPreparationPanel" title="Payroll preparation" sidebar="true" readonly="true" showIf="payrollPreparation"
-            hidden="true">
-            <field name="payrollPreparation" showTitle="false" />
-            <field name="payrollPreparation.exported" />
+        <panel name="payrollPreparationPanel" title="Payroll preparation" sidebar="true" readonly="true" hidden="true">
+            <field name="payrollPreparation" showTitle="false" colSpan="8" />
+            <field name="payrollPreparation.exported" colSpan="4" />
         </panel>
 	</form>
 	
@@ -34,7 +33,7 @@
 	</action-attrs>
 	
     <action-attrs name="action-extra-hours-line-attrs-payroll-preparation">
-        <attribute name="hidden" for="payrollPreparationPanel" expr="eval: !__user__.employee?.hrManager" />
+        <attribute name="hidden" for="payrollPreparationPanel" expr="eval: !payrollPreparation" if="__user__.employee?.hrManager" />
     </action-attrs>
 
 	<action-record name="action-extra-hours-line-record-default" model="com.axelor.apps.hr.db.ExtraHoursLine">

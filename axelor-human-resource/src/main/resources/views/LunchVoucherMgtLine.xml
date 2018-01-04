@@ -69,15 +69,14 @@
 		<panel name="comment" title="Comments">
 			<field name="comments" colSpan="12" showTitle="false" widget="Text"/>
 		</panel>
-        <panel name="payrollPreparationPanel" title="Payroll preparation" sidebar="true" readonly="true" showIf="payrollPreparation"
-            hidden="true">
-            <field name="payrollPreparation" showTitle="false" />
-            <field name="payrollPreparation.exported" />
+        <panel name="payrollPreparationPanel" title="Payroll preparation" sidebar="true" readonly="true" hidden="true">
+            <field name="payrollPreparation" showTitle="false" colSpan="8" />
+            <field name="payrollPreparation.exported" colSpan="4" />
         </panel>
 	</form>
 
     <action-attrs name="action-lunch-voucher-mgt-line-attrs-payroll-preparation">
-        <attribute name="hidden" for="payrollPreparationPanel" expr="eval: !__user__.employee?.hrManager" />
+        <attribute name="hidden" for="payrollPreparationPanel" expr="eval: !payrollPreparation" if="__user__.employee?.hrManager" />
     </action-attrs>
 
 	<action-method name="action-lunch-voucher-mgt-line-compute">

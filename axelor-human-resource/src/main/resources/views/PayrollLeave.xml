@@ -19,15 +19,14 @@
 			<field name="leaveReason" grid-view="leave-reason-grid" form-view="leave-reason-form" />
 			<field name="leaveRequest" grid-view="leave-request-grid" form-view="leave-request-form"/>
 		</panel>
-        <panel name="payrollPreparationPanel" title="Payroll preparation" sidebar="true" readonly="true" showIf="payrollPreparation"
-            hidden="true">
-            <field name="payrollPreparation" showTitle="false" />
-            <field name="payrollPreparation.exported" />
+        <panel name="payrollPreparationPanel" title="Payroll preparation" sidebar="true" readonly="true" hidden="true">
+            <field name="payrollPreparation" showTitle="false" colSpan="8" />
+            <field name="payrollPreparation.exported" colSpan="4" />
         </panel>
 	</form>
 
     <action-attrs name="action-payroll-leave-attrs-payroll-preparation">
-        <attribute name="hidden" for="payrollPreparationPanel" expr="eval: !__user__.employee?.hrManager" />
+        <attribute name="hidden" for="payrollPreparationPanel" expr="eval: !payrollPreparation" if="__user__.employee?.hrManager" />
     </action-attrs>
 
 </object-views>
