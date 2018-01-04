@@ -98,7 +98,7 @@
 						<field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale').getManageSalesUnits()"/>
 						<field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('purchase').getManagePurchasesUnits()"/>
 					</panel>
-					<panel colSpan="12" title="Configurator" if-module="axelor-sale">
+					<panel colSpan="12" name="Configurator" title="Configurator" if-module="axelor-sale" hidden="true">
 						<button name="showConfigurator" title="Show Configurator" onClick="action-product-method-show-product-configurator"/>
 					</panel>
 				</panel>
@@ -330,6 +330,7 @@
         <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
 		<action name="action-product-method-supplier-catalog-coeff"/>
 		<action name="action-product-attrs-cost-price-variant"/>
+		<action name="action-product-attrs-hide-configurator"/>
 		<action name="save"/>
     </action-group>
 
@@ -488,6 +489,10 @@
         <attribute name="title" for="unit" expr="eval: com.axelor.i18n.I18n.get('Unit')"/>
         <attribute name="title" for="unit" expr="eval: com.axelor.i18n.I18n.get('Stock Unit')" if="__config__.app.getApp('sale').getManageSalesUnits()"/>
         <attribute name="title" for="unit" expr="eval: com.axelor.i18n.I18n.get('Stock Unit')" if="__config__.app.getApp('purchase').getManagePurchasesUnits()"/>
+    </action-attrs>
+    
+    <action-attrs name="action-product-attrs-hide-configurator">
+    	<attribute name="hidden" for="Configurator" expr="eval: __repo__(Configurator).all().filter('self.productId = ?', id).fetch().empty"/>
     </action-attrs>
 	
     <search-filters name="products-filters" model="com.axelor.apps.base.db.Product" title="Products filters">
