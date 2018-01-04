@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-	<form name="qms-document-form" title="QMS Document" model="com.axelor.apps.qms.db.QMSDocument" id="qms-document-form">
+	<form name="qms-document-form" title="QMS Document" model="com.axelor.apps.qms.db.QMSDocument" id="qms-document-form" width="large">
 		<panel>
 			<field name="company" title="Company" readonlyIf="id != null" />
 			<field name="reference" css="bold label-bold" hiddenIf="reference == null" readonly="true"/>
@@ -9,11 +9,11 @@
 
 			<field name="title" title="	Title" nullable="false" required="true" colSpan="12" />
 
-			<field name="responsibles" title="Responsibles" colSpan="12" grid-view="employee-lite-grid" />
+			<field name="responsibles" title="Responsibles" colSpan="12" grid-view="employee-lite-grid" canNew="false" canEdit="false"/>
 		</panel>
 	</form>
 
-	<grid model="com.axelor.apps.qms.db.QMSDocument" title="QMS documents" name="qms-documents-grid" freeSearch="all" editable="false">
+	<grid model="com.axelor.apps.qms.db.QMSDocument" title="QMS documents" name="qms-document-grid" freeSearch="all" editable="false">
 		<field name="company" />
 		<field name="reference" />
 		<field name="title" />
