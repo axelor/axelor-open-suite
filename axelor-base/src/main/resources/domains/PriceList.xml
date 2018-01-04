@@ -19,6 +19,13 @@
   			<many-to-one name="parentPriceList" ref="com.axelor.apps.base.db.PriceList" title="Parent Price List"/>
 			<date name="applicationBeginDate" title="Application begin date"/>
 			<date name="applicationEndDate" title="Application end date"/>
+
+			<extra-code>
+				<![CDATA[
+                    public static final int TYPE_SALE = 1;
+                    public static final int TYPE_PURCHASE = 2;
+                ]]>
+			</extra-code>
 		</entity>
-		
+
 </domain-models>

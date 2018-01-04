@@ -26,8 +26,8 @@
 		    <field name="title"/>
 			<field name="typeSelect" colSpan="4"/>
 			<field name="isActive" colSpan="2"/>
-			<field name="applicationBeginDate" onChange="action-price-list-method-check-dates"/>
-			<field name="applicationEndDate" onChange="action-price-list-method-check-dates"/>
+			<field name="applicationBeginDate" required="true" onChange="action-price-list-method-check-dates"/>
+			<field name="applicationEndDate" required="true" onChange="action-price-list-method-check-dates"/>
 			<field name="hideDiscount"/>
     	</panel>
 		<panel name="priceListLine" title="Price list lines" >

@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerPriceList;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.exception.AxelorException;
 
 public interface PartnerPriceListService {
@@ -29,4 +31,11 @@ public interface PartnerPriceListService {
      *         if two price lists are scheduled on the same time.
      */
     void checkDates(PartnerPriceList partnerPriceList) throws AxelorException;
+
+    /**
+     * @param partner
+     * @param priceListTypeSelect
+     * @return  the default price list from the partner
+     */
+    PriceList getDefaultPriceList(Partner partner, int priceListTypeSelect);
 }

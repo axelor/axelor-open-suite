@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -488,14 +490,18 @@ public class SaleOrderController {
     }
 
 	/**
-	 * Called from sale order form view.
-	 * Call {@link SaleOrderService#getDefaultPriceList(SaleOrder)}.
+	 * Called from sale order form view on partner change.
+	 * Get the default price list for the sale order.
+	 * Call {@link PartnerPriceListService#getDefaultPriceList(Partner, int)}.
 	 * @param request
 	 * @param response
 	 */
 	public void fillPriceList(ActionRequest request, ActionResponse response) {
 	    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-	    response.setValue("priceList", saleOrderService.getDefaultPriceList(saleOrder));
+	    response.setValue("priceList",
+				Beans.get(PartnerPriceListService.class)
+						.getDefaultPriceList(saleOrder.getClientPartner(), PriceListRepository.TYPE_SALE)
+		);
     }
 
 }
