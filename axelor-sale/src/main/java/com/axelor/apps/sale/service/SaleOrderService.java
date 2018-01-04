@@ -154,4 +154,9 @@ public interface SaleOrderService {
      */
     void sortSaleOrderLineList(SaleOrder saleOrder);
 
+	/**
+	 * @param saleOrder
+	 * @return  the default price list (from the partner) of the sale order
+	 */
+	PriceList getDefaultPriceList(SaleOrder saleOrder);
 }

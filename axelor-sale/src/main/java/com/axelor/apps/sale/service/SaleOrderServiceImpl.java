@@ -24,9 +24,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Query;
 
+import com.axelor.apps.base.db.PartnerPriceList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -603,4 +606,26 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         }
     }
 
+    @Override
+    public PriceList getDefaultPriceList(SaleOrder saleOrder) {
+	    Partner partner = saleOrder.getClientPartner();
+	    partner = Beans.get(PartnerRepository.class).find(partner.getId());
+	    PartnerPriceList partnerPriceList = partner.getSalePartnerPriceList();
+	    if (partnerPriceList == null) {
+	    	return null;
+		}
+	    Set<PriceList> priceListSet = partnerPriceList.getPriceListSet();
+	    if (priceListSet == null) {
+	    	return null;
+		}
+		List<PriceList> priceLists = priceListSet.stream().filter(priceList ->
+				priceList.getApplicationBeginDate().isBefore(today)
+						&& priceList.getApplicationEndDate().isAfter(today)
+		).collect(Collectors.toList());
+	    if (priceLists.size() == 1) {
+	    	return priceLists.get(0);
+		} else {
+	    	return null;
+		}
+	}
 }

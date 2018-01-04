@@ -487,4 +487,15 @@ public class SaleOrderController {
         }
     }
 
+	/**
+	 * Called from sale order form view.
+	 * Call {@link SaleOrderService#getDefaultPriceList(SaleOrder)}.
+	 * @param request
+	 * @param response
+	 */
+	public void fillPriceList(ActionRequest request, ActionResponse response) {
+	    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+	    response.setValue("priceList", saleOrderService.getDefaultPriceList(saleOrder));
+    }
+
 }
