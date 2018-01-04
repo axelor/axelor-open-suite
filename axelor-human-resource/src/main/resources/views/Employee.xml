@@ -81,8 +81,8 @@
         			<field name="timesheetReminder" colSpan="4"/>
         			<field name="external" colSpan="4"/>
         			<field name="planning" colSpan="4" canNew="true" form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
-        			<field name="publicHolidayPlanning" colSpan="4" form-view="public-holiday-planning-form" grid-view="public-holiday-planning-grid" canEdit="false"/>
-        			<field name="imposedDayPlanning" colSpan="4" form-view="public-holiday-planning-form" grid-view="public-holiday-planning-grid" canEdit="false"/>
+                    <field name="publicHolidayEventsPlanning" colSpan="4" form-view="events-planning-form" grid-view="events-planning-grid" canEdit="false"/>
+                    <field name="imposedDayEventsPlanning" colSpan="4" form-view="events-planning-form" grid-view="events-planning-grid" canEdit="false"/>
         			<field name="negativeValueLeave" colSpan="4"/>
         			<field name="hrManager" colSpan="4"/>
         			<field name="exportCode" colSpan="4"/>
@@ -134,7 +134,7 @@
 		<field name="timeLoggingPreferenceSelect" expr="eval:__config__.general.getTimeLoggingPreferenceSelect()"/>
 		<field name="dailyWorkHours" expr="eval:__config__.general.getDailyWorkHours()"/>
 		<field name="negativeValueLeave" expr="eval:__config__.general.getAllowNegativeLeaveEmployees()"/>
-		<field name="publicHolidayPlanning" expr="eval: __user__.activeCompany?.hrConfig?.publicHolidayPlanning"/>
+		<field name="publicHolidayEventsPlanning" expr="eval: __user__.activeCompany?.hrConfig?.publicHolidayEventsPlanning"/>
 	</action-record>
 
 	<action-record name="action-hr-record-reset-company-cb-details" model="com.axelor.apps.hr.db.Employee">

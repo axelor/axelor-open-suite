@@ -2,15 +2,15 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
-	<grid name="public-holiday-planning-grid" title="Public Holiday Plannings" model="com.axelor.apps.hr.db.PublicHolidayPlanning">
+	<grid name="events-planning-grid" title="Events plannings" model="com.axelor.apps.hr.db.EventsPlanning">
 		<field name="name"/>
 	</grid>
 	
-	<form name="public-holiday-planning-form" title="Public Holiday Planning" model="com.axelor.apps.hr.db.PublicHolidayPlanning">
+	<form name="events-planning-form" title="Events planning" model="com.axelor.apps.hr.db.EventsPlanning">
 		<panel name="main" >
 			<field name="name"/>
 		</panel>
-	    <panel-related field="publicHolidayDayList" editable="true" grid-view="public-holiday-day-grid" form-view="public-holiday-day-form"/>
+        <panel-related field="eventsPlanningLineList" editable="true" grid-view="events-planning-line-grid" form-view="events-planning-line-form"/>
 	</form>
 
 </object-views>

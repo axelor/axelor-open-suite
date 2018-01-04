@@ -17,26 +17,10 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.mail.MessagingException;
-
-import com.axelor.apps.base.db.Company;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
-import org.joda.time.Minutes;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
@@ -49,14 +33,13 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EventsPlanningLine;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
-import com.axelor.apps.hr.db.PublicHolidayDay;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
-import com.axelor.apps.hr.db.repo.PublicHolidayDayRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -78,6 +61,20 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
+import org.joda.time.Minutes;
+
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TimesheetServiceImpl implements TimesheetService{
 
@@ -91,10 +88,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	protected GeneralService generalService;
 	
 	@Inject
-	protected ProjectTaskService projectTaskService; 
-	
-	@Inject
-	protected PublicHolidayDayRepository publicHolidayDayRepo;
+	protected ProjectTaskService projectTaskService;
 	
 	@Inject
 	protected EmployeeRepository employeeRepo;
@@ -269,7 +263,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		List<LeaveRequest> leaveList = LeaveRequestRepository.of(LeaveRequest.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", user).fetch();
 		
 		//Public holidays list
-		List<PublicHolidayDay> publicHolidayList = employee.getPublicHolidayPlanning().getPublicHolidayDayList();
+		List<EventsPlanningLine> publicHolidayList = employee.getPublicHolidayEventsPlanning().getEventsPlanningLineList();
 		 
 		while(!fromDate.isAfter(toDate)){
 			DayPlanning dayPlanningCurr = new DayPlanning();
@@ -297,7 +291,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 				/*Check if the day is not a public holiday */
 				boolean noPublicHoliday = true;
 				if(publicHolidayList != null){
-					for (PublicHolidayDay publicHoliday : publicHolidayList) {
+					for (EventsPlanningLine publicHoliday : publicHolidayList) {
 						if(publicHoliday.getDate().isEqual(fromDate))
 						{
 							noPublicHoliday = false;

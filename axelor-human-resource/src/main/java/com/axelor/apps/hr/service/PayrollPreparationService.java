@@ -109,7 +109,7 @@ public class PayrollPreparationService {
 		LocalDate toDate = payrollPreparation.getPeriod().getToDate();
 		Employee employee = payrollPreparation.getEmployee();
 		
-		if(employee.getPublicHolidayPlanning() == null){
+		if(employee.getPublicHolidayEventsPlanning() == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY),employee.getName()), IException.CONFIGURATION_ERROR);
 		}
 		if(employee.getPlanning()== null){

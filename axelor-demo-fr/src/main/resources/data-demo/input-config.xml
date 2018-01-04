@@ -310,9 +310,9 @@
 		<bind to="date" eval="call:com.axelor.csv.script.ImportDateTime:importDate(date)" column="date"/>
 	</input>
 	
-	<input file="hr_publicHolidayPlanning.csv" type="com.axelor.apps.hr.db.PublicHolidayPlanning" separator=";" search="self.importId = :importId"/>
+	<input file="hr_eventsPlanning.csv" type="com.axelor.apps.hr.db.EventsPlanning" separator=";" search="self.importId = :importId"/>
 	
-	<input file="hr_publicHolidayDay.csv" type="com.axelor.apps.hr.db.PublicHolidayDay" separator=";" search="self.importId = :importId"/>
+	<input file="hr_eventsPlanningLine.csv" type="com.axelor.apps.hr.db.EventsPlanningLine" separator=";" search="self.importId = :importId"/>
 		
 	<input file="hr_weeklyPlanning.csv" separator=";" type="com.axelor.apps.base.db.WeeklyPlanning" search="self.importId  = :importId"/>
   

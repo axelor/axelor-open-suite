@@ -5,12 +5,10 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="PublicHolidayDay" cachable="true">
+  <entity name="EventsPlanning" cachable="true">
   	  <integer name="importId"/>
-  	  <many-to-one name="publicHolidayPlann" ref="com.axelor.apps.hr.db.PublicHolidayPlanning"/>
-  	  <integer name="year" required="true" title="Year"/>
-  	  <date name="date" column="date_val" required="true" title="Date"/>
-  	  <string name="description" title="Description"/>
+  	  <string name="name" required="true" namecolumn="true"/>
+      <one-to-many name="eventsPlanningLineList" ref="com.axelor.apps.hr.db.EventsPlanningLine" mappedBy="eventsPlanning"/>
   </entity>
   
 </domain-models>

@@ -13,7 +13,7 @@
 	  	</panel>
 	  	<panel name="general" title="General">
 	  		<field name="kilometricExpenseProduct" canEdit="false" canView="false" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid" />
-	  		<field name="publicHolidayPlanning" canNew="true"/>
+	  		<field name="publicHolidayEventsPlanning" canNew="true"/>
 	  		<field name="weeklyPlanning" canNew="true"/>
 	  		<field name="toJustifyLeaveReason" form-view="leave-reason-form" grid-view="leave-reason-grid"/>
 			<field name="expenseSequence" domain="self.code = 'expense' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>

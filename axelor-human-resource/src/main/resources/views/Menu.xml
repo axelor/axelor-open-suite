@@ -364,15 +364,15 @@
 	</action-view>
 
 	<menuitem name="plannings-all" parent="hr-conf" title="Plannings" />
-	<menuitem name="event-planning-all" parent="plannings-all" title="Event planning" action="hr.public.holiday.planning.all"/>
-	<menuitem name="weekly-planning-all" parent="plannings-all" title="Weekly planning" action="hr.weekly.planning.all"/>
-	
-	<action-view name="hr.public.holiday.planning.all" title="Public Holiday Plannings" model="com.axelor.apps.hr.db.PublicHolidayPlanning">
-    	<view type="grid" name="public-holiday-planning-grid"/>
-	    <view type="form" name="public-holiday-planning-form"/>
+
+    <menuitem name="events-planning-all" parent="plannings-all" title="Events plannings" action="hr.events.planning.all"/>
+    <action-view name="hr.events.planning.all" title="Events plannings" model="com.axelor.apps.hr.db.EventsPlanning">
+    	<view type="grid" name="events-planning-grid"/>
+	    <view type="form" name="events-planning-form"/>
 	</action-view>
-	
-	<action-view name="hr.weekly.planning.all" title="Weekly Planning" model="com.axelor.apps.base.db.WeeklyPlanning">
+
+    <menuitem name="weekly-planning-all" parent="plannings-all" title="Weekly planning" action="hr.weekly.planning.all"/>
+    <action-view name="hr.weekly.planning.all" title="Weekly Planning" model="com.axelor.apps.base.db.WeeklyPlanning">
     	<view type="grid" name="weekly-planning-grid"/>
 	    <view type="form" name="weekly-planning-form"/>
 	</action-view>
