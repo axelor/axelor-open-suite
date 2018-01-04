@@ -45,6 +45,10 @@
 	  ]]>
       </string>
 
+    <finder-method name="findAllByEmployeeAndDates" using="employee, LocalDate:fromDate, LocalDate:toDate"
+        filter="self.employee = :employee AND (self.period.fromDate &lt;= :fromDate AND self.period.toDate >= :fromDate OR self.period.fromDate &lt;= :toDate AND self.period.toDate >= :toDate)"
+        all="true" />
+
   </entity>
   
 </domain-models>

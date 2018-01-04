@@ -8,7 +8,12 @@
 		 <field name="period" grid-view="period-hr-grid" form-view="period-hr-form" canEdit="false"/>
 		 <field name="exported" />
 	</grid>
-	
+
+    <grid name="payroll-preparation-leave-request-grid" title="Payroll preparations" model="com.axelor.apps.hr.db.PayrollPreparation">
+        <field name="fullName" title="Payroll preparation" />
+         <field name="exported" />
+    </grid>
+
 	<form name="payroll-preparation-form" title="Payroll preparation" model="com.axelor.apps.hr.db.PayrollPreparation" 
 		onNew="action-payroll-preparation-group-on-new"
 		onLoad="action-payroll-preparation-method-fill-in-leaves">
