@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.db.mapper.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -280,7 +281,7 @@ public class AddressController {
 		LOG.debug("Context fields: {}",context.keySet());
 		Address address = context.asType(Address.class);
 
-		Context parentContext = context.getParentContext();
+		Context parentContext = context.getParent();
 		LOG.debug("Parent Context fields: {}",parentContext.keySet());
 		if(parentContext.isEmpty()){
 			return;
@@ -289,8 +290,7 @@ public class AddressController {
 		String parentModel = (String) parentContext.get("_model");
 		LOG.debug("Partner modelPartnerFieldMap: {}",IPartner.modelPartnerFieldMap);
 		LOG.debug("Parent model: {}",parentModel);
-		String parnterField = IPartner.modelPartnerFieldMap.get(parentModel);
-		Partner partner = (Partner) parentContext.get(parnterField);
+		Partner partner = Mapper.toBean(Partner.class, (Map<String, Object>)parentContext.get("_parent"));
 		if(partner == null || partner.getId() == null){
 			return;
 		}
