@@ -40,7 +40,7 @@ public interface MrpLineService {
 	void generateProposal(MrpLine mrpLine, Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders) throws AxelorException;
 
 	MrpLine createMrpLine(Product product, int maxLevel, MrpLineType mrpLineType, BigDecimal qty,
-			LocalDate maturityDate, BigDecimal cumulativeQty, StockLocation location, Model... models);
+			LocalDate maturityDate, BigDecimal cumulativeQty, StockLocation stockLocation, Model... models);
 
 	MrpLineOrigin createMrpLineOrigin(Model model);
 

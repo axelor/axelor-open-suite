@@ -32,9 +32,9 @@ import com.axelor.inject.Beans;
 public class StockRulesServiceProductionImpl extends StockRulesServiceSupplychainImpl {
 
 	public void generateOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type) throws AxelorException {
-		StockLocation location = stockLocationLine.getStockLocation();
-		if (location == null) {return;}
-		StockRules stockRules = this.getStockRules(product, location, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
+		StockLocation stockLocation = stockLocationLine.getStockLocation();
+		if (stockLocation == null) {return;}
+		StockRules stockRules = this.getStockRules(product, stockLocation, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
 		if (stockRules == null) {return;}
 	    if (stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER) {
 	    	this.generateProductionOrder(product, qty, stockLocationLine, type, stockRules);

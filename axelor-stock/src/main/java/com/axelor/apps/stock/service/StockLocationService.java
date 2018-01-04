@@ -44,6 +44,6 @@ public interface StockLocationService {
 
 	public List<Long> getBadLocationLineId();
 	
-	public Set<Long> getContentLocationIds(StockLocation location);
+	public Set<Long> getContentLocationIds(StockLocation stockLocation);
 	
 }

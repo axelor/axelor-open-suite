@@ -68,7 +68,7 @@ public interface ITranslation {
 	
 	public static final String PRODUCTION_PROCESS_LABEL = /*$$(*/ "ProdProcess.label"; /*)*/
 	public static final String PRODUCTION_PROCESS_NAME = /*$$(*/ "ProdProcess.name"; /*)*/
-	public static final String PRODUCTION_PROCESS_LOCATION = /*$$(*/ "ProdProcess.location"; /*)*/
+	public static final String PRODUCTION_PROCESS_STOCK_LOCATION = /*$$(*/ "ProdProcess.stockLocation"; /*)*/
 	public static final String PRODUCTION_PROCESS_FINAL_LOCATION = /*$$(*/ "ProdProcess.producedProductLocation"; /*)*/
 	public static final String PRODUCTION_PROCESS_PRODUCT = /*$$(*/ "ProdProcess.product"; /*)*/
 	public static final String PRODUCTION_PROCESS_ISOPERATION = /*$$(*/ "ProdProcess.isOperation"; /*)*/

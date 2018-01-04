@@ -23,7 +23,7 @@ public class ITranslation {
      * MrpWeeks.rptdesign
      * */
     public static final String MRP_WEEKS_TITLE = /*$$(*/ "MrpWeeks.title"; /*)*/
-    public static final String MRP_WEEKS_LOCATION = /*$$(*/ "MrpWeeks.location"; /*)*/
+    public static final String MRP_WEEKS_STOCK_LOCATION = /*$$(*/ "MrpWeeks.stockLocation"; /*)*/
     public static final String MRP_WEEKS_WEEK = /*$$(*/ "MrpWeeks.week"; /*)*/
     public static final String MRP_WEEKS_PRODUCT = /*$$(*/ "MrpWeeks.product"; /*)*/
     public static final String MRP_WEEKS_UNIT = /*$$(*/ "MrpWeeks.unit"; /*)*/
@@ -38,7 +38,7 @@ public class ITranslation {
     public static final String MRP_LIST_TITLE = /*$$(*/ "MrpList.title"; /*)*/
     public static final String MRP_LIST_CREATED_ON = /*$$(*/ "MrpList.createdOn"; /*)*/
     public static final String MRP_LIST_END_DATE = /*$$(*/ "MrpList.endDate"; /*)*/
-    public static final String MRP_LIST_LOCATION = /*$$(*/ "MrpList.location"; /*)*/
+    public static final String MRP_LIST_STOCK_LOCATION = /*$$(*/ "MrpList.stockLocation"; /*)*/
 
     public static final String MRP_LIST_PRODUCTS_TITLE = /*$$(*/ "MrpList.productsTitle"; /*)*/
     public static final String MRP_LIST_PRODUCT_CATEGORIES_TITLE = /*$$(*/ "MrpList.productCategoriesTitle"; /*)*/

@@ -173,9 +173,9 @@ public class InventoryController {
 			
 			if(inventory.getInventorySeq() ==  null) {
 				
-				StockLocation location = inventory.getStockLocation();
+				StockLocation stockLocation = inventory.getStockLocation();
 				
-				response.setValue("inventorySeq", inventoryService.getInventorySequence(location.getCompany()));
+				response.setValue("inventorySeq", inventoryService.getInventorySequence(stockLocation.getCompany()));
 			}
 		} catch(Exception e) {
 			TraceBackService.trace(response, e);

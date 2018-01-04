@@ -52,7 +52,7 @@
 			<field name="date" type="date"/>
 		</result-fields>
 
-		<select model="com.axelor.apps.stock.db.StockMove" title="Stock Move">
+		<select model="com.axelor.apps.stock.db.StockMove" title="Stock move">
 			<field name="stockMoveLineList[].trackingNumber" as="trackingNumber"/>
 			<field name="stockMoveLineList[].product.fullName" as="product"/>
 			<field name="stockMoveLineList[].productName" as="moveLine"/>
@@ -63,7 +63,7 @@
 				<input name="trackingNumber" field="stockMoveLineList[].trackingNumber"/>
 			</where>
 		</select>
-		<select model="com.axelor.apps.stock.db.StockLocation" title="Stock Location">
+		<select model="com.axelor.apps.stock.db.StockLocation" title="Stock location">
 			<field name="detailsLocationLineList[].trackingNumber" as="trackingNumber"/>
 			<field name="detailsLocationLineList[].product.name" as="product"/>
 			<field name="detailsLocationLineList[].stockLocation.name" as="stockLocation"/>

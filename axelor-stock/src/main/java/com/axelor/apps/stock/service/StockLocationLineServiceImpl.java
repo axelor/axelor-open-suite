@@ -52,26 +52,26 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 	protected StockRulesService stockRulesService;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateLocation(StockLocation location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
+	public void updateLocation(StockLocation StockLocation, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
 							   LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException  {
 		
-		this.updateLocation(location, product, qty, current, future, isIncrement, lastFutureStockMoveDate, reservedQty);
+		this.updateLocation(StockLocation, product, qty, current, future, isIncrement, lastFutureStockMoveDate, reservedQty);
 		
 		if(trackingNumber != null)  {
-			this.updateDetailLocation(location, product, qty, current, future, isIncrement, lastFutureStockMoveDate, trackingNumber, reservedQty);
+			this.updateDetailLocation(StockLocation, product, qty, current, future, isIncrement, lastFutureStockMoveDate, trackingNumber, reservedQty);
 		}
 		
 	}
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateLocation(StockLocation location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
+	public void updateLocation(StockLocation stockLocation, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
 							   LocalDate lastFutureStockMoveDate, BigDecimal reservedQty) throws AxelorException  {
 		
-		StockLocationLine stockLocationLine = this.getStockLocationLine(location, product);
+		StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation, product);
 		
 		LOG.debug("Mise à jour du stock : Entrepot? {}, Produit? {}, Quantité? {}, Actuel? {}, Futur? {}, Incrément? {}, Date? {}, Num de suivi? {} ", 
-				new Object[] { location.getName(), product.getCode(), qty, current, future, isIncrement, lastFutureStockMoveDate });
+				new Object[] { stockLocation.getName(), product.getCode(), qty, current, future, isIncrement, lastFutureStockMoveDate });
 		
 		if (!isIncrement) {
 			minStockRules(product, qty, stockLocationLine, current, future);
@@ -113,8 +113,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 	}
 
 	void checkStockMax(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type, BigDecimal baseQty) throws AxelorException {
-		StockLocation location = stockLocationLine.getStockLocation();
-		StockRules stockRules = stockRulesService.getStockRules(product, location, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
+		StockLocation stockLocation = stockLocationLine.getStockLocation();
+		StockRules stockRules = stockRulesService.getStockRules(product, stockLocation, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
 
 		if (stockRules == null || !stockRules.getUseMaxQty()) {
 			return;
@@ -127,13 +127,13 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateDetailLocation(StockLocation location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
+	public void updateDetailLocation(StockLocation stockLocation, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
 									 LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException  {
 		
-		StockLocationLine detailLocationLine = this.getDetailLocationLine(location, product, trackingNumber);
+		StockLocationLine detailLocationLine = this.getDetailLocationLine(stockLocation, product, trackingNumber);
 		
 		LOG.debug("Mise à jour du detail du stock : Entrepot? {}, Produit? {}, Quantité? {}, Actuel? {}, Futur? {}, Incrément? {}, Date? {}, Num de suivi? {} ", 
-				new Object[] { location.getName(), product.getCode(), qty, current, future, isIncrement, lastFutureStockMoveDate, trackingNumber});
+				new Object[] { stockLocation.getName(), product.getCode(), qty, current, future, isIncrement, lastFutureStockMoveDate, trackingNumber});
 		
 		detailLocationLine = this.updateLocation(detailLocationLine, qty, current, future, isIncrement, lastFutureStockMoveDate, reservedQty);
 		
@@ -161,8 +161,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 		}
 	}
 
-	public void checkIfEnoughStock(StockLocation location, Product product, BigDecimal qty) throws AxelorException{
-		StockLocationLine stockLocationLine = this.getLocationLine(location.getStockLocationLineList(), product);
+	public void checkIfEnoughStock(StockLocation stockLocation, Product product, BigDecimal qty) throws AxelorException{
+		StockLocationLine stockLocationLine = this.getLocationLine(stockLocation.getStockLocationLineList(), product);
 
 	    if(stockLocationLine != null && stockLocationLine.getCurrentQty().compareTo(qty) < 0) {
 			throw new AxelorException(stockLocationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
@@ -193,12 +193,12 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 	}
 	
 	
-	public StockLocationLine getStockLocationLine(StockLocation location, Product product)  {
+	public StockLocationLine getStockLocationLine(StockLocation stockLocation, Product product)  {
 		
-		StockLocationLine stockLocationLine = this.getLocationLine(location.getStockLocationLineList(), product);
+		StockLocationLine stockLocationLine = this.getLocationLine(stockLocation.getStockLocationLineList(), product);
 		
 		if(stockLocationLine == null)  {
-			stockLocationLine = this.createLocationLine(location, product);
+			stockLocationLine = this.createLocationLine(stockLocation, product);
 			
 		}
 		
@@ -296,21 +296,21 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 	
 	/**
 	 * Permet de créer une ligne de stock pour un entrepot et un produit donnés.
-	 * @param location
+	 * @param stockLocation
 	 * 		Un entrepot
 	 * @param product
 	 * 		Un produit
 	 * @return
 	 * 		La ligne de stock
 	 */
-	public StockLocationLine createLocationLine(StockLocation location, Product product)  {
+	public StockLocationLine createLocationLine(StockLocation stockLocation, Product product)  {
 		
-		LOG.debug("Création d'une ligne de stock : Entrepot? {}, Produit? {} ", new Object[] { location.getName(), product.getCode() });
+		LOG.debug("Création d'une ligne de stock : Entrepot? {}, Produit? {} ", new Object[] { stockLocation.getName(), product.getCode() });
 		
 		StockLocationLine stockLocationLine = new StockLocationLine();
 		
-		stockLocationLine.setStockLocation(location);
-		location.addStockLocationLineListItem(stockLocationLine);
+		stockLocationLine.setStockLocation(stockLocation);
+		stockLocation.addStockLocationLineListItem(stockLocationLine);
 		stockLocationLine.setProduct(product);
 		stockLocationLine.setCurrentQty(BigDecimal.ZERO);
 		stockLocationLine.setFutureQty(BigDecimal.ZERO);
@@ -322,7 +322,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 	
 	/**
 	 * Permet de créer une ligne détaillée de stock pour un entrepot, un produit, une variante de produit et un numéro de suivi donnés.
-	 * @param location
+	 * @param stockLocation
 	 * 		Un entrepot
 	 * @param product
 	 * 		Un produit
@@ -331,15 +331,15 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 	 * @return
 	 * 		La ligne détaillée de stock
 	 */
-	public StockLocationLine createDetailLocationLine(StockLocation location, Product product, TrackingNumber trackingNumber)  {
+	public StockLocationLine createDetailLocationLine(StockLocation stockLocation, Product product, TrackingNumber trackingNumber)  {
 		
 		LOG.debug("Création d'une ligne de détail de stock : Entrepot? {}, Produit? {}, Num de suivi? {} ", 
-				new Object[] { location.getName(), product.getCode(), trackingNumber.getTrackingNumberSeq() });
+				new Object[] { stockLocation.getName(), product.getCode(), trackingNumber.getTrackingNumberSeq() });
 		
 		StockLocationLine detailLocationLine = new StockLocationLine();
 		
-		detailLocationLine.setDetailsLocation(location);
-		location.addDetailsLocationLineListItem(detailLocationLine);
+		detailLocationLine.setDetailsLocation(stockLocation);
+		stockLocation.addDetailsLocationLineListItem(detailLocationLine);
 		detailLocationLine.setProduct(product);
 		detailLocationLine.setCurrentQty(BigDecimal.ZERO);
 		detailLocationLine.setFutureQty(BigDecimal.ZERO);

@@ -80,8 +80,8 @@ public class StockLocationServiceImpl implements StockLocationService {
 				List<StockLocation> locations = getNonVirtualLocations();
 				if (!locations.isEmpty()) {
 					BigDecimal qty = BigDecimal.ZERO;
-					for (StockLocation location : locations) {
-						StockLocationLine stockLocationLine = stockLocationLineService.getStockLocationLine(stockLocationRepo.find(location.getId()), productRepo.find(productId));
+					for (StockLocation stockLocation : locations) {
+						StockLocationLine stockLocationLine = stockLocationLineService.getStockLocationLine(stockLocationRepo.find(stockLocation.getId()), productRepo.find(productId));
 						
 						if (stockLocationLine != null) {
 							qty = qty.add(qtyType.equals("real") ? stockLocationLine.getCurrentQty() : stockLocationLine.getFutureQty());
@@ -115,7 +115,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 	public void computeAvgPriceForProduct(Product product) {
 		Long productId = product.getId();
 		String query = "SELECT new list(self.id, self.avgPrice, self.currentQty) FROM LocationLine as self "
-				+ "WHERE self.product.id = " + productId + " AND self.location.typeSelect != "
+				+ "WHERE self.product.id = " + productId + " AND self.stockLocation.typeSelect != "
 				+ StockLocationRepository.TYPE_VIRTUAL;
 		int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
 		BigDecimal productAvgPrice = BigDecimal.ZERO;
@@ -153,7 +153,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 
 		for (StockLocationLine stockLocationLine : stockLocationLineList) {
 			StockRules stockRules = Beans.get(StockRulesRepository.class).all()
-					.filter("self.location = ?1 AND self.product = ?2", stockLocationLine.getStockLocation(), stockLocationLine.getProduct()).fetchOne();
+					.filter("self.stockLocation = ?1 AND self.product = ?2", stockLocationLine.getStockLocation(), stockLocationLine.getProduct()).fetchOne();
 			if (stockRules != null
 					&& stockLocationLine.getFutureQty().compareTo(stockRules.getMinQty()) < 0) {
 				idList.add(stockLocationLine.getId());
@@ -190,13 +190,13 @@ public class StockLocationServiceImpl implements StockLocationService {
 	}
 	
 	@Override
-	public Set<Long> getContentLocationIds(StockLocation location) {
+	public Set<Long> getContentLocationIds(StockLocation stockLocation) {
 		
 		List<StockLocation> locations = new ArrayList<>();
 
-		if(location != null) {
-			locations.add(location);
-			locationIdSet.add(location.getId());
+		if(stockLocation != null) {
+			locations.add(stockLocation);
+			locationIdSet.add(stockLocation.getId());
 			findLocationIds(locations);
 		} else {
 			locationIdSet.add(0l);

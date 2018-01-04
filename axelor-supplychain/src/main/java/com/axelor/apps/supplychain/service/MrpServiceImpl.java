@@ -96,7 +96,7 @@ public class MrpServiceImpl implements MrpService  {
 	
 	protected LocalDate today;
 	
-	protected List<StockLocation> locationList = Lists.newArrayList();
+	protected List<StockLocation> stockLocationList = Lists.newArrayList();
 	protected Map<Product,Integer> productMap = Maps.newHashMap();
 	protected Mrp mrp;
 	
@@ -165,7 +165,7 @@ public class MrpServiceImpl implements MrpService  {
 		
 		// Initialize 
 		this.mrp = mrp;
-		this.locationList = this.getAllLocationAndSubLocation(mrp.getStockLocation());
+		this.stockLocationList = this.getAllLocationAndSubLocation(mrp.getStockLocation());
 		this.assignProductAndLevel(this.getProductList());
 		
 		// Get the stock for each product on each location
@@ -297,7 +297,7 @@ public class MrpServiceImpl implements MrpService  {
 	}
 	
 	
-	public MrpLine getPreviousProposalMrpLine(Product product, MrpLineType mrpLineType, StockLocation location, LocalDate maturityDate)  {
+	public MrpLine getPreviousProposalMrpLine(Product product, MrpLineType mrpLineType, StockLocation stockLocation, LocalDate maturityDate)  {
 		
 		LocalDate startPeriodDate = maturityDate;
 		
@@ -311,20 +311,20 @@ public class MrpServiceImpl implements MrpService  {
 		
 		}
 		
-		return mrpLineRepository.all().filter("self.mrp = ?1 AND self.product = ?2 AND self.mrpLineType = ?3 AND self.location = ?4 AND self.maturityDate > ?5 AND self.maturityDate <= ?6",
-				mrp, product, mrpLineType, location, startPeriodDate, maturityDate).fetchOne();
+		return mrpLineRepository.all().filter("self.mrp = ?1 AND self.product = ?2 AND self.mrpLineType = ?3 AND self.stockLocation = ?4 AND self.maturityDate > ?5 AND self.maturityDate <= ?6",
+				mrp, product, mrpLineType, stockLocation, startPeriodDate, maturityDate).fetchOne();
 		
 	}
 	
 	
-	protected void createProposalMrpLine(Product product, MrpLineType mrpLineType, BigDecimal reorderQty, StockLocation location, LocalDate maturityDate, List<MrpLineOrigin> mrpLineOriginList, String relatedToSelectName) throws AxelorException {
+	protected void createProposalMrpLine(Product product, MrpLineType mrpLineType, BigDecimal reorderQty, StockLocation stockLocation, LocalDate maturityDate, List<MrpLineOrigin> mrpLineOriginList, String relatedToSelectName) throws AxelorException {
 		
 		if(mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL)  {
 			maturityDate = maturityDate.minusDays(product.getSupplierDeliveryTime());
 			reorderQty = reorderQty.max(this.getSupplierCatalogMinQty(product));
 		}
 		
-		MrpLine mrpLine = this.getPreviousProposalMrpLine(product, mrpLineType, location, maturityDate);
+		MrpLine mrpLine = this.getPreviousProposalMrpLine(product, mrpLineType, stockLocation, maturityDate);
 		
 		if(mrpLine != null)  {
 			mrpLine.setQty(mrpLine.getQty().add(reorderQty));
@@ -333,7 +333,7 @@ public class MrpServiceImpl implements MrpService  {
 		}
 		else  {
 			
-			mrpLine = mrpLineRepository.save(this.createMrpLine(product, mrpLineType, reorderQty, maturityDate, BigDecimal.ZERO, location));
+			mrpLine = mrpLineRepository.save(this.createMrpLine(product, mrpLineType, reorderQty, maturityDate, BigDecimal.ZERO, stockLocation));
 			mrp.addMrpLineListItem(mrpLine);
 			mrpLine.setRelatedToSelectName(relatedToSelectName);
 
@@ -469,9 +469,9 @@ public class MrpServiceImpl implements MrpService  {
 
 		// TODO : Manage the case where order is partially delivered
 		List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrderLineRepository.all()
-				.filter("self.product in (?1) AND self.purchaseOrder.location in (?2) AND self.purchaseOrder.receiptState = ?3 "
+				.filter("self.product in (?1) AND self.purchaseOrder.stockLocation in (?2) AND self.purchaseOrder.receiptState = ?3 "
 						+ "AND self.purchaseOrder.statusSelect IN (?4)",
-						this.productMap.keySet(), this.locationList, IPurchaseOrder.STATE_NOT_RECEIVED, statusList).fetch();
+						this.productMap.keySet(), this.stockLocationList, IPurchaseOrder.STATE_NOT_RECEIVED, statusList).fetch();
 		
 		for(PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList)  {
 			
@@ -510,9 +510,9 @@ public class MrpServiceImpl implements MrpService  {
 		if(mrp.getSaleOrderLineSet().isEmpty())  {
 			
 			saleOrderLineList.addAll(saleOrderLineRepository.all()
-				.filter("self.product in (?1) AND self.saleOrder.location in (?2) AND self.saleOrder.deliveryState = ?3 "
+				.filter("self.product in (?1) AND self.saleOrder.stockocation in (?2) AND self.saleOrder.deliveryState = ?3 "
 						+ "AND self.saleOrder.statusSelect IN (?4)",
-						this.productMap.keySet(), this.locationList, SaleOrderRepository.STATE_NOT_DELIVERED, statusList).fetch());
+						this.productMap.keySet(), this.stockLocationList, SaleOrderRepository.STATE_NOT_DELIVERED, statusList).fetch());
 			
 		}
 		else  {
@@ -552,8 +552,8 @@ public class MrpServiceImpl implements MrpService  {
 		if(mrp.getMrpForecastSet().isEmpty())  {
 			
 			mrpForecastList.addAll(mrpForecastRepository.all()
-					.filter("self.product in (?1) AND self.location in (?2) AND self.forecastDate >= ?3", 
-							this.productMap.keySet(), this.locationList, today, today).fetch());
+					.filter("self.product in (?1) AND self.stockLocation in (?2) AND self.forecastDate >= ?3", 
+							this.productMap.keySet(), this.stockLocationList, today, today).fetch());
 			
 		}
 		else  {
@@ -594,26 +594,26 @@ public class MrpServiceImpl implements MrpService  {
 		
 		for(Product product : this.productMap.keySet())  {
 			
-			for(StockLocation location : this.locationList)  {
+			for(StockLocation stockLocation : this.stockLocationList)  {
 				
-				mrp.addMrpLineListItem(this.createAvailableStockMrpLine(product, location, availableStockMrpLineType));
+				mrp.addMrpLineListItem(this.createAvailableStockMrpLine(product, stockLocation, availableStockMrpLineType));
 				
 			}
 		}
 	}
 	
-	protected MrpLine createAvailableStockMrpLine(Product product, StockLocation location, MrpLineType availableStockMrpLineType)  {
+	protected MrpLine createAvailableStockMrpLine(Product product, StockLocation stockLocation, MrpLineType availableStockMrpLineType)  {
 		
 		BigDecimal qty = BigDecimal.ZERO;
 		
-		StockLocationLine stockLocationLine = this.getStockLocationLine(product, location);
+		StockLocationLine stockLocationLine = this.getStockLocationLine(product, stockLocation);
 		
 		if(stockLocationLine != null)  {
 			
 			qty = stockLocationLine.getCurrentQty();
 		}
 		
-		return this.createMrpLine(product, availableStockMrpLineType, qty, today, qty, location);
+		return this.createMrpLine(product, availableStockMrpLineType, qty, today, qty, stockLocation);
 	}
 	
 	
@@ -633,7 +633,7 @@ public class MrpServiceImpl implements MrpService  {
 	
 	protected StockLocationLine getStockLocationLine(Product product, StockLocation stockLocation)  {
 
-		return stockLocationLineRepository.all().filter("self.location = ?1 AND self.product = ?2", stockLocation, product).fetchOne();
+		return stockLocationLineRepository.all().filter("self.stockLocation = ?1 AND self.product = ?2", stockLocation, product).fetchOne();
 		
 	}
 		
@@ -713,9 +713,9 @@ public class MrpServiceImpl implements MrpService  {
 	}
 	
 	
-	protected MrpLine createMrpLine(Product product,  MrpLineType mrpLineType, BigDecimal qty, LocalDate maturityDate, BigDecimal cumulativeQty, StockLocation location, Model... models)  {
+	protected MrpLine createMrpLine(Product product,  MrpLineType mrpLineType, BigDecimal qty, LocalDate maturityDate, BigDecimal cumulativeQty, StockLocation stockLocation, Model... models)  {
 		
-		return mrpLineService.createMrpLine(product, this.productMap.get(product), mrpLineType, qty, maturityDate, cumulativeQty, location, models);
+		return mrpLineService.createMrpLine(product, this.productMap.get(product), mrpLineType, qty, maturityDate, cumulativeQty, stockLocation, models);
 		
 	}
 	
@@ -735,9 +735,9 @@ public class MrpServiceImpl implements MrpService  {
 	}
 	
 	
-	protected List<StockLocation> getAllLocationAndSubLocation(StockLocation location)  {
+	protected List<StockLocation> getAllLocationAndSubLocation(StockLocation stockLocation)  {
 	
-		List<StockLocation> subLocationList =  stockLocationRepository.all().filter("self.parentLocation = ?1", location).fetch();
+		List<StockLocation> subLocationList =  stockLocationRepository.all().filter("self.parentLocation = ?1", stockLocation).fetch();
 	
 		for(StockLocation subLocation : subLocationList)  {
 			
@@ -745,7 +745,7 @@ public class MrpServiceImpl implements MrpService  {
 		
 		}
 		
-		subLocationList.add(location);
+		subLocationList.add(stockLocation);
 		
 		return subLocationList;
 	}	

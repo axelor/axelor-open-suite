@@ -331,17 +331,17 @@ public class StockMoveServiceImpl implements StockMoveService {
 	 * @throws AxelorException
 	 */
 	private void checkOngoingInventory(StockMove stockMove) throws AxelorException {
-		List<StockLocation> locationList = new ArrayList<>();
+		List<StockLocation> stockLocationList = new ArrayList<>();
 
 		if (stockMove.getFromLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-			locationList.add(stockMove.getFromLocation());
+			stockLocationList.add(stockMove.getFromLocation());
 		}
 
 		if (stockMove.getToLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-			locationList.add(stockMove.getToLocation());
+			stockLocationList.add(stockMove.getToLocation());
 		}
 
-		if (locationList.isEmpty()) {
+		if (stockLocationList.isEmpty()) {
 			return;
 		}
 
@@ -356,10 +356,10 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 		InventoryLine inventoryLine = inventoryLineRepo.all()
 				.filter("self.inventory.statusSelect BETWEEN :startStatus AND :endStatus\n"
-						+ "AND self.inventory.location IN (:locationList)\n" + "AND self.product IN (:productList)")
+						+ "AND self.inventory.stockLocation IN (:stockLocationList)\n" + "AND self.product IN (:productList)")
 				.bind("startStatus", InventoryRepository.STATUS_IN_PROGRESS)
 				.bind("endStatus", InventoryRepository.STATUS_COMPLETED)
-				.bind("locationList", locationList)
+				.bind("stockLocationList", stockLocationList)
 				.bind("productList", productList).fetchOne();
 
 		if (inventoryLine != null) {

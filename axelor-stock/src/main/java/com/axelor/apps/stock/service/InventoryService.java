@@ -417,7 +417,7 @@ public class InventoryService {
 
 	public List<? extends StockLocationLine> getStockLocationLines(Inventory inventory)  {
 
-		String query = "(self.location = ? OR self.detailsLocation = ?)";
+		String query = "(self.stockLocation = ? OR self.detailsLocation = ?)";
 		List<Object> params = new ArrayList<>();
 
 		params.add(inventory.getStockLocation());
