@@ -734,6 +734,7 @@
 		<action name="action-invoice-method-fill-company-bank-details"/>
 		<action name="action-invoice-method-fill-advance-payment-set"/>
 		<action name="action-invoice-method-set-default-mail"/>
+		<action name="action-invoice-method-fill-price-list"/>
 		<action name="action-invoice-attrs-interco-supplychain"/>
 		<action name="action-invoice-record-interco-supplychain"/>
     </action-group>
@@ -801,8 +802,6 @@
     	<field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
 		<field name="address" expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
     	<field name="currency" expr="eval: partner?.currency"/>
-		<field name="priceList" expr="eval: partner?.salePriceList" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
-		<field name="priceList" expr="eval: partner?.purchasePriceList" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
 		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : bankDetails" />
     	<field name="contactPartner" expr="eval:null" />
     	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect"/>
@@ -891,8 +890,12 @@
 	</action-attrs>
 	
 	<action-attrs name="action-invoice-attrs-domain-priceList">
-		<attribute name="domain" for="priceList" expr="eval: &quot; self.typeSelect = 1 &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
-		<attribute name="domain" for="priceList" expr="eval: &quot; self.typeSelect = 2 &quot;" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
+		<attribute name="domain" for="priceList"
+				   if="operationTypeSelect == 3 || operationTypeSelect == 4"
+				   expr="eval: &quot; self.typeSelect = 1 and self.isActive = true and self.id IN (${(partner?.salePartnerPriceList?.priceListSet?.findAll{it.applicationBeginDate &lt;= __date__ &amp;&amp; it.applicationEndDate &gt; __date__}.collect{it.id}+[0]).join(',')})&quot;"/>
+		<attribute name="domain" for="priceList"
+				   if="operationTypeSelect == 1 || operationTypeSelect == 2"
+				   expr="eval: &quot; self.typeSelect = 2 and self.isActive = true and self.id IN (${(partner?.purchasePartnerPriceList?.priceListSet?.findAll{it.applicationBeginDate &lt;= __date__ &amp;&amp; it.applicationEndDate &gt; __date__}.collect{it.id}+[0]).join(',')}) &quot;"/>
 	</action-attrs>
 
 	<action-attrs name="action-invoice-attrs-domain-address">
@@ -989,6 +992,11 @@
 	<action-method name="action-invoice-method-set-default-mail">
 		<call class="com.axelor.apps.account.web.InvoiceController"
 			  method="setDefaultMail"/>
+	</action-method>
+
+	<action-method name="action-invoice-method-fill-price-list">
+		<call class="com.axelor.apps.account.web.InvoiceController"
+			  method="fillPriceList"/>
 	</action-method>
 
     <action-view name="action-invoice-view-register-payment" title="Register a payment" model="com.axelor.apps.account.db.InvoicePayment">
