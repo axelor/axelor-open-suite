@@ -8,7 +8,8 @@
   <entity name="EbicsUser" lang="java">
 
 	 <string name="securityMedium" title="Security medium" default="0000"/>
-	 <string name="name" title="Name" namecolumn="true" required="true"/>
+	 <string name="name" title="Name" required="true"/>
+	 <string name="fullName" title="Full name" namecolumn="true" />
 	 <string name="userId" title="User id" max="35" required="true"/>
 	 <string name="nextOrderId" title="Next order id" readonly="true"/>
 	 
@@ -19,7 +20,7 @@
 	 
  	 <many-to-one name="ebicsPartner" ref="com.axelor.apps.bankpayment.db.EbicsPartner" title="Ebics partner" required="true"/>
  	 
- 	 <many-to-one name="associatedUser" ref="com.axelor.auth.db.User" title="Associate user"/>
+ 	 <many-to-one name="associatedUser" ref="com.axelor.auth.db.User" title="Associated user"/>
 	 
 	 <!-- 	 Electronic signature certificate -->
  	 <string name="dn" title="dn" />
