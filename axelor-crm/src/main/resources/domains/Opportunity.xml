@@ -31,13 +31,27 @@
   	
   	<many-to-one name="lostReason" ref="LostReason" title="Lost reason" />
  	
-  	<track>
-      <field name="name"/>
-      <message if="true" on="CREATE">Opportunity created</message>
-      <message if="salesStageSelect == 5" fields="salesStageSelect" tag="success">Opportunity won</message>
-      <message if="salesStageSelect == 6" fields="salesStageSelect" tag="warning">Opportunity lost</message>
-    </track>
-    
+
+	<extra-code>
+		<![CDATA[
+		// Stage SELECT
+			public static final int SALES_STAGE_NEW = 1;
+			public static final int SALES_STAGE_QUALIFICATION = 2;
+			public static final int SALES_STAGE_PROPOSITION = 3;
+			public static final int SALES_STAGE_NEGOTIATION = 4;
+			public static final int SALES_STAGE_CLOSED_WON = 5;
+			public static final int SALES_STAGE_CLOSED_LOST = 6;
+		]]>
+	</extra-code>
+
+
+	<track>
+	   <field name="name"/>
+	   <message if="true" on="CREATE">Opportunity created</message>
+	   <message if="salesStageSelect == 5" fields="salesStageSelect" tag="success">Opportunity won</message>
+	   <message if="salesStageSelect == 6" fields="salesStageSelect" tag="warning">Opportunity lost</message>
+	 </track>
+	 
   </entity>
 
 </domain-models>

@@ -6,7 +6,6 @@
 
 	<entity name="AppProject" lang="java" cachable="true" extends="App">
 		<string name="projectLabel" title="Project Label"/>
-		<integer name="generatedElementTypeSelect" title="Generated element type" selection="project.config.generated.element.type"/>
 		<boolean name="resourceManagement" title="Resource management" />
 	</entity>
 

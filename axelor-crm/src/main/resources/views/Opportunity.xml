@@ -94,8 +94,8 @@
 	  
 		<panel name="main" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
 			<field name="name" css="label-bold bold"/>
-			<field name="opportunityType" widget="SuggestBox" colSpan="3" grid-view="opportunity-type-grid" form-view="opportunity-type-form"/>
-			<field name="source" colSpan="3" form-view="source-form" grid-view="source-grid"/>
+			<field name="opportunityType" widget="SuggestBox" canEdit="false" colSpan="3" grid-view="opportunity-type-grid" form-view="opportunity-type-form"/>
+			<field name="source" canEdit="false" colSpan="3" form-view="source-form" grid-view="source-grid"/>
 		</panel>
 		
 		<panel name="followUp" title="Follow-up">
@@ -115,18 +115,19 @@
 		<panel name="description" title="Description">
 			<field name="description" colSpan="12" showTitle="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" />
 		</panel>
-		
+
+        <panel-related field="saleOrderList" title="Sale quotations/orders" showIf="saleOrderList &amp;&amp; saleOrderList.length" if-module="axelor-sale" if="__config__.app.isApp('sale')" form-view="sale-order-form" grid-view="sale-order-opportunity-grid"/>
+
 		<panel name="linkedTo" title="Linked to" sidebar="true">
 			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
 			<field name="lead" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" form-view="lead-form" grid-view="lead-grid"/>
-			<panel-include view="convert-opportunity-form" from="axelor-sale" if-module="axelor-sale"  if="__config__.app.isApp('sale')" />
 		</panel>
 		
 		<panel name="assignedTo" title="Assigned to" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" sidebar="true">
-		  <field name="user" form-view="user-form" grid-view="user-grid"/>
+		  <field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 		  <button name="grabOpportunity" title="Assign to me" hideIf="user.id == _internalUserId"   icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
-		  <field name="team" form-view="team-form" grid-view="team-grid"/>
-		  <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+		  <field name="team" canEdit="false" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
+		  <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 		  <field name="bankDetails" widget="SuggestBox"  if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()"/>
 		  <field name="lostReason" canNew="true" />
 		</panel>
@@ -150,6 +151,11 @@
 		<field name="expectedCloseDate"/>
 		<field name="user"/>
 		<field name="salesStageSelect"/>
+        <field name="partner.name" />
+        <field name="partner.fixedPhone" />
+        <field name="partner.mobilePhone" />
+        <field name="amount" />
+        <field name="currency.symbol" />
 		<hilite color="danger" if="probability &lt;= 25"/>
 		<hilite color="success" if="probability &gt;= 75"/>
 		<hilite color="info" if="probability &gt;= 50"/>
@@ -158,7 +164,15 @@
             <![CDATA[
             <h4>{{name}}</h4>
             <img ng-if="user" ng-src="{{$image('user', 'image')}}">
-            <div class="card-body">{{description}}</div>
+            <div class="card-body">
+                <p>{{description}}</p>
+                <dl>
+                    <dt ng-show="record.partner.name" x-translate>Customer</dt><dd ng-show="record.partner.name">{{partner.name}}</dd>
+                    <dt ng-show="record.partner.fixedPhone" x-translate>Fixed phone</dt><dd ng-show="record.partner.fixedPhone"><a href="tel:{{partner.fixedPhone}}">{{partner.fixedPhone}}</a></dd>
+                    <dt ng-show="record.partner.mobilePhone" x-translate>Mobile phone</dt><dd ng-show="record.partner.mobilePhone"><a href="tel:{{partner.mobilePhone}}">{{partner.mobilePhone}}</a></dd>
+                    <dt ng-show="record.amount" x-translate>Amount</dt><dd ng-show="record.amount">{{amount | currency : currency.symbol}}</dd>
+                </dl>
+            </div>
             <div class="card-footer">
                 <i class='fa fa-clock-o'></i> <span>{{expectedCloseDate|date:'dd/MM/yyyy'}}</span>
             </div>
@@ -229,13 +243,18 @@
     </action-record>
     
     <search-filters name="opportunity-filters" model="com.axelor.apps.crm.db.Opportunity" title="Opportunities filters">
-		<filter title="My Opportunities">
-			<domain>self.user.internalUser.id = :_internalUserId</domain>
+        <field name="name" />
+        <field name="partner.name" title="Customer name" />
+        <field name="partner.fixedPhone" title="Customer fixed phone" />
+        <field name="partner.mobilePhone" title="Customer mobile phone" />
+        <field name="amount" />
+		<filter title="My opportunities">
+			<domain>self.user.id = :_internalUserId</domain>
 		</filter>
-		<filter title="Unassigned Opportunities">
+		<filter title="Unassigned opportunities">
 			<domain>self.user IS NULL</domain>
 		</filter>
-		<filter title="My Team Opportunities">
+		<filter title="My team opportunities">
 			<domain>self.team = :_myActiveTeam</domain>
 		</filter>
 	</search-filters>

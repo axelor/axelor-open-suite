@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -54,6 +54,7 @@ import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectService;
+import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -301,12 +302,12 @@ public class InvoicingProjectService {
 	public void setLines(InvoicingProject invoicingProject,Project project, int counter){
 		
 		
-		if(counter > ProjectService.MAX_LEVEL_OF_PROJECT)  {  return;  }
+		if(counter > ProjectServiceImpl.MAX_LEVEL_OF_PROJECT)  {  return;  }
 		counter++;
 		
 		this.fillLines(invoicingProject, project);
 
-		List<Project> projectChildrenList = Beans.get(ProjectRepository.class).all().filter("self.project = ?1", project).fetch();
+		List<Project> projectChildrenList = Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
 
 		for (Project projectChild : projectChildrenList) {
 			this.setLines(invoicingProject, projectChild, counter);
@@ -366,11 +367,11 @@ public class InvoicingProjectService {
 	
 	
 	public Company getRootCompany(Project project){
-		if(project.getProject() == null){
+		if(project.getParentProject() == null){
 			return project.getCompany();
 		}
 		else{
-			return getRootCompany(project.getProject());
+			return getRootCompany(project.getParentProject());
 		}
 	}
 

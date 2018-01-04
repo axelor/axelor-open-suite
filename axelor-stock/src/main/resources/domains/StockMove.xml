@@ -11,8 +11,8 @@
 
 	<string name="stockMoveSeq" namecolumn="true" title="Ref." readonly="true"/>
     <string name="name" title="Name"/>
-    <many-to-one name="fromLocation" ref="com.axelor.apps.stock.db.Location" required="true" title="From location"/>
-    <many-to-one name="toLocation" ref="com.axelor.apps.stock.db.Location" required="true" title="To location"/>
+    <many-to-one name="fromLocation" ref="com.axelor.apps.stock.db.StockLocation" required="true" title="From location"/>
+    <many-to-one name="toLocation" ref="com.axelor.apps.stock.db.StockLocation" required="true" title="To location"/>
     
     <date name="estimatedDate" title="Estimated date"/>
     <date name="realDate" title="Move date" readonly="true"/>
@@ -47,7 +47,11 @@
     <many-to-one name="freightCarrierMode" ref="com.axelor.apps.stock.db.FreightCarrierMode"/>
     
     <integer name="conformitySelect" title="Conformity" selection="stock.move.line.conformity.select"/>
-    
+
+    <boolean name="fullySpreadOverLogisticalFormsFlag" default="false" title="Fully spread over logistical forms" />
+
+    <many-to-one name="cancelReason" title="Cancel reason" ref="com.axelor.apps.base.db.CancelReason"/>
+
     <unique-constraint columns="stockMoveSeq,company"/>
     
     <extra-code><![CDATA[

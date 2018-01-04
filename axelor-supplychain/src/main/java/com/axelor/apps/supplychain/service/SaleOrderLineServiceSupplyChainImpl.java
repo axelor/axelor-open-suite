@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,32 +17,35 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.SaleOrderLineServiceImpl;
-import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
-
-public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl  {
+public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl implements SaleOrderLineServiceSupplyChain {
 
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
@@ -123,17 +126,17 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 
 	@Override
 	public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine) {
-		QueryBuilder<LocationLine> queryBuilder = QueryBuilder.of(LocationLine.class);
-		queryBuilder.add("self.location = :location");
+		QueryBuilder<StockLocationLine> queryBuilder = QueryBuilder.of(StockLocationLine.class);
+		queryBuilder.add("self.stockLocation = :stockLocation");
 		queryBuilder.add("self.product = :product");
-		queryBuilder.bind("location", saleOrderLine.getSaleOrder().getLocation());
+		queryBuilder.bind("stockLocation", saleOrderLine.getSaleOrder().getStockLocation());
 		queryBuilder.bind("product", saleOrderLine.getProduct());
-		LocationLine locationLine = queryBuilder.create().fetchOne();
-		if (locationLine == null) {
+		StockLocationLine stockLocationLine = queryBuilder.create().fetchOne();
+		if (stockLocationLine == null) {
 			return BigDecimal.ZERO;
 		}
 
-		return locationLine.getCurrentQty().subtract(locationLine.getReservedQty());
+		return stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
 	}
 
 	@Transactional
@@ -141,4 +144,19 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 	    saleOrderLine.setReservedQty(reservedQty);
 	    Beans.get(SaleOrderLineRepository.class).save(saleOrderLine);
 	}
+
+    @Override
+    public BigDecimal computeUndeliveredQty(SaleOrderLine saleOrderLine) {
+        Preconditions.checkNotNull(saleOrderLine);
+        SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+        Preconditions.checkNotNull(saleOrder);
+        Product product = saleOrderLine.getProduct();
+        BigDecimal deliveredQty = product != null
+                ? saleOrder.getSaleOrderLineList().stream().filter(line -> product.equals(line.getProduct()))
+                        .reduce(BigDecimal.ZERO, (qty, line) -> qty.add(line.getDeliveredQty()), BigDecimal::add)
+                : BigDecimal.ZERO;
+
+        return saleOrderLine.getQty().subtract(deliveredQty);
+    }
+
 }

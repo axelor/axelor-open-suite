@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,7 +38,7 @@ public interface ITranslation {
 	public static final String INVENTORY_TITLE = /*$$(*/ "Inventory.title"; /*)*/
 	public static final String INVENTORY_NAME = /*$$(*/ "Inventory.name"; /*)*/
 	public static final String INVENTORY_DATE = /*$$(*/ "Inventory.date"; /*)*/
-	public static final String INVENTORY_LOCATION = /*$$(*/ "Inventory.location"; /*)*/
+	public static final String INVENTORY_LOCATION = /*$$(*/ "Inventory.stockLocation"; /*)*/
 	public static final String INVENTORY_CODE = /*$$(*/ "Inventory.code"; /*)*/
 	public static final String INVENTORY_UNIT = /*$$(*/ "Inventory.unit"; /*)*/
 	public static final String INVENTORY_REAL_QTY = /*$$(*/ "Inventory.realQty"; /*)*/

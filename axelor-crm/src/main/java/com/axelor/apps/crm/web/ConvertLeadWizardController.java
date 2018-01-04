@@ -147,6 +147,7 @@ public class ConvertLeadWizardController {
 		response.setAttr("jobTitle", "value", lead.getJobTitle());
 		response.setAttr("languageSelect", "value", appBase.getDefaultPartnerLanguage());
 	}
+	
 	public void setConvertLeadIntoPartner(ActionRequest request, ActionResponse response) { 
 		Context context = request.getContext();
 		Lead lead;
@@ -168,10 +169,11 @@ public class ConvertLeadWizardController {
 		response.setAttr("source", "value", lead.getSource());
 		response.setAttr("department", "value", lead.getDepartment());
 		response.setAttr("team", "value", lead.getTeam());
-		response.setAttr("isCustomer", "value", true);
+		response.setAttr("isProspect", "value", true);
 		response.setAttr("partnerTypeSelect", "value", "1");
 		response.setAttr("languageSelect", "value", appBase.getDefaultPartnerLanguage());
 	}
+	
 	public void setConvertLeadIntoOpportunity(ActionRequest request, ActionResponse response) { 
 		Context context = request.getContext();
 		Lead lead;

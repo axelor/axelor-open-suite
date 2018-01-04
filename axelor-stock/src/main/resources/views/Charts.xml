@@ -13,15 +13,15 @@
 				country.alpha3Code AS _country
 			FROM
 				StockMove self,    
-				Location location,    
+				StockLocation stockLocation,    
 				Address address,
 				Country country      
 			WHERE
 				self.typeSelect = 2 AND
 				self.statusSelect = 3 AND
 				self.company =:activeCompany AND    
-				self.toLocation = location AND
-				location.typeSelect = 2 AND
+				self.toLocation = stockLocation AND
+				stockLocation.typeSelect = 2 AND
 				self.toAddress = address AND
 				address.addressL7Country = country AND
 				self.realDate BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND DATE(:todayDate)
@@ -43,7 +43,7 @@
 			FROM
 				StockMoveLine self,    
 				StockMove stockMove,
-				Location location,
+				StockLocation stockLocation,
 				Address address,
 				Country country
 			WHERE
@@ -52,8 +52,8 @@
 				stockMove.company = :activeCompany AND
 				stockMove.realDate BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND DATE(:todayDate) AND
 				self.stockMove = stockMove AND
-				stockMove.toLocation = location AND
-				location.typeSelect = 2 AND
+				stockMove.toLocation = stockLocation AND
+				stockLocation.typeSelect = 2 AND
 				stockMove.toAddress = address AND
 				address.addressL7Country = country
 			GROUP BY
@@ -76,7 +76,7 @@
 			FROM
 				StockMoveLine self,    
 				StockMove stockMove,
-				Location location,
+				StockLocation stockLocation,
 				Address address,
 				Country country,
 				ProductFamily productFamily
@@ -86,8 +86,8 @@
 				stockMove.company = :activeCompany AND
 				stockMove.realDate BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND DATE(:todayDate) AND
 				self.stockMove = stockMove AND
-				stockMove.toLocation = location AND
-				location.typeSelect = 2 AND
+				stockMove.toLocation = stockLocation AND
+				stockLocation.typeSelect = 2 AND
 				stockMove.toAddress = address AND
 				address.addressL7Country = country AND
 				self.product.productFamily = productFamily
@@ -117,7 +117,7 @@
 				ON _user.id = :userId
 				AND self.company = _user.active_company      
 			JOIN
-				stock_location AS _location
+				stock_stock_location AS _location
 				ON _location.type_select = 2
 				AND self.to_location = _location.id
 			WHERE
@@ -147,7 +147,7 @@
 				ON _user.id = :userId 
 				AND self.company = _user.active_company
 			JOIN
-				stock_location AS _location
+				stock_stock_location AS _location
 				ON self.to_location = _location.id
 				AND _location.type_select = 2
 			WHERE
@@ -161,8 +161,8 @@
 		<series key="moves" type="bar" title="Stock Moves"/>
 	</chart>
 	  
-	<!-- This chart is used in location-form -->
-	<chart name="chart.locationLine.location.value" title="Location value">
+	<!-- This chart is used in stock-location-form -->
+	<chart name="chart.stockLocationLine.stockLocation.value" title="Location value">
 		<dataset type="jpql">
 			SELECT
 				SUM(
@@ -177,9 +177,9 @@
 				) AS value,
 				'Stock Value' AS label
 			FROM
-				LocationLine AS self
+				StockLocationLine AS self
 			WHERE
-				self.location.id =:id
+				self.stockLocation.id =:id
 		</dataset>
 		<category key="label" type="text" title="Location"/>
 		<series key="value" type="bar" title="Value"/>
@@ -199,7 +199,7 @@
 	                           END) AS qty                                                                 
                			FROM 	stock_stock_move_line line,
 	                    		stock_stock_move move,
-	                    		stock_location loc 
+	                    		stock_stock_location loc 
 	               		WHERE line.stock_move = move.id 
 							AND move.real_date <= DATE(:todayDate)
 							AND move.status_select in (2,3)
@@ -207,8 +207,8 @@
 							AND loc.id = location.id
 							AND (move.from_location = loc.id OR move.to_location = loc.id)
 							AND loc.type_select = 1) AS qty
-				FROM stock_location_line loc_line, stock_location location
-				WHERE loc_line.location = location.id 
+				FROM stock_stock_location_line loc_line, stock_stock_location location
+				WHERE loc_line.stock_location = location.id 
 					AND location.type_select != 3
 					AND loc_line.product = :id
 				GROUP BY location.id) 
@@ -220,7 +220,7 @@
 		                        END AS qty
 		                     FROM stock_stock_move_line line 
 		                     LEFT JOIN stock_stock_move move ON (line.stock_move = move.id)
-		                     LEFT JOIN stock_location location ON (move.from_location = location.id OR move.to_location = location.id)
+		                     LEFT JOIN stock_stock_location location ON (move.from_location = location.id OR move.to_location = location.id)
       	             		 WHERE  line.product = :id
 			                     AND move.estimated_date > DATE(:todayDate)
 			                     AND location.type_select = 1) location
@@ -246,7 +246,7 @@
        		FROM  
        			stock_stock_move_line line,
        			stock_stock_move move,	        
-       			stock_location loc 
+       			stock_stock_location loc 
       		WHERE 
       		    line.stock_move = move.id 
 			    AND move.real_date <= DATE(:fromDate)
@@ -256,9 +256,9 @@
 				AND (move.from_location = loc.id OR move.to_location = loc.id)
 				AND loc.type_select = 1) AS qty
 		    FROM 
-		   		stock_location_line loc_line, stock_location location
+		   		stock_stock_location_line loc_line, stock_stock_location location
 		    WHERE 
-		        loc_line.location = location.id 
+		        loc_line.stock_location = location.id 
 				AND location.type_select != 3
 				AND loc_line.product = :id
 		    GROUP BY 
@@ -275,7 +275,7 @@
             LEFT JOIN 
              	stock_stock_move move ON (line.stock_move = move.id)
             LEFT JOIN 
-             	stock_location location ON (move.from_location = location.id OR move.to_location = location.id)
+             	stock_stock_location location ON (move.from_location = location.id OR move.to_location = location.id)
 		    WHERE  
 		    	line.product = :id
 	            AND move.real_date > DATE(:fromDate)
@@ -336,7 +336,7 @@
 			                           END) AS qty                                                                 
 		               			FROM 	stock_stock_move_line line,
 			                    		stock_stock_move move,
-			                    		stock_location loc,
+			                    		stock_stock_location loc,
 			                    		base_product prod 
 			               		WHERE line.stock_move = move.id 
 									AND move.real_date <= DATE(:todayDate)
@@ -346,10 +346,10 @@
 									AND loc.id = location.id
 									AND (move.from_location = loc.id OR move.to_location = loc.id)
 									AND loc.type_select = 1) AS qty
-						FROM stock_location_line loc_line, 
-							 stock_location location,
+						FROM stock_stock_location_line loc_line, 
+							 stock_stock_location location,
 							 base_product prod 
-						WHERE loc_line.location = location.id 
+						WHERE loc_line.stock_location = location.id 
 							AND location.type_select = 1 
 							AND loc_line.product = prod.id 
 							AND prod.parent_product = :id 
@@ -362,7 +362,7 @@
 				                        END AS qty
 				                     FROM stock_stock_move_line line 
 				                     LEFT JOIN stock_stock_move move ON (line.stock_move = move.id)
-				                     LEFT JOIN stock_location location ON (move.from_location = location.id OR move.to_location = location.id)
+				                     LEFT JOIN stock_stock_location location ON (move.from_location = location.id OR move.to_location = location.id)
 				                     LEFT JOIN base_product prod ON (line.product = prod.id)
 		      	             		 WHERE prod.parent_product = :id 
 					                     AND move.estimated_date > DATE(:todayDate)
@@ -395,7 +395,7 @@
        		FROM  
        			stock_stock_move_line line,
        			stock_stock_move move,	        
-       			stock_location loc,
+       			stock_stock_location loc,
        			base_product prod 
       		WHERE 
       		    line.stock_move = move.id 
@@ -407,11 +407,11 @@
 				AND (move.from_location = loc.id OR move.to_location = loc.id)
 				AND loc.type_select = 1) AS qty
 		    FROM 
-		   		stock_location_line loc_line, 
-		   		stock_location location,
+		   		stock_stock_location_line loc_line, 
+		   		stock_stock_location location,
 		   		base_product prod 
 		    WHERE 
-		        loc_line.location = location.id 
+		        loc_line.stock_location = location.id 
 				AND location.type_select = 1 
 				AND loc_line.product = prod.id
 				AND prod.parent_product = :id
@@ -429,7 +429,7 @@
             LEFT JOIN 
              	stock_stock_move move ON (line.stock_move = move.id)
             LEFT JOIN 
-             	stock_location location ON (move.from_location = location.id OR move.to_location = location.id)
+             	stock_stock_location location ON (move.from_location = location.id OR move.to_location = location.id)
 		    WHERE  
 		    	line.product = :id
 	            AND move.real_date > DATE(:fromDate)

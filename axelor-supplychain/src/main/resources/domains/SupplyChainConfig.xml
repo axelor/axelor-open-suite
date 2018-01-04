@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="stock" package="com.axelor.apps.supplychain.db"/>
+
+  <entity name="SupplyChainConfig" lang="java">
+     
+    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    
+  	<boolean name="hasOutSmForStorableProduct" title="Generate out. moves for storable products ?"/>
+  	<boolean name="hasOutSmForNonStorableProduct" title="Generate out. moves for non storable products ?"/>
+  	<boolean name="hasInSmForStorableProduct" title="Generate inc. moves for storable products ?"/>
+  	<boolean name="hasInSmForNonStorableProduct" title="Generate inc. moves for non storable products ?"/>
+
+  </entity>
+  
+</domain-models>

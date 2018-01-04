@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,8 +28,9 @@ public interface IExceptionMessage {
 	static final public String NOT_IMPLEMENTED_METHOD = /*$$(*/ "Not implemented yet!" /*)*/;
 	
 	static final String BIRT_EXTERNAL_REPORT_NO_URL = /*$$(*/ "Impossible to generate report, url toward Birt viewer is not correctly configured (%s)" /*)*/;
-	
-	
+
+	static final String RECORD_UNSAVED = /*$$(*/ "Unsaved record" /*)*/;
+
 	/**
 	 * Currency service and controller
 	 */
@@ -120,6 +121,7 @@ public interface IExceptionMessage {
 	 */
 	static final public String IMPORTER_1 = /*$$(*/ "Error : Mapping file is unreachable." /*)*/;
 	static final public String IMPORTER_2 = /*$$(*/ "Error : Data file is unreachable." /*)*/;
+	static final public String IMPORTER_3 = /*$$(*/ "Error : Mapping file is not found." /*)*/;
 	
 	/**
 	 * Importer Listener 
@@ -154,7 +156,12 @@ public interface IExceptionMessage {
 	 * Template rule service
 	 */
 	static final public String TEMPLATE_RULE_1 = /*$$(*/ "Bean is not an instance of" /*)*/;
-	
+
+	/**
+	 * Sequence service
+	 */
+    static final public String SEQUENCE_NOT_SAVED_RECORD = /*$$(*/ "Can't generate draft sequence number on an unsaved record." /*)*/;
+
 	/**
 	 * Address controller
 	 */
@@ -207,6 +214,5 @@ public interface IExceptionMessage {
 	 */
 	static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;
 	static final String IMPORT_CALENDAR = /*$$(*/ "Import calendar" /*)*/;
-	
-	
+
 }

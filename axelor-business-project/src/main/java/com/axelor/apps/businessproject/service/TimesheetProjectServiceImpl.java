@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -112,7 +112,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 	public TimesheetLine createTimesheetLine(Project project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments){
 		TimesheetLine timesheetLine = super.createTimesheetLine(project, product, user, date, timesheet, hours, comments);
 		
-		if(project != null && (project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_TIME_BASED || (project.getProject() != null && project.getProject().getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_TIME_BASED)))
+		if(project != null && (project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_TIME_BASED || (project.getParentProject() != null && project.getParentProject().getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_TIME_BASED)))
 				timesheetLine.setToInvoice(true);
 		
 		return timesheetLine;

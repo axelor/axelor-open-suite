@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -96,7 +96,7 @@ public class BatchDebtRecovery extends BatchStrategy {
 		
 		int i = 0;
 		Company company = batch.getAccountingBatch().getCompany();
-		List<Partner> partnerList = partnerRepository.all().filter("self.isContact = false AND ?1 MEMBER OF self.companySet", company).fetch();
+		List<Partner> partnerList = partnerRepository.all().filter("self.isContact = false AND ?1 MEMBER OF self.companySet AND self.accountingSituationList IS NOT EMPTY AND self.isCustomer = true", company).fetch();
 		
 		for (Partner partner : partnerList) {
 
@@ -145,7 +145,8 @@ public class BatchDebtRecovery extends BatchStrategy {
 				if (debtRecoveryHistory == null) {
 					continue;
 				}
-				if (debtRecoveryHistory.getDebtRecoveryMessage() == null) {
+				if (debtRecoveryHistory.getDebtRecoveryMessageSet() == null
+						|| debtRecoveryHistory.getDebtRecoveryMessageSet().isEmpty()) {
 					Beans.get(DebtRecoveryActionService.class).runMessage(debtRecovery);
 				}
 			} catch (Exception e) {

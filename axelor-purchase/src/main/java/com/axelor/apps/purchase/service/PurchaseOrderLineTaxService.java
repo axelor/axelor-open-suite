@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,21 +17,21 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
+import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
-import com.google.inject.Inject;
 
 public class PurchaseOrderLineTaxService {
 
@@ -66,6 +66,8 @@ public class PurchaseOrderLineTaxService {
 			for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 				
 				TaxLine taxLine = purchaseOrderLine.getTaxLine();
+				TaxEquiv taxEquiv = purchaseOrderLine.getTaxEquiv();
+				TaxLine taxLineRC = (taxEquiv != null && taxEquiv.getReverseCharge() && taxEquiv.getReverseChargeTax() != null) ? taxEquiv.getReverseChargeTax().getActiveTaxLine() : null;
 
 				if(taxLine != null)  {
 					LOG.debug("TVA {}", taxLine);
@@ -75,6 +77,8 @@ public class PurchaseOrderLineTaxService {
 						PurchaseOrderLineTax purchaseOrderLineVat = map.get(taxLine);
 						
 						purchaseOrderLineVat.setExTaxBase(purchaseOrderLineVat.getExTaxBase().add(purchaseOrderLine.getExTaxTotal()));
+
+						purchaseOrderLineVat.setReverseCharged(false);
 						
 					}
 					else {
@@ -83,10 +87,39 @@ public class PurchaseOrderLineTaxService {
 						purchaseOrderLineTax.setPurchaseOrder(purchaseOrder);
 						
 						purchaseOrderLineTax.setExTaxBase(purchaseOrderLine.getExTaxTotal());
+
+						purchaseOrderLineTax.setReverseCharged(false);
 						
 						purchaseOrderLineTax.setTaxLine(taxLine);
 						map.put(taxLine, purchaseOrderLineTax);
 						
+					}
+				}
+
+				if(taxLineRC != null)  {
+					LOG.debug("TVA {}", taxLineRC);
+
+					if (map.containsKey(taxLineRC)) {
+
+						PurchaseOrderLineTax purchaseOrderLineRC = map.get(taxEquiv.getReverseChargeTax().getActiveTaxLine());
+
+						purchaseOrderLineRC.setExTaxBase(purchaseOrderLineRC.getExTaxBase().subtract(purchaseOrderLine.getExTaxTotal()));
+
+						purchaseOrderLineRC.setReverseCharged(true);
+
+					}
+					else {
+
+						PurchaseOrderLineTax purchaseOrderLineTaxRC = new PurchaseOrderLineTax();
+						purchaseOrderLineTaxRC.setPurchaseOrder(purchaseOrder);
+
+						purchaseOrderLineTaxRC.setExTaxBase(purchaseOrderLine.getExTaxTotal());
+
+						purchaseOrderLineTaxRC.setReverseCharged(true);
+
+						purchaseOrderLineTaxRC.setTaxLine(taxLineRC);
+						map.put(taxLineRC, purchaseOrderLineTaxRC);
+
 					}
 				}
 			}
@@ -95,12 +128,12 @@ public class PurchaseOrderLineTaxService {
 		for (PurchaseOrderLineTax purchaseOrderLineTax : map.values()) {
 			
 			// Dans la devise de la commande
-			BigDecimal exTaxBase = purchaseOrderLineTax.getExTaxBase();
+			BigDecimal exTaxBase = (purchaseOrderLineTax.getReverseCharged()) ? purchaseOrderLineTax.getExTaxBase().negate() : purchaseOrderLineTax.getExTaxBase();
 			BigDecimal taxTotal = BigDecimal.ZERO;
 			if(purchaseOrderLineTax.getTaxLine() != null)
 				taxTotal = purchaseOrderToolService.computeAmount(exTaxBase, purchaseOrderLineTax.getTaxLine().getValue());
 			purchaseOrderLineTax.setTaxTotal(taxTotal);
-			purchaseOrderLineTax.setInTaxTotal(exTaxBase.add(taxTotal));
+			purchaseOrderLineTax.setInTaxTotal(purchaseOrderLineTax.getExTaxBase().add(taxTotal));
 			
 			purchaseOrderLineTaxList.add(purchaseOrderLineTax);
 

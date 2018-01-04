@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.hr.service.HRMenuValidateService;
+import com.axelor.apps.hr.service.employee.EmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,7 @@ import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.Timesheet;
+import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
@@ -103,13 +105,16 @@ public class TimesheetController {
 			logTime = new BigDecimal(context.get("logTime").toString());
 		
 		Map<String, Object> projectContext = (Map<String, Object>) context.get("project");
-		Project project = projectRepoProvider.get().find(((Integer) projectContext.get("id")).longValue());
+		Project project = null;
+		if (projectContext != null) {
+            project = projectRepoProvider.get().find(((Integer) projectContext.get("id")).longValue());
+        }
 		
 		Map<String, Object> productContext = (Map<String, Object>) context.get("product");
 		Product product = null;
 		if(productContext != null)
 			product = productRepoProvider.get().find(((Integer) productContext.get("id")).longValue());
-		
+
 		if (context.get("showActivity") == null || !(Boolean) context.get("showActivity")) {
 			product = userHrservice.get().getTimesheetProduct(timesheet.getUser());
 		}
@@ -165,6 +170,22 @@ public class TimesheetController {
 
 		response.setView(actionView.map());
 	}
+
+	public void validateTimesheetLine(ActionRequest request, ActionResponse response){
+
+		User user = AuthUtils.getUser();
+		Employee employee = user.getEmployee();
+
+		ActionViewBuilder actionView = ActionView.define(I18n.get("See timesheet lines"))
+				   .model(TimesheetLine.class.getName())
+				   .add("grid","timesheet-line-grid")
+				   .add("form","timesheet-line-form")
+				   .context("todayDate", Beans.get(AppBaseService.class).getTodayDate());
+
+		timesheetServiceProvider.get().createValidateDomainTimesheetLine(user, employee, actionView);
+
+		response.setView(actionView.map());
+	}
 	
 	public void editTimesheetSelected(ActionRequest request, ActionResponse response){
 		Map timesheetMap = (Map)request.getContext().get("timesheetSelect");
@@ -200,6 +221,28 @@ public class TimesheetController {
 		
 	}
 	
+public void historicTimesheetLine(ActionRequest request, ActionResponse response){
+
+		User user = AuthUtils.getUser();
+		Employee employee = user.getEmployee();
+
+		ActionViewBuilder actionView = ActionView.define(I18n.get("See timesheet lines"))
+				   .model(TimesheetLine.class.getName())
+				   .add("grid","timesheet-line-grid")
+				   .add("form","timesheet-line-form");
+
+		actionView.domain("self.timesheet.company = :_activeCompany AND (self.timesheet.statusSelect = 3 OR self.timesheet.statusSelect = 4)")
+		.context("_activeCompany", user.getActiveCompany());
+
+		if(employee == null || !employee.getHrManager())  {
+			actionView.domain(actionView.get().getDomain() + " AND self.timesheet.user.employee.manager = :_user")
+			.context("_user", user);
+		}
+
+		response.setView(actionView.map());
+
+	}
+
 	public void showSubordinateTimesheets(ActionRequest request, ActionResponse response){
 		
 		User user = AuthUtils.getUser();
@@ -271,6 +314,9 @@ public class TimesheetController {
                 .define(I18n.get("Timesheet"))
                 .model(Timesheet.class.getName())
                 .add("form", "timesheet-form")
+				.add("grid", "timesheet-grid")
+				.domain("self.user = :_user")
+				.context("_user", AuthUtils.getUser())
                 .map());
     }
 
@@ -375,13 +421,13 @@ public class TimesheetController {
 				.define(name)
 				.add("html", fileLink).map());	
 	}
-	
+
 	public void setShowActivity(ActionRequest request, ActionResponse response) {
-		
+
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
-		
+
 		boolean showActivity = true;
-		
+
 		User user = timesheet.getUser();
 		if (user != null) {
 			Company company = user.getActiveCompany();
@@ -389,20 +435,32 @@ public class TimesheetController {
 				showActivity = !company.getHrConfig().getUseUniqueProductForTimesheet();
 			}
 		}
-		
+
 		response.setValue("$showActivity", showActivity);
 	}
-	
+
 	public void openTimesheetEditor(ActionRequest request, ActionResponse response) {
-		
+
 		Context context = request.getContext();
-		
+
 		String url = "hr/timesheet?timesheetId=" + context.get("id") + "&showActivity=" + context.get("showActivity");
-		
+
 		response.setView(ActionView
 				.define(I18n.get("Timesheet lines"))
-				.add("html", url).map());       
+				.add("html", url).map());
 
 	}
-	
+
+
+	public void timesheetPeriodTotalController(ActionRequest request, ActionResponse response) {
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		User user = timesheet.getUser();
+
+		BigDecimal periodTotal = timesheetServiceProvider.get().computePeriodTotal(timesheet);
+
+		response.setAttr("periodTotal","value",periodTotal);
+		response.setAttr("$periodTotalConvert","hidden",false);
+		response.setAttr("$periodTotalConvert","value",Beans.get(EmployeeService.class).getUserDuration(periodTotal,user,false));
+		response.setAttr("$periodTotalConvert","title",timesheetServiceProvider.get().getPeriodTotalConvertTitleByUserPref(user));
+	}
 }

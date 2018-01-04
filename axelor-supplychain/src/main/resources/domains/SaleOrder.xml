@@ -10,7 +10,7 @@
         <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
         <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
 
-        <many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Stock Location"/>
+        <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
         <date name="shipmentDate" title="Date of shipment" />
         <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
         <boolean name="subscription" title="Subscription"/>
@@ -26,10 +26,12 @@
         <boolean name="createdByInterco" default="false"/>
         <date name="expectedRealisationDate" title="Expected realisation date"/>
         <integer name="standardDelay" title="Standard delay (days)" default="0"  />
+        <one-to-many name="stockMoveList" ref="com.axelor.apps.stock.db.StockMove" mappedBy="saleOrder" title="Stock moves" />
+
         <extra-code>
             <![CDATA[
-                public static final Integer SUBSCRIPTION_PERIOD_BEGINNING = 1;
-                public static final Integer SUBSCRIPTION_PERIOD_ENDING = 2;
+                public static final int SUBSCRIPTION_PERIOD_BEGINNING = 1;
+                public static final int SUBSCRIPTION_PERIOD_ENDING = 2;
 
                 public static final int INVOICE_ALL = 1;
                 public static final int INVOICE_PART = 2;

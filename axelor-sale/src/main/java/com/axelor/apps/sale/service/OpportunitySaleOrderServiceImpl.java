@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
@@ -36,17 +38,32 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
 	@Inject
 	protected AppBaseService appBaseService;
 
+	@Inject
+	protected OpportunityRepository opportunityRepository;
+
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException  {
+		Currency currency;
+		if (opportunity.getCurrency() != null) {
+			currency = opportunity.getCurrency();
+		} else if (opportunity.getPartner() != null && opportunity.getPartner().getCurrency() != null) {
+			currency = opportunity.getPartner().getCurrency();
+		} else {
+			currency = opportunity.getCompany().getCurrency();
+		}
 
-		SaleOrder saleOrder = saleOrderService.createSaleOrder(opportunity.getUser(), opportunity.getCompany(), null, opportunity.getCurrency(), null, opportunity.getName(), null,
-				appBaseService.getTodayDate(), opportunity.getPartner().getSalePriceList(), opportunity.getPartner(), opportunity.getTeam());
+		SaleOrder saleOrder = createSaleOrder(opportunity, currency);
 
+		opportunity.addSaleOrderListItem(saleOrder);
 		saleOrderRepo.save(saleOrder);
 
 		return saleOrder;
 	}
 
+	protected SaleOrder createSaleOrder(Opportunity opportunity, Currency currency) throws AxelorException {
+		return saleOrderService.createSaleOrder(opportunity.getUser(), opportunity.getCompany(), null, currency, null, opportunity.getName(), null,
+				appBaseService.getTodayDate(), opportunity.getPartner().getSalePriceList(), opportunity.getPartner(), opportunity.getTeam());
+	}
 
 }

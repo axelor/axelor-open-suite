@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,14 @@
  */
 package com.axelor.apps.stock.web;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockMove;
@@ -24,7 +32,6 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -33,14 +40,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class StockMoveController {
 
@@ -91,12 +90,11 @@ public class StockMoveController {
 	
 
 	public void cancel(ActionRequest request, ActionResponse response)  {
-
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 
 		try {
-			stockMoveService.cancel(stockMoveRepo.find(stockMove.getId()));
-			response.setReload(true);
+			stockMoveService.cancel(stockMoveRepo.find(stockMove.getId()), stockMove.getCancelReason());
+			response.setCanClose(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
@@ -108,16 +106,19 @@ public class StockMoveController {
 	 * @param request
 	 * @param response
 	 */
-	public void printStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void printStockMove(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 		@SuppressWarnings("unchecked")
 		List<Integer> lstSelectedMove = (List<Integer>) request.getContext().get("_ids");
 
-		String fileLink =  stockMoveService.printStockMove(stockMove, lstSelectedMove, false);
-
-		response.setView(ActionView
-				.define(I18n.get("Stock move"))
-				.add("html", fileLink).map());
+		try {
+			String fileLink = stockMoveService.printStockMove(stockMove, lstSelectedMove, false);
+			response.setView(ActionView
+					.define(I18n.get("Stock move"))
+					.add("html", fileLink).map());
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 
 	/**
@@ -125,18 +126,20 @@ public class StockMoveController {
 	 * Print one or more stock move as PDF
 	 * @param request
 	 * @param response
-	 * @throws AxelorException
 	 */
-	public void printPickingStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void printPickingStockMove(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 		@SuppressWarnings("unchecked")
 		List<Integer> lstSelectedMove = (List<Integer>) request.getContext().get("_ids");
 
-		String fileLink =  stockMoveService.printStockMove(stockMove, lstSelectedMove, true);
-
-		response.setView(ActionView
-				.define(I18n.get("Stock move"))
-				.add("html", fileLink).map());
+		try {
+			String fileLink = stockMoveService.printStockMove(stockMove, lstSelectedMove, true);
+			response.setView(ActionView
+					.define(I18n.get("Stock move"))
+					.add("html", fileLink).map());
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 
 

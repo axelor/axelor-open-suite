@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="supply-chain-config-grid" title="Supply chain configurations" model="com.axelor.apps.supplychain.db.SupplyChainConfig">
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
+    </grid>
+    
+	<form name="supply-chain-config-form" title="Supply chain configuration" model="com.axelor.apps.supplychain.db.SupplyChainConfig" onNew="action-supply-chain-config-record-default">
+		<panel name="main" >
+	    	<field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
+	  	</panel>
+	  	<panel name="main" >
+	  		<field name="hasOutSmForStorableProduct"/>
+			<field name="hasOutSmForNonStorableProduct"/>
+			<field name="hasInSmForStorableProduct"/>
+			<field name="hasInSmForNonStorableProduct"/>
+	  	</panel>
+	
+	</form>
+	
+	<action-record name="action-supply-chain-config-record-default" model="com.axelor.apps.supplychain.db.SupplyChainConfig">
+		<field name="company" expr="eval: _company" if="_company != null"/>
+		<field name="company"  expr="eval:__user__.activeCompany" if="_company == null &amp;&amp; __user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="_company == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+	</action-record>
+	
+	<action-view name="action-company-view-supply-chain-config" title="Supply chain config (${ name })" model="com.axelor.apps.supplychain.db.SupplyChainConfig">
+    	<view type="form" name="supply-chain-config-form"/>
+    	<context name="_showRecord" expr="eval: __self__.supplyChainConfig?.id"/>
+    	<context name="_company" expr="eval: __this__"/>
+    </action-view>
+	
+</object-views>

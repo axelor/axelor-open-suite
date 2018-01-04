@@ -27,4 +27,8 @@
 		<option value="4">Emailing</option>
 	</selection>
 	
+	<selection name="marketing.target.list.query.type.select">
+		<option value="0">Guided</option>
+		<option value="1">Manual</option>
+	</selection>
 </object-views>

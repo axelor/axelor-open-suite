@@ -2,35 +2,30 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-    <grid name="debt-recovery-method-line-grid" title="Debt recovery method lines" model="com.axelor.apps.account.db.DebtRecoveryMethodLine">
+
+    <grid name="debt-recovery-method-line-grid" orderBy="debtRecoveryLevel" title="Debt recovery method lines" model="com.axelor.apps.account.db.DebtRecoveryMethodLine">
         <field name="debtRecoveryLevel"/>
         <field name="debtRecoveryLevelLabel"/>
         <field name="standardDeadline"/>
         <field name="minThreshold"/>
-        <field name="messageTemplate"/>
         <field name="manualValidationOk"/>
     </grid>
 
-    <form   name="debt-recovery-method-line-form" title="Debt recovery method line" model="com.axelor.apps.account.db.DebtRecoveryMethodLine" width="large">
+	<form name="debt-recovery-method-line-form" title="Debt recovery method line" model="com.axelor.apps.account.db.DebtRecoveryMethodLine" width="large">
 		<panel name="debtRecoveryLevel" title="Debt recovery level" colSpan="6">
-<!-- 			<field name="debtRecoveryLevel" widget="NestedEditor" canSelect="true" onChange="action-debt-recovery-level-selected" edit-window="self" form-view="matrix-line-debt-recovery-form" summary-view="true"> -->
-			<field name="debtRecoveryLevel" canSelect="true" onChange="action-debt-recovery-level-selected">
-			 <!-- TODO: DONT KNOW WHHERE TO ADD THIS FORM ! -->
-			<!-- <form title="DebtRecoveryLevel">
-			  <field name="label" readonly="true"/>
-			</form>-->
-			</field>
-       		<field name="debtRecoveryLevelLabel" readonly="true"/>
+			<field name="debtRecoveryLevel" canSelect="true" onChange="action-debt-recovery-level-selected"/>
+			<field name="debtRecoveryLevelLabel" readonly="true"/>
 		</panel>
 		<panel name="conditions" title="Conditions" colSpan="6">
-		  <field name="standardDeadline"/>
-		  <field name="minThreshold"/>
-		  <field name="manualValidationOk"/>
+			<field name="standardDeadline"/>
+			<field name="minThreshold"/>
+			<field name="manualValidationOk"/>
 		</panel>
 		<panel name="actions" title="Actions">
-		  <field name="messageTemplate"/>
+			<field name="messageTemplateSet" form-view="template-form" grid-view="template-grid" colSpan="12"/>
+			<field name="printingMessage" widget="HTML" colSpan="12"/>
 		</panel>
-</form>
+	</form>
 
     
     <action-record name="action-debt-recovery-level-selected" model="com.axelor.apps.account.db.DebtRecoveryMethodLine">

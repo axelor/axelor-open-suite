@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.sale.web;
 
+import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.sale.db.repo.ConfiguratorFormulaRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
@@ -46,9 +47,10 @@ public class ConfiguratorFormulaController {
      */
     public void checkGroovyFormula(ActionRequest request, ActionResponse response) {
         ConfiguratorFormula configuratorFormula = request.getContext().asType(ConfiguratorFormula.class);
+        ConfiguratorCreator creator = request.getContext().getParent().asType(ConfiguratorCreator.class);
         try {
             configuratorFormula = configuratorFormulaRepository.find(configuratorFormula.getId());
-            configuratorFormulaService.checkFormula(configuratorFormula);
+            configuratorFormulaService.checkFormula(configuratorFormula, creator);
             response.setAlert(I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_WORKING));
         } catch (AxelorException e) {
             response.setError(e.getMessage());

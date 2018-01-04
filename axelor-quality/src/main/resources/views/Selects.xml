@@ -54,4 +54,8 @@
 		<option value="qualityControl">Quality control</option>
 	</selection>
 	
+	<selection name="team.type.select" id="quality.team.type.select">
+		<option value="quality">Quality</option>
+	</selection>
+	
 </object-views>

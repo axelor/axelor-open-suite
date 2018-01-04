@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,33 +17,20 @@
  */
 package com.axelor.apps.account.service.debtrecovery;
 
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-
-import java.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.db.DebtRecoveryHistory;
 import com.axelor.apps.account.db.DebtRecoveryMethodLine;
-import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.DebtRecoveryHistoryRepository;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -51,6 +38,15 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Set;
 
 public class DebtRecoveryActionService {
 
@@ -122,33 +118,37 @@ public class DebtRecoveryActionService {
 	 * @throws IllegalAccessException
 	 * @throws IOException
 	 */
-	public Message runStandardMessage(DebtRecovery debtRecovery) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
+	public Set<Message> runStandardMessage(DebtRecovery debtRecovery) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
 
 		DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getDebtRecoveryMethodLine();
 		Partner partner =  debtRecovery.getAccountingSituation().getPartner();
 
-		Template template = debtRecoveryMethodLine.getMessageTemplate();
+		Set<Template> templateSet = debtRecoveryMethodLine.getMessageTemplateSet();
 
-		if (template == null) {
+		if (templateSet == null || templateSet.isEmpty()) {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_3), AppAccountServiceImpl.EXCEPTION, partner.getName(), debtRecoveryMethodLine.getDebtRecoveryMethod().getName(), debtRecoveryMethodLine.getDebtRecoveryLevel().getName());
 		}
 
 		DebtRecoveryHistory debtRecoveryHistory = this.getDebtRecoveryHistory(debtRecovery);
 
-		debtRecoveryHistory.setDebtRecoveryMessage(templateMessageService.generateMessage(debtRecoveryHistory, template));
+		for (Template template : templateSet) {
+			Message message = templateMessageService.generateMessage(debtRecoveryHistory, template);
+			message.setRelatedTo2Select(Partner.class.getCanonicalName());
+			message.setRelatedTo2SelectId(Math.toIntExact(debtRecoveryHistory.getDebtRecovery().getAccountingSituation().getPartner().getId()));
+			debtRecoveryHistory.addDebtRecoveryMessageSetItem(message);
+		}
 
-		return debtRecoveryHistory.getDebtRecoveryMessage();
+		return debtRecoveryHistory.getDebtRecoveryMessageSet();
 
 	}
 
 
 	public DebtRecoveryHistory getDebtRecoveryHistory(DebtRecovery detDebtRecovery)  {
-	    return Collections.max(detDebtRecovery.getDebtRecoveryHistoryList(), new Comparator<DebtRecoveryHistory>() {
-			@Override
-			public int compare(DebtRecoveryHistory debtRecoveryHistory, DebtRecoveryHistory t1) {
-			    return debtRecoveryHistory.getDebtRecoveryDate().compareTo(t1.getDebtRecoveryDate());
-			}
-		});
+		if (detDebtRecovery.getDebtRecoveryHistoryList() == null || detDebtRecovery.getDebtRecoveryHistoryList().isEmpty()) {
+			return null;
+		}
+	    return Collections.max(detDebtRecovery.getDebtRecoveryHistoryList(),
+				Comparator.comparing(DebtRecoveryHistory::getDebtRecoveryDate));
 	}
 
 
@@ -187,7 +187,7 @@ public class DebtRecoveryActionService {
 	}
 
 	/**
-	 * Generates a message from a debtRecovery and saves it
+	 * Generate a message from a debtRecovery, save, and send it.
 	 * @param debtRecovery
 	 * @throws AxelorException
 	 * @throws ClassNotFoundException
@@ -197,9 +197,12 @@ public class DebtRecoveryActionService {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void runMessage(DebtRecovery debtRecovery) throws AxelorException, ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
-		Message message = this.runStandardMessage(debtRecovery);
-		Beans.get(MessageRepository.class).save(message);
-		this.updateDebtRecoveryHistory(debtRecovery, message);
+		Set<Message> messageSet = this.runStandardMessage(debtRecovery);
+		for (Message message : messageSet) {
+			Beans.get(MessageRepository.class).save(message);
+			Beans.get(MessageService.class).sendMessage(message);
+		}
+		this.updateDebtRecoveryHistory(debtRecovery, messageSet);
 	}
 
 	/**
@@ -265,10 +268,11 @@ public class DebtRecoveryActionService {
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateDebtRecoveryHistory(DebtRecovery debtRecovery, Message debtRecoveryMessage)  {
+	public void updateDebtRecoveryHistory(DebtRecovery debtRecovery, Set<Message> debtRecoveryMessageSet)  {
 
 		if(!debtRecovery.getDebtRecoveryHistoryList().isEmpty())  {
-			debtRecovery.getDebtRecoveryHistoryList().get(debtRecovery.getDebtRecoveryHistoryList().size()-1).setDebtRecoveryMessage(debtRecoveryMessage);
+			DebtRecoveryHistory debtRecoveryHistory = getDebtRecoveryHistory(debtRecovery);
+			debtRecoveryMessageSet.forEach(debtRecoveryHistory::addDebtRecoveryMessageSetItem);
 		}
 
 	}

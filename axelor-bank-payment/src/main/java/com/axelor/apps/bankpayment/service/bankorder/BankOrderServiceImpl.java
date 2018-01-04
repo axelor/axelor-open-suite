@@ -17,22 +17,6 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.List;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
@@ -71,6 +55,20 @@ import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class BankOrderServiceImpl implements BankOrderService {
 
@@ -185,9 +183,11 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	@Override
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public BankOrder generateSequence(BankOrder bankOrder) {
+	public BankOrder generateSequence(BankOrder bankOrder) throws AxelorException {
 		if (bankOrder.getBankOrderSeq() == null && bankOrder.getId() != null) {
-			bankOrder.setBankOrderSeq("*" + StringTool.fillStringLeft(Long.toString(bankOrder.getId()), '0', 6));
+
+			Sequence sequence = getSequence(bankOrder);
+			setBankOrderSeq(bankOrder, sequence);
 			bankOrderRepo.save(bankOrder);
 		}
 		return bankOrder;
@@ -250,15 +250,12 @@ public class BankOrderServiceImpl implements BankOrderService {
 			checkLines(bankOrder);
 		}
 
-		Sequence sequence = getSequence(bankOrder);
-		setBankOrderSeq(bankOrder, sequence);
-
-
 		setNbOfLines(bankOrder);
+		
+		setSequenceOnBankOrderLines(bankOrder);
 
 		generateFile(bankOrder);
 
-		setSequenceOnBankOrderLines(bankOrder);
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
 		makeEbicsUserFollow(bankOrder);
 
@@ -299,6 +296,11 @@ public class BankOrderServiceImpl implements BankOrderService {
 		File signatureFileToSend = null;
 
 		if(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+            if (bankOrder.getSignedMetaFile() == null) {
+                throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_NOT_PROPERLY_SIGNED),
+                        IException.NO_VALUE);
+            }
+
 			signatureFileToSend = MetaFiles.getPath(bankOrder.getSignedMetaFile()).toFile();
 		}
 		dataFileToSend = MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
@@ -329,7 +331,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		EbicsUser signatoryEbicsUser = bankOrder.getSignatoryEbicsUser();
 		
 		ebicsService.sendFULRequest(signatoryEbicsUser.getEbicsPartner().getTransportEbicsUser(), signatoryEbicsUser, null, dataFileToSend,
-				bankOrder.getBankOrderFileFormat().getOrderFileFormatSelect(), signatureFileToSend);
+				bankOrder.getBankOrderFileFormat(), signatureFileToSend);
 
 	}
 
@@ -533,7 +535,7 @@ public class BankOrderServiceImpl implements BankOrderService {
             case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SBB:
                 file = new BankOrderFile00800102Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_SBB).generateFile();
                 break;
-                
+
             default:
             	throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_FORMAT));
 		}
@@ -582,7 +584,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	protected void setBankOrderSeq(BankOrder bankOrder, Sequence sequence) throws AxelorException {
 		bankOrder.setBankOrderSeq(
-				(sequenceService.setRefDate(bankOrder.getBankOrderDate()).getSequenceNumber(sequence)));
+				(sequenceService.getSequenceNumber(sequence, bankOrder.getBankOrderDate())));
 
 		if (bankOrder.getBankOrderSeq() != null) {
 			return;

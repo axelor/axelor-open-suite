@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -55,7 +55,7 @@ public class PartnerService {
 		partner.setFirstName(firstName);
 		partner.setFullName(this.computeFullName(partner));
 		partner.setPartnerTypeSelect(IPartner.PARTNER_TYPE_SELECT_ENTERPRISE);
-		partner.setIsCustomer(true);
+		partner.setIsProspect(true);
 		partner.setFixedPhone(fixedPhone);
 		partner.setMobilePhone(mobilePhone);
 		partner.setEmailAddress(emailAddress);
@@ -290,5 +290,37 @@ public class PartnerService {
 		partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
 		addPartnerAddress(partner, partner.getContactAddress(), true, false, false);
 		partner.setContactAddress(null);
+	}
+
+	/**
+	 * Check if the partner in view has a duplicate.
+	 * @param partner a context partner object
+	 * @return if there is a duplicate partner
+	 */
+	public boolean isThereDuplicatePartner(Partner partner) {
+		String newName = this.computeFullName(partner);
+		if (Strings.isNullOrEmpty(newName)) {
+		    return false;
+		}
+		Long partnerId = partner.getId();
+		if (partnerId == null) {
+			Partner existingPartner = partnerRepo.all()
+					.filter("lower(self.fullName) = lower(:newName) " +
+							"and self.partnerTypeSelect = :_partnerTypeSelect")
+					.bind("newName", newName)
+					.bind("_partnerTypeSelect", partner.getPartnerTypeSelect())
+					.fetchOne();
+			return existingPartner != null;
+		} else {
+			Partner existingPartner = partnerRepo.all()
+					.filter("lower(self.fullName) = lower(:newName) " +
+							"and self.id != :partnerId " +
+							"and self.partnerTypeSelect = :_partnerTypeSelect")
+					.bind("newName", newName)
+					.bind("partnerId", partnerId)
+					.bind("_partnerTypeSelect", partner.getPartnerTypeSelect())
+					.fetchOne();
+			return existingPartner != null;
+		}
 	}
 }

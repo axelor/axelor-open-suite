@@ -21,8 +21,8 @@
 		<view type="grid" name="quality-control-grid"/>
 		<view type="form" name="quality-control-form"/>
 		<view-param name="search-filters" value="quality-control-filters"/>
-		<context name="_id" expr="eval:__user__.id"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+		<context name="_userId" expr="eval:__user__.id"/>
+		<context name="_myActiveTeamId" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeamId()"/>
 	</action-view>
 		     	
 	<menuitem name="quality-control-points" parent="quality-controls-root" title="Control points" action="quality.controls.points"/>
@@ -39,8 +39,8 @@
 		<view type="grid" name="quality-alert-grid"/>
 		<view type="form" name="quality-alert-form"/>
 		<view-param name="search-filters" value="quality-alert-filters"/>
-		<context name="_id" expr="eval:__user__.id"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+		<context name="_userId" expr="eval:__user__.id"/>
+		<context name="_myActiveTeamId" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeamId()"/>
 	</action-view>
 	 
 	<menuitem name="quality-calendar" parent="menu-quality-root" title="Calendar" />
@@ -70,9 +70,11 @@
 	     	
 	<menuitem name="quality-teams" parent="quality-configurations" title="Quality teams" action="quality.teams"/>
 	     	
-	<action-view name="quality.teams" title="Quality teams" model="com.axelor.apps.quality.db.QualityTeam">
-		<view type="grid" name="quality-team-grid"/>
-		<view type="form" name="quality-team-form"/>
+	<action-view name="quality.teams" title="Quality teams" model="com.axelor.team.db.Team">
+		<view type="grid" name="team-grid"/>
+		<view type="form" name="team-form"/>
+		<domain>self.typeSelect = 'quality'</domain>
+		<context name="_typeSelect" expr="eval: 'quality'"/>
 	</action-view>
 	     	
 	<menuitem name="quality-root-causes" parent="quality-configurations" title="Root causes" action="quality.root.causes" />

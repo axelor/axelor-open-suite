@@ -133,16 +133,25 @@ public class ActionBuilderService {
 		
 		stb.append(format("var ctx = $request.context;", level));
 		
-		String target = builder.getTypeSelect() == 0 ? builder.getTargetModel() : builder.getModel();
+		String targetModel = builder.getTypeSelect() == 0 ? builder.getTargetModel() : builder.getModel();
 		
 		if (builder.getTypeSelect() == 0) {
 			isCreate = true;
-			addCreateCode(builder.getIsJson(), stb, level, target);
+			addCreateCode(builder.getIsJson(), stb, level, targetModel);
+			if (builder.getOpenRecord()) {
+				addOpenRecord(builder.getIsJson(), stb, level, targetModel);
+			}
+			if (!Strings.isNullOrEmpty(builder.getDisplayMsg())) {
+				stb.append("\n");
+				stb.append(format("$response.setFlash('" + builder.getDisplayMsg() + "')", level));
+			}
 		}
 		else {
 			isCreate = false;
-			addUpdateCode(builder.getIsJson(), stb, level, target);
+			addUpdateCode(builder.getIsJson(), stb, level, targetModel);
 		}
+		
+		stb.append("\n");
 		
 		addRootFunction(builder, stb, level);
 		
@@ -152,29 +161,56 @@ public class ActionBuilderService {
 
 	}
 
-	private void addCreateCode(boolean isJson, StringBuilder stb, int level, String target) {
+	private void addCreateCode(boolean isJson, StringBuilder stb, int level, String targetModel) {
 		
 		if (isJson) {
-			stb.append(format("var target = $json.create('" + target + "');" , level));
+			stb.append(format("var target = $json.create('" + targetModel + "');" , level));
 			stb.append(format("target = setVar0(null, ctx, {});", level));
 			stb.append(format("target = $json.save(target);", level));
 			stb.append(format("Beans.get(" + WkfTrackingService.class.getName() + ".class).track(target);", level));
 		}
 		else {
-			stb.append(format("var target = new " + target + "();" , level));
+			stb.append(format("var target = new " + targetModel + "();" , level));
 			stb.append(format("target = setVar0(null, ctx, {});", level));
-			stb.append(format("target = $em.persist(target);", level));
+			stb.append(format("$em.persist(target);", level));
 		}
 		
 	}
 	
-	private void addUpdateCode(boolean isJson, StringBuilder stb, int level, String target) {
+	private void addOpenRecord(boolean isJson, StringBuilder stb, int level, String targetModel) { 
+		
+		stb.append("\n");
+		
+		if (isJson) {
+			String title = inflector.humanize(targetModel);
+			stb.append(format("$response.setView(com.axelor.meta.schema.actions.ActionView.define('" + title + "')", level));
+			stb.append(format(".model('com.axelor.meta.db.MetaJsonRecord')", level + 1));
+			stb.append(format(".add('grid','custom-model-" + targetModel + "-grid')", level + 1));
+			stb.append(format(".add('form','custom-model-" + targetModel + "-form')", level + 1));
+			stb.append(format(".domain('self.jsonModel = :jsonModel')", level + 1));
+			stb.append(format(".context('jsonModel', '" + targetModel + "')", level + 1));
+			stb.append(format(".context('_showRecord', target.id)", level + 1));
+			stb.append(format(".map())", level + 1));
+		}
+		else {
+			String title = inflector.humanize(targetModel.substring(targetModel.lastIndexOf(".") + 1));
+			stb.append(format("$response.setView(com.axelor.meta.schema.actions.ActionView.define('" + title + "')", level));
+			stb.append(format(".model('" + targetModel + "')", level + 1));
+			stb.append(format(".add('grid')", level + 1));
+			stb.append(format(".add('form')", level + 1));
+			stb.append(format(".context('_showRecord', target.id)", level + 1));
+			stb.append(format(".map())", level + 1));
+		}
+		
+	}
+	
+	private void addUpdateCode(boolean isJson, StringBuilder stb, int level, String targetModel) {
 		
 		if (isJson) {
 			stb.append(format("var target = {};", level));
 		}
 		else {
-			stb.append(format("var target = ctx.asType(" + target + ".class)" , level));
+			stb.append(format("var target = ctx.asType(" + targetModel + ".class)" , level));
 		}
 		
 		stb.append(format("target = setVar0(null, ctx, {});", level));
@@ -345,7 +381,7 @@ public class ActionBuilderService {
 		
 		try {
 			if (jsonField != null && jsonField.getTargetModel() != null) {
-				if (!line.getValue().contentEquals("$." + jsonField.getName())) {
+				if (line.getValue() != null && !line.getValue().contentEquals("$." + jsonField.getName())) {
 					targetObject = filterSqlService.parseJsonField(jsonField, line.getValue().replace("$.", ""), null, null);
 				}
 				else {
@@ -355,7 +391,7 @@ public class ActionBuilderService {
 			
 			MetaField field = line.getValueField();
 			if (field != null && field.getTypeName() != null) {
-				if (!line.getValue().contentEquals("$." + field.getName())) {
+				if (line.getValue() != null && !line.getValue().contentEquals("$." + field.getName())) {
 					targetObject = filterSqlService.parseMetaField(field, line.getValue().replace("$.", ""), null, null, false);
 				}
 				else {
@@ -502,7 +538,7 @@ public class ActionBuilderService {
 //		stb.append(format("if ($ != null && $.id != null){", 2));
 //		stb.append(format("$ = $json.find($.id);", 3));
 		if (search) {
-			stb.append(format("if ($.id != null) {",2));
+			stb.append(format("if ($ != null && $.id != null) {",2));
 			stb.append(format("val = $json.find($.id);", 3));
 			stb.append(format("if (val.jsonModel != '" + model + "'){val = null;} ", 3));
 			stb.append(format("}", 2));

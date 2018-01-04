@@ -29,7 +29,8 @@
 	</input>
 	
 	<input file="production_productionConfig.csv" separator=";" type="com.axelor.apps.production.db.ProductionConfig" search="self.importId = :importId"/>
-	
+	<input file="stock_stockConfig.csv" separator=";" type="com.axelor.apps.stock.db.StockConfig" search="self.importId = :importId"/>
+
 	<input file="production_costSheetGroup.csv" separator=";" type="com.axelor.apps.production.db.CostSheetGroup" search="self.importId = :importId"/>
 	
 <!-- 	Update default BOM -->
@@ -40,5 +41,5 @@
 	</input>
 	
 	<input file="base_appProduction.csv" separator=";" type="com.axelor.apps.base.db.AppProduction" search="self.code = :code" update="true" />
-	
+
 </csv-inputs>

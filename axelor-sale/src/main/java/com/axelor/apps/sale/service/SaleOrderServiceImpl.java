@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,15 +17,38 @@
  */
 package com.axelor.apps.sale.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import javax.persistence.Query;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.db.*;
+import com.axelor.apps.base.db.AppSale;
+import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.sale.db.*;
+import com.axelor.apps.sale.db.AdvancePayment;
+import com.axelor.apps.sale.db.ISaleOrder;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
@@ -558,7 +581,26 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		}
 		return price;
 	}
+
+	@Override
+    @Transactional(rollbackOn = { Exception.class, AxelorException.class })
+	public void enableEditOrder(SaleOrder saleOrder) throws AxelorException {
+	    if (saleOrder.getStatusSelect() == ISaleOrder.STATUS_FINISHED) {
+	        throw new AxelorException(saleOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.SALES_ORDER_FINISHED));
+	    }
+
+		saleOrder.setOrderBeingEdited(true);
+	}
+
+    @Override
+    public void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException {
+    }
+
+    @Override
+    public void sortSaleOrderLineList(SaleOrder saleOrder) {
+        if (saleOrder.getSaleOrderLineList() != null) {
+            saleOrder.getSaleOrderLineList().sort(Comparator.comparing(SaleOrderLine::getSequence));
+        }
+    }
+
 }
-
-
-

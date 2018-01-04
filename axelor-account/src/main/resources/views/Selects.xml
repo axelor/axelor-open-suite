@@ -111,7 +111,7 @@
 	</selection>
 
 	<selection name='iinvoice.operation.sub.type.select'>
-		<option value="1">Default</option>
+		<option value="1">Classic invoice</option>
 		<option value="2">Advance payment invoice</option>
 		<option value="3">Balance invoice</option>
 	</selection>
@@ -306,6 +306,10 @@
 		<option value="0"></option>
 		<option value="1">Payment terms</option>
 		<option value="2">Monthly payments</option>
+	</selection>
+
+	<selection name="message.related.to.select" id="account.message.related.to.select">
+		<option value="com.axelor.apps.account.db.DebtRecoveryHistory">Debt Recovery History</option>
 	</selection>
 
 </object-views>

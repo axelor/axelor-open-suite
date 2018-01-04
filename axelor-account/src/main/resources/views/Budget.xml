@@ -21,8 +21,8 @@
 	       <field name="code" x-bind="{{code|unaccent|uppercase}}" required="true"/>
 	       <field name="fromDate"/>
 	       <field name="toDate"/>
-	       <field name="company"/>
-	       <field name="inChargeUser"/>
+	       <field name="company" canEdit="false"/>
+	       <field name="inChargeUser" canEdit="false"/>
        </panel>
        <panel-related field="budgetLineList" onChange="action-budget-method-compute-total-amount"/>
        <panel sidebar="true" name="periodsGenerationAssistant" title="Periods generation assistant">
@@ -36,7 +36,7 @@
                     <![CDATA[
                     <dl class="dl-horizontal">
                         <dt class="order-subtotal-total" x-translate>Expected total Amount</dt>
-                        <dd class="order-subtotal-total">{{totalAmountExpected}}</dd>
+                        <dd class="order-subtotal-total">{{record.totalAmountExpected}}</dd>
                     </dl>
                     ]]>
                 </viewer>

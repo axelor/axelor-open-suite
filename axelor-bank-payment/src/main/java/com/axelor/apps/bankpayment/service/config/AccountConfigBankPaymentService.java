@@ -79,14 +79,14 @@ public class AccountConfigBankPaymentService extends AccountConfigService  {
 	
 	public Sequence getNatTreasuryTransSequence(AccountConfig accountConfig) throws AxelorException {
 		if (accountConfig.getNatTreasuryTransSequence() == null) {
-			throw new AxelorException(accountConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_9), AppBaseServiceImpl.EXCEPTION, accountConfig.getCompany().getName());
+			throw new AxelorException(accountConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_10), AppBaseServiceImpl.EXCEPTION, accountConfig.getCompany().getName());
 		}
 		return accountConfig.getNatTreasuryTransSequence();
 	}
 	
 	public Sequence getIntTreasuryTransSequence(AccountConfig accountConfig) throws AxelorException {
 		if (accountConfig.getIntTreasuryTransSequence() == null) {
-			throw new AxelorException(accountConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_10), AppBaseServiceImpl.EXCEPTION, accountConfig.getCompany().getName());
+			throw new AxelorException(accountConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_9), AppBaseServiceImpl.EXCEPTION, accountConfig.getCompany().getName());
 		}
 		return accountConfig.getIntTreasuryTransSequence();
 	}

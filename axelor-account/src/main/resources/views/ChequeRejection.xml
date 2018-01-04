@@ -21,7 +21,7 @@
 			<field name="move" form-view="move-form" grid-view="move-grid" readonly="true"/>
 			<field name="name" />
 			<field name="dateTime" />
-			<field name="company" form-view="company-form" grid-view="company-grid" widget="SuggestBox" />
+			<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" widget="SuggestBox" />
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" />
 			<field name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false" />
 		</panel>
@@ -33,7 +33,7 @@
 		</panel>
 
 		<panel name="paymentRejected" title="Payment Rejected">
-			<!-- TODO:check weather this Editor is working or not -->
+			<!-- TODO:check whether this Editor is working or not -->
 			<field readonlyIf="partner == null" name="paymentVoucher"
 				onChange="action-group-account-cheque-rejection-paymentvoucher-onchange"
 				onSelect="action-cheque-rejection-attrs-domain-payment-voucher"

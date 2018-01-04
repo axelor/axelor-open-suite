@@ -1,17 +1,17 @@
-/**
+/*
  * Axelor Business Solutions
- * <p>
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
- * <p>
+ *
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
  * as published by the Free Software Foundation.
- * <p>
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * <p>
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -46,7 +46,7 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
         ProdProcess prodProcess = new ProdProcess();
         prodProcess.setName(confProdProcess.getName());
         prodProcess.setCompany(confProdProcess.getCompany());
-        prodProcess.setLocation(confProdProcess.getLocation());
+        prodProcess.setStockLocation(confProdProcess.getStockLocation());
         if (confLines != null) {
             for (ConfiguratorProdProcessLine confLine : confLines) {
                 prodProcess.addProdProcessLineListItem(

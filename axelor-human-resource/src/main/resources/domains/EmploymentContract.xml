@@ -33,7 +33,9 @@
         <string name="hoursDistribution" title="Hours distribution" large="true"/>
         <integer name="executiveStatusSelect" selection="hr.employment.contract.executiveStatus.select" title="Executive Status"/>
         <decimal name="minMonthlyRemuneration" title="Min monthly remuneration"/>
-        <many-to-one name="employmentContractTemplate" ref="com.axelor.apps.hr.db.EmploymentContractTemplate" title="Employment contract template" /> 
+        <many-to-one name="employmentContractTemplate" ref="com.axelor.apps.hr.db.EmploymentContractTemplate" title="Employment contract template" />
+
+        <string name="employment" title="Employment"/>
 		
 		<decimal name="annualGrossSalary" title="Annual gross salary"/>
 		<decimal name="monthlyGlobalCost" title="Monthly global cost"/>

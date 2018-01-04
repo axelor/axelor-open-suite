@@ -11,8 +11,8 @@
 			selection="account.notification.status.select" readonly="true"
 			default="1" />
 
-		<many-to-one name="factor" ref="com.axelor.apps.base.db.Partner"
-			required="true" />
+		<many-to-one name="factorPartner" ref="com.axelor.apps.base.db.Partner"
+			required="true" title="Factor" />
 		<date name="paymentDate" required="true" />
 		<many-to-one name="subrogationRelease"
 			ref="com.axelor.apps.account.db.SubrogationRelease" required="true" />

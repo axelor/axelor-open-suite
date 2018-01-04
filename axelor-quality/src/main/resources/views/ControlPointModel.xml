@@ -17,7 +17,7 @@
 			<field name="name"/>
 			<field name="priority"/>
 			<field name="product"/>
-			<field name="team"/>
+			<field name="team" domain="self.typeSelect = 'quality'"/>
 			<field name="responsible"/>
 			<field name="controlType"/>
 			<field name="testType"/>

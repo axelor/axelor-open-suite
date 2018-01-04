@@ -17,8 +17,8 @@
   	
   	<boolean name="isConsProOnOperation" title="Manage consumed products on phases?"/>
   	
-  	<many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Production location"/>
-  	<many-to-one name="producedProductLocation" ref="com.axelor.apps.stock.db.Location" title="Location for produced product"/>
+  	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Production location"/>
+  	<many-to-one name="producedProductLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Location for produced product"/>
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   	
   </entity>

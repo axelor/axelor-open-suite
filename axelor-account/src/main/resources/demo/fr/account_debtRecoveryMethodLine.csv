@@ -1,4 +1,4 @@
-"importId";"debtRecoveryMethod.code";"debtRecoveryLevel.code";"standardDeadline";"minThreshold";"messageTemplate.name";"manualValidationOk";"debtRecoveryLevelLabel"
+"importId";"debtRecoveryMethod.code";"debtRecoveryLevel.code";"standardDeadline";"minThreshold";"messageTemplateSet.name";"manualValidationOk";"debtRecoveryLevelLabel"
 1;"REL_PART";"EM";0;;"EM01";;"Email"
 2;"REL_PART";"LS";10;;"LS01";;"Lettre simple"
 3;"REL_PART";"LRAR1";10;50;"LRAR01";;"Lettre recommandée 1"

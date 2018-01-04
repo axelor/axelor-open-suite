@@ -21,7 +21,7 @@
 <!--     	<bind to="resetDate" eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate()" /> -->
 <!--     </input> -->
     
-<!--     <input file="stock_location.csv" separator=";" type="com.axelor.apps.stock.db.Location" search="self.importId = :importId" /> -->
+<!--     <input file="stock_stock_location.csv" separator=";" type="com.axelor.apps.stock.db.StockLocation" search="self.importId = :importId" /> -->
     
 <!--     <input file="stock_stockConfig.csv" separator=";" type="com.axelor.apps.stock.db.StockConfig" search="self.importId = :importId" /> -->
     

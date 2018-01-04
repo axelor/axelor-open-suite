@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.stock.service.config;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockConfig;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -44,7 +44,7 @@ public class StockConfigService
 	
 	/******************************** LOCATION ********************************************/
 	
-	public Location getInventoryVirtualLocation(StockConfig stockConfig) throws AxelorException  {
+	public StockLocation getInventoryVirtualLocation(StockConfig stockConfig) throws AxelorException  {
 		
 		if (stockConfig.getInventoryVirtualLocation() == null) {
 			throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_2), stockConfig.getCompany().getName());
@@ -54,7 +54,7 @@ public class StockConfigService
 		
 	}
 	
-	public Location getSupplierVirtualLocation(StockConfig stockConfig) throws AxelorException  {
+	public StockLocation getSupplierVirtualLocation(StockConfig stockConfig) throws AxelorException  {
 		
 		if (stockConfig.getSupplierVirtualLocation() == null) {
 			throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_3), stockConfig.getCompany().getName());
@@ -64,7 +64,7 @@ public class StockConfigService
 		
 	}
 	
-	public Location getCustomerVirtualLocation(StockConfig stockConfig) throws AxelorException  {
+	public StockLocation getCustomerVirtualLocation(StockConfig stockConfig) throws AxelorException  {
 		
 		if (stockConfig.getCustomerVirtualLocation() == null) {
 			throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_4), stockConfig.getCompany().getName());
@@ -73,5 +73,14 @@ public class StockConfigService
 		return stockConfig.getCustomerVirtualLocation();
 		
 	}
-	
+
+	public StockLocation getDefaultLocation(StockConfig stockConfig) throws AxelorException  {
+
+		if (stockConfig.getDefaultLocation() == null) {
+			throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_5), stockConfig.getCompany().getName());
+		}
+
+		return stockConfig.getDefaultLocation();
+
+	}
 }

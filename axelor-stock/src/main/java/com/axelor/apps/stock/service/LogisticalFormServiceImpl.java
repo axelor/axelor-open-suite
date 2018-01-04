@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,326 +19,515 @@ package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.TypedQuery;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
+import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LogisticalFormLineRepository;
+import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.apps.stock.exception.LogisticalFormWarning;
+import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.AuthUtils;
+import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.google.inject.persist.Transactional;
 
 public class LogisticalFormServiceImpl implements LogisticalFormService {
 
-	@Override
-	public void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove) {
-		if (stockMove.getStockMoveLineList() != null) {
-			Map<StockMoveLine, BigDecimal> stockMoveLineMap = getStockMoveLineQtyMap(logisticalForm);
+    @Override
+    public void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove) throws AxelorException {
+        Objects.requireNonNull(logisticalForm);
+        Objects.requireNonNull(stockMove);
 
-			for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-				BigDecimal qty = stockMoveLineMap.getOrDefault(stockMoveLine, BigDecimal.ZERO);
-				if (qty.compareTo(stockMoveLine.getRealQty()) >= 0) {
-					continue;
-				}
+        if (logisticalForm.getDeliverToCustomerPartner() != null
+                && !logisticalForm.getDeliverToCustomerPartner().equals(stockMove.getPartner())) {
+            throw new AxelorException(logisticalForm, IException.INCONSISTENCY,
+                    I18n.get(IExceptionMessage.LOGISTICAL_FORM_PARTNER_MISMATCH),
+                    logisticalForm.getDeliverToCustomerPartner().getName());
+        }
 
-				if (testForDetailLine(stockMoveLine)) {
-					LogisticalFormLine logisticalFormLine = createDetailLine(logisticalForm, stockMoveLine,
-							stockMoveLine.getRealQty().subtract(qty));
-					logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
-				}
-			}
-		}
-	}
+        if (stockMove.getStockMoveLineList() == null) {
+            return;
+        }
 
-	/**
-	 * Test for detail line (to be overridden).
-	 * 
-	 * @param stockMoveLine
-	 * @return
-	 */
-	@SuppressWarnings("all")
-	protected boolean testForDetailLine(StockMoveLine stockMoveLine) {
-		return true;
-	}
+        StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
+        List<Pair<StockMoveLine, BigDecimal>> toAddList = new ArrayList<>();
 
-	@Override
-	public void addParcelPalletLine(LogisticalForm logisticalForm, int typeSelect) {
-		LogisticalFormLine logisticalFormLine = createParcelPalletLine(logisticalForm, typeSelect);
-		logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
-	}
+        for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+            BigDecimal spreadableQty = stockMoveLineService.computeSpreadableQtyOverLogisticalFormLines(stockMoveLine,
+                    logisticalForm);
 
-	@Override
-	public void checkLines(LogisticalForm logisticalForm) throws LogisticalFormWarning, LogisticalFormError {
-		List<String> warningMessageList = new ArrayList<>();
+            if (spreadableQty.signum() <= 0) {
+                continue;
+            }
 
-		checkEmptyParcelPalletLines(logisticalForm, warningMessageList);
-		checkInconsistentQties(logisticalForm, warningMessageList);
+            if (testForDetailLine(stockMoveLine)) {
+                toAddList.add(Pair.of(stockMoveLine, spreadableQty));
+            }
+        }
 
-		if (!warningMessageList.isEmpty()) {
-			String errorMessage = String.format("<ul>%s</ul>", warningMessageList.stream()
-					.map(message -> String.format("<li>%s</li>", message)).collect(Collectors.joining("\n")));
-			throw new LogisticalFormWarning(logisticalForm, errorMessage);
-		}
-	}
+        if (!toAddList.isEmpty()) {
+            if (logisticalForm.getLogisticalFormLineList() == null
+                    || logisticalForm.getLogisticalFormLineList().isEmpty()) {
+                addParcelPalletLine(logisticalForm, LogisticalFormLineRepository.TYPE_PARCEL);
+            }
 
-	protected void checkInconsistentQties(LogisticalForm logisticalForm, List<String> errorMessageList) {
-		Map<StockMoveLine, BigDecimal> stockMoveLineMap = getStockMoveLineQtyMap(logisticalForm);
+            toAddList.forEach(item -> addDetailLine(logisticalForm, item.getLeft(), item.getRight()));
+        }
+    }
 
-		for (Entry<StockMoveLine, BigDecimal> entry : stockMoveLineMap.entrySet()) {
-			StockMoveLine stockMoveLine = entry.getKey();
-			BigDecimal qty = entry.getValue();
+    /**
+     * Test for detail line (to be overridden).
+     * 
+     * @param stockMoveLine
+     * @return
+     */
+    @SuppressWarnings("all")
+    protected boolean testForDetailLine(StockMoveLine stockMoveLine) {
+        return true;
+    }
 
-			if (qty.compareTo(stockMoveLine.getRealQty()) != 0) {
-				String errorMessage = String
-						.format(I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINES_INCONSISTENT_QUANTITY),
-								String.format("%s (%s)", stockMoveLine.getProductName(),
-										stockMoveLine.getStockMove().getStockMoveSeq()),
-								qty, stockMoveLine.getRealQty());
-				errorMessageList.add(errorMessage);
-			}
-		}
-	}
+    @Override
+    public void checkLines(LogisticalForm logisticalForm) throws LogisticalFormWarning, LogisticalFormError {
+        List<String> warningMessageList = new ArrayList<>();
 
-	protected void checkEmptyParcelPalletLines(LogisticalForm logisticalForm, List<String> errorMessageList)
-			throws LogisticalFormError {
-		if (logisticalForm.getLogisticalFormLineList() == null) {
-			return;
-		}
+        checkRequiredLineFields(logisticalForm);
+        checkInvalidLineDimensions(logisticalForm);
+        checkEmptyParcelPalletLines(logisticalForm, warningMessageList);
+        checkInconsistentQties(logisticalForm, warningMessageList);
 
-		Map<LogisticalFormLine, BigDecimal> qtyMap = new HashMap<>();
-		LogisticalFormLine currentLine = null;
+        if (!warningMessageList.isEmpty()) {
+            String errorMessage = String.format("<ul>%s</ul>", warningMessageList.stream()
+                    .map(message -> String.format("<li>%s</li>", message)).collect(Collectors.joining("\n")));
+            throw new LogisticalFormWarning(logisticalForm, errorMessage);
+        }
+    }
 
-		for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
-			if (logisticalFormLine.getTypeSelect() != LogisticalFormLineRepository.TYPE_DETAIL) {
-				currentLine = logisticalFormLine;
-				qtyMap.put(currentLine, BigDecimal.ZERO);
-			} else {
-				if (currentLine == null) {
-					throw new LogisticalFormError(logisticalForm,
-							I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINES_ORPHAN_DETAIL));
-				}
-				qtyMap.merge(currentLine, logisticalFormLine.getQty(), BigDecimal::add);
-			}
-		}
+    protected void checkRequiredLineFields(LogisticalForm logisticalForm) throws LogisticalFormError {
+        if (logisticalForm.getLogisticalFormLineList() == null) {
+            return;
+        }
 
-		for (Entry<LogisticalFormLine, BigDecimal> entry : qtyMap.entrySet()) {
-			LogisticalFormLine logisticalFormLine = entry.getKey();
+        for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
+            if (logisticalFormLine.getTypeSelect() == 0) {
+                throw new LogisticalFormError(logisticalFormLine,
+                        I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINE_REQUIRED_TYPE),
+                        logisticalFormLine.getSequence() + 1);
+            }
 
-			BigDecimal qty = entry.getValue();
+            if (logisticalFormLine.getTypeSelect() == LogisticalFormLineRepository.TYPE_DETAIL) {
+                if (logisticalFormLine.getStockMoveLine() == null) {
+                    throw new LogisticalFormError(logisticalFormLine,
+                            I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINE_REQUIRED_STOCK_MOVE_LINE),
+                            logisticalFormLine.getSequence() + 1);
+                }
+                if (logisticalFormLine.getQty() == null || logisticalFormLine.getQty().signum() <= 0) {
+                    throw new LogisticalFormError(logisticalFormLine,
+                            I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINE_REQUIRED_QUANTITY),
+                            logisticalFormLine.getSequence() + 1);
+                }
+            }
+        }
+    }
 
-			if (qty.signum() <= 0) {
-				String msg;
+    protected void checkInconsistentQties(LogisticalForm logisticalForm, List<String> errorMessageList) {
+        Map<StockMoveLine, BigDecimal> spreadableQtyMap = getSpreadableQtyMap(logisticalForm);
+        Map<StockMoveLine, BigDecimal> spreadQtyMap = getSpreadQtyMap(logisticalForm);
+        Locale locale = new Locale(AuthUtils.getUser().getLanguage());
+        NumberFormat nf = NumberFormat.getInstance(locale);
 
-				if (logisticalFormLine.getTypeSelect() == LogisticalFormLineRepository.TYPE_PARCEL) {
-					msg = I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINES_EMPTY_PARCEL);
-				} else {
-					msg = I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINES_EMPTY_PALLET);
-				}
+        for (Entry<StockMoveLine, BigDecimal> entry : spreadableQtyMap.entrySet()) {
+            StockMoveLine stockMoveLine = entry.getKey();
+            BigDecimal spreadableQty = entry.getValue();
 
-				String errorMessage = String.format(msg, logisticalFormLine.getParcelPalletNumber());
-				errorMessageList.add(errorMessage);
-			}
-		}
-	}
+            if (spreadableQty.signum() != 0) {
+                BigDecimal spreadQty = spreadQtyMap.getOrDefault(stockMoveLine, BigDecimal.ZERO);
+                BigDecimal expectedQty = spreadQty.add(spreadableQty);
+                String errorMessage = String.format(locale,
+                        I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINES_INCONSISTENT_QUANTITY),
+                        String.format("%s (%s)", stockMoveLine.getProductName(),
+                                stockMoveLine.getStockMove().getStockMoveSeq()),
+                        nf.format(spreadQty), nf.format(expectedQty));
+                errorMessageList.add(errorMessage);
+            }
+        }
+    }
 
-	@Override
-	public void checkInvalidLineDimensions(LogisticalForm logisticalForm) throws LogisticalFormError {
-		if (logisticalForm.getLogisticalFormLineList() != null) {
-			LogisticalFormLineService logisticalFormLineService = Beans.get(LogisticalFormLineService.class);
-			for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
-				logisticalFormLineService.validateDimensions(logisticalFormLine);
-			}
-		}
-	}
+    protected void checkEmptyParcelPalletLines(LogisticalForm logisticalForm, List<String> errorMessageList)
+            throws LogisticalFormError {
+        if (logisticalForm.getLogisticalFormLineList() == null) {
+            return;
+        }
 
-	@Override
-	public List<StockMoveLine> getFullySpreadStockMoveLineList(LogisticalForm logisticalForm) {
-		List<StockMoveLine> stockMoveLineList = new ArrayList<>();
-		Map<StockMoveLine, BigDecimal> stockMoveLineMap = getStockMoveLineQtyMap(logisticalForm);
+        Map<LogisticalFormLine, BigDecimal> qtyMap = new HashMap<>();
+        LogisticalFormLine currentLine = null;
 
-		for (Entry<StockMoveLine, BigDecimal> entry : stockMoveLineMap.entrySet()) {
-			StockMoveLine stockMoveLine = entry.getKey();
-			BigDecimal qty = entry.getValue();
+        for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
+            if (logisticalFormLine.getTypeSelect() != LogisticalFormLineRepository.TYPE_DETAIL) {
+                currentLine = logisticalFormLine;
+                qtyMap.put(currentLine, BigDecimal.ZERO);
+            } else {
+                if (currentLine == null) {
+                    throw new LogisticalFormError(logisticalForm,
+                            I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINES_ORPHAN_DETAIL));
+                }
+                qtyMap.merge(currentLine, logisticalFormLine.getQty(), BigDecimal::add);
+            }
+        }
 
-			if (qty.compareTo(stockMoveLine.getRealQty()) >= 0) {
-				stockMoveLineList.add(stockMoveLine);
-			}
-		}
+        for (Entry<LogisticalFormLine, BigDecimal> entry : qtyMap.entrySet()) {
+            LogisticalFormLine logisticalFormLine = entry.getKey();
 
-		return stockMoveLineList;
-	}
+            BigDecimal qty = entry.getValue();
 
-	protected List<StockMove> getFullSpreadStockMoveList(LogisticalForm logisticalForm) {
-		List<StockMove> fullySpreadStockMoveList = new ArrayList<>();
-		List<StockMoveLine> fullySpreadStockMoveLineList = getFullySpreadStockMoveLineList(logisticalForm);
+            if (qty.signum() <= 0) {
+                String msg;
 
-		Set<StockMove> stockMoveSet = new HashSet<>();
+                if (logisticalFormLine.getTypeSelect() == LogisticalFormLineRepository.TYPE_PARCEL) {
+                    msg = I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINES_EMPTY_PARCEL);
+                } else {
+                    msg = I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINES_EMPTY_PALLET);
+                }
 
-		for (StockMoveLine stockMoveLine : fullySpreadStockMoveLineList) {
-			stockMoveSet.add(stockMoveLine.getStockMove());
-		}
+                String errorMessage = String.format(msg, logisticalFormLine.getParcelPalletNumber());
+                errorMessageList.add(errorMessage);
+            }
+        }
+    }
 
-		for (StockMove stockMove : stockMoveSet) {
-			if (fullySpreadStockMoveLineList.containsAll(stockMove.getStockMoveLineList())) {
-				fullySpreadStockMoveList.add(stockMove);
-			}
-		}
+    protected void checkInvalidLineDimensions(LogisticalForm logisticalForm) throws LogisticalFormError {
+        if (logisticalForm.getLogisticalFormLineList() != null) {
+            LogisticalFormLineService logisticalFormLineService = Beans.get(LogisticalFormLineService.class);
+            for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
+                logisticalFormLineService.validateDimensions(logisticalFormLine);
+            }
+        }
+    }
 
-		return fullySpreadStockMoveList;
-	}
+    @Override
+    public List<StockMoveLine> getFullySpreadStockMoveLineList(LogisticalForm logisticalForm) {
+        List<StockMoveLine> stockMoveLineList = new ArrayList<>();
+        Map<StockMoveLine, BigDecimal> spreadableQtyMap = new HashMap<>();
 
-	@Override
-	public Map<StockMoveLine, BigDecimal> getStockMoveLineQtyMap(LogisticalForm logisticalForm) {
-		Map<StockMoveLine, BigDecimal> stockMoveLineMap = new LinkedHashMap<>();
+        for (LogisticalForm item : findPendingLogisticalForms(logisticalForm)) {
+            spreadableQtyMap.putAll(getSpreadableQtyMap(item));
+        }
 
-		if (logisticalForm.getLogisticalFormLineList() != null) {
-			logisticalForm.getLogisticalFormLineList().stream()
-					.filter(logisticalFormLine -> logisticalFormLine
-							.getTypeSelect() == LogisticalFormLineRepository.TYPE_DETAIL)
-					.forEach(logisticalFormLine -> {
-						StockMoveLine stockMoveLine = logisticalFormLine.getStockMoveLine();
-						if (stockMoveLine != null && logisticalFormLine.getQty() != null) {
-							stockMoveLineMap.merge(stockMoveLine, logisticalFormLine.getQty(), BigDecimal::add);
-						}
-					});
-		}
+        for (Entry<StockMoveLine, BigDecimal> entry : spreadableQtyMap.entrySet()) {
+            StockMoveLine stockMoveLine = entry.getKey();
+            BigDecimal spreadableQty = entry.getValue();
 
-		return stockMoveLineMap;
-	}
+            if (spreadableQty.signum() <= 0) {
+                stockMoveLineList.add(stockMoveLine);
+            }
+        }
 
-	protected LogisticalFormLine createDetailLine(LogisticalForm logisticalForm, StockMoveLine stockMoveLine,
-			BigDecimal qty) {
-		LogisticalFormLine logisticalFormLine = new LogisticalFormLine();
-		logisticalFormLine.setTypeSelect(LogisticalFormLineRepository.TYPE_DETAIL);
-		logisticalFormLine.setStockMoveLine(stockMoveLine);
-		logisticalFormLine.setQty(qty);
-		logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
-		return logisticalFormLine;
-	}
+        return stockMoveLineList;
+    }
 
-	protected LogisticalFormLine createParcelPalletLine(LogisticalForm logisticalForm, int typeSelect) {
-		LogisticalFormLine logisticalFormLine = new LogisticalFormLine();
-		logisticalFormLine.setTypeSelect(typeSelect);
-		logisticalFormLine.setParcelPalletNumber(getNextParcelPalletNumber(logisticalForm, typeSelect));
-		logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
-		return logisticalFormLine;
-	}
+    private List<LogisticalForm> findPendingLogisticalForms(LogisticalForm logisticalForm) {
+        Preconditions.checkNotNull(logisticalForm);
+        Preconditions.checkNotNull(logisticalForm.getDeliverToCustomerPartner());
 
-	@Override
-	public int getNextParcelPalletNumber(LogisticalForm logisticalForm, int typeSelect) {
-		int highest = 0;
-		Set<Integer> parcelPalletNumberSet = new HashSet<>();
+        QueryBuilder<LogisticalForm> queryBuilder = QueryBuilder.of(LogisticalForm.class);
+        queryBuilder.add("self.deliverToCustomerPartner = :deliverToCustomerPartner");
+        queryBuilder.bind("deliverToCustomerPartner", logisticalForm.getDeliverToCustomerPartner());
+        queryBuilder.add("self.statusSelect < :statusSelect");
+        queryBuilder.bind("statusSelect", LogisticalFormRepository.STATUS_COLLECTED);
 
-		if (logisticalForm.getLogisticalFormLineList() != null) {
-			for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
-				if (logisticalFormLine.getTypeSelect() == typeSelect
-						&& logisticalFormLine.getParcelPalletNumber() != null) {
-					parcelPalletNumberSet.add(logisticalFormLine.getParcelPalletNumber());
+        if (logisticalForm.getId() != null) {
+            queryBuilder.add("self.id != :id");
+            queryBuilder.bind("id", logisticalForm.getId());
+        }
 
-					if (logisticalFormLine.getParcelPalletNumber() > highest) {
-						highest = logisticalFormLine.getParcelPalletNumber();
-					}
-				}
-			}
-		}
+        List<LogisticalForm> logisticalFormList = queryBuilder.build().fetch();
+        logisticalFormList.add(logisticalForm);
 
-		for (int i = 1; i < highest; ++i) {
-			if (!parcelPalletNumberSet.contains(i)) {
-				return i;
-			}
-		}
+        return logisticalFormList;
+    }
 
-		return highest + 1;
-	}
+    protected List<StockMove> getFullySpreadStockMoveList(LogisticalForm logisticalForm) {
+        List<StockMove> fullySpreadStockMoveList = new ArrayList<>();
+        List<StockMoveLine> fullySpreadStockMoveLineList = getFullySpreadStockMoveLineList(logisticalForm);
 
-	@Override
-	public int getNextLineSequence(LogisticalForm logisticalForm) {
-		return logisticalForm.getLogisticalFormLineList() != null
-				? logisticalForm.getLogisticalFormLineList().stream().mapToInt(LogisticalFormLine::getSequence).max()
-						.orElse(1)
-				: 1;
-	}
+        Set<StockMove> stockMoveSet = new HashSet<>();
 
-	@Override
-	public void computeTotals(LogisticalForm logisticalForm) throws LogisticalFormError {
-		BigDecimal totalNetWeight = BigDecimal.ZERO;
-		BigDecimal totalGrossWeight = BigDecimal.ZERO;
-		BigDecimal totalVolume = BigDecimal.ZERO;
+        for (StockMoveLine stockMoveLine : fullySpreadStockMoveLineList) {
+            stockMoveSet.add(stockMoveLine.getStockMove());
+        }
 
-		if (logisticalForm.getLogisticalFormLineList() != null) {
-			ScriptHelper scriptHelper = getScriptHelper(logisticalForm);
-			LogisticalFormLineService logisticalFormLineService = Beans.get(LogisticalFormLineService.class);
+        for (StockMove stockMove : stockMoveSet) {
+            if (fullySpreadStockMoveLineList.containsAll(stockMove.getStockMoveLineList())) {
+                fullySpreadStockMoveList.add(stockMove);
+            }
+        }
 
-			for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
-				StockMoveLine stockMoveLine = logisticalFormLine.getStockMoveLine();
+        return fullySpreadStockMoveList;
+    }
 
-				if (logisticalFormLine.getTypeSelect() != LogisticalFormLineRepository.TYPE_DETAIL) {
-					if (logisticalFormLine.getGrossWeight() != null) {
-						totalGrossWeight = totalGrossWeight.add(logisticalFormLine.getGrossWeight());
-					}
+    @Override
+    public Map<StockMoveLine, BigDecimal> getSpreadableQtyMap(LogisticalForm logisticalForm) {
+        Set<StockMove> stockMoveSet = new LinkedHashSet<>();
+        Map<StockMoveLine, BigDecimal> spreadableQtyMap = new LinkedHashMap<>();
 
-					totalVolume = totalVolume
-							.add(logisticalFormLineService.evalVolume(logisticalFormLine, scriptHelper));
-				} else if (stockMoveLine != null) {
-					totalNetWeight = totalNetWeight
-							.add(logisticalFormLine.getQty().multiply(stockMoveLine.getNetWeight()));
-				}
+        if (logisticalForm.getLogisticalFormLineList() != null) {
+            StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
 
-			}
-		}
+            logisticalForm.getLogisticalFormLineList().stream().filter(
+                    logisticalFormLine -> logisticalFormLine.getTypeSelect() == LogisticalFormLineRepository.TYPE_DETAIL
+                            && logisticalFormLine.getStockMoveLine() != null
+                            && logisticalFormLine.getStockMoveLine().getStockMove() != null)
+                    .forEach(logisticalFormLine -> stockMoveSet
+                            .add(logisticalFormLine.getStockMoveLine().getStockMove()));
 
-		totalVolume = totalVolume.divide(new BigDecimal(1_000_000), 10, RoundingMode.HALF_UP);
-		logisticalForm.setTotalNetWeight(totalNetWeight);
-		logisticalForm.setTotalGrossWeight(totalGrossWeight);
-		logisticalForm.setTotalVolume(totalVolume);
-	}
+            for (StockMove stockMove : stockMoveSet) {
+                if (stockMove.getStockMoveLineList() == null) {
+                    continue;
+                }
 
-	protected ScriptHelper getScriptHelper(LogisticalForm logisticalForm) {
-		Context scriptContext = new Context(Mapper.toMap(logisticalForm), logisticalForm.getClass());
-		return new GroovyScriptHelper(scriptContext);
-	}
+                for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+                    BigDecimal spreadableQty = stockMoveLineService
+                            .computeSpreadableQtyOverLogisticalFormLines(stockMoveLine, logisticalForm);
+                    spreadableQtyMap.put(stockMoveLine, spreadableQty);
+                }
+            }
+        }
 
-	@Override
-	public String getStockMoveDomain(LogisticalForm logisticalForm) {
-		List<String> domainList = new ArrayList<>();
+        return spreadableQtyMap;
 
-		domainList.add("self.partner = :deliverToCustomer");
-		domainList.add(String.format("self.typeSelect = %d", StockMoveRepository.TYPE_OUTGOING));
+    }
 
-		List<StockMove> fullySpreadStockMoveList = getFullSpreadStockMoveList(logisticalForm);
+    @Override
+    public Map<StockMoveLine, BigDecimal> getSpreadQtyMap(LogisticalForm logisticalForm) {
+        Map<StockMoveLine, BigDecimal> spreadQtyMap = new LinkedHashMap<>();
 
-		if (!fullySpreadStockMoveList.isEmpty()) {
-			String idListString = StringTool.getIdListString(fullySpreadStockMoveList);
-			domainList.add(String.format("self.id NOT IN (%s)", idListString));
-		}
+        if (logisticalForm.getLogisticalFormLineList() != null) {
+            logisticalForm.getLogisticalFormLineList().stream()
+                    .filter(logisticalFormLine -> logisticalFormLine
+                            .getTypeSelect() == LogisticalFormLineRepository.TYPE_DETAIL)
+                    .forEach(logisticalFormLine -> {
+                        StockMoveLine stockMoveLine = logisticalFormLine.getStockMoveLine();
+                        if (stockMoveLine != null && logisticalFormLine.getQty() != null) {
+                            spreadQtyMap.merge(stockMoveLine, logisticalFormLine.getQty(), BigDecimal::add);
+                        }
+                    });
 
-		return domainList.stream().map(domain -> String.format("(%s)", domain)).collect(Collectors.joining(" AND "));
-	}
+        }
 
-	@Override
-	public void sortLines(LogisticalForm logisticalForm) {
-		if (logisticalForm.getLogisticalFormLineList() != null) {
-			logisticalForm.getLogisticalFormLineList().sort(Comparator.comparing(LogisticalFormLine::getSequence));
-		}
-	}
+        return spreadQtyMap;
+    }
+
+    protected void addDetailLine(LogisticalForm logisticalForm, StockMoveLine stockMoveLine, BigDecimal qty) {
+        Preconditions.checkNotNull(logisticalForm);
+        Preconditions.checkNotNull(stockMoveLine);
+
+        LogisticalFormLine logisticalFormLine = new LogisticalFormLine();
+        logisticalFormLine.setTypeSelect(LogisticalFormLineRepository.TYPE_DETAIL);
+        logisticalFormLine.setStockMoveLine(stockMoveLine);
+        logisticalFormLine.setQty(qty);
+        logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
+        logisticalFormLine.setUnitNetWeight(stockMoveLine.getNetWeight());
+        logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
+    }
+
+    @Override
+    public void addParcelPalletLine(LogisticalForm logisticalForm, int typeSelect) {
+        LogisticalFormLine logisticalFormLine = new LogisticalFormLine();
+        logisticalFormLine.setTypeSelect(typeSelect);
+        logisticalFormLine.setParcelPalletNumber(getNextParcelPalletNumber(logisticalForm, typeSelect));
+        logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
+        logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
+    }
+
+    @Override
+    public int getNextParcelPalletNumber(LogisticalForm logisticalForm, int typeSelect) {
+        int highest = 0;
+        Set<Integer> parcelPalletNumberSet = new HashSet<>();
+
+        if (logisticalForm.getLogisticalFormLineList() != null) {
+            for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
+                if (logisticalFormLine.getTypeSelect() == typeSelect
+                        && logisticalFormLine.getParcelPalletNumber() != null) {
+                    parcelPalletNumberSet.add(logisticalFormLine.getParcelPalletNumber());
+
+                    if (logisticalFormLine.getParcelPalletNumber() > highest) {
+                        highest = logisticalFormLine.getParcelPalletNumber();
+                    }
+                }
+            }
+        }
+
+        for (int i = 1; i < highest; ++i) {
+            if (!parcelPalletNumberSet.contains(i)) {
+                return i;
+            }
+        }
+
+        return highest + 1;
+    }
+
+    @Override
+    public int getNextLineSequence(LogisticalForm logisticalForm) {
+        if (logisticalForm.getLogisticalFormLineList() == null) {
+            return 0;
+        }
+
+        OptionalInt max = logisticalForm.getLogisticalFormLineList().stream().mapToInt(LogisticalFormLine::getSequence)
+                .max();
+
+        return max.isPresent() ? max.getAsInt() + 1 : 0;
+    }
+
+    @Override
+    public void computeTotals(LogisticalForm logisticalForm) throws LogisticalFormError {
+        BigDecimal totalNetWeight = BigDecimal.ZERO;
+        BigDecimal totalGrossWeight = BigDecimal.ZERO;
+        BigDecimal totalVolume = BigDecimal.ZERO;
+
+        if (logisticalForm.getLogisticalFormLineList() != null) {
+            ScriptHelper scriptHelper = getScriptHelper(logisticalForm);
+            LogisticalFormLineService logisticalFormLineService = Beans.get(LogisticalFormLineService.class);
+
+            for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
+                StockMoveLine stockMoveLine = logisticalFormLine.getStockMoveLine();
+
+                if (logisticalFormLine.getTypeSelect() != LogisticalFormLineRepository.TYPE_DETAIL) {
+                    if (logisticalFormLine.getGrossWeight() != null) {
+                        totalGrossWeight = totalGrossWeight.add(logisticalFormLine.getGrossWeight());
+                    }
+
+                    totalVolume = totalVolume
+                            .add(logisticalFormLineService.evalVolume(logisticalFormLine, scriptHelper));
+                } else if (stockMoveLine != null) {
+                    totalNetWeight = totalNetWeight
+                            .add(logisticalFormLine.getQty().multiply(stockMoveLine.getNetWeight()));
+                }
+
+            }
+        }
+
+        totalVolume = totalVolume.divide(new BigDecimal(1_000_000), 10, RoundingMode.HALF_UP);
+        logisticalForm.setTotalNetWeight(totalNetWeight);
+        logisticalForm.setTotalGrossWeight(totalGrossWeight);
+        logisticalForm.setTotalVolume(totalVolume);
+    }
+
+    protected ScriptHelper getScriptHelper(LogisticalForm logisticalForm) {
+        Context scriptContext = new Context(Mapper.toMap(logisticalForm), logisticalForm.getClass());
+        return new GroovyScriptHelper(scriptContext);
+    }
+
+    @Override
+    public String getStockMoveDomain(LogisticalForm logisticalForm) {
+        List<String> domainList = new ArrayList<>();
+
+        domainList.add("self.partner = :deliverToCustomerPartner");
+        domainList.add(String.format("self.typeSelect = %d", StockMoveRepository.TYPE_OUTGOING));
+        domainList.add(String.format("self.statusSelect = %d", StockMoveRepository.STATUS_PLANNED));
+        domainList.add(
+                "self.fullySpreadOverLogisticalFormsFlag IS NULL OR self.fullySpreadOverLogisticalFormsFlag = FALSE");
+
+        List<StockMove> fullySpreadStockMoveList = getFullySpreadStockMoveList(logisticalForm);
+
+        if (!fullySpreadStockMoveList.isEmpty()) {
+            String idListString = StringTool.getIdListString(fullySpreadStockMoveList);
+            domainList.add(String.format("self.id NOT IN (%s)", idListString));
+        }
+
+        return domainList.stream().map(domain -> String.format("(%s)", domain)).collect(Collectors.joining(" AND "));
+    }
+
+    @Override
+    public void sortLines(LogisticalForm logisticalForm) {
+        if (logisticalForm.getLogisticalFormLineList() != null) {
+            logisticalForm.getLogisticalFormLineList().sort(Comparator.comparing(LogisticalFormLine::getSequence));
+        }
+    }
+
+    @Override
+    public List<Long> getIdList(StockMove stockMove) throws AxelorException {
+        if (stockMove.getId() == null) {
+            throw new AxelorException(StockMove.class, IException.NO_VALUE,
+                    I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_UNSAVED));
+        }
+
+        TypedQuery<LogisticalForm> query = JPA.em().createQuery("SELECT DISTINCT self FROM LogisticalForm self "
+                + "JOIN self.logisticalFormLineList logisticalFormLine "
+                + "WHERE logisticalFormLine.stockMoveLine.stockMove = :stockMove", LogisticalForm.class);
+        query.setParameter("stockMove", stockMove);
+        List<LogisticalForm> resultList = query.getResultList();
+
+        return resultList.isEmpty() ? Lists.newArrayList(0L)
+                : resultList.stream().map(LogisticalForm::getId).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(rollbackOn = { AxelorException.class, Exception.class })
+    public void processCollected(LogisticalForm logisticalForm) throws AxelorException {
+        if (logisticalForm.getLogisticalFormLineList() == null) {
+            return;
+        }
+
+        Set<StockMove> stockMoveSet = new HashSet<>();
+
+        logisticalForm.getLogisticalFormLineList().stream().filter(
+                logisticalFormLine -> logisticalFormLine.getTypeSelect() == LogisticalFormLineRepository.TYPE_DETAIL
+                        && logisticalFormLine.getStockMoveLine() != null
+                        && logisticalFormLine.getStockMoveLine().getStockMove() != null)
+                .forEach(logisticalFormLine -> stockMoveSet.add(logisticalFormLine.getStockMoveLine().getStockMove()));
+
+        StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+
+        stockMoveSet.forEach(stockMoveService::updateFullySpreadOverLogisticalFormsFlag);
+
+        StockConfigService stockConfigService = Beans.get(StockConfigService.class);
+        StockConfig stockConfig = stockConfigService.getStockConfig(logisticalForm.getCompany());
+
+        if (stockConfig.getRealizeStockMovesUponParcelPalletCollection()) {
+            for (StockMove stockMove : stockMoveSet) {
+                if (stockMove.getFullySpreadOverLogisticalFormsFlag()) {
+                    stockMoveService.realize(stockMove);
+                }
+            }
+
+        }
+
+        logisticalForm.setStatusSelect(LogisticalFormRepository.STATUS_COLLECTED);
+    }
 
 }

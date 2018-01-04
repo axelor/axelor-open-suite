@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -149,7 +149,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
         queryBuilder.add("self.statusSelect = :statusSelect");
         queryBuilder.bind("statusSelect", PaymentVoucherRepository.STATUS_WAITING_FOR_DEPOSIT_SLIP);
 
-        return queryBuilder.create().fetch();
+        return queryBuilder.build().fetch();
     }
 
     private void checkPayments(DepositSlip depositSlip) throws AxelorException {

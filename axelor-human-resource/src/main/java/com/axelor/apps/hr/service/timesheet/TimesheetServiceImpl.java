@@ -28,6 +28,7 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
+import com.axelor.apps.base.db.Company;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -74,6 +75,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
@@ -92,7 +94,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	protected AppHumanResourceService appHumanResourceService;
 	
 	@Inject
-	protected ProjectService projectService; 
+	protected ProjectService projectService;
 	
 	@Inject
 	protected PublicHolidayDayRepository publicHolidayDayRepo;
@@ -108,17 +110,17 @@ public class TimesheetServiceImpl implements TimesheetService{
 	
 	@Inject
 	protected TemplateMessageService  templateMessageService;
-	
+
 	@Inject
 	private ProjectRepository projectRepo;
-	
+
 	@Inject
 	private UserRepository userRepo;
-	
+
 	@Inject
 	private UserHrService userHrService;
 
-	
+
 	@Override
 	@Transactional(rollbackOn={Exception.class})
 	public void getTimeFromTask(Timesheet timesheet){
@@ -360,7 +362,12 @@ public class TimesheetServiceImpl implements TimesheetService{
 		Timesheet timesheet = new Timesheet();
 		
 		timesheet.setUser(user);
-		timesheet.setCompany(user.getActiveCompany());
+		Company company = null;
+		if (user.getEmployee() != null
+				&& user.getEmployee().getMainEmploymentContract() != null) {
+			company = user.getEmployee().getMainEmploymentContract().getPayCompany();
+		}
+		timesheet.setCompany(company);
 		timesheet.setFromDate(fromDate);
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
 		timesheet.setFullName(computeFullName(timesheet));
@@ -527,7 +534,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 	public BigDecimal computeSubTimeSpent(Project project){
 		BigDecimal sum = BigDecimal.ZERO;
-		List<Project> subProjectList = Beans.get(ProjectRepository.class).all().filter("self.project = ?1", project).fetch();
+		List<Project> subProjectList = Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
 		if(subProjectList == null || subProjectList.isEmpty()){
 			return project.getTimeSpent();
 		}
@@ -538,7 +545,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	}
 
 	public void computeParentTimeSpent(Project project){
-		Project parentProject = project.getProject();
+		Project parentProject = project.getParentProject();
 		if(parentProject == null){
 			return;
 		}
@@ -664,35 +671,77 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		}
 	}
-	
+
 	@Override
 	public List<Map<String,Object>> createDefaultLines(Timesheet timesheet) {
-		
+
 		List<Map<String,Object>> lines =  new ArrayList<Map<String,Object>>();
 		User user = timesheet.getUser();
 		if (user == null || timesheet.getFromDate() == null) {
 			return lines;
 		}
-		
+
 		user = userRepo.find(user.getId());
-		
+
 		Product product = userHrService.getTimesheetProduct(user);
-		
+
 		if (product == null) {
 			return lines;
 		}
-		
+
 		List<Project> projects = projectRepo.all().filter("self.membersUserSet.id = ?1 and "
 				+ "self.imputable = true "
 				+ "and self.statusSelect != 3", user.getId()).fetch();
-		
+
 		for (Project project : projects) {
 			TimesheetLine line = createTimesheetLine(project, product, user, timesheet.getFromDate(), timesheet, new BigDecimal(0), null);
 			lines.add(Mapper.toMap(line));
 		}
-		
-		
+
+
 		return lines;
-		
+	}
+
+	@Override
+	public BigDecimal computePeriodTotal(Timesheet timesheet) {
+		BigDecimal periodTotal = BigDecimal.ZERO;
+
+		List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
+
+		for (TimesheetLine timesheetLine : timesheetLines) {
+			periodTotal = periodTotal.add(timesheetLine.getDurationStored());
+		}
+
+		return periodTotal;
+	}
+
+	@Override
+	public String getPeriodTotalConvertTitleByUserPref(User user) {
+		String title;
+		if (user.getEmployee() != null) {
+			if (user.getEmployee().getTimeLoggingPreferenceSelect() != null) {
+				title = user.getEmployee().getTimeLoggingPreferenceSelect().equals("days") ? I18n.get("Days") : user.getEmployee().getTimeLoggingPreferenceSelect().equals("minutes") ? I18n.get("Minutes") : I18n.get("Hours");
+				return title;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public void createValidateDomainTimesheetLine(User user, Employee employee, ActionView.ActionViewBuilder actionView) {
+
+		actionView.domain("self.timesheet.company = :_activeCompany AND  self.timesheet.statusSelect = 2")
+				.context("_activeCompany", user.getActiveCompany());
+
+		if(employee == null || !employee.getHrManager())  {
+			if (employee == null || employee.getManager() == null) {
+				actionView.domain(actionView.get().getDomain() + " AND (self.timesheet.user = :_user OR self.timesheet.user.employee.manager = :_user)")
+						.context("_user", user);
+			}
+			else {
+				actionView.domain(actionView.get().getDomain() + " AND self.timesheet.user.employee.manager = :_user")
+						.context("_user", user);
+			}
+		}
 	}
 }

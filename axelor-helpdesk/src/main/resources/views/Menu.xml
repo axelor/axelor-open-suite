@@ -53,8 +53,8 @@
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
-		<domain>self.deadlineDateT &lt; :_date</domain>
-		<context name="_date" expr="eval: __date__"/>
+		<domain>(self.endDateT != null and self.endDateT &gt; self.deadlineDateT) or (self.endDateT = null and self.deadlineDateT &lt; :_date)</domain>
+		<context name="_date" expr="eval: __datetime__"/>
 		<context name="_user" expr="eval: __user__"/>
 	</action-view>
 	
@@ -74,10 +74,10 @@
 	<action-view name="helpdesk.report.ticket" title="Ticket Details">
 		<view type="dashboard" name="helpdesk.ticket.dashboard"/>
 		<context name="_user_id" expr="eval:__user__.id" />
-		<context name="_myActiveTeam" expr="eval:__user__.activeTeam.id"/>
+		<context name="_myActiveTeam" expr="eval:__user__.activeTeam != null ? __user__.activeTeam.id : 0"/>
 	</action-view>
 	
-	<menuitem title="SLA" name="helpdesk-report-sla" action="helpdesk.report.sla" parent="helpdesk-reporting"/>
+	<menuitem title="SLA" name="helpdesk-report-sla" action="helpdesk.report.sla" parent="helpdesk-reporting" if="__config__.app.getApp('helpdesk').getIsSla()"/>
 	
 	<action-view name="helpdesk.report.sla" title="SLA Details">
 	  <view name="helpdesk.sla.dashboard" type="dashboard"/>

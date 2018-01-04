@@ -39,13 +39,13 @@
 	    </panel>
 		<panel name="head">
 			<field name="sentDate" colSpan="4"/>
-			<field name="company" colSpan="4" form-view="company-form" grid-view="company-grid"/>
-			<field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
+			<field name="company" canEdit="false" colSpan="4" form-view="company-form" grid-view="company-grid"/>
+			<field name="user" canEdit="false" colSpan="4" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 		<panel-related field="extraHoursLineList"/>
 		<panel>
-			<field name="validatedBy" form-view="user-form" grid-view="user-grid"/>
-			<field name="refusedBy" form-view="user-form" grid-view="user-grid"/>
+			<field name="validatedBy" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="refusedBy" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="validationDate"/>
 			<field name="refusalDate"/>
 			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
@@ -94,7 +94,7 @@
 	
 	<action-record name="action-extra-hours-record-default" model="com.axelor.apps.hr.db.ExtraHours">
 	    <field name="user" expr="eval:__user__"/>
-	    <field name="company" expr="eval: __user__.activeCompany"/>
+	    <field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-record>
 	
 	<action-record name="action-extra-hours-record-draft" model="com.axelor.apps.hr.db.ExtraHours">

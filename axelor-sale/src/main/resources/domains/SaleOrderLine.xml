@@ -54,7 +54,7 @@
   	
 <!--   	Devis-commande fournisseur -->
 	<date name="deliveryDate" title="Delivery date"/>
-	<decimal name="deliveredQuantities" title="Delivered quantities"/>
+	<decimal name="deliveredQty" title="Delivered quantity"/>
 
 <!--   	Champ technique non affiché, utilisé pour les reportings -->
   	<decimal name="companyExTaxTotal" title="Total W.T. in company currency" hidden="true"/>
@@ -66,12 +66,14 @@
 	<many-to-one name="parentLine" ref="com.axelor.apps.sale.db.SaleOrderLine" />
   	<one-to-many name="subLineList" ref="com.axelor.apps.sale.db.SaleOrderLine" mappedBy="parentLine" title="Pack lines"/>
   	<decimal name="totalPack" title="Total pack"/>
-  		
+
+	<finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
+
 	<extra-code>
 		<![CDATA[
-			public static final Integer TYPE_NORMAL = 0;
-			public static final Integer TYPE_TITLE = 1;
-			public static final Integer TYPE_PACK = 2;
+			public static final int TYPE_NORMAL = 0;
+			public static final int TYPE_TITLE = 1;
+			public static final int TYPE_PACK = 2;
 	  	]]>
 	</extra-code>
   	

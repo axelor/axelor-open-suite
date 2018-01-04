@@ -3,12 +3,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
-	<form name="convert-opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity">
-		<panel colSpan="12">
-			<field name="saleOrder" title="Sale order" hideIf="saleOrder == null" form-view="sale-order-form" grid-view="sale-order-grid"/>
-		</panel>
-	</form>
-	
 	<action-group name="action-sale-group-generate-sale-order">
 		<action name="action-sale-validate-create-client" if="partner == null"/>
 		<action name="save"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,20 +17,19 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.math.BigDecimal;
+import java.util.Optional;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 
 public interface SaleOrderStockService {
 
-
-	public Location getLocation(Company company);
-
-	/**
+    /**
 	 * Create a delivery stock move from a sale order.
 	 * 
 	 * @param saleOrder
@@ -41,7 +40,9 @@ public interface SaleOrderStockService {
 
 	public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException;
 	
-	public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine, Company company) throws AxelorException;
+	public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine) throws AxelorException;
+
+	public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine, BigDecimal qty) throws AxelorException;
 
 	public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException;
 
@@ -51,8 +52,21 @@ public interface SaleOrderStockService {
 	 * @param saleOrder
 	 * @return
 	 */
-	public boolean existActiveStockMoveForSaleOrder(SaleOrder saleOrder);
+    public boolean activeStockMoveForSaleOrderExists(SaleOrder saleOrder);
+
+    /**
+     * Find active stock move for sale order.
+     * 
+     * @param saleOrder
+     * @return
+     */
+    Optional<StockMove> findActiveStockMoveForSaleOrder(SaleOrder saleOrder);
+
+    /**
+     * Update delivery state by checking delivery states on the sale order lines.
+     * 
+     * @param saleOrder
+     */
+    void updateDeliveryState(SaleOrder saleOrder);
+
 }
-
-
-

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -16,6 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetDistribution;
@@ -39,18 +50,20 @@ import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
-import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockConfig;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -61,16 +74,6 @@ import com.axelor.inject.Beans;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImpl {
 
@@ -99,7 +102,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	}
 
 	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
-			LocalDate deliveryDate, String internalReference, String externalReference, Location location, LocalDate orderDate,
+			LocalDate deliveryDate, String internalReference, String externalReference, StockLocation stockLocation, LocalDate orderDate,
 			PriceList priceList, Partner supplierPartner) throws AxelorException  {
 
 		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
@@ -108,7 +111,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		PurchaseOrder purchaseOrder = super.createPurchaseOrder(buyerUser, company, contactPartner, currency, deliveryDate,
 				internalReference, externalReference, orderDate, priceList, supplierPartner);
 
-		purchaseOrder.setLocation(location);
+		purchaseOrder.setStockLocation(stockLocation);
 
 		purchaseOrder.setPaymentMode(supplierPartner.getInPaymentMode());
 		purchaseOrder.setPaymentCondition(supplierPartner.getPaymentCondition());
@@ -144,10 +147,11 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		if(purchaseOrder.getPurchaseOrderLineList() != null && purchaseOrder.getCompany() != null) {
 			StockConfigService stockConfigService = Beans.get(StockConfigService.class);
 			Company company = purchaseOrder.getCompany();
+			SupplyChainConfig supplyChainConfig = Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(company);
 
 			StockConfig stockConfig = stockConfigService.getStockConfig(company);
 
-			Location startLocation = Beans.get(LocationRepository.class).findByPartner(purchaseOrder.getSupplierPartner());
+			StockLocation startLocation = Beans.get(StockLocationRepository.class).findByPartner(purchaseOrder.getSupplierPartner());
 
 			if (startLocation == null) {
 				startLocation = stockConfigService.getSupplierVirtualLocation(stockConfig);
@@ -160,7 +164,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
 			Address address = Beans.get(PartnerService.class).getDeliveryAddress(supplierPartner);
 
-			StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(address, null, company, supplierPartner, startLocation, purchaseOrder.getLocation(), null, purchaseOrder.getDeliveryDate(), purchaseOrder.getNotes(), purchaseOrder.getShipmentMode(), purchaseOrder.getFreightCarrierMode());
+			StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(address, null, company, supplierPartner, startLocation, purchaseOrder.getStockLocation(), null, purchaseOrder.getDeliveryDate(), purchaseOrder.getNotes(), purchaseOrder.getShipmentMode(), purchaseOrder.getFreightCarrierMode());
 			stockMove.setPurchaseOrder(purchaseOrder);
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			stockMove.setEstimatedDate(purchaseOrder.getDeliveryDate());
@@ -170,14 +174,14 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 				Product product = purchaseOrderLine.getProduct();
 				// Check if the company field 'hasInSmForStorableProduct' = true and productTypeSelect = 'storable' or 'hasInSmForNonStorableProduct' = true and productTypeSelect = 'service' or productTypeSelect = 'other'
 				if(product != null
-						&& ((stockConfig.getHasInSmForStorableProduct() && ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect()))
-								|| (stockConfig.getHasInSmForNonStorableProduct() && !ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())))
+						&& ((supplyChainConfig.getHasInSmForStorableProduct() && ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect()))
+								|| (supplyChainConfig.getHasInSmForNonStorableProduct() && !ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())))
 						&& !ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(product.getProductTypeSelect())) {
 					
 					Unit unit = purchaseOrderLine.getProduct().getUnit();
 					BigDecimal qty = purchaseOrderLine.getQty();
 					BigDecimal priceDiscounted = purchaseOrderLine.getPriceDiscounted();
-					if(!unit.equals(purchaseOrderLine.getUnit())){
+					if(unit != null && !unit.equals(purchaseOrderLine.getUnit())){
 						qty = unitConversionService.convertWithProduct(purchaseOrderLine.getUnit(), unit, qty, purchaseOrderLine.getProduct());
 						priceDiscounted = unitConversionService.convertWithProduct(purchaseOrderLine.getUnit(), unit, priceDiscounted, purchaseOrderLine.getProduct());
 					}
@@ -222,13 +226,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		return stockMoveId;
 	}
 
-
-	public Location getLocation(Company company)  {
-
-		return Beans.get(LocationRepository.class).all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", company, true, LocationRepository.TYPE_INTERNAL).fetchOne();
-	}
-
-
 	public void cancelReceipt(PurchaseOrder purchaseOrder) throws AxelorException  {
 
 		List<StockMove> stockMoveList = Beans.get(StockMoveRepository.class).all().filter("self.purchaseOrder = ?1 AND self.statusSelect = 2", purchaseOrder).fetch();
@@ -265,7 +262,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	
 	@Transactional
 	public PurchaseOrder mergePurchaseOrders(List<PurchaseOrder> purchaseOrderList, Currency currency,
-			Partner supplierPartner, Company company, Location location, Partner contactPartner,
+			Partner supplierPartner, Company company, StockLocation stockLocation, Partner contactPartner,
 			PriceList priceList) throws AxelorException{
 		String numSeq = "";
 		String externalRef = "";
@@ -291,7 +288,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 				null,
 				numSeq,
 				externalRef,
-				location,
+				stockLocation,
 				LocalDate.now(),
 				priceList,
 				supplierPartner);
@@ -323,9 +320,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		if (purchaseOrder.getStatusSelect() == IPurchaseOrder.STATUS_FINISHED  && appSupplychainService.getAppSupplychain().getTerminatePurchaseOrderOnReceipt()){
 			purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
 		}
-		
-		purchaseOrderRepo.save(purchaseOrder);
-		
 	}
 
 	public void updateAmountToBeSpreadOverTheTimetable(PurchaseOrder purchaseOrder) {
@@ -346,7 +340,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		
 		for(PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
 			BudgetDistribution newBudgetDistribution = new BudgetDistribution();
-			newBudgetDistribution.setAmount(BigDecimal.ZERO);
+			newBudgetDistribution.setAmount(purchaseOrderLine.getExTaxTotal());
 			newBudgetDistribution.setBudget(purchaseOrder.getBudget());
 			newBudgetDistribution.setPurchaseOrderLine(purchaseOrderLine);
 			budgetDistributionRepo.save(newBudgetDistribution);
@@ -360,7 +354,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		if (appAccountService.isApp("budget") && appAccountService.getAppBudget().getCheckAvailableBudget()) {
 			List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
 
-			Map<Budget, BigDecimal> amountPerBudget = new HashMap<Budget, BigDecimal>();
+			Map<Budget, BigDecimal> amountPerBudget = new HashMap<>();
 			if (appAccountService.getAppBudget().getManageMultiBudget()) {
 				for (PurchaseOrderLine pol : purchaseOrderLines) {
 					for (BudgetDistribution bd : pol.getBudgetDistributionList()) {

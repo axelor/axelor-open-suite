@@ -22,7 +22,9 @@ import com.axelor.apps.crm.db.Opportunity;
 public class OpportunityManagementRepository extends OpportunityRepository {
 	@Override
 	public Opportunity copy(Opportunity entity, boolean deep) {
-		entity.setSalesStageSelect(1);
-		return super.copy(entity, deep);
+		Opportunity copy = super.copy(entity, deep);
+		copy.setSalesStageSelect(OpportunityRepository.SALES_STAGE_NEW);
+		copy.setLostReason(null);
+		return copy;
 	}
 }

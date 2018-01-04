@@ -2,8 +2,8 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<grid name="leave-management-grid" title="Leave Management" model="com.axelor.apps.hr.db.LeaveManagement" editable="true"
-		onNew="action-leave-management-record-default">
+    <grid name="leave-management-grid" title="Leave Management" model="com.axelor.apps.hr.db.LeaveManagement"
+          editable="true" orderBy="-fromDate,-date" onNew="action-leave-management-record-default">
 		<field name="value" onChange="action-leave-management-record-counted"/>
 	    <field name="date"/>
 	    <field name="user" form-view="user-form" grid-view="user-grid"/>
@@ -19,7 +19,7 @@
 		<panel name="main">
 			<field name="value" onChange="action-leave-management-record-counted"/>
 		    <field name="date"/>
-		    <field name="user" form-view="user-form" grid-view="user-grid"/>
+		    <field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 		    <field name="fromDate"/>
 		    <field name="toDate"/>
 		    <field name="comments"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,13 +25,18 @@ import java.time.LocalDate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.axelor.apps.account.db.*;
 import com.axelor.inject.Beans;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
+
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
@@ -57,7 +62,7 @@ public class VentilateState extends WorkflowInvoice {
 	private AccountConfigService accountConfigService;
 
 	protected AppAccountService appAccountService;
-	
+
 	private InvoiceRepository invoiceRepo;
 
 	protected WorkflowVentilationService workflowService;
@@ -135,7 +140,7 @@ public class VentilateState extends WorkflowInvoice {
 	}
 
 	protected void setDate( ) throws AxelorException{
-		
+
 		if(invoice.getInvoiceDate() == null)  {
 			invoice.setInvoiceDate(appAccountService.getTodayDate());
 		} else if (invoice.getInvoiceDate().isAfter(appAccountService.getTodayDate())) {
@@ -231,11 +236,9 @@ public class VentilateState extends WorkflowInvoice {
 	 */
 	protected void setInvoiceId(Sequence sequence) throws AxelorException {
 
-		if (!Strings.isNullOrEmpty(invoice.getInvoiceId()) && !invoice.getInvoiceId().contains("*")) {
-			return;
-		}
+		if ( !sequenceService.isEmptyOrDraftSequenceNumber(invoice.getInvoiceId())) { return; }
 
-		invoice.setInvoiceId(sequenceService.setRefDate(invoice.getInvoiceDate()).getSequenceNumber(sequence));
+		invoice.setInvoiceId( sequenceService.getSequenceNumber(sequence, invoice.getInvoiceDate()) );
 
 		if (invoice.getInvoiceId() != null) {
 			return;

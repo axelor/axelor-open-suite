@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,10 +18,12 @@
 package com.axelor.apps.prestashop.service.exports.batch;
 
 import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.prestashop.service.exports.PrestaShopServiceExport;
+import com.axelor.apps.prestashop.exports.PrestaShopServiceExport;
+import com.google.inject.Inject;
 
 public abstract class BatchStrategyExport extends AbstractBatch {
-
+	
+	@Inject
 	protected PrestaShopServiceExport prestaShopServiceExport;
 	
 	protected BatchStrategyExport(PrestaShopServiceExport prestaShopServiceExport) {

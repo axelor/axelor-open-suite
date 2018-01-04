@@ -17,15 +17,6 @@
  */
 package com.axelor.apps.hr.web.expense;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -70,6 +61,15 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class ExpenseController {
 
@@ -459,6 +459,33 @@ public class ExpenseController {
 		
 	}
 	
+	public void removeLines(ActionRequest request, ActionResponse response) {
+
+		Expense expense = request.getContext().asType(Expense.class);
+
+		List<ExpenseLine> expenseLineList = expense.getExpenseLineList();
+
+		try {
+			if (expenseLineList != null && !expenseLineList.isEmpty()) {
+				Iterator<ExpenseLine> expenseLineIter = expenseLineList.iterator();
+				while (expenseLineIter.hasNext()) {
+					ExpenseLine generalExpenseLine = expenseLineIter.next();
+
+					if (generalExpenseLine.getKilometricExpense() != null
+							&& (expense.getKilometricExpenseLineList() != null
+									&& !expense.getKilometricExpenseLineList().contains(generalExpenseLine)
+									|| expense.getKilometricExpenseLineList() == null)) {
+
+						expenseLineIter.remove();
+					}
+				}
+			}
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+		response.setValue("expenseLineList", expenseLineList);
+	}
+
 	public void computeKilometricExpense(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
@@ -502,14 +529,18 @@ public class ExpenseController {
 		}
 		
 		List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
-		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdListString(kilometricAllowParamList)+ ")");
+		if (kilometricAllowParamList == null || kilometricAllowParamList.isEmpty()) {
+			response.setAttr("kilometricAllowParam", "domain", "self.id IN (0)");
+		} else {
+			response.setAttr("kilometricAllowParam", "domain", "self.id IN (" + StringTool.getIdListString(kilometricAllowParamList) + ")");
+		}
 
 		KilometricAllowParam currentKilometricAllowParam = expenseLine.getKilometricAllowParam();
 		boolean vehicleOk = false;
 
-		if (kilometricAllowParamList.size() == 1) {
+		if (kilometricAllowParamList != null && kilometricAllowParamList.size() == 1) {
 			response.setValue("kilometricAllowParam", kilometricAllowParamList.get(0));
-		} else {
+		} else if (kilometricAllowParamList != null) {
 			for (KilometricAllowParam kilometricAllowParam : kilometricAllowParamList) {
 				if (currentKilometricAllowParam != null && currentKilometricAllowParam.equals(kilometricAllowParam)) {
 					expenseLine.setKilometricAllowParam(kilometricAllowParam);

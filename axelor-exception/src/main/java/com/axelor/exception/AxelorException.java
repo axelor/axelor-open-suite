@@ -29,7 +29,7 @@ public class AxelorException extends Exception {
 	
 	private final int category;
 	private final Class<? extends Model> refClass;
-	private final long refId;
+	private final Long refId;
 
 	/**
 	 * Default constructor
@@ -263,7 +263,7 @@ public class AxelorException extends Exception {
 	 * 
 	 * @return
 	 */
-	public long getRefId() {
+	public Long getRefId() {
 		return refId;
 	}
 

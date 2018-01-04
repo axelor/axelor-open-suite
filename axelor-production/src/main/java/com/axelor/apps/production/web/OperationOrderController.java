@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -138,7 +138,7 @@ public class OperationOrderController {
 		if(operationOrder != null && operationOrder.getStatusSelect() == IOperationOrder.STATUS_PLANNED){
 			operationOrder = operationOrderWorkflowService.replan(operationOrder);
 			List<OperationOrder> operationOrderList = operationOrderRepo.all().filter("self.manufOrder = ?1 AND self.priority >= ?2 AND self.statusSelect = 3 AND self.id != ?3",
-					operationOrder.getManufOrder(), operationOrder.getPriority(), operationOrder.getId()).order("self.priority").order("self.plannedEndDateT").fetch();
+					operationOrder.getManufOrder(), operationOrder.getPriority(), operationOrder.getId()).order("priority").order("plannedEndDateT").fetch();
 			for (OperationOrder operationOrderIt : operationOrderList) {
 				operationOrderIt = operationOrderWorkflowService.replan(operationOrderIt);
 			}

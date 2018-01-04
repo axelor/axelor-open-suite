@@ -19,6 +19,10 @@
 		<option value="9">9</option>
 		<option value="10">10</option>
 	</selection>
+	
+	<selection name="iterritory.city.type.select">
+		<option value="geonames">Geonames</option>
+	</selection>
 
 	<selection name="partner.title.type.select">
 		<option value="1">M.</option>
@@ -257,6 +261,7 @@
 	<selection name="account.year.type.select">
 		<option value="0">Civil Year</option>
 		<option value="1">Fiscal Year</option>
+		<option value="2">Payroll Year</option>
 	</selection>
 	
 	<selection name="base.year.status.select">
@@ -423,6 +428,15 @@
 	<selection name="meta.schedule.batch.service.select" id="base.meta.schedule.batch.service.select">
 		<option value="com.axelor.apps.base.service.batch.BaseBatchService">com.axelor.apps.base.service.batch.BaseBatchService</option>
 		<option value="com.axelor.apps.base.service.batch.MailBatchService">com.axelor.apps.base.service.batch.MailBatchService</option>
+	</selection>
+	
+	<selection name="team.type.select">
+		<option value="general">General</option>
+	</selection>
+
+	<selection name="base.cancel.reason.application.type.select">
+		<option value="com.axelor.apps.sale.db.SaleOrder">Sale order</option>
+        <option value="com.axelor.apps.stock.db.StockMove">Stock move</option>
 	</selection>
 
 </object-views>

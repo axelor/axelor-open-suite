@@ -9,13 +9,7 @@
 
     <form name="production-config-form" title="Production configuration" model="com.axelor.apps.production.db.ProductionConfig" onNew="action-production-config-record-default">
     	<panel name="main">
-		    <field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
-		</panel>
-		<panel>
-			<field name="productionVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="location-form" grid-view="location-grid"/>
-		</panel>
-		<panel>
-			<field name="wasteLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" />
+		    <field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 		</panel>
 		<panel>
 			<field name="stockMoveRealizeOrderSelect"/>

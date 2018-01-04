@@ -7,13 +7,17 @@
 		<panel>
 			<field name="generateProjectOrder" widget="boolean-switch"/>
 			<field name="automaticProject" widget="boolean-switch"/>
+			<field name="generatedElementTypeSelect"/>
 			<field name="projectSaleOrderLines" widget="boolean-switch"/>
 			<field name="projectPurchaseOrderLines" widget="boolean-switch"/>
 			<field name="projectInvoiceLines" widget="boolean-switch"/>
-			<field name="productInvoicingProject" canNew="true"/>
+			<field name="productInvoicingProject" canEdit="false"/>
 			<field name="showPurchaseOrderLineRelatedToProject" widget="boolean-switch"/>
 			<field name="showSaleOrderLineRelatedToProject" widget="boolean-switch"/>
+			<field name="showProductionOrderRelatedToProject" widget="boolean-switch"/>
 			<field name="showExpenseLineRelatedToProject" widget="boolean-switch"/>
+			<field name="showPurchaseInvoiceLineRelatedToProject" widget="boolean-switch"/>
+			<field name="showSaleInvoiceLineRelatedToProject" widget="boolean-switch"/>
 			<field name="enableToInvoiceTimesheet" showIf="generateInvoiceFromSaleOrder" widget="boolean-switch" />
 			<field name="enableToInvoiceExpense"  showIf="generateInvoiceFromSaleOrder" widget="boolean-switch" />
 			<field name="defaultInvoiceTypeSelect" showIf="generateInvoiceFromSaleOrder" />

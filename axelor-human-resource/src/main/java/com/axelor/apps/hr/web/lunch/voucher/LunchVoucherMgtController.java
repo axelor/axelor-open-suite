@@ -98,7 +98,7 @@ public class LunchVoucherMgtController {
 		
 		response.setValue("totalLunchVouchers", lunchVoucherMgt.getTotalLunchVouchers());
 		response.setValue("requestedLunchVouchers", lunchVoucherMgt.getRequestedLunchVouchers());
-		response.setValue("givenLunchVouchers", lunchVoucherMgt	.getGivenLunchVouchers());
+		response.setValue("givenLunchVouchers", lunchVoucherMgt.getGivenLunchVouchers());
 	}
 	
 	public void export(ActionRequest request, ActionResponse response) throws IOException {
@@ -142,13 +142,16 @@ public class LunchVoucherMgtController {
 		try {
 			LunchVoucherMgtService lunchVoucherMgtService = lunchVoucherMgtProvider.get();
 			LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
+			if (lunchVoucherMgt.getId() == null) {
+				return;
+			}
 			List<LunchVoucherMgtLine> oldLunchVoucherLines =
 					Beans.get(LunchVoucherMgtLineRepository.class).all()
 							.filter("self.lunchVoucherMgt.id = ?", lunchVoucherMgt.getId())
 							.fetch();
-			lunchVoucherMgt = lunchVoucherMgtService.updateStock(lunchVoucherMgt,
-					oldLunchVoucherLines);
-			response.setValue("stockQuantityStatus", lunchVoucherMgt.getStockQuantityStatus());
+			int stockQuantityStatus = lunchVoucherMgtService.updateStock(lunchVoucherMgt.getLunchVoucherMgtLineList(),
+					oldLunchVoucherLines, lunchVoucherMgt.getCompany());
+			response.setValue("stockQuantityStatus", stockQuantityStatus);
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}

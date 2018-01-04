@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -76,7 +76,7 @@ public class PaymentScheduleController {
 		
 			if(num == null || num.isEmpty()) {
 				
-				response.setFlash(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5)+" "+paymentSchedule.getCompany().getName()); 
+				response.setError(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5), paymentSchedule.getCompany().getName())); 
 			}
 			else {
 				response.setValue("paymentScheduleSeq", num);			

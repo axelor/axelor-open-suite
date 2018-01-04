@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,7 +36,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesService;
@@ -103,7 +103,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 	protected void generatePurchaseProposal(MrpLine mrpLine, Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders) throws AxelorException  {
 		
 		Product product = mrpLine.getProduct();
-		Location location = mrpLine.getLocation();
+		StockLocation stockLocation = mrpLine.getStockLocation();
 		LocalDate maturityDate = mrpLine.getMaturityDate();
 		
 		Partner supplierPartner = product.getDefaultSupplierPartner();
@@ -112,7 +112,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 			throw new AxelorException(mrpLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MRP_LINE_1), product.getFullName()); 
 		}
 
-		Company company = location.getCompany();
+		Company company = stockLocation.getCompany();
 
 		Pair<Partner, LocalDate> key = null;
 		PurchaseOrder purchaseOrder = null;
@@ -131,7 +131,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 					maturityDate,
 					"MRP-"+this.today.toString(), //TODO sequence on mrp
 					null,
-					location,
+					stockLocation,
 					this.today,
 					supplierPartner.getPurchasePriceList(),
 					supplierPartner));
@@ -168,7 +168,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 	}
 	
 	
-	public MrpLine createMrpLine(Product product, int maxLevel, MrpLineType mrpLineType, BigDecimal qty, LocalDate maturityDate, BigDecimal cumulativeQty, Location location, Model... models)  {
+	public MrpLine createMrpLine(Product product, int maxLevel, MrpLineType mrpLineType, BigDecimal qty, LocalDate maturityDate, BigDecimal cumulativeQty, StockLocation stockLocation, Model... models)  {
 		
 		MrpLine mrpLine = new MrpLine();
 
@@ -183,18 +183,18 @@ public class MrpLineServiceImpl implements MrpLineService  {
 		}
 		mrpLine.setMaturityDate(maturityDate);
 		mrpLine.setCumulativeQty(cumulativeQty);		
-		mrpLine.setLocation(location);
+		mrpLine.setStockLocation(stockLocation);
 		
-		mrpLine.setMinQty(this.getMinQty(product, location));
+		mrpLine.setMinQty(this.getMinQty(product, stockLocation));
 		
 		this.createMrpLineOrigins(mrpLine, models);
 		
 		return mrpLine;
 	}
 	
-	protected BigDecimal getMinQty(Product product, Location location)  {
+	protected BigDecimal getMinQty(Product product, StockLocation stockLocation)  {
 		
-		StockRules stockRules = stockRulesService.getStockRules(product, location, StockRulesRepository.TYPE_FUTURE, StockRulesRepository.USE_CASE_USED_FOR_MRP);
+		StockRules stockRules = stockRulesService.getStockRules(product, stockLocation, StockRulesRepository.TYPE_FUTURE, StockRulesRepository.USE_CASE_USED_FOR_MRP);
 		
 		if(stockRules != null)  {
 			return stockRules.getMinQty();

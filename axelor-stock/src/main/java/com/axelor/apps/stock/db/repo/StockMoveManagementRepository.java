@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,13 @@
  */
 package com.axelor.apps.stock.db.repo;
 
+import javax.persistence.PersistenceException;
+
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 
 public class StockMoveManagementRepository extends StockMoveRepository {
 	@Override
@@ -32,4 +38,26 @@ public class StockMoveManagementRepository extends StockMoveRepository {
 
 		return copy;
 	}
+
+    @Override
+    public StockMove save(StockMove entity) {
+        try {
+            StockMove stockMove = super.save(entity);
+            SequenceService sequenceService = Beans.get(SequenceService.class);
+
+            if (Strings.isNullOrEmpty(stockMove.getStockMoveSeq())) {
+                stockMove.setStockMoveSeq(sequenceService.getDraftSequenceNumber(stockMove));
+            }
+
+            if (Strings.isNullOrEmpty(stockMove.getName())
+                    || stockMove.getName().startsWith(stockMove.getStockMoveSeq())) {
+                stockMove.setName(Beans.get(StockMoveService.class).computeName(stockMove));
+            }
+
+            return stockMove;
+        } catch (Exception e) {
+            throw new PersistenceException(e);
+        }
+    }
+
 }

@@ -12,9 +12,10 @@
     	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
     	<bind to="resetDate" eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate()" />
     </input>
-  	
-	<input file="sale_cancelReason.csv" separator=";" type="com.axelor.apps.sale.db.CancelReason">
+
+	<input file="sale_cancelReason.csv" separator=";" type="com.axelor.apps.base.db.CancelReason">
 		<bind to="freeText" eval="freeText == 'true' ? true : false" />
+		<bind to="applicationType" eval="'com.axelor.apps.sale.db.SaleOrder'"/>
 	</input>
 	
 	<input file="sale_saleBatch.csv" separator=";" type="com.axelor.apps.sale.db.SaleBatch" />

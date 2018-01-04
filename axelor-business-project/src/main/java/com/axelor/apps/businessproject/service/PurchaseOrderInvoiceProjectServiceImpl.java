@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -52,22 +52,10 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 	@Inject
 	protected AppBusinessProjectService appBusinessProjectService;
 
-
 	@Override
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<PurchaseOrderLine> purchaseOrderLineList) throws AxelorException  {
-
-		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-
-		for(PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
-
-			//Lines of subscription type are invoiced directly from purchase order line or from the subscription batch
-			if (!ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(purchaseOrderLine.getProduct().getProductTypeSelect())){
-				invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
-				invoiceLineList.get(invoiceLineList.size()-1).setProject(purchaseOrderLine.getProject());
-				purchaseOrderLine.setInvoiced(true);
-			}
-		}
-		return invoiceLineList;
+	protected void processPurchaseOrderLine(Invoice invoice, List<InvoiceLine> invoiceLineList, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
+		super.processPurchaseOrderLine(invoice,invoiceLineList,purchaseOrderLine);
+		invoiceLineList.get(invoiceLineList.size()-1).setProject(purchaseOrderLine.getProject());
 	}
 
 	@Override

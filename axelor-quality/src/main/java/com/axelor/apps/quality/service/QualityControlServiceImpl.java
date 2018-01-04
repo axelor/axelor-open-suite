@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,8 +31,11 @@ public class QualityControlServiceImpl  implements QualityControlService {
 	@Inject
 	ControlPointRepository controlPointRepo;
 	
-	/*
-	 * copy control point model to control point and set it to the quality control
+	/**
+	 * Copy control point model to control point and set it to the quality control.
+	 * @param qualityControl Set control point model to control point of this object.
+	 * @throws AxelorException
+	 * 
 	 */
 	@Override
 	@Transactional

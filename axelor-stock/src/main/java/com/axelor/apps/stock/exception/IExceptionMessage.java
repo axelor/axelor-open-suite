@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -87,6 +87,7 @@ public interface IExceptionMessage {
 	static final String STOCK_CONFIG_2 = /*$$(*/ "You must configure an inventory virtual location for the company %s" /*)*/;
 	static final String STOCK_CONFIG_3 = /*$$(*/ "You must configure a supplier virtual location for the company %s" /*)*/;
 	static final String STOCK_CONFIG_4 = /*$$(*/ "You must configure a customer virtual location for the company %s" /*)*/;
+	static final String STOCK_CONFIG_5 = /*$$(*/ "You must configure a default location for the company %s" /*)*/;
 
 	/**
 	 * Location Controller
@@ -110,10 +111,16 @@ public interface IExceptionMessage {
 	 * Logistical form
 	 */
 	String LOGISTICAL_FORM_MISSING_SEQUENCE = /*$$(*/ "Missing logistical form sequence for company %s" /*)*/;
+	String LOGISTICAL_FORM_PARTNER_MISMATCH = /*$$(*/ "Partner mismatch: %s" /*)*/;
 	String LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS = /*$$(*/ "Invalid dimensions on packaging line No. %d" /*)*/;
+    String LOGISTICAL_FORM_LINE_REQUIRED_TYPE = /*$$(*/ "Type is required on line %d." /*)*/;
+	String LOGISTICAL_FORM_LINE_REQUIRED_STOCK_MOVE_LINE = /*$$(*/ "Stock move line is required on line %d." /*)*/;
+    String LOGISTICAL_FORM_LINE_REQUIRED_QUANTITY = /*$$(*/ "Quantity is required on line %d." /*)*/;
 	String LOGISTICAL_FORM_LINES_INCONSISTENT_QUANTITY = /*$$(*/ "Total quantity for %s: %s (expected: %s)" /*)*/;
 	String LOGISTICAL_FORM_LINES_EMPTY_PARCEL = /*$$(*/ "Parcel %d is empty." /*)*/;
 	String LOGISTICAL_FORM_LINES_EMPTY_PALLET = /*$$(*/ "Pallet %d is empty." /*)*/;
 	String LOGISTICAL_FORM_LINES_ORPHAN_DETAIL = /*$$(*/ "Detail line(s) not inside a parcel/pallet" /*)*/;
 
+	String CANCEL_REASON_MISSING = /*$$(*/ "A cancel reason must be selected" /*)*/;
+	String CANCEL_REASON_BAD_TYPE = /*$$(*/ "The type of cancel reason doesn't match with stock move" /*)*/;
 }

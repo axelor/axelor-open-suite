@@ -1,4 +1,4 @@
-"importId";"externalReference";"clientPartner.importId";"contactPartner.importId";"mainInvoicingAddress.importId";"deliveryAddress.importId";"salemanUser.importId";"team.importId";"paymentMode.importId";"paymentCondition.importId";"currency.code";"creationDate";"statusSelect";"company.importId";"location.id";"confirmedByUser.importId";"confirmationDate";"shipmentDate"
+"importId";"externalReference";"clientPartner.importId";"contactPartner.importId";"mainInvoicingAddress.importId";"deliveryAddress.importId";"salemanUser.importId";"team.importId";"paymentMode.importId";"paymentCondition.importId";"currency.code";"creationDate";"statusSelect";"company.importId";"stockLocation.id";"confirmedByUser.importId";"confirmationDate";"shipmentDate"
 1;8736;88;89;590;590;9;1;6;2;"EUR";"TODAY[-5M]";3;1;1;9;"TODAY[-5M+7d]";
 2;"CF_1342";20;21;62;62;11;2;8;6;"EUR";"TODAY[-4M]";3;1;1;11;"TODAY[-4M+7d]";
 3;"F-2549";44;45;13002;13002;11;2;8;6;"EUR";"TODAY[-3M]";3;1;1;11;"TODAY[-3M+14d]";

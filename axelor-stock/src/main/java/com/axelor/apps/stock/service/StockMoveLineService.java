@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,18 +18,18 @@
 package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
-import java.time.LocalDate;
-
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.TrackingNumber;
-import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.stock.db.Location;
-import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.LogisticalForm;
+import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.exception.AxelorException;
 
 public interface StockMoveLineService {
@@ -76,11 +76,11 @@ public interface StockMoveLineService {
 
 
 
-	public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product, Location location) throws AxelorException;
+	public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product, StockLocation stockLocation) throws AxelorException;
 
 
 
-	public List<? extends LocationLine> getLocationLines(Product product, Location location) throws AxelorException;
+	public List<? extends StockLocationLine> getLocationLines(Product product, StockLocation stockLocation) throws AxelorException;
 
 
 
@@ -88,14 +88,14 @@ public interface StockMoveLineService {
 
 
 
-	public void updateLocations(Location fromLocation, Location toLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList,
+	public void updateLocations(StockLocation fromLocation, StockLocation toLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList,
 			LocalDate lastFutureStockMoveDate, boolean realQty) throws AxelorException;
 
 
-	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
+	public void updateLocations(StockLocation fromLocation, StockLocation toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
 			lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException;
 
-	public void updateAveragePriceLocationLine(Location location, StockMoveLine stockMoveLine, int toStatus);
+	public void updateAveragePriceLocationLine(StockLocation stockLocation, StockMoveLine stockMoveLine, int toStatus);
 
 	/**
 	 * Check in the product if the stock move line needs to have a conformity
@@ -140,5 +140,31 @@ public interface StockMoveLineService {
 	 * @return
 	 */
 	StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList);
+
+	/**
+	 * Check whether a stock move line is fully spread over logistical form lines.
+	 * 
+	 * @param stockMoveLine
+	 * @return
+	 */
+	boolean computeFullySpreadOverLogisticalFormLinesFlag(StockMoveLine stockMoveLine);
+
+	/**
+	 * Get the quantity spreadable over logistical form lines.
+	 * 
+	 * @param stockMoveLine
+	 * @return
+	 */
+	BigDecimal computeSpreadableQtyOverLogisticalFormLines(StockMoveLine stockMoveLine);
+
+	/**
+	 * Get the quantity spreadable over logistical form lines.
+	 * Take into account the lines from the specified logistical form.
+	 * 
+	 * @param stockMoveLine
+	 * @param logisticalForm
+	 * @return
+	 */
+	BigDecimal computeSpreadableQtyOverLogisticalFormLines(StockMoveLine stockMoveLine, LogisticalForm logisticalForm);
 
 }

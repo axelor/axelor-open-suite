@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -180,7 +180,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
 	public String getPaymentScheduleSequence(Company company) throws AxelorException  {
 		String seq = sequenceService.getSequenceNumber(IAdministration.PAYMENT_SCHEDULE, company);
 		if(seq == null)  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, "%s :\n"+I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5)+" %s", AppAccountServiceImpl.EXCEPTION,company.getName());
+			throw new AxelorException(IException.CONFIGURATION_ERROR, "%s :\n"+I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5), AppAccountServiceImpl.EXCEPTION,company.getName());
 		}
 		return seq;
 	}

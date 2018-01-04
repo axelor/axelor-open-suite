@@ -62,6 +62,7 @@ public class CampaignController {
 		Campaign campaign = request.getContext().asType(Campaign.class);
 		campaign = campaignRepo.find(campaign.getId());
 		campaignService.generateEvents(campaign);
+		response.setAttr("plannedEvents", "refresh", true);
 	}
 	
 	public void generateTargets(ActionRequest request, ActionResponse response) {

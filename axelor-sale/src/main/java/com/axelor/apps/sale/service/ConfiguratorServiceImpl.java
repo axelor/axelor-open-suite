@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -147,7 +147,9 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
      */
     protected void fillSaleOrderWithProduct(SaleOrderLine saleOrderLine) throws AxelorException {
         SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
-        saleOrderLineService.computeProductInformation(saleOrderLine, saleOrderLine.getSaleOrder());
+        if (saleOrderLine.getProduct() != null) {
+            saleOrderLineService.computeProductInformation(saleOrderLine, saleOrderLine.getSaleOrder());
+        }
     }
 
     protected void overwriteFieldToUpdate(Configurator configurator,

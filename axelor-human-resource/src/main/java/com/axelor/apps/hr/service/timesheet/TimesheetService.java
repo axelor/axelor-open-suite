@@ -29,12 +29,14 @@ import java.time.LocalDate;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.persist.Transactional;
@@ -84,4 +86,9 @@ public interface TimesheetService {
 	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet);
 	
 	public List<Map<String, Object>> createDefaultLines(Timesheet timesheet);
+
+	public BigDecimal computePeriodTotal(Timesheet timesheet);
+	public String getPeriodTotalConvertTitleByUserPref(User user);
+	
+	public void createValidateDomainTimesheetLine(User user, Employee employee, ActionView.ActionViewBuilder actionView);
 }
