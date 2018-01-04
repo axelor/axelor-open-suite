@@ -84,7 +84,7 @@ public class SaleOrderController{
 
 			if(stockMove != null)  {
 				response.setView(ActionView
-					.define(I18n.get("Stock Move"))
+					.define(I18n.get("Stock move"))
 					.model(StockMove.class.getName())
 					.add("grid", "stock-move-grid")
 					.add("form", "stock-move-form")

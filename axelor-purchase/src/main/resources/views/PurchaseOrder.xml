@@ -530,7 +530,7 @@
 	    <view type="form" name="purchase-order-merge-form"/>
 	</action-view>
 
-	<action-view name="action-purchase-order-view-stock-moves" model="com.axelor.apps.stock.db.StockMove" title="Stock Move">
+	<action-view name="action-purchase-order-view-stock-moves" model="com.axelor.apps.stock.db.StockMove" title="Stock move">
 		<view name="stock-move-grid" type="grid"/>
 		<view name="stock-move-form" type="form"/>
 		<domain>self.purchaseOrder.id = :id</domain>

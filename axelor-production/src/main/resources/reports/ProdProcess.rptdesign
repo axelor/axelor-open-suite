@@ -467,7 +467,7 @@ production_prod_process as Production
 LEFT JOIN base_product as Product ON Product.id = Production.product
 LEFT JOIN base_company as Company ON Production.company = Company.id
 LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
-LEFT JOIN stock_stock_location as Stock ON Stock.id = Production.location
+LEFT JOIN stock_stock_location as Stock ON Stock.id = Production.stock_location
 LEFT JOIN stock_stock_location as DestinationStock ON DestinationStock.id = Production.produced_product_location
 WHERE Production.id IN (?);]]></xml-property>
         </oda-data-set>
@@ -1217,7 +1217,7 @@ where prod.to_consume_prod_process_line = ?;
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">"ProdProcess.location"</value>
+                                                    <value type="javascript">"ProdProcess.stockLocation"</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>

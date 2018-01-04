@@ -206,9 +206,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 
 	@Override
-	public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product, StockLocation location) throws AxelorException  {
+	public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product, StockLocation stockLocation) throws AxelorException  {
 
-		List<? extends StockLocationLine> stockLocationLineList = this.getLocationLines(product, location);
+		List<? extends StockLocationLine> stockLocationLineList = this.getLocationLines(product, stockLocation);
 
 		if(stockLocationLineList != null)  {
 			for(StockLocationLine stockLocationLine : stockLocationLineList)  {
@@ -228,11 +228,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 
 	@Override
-	public List<? extends StockLocationLine> getLocationLines(Product product, StockLocation location) throws AxelorException  {
+	public List<? extends StockLocationLine> getLocationLines(Product product, StockLocation stockLocation) throws AxelorException  {
 
 		List<? extends StockLocationLine> stockLocationLineList = Beans.get(StockLocationLineRepository.class).all().
 				filter("self.product = ?1 AND self.futureQty > 0 AND self.trackingNumber IS NOT NULL AND self.detailsLocation = ?2"
-						+trackingNumberService.getOrderMethod(product.getTrackingNumberConfiguration()), product, location).fetch();
+						+trackingNumberService.getOrderMethod(product.getTrackingNumberConfiguration()), product, stockLocation).fetch();
 
 		return stockLocationLineList;
 
@@ -300,9 +300,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	}
 
 	@Override
-	public void updateAveragePriceLocationLine(StockLocation location, StockMoveLine stockMoveLine, int toStatus) {
+	public void updateAveragePriceLocationLine(StockLocation stockLocation, StockMoveLine stockMoveLine, int toStatus) {
 		StockLocationLine stockLocationLine = Beans.get(StockLocationLineService.class)
-				.getStockLocationLine(location, stockMoveLine.getProduct());
+				.getStockLocationLine(stockLocation, stockMoveLine.getProduct());
 		if (toStatus == StockMoveRepository.STATUS_REALIZED) {
 			this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
 		}

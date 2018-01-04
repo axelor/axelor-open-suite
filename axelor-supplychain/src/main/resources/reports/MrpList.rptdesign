@@ -275,7 +275,7 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select Mrp.created_on, Mrp.end_date, Location.name as "locationName"
 from supplychain_mrp as Mrp 
-left join stock_stock_location as Location on (Mrp.location = Location.id)
+left join stock_stock_location as Location on (Mrp.stock_location = Location.id)
 where Mrp.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1119,7 +1119,7 @@ Partner.full_name as "partner"
 from supplychain_mrp_forecast as MrpForecast
 left join supplychain_mrp_mrp_forecast_set as MTM on (MrpForecast.id = MTM.mrp_forecast_set)
 left join supplychain_mrp as Mrp on (Mrp.id = MTM.supplychain_mrp)
-left join stock_stock_location as Location on (Location.id = MrpForecast.location)
+left join stock_stock_location as Location on (Location.id = MrpForecast.stock_location)
 left join base_product as Product on (Product.id = MrpForecast.product)
 left join base_partner as Partner on (Partner.id = MrpForecast.partner)
 left join base_unit as Unit on (Unit.id = MrpForecast.unit)
@@ -1342,7 +1342,7 @@ from supplychain_mrp_line as MrpLine
 left join base_product as Product on (Product.id = MrpLine.product)
 left join supplychain_mrp_line_type as MrpLineType on (MrpLineType.id = MrpLine.mrp_line_type)
 left join base_unit as Unit on (Product.id = MrpLine.product and Product.unit = Unit.id)
-left join stock_stock_location as Location on (Location.id = MrpLine.location)
+left join stock_stock_location as Location on (Location.id = MrpLine.stock_location)
 where MrpLine.mrp = ?
 order by "product" ASC, MrpLineType.sequence ASC]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -2021,7 +2021,7 @@ order by "product" ASC, MrpLineType.sequence ASC]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'MrpList.location'</value>
+                                    <value type="javascript">'MrpList.stockLocation'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3992,7 +3992,7 @@ order by "product" ASC, MrpLineType.sequence ASC]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'MrpList.location'</value>
+                                                    <value type="javascript">'MrpList.stockLocation'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -4359,7 +4359,7 @@ order by "product" ASC, MrpLineType.sequence ASC]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'MrpList.location'</value>
+                                                    <value type="javascript">'MrpList.stockLocation'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>

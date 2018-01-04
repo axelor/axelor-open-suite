@@ -58,14 +58,14 @@ public class StockRulesServiceImpl implements StockRulesService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generatePurchaseOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type) throws AxelorException  {
 
-		StockLocation location = stockLocationLine.getStockLocation();
+		StockLocation stockLocation = stockLocationLine.getStockLocation();
 
 		//TODO à supprimer après suppression des variantes
-		if(location == null)  {
+		if (stockLocation == null) {
 			return;
 		}
 
-		StockRules stockRules = this.getStockRules(product, location, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
+		StockRules stockRules = this.getStockRules(product, stockLocation, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
 
 		if(stockRules == null)  {
 			return;
@@ -161,12 +161,12 @@ public class StockRulesServiceImpl implements StockRulesService  {
 	}
 
 	@Override
-	public StockRules getStockRules(Product product, StockLocation location, int type, int useCase)  {
+	public StockRules getStockRules(Product product, StockLocation stockLocation, int type, int useCase)  {
 
 		if (useCase == StockRulesRepository.USE_CASE_USED_FOR_MRP) {
-			return stockRuleRepo.all().filter("self.product = ?1 AND self.location = ?2 AND self.useCaseSelect = ?3", product, location, useCase).fetchOne();
+			return stockRuleRepo.all().filter("self.product = ?1 AND self.stockLocation = ?2 AND self.useCaseSelect = ?3", product, stockLocation, useCase).fetchOne();
 		} else if (useCase == StockRulesRepository.USE_CASE_STOCK_CONTROL) {
-			return stockRuleRepo.all().filter("self.product = ?1 AND self.location = ?2 AND self.useCaseSelect = ?3 AND self.typeSelect = ?4", product, location, useCase, type).fetchOne();
+			return stockRuleRepo.all().filter("self.product = ?1 AND self.stockLocation = ?2 AND self.useCaseSelect = ?3 AND self.typeSelect = ?4", product, stockLocation, useCase, type).fetchOne();
 		} else {
 			return null;
 		}

@@ -15,7 +15,7 @@
         <field name="typeSelect"/>
     </grid>
     
-	<form name="stock-location-form" title="Stock Location" model="com.axelor.apps.stock.db.StockLocation" onNew="action-location-record-new" width="large">
+	<form name="stock-location-form" title="Stock location" model="com.axelor.apps.stock.db.StockLocation" onNew="action-location-record-new" width="large">
 		<toolbar>
 			<button name="createInventory" title="Create inventory" onClick="action-location-view-create-inventory"/>
 			<button name="print" title="Print" icon="fa-print" onClick="action-stock-location-method-print"/>

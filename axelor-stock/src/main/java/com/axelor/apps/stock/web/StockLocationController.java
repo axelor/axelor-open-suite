@@ -64,7 +64,7 @@ public class StockLocationController {
 	public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
 
-		StockLocation location = request.getContext().asType(StockLocation.class );
+		StockLocation stockLocation = request.getContext().asType(StockLocation.class );
 		String locationIds = "";
 
 		@SuppressWarnings("unchecked")
@@ -77,15 +77,15 @@ public class StockLocationController {
 			
 		if(!locationIds.equals("")){
 			locationIds = locationIds.substring(0, locationIds.length()-1);	
-			location = stockLocationRepo.find(new Long(lstSelectedLocations.get(0)));
-		}else if(location.getId() != null){
-			locationIds = location.getId().toString();			
+			stockLocation = stockLocationRepo.find(new Long(lstSelectedLocations.get(0)));
+		}else if(stockLocation.getId() != null){
+			locationIds = stockLocation.getId().toString();			
 		}
 		
 		if(!locationIds.equals("")){
 			
 			User user = AuthUtils.getUser();
-			Company company = location.getCompany();
+			Company company = stockLocation.getCompany();
 			
 			String language = "en";
 			if(user != null && !Strings.isNullOrEmpty(user.getLanguage()))  {
@@ -96,8 +96,8 @@ public class StockLocationController {
 			}
 
 			String title = I18n.get("Location");
-			if(location.getName() != null)  {
-				title = lstSelectedLocations == null ? I18n.get("Location") + " " + location.getName() : I18n.get("Location(s)");
+			if(stockLocation.getName() != null)  {
+				title = lstSelectedLocations == null ? I18n.get("Location") + " " + stockLocation.getName() : I18n.get("Location(s)");
 			}
 		
 			String fileLink = ReportFactory.createReport(IReport.STOCK_LOCATION, title+"-${date}")

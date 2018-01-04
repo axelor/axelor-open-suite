@@ -102,7 +102,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	}
 
 	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
-			LocalDate deliveryDate, String internalReference, String externalReference, StockLocation location, LocalDate orderDate,
+			LocalDate deliveryDate, String internalReference, String externalReference, StockLocation stockLocation, LocalDate orderDate,
 			PriceList priceList, Partner supplierPartner) throws AxelorException  {
 
 		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
@@ -111,7 +111,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		PurchaseOrder purchaseOrder = super.createPurchaseOrder(buyerUser, company, contactPartner, currency, deliveryDate,
 				internalReference, externalReference, orderDate, priceList, supplierPartner);
 
-		purchaseOrder.setStockLocation(location);
+		purchaseOrder.setStockLocation(stockLocation);
 
 		purchaseOrder.setPaymentMode(supplierPartner.getInPaymentMode());
 		purchaseOrder.setPaymentCondition(supplierPartner.getPaymentCondition());
@@ -262,7 +262,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	
 	@Transactional
 	public PurchaseOrder mergePurchaseOrders(List<PurchaseOrder> purchaseOrderList, Currency currency,
-			Partner supplierPartner, Company company, StockLocation location, Partner contactPartner,
+			Partner supplierPartner, Company company, StockLocation stockLocation, Partner contactPartner,
 			PriceList priceList) throws AxelorException{
 		String numSeq = "";
 		String externalRef = "";
@@ -288,7 +288,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 				null,
 				numSeq,
 				externalRef,
-				location,
+				stockLocation,
 				LocalDate.now(),
 				priceList,
 				supplierPartner);

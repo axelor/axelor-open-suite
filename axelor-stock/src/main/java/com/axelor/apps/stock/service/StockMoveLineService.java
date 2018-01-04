@@ -76,11 +76,11 @@ public interface StockMoveLineService {
 
 
 
-	public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product, StockLocation location) throws AxelorException;
+	public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product, StockLocation stockLocation) throws AxelorException;
 
 
 
-	public List<? extends StockLocationLine> getLocationLines(Product product, StockLocation location) throws AxelorException;
+	public List<? extends StockLocationLine> getLocationLines(Product product, StockLocation stockLocation) throws AxelorException;
 
 
 
@@ -95,7 +95,7 @@ public interface StockMoveLineService {
 	public void updateLocations(StockLocation fromLocation, StockLocation toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
 			lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException;
 
-	public void updateAveragePriceLocationLine(StockLocation location, StockMoveLine stockMoveLine, int toStatus);
+	public void updateAveragePriceLocationLine(StockLocation stockLocation, StockMoveLine stockMoveLine, int toStatus);
 
 	/**
 	 * Check in the product if the stock move line needs to have a conformity

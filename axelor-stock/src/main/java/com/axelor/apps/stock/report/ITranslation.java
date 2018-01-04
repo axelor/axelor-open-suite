@@ -38,7 +38,7 @@ public interface ITranslation {
 	public static final String INVENTORY_TITLE = /*$$(*/ "Inventory.title"; /*)*/
 	public static final String INVENTORY_NAME = /*$$(*/ "Inventory.name"; /*)*/
 	public static final String INVENTORY_DATE = /*$$(*/ "Inventory.date"; /*)*/
-	public static final String INVENTORY_LOCATION = /*$$(*/ "Inventory.location"; /*)*/
+	public static final String INVENTORY_LOCATION = /*$$(*/ "Inventory.stockLocation"; /*)*/
 	public static final String INVENTORY_CODE = /*$$(*/ "Inventory.code"; /*)*/
 	public static final String INVENTORY_UNIT = /*$$(*/ "Inventory.unit"; /*)*/
 	public static final String INVENTORY_REAL_QTY = /*$$(*/ "Inventory.realQty"; /*)*/

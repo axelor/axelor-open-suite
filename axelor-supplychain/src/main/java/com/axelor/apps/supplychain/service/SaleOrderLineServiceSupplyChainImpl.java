@@ -127,7 +127,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 	@Override
 	public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine) {
 		QueryBuilder<StockLocationLine> queryBuilder = QueryBuilder.of(StockLocationLine.class);
-		queryBuilder.add("self.location = :location");
+		queryBuilder.add("self.stockLocation = :stockLocation");
 		queryBuilder.add("self.product = :product");
 		queryBuilder.bind("stockLocation", saleOrderLine.getSaleOrder().getStockLocation());
 		queryBuilder.bind("product", saleOrderLine.getProduct());

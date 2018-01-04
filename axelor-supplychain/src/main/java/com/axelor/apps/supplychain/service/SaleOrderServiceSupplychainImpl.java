@@ -185,7 +185,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	
 	@Transactional
 	public SaleOrder mergeSaleOrders(List<SaleOrder> saleOrderList, Currency currency,
-			Partner clientPartner, Company company, StockLocation location, Partner contactPartner,
+			Partner clientPartner, Company company, StockLocation stockLocation, Partner contactPartner,
 			PriceList priceList, Team team) throws AxelorException{
 		String numSeq = "";
 		String externalRef = "";
@@ -211,7 +211,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 				null,
 				numSeq,
 				externalRef,
-				location,
+				stockLocation,
 				LocalDate.now(),
 				priceList,
 				clientPartner,
