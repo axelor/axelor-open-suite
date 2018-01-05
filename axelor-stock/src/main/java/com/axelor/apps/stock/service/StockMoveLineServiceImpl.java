@@ -208,7 +208,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	@Override
 	public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product, StockLocation stockLocation) throws AxelorException  {
 
-		List<? extends StockLocationLine> stockLocationLineList = this.getLocationLines(product, stockLocation);
+		List<? extends StockLocationLine> stockLocationLineList = this.getStockLocationLines(product, stockLocation);
 
 		if(stockLocationLineList != null)  {
 			for(StockLocationLine stockLocationLine : stockLocationLineList)  {
@@ -228,7 +228,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 
 	@Override
-	public List<? extends StockLocationLine> getLocationLines(Product product, StockLocation stockLocation) throws AxelorException  {
+	public List<? extends StockLocationLine> getStockLocationLines(Product product, StockLocation stockLocation) throws AxelorException  {
 
 		List<? extends StockLocationLine> stockLocationLineList = Beans.get(StockLocationLineRepository.class).all().
 				filter("self.product = ?1 AND self.futureQty > 0 AND self.trackingNumber IS NOT NULL AND self.detailsLocation = ?2"

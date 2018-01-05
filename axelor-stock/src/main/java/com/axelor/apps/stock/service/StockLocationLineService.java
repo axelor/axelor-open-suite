@@ -91,7 +91,7 @@ public interface StockLocationLineService {
 	 * @return
 	 * 		La ligne de stock
 	 */
-	public StockLocationLine getLocationLine(List<StockLocationLine> stockLocationLineList, Product product);
+	public StockLocationLine getStockLocationLine(List<StockLocationLine> stockLocationLineList, Product product);
 	
 	
 	/**

@@ -162,7 +162,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 	}
 
 	public void checkIfEnoughStock(StockLocation stockLocation, Product product, BigDecimal qty) throws AxelorException{
-		StockLocationLine stockLocationLine = this.getLocationLine(stockLocation.getStockLocationLineList(), product);
+		StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation.getStockLocationLineList(), product);
 
 	    if(stockLocationLine != null && stockLocationLine.getCurrentQty().compareTo(qty) < 0) {
 			throw new AxelorException(stockLocationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
@@ -195,7 +195,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 	
 	public StockLocationLine getStockLocationLine(StockLocation stockLocation, Product product)  {
 		
-		StockLocationLine stockLocationLine = this.getLocationLine(stockLocation.getStockLocationLineList(), product);
+		StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation.getStockLocationLineList(), product);
 		
 		if(stockLocationLine == null)  {
 			stockLocationLine = this.createLocationLine(stockLocation, product);
@@ -253,7 +253,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 	 * @return
 	 * 		La ligne de stock
 	 */
-	public StockLocationLine getLocationLine(List<StockLocationLine> stockLocationLineList, Product product)  {
+	public StockLocationLine getStockLocationLine(List<StockLocationLine> stockLocationLineList, Product product)  {
 		
 		for(StockLocationLine stockLocationLine : stockLocationLineList)  {
 			
