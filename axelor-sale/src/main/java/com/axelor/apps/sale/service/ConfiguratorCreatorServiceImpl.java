@@ -371,7 +371,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 			creator.addConfiguratorFormulaListItem(createFormula("Product", "code"));
 			creator.addConfiguratorFormulaListItem(createFormula("Product", "name"));
 			creator.addConfiguratorFormulaListItem(createFormula("Product", "productTypeSelect", "'storable'"));
-			creator.addConfiguratorFormulaListItem(createFormula("Product", "productFamily", "__repo__(ProductFamily).all().filter('self.code = :_code').bind('_code', 'COMP')"));
+			creator.addConfiguratorFormulaListItem(createFormula("Product", "productFamily", "__repo__(ProductFamily).all().filter('self.code = :_code').bind('_code', 'COMP').fetchOne()"));
 		} else {
 			creator.addConfiguratorFormulaListItem(createFormula("SaleOrderLine", "productName"));
 		}
