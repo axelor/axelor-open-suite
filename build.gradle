@@ -61,10 +61,6 @@ task("dataImport", type: JavaExec) {
 	}
 }
 
-build.doLast{
-	archiveReports.execute()
-	archiveImages.execute()
-}
 
 task archiveReports(type: Zip){
 	from 'modules/abs'
@@ -88,3 +84,5 @@ task archiveImages(type: Zip){
 	destinationDir = new File("$buildDir/libs")
 	includeEmptyDirs = false
 }
+
+build.finalizedBy archiveReports, archiveImages
