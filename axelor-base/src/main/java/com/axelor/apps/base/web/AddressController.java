@@ -62,21 +62,10 @@ public class AddressController {
 
 	@Inject
 	private AddressService addressService;
-	
-	@Inject
-	private AddressRepository addressRepo;
 
 	@Inject
 	protected AppBaseService appBaseService;
-	
-	@Inject
-	private PartnerService partnerService;
-	
-	@Inject
-	private PartnerRepository partnerRepo;
-	
-	
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	public void check(ActionRequest request, ActionResponse response) {
@@ -236,7 +225,7 @@ public class AddressController {
 			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_6));
 			return;
 		}
-		Address departureAddress = partnerService.getDeliveryAddress(currPartner);
+		Address departureAddress = Beans.get(PartnerService.class).getDeliveryAddress(currPartner);
 		if (departureAddress == null) {
 			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
 			return;
@@ -276,41 +265,29 @@ public class AddressController {
 
 
 	public void createPartnerAddress(ActionRequest request, ActionResponse response){
-
 		Context context = request.getContext();
-		LOG.debug("Context fields: {}",context.keySet());
-		Address address = context.asType(Address.class);
-
 		Context parentContext = context.getParent();
-		LOG.debug("Parent Context fields: {}",parentContext.keySet());
-		if(parentContext.isEmpty()){
+		if(parentContext.isEmpty()) {
 			return;
 		}
 
-		String parentModel = (String) parentContext.get("_model");
-		LOG.debug("Partner modelPartnerFieldMap: {}",IPartner.modelPartnerFieldMap);
-		LOG.debug("Parent model: {}",parentModel);
 		Partner partner = Mapper.toBean(Partner.class, (Map<String, Object>)parentContext.get("_parent"));
 		if(partner == null || partner.getId() == null){
 			return;
 		}
+		Address address = context.asType(Address.class);
 
 		PartnerAddress partnerAddress = Beans.get(PartnerAddressRepository.class).all().filter("self.partner.id = ? AND self.address.id = ?", partner.getId(), address.getId()).fetchOne();
-		
-		LOG.debug("Partner address: {}",partnerAddress);
-		if(partnerAddress ==  null){
-			partner = partnerRepo.find(partner.getId());
-			address = addressRepo.find(address.getId());
+		if (partnerAddress == null) {
+			partner = Beans.get(PartnerRepository.class).find(partner.getId());
+			address = Beans.get(AddressRepository.class).find(address.getId());
 			Boolean invoicing = (Boolean)context.get("isInvoicingAddr");
 			Boolean delivery = (Boolean)context.get("isDeliveryAddr");
 			Boolean isDefault = (Boolean)context.get("isDefault");
-			LOG.debug("Address isDelivery : {} , isInvoicing: {}",delivery,invoicing);
-
+			PartnerService partnerService = Beans.get(PartnerService.class);
 			partnerService.addPartnerAddress(partner, address, isDefault, invoicing, delivery);
 			partnerService.savePartner(partner);
 		}
-				
-		
 	}
 
 }
