@@ -19,7 +19,8 @@
       <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
       
       <one-to-many name="extraHoursLineList" ref="com.axelor.apps.hr.db.ExtraHoursLine" title="Extra Hours" mappedBy="extraHours"/>
-      
+      <many-to-one name="payrollPreparation" ref="com.axelor.apps.hr.db.PayrollPreparation"/>
+
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
    	  String fullName = "";

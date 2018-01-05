@@ -16,15 +16,16 @@
 
 	<form name="payroll-preparation-form" title="Payroll preparation" model="com.axelor.apps.hr.db.PayrollPreparation" 
 		onNew="action-payroll-preparation-group-on-new"
-		onLoad="action-payroll-preparation-method-fill-in-leaves">
+		onLoad="action-payroll-preparation-method-fill-in-lists">
 		<panel name="main" >
 			<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" colSpan="4"/>
 			 <field name="employee" colSpan="4" onChange="action-payroll-preparation-record-fill-contract, action-payroll-preparation-group-fill-in"/>
 			 <field name="employmentContract" colSpan="4" domain="self.employee = :employee" onChange="action-payroll-preparation-group-fill-in" canEdit="false"/> 
 			 <field name="period" canEdit="false" domain="self.year.typeSelect = 2" grid-view="period-hr-grid" form-view="period-hr-form" onChange="action-payroll-preparation-group-fill-in" colSpan="4"/>
 			 <button name="refreshButton" title="Refresh" onClick="action-payroll-preparation-group-fill-in,save" colSpan="4" colOffset="4"/>
-			 <field name="$payrollLeavesList" type="many-to-many" target="com.axelor.apps.hr.db.PayrollLeave" title="Leaves" readonly="true" colSpan="12"/>
-			 <panel-related field="extraHoursLineList" readonly="true" colSpan="12"/>
+			 <panel-related field="$payrollLeaveList" type="many-to-many" target="com.axelor.apps.hr.db.PayrollLeave" title="Leaves" readonly="true" colSpan="12" grid-view="payroll-leave-grid" form-view="payroll-leave-form"/>
+			 <panel-related field="extraHoursList" hidden="true" title="Extra hours" readonly="true" colSpan="12" grid-view="extra-hours-grid" form-view="extra-hours-form"/>
+			 <panel-related field="$extraHoursLineList" type="one-to-many" target="com.axelor.apps.hr.db.ExtraHoursLine" title="Extra hours" readonly="true" editable="false" colSpan="12" grid-view="extra-hours-line-grid" form-view="extra-hours-line-form"/>
 			 <field name="duration"/>
 			 <field name="leaveDuration" />
 			 <panel-related field="expenseList" 		     colSpan="12" canEdit="false" canNew="false" grid-view="expense-payroll-preparation-grid"/>
@@ -69,8 +70,8 @@
 		<call class="com.axelor.apps.hr.web.PayrollPreparationController" method="fillInPayrollPreparation"/>
 	</action-method>
 	
-	<action-method name="action-payroll-preparation-method-fill-in-leaves">
-		<call class="com.axelor.apps.hr.web.PayrollPreparationController" method="fillInPayrollPreparationLeaves"/>
+	<action-method name="action-payroll-preparation-method-fill-in-lists">
+		<call class="com.axelor.apps.hr.web.PayrollPreparationController" method="fillInPayrollPreparationLists"/>
 	</action-method>
 	
 	<action-record name="action-payroll-preparation-record-default-on-new" model="com.axelor.apps.hr.db.PayrollPreparation">

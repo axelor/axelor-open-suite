@@ -26,7 +26,7 @@
 
 	<form name="extra-hours-form" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHours" cols="12" width="large"
 	    onNew="action-group-extra-hours-onnew"
-	    onLoad="action-extra-hours-attrs-buttons,action-extra-hours-attrs-title-project-task" canNew="false" canCopy="false">
+	    onLoad="action-extra-hours-attrs-buttons,action-extra-hours-attrs-title-project-task,action-extra-hours-attrs-payroll-preparation" canNew="false" canCopy="false">
 
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
 	    	<button name="confirmButton" onClick="action-extra-hours-group-confirm" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
@@ -49,6 +49,10 @@
 			<field name="refusalDate"/>
 			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
 		</panel>
+        <panel name="payrollPreparationPanel" title="Payroll preparation" sidebar="true" readonly="true" hidden="true">
+            <field name="payrollPreparation" showTitle="false" colSpan="8" />
+            <field name="payrollPreparation.exported" colSpan="4" />
+        </panel>
 	</form>
 	
 	<form name="popup-extra-hours-refusal-form" title="Ground for refusal" model="com.axelor.apps.hr.db.ExtraHours">
@@ -109,7 +113,11 @@
 	<action-attrs name="action-extra-hours-attrs-domain-extra-hours-select">
 		<attribute name="domain" for="$extraHoursSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
 	</action-attrs>
-	
+
+    <action-attrs name="action-extra-hours-attrs-payroll-preparation">
+        <attribute name="hidden" for="payrollPreparationPanel" expr="eval: !payrollPreparation" if="__user__.employee?.hrManager" />
+    </action-attrs>
+
 	<action-method name="action-extra-hours-method-confirm">
 		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="confirm"/>
 	</action-method>

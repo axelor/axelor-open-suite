@@ -17,11 +17,46 @@
  */
 package com.axelor.apps.hr.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.joda.time.LocalDate;
+
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
-import com.axelor.apps.hr.db.*;
-import com.axelor.apps.hr.db.repo.*;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EmployeeBonusMgtLine;
+import com.axelor.apps.hr.db.EmploymentContract;
+import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.db.ExtraHours;
+import com.axelor.apps.hr.db.ExtraHoursLine;
+import com.axelor.apps.hr.db.HRConfig;
+import com.axelor.apps.hr.db.LeaveRequest;
+import com.axelor.apps.hr.db.LunchVoucherMgtLine;
+import com.axelor.apps.hr.db.OtherCostsEmployee;
+import com.axelor.apps.hr.db.PayrollLeave;
+import com.axelor.apps.hr.db.PayrollPreparation;
+import com.axelor.apps.hr.db.repo.EmployeeBonusMgtLineRepository;
+import com.axelor.apps.hr.db.repo.EmployeeBonusMgtRepository;
+import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.db.repo.ExtraHoursLineRepository;
+import com.axelor.apps.hr.db.repo.ExtraHoursRepository;
+import com.axelor.apps.hr.db.repo.HrBatchRepository;
+import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
+import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
+import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.leave.LeaveService;
@@ -33,19 +68,6 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.joda.time.LocalDate;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class PayrollPreparationService {
 	
@@ -97,11 +119,41 @@ public class PayrollPreparationService {
 		payrollPreparation.setLunchVoucherNumber(this.computeLunchVoucherNumber(payrollPreparation));
 		payrollPreparation.setEmployeeBonusAmount( computeEmployeeBonusAmount(payrollPreparation) );
 		payrollPreparation.setExtraHoursNumber( computeExtraHoursNumber(payrollPreparation) );
-		
+
+        if (payrollPreparation.getEmploymentContract() != null) {
+            if (payrollPreparation.getEmploymentContract().getOtherCostsEmployeeSet() != null) {
+                for (OtherCostsEmployee otherCostsEmployee : payrollPreparation.getEmploymentContract()
+                        .getOtherCostsEmployeeSet()) {
+                    payrollPreparation.addOtherCostsEmployeeSetItem(otherCostsEmployee);
+                }
+            }
+
+            payrollPreparation.setAnnualGrossSalary(payrollPreparation.getEmploymentContract().getAnnualGrossSalary());
+        }
+
 		return payrollLeaveList;
 	}
-	
-	
+
+    /**
+     * Get list of extra hours lines from the list of extra hours on the payroll preparation.
+     * 
+     * @param payrollPreparation
+     * @return
+     */
+    public List<ExtraHoursLine> getExtraHoursLineList(PayrollPreparation payrollPreparation) {
+        List<ExtraHoursLine> extraHoursLines = new ArrayList<>();
+
+        if (payrollPreparation.getExtraHoursList() != null) {
+            for (ExtraHours extraHours : payrollPreparation.getExtraHoursList()) {
+                if (extraHours.getExtraHoursLineList() != null) {
+                    extraHoursLines.addAll(extraHours.getExtraHoursLineList());
+                }
+            }
+        }
+
+        return extraHoursLines;
+    }
+
 	public List<PayrollLeave> fillInLeaves(PayrollPreparation payrollPreparation) throws AxelorException{
 		
 		List<PayrollLeave> payrollLeaveList = new ArrayList<PayrollLeave>();
@@ -168,10 +220,27 @@ public class PayrollPreparationService {
 		LocalDate fromDate = payrollPreparation.getPeriod().getFromDate();
 		LocalDate toDate = payrollPreparation.getPeriod().getToDate();
 		BigDecimal extraHoursNumber = BigDecimal.ZERO;
-		for(ExtraHoursLine extraHoursLine : Beans.get(ExtraHoursLineRepository.class).all().filter("self.user.employee = ?1 AND self.extraHours.statusSelect = 3 AND self.date BETWEEN ?2 AND ?3 AND (self.payrollPreparation = null OR self.payrollPreparation.id = ?4)", payrollPreparation.getEmployee(), fromDate, toDate, payrollPreparation.getId()).fetch()){
-			payrollPreparation.addExtraHoursLineListItem(extraHoursLine);
+        Set<ExtraHours> extraHoursSet = new HashSet<>();
+
+        for (ExtraHoursLine extraHoursLine : Beans.get(ExtraHoursLineRepository.class).all()
+                .filter("self.user.employee = ?1 AND self.extraHours.statusSelect = ?2 "
+                        + "AND self.extraHours.validationDate BETWEEN ?3 AND ?4 "
+                        + "AND (self.extraHours.payrollPreparation IS NULL OR self.extraHours.payrollPreparation.id = ?5)",
+                        payrollPreparation.getEmployee(), ExtraHoursRepository.STATUS_VALIDATED, fromDate, toDate,
+                        payrollPreparation.getId())
+                .fetch()) {
+            extraHoursSet.add(extraHoursLine.getExtraHours());
 			extraHoursNumber = extraHoursNumber.add( extraHoursLine.getQty() );
 		}
+
+        payrollPreparation.clearExtraHoursList();
+
+        for (ExtraHours extraHours : extraHoursSet) {
+//            extraHours.setPayrollPreparation(payrollPreparation);
+//            payrollPreparation.getExtraHoursList().add(extraHours);
+            payrollPreparation.addExtraHoursListItem(extraHours);
+        }
+
 		return extraHoursNumber;
 	}
 	
@@ -190,7 +259,10 @@ public class PayrollPreparationService {
                         payrollPreparation.getPeriod().getFromDate(),
                         payrollPreparation.getPeriod().getToDate())
                 .fetch();
-		for (Expense expense : expenseList) {
+
+        payrollPreparation.clearExpenseList();
+
+        for (Expense expense : expenseList) {
 			expenseAmount = expenseAmount.add(expense.getInTaxTotal());
 			payrollPreparation.addExpenseListItem(expense);
 		}
@@ -200,6 +272,9 @@ public class PayrollPreparationService {
 	public BigDecimal computeLunchVoucherNumber(PayrollPreparation payrollPreparation){
 		BigDecimal lunchVoucherNumber = BigDecimal.ZERO;
 		List<LunchVoucherMgtLine> lunchVoucherList = Beans.get(LunchVoucherMgtLineRepository.class).all().filter("self.employee = ?1 AND self.lunchVoucherMgt.statusSelect = 3 AND (self.payrollPreparation = null OR self.payrollPreparation.id = ?2) AND self.lunchVoucherMgt.payPeriod = ?3", payrollPreparation.getEmployee(), payrollPreparation.getId(), payrollPreparation.getPeriod()).fetch();
+
+		payrollPreparation.clearLunchVoucherMgtLineList();
+
 		for (LunchVoucherMgtLine lunchVoucherMgtLine : lunchVoucherList) {
 			lunchVoucherNumber = lunchVoucherNumber.add(new BigDecimal(lunchVoucherMgtLine.getLunchVoucherNumber()) );
 			lunchVoucherNumber = lunchVoucherNumber.add(new BigDecimal(lunchVoucherMgtLine.getInAdvanceNbr()));
@@ -222,6 +297,9 @@ public class PayrollPreparationService {
 								payrollPreparation.getPeriod(),
 								EmployeeBonusMgtRepository.STATUS_CALCULATED)
 						.fetch();
+
+		payrollPreparation.clearEmployeeBonusMgtLineList();
+
 		for (EmployeeBonusMgtLine employeeBonusMgtLine : employeeBonusList) {
 			payrollPreparation.addEmployeeBonusMgtLineListItem(employeeBonusMgtLine);
 			employeeBonusAmount = employeeBonusAmount.add( employeeBonusMgtLine.getAmount() );

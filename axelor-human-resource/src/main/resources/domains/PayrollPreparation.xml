@@ -19,7 +19,7 @@
      
       <string name="comments" title="Comments" large="true"/>
      
-      <one-to-many name="extraHoursLineList" ref="com.axelor.apps.hr.db.ExtraHoursLine" title="Extra hours" mappedBy="payrollPreparation" orphanRemoval="false"/>
+      <one-to-many name="extraHoursList" ref="com.axelor.apps.hr.db.ExtraHours" title="Extra hours" mappedBy="payrollPreparation" orphanRemoval="false"/>
       <one-to-many name="expenseList" ref="com.axelor.apps.hr.db.Expense" title="Expenses" mappedBy="payrollPreparation" orphanRemoval="false"/>
       <one-to-many name="employeeBonusMgtLineList" ref="com.axelor.apps.hr.db.EmployeeBonusMgtLine" title="Employee bonuses" mappedBy="payrollPreparation" orphanRemoval="false"/>
       <one-to-many name="lunchVoucherMgtLineList" ref="com.axelor.apps.hr.db.LunchVoucherMgtLine" title="Lunch vouchers" mappedBy="payrollPreparation" orphanRemoval="false"/>

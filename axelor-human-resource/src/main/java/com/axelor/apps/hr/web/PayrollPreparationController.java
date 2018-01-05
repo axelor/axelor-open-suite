@@ -19,8 +19,10 @@ package com.axelor.apps.hr.web;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map.Entry;
 
 import com.axelor.apps.hr.db.EmploymentContract;
+import com.axelor.apps.hr.db.ExtraHoursLine;
 import com.axelor.apps.hr.db.PayrollLeave;
 import com.axelor.apps.hr.db.PayrollPreparation;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
@@ -28,7 +30,9 @@ import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.PayrollLeaveRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.service.PayrollPreparationService;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -53,33 +57,41 @@ public class PayrollPreparationController {
 		response.setValues(payrollPreparationService.generateFromEmploymentContract(payrollPreparation, employmentContract));
 	}
 	
-	public void fillInPayrollPreparation(ActionRequest request, ActionResponse response) throws AxelorException{
-		PayrollPreparation payrollPreparation = request.getContext().asType(PayrollPreparation.class);
-		
-		 List<PayrollLeave> payrollLeaveList = payrollPreparationService.fillInPayrollPreparation(payrollPreparation);
-		
-		response.setValue("extraHoursLineList",payrollPreparation.getExtraHoursLineList());
-		response.setValue("$payrollLeavesList", payrollLeaveList);
-		response.setValue("duration",payrollPreparation.getDuration());
-		response.setValue("leaveDuration",payrollPreparation.getLeaveDuration());
-		response.setValue("expenseAmount",payrollPreparation.getExpenseAmount());
-		response.setValue("expenseList",payrollPreparation.getExpenseList());
-		response.setValue("otherCostsEmployeeSet",payrollPreparation.getEmploymentContract().getOtherCostsEmployeeSet());
-		response.setValue("annualGrossSalary",payrollPreparation.getEmploymentContract().getAnnualGrossSalary());
-		response.setValue("employeeBonusMgtLineList", payrollPreparation.getEmployeeBonusMgtLineList());
-		response.setValue("lunchVoucherNumber", payrollPreparation.getLunchVoucherNumber());
-		response.setValue("lunchVoucherMgtLineList", payrollPreparation.getLunchVoucherMgtLineList());
-	}
-	
-	public void fillInPayrollPreparationLeaves(ActionRequest request, ActionResponse response) throws AxelorException{
-		PayrollPreparation payrollPreparation = request.getContext().asType(PayrollPreparation.class);
-		
-		 List<PayrollLeave> payrollLeaveList = payrollPreparationService.fillInLeaves(payrollPreparation);
-		
-		response.setValue("$payrollLeavesList", payrollLeaveList);
-	}
-	
-	
+    public void fillInPayrollPreparation(ActionRequest request, ActionResponse response) throws AxelorException {
+        try {
+            PayrollPreparation payrollPreparation = request.getContext().asType(PayrollPreparation.class);
+
+            List<PayrollLeave> payrollLeaveList = payrollPreparationService
+                    .fillInPayrollPreparation(payrollPreparation);
+            List<ExtraHoursLine> extraHoursLineList = payrollPreparationService
+                    .getExtraHoursLineList(payrollPreparation);
+
+            for (Entry<String, Object> entry : Mapper.toMap(payrollPreparation).entrySet()) {
+                response.setValue(entry.getKey(), entry.getValue());
+            }
+
+            response.setValue("$payrollLeaveList", payrollLeaveList);
+            response.setValue("$extraHoursLineList", extraHoursLineList);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
+
+    public void fillInPayrollPreparationLists(ActionRequest request, ActionResponse response) throws AxelorException {
+        try {
+            PayrollPreparation payrollPreparation = request.getContext().asType(PayrollPreparation.class);
+
+            List<PayrollLeave> payrollLeaveList = payrollPreparationService.fillInLeaves(payrollPreparation);
+            List<ExtraHoursLine> extraHoursLineList = payrollPreparationService
+                    .getExtraHoursLineList(payrollPreparation);
+
+            response.setValue("$payrollLeaveList", payrollLeaveList);
+            response.setValue("$extraHoursLineList", extraHoursLineList);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
+
 	public void exportPayrollPreparation(ActionRequest request, ActionResponse response) throws IOException, AxelorException{
 		
 		PayrollPreparation payrollPreparation = payrollPreparationRepo.find( request.getContext().asType(PayrollPreparation.class).getId() );
