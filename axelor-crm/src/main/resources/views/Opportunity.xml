@@ -88,7 +88,7 @@
 		</toolbar>
 		<menubar>
 	    	<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
-	    		<item title="Convert into quotation" action="action-sale-group-generate-sale-order"  if-module="axelor-sale"/>
+	    		<item title="Convert into quotation" action="action-sale-group-generate-sale-order"  if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
 	    	</menu>
 	  	</menubar>
 	  
