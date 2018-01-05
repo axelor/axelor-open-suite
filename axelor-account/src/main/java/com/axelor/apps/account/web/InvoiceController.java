@@ -637,17 +637,24 @@ public class InvoiceController {
 	public void fillPriceList(ActionRequest request, ActionResponse response) {
 	    Invoice invoice = request.getContext().asType(Invoice.class);
 	    Partner partner = invoice.getPartner();
-	    int priceListTypeSelect = -1;
-	    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
-				|| invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
-	        priceListTypeSelect = PriceListRepository.TYPE_SALE;
-		} else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-				|| invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
-	        priceListTypeSelect = PriceListRepository.TYPE_PURCHASE;
-		}
+	    int priceListTypeSelect = invoiceService.getPurchaseTypeOrSaleType(invoice);
 		response.setValue("priceList",
 				Beans.get(PartnerPriceListService.class)
 						.getDefaultPriceList(partner, priceListTypeSelect)
 		);
+	}
+
+	/**
+	 * Called from invoice view on price list select.
+	 * Call {@link PartnerPriceListService#getPriceListDomain(Partner, int)}.
+	 * @param request
+	 * @param response
+	 */
+	public void changePriceListDomain(ActionRequest request, ActionResponse response) {
+	    Invoice invoice = request.getContext().asType(Invoice.class);
+		Partner partner = invoice.getPartner();
+		int priceListTypeSelect = invoiceService.getPurchaseTypeOrSaleType(invoice);
+	    String domain = Beans.get(PartnerPriceListService.class).getPriceListDomain(partner, priceListTypeSelect);
+	    response.setAttr("priceList", "domain", domain);
 	}
 }

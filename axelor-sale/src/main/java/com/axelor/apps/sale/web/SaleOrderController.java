@@ -504,4 +504,16 @@ public class SaleOrderController {
 		);
     }
 
+	/**
+	 * Called from sale order view on price list select.
+	 * Call {@link PartnerPriceListService#getPriceListDomain(Partner, int)}.
+	 * @param request
+	 * @param response
+	 */
+	public void changePriceListDomain(ActionRequest request, ActionResponse response) {
+	    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+	    String domain = Beans.get(PartnerPriceListService.class).getPriceListDomain(saleOrder.getClientPartner(), PriceListRepository.TYPE_SALE);
+	    response.setAttr("priceList", "domain", domain);
+	}
+
 }

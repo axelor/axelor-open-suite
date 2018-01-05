@@ -38,4 +38,18 @@ public interface PartnerPriceListService {
      * @return  the default price list from the partner
      */
     PriceList getDefaultPriceList(Partner partner, int priceListTypeSelect);
+
+    /**
+     * @param partner
+     * @param priceListTypeSelect
+     * @return  the domain for the partner and the type
+     */
+    String getPriceListDomain(Partner partner, int priceListTypeSelect);
+
+    /**
+     * @param partner
+     * @param priceListTypeSelect
+     * @return the partner price list for the given type
+     */
+    public PartnerPriceList getPartnerPriceList(Partner partner, int priceListTypeSelect);
 }

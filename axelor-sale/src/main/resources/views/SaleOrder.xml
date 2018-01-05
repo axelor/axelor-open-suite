@@ -243,7 +243,7 @@
 				  <viewer>{{record.deliveryAddressStr}}</viewer>
 			  </field>
 		  </panel>
-	      <field name="priceList" onSelect="action-sale-order-attrs-price-list-domain" onChange="action-sale-order-record-hide-discount" form-view="price-list-form"  grid-view="price-list-grid" readonlyIf="statusSelect >= 3"/>
+	      <field name="priceList" onSelect="action-sale-order-method-price-list-domain" onChange="action-sale-order-record-hide-discount" form-view="price-list-form"  grid-view="price-list-grid" readonlyIf="statusSelect >= 3"/>
 	      <field name="hideDiscount"/>
       	  <field name="externalReference"/>
       </panel>
@@ -452,7 +452,7 @@
 				  <viewer>{{record.deliveryAddressStr}}</viewer>
 			  </field>
           </panel>
-	      <field name="priceList" onSelect="action-sale-order-attrs-price-list-domain" onChange="action-sale-order-record-hide-discount" form-view="price-list-form" grid-view="price-list-grid" readonlyIf="statusSelect == 3"/>
+	      <field name="priceList" onSelect="action-sale-order-method-price-list-domain" onChange="action-sale-order-record-hide-discount" form-view="price-list-form" grid-view="price-list-grid" readonlyIf="statusSelect == 3"/>
 	      <field name="hideDiscount"/>
       	  <field name="externalReference"/>
       </panel>
@@ -757,11 +757,6 @@
 		<attribute for="cancelReasonStr" name="hidden" expr="cancelReason.freeText == false"/>
 	</action-attrs>
 
-	<action-attrs name="action-sale-order-attrs-price-list-domain">
-		<attribute for="priceList" name="domain"
-				   expr="eval: &quot;self.typeSelect = 1 and self.isActive = true and self.id IN (${(clientPartner?.salePartnerPriceList?.priceListSet?.findAll{it.applicationBeginDate &lt;= __date__ &amp;&amp; it.applicationEndDate &gt; __date__}.collect{it.id}+[0]).join(',')}) &quot;"/>
-	</action-attrs>
-
 	<action-group name="action-group-sale-order-merge-action">
 	    <action name="action-sale-order-method-merge-sale" if="!__config__.app.isApp('supplychain')"/>
 	    <action name="action-sale-order-method-merge-supplychain" if="__config__.app.isApp('supplychain')"/>
@@ -875,6 +870,10 @@
 
 	<action-method name="action-sale-order-method-fill-price-list">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="fillPriceList"/>
+	</action-method>
+
+	<action-method name="action-sale-order-method-price-list-domain">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="changePriceListDomain"/>
 	</action-method>
 
 	<action-method name="action-sale-order-method-generate-type-per-order-line">

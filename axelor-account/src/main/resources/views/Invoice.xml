@@ -189,7 +189,7 @@
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" onSelect="action-set-payment-mode-domain" onChange="action-invoice-method-fill-company-bank-details"/>
 			<field name="paymentCondition" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 			<field name="bankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="priceList" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-attrs-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
+			<field name="priceList" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-method-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
 			<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-group-saleorder-onchange" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="purchaseOrder" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
 			<field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
@@ -889,15 +889,6 @@
 		<attribute name="domain" for="partnerAccount" expr="eval: &quot;self.company.id = ${company.id} AND (self.accountType.technicalTypeSelect = 'receivable' OR self.accountType.technicalTypeSelect = 'payable') AND self.useForPartnerBalance = true &quot;" if="company"/>
 	</action-attrs>
 	
-	<action-attrs name="action-invoice-attrs-domain-priceList">
-		<attribute name="domain" for="priceList"
-				   if="operationTypeSelect == 3 || operationTypeSelect == 4"
-				   expr="eval: &quot; self.typeSelect = 1 and self.isActive = true and self.id IN (${(partner?.salePartnerPriceList?.priceListSet?.findAll{it.applicationBeginDate &lt;= __date__ &amp;&amp; it.applicationEndDate &gt; __date__}.collect{it.id}+[0]).join(',')})&quot;"/>
-		<attribute name="domain" for="priceList"
-				   if="operationTypeSelect == 1 || operationTypeSelect == 2"
-				   expr="eval: &quot; self.typeSelect = 2 and self.isActive = true and self.id IN (${(partner?.purchasePartnerPriceList?.priceListSet?.findAll{it.applicationBeginDate &lt;= __date__ &amp;&amp; it.applicationEndDate &gt; __date__}.collect{it.id}+[0]).join(',')}) &quot;"/>
-	</action-attrs>
-
 	<action-attrs name="action-invoice-attrs-domain-address">
 		<attribute name="domain" for="address" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isInvoicingAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
     </action-attrs>
@@ -997,6 +988,11 @@
 	<action-method name="action-invoice-method-fill-price-list">
 		<call class="com.axelor.apps.account.web.InvoiceController"
 			  method="fillPriceList"/>
+	</action-method>
+
+	<action-method name="action-invoice-method-domain-priceList">
+		<call class="com.axelor.apps.account.web.InvoiceController"
+			  method="changePriceListDomain"/>
 	</action-method>
 
     <action-view name="action-invoice-view-register-payment" title="Register a payment" model="com.axelor.apps.account.db.InvoicePayment">

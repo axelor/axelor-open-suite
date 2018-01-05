@@ -8,6 +8,7 @@
           model="com.axelor.apps.base.db.PartnerPriceList">
         <field name="label"/>
         <field name="typeSelect"/>
+        <field name="isExclusive"/>
     </grid>
 
     <form name="sale-partner-price-list-form" title="Price lists"
@@ -17,6 +18,7 @@
         <panel name="main">
             <field name="label"/>
             <field name="typeSelect" readonly="true" colSpan="4"/>
+            <field name="isExclusive"/>
             <field name="priceListSet"
                    grid-view="price-list-grid"
                    form-view="sale-price-list-form"
@@ -33,6 +35,7 @@
         <panel name="main">
             <field name="label"/>
             <field name="typeSelect" readonly="true" colSpan="4"/>
+            <field name="isExclusive"/>
             <field name="priceListSet"
                    grid-view="price-list-grid"
                    form-view="purchase-price-list-form"

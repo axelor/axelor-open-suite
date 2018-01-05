@@ -20,14 +20,17 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerPriceList;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.repo.PartnerPriceListRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -36,6 +39,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class PartnerPriceListServiceImpl implements PartnerPriceListService {
+
+    protected LocalDate today;
+
+    @Inject
+    public PartnerPriceListServiceImpl(AppBaseService appBaseService) {
+        this.today = appBaseService.getTodayDate();
+    }
 
     @Override
     public void checkDates(PartnerPriceList partnerPriceList) throws AxelorException {
@@ -73,13 +83,7 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
     @Override
     public PriceList getDefaultPriceList(Partner partner, int priceListTypeSelect) {
         partner = Beans.get(PartnerRepository.class).find(partner.getId());
-        LocalDate today = Beans.get(AppBaseService.class).getTodayDate();
-        PartnerPriceList partnerPriceList = null;
-        if (priceListTypeSelect == PriceListRepository.TYPE_SALE) {
-            partnerPriceList = partner.getSalePartnerPriceList();
-        } else if (priceListTypeSelect == PriceListRepository.TYPE_PURCHASE) {
-            partnerPriceList = partner.getPurchasePartnerPriceList();
-        }
+        PartnerPriceList partnerPriceList = getPartnerPriceList(partner, priceListTypeSelect);
         if (partnerPriceList == null) {
             return null;
         }
@@ -88,13 +92,47 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
             return null;
         }
         List<PriceList> priceLists = priceListSet.stream().filter(priceList ->
-                priceList.getApplicationBeginDate().isBefore(today)
-                        && priceList.getApplicationEndDate().isAfter(today)
+                priceList.getApplicationBeginDate().compareTo(today) <= 0
+                        && priceList.getApplicationEndDate().compareTo(today) >= 0
         ).collect(Collectors.toList());
         if (priceLists.size() == 1) {
             return priceLists.get(0);
         } else {
             return null;
         }
+    }
+
+    public String getPriceListDomain(Partner partner, int priceListTypeSelect) {
+        //get all non exclusive partner price lists
+        List<PartnerPriceList> partnerPriceLists = Beans.get(PartnerPriceListRepository.class)
+                .all()
+                .filter("self.typeSelect = :_priceListTypeSelect " +
+                        "AND self.isExclusive = false")
+                .bind("_priceListTypeSelect", priceListTypeSelect)
+                .fetch();
+        //get (maybe exclusive) list for the partner
+        PartnerPriceList partnerPriceList = getPartnerPriceList(partner, priceListTypeSelect);
+        if (partnerPriceList != null && partnerPriceList.getIsExclusive()) {
+            partnerPriceLists.add(partnerPriceList);
+        }
+        if (partnerPriceLists.isEmpty()) {
+            return "self.id IN (0)";
+        }
+        List<PriceList> priceLists = partnerPriceLists.stream()
+                .flatMap(partnerPriceList1 -> partnerPriceList1.getPriceListSet().stream())
+                .filter(priceList -> priceList.getIsActive()
+                        && (priceList.getApplicationBeginDate().compareTo(today) <= 0)
+                        && (priceList.getApplicationEndDate().compareTo(today)) >= 0)
+                .collect(Collectors.toList());
+        return "self.id IN (" + StringTool.getIdListString(priceLists) + ")";
+    }
+
+    public PartnerPriceList getPartnerPriceList(Partner partner, int priceListTypeSelect) {
+        if (priceListTypeSelect == PriceListRepository.TYPE_SALE) {
+            return partner.getSalePartnerPriceList();
+        } else if (priceListTypeSelect == PriceListRepository.TYPE_PURCHASE) {
+            return partner.getPurchasePartnerPriceList();
+        }
+        return null;
     }
 }

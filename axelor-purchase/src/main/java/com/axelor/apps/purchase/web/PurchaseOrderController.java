@@ -367,4 +367,10 @@ public class PurchaseOrderController {
 		);
 	}
 
+	public void changePriceListDomain(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		String domain = Beans.get(PartnerPriceListService.class).getPriceListDomain(purchaseOrder.getSupplierPartner(), PriceListRepository.TYPE_PURCHASE);
+		response.setAttr("priceList", "domain", domain);
+	}
+
 }
