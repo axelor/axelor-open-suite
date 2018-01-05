@@ -271,8 +271,18 @@ public class AddressController {
 			return;
 		}
 
-		Partner partner = Mapper.toBean(Partner.class, (Map<String, Object>)parentContext.get("_parent"));
-		if(partner == null || partner.getId() == null){
+		String parentModel = (String) parentContext.get("_model");
+		String partnerField = IPartner.modelPartnerFieldMap.get(parentModel);
+
+		Partner partner = null;
+		if (parentContext.get(partnerField) instanceof Partner) {
+			partner = (Partner) parentContext.get(partnerField);
+		}
+		else if (parentContext.get(partnerField) instanceof Map) {
+			partner = Mapper.toBean(Partner.class, (Map<String, Object>) parentContext.get(partnerField));
+		}
+
+		if (partner == null || partner.getId() == null) {
 			return;
 		}
 		Address address = context.asType(Address.class);

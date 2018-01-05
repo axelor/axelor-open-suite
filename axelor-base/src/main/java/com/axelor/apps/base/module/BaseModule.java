@@ -18,6 +18,8 @@
 package com.axelor.apps.base.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.base.db.IPartner;
+import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.AddressBaseRepository;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.AlarmEngineBatchBaseRepository;
@@ -114,5 +116,6 @@ public class BaseModule extends AxelorModule {
         bind(BaseBatchRepository.class).to(BaseBatchBaseRepository.class);
         bind(MailBatchRepository.class).to(MailBatchBaseRepository.class);
         bind(AlarmEngineBatchRepository.class).to(AlarmEngineBatchBaseRepository.class);
+        IPartner.modelPartnerFieldMap.put(PartnerAddress.class.getName(), "_parent");
     }
 }
