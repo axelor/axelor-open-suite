@@ -45,7 +45,7 @@ public class PublicHolidayService {
 	public BigDecimal computePublicHolidayDays(LocalDate fromDate, LocalDate toDate, WeeklyPlanning weeklyPlanning, EventsPlanning publicHolidayPlanning) throws AxelorException{
 		BigDecimal publicHolidayDays = BigDecimal.ZERO;
 
-		List<EventsPlanningLine> publicHolidayDayList = eventsPlanningLineRepo.all().filter("self.publicHolidayPlann = ?1 AND self.date BETWEEN ?2 AND ?3", publicHolidayPlanning, fromDate, toDate).fetch();
+		List<EventsPlanningLine> publicHolidayDayList = eventsPlanningLineRepo.all().filter("self.eventsPlanning = ?1 AND self.date BETWEEN ?2 AND ?3", publicHolidayPlanning, fromDate, toDate).fetch();
 		for (EventsPlanningLine publicHolidayDay : publicHolidayDayList) {
 			publicHolidayDays = publicHolidayDays.add(new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, publicHolidayDay.getDate())));
 		}
@@ -54,7 +54,7 @@ public class PublicHolidayService {
 	
 	public boolean checkPublicHolidayDay(LocalDate date, Employee employee) throws AxelorException{
 
-		List<EventsPlanningLine> publicHolidayDayList = eventsPlanningLineRepo.all().filter("self.publicHolidayPlann = ?1 AND self.date = ?2", employee.getPublicHolidayEventsPlanning(), date).fetch();
+		List<EventsPlanningLine> publicHolidayDayList = eventsPlanningLineRepo.all().filter("self.eventsPlanning = ?1 AND self.date = ?2", employee.getPublicHolidayEventsPlanning(), date).fetch();
 		if(publicHolidayDayList == null || publicHolidayDayList.isEmpty()){
 			return false;
 		}
@@ -69,7 +69,7 @@ public class PublicHolidayService {
 		
 		if (imposedDays == null || imposedDays.getEventsPlanningLineList() == null || imposedDays.getEventsPlanningLineList().isEmpty()) { return 0; }
 		
-		List<EventsPlanningLine> imposedDayList = eventsPlanningLineRepo.all().filter("self.publicHolidayPlann = ?1 AND self.date BETWEEN ?2 AND ?3", imposedDays, startDate, endDate).fetch();
+		List<EventsPlanningLine> imposedDayList = eventsPlanningLineRepo.all().filter("self.eventsPlanning = ?1 AND self.date BETWEEN ?2 AND ?3", imposedDays, startDate, endDate).fetch();
 		
 		return imposedDayList.size();
 	}
