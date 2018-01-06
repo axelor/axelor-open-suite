@@ -49,7 +49,7 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
                 .getConfiguratorBom();
         if (configuratorBOM != null
                 && checkConditions(configuratorBOM, jsonAttributes)) {
-            Product generatedProduct = Beans.get(ProductRepository.class).find(configurator.getProductId());
+            Product generatedProduct = configurator.getProduct();
             BillOfMaterial generatedBom = Beans.get(ConfiguratorBomService.class)
                     .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, generatedProduct);
             generatedProduct.setDefaultBillOfMaterial(generatedBom);
