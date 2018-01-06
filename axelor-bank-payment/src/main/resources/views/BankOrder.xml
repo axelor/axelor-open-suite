@@ -91,7 +91,7 @@
 			
 			<panel hidden="true" hideIf="isMultiCurrency" >
 				<field name="bankOrderTotalAmount" colSpan="6" readonly="true"/>
-				<field name="bankOrderCurrency" canView="false" grid-view="currency-grid" form-view="currency-form" colSpan="6" readonlyIf="orderTypeSelect == 1 || orderTypeSelect == 2 || orderTypeSelect == 5 || bankOrderLineList.length > 0"/>
+				<field name="bankOrderCurrency" onChange="action-bank-order-record-currency-onchange" canView="false" grid-view="currency-grid" form-view="currency-form" colSpan="6" readonlyIf="orderTypeSelect == 1 || orderTypeSelect == 2 || orderTypeSelect == 5 || bankOrderLineList.length > 0"/>
 			</panel>
 			<panel readonly="true">
 				<field name="companyCurrencyTotalAmount" colSpan="6"/>
@@ -374,6 +374,10 @@
 
 	<action-record name="action-bank-order-record-fill-signatory-user" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<field name="signatoryUser" expr="eval: signatoryEbicsUser?.associatedUser"/>
+	</action-record>
+
+	<action-record name="action-bank-order-record-currency-onchange" model="com.axelor.apps.bankpayment.db.BankOrder">
+		<field name="senderBankDetails" if="!bankOrderFileFormat?.allowOrderCurrDiffFromBankDetails" expr="eval: null"/>
 	</action-record>
 
 		<!-- Actions Methods -->

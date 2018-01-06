@@ -32,5 +32,13 @@ public interface EbicsPartnerService {
 
     List<BankStatement> getBankStatements(EbicsPartner ebicsPartner,
             Collection<BankStatementFileFormat> bankStatementFileFormatCollection) throws AxelorException, IOException;
+
+    /**
+     * Check if bank details miss mandatory currency
+     * @param ebicsPartner
+     * @throws AxelorException with the name of the bank details missing currency
+     *                         if the currency is mandatory
+     */
+    void checkBankDetailsMissingCurrency(EbicsPartner ebicsPartner) throws AxelorException;
 	
 }

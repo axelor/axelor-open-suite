@@ -18,8 +18,9 @@
 	
 	
 	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Default Currency"/>
-	
-	
+
+	<boolean name="allowOrderCurrDiffFromBankDetails" title="Allow orders with a transfer currency different from bank details currency" default="false"/>
+
     <!-- 	 AFB320 -->
 	<string name="qualifyingOfDate" title="Qualifying of date"/>
 	<boolean name="isMultiDate" title="Multidate"/>

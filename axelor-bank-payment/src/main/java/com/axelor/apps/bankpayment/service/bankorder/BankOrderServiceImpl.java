@@ -253,7 +253,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 	public void confirm(BankOrder bankOrder)  throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
 		checkBankDetails(bankOrder.getSenderBankDetails(), bankOrder);
-		
+
 		if(bankOrder.getGeneratedMetaFile() == null)  {
 			checkLines(bankOrder);
 		}
@@ -425,7 +425,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 		// filter on the currency if it is set in file format and in the bankdetails
 		Currency currency = bankOrder.getBankOrderCurrency();
-		if (currency != null) {
+		if (currency != null && !bankOrder.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails()) {
 			String fileFormatCurrencyId = currency.getId().toString();
 			domain += " AND (self.currency IS NULL OR self.currency.id = " + fileFormatCurrencyId + ")";
 		}
@@ -466,10 +466,18 @@ public class BankOrderServiceImpl implements BankOrderService {
 				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE),
 						IException.INCONSISTENCY);
 			}
-			if (!this.checkBankDetailsCurrencyCompatible(bankDetails, bankOrder)) {
+			if (!bankOrder.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails()
+					&& !this.checkBankDetailsCurrencyCompatible(bankDetails, bankOrder)) {
 				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE),
 						IException.INCONSISTENCY);
 			}
+		}
+
+		if (bankOrder.getBankOrderFileFormat() != null
+				&& bankOrder.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails()
+				&& bankDetails.getCurrency() == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING_CURRENCY),
+					IException.MISSING_FIELD);
 		}
 	}
 
