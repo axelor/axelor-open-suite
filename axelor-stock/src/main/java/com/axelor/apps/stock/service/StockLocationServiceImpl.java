@@ -114,7 +114,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 	@Override
 	public void computeAvgPriceForProduct(Product product) {
 		Long productId = product.getId();
-		String query = "SELECT new list(self.id, self.avgPrice, self.currentQty) FROM LocationLine as self "
+		String query = "SELECT new list(self.id, self.avgPrice, self.currentQty) FROM StockLocationLine as self "
 				+ "WHERE self.product.id = " + productId + " AND self.stockLocation.typeSelect != "
 				+ StockLocationRepository.TYPE_VIRTUAL;
 		int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();

@@ -81,7 +81,7 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
         super.checkIfEnoughStock(stockLocation, product, qty);
 
         if (Beans.get(AppSupplychainService.class).getAppSupplychain().getManageStockReservation()) {
-            StockLocationLine stockLocationLine = this.getLocationLine(stockLocation.getStockLocationLineList(), product);
+            StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation.getStockLocationLineList(), product);
             if (stockLocationLine != null && stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty()).compareTo(qty) < 0) {
                 throw new AxelorException(stockLocationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
             }
