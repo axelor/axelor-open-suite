@@ -5,7 +5,7 @@
 			<field name="document" title="Document" readonly="true" />
 			<field name="versionIndex" required="true" readonly="true"/>
 			
-			<field name="versionMetaFile" widget="binary-link" colSpan="12" />
+			<field name="versionMetaFile" widget="binary-link" colSpan="12" onChange="qms-document-version-set-filename"/>
 
 			<field name="versionCreator" title="Creator" required="true" readonlyIf="versionReviewer != null"/>
 			<field name="versionCreationDate" title="Creation date" required="true" readonlyIf="versionReviewer != null"/>
@@ -25,6 +25,10 @@
 		<field name="versionApprover" />
 		<field name="versionMetaFile" widget="binary-link" />
 	</grid>
+
+	<action-method name="qms-document-version-set-filename" model="com.axelor.apps.qms.db.QMSDocumentVersion">
+		<call class="com.axelor.apps.qms.web.QMSDocumentVersionController" method="setVersionFileName"/>
+	</action-method>
     
     <action-record name="qms-document-version-record-default" model="com.axelor.apps.qms.db.QMSDocumentVersion">
     	<field name="versionCreator" expr="eval:__user__.employee"/>
@@ -32,7 +36,7 @@
     	<field name="document" expr="eval:__repo__(QMSDocument).find(_parent.id)" if="_parent != null &amp;&amp; _parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.qms.db.QMSDocument'"/>
     	<field name="versionIndex" expr="call:com.axelor.apps.qms.service.QMSDocumentVersionService:getNextVersionIndex(__repo__(QMSDocument).find(_parent.id))" if="_parent != null &amp;&amp; _parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.qms.db.QMSDocument'"/>
     </action-record>
-    
+
     <action-validate name="qms-document-version-validate-reviewer">
     	<error if="versionReviewer != null &amp;&amp; versionReviewer.id == versionCreator.id" message="Reviewer and author must be different" action="qms-document-version-record-clear-reviewer"/>
     </action-validate>
