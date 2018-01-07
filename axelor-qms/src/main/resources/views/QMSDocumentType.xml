@@ -3,7 +3,7 @@
 	<form name="qms-document-type-form" title="QMS Document Type" model="com.axelor.apps.qms.db.QMSDocumentType" id="qms-document-type-form">
 		<panel>
 			<field name="company" title="Company" readonlyIf="id != null" />
-			<field name="code" title="Code" max="3" required="true" readonlyIf="id != null" pattern="[A-Z0-9]{2,3}" help="Alphanumeric code (2 to 3 chars)"/>
+			<field name="code" title="Code" max="3" required="true" readonlyIf="id != null" pattern="[A-Z0-9]{2,3}" help="Alphanumeric code (2 to 3 chars)" x-bind="{{code|unaccent|uppercase}}"/>
 			
 			<field name="title" title="	Title" nullable="false" required="true" colSpan="12" />
 		</panel>
