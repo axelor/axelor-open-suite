@@ -80,7 +80,7 @@ public interface StockMoveLineService {
 
 
 
-	public List<? extends StockLocationLine> getLocationLines(Product product, StockLocation stockLocation) throws AxelorException;
+	public List<? extends StockLocationLine> getStockLocationLines(Product product, StockLocation stockLocation) throws AxelorException;
 
 
 

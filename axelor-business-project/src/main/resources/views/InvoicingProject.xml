@@ -34,16 +34,14 @@
 		<panel-related field="projectSet" canNew="false" canEdit="false" canSelect="false" form-view="project-form" grid-view="project-grid" readonlyIf="invoice != null"/>
 		<panel-related field="elementsToInvoiceSet" canNew="false" canEdit="false" canSelect="false" grid-view="elements-to-invoice-grid" form-view="elements-to-invoice-form" readonlyIf="invoice != null"/>
 		<panel-related field="manufOrderSet" canNew="false" canEdit="false" canSelect="false" if-module="axelor-business-production" grid-view="manuf-order-invoicing-project-grid" form-view="manuf-order-form" readonlyIf="invoice != null"  if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction()" />
-<!-- 		<panel sidebar="true" name="priority" title="Priority" readonlyIf="invoice != null"> -->
-			
-<!-- 			<field name="saleOrderLineSetPrioritySelect" width="30%"/> -->
-<!-- 			<field name="purchaseOrderLineSetPrioritySelect" width="30%"/> -->
-<!-- 			<field name="logTimesSetPrioritySelect" width="30%"/> -->
-<!-- 			<field name="expenseLineSetPrioritySelect" width="30%"/> -->
-<!-- 			<field name="projectSetPrioritySelect" width="30%"/> -->
-<!-- 			<field name="elementsToInvoiceSetPrioritySelect" width="30%"/> -->
-			
-<!-- 		</panel> -->
+		<panel sidebar="true" name="priority" title="Priority" readonlyIf="invoice != null">
+			<field name="saleOrderLineSetPrioritySelect" width="30%"/>
+			<field name="purchaseOrderLineSetPrioritySelect" width="30%"/>
+			<field name="logTimesSetPrioritySelect" width="30%"/>
+			<field name="expenseLineSetPrioritySelect" width="30%"/>
+			<field name="projectSetPrioritySelect" width="30%"/>
+			<field name="elementsToInvoiceSetPrioritySelect" width="30%"/>
+		</panel>
 		<panel>
 			<field name="comments" colSpan="12" />
 		</panel>
