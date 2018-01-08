@@ -50,6 +50,7 @@
 	  			<field name="defaultPartnerTypeSelect"/>
 	  			<field name="customerPaymentDelay" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
 	  			<field name="supplierPaymentDelay" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
+				<field name="tradingNameSet" canNew="true" form-view="trading-name-form" grid-view="trading-name-grid" colSpan="12"/>
 	  		</panel>
 	    	<panel name="bankDetails" title="Bank details">
                 <field name="defaultBankDetails" onSelect="action-company-attrs-default-bank-details-domain"/>
