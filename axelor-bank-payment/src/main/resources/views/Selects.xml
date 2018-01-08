@@ -202,4 +202,9 @@
         <option value="3">Overall debit by transfer currency</option>
     </selection>
 
+    <selection name="bankpayment.bank.order.ff.qualifying.amount.select">
+        <option value="T">Amount in transfer's currency</option>
+        <option value="D">Equivalent amount in sender bank details' currency</option>
+    </selection>
+
 </object-views>

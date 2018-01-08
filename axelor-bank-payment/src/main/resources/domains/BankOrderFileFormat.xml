@@ -23,6 +23,7 @@
 
     <!-- 	 AFB320 -->
 	<string name="qualifyingOfDate" title="Qualifying of date"/>
+      <string name="qualifyingOfAmountSelect" title="Qualifying of amount" selection="bankpayment.bank.order.ff.qualifying.amount.select" default="T"/>
 	<boolean name="isMultiDate" title="Multidate"/>
 	<boolean name="isMultiCurrency" title="Multicurrency"/>
     <integer name="orderDebitTypeSelect" title="Order debit type" selection="bankpayment.order.debit.type.select" nullable="true" />
@@ -81,6 +82,10 @@
         public static final int ORDER_DEBIT_TYPE_ORDER_OVERALL_DEBIT = 1;
         public static final int ORDER_DEBIT_TYPE_UNIT_DEBIT_BY_OPERATION = 2;
         public static final int ORDER_DEBIT_TYPE_OVERALL_DEBIT_BY_TRANSFER_CURRENCY = 3;
+
+        // QUALIFYING AMOUNT SELECT
+        public static final String QUALIFYING_AMOUNT_TRANSFER_CURRENCY = "T";
+        public static final String QUALIFYING_AMOUNT_SENDER_BANK_DETAILS_CURRENCY = "D";
 	]]></extra-code>
 
   </entity>

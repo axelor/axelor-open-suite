@@ -23,6 +23,10 @@
 			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="bankDetailsTypeSelect" widget="MultiSelect"/>
             <field name="allowOrderCurrDiffFromBankDetails" showIf="orderTypeSelect != 1 &amp;&amp; orderTypeSelect != 2" colSpan="12"/>
+            <panel showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'">
+                <field name="qualifyingOfAmountSelect" hidden="true" showIf="!allowOrderCurrDiffFromBankDetails" selection-in="['T']" colSpan="12"/>
+                <field name="qualifyingOfAmountSelect" hidden="true" showIf="allowOrderCurrDiffFromBankDetails" colSpan="12"/>
+            </panel>
 		</panel>
 		<panel name="specificAttributes" title="Specific attributes" hidden="true" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct' || orderFileFormatSelect == 'pain.xxx.cfonb160.ict'">
 			<field name="qualifyingOfDate" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
