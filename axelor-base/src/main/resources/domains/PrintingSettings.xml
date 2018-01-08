@@ -13,6 +13,8 @@
 		<string name="pdfFooter" large="true" title="Company Footer"/>
 		<many-to-one name="defaultMailBirtTemplate" ref="com.axelor.apps.base.db.BirtTemplate" title="Birt Template"/>
 		<integer name="logoPositionSelect" title="Logo position" selection="printing.setting.logo.position"/>
+		<string name="colorCode" title="Color code (hex)" />
+		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
  	</entity>
 
 </domain-models>
