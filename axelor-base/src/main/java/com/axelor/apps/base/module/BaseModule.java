@@ -56,6 +56,8 @@ import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ProductServiceImpl;
+import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.TradingNameServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.app.AppService;
@@ -116,6 +118,7 @@ public class BaseModule extends AxelorModule {
         bind(BaseBatchRepository.class).to(BaseBatchBaseRepository.class);
         bind(MailBatchRepository.class).to(MailBatchBaseRepository.class);
         bind(AlarmEngineBatchRepository.class).to(AlarmEngineBatchBaseRepository.class);
+        bind(TradingNameService.class).to(TradingNameServiceImpl.class);
         IPartner.modelPartnerFieldMap.put(PartnerAddress.class.getName(), "_parent");
     }
 }
