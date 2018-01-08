@@ -21,8 +21,8 @@
 			<field name="orderTypeSelect" onChange="action-bank-order-file-format-record-order-type-select-onchange" required="true"/>
 			<field name="fileGenerationSupported"/>
 			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
-			<field name="allowOrderCurrDiffFromBankDetails" showIf="orderTypeSelect != 1 &amp;&amp; orderTypeSelect != 2"/>
 			<field name="bankDetailsTypeSelect" widget="MultiSelect"/>
+            <field name="allowOrderCurrDiffFromBankDetails" showIf="orderTypeSelect != 1 &amp;&amp; orderTypeSelect != 2" colSpan="12"/>
 		</panel>
 		<panel name="specificAttributes" title="Specific attributes" hidden="true" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct' || orderFileFormatSelect == 'pain.xxx.cfonb160.ict'">
 			<field name="qualifyingOfDate" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
