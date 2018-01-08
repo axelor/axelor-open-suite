@@ -7,7 +7,6 @@
 
   <entity name="PaymentCondition" lang="java" cachable="true">
   	
-    <integer name="importId" />
    	<string name="name" title="Name" required="true" translatable="true"/>
     <string name="code" title="Code" required="true" unique="true"/>
 	<integer name="typeSelect" title="Type" selection="account.payment.condition.type.select"/>

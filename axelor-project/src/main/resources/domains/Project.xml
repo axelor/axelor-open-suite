@@ -6,8 +6,7 @@
   <module name="project" package="com.axelor.apps.project.db"/>
 
   <entity name="Project">
-      
-     	<integer name="importId"/>
+
 		<string name="name" required="true" unique="true"/>
 		<string name="description" multiline="true" large="true"/>
 		<many-to-one name="team" ref="com.axelor.team.db.Team"/>

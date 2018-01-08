@@ -7,7 +7,6 @@
 
   <entity name="Employee" cachable="true">
       
-      <integer name="importId"/>
       <one-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" mappedBy="employee"/>
       <many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
       <decimal name="hourlyRate" title="Hourly rate" scale="2" precision="20" />

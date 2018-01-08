@@ -7,7 +7,6 @@
 
   <entity name="TrackingNumberConfiguration" lang="java">
 
-	<integer name="importId"/>
 	<boolean name="isPurchaseTrackingManaged" title="Manage purchase tracking Nbr. ?"/>
 	<boolean name="isProductionTrackingManaged"  title="Manage production tracking Nbr. ?"/>
 	<boolean name="isSaleTrackingManaged"  title="Manage sale tracking Nbr. ?"/>

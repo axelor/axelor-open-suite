@@ -6,9 +6,7 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Sequence" lang="java">
-  	
-  	<integer name="importId" />
-  	
+
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company" required="false"/>
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Document concerned" required="true" selection="sequence.generic.code.select"/> 

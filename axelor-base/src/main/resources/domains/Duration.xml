@@ -7,8 +7,6 @@
 
 	<entity name="Duration" lang="java">
 		
-		<string name="importId"/>
-		
 		<integer name="typeSelect" title="Month/days ?" selection="base.duration.type.select"/>
 		<integer name="value" title="Value"/>
 		<string name="name" title="Name"/>

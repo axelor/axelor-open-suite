@@ -7,7 +7,6 @@
 
   <entity name="LeaveReason" cachable="true">
 
-      <integer name="importId"/>
       <string name="leaveReason" namecolumn="true" title="Leave reason" required="true"/>
       <boolean name="manageAccumulation" title="Manage Accumulation"/>
       <boolean name="allowNegativeValue" title="Allow Negative Value for leaves"/>

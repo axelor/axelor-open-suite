@@ -5,7 +5,6 @@
 	<module name="contract" package="com.axelor.apps.contract.db" />
 
 	<entity name="Contract" repository="none">
-		<string name="importId" copy="false"/>
 
 		<string name="name" title="Name" namecolumn="true" />
 		<string name="contractId" title="Contract N°" readonly="true"/>
@@ -60,7 +59,6 @@
 	</entity>
 
 	<entity name="ContractVersion" repository="none">
-		<string name="importId" copy="false"/>
 
 		<integer name="statusSelect" title="Status" selection="contract.version.status.select" default="1" required="true" copy="false"/>
 
@@ -208,8 +206,6 @@
 	</entity>
 	
 	<entity name="ContractTemplate">
-	
-		<string name="importId" copy="false"/>
 
 		<string name="name" title="Template name" required="true" namecolumn="true" />
 		<integer name="targetType" title="Type" selection="contract.target.type.select" default="1" required="true"/>

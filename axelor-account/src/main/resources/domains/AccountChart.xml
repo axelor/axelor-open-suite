@@ -6,7 +6,6 @@
   <module name="accountchart" package="com.axelor.apps.account.db"/>
 
   <entity name="AccountChart" lang="java" cachable="true">
-  	<integer name="importId" />
   	<string name="name" title="Name" required="true"/>
   	<string name="code" title="Code" unique="true"/>
   	<string name="countryCode" title="Country code" />
