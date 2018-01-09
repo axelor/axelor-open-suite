@@ -2,7 +2,7 @@ apply plugin: 'axelor-module'
 
 module {
 	name "axelor-supplier-management"
-	version "4.0.1"
+	version "4.0.2"
 	title "Axelor :: Supplier management"
 	
 	removable true

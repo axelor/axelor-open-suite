@@ -1,3 +1,25 @@
+# 4.0.2 (2018-01-09)
+- BOM Componants tab order by priority
+- Set all field of all locationline view in readonly
+- Copy fix ICalendar and MailAccount
+- Fix NPE when generating an invoice from a stock move.
+- Fix currency conversion
+- Update translations
+- Fix google map api with api key
+- Toolbar does not show in special split popup anymore
+- Popup now closes after special split
+- Fixed multiple bug reported
+- Fix irrecoverable getInvoiceList request
+- Replace all __user__ context by __user__ directly on sql
+- Fix bad domain
+- STOCKMOVE - report with tracking number
+- Remove seeMonth Button on Project/MyPlanning
+- Timesheet lines and related elements are sorted by date DESC
+- Catch exception in TraceBack
+- Manage duplicate move lines in reports
+- CURRENCY CONVERSION : WS
+- Update license
+
 # 4.0.1 (2017-06-19)
 
 # 4.0.0 (2017-01-30)
