@@ -11,11 +11,11 @@
 		<field name="description"/>
     </grid>
  
-	<form name="hr-batch-form" title="HR Batch" model="com.axelor.apps.hr.db.HrBatch" width="large" onNew="action-hr-batch-record-default">
+	<form name="hr-batch-form" title="HR Batch" model="com.axelor.apps.hr.db.HrBatch" width="large" onNew="action-hr-batch-record-default,action-hr-batch-attrs-employee-set-domain" onLoad="action-hr-batch-attrs-employee-set-domain">
 	  	<panel name="main">
 		    <field name="actionSelect"/>
 		    <field name="code"/>
-		    <field name="company" canEdit="false"/>
+		    <field name="company" canEdit="false" onChange="action-hr-batch-attrs-employee-set-domain"/>
 		</panel>
 		<panel-tabs>
 			<panel name="leaveManagementPage" title="Leave management page" hidden="true" showIf="$contains([1, 5], actionSelect)">
@@ -71,6 +71,11 @@
 	<action-record name="action-hr-batch-record-day-number-default" model="com.axelor.apps.hr.db.HrBatch">
 		<field name="dayNumber" expr="eval: leaveReason?.defaultDayNumberGain"/>
 	</action-record>
+
+    <action-attrs name="action-hr-batch-attrs-employee-set-domain">
+        <attribute for="employeeSet" name="domain" expr="eval: null"/>
+        <attribute for="employeeSet" name="domain" expr="eval: &quot;self.payCompany.id = ${company.id}&quot;" if="eval: company != null"/>
+    </action-attrs>
 	
 
 </object-views>
