@@ -629,9 +629,12 @@ public class InvoiceController {
 
 	public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
 		Invoice invoice = request.getContext().asType(Invoice.class);
+		PrintingSettings printingSettings = invoice.getPrintingSettings();
 
 		List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(invoice.getTradingName(), invoice.getCompany());
-		PrintingSettings printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
+		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
+			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
+		}
 		String domain = !printingSettingsList.isEmpty() ? String.format("self.id IN (%s)", StringTool.getIdListString(printingSettingsList)) : null;
 
 		response.setValue("printingSettings", printingSettings);

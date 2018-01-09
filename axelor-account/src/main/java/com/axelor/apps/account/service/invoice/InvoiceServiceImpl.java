@@ -407,11 +407,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	
 	protected String getDefaultPrintingLocale(Invoice invoice, Company company) {
 		String locale = null;
-		
-		if(invoice != null && invoice.getPartner() != null) {
-			locale = invoice.getPartner().getLanguageSelect();
+
+		if (invoice != null) {
+			if (invoice.getPrintingSettings() != null) {
+				locale = invoice.getPrintingSettings().getLanguageSelect();
+			}
+			else if (invoice.getPartner() != null) {
+				locale = invoice.getPartner().getLanguageSelect();
+			}
 		}
-		
+
 		if(locale == null && company != null && company.getPrintingSettings() != null) {
 			locale = company.getPrintingSettings().getLanguageSelect();
 		}

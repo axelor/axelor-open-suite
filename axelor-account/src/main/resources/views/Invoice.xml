@@ -716,6 +716,7 @@
         <action name="action-invoice-attrs-show-validate-button"/>
 		<action name="action-invoice-attrs-interco-supplychain"/>
 		<action name="action-invoice-attrs-change-create-refund-title"/>
+		<action name="action-invoice-method-filter-printing-settings"/>
     </action-group>
     
     <action-group name="action-group-account-invoice-operationtype-onchange">
