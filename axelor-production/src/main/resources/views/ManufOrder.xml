@@ -100,7 +100,7 @@
 			<button name="resume" icon="fa-step-forward" title="Resume" colSpan="12" showIf="statusSelect == 5" onClick="save,action-manuf-order-method-resume"/>
 			<button name="finish" icon="fa-power-off" title="Finish" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-finish"/>
 			<button name="cancel" icon="fa-times-circle" title="Cancel" colSpan="12" showIf="statusSelect != 2" onClick="save,action-manuf-order-method-cancel"/>
-			<button name="updateQty" title="Update quantities (Components and PF)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-qty-popup-form-view"/>
+			<button name="updateQty" title="Update quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-qty-popup-form-view"/>
 		</panel>
 		</panel>
 		<panel-tabs colSpan="4" >
@@ -127,7 +127,7 @@
 			</panel>
 			<panel name="consumedProducts" title="Consumed products" hideIf="isConsProOnOperation">
 				<panel-related field="toConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
-				<panel-related field="consumedStockMoveLineList" onChange="action-manuf-order-method-compute-diff-prod-product-list" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
+				<panel-related field="consumedStockMoveLineList" onChange="action-manuf-order-method-compute-diff-prod-product-list" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-consumed-production-grid"/>
 				<panel-related field="diffConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 			</panel>
    			<panel readonly="true" name="consumedProducts" title="Consumed products" showIf="isConsProOnOperation">
@@ -137,7 +137,7 @@
 			</panel>
 			<panel name="finishedProducts" title="Finished products">
 				<panel-related field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 3" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
-				<panel-related field="producedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
+				<panel-related field="producedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-produced-production-grid"/>
 				<panel-related field="wasteProdProductList" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 				<panel name="description" title="Waste description" colSpan="12">
 					<field name="wasteProdDescription" showTitle="false" colSpan="12"/>
@@ -157,7 +157,7 @@
 	  
 	</form>
 	
-	<form title="Update quantities (Components and PF)" name="popup-manuf-order-form-update-qty" model="com.axelor.apps.production.db.CostSheetLine">
+	<form title="Update quantities (Components and FP)" name="popup-manuf-order-form-update-qty" model="com.axelor.apps.production.db.CostSheetLine">
 		<panel>
 			<field name="qty" colSpan="8"/>
 			<button name="ok" colSpan="4" title="OK" onClick="save,action-manuf-order-method-update-qty,close"/>
@@ -169,7 +169,7 @@
 		<context name="_costSheetId" expr="eval: costSheet.id"/>
 	</action-view>
 	
-	<action-view name="action-manuf-order-update-qty-popup-form-view" title="Update quantities (Components and PF)" model="com.axelor.apps.production.db.ManufOrder">
+	<action-view name="action-manuf-order-update-qty-popup-form-view" title="Update quantities (Components and FP)" model="com.axelor.apps.production.db.ManufOrder">
 		<view type="form" name="popup-manuf-order-form-update-qty"/>
 		<view-param name="popup" value="reload"/>
 		<view-param name="forceEdit" value="true"/>
@@ -277,7 +277,7 @@
   	</action-view>
   	
   	<action-view name="action-manuf-order-view-operation-order-consumed-product" title="Consumed products" model="com.axelor.apps.stock.db.StockMoveLine">
-  		<view type="grid" name="stock-move-line-production-grid"/>
+  		<view type="grid" name="stock-move-line-consumed-production-grid"/>
 		<view type="form" name="stock-move-line-production-form"/>
   		<domain>self.consumedOperationOrder.manufOrder.id = :id</domain>
   		<context name="id" expr="eval: id"/>

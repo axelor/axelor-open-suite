@@ -125,10 +125,20 @@
         </panel>
     </form>
 
-    <grid name="stock-move-line-production-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
+    <grid name="stock-move-line-consumed-production-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="productModel" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
         <field name="qty" title="Consumed quantity" aggregate="sum"/>
+        <field name="unitPriceUntaxed" x-scale="2"/>
+        <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
+    </grid>
+
+    <grid name="stock-move-line-produced-production-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
+        <field name="product" form-view="product-form" grid-view="product-grid"/>
+        <field name="productModel" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
+        <field name="qty" title="Produced quantity" aggregate="sum"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
