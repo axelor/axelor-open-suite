@@ -176,7 +176,7 @@
 			<field name="interco"/>
 			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
 			<field name="isSubscription" hidden="true"/>
-			<field name="printingSettings" required="true" canEdit="false" hidden="false" showIf="true"/>
+			<field name="printingSettings" required="true" canEdit="false" hidden="true" showIf="tradingName"/>
 		</panel>
 
 		<panel name="invoicingInformations" title="Invoicing informations" hideIf="company == null">
