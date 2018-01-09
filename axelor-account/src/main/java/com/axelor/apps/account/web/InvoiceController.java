@@ -600,8 +600,7 @@ public class InvoiceController {
                     .getDefaultAdvancePaymentInvoice(invoice);
 			response.setValue("advancePaymentInvoiceSet", invoices);
 		} catch (AxelorException e) {
-			TraceBackService.trace(e);
-			response.setError(e.getMessage());
+			TraceBackService.trace(response, e);
 		}
 	}
 

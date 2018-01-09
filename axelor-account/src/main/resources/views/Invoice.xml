@@ -750,7 +750,6 @@
 
 	<action-group name="action-invoice-group-invoice-line-onchange">
 		<action name="action-invoice-method-compute"/>
-		<action name="action-invoice-method-fill-advance-payment-set"/>
 		<action name="save"/>
 	</action-group>
 	<action-attrs name="action-invoice-attrs-in-ati">
