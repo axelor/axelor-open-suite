@@ -55,7 +55,9 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
             return;
         }
         Set<PriceList> sortedPriceListSet = priceListSet.stream()
-                .sorted(Comparator.comparing(PriceList::getApplicationBeginDate))
+                .sorted(Comparator.comparing(priceList -> priceList.getApplicationBeginDate() != null
+                        ? priceList.getApplicationBeginDate()
+                        : LocalDate.MIN))
                 .collect(Collectors.toSet());
         LocalDate beginDate;
         LocalDate previousEndDate = LocalDate.MIN;
@@ -92,8 +94,8 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
             return null;
         }
         List<PriceList> priceLists = priceListSet.stream().filter(priceList ->
-                priceList.getApplicationBeginDate().compareTo(today) <= 0
-                        && priceList.getApplicationEndDate().compareTo(today) >= 0
+                (priceList.getApplicationBeginDate() == null || priceList.getApplicationBeginDate().compareTo(today) <= 0)
+                        && (priceList.getApplicationEndDate() == null || priceList.getApplicationEndDate().compareTo(today) >= 0)
         ).collect(Collectors.toList());
         if (priceLists.size() == 1) {
             return priceLists.get(0);
@@ -121,8 +123,8 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
         List<PriceList> priceLists = partnerPriceLists.stream()
                 .flatMap(partnerPriceList1 -> partnerPriceList1.getPriceListSet().stream())
                 .filter(priceList -> priceList.getIsActive()
-                        && (priceList.getApplicationBeginDate().compareTo(today) <= 0)
-                        && (priceList.getApplicationEndDate().compareTo(today)) >= 0)
+                        && (priceList.getApplicationBeginDate() == null || priceList.getApplicationBeginDate().compareTo(today) <= 0)
+                        && (priceList.getApplicationEndDate() == null || priceList.getApplicationEndDate().compareTo(today) >= 0))
                 .collect(Collectors.toList());
         return "self.id IN (" + StringTool.getIdListString(priceLists) + ")";
     }
