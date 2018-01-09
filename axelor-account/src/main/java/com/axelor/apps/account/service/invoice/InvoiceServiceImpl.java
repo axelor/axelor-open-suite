@@ -45,6 +45,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
@@ -166,7 +167,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 			
 		};
 		
-		return invoiceGenerator.generate();
+		Invoice invoice1 = invoiceGenerator.generate();
+		invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
+		return invoice1;
 		
 	}
 	
