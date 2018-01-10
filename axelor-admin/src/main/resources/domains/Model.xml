@@ -5,8 +5,8 @@
     <module name="core" package="com.axelor.db" />
 
     <entity name="Model">
-        <string name="importId" copy="false" hashKey="false" unique="true" />
-        <string name="importOrigin" copy="false" hashKey="false" />
+        <string name="importId" copy="false" hashKey="false" readonly="true" title="Import ID" unique="true" />
+        <string name="importOrigin" copy="false" hashKey="false" readonly="true" title="Imported from" />
     </entity>
 
 </domain-models>
