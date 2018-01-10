@@ -307,7 +307,6 @@ public class SequenceService {
      *
      * @param sequence Sequence to compute full name
      */
-    @Transactional
     public String computeFullName(Sequence sequence) {
         StringBuilder fn = new StringBuilder();
 
