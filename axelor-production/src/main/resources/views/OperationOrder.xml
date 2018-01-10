@@ -121,9 +121,7 @@
 			<button name="resume" title="Resume" icon="fa-step-forward" showIf="statusSelect == 5" colSpan="12" onClick="save,action-operation-order-method-resume,save"/>
 		</panel>
 		
-		<panel name="informationPanel" title="Information" sidebar="true" colSpan="12" showIf="id">
-			<panel-related field="operationOrderDurationList" canNew="false" canEdit="false" canRemove="false"/>
-		</panel>
+		<panel-related field="operationOrderDurationList" canNew="false" canEdit="false" canRemove="false" sidebar="true" showIf="id"/>
 		
 <!--	    <panel-related field="timesheetLineList" title="Timesheet lines" form-view="timesheet-line-production-form" grid-view="timesheet-line-production-grid" colSpan="12"/>  --> 
 	</form>
