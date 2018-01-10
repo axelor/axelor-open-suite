@@ -1,3 +1,17 @@
+# 4.1.1 (2018-01-10)
+- Ebics TS improvements
+- Bank order improvements
+- HR improvments
+- Some fixes
+
+# 4.1.0 (2017-06-19)
+- Ebics TS implementation
+- Bank ordre implementation
+- Lunch voucher management
+- Employee bonus management
+- Expense improvements (multi user, kilometric compute with some rates)
+- Leave request improvements
+
 # 4.0.1 (2017-06-19)
 
 # 4.0.0 (2017-01-30)
