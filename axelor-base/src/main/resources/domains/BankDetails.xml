@@ -44,6 +44,7 @@
         ]]>
     </string>
     <boolean name="active" title="Active" default="true"/>
+    <string name="code" />
 
 	<finder-method name="findDefaultByPartner" using="partner,isDefault"/>
     <finder-method name="findActivesByPartner" using="partner,active" all="true"/>
