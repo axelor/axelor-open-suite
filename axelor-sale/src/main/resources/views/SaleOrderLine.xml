@@ -3,10 +3,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="sale-order-line-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
+    <grid name="sale-order-line-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" >
+		<hilite strong="true" color="default" if="typeSelect != 0"/>
 		<hilite background="danger" if="deliveryState == 1"/>
 		<hilite background="warning" if="deliveryState == 2"/>
 		<hilite background="success" if="deliveryState == 3"/>
+		<field name="typeSelect" hidden="true"/>
 		<field name="deliveryState" hidden="true" if="__config__.app.isApp('supplychain')" />
 		<field name="productName"/>
 		<field name="qty" aggregate="sum"/>
@@ -56,18 +58,21 @@
 				]]></viewer>
 			</field>
 		   	<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange,action-sale-order-line-compute-total-pack,action-method-sale-order-line-available-stock" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid"/>
+		   	<field name="packPriceSelect" showIf="typeSelect == 2" onChange="action-sale-order-line-price-attrs-readonly, action-record-sale-order-line-reset-price-on-select-sub-line, action-method-sale-order-subline-reset-data-on-select-pack-line" />
 		   	<field name="productName"/>
-		   	<field name="qty"  hideIf="typeSelect == 2" onChange="action-group-sale-saleorderline-qty-onchange" readonlyIf="typeSelect == 2"/>
+		   	<field name="oldQty"/>
+		   	<field name="qty" onChange="action-group-sale-saleorderline-qty-onchange"/>
 			<field name="reservedQty" hideIf="typeSelect == 2" if-module="axelor-supplychain" onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
             <field name="$availableStock" readonly="true" type="decimal" title="Available stock" if-module="axelor-supplychain" hideIf="typeSelect == 2" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 			<button name="updateReservedQty" hidden="true" title="Change reserved qty" onClick="action-view-sale-order-line-reserved-qty-wizard" if-module="axelor-supplychain"/>
 		   	<field name="unit"  hideIf="typeSelect == 2" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 		   	<field name="taxLine"  hideIf="typeSelect == 2" colSpan="4" onChange="action-sale-order-line-method-convert-tax,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 		   	<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
-		   	<field name="price"  hideIf="typeSelect == 2" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" colSpan="4"/>
+		   	<field name="price" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" colSpan="4"/>
 		   	<field name="priceDiscounted" colSpan="4" hidden="true"/>
 		   	<field name="exTaxTotal" readonly="true" hideIf="typeSelect == 2" />
 		   	<field name="inTaxTotal" readonly="true" hideIf="typeSelect == 2" />
+		   	<field name="isSubLine" hideIf="typeSelect == 2"/>  
 		   	<field name="toInvoice"  hideIf="typeSelect == 2" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" if-module="axelor-business-project" />
 			<field name="invoiced" showIf="toInvoice"/>
 		</panel>
@@ -81,9 +86,9 @@
 		   	<field name="discountTypeSelect" onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title,action-sale-order-line-method-compute-analytic-distribution"/>
 		   	<field name="discountAmount" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 3"/>
 		</panel>
-		<panel>
-		<field name="typeSelect"  onChange="action-sale-order-line-method-empty-line" selection-in="[0,1]" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
-		    <field name="typeSelect"  onChange="action-sale-order-line-method-empty-line" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
+		<panel hideIf="isSubLine">
+		<field name="typeSelect" onChange="action-sale-order-line-method-empty-line" selection-in="[0,1]" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
+		    <field name="typeSelect" onChange="action-sale-order-line-method-empty-line" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
 		</panel>
 		<panel-tabs hideIf="typeSelect == 1" name="allPanelTabs">
 			<panel name="pack" title="Pack lines" showIf="typeSelect == 2" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" >
@@ -152,7 +157,7 @@
 			<field name="unit"  hideIf="typeSelect == 2" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 			<field name="taxLine"  hideIf="typeSelect == 2" colSpan="4" onChange="action-sale-order-line-method-convert-tax,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 			<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
-			<field name="price"  hideIf="typeSelect == 2" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" colSpan="4"/>
+			<field name="price" hideIf="typeSelect == 2" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" colSpan="4"/>
 			<field name="priceDiscounted" colSpan="4" hidden="true"/>
 			<field name="exTaxTotal" readonly="true" hideIf="typeSelect == 2" />
 			<field name="inTaxTotal" readonly="true" hideIf="typeSelect == 2" />
@@ -230,6 +235,10 @@
 		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="checkStocks"/>
 	</action-method>
 	
+	<action-method name="action-sale-order-pack-subline-update-qty">
+		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="updateSubLineQty"/>
+	</action-method>
+	
 	<action-attrs name="action-sale-order-line-attrs-read-only-distribution-lines">
 		<attribute name="readonly" for="analyticMoveLineList" expr="eval: !__config__.app.isApp('account')  || __config__.app.getApp('account').getAnalyticDistributionTypeSelect() != 1"/>
 	</action-attrs>
@@ -257,6 +266,8 @@
     	<action name="action-sale-order-line-attrs-type-select"/>
     	<action name="action-sale-order-line-attrs-set-company-currency" />
 		<action name="action-supplychain-sale-order-line-attrs-hide-button"/>
+		<action name="action-sale-order-line-attrs-sub-line"/>
+		<action name="action-sale-order-subline-price-attrs-readonly" if="isSubLine"/>
     </action-group>
     
     <action-group name="action-group-sale-saleorderline-onload">
@@ -272,6 +283,7 @@
     	<action name="action-sale-order-line-attrs-type-select"/>
     	<action name="action-sale-order-line-attrs-set-company-currency" />
 		<action name="action-supplychain-sale-order-line-attrs-hide-button"/>
+		<action name="action-sale-order-subline-price-attrs-readonly" if="isSubLine"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-product-onchange">
@@ -296,6 +308,7 @@
     	<action name="action-sale-order-line-method-compute-analytic-distribution" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"/>
 		<action name="action-sale-order-line-method-check-stock"
 				if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getCheckSaleStocks()"/>
+		<action name="action-sale-order-pack-subline-update-qty"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-production">
@@ -360,7 +373,7 @@
 	</action-method>
 	
 	<action-method name="action-sale-order-line-method-create-pack-lines">
-		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="createPackLines"/>
+		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="createPackLines" if="isSubline"/>
 	</action-method>
 	
 	
@@ -434,6 +447,34 @@
 	<action-attrs name="action-sale-order-line-template-attrs-hidden-fields-for-client">
 		<attribute name="hidden" for="allPanelTabs" if="eval: __user__.group.isClient" expr="true"/>
 	</action-attrs>
+	
+	<action-attrs name="action-sale-order-line-attrs-sub-line">
+	  <attribute if="eval: __parent__.typeSelect == 2" name="value" expr="eval: true" for="isSubLine"/>
+	</action-attrs>
+	
+	<action-attrs name="action-sale-order-line-price-attrs-readonly">
+		<attribute if="packPriceSelect == 1 &amp;&amp; !isSubLine" name="readonly" expr="eval: true" for="price"/>
+		<attribute if="packPriceSelect == 0 &amp;&amp; !isSubLine" name="readonly" expr="eval: false" for="price"/>
+		<attribute if="packPriceSelect == 1 &amp;&amp; !isSubLine" name="readonly" expr="eval: true" for="priceDiscounted"/>
+		<attribute if="packPriceSelect == 0 &amp;&amp; !isSubLine" name="readonly" expr="eval: false" for="priceDiscounted"/>
+	</action-attrs>
+	
+	<action-attrs name="action-sale-order-subline-price-attrs-readonly">
+		<attribute if="eval: __parent__.packPriceSelect == 1" name="readonly" expr="eval: false" for="price"/>
+		<attribute if="eval: __parent__.packPriceSelect == 0" name="readonly" expr="eval: true" for="price"/>
+		<attribute if="eval: __parent__.packPriceSelect == 1" name="readonly" expr="eval: false" for="priceDiscounted"/>
+		<attribute if="eval: __parent__.packPriceSelect == 0" name="readonly" expr="eval: true" for="priceDiscounted"/>
+	</action-attrs>
+	
+	<action-record name="action-record-sale-order-line-reset-price-on-select-sub-line" model="com.axelor.apps.sale.db.SaleOrderLine">
+		<field name="price" expr="eval: 0.00" if="packPriceSelect == 1 &amp;&amp; !isSubLine" />
+		<field name="priceDiscounted" expr="eval: 0.00" if="packPriceSelect == 1 &amp;&amp; !isSubLine" />
+		<field name="totalPack" expr="eval: 0.00" if="packPriceSelect == 0 &amp;&amp; !isSubLine" />
+	</action-record>
+	
+	<action-method name="action-method-sale-order-subline-reset-data-on-select-pack-line">
+		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="resetSubLines"/>
+	</action-method>
 
 <!-- 	ACTION VIEW -->
 	<action-view name="action-sale-order-line-view-stock-move-line" title="" model="com.axelor.apps.stock.db.StockMoveLine">

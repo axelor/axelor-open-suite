@@ -63,6 +63,7 @@ import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.IntercoServiceImpl;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.apps.supplychain.service.InvoicePaymentToolServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.InvoiceService;
 import com.axelor.apps.supplychain.service.StockLocationLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.LogisticalFormSupplychainService;
 import com.axelor.apps.supplychain.service.LogisticalFormSupplychainServiceImpl;
@@ -152,5 +153,7 @@ public class SupplychainModule extends AxelorModule {
         bind(SaleOrderLineServiceSupplyChain.class).to(SaleOrderLineServiceSupplyChainImpl.class);
         bind(SupplyChainConfigService.class).to(SupplyChainConfigServiceImpl.class);
         bind(SupplychainBatchRepository.class).to(SupplychainBatchSupplychainRepository.class);
+        bind(InvoiceService.class).to(com.axelor.apps.supplychain.service.InvoiceServiceImpl.class);
+        bind(com.axelor.apps.supplychain.service.StockMoveService.class).to(com.axelor.apps.supplychain.service.StockMoveServiceImpl.class);
     }
 }
