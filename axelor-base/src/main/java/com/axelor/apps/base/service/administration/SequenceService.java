@@ -302,4 +302,30 @@ public class SequenceService {
                 || sequenceNumber.matches(String.format("[\\%s\\*]\\d+", DRAFT_PREFIX));
     }
 
+    /**
+     * Computes sequence full name
+     *
+     * @param sequence Sequence to compute full name
+     */
+    @Transactional
+    public String computeFullName(Sequence sequence) {
+        StringBuilder fn = new StringBuilder();
+
+        if (sequence.getPrefixe() != null) {
+            fn.append(sequence.getPrefixe());
+        }
+
+        for (int i = 0; i < sequence.getPadding(); i++) {
+            fn.append("X");
+        }
+
+        if (sequence.getSuffixe() != null) {
+            fn.append(sequence.getSuffixe());
+        }
+
+        fn.append(" - ");
+        fn.append(sequence.getName());
+
+        return fn.toString();
+    }
 }
