@@ -24,21 +24,12 @@ import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.ConfiguratorFormulaService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class ConfiguratorFormulaController {
-
-    private ConfiguratorFormulaService configuratorFormulaService;
-    private ConfiguratorFormulaRepository configuratorFormulaRepository;
-
-    @Inject
-    public ConfiguratorFormulaController(ConfiguratorFormulaService configuratorFormulaService, ConfiguratorFormulaRepository configuratorFormulaRepository) {
-        this.configuratorFormulaService = configuratorFormulaService;
-        this.configuratorFormulaRepository = configuratorFormulaRepository;
-    }
-
 
     /**
      * Check the groovy script in the context
@@ -49,8 +40,7 @@ public class ConfiguratorFormulaController {
         ConfiguratorFormula configuratorFormula = request.getContext().asType(ConfiguratorFormula.class);
         ConfiguratorCreator creator = request.getContext().getParent().asType(ConfiguratorCreator.class);
         try {
-            configuratorFormula = configuratorFormulaRepository.find(configuratorFormula.getId());
-            configuratorFormulaService.checkFormula(configuratorFormula, creator);
+            Beans.get(ConfiguratorFormulaService.class).checkFormula(configuratorFormula, creator);
             response.setAlert(I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_WORKING));
         } catch (AxelorException e) {
             response.setError(e.getMessage());
