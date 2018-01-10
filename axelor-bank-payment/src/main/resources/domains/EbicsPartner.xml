@@ -7,6 +7,8 @@
   
   <entity name="EbicsPartner" lang="java">
   
+  	<integer name="ebicsTypeSelect" title="Mode" selection="bankpayment.ebics.partner.ebics.type.select"/>
+  
     <many-to-one name="ebicsBank" ref="com.axelor.apps.bankpayment.db.EbicsBank" title="Ebics bank" required="true"/>
     <string name="partnerId" title="Partner id" namecolumn="true" max="35" required="true"/>
     <many-to-one name="defaultSignatoryEbicsUser" ref="com.axelor.apps.bankpayment.db.EbicsUser" title="Default signatory"/>
@@ -16,7 +18,7 @@
 	<integer name="bankStatementGetModeSelect" title="Get mode" selection="bankpayment.ebics.bank.bank.statement.period.mode.select" default="1"/>
 	<date name="bankStatementStartDate" title="Start date"/>
 	<date name="bankStatementEndDate" title="End date"/>
-	<many-to-one name="bankStatementEbicsUser" ref="com.axelor.apps.bankpayment.db.EbicsUser" title="Ebics user for get the bank statements"/>
+	<many-to-one name="transportEbicsUser" ref="com.axelor.apps.bankpayment.db.EbicsUser" title="Ebics user for transport"/>
 	
 	<many-to-many name="bankDetailsSet" ref="com.axelor.apps.base.db.BankDetails" title="Bank accounts"/>
 	
@@ -28,7 +30,10 @@
 	<boolean name="filterReceiverBD" default="false" title="Filter receiver bank details?"/>
 	<integer name="orderTypeSelect" selection="bankpayment.bank.order.type.select" title="Order type to filter"/>
 	<many-to-many name="receiverBankDetailsSet" ref="com.axelor.apps.base.db.BankDetails" title="Authorized Bank Accounts"/>
-	
+
+    <one-to-many name="ebicsPartnerServiceList" ref="com.axelor.apps.bankpayment.db.EbicsPartnerService"
+        mappedBy="ebicsPartner" title="Services" />
+
 	<extra-code><![CDATA[
 	
 	   	// BANK STATEMENT GET MODE SELECT

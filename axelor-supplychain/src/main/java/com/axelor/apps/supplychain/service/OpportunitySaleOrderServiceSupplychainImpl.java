@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.OpportunitySaleOrderServiceImpl;
 import com.axelor.exception.AxelorException;
@@ -50,6 +51,9 @@ public class OpportunitySaleOrderServiceSupplychainImpl extends OpportunitySaleO
 				null, generalService.getTodayDate(), opportunity.getPartner().getSalePriceList(), opportunity.getPartner(), opportunity.getTeam());
 
 		saleOrderRepo.save(saleOrder);
+
+		opportunity.setSaleOrder(saleOrder);
+		opportunityRepository.save(opportunity);
 
 		return saleOrder;
 	}

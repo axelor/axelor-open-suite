@@ -28,7 +28,6 @@ import java.util.List;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Year;
-import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Employee;
@@ -36,6 +35,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowanceRate;
 import com.axelor.apps.hr.db.KilometricAllowanceRule;
 import com.axelor.apps.hr.db.KilometricLog;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.KilometricAllowanceRateRepository;
 import com.axelor.apps.hr.db.repo.KilometricLogRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -90,7 +90,7 @@ public class KilometricService {
 		Year year = Beans.get(YearServiceImpl.class).getYear(date, employee.getMainEmploymentContract().getPayCompany());
 		
 		if (year == null){
-			throw new AxelorException( String.format( I18n.get(IExceptionMessage.KILOMETRIC_LOG_NO_YEAR), employee.getUser().getActiveCompany(), date)  , IException.CONFIGURATION_ERROR);
+			throw new AxelorException( String.format( I18n.get(IExceptionMessage.KILOMETRIC_LOG_NO_YEAR), employee.getMainEmploymentContract().getPayCompany(), date)  , IException.CONFIGURATION_ERROR);
 		}
 		
 		return createKilometricLog(employee, new BigDecimal("0.00"), year);
@@ -98,14 +98,13 @@ public class KilometricService {
 	
 	
 	public BigDecimal computeKilometricExpense(ExpenseLine expenseLine, Employee employee) throws AxelorException{
-		
-		BigDecimal multiplier = expenseLine.getKilometricTypeSelect() == 1 ? BigDecimal.ONE : new BigDecimal("2.00");
-		BigDecimal distance =  expenseLine.getDistance().multiply(multiplier) ;
-		
+
+		BigDecimal distance =  getDistanceTravelled(expenseLine);
+
 		BigDecimal previousDistance;
 		KilometricLog log = Beans.get(KilometricService.class).getKilometricLog(employee, expenseLine.getExpenseDate());
 		if (log == null){
-			previousDistance= new BigDecimal("0.00");
+			previousDistance= BigDecimal.ZERO;
 		}else {
 			previousDistance= log.getDistanceTravelled();
 		}
@@ -113,11 +112,14 @@ public class KilometricService {
 		KilometricAllowanceRate allowance = Beans.get(KilometricAllowanceRateRepository.class).all().filter("self.kilometricAllowParam = ?1", expenseLine.getKilometricAllowParam() ).fetchOne();
 		
 		List<KilometricAllowanceRule> ruleList = new ArrayList<>();
-		
-		for (KilometricAllowanceRule rule : allowance.getKilometricAllowanceRuleList() ) {
-			
-			if (rule.getMinimumCondition().compareTo( previousDistance.add(distance)) <= 0 && rule.getMaximumCondition().compareTo(previousDistance) >= 0 ){
-				ruleList.add(rule);				
+
+		List<KilometricAllowanceRule> allowanceRuleList = allowance.getKilometricAllowanceRuleList();
+		if (allowanceRuleList != null) {
+			for (KilometricAllowanceRule rule : allowanceRuleList) {
+
+				if (rule.getMinimumCondition().compareTo(previousDistance.add(distance)) <= 0 && rule.getMaximumCondition().compareTo(previousDistance) >= 0) {
+					ruleList.add(rule);
+				}
 			}
 		}
 		
@@ -148,10 +150,22 @@ public class KilometricService {
 	public void updateKilometricLog(ExpenseLine expenseLine, Employee employee) throws AxelorException{
 		
 		KilometricLog log = getOrCreateKilometricLog(employee, expenseLine.getExpenseDate());
-		log.setDistanceTravelled( log.getDistanceTravelled().add( expenseLine.getDistance().multiply( BigDecimal.valueOf(expenseLine.getKilometricTypeSelect()) )  ) );
+		log.setDistanceTravelled(log.getDistanceTravelled().add(getDistanceTravelled(expenseLine)));
 		log.addExpenseLineListItem(expenseLine);
 		kilometricLogRepo.save(log);
 	}
-	
+
+	/**
+	 * Get distance traveled according to kilometric type.
+	 * 
+	 * @param expenseLine
+	 * @return
+	 */
+	private BigDecimal getDistanceTravelled(ExpenseLine expenseLine) {
+		if (expenseLine.getKilometricTypeSelect().equals(ExpenseLineRepository.KILOMETRIC_TYPE_ROUND_TRIP)) {
+			return expenseLine.getDistance().multiply(new BigDecimal(2));
+		}
+		return expenseLine.getDistance();
+	}
 
 }

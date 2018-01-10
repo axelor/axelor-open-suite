@@ -1,4 +1,8 @@
 "key","message","comment","context"
+"%d anomalies.",,,
+"%d anomaly.",,,
+"%d expense treated successfully,",,,
+"%d expenses treated successfully,",,,
 "Amount",,,
 "Auto",,,
 "Balance",,,
@@ -53,6 +57,7 @@
 "Previsional Spending",,,
 "Realized?",,,
 "Reason",,,
+"Report for credit transfers on expenses:",,,
 "Sales",,,
 "SalesMan",,,
 "Show histrogram",,,

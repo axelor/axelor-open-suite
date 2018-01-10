@@ -9,11 +9,11 @@
   
   	<string name="importId" />
     <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Company"/>
-    <many-to-one name="activeCompany" ref="com.axelor.apps.base.db.Company" title="Active company" help="true"/>
+    <many-to-one name="activeCompany" ref="com.axelor.apps.base.db.Company" title="Active company" help="true" massUpdate="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" help="true"/>
     <datetime name="today" title="Today date" tz="true" help="true"/>
     <many-to-many name="teamSet" ref="com.axelor.apps.base.db.Team"  title="Teams"/>
-    <many-to-one name="activeTeam" ref="com.axelor.apps.base.db.Team"  title="Active Team" help="true"/>
+    <many-to-one name="activeTeam" ref="com.axelor.apps.base.db.Team"  title="Active Team" help="true" massUpdate="true"/>
     
     
     <string name="fullName" namecolumn="true" search="partner,name" title="Partner name">
@@ -28,7 +28,13 @@
     	]]>
    	</string>
    	
-    
+   	<many-to-one name="group" ref="com.axelor.auth.db.Group" column="group_id" massUpdate="true"/>
+   	<string name="language" selection="select.language" massUpdate="true"/>
+   	<boolean name="singleTab" help="Whether to use tabbed ui." massUpdate="true"/>
+   	<boolean name="noHelp" help="Whether to show help messages." massUpdate="true"/>
+   	<boolean name="blocked" default="false" help="Specify whether to block the user for an indeterminate times." massUpdate="true"/>
+    <string name="homeAction" massUpdate="true"/>
+      
   </entity>
 
 </domain-models>

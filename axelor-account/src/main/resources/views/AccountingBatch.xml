@@ -15,8 +15,8 @@
 	<panel name="main" >
 		<field name="actionSelect" onChange="action-accounting-batch-record-default-currency"/>
 		<field name="code"/>
-		<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-		<field name="bankDetails" hideIf="actionSelect &amp;&amp; ([14,15,16,17,18].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitTypeSelect == 2))" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+		<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid" hideIf="[20].indexOf(actionSelect) >= 0"/>
+		<field name="bankDetails" hideIf="actionSelect &amp;&amp; ([14,15,16,17,18,20].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitTypeSelect == 2))" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 		<field name="archived" title="Archived ?"/>
 	</panel>
 	<panel-tabs>
@@ -26,22 +26,24 @@
 			<field name="currency" canEdit="false" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
 		</panel>
 		<panel name="directDebitPage" title="Direct debit configuration" hideIf="actionSelect != 12">
-			<field name="directDebitTypeSelect"/>
-			<field name="currency" canEdit="false" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
-			<panel name="directDebitExportGroup" hideIf="directDebitTypeSelect != 1"  colSpan="12">
-				<field name="directDebitExportTypeSelect"/>
-				<field name="debitDate"/>
-				<field name="hasToReExportCfbonb" showIf="directDebitExportTypeSelect != 2"/>
-				<field name="batchToReExport" showIf="hasToReExportCfbonb" domain="self.accountingBatch.id = :id" form-view="batch-form" grid-view="batch-grid"/>
-				<field name="paymentMode" domain="self.typeSelect in (2,9)" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-			</panel>
+			<field name="directDebitDataTypeSelect" />
+			<field name="paymentMode"
+				domain="self.typeSelect = 2 AND self.inOutSelect = 1 AND self.generateBankOrder = TRUE"
+				grid-view="payment-mode-grid" form-view="payment-mode-form" />
+			<field name="dueDate" />
+			<field name="currency" />
+			<field name="includeOtherBankAccounts" if="__config__.general.getManageMultiBanks()" /> 
 		</panel>
 		<panel name="creditTransferPage" title="Credit Transfer configuration" hideIf="actionSelect != 19">
-			<field name="creditTransfertTypeSelect"/>
+			<field name="creditTransferTypeSelect"/>
+			<field name="customerReimbursementTypeSelect" showIf="$contains([3], creditTransferTypeSelect)" />
 			<field name="paymentMode" domain="self.typeSelect in (2,9)" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-			<field name="period" showIf="creditTransfertTypeSelect == 1" form-view="period-form" grid-view="period-grid"/>
+			<field name="period" showIf="$contains([1], creditTransferTypeSelect)" form-view="period-form" grid-view="period-grid" canEdit="false"/>
+			<field name="dueDate" showIf="$contains([2, 3], creditTransferTypeSelect)" />
+			<field name="currency" showIf="$contains([2, 3], creditTransferTypeSelect)" />
+			<field name="includeOtherBankAccounts" showIf="$contains([1, 2, 3], creditTransferTypeSelect)" if="__config__.general.getManageMultiBanks()" />
 		</panel>
-		
+
 		<panel name="reminderPage" title="Reminder configuration" hideIf="actionSelect != 14"  >
 			<field name="reminderTypeSelect"/>
 		</panel>
@@ -62,6 +64,10 @@
 			<field name="startDate"/>
 			<field name="endDate"/>
 		</panel>
+		<panel name="bankStatementPage" title="Bank statement retrieval configuration" hideIf="actionSelect != 20">
+			<field name="ebicsPartnerSet" canNew="false" widget="TagSelect" colSpan="12" domain="self.transportEbicsUser.statusSelect = 3"/>
+            <field name="bankStatementFileFormatSet" canNew="false" widget="TagSelect" colSpan="12"/>
+		</panel>
 		<panel name="information" title="Information"  >
 			<field name="createdOn" title="Created on"/>
 			<field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
@@ -77,7 +83,8 @@
 	    <button name="doubtfulCustomerBatch" title="Doubtful Customer Batch" showIf="actionSelect == 16" onClick="save,action-accounting-batch-method-action-doubtful-customer" colSpan="12"/>
 	    <button name="accountCustomerBatch" title="Start" showIf="actionSelect == 17"  onClick="save,action-accounting-batch-method-action-account-customer" colSpan="12"/>
 	    <button name="moveLineExportBatch" title="Start" showIf="actionSelect == 18"  onClick="save,action-accounting-batch-method-action-move-line-export" colSpan="12"/>
-	    <button name="creditTransferBatch" title="Credit Transfer Batch" showIf="actionSelect == 19" onClick="save" colSpan="12"/>
+	    <button name="creditTransferBatch" title="Credit Transfer Batch" showIf="actionSelect == 19" onClick="save,action-accounting-batch-method-action-credit-transfer" colSpan="12"/>
+	    <button name="bankStatementBatch" title="Bank Statement Batch" showIf="actionSelect == 20" onClick="save,action-accounting-batch-method-action-bank-statement" colSpan="12"/>
 	</panel>
 </form>
 
@@ -91,7 +98,7 @@
 	</action-record>
     
     <action-record name="action-accounting-batch-record-default-currency" model="com.axelor.apps.account.db.AccountingBatch">
-    	<field name="currency" expr="eval:__repo__.of(Currency).findByCode(&quot;EUR&quot;)" if="actionSelect == 11 || actionSelect == 12 || actionSelect == 15 "/>
+    	<field name="currency" expr="eval: company?.currency" if="[11, 12, 15, 19].indexOf(actionSelect) >= 0"/>
     </action-record>
     
     <!-- ACTION METHOD -->
@@ -123,6 +130,10 @@
 		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionMoveLineExport"/>
 	</action-method>
 	
+	<action-method name="action-accounting-batch-method-action-credit-transfer">
+		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionCreditTransfer"/>
+	</action-method>
+
     <!-- ACTION ATTRS -->
     
     <action-attrs name="action-accounting-batch-attrs-bank-details-domain">

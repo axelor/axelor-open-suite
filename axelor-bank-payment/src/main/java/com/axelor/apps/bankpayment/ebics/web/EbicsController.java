@@ -93,7 +93,7 @@ public class EbicsController {
 		EbicsUser ebicsUser = ebicsUserRepo.find(request.getContext().asType(EbicsUser.class).getId());
 		
 		if (ebicsUser.getStatusSelect() != EbicsUserRepository.STATUS_WAITING_CERTIFICATE_CONFIG 
-				&& ebicsUser.getStatusSelect() != EbicsUserRepository.STATUS_CERTIFICATES_SHOULD_BE_RENEW) {
+				&& ebicsUser.getStatusSelect() != EbicsUserRepository.STATUS_CERTIFICATES_SHOULD_BE_RENEWED) {
 		      return;
 	    }
 		
@@ -215,11 +215,11 @@ public class EbicsController {
 
 				File testSignatureFile = null;
 				
-				if(ebicsUser.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS && testSignatureMetaFile != null)  {
+				if(ebicsUser.getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS && testSignatureMetaFile != null)  {
 					testSignatureFile = MetaFiles.getPath(testSignatureMetaFile).toFile();
 				}
 				
-				ebicsService.sendFULRequest(ebicsUser, null, MetaFiles.getPath(testDataMetaFile).toFile(), bankOrderFileFormat.getOrderFileFormatSelect(), testSignatureFile);
+				ebicsService.sendFULRequest(ebicsUser, ebicsUser.getTestSignatoryEbicsUser(), null, MetaFiles.getPath(testDataMetaFile).toFile(), bankOrderFileFormat, testSignatureFile);
 			}
 			else  {
 				response.setFlash(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
@@ -336,7 +336,7 @@ public class EbicsController {
 		
 		if (certs != null && certs.length > 0) {
 			X509Certificate certificate = EbicsCertificateService.getCertificate(certs, cert.getTypeSelect());
-			cert = certificateService.updateCertificate(certificate, cert);
+			cert = certificateService.updateCertificate(certificate, cert, true);
 			response.setValue("validFrom", cert.getValidFrom());
 			response.setValue("validTo", cert.getValidTo());
 			response.setValue("issuer", cert.getIssuer());

@@ -7,12 +7,11 @@
 
   <entity name="LeaveLine" cachable="true">
     <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee"/>
-    <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason" title="Reason" />
-    <decimal name="quantity" title="Remaining" scale="1" precision="5"/>
-    <decimal name="daysToValidate" title="Waiting for validation" scale="1"
-             precision="5"/>
-    <decimal name="daysValidated" title="Days validated" scale="1" precision="5" />
-    <decimal name="totalQuantity" title="Acquired" scale="1" precision="5" />
+    <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason" title="Type" />
+    <decimal name="quantity" title="Remaining" scale="4" precision="8"/>
+    <decimal name="daysToValidate" title="Waiting for validation" scale="4" precision="8"/>
+    <decimal name="daysValidated" title="Days validated" scale="4" precision="8"/>
+    <decimal name="totalQuantity" title="Acquired" scale="4" precision="8"/>
     <one-to-many name="leaveManagementList" title="Leaves Management" ref="com.axelor.apps.hr.db.LeaveManagement" mappedBy="leaveLine"/>
     <integer name="importId"/>
     

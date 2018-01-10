@@ -37,6 +37,7 @@ import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDige
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Authentication;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Encryption;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.Product;
+import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.certificate.KeyUtil;
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
@@ -84,11 +85,13 @@ public class SPRRequestElement extends InitializationRequestElement {
     UserSignature			userSignature;
 
     EbicsUser ebicsUser = session.getUser();
+	EbicsPartner ebicsPartner = ebicsUser.getEbicsPartner();
     
     userSignature = new UserSignature(ebicsUser,
 				      generateName("SIG"),
 	                              "A005",
-	                              " ".getBytes());
+	                              " ".getBytes(), " ".getBytes());
+    //TODO Manage the ebics ts case, with an eletronic signature of the user
     userSignature.build();
     userSignature.validate();
 
@@ -104,7 +107,7 @@ public class SPRRequestElement extends InitializationRequestElement {
     orderType = EbicsXmlFactory.createOrderType(type.getOrderType());
     standardOrderParamsType = EbicsXmlFactory.createStandardOrderParamsType();
     
-    OrderAttribute orderAttribute = new OrderAttribute(type, ebicsUser.getEbicsTypeSelect());
+    OrderAttribute orderAttribute = new OrderAttribute(type, ebicsPartner.getEbicsTypeSelect());
     orderAttribute.build();
     
     orderDetails = EbicsXmlFactory.createStaticHeaderOrderDetailsType(ebicsUser.getNextOrderId(),
@@ -114,7 +117,7 @@ public class SPRRequestElement extends InitializationRequestElement {
     xstatic = EbicsXmlFactory.createStaticHeaderType(session.getBankID(),
 	                                             nonce,
 	                                             0,
-	                                             ebicsUser.getEbicsPartner().getPartnerId(),
+	                                             ebicsPartner.getPartnerId(),
 	                                             product,
 	                                             ebicsUser.getSecurityMedium(),
 	                                             ebicsUser.getUserId(),

@@ -101,7 +101,10 @@ public class ICalendarService {
 	
 	@Inject
 	protected ICalendarUserRepository iCalendarUserRepository;
-
+	
+	@Inject
+	protected ICalendarEventRepository iEventRepo;
+	
 	/**
 	 * Generate next {@link Uid} to be used with calendar event.
 	 *
@@ -196,8 +199,7 @@ public class ICalendarService {
 		}
 
 		for (Object item : cal.getComponents(Component.VEVENT)) {
-			ICalendarEvent event = findOrCreateEvent((VEvent) item);
-			calendar.addEvent(event);
+			findOrCreateEvent((VEvent) item, calendar);
 		}
 	}
 
@@ -209,17 +211,17 @@ public class ICalendarService {
 	}
 	
 	@Transactional
-	protected ICalendarEvent findOrCreateEvent(VEvent vEvent) {
+	protected ICalendarEvent findOrCreateEvent(VEvent vEvent, ICalendar calendar) {
 
 		String uid = vEvent.getUid().getValue();
 		DtStart dtStart = vEvent.getStartDate();
 		DtEnd dtEnd = vEvent.getEndDate();
 
-		ICalendarEventRepository repo = Beans.get(ICalendarEventRepository.class);
-		ICalendarEvent event = repo.findByUid(uid);
+		ICalendarEvent event = iEventRepo.findByUid(uid);
 		if (event == null) {
 			event = new ICalendarEvent();
 			event.setUid(uid);
+			event.setCalendar(calendar);
 		}
 
 		event.setStartDateTime(new LocalDateTime(dtStart.getDate()));
@@ -430,12 +432,12 @@ public class ICalendarService {
 	public void export(ICalendar calendar, Writer writer) throws IOException, ValidationException, ParseException {
 		Preconditions.checkNotNull(calendar, "calendar can't be null");
 		Preconditions.checkNotNull(writer, "writer can't be null");
-		Preconditions.checkNotNull(calendar.getEvents(), "can't export empty calendar");
+		Preconditions.checkNotNull(getICalendarEvents(calendar), "can't export empty calendar");
 
 		Calendar cal = newCalendar();
 		cal.getProperties().add(new XProperty(X_WR_CALNAME, calendar.getName()));
 
-		for (ICalendarEvent item : calendar.getEvents()) {
+		for (ICalendarEvent item : getICalendarEvents(calendar)) {
 			VEvent event = createVEvent(item);
 			cal.getComponents().add(event);
 		}
@@ -489,7 +491,7 @@ public class ICalendarService {
 			remoteEvents.put(item.getUid().getValue(), item);
 		}
 
-		for (ICalendarEvent item : calendar.getEvents()) {
+		for (ICalendarEvent item : getICalendarEvents(calendar)) {
 			VEvent source = createVEvent(item);
 			VEvent target = remoteEvents.get(source.getUid().getValue());
 			if (target == null && Strings.isNullOrEmpty(item.getUid())) {
@@ -548,17 +550,17 @@ public class ICalendarService {
 				localEvents.add(remoteEvents.get(uid));
 			}
 		}
-
-		// update local events
-		final List<ICalendarEvent> iEvents = new ArrayList<>();
+		
+		List<ICalendarEvent> oldEvents = getICalendarEvents(calendar);
+		
 		for (VEvent item : localEvents) {
-			ICalendarEvent iEvent = findOrCreateEvent(item);
-			iEvents.add(iEvent);
+			ICalendarEvent iEvent = findOrCreateEvent(item, calendar);
+			if (oldEvents.contains(iEvent)) {
+				oldEvents.remove(iEvent);
+			}
 		}
-		calendar.getEvents().clear();
-		for (ICalendarEvent event : iEvents) {
-			calendar.addEvent(event);
-		}
+		
+		removeOldEvents(oldEvents);
 
 		// update remote events
 		for (VEvent item : localEvents) {
@@ -572,4 +574,18 @@ public class ICalendarService {
 
 		return calendar;
 	}
+	
+	@Transactional
+	public void removeOldEvents(List<ICalendarEvent> oldEvents) {
+		
+		for (ICalendarEvent event : oldEvents) {
+			iEventRepo.remove(event);
+		}
+	}
+	
+	private List<ICalendarEvent> getICalendarEvents(ICalendar calendar) {
+		
+		return iEventRepo.all().filter("self.calendar = ?1", calendar).fetch();
+	}
+	
 }

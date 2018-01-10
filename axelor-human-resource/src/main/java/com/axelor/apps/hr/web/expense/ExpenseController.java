@@ -17,17 +17,6 @@
  */
 package com.axelor.apps.hr.web.expense;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import com.axelor.apps.hr.service.HRMenuValidateService;
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.db.Company;
@@ -40,16 +29,20 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.HRConfig;
+import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
+import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -63,10 +56,21 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class ExpenseController {
 
@@ -82,6 +86,8 @@ public class ExpenseController {
 	private Provider<GeneralService> generalServiceProvider;
 	@Inject
 	private Provider<ExpenseRepository> expenseRepositoryProvider;
+	@Inject
+	private Provider<ExpenseLineRepository> expenseLineRepositoryProvider;
 	
 	public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response) throws AxelorException{
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
@@ -326,6 +332,22 @@ public class ExpenseController {
 			response.setException(e);
 		}
 	}
+
+	/**
+	 * Called on clicking cancelPaymentButton, call {@link ExpenseService#cancelPayment(Expense)}.
+	 * @param request
+	 * @param response
+	 */
+	public void cancelPayment(ActionRequest request, ActionResponse response) {
+		Expense expense = request.getContext().asType(Expense.class);
+		expense = Beans.get(ExpenseRepository.class).find(expense.getId());
+		try {
+			expenseServiceProvider.get().cancelPayment(expense);
+			response.setReload(true);
+		} catch (Exception e) {
+			TraceBackService.trace(e);
+		}
+	}
 	
 	//sending expense and sending mail to manager
 	public void send(ActionRequest request, ActionResponse response) throws AxelorException{
@@ -427,13 +449,7 @@ public class ExpenseController {
 	 public void insertKMExpenses(ActionRequest request, ActionResponse response) throws AxelorException{
 	 	User user = AuthUtils.getUser();
 	 	if(user != null){
-	 		Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
-	 		if(expense == null){
-	 			expense = new Expense();
-	 			expense.setUser(user);
-	 			expense.setCompany(user.getActiveCompany());
-	 			expense.setStatusSelect(ExpenseRepository.STATUS_DRAFT);
-	 		}
+	 		Expense expense = expenseServiceProvider.get().getOrCreateExpense(user);
 	 		ExpenseLine expenseLine = new ExpenseLine();
 	 		expenseLine.setDistance(new BigDecimal(request.getData().get("kmNumber").toString()));
 	 		expenseLine.setFromCity(request.getData().get("locationFrom").toString());
@@ -443,8 +459,8 @@ public class ExpenseController {
 	 		expenseLine.setExpenseDate(new LocalDate(request.getData().get("date").toString()));
 	 		
 	 		Employee employee = user.getEmployee();
-	 		if(employee != null && employee.getKilometricAllowParam() != null)  {
-	 			expenseLine.setKilometricAllowParam(user.getEmployee().getKilometricAllowParam());
+	 		if(employee != null)  {
+	 			expenseLine.setKilometricAllowParam(expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine).get(0));
 	 			expenseLine.setTotalAmount(Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
 	 			expenseLine.setUntaxedAmount(expenseLine.getTotalAmount());
 	 		}
@@ -475,17 +491,45 @@ public class ExpenseController {
 		
 	}
 	
+	public void removeLines(ActionRequest request, ActionResponse response) {
+
+		Expense expense = request.getContext().asType(Expense.class);
+
+		List<ExpenseLine> expenseLineList = expense.getExpenseLineList();
+
+		try {
+			if (expenseLineList != null && !expenseLineList.isEmpty()) {
+				Iterator<ExpenseLine> expenseLineIter = expenseLineList.iterator();
+				while (expenseLineIter.hasNext()) {
+					ExpenseLine generalExpenseLine = expenseLineIter.next();
+
+					if (generalExpenseLine.getKilometricExpense() != null
+							&& (expense.getKilometricExpenseLineList() != null
+									&& !expense.getKilometricExpenseLineList().contains(generalExpenseLine)
+									|| expense.getKilometricExpenseLineList() == null)) {
+
+						expenseLineIter.remove();
+					}
+				}
+			}
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+		response.setValue("expenseLineList", expenseLineList);
+	}
+	
 	public void computeKilometricExpense(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
 		
-		if (expenseLine.getKilometricAllowParam() == null || expenseLine.getDistance() == null || expenseLine.getExpenseDate() == null || expenseLine.getKilometricTypeSelect() == null || expenseLine.getKilometricTypeSelect() == 0 || expenseLine.getDistance() == null ){ 
+		if (expenseLine.getKilometricAllowParam() == null || expenseLine.getDistance().compareTo(BigDecimal.ZERO) == 0
+				|| expenseLine.getExpenseDate() == null || expenseLine.getKilometricTypeSelect() == 0) {
 			return;
 		}
 		
 		String userId = null;
 		String userName = null;
-		if (expenseLine.getExpense() != null){
+		if (expenseLine.getExpense() != null && expenseLine.getUser() != null){
 			userId = expenseLine.getExpense().getUser().getId().toString();
 			userName = expenseLine.getExpense().getUser().getFullName();
 		}else{
@@ -509,5 +553,61 @@ public class ExpenseController {
 		response.setValue("totalAmount", amount);
 		response.setValue("untaxedAmount", amount);
 	}
-	
+
+	public void updateKAPOfKilometricAllowance(ActionRequest request, ActionResponse response) {
+		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+		
+		if (expenseLine.getExpense() == null) {
+			setExpense(request, expenseLine);
+		}
+		
+		List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
+		if (kilometricAllowParamList == null || kilometricAllowParamList.isEmpty()) {
+			response.setAttr("kilometricAllowParam", "domain", "self.id IN (0)");
+		} else {
+			response.setAttr("kilometricAllowParam", "domain", "self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList) + ")");
+		}
+
+		KilometricAllowParam currentKilometricAllowParam = expenseLine.getKilometricAllowParam();
+		boolean vehicleOk = false;
+
+		if (kilometricAllowParamList != null && kilometricAllowParamList.size() == 1) {
+			response.setValue("kilometricAllowParam", kilometricAllowParamList.get(0));
+		} else if (kilometricAllowParamList != null) {
+			for (KilometricAllowParam kilometricAllowParam : kilometricAllowParamList) {
+				if (currentKilometricAllowParam != null && currentKilometricAllowParam.equals(kilometricAllowParam)) {
+					expenseLine.setKilometricAllowParam(kilometricAllowParam);
+					vehicleOk = true;
+					break;
+				}
+			}
+			if (!vehicleOk) {
+				response.setValue("kilometricAllowParam", null);
+			} else {
+				response.setValue("kilometricAllowParam", expenseLine.getKilometricAllowParam());
+			}
+		}
+	}
+
+	private void setExpense(ActionRequest request, ExpenseLine expenseLine) {
+		
+		Context parent = request.getContext().getParentContext();
+		
+		if (parent != null && parent.get("_model").equals(Expense.class.getName())) {
+			expenseLine.setExpense(parent.asType(Expense.class));
+		}
+		
+	}
+
+	public void domainOnSelectOnKAP(ActionRequest request, ActionResponse response) {
+		
+		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+		
+		if (expenseLine.getExpense() == null) {
+			setExpense(request, expenseLine);
+		}
+		
+		List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
+		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList)+ ")");
+	}
 }

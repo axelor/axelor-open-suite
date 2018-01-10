@@ -80,7 +80,7 @@ public class EbicsUserImport {
 		
 		try {
 			X509Certificate certificate = certificateService.convertToCertificate(pem);
-			certificateService.updateCertificate(certificate, cert);
+			certificateService.updateCertificate(certificate, cert, false);
 		} catch (IOException | CertificateEncodingException e) {
 			e.printStackTrace();
 		}

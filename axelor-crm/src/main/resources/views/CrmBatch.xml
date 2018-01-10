@@ -15,7 +15,7 @@
   <panel name="main" >
     <field name="actionSelect" onChange="action-crm-batch-attrs-action-select"/>
     <field name="code"/>
-    <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+    <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
   </panel>
   <panel-tabs>
     <panel name="eventReminderPage" title="Event reminder page">

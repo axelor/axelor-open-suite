@@ -32,7 +32,6 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.RejectImportService;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -41,7 +40,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
 import com.axelor.exception.AxelorException;
@@ -57,7 +56,7 @@ public class InterbankPaymentOrderImportService {
 	protected PaymentVoucherCreateService paymentVoucherCreateService;
 	protected CfonbImportService cfonbImportService;
 	protected RejectImportService rejectImportService;
-	protected BankDetailsService bankDetailsService;
+	protected BankDetailsServiceImpl bankDetailsService;
 	protected AccountConfigService accountConfigService;
 	protected PartnerRepository partnerRepo;
 	protected InvoiceRepository invoiceRepo;
@@ -66,8 +65,8 @@ public class InterbankPaymentOrderImportService {
 
 	@Inject
 	public InterbankPaymentOrderImportService(GeneralService generalService, PaymentVoucherCreateService paymentVoucherCreateService, CfonbImportService cfonbImportService,
-			RejectImportService rejectImportService, BankDetailsService bankDetailsService, AccountConfigService accountConfigService, PartnerRepository partnerRepo,
-			InvoiceRepository invoiceRepo) {
+                                              RejectImportService rejectImportService, BankDetailsServiceImpl bankDetailsService, AccountConfigService accountConfigService, PartnerRepository partnerRepo,
+                                              InvoiceRepository invoiceRepo) {
 
 		this.paymentVoucherCreateService = paymentVoucherCreateService;
 		this.cfonbImportService = cfonbImportService;

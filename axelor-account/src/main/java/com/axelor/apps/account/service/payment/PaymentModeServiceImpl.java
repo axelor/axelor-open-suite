@@ -50,7 +50,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
 
 		AccountManagement accountManagement = this.getAccountManagement(paymentMode, company, bankDetails);
 
-		if(accountManagement != null)  {
+		if(accountManagement != null && accountManagement.getCashAccount() != null)  {
 			return accountManagement.getCashAccount();
 		}
 

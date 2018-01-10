@@ -12,7 +12,7 @@
 		  <button name="showInvoice" title="Invoices" onClick="save,action-company-view-invoice"/>
 		</toolbar>
 		<panel name="main" >
-		  <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+		  <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 	
 		  <field name="accountChart" readonlyIf="hasChartImported" colSpan="8" form-view="account-chart-form" grid-view="account-chart-grid"/>
 		  <button name="installTemplate" title="Import a chart" readonlyIf="hasChartImported || company == null || accountChart == null" colSpan="4" icon="fa-import" onClick="action-group-account-config-installchart-click"/>
@@ -64,10 +64,6 @@
 				<panel name="exports" title="Exports" colSpan="12">
 					<field name="exportPath"/>
 <!-- 					<field name="exportFileName"/> -->
-				</panel>
-				<panel name="cashiers" title="Cashiers" colSpan="12">
-					<field name="cashRegisterTemplate" form-view="template-form" grid-view="template-grid"/>
-					<field name="cashRegisterAddressEmail"/>
 				</panel>
 				<panel name="shiftToIrrecoverable" title="Shift to irrecoverable" colSpan="12">
 					<field name="irrecoverableReasonPassage"/>
@@ -146,23 +142,27 @@
 			</panel>
 			
 			<panel name="bankOrder" title="Bank Order" if-module="axelor-bank-payment">
-			  	<field name="generateMoveOnBankOrderValidation"  if-module="axelor-bank-payment"/>
-			  	<field name="internalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-				<field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-				
-				<panel name="creditTransferBankOrderSequences" title="Credit transfer bank orders sequences" colSpan="6">
+                <panel colSpan="12">
+                    <field name="generateMoveOnBankOrderValidation" if-module="axelor-bank-payment"/>
+                    <field name="icsNumber" if="__config__.general.getManageDirectDebitPayment()" if-module="axelor-bank-payment"/>
+                    <field name="internalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+                    <field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+                </panel>
+				<panel name="creditTransferBankOrderSequences" title="Credit transfer bank orders sequences" colSpan="4">
 					<field name="sepaCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 					<field name="intCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 				</panel>
-				<panel name="directDebitBankOrderSequences" title="Direct debit bank orders sequences" colSpan="6">
+				<panel name="directDebitBankOrderSequences" title="Direct debit bank orders sequences" colSpan="4">
 					<field name="sepaDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 					<field name="intDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 				</panel>
-				<panel name="treasuryTransferBankOrderSequences" title="Treasury transfer Bank orders sequences" colSpan="6">
+				<panel name="treasuryTransferBankOrderSequences" title="Treasury transfer Bank orders sequences" colSpan="4">
 					<field name="natTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 					<field name="intTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
 				</panel>
-				<field name="otherBankOrderSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+                <panel name="other" title="Other" colSpan="12">
+                    <field name="otherBankOrderSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+                </panel>
 			</panel>
 		
 			<panel name="reimbursement" title="Reimbursement">
@@ -210,7 +210,7 @@
 						<field name="accountType" colSpan="6" form-view="account-type-form" grid-view="account-type-grid"/>
 						<field name="reconcileOk" colSpan="6"/>
 						<field name="parent" colSpan="6" grid-view="account-grid" form-view="account-form"/>
-						<field name="company" widget="SuggestBox" colSpan="6" form-view="company-form" grid-view="company-grid"/>
+						<field name="company" canEdit="false" widget="SuggestBox" colSpan="6" form-view="company-form" grid-view="company-grid"/>
 				    </editor>
 				</field>
 			</panel>

@@ -95,14 +95,15 @@
 		
 	<action-view name="account.send.bank.order"
 		title="Send a Bank Order" model="com.axelor.apps.bankpayment.db.BankOrder">
-		<view type="grid" name="bank-order-grid"/>
+		<view type="grid" name="bank-order-send-grid"/>
 		<view type="form" name="bank-order-send-form"/>
-		<domain>self.generatedMetaFile != NULL</domain>
+		<domain>self.generatedMetaFile != NULL AND self.nbOfLines = 0</domain>
 	</action-view>
 	
 	<menuitem name="account-root-bank-order-awaiting-for-signature"
 		parent="account-root-bank-orders" title="Bank Orders awaiting for signature"
-		action="account.bank.order.awaiting.for.signature" />
+		action="account.bank.order.awaiting.for.signature" tag-count="true"
+		tag-style="default"/>
 	
 	<action-view name="account.bank.order.awaiting.for.signature"
 		title="Bank Orders awaiting for signature" model="com.axelor.apps.bankpayment.db.BankOrder" >

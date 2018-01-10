@@ -422,7 +422,7 @@
 		title="Unit conversions" model="com.axelor.apps.base.db.UnitConversion" >
 		<view type="grid" name="unit-conversion-grid"/>
 		<view type="form" name="unit-conversion-form"/>
-		<context name="searchFields" expr="fromUnit;toUnit"/>
+		<context name="searchFields" expr="startUnit;endUnit"/>
 	</action-view>
 	
 	<menuitem name="admin-conf-general-year" parent="admin-conf-general"

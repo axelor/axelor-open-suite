@@ -23,6 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.BankDetailsService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -316,4 +320,34 @@ public class PurchaseOrderController {
 			response.setFlash(ae.getLocalizedMessage());
 		}
 	}
+
+	/**
+	 * Called on partner, company or payment change.
+	 * Fill the bank details with a default value.
+	 * @param request
+	 * @param response
+	 */
+	public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		PaymentMode paymentMode = (PaymentMode) request.getContext().get("paymentMode");
+		Company company = purchaseOrder.getCompany();
+		Partner partner = purchaseOrder.getSupplierPartner();
+		if(company == null) {
+			return;
+		}
+		if (partner != null) {
+			partner = Beans.get(PartnerRepository.class).find(partner.getId());
+		}
+		BankDetails defaultBankDetails = Beans.get(BankDetailsService.class)
+				.getDefaultCompanyBankDetails(company, paymentMode, partner);
+		response.setValue("companyBankDetails", defaultBankDetails);
+	}
+
+	public void validate(ActionRequest request, ActionResponse response) throws Exception {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
+		purchaseOrderService.validatePurchaseOrder(purchaseOrder);
+		response.setReload(true);
+	}
+
 }

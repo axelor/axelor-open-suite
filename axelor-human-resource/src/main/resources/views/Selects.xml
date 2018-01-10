@@ -99,6 +99,7 @@
 		<option value="2">Seniority leave Management</option>
 		<option value="3">Payroll preparation generation</option>
 		<option value="4">Payroll preparation export</option>
+		<option value="5">Leave Management Reset</option>
 	</selection>
 	
 	<selection name="hr.expense.company.cb.payment">
@@ -110,6 +111,7 @@
 		<option value="1">Draft</option>
 		<option value="2">Calculated</option>
 		<option value="3">Validated</option>
+		<option value="4">Closed</option>
 	</selection>
 	
 	<selection name="hr.lunch.voucher.mgt.line.lunch.voucher.format.select">
@@ -160,5 +162,9 @@
 		<option value="2">Single</option>
 		<option value="3">Cohabitee</option>
 	</selection>
-	
+
+	<selection name="meta.schedule.batch.service.select" id="hr.meta.schedule.batch.service.select">
+		<option value="com.axelor.apps.hr.service.batch.HrBatchService">com.axelor.apps.hr.service.batch.HrBatchService</option>
+	</selection>
+
 </object-views>

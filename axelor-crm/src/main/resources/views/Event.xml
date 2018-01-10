@@ -46,8 +46,8 @@
 			<field name="duration" widget="duration" colSpan="2" onChange="action-event-method-compute-from-duration" x-big="true"/>
 			<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
 			<field name="limitDateT" colSpan="4" showIf="typeSelect == 3"/>
-			<field name="user" form-view="user-form" grid-view="user-grid"/>
-			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
+			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="team" canEdit="false" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 			<field name="disponibilitySelect" widget="RadioSelect" readonlyIf="calendarCrm != null"/>
 			<field name="visibilitySelect" widget="RadioSelect" readonlyIf="calendarCrm != null"/>
 			<panel colSpan="12">
@@ -65,7 +65,7 @@
 			<field name="subjectTeam" hidden="true"/>
 		</panel>
 		<panel title="Add Guests" name="addGuests" sidebar="true">
-			<field name="$guestUser" title="Existing user" colSpan="9" type="many-to-one" target="com.axelor.auth.db.User"/>
+			<field name="$guestUser" title="Existing user" colSpan="9" type="many-to-one" target="com.axelor.auth.db.User" canEdit="false"/>
 			<button name="addNewGuestUser" title="Add" colSpan="3" onClick="save, action-event-method-add-user-guest"/>
 			<field name="$guestPartner" title="Existing customer/supplier/contact" colSpan="9" type="many-to-one" target="com.axelor.apps.base.db.Partner"/>
 			<button name="addNewGuestPartner" title="Add" colSpan="3" onClick="save, action-event-method-add-partner-guest"/>
@@ -144,8 +144,8 @@
 
 		<panel colSpan="12" name="main" >
 			<field name="subject" colSpan="12"/>
-			<field name="user" form-view="user-form" grid-view="user-grid"/>
-			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
+			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="team" canEdit="false" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 			<panel colSpan="12">
 				<field name="description" widget="html" colSpan="12"/>
 			</panel>
@@ -211,8 +211,8 @@
 		<panel name="meetingGeneral" colSpan="12">
 			<field name="subject" colSpan="6"/>
 			<field name="location" colSpan="6"/>
-			<field name="user" form-view="user-form" grid-view="user-grid"/>
-			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
+			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="team" canEdit="false" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 			<panel colSpan="12">
 				<field name="description" widget="html" colSpan="12"/>
 			</panel>
@@ -298,8 +298,8 @@
 		<panel name="main" readonlyIf="statusSelect == 14">
 			<field name="subject" colSpan="12"/>
 			<field name="limitDateT" colSpan="3"/>
-			<field name="user" form-view="user-form" grid-view="user-grid"/>
-			<field name="team" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
+			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="team" canEdit="false" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 			<panel colSpan="12">
 				<field name="description" widget="html" colSpan="12"/>
 			</panel>
@@ -377,8 +377,8 @@
 			<field name="clientPartner" onChange="action-partner-attrs-hide-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" onChange="action-event-record-client-partner" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<field name="lead"/>
-			<field name="user" onChange="action-event-record-ticket-responsible-user" form-view="user-form" grid-view="user-grid"/>
-			<field name="responsibleUser" form-view="user-form" grid-view="user-grid"/>
+			<field name="user" canEdit="false" onChange="action-event-record-ticket-responsible-user" form-view="user-form" grid-view="user-grid"/>
+			<field name="responsibleUser" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 		<panel title=" " colSpan="12">
 			<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
@@ -412,7 +412,7 @@
     
     <form name="leave-form" title="Leave" model="com.axelor.apps.crm.db.Event" onNew="action-event-new-leave" canNew="false" canEdit="false">
 		<panel colSpan="12">
-			<field name="user" title="Leave for" form-view="user-form" grid-view="user-grid"/>
+			<field name="user" canEdit="false" title="Leave for" form-view="user-form" grid-view="user-grid"/>
 			<panel title="Dates" colSpan="12">
 				<field name="startDateTime" colSpan="3"/>
 				<field name="endDateTime" colSpan="3"/>

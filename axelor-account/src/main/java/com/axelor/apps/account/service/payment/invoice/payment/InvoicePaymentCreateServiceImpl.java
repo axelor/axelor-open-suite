@@ -19,30 +19,53 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import java.math.BigDecimal;
 
-import com.axelor.apps.account.db.*;
 import org.joda.time.LocalDate;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateService {
 	
 	protected InvoicePaymentRepository invoicePaymentRepository;
 	protected InvoicePaymentToolService invoicePaymentToolService;
 	protected CurrencyService currencyService;
+	protected GeneralService generalService;
 	
 	@Inject
 	public InvoicePaymentCreateServiceImpl(InvoicePaymentRepository invoicePaymentRepository, InvoicePaymentToolService invoicePaymentToolService, 
-			CurrencyService currencyService)  {
+			CurrencyService currencyService, GeneralService generalService)  {
 		
 		this.invoicePaymentRepository = invoicePaymentRepository;
 		this.invoicePaymentToolService = invoicePaymentToolService;
 		this.currencyService = currencyService;
+		this.generalService = generalService;
 		
+	}
+	
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails bankDetails) {
+		InvoicePayment invoicePayment = createInvoicePayment(
+				invoice,
+				invoice.getInTaxTotal().subtract(invoice.getAmountPaid()),
+				generalService.getTodayDate(),
+				invoice.getCurrency(),
+				invoice.getPaymentMode(),
+				InvoicePaymentRepository.TYPE_PAYMENT);
+		invoicePayment.setBankDetails(bankDetails);
+		return invoicePaymentRepository.save(invoicePayment);
 	}
 	
 	/**

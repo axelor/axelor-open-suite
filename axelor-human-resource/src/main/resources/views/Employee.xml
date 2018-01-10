@@ -8,6 +8,7 @@
 		 <field name="timeLoggingPreferenceSelect" />
 		 <field name="manager" form-view="user-form" grid-view="user-grid" />
 		 <field name="department" form-view="department-form" grid-view="department-grid"/>
+		 <field name="mainEmploymentContract.payCompany"/>
 	</grid>
 	
 	<grid name="employee-lite-grid" title="Employee" model="com.axelor.apps.hr.db.Employee">
@@ -19,7 +20,7 @@
 	<form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee"
 		onNew="action-employee-record-default" width="large">
 		<toolbar>
-			<button name="annualReport" title="Show annual report" readonlyIf="!id" onClick="action-employee-view-annual-report-wizard"/>
+			<button name="annualReport" title="Show expenses annual report" readonlyIf="!id" onClick="action-employee-view-annual-report-wizard"/>
 		</toolbar>
 	    <panel name="contact" title="Contact">
             <field name="contactPartner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-contact-grid" form-view="partner-contact-form" colSpan="12" showTitle="false">
@@ -46,7 +47,6 @@
         			<field name="birthDate" colSpan="4"/>
         			<field name="maritalStatus" colSpan="4"/>
         			<field name="socialSecurityNumber" colSpan="4"/>
-        			<field name="kilometricAllowParam" colSpan="4"/>
       			</panel>
 	        	<panel name="emergencyContact" title="Emergency Contact" colSpan="12">
 	        		<field name="emergencyContact" colSpan="4"/>
@@ -60,6 +60,7 @@
 						<editor x-viewer="true">
 							<field name="payCompany"/>
 							<field name="executiveStatusSelect"/>
+							<field name="employment"/>
 						</editor>
 					</field>
         			<field name="bonusCoef" colSpan="4" />
@@ -74,14 +75,14 @@
         			<field name="dailyWorkHours" colSpan="4"/>
         			<field name="$dailySalaryCost" readonly="true"
 					   x-bind="{{hourlyRate*dailyWorkHours}}" title="Daily cost"/>
-        			<field name="product" colSpan="4" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
-        			<field name="manager" colSpan="4" form-view="user-form" grid-view="user-grid"/>
+        			<field name="product" canEdit="false" colSpan="4" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
+        			<field name="manager" canEdit="false" colSpan="4" form-view="user-form" grid-view="user-grid"/>
         			<field name="department" colSpan="4" form-view="department-form" grid-view="department-grid"/>
         			<field name="timesheetReminder" colSpan="4"/>
         			<field name="external" colSpan="4"/>
         			<field name="planning" colSpan="4" canNew="true" form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
-        			<field name="publicHolidayPlanning" colSpan="4" form-view="public-holiday-planning-form" grid-view="public-holiday-planning-grid"/>
-        			<field name="imposedDayPlanning" colSpan="4" form-view="public-holiday-planning-form" grid-view="public-holiday-planning-grid"/>
+                    <field name="publicHolidayEventsPlanning" colSpan="4" form-view="events-planning-form" grid-view="events-planning-grid" canEdit="false"/>
+                    <field name="imposedDayEventsPlanning" colSpan="4" form-view="events-planning-form" grid-view="events-planning-grid" canEdit="false"/>
         			<field name="negativeValueLeave" colSpan="4"/>
         			<field name="hrManager" colSpan="4"/>
         			<field name="exportCode" colSpan="4"/>
@@ -94,17 +95,38 @@
 	       		<panel-dashlet title="Lunch Vouchers" colSpan="12" action="action-hr-view-show-lunch-voucher"/>
 	       		<panel-related field="lunchVoucherAdvanceList" colSpan="12" grid-view="lunch-voucher-advance-grid" form-view="lunch-voucher-advance-form" canNew="false" canEdit="false" canRemove="true"/>
 	       	</panel>
-	       	<panel-related field="employeeAdvanceList" title="Employee advances" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" />
-	       	<panel-related field="kilometricLogList" title="Kilometric log" grid-view="kilometric-log-grid" form-view="kilometric-log-form" readonly="true" />
+
+            <panel title="Expenses">
+                <field name="companyCbSelect" onChange="action-hr-record-reset-company-cb-details"/>
+                <field name="companyCbDetails" hidden="true" showIf="companyCbSelect > 1"/>
+                <panel-related field="employeeAdvanceList" title="Employee advances" colSpan="12" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" />
+            </panel>
+
+	       	<panel name="kilometricLog" title="Kilometric log">
+				<panel-related field="kilometricLogList" title="Kilometric log" grid-view="kilometric-log-grid" form-view="kilometric-log-form" readonly="true" colSpan="12"/>
+				<panel name="vehicles" title="Vehicles" colSpan="12">
+					<field name="employeeVehicleList" colSpan="12" showTitle="false">
+						<editor x-show-on-new="true" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4">
+							<field name="plateNo"/>
+							<field name="vehicleModel"/>
+							<field name="vehicleMake"/>
+							<field name="kilometricAllowParam" widget="SuggestBox"/>
+							<field name="startDate"/>
+							<field name="endDate"/>
+						</editor>
+					</field>
+				</panel>
+			</panel>
+			<!--<panel-related field="kilometricLogList" title="Kilometric log" grid-view="kilometric-log-grid" form-view="kilometric-log-form" readonly="true" />-->
 	       	<panel-dashlet action="hr.dashlet.employee.bonus" title="Bonuses" colSpan="12" readonly="true" />
        	    <panel-related field="leaveLineList" grid-view="leave-line-grid" form-view="leave-line-form" colSpan="12"/>
-        </panel-tabs>
+		</panel-tabs>
 	</form>
 	
 	<form title="Annual report" name="employee-annual-report-form" model="com.axelor.apps.hr.db.Employee">
 		<panel>
 			<field name="year" title="Year" type="many-to-one" target="com.axelor.apps.base.db.Year" domain="self.typeSelect = 1" />
-			<button name="showAnnualReport" title="Show annual report" readonlyIf="year == null" onClick="action-employee-method-show-annual-report" />
+			<button name="showAnnualReport" title="Show expenses annual report" readonlyIf="year == null" onClick="action-employee-method-show-annual-report" />
 		</panel>
 	</form>
 	
@@ -112,7 +134,11 @@
 		<field name="timeLoggingPreferenceSelect" expr="eval:__config__.general.getTimeLoggingPreferenceSelect()"/>
 		<field name="dailyWorkHours" expr="eval:__config__.general.getDailyWorkHours()"/>
 		<field name="negativeValueLeave" expr="eval:__config__.general.getAllowNegativeLeaveEmployees()"/>
-		<field name="publicHolidayPlanning" expr="eval: __user__.activeCompany?.hrConfig?.publicHolidayPlanning"/>
+		<field name="publicHolidayEventsPlanning" expr="eval: __user__.activeCompany?.hrConfig?.publicHolidayEventsPlanning"/>
+	</action-record>
+
+	<action-record name="action-hr-record-reset-company-cb-details" model="com.axelor.apps.hr.db.Employee">
+		<field name="companyCbDetails" expr="eval: ''"/>
 	</action-record>
 	
 	<action-view name="action-hr-user-show-employee" title="Employee" model="com.axelor.apps.hr.db.Employee">
@@ -147,5 +173,10 @@
 	<action-method name="action-employee-method-show-annual-report">
 		<call class="com.axelor.apps.hr.web.EmployeeController" method="showAnnualReport"/>
 	</action-method>
+	
+	<search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee" title="Employee filters">
+		<field name="mainEmploymentContract.payCompany" title="Société de paie du contrat de travail principal"/>
+		<field name="mainEmploymentContract.executiveStatusSelect" title="Statut du contrat de travail principal"/>
+	</search-filters>
 	
 </object-views>

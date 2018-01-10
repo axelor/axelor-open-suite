@@ -30,12 +30,15 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Date;
+import java.util.List;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jdom.JDOMException;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
+import com.axelor.apps.bankpayment.db.EbicsPartnerService;
 import com.axelor.apps.bankpayment.db.EbicsRequestLog;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.EbicsRequestLogRepository;
@@ -46,11 +49,14 @@ import com.axelor.apps.bankpayment.ebics.client.FileTransfer;
 import com.axelor.apps.bankpayment.ebics.client.KeyManagement;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
 import com.axelor.apps.bankpayment.ebics.io.IOUtils;
+import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -265,6 +271,51 @@ public class EbicsService {
 	    
 	}
 
+    /**
+     * Send a file to the EBICS bank server.
+     * 
+     * @param transportUser
+     * @param signatoryUser
+     * @param product
+     * @param file
+     * @param format
+     * @param signature
+     * @throws AxelorException
+     */
+    public void sendFULRequest(EbicsUser transportUser, EbicsUser signatoryUser, EbicsProduct product, File file,
+            BankOrderFileFormat format, File signature) throws AxelorException {
+        Preconditions.checkNotNull(transportUser);
+        Preconditions.checkNotNull(transportUser.getEbicsPartner());
+        Preconditions.checkNotNull(format);
+        List<EbicsPartnerService> ebicsPartnerServiceList = transportUser.getEbicsPartner()
+                .getEbicsPartnerServiceList();
+        String ebicsCodification;
+
+        if (ebicsPartnerServiceList == null || ebicsPartnerServiceList.isEmpty()) {
+            ebicsCodification = format.getOrderFileFormatSelect();
+        } else {
+            ebicsCodification = findEbicsCodification(transportUser.getEbicsPartner(), format);
+        }
+
+        sendFULRequest(transportUser, signatoryUser, product, file, ebicsCodification, signature);
+    }
+
+    private String findEbicsCodification(EbicsPartner ebicsPartner, BankOrderFileFormat format) throws AxelorException {
+        Preconditions.checkNotNull(ebicsPartner);
+        Preconditions.checkNotNull(format);
+
+        if (ebicsPartner.getEbicsPartnerServiceList() != null) {
+            for (EbicsPartnerService service : ebicsPartner.getEbicsPartnerServiceList()) {
+                if (format.equals(service.getBankOrderFileFormat())) {
+                    return service.getEbicsCodification();
+                }
+            }
+        }
+
+        throw new AxelorException(I18n.get(IExceptionMessage.EBICS_NO_SERVICE_CONFIGURED),
+                IException.CONFIGURATION_ERROR, ebicsPartner.getPartnerId(), format.getName());
+    }
+
 	/**
 	 * Sends a file to the ebics bank sever
 	 * @param path the file path to send
@@ -272,18 +323,26 @@ public class EbicsService {
 	 * @param product the application product.
 	 * @throws AxelorException 
 	 */
-	public void sendFULRequest(EbicsUser user, EbicsProduct product, File file, String format, File signature) throws AxelorException {
+	private void sendFULRequest(EbicsUser transportUser, EbicsUser signatoryUser, EbicsProduct product, File file, String format, File signature) throws AxelorException {
 		  
-		EbicsSession session = new EbicsSession(user);
-	    boolean test = isTest(user);
+		EbicsSession session = new EbicsSession(transportUser, signatoryUser);
+	    boolean test = isTest(transportUser);
 	    if (test) {
 	    	session.addSessionParam("TEST", "true");
 	    }
 	    if (file == null) {
 	    	throw new AxelorException("File is required to send FUL request", IException.CONFIGURATION_ERROR);
 	    }
-	    if (user.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS && signature == null)  {
-	    	throw new AxelorException("Signature file is required to send FUL request", IException.CONFIGURATION_ERROR);
+	    
+	    EbicsPartner ebicsPartner = transportUser.getEbicsPartner();
+	    
+	    if (ebicsPartner.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+	    	if(signature == null)  {
+	    		throw new AxelorException("Signature file is required to send FUL request", IException.CONFIGURATION_ERROR);
+	    	}
+	    	if(signatoryUser == null)  {
+	    		throw new AxelorException("Signatory user is required to send FUL request", IException.CONFIGURATION_ERROR);
+	    	}
 	    }
 	    
 	    session.addSessionParam("EBCDIC", "false");
@@ -296,24 +355,24 @@ public class EbicsService {
 	    FileTransfer transferManager = new FileTransfer(session);
 	    
 	    try {
-			if(user.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+			if(ebicsPartner.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
 				transferManager.sendFile(IOUtils.getFileContent(file.getAbsolutePath()), OrderType.FUL, IOUtils.getFileContent(signature.getAbsolutePath()));
 			}
 			else  {
 				transferManager.sendFile(IOUtils.getFileContent(file.getAbsolutePath()), OrderType.FUL, null);
 			}
-			userService.getNextOrderId(user);
+			userService.getNextOrderId(transportUser);
 	    } catch (IOException | AxelorException e) {
 	    	TraceBackService.trace(e);
 	    	throw new AxelorException(e,IException.TECHNICAL);
 	    }
 	    
-	    EbicsPartner ebicsPartner = user.getEbicsPartner();
-	    
-	    if(ebicsPartner.getUsePSR())  {
-	    	
-	    	sendFDLRequest(user, product, null, null, ebicsPartner.getpSRBankStatementFileFormat().getStatementFileFormatSelect());
-	    	
+	    try {
+		    if(ebicsPartner.getUsePSR())  {
+		    	sendFDLRequest(transportUser, product, null, null, ebicsPartner.getpSRBankStatementFileFormat().getStatementFileFormatSelect());
+		    }
+	    } catch (AxelorException e) {
+	    	TraceBackService.trace(e);
 	    }
 	}
 

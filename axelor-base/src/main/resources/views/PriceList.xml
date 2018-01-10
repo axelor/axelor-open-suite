@@ -69,7 +69,6 @@
    		<field name="typeSelect" expr="2" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
    		<field name="typeSelect" expr="1" if="_parent?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (_parent.operationTypeSelect == 3 || _parent.operationTypeSelect == 4)"/>
    		<field name="typeSelect" expr="2" if="_parent?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (_parent.operationTypeSelect == 1 || _parent.operationTypeSelect == 2)"/>
-   		<field name="typeSelect" expr="1" if="_parent?._model == 'com.axelor.apps.protraining.db.ProTraining'"/>
    		<field name="isActive" expr="true"/>
    		<field name="hideDiscount" expr="false"/>
    </action-record>

@@ -174,9 +174,9 @@ public class CostSheetServiceImpl implements CostSheetService  {
 
 	protected void _computeToConsumeProduct(BillOfMaterial billOfMaterial, int bomLevel, CostSheetLine parentCostSheetLine) throws AxelorException  {
 
-		if(billOfMaterial.getBillOfMaterialList() != null)  {
+		if(billOfMaterial.getBillOfMaterialSet() != null)  {
 
-			for(BillOfMaterial billOfMaterialLine : billOfMaterial.getBillOfMaterialList())  {
+			for(BillOfMaterial billOfMaterialLine : billOfMaterial.getBillOfMaterialSet())  {
 
 				Product product = billOfMaterialLine.getProduct();
 

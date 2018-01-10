@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Génération &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706142203</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -171,18 +171,6 @@
                     <text-property name="displayName">account_code</text-property>
                     <text-property name="heading">account_code</text-property>
                 </structure>
-                <structure>
-                    <property name="columnName">cash_register_num</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">cash_register_num</text-property>
-                    <text-property name="heading">cash_register_num</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">cash_register_name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">cash_register_name</text-property>
-                    <text-property name="heading">cash_register_name</text-property>
-                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -251,16 +239,6 @@
                     <structure>
                         <property name="position">11</property>
                         <property name="name">account_code</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">12</property>
-                        <property name="name">cash_register_num</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">13</property>
-                        <property name="name">cash_register_name</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -345,25 +323,10 @@
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
-                <structure>
-                    <property name="position">12</property>
-                    <property name="name">cash_register_num</property>
-                    <property name="nativeName">cash_register_num</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">13</property>
-                    <property name="name">cash_register_name</property>
-                    <property name="nativeName">cash_register_name</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select MoveLine.name as move_line_name, MoveLineReport.global, MoveLineReport.global_by_date, MoveLineReport.global_by_post, 
 MoveLine.date_val as "date", Partner.name as partner_name, Partner.first_name as partner_first_name, Partner.partner_seq as partner_seq, MoveLine.credit, 
-Invoice.invoice_id, Account.code as account_code, CashRegister.num as cash_register_num, 
-CashRegister.name as cash_register_name 
+Invoice.invoice_id, Account.code as account_code
 from public.account_move_line_report as MoveLineReport 
 left outer join public.account_move_line as MoveLine on (MoveLineReport.id = ?) 
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
@@ -375,7 +338,6 @@ left outer join public.account_move_line_report_account_set as AccountSet on (Ac
 left outer join public.account_move_line_report_partner_set as PartnerSet on (PartnerSet.account_move_line_report = MoveLineReport.id)
 
 left outer join public.base_company as Company on (MoveLineReport.company = Company.id)
-left outer join public.account_cash_register as CashRegister on (Move.cash_register = CashRegister.id)
 left outer join public.base_period as Period on (Move.period = Period.id)
 left outer join public.account_journal as Journal on (Move.journal = Journal.id)
 left outer join public.account_payment_mode as PaymentMode on (Move.payment_mode = PaymentMode.id)
@@ -392,7 +354,6 @@ Move.company = MoveLineReport.company  AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id) AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = Partner.id) AND
 (MoveLine.account IS NULL OR (Account.reconcile_ok = true )) AND
-(MoveLineReport.cash_register IS NULL OR MoveLineReport.cash_register = Move.cash_register) AND 
 (MoveLineReport.period IS NULL OR MoveLineReport.period  = Move.period) AND 
 (MoveLineReport.journal IS NULL OR MoveLineReport.journal  = Move.journal) AND 
 (MoveLineReport.payment_mode IS  NULL OR (MoveLineReport.payment_mode = Move.payment_mode)) AND
@@ -400,27 +361,6 @@ Move.ignore_in_accounting_ok = false AND
 MoveLine.credit > 0.00 AND 
 PaymentMode.type_select = 5
 ]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
-</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MoveLineReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>
@@ -1081,25 +1021,6 @@ left outer join public.account_journal as Journal on (MoveLineReport.journal = J
                 <structure>
                     <property name="name">AmountPaidOnDate</property>
                     <property name="dataType">float</property>
-                    <simple-property-list name="aggregateOn">
-                        <value>NewTableGroup1</value>
-                    </simple-property-list>
-                    <property name="aggregateFunction">SUM</property>
-                    <list-property name="arguments">
-                        <structure>
-                            <property name="name">Expression</property>
-                            <expression name="value" type="javascript">dataSetRow["credit"]</expression>
-                        </structure>
-                    </list-property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">sumOnAgency</property>
-                    <text-property name="displayName">SumOnCashRegister</text-property>
-                    <property name="dataType">float</property>
-                    <simple-property-list name="aggregateOn">
-                        <value>NewTableGroup1</value>
-                    </simple-property-list>
                     <property name="aggregateFunction">SUM</property>
                     <list-property name="arguments">
                         <structure>
@@ -1149,13 +1070,6 @@ left outer join public.account_journal as Journal on (MoveLineReport.journal = J
                     <property name="allowExport">true</property>
                 </structure>
                 <structure>
-                    <property name="name">Sum on Agency</property>
-                    <text-property name="displayName">AgencySum</text-property>
-                    <expression name="expression" type="javascript">row["sumOnAgency"]</expression>
-                    <property name="dataType">float</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
                     <property name="name">PartnerAmt</property>
                     <text-property name="displayName">PartnerAmt</text-property>
                     <expression name="expression" type="javascript">row["AmountPaidByPartner"]</expression>
@@ -1184,18 +1098,6 @@ left outer join public.account_journal as Journal on (MoveLineReport.journal = J
                     <property name="name">partner_seq</property>
                     <text-property name="displayName">partner_seq</text-property>
                     <expression name="expression" type="javascript">dataSetRow["partner_seq"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">cash_register_num</property>
-                    <text-property name="displayName">cash_register_num</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["cash_register_num"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">cash_register_name</property>
-                    <text-property name="displayName">cash_register_name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["cash_register_name"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -1423,133 +1325,6 @@ left outer join public.account_journal as Journal on (MoveLineReport.journal = J
                     </cell>
                 </row>
             </header>
-            <group id="1152">
-                <property name="groupName">NewTableGroup1</property>
-                <expression name="keyExpr" type="javascript">row["cash_register_num"]</expression>
-                <structure name="toc">
-                    <expression name="expressionValue" type="javascript">row["cash_register_num"]</expression>
-                </structure>
-                <property name="hideDetail">false</property>
-                <footer>
-                    <row id="1164">
-                        <property name="height">0.21875in</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["global_by_post"]==false</expression>
-                            </structure>
-                        </list-property>
-                        <cell id="2506">
-                            <property name="backgroundColor">#E5E5E5</property>
-                            <property name="borderBottomColor">#000000</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderLeftColor">#000000</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">thin</property>
-                            <property name="borderTopColor">#000000</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
-                        </cell>
-                        <cell id="1166">
-                            <property name="backgroundColor">#E5E5E5</property>
-                            <property name="borderBottomColor">#000000</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderLeftColor">#000000</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">thin</property>
-                            <property name="borderTopColor">#000000</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
-                        </cell>
-                        <cell id="1167">
-                            <property name="colSpan">2</property>
-                            <property name="rowSpan">1</property>
-                            <property name="backgroundColor">#E5E5E5</property>
-                            <property name="borderBottomColor">#000000</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderTopColor">#000000</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
-                            <text id="1227">
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<B>S/Total  <VALUE-OF>row["cash_register_name"]</VALUE-OF></B>]]></text-property>
-                            </text>
-                        </cell>
-                        <cell id="1170">
-                            <property name="backgroundColor">#E5E5E5</property>
-                            <property name="borderBottomColor">#000000</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderTopColor">#000000</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
-                            <data id="2659">
-                                <property name="fontSize">9.5pt</property>
-                                <property name="fontWeight">bold</property>
-                                <property name="numberAlign">right</property>
-                                <structure name="numberFormat">
-                                    <property name="category">Custom</property>
-                                    <property name="pattern">###,##0.00</property>
-                                </structure>
-                                <property name="textAlign">right</property>
-                                <property name="resultSetColumn">Sum on Agency</property>
-                            </data>
-                        </cell>
-                        <cell id="1172">
-                            <property name="backgroundColor">#E5E5E5</property>
-                            <property name="borderBottomColor">#000000</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderTopColor">#000000</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
-                        </cell>
-                        <cell id="1174">
-                            <property name="backgroundColor">#E5E5E5</property>
-                            <property name="borderBottomColor">#000000</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderTopColor">#000000</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
-                        </cell>
-                        <cell id="1175">
-                            <property name="backgroundColor">#E5E5E5</property>
-                            <property name="borderBottomColor">#000000</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderRightColor">#000000</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">thin</property>
-                            <property name="borderTopColor">#000000</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
-                            <data id="2656">
-                                <property name="fontSize">9.5pt</property>
-                                <property name="fontWeight">bold</property>
-                                <property name="numberAlign">right</property>
-                                <structure name="numberFormat">
-                                    <property name="category">Custom</property>
-                                    <property name="pattern">###,##0.00</property>
-                                </structure>
-                                <property name="textAlign">right</property>
-                                <property name="resultSetColumn">Amt On Dt</property>
-                            </data>
-                        </cell>
-                    </row>
-                </footer>
-            </group>
-            <group id="2573">
-                <property name="groupName">GroupByDate</property>
-                <expression name="keyExpr" type="javascript">row["date"]</expression>
-                <structure name="toc">
-                    <expression name="expressionValue" type="javascript">row["date"]</expression>
-                </structure>
-                <property name="hideDetail">false</property>
-            </group>
             <group id="1178">
                 <property name="groupName">NewTableGroup3</property>
                 <expression name="keyExpr" type="javascript">row["partner_name"]+row["partner_first_name"]+row["partner_seq"]</expression>

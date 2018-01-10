@@ -7,24 +7,10 @@
 
   <entity name="BankOrderEconomicReason" lang="java">
   
-	<string name="code" title="Code" min="3" max="3"/>
+	<string name="code" title="Code" min="3" max="3" required="true"/>
 	<string name="label" title="Label"/>
 	<string name="description" title="Description" large="true" multiline="true"/>
-	<string name="name" title="Name">
-		<![CDATA[
-		String name = "";
-		if(code != null && !code.isEmpty())  {
-			name = code + " - " + label;
-		}
-    	if(label != null && !label.isEmpty()) {
-    		if(!name.isEmpty())  {
-		    	name += " - ";
-		    }
-		    name += label;
-	    }
-		return name;
-	    ]]>
-	</string>
+	<string name="name" title="Name"/>
   	
   </entity>
 

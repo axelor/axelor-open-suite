@@ -4,8 +4,8 @@
 
 	<grid name="employee-bonus-mgt-grid" title="Employee bonus management" model="com.axelor.apps.hr.db.EmployeeBonusMgt" >
 		<field name="company" />
-		<field name="payPeriod" />
-		<field name="leavePeriod" />
+		<field name="payPeriod" canEdit="false"/>
+		<field name="leavePeriod" canEdit="false"/>
 		<field name="employeeBonusType" />
 		<field name="baseAmount" />
 		<field name="statusSelect" />
@@ -16,10 +16,10 @@
 	    	<button name="print" title="Print" onClick="action-employee-bonus-mgt-method-print" />
 	    </toolbar>
     	<panel name="main" readonlyIf="statusSelect == 2">
-    		<field name="company" required="true"/>
+    		<field name="company" canEdit="false" required="true"/>
     		<field name="employeeBonusType" required="true" form-view="employee-bonus-type-form" canEdit="false" canNew="false" />
-			<field name="payPeriod" required="true" />
-			<field name="leavePeriod" required="true" />
+			<field name="payPeriod" canEdit="false" domain="self.year.typeSelect = 2" grid-view="period-hr-grid" form-view="period-hr-form" required="true" />
+			<field name="leavePeriod" canEdit="false" domain="self.year.typeSelect = 2" grid-view="period-hr-grid" form-view="period-hr-form" required="true" />
 			<field name="baseAmount" />
         </panel>
         <panel-related field="employeeBonusMgtLineList" title="Employee bonuses" form-view="employee-bonus-mgt-line-form" grid-view="employee-bonus-mgt-line-grid" canNew="false" />

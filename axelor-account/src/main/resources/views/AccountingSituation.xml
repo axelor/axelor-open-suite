@@ -17,7 +17,7 @@
 	     onLoad="action-account-accounting-situation-method-update-customer-account" 
 	     onNew="action-account-accounting-situation-default-set" width="large">
 		<panel name="main" >
-			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="companyInBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="companyOutBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
@@ -37,7 +37,7 @@
     
     
     <grid name="accounting-situation-grid" title="Accounting situations" model="com.axelor.apps.account.db.AccountingSituation">
-    	<field name="company" form-view="company-form" grid-view="company-grid"/>
+    	<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"/>
     	<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     	<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
        	<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
@@ -51,7 +51,7 @@
 	     onLoad="action-account-accounting-situation-method-update-customer-account"  
 	     onNew="action-account-accounting-situation-default-set" >
 		<panel name="main" >
-			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
        		<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>

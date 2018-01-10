@@ -147,7 +147,7 @@ public class BankOrderFileService {
 			}
 
 		default:
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOW_FORMAT), paymentMode.getName()), IException.INCONSISTENCY);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_FORMAT), paymentMode.getName()), IException.INCONSISTENCY);
 		}
 		
 		

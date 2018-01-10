@@ -747,19 +747,19 @@ public class EventService {
 			}
 			
 			if(recurrConf.getEndType() == RecurrenceConfigurationRepository.END_TYPE_REPET){
-				recurrName += String.format(I18n.get(", %d times"), recurrConf.getRepetitionsNumber());
+				recurrName += String.format(", " + I18n.get("%d times"), recurrConf.getRepetitionsNumber());
 			}
 			else if(recurrConf.getEndDate() != null){
-				recurrName += I18n.get(", until the ") + recurrConf.getEndDate().toString("dd/MM/yyyy");
+				recurrName += ", " + I18n.get("until the") + " " + recurrConf.getEndDate().toString("dd/MM/yyyy");
 			}
 			break;
 		
 		case RecurrenceConfigurationRepository.TYPE_WEEK:
 			if(recurrConf.getPeriodicity() == 1){
-				recurrName += I18n.get("Every week ");
+				recurrName += I18n.get("Every week") + " ";
 			}
 			else{
-				recurrName += String.format(I18n.get("Every %d weeks "), recurrConf.getPeriodicity());
+				recurrName += String.format(I18n.get("Every %d weeks") + " ", recurrConf.getPeriodicity());
 			}
 			if(recurrConf.getMonday() && recurrConf.getTuesday() && recurrConf.getWednesday() && recurrConf.getThursday() && recurrConf.getFriday()
 					&& !recurrConf.getSaturday() && !recurrConf.getSunday()){
@@ -770,7 +770,7 @@ public class EventService {
 				recurrName += I18n.get("everyday");
 			}
 			else{
-				recurrName += I18n.get("on ");
+				recurrName += I18n.get("on") + " ";
 				if(recurrConf.getMonday()){
 					recurrName += I18n.get("mon,");
 				}
@@ -795,42 +795,42 @@ public class EventService {
 			}
 			
 			if(recurrConf.getEndType() == RecurrenceConfigurationRepository.END_TYPE_REPET){
-				recurrName += String.format(I18n.get(" %d times"), recurrConf.getRepetitionsNumber());
+				recurrName += String.format(" " + I18n.get("%d times"), recurrConf.getRepetitionsNumber());
 			}
 			else if(recurrConf.getEndDate() != null){
-				recurrName += I18n.get(" until the ") + recurrConf.getEndDate().toString("dd/MM/yyyy");
+				recurrName += " " + I18n.get("until the") + " " + recurrConf.getEndDate().toString("dd/MM/yyyy");
 			}
 			break;
 		
 		case RecurrenceConfigurationRepository.TYPE_MONTH:
 			if(recurrConf.getPeriodicity() == 1){
-				recurrName += I18n.get("Every month the ") + recurrConf.getStartDate().getDayOfMonth();
+				recurrName += I18n.get("Every month the") + " " + recurrConf.getStartDate().getDayOfMonth();
 			}
 			else{
 				recurrName += String.format(I18n.get("Every %d months the %d"), recurrConf.getPeriodicity(), recurrConf.getStartDate().getDayOfMonth());
 			}
 			
 			if(recurrConf.getEndType() == RecurrenceConfigurationRepository.END_TYPE_REPET){
-				recurrName += String.format(I18n.get(", %d times"), recurrConf.getRepetitionsNumber());
+				recurrName += String.format(", " + I18n.get("%d times"), recurrConf.getRepetitionsNumber());
 			}
 			else if(recurrConf.getEndDate() != null){
-				recurrName += I18n.get(", until the ") + recurrConf.getEndDate().toString("dd/MM/yyyy");
+				recurrName += ", " + I18n.get("until the") + " " + recurrConf.getEndDate().toString("dd/MM/yyyy");
 			}
 			break;
 			
 		case RecurrenceConfigurationRepository.TYPE_YEAR:
 			if(recurrConf.getPeriodicity() == 1){
-				recurrName += I18n.get("Every year the ") + recurrConf.getStartDate().toString("dd/MM");
+				recurrName += I18n.get("Every year the") + " " + recurrConf.getStartDate().toString("dd/MM");
 			}
 			else{
 				recurrName += String.format(I18n.get("Every %d years the %s"), recurrConf.getPeriodicity(), recurrConf.getStartDate().toString("dd/MM"));
 			}
 			
 			if(recurrConf.getEndType() == RecurrenceConfigurationRepository.END_TYPE_REPET){
-				recurrName += String.format(I18n.get(", %d times"), recurrConf.getRepetitionsNumber());
+				recurrName += String.format(", " + I18n.get("%d times"), recurrConf.getRepetitionsNumber());
 			}
 			else if(recurrConf.getEndDate() != null){
-				recurrName += I18n.get(", until the ") + recurrConf.getEndDate().toString("dd/MM/yyyy");
+				recurrName += ", " + I18n.get("until the") + " " + recurrConf.getEndDate().toString("dd/MM/yyyy");
 			}
 			break;
 

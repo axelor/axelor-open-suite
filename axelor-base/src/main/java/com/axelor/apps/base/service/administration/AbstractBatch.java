@@ -39,10 +39,12 @@ import com.google.inject.persist.Transactional;
 
 public abstract class AbstractBatch {
 
+	protected static final int FETCH_LIMIT = 10;
+
 	@Inject
 	protected GeneralService generalService;
 
-	static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+	protected static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected Batch batch;
 	protected Model model;

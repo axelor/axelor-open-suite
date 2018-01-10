@@ -34,7 +34,6 @@ import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -119,16 +118,20 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 		List<LunchVoucherMgtLine> lunchVoucherMgtLineList = lunchVoucherMgt.getLunchVoucherMgtLineList();
 		int total = 0;
 		int totalInAdvance = 0;
+
+		int totalGiven = 0;
 		
 		if(!ObjectUtils.isEmpty(lunchVoucherMgtLineList)) {
 			for (LunchVoucherMgtLine lunchVoucherMgtLine : lunchVoucherMgtLineList) {
 				total += lunchVoucherMgtLine.getLunchVoucherNumber();
 				totalInAdvance += lunchVoucherMgtLine.getInAdvanceNbr();
+				totalGiven += lunchVoucherMgtLine.getGivenToEmployee();
 			}
 		}
 		
 		lunchVoucherMgt.setTotalLunchVouchers(total + totalInAdvance + lunchVoucherMgt.getStockLineQuantity());
 		lunchVoucherMgt.setRequestedLunchVouchers(total + lunchVoucherMgt.getStockLineQuantity());
+		lunchVoucherMgt.setGivenLunchVouchers(totalGiven);
 	}
 	
 	@Override
@@ -140,7 +143,35 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 		
 		return availableStoclLV - numberToUse - minStoclLV;
 	}
-	
+
+	/**
+	 * Update the stock in the config from lunch voucher management
+	 * @param newLunchVoucherMgtLines the new mgt lines
+	 * @param oldLunchVoucherMgtLines the previous mgt lines
+	 * @param company the company of the HR config
+	 * @return the stock quantity status of the lunch voucher mgt
+	 * @throws AxelorException
+	 */
+	@Transactional
+	@Override
+	public int updateStock(List<LunchVoucherMgtLine> newLunchVoucherMgtLines,
+						   List<LunchVoucherMgtLine> oldLunchVoucherMgtLines, Company company)
+			throws AxelorException{
+		HRConfig hrConfig = hrConfigService.getHRConfig(company);
+
+		int newLunchVoucherQty = hrConfig.getAvailableStockLunchVoucher();
+		int i = 0;
+		for (LunchVoucherMgtLine line : newLunchVoucherMgtLines) {
+		    int oldQty = oldLunchVoucherMgtLines.get(i).getGivenToEmployee();
+		    int newQty = line.getGivenToEmployee();
+		    newLunchVoucherQty = newLunchVoucherQty - newQty + oldQty;
+		    i++;
+		}
+		hrConfig.setAvailableStockLunchVoucher(newLunchVoucherQty);
+		Beans.get(HRConfigRepository.class).save(hrConfig);
+		return hrConfig.getAvailableStockLunchVoucher();
+	}
+
 	@Transactional
 	public void export(LunchVoucherMgt lunchVoucherMgt) throws IOException {
 		MetaFile metaFile = new MetaFile();

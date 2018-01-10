@@ -5,31 +5,38 @@
     
     <grid name="lunch-voucher-mgt-grid" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt">
         <field name="company"/>
-        <field name="payPeriod"/>
-        <field name="leavePeriod"/>
+        <field name="payPeriod" canEdit="false"/>
+        <field name="leavePeriod" canEdit="false"/>
         <field name="statusSelect"/>
         <field name="requestedLunchVouchers"/>
         <field name="lunchVoucherWageShare"/>
         <field name="lunchVoucherEmployersShare"/>
     </grid>
 
-	<form name="lunch-voucher-mgt-form" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt" width="large" onNew="action-lunch-voucher-record-default-onnew">
+	<form name="lunch-voucher-mgt-form" title="Lunch Voucher Management"
+		  model="com.axelor.apps.hr.db.LunchVoucherMgt" width="large"
+		  onNew="action-lunch-voucher-record-default-onnew"
+		  onSave="action-lunch-voucher-group-form-onsave">
 		<toolbar>
 			<button name="printBtn" title="Print" icon="fa-print" showIf="statusSelect &gt;= 2" onClick="action-lunch-voucher-method-print"/>
 			<button name="exportBtn" title="Export CSV" icon="fa-file-text-o" showIf="statusSelect == 3 &amp;&amp; csvFile == null" onClick="action-lunch-voucher-method-export"/>
 		</toolbar>
-  		<panel name="main">
+  		<panel name="main" readonlyIf="statusSelect == 4">
   			<panel colSpan="6">
   				<panel colSpan="12" readonlyIf="statusSelect != 1">
   					<field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
-		    		<field name="company" colSpan="6" onChange="action-lunch-voucher-record-company-onchange" />
+		    		<field name="company" canEdit="false" colSpan="6" onChange="action-lunch-voucher-record-company-onchange" />
 		    		<spacer colSpan="6"/>
-		    		<field name="payPeriod"/>
-		        	<field name="leavePeriod"/>
+					<field name="payPeriod" canEdit="false" domain="self.year.typeSelect = 2" grid-view="period-hr-grid" form-view="period-hr-form"/>
+					<field name="leavePeriod" canEdit="false" domain="self.year.typeSelect = 2" grid-view="period-hr-grid" form-view="period-hr-form"/>
   				</panel>
 	        	<panel colSpan="12">
-	        		<button name="calculateBtn" title="Calculate" colSpan="6" onClick="save,action-lunch-voucher-method-calculate,action-lunch-voucher-method-check-stock" showIf="statusSelect != 3" hidden="true"/>
-		    		<button name="validateBtn" title="Validate" colSpan="6" onClick="save,action-lunch-voucher-method-validate" showIf="statusSelect == 2" hidden="true"/>
+	        		<button name="calculateBtn" title="Calculate" colSpan="6"
+							onClick="save,action-lunch-voucher-method-calculate,action-lunch-voucher-method-check-stock" showIf="statusSelect &lt; 3" hidden="true"/>
+		    		<button name="validateBtn" title="Validate" colSpan="6" onClick="action-lunch-voucher-group-validate" showIf="statusSelect == 2" hidden="true"/>
+					<button name="closeBtn" title="Close" colSpan="6"
+							onClick="action-lunch-voucher-group-close"
+							showIf="statusSelect == 3" hidden="true"/>
 	        	</panel>
 	        	<panel title="Export" colSpan="12" readonly="true" hidden="true" showIf="csvFile != null">
 	        		<field name="exportDate"/>
@@ -44,14 +51,37 @@
 				<field name="requestedLunchVouchers" css="label-bold bold" colSpan="12"/>
 				<field name="totalLunchVouchers" css="label-bold bold" colSpan="12"/>
 				<field name="stockQuantityStatus" css="label-bold bold" colSpan="12"/>
+				<field name="givenLunchVouchers" css="label-bold bold"
+					   colSpan="12" showIf="statusSelect == 4"/>
 			</panel>
   		</panel>
-    	<panel title="Line Stock quantity" readonlyIf="statusSelect == 3" canCollapse="true" collapseIf="true">
-   			<field name="stockLineQuantity" showTitle="false" colSpan="6" css="label-bold bold" onChange="action-lunch-voucher-method-update-total,action-lunch-voucher-method-check-stock"/>
+    	<panel title="Quantity for stock" readonlyIf="statusSelect &gt;= 3" canCollapse="true" collapseIf="true">
+   			<field name="stockLineQuantity" colSpan="6" css="label-bold bold" onChange="action-lunch-voucher-method-update-total,action-lunch-voucher-method-check-stock"/>
    			<field name="stockLineComment" colSpan="6"/>
    		</panel>
   		<panel-related field="lunchVoucherMgtLineList" form-view="lunch-voucher-mgt-line-form" grid-view="lunch-voucher-mgt-line-grid" canNew="false" canRemove="false" onChange="action-lunch-voucher-method-update-total,action-lunch-voucher-method-check-stock"/>
 	</form>
+
+	<!-- ACTION GROUPS -->
+    <action-group name="action-lunch-voucher-group-form-onsave">
+		<action name="action-lunch-voucher-method-update-total"/>
+        <action name="action-lunch-voucher-method-check-stock"/>
+        <action name="action-lunch-voucher-method-update-stock"/>
+	</action-group>
+    
+	<action-group name="action-lunch-voucher-group-validate">
+		<action name="action-lunch-voucher-method-update-total"/>
+		<action name="action-lunch-voucher-method-update-stock"/>
+        <action name="save"/>
+        <action name="action-lunch-voucher-method-validate"/>
+	</action-group>
+
+	<action-group name="action-lunch-voucher-group-close">
+		<action name="action-lunch-voucher-method-update-total"/>
+		<action name="action-lunch-voucher-method-update-stock"/>
+		<action name="action-lunch-voucher-record-close"/>
+        <action name="save"/>
+	</action-group>
 	
 	<!-- ACTION RECORDS -->
 	
@@ -59,15 +89,18 @@
 		<field name="company" expr="eval:__user__.activeCompany"/>
 		<field name="lunchVoucherWageShare" expr="eval: __user__.activeCompany?.hrConfig?.lunchVoucherWageShare"/>
 		<field name="lunchVoucherEmployersShare" expr="eval: __user__.activeCompany?.hrConfig?.lunchVoucherEmployersShare"/>
-		<field name="payPeriod" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
-		<field name="leavePeriod" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
+		<field name="payPeriod" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.year.typeSelect = 2',__date__).fetchOne()"/>
+		<field name="leavePeriod" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.year.typeSelect = 2',__date__).fetchOne()"/>
 	</action-record>
 		
 	<action-record name="action-lunch-voucher-record-company-onchange" model="com.axelor.apps.hr.db.LunchVoucherMgt">
 		<field name="lunchVoucherWageShare" expr="eval: company?.hrConfig?.lunchVoucherWageShare"/>
 		<field name="lunchVoucherEmployersShare" expr="eval: company?.hrConfig?.lunchVoucherEmployersShare"/>
 	</action-record>
-	
+
+	<action-record name="action-lunch-voucher-record-close" model="com.axelor.apps.hr.db.LunchVoucherMgt">
+		<field name="statusSelect" expr="eval: 4"/>
+	</action-record>
 	<!-- ACTION METHODS -->
 	
 	<action-method name="action-lunch-voucher-method-calculate">
@@ -93,5 +126,9 @@
 	<action-method name="action-lunch-voucher-method-print">
 		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="print"/>
 	</action-method>
-	
+
+	<action-method name="action-lunch-voucher-method-update-stock">
+		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="updateStock"/>
+	</action-method>
+
 </object-views>

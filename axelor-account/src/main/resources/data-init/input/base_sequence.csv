@@ -6,8 +6,6 @@
 104;"invoice";"Supplier Invoice";1;7;"SINV_%YY";;1;1;1
 105;"invoice";"Supplier Refund";1;7;"SREF_%YY";;1;1;1
 106;"debit";"Direct debit (invoice and installments)";1;7;"DDINV_%YY_";;1;1;1
-107;"debitReject";"Direct debit reject";1;7;"REJDD_%YY_";;1;1;1
-108;"doubtfulCustomer";"Transfer in doubtful receivables";1;7;"DBTREC_%YY_";;1;1;1
 109;"irrecoverable";"Transfer in irrecoverables";1;7;"IRRECOV_%YY_";;1;1;1
 110;"move";"Sales move line";1;7;"MVSAL_%YY_";;1;1;1
 111;"move";"Refund move line";1;10;"MVREF_%YY_";;1;1;1

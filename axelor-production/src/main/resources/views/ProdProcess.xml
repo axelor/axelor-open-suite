@@ -17,7 +17,7 @@
 	    	<field name="name"/>
 	    	<field name="code"/>
 	        <field name="location" required="true" grid-view="location-grid" form-view="location-form"/>
-	        <field name="product" grid-view="product-grid" form-view="product-form"/>
+	        <field name="product" canEdit="false" grid-view="product-grid" form-view="product-form"/>
 	        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"/>
 	        <field name="outsourcing" onChange="action-prod-process-method-change-prodprocesslist-outsourcing"/>
         </panel>

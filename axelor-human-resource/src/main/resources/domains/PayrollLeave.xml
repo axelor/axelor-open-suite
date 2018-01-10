@@ -11,7 +11,7 @@
       <date name="fromDate" title="From" required="true"/>
       <date name="toDate" title="To" required="true"/>
       <decimal name="duration" title="Duration" scale="1" precision="5"/>
-      <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason" title="Reason" />
+      <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason" title="Type" />
       <many-to-one name="leaveRequest" ref="com.axelor.apps.hr.db.LeaveRequest" title="Leave request" />
       
   </entity>

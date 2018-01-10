@@ -74,14 +74,19 @@ public interface IExceptionMessage {
 	/**
 	 * Abstract batch
 	 */
-	
-	static final public String ABSTRACT_BATCH_1 =  /*$$(*/ "This batch is not runnable !" /*)*/;
+
+	String ABSTRACT_BATCH_1 =  /*$$(*/ "This batch is not runnable !" /*)*/;
+	String ABSTRACT_BATCH_REPORT = /*$$(*/ "Batch report:" /*)*/;
+	String ABSTRACT_BATCH_DONE_SINGULAR = /*$$(*/ "%d record processed successfully," /*)*/;
+	String ABSTRACT_BATCH_DONE_PLURAL = /*$$(*/ "%d records processed successfully," /*)*/;
+	String ABSTRACT_BATCH_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
+	String ABSTRACT_BATCH_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
 	
 	/**
 	 * Indicator generator grouping service
 	 */
-	static final public String INDICATOR_GENERATOR_GROUPING_1 = /*$$(*/ "\nError : no export path has been set" /*)*/;
-	static final public String INDICATOR_GENERATOR_GROUPING_2 = /*$$(*/ "\nError : no code has been set" /*)*/;
+	static final public String INDICATOR_GENERATOR_GROUPING_1 = /*$$(*/ "Error : no export path has been set" /*)*/;
+	static final public String INDICATOR_GENERATOR_GROUPING_2 = /*$$(*/ "Error : no code has been set" /*)*/;
 	static final public String INDICATOR_GENERATOR_GROUPING_3 = /*$$(*/ "Error while creating the file" /*)*/;
 	static final public String INDICATOR_GENERATOR_GROUPING_4 = /*$$(*/ "Result exported" /*)*/;
 	/**
@@ -96,9 +101,9 @@ public interface IExceptionMessage {
 	 * Alarm engine batch service
 	 */
 	static final public String ALARM_ENGINE_BATCH_1 = /*$$(*/ "Alarm Engine %s" /*)*/;
-	static final public String ALARM_ENGINE_BATCH_2 = /*$$(*/ "Alarms report :\n" /*)*/;
-	static final public String ALARM_ENGINE_BATCH_3 = /*$$(*/ "\t* %s object(s) into alarm\n" /*)*/;
-	static final public String ALARM_ENGINE_BATCH_4 = /*$$(*/ "\t* %s anomaly(ies)" /*)*/;
+	static final public String ALARM_ENGINE_BATCH_2 = /*$$(*/ "Alarms report :" /*)*/;
+	static final public String ALARM_ENGINE_BATCH_3 = /*$$(*/ "* %s object(s) into alarm" /*)*/;
+	static final public String ALARM_ENGINE_BATCH_4 = /*$$(*/ "* %s anomaly(ies)" /*)*/;
 	static final public String ALARM_ENGINE_BATCH_5 = /*$$(*/ "Alarm batch" /*)*/;
 
 	/**
@@ -116,11 +121,11 @@ public interface IExceptionMessage {
 	/**
 	 * Importer Listener 
 	 */
-	static final public String IMPORTER_LISTERNER_1 = /*$$(*/ "\nTotal : " /*)*/;
-	static final public String IMPORTER_LISTERNER_2 = /*$$(*/ " - Succeeded : " /*)*/;
-	static final public String IMPORTER_LISTERNER_3 = /*$$(*/ "\nGenerated anomalies :" /*)*/;
+	static final public String IMPORTER_LISTERNER_1 = /*$$(*/ "Total :" /*)*/;
+	static final public String IMPORTER_LISTERNER_2 = /*$$(*/ "- Succeeded :" /*)*/;
+	static final public String IMPORTER_LISTERNER_3 = /*$$(*/ "Generated anomalies :" /*)*/;
 	static final public String IMPORTER_LISTERNER_4 = /*$$(*/ "The line cannot be imported (import : %s)" /*)*/;
-	static final public String IMPORTER_LISTERNER_5 = /*$$(*/ " - Not null : " /*)*/;
+	static final public String IMPORTER_LISTERNER_5 = /*$$(*/ "- Not null :" /*)*/;
 
 	/**
 	 * Template message service base impl
@@ -150,8 +155,13 @@ public interface IExceptionMessage {
 	/**
 	 * Template rule service
 	 */
-	static final public String TEMPLATE_RULE_1 = /*$$(*/ "Bean is not an instance of " /*)*/;
-	
+	static final public String TEMPLATE_RULE_1 = /*$$(*/ "Bean is not an instance of" /*)*/;
+
+	/**
+	 * Sequence service
+	 */
+    static final public String SEQUENCE_NOT_SAVED_RECORD = /*$$(*/ "Can't generate draft sequence number on an unsaved record." /*)*/;
+
 	/**
 	 * Address controller
 	 */

@@ -17,20 +17,25 @@
  */
 package com.axelor.apps.purchase.web;
 
-import java.math.BigDecimal;
-import java.util.Map;
-
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+
+import java.math.BigDecimal;
+import java.util.Map;
 
 public class PurchaseOrderLineController {
 
@@ -103,9 +108,9 @@ public class PurchaseOrderLineController {
 			this.resetProductInformation(response);
 			return;
 		}
-		
+
 		try  {
-			
+
 			TaxLine taxLine = purchaseOrderLineService.getTaxLine(purchaseOrder, purchaseOrderLine);
 			response.setValue("taxLine", taxLine);
 			
@@ -114,6 +119,10 @@ public class PurchaseOrderLineController {
 			response.setValue("productName", purchaseOrderLine.getProduct().getName());
 			response.setValue("unit", purchaseOrderLineService.getPurchaseUnit(purchaseOrderLine));
 			response.setValue("qty", purchaseOrderLineService.getQty(purchaseOrder,purchaseOrderLine));
+
+			Tax tax = Beans.get(AccountManagementService.class).getProductTax(Beans.get(AccountManagementService.class).getAccountManagement(product, purchaseOrder.getCompany()),true);
+			TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(purchaseOrder.getSupplierPartner().getFiscalPosition(), tax);
+			response.setValue("taxEquiv", taxEquiv);
 
 			response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
 			response.setValue("salePrice", purchaseOrderLineService.getSalePrice(purchaseOrder, purchaseOrderLine.getProduct(),price));

@@ -19,10 +19,14 @@ package com.axelor.apps.hr.web.timesheet;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.text.Bidi;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.HRMenuValidateService;
+import com.axelor.apps.hr.service.employee.EmployeeService;
+import com.axelor.auth.AuthLdap;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,7 +104,10 @@ public class TimesheetController {
 			logTime = new BigDecimal(context.get("logTime").toString());
 		
 		Map<String, Object> projectTaskContext = (Map<String, Object>) context.get("projectTask");
-		ProjectTask projectTask = projectTaskRepoProvider.get().find(((Integer) projectTaskContext.get("id")).longValue());
+		ProjectTask  projectTask = null;
+		if (projectTaskContext != null) {
+			projectTask = projectTaskRepoProvider.get().find(((Integer) projectTaskContext.get("id")).longValue());
+		}
 		
 		Map<String, Object> productContext = (Map<String, Object>) context.get("product");
 		Product product = null;
@@ -258,19 +265,24 @@ public class TimesheetController {
 			response.setReload(true);
 		}
 	}
-	
-	//Confirm and continue Button
-		public void confirmContinue(ActionRequest request, ActionResponse response) throws AxelorException{
 
-			this.confirm(request, response);
-			
-			response.setView(ActionView
-					.define(I18n.get("Timesheet"))
-					.model(Timesheet.class.getName())
-					.add("form", "timesheet-form")
-					.map());
-			
-		}
+    // Continue button
+    public void continueBtn(ActionRequest request, ActionResponse response) throws AxelorException {
+        response.setView(ActionView
+                .define(I18n.get("Timesheet"))
+                .model(Timesheet.class.getName())
+                .add("form", "timesheet-form")
+				.add("grid", "timesheet-grid")
+				.domain("self.user = :_user")
+				.context("_user", AuthUtils.getUser())
+                .map());
+    }
+
+    // Confirm and continue button
+    public void confirmContinue(ActionRequest request, ActionResponse response) throws AxelorException {
+        this.confirm(request, response);
+        this.continueBtn(request, response);
+    }
 	
 	
 	//action called when validating a timesheet. Changing status + Sending mail to Applicant
@@ -366,5 +378,17 @@ public class TimesheetController {
 		response.setView(ActionView
 				.define(name)
 				.add("html", fileLink).map());	
+	}
+
+	public void timesheetPeriodTotalController(ActionRequest request, ActionResponse response) {
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		User user = timesheet.getUser();
+
+		BigDecimal periodTotal = timesheetServiceProvider.get().computePeriodTotal(timesheet);
+
+		response.setAttr("periodTotal","value",periodTotal);
+		response.setAttr("$periodTotalConvert","hidden",false);
+		response.setAttr("$periodTotalConvert","value",Beans.get(EmployeeService.class).getUserDuration(periodTotal,user,false));
+		response.setAttr("$periodTotalConvert","title",timesheetServiceProvider.get().getPeriodTotalConvertTitleByUserPref(user));
 	}
 }

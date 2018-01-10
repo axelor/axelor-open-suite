@@ -9,7 +9,7 @@
     
 	<form name="reported-balance-form" title="Reported balance" model="com.axelor.apps.account.db.ReportedBalance"  onNew="action-reported-balance-set-default" width="large">
 		<panel name="main" >
-			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 		</panel>
 		<panel-related field="reportedBalanceLineList" colSpan="12" form-view="reported-balance-line-custom-form" grid-view="reported-balance-line-custom-grid"/>
 	</form>

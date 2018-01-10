@@ -101,9 +101,9 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 
 		BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
 
-		if(billOfMaterial.getBillOfMaterialList() != null)  {
+		if(billOfMaterial.getBillOfMaterialSet() != null)  {
 
-			for(BillOfMaterial billOfMaterialLine : billOfMaterial.getBillOfMaterialList())  {
+			for(BillOfMaterial billOfMaterialLine : billOfMaterial.getBillOfMaterialSet())  {
 
 				if(!billOfMaterialLine.getHasNoManageStock())  {
 

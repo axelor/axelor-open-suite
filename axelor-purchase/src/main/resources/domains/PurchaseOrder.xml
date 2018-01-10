@@ -16,7 +16,7 @@
   		return purchaseOrderSeq + "-" + supplierPartner.getName();
   	]]>
   	</string>
-  	<string name="purchaseOrderSeq" title="Ref." readonly="true"  unique="true"/>
+  	<string name="purchaseOrderSeq" title="Ref." readonly="true"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company"/>
   	
   	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" required="true" title="Supplier"/>
@@ -60,6 +60,8 @@
 	<boolean name="priceDisplay" title="Display price on requested purchase printing" />
   	
   	<string name="priceRequest" title="Message for requesting prices" large="true"/>
+  	
+  	<unique-constraint columns="purchaseOrderSeq,company"/>
   	
 	<track>
       <field name="purchaseOrderSeq" />

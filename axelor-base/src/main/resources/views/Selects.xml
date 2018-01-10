@@ -328,7 +328,6 @@
 		<option value="paymentSchedule">Payment schedule</option>
 		<option value="paymentVoucher">Payment voucher</option>
 		<option value="debit">Direct debit</option>
-		<option value="debitReject">Direct debit reject</option>
 		<option value="moveLineReport">Accounting reports</option>
 		<option value="reimbursement">Reimbursements</option>
 		<option value="paymentVoucherReceiptNo">Receipt N°(Payment voucher)</option>
@@ -340,7 +339,6 @@
 		<option value="treasuryInterface">Treasury interface</option>
 		<option value="purchaseInterface">Purchase interface</option>
 		<option value="moveLineExport">Accounting export</option>
-		<option value="doubtfulCustomer">Shift to doubtful receivables</option>
 		<option value="saleOrder">Sales order</option>
 		<option value="purchaseOrder">Purchase order</option>
 		<option value="eventTicket">Ticket</option>
@@ -349,7 +347,6 @@
 		<option value="inStockMove">Receipt stock move</option>
 		<option value="inventory">Inventory</option>
 		<option value="productTrackingNumber">Product tracking number</option>
-		<option value="proTraining">Professional training</option>
 		<option value="productionOrder">Production order</option>
 		<option value="manufOrder">Manufacturing order</option>
 		<option value="bankOrder">Bank order</option>
@@ -560,6 +557,7 @@
 	<selection name="account.year.type.select">
 		<option value="0">Civil Year</option>
 		<option value="1">Fiscal Year</option>
+		<option value="2">Payroll Year</option>
 	</selection>
 	
 	<selection name="base.year.status.select">
@@ -680,6 +678,17 @@
 		<option value="integer">Integer</option>
 		<option value="date">Date</option>
 		<option value="time">Time</option>
+	</selection>
+
+	<selection name="meta.schedule.job.select">
+		<option value="com.axelor.mail.service.MailFetchJob">com.axelor.mail.service.MailFetchJob</option>
+		<option value="com.axelor.apps.base.job.MailJob">com.axelor.apps.base.job.MailJob</option>
+		<option value="com.axelor.apps.base.job.BatchJob">com.axelor.apps.base.job.BatchJob</option>
+	</selection>
+
+	<selection name="meta.schedule.batch.service.select" id="base.meta.schedule.batch.service.select">
+		<option value="com.axelor.apps.base.service.batch.BaseBatchService">com.axelor.apps.base.service.batch.BaseBatchService</option>
+		<option value="com.axelor.apps.base.service.batch.MailBatchService">com.axelor.apps.base.service.batch.MailBatchService</option>
 	</selection>
 
 </object-views>

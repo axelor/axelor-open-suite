@@ -73,7 +73,7 @@ public class CertificateManager {
     org.apache.xml.security.Init.init();
     java.security.Security.addProvider(new BouncyCastleProvider());
     
-    if(user.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_T)  {
+    if(user.getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_T)  {
     	createA005Certificate(new Date(calendar.getTimeInMillis()));
     }
     createX002Certificate(new Date(calendar.getTimeInMillis()));
@@ -88,7 +88,7 @@ public class CertificateManager {
    */
   private void setUserCertificates() throws IOException, CertificateEncodingException {
 	
-    if(user.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_T)  {
+    if(user.getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_T)  {
     	user.setA005Certificate(updateCertificate(a005Certificate, user.getA005Certificate(), a005PrivateKey.getEncoded(), EbicsCertificateRepository.TYPE_SIGNATURE));
     }   
     
@@ -107,7 +107,7 @@ public class CertificateManager {
 	  
 	  EbicsCertificateService certificateService = Beans.get(EbicsCertificateService.class);
 	  
-	  cert = certificateService.updateCertificate(certificate, cert);
+	  cert = certificateService.updateCertificate(certificate, cert, true);
 	  
 	  cert.setPrivateKey(privateKey);
 	  

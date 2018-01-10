@@ -17,10 +17,25 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.base.db.*;
+import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -48,14 +63,6 @@ import com.axelor.inject.Beans;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImpl {
 
@@ -150,7 +157,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 					Unit unit = purchaseOrderLine.getProduct().getUnit();
 					BigDecimal qty = purchaseOrderLine.getQty();
 					BigDecimal priceDiscounted = purchaseOrderLine.getPriceDiscounted();
-					if(!unit.equals(purchaseOrderLine.getUnit())){
+					if(unit != null && !unit.equals(purchaseOrderLine.getUnit())){
 						qty = unitConversionService.convertWithProduct(purchaseOrderLine.getUnit(), unit, qty, purchaseOrderLine.getProduct());
 						priceDiscounted = unitConversionService.convertWithProduct(purchaseOrderLine.getUnit(), unit, priceDiscounted, purchaseOrderLine.getProduct());
 					}
@@ -311,4 +318,20 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		}
 		purchaseOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
 	}
+
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+		super.validatePurchaseOrder(purchaseOrder);
+
+		if (generalService.getGeneral().getSupplierStockMoveGenerationAuto()
+				&& !existActiveStockMoveForPurchaseOrder(purchaseOrder.getId())) {
+			createStocksMove(purchaseOrder);
+		}
+
+		if (generalService.getGeneral().getManageBudget() && !generalService.getGeneral().getManageMultiBudget()) {
+			generateBudgetDistribution(purchaseOrder);
+		}
+	}
+
 }

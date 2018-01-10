@@ -24,29 +24,27 @@ import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
-import com.axelor.apps.account.xsd.pain_001_001_03.AccountIdentification4Choice;
-import com.axelor.apps.account.xsd.pain_001_001_03.ActiveOrHistoricCurrencyAndAmount;
-import com.axelor.apps.account.xsd.pain_001_001_03.AmountType3Choice;
-import com.axelor.apps.account.xsd.pain_001_001_03.BranchAndFinancialInstitutionIdentification4;
-import com.axelor.apps.account.xsd.pain_001_001_03.CashAccount16;
-import com.axelor.apps.account.xsd.pain_001_001_03.CreditTransferTransactionInformation10;
-import com.axelor.apps.account.xsd.pain_001_001_03.CreditorReferenceInformation2;
-import com.axelor.apps.account.xsd.pain_001_001_03.CustomerCreditTransferInitiationV03;
-import com.axelor.apps.account.xsd.pain_001_001_03.Document;
-import com.axelor.apps.account.xsd.pain_001_001_03.FinancialInstitutionIdentification7;
-import com.axelor.apps.account.xsd.pain_001_001_03.GroupHeader32;
-import com.axelor.apps.account.xsd.pain_001_001_03.ObjectFactory;
-import com.axelor.apps.account.xsd.pain_001_001_03.PartyIdentification32;
-import com.axelor.apps.account.xsd.pain_001_001_03.PaymentIdentification1;
-import com.axelor.apps.account.xsd.pain_001_001_03.PaymentInstructionInformation3;
-import com.axelor.apps.account.xsd.pain_001_001_03.PaymentMethod3Code;
-import com.axelor.apps.account.xsd.pain_001_001_03.PaymentTypeInformation19;
-import com.axelor.apps.account.xsd.pain_001_001_03.RemittanceInformation5;
-import com.axelor.apps.account.xsd.pain_001_001_03.ServiceLevel8Choice;
-import com.axelor.apps.account.xsd.pain_001_001_03.StructuredRemittanceInformation7;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.AccountIdentification4Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.ActiveOrHistoricCurrencyAndAmount;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.AmountType3Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.BranchAndFinancialInstitutionIdentification4;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.CashAccount16;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.CreditTransferTransactionInformation10;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.CustomerCreditTransferInitiationV03;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.Document;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.FinancialInstitutionIdentification7;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.GroupHeader32;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.ObjectFactory;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.PartyIdentification32;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.PaymentIdentification1;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.PaymentInstructionInformation3;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.PaymentMethod3Code;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.PaymentTypeInformation19;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.RemittanceInformation5;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.ServiceLevel8Choice;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
@@ -59,7 +57,7 @@ public class BankOrderFile00100103Service extends BankOrderFileService  {
 		
 		super(bankOrder);
 		
-		context = "com.axelor.apps.account.xsd.pain_001_001_03";
+		context = "com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03";
 		fileExtension = FILE_EXTENSION_XML;
 
 	}

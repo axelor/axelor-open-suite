@@ -19,7 +19,7 @@
     
  	<!--  Leave Management  -->
   	<many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason" title="Leave Reason"/>
-  	<decimal name="dayNumber" title="Number of days"/>
+      <decimal name="dayNumber" title="Number of days" scale="4" precision="8"/>
   	<date name="startDate" title="Start date"/>
   	<date name="endDate" title="End date"/>
  	<string name="comments" title="Comment" />
@@ -49,6 +49,7 @@
 		public static final int ACTION_SENIORITY_LEAVE_MANAGEMENT = 2;
 		public static final int ACTION_PAYROLL_PREPARATION_GENERATION = 3;
 		public static final int ACTION_PAYROLL_PREPARATION_EXPORT = 4;
+		public static final int ACTION_LEAVE_MANAGEMENT_RESET = 5;
 		
 		//PAYROLL PREPARATION EXPORT TYPE SELECT
 		public static final int EXPORT_TYPE_STANDARD = 1;

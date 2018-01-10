@@ -210,11 +210,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	}
 
 	@Override
-	public String getDraftSequence(Long purchaseOrderId){
-		return "*"+purchaseOrderId.toString();
-	}
-
-	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Partner validateSupplier(PurchaseOrder purchaseOrder)  {
 
@@ -337,10 +332,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	}
 
 	@Override
-	public void setDraftSequence(PurchaseOrder purchaseOrder) {
+	public void setDraftSequence(PurchaseOrder purchaseOrder) throws AxelorException {
 		
 		if(purchaseOrder.getId() != null && Strings.isNullOrEmpty(purchaseOrder.getPurchaseOrderSeq())){
-			purchaseOrder.setPurchaseOrderSeq(this.getDraftSequence(purchaseOrder.getId()));
+            purchaseOrder.setPurchaseOrderSeq(sequenceService.getDraftSequenceNumber(purchaseOrder));
 		}
 	}
 	
@@ -367,15 +362,25 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
 		purchaseOrderRepo.save(purchaseOrder);
 	}
-	
+
 	@Override
-	@Transactional
-	public void validatePurchaseOrder(PurchaseOrder purchaseOrder){
-		
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+		computePurchaseOrder(purchaseOrder);
+
 		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
-		purchaseOrderRepo.save(purchaseOrder);
+		purchaseOrder.setValidationDate(generalService.getTodayDate());
+		purchaseOrder.setValidatedByUser(AuthUtils.getUser());
+
+		purchaseOrder.setSupplierPartner(validateSupplier(purchaseOrder));
+
+		if (purchaseOrder.getCompany() != null) {
+			purchaseOrder.setPurchaseOrderSeq(getSequence(purchaseOrder.getCompany()));
+		}
+
+		updateCostPrice(purchaseOrder);
 	}
-	
+
 	@Override
 	@Transactional
 	public void finishPurchaseOrder(PurchaseOrder purchaseOrder){

@@ -29,7 +29,7 @@
       <date name="refusalDate" title="Refusal Date" readonly="true"  />
       <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
       <boolean name="ventilated"/>
-      <integer name="companyCbSelect" title="Expense paied with company's credit card" selection="hr.expense.company.cb.payment" default="1"/>
+      <integer name="companyCbSelect" title="Expense paid with company's credit card" selection="hr.expense.company.cb.payment" default="1"/>
       <many-to-one name="payrollPreparation" ref="com.axelor.apps.hr.db.PayrollPreparation"/>
       <boolean name="multipleUsers" title="Multiple users ?" default="false"/>
       <one-to-many name="employeeAdvanceUsageList" ref="com.axelor.apps.hr.db.EmployeeAdvanceUsage" mappedBy="expense" title="Employee advances" readonly="true" orphanRemoval="false"/>
@@ -56,16 +56,23 @@
       return fullName;
 	  ]]>
       </string>
+
+      <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank"/>
       
+      <unique-constraint columns="expenseSeq,company"/>
+	
       <extra-code>
       	<![CDATA[
       		//STATUS SELECT
-	  		public static final Integer STATUS_DRAFT = 1;
-	  		public static final Integer STATUS_CONFIRMED = 2;
-	  		public static final Integer STATUS_VALIDATED = 3;
-	  		public static final Integer STATUS_REIMBURSED = 4;
-	  		public static final Integer STATUS_REFUSED = 5;
-	  		public static final Integer STATUS_CANCELED = 6;
+	  		public static final int STATUS_DRAFT = 1;
+	  		public static final int STATUS_CONFIRMED = 2;
+	  		public static final int STATUS_VALIDATED = 3;
+	  		public static final int STATUS_REIMBURSED = 4;
+	  		public static final int STATUS_REFUSED = 5;
+	  		public static final int STATUS_CANCELED = 6;
+
+            public static final int COMPANY_CB_PAYMENT_NO = 1;
+            public static final int COMPANY_CB_PAYMENT_COMPANYS_CREDIT_CARD = 2;
 	  ]]>
       </extra-code>
   </entity>

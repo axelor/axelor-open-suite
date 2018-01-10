@@ -9,15 +9,16 @@
         <field name="description"/>
     </grid>
 	
-    <grid name="interbank-code-line-custom-grid" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCodeLine"> 
+    <grid name="interbank-code-line-custom-grid" title="Interbank codes lists" model="com.axelor.apps.account.db.InterbankCodeLine">
 		<field name="code"/>
 		<field name="name"/>
 		<field name="description"/>
 		<field name="technicalRejectOk"/>
 	</grid>
 	
-    <form name="interbank-code-form" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode" width="large">
+    <form name="interbank-code-form" title="Interbank codes lists" model="com.axelor.apps.account.db.InterbankCode" width="large">
 		<panel name="main">
+			<field name="typeSelect"/>
 			<field name="code"/>
 			<field name="name"/>
 			<field name="endDate"/>

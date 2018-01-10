@@ -22,8 +22,8 @@
     
     <one-to-many name="sequenceVersionList" ref="com.axelor.apps.base.db.SequenceVersion" mappedBy="sequence" title="Versions"/>
     
+    <unique-constraint columns="company,code,prefixe,suffixe"/>
     <index columns="code,company" name="idx_sequence_code_company"/>
-    
     <finder-method name="find" using="code,company"/>
     
   </entity>

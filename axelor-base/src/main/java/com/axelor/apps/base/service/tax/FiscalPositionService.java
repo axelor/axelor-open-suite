@@ -19,9 +19,11 @@ package com.axelor.apps.base.service.tax;
 
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxEquiv;
 
 public interface FiscalPositionService {
-	
 
 	public Tax getTax(FiscalPosition fiscalPosition, Tax tax);
+
+	public TaxEquiv getTaxEquiv(FiscalPosition fiscalPosition, Tax tax);
 }

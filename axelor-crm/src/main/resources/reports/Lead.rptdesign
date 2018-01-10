@@ -865,27 +865,6 @@ where Lead.id in (@INJECTID)]]></xml-property>
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>cash_register_address_email</design:name>
-              <design:position>6</design:position>
-            </design:identifier>
-            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
-            <design:precision>255</design:precision>
-            <design:scale>0</design:scale>
-            <design:nullability>Nullable</design:nullability>
-            <design:uiHints>
-              <design:displayName>cash_register_address_email</design:displayName>
-            </design:uiHints>
-          </design:attributes>
-          <design:usageHints>
-            <design:label>cash_register_address_email</design:label>
-            <design:formattingHints>
-              <design:displaySize>255</design:displaySize>
-            </design:formattingHints>
-          </design:usageHints>
-        </design:resultColumnDefinitions>
-        <design:resultColumnDefinitions>
-          <design:attributes>
-            <design:identifier>
               <design:name>code</design:name>
               <design:position>7</design:position>
             </design:identifier>
@@ -2314,27 +2293,6 @@ where Lead.id in (@INJECTID)]]></xml-property>
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>cash_register_mail_model</design:name>
-              <design:position>75</design:position>
-            </design:identifier>
-            <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-            <design:precision>19</design:precision>
-            <design:scale>0</design:scale>
-            <design:nullability>Nullable</design:nullability>
-            <design:uiHints>
-              <design:displayName>cash_register_mail_model</design:displayName>
-            </design:uiHints>
-          </design:attributes>
-          <design:usageHints>
-            <design:label>cash_register_mail_model</design:label>
-            <design:formattingHints>
-              <design:displaySize>20</design:displaySize>
-            </design:formattingHints>
-          </design:usageHints>
-        </design:resultColumnDefinitions>
-        <design:resultColumnDefinitions>
-          <design:attributes>
-            <design:identifier>
               <design:name>currency</design:name>
               <design:position>76</design:position>
             </design:identifier>
@@ -2671,7 +2629,7 @@ where Lead.id in (@INJECTID)]]></xml-property>
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>reimbursement_mail_model</design:name>
+              <design:name>reimbursement_template</design:name>
               <design:position>92</design:position>
             </design:identifier>
             <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
@@ -2679,11 +2637,11 @@ where Lead.id in (@INJECTID)]]></xml-property>
             <design:scale>0</design:scale>
             <design:nullability>Nullable</design:nullability>
             <design:uiHints>
-              <design:displayName>reimbursement_mail_model</design:displayName>
+              <design:displayName>reimbursement_template</design:displayName>
             </design:uiHints>
           </design:attributes>
           <design:usageHints>
-            <design:label>reimbursement_mail_model</design:label>
+            <design:label>reimbursement_template</design:label>
             <design:formattingHints>
               <design:displaySize>20</design:displaySize>
             </design:formattingHints>
@@ -2713,7 +2671,7 @@ where Lead.id in (@INJECTID)]]></xml-property>
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>reject_payment_schedule_mail_model</design:name>
+              <design:name>reject_payment_schedule_template</design:name>
               <design:position>94</design:position>
             </design:identifier>
             <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
@@ -2721,11 +2679,11 @@ where Lead.id in (@INJECTID)]]></xml-property>
             <design:scale>0</design:scale>
             <design:nullability>Nullable</design:nullability>
             <design:uiHints>
-              <design:displayName>reject_payment_schedule_mail_model</design:displayName>
+              <design:displayName>reject_payment_schedule_template</design:displayName>
             </design:uiHints>
           </design:attributes>
           <design:usageHints>
-            <design:label>reject_payment_schedule_mail_model</design:label>
+            <design:label>reject_payment_schedule_template</design:label>
             <design:formattingHints>
               <design:displaySize>20</design:displaySize>
             </design:formattingHints>

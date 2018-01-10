@@ -18,29 +18,31 @@
 	
 	
 	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Default Currency"/>
-	
-	
-<!-- 	 AFB320 -->
+
+	<boolean name="allowOrderCurrDiffFromBankDetails" title="Allow orders with a transfer currency different from bank details currency" default="false"/>
+
+    <!-- 	 AFB320 -->
 	<string name="qualifyingOfDate" title="Qualifying of date"/>
-	<boolean name="isMultiDate" title="Multi dates"/>
-	<boolean name="isMultiCurrency" title="Multi currencies"/>
+      <string name="qualifyingOfAmountSelect" title="Qualifying of amount" selection="bankpayment.bank.order.ff.qualifying.amount.select" default="T"/>
+	<boolean name="isMultiDate" title="Multidate"/>
+	<boolean name="isMultiCurrency" title="Multicurrency"/>
+    <integer name="orderDebitTypeSelect" title="Order debit type" selection="bankpayment.order.debit.type.select" nullable="true" />
+
+  	<boolean name="displayAdditionnalInformations" title="Display additional information?"/>
 	
-  	
-  	<boolean name="displayAdditionnalInformations" title="Display additionnal informations ?"/>
-	
-  	<boolean name="displayBankOrderEconomicReason" title="Display economic reason ?"/>
+  	<boolean name="displayBankOrderEconomicReason" title="Display economic reason?"/>
 	<many-to-one name="bankOrderEconomicReason" ref="com.axelor.apps.bankpayment.db.BankOrderEconomicReason" title="Default economic reason" index="idx_bankpayment_bank_order_file_format_economic_reason"/>
 	
-	<boolean name="displayReceiverCountry" title="Display receiver country ?"/>
+	<boolean name="displayReceiverCountry" title="Display receiver country?"/>
   	<many-to-one name="receiverCountry" ref="com.axelor.apps.base.db.Country" title="Default receiver country"/>
 	
-  	<boolean name="displayPaymentModeSelect" title="Display payment Mode ?"/>
+  	<boolean name="displayPaymentModeSelect" title="Display payment mode?"/>
   	<integer name="paymentModeSelect" title="Default payment Mode" selection="bankpayment.bank.order.line.payment.mode.select"/>
   	
-  	<boolean name="displayFeesImputationModeSelect" title="Display fees imputation ?"/>
+  	<boolean name="displayFeesImputationModeSelect" title="Display fees imputation?"/>
   	<integer name="feesImputationModeSelect" title="Default fees imputation" selection="bankpayment.bank.order.line.fees.imputation.mode.select"/>
   	
-	<boolean name="displayFurtherInformations" title="Display further informations ?"/>
+	<boolean name="displayFurtherInformations" title="Display further information?"/>
   	
 	 
  	<extra-code><![CDATA[
@@ -54,6 +56,8 @@
 		public static final String FILE_FORMAT_PAIN_001_001_03_SCT = "pain.001.001.03.sct";
 		public static final String FILE_FORMAT_PAIN_008_001_01_SBB = "pain.008.001.01.sbb";
 		public static final String FILE_FORMAT_PAIN_008_001_01_SDD = "pain.008.001.01.sdd";
+		public static final String FILE_FORMAT_PAIN_008_001_02_SBB = "pain.008.001.02.sbb";
+		public static final String FILE_FORMAT_PAIN_008_001_02_SDD = "pain.008.001.02.sdd";
 		public static final String FILE_FORMAT_PAIN_FIN_MT101_DCT = "pain.fin.mt101.dct";
 		public static final String FILE_FORMAT_PAIN_FIN_MT101_MCT = "pain.fin.mt101.mct";
 		public static final String FILE_FORMAT_PAIN_XXX_CFONB160_DCO = "pain.xxx.cfonb160.dco";
@@ -74,6 +78,14 @@
 		public static final String FILE_FORMAT_PAIN_XXX_PAYORD912_ICT = "pain.xxx.payord912.ict";
 		public static final String FILE_FORMAT_PAIN_XXX_VCOM400_VCT = "pain.xxx.vcom400.vct";
 
+        // ORDER DEBIT TYPE SELECT
+        public static final int ORDER_DEBIT_TYPE_ORDER_OVERALL_DEBIT = 1;
+        public static final int ORDER_DEBIT_TYPE_UNIT_DEBIT_BY_OPERATION = 2;
+        public static final int ORDER_DEBIT_TYPE_OVERALL_DEBIT_BY_TRANSFER_CURRENCY = 3;
+
+        // QUALIFYING AMOUNT SELECT
+        public static final String QUALIFYING_AMOUNT_TRANSFER_CURRENCY = "T";
+        public static final String QUALIFYING_AMOUNT_SENDER_BANK_DETAILS_CURRENCY = "D";
 	]]></extra-code>
 
   </entity>

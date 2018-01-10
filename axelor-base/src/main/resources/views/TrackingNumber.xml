@@ -17,7 +17,7 @@
     	onLoad="action-tracking-number-attrs-hide-fields" >
     	<panel name="main">
 	    	<field name="trackingNumberSeq"/>
-	        <field name="product" hidden="true" onChange="action-tracking-number-attrs-hide-fields" form-view="product-form" grid-view="product-grid"/>
+	        <field name="product" canEdit="false" hidden="true" onChange="action-tracking-number-attrs-hide-fields" form-view="product-form" grid-view="product-grid"/>
 	        <field name="warrantyExpirationDate"/>
 	        <field name="perishableExpirationDate"/>
 	        <field name="counter"/>

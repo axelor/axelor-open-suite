@@ -123,7 +123,7 @@
 					  	<label title="Informations" css="label-bold"/>
 					  	<spacer/>
 					    <field name="name" colSpan="12" css="bold"/>
-					    <field name="opportunityType" widget="SuggestBox"/>
+					    <field name="opportunityType" canEdit="false" widget="SuggestBox"/>
 					    <spacer/>
 					    <label title="Follow-up" css="label-bold"/>
 					  	<spacer/>
@@ -325,8 +325,8 @@
 
 	
 	<form name="partner-lead-converted-form" title="Partner" model="com.axelor.apps.base.db.Partner"
-	onNew="action-partner-record-set-default" 
-	onLoad="action-convert-lead-wizard-record-default-partner-address,action-partner-attrs-change-name">
+	onNew="action-partner-record-set-default, action-partner-record-set-default-cash-management" 
+	onLoad="action-convert-lead-wizard-record-default-partner-address, action-partner-attrs-change-name">
 	
 		<panel name="personal" title="Personal">
 		  <panel colSpan="4">
@@ -488,7 +488,7 @@
 	  <panel name="informations" title="Informations">
 	    <panel title="Context" colSpan="12">
 	      <field name="name"/>
-	      <field name="opportunityType" widget="SuggestBox"/>
+	      <field name="opportunityType" canEdit="false" widget="SuggestBox"/>
 	    </panel>
 	    <panel name="followUp" title="Follow-up" colSpan="12">
 	      <field name="salesStageSelect"/>

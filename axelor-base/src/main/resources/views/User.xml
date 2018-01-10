@@ -16,7 +16,6 @@
     onNew="action-user-apply-applicaton-mode,action-user-default-record,action-user-check-company" onSave="com.axelor.auth.AuthService:validate" onLoad="action-user-apply-applicaton-mode">
     	<panel name="main" sidebar="true">
 	        <field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-	        <field name="activeCashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
 <!-- 	        <field name="timesheetPeriodConfig"/> -->
 	        <field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null"/>
 	        <button name="createEmployee" onClick="save,action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0"/>
@@ -39,11 +38,11 @@
     		 </panel>
         	 <panel-related title="Internal companies" field="companySet" showTitle="false" canNew="false"/>
         	 <panel name="teams" title="Teams" if="__config__.general.getTeamManagement()">
-        		<field name="activeTeam" form-view="team-form" grid-view="team-grid"/>
-        		<panel-related field="teamSet" canNew="false" colSpan="12" form-view="team-form" grid-view="team-grid"/>
+        		<field name="activeTeam" canEdit="false" form-view="team-form" grid-view="team-grid"/>
+        		<panel-related field="teamSet" canEdit="false" canNew="false" colSpan="12" form-view="team-form" grid-view="team-grid"/>
         	 </panel>
         	<panel name="calendarsConfiguration" title="Calendars Configuration" if-module="axelor-crm">
-        		<panel-related field="followersCalUserSet" colSpan="12" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
+        		<panel-related field="followersCalUserSet" canEdit="false" colSpan="12" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
         		<panel-related field="calendarManagementList" colSpan="12"/>
         	</panel>
         </panel-tabs>
@@ -55,7 +54,7 @@
 		<panel name="userPreferences" title="User preferences" itemSpan="12">
 			<field name="image" showTitle="false"/>
 			<field name="language"/>
-	        <field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+	        <field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" canEdit="false"/>
 			<field name="singleTab" widget="inline-checkbox"/>
 			<field name="change" title="Change password?" widget="inline-checkbox"/>
 			<panel showIf="change">
@@ -78,7 +77,7 @@
     </action-attrs>
     
     <action-attrs name="action-user-attrs-domain-active-company">
-  		<attribute name="domain" expr="eval: &quot; self.id IN (${companySet?.collect{it.id}.join(',')}) &quot; " for="activeCompany"/>
+  		<attribute name="domain" expr="eval: &quot; self.id IN (${companySet?.collect{it.id}.join(',')}) &quot; " for="activeCompany" if="companySet ?: false" />
     </action-attrs>
 
     

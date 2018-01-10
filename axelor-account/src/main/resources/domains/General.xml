@@ -11,9 +11,6 @@
 			title="Code list for rejects/return of Direct debit, Wire Transfers and IPO" />
 		<many-to-one name="chequeInterbankCode" ref="com.axelor.apps.account.db.InterbankCode" title="Code list for rejects/return of Cheques" />
 		<one-to-many name="payerQualityConfigLineList" ref="com.axelor.apps.account.db.PayerQualityConfigLine" title="Weight table (Payer quality)" />
-
-		<!-- TVA -->
-		<many-to-one name="defaultExemptionTax" ref="com.axelor.apps.account.db.Tax" title="Tax 0%" />
 		
 		<!-- Manage CustomerCreditLines -->
 		<boolean name="manageCustomerCredit" title="Manage customerCredit"/>

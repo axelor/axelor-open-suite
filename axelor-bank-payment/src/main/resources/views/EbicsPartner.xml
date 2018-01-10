@@ -6,21 +6,23 @@
   
   	<grid name="ebics-partner-grid" title="Ebics partner" model="com.axelor.apps.bankpayment.db.EbicsPartner" >
 		<field name="partnerId" />
+		<field name="ebicsTypeSelect"/>
 		<field name="ebicsBank"/>
 	</grid>
 	
-	<form name="ebics-partner-form" title="Ebics partner" model="com.axelor.apps.bankpayment.db.EbicsPartner">
+	<form name="ebics-partner-form" title="Ebics partner" onSave="action-ebics-partner-method-onsave" model="com.axelor.apps.bankpayment.db.EbicsPartner">
 	
-		<panel title="General informations">
+		<panel title="General information">
 			<field name="partnerId" help="Name of the contract/subscription" max="35" x-bind="{{partnerId|uppercase}}" pattern='^[A-Z0-9]+$'/>
 			<field name="ebicsBank" />
+			<field name="ebicsTypeSelect" widget="RadioSelect" readonlyIf="statusSelect == 3"/>
 			<field name="testMode"/>
-			<field name="defaultSignatoryEbicsUser" domain="self.ebicsPartner.id = :id"/>
+			<field name="transportEbicsUser" colSpan="6" domain="self.ebicsPartner.id = :id AND self.userTypeSelect = 0" form-view="ebics-user-form" grid-view="ebics-user-grid"/>
+			<field name="defaultSignatoryEbicsUser" domain="self.ebicsPartner.id = :id AND self.userTypeSelect = 1"/>
 		</panel>
 		
 		<panel title="Bank statements" colSpan="12">
 			<field name="bankStatementFileFormatSet" widget="TagSelect" canNew="false" canEdit="false" colSpan="6" form-view="bank-statement-file-format-form" grid-view="bank-statement-file-format-grid"/>
-			<field name="bankStatementEbicsUser" colSpan="6" domain="self.ebicsPartner.id = :id" form-view="ebics-user-form" grid-view="ebics-user-grid"/>
 			<field name="bankStatementGetModeSelect" colSpan="6" widget="radio-select" x-direction="horizontal"/>
 			<field name="bankStatementLastExeDateT" readonly="true" colSpan="6"/>
 			<field name="bankStatementStartDate" colSpan="6" showIf="bankStatementGetModeSelect == 2"/>
@@ -41,7 +43,10 @@
 		</panel>
 		
 		<panel-related field="bankDetailsSet" colSpan="12" canNew="true" showIf="ebicsBank" hidden="true" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-ebics-partner-method-bank-details-set-domain"/>
-		
+
+        <panel-related field="ebicsPartnerServiceList" colSpan="12" canNew="true" grid-view="ebics-partner-service-grid"
+            form-view="ebics-partner-service-form" editable="true" />
+
 		<panel-dashlet action="action-ebics-partner-view-ebics-users"/>
 
 	</form>
@@ -49,6 +54,10 @@
 	
 	<action-method name="action-ebics-partner-method-get-bank-statement">
 		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsPartnerController" method="getBankStatement"/>
+	</action-method>
+
+	<action-method name="action-ebics-partner-method-onsave">
+		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsPartnerController" method="checkBankDetailsSet"/>
 	</action-method>
 	
 	<action-attrs name="action-ebics-partner-method-bank-details-set-domain">

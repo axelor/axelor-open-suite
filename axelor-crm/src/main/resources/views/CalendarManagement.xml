@@ -14,8 +14,8 @@
     
     <form name="calendar-management-form" title="Calendar permission" model="com.axelor.apps.crm.db.CalendarManagement">
     	<panel name="main" >
-    		<field name="user" showIf="team == null"/>
-	        <field name="team" showIf="user == null" if="__config__.general.getTeamManagement()"/>
+    		<field name="user" canEdit="false" showIf="team == null"/>
+	        <field name="team" canEdit="false" showIf="user == null" if="__config__.general.getTeamManagement()"/>
 	        <field name="allCalendars" onChange="action-calendar-management-record-all-calendars-checked" colSpan="4"/>
 	        <field name="erpCalendars" onChange="action-calendar-management-record-erp-calendars-checked" colSpan="4"/>
 	        <field name="icalCalendars" onChange="action-calendar-management-record-ical-calendars-checked" colSpan="4"/>

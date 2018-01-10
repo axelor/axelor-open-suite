@@ -217,6 +217,7 @@
 	<action-view name="employee.all" title="Employee" model="com.axelor.apps.hr.db.Employee">
     	<view type="grid" name="employee-grid"/>
 	    <view type="form" name="employee-form"/>
+	    <view-param name="search-filters" value="employee-filters"/>
 	</action-view>
 	
 	<menuitem name="leave-reason-all" parent="hr-conf"
@@ -247,7 +248,7 @@
 	
 	<menuitem name="hr-conf-expense-type" parent="hr-conf" title="Expense Type" action="conf.expense.type"/>
 	
-	<action-view name="conf.expense.type" title="Expense Type" model="com.axelor.apps.base.db.Product">
+	<action-view name="conf.expense.type" title="Expense types" model="com.axelor.apps.base.db.Product">
     	<view type="grid" name="product-expense-grid"/>
 	    <view type="form" name="product-expense-form"/>
 	    <view-param name="search-filters" value="products-filters"/>
@@ -342,17 +343,36 @@
     	<view type="grid" name="employee-bonus-type-grid"/>
 	    <view type="form" name="employee-bonus-type-form"/>
 	</action-view>
-	
-	<menuitem name="plannings-all" parent="hr-conf" title="Plannings" />
-	<menuitem name="event-planning-all" parent="plannings-all" title="Event planning" action="hr.public.holiday.planning.all"/>
-	<menuitem name="weekly-planning-all" parent="plannings-all" title="Weekly planning" action="hr.weekly.planning.all"/>
-	
-	<action-view name="hr.public.holiday.planning.all" title="Public Holiday Plannings" model="com.axelor.apps.hr.db.PublicHolidayPlanning">
-    	<view type="grid" name="public-holiday-planning-grid"/>
-	    <view type="form" name="public-holiday-planning-form"/>
+
+	<menuitem name="hr-conf-payroll-year" parent="hr-conf" title="Payroll years" action="hr.conf.payroll.year"/>
+
+	<action-view name="hr.conf.payroll.year" title="Payroll years"
+		model="com.axelor.apps.base.db.Year">
+		<view type="grid" name="year-grid"/>
+		<view type="form" name="year-hr-form"/>
+		<domain>self.typeSelect = 2</domain>
 	</action-view>
-	
-	<action-view name="hr.weekly.planning.all" title="Weekly Planning" model="com.axelor.apps.base.db.WeeklyPlanning">
+
+	<menuitem name="hr-conf-payroll-period" parent="hr-conf"
+			  title="Payroll periods" action="hr.conf.payroll.period"/>
+
+	<action-view name="hr.conf.payroll.period" title="Payroll periods"
+				 model="com.axelor.apps.base.db.Period">
+		<view type="grid" name="period-hr-grid"/>
+		<view type="form" name="period-hr-form"/>
+		<domain>self.year.typeSelect = 2</domain>
+	</action-view>
+
+	<menuitem name="plannings-all" parent="hr-conf" title="Plannings" />
+
+    <menuitem name="events-planning-all" parent="plannings-all" title="Events plannings" action="hr.events.planning.all"/>
+    <action-view name="hr.events.planning.all" title="Events plannings" model="com.axelor.apps.hr.db.EventsPlanning">
+    	<view type="grid" name="events-planning-grid"/>
+	    <view type="form" name="events-planning-form"/>
+	</action-view>
+
+    <menuitem name="weekly-planning-all" parent="plannings-all" title="Weekly planning" action="hr.weekly.planning.all"/>
+    <action-view name="hr.weekly.planning.all" title="Weekly Planning" model="com.axelor.apps.base.db.WeeklyPlanning">
     	<view type="grid" name="weekly-planning-grid"/>
 	    <view type="form" name="weekly-planning-form"/>
 	</action-view>

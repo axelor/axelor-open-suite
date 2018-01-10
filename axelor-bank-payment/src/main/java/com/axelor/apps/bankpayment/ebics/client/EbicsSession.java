@@ -17,25 +17,6 @@
  */
 package com.axelor.apps.bankpayment.ebics.client;
 
-/*
- * Copyright (c) 1990-2012 kopiLeft Development SARL, Bizerte, Tunisia
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License version 2.1 as published by the Free Software Foundation.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *
- * $Id$
- */
-
 
 import java.io.IOException;
 import java.security.interfaces.RSAPublicKey;
@@ -47,13 +28,12 @@ import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
 import com.axelor.exception.AxelorException;
 
-/**
- * Communication hub for EBICS.
- *
- * @author Hachani
- *
- */
 public class EbicsSession {
+	
+	  private EbicsUser	user;
+	  private EbicsUser signatoryUser;
+	  private EbicsProduct product;
+	  private Map<String, String> parameters;
 	
 	  /**
 	   * Constructs a new ebics session
@@ -62,6 +42,17 @@ public class EbicsSession {
 	   */
 	  public EbicsSession(EbicsUser user) {
 	    this.user = user;
+	    parameters = new HashMap<String, String>();
+	  }
+	  
+	  /**
+	   * Constructs a new ebics session
+	   * @param user the ebics user
+	   * @param the ebics client configuration
+	   */
+	  public EbicsSession(EbicsUser user, EbicsUser signatoryUser) {
+	    this.user = user;
+	    this.signatoryUser = signatoryUser;
 	    parameters = new HashMap<String, String>();
 	  }
 
@@ -104,6 +95,14 @@ public class EbicsSession {
 	  public EbicsUser getUser() {
 	    return user;
 	  }
+	  
+	  /**
+	   * Return the session signatory user.
+	   * @return the session signatory user.
+	   */
+	  public EbicsUser getSignatoryUser() {
+	    return signatoryUser;
+	  }
 
 	  /**
 	   * Sets the optional product identification that will be sent to the bank during each request.
@@ -141,12 +140,5 @@ public class EbicsSession {
 
 	    return parameters.get(key);
 	  }
-
-	  // --------------------------------------------------------------------
-	  // DATA MEMBERS
-	  // --------------------------------------------------------------------
-
-	  private EbicsUser				user;
-	  private EbicsProduct				product;
-	  private Map<String, String>			parameters;
+	 
 	}

@@ -17,8 +17,9 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.account.db.Reminder;
+import com.axelor.apps.account.db.repo.ReminderRepository;
+import com.axelor.apps.account.service.debtrecovery.ReminderActionService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -26,21 +27,30 @@ import com.google.inject.Inject;
 
 public class ReminderController {
 
-	@Inject
-	private PartnerRepository partnerRepo;
 
-	public void ReminderGenerate(ActionRequest request, ActionResponse response) {
+    private ReminderRepository reminderRepository;
+    private ReminderActionService reminderService;
 
-		try {			
-			Partner partner = request.getContext().asType(Partner.class);
-			partner = partnerRepo.find(partner.getId());
+    @Inject
+    public ReminderController(ReminderRepository reminderRepository, ReminderActionService reminderService) {
+        this.reminderRepository = reminderRepository;
+        this.reminderService = reminderService;
+    }
 
-//			MailService mailService = Beans.get(MailService.class);
-//			for(Mail mail : mailService.getMailList(partner))  {
-//				mailService.generatePdfMail(mail);
-//			}
-			response.setReload(true);			
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
+    public void runReminder(ActionRequest request, ActionResponse response) {
+        Reminder reminder = request.getContext().asType(Reminder.class);
+
+        reminder = reminderRepository.find(reminder.getId());
+        try {
+            reminder.setReminderMethodLine(reminder.getWaitReminderMethodLine());
+            reminderService.runManualAction(reminder);
+            //find the updated reminder
+            reminder = reminderRepository.find(reminder.getId());
+            reminderService.runMessage(reminder);
+            response.setReload(true);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+
+    }
 }

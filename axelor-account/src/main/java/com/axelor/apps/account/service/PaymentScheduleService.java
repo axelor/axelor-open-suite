@@ -141,7 +141,7 @@ public class PaymentScheduleService {
 		PaymentSchedule paymentSchedule = new PaymentSchedule();
 
 		paymentSchedule.setCompany(company);
-		paymentSchedule.setScheduleId(this.getPaymentScheduleSequence(company));
+		paymentSchedule.setPaymentScheduleSeq(this.getPaymentScheduleSequence(company));
 		paymentSchedule.setCreationDate(date);
 		paymentSchedule.setStartDate(startDate);
 		paymentSchedule.setNbrTerm(nbrTerm);
@@ -157,7 +157,7 @@ public class PaymentScheduleService {
 		}
 
 		if (invoice != null){
-			paymentSchedule.setInvoice(invoice);
+			paymentSchedule.addInvoiceSetItem(invoice);
 			invoice.setPaymentSchedule(paymentSchedule);
 		}
 
@@ -202,14 +202,14 @@ public class PaymentScheduleService {
 			for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()){
 				if (paymentScheduleLine.getInTaxAmount() != null) {
 
-					log.debug("Somme TTC des lignes de l'échéancier {} : total = {}, ajout = {}", new Object[] {paymentSchedule.getScheduleId(), totalAmount, paymentScheduleLine.getInTaxAmount()});
+					log.debug("Somme TTC des lignes de l'échéancier {} : total = {}, ajout = {}", new Object[] {paymentSchedule.getPaymentScheduleSeq(), totalAmount, paymentScheduleLine.getInTaxAmount()});
 
 					totalAmount = totalAmount.add(paymentScheduleLine.getInTaxAmount());
 				}
 			}
 		}
 
-		log.debug("Obtention de la somme TTC des lignes de l'échéancier {} : {}", new Object[] {paymentSchedule.getScheduleId(), totalAmount});
+		log.debug("Obtention de la somme TTC des lignes de l'échéancier {} : {}", new Object[] {paymentSchedule.getPaymentScheduleSeq(), totalAmount});
 
 		return totalAmount;
 
@@ -227,7 +227,7 @@ public class PaymentScheduleService {
 	@Transactional
 	public void updatePaymentSchedule(PaymentSchedule paymentSchedule, BigDecimal inTaxTotal){
 
-		log.debug("Mise à jour de l'échéancier {} : {}", new Object[] {paymentSchedule.getScheduleId(), inTaxTotal});
+		log.debug("Mise à jour de l'échéancier {} : {}", new Object[] {paymentSchedule.getPaymentScheduleSeq(), inTaxTotal});
 
 		for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()){
 
@@ -314,11 +314,11 @@ public class PaymentScheduleService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validatePaymentSchedule(PaymentSchedule paymentSchedule) throws AxelorException {
 
-		log.debug("Validation de l'échéancier {}", paymentSchedule.getScheduleId());
+		log.debug("Validation de l'échéancier {}", paymentSchedule.getPaymentScheduleSeq());
 
 		if(paymentSchedule.getPaymentScheduleLineList() == null || paymentSchedule.getPaymentScheduleLineList().size() == 0)  {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_6),
-					GeneralServiceImpl.EXCEPTION, paymentSchedule.getScheduleId()), IException.INCONSISTENCY);
+					GeneralServiceImpl.EXCEPTION, paymentSchedule.getPaymentScheduleSeq()), IException.INCONSISTENCY);
 		}
 
 //		this.updateInvoices(paymentSchedule); //TODO

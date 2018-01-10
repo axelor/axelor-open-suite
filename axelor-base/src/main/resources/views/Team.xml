@@ -13,7 +13,7 @@
         	<field name="name"/>
         	<field name="code" x-bind="{{code|uppercase}}"/>
         </panel>
-        <panel-related field="userSet" canNew="false" colSpan="12" form-view="user-form" grid-view="user-grid"/>
+        <panel-related field="userSet" canEdit="false" canNew="false" colSpan="12" form-view="user-form" grid-view="user-grid"/>
     </form>
     
 </object-views>

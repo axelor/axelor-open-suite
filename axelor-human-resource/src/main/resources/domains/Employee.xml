@@ -11,20 +11,19 @@
       <one-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" mappedBy="employee"/>
       <many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
       <decimal name="hourlyRate" title="Hourly rate" scale="2" precision="20" />
-      <string name="timeLoggingPreferenceSelect" title="Time logging preference" selection="hr.time.logging.preference.select"/>
+      <string name="timeLoggingPreferenceSelect" title="Time logging preference" selection="hr.time.logging.preference.select" massUpdate="true"/>
       <decimal name="weeklyWorkHours" title="Weekly work hours" scale="2" precision="20" />
       <decimal name="dailyWorkHours" title="Daily work hours" scale="2" precision="20" />
-      <many-to-one name="manager" ref="com.axelor.auth.db.User" title="Manager" />
+      <many-to-one name="manager" ref="com.axelor.auth.db.User" title="Manager" massUpdate="true"/>
       <many-to-one name="department" ref="com.axelor.apps.base.db.CompanyDepartment" title="Company department" />
       <boolean name="timesheetReminder" title="Timesheet reminder" />
       <boolean name="external" title="External" />
-      <many-to-one name="planning" ref="com.axelor.apps.base.db.WeeklyPlanning"/>
+      <many-to-one name="planning" ref="com.axelor.apps.base.db.WeeklyPlanning" massUpdate="true"/>
       <one-to-many name="leaveLineList" title="Leave List" ref="com.axelor.apps.hr.db.LeaveLine" mappedBy="employee"/>
       <boolean name="negativeValueLeave" title="Allow Negative Value for Leaves"/>
       <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Default Activity Product"/>
-      <many-to-one name="publicHolidayPlanning" ref="com.axelor.apps.hr.db.PublicHolidayPlanning" title="Public Holiday Planning"/>
+      <many-to-one name="publicHolidayEventsPlanning" ref="com.axelor.apps.hr.db.EventsPlanning" title="Public Holiday Planning" massUpdate="true"/>
       <one-to-many name="employmentContractList" ref="com.axelor.apps.hr.db.EmploymentContract" title="Employment contracts" mappedBy="employee"/>
-      <many-to-one name="kilometricAllowParam" ref="com.axelor.apps.hr.db.KilometricAllowParam" title="Kilometric Allowance Param" />
       <boolean name="hrManager" title="HR manager" />
       <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
       <date name="birthDate" title="Birth date" />
@@ -37,15 +36,18 @@
       <date name="dateOfHire" title="Date of hire" />
       <date name="seniorityDate" title="Seniority date" />
       <many-to-one name="mainEmploymentContract" ref="com.axelor.apps.hr.db.EmploymentContract" title="Main employment contract" />
-      <boolean name="profitSharingBeneficiary" title="Profit-sharing beneficiary" default="false" />
-      <many-to-one name="imposedDayPlanning" ref="com.axelor.apps.hr.db.PublicHolidayPlanning" title="Imposed day Planning"/>
+      <boolean name="profitSharingBeneficiary" title="Profit-sharing beneficiary" default="false" massUpdate="true"/>
+      <many-to-one name="imposedDayEventsPlanning" ref="com.axelor.apps.hr.db.EventsPlanning" title="Imposed day Planning" massUpdate="true"/>
       <string name="socialSecurityNumber"  title="Social security number" min="12" max="15"/>
       <one-to-many name="employeeAdvanceList" ref="com.axelor.apps.hr.db.EmployeeAdvance" title="Employee advances" readonly="true" mappedBy="employee" />
-      <integer name="lunchVoucherFormatSelect" title="Lunch Voucher Format" selection="hr.lunch.voucher.mgt.line.lunch.voucher.format.select"/>
+      <integer name="lunchVoucherFormatSelect" title="Lunch Voucher Format" selection="hr.lunch.voucher.mgt.line.lunch.voucher.format.select" massUpdate="true"/>
       <one-to-many name="lunchVoucherAdvanceList" ref="com.axelor.apps.hr.db.LunchVoucherAdvance" title="Lunch Voucher Advances" mappedBy="employee" orphanRemoval="true"/>
       <one-to-many name="kilometricLogList" ref="com.axelor.apps.hr.db.KilometricLog" mappedBy="employee"/>
       <decimal name="bonusCoef" title="Coefficient for bonus" />
       <string name="exportCode" title="Export code" help="May be used as registration number in export" />
+      <one-to-many name="employeeVehicleList" ref="com.axelor.apps.hr.db.EmployeeVehicle" mappedBy="employee"/>
+      <integer name="companyCbSelect" title="Expense paid with company's credit card" selection="hr.expense.company.cb.payment" default="1"/>
+      <string name="companyCbDetails" title="Company credit card details"/>
       <string name="name" title="Name" search="contactPartner">
            <![CDATA[
 	       		if(contactPartner != null) { return contactPartner.getFullName(); }

@@ -19,37 +19,37 @@ package com.axelor.apps.supplychain.service.batch;
 
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
-public class SupplychainBatchService {
+public class SupplychainBatchService extends AbstractBatchService {
 
 	@Inject
 	protected BatchSubscription batchSubscription;
-	
-	@Inject
-	protected SupplychainBatchRepository supplychainBatchRepo;
 
-	public Batch run(String batchCode) throws AxelorException {
+	@Override
+	protected Class<? extends Model> getModelClass() {
+		return SupplychainBatch.class;
+	}
+
+	@Override
+	public Batch run(Model batchModel) throws AxelorException {
 
 		Batch batch;
-		SupplychainBatch supplychainBatch = supplychainBatchRepo.findByCode(batchCode);
+		SupplychainBatch supplychainBatch = (SupplychainBatch) batchModel;
 
-		if (batchCode != null){
-			switch (supplychainBatch.getActionSelect()) {
-			case SupplychainBatchRepository.ACTION_BILL_SUB:
-				batch = billSubscriptions(supplychainBatch);
-				break;
-			default:
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), supplychainBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
-			}
-		}
-		else {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_2), batchCode), IException.INCONSISTENCY);
+		switch (supplychainBatch.getActionSelect()) {
+		case SupplychainBatchRepository.ACTION_BILL_SUB:
+			batch = billSubscriptions(supplychainBatch);
+			break;
+		default:
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), supplychainBatch.getActionSelect(), supplychainBatch.getCode()), IException.INCONSISTENCY);
 		}
 
 		return batch;

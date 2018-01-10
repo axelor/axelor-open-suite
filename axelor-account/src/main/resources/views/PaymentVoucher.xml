@@ -6,7 +6,6 @@
     <grid name="payment-voucher-grid" title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher">
         <field name="ref"/>
         <field name="operationTypeSelect"/>
-        <field name="cashRegister" form-view="cash-register-form" grid-view="cash-register-grid"/>
         <field name="user" form-view="user-form" grid-view="user-grid"/>
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
         <field name="paymentDate"/>
@@ -25,10 +24,9 @@
 		<panel name="main" readonlyIf="statusSelect == 2" itemSpan="12">
 			 <field name="ref" readonly="true" colSpan="4"/>
 			 <field name="operationTypeSelect" colSpan="4" onChange="action-payment-voucher-hidden-fields-if-purchase"/>
-			 <field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"/>
+			 <field name="user" canEdit="false" colSpan="4" form-view="user-form" grid-view="user-grid"/>
 			 <field name="paymentDate" colSpan="4" required="true"/>
-			 <field name="company" widget="SuggestBox" colSpan="4" form-view="company-form" grid-view="company-grid" onChange="action-payment-voucher-attrs-fill-bank-details"/>
-			 <field name="cashRegister" colSpan="4" grid-view="cash-register-grid" form-view="cash-register-form"/>
+			 <field name="company" canEdit="false" widget="SuggestBox" colSpan="4" form-view="company-form" grid-view="company-grid" onChange="action-payment-voucher-method-fill-bank-details"/>
 			 <field name="hasAutoInput" colSpan="4" hidden="true"/>
 		</panel>
 		
@@ -61,7 +59,7 @@
 		<panel name="payer" title="Payer" itemSpan="12" readonlyIf="statusSelect == 2">
 			<field name="partner" form-view="partner-form" grid-view="partner-grid" colSpan="4" onChange="action-pv-record-default-partner-inf" onSelect="action-payment-voucher-set-partner-domain" />
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" colSpan="4" widget="SuggestBox" onChange="action-group-account-payment-voucher-paymentmode-onchange" onSelect="action-set-payment-mode-domain"/>
-			<field name="companyBankDetails" form-view="bank-details-form" grid-view="bank-details-grid" colSpan="4" onSelect="action-payment-voucher-attrs-set-company-bank-details-domain"/>
+			<field name="companyBankDetails" form-view="bank-details-form" grid-view="bank-details-grid" colSpan="4" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"/>
 		</panel>
 		
 		<panel colSpan="12" showIf="statusSelect == 1">
@@ -95,7 +93,6 @@
     <action-group name="action-account-payment-voucher-onnew-group">
 	    <action name="action-payment-voucher-attrs-hidden-paybox-email"/>
 	    <action name="action-record-payment-voucher-default-record"/>
-	    <action name="action-record-payment-voucher-cash-register-record"/>
 	    <action name="action-pv-hide-confirm-button"/>
 	    <action name="action-payment-voucher-getDate"/>
 	    <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
@@ -103,7 +100,8 @@
 	    <action name="action-attrs-payment-voucher-readonly-status"/>
 	    <action name="action-payment-voucher-hidden-fields-if-purchase"/>
 		<action name="action-attrs-payment-voucher-hidden-bank-details"/>
-    </action-group>
+		<action name="action-pv-attrs-auto-imputation"/>
+	</action-group>
     
     <action-group name="action-account-payment-voucher-onload-group">
 	    <action name="action-payment-voucher-attrs-hidden-paybox-email"/>
@@ -114,10 +112,11 @@
 	    <action name="action-payment-voucher-hidden-fields-if-purchase"/>
 		<action name="action-attrs-payment-voucher-hidden-bank-details"/>
     </action-group>
-    
+
     <action-group name="action-group-account-payment-voucher-confirm-click">
     	<action name="save"/>
-    	<action name="action-method-account-payment-voucher-confirm"/>
+		<action name="action-method-account-payment-voucher-ask"/>
+		<action name="action-method-account-payment-voucher-confirm"/>
     	<action name="action-attrs-payment-voucher-readonly-status"/>
     </action-group>
     
@@ -126,7 +125,7 @@
     	<action name="action-pv-hide-confirm-button"/>
     	<action name="action-attrs-payment-voucher-hidden-receipt"/>
     	<action name="action-attrs-payment-voucher-readonly-status"/>
-        <action name="action-payment-voucher-attrs-fill-bank-details"/>
+        <action name="action-payment-voucher-method-fill-bank-details"/>
     </action-group>
     
     <action-group name="action-group-account-payment-voucher-paybox-onclick">
@@ -143,15 +142,23 @@
     <action-method name="action-method-account-payment-voucher-set-num">
     	<call class="com.axelor.apps.account.web.PaymentVoucherController" method="paymentVoucherSetNum"/>
     </action-method>
-    
+
+	<action-method name="action-method-account-payment-voucher-ask">
+		<call class="com.axelor.apps.account.web.PaymentVoucherController" method="askPaymentVoucher"/>
+	</action-method>
+
     <action-method name="action-method-account-payment-voucher-confirm">
     	<call class="com.axelor.apps.account.web.PaymentVoucherController" method="confirmPaymentVoucher"/>
     </action-method>
-    
  
   	<action-record name="action-record-fill-paidAmount-fromMoveLine" model="com.axelor.apps.account.db.PaymentVoucher">
    		<field name="paidAmount" expr="eval: moveLine?.amountRemaining"/>
 	</action-record>
+
+	<action-attrs name="action-pv-attrs-auto-imputation">
+		<attribute name="hidden" for="hasAutoInput" expr="eval: __repo__.of(AccountConfig).all().filter('self.company.id = ?1',company?.id).fetchOne()?.autoReconcileOnPayment == false"/>
+		<attribute name="value" for="hasAutoInput" expr="eval: __repo__.of(AccountConfig).all().filter('self.company.id = ?1',company?.id).fetchOne()?.autoReconcileOnPayment == true"/>
+	</action-attrs>
 	 
 	<action-attrs name="action-pv-moveLine-attrs">
 		<attribute name="readonly" for="paidAmount" expr="eval: moveLine != null || payboxPaidOk"/>
@@ -178,7 +185,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-pv-moveLine-domain">
-		<attribute name="domain" for="moveLine" expr="eval: &quot;self.account.reconcileOk = 't' and self.fromSchedulePaymentOk = 'f' and self.partner.id = ${partner?.id} and self.move.statusSelect = 3 and self.amountRemaining &gt; 0.0  and self.credit &gt; 0.0&quot;"/>
+		<attribute name="domain" for="moveLine" expr="eval: &quot;self.account.reconcileOk = 't' and self.partner.id = ${partner?.id?: 0} and self.move.statusSelect = 3 and self.amountRemaining &gt; 0.0  and self.credit &gt; 0.0&quot;"/>
 	</action-attrs>
 
 	<action-attrs name="action-attrs-payment-voucher-hidden-bank-details">
@@ -187,18 +194,13 @@
 	
 	<action-record name="action-record-payment-voucher-default-record" model="com.axelor.apps.account.db.PaymentVoucher">
 		<field name="user" expr="eval:__user__"/>
-       	<field name="cashRegister" expr="eval:__user__.activeCashRegister"/>
 		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__.of(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
 		<field name="operationTypeSelect" expr="eval: _operationTypeSelect"/>
 		<field name="currency"  expr="eval:__user__.activeCompany?.currency"/>
 		<field name="currency"  expr="eval:__repo__.of(Company).all().fetchOne()?.currency" if="__user__.activeCompany == null &amp;&amp; __repo__.of(Company).all().fetch().size == 1"/>
 	</action-record>
-	
-	<action-record name="action-record-payment-voucher-cash-register-record" model="com.axelor.apps.account.db.PaymentVoucher">
-		<field name="cashRegister" expr="eval: user?.activeCashRegister"/>
-	</action-record>
-	
+
 	<action-record name="action-payment-voucher-getDate" model="com.axelor.apps.account.db.PaymentVoucher">
     	<field name="paymentDate" expr="eval: __config__.generalService.getTodayDate()"/>
    	</action-record>
@@ -257,18 +259,9 @@
 		<attribute name="domain" for="partner" expr="eval:'self.isContact = false AND self.isCustomer = true'" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
 	</action-attrs>
 
-    <action-attrs name="action-payment-voucher-attrs-set-company-bank-details-domain">
-		<attribute for="companyBankDetails" name="domain"
-				   if="company &amp;&amp; paymentMode?.accountManagementList &amp;&amp; !paymentMode.accountManagementList.isEmpty()"
-				   expr="eval: &quot;self.id IN (${paymentMode?.accountManagementList?.collect{ if(it.company == company &amp;&amp; it.bankDetails) return it.bankDetails.id }.join(',')}) AND self.active = true&quot;"/>
-	</action-attrs>
-
-	<action-attrs name="action-payment-voucher-attrs-fill-bank-details">
-		<attribute for="companyBankDetails" name="value" expr="eval: null"/>
-		<attribute for="companyBankDetails" name="value"
-				   if="company &amp;&amp; paymentMode?.accountManagementList?.findAll{ it.company == company }.size() == 1"
-				   expr="eval: paymentMode?.accountManagementList?.find{ it.company == company }.bankDetails"/>
-	</action-attrs>
+	<action-method name="action-payment-voucher-method-fill-bank-details">
+		<call class="com.axelor.apps.account.web.PaymentVoucherController" method="fillCompanyBankDetails"/>
+	</action-method>
 
 	
 </object-views>

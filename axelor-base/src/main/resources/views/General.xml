@@ -48,12 +48,12 @@
 				<field name="activateBarCodeGeneration" widget="Boolean-switch"/>
 		    </panel>
 		    <panel name="accounting" title="Accounting">
-				<field name="defaultExemptionTax" if-module="axelor-account" form-view="tax-form" grid-view="tax-grid"/>
 				<field name="manageAnalyticAccounting" if-module="axelor-account" widget="Boolean-switch"/>
 				<field name="analyticDistributionTypeSelect" if-module="axelor-account" showIf="manageAnalyticAccounting"/>
 				<field name="manageCustomerCredit" if-module="axelor-account" widget="Boolean-switch"/>
 				<field name="allowTimetableInvoicing" if-module="axelor-business-project" widget="Boolean-switch"/>
 				<field name="printReportOnVentilation" if-module="axelor-account" widget="Boolean-switch"/>
+				<field name="manageDirectDebitPayment" if-module="axelor-account" widget="Boolean-switch"/>
 				<panel name="rejectsReasonsAndCodesList" title="Rejects reasons and codes list" colSpan="12" if-module="axelor-account">
 					<field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 					<field name="chequeInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
@@ -116,26 +116,28 @@
 			</panel>
 			
 			<panel name="stockMoveConfiguration" title="Stock Move configuration" itemSpan="4">
-				<field name="customerStockMoveManagement" if-module="axelor-supplychain" readonlyIf="customerStockMoveGenerationAuto || terminateSaleOrderOnDelivery" widget="Boolean-switch"/>
-				<field name="customerStockMoveGenerationAuto" showIf="customerStockMoveManagement" if-module="axelor-supplychain" widget="Boolean-switch"/>
-				<field name="terminateSaleOrderOnDelivery" if-module="axelor-sale" showIf="customerStockMoveManagement" widget="Boolean-switch"/>
+				<field name="custStockMoveMgtOnSO" if-module="axelor-supplychain" readonlyIf="customerStockMoveGenerationAuto || terminateSaleOrderOnDelivery" widget="Boolean-switch"/>
+				<field name="customerStockMoveGenerationAuto" showIf="custStockMoveMgtOnSO" if-module="axelor-supplychain" widget="Boolean-switch"/>
+				<field name="terminateSaleOrderOnDelivery" if-module="axelor-sale" showIf="custStockMoveMgtOnSO" widget="Boolean-switch"/>
 				
-				<field name="supplierStockMoveManagement" if-module="axelor-supplychain" readonlyIf="supplierStockMoveGenerationAuto || terminatePurchaseOrderOnReceipt" widget="Boolean-switch"/>
-				<field name="supplierStockMoveGenerationAuto" showIf="supplierStockMoveManagement" if-module="axelor-supplychain" widget="Boolean-switch"/>
-				<field name="terminatePurchaseOrderOnReceipt" if-module="axelor-supplychain" showIf="supplierStockMoveManagement" widget="Boolean-switch"/>
+				<field name="supplStockMoveMgtOnSO" if-module="axelor-supplychain" readonlyIf="supplierStockMoveGenerationAuto || terminatePurchaseOrderOnReceipt" widget="Boolean-switch"/>
+				<field name="supplierStockMoveGenerationAuto" showIf="supplStockMoveMgtOnSO" if-module="axelor-supplychain" widget="Boolean-switch"/>
+				<field name="terminatePurchaseOrderOnReceipt" if-module="axelor-supplychain" showIf="supplStockMoveMgtOnSO" widget="Boolean-switch"/>
 				
 				<field name="generateInvoiceFromStockMove" widget="Boolean-switch"/>
 			</panel>
 			
 			<panel name="productionConfiguration" title="Production configuration" if-module="axelor-production">
-				<field name="productionOrderManagement" readonlyIf="productionOrderGenerationAuto" colSpan="4" widget="Boolean-switch"/>
-				<field name="productionOrderGenerationAuto" showIf="productionOrderManagement" colSpan="4" widget="Boolean-switch"/>
-				<field name="manageBillOfMaterialVersion" colSpan="4" widget="Boolean-switch"/>
+				<panel name="saleOrder" title="Sale order">
+					<field name="prodOrderMgtOnSO" readonlyIf="productionOrderGenerationAuto" widget="Boolean-switch"/>
+					<field name="productionOrderGenerationAuto" showIf="prodOrderMgtOnSO" widget="Boolean-switch"/>
+				</panel>
 				<panel name="billOfMaterial" title="Bill of material">
+					<field name="manageBillOfMaterialVersion" widget="Boolean-switch"/>
 				    <field name="manageResidualProductOnBom" widget="Boolean-switch"/>
 				</panel>
 				<panel name="manufacturingProcess" title="Manufacturing process">
-    				<field name="workCenterProduct" form-view="product-form" grid-view="product-grid"/>
+    				<field name="workCenterProduct" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 				</panel>
 				<panel name="costSheet" title="Cost sheet">
 				    <field name="productCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
@@ -156,7 +158,7 @@
 				<field name="projectTaskPurchaseOrderLines" widget="Boolean-switch"/>
 				<field name="projectTaskInvoiceLines" widget="Boolean-switch"/>
 				<field name="projectTaskLabel"/>
-				<field name="productInvoicingProjectTask" canNew="true"/>
+				<field name="productInvoicingProjectTask" canEdit="false" canNew="true"/>
 				
 				<field name="showPurchaseOrderLineRelatedToProject" if-module="axelor-business-project"/>
 				<field name="showSaleOrderLineRelatedToProject" if-module="axelor-business-project" />

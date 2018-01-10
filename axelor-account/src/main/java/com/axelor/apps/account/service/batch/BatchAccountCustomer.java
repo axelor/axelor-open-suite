@@ -116,9 +116,9 @@ public class BatchAccountCustomer extends BatchStrategy {
 	@Override
 	protected void stop() {
 		String comment = "";
-		comment = I18n.get(IExceptionMessage.BATCH_ACCOUNT_2);
-		comment += String.format(I18n.get(IExceptionMessage.BATCH_ACCOUNT_3), batch.getDone());
-		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+		comment = I18n.get(IExceptionMessage.BATCH_ACCOUNT_2) + "\n";
+		comment += String.format("\t" + I18n.get(IExceptionMessage.BATCH_ACCOUNT_3) + "\n", batch.getDone());
+		comment += String.format("\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
 		super.stop();
 		addComment(comment);

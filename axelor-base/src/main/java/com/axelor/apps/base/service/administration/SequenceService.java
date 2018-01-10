@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.base.service.administration;
 
-import com.axelor.meta.db.MetaSelectItem;
-import com.axelor.meta.db.repo.MetaSelectItemRepository;
+import java.lang.invoke.MethodHandles;
+
+import javax.annotation.concurrent.ThreadSafe;
+
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -29,13 +31,22 @@ import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.SequenceVersion;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.SequenceVersionRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.tool.StringTool;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaSelectItem;
+import com.axelor.meta.db.repo.MetaSelectItemRepository;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
-import java.lang.invoke.MethodHandles;
-
+@ThreadSafe
+@Singleton
 public class SequenceService {
 
 	private final static String
@@ -47,33 +58,22 @@ public class SequenceService {
 		PATTERN_WEEK = "%WY",
 		PADDING_STRING = "0";
 
+	private static final String DRAFT_PREFIX = "#";
+
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private SequenceVersionRepository sequenceVersionRepository;
 
-	private LocalDate today, refDate;
-	
+	private GeneralService generalService;
+
 	@Inject
 	private SequenceRepository sequenceRepo;
 
 	@Inject
-	public SequenceService( SequenceVersionRepository sequenceVersionRepository ) {
+	public SequenceService( SequenceVersionRepository sequenceVersionRepository, GeneralService generalService ) {
 
 		this.sequenceVersionRepository = sequenceVersionRepository;
-
-		this.today = Beans.get(GeneralService.class).getTodayDate();
-		this.refDate = this.today;
-
-	}
-
-	public SequenceService(LocalDate today) {
-		this.today = today;
-		this.refDate = this.today;
-	}
-
-	public SequenceService setRefDate( LocalDate refDate ){
-		this.refDate = refDate;
-		return this;
+		this.generalService = generalService;
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class SequenceService {
 
 		if (sequence == null)  {  return null;  }
 
-		return this.getSequenceNumber(sequence);
+		return this.getSequenceNumber(sequence, generalService.getTodayDate());
 
 	}
 
@@ -166,6 +166,10 @@ public class SequenceService {
 
 	}
 
+	public String getSequenceNumber( Sequence sequence ) {
+		return getSequenceNumber( sequence, generalService.getTodayDate() );
+	}
+
 	/**
 	 * Fonction retournant une numéro de séquence depuis une séquence générique, et une date
 	 *
@@ -173,9 +177,9 @@ public class SequenceService {
 	 * @return
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public String getSequenceNumber( Sequence sequence )  {
+	public String getSequenceNumber( Sequence sequence, LocalDate refDate )  {
 
-		SequenceVersion sequenceVersion = getVersion(sequence);
+		SequenceVersion sequenceVersion = getVersion(sequence, refDate);
 
 		String
 			seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
@@ -198,17 +202,17 @@ public class SequenceService {
 		return nextSeq;
 	}
 
-	protected SequenceVersion getVersion( Sequence sequence ){
+	protected SequenceVersion getVersion( Sequence sequence, LocalDate refDate ){
 
 		log.debug( "Reference date : : : : {}" , refDate );
 
-		if ( sequence.getMonthlyResetOk() ){ return getVersionByMonth(sequence); }
-		if ( sequence.getYearlyResetOk() ){ return getVersionByYear(sequence); }
-		return getVersionByDate(sequence);
+		if ( sequence.getMonthlyResetOk() ){ return getVersionByMonth(sequence, refDate); }
+		if ( sequence.getYearlyResetOk() ){ return getVersionByYear(sequence, refDate); }
+		return getVersionByDate(sequence, refDate);
 
 	}
 
-	protected SequenceVersion getVersionByDate( Sequence sequence ){
+	protected SequenceVersion getVersionByDate( Sequence sequence, LocalDate refDate ){
 
 		SequenceVersion sequenceVersion = sequenceVersionRepository.findByDate(sequence, refDate);
 		if ( sequenceVersion == null ){ sequenceVersion = new SequenceVersion(sequence, refDate, null, 1L); }
@@ -217,7 +221,7 @@ public class SequenceService {
 
 	}
 
-	protected SequenceVersion getVersionByMonth( Sequence sequence ){
+	protected SequenceVersion getVersionByMonth( Sequence sequence, LocalDate refDate ){
 
 		SequenceVersion sequenceVersion = sequenceVersionRepository.findByMonth(sequence, refDate.getMonthOfYear(), refDate.getYear());
 		if ( sequenceVersion == null ){ sequenceVersion = new SequenceVersion(sequence, refDate.dayOfMonth().withMinimumValue(), refDate.dayOfMonth().withMaximumValue(), 1L); }
@@ -226,7 +230,7 @@ public class SequenceService {
 
 	}
 
-	protected SequenceVersion getVersionByYear( Sequence sequence ){
+	protected SequenceVersion getVersionByYear( Sequence sequence, LocalDate refDate ){
 
 		SequenceVersion sequenceVersion = sequenceVersionRepository.findByYear(sequence, refDate.getYear());
 		if ( sequenceVersion == null ){
@@ -245,5 +249,47 @@ public class SequenceService {
 
 		return item.getTitle();
 	}
-	
+
+	/**
+	 * Get draft sequence number.
+	 * 
+	 * @param model
+	 * @return
+     * @throws AxelorException
+	 */
+	public String getDraftSequenceNumber(Model model) throws AxelorException {
+	    if (model.getId() == null) {
+	        throw new AxelorException(I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD), IException.INCONSISTENCY);
+	    }
+	    return String.format("%s%d", DRAFT_PREFIX, model.getId());
+	}
+
+    /**
+     * Get draft sequence number with leading zeros.
+     * 
+     * @param model
+     * @param padding
+     * @return
+     */
+    public String getDraftSequenceNumber(Model model, int zeroPadding) throws AxelorException {
+        if (model.getId() == null) {
+            throw new AxelorException(I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD), IException.INCONSISTENCY);
+        }
+        return String.format("%s%s", DRAFT_PREFIX,
+                StringTool.fillStringLeft(String.valueOf(model.getId()), '0', zeroPadding));
+    }
+
+	/**
+	 * Check whether a sequence number is empty or draft.
+	 * 
+	 * Also consider '*' as draft character for backward compatibility.
+	 * 
+	 * @param sequenceNumber
+	 * @return
+	 */
+    public boolean isEmptyOrDraftSequenceNumber(String sequenceNumber) {
+        return Strings.isNullOrEmpty(sequenceNumber)
+                || sequenceNumber.matches(String.format("[\\%s\\*]\\d+", DRAFT_PREFIX));
+    }
+
 }

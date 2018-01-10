@@ -32,6 +32,8 @@ public interface InvoicePaymentToolService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateAmountPaid(Invoice invoice) throws AxelorException;
 
+	void updateHasPendingPayments(Invoice invoice);
+
 	/**
 	 * @param company  company from the invoice
 	 * @param invoicePayment

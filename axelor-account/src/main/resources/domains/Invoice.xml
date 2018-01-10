@@ -13,7 +13,7 @@
     <string name="invoiceId" namecolumn="true" title="Invoice N°" readonly="true"/>
 	<integer name="operationTypeSelect" title="Document Type" required="true" selection="iinvoice.operation.type.select"/>
     
-    <!-- Legal informations -->
+    <!-- Legal information -->
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" required="true" title="Partner" />
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
@@ -33,7 +33,7 @@
     <date name="invoiceDate" title="Invoice Date" />
     <date name="dueDate" title="Due Date"/>
     
-    <!-- Accounting informations -->
+    <!-- Accounting information -->
     <boolean name="schedulePaymentOk" title="Belong to a payment schedule ?" default="false"/>
     <many-to-one name="paymentSchedule" ref="com.axelor.apps.account.db.PaymentSchedule" title="Payment Schedule" readonly="true"/>
     <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"/>
@@ -57,7 +57,7 @@
     <many-to-one name="standardInvoice" ref="Invoice" title="Standard Invoice" />
   	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     
-    <!-- Blocking informations -->
+    <!-- Blocking information -->
     <boolean name="debitBlockingOk" title="Direct debit blocking"/>
     <many-to-one name="debitBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
     <date name="debitBlockingToDate" title="Blocking until"/>
@@ -82,6 +82,7 @@
 	<!--  Impression -->
 	<integer name="invoicesCopySelect" selection="grade.0.up.to.10.select"/>
     <string name="note" title="Notes" large="true"/>
+      <string name="specificNotes" title="Specific notes" large="true"/>
     
     <!-- Totals & Status -->
     
@@ -91,14 +92,14 @@
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true" help="true"/>
     <decimal name="amountPaid" title="Amount paid" readonly="true" />
     <decimal name="amountRemaining" title="Amount remaining" readonly="true"/>
-    
-    
+
 	<!--     Totals based on the company currency -->
     <decimal name="companyExTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
     <decimal name="companyTaxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
     <decimal name="companyInTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
     <decimal name="companyInTaxTotalRemaining" title="Remaining to pay" readonly="true" />
     
+    <boolean name="hasPendingPayments" readonly="true"/>
     <integer name="statusSelect" title="Status" selection="iaccount.invoice.status.select" readonly="true" default="1"/>
     
     <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/>

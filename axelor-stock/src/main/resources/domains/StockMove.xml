@@ -9,7 +9,7 @@
   
 	<integer name="importId" />
 
-	<string name="stockMoveSeq" namecolumn="true" title="Ref." readonly="true" unique="true"/>
+	<string name="stockMoveSeq" namecolumn="true" title="Ref." readonly="true"/>
     <string name="name" title="Name"/>
     <many-to-one name="fromLocation" ref="com.axelor.apps.stock.db.Location" required="true" title="From location"/>
     <many-to-one name="toLocation" ref="com.axelor.apps.stock.db.Location" required="true" title="To location"/>
@@ -44,6 +44,8 @@
     <many-to-one name="freightCarrierMode" ref="com.axelor.apps.stock.db.FreightCarrierMode"/>
     
     <integer name="conformitySelect" title="Conformity" selection="stock.move.line.conformity.select"/>
+    
+    <unique-constraint columns="stockMoveSeq,company"/>
     
     <extra-code><![CDATA[
 	

@@ -51,7 +51,7 @@ public class EmbeddedReportSettings  extends ReportSettings  {
 			this.attach();
 		
 		} catch(IOException | BirtException e)  {
-			throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(e, IException.CONFIGURATION_ERROR);
 		}
 		
 		return this;

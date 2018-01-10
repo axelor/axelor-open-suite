@@ -19,8 +19,5 @@
     	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="cancelReceipt"/>
     </action-method>
 
-	<action-method name="action-purchase-order-method-fill-company-bank-details">
-		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="fillCompanyBankDetails"/>
-	</action-method>
 
 </object-views>

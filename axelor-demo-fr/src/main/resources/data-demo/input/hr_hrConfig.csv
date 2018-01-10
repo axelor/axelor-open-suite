@@ -1,2 +1,2 @@
-"importId";"company.importId";"kilometricExpenseProduct.importId";"publicHolidayPlanning.importId";"weeklyPlanning.importId";"lunchVoucherWageShare";"lunchVoucherEmployersShare";"expenseSequence.importId"
-1;1;"503";"1";"1";"5";"3";167
+"importId";"company.importId";"kilometricExpenseProduct.importId";"publicHolidayPlanning.importId";"weeklyPlanning.importId";"lunchVoucherWageShare";"lunchVoucherEmployersShare";"expenseSequence.importId";"expenseMailNotification";"sentExpenseTemplate.importId";"refusedExpenseTemplate.importId";"validatedExpenseTemplate.importId";"leaveMailNotification";"sentLeaveTemplate.importId";"refusedLeaveTemplate.importId";"validatedLeaveTemplate.importId";"exportCodeForLunchVoucherManagement";"exportCodeForExtraHours"
+1;1;"503";"1";"1";"5";"3";167;"true";1;2;3;"true";4;5;6;"TICKET_SALA";"HS25"

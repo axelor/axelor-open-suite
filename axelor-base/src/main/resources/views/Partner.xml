@@ -162,7 +162,7 @@
 					<panel colSpan="6">
 						<field name="partnerCategory" widget="SuggestBox" colSpan="6" form-view="partner-category-form" grid-view="partner-category-grid"/>
 						<field name="industrySector" colSpan="6" widget="SuggestBox" hideIf="partnerTypeSelect== 2"/>
-						<field name="source" colSpan="6" widget="SuggestBox" form-view="source-form" grid-view="source-grid"/>
+						<field name="source" canEdit="false" colSpan="6" widget="SuggestBox" form-view="source-form" grid-view="source-grid"/>
 						<field name="department" colSpan="6" hideIf="partnerTypeSelect== 2"/>
 					</panel>
 					<panel  colSpan="6">
@@ -178,8 +178,8 @@
 					<field name="partnerSeq" colSpan="6"/>
 					<field name="languageSelect" colSpan="6"/>
 					<panel title="Assigned to" colSpan="12">
-						<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" hideIf="isEmployee"/>
-						<field name="team" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()" hideIf="isEmployee"/>
+						<field name="user" canEdit="false" colSpan="6" form-view="user-form" grid-view="user-grid" hideIf="isEmployee"/>
+						<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()" hideIf="isEmployee"/>
 						<field name="companySet" colSpan="12" widget="TagSelect" onChange="action-partner-method-generate-customer-credit-line" canNew="false" form-view="company-form" grid-view="company-grid"/>
 					</panel>
 				</panel>
@@ -255,7 +255,7 @@
 	        <panel name="information" title="Informations">
 	            <panel title="Partner details" colSpan="12"  hideIf="partnerTypeSelect == 2">
 	                <field name="department" form-view="department-form" grid-view="department-grid"/>
-	                <field name="source" hideIf="isContact" form-view="source-form" grid-view="source-grid"/>
+	                <field name="source" canEdit="false" hideIf="isContact" form-view="source-form" grid-view="source-grid"/>
 	            </panel>
 	            <panel colSpan="12" name="postalAddresses" title="Postal addresses" hideIf="isContact">
 	                <field name="partnerAddressList" colSpan="12">
@@ -344,8 +344,8 @@
             <field name="partnerSeq"/>
             <field name="languageSelect"/>
             <panel title="Assigned to" canCollapse="true" colSpan="12">
-				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"/>
-                <field name="team" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
+				<field name="user" canEdit="false" colSpan="6" form-view="user-form" grid-view="user-grid"/>
+                <field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
                 <field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
             </panel>
         </panel>
@@ -491,8 +491,8 @@
             <field name="partnerSeq"/>
             <field name="languageSelect"/>
             <panel title="Assigned to" canCollapse="true" colSpan="12">
-				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"/>
-                <field name="team" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
+				<field name="user" canEdit="false" colSpan="6" form-view="user-form" grid-view="user-grid"/>
+                <field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
                 <field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
             </panel>
         </panel>
@@ -502,15 +502,16 @@
 	</form>
 		
 	<action-group name="action-group-partner-onload">
-    	<action name="action-partner-method-update-customer-credit-line-from-partner" if="!isContact &amp;&amp; isCustomer &amp;&amp; __config__.general.getManageCustomerCredit()"/>
     	<action name="save"/>
     	<action name="action-partner-attrs-change-name"/>
+        <action name="action-partner-attrs-show-specific-tax-note"/>
     	<action name="action-partner-method-set-social-network-url"/>
     </action-group>
 	
 	<action-group name="action-group-base-partner-onnew">
 		<action name="action-partner-record-partner-type-select"/>
 		<action name="action-partner-record-set-default"/>
+		<action name="action-partner-record-set-default-cash-management"/>
 		<action name="action-partner-record-set-payment-modes"/>
 		<action name="action-partner-record-payment-condition"/>
 	</action-group>
@@ -575,8 +576,6 @@
     	<field name="languageSelect" expr="#{__config__.general.getDefaultPartnerLanguage()}" />
     	<field name="isCustomer" expr="true" if="_isCustomer"/>
   		<field name="isSupplier" expr="true" if="_isSupplier"/>
-    	<field name="paymentDelay" expr="eval: __user__.activeCompany?.customerPaymentDelay" if="_isCustomer"/>
-    	<field name="paymentDelay" expr="eval: __user__.activeCompany?.supplierPaymentDelay" if="_isSupplier"/>
     </action-record>
     
     <action-record name="action-partner-contact-record-default" model="com.axelor.apps.base.db.Partner">

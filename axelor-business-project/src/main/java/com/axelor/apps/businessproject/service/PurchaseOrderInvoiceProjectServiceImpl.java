@@ -54,22 +54,10 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 	@Inject
 	protected GeneralService generalService;
 
-
 	@Override
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<PurchaseOrderLine> purchaseOrderLineList) throws AxelorException  {
-
-		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-
-		for(PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
-
-			//Lines of subscription type are invoiced directly from purchase order line or from the subscription batch
-			if (!ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(purchaseOrderLine.getProduct().getProductTypeSelect())){
-				invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
-				invoiceLineList.get(invoiceLineList.size()-1).setProject(purchaseOrderLine.getProjectTask());
-				purchaseOrderLine.setInvoiced(true);
-			}
-		}
-		return invoiceLineList;
+	protected void processPurchaseOrderLine(Invoice invoice, List<InvoiceLine> invoiceLineList, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
+		super.processPurchaseOrderLine(invoice,invoiceLineList,purchaseOrderLine);
+		invoiceLineList.get(invoiceLineList.size()-1).setProject(purchaseOrderLine.getProjectTask());
 	}
 
 	@Override

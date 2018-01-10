@@ -7,17 +7,6 @@
   
     <integer name="incidentTypeSelect" title="Incident type" selection="payer.quality.config.line.incident.type.select"/>
     <many-to-one name="reminderLevel" ref="com.axelor.apps.account.db.ReminderLevel" title="Reminder level"/>
-    <string name="rejectType" title="Reject type"/>
-    <string name="name" title="Label">
-    	<![CDATA[
-    	if (incidentTypeSelect != 0){
-    		return "Rejet ("+rejectType+")";
-    	}
-		else {
-			return "Relance "+reminderLevel.getName();
-		}
-	    ]]>
-    </string>
     <decimal name="burden" title="Burden (weight)"/>
     <string name="description" title="Description"/>
   

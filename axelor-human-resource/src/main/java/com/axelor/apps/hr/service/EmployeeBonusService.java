@@ -66,9 +66,9 @@ public class EmployeeBonusService {
 			employeeStatus.put(line.getEmployee(), line);
 		}
 
-		List<Employee> allEmployee = Beans.get(EmployeeRepository.class).all().filter("self.user.activeCompany = ?1", bonus.getCompany()).fetch();
+		List<Employee> allEmployee = Beans.get(EmployeeRepository.class).all().filter("self.mainEmploymentContract.payCompany = ?1", bonus.getCompany()).fetch();
 		TemplateMaker maker = new TemplateMaker( Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
-		String eval = "";
+		String eval;
 		CompilerConfiguration conf = new CompilerConfiguration();
 		ImportCustomizer customizer = new ImportCustomizer();
 		customizer.addStaticStars("java.lang.Math");
@@ -81,7 +81,7 @@ public class EmployeeBonusService {
 			
 			// check if line is already calculated
 			if (employeeStatus.get(employee) != null) {
-				if (employeeStatus.get(employee).getStatusSelect() == EmployeeBonusMgtLineRepository.STATUS_CALCULATED) {
+				if (employeeStatus.get(employee).getStatusSelect().equals(EmployeeBonusMgtLineRepository.STATUS_CALCULATED)) {
 					continue;
 				} else {
 					bonus.removeEmployeeBonusMgtLineListItem(employeeStatus.get(employee));
@@ -89,6 +89,10 @@ public class EmployeeBonusService {
 			}
 
 			maker.setContext(employee, "Employee");
+			EmployeeBonusMgtLine line = new EmployeeBonusMgtLine();
+			line.setEmployeeBonusMgt(bonus);
+			line.setEmployee(employee);
+			maker.addInContext("EmployeeBonusMgtLine",line);
 			String formula = bonus.getEmployeeBonusType().getApplicationCondition();
 			Integer lineStatus = EmployeeBonusMgtLineRepository.STATUS_CALCULATED;
 			try {
@@ -102,11 +106,6 @@ public class EmployeeBonusService {
 			eval = maker.make();
 
 			if (shell.evaluate(eval).toString().equals("true")) {
-				EmployeeBonusMgtLine line = new EmployeeBonusMgtLine();
-				line.setEmployeeBonusMgt(bonus);
-				line.setEmployee(employee);
-
-				maker.setContext(line, "employeeBonusMgtLine");
 				try{
 					formula = replaceExpressionInFormula(bonus.getEmployeeBonusType().getFormula(), bonus.getCompany().getHrConfig(), employee, bonus.getPayPeriod());
 				}catch (AxelorException e){
@@ -115,7 +114,7 @@ public class EmployeeBonusService {
 
 				line.setStatusSelect(lineStatus);
 
-				if (lineStatus == EmployeeBonusMgtLineRepository.STATUS_ANOMALY) {
+				if (lineStatus.equals(EmployeeBonusMgtLineRepository.STATUS_ANOMALY)) {
 					employeeBonusStatus = EmployeeBonusMgtRepository.STATUS_ANOMALY;
 					employeeBonusMgtLineRepo.save(line);
 					continue;
@@ -123,7 +122,7 @@ public class EmployeeBonusService {
 
 				line.setSeniorityDate( employee.getSeniorityDate() );
 				line.setCoef( employee.getBonusCoef() );
-				line.setPresence( employee.getPlanning() );
+				line.setWeeklyPlanning(employee.getPlanning());
 
 				maker.setTemplate( formula );
 				eval = maker.make();

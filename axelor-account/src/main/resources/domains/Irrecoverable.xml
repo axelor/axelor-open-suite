@@ -18,6 +18,7 @@
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
   	<string name="exportTypeSelect" title="Export file type" selection="iadministration.export.type.select"/>
   	
+	<unique-constraint columns="name,company"/>
   	
   	<extra-code><![CDATA[
 	

@@ -10,8 +10,9 @@
 
     <form name="fiscal-position-form" title="Fiscal position" model="com.axelor.apps.account.db.FiscalPosition"  width="large">
         <panel name="main" >
-	        <field name="name"/>
-	        <field name="code"/>
+	        <field name="name" colSpan="4"/>
+	        <field name="code" colSpan="4"/>
+            <field name="customerSpecificNote" colSpan="4"/>
 	        <panel-related field="accountEquivList" form-view="account-equiv-form" grid-view="account-equiv-grid" />
 	        <panel-related field="taxEquivList" form-view="tax-equiv-form" grid-view="tax-equiv-grid" />
         </panel>

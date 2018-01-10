@@ -121,9 +121,9 @@
 		</panel>
 		
 		<panel name="informationPanel" title="Information" sidebar="true" colSpan="12" showIf="id">
-			<field name="startedBy" colSpan="6"/>
+			<field name="startedBy" canEdit="false" colSpan="6"/>
 			<field name="startingDateTime" colSpan="6"/>
-			<field name="stoppedBy" colSpan="6"/>
+			<field name="stoppedBy" canEdit="false" colSpan="6"/>
 			<field name="stoppingDateTime" colSpan="6"/>
 			<field name="barCode"/>
 		</panel>

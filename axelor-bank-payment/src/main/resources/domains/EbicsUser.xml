@@ -8,18 +8,19 @@
   <entity name="EbicsUser" lang="java">
 
 	 <string name="securityMedium" title="Security medium" default="0000"/>
-	 <string name="name" title="Name" namecolumn="true" required="true"/>
+	 <string name="name" title="Name" required="true"/>
+	 <string name="fullName" title="Full name" namecolumn="true" />
 	 <string name="userId" title="User id" max="35" required="true"/>
 	 <string name="nextOrderId" title="Next order id" readonly="true"/>
 	 
 	 <string name="password" title="Password" password="true" />
 	 
-	 <integer name="ebicsTypeSelect" title="Type" selection="bankpayment.ebics.user.ebics.type.select"/>
+	 <integer name="userTypeSelect" title="User type" selection="bankpayment.ebics.user.user.type.select"/>
 	 <integer name="statusSelect" title="Status" selection="bankpayment.account.ebics.user.status.select" readonly="true"/>
 	 
  	 <many-to-one name="ebicsPartner" ref="com.axelor.apps.bankpayment.db.EbicsPartner" title="Ebics partner" required="true"/>
  	 
- 	 <many-to-one name="associatedUser" ref="com.axelor.auth.db.User" title="Associate user"/>
+ 	 <many-to-one name="associatedUser" ref="com.axelor.auth.db.User" title="Associated user"/>
 	 
 	 <!-- 	 Electronic signature certificate -->
  	 <string name="dn" title="dn" />
@@ -31,6 +32,7 @@
 	 
 	 <many-to-one name="testDataFile" ref="com.axelor.meta.db.MetaFile" title="Test data file"/>
  	 <many-to-one name="testSignatureFile" ref="com.axelor.meta.db.MetaFile" title="Test signature file"/>
+  	 <many-to-one name="testSignatoryEbicsUser" ref="com.axelor.apps.bankpayment.db.EbicsUser" title="Signatory user"/>
      <many-to-one name="testBankStatementFileFormat" ref="com.axelor.apps.bankpayment.db.BankStatementFileFormat" title="Bank statement file format"/>
      <many-to-one name="testBankOrderFileFormat" ref="com.axelor.apps.bankpayment.db.BankOrderFileFormat" title="Bank order file format"/>
 	 
@@ -46,7 +48,7 @@
 		public static final int STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE = 1;
 		public static final int STATUS_WAITING_AUTH_AND_ENCRYPT_CERTIFICATES = 2;
 		public static final int STATUS_ACTIVE_CONNECTION = 3;
-		public static final int STATUS_CERTIFICATES_SHOULD_BE_RENEW = 4;
+		public static final int STATUS_CERTIFICATES_SHOULD_BE_RENEWED = 4;
 	
 	]]></extra-code>
 	 

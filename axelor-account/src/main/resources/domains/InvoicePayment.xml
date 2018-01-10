@@ -29,10 +29,10 @@
    		<![CDATA[
    		
    		// STATUS SELECT
-		public static final Integer STATUS_DRAFT = 0;
-		public static final Integer STATUS_VALIDATED = 1;
-		public static final Integer STATUS_CANCELED = 2;
-		public static final Integer STATUS_PENDING = 3;
+		public static final int STATUS_DRAFT = 0;
+		public static final int STATUS_VALIDATED = 1;
+		public static final int STATUS_CANCELED = 2;
+		public static final int STATUS_PENDING = 3;
 	
 	   	// TYPE SELECT
 		public static final int TYPE_ADVANCEPAYMENT = 1;

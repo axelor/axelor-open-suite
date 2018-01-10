@@ -8,14 +8,14 @@
   <entity name="InterbankCodeLine" lang="java" cachable="true">
   
     <string name="code" title="Code" required="true"/>
-    <string name="name" title="Standard label (24 caracters)" required="true" max="24"/>
+    <string name="name" title="Standard label" required="true"/>
     <string name="description" multiline="true" title="Usage rule" large="true"/>
     <boolean name="transferCfonbOk" title="Wire Transfer"/>
     <boolean name="directDebitAndTipCfonbOk" title="Direct debit/IPO/Electronic Payment Order (EPO) CFONB"/>
     <boolean name="directDebitSepaOk" title="Direct debit SEPA"/>
     <boolean name="lcrBorOk" title="LCR/BOR"/>
     <boolean name="chequeOk" title="Cheque"/>
-    <many-to-one name="interbankCode" ref="InterbankCode" title="Rejects/Return reason code list"/>
+    <many-to-one name="interbankCode" ref="InterbankCode" title="Interbank codes list"/>
     <boolean name="technicalRejectOk" title="Technical Rejection"/>
   
   </entity>

@@ -14,6 +14,9 @@
 		<integer name="statusSelect" title="Status" selection="hrs.lunch.voucher.mgt.status.select" default="1" readonly="true" />
 		<integer name="requestedLunchVouchers" title="Requested lunch vouchers on the period" readonly="true" />
 		<integer name="totalLunchVouchers" title="Total lunch vouchers" readonly="true" />
+		<integer name="givenLunchVouchers"
+				 title="Given lunch vouchers on the period"
+				 readonly="true"/>
 
 		<decimal name="lunchVoucherWageShare" title="Lunch Voucher Wage Share" scale="2" precision="20" readonly="true" />
 		<decimal name="lunchVoucherEmployersShare" title="Lunch Voucher Employer's Share" scale="2" precision="20" readonly="true" />
@@ -21,8 +24,8 @@
 		<one-to-many name="lunchVoucherMgtLineList" ref="com.axelor.apps.hr.db.LunchVoucherMgtLine" title="Lunch Voucher Lines" mappedBy="lunchVoucherMgt" orphanRemoval="true" />
 
 		<integer name="stockQuantityStatus" title="Stock quantity status" readonly="true" />
-		<integer name="stockLineQuantity" title="Stock Line quantity" />
-		<string name="stockLineComment" title="Comment" large="true" />
+		<integer name="stockLineQuantity" title="Quantity" min="0"/>
+		<string name="stockLineComment" title="Comment" large="true"/>
 
 		<date name="exportDate" title="Export date" />
 		<many-to-one name="csvFile" title="CSV" ref="com.axelor.meta.db.MetaFile" />

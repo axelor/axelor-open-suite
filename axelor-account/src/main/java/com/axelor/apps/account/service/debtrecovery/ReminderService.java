@@ -363,6 +363,7 @@ public class ReminderService {
 	public Reminder createReminder(AccountingSituation accountingSituation)  {
 		Reminder reminder = new Reminder();
 		reminder.setAccountingSituation(accountingSituation);
+		accountingSituation.setReminder(reminder);
 		reminderRepo.save(reminder);
 		return reminder;
 	}

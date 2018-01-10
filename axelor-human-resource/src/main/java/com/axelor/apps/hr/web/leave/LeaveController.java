@@ -55,7 +55,7 @@ import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 
 public class LeaveController {
-	
+
 	@Inject
 	private Provider<HRMenuTagService> hrMenuTagServiceProvider;
 	@Inject
@@ -64,11 +64,11 @@ public class LeaveController {
 	private Provider<LeaveRequestRepository> leaveRequestRepositoryProvider;
 	@Inject
 	private HRConfigService hrConfigService;
-	
+
 	public void editLeave(ActionRequest request, ActionResponse response)  {
-		
+
 		User user = AuthUtils.getUser();
-		
+
 		List<LeaveRequest> leaveList = Beans.get(LeaveRequestRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",
 				user, user.getActiveCompany()).fetch();
 		if(leaveList.isEmpty()){
@@ -115,10 +115,10 @@ public class LeaveController {
 	}
 
 	public void validateLeave(ActionRequest request, ActionResponse response) throws AxelorException{
-		
+
 		User user = AuthUtils.getUser();
 		Employee employee = user.getEmployee();
-		
+
 		ActionViewBuilder actionView = ActionView.define(I18n.get("Leave Requests to Validate"))
 		   .model(LeaveRequest.class.getName())
 		   .add("grid","leave-request-validate-grid")
@@ -130,49 +130,48 @@ public class LeaveController {
 	}
 
 	public void historicLeave(ActionRequest request, ActionResponse response){
-		
+
 		User user = AuthUtils.getUser();
 		Employee employee = user.getEmployee();
-		
+
 		ActionViewBuilder actionView = ActionView.define(I18n.get("Colleague Leave Requests"))
 				.model(LeaveRequest.class.getName())
 				.add("grid","leave-request-grid")
 				.add("form","leave-request-form");
 
-		actionView.domain("self.company = :_activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
-		.context("_activeCompany", user.getActiveCompany());
-	
+		actionView.domain("self.statusSelect = 3 OR self.statusSelect = 4");
+
 		if(employee == null || !employee.getHrManager())  {
 			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
 			.context("_user", user);
 		}
-		
+
 		response.setView(actionView.map());
 	}
-	
+
 	public void showSubordinateLeaves(ActionRequest request, ActionResponse response){
-		
+
 		User user = AuthUtils.getUser();
 		Company activeCompany = user.getActiveCompany();
-		
+
 		ActionViewBuilder actionView = ActionView.define(I18n.get("Leaves to be Validated by your subordinates"))
 				   .model(LeaveRequest.class.getName())
 				   .add("grid","leave-request-grid")
 				   .add("form","leave-request-form");
-		
-		String domain = "self.user.employee.manager.employee.manager = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
-		
+
+		String domain = "self.user.employee.manager.employee.manager = :_user AND self.statusSelect = 2";
+
 		long nbLeaveRequests =  Query.of(ExtraHours.class).filter(domain).bind("_user", user).bind("_activeCompany", activeCompany).count();
-		
+
 		if(nbLeaveRequests == 0)  {
 			response.setNotify(I18n.get("No Leave Request to be validated by your subordinates"));
 		}
 		else  {
 			response.setView(actionView.domain(domain).context("_user", user).context("_activeCompany", activeCompany).map());
 		}
-		
+
 	}
-	
+
 	public void testDuration(ActionRequest request, ActionResponse response){
 		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
 		Double duration = leave.getDuration().doubleValue();
@@ -185,16 +184,16 @@ public class LeaveController {
 		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
 		response.setValue("duration", leaveServiceProvider.get().computeDuration(leave));
 	}
-	
+
 	//sending leave request and an email to the manager
 	public void send(ActionRequest request, ActionResponse response) throws AxelorException{
-		
+
 		try{
 			LeaveService leaveService = leaveServiceProvider.get();
 			LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
 			leaveRequest = leaveRequestRepositoryProvider.get().find(leaveRequest.getId());
-			
-			if(leaveRequest.getLeaveLine().getQuantity().subtract(leaveRequest.getDuration()).compareTo(BigDecimal.ZERO ) == -1 ){
+
+			if(leaveRequest.getLeaveLine().getQuantity().subtract(leaveRequest.getDuration()).compareTo(BigDecimal.ZERO) < 0){
 				if(!leaveRequest.getLeaveLine().getLeaveReason().getAllowNegativeValue() && !leaveService.willHaveEnoughDays(leaveRequest)){
 					String instruction = leaveRequest.getLeaveLine().getLeaveReason().getInstruction();
 					if (instruction == null) { instruction = ""; }
@@ -207,13 +206,13 @@ public class LeaveController {
 					response.setNotify( String.format(I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_ALERT), leaveRequest.getLeaveLine().getLeaveReason().getLeaveReason()) );
 				}
 			}
-			
+
 			leaveService.confirm(leaveRequest);
 
 			Message message = leaveService.sendConfirmationEmail(leaveRequest);
 			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
-			} 
+			}
 
 		}  catch(Exception e)  {
 			TraceBackService.trace(response, e);
@@ -222,10 +221,10 @@ public class LeaveController {
 			response.setReload(true);
 		}
 	}
-	
+
 	//validating leave request and sending an email to the applicant
 	public void validate(ActionRequest request, ActionResponse response) throws AxelorException{
-		
+
 		try{
 			LeaveService leaveService = leaveServiceProvider.get();
 			LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
@@ -236,8 +235,8 @@ public class LeaveController {
 			Message message = leaveService.sendValidationEmail(leaveRequest);
 			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
-			} 
-			
+			}
+
 		}  catch(Exception e)  {
 			TraceBackService.trace(response, e);
 		}
@@ -245,10 +244,10 @@ public class LeaveController {
 			response.setReload(true);
 		}
 	}
-	
+
 	//refusing leave request and sending an email to the applicant
 	public void refuse(ActionRequest request, ActionResponse response) throws AxelorException{
-		
+
 		try{
 			LeaveService leaveService = leaveServiceProvider.get();
 			LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
@@ -259,8 +258,8 @@ public class LeaveController {
 			Message message = leaveService.sendRefusalEmail(leaveRequest);
 			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
-			} 
-			
+			}
+
 		}  catch(Exception e)  {
 			TraceBackService.trace(response, e);
 		}
@@ -289,33 +288,45 @@ public class LeaveController {
 	}
 
 	/* Count Tags displayed on the menu items */
-	
+
 	@Transactional
 	public void leaveReasonToJustify(ActionRequest request, ActionResponse response) throws AxelorException {
-		LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
-		Boolean leaveToJustify = leave.getToJustifyLeaveReason();
-		LeaveLine leaveLine = null;
-		
-		if(leaveToJustify == true){
-			if(leave.getUser() != null) {
-				hrConfigService.getLeaveReason(leave.getUser().getActiveCompany().getHrConfig());
-				
-				Employee employee = Beans.get(EmployeeRepository.class).find(leave.getUser().getEmployee().getId());
-				LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(leave.getUser().getActiveCompany().getHrConfig().getToJustifyLeaveReason().getId());
-				
-				if(employee != null){
-					leaveLine = leaveServiceProvider.get().addLeaveReasonOrCreateIt(employee, leaveReason);
-					response.setValue("leaveLine", leaveLine);
-				}
-			}
-		}
-	}
-	
-	
+        LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+        Boolean leaveToJustify = leave.getToJustifyLeaveReason();
+        LeaveLine leaveLine = null;
+
+        if (!leaveToJustify) {
+            return;
+        }
+        Company company = leave.getCompany();
+        if (leave.getUser() == null) {
+            return;
+        }
+        if (company == null) {
+            company = leave.getUser().getActiveCompany();
+        }
+        if (company == null) {
+            return;
+        }
+
+        hrConfigService.getLeaveReason(company.getHrConfig());
+
+        Employee employee = leave.getUser().getEmployee();
+
+        LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(company.getHrConfig().getToJustifyLeaveReason().getId());
+
+        if (employee != null) {
+            employee = Beans.get(EmployeeRepository.class).find(leave.getUser().getEmployee().getId());
+            leaveLine = leaveServiceProvider.get().addLeaveReasonOrCreateIt(employee, leaveReason);
+            response.setValue("leaveLine", leaveLine);
+        }
+    }
+
+
 	public String leaveValidateMenuTag() {
-		
+
 		return hrMenuTagServiceProvider.get().countRecordsTag(LeaveRequest.class, LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
-	
+
 	}
-	
+
 }

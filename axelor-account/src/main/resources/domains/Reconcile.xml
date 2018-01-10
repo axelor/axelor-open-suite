@@ -6,6 +6,7 @@
   <entity sequential="true" name="Reconcile" lang="java">
   	
   	<string name="reconcileSeq" title="Reference" namecolumn="true"/>
+  	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" initParam="true"/>
     <decimal name="amount" title="Amount reconciled" default="0.0" initParam="true"/>
     <many-to-one name="debitMoveLine" ref="MoveLine" title="Debit line" required="true" initParam="true"/>
     <many-to-one name="creditMoveLine" ref="MoveLine" title="Credit line" required="true" initParam="true"/>
@@ -17,9 +18,11 @@
     <!--  Will be fully reconciled if there is a currency delta amount -->
     <boolean name="mustBeZeroBalanceOk" title="Must be solded out" default="false"/>
     
+    <unique-constraint columns="reconcileSeq,company"/>
+
     <finder-method name="findByMoveLines" using="debitMoveLine,creditMoveLine"/>
     
-     <extra-code><![CDATA[
+    <extra-code><![CDATA[
 	
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;

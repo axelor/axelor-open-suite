@@ -17,18 +17,7 @@
  */
 package com.axelor.apps.hr.service.leave;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.mail.MessagingException;
-
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.DurationService;
@@ -38,11 +27,11 @@ import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EventsPlanning;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
-import com.axelor.apps.hr.db.PublicHolidayPlanning;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
@@ -61,6 +50,16 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class LeaveServiceImpl  implements  LeaveService  {
 	
@@ -168,11 +167,11 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			if(weeklyPlanning == null){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),employee.getName()), IException.CONFIGURATION_ERROR);
 			}
-			PublicHolidayPlanning publicHolidayPlanning = employee.getPublicHolidayPlanning();
+			EventsPlanning publicHolidayPlanning = employee.getPublicHolidayEventsPlanning();
 			if(publicHolidayPlanning == null){
 				HRConfig conf = leave.getCompany().getHrConfig();
 				if(conf != null){
-					publicHolidayPlanning = conf.getPublicHolidayPlanning();
+					publicHolidayPlanning = conf.getPublicHolidayEventsPlanning();
 				}
 			}
 
@@ -211,7 +210,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			}
 
 			if(duration.compareTo(BigDecimal.ZERO) < 0){
-				duration.equals(BigDecimal.ZERO);
+				duration = BigDecimal.ZERO;
 			}
 			return duration;
 		}
@@ -479,7 +478,12 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		if(user != null && leaveReason != null){
 			LeaveRequest leave = new LeaveRequest();
 			leave.setUser(user);
-			leave.setCompany(user.getActiveCompany());
+			Company company = null;
+			if (user.getEmployee() != null
+					&& user.getEmployee().getMainEmploymentContract() != null) {
+				company = user.getEmployee().getMainEmploymentContract().getPayCompany();
+			}
+			leave.setCompany(company);
 			LeaveLine leaveLine = leaveLineRepo.all().filter("self.employee = ?1 AND self.leaveReason = ?2", user.getEmployee(), leaveReason).fetchOne();
 			if(leaveLine == null){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_LINE),user.getEmployee().getName(), leaveReason.getLeaveReason()), IException.CONFIGURATION_ERROR);

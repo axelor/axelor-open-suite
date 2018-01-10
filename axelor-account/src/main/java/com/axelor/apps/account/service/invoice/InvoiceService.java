@@ -74,17 +74,18 @@ public interface InvoiceService {
 	
 	
 	/**
-	 * Validation d'une facture.
-	 * (Transaction)
+	 * Validate an invoice.
 	 * 
 	 * @param invoice
-	 * 		Une facture.
-	 * 
+	 * @param compute
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void validate(Invoice invoice, boolean compute) throws AxelorException;
+
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(Invoice invoice) throws AxelorException;
-	
+
 	/**
 	 * Ventilation comptable d'une facture.
 	 * (Transaction)
@@ -136,7 +137,7 @@ public interface InvoiceService {
 	public Invoice createRefund(Invoice invoice) throws AxelorException;
 	
 	
-	public void setDraftSequence(Invoice invoice);
+	public void setDraftSequence(Invoice invoice) throws AxelorException;
 	
 	
 	public void generateBudgetDistribution(Invoice invoice);

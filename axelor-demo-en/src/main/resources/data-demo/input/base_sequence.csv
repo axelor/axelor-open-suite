@@ -6,8 +6,6 @@
 104;"invoice";"Supplier Invoice";1;7;"SINV_%YY";;1;1;1
 105;"invoice";"Supplier Refund";1;7;"SREF_%YY";;1;1;1
 106;"debit";"Direct debit (invoice and installments)";1;7;"DDINV_%YY_";;1;1;1
-107;"debitReject";"Direct debit reject";1;7;"REJDD_%YY_";;1;1;1
-108;"doubtfulCustomer";"Transfer in doubtful receivables";1;7;"DBTREC_%YY_";;1;1;1
 109;"irrecoverable";"Transfer in irrecoverables";1;7;"IRRECOV_%YY_";;1;1;1
 110;"move";"Sales move line";1;7;"MVSAL_%YY_";;1;1;1
 111;"move";"Refund move line";1;10;"MVREF_%YY_";;1;1;1
@@ -67,14 +65,14 @@
 165;"bankOrder";"International Credit Transfers";1;10;"ICT%YY%FM";;1;1;1
 166;"bankOrder";"International Direct Debits";1;10;"IDD%YY%FM";;1;1;1
 167;"expense";"Expense N°";1;7;"EXP%YY%FM";;1;1;1
-1;"partner";"Identifier for accounts and contacts";4;10;"P";;1;0;1
+1;"partner";"Identifier for accounts and contacts";4;10;"P";;1;0;
 2;"saleOrder";"Sale Order / Customer Order";1;5;"SO";;1;0;1
 3;"purchaseOrder";"RFQ/Quotes for Suppliers";1;5;"PO";;1;0;1
-4;"eventTicket";"Ticket N°";1;4;"TKT";;1;0;1
+4;"eventTicket";"Ticket N°";1;4;"TKT";;1;0;
 5;"intStockMove";"Internal stock move N°";1;4;"ISM";;1;0;1
 6;"outStockMove";"Delivery order N°";1;4;"DO";;1;0;1
 7;"inStockMove";"Goods receipt order N°";1;4;"RO";;1;0;1
-8;"inventory";"Inventory N°";1;4;"INV%M%YY";;1;0;1
-9;"productTrackingNumber";"Tracking N°";1;5;"TN";;1;0;1
+8;"inventory";"Inventory N°";1;4;"INV%M%YY";;1;0;
+9;"productTrackingNumber";"Tracking N°";1;5;"TN";;1;0;
 10;"productionOrder";"Production Order N°";1;5;"PDO";;1;0;1
 11;"manufOrder";"Manufacturing Order N°";1;5;"MO";;1;0;1

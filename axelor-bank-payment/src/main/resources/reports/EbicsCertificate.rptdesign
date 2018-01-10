@@ -831,7 +831,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["message_value"] == null ? 'Certificate issued to' :  row["message_value"]</VALUE-OF> : </B> <VALUE-OF>row._outer["subject"] != null ? (row._outer["subject"].split(',')[0]).split('=')[1] : ""</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["message_value"] == null ? 'Certificate issued to' :  row["message_value"]</VALUE-OF> : </B> <VALUE-OF>row._outer["subject"] != null ? (row._outer["subject"].split(',')[row._outer["subject"].split(',').length-1]).split('=')[1] : ""</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>

@@ -30,28 +30,26 @@ import org.jdom.JDOMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType;
-import com.axelor.apps.account.ebics.schema.h003.FULOrderParamsType;
-import com.axelor.apps.account.ebics.schema.h003.FileFormatType;
-import com.axelor.apps.account.ebics.schema.h003.MutableHeaderType;
-import com.axelor.apps.account.ebics.schema.h003.StaticHeaderOrderDetailsType;
-import com.axelor.apps.account.ebics.schema.h003.StaticHeaderOrderDetailsType.OrderType;
-import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType;
-import com.axelor.apps.account.ebics.schema.h003.DataDigestType;
 import com.axelor.apps.account.ebics.schema.h003.DataEncryptionInfoType.EncryptionPubKeyDigest;
+import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType;
 import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType.DataEncryptionInfo;
 import com.axelor.apps.account.ebics.schema.h003.DataTransferRequestType.SignatureData;
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest;
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body;
-import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body.PreValidation;
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Header;
+import com.axelor.apps.account.ebics.schema.h003.FULOrderParamsType;
+import com.axelor.apps.account.ebics.schema.h003.FileFormatType;
+import com.axelor.apps.account.ebics.schema.h003.MutableHeaderType;
 import com.axelor.apps.account.ebics.schema.h003.ParameterDocument.Parameter;
 import com.axelor.apps.account.ebics.schema.h003.ParameterDocument.Parameter.Value;
+import com.axelor.apps.account.ebics.schema.h003.StaticHeaderOrderDetailsType;
+import com.axelor.apps.account.ebics.schema.h003.StaticHeaderOrderDetailsType.OrderType;
+import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests;
-import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.Product;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Authentication;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDigests.Encryption;
-import com.axelor.apps.account.ebics.schema.xmldsig.ReferenceType;
+import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.Product;
+import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.certificate.KeyUtil;
@@ -61,7 +59,6 @@ import com.axelor.apps.bankpayment.ebics.client.OrderAttribute;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.apps.bankpayment.ebics.io.Splitter;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 
 /**
  * The <code>UInitializationRequestElement</code> is the common initialization
@@ -118,25 +115,26 @@ public class UInitializationRequestElement extends InitializationRequestElement 
     List<Parameter>			parameters;
     
     EbicsUser ebicsUser = session.getUser();
+	EbicsPartner ebicsPartner = ebicsUser.getEbicsPartner();
     
-//     Transport user
-//	EbicsUser signataire = ebicsUser.getEbicsPartner().getBankStatementEbicsUser();
-
-    EbicsUser signataire = ebicsUser.getEbicsPartner().getDefaultSignatoryEbicsUser();
-    
-    if(signataire.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
-    	userSignature = new UserSignature(signataire,
-			      generateName("UserSignature"),
-                          "A005",
-                          userSignatureData);
+    if(ebicsPartner.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
     	
+        EbicsUser signatoryUser = session.getSignatoryUser();
+
+    	userSignature = new UserSignature(signatoryUser,
+  		      generateName("UserSignature"),
+                          "A005",
+                          userData,
+                          userSignatureData);
     }
     else  {
     	userSignature = new UserSignature(ebicsUser,
-			      generateName("UserSignature"),
-                            "A005",
-                            userData);
+  		      generateName("UserSignature"),
+                          "A005",
+                          userData,
+                          null);
     }
+    
     
     userSignature.build();
     
@@ -185,7 +183,7 @@ public class UInitializationRequestElement extends InitializationRequestElement 
       fULOrderParams.setParameterArray(parameters.toArray(new Parameter[parameters.size()]));
     }
     
-    OrderAttribute orderAttribute = new OrderAttribute(type, ebicsUser.getEbicsTypeSelect());
+    OrderAttribute orderAttribute = new OrderAttribute(type, ebicsPartner.getEbicsTypeSelect());
     orderAttribute.build();
     
     orderDetails = EbicsXmlFactory.createStaticHeaderOrderDetailsType(ebicsUser.getNextOrderId(),
@@ -195,7 +193,7 @@ public class UInitializationRequestElement extends InitializationRequestElement 
     xstatic = EbicsXmlFactory.createStaticHeaderType(session.getBankID(),
 	                                             nonce,
 	                                             splitter.getSegmentNumber(),
-	                                             ebicsUser.getEbicsPartner().getPartnerId(),
+	                                             ebicsPartner.getPartnerId(),
 	                                             product,
 	                                             ebicsUser.getSecurityMedium(),
 	                                             ebicsUser.getUserId(),

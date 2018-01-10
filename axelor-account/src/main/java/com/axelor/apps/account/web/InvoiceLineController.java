@@ -22,11 +22,15 @@ import java.util.Map;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -41,6 +45,8 @@ public class InvoiceLineController {
 	@Inject
 	private InvoiceLineService invoiceLineService;
 
+	@Inject
+    private AccountManagementService accountManagementService;
 
 	public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response) throws AxelorException{
 		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
@@ -139,7 +145,11 @@ public class InvoiceLineController {
 			response.setValue("taxLine", taxLine);
 			response.setValue("taxRate", taxLine.getValue());
 			response.setValue("taxCode", taxLine.getTax().getCode());
-			
+
+			Tax tax = accountManagementService.getProductTax(accountManagementService.getAccountManagement(product, invoice.getCompany()), isPurchase);
+            TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
+            response.setValue("taxEquiv", taxEquiv);
+
 			BigDecimal price = invoiceLineService.getUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
 
 			response.setValue("productName", invoiceLine.getProduct().getName());
@@ -166,6 +176,7 @@ public class InvoiceLineController {
 	public void resetProductInformation(ActionResponse response)  {
 
 		response.setValue("taxLine", null);
+		response.setValue("taxEquiv", null);
 		response.setValue("taxCode", null);
 		response.setValue("taxRate", null);
 		response.setValue("productName", null);

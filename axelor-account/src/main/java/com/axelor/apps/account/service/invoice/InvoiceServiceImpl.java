@@ -48,6 +48,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
@@ -62,7 +63,7 @@ import com.google.inject.persist.Transactional;
 
 /**
  * InvoiceService est une classe implémentant l'ensemble des services de
- * facturations.
+ * facturation.
  * 
  */
 public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceService  {
@@ -138,7 +139,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice compute(final Invoice invoice) throws AxelorException {
 
-		log.debug("Calcule de la facture");
+		log.debug("Calcul de la facture");
 		
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator() {
 			
@@ -169,19 +170,28 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 * 
 	 * @throws AxelorException
 	 */
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(Invoice invoice) throws AxelorException {
+	public void validate(Invoice invoice, boolean compute) throws AxelorException {
 
 		log.debug("Validation de la facture");
-		
+
+		if (compute) {
+			compute(invoice);
+		}
+
 		validateFactory.getValidator(invoice).process( );
 		if(generalService.getGeneral().getManageBudget() && !generalService.getGeneral().getManageMultiBudget()){
 			this.generateBudgetDistribution(invoice);
 		}
-		invoiceRepo.save(invoice);
-		
 	}
-	
+
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void validate(Invoice invoice) throws AxelorException {
+		validate(invoice, false);
+	}
+
 	@Override
 	public void generateBudgetDistribution(Invoice invoice){
 		if(invoice.getInvoiceLineList() != null){
@@ -292,14 +302,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		
 	}
 	
-	protected String getDraftSequence(Invoice invoice)  {
-		return "*" + invoice.getId();
-	}
-	
-	public void setDraftSequence(Invoice invoice)  {
+    @Override
+	public void setDraftSequence(Invoice invoice) throws AxelorException {
 		
 		if (invoice.getId() != null && Strings.isNullOrEmpty(invoice.getInvoiceId()))  {
-			invoice.setInvoiceId(this.getDraftSequence(invoice));
+			invoice.setInvoiceId(Beans.get(SequenceService.class).getDraftSequenceNumber(invoice));
 		}
 		
 	}

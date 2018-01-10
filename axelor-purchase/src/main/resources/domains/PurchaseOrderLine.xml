@@ -33,6 +33,7 @@
   	<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
   	<decimal name="exTaxTotal" title="Subtotal W.T."/>
   	<decimal name="inTaxTotal" title="Total A.T.I."/>
+	  <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv" title="Tax Equiv"/>
   	
   	<string name="description" title="Description" large="true"/>
   	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>

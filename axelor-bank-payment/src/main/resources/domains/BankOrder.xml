@@ -10,7 +10,7 @@
   	<integer name="importId" />
   	<integer name="orderTypeSelect" title="Order Type" selection="bankpayment.bank.order.type.select"/>
   	<integer name="rejectStatusSelect" title="Rejection Status" selection="bankpayment.bank.order.reject.status.select"/>
-  	<string name="bankOrderSeq" title="Sequence" namecolumn="true" readonly="true" unique="true"/>
+  	<string name="bankOrderSeq" title="Sequence" namecolumn="true" readonly="true"/>
   	<integer name="partnerTypeSelect" title="Partner Type" selection="bankpayment.bank.order.partner.type.select" required="true"/>
   	<integer name="statusSelect" title="Status" default="1" readonly="true" selection="bankpayment.bank.order.status.select"/>
 	<date name="bankOrderDate" title="Bank order due Date"/>
@@ -22,16 +22,17 @@
 	<datetime name="sendingDateTime" title="Sending date"/>
 	<many-to-one name="bankOrderCurrency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 	<many-to-one name="companyCurrency" ref="com.axelor.apps.base.db.Currency" title="Company currency"/>
-	<boolean name="isMultiDate" title="Multi dates"/>
-	<boolean name="isMultiCurrency" title="Multi currencies"/>
+	<boolean name="isMultiDate" title="Multidate"/>
+	<boolean name="isMultiCurrency" title="Multicurrency"/>
 	<decimal name="arithmeticTotal" title="Arithmetic total" readonly="true"/>
+	<boolean name="testMode" title="Test mode"/>
 	
 	<!-- Sender -->
 	<many-to-one name="senderCompany" ref="com.axelor.apps.base.db.Company" title="Company"/>
 	<many-to-one name="senderBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Account"/>
 	<decimal name="bankOrderTotalAmount" title="Total amount"/>
 	<decimal name="companyCurrencyTotalAmount" title="Total amount in company currency" readonly="true"/>
-	<string name="senderReference" title="Reference" unique="true"/>
+	<string name="senderReference" title="Reference"/>
 	<string name="senderLabel" title="Label"/>
 	<integer name="nbOfLines" title="Number of lines"/>
 	
@@ -43,7 +44,9 @@
 	<many-to-one name="generatedMetaFile" ref="com.axelor.meta.db.MetaFile" title="Generated file" />
 	<many-to-one name="signedMetaFile" ref="com.axelor.meta.db.MetaFile" title="Signed file" />
 	
-	 <extra-code><![CDATA[
+	<unique-constraint columns="bankOrderSeq,senderCompany"/>
+	
+	<extra-code><![CDATA[
 	
 	   	// BANK ORDER TYPE SELECT
 		public static final int ORDER_TYPE_SEPA_CREDIT_TRANSFER = 1;
@@ -75,8 +78,19 @@
 		public static final int REJECT_STATUS_TOTALLY_REJECTED = 2;
 	
 	]]></extra-code>
-    
-    
+
+	  <track>
+		  <field name="bankOrderDate" on="UPDATE" if="statusSelect &gt; 1"/>
+		  <field name="signatoryEbicsUser" on="UPDATE" if="statusSelect &gt; 1"/>
+		  <field name="senderCompany" on="UPDATE" if="statusSelect &gt; 1"/>
+		  <field name="senderBankDetails" on="UPDATE" if="statusSelect &gt; 1"/>
+		  <field name="bankOrderTotalAmount" on="UPDATE" if="statusSelect &gt; 1"/>
+		  <field name="bankOrderCurrency" on="UPDATE" if="statusSelect &gt; 1"/>
+		  <field name="senderReference" on="UPDATE" if="statusSelect &gt; 1"/>
+		  <field name="statusSelect" on="UPDATE" if="statusSelect &gt; 1"/>
+		  <message if="statusSelect == 2" tag="info">Awaiting signature</message>
+	  </track>
+
   </entity>
 
 </domain-models>

@@ -117,10 +117,8 @@
 	
 	<input file="base_year.csv" separator=";" type="com.axelor.apps.base.db.Year" search="self.importId = :importId"/>
 	
-	<input file="account_cashRegister.csv" separator=";" type="com.axelor.apps.account.db.CashRegister" search="self.importId = :importId" />
-	
 	<input file="account_accountingBatch.csv" separator=";" type="com.axelor.apps.account.db.AccountingBatch" search="self.code = :code" >
-		<bind to="debitDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(debitDate)" column="debitDate"/>
+		<bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)" column="dueDate"/>
 		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
 		<bind to="endDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(endDate)" column="endDate"/>
 	</input>
@@ -177,7 +175,7 @@
 		<bind column="importId" to="importId"/>
 	</input>
 	
-	<input file="account_interBankCode.csv" separator=";" type="com.axelor.apps.account.db.InterbankCodeLine">
+	<input file="account_interBankCodeReject.csv" separator=";" type="com.axelor.apps.account.db.InterbankCodeLine">
         <bind column="code_rejet" to="code" />
         <bind column="libelle_rejet" to="name" />
         <bind column="description_rejet" to="description" />
@@ -192,9 +190,27 @@
             <bind column="nom_fichier" to="name"/>
             <bind column="date_fin" to="endDate" eval="date_fin ? date_fin : null"/>
             <bind column="description_fichier" to="description"/>
+			<bind to="typeSelect" eval="2"/>
         </bind>
     </input>
-	
+	<input file="account_interBankCodeOperation.csv" separator=";" type="com.axelor.apps.account.db.InterbankCodeLine">
+		<bind column="code_operation" to="code" />
+		<bind column="libelle_operation" to="name" />
+		<bind column="description_operation" to="description" />
+		<bind column="transferCfonbOk" to="transferCfonbOk" eval="transferCfonbOk == 't' ? true : false"/>
+		<bind column="prelevement" to="directDebitAndTipCfonbOk" eval="prelevement == 't' ? true : false"/>
+		<bind column="prelevement_sepa" to="directDebitSepaOk" eval="prelevement_sepa == 't' ? true : false"/>
+		<bind column="lcr_bor" to="lcrBorOk" eval="lcr_bor == 't' ? true : false"/>
+		<bind column="cheque" to="chequeOk" eval="cheque == 't' ? true : false"/>
+		<bind column="operation_technique" to="technicalRejectOk" eval="rejet_technique == 't' ? true : false"/>
+		<bind to="interbankCode" search="self.code = :code_fichier">
+			<bind column="code_fichier" to="code"/>
+			<bind column="nom_fichier" to="name"/>
+			<bind column="date_fin" to="endDate" eval="date_fin ? date_fin : null"/>
+			<bind column="description_fichier" to="description"/>
+			<bind to="typeSelect" eval="1"/>
+		</bind>
+	</input>
 	<input file="account_reminderLevel.csv" separator=";" type="com.axelor.apps.account.db.ReminderLevel" search="self.name = :name"/>
 	
 	<input file="account_reminderMethod.csv" separator=";" type="com.axelor.apps.account.db.ReminderMethod" search="self.code = :code"/>
@@ -232,9 +248,6 @@
 <!-- 	Deuxième passe sur le package 'base' pour prendre en compte les éléments du package account  -->
 
 	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General"  search="self.importId = :importId" update="true">
-      	<bind to="defaultExemptionTax" search="self.code = :defaultExemptionTax_code" update="true">
-          	<bind column="defaultExemptionTax_code" to="code"/>
-      	</bind>
 		<bind to="qasWsdlUrl" column="qas_url"/>
 		<bind to="manageBudget" column="manageBudget"/>
 		<bind to="manageMultiBudget" column="manageMultiBudget"/>
@@ -282,6 +295,8 @@
  	<input file="project_project_task.csv" type="com.axelor.apps.project.db.ProjectTask" separator=";" search="self.importId = :importId"/>
  	
  	<input file="business_project_project_task.csv" type="com.axelor.apps.project.db.ProjectTask" separator=";" search="self.importId = :importId"/>
+	
+	<input file="message_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.importId = :importId"/>
  	
 <!--  	<input file="hr_timeActivity.csv" type="com.axelor.apps.hr.db.TimeActivity" separator=";" search="self.importId = :importId"/> -->
  	
@@ -295,9 +310,9 @@
 		<bind to="date" eval="call:com.axelor.csv.script.ImportDateTime:importDate(date)" column="date"/>
 	</input>
 	
-	<input file="hr_publicHolidayPlanning.csv" type="com.axelor.apps.hr.db.PublicHolidayPlanning" separator=";" search="self.importId = :importId"/>
+	<input file="hr_eventsPlanning.csv" type="com.axelor.apps.hr.db.EventsPlanning" separator=";" search="self.importId = :importId"/>
 	
-	<input file="hr_publicHolidayDay.csv" type="com.axelor.apps.hr.db.PublicHolidayDay" separator=";" search="self.importId = :importId"/>
+	<input file="hr_eventsPlanningLine.csv" type="com.axelor.apps.hr.db.EventsPlanningLine" separator=";" search="self.importId = :importId"/>
 		
 	<input file="hr_weeklyPlanning.csv" separator=";" type="com.axelor.apps.base.db.WeeklyPlanning" search="self.importId  = :importId"/>
   
@@ -429,7 +444,7 @@
 	
 	<input file="production_prodProcessLine.csv" separator=";" type="com.axelor.apps.production.db.ProdProcessLine"/>
 
-	<input file="production_billOfMaterial.csv" separator=";" type="com.axelor.apps.production.db.BillOfMaterial"/>
+	<input file="production_billOfMaterial.csv" separator=";" type="com.axelor.apps.production.db.BillOfMaterial" search="self.importId = :importId"/>
 	
 	<input file="production_billOfMaterial.csv" separator=";" type="com.axelor.apps.production.db.BillOfMaterial" search="self.importId = :importId" update="true" call="com.axelor.csv.script.ImportBillOfMaterial:computeCostPrice"/>
 	
@@ -471,9 +486,6 @@
 	<input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template" update="true" search="self.name = :name"/>
 	
 	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General"  search="self.importId = :importId" update="true" call="com.axelor.csv.script.ClearMessage:clearAllMailMessages">
-      	<bind to="defaultExemptionTax" search="self.code = :defaultExemptionTax_code" update="true">
-          	<bind column="defaultExemptionTax_code" to="code"/>
-      	</bind>
 		<bind to="qasWsdlUrl" column="qas_url"/>
 		<bind to="manageBudget" column="manageBudget"/>
 		<bind to="manageMultiBudget" column="manageMultiBudget"/>
@@ -498,7 +510,9 @@
 	
 	<input file="hr_employeeBonusType.csv" separator=";" type="com.axelor.apps.hr.db.EmployeeBonusType" />
 	
-	<input file="bankpayment_bankOrderEconomicReason.csv" separator=";" type="com.axelor.apps.bankpayment.db.BankOrderEconomicReason" />
+	<input file="bankpayment_bankOrderEconomicReason.csv" separator=";" type="com.axelor.apps.bankpayment.db.BankOrderEconomicReason">
+		<bind to="name" eval="label ? code + ' - ' + label : code"/>
+	</input>
 	
 	<input file="hr_leaveLine.csv" separator=";" type="com.axelor.apps.hr.db.LeaveLine" />
 	
@@ -507,7 +521,6 @@
 		<bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)" column="fromDate"/>
 		<bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)" column="toDate"/>
 	</input>
-	
 	
 </csv-inputs>
 

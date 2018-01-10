@@ -62,13 +62,14 @@ public class ITranslation {
 	public static final String LUNCH_VOUCHER_LEAVES_FROM= /*$$(*/ "LunchVoucher.leavesFrom"; /*)*/
 	public static final String LUNCH_VOUCHER_TO= /*$$(*/ "LunchVoucher.to"; /*)*/
 	public static final String LUNCH_VOUCHER_NAMES= /*$$(*/ "LunchVoucher.names"; /*)*/
-	public static final String LUNCH_VOUCHER_NAME= /*$$(*/ "LunchVoucher.name"; /*)*/
 	public static final String LUNCH_VOUCHER_QTY= /*$$(*/ "LunchVoucher.qty"; /*)*/
 	public static final String LUNCH_VOUCHER_AMOUNT= /*$$(*/ "LunchVoucher.amount"; /*)*/
 	public static final String LUNCH_VOUCHER_COMMENT= /*$$(*/ "LunchVoucher.comment"; /*)*/
 	public static final String LUNCH_VOUCHER_EMPLOYER_SHARE= /*$$(*/ "LunchVoucher.employerShare"; /*)*/
 	public static final String LUNCH_VOUCHER_EMPLOYEE_SHARE= /*$$(*/ "LunchVoucher.employeeShare"; /*)*/
 	public static final String LUNCH_VOUCHER_TOTAL= /*$$(*/ "LunchVoucher.total"; /*)*/
-	public static final String LUNCH_VOUCHER_DISTRIBUTION_DATE= /*$$(*/ "LunchVoucher.distributionDate"; /*)*/
+    public static final String LUNCH_VOUCHER_SUBTOTAL = /*$$(*/ "LunchVoucher.subtotal"; /*)*/
+	public static final String LUNCH_VOUCHER_HANDED_ON = /*$$(*/ "LunchVoucher.handedOn"; /*)*/
+	public static final String LUNCH_VOUCHER_SIGNATURE = /*$$(*/ "LunchVoucher.signature"; /*)*/
 
 }

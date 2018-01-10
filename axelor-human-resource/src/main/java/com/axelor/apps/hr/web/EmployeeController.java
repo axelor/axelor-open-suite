@@ -44,7 +44,7 @@ public class EmployeeController {
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 		
-		String name = I18n.get("Annual report") + " :  " + user.getFullName() + " (" + yearName + ")";
+		String name = I18n.get("Annual expenses report") + " :  " + user.getFullName() + " (" + yearName + ")";
 		
 		String fileLink = ReportFactory.createReport(IReport.EMPLOYEE_ANNUAL_REPORT, name)
 				.addParam("EmployeeId", Long.valueOf(employeeId) )

@@ -17,7 +17,7 @@
 	
 	<selection name="bankpayment.bank.statement.status.select">
 		<option value="1">Received</option>
-		<option value="2">Checked</option>
+		<option value="2">Imported</option>
 	</selection>
 
 	<selection name="bankpayment.bank.order.type.select">
@@ -116,6 +116,7 @@
 		<option value="camt.053.001.02.stm">camt.053.001.02.stm</option>
 		<option value="camt.xxx.cfonb120.stm">camt.xxx.cfonb120.stm</option>
 		<option value="camt.xxx.cfonb120.stm.0by">camt.xxx.cfonb120.stm.0by</option>
+		<option value="camt.xxx.cfonb120.stm.eur">camt.xxx.cfonb120.stm.eur</option>
 		<option value="camt.xxx.cfonb120.rep">camt.xxx.cfonb120.rep</option>
 		<option value="camt.fin.mt940.stm">camt.fin.mt940.stm</option>
 		<option value="camt.fin.mt942.rep">camt.fin.mt942.rep</option>
@@ -130,9 +131,14 @@
 		<option value="2">Period</option>
 	</selection>
 	
-	<selection name="bankpayment.ebics.user.ebics.type.select">
+	<selection name="bankpayment.ebics.partner.ebics.type.select">
 		<option value="0">Ebics T</option>
 		<option value="1">Ebics TS</option>
+	</selection>
+
+	<selection name="bankpayment.ebics.user.user.type.select">
+		<option value="0">Transport</option>
+		<option value="1">Signatory</option>
 	</selection>
 
 	<selection name="bankpayment.account.ebics.user.status.select">
@@ -140,7 +146,7 @@
 		<option value="1">Waiting for the sending of the signature certificate to the bank</option>
 		<option value="2">Waiting for the sending of the authentication and encryption certificates</option>
 		<option value="3">Active connection</option>
-		<option value="4">Certificates should be renew</option>
+		<option value="4">Certificates should be renewed</option>
 	</selection>
 	
 	<selection name="bankpayment.ebics.certificate.type.select">
@@ -162,5 +168,43 @@
 		<option value="4">4</option>
 		<option value="5">5</option>
 	</selection>
+
+	<selection name="iaccounting.batch.action.select" id="bankpayment.iaccounting.batch.action.select">
+		<option value="12">Direct debit</option>
+		<option value="20">Bank statement</option>
+	</selection>
+
+	<selection name="iaccount.account.batch.direct.debit.data.type.select">
+		<option value="1">Customer invoices</option>
+		<option value="2">Payment schedules</option>
+		<option value="3">Monthly payment schedules</option>
+	</selection>
+	
+	<selection name="bankpayment.bank.statement.line.afb.120.line.type.select">
+        <option value="1">Initial balance</option>
+        <option value="2">Movement</option>
+        <option value="3">Final balance</option>
+    </selection>
+    
+	<selection name="bankpayment.bank.statement.line.afb.120.unavailability.index.select">
+        <option value="0">Available</option>
+        <option value="1">Unavailable</option>
+    </selection>
+    
+    <selection name="bankpayment.bank.statement.line.afb.120.commission.exemption.index.select">
+        <option value="0">Not exempt</option>
+        <option value="1">Exempt</option>
+    </selection>
+
+    <selection name="bankpayment.order.debit.type.select">
+        <option value="1">Order overall debit</option>
+        <option value="2">Unit debit by operation</option>
+        <option value="3">Overall debit by transfer currency</option>
+    </selection>
+
+    <selection name="bankpayment.bank.order.ff.qualifying.amount.select">
+        <option value="T">Amount in transfer's currency</option>
+        <option value="D">Equivalent amount in sender bank details' currency</option>
+    </selection>
 
 </object-views>

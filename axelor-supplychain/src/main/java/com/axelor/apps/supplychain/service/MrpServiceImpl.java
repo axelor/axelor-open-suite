@@ -728,7 +728,7 @@ public class MrpServiceImpl implements MrpService  {
 	
 	protected List<Location> getAllLocationAndSubLocation(Location location)  {
 	
-		List<Location> subLocationList =  locationRepository.all().filter("self.parent = ?1", location).fetch();
+		List<Location> subLocationList =  locationRepository.all().filter("self.parentLocation = ?1", location).fetch();
 	
 		for(Location subLocation : subLocationList)  {
 			

@@ -19,9 +19,7 @@ package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.base.db.Company;
@@ -35,6 +33,7 @@ import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.supplychain.db.CustomerCreditLine;
 import com.axelor.apps.supplychain.db.repo.CustomerCreditLineRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -83,6 +82,7 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 	}
 
 	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public void updateLines(Partner partner) throws AxelorException{
 		if(partner.getCustomerCreditLineList() == null || partner.getCustomerCreditLineList().isEmpty()){
 			partner = generateLines(partner);
@@ -94,30 +94,29 @@ public class CustomerCreditLineServiceImpl implements CustomerCreditLineService{
 	}
 
 	@Override
-	public Map<String,Object> updateLinesFromOrder(Partner partner,SaleOrder saleOrder) throws AxelorException{
+	@Transactional
+	public void updateLinesFromOrder(Partner partner, SaleOrder saleOrder) throws AxelorException {
 
-		Map<String,Object> map = new HashMap<String,Object>();
-
-		if(partner.getCustomerCreditLineList() == null || partner.getCustomerCreditLineList().isEmpty()){
+		if (partner.getCustomerCreditLineList() == null || partner.getCustomerCreditLineList().isEmpty()) {
 			partner = generateLines(partner);
 		}
 		List<CustomerCreditLine> customerCreditLineList = partner.getCustomerCreditLineList();
 		for (CustomerCreditLine customerCreditLine : customerCreditLineList) {
-			if(customerCreditLine.getCompany().equals(saleOrder.getCompany())){
+			if (customerCreditLine.getCompany().equals(saleOrder.getCompany())) {
 				customerCreditLine = this.computeUsedCredit(customerCreditLine);
 				customerCreditLine.setUsedCredit(customerCreditLine.getUsedCredit().add(saleOrder.getExTaxTotal().subtract(saleOrder.getAmountInvoiced())));
-				boolean test = testUsedCredit(customerCreditLine);
-				map.put("bloqued", test);
-				if(test){
-					if(Strings.isNullOrEmpty(customerCreditLine.getCompany().getOrderBloquedMessage())){
-						map.put("message", I18n.get("Client bloqued"));
-					}else{
-						map.put("message", customerCreditLine.getCompany().getOrderBloquedMessage());
+				if (testUsedCredit(customerCreditLine)) {
+					saleOrder.setBloqued(true);	// No rollback
+					if (!saleOrder.getManualUnblock()) {
+						String message = customerCreditLine.getCompany().getOrderBloquedMessage();
+						if (Strings.isNullOrEmpty(message)) {
+							message = I18n.get("Client bloqued");
+						}
+						throw new AxelorException(message, IException.CONFIGURATION_ERROR);
 					}
 				}
 			}
 		}
-		return map;
 	}
 
 	@Override

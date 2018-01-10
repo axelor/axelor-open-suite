@@ -19,51 +19,33 @@ package com.axelor.apps.base.service.batch;
 
 import com.axelor.apps.base.db.BaseBatch;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.base.db.repo.BaseBatchRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.administration.AbstractBatchService;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 
-/**
- * InvoiceBatchService est une classe implémentant l'ensemble des batchs de
- * comptabilité et assimilé.
- * 
- * @author Geoffrey DUBAUX
- * 
- * @version 0.1
- */
-public class BaseBatchService {
+public class BaseBatchService extends AbstractBatchService {
 
-// Appel 	
-	
-	/**
-	 * Lancer un batch à partir de son code.
-	 * 
-	 * @param batchCode
-	 * 		Le code du batch souhaité.
-	 * 
-	 * @throws AxelorException
-	 */
-	public Batch run(String batchCode) throws AxelorException {
-		
-		BaseBatch baseBatch = Beans.get(BaseBatchRepository.class).findByCode(batchCode);
-		
-		if (baseBatch != null){
-			switch (baseBatch.getActionSelect()) {
-			
-			default:
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), baseBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
-			}
-		}
-		else {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_2), batchCode), IException.INCONSISTENCY);
-		}
-		
+	@Override
+	protected Class<? extends Model> getModelClass() {
+		return BaseBatch.class;
 	}
-	
-	
-	
-	
+
+	@Override
+	public Batch run(Model batchModel) throws AxelorException {
+
+		BaseBatch baseBatch = (BaseBatch) batchModel;
+
+		switch (baseBatch.getActionSelect()) {
+
+		default:
+			throw new AxelorException(
+					String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), baseBatch.getActionSelect(), baseBatch.getCode()),
+					IException.INCONSISTENCY);
+		}
+
+	}
+
 }

@@ -17,11 +17,8 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import java.util.Map;
-
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.CustomerCreditLine;
 import com.axelor.apps.supplychain.service.CustomerCreditLineService;
 import com.axelor.exception.AxelorException;
@@ -57,14 +54,5 @@ public class CustomerCreditLineController {
 			response.setValue("customerCreditLineList", partner.getCustomerCreditLineList());
 		}
 	}
-	
-	public void updateLinesFromSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException  {
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		if(saleOrder.getClientPartner() != null){
-			Partner partner = saleOrder.getClientPartner();
-			Map<String,Object> map = customerCreditLineService.updateLinesFromOrder(partnerRepo.find(partner.getId()),saleOrder);
-			response.setValues(map);
-		}
-	}
-	
+
 }

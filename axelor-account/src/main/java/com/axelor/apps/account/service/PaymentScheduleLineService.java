@@ -81,7 +81,7 @@ public class PaymentScheduleLineService {
 		
 		BigDecimal inTaxAmount = paymentSchedule.getInTaxAmount();
 		
-		log.debug("Création de lignes pour l'échéancier numéro {} (nombre d'échéance : {}, montant : {})", new Object[]{paymentSchedule.getScheduleId(), nbrTerm, inTaxAmount});
+		log.debug("Création de lignes pour l'échéancier numéro {} (nombre d'échéance : {}, montant : {})", new Object[]{paymentSchedule.getPaymentScheduleSeq(), nbrTerm, inTaxAmount});
 		
 		if (nbrTerm > 0 && inTaxAmount.compareTo(BigDecimal.ZERO) == 1){
 			

@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
@@ -32,7 +33,7 @@ public interface BillOfMaterialService {
 	static final String UNIT_DAY_CODE = "JR";
 	
 	
-	public List<BillOfMaterial> getBillOfMaterialList(Product product);
+	public List<BillOfMaterial> getBillOfMaterialSet(Product product);
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -43,5 +44,8 @@ public interface BillOfMaterialService {
 	public BillOfMaterial customizeBillOfMaterial(SaleOrderLine saleOrderLine);
 	
 	public BillOfMaterial generateNewVersion(BillOfMaterial billOfMaterial);
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public TempBomTree generateTree(BillOfMaterial billOfMaterial);
 	
 }

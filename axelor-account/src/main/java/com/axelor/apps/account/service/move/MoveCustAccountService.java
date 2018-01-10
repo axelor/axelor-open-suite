@@ -56,7 +56,7 @@ public class MoveCustAccountService {
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateCustomerAccount(Move move)  {
+	public void updateCustomerAccount(Move move) throws AxelorException {
 
 		if( AccountingService.getUpdateCustomerAccount() )  {
 			accountCustomerService.updatePartnerAccountingSituation(this.getPartnerOfMove(move), move.getCompany(), true, true, false);

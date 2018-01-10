@@ -17,24 +17,12 @@
  */
 package com.axelor.apps.account.service.debtrecovery;
 
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Reminder;
 import com.axelor.apps.account.db.ReminderHistory;
 import com.axelor.apps.account.db.ReminderMethodLine;
-import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.ReminderHistoryRepository;
 import com.axelor.apps.account.db.repo.ReminderRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.GeneralServiceImpl;
@@ -49,6 +37,14 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class ReminderActionService {
 
@@ -106,12 +102,6 @@ public class ReminderActionService {
 
 			this.saveReminder(reminder);
 
-			Message message = this.runStandardMessage(reminder);
-
-			Beans.get(MessageRepository.class).save(message);
-
-			this.updateReminderHistory(reminder, message);
-
 		}
 
 	}
@@ -138,7 +128,6 @@ public class ReminderActionService {
 
 		ReminderMethodLine reminderMethodLine = reminder.getReminderMethodLine();
 		Partner partner =  reminder.getAccountingSituation().getPartner();
-		Company company = reminder.getAccountingSituation().getCompany();
 
 		Template template = reminderMethodLine.getMessageTemplate();
 
@@ -147,7 +136,7 @@ public class ReminderActionService {
 					GeneralServiceImpl.EXCEPTION, partner.getName(), reminderMethodLine.getReminderMethod().getName(), reminderMethodLine.getReminderLevel().getName()), IException.CONFIGURATION_ERROR);
 		}
 
-		ReminderHistory reminderHistory = this.getReminderHistory(partner, company);
+		ReminderHistory reminderHistory = this.getReminderHistory(reminder);
 
 		reminderHistory.setReminderMessage(templateMessageService.generateMessage(reminderHistory, template));
 
@@ -155,29 +144,16 @@ public class ReminderActionService {
 
 	}
 
-
-	public List<ReminderHistory> getReminderHistoryList(Partner partner, Company company)  {
-		
-		AccountingSituationRepository accSituationRepo = Beans.get(AccountingSituationRepository.class);
-		
-		AccountingSituation accountingSituation = accSituationRepo.all().filter("self.partner = ?1 and self.company = ?2", partner, company).fetchOne();
-		if(accountingSituation != null && accountingSituation.getReminder() != null)  {
-			return accountingSituation.getReminder().getReminderHistoryList();
+	public ReminderHistory getReminderHistory(Reminder reminder)  {
+		if (reminder.getReminderHistoryList() == null) {
+			return null;
 		}
-
-		return new LinkedList<ReminderHistory>();
-	}
-
-
-	public ReminderHistory getReminderHistory(Partner partner, Company company)  {
-
-		LinkedList<ReminderHistory>  reminderHistoryList = new LinkedList<ReminderHistory>();
-		reminderHistoryList.addAll(this.getReminderHistoryList(partner, company));
-
-		if(!reminderHistoryList.isEmpty())  {
-			return reminderHistoryList.getLast();
-		}
-		return null;
+	    return Collections.max(reminder.getReminderHistoryList(), new Comparator<ReminderHistory>() {
+			@Override
+			public int compare(ReminderHistory reminderHistory, ReminderHistory t1) {
+			    return reminderHistory.getReminderDate().compareTo(t1.getReminderDate());
+			}
+		});
 	}
 
 
@@ -212,12 +188,24 @@ public class ReminderActionService {
 
 			this.saveReminder(reminder);
 
-			Message message = this.runStandardMessage(reminder);
-
-			this.updateReminderHistory(reminder, message);
-
 		}
 		log.debug("End runManualAction service");
+	}
+
+	/**
+	 * Generates a message from a reminder and saves it
+	 * @param reminder
+	 * @throws AxelorException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void runMessage(Reminder reminder) throws AxelorException, ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+		Message message = this.runStandardMessage(reminder);
+		Beans.get(MessageRepository.class).save(message);
+		this.updateReminderHistory(reminder, message);
 	}
 
 
@@ -278,7 +266,7 @@ public class ReminderActionService {
 		reminderHistory.setReminderMethod(reminder.getReminderMethod());
 
 		reminderHistory.setUserReminder(userService.getUser());
-		reminder.getReminderHistoryList().add(reminderHistory);
+		reminder.addReminderHistoryListItem(reminderHistory);
 		reminderHistoryRepository.save(reminderHistory);
 
 	}

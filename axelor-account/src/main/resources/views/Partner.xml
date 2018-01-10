@@ -11,7 +11,8 @@
 	        <field name="outPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 2"/>
 	        <field name="paymentCondition" grid-view="payment-condition-grid" form-view="payment-condition-form" hideIf="isEmployee"/>
 	        <field name="currency" canEdit="false" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2" form-view="currency-form" grid-view="currency-grid"/>
-	        <field name="fiscalPosition" form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
+	        <field name="fiscalPosition" onChange="action-partner-attrs-show-specific-tax-note" form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
+            <field name="specificTaxNote" hidden="true"/>
 	        <field name="payerQuality" hideIf="!isCustomer || isEmployee"/>
 	        <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project" hideIf="!isCustomer"/>
 	        <field name="chargeBackPurchase" colSpan="3" if-module="axelor-business-project" showIf="chargeBackPurchaseSelect == 3"/>
@@ -25,16 +26,20 @@
 	        <field name="bankDetailsList" colSpan="12" showTitle="false" >
                 <viewer><![CDATA[
                     <dl>
-                        <dd ng-if="!record.isDefault"> {{record.fullName}} </dd>
-                        <dd ng-if="record.isDefault"> <b>{{record.fullName}}</b> </dd>
+                      <dd ng-if="!record.isDefault" ng-style="!record.active && {'color':'orange'}"> {{record.fullName}} </dd>
+                      <dd ng-if="record.isDefault" ng-style="!record.active && {'color':'orange'}"> <b>{{record.fullName}}</b> </dd>
                     </dl>
                 ]]></viewer>
-			    <editor layout="table" x-show-titles="false" onNew="action-set-default-partner" x-show-on-new="false">
+			    <editor onNew="action-set-default-partner" x-show-on-new="false">
 					<field name="ownerName"/>
-					<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" min="14" max="34" />
-					<field name="bank" canNew="true"></field>
+					<field name="iban" onChange="action-group-account-bankdetails-iban-onchange"/>
+					<field name="bank" onChange="action-group-account-bankdetails-iban-onchange" canNew="true"/>
+					<field name="bankAddress" showIf="bank" grid-view="bank-address-grid"
+						   onSelect="action-attrs-account-bankdetails-bank-set-address-domain"
+						   canNew="true" form-view="bank-address-form"/>
 					<field name="label"/>
 					<field name="isDefault" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star" x-exclusive="true" />
+                    <field name="active" widget="boolean-switch"/>
 					<field name="ibanBic" hidden="true" x-bind="{{iban + ' ' + bank.code}}"/>
 					<field name="bankCode" hidden="true"/>
 					<field name="sortCode" hidden="true"/>
@@ -109,13 +114,17 @@
 	<action-view name="action-partner-view-show-unpaid-invoice" title="Unpaid invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
-		<domain>self.partner.id = :id AND (self.inTaxTotal - self.amountPaid) > 0</domain>
+		<domain>self.partner.id = :id AND (self.inTaxTotal - self.amountPaid) &gt; 0</domain>
 		<context name="id" expr="eval: id"/>
 	</action-view>
 	
 	<action-method name="action-partner-method-show-client-situation" >
 		<call class="com.axelor.apps.base.web.PartnerController" method="printClientSituation"/>
 	</action-method>
+
+    <action-attrs name="action-partner-attrs-show-specific-tax-note">
+        <attribute for="specificTaxNote" name="hidden" expr="eval: fiscalPosition == null || !fiscalPosition.customerSpecificNote"/>
+    </action-attrs>
 
 	
 </object-views>

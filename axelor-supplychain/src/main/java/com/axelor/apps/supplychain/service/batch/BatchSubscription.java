@@ -73,7 +73,7 @@ public class BatchSubscription extends AbstractBatch{
 	protected void stop() {
 
 		comment += String.format("\t* %s abonnement(s) facturé(s) \n", batch.getDone());
-		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+		comment += String.format("\t"+I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
 
 		super.stop();
