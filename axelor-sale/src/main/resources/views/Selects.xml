@@ -57,4 +57,9 @@
 		<option value="1">Update from configurator</option>
 	</selection>
 	
+	<selection name="product.pack.price.select">
+		<option value="0">Pack price only</option>
+		<option value="1">Subline price only</option>
+	</selection>
+	
 </object-views>

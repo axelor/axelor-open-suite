@@ -20,19 +20,19 @@ package com.axelor.apps.sale.web;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.SaleOrderLineService;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
-
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,10 +44,7 @@ public class SaleOrderLineController {
 	
 	@Inject
 	private ProductRepository productRepo;
-
-    @Inject
-    private AccountManagementService accountManagementService;
-
+	
 	public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Context context = request.getContext();
@@ -101,10 +98,9 @@ public class SaleOrderLineController {
 	public void getProductInformation(ActionRequest request, ActionResponse response)  {
 
 		Context context = request.getContext();
-		
 		SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-
 		SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+		Integer parentPackPriceSelect = (Integer) context.getParent().get("packPriceSelect");
 		
 		Product product = saleOrderLine.getProduct();
 
@@ -128,8 +124,26 @@ public class SaleOrderLineController {
 			if (saleOrderLine.getDiscountTypeSelect() != null) {
 				response.setValue("discountTypeSelect", saleOrderLine.getDiscountTypeSelect());
 			}
-			response.setValue("price", saleOrderLine.getPrice());
-
+			
+			if(saleOrderLine.getPackPriceSelect() == SaleOrderLineRepository.SUBLINE_PRICE_ONLY && saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK) {
+				response.setValue("price", 0.00);
+			} else if (saleOrderLine.getParentLine() != null || parentPackPriceSelect != null){
+				
+				if(parentPackPriceSelect != null) {
+					if (parentPackPriceSelect == SaleOrderLineRepository.SUBLINE_PRICE_ONLY && saleOrderLine.getIsSubLine()) {
+						response.setValue("price", saleOrderLine.getPrice());
+					} else {
+						response.setValue("price", 0.00);
+					}
+				} else if (saleOrderLine.getParentLine().getPackPriceSelect() == SaleOrderLineRepository.SUBLINE_PRICE_ONLY && saleOrderLine.getIsSubLine()) {
+					response.setValue("price", saleOrderLine.getPrice());
+				} else {
+					response.setValue("price", 0.00);
+				}
+			} else {
+				response.setValue("price", saleOrderLine.getPrice());
+			}
+			
 		}
 		catch(Exception e)  {
 			response.setFlash(e.getMessage());
@@ -222,11 +236,11 @@ public class SaleOrderLineController {
 	public void emptyLine(ActionRequest request, ActionResponse response){
 		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 		if(saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL){
-			SaleOrderLine newSaleOrderLine = new SaleOrderLine();
-			newSaleOrderLine.setQty(BigDecimal.ZERO);
-			newSaleOrderLine.setId(saleOrderLine.getId());
-			newSaleOrderLine.setVersion(saleOrderLine.getVersion());
-			newSaleOrderLine.setTypeSelect(saleOrderLine.getTypeSelect());
+			Map<String,Object> newSaleOrderLine =  Mapper.toMap(new SaleOrderLine());
+			newSaleOrderLine.put("qty", BigDecimal.ZERO);
+			newSaleOrderLine.put("id", saleOrderLine.getId());
+			newSaleOrderLine.put("version", saleOrderLine.getVersion());
+			newSaleOrderLine.put("typeSelect", saleOrderLine.getTypeSelect());
 			response.setValues(newSaleOrderLine);
 		}
 	}
@@ -285,5 +299,59 @@ public class SaleOrderLineController {
 		}
 		
 	}	
-
+	
+	public void updateSubLineQty(ActionRequest request, ActionResponse response) {
+		
+		SaleOrderLine newkitLine = request.getContext().asType(SaleOrderLine.class);
+		BigDecimal qty = BigDecimal.ZERO;
+		BigDecimal oldKitQty = BigDecimal.ZERO;
+		BigDecimal newKitQty = BigDecimal.ZERO;
+		
+		if(newkitLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK) {
+			
+			if(newkitLine.getOldQty().compareTo(BigDecimal.ZERO) == 0) {
+				oldKitQty = BigDecimal.ONE;
+			} else {
+				oldKitQty = newkitLine.getOldQty();
+			}
+			
+			if(newkitLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
+				newKitQty = newkitLine.getQty(); 
+			}
+			
+			List<SaleOrderLine> orderLines = newkitLine.getSubLineList();
+				
+			if(orderLines != null) {
+				if(newKitQty.compareTo(BigDecimal.ZERO) != 0) {
+					for(SaleOrderLine line : orderLines) {
+						qty = (line.getQty().divide(oldKitQty, 2, RoundingMode.HALF_EVEN)).multiply(newKitQty);
+						line.setQty(qty.setScale(2, RoundingMode.HALF_EVEN));
+					}
+				} else {
+					for(SaleOrderLine line : orderLines) {
+						line.setQty(qty.setScale(2, RoundingMode.HALF_EVEN));
+					}
+				}
+				
+				response.setValue("oldQty", newKitQty);
+				response.setValue("subLineList", orderLines);
+			}
+		}
+	}
+	
+	public void resetSubLines(ActionRequest request, ActionResponse response) {
+		
+		SaleOrderLine packLine = request.getContext().asType(SaleOrderLine.class);
+		List<SaleOrderLine> subLines = packLine.getSubLineList();
+		
+		if(subLines != null) {
+			for(SaleOrderLine line : subLines) {
+				line.setPrice(BigDecimal.ZERO);
+				line.setPriceDiscounted(BigDecimal.ZERO);
+				line.setExTaxTotal(BigDecimal.ZERO);
+				line.setInTaxTotal(BigDecimal.ZERO);
+			}
+		}
+		response.setValue("subLineList", subLines);
+	}
 }

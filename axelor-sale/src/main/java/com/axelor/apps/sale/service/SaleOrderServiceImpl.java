@@ -23,7 +23,9 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Query;
 
@@ -64,16 +66,6 @@ import com.axelor.team.db.Team;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.persistence.Query;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
 
@@ -539,21 +531,27 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	private void _addPackLines(SaleOrder saleOrder) {
 		
 		if (saleOrder.getSaleOrderLineList() == null) {
-			return;
-		}
-		
-		List<SaleOrderLine> lines = new ArrayList<SaleOrderLine>();
-		lines.addAll(saleOrder.getSaleOrderLineList());
-		for (SaleOrderLine line : lines) {
-			if (line.getSubLineList() == null) {
-				continue;
-			}
-			for (SaleOrderLine subLine : line.getSubLineList()) {
-				if (subLine.getSaleOrder() == null) {
-					saleOrder.addSaleOrderLineListItem(subLine);
-				}
-			}
-		}
+            return;
+        }
+        
+        List<SaleOrderLine> lines = new ArrayList<SaleOrderLine>();
+        lines.addAll(saleOrder.getSaleOrderLineList());
+        for (SaleOrderLine line : lines) {
+            if (line.getSubLineList() == null) {
+                continue;
+            }
+            for (SaleOrderLine subLine : line.getSubLineList()) {
+                if (subLine.getSaleOrder() == null) {
+                    saleOrder.getSaleOrderLineList().add(subLine);
+                }
+            }
+            for (SaleOrderLine subLine : lines) {
+                if (subLine.getParentLine() != null && subLine.getParentLine().getId() == line.getId() 
+                        && !line.getSubLineList().contains(subLine)) {
+                    saleOrder.getSaleOrderLineList().remove(subLine);
+                }
+            }
+        }
 	}
 
 	@Override
@@ -602,5 +600,26 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             saleOrder.getSaleOrderLineList().sort(Comparator.comparing(SaleOrderLine::getSequence));
         }
     }
+    
+	public List<SaleOrderLine> removeSubLines(List<SaleOrderLine> soLines) {
 
+		if (soLines == null) {
+			return soLines;
+		}
+
+		List<SaleOrderLine> packLines = soLines.stream().filter(it -> it.getTypeSelect() == 2)
+				.collect(Collectors.toList());
+
+		Iterator<SaleOrderLine> lines = soLines.iterator();
+
+		while (lines.hasNext()) {
+			SaleOrderLine subLine = lines.next();
+			if (subLine.getId() != null && subLine.getParentLine() != null
+					&& !packLines.contains(subLine.getParentLine())) {
+				lines.remove();
+			}
+		}
+
+		return soLines;
+	}
 }

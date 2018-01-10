@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -36,6 +38,8 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -58,6 +62,7 @@ import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class SaleOrderController{
 	
@@ -81,8 +86,9 @@ public class SaleOrderController{
 
 			SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
 			StockMove stockMove = saleOrderStockService.createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
-
+			
 			if(stockMove != null)  {
+				this.generateStockMoveLineParentLine(stockMove.getStockMoveLineList());
 				response.setView(ActionView
 					.define(I18n.get("Stock move"))
 					.model(StockMove.class.getName())
@@ -94,6 +100,17 @@ public class SaleOrderController{
 			else  {
 				response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
 			}
+		}
+	}
+	
+	@Transactional
+	public void generateStockMoveLineParentLine(List<StockMoveLine> stockMoveLines) {
+		
+		for(StockMoveLine line : stockMoveLines) {
+			line.setPackPriceSelect(line.getSaleOrderLine().getPackPriceSelect());
+			line.setTotalPack(line.getSaleOrderLine().getTotalPack());
+			StockMoveLine parentStockMoveLine = Beans.get(StockMoveLineRepository.class).all().filter("self.saleOrderLine = ?", line.getSaleOrderLine().getParentLine()).fetchOne();
+			line.setParentLine(parentStockMoveLine);
 		}
 	}
 
@@ -222,8 +239,9 @@ public class SaleOrderController{
 							saleOrder, operationSelect, amountToInvoice, isPercent,
 							qtyToInvoiceMap
 					);
-
+			
 			if(invoice != null)  {
+				this.generateInvoiceLineParentLine(invoice.getInvoiceLineList());
 				response.setCanClose(true);
 				response.setView(ActionView
 		            .define(I18n.get("Invoice generated"))
@@ -237,6 +255,16 @@ public class SaleOrderController{
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 	
+	@Transactional
+	public void generateInvoiceLineParentLine(List<InvoiceLine> invoiceLine) {
+		
+		for(InvoiceLine line : invoiceLine) {
+			line.setPackPriceSelect(line.getSaleOrderLine().getPackPriceSelect());
+			line.setTotalPack(line.getSaleOrderLine().getTotalPack());
+			InvoiceLine parentInvoiceLine = Beans.get(InvoiceLineRepository.class).all().filter("self.saleOrderLine = ?", line.getSaleOrderLine().getParentLine()).fetchOne();
+			line.setParentLine(parentInvoiceLine);
+		}
+	}
 	
 	public void generateInvoiceFromPopup(ActionRequest request, ActionResponse response)  {
 
