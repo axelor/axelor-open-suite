@@ -6,13 +6,13 @@
 		  title="Expense lines" 
 		  model="com.axelor.apps.hr.db.ExpenseLine"
 		  onNew="action-expense-line-default, action-kilometric-allowance-record-default" orderBy="expenseDate">
-		<field name="project" requiredIf="toInvoice" canView="false"  onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" />
-		<field name="expenseProduct" canView="false" onChange="action-expense-line-attrs-expense-product-onchange" onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
-		<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
+		<field name="project" requiredIf="toInvoice" canView="false"  onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" width="150"/>
+		<field name="expenseProduct" canView="false" onChange="action-expense-line-attrs-expense-product-onchange" onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid" width="200"/>
+		<field name="expenseDate" onChange="action-expense-line-validate-expenseDate" width="120"/>
 		<field name="user" hidden="true" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company"/>
-		<field name="totalAmount" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount"/>
-		<field name="totalTax" readonlyIf="(!$hasBeenChanged &amp;&amp; $get('expenseProduct.blockExpenseTax')) || ($expenseProductBlockExpenseTax &amp;&amp; $hasBeenChanged)" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
-		<field name="comments"/>
+		<field name="totalAmount" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount" width="170"/>
+		<field name="totalTax" readonlyIf="(!$hasBeenChanged &amp;&amp; $get('expenseProduct.blockExpenseTax')) || ($expenseProductBlockExpenseTax &amp;&amp; $hasBeenChanged)" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution" width="80"/>
+		<field name="comments" width="400"/>
 		<field name="untaxedAmount" hidden="true"/>
         <!-- dummy fields to make totalTax readonlyIf work (not needed in future versions) -->
 		<field name="$expenseProductBlockExpenseTax" hidden="true"/>
