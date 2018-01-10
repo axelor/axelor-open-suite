@@ -18,8 +18,11 @@
     </grid>
     
     <form name="tracking-number-configuration-form" title="Tracking Number Configuration" model="com.axelor.apps.stock.db.TrackingNumberConfiguration"
-    	onNew="action-tracking-number-config-record-default" onSave="action-tracking-number-validate-qty" width="large">
-    	<panel name="main" >
+          onNew="action-tracking-number-config-record-default" onSave="action-tracking-number-validate-qty,action-tracking-number-config-record-compute-fullname" width="large">
+        <panel>
+            <field name="name"/>
+        </panel>
+        <panel>
 	        <field name="isPurchaseTrackingManaged" onChange="action-tracking-number-set-default-purchase-qty"/>
 		    <panel title="Purchase tracking management" showIf="isPurchaseTrackingManaged" colSpan="12">
 		        <field name="generatePurchaseAutoTrackingNbr"/>
@@ -67,6 +70,11 @@
     
     <action-record name="action-tracking-number-set-default-sale-qty" model="com.axelor.apps.stock.db.TrackingNumberConfiguration">
         <field name="saleQtyByTracking" expr="eval:isSaleTrackingManaged ? 1 : 0"/>
+    </action-record>
+
+    <action-record name="action-tracking-number-config-record-compute-fullname" model="com.axelor.apps.stock.db.TrackingNumberConfiguration">
+        <field name="fullName" expr="eval: name"/>
+        <field name="fullName" expr="eval: name + ' / ' + sequence.fullName" if="sequence != null"/>
     </action-record>
     
     <action-validate name="action-tracking-number-validate-qty">
