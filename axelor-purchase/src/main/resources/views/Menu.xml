@@ -222,7 +222,17 @@
 			
 	<menuitem name="sc-root-purchase-conf" parent="sc-root-purchase"
 		title="Configuration" order="300"/>
-		
+
+	<menuitem name="sc-root-purchase-conf-partner-price-list" parent="sc-root-purchase-conf"
+		title="Partner price lists" action="sc.root.purchase.conf.partner.price.list" />
+
+	<action-view name="sc.root.purchase.conf.partner.price.list" title="Partner price lists"
+		model="com.axelor.apps.base.db.PartnerPriceList" >
+		<view type="grid" name="partner-price-list-grid" />
+		<view type="form" name="purchase-partner-price-list-form" />
+		<domain>self.typeSelect = 2</domain>
+	</action-view>
+
 	<menuitem name="sc-root-purchase-conf-price-list" parent="sc-root-purchase-conf"
 		title="Price lists" action="sc.root.purchase.conf.price.list" />
 

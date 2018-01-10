@@ -243,7 +243,7 @@
 				  <viewer>{{record.deliveryAddressStr}}</viewer>
 			  </field>
 		  </panel>
-	      <field name="priceList" domain="self.typeSelect = 1 and self.isActive = true" onChange="action-sale-order-record-hide-discount" form-view="price-list-form"  grid-view="price-list-grid" readonlyIf="statusSelect >= 3"/>
+	      <field name="priceList" onSelect="action-sale-order-method-price-list-domain" onChange="action-sale-order-record-hide-discount" form-view="price-list-form"  grid-view="price-list-grid" readonlyIf="statusSelect >= 3"/>
 	      <field name="hideDiscount"/>
       	  <field name="externalReference"/>
       </panel>
@@ -452,7 +452,7 @@
 				  <viewer>{{record.deliveryAddressStr}}</viewer>
 			  </field>
           </panel>
-	      <field name="priceList" domain="self.typeSelect = 1 and self.isActive = true" onChange="action-sale-order-record-hide-discount" form-view="price-list-form" grid-view="price-list-grid" readonlyIf="statusSelect == 3"/>
+	      <field name="priceList" onSelect="action-sale-order-method-price-list-domain" onChange="action-sale-order-record-hide-discount" form-view="price-list-form" grid-view="price-list-grid" readonlyIf="statusSelect == 3"/>
 	      <field name="hideDiscount"/>
       	  <field name="externalReference"/>
       </panel>
@@ -813,6 +813,7 @@
         <action name="action-partner-attrs-hide-contact-partner"/>
 		<action name="action-sale-order-validate-information"/>
         <action name="action-sale-order-method-address-str"/>
+		<action name="action-sale-order-method-fill-price-list"/>
 		<action name="action-sale-order-attrs-interco"
 				if="__config__.app.isApp('supplychain')"/>
 		<action name="action-sale-order-record-interco"
@@ -867,10 +868,18 @@
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="exportSaleOrderWord"/>
 	</action-method>
 
+	<action-method name="action-sale-order-method-fill-price-list">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="fillPriceList"/>
+	</action-method>
+
+	<action-method name="action-sale-order-method-price-list-domain">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="changePriceListDomain"/>
+	</action-method>
+
 	<action-method name="action-sale-order-method-generate-type-per-order-line">
 		<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="generateTypePerOrderLineForProject"/>
 	</action-method>
-    
+
     <action-record name="action-sale-record-newVersion" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="deliveryState" expr="eval: 1"/>
@@ -942,7 +951,6 @@
 		<field name="paymentMode" expr="eval: company?.accountConfig?.inPaymentMode" if="clientPartner?.inPaymentMode == null"/>
 		<field name="mainInvoicingAddress" expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(clientPartner)" if="clientPartner != null"/>
 		<field name="deliveryAddress" expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(clientPartner)" if="clientPartner != null"/>
-		<field name="priceList" expr="eval: clientPartner?.salePriceList"/>
 		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
 		<field name="companyBankDetails" expr="eval: null"/>
 		<field name="companyBankDetails" expr="eval: __repo__(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails"

@@ -24,9 +24,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Query;
 
+import com.axelor.apps.base.db.PartnerPriceList;
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -331,7 +336,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		this.computeAddressStr(saleOrder);
 
 		if(priceList == null)  {
-			priceList = clientPartner.getSalePriceList();
+			priceList = Beans.get(PartnerPriceListService.class).getDefaultPriceList(clientPartner, PriceListRepository.TYPE_SALE);
 		}
 		saleOrder.setPriceList(priceList);
 

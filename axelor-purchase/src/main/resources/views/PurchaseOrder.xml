@@ -111,7 +111,7 @@
 				domain="self.isContact = true"
 				form-view="partner-contact-form" grid-view="partner-contact-grid" />
 			<field name="externalReference"/>
-	      	<field name="priceList" domain="self.typeSelect = 2 and self.isActive = true" readonlyIf="statusSelect >= 3" form-view="price-list-form" grid-view="price-list-grid" />
+	      	<field name="priceList" onSelect="action-purchase-order-method-price-list-domain" readonlyIf="statusSelect >= 3" form-view="price-list-form" grid-view="price-list-grid" />
 		</panel>
 		<panel-tabs hideIf="supplierPartner == null">
 			<panel name="content" title="Content" colSpan="12">
@@ -374,6 +374,7 @@
         <action name="action-purchase-order-attrs-hide-contact-partner"/>
 		<action name="action-purchase-order-validate-information"/>
         <action name="action-purchase-order-method-fill-company-bank-details"/>
+		<action name="action-purchase-order-method-fill-price-list"/>
 		<action name="action-purchase-order-attrs-interco"/>
 		<action name="action-purchase-order-record-interco"/>
 	</action-group>
@@ -432,7 +433,6 @@
  		<field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition" if="supplierPartner?.paymentCondition == null"/>
  		<field name="paymentMode" expr="eval: supplierPartner?.outPaymentMode" if="supplierPartner?.outPaymentMode != null"/>
 		<field name="paymentMode" expr="eval: company?.accountConfig?.outPaymentMode" if="supplierPartner?.outPaymentMode == null"/>
- 		<field name="priceList" expr="eval: supplierPartner?.purchasePriceList"/>
  		<field name="contactPartner" expr="eval:null" />
     	<field name="shipmentMode" expr="eval: supplierPartner?.shipmentMode"/>
     	<field name="freightCarrierMode" expr="eval: supplierPartner?.freightCarrierMode"/>
@@ -556,6 +556,14 @@
 
 	<action-method name="action-purchase-order-method-merge-purchase">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="mergePurchaseOrder"/>
+	</action-method>
+
+	<action-method name="action-purchase-order-method-fill-price-list">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="fillPriceList"/>
+	</action-method>
+
+	<action-method name="action-purchase-order-method-price-list-domain">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="changePriceListDomain"/>
 	</action-method>
 
 	<action-method name="action-purchase-order-method-merge-supplychain" if-module="axelor-supplychain">
