@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import java.time.format.DateTimeFormatter;
 
+import com.axelor.apps.report.engine.ReportSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +51,7 @@ public class AssistantReportInvoiceController {
 		String name = I18n.get("SaleInvoicesDetails-") + getDateString(assistant);
 		
 		String fileLink = ReportFactory.createReport(IReport.SALE_INVOICES_DETAILS, name+"-${date}")
-				.addParam("Locale", this.getLanguageToPrinting())
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.addParam("assistantId", assistant.getId())
 				.addParam("companyId", assistant.getCompany().getId())
 				.addParam("partnersIds", Joiner.on(",").join(assistant.getPartnerSet()))
@@ -81,7 +82,7 @@ public class AssistantReportInvoiceController {
 		String name = I18n.get("PurchaseInvoicesDetails-") + getDateString(assistant);
 		
 		String fileLink = ReportFactory.createReport(IReport.PURCHASE_INVOICES_DETAILS, name+"-${date}")
-				.addParam("Locale", this.getLanguageToPrinting())
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.addParam("assistantId", assistant.getId())
 				.addParam("companyId", assistant.getCompany().getId())
 				.addParam("partnersIds", Joiner.on(",").join(assistant.getPartnerSet()))
@@ -98,20 +99,5 @@ public class AssistantReportInvoiceController {
 		response.setView(ActionView
 				.define(name)
 				.add("html", fileLink).map());
-	}
-	
-	
-	public String getLanguageToPrinting()  {
-		
-		String language="";
-		
-		try{
-			language = AuthUtils.getUser().getLanguage() ;
-		}catch (NullPointerException e) {
-			language = "en";
-		}
-		
-		return language.equals("")? "en": language;
-		
 	}
 }

@@ -853,9 +853,6 @@ public class StockMoveServiceImpl implements StockMoveService {
 		}
 
 		if (!stockMoveIds.equals("")) {
-
-			String language = ReportSettings.getPrintingLocale(stockMove.getPartner());
-
 			String title = I18n.get("Stock move");
 			if(stockMove.getStockMoveSeq() != null)  {
 				title = lstSelectedMove == null ? I18n.get("StockMove") + " " + stockMove.getStockMoveSeq() : I18n.get("StockMove(s)");
@@ -867,7 +864,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 			return ReportFactory.createReport(report, title+"-${date}")
 					.addParam("StockMoveId", stockMoveIds)
-					.addParam("Locale", language)
+					.addParam("Locale", ReportSettings.getPrintingLocale(stockMove.getPartner()))
 					.generate()
 					.getFileLink();
 		} else {

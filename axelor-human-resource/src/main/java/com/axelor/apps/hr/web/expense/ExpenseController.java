@@ -42,6 +42,7 @@ import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -263,16 +264,13 @@ public class ExpenseController {
 	public void printExpense(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Expense expense = request.getContext().asType(Expense.class);
-		
-		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
-		
+
 		String name = I18n.get("Expense") + " " + expense.getFullName()
 												.replace("/", "-");
 		
 		String fileLink = ReportFactory.createReport(IReport.EXPENSE, name)
 				.addParam("ExpenseId", expense.getId())
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.toAttach(expense)
 				.generate()
 				.getFileLink();

@@ -463,10 +463,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	
 	@Override
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException  {
-		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
-		
 		ReportFactory.createReport(IReport.SALES_ORDER, this.getFileName(saleOrder)+"-${date}")
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(saleOrder.getClientPartner()))
 				.addParam("SaleOrderId", saleOrder.getId())
 				.toAttach(saleOrder)
 				.generate()

@@ -22,6 +22,7 @@ import com.axelor.apps.hr.db.EmployeeBonusMgt;
 import com.axelor.apps.hr.db.repo.EmployeeBonusMgtRepository;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.EmployeeBonusService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -50,14 +51,12 @@ public class EmployeeBonusController {
 	public void print(ActionRequest request, ActionResponse response) throws AxelorException{
 		
 		EmployeeBonusMgt bonus = employeeBonusMgtRepo.find( request.getContext().asType( EmployeeBonusMgt.class ).getId());
-		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
-		
+
 		String name = I18n.get("Employee bonus management") + " :  " + bonus.getEmployeeBonusType().getLabel();
 		
 		String fileLink = ReportFactory.createReport(IReport.EMPLOYEE_BONUS_MANAGEMENT, name)
 				.addParam("EmployeeBonusMgtId", bonus.getId())
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.toAttach(bonus)
 				.generate()
 				.getFileLink();
