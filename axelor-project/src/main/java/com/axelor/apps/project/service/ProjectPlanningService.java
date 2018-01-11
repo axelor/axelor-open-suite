@@ -129,16 +129,6 @@ public class ProjectPlanningService {
 		}
 		return planningLineList;
 	}
-
-	public LocalDate getFromDate(){
-		LocalDate todayDate = generalService.getTodayDate();
-		return new LocalDate(todayDate.getYear(), todayDate.getMonthOfYear(), todayDate.dayOfMonth().getMinimumValue());
-	}
-
-	public LocalDate getToDate(){
-		LocalDate todayDate = generalService.getTodayDate();
-		return new LocalDate(todayDate.getYear(), todayDate.getMonthOfYear(), todayDate.dayOfMonth().getMaximumValue());
-	}
 	
 	public void getTasksForUser(ActionRequest request, ActionResponse response){
 		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
