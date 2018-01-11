@@ -12,7 +12,7 @@
 			<field name="responsibles" title="Responsibles" colSpan="12" grid-view="employee-lite-grid" canNew="false" canEdit="false"/>
 
 			<!-- We need to save on change in order to have proper versionIndex computation (putting save in onNew doesn't work…) -->
-			<panel-related field="versions" form-view="qms-document-version-form" grid-view="qms-document-versions-grid" onChange="save" colSpan="12"/>
+			<panel-related field="versions" form-view="qms-document-version-form" grid-view="qms-document-versions-grid" onChange="save" colSpan="12" readonlyIf="id == null"/>
 		</panel>
 	</form>
 
