@@ -5,7 +5,7 @@
 	<grid name="expense-line-grid" 
 		  title="Expense lines" 
 		  model="com.axelor.apps.hr.db.ExpenseLine"
-		  onNew="action-expense-line-default" orderBy="expenseDate">
+		  onNew="action-expense-line-default" orderBy="-expenseDate">
 		<field name="projectTask" requiredIf="toInvoice" canView="false" onSelect="action-expense-line-attrs-domain-project-task" widget="SuggestBox"/>
 		<field name="expenseProduct" canView="false" onChange="action-expense-line-attrs-expense-product-onchange" onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
 		<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
@@ -141,7 +141,7 @@
 	<action-record name="action-expense-line-record-expenseDate-invalide" model="com.axelor.apps.hr.db.ExpenseLine">
 		<field name="expenseDate" expr="eval :__date__"/>
 	</action-record>
-	
+
 	<action-attrs name="action-expense-line-attrs-company" model="com.axelor.apps.hr.db.ExpenseLine">
 		<attribute name="domain" for="user" expr="eval: &quot; ${expense.company.id} MEMBER OF self.companySet &quot;" />
 	</action-attrs>

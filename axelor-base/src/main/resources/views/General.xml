@@ -74,6 +74,7 @@
 				<panel name="map" title="Mapping"  colSpan="12">
 					<field name="mapApiSelect"/>
 					<button name="checkMapApi" title="Test mapping service connection"   onClick="com.axelor.apps.base.web.GeneralController:checkMapApi"/>
+					<field name="googleMapApiKey"/>
 				</panel>
 				<panel name="qas" title="Addresses validation"  colSpan="12">
 					<field name="qasWsdlUrl"/>
