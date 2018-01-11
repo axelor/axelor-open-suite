@@ -25,9 +25,12 @@ import java.util.Map;
 
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.StringTool;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -345,4 +348,17 @@ public class PurchaseOrderController {
 		response.setReload(true);
 	}
 
+	public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		PrintingSettings printingSettings = purchaseOrder.getPrintingSettings();
+
+		List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(purchaseOrder.getTradingName(), purchaseOrder.getCompany());
+		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
+			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
+		}
+		String domain = !printingSettingsList.isEmpty() ? String.format("self.id IN (%s)", StringTool.getIdListString(printingSettingsList)) : null;
+
+		response.setValue("printingSettings", printingSettings);
+		response.setAttr("printingSettings", "domain", domain);
+	}
 }

@@ -97,6 +97,8 @@
 			<field name="buyerUser" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="versionNumber"
 				if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
+			<field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement"
+				   readonlyIf="statusSelect >= 3 || supplierPartner != null" domain=":company MEMBER OF self.companySet" onChange="action-purchase-order-method-filter-printing-settings"/>
 			<field name="companyBankDetails" widget="SuggestBox"
 					onSelect="action-invoice-attrs-domain-company-bank-details"
 					form-view="bank-details-form" grid-view="bank-details-grid"
@@ -144,6 +146,9 @@
 			<panel name="otherInformation" title="Other Information" hideIf="statusSelect &gt; 2">
 				<field name="priceDisplay" colSpan="12"/>
 				<field name="priceRequest" hideIf="priceDisplay" colSpan="12" x-height="5"/>
+			</panel>
+			<panel name="printing" title="Printing">
+				<field name="printingSettings" required="true" canEdit="false"/>
 			</panel>
 			<panel name="invoicing" title="Invoicing" hideIf="statusSelect &lt; 3">
 				<field if="__config__.app.isApp('invoice')" if-module="axelor-account" name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>
@@ -344,6 +349,7 @@
     </action-group>
 
     <action-group name="action-group-purchase-order-on-load-actions">
+		<action name="action-purchase-order-method-filter-printing-settings"/>
 		<action name="action-purchase-order-attrs-hide-contact-partner"/>
 		<action name="action-purchase-order-attrs-in-ati"/>
 		<action name="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable"/>
@@ -356,6 +362,7 @@
 	    <action name="action-purchase-order-record-company-configuration"/>
 		<action name="action-purchase-order-method-fill-company-bank-details"/>
 	    <action name="action-purchase-order-method-get-location"/>
+		<action name="action-purchase-order-record-update-info-company"/>
     </action-group>
 
     <action-group name="action-group-purchase-order-on-validate-actions">
@@ -420,6 +427,7 @@
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     	<field name="buyerUser" expr="eval:__user__"/>
     	<field name="orderDate" expr="eval: __date__"/>
+		<field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings" if="__user__.activeCompany != null"/>
     </action-record>
 
     <action-record name="action-purchase-order-record-company-configuration" model="com.axelor.apps.purchase.db.PurchaseOrder">
@@ -591,5 +599,14 @@
 			<domain>(self.statusSelect = 3 or self.statusSelect = 4) and self.buyerUser.internalUser.id = :_internalUser</domain>
 		</filter>
 	</search-filters>
+
+	<action-record name="action-purchase-order-record-update-info-company" model="com.axelor.apps.purchase.db.PurchaseOrder">
+		<field name="tradingName" expr="eval: null" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+		<field name="printingSettings" expr="eval: company?.printingSettings"/>
+	</action-record>
+
+	<action-method name="action-purchase-order-method-filter-printing-settings">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="filterPrintingSettings"/>
+	</action-method>
 
 </object-views>
