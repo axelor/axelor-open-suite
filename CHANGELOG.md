@@ -276,3 +276,15 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Inventory and Supply Chain Management
 - Production Management
 - Multi-company, multi-currency and multi-lingual
+
+
+[Unreleased]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...HEAD
+[4.1.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.0...v4.1.1
+[4.1.0]: https://github.com/axelor/axelor-business-suite/compare/v4.0.2...v4.1.0
+[4.0.2]: https://github.com/axelor/axelor-business-suite/compare/v4.0.1...v4.0.2
+[4.0.1]: https://github.com/axelor/axelor-business-suite/compare/v4.0.0...v4.0.1
+[4.0.0]: https://github.com/axelor/axelor-business-suite/compare/v3.0.3...v4.0.0
+[3.0.3]: https://github.com/axelor/axelor-business-suite/compare/v3.0.2...v3.0.3
+[3.0.2]: https://github.com/axelor/axelor-business-suite/compare/v3.0.1...v3.0.2
+[3.0.1]: https://github.com/axelor/axelor-business-suite/compare/v3.0.0...v3.0.1
+[3.0.0]: https://github.com/axelor/axelor-business-suite/compare/0f38e90dcd9126079eac78c1639a40c728e63d94...v3.0.0
