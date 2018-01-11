@@ -35,7 +35,7 @@
 		<field name="statusSelect"/>
 	</grid>
 
-	<form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large" canNew="false"
+	<form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large"
 	    onNew="action-expense-record-default,action-expense-attrs-buttons,action-expense-attrs-multiple-users" 
 	    onLoad="action-expense-attrs-buttons,action-expense-attrs-expense-company-cb,action-expense-attrs-multiple-users"
 	    onSave="action-expense-method-validate-date,action-expense-method-compute-amounts,action-expense-method-compute" canCopy="false">
