@@ -72,7 +72,7 @@
 			</panel>
 			<panel name="actions" title="Actions" colSpan="3" stacked="true">
 		    	<button name="sendExpenses" colSpan="4" title="Send Expenses" onClick="action-expense-group-send" hideIf="statusSelect &gt; 1"/>
-				<button name="ventilate" colSpan="4" title="Ventilate" onClick="action-expense-method-ventilate" hideIf="__user__.employee?.hrManager || statusSelect != 3 || ventilated"/>
+				<button name="ventilate" colSpan="4" title="Ventilate" onClick="action-expense-method-ventilate" hideIf="statusSelect != 3 || ventilated"/>
 		    	<button name="validateButton" onClick="action-expense-group-validate" title="Validate"/>
 		    	<button name="refuseButton" onClick="action-expense-group-refuse" title="Refuse"/>
 		    	<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-buttons" hideIf="statusSelect == 6 || move != null" title="Cancel" icon="fa-close"/>
@@ -244,9 +244,11 @@
 	</action-method>
 	
 	<action-attrs name="action-expense-attrs-buttons">
+		<attribute name="hidden" for="ventilate" expr="eval: !__user__.employee?.hrManager"/>
 		<attribute name="hidden" for="validateButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager || __user__.employee?.hrManager))"/>
 		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager || __user__.employee?.hrManager))"/>
 		<attribute name="hidden" for="cancelButton" expr="eval: period?.toDate &lt; __date__ || statusSelect == 6"/>
+		
 	</action-attrs>
 	
 	<action-attrs name="action-expense-attrs-multiple-users">
