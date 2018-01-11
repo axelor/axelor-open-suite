@@ -7,7 +7,6 @@
 
 	
 	<entity name="TeamTask">
-  		<integer name="importId"/>
 		<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 
         <string name="fullName" namecolumn="true" title="Name" search="id,name"/>

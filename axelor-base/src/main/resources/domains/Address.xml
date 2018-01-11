@@ -7,7 +7,6 @@
 
   	<entity name="Address" lang="java">
 
-    <string name="importId"/>
     <string name="addressL2" title="Recipient details"/>
     <string name="addressL3" title="Address precisions" />
     <string name="addressL4" title="N° and Street label" required="true"/>

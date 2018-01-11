@@ -6,8 +6,7 @@
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="Inventory" lang="java">
-  
-  	<integer name="importId" />
+
   	<string name="inventorySeq" title="Inventory N°" readonly="true"/>
   	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location" required="true"/>
     <integer name="statusSelect" title="Status" selection="inventory.status.select" readonly="true"/>

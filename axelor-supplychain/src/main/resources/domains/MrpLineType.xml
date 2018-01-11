@@ -4,8 +4,7 @@
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
  
   <entity name="MrpLineType" lang="java">
-  		
-      <integer name="importId" />
+
       <string name="code" title="Code"/>
       <string name="label" title="Label"/>
       <string name="name" title="Name"/>

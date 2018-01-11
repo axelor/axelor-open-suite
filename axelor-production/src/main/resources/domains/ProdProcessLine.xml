@@ -6,9 +6,7 @@
   <module name="production" package="com.axelor.apps.production.db"/>
 
   <entity name="ProdProcessLine" lang="java">
-  
-  	<integer name="importId"/>
-  
+
  	<many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process"/>
   	<many-to-one required="true" name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
     <string name="name" title="Label"/>

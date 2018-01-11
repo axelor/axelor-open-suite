@@ -7,7 +7,6 @@
 
   <entity name="DebtRecoveryMethodLine" lang="java" cachable="true">
   
-    <integer name="importId"/>
   	<many-to-one name="debtRecoveryLevel"  ref="com.axelor.apps.account.db.DebtRecoveryLevel" title="Level" />
   	<string name="debtRecoveryLevelLabel" namecolumn="true" title="Label"/>
   	<integer name="standardDeadline" title="Standard trigger delay (days)"/>

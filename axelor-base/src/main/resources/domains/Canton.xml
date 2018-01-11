@@ -5,8 +5,6 @@
   
   <entity name="Canton" lang="java" cachable="true">
   
-    
-	<integer name="importId"/>
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" unique="true" required="true"/>
     <string name="artmin" title="ARTMIN" selection="iterritory.artmin.select"/>

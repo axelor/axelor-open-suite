@@ -7,7 +7,6 @@
 
   	<entity name="App" lang="java" strategy="JOINED" cachable="true">
 		
-	    <integer name="importId"/>
 	    <string name="name" title="Name" required="true" translatable="true"/>
 	    <string name="code" title="Code" required="true" unique="true"/>
 	    <string name="description" title="Description" large="true" translatable="true"/>
