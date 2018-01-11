@@ -232,24 +232,28 @@ public class ExpenseController {
 		response.setValues(expense);
 	}
 
-	public void ventilate(ActionRequest request, ActionResponse response) throws AxelorException{
-		Expense expense = request.getContext().asType(Expense.class);
-		expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-		Move move = expenseServiceProvider.get().ventilate(expense);
-		response.setReload(true);
-		response.setView(ActionView.define(I18n.get("Move"))
-				   .model(Move.class.getName())
-				   .add("grid","move-grid")
-				   .add("form","move-form")
-				   .context("_showRecord", String.valueOf(move.getId()))
-				   .map());
+	public void ventilate(ActionRequest request, ActionResponse response) throws AxelorException {
+		try {
+			Expense expense = request.getContext().asType(Expense.class);
+			expense = Beans.get(ExpenseRepository.class).find(expense.getId());
+			Move move = expenseServiceProvider.get().ventilate(expense);
+			response.setReload(true);
+			response.setView(ActionView.define(I18n.get("Move"))
+					   .model(Move.class.getName())
+					   .add("grid","move-grid")
+					   .add("form","move-form")
+					   .context("_showRecord", String.valueOf(move.getId()))
+					   .map());
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 
 	public void validateDates(ActionRequest request, ActionResponse response) throws AxelorException{
 		Expense expense = request.getContext().asType(Expense.class);
 		if(expense.getExpenseLineList()!= null){
 			List<ExpenseLine> expenseLineList = expense.getExpenseLineList();
-			List<Integer> expenseLineId = new ArrayList<Integer>();
+			List<Integer> expenseLineId = new ArrayList<>();
 			int compt = 0;
 			for (ExpenseLine expenseLine : expenseLineList) {
 				compt++;

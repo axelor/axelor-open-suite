@@ -321,10 +321,10 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 		Move move = moveService.getMoveCreateService().createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getInPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
-		List<MoveLine> moveLines = new ArrayList<MoveLine>();
+		List<MoveLine> moveLines = new ArrayList<>();
 
 		AccountManagement accountManagement = null;
-		Set<AnalyticAccount> analyticAccounts = new HashSet<AnalyticAccount>();
+		Set<AnalyticAccount> analyticAccounts = new HashSet<>();
 		BigDecimal exTaxTotal = null;
 
 		int moveLineId = 1;
@@ -473,7 +473,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException {
 
-		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+		List<InvoiceLine> invoiceLineList = new ArrayList<>();
 		int count = 0;
 		for (ExpenseLine expenseLine : expenseLineList) {
 
@@ -502,7 +502,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 					InvoiceLine invoiceLine = this.createInvoiceLine();
 
-					List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+					List<InvoiceLine> invoiceLines = new ArrayList<>();
 					invoiceLines.add(invoiceLine);
 
 					return invoiceLines;
@@ -518,7 +518,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 					InvoiceLine invoiceLine = this.createInvoiceLine();
 
-					List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+					List<InvoiceLine> invoiceLines = new ArrayList<>();
 					invoiceLines.add(invoiceLine);
 
 					return invoiceLines;
@@ -529,11 +529,11 @@ public class ExpenseServiceImpl implements ExpenseService {
 	}
 
 	public void getExpensesTypes(ActionRequest request, ActionResponse response) {
-		List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
+		List<Map<String, String>> dataList = new ArrayList<>();
 		try {
 			List<Product> productList = Beans.get(ProductRepository.class).all().filter("self.expense = true").fetch();
 			for (Product product : productList) {
-				Map<String, String> map = new HashMap<String, String>();
+				Map<String, String> map = new HashMap<>();
 				map.put("name", product.getName());
 				map.put("id", product.getId().toString());
 				dataList.add(map);
