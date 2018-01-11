@@ -1,3 +1,7 @@
 "name";"object";"canRead";"canWrite";"canCreate";"canRemove";"canExport";"condition";"conditionParams"
-"perm.qms.all";"com.axelor.apps.quality.db.*";"true";"true";"true";"true";"true";;
-"perm.qms.improvementForm.manage";"com.axelor.apps.quality.db.ImprovementForm";"true";"true";"true";"true";;
+"perm.qms.all";"com.axelor.apps.qms.db.*";"true";"true";"true";"true";"true";;
+"perm.qms.ImprovementForm.rwce";"com.axelor.apps.qms.db.ImprovementForm";"true";"true";"true";"false";"true";;
+"perm.qms.ImprovementForm.rce";"com.axelor.apps.qms.db.ImprovementForm";"true";"true";"true";"false";"true";;
+"perm.qms.ImprovementForm.own";"com.axelor.apps.qms.db.ImprovementForm";"false";"true";"false";"false";"false";"(self.statusSelect = 1 and self.createdBy.id = ?) or (self.statusSelect between 3 and 6 and ? member of self.responsibles)";"__user__.id,__user__.employee?.id"
+"perm.qms.RootCause.r";"com.axelor.apps.quality.db.RootCause";"true";"false";"false";"false";"false";;
+"perm.qms.Employee.r";"com.axelor.apps.hr.db.Employee";"true";"false";"false";"false";"false";;

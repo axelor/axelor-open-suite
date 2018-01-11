@@ -13,5 +13,7 @@
 		<bind column="permissions" to="permissions" search="self.name in :permissions" eval="permissions.split('\\|') as List" />
 	</input>
 
-
+	<input file="meta_menu.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name">
+		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
+	</input>
 </csv-inputs>

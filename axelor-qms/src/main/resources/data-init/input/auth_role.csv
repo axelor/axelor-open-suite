@@ -1,3 +1,4 @@
 "name";"description";"permissions"
 "role.admin";"Access to all objects for all modules";"perm.qms.all"
-"role.qms.manager";"Access to all QMS' objects";"perm.qms.all"
+"role.qms.manager";"Access to all QMS' objects";"perm.qms.ImprovementForm.rwce"
+"role.user";"Basic user";"perm.qms.ImprovementForm.rce|perm.qms.ImprovementForm.own|perm.qms.RootCause.r|perm.qms.Employee.r"
