@@ -27,8 +27,8 @@
 		<panel name="main" >
 			<field name="ref" readonly="true" />
 			<field name="date" readonlyIf="statusSelect == 2"/>
-			<field name="typeSelect" onChange="action-group-account-moveline-report-typeselect-onchange" selection="move.line.report.type.select" />
-			<field name="exportTypeSelect" />
+			<field name="typeSelect" readonlyIf="company == null" onChange="action-group-account-moveline-report-typeselect-onchange" selection="move.line.report.type.select" />
+			<field name="exportTypeSelect"/>
 			<field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox" onChange="action-move-line-report-method-get-account" form-view="company-form" grid-view="company-grid"/>
 		</panel>
 		
@@ -195,7 +195,7 @@
 		<field name="dateFrom" expr="eval: year.fromDate"/>
 		<field name="dateTo" expr="eval: year.toDate"/>
 	</action-record>
-	
+
 	<action-record name="action-move-line-report-record-date-from-and-date-to" model="com.axelor.apps.account.db.MoveLineReport">
 		<field name="dateFrom" expr="eval: period.fromDate" if="eval : period != null"/>
 		<field name="dateTo" expr="eval: period.toDate" if="eval : period != null"/>
