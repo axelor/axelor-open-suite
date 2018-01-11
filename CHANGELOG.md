@@ -1,10 +1,15 @@
-# 4.1.1 (2018-01-10)
+# Changelog
+
+## [Unreleased]
+
+## [4.1.1] - 2018-01-10
 - Ebics TS improvements
 - Bank order improvements
 - HR improvments
 - Some fixes
 
-# 4.1.0 (2017-06-19)
+
+## [4.1.0] - 2017-06-19
 - Ebics TS implementation
 - Bank ordre implementation
 - Lunch voucher management
@@ -12,10 +17,12 @@
 - Expense improvements (multi user, kilometric compute with some rates)
 - Leave request improvements
 
-# 4.0.1 (2017-06-19)
 
-# 4.0.0 (2017-01-30)
-## Improvements
+## [4.0.1] - 2017-06-19
+
+
+## [4.0.0] - 2017-01-30
+### Improvements
 - Default partner type
 - Remove sublines of SOlines : SubLine will be replaced per a title line to group some lines.
 - Rename saleOrder status and field :
@@ -179,8 +186,8 @@ The conversion is done with conversion unit lines or with a formule on Product f
 - STOCK MOVE : cancel a stock move and update the sale order or purchase order
 
 
-# 3.0.3 (2017-02-28)
-## Bug Fixes
+## [3.0.3] - 2017-02-28
+### Bug Fixes
 
 - Fixed issue on the method to get the next period
 - Changed display of CFONB field, by using nested, on AccontConfig
@@ -192,8 +199,8 @@ The conversion is done with conversion unit lines or with a formule on Product f
 - Sequence onNew fix: nextNum removed
 
 
-# 3.0.2 (2015-09-09)
-## Bug Fixes
+## [3.0.2] - 2015-09-09
+### Bug Fixes
 - Domain on Partner account in Invoice
 - JPA context of the project during generation of invoice
 - Removed unused selection for social network
@@ -209,7 +216,7 @@ The conversion is done with conversion unit lines or with a formule on Product f
 - Fixed some issue with conversion of lead
 - Contact dashboard
 
-## Improvements
+### Improvements
 - Sequence management
 - Management of number of decimal for unit price
 - Company logo became a MetaFile instead of a path
@@ -221,19 +228,19 @@ The conversion is done with conversion unit lines or with a formule on Product f
 - No check of account config if amount if null on a line of invoice during ventilation
 - Per default, translation doesn't contains the context, according ADK improvement
 
-# 3.0.1 (2015-05-13)
-## Bug Fixes
+## [3.0.1] - 2015-05-13
+### Bug Fixes
 - Fixed somes issues
 
-## Improvements
+### Improvements
 - Sequence management
 - Message management
 
 
-# 3.0.0 (2015-01-21)
+## [3.0.0] - 2015-01-21
 Fully responsive mobile ready views, gradle based build system and much more.
 
-## Features
+### Features
 - migrated to gradle build system
 - fully responsive mobile ready views
 - Split object per modules
