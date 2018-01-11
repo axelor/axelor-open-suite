@@ -48,10 +48,9 @@ import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -404,34 +403,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 			invoiceLine.setInvoice(invoice);
 		}
 	}
-	
-	protected String getDefaultPrintingLocale(Invoice invoice, Company company) {
-		String locale = null;
 
-		if (invoice != null) {
-			if (invoice.getPrintingSettings() != null) {
-				locale = invoice.getPrintingSettings().getLanguageSelect();
-			}
-			else if (invoice.getPartner() != null) {
-				locale = invoice.getPartner().getLanguageSelect();
-			}
-		}
-
-		if(locale == null && company != null && company.getPrintingSettings() != null) {
-			locale = company.getPrintingSettings().getLanguageSelect();
-		}
-		
-		User user = AuthUtils.getUser();
-		if(user != null && user.getLanguage() != null) {
-			locale = user.getLanguage();
-		}
-		
-		return locale == null ? "en" : locale;
-	}
-	
 	@Override
 	public ReportSettings printInvoice(Invoice invoice, boolean toAttach) throws AxelorException {
-		String locale = getDefaultPrintingLocale(invoice, invoice.getCompany());
+		String locale = ReportSettings.getPrintingLocale(invoice.getPartner());
 		
 		String title = I18n.get("Invoice");
 		if(invoice.getInvoiceId() != null) { title += " " + invoice.getInvoiceId(); }
@@ -447,8 +422,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	
 	@Override
 	public ReportSettings printInvoices(List<Long> ids) throws AxelorException {
-		User user = AuthUtils.getUser();
-		String locale = getDefaultPrintingLocale(null, user == null ? null : user.getActiveCompany());
+		String locale = Beans.get(AppBaseService.class).getAppBase().getDefaultPartnerLanguage();
 		
 		String title = I18n.get("Invoices");
 		

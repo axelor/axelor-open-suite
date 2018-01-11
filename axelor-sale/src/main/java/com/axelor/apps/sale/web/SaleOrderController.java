@@ -57,6 +57,7 @@ import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+import org.w3c.tidy.Report;
 
 public class SaleOrderController {
 	
@@ -108,7 +109,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 		
 		String name = saleOrderService.getFileName(saleOrder);
 		
@@ -129,7 +130,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 
 		String name = saleOrderService.getFileName(saleOrder);
 
@@ -146,7 +147,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 
 		String name = saleOrderService.getFileName(saleOrder);
 		
@@ -165,7 +166,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 
 		String name = saleOrderService.getFileName(saleOrder);
 		

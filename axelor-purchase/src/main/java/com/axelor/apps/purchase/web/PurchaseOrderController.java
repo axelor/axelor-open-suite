@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.report.engine.ReportSettings;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,13 +128,7 @@ public class PurchaseOrderController {
 		}else if(purchaseOrder.getId() != null){
 			purchaseOrderIds = purchaseOrder.getId().toString();
 		}
-		String language="";
-		try{
-			language = purchaseOrder.getSupplierPartner().getLanguageSelect() != null? purchaseOrder.getSupplierPartner().getLanguageSelect() : purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-		}catch (NullPointerException e) {
-			language = "en";
-		}
-		language = language.equals("")? "en": language;
+		String language = ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner());
 
 		String title = I18n.get("Purchase order");
 		if(purchaseOrder.getPurchaseOrderSeq() != null)  {

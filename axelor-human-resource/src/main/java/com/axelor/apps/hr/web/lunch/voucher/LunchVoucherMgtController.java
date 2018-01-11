@@ -20,6 +20,7 @@ package com.axelor.apps.hr.web.lunch.voucher;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
@@ -125,7 +126,7 @@ public class LunchVoucherMgtController {
 		try {
 			String fileLink = ReportFactory.createReport(IReport.LUNCH_VOUCHER_MGT_MONTHLY, name)
 					.addParam("lunchVoucherMgtId", lunchVoucherMgt.getId())
-					.addParam("Locale", lunchVoucherMgt.getCompany().getPrintingSettings().getLanguageSelect())
+					.addParam("Locale", Beans.get(AppBaseService.class).getAppBase().getDefaultPartnerLanguage())
 					.addFormat(ReportSettings.FORMAT_PDF)
 					.generate()
 					.getFileLink();

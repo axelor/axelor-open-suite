@@ -27,6 +27,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import com.axelor.apps.report.engine.ReportSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -462,8 +463,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	
 	@Override
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException  {
-		
-		String language = this.getLanguageForPrinting(saleOrder);
+		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 		
 		ReportFactory.createReport(IReport.SALES_ORDER, this.getFileName(saleOrder)+"-${date}")
 				.addParam("Locale", language)
@@ -476,19 +476,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		
 	}
 
-	@Override
-	public String getLanguageForPrinting(SaleOrder saleOrder)  {
-		String language="";
-		try{
-			language = saleOrder.getClientPartner().getLanguageSelect() != null? saleOrder.getClientPartner().getLanguageSelect() : saleOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? saleOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-		}catch (NullPointerException e) {
-			language = "en";
-		}
-		language = language.equals("")? "en": language;
-		
-		return language;
-	}
-	
 	@Override
 	public String getFileName(SaleOrder saleOrder)  {
 		

@@ -8,7 +8,6 @@
 	<entity name="PrintingSettings" lang="java" cachable="true">
 		<string name="importId" hashKey="false" unique="true"/>
 		<string name="name" required="true"/>
-        <string name="languageSelect" title="Language" selection="select.language"/>
 		<string name="pdfHeader" large="true" title="Company Header"/>
 		<string name="pdfFooter" large="true" title="Company Footer"/>
 		<many-to-one name="defaultMailBirtTemplate" ref="com.axelor.apps.base.db.BirtTemplate" title="Birt Template"/>
