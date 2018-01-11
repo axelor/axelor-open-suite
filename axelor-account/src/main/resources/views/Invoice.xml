@@ -22,6 +22,8 @@
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
         <field name="invoiceId"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" widget="200"/>
+		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement" widget="200"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
 		<field name="operationTypeSelect" width="160"/>
 		<field name="operationSubTypeSelect" widget="160"/>
@@ -162,7 +164,7 @@
 			<field name="company" canEdit="false" widget="SuggestBox" 
 				onChange="action-group-account-invoice-company-onchange" 
 				form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1 || partner != null"/>
-			<field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form"
+			<field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement"
 				   readonlyIf="statusSelect != 1 || partner != null" domain=":company MEMBER OF self.companySet" onChange="action-invoice-method-filter-printing-settings"/>
 			<field name="companyBankDetails" widget="SuggestBox"
 				onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" 
@@ -998,7 +1000,7 @@
 	</action-method>
 
 	<action-record name="action-invoice-record-update-info-company" model="com.axelor.apps.account.db.Invoice">
-		<field name="tradingName" expr="eval: null"/>
+		<field name="tradingName" expr="eval: null" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 		<field name="printingSettings" expr="eval: company?.printingSettings"/>
 	</action-record>
 
