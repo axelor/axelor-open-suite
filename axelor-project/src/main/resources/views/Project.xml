@@ -19,6 +19,12 @@
 		<field name="projectTypeSelect" hidden="true"/>
 	</grid>
 
+	<grid name="folder-project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
+		<field name="fullName"/>
+		<field name="company"/>
+		<field name="clientPartner"/>
+	</grid>
+
 	<form name="project-form" title="Project" model="com.axelor.apps.project.db.Project" width="large" onLoad="action-project-on-load-group,save" onNew="action-project-group-on-new-project">
 		<toolbar>
 			<button name="start" icon="fa-play" onClick="action-project-record-status-in-progress,save"/>
