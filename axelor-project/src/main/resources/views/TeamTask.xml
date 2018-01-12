@@ -175,7 +175,7 @@
 	</action-record>
 	
 	<action-attrs name="action-task-attrs-project-category-configurations" model="com.axelor.team.db.TeamTask">
-		<attribute name="domain" for="category" expr="eval: (project?.categorySet !=  null &amp;&amp; project?.categorySet?.size() &gt; 0) ? &quot;self.id IN (${project?.categorySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+		<attribute name="domain" for="category" expr="eval: (project?.projectCategorySet !=  null &amp;&amp; project?.projectCategorySet?.size() &gt; 0) ? &quot;self.id IN (${project?.projectCategorySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-task-attrs-project-assigned-to-configurations" model="com.axelor.team.db.TeamTask">

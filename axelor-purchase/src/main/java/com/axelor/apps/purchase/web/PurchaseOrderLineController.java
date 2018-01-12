@@ -246,7 +246,7 @@ public class PurchaseOrderLineController {
 		Context parentContext = context.getParent();
 		PurchaseOrder purchaseOrder = null;
 		
-		if(parentContext != null) {
+		if(parentContext != null && parentContext.getContextClass() == PurchaseOrder.class) {
 
 			purchaseOrder = parentContext.asType(PurchaseOrder.class);
 			if(!parentContext.getContextClass().toString().equals(PurchaseOrder.class.toString())){
