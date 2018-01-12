@@ -26,6 +26,7 @@ import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -44,7 +45,7 @@ public class ProjectController {
 		Partner partner = Beans.get(PartnerRepository.class).find(Long.valueOf(request.getContext().get("_idPartner").toString()));
 		User user = AuthUtils.getUser();
 		Project project = Beans.get(ProjectService.class).generateProject(null, partner.getName()+" project", user, user.getActiveCompany(), partner);
-		response.setValues(project);
+		response.setValues(Mapper.toMap(project));
 	}
 
 	public void setDuration(ActionRequest request, ActionResponse response){
