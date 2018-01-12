@@ -15,7 +15,7 @@
 	  	<panel name="main">
 		    <field name="actionSelect"/>
 		    <field name="code"/>
-		    <field name="company" canEdit="false" onChange="action-hr-batch-attrs-employee-set-domain"/>
+		    <field name="company" canEdit="false"/>
 		</panel>
 		<panel-tabs>
 			<panel name="leaveManagementPage" title="Leave management page" hidden="true" showIf="$contains([1, 5], actionSelect)">
@@ -26,7 +26,7 @@
    				<field name="planningSet" grid-view="weekly-planning-grid" form-view="weekly-planning-form" widget="TagSelect"/>
 			    <field name="startDate" colSpan="3"/>
 			    <field name="endDate" colSpan="3"/>
-		   		<panel-related field="employeeSet" target="com.axelor.apps.hr.db.Employee" grid-view="employee-lite-grid" form-view="employee-form" canNew="false" colSpan="12"/>
+                <panel-related field="employeeSet" target="com.axelor.apps.hr.db.Employee" onSelect="action-hr-batch-attrs-employee-set-domain" grid-view="employee-lite-grid" form-view="employee-form" canNew="false" colSpan="12"/>
 				<button name="leaveManagementBatch" title="Leave management batch" onClick="save,action-hrbatch-method-hr-batch"/>
 			</panel>
 			<panel name="seniorityLeaveManagementPage" title="Seniority leave management page" hidden="true" showIf="actionSelect == 2">
