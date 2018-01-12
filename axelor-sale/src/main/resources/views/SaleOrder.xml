@@ -289,7 +289,7 @@
 		<panel sidebar="true" name="info" title="Info." hideIf="clientPartner == null">
 			<field name="creationDate" readonlyIf="statusSelect != 1"
 				colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date" />
-			<field name="confirmedByUser" canEdit="false" readonly="true" colSpan="6"
+			<field name="confirmedByUser" canNew="false" canEdit="false" canView="false" readonly="true" colSpan="6"
 				showIf="statusSelect == 3" form-view="user-form" grid-view="user-grid" />
 			<field name="confirmationDate" readonly="true" colSpan="6"
 				showIf="statusSelect == 3" />
@@ -329,7 +329,7 @@
 
 		<panel sidebar="true" hideIf="clientPartner == null">
 			<panel name="salesFollowUp" title="Sales follow-up" colSpan="12">
-				<field name="salemanUser" canEdit="false" grid-view="user-grid" form-view="user-form" />
+				<field name="salemanUser" canNew="false" canEdit="false" canView="false" grid-view="user-grid" form-view="user-form" />
 				<field name="team" canEdit="false" onSelect="action-sale-order-domain-on-team"
 					form-view="team-form" grid-view="team-grid"
 					if="__config__.general.getTeamManagement()" />
@@ -386,7 +386,7 @@
 				grid-view="company-grid" readonlyIf="statusSelect == 3" />
 			<field name="currency" canEdit="false" form-view="currency-form"
 				grid-view="currency-grid" readonlyIf="statusSelect == 3" />
-			<field name="templateUser" canEdit="false" form-view="user-form" grid-view="user-grid" />
+			<field name="templateUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" />
 		</panel>
 
 		<panel name="customerInformation" title="Customer information">
@@ -420,7 +420,7 @@
 			<panel name="otherInformations" title="Other informations"
 				showTitle="false">
 				<panel name="salesFollowUp" title="Sales follow-up" colSpan="12">
-					<field name="salemanUser" canEdit="false" form-view="user-form" grid-view="user-grid" />
+					<field name="salemanUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" />
 					<field name="team" canEdit="false" onSelect="action-sale-order-domain-on-team"
 						form-view="team-form" grid-view="team-grid"
 						if="__config__.general.getTeamManagement()" />
@@ -465,7 +465,7 @@
 		<panel sidebar="true" name="info" title="Info.">
 			<field name="creationDate" readonlyIf="statusSelect != 1"
 				colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date" />
-			<field name="confirmedByUser" canEdit="false" readonly="true" colSpan="6"
+			<field name="confirmedByUser" canNew="false" canEdit="false" canView="false" readonly="true" colSpan="6"
 				showIf="statusSelect == 3" form-view="user-form" grid-view="user-grid" />
 			<field name="confirmationDate" readonly="true" colSpan="6"
 				showIf="statusSelect == 3" />
@@ -556,7 +556,7 @@
 							if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3"
 							color="danger" />
 					</field>
-					<field name="salemanUser" canEdit="false" colSpan="10" form-view="user-form"
+					<field name="salemanUser" canNew="false" canEdit="false" canView="false" colSpan="10" form-view="user-form"
 						grid-view="user-grid" />
 					<field name="statusSelect" widget="NavSelect" colSpan="12" />
 				</panel>

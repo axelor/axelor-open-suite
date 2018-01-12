@@ -17,7 +17,7 @@
 <!-- 	    <group title="Information"   colWidths="15%,35%,15%,35%"> -->
 <!-- 	        <field name="name"/> -->
 <!-- 	        <field name="code"/> -->
-<!-- 	        <field name="user" showIf="team == null"/> -->
+<!-- 	        <field name="user" canNew="false" canEdit="false" canView="false" showIf="team == null"/> -->
 <!-- 	        <field name="team" showIf="user == null"/> -->
 <!-- 	    </group> -->
 <!-- 	    <group title="Period"   colWidths="15%,35%,15%,35%"> -->
@@ -72,7 +72,7 @@
   <panel name="information" title="Information">
     <field name="name"/>
     <field name="code"/>
-    <field name="user" canEdit="false" showIf="team == null" form-view="user-form" grid-view="user-grid"/>
+    <field name="user" canNew="false" canEdit="false" canView="false" showIf="team == null" form-view="user-form" grid-view="user-grid"/>
     <field name="team" canEdit="false" showIf="user == null" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
   </panel>
   <panel name="period" title="Period">

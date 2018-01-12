@@ -26,7 +26,7 @@
 	        <field name="reOrderQty"/>
         </panel>
 		<panel name="reorderingManagedBy" title="Reordering managed by">
-			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="user" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 	        <field name="team" canEdit="false" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 		</panel>
     </form>
