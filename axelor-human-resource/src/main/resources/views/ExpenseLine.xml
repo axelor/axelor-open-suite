@@ -47,6 +47,10 @@
 		<field name="toInvoice"/>
 	</grid>
 
+	<form name="expense-line-project-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine" canEdit="false">
+		<panel-include view="expense-line-form"/>
+	</form>
+
 	<form name="expense-line-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine"
 		onNew="action-expense-line-default"
 		onSave="action-expense-line-validate-expenseDate" width="large">

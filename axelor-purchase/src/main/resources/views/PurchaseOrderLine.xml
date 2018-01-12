@@ -66,8 +66,12 @@
 		<field name="price" readonly="true"/>
 		<field name="exTaxTotal" aggregate="sum" readonly="true"/>
 		<field name="inTaxTotal" aggregate="sum" readonly="true"/>
-		<field name="toInvoice" readonly="false"/>
+		<field name="toInvoice"/>
 	</grid>
+
+	<form name="purchase-order-line-project-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine" canEdit="false">
+		<panel-include view="purchase-order-line-form"/>
+	</form>
 
 	<form name="purchase-order-line-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine"
 		  onNew="action-group-purchase-purchase-orderline-onnew"
