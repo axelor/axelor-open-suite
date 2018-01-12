@@ -78,7 +78,7 @@
 				<field name="parentProject" domain="self.isProject = true AND self.projectTypeSelect = 1" showIf="projectTypeSelect == 2"/>
 			</panel>
 			<panel if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="business" title=" " showIf="isBusinessProject" colSpan="12">
-				<field name="clientPartner" domain="self.isCustomer = true" form-view="partner-form" grid-view="partner-grid"/>
+				<field name="clientPartner" domain="self.isCustomer = true" form-view="partner-form" grid-view="partner-grid" requiredIf="isBusinessProject"/>
 				<field name="saleOrder" domain="self.clientPartner = :clientPartner" form-view="sale-order-form" grid-view="sale-order-grid"/>
 				<field name="contactPartner" onSelect="action-attrs-domain-on-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
 				<field name="projInvTypeSelect" colSpan="4"/>
