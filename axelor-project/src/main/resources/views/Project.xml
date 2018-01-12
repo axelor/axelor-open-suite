@@ -50,20 +50,23 @@
 					<field name="name" showTitle="false" colSpan="9" css="label-bold bold large"/>
 				</editor>
 			</field>
-			<field name="statusSelect" widget="NavSelect" colSpan="8" readonly="true" showTitle="false"/>
-			<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="isProject" colSpan="2" widget="boolean-switch">
+			<field name="statusSelect" showTitle="false" readonly="true" colSpan="8" widget="NavSelect"/>
+			<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="isProject" hidden="true" showIf="!$readonly()" colSpan="1" widget="boolean-switch"/>
+			<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="isBusinessProject" hidden="true" showIf="!$readonly()" colSpan="1" widget="boolean-switch"/>
+
+			<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="isProject" showTitle="false" hidden="true" showIf="isProject &amp;&amp; $readonly()" colSpan="1">
 				<viewer><![CDATA[
-                     <h4>
-                      	<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProject" x-translate>Project/Phase</span>
-                     </h4>
-                  ]]></viewer>
+                   <h4>
+                    	<span class="label label-default" style="background-color: #FC6355;margin: 5 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProject" x-translate>Project/Phase</span>
+                   </h4>
+                ]]></viewer>
 			</field>
-			<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="isBusinessProject" colSpan="2" widget="boolean-switch">
+			<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="isBusinessProject" showTitle="false" hidden="true" showIf="isBusinessProject &amp;&amp; $readonly()" colSpan="1">
 				<viewer><![CDATA[
-                     <h4>
-                     		<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isBusinessProject" x-translate>Business</span>
-                    </h4>
-                  ]]></viewer>
+                   <h4>
+                   		<span class="label label-default" style="background-color: #5680FC;margin: 5 0 !important;display: inline-table; line-height: initial;" ng-show="record.isBusinessProject" x-translate>Business</span>
+                  </h4>
+                ]]></viewer>
 			</field>
 			<panel name="overview" title="Overview" colSpan="12">
 				<field name="company" form-view="company-form" grid-view="company-grid"/>
