@@ -13,7 +13,7 @@
 		onNew="action-invoicing-project-attrs-title-project" onLoad="action-invoicing-project-attrs-title-project" width="large">
 		<toolbar>
   			<button name="delete" hidden="true" showIf="invoice == null" title="Delete"/>
-  			<button name="print" title="Print delivery sheet" />
+  			<button name="print" title="Print delivery sheet" onClick="action-invoicing-project-method-print"/>
   		</toolbar>
   		<panel title="Status">
   			<field name="statusSelect" widget="NavSelect" colSpan="12" showTitle="false"/>
@@ -53,6 +53,10 @@
 	
 	<action-method name="action-invoicing-project-method-fill-in">
 		<call class="com.axelor.apps.businessproject.web.InvoicingProjectController" method="fillIn"/>
+	</action-method>
+
+	<action-method name="action-invoicing-project-method-print">
+		<call class="com.axelor.apps.businessproject.web.InvoicingProjectController" method="print"/>
 	</action-method>
 	
 	<action-attrs name="action-invoicing-project-attrs-title-project">
