@@ -38,6 +38,19 @@
    		<field name="expenseProduct" readonly="true" form-view="product-expense-form" grid-view="product-expense-grid" hidden="true"/> 
 	</grid>
 
+	<grid name="expense-line-project-grid" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine">
+		<field name="expenseProduct" canView="false" readonly="true"/>
+		<field name="expenseDate" readonly="true"/>
+		<field name="totalAmount" aggregate="sum" readonly="true"/>
+		<field name="totalTax" aggregate="sum" readonly="true"/>
+		<field name="comments" readonly="true"/>
+		<field name="toInvoice"/>
+	</grid>
+
+	<form name="expense-line-project-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine" canEdit="false">
+		<panel-include view="expense-line-form"/>
+	</form>
+
 	<form name="expense-line-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine"
 		onNew="action-expense-line-default"
 		onSave="action-expense-line-validate-expenseDate" width="large">
