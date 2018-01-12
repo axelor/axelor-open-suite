@@ -80,6 +80,8 @@ public interface ITranslation {
 
 
     public static final String INVOICING_PROJECT_BUSINESS_PROJECT = /*$$(*/ "InvoicingProject.businessProject"; /*)*/
+    public static final String INVOICING_PROJECT_TITLE = /*$$(*/ "InvoicingProject.title"; /*)*/
+    public static final String INVOICING_PROJECT_COMPANY = /*$$(*/ "InvoicingProject.company"; /*)*/
 
     public static final String INVOICING_PROJECT_LOG_TIMES = /*$$(*/ "InvoicingProject.logTimes"; /*)*/
     public static final String INVOICING_PROJECT_LOG_TIMES_USER = /*$$(*/ "InvoicingProject.user"; /*)*/
