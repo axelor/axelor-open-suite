@@ -27,6 +27,7 @@ import com.axelor.apps.project.exception.IExceptionMessage;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -80,6 +81,21 @@ public class ProjectServiceImpl implements ProjectService {
 		project.setProgress(BigDecimal.ZERO);
 		return project;
 	}
+
+    @Override
+    @Transactional(rollbackOn = { AxelorException.class, Exception.class })
+    public Project generateProject(Partner partner) {
+        User user = AuthUtils.getUser();
+        Project project = Beans.get(ProjectService.class).generateProject(null, getUniqueProjectName(partner), user,
+                user.getActiveCompany(), partner);
+        return projectRepository.save(project);
+    }
+
+    private String getUniqueProjectName(Partner partner) {
+        String name = String.format(I18n.get("%s project"), partner.getName());
+        long count = projectRepository.all().filter(String.format("self.name LIKE '%s%%'", name)).count();
+        return count != 0 ? String.format("%s %d", name, count + 1) : name;
+    }
 
 	@Override
 	public Partner getClientPartnerFromProject(Project project) throws AxelorException{
