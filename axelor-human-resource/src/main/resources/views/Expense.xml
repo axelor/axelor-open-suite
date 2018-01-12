@@ -61,7 +61,7 @@
 			    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 				<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
 				<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" readonlyIf="ventilated"/>
-				<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+				<field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 				<field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()" if-module="axelor-cash-management"/>
 				<field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" readonlyIf="ventilated"/>
 				<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb" readonlyIf="ventilated"/>
@@ -98,7 +98,7 @@
 				    <field name="totalAmount" title="Total A.T.I" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" colSpan="2" readonly="true"/>
 			   	    <field name="projectTask" title="Project" requiredIf="toInvoice" canView="false" domain="self.imputable = true" widget="SuggestBox" colSpan="4" grid-view="project-task-grid"/>
 					<field name="comments" colSpan="6" height="2" />
-					<field name="user" canEdit="false" hidden="true" form-view="user-form" grid-view="user-grid"/>
+					<field name="user" hidden="true" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 					<field name="untaxedAmount" hidden="true" />
 					<field name="expenseProduct" readonly="true" form-view="product-expense-form" grid-view="product-expense-grid" hidden="true"/>
 				</editor>

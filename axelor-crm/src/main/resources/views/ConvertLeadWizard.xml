@@ -49,7 +49,7 @@
 					  	<field name="languageSelect"/>
 					  	<label title="Assigned to"/>
 					    <field name="companySet"  widget="TagSelect" canNew="false" grid-view="company-grid" form-view="company-form"/>
-					    <field name="user" form-view="user-form" grid-view="user-grid"/>
+					    <field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 					    <field name="team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 		
 			
@@ -112,7 +112,7 @@
 					  	
 					  	<label title="Assigned to" colSpan="12"/>
 					    <field name="companySet"  widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
-					    <field name="user" form-view="user-form" grid-view="user-grid"/>
+					    <field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 					    <field name="team" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 					</editor>
 				</field>
@@ -148,7 +148,7 @@
 					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="4"/>
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
-					    <field name="user" colSpan="4"/>
+					    <field name="user" colSpan="4" canNew="false" canEdit="false" canView="false"/>
 					    <field name="team" onSelect="action-event-attrs-team-domain" colSpan="4" if="__config__.general.getTeamManagement()"/>
 					    <field name="company" widget="SuggestBox" colSpan="4"/>
 					</editor>
@@ -173,7 +173,7 @@
 					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
-					    <field name="user"/>
+					    <field name="user" canNew="false" canEdit="false" canView="false"/>
 					    <field name="team" onSelect="action-event-attrs-team-domain" if="__config__.general.getTeamManagement()"/>
 					</editor>
 				</field>
@@ -196,7 +196,7 @@
 					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
-					    <field name="user"/>
+					    <field name="user" canNew="false" canEdit="false" canView="false"/>
 					    <field name="team" onSelect="action-event-attrs-team-domain" if="__config__.general.getTeamManagement()"/>
 					</editor>
 				</field>
@@ -220,7 +220,7 @@
 					    <field name="limitDateT" colSpan="3"/>
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
-					    <field name="user"/>
+					    <field name="user" canNew="false" canEdit="false" canView="false"/>
 					    <field name="team" onSelect="action-event-attrs-team-domain" if="__config__.general.getTeamManagement()"/>
 					</editor>
 				</field>
@@ -316,7 +316,7 @@
 			  <field name="languageSelect"/>
 			  <panel title="Assigned to">
 			    <field name="companySet"  widget="TagSelect" canNew="false"/>
-			    <field name="user"/>
+			    <field name="user" canNew="false" canEdit="false" canView="false"/>
 			    <field name="team" if="__config__.general.getTeamManagement()"/>
 			  </panel>
 			</panel>
@@ -380,7 +380,7 @@
 		    <field name="languageSelect" colSpan="12"/>
 		    <panel title="Assigned to" colSpan="12" >
 		      <field name="companySet" widget="TagSelect" canNew="false"/>
-		      <field name="user"/>
+		      <field name="user" canNew="false" canEdit="false" canView="false"/>
 		      <field name="team" if="__config__.general.getTeamManagement()"/>
 		    </panel>
 		  </panel>
@@ -511,7 +511,7 @@
 	    </panel>
 	  </panel>
 	  <panel name="assignedTo" title="Assigned to" >
-	    <field name="user"/>
+	    <field name="user" canNew="false" canEdit="false" canView="false"/>
 	    <field name="team" if="__config__.general.getTeamManagement()"/>
 	    <field name="company" widget="SuggestBox"/>
 	  </panel>
@@ -534,7 +534,7 @@
 	      <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
 	    </panel>
 	  <panel name="assignment" title="Assignment">
-	    <field name="user"/>
+	    <field name="user" canNew="false" canEdit="false" canView="false"/>
 	    <field name="team" onSelect="action-event-attrs-team-domain" if="__config__.general.getTeamManagement()"/>
 	  </panel>
 	</form>
@@ -569,7 +569,7 @@
 	      <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
 	    </panel>
 	  <panel name="assignment" title="Assignment">
-	    <field name="user"/>
+	    <field name="user" canNew="false" canEdit="false" canView="false"/>
 	    <field name="team" onSelect="action-event-attrs-team-domain" if="__config__.general.getTeamManagement()"/>
 	  </panel>
 	</form>
@@ -602,7 +602,7 @@
 	      <field name="limitDateT"/>
 	    </panel>
 	  <panel name="assignedTo" title="Assigned to">
-	    <field name="user"/>
+	    <field name="user" canNew="false" canEdit="false" canView="false"/>
 	    <field name="team" onSelect="action-event-attrs-team-domain" if="__config__.general.getTeamManagement()"/>
 	  </panel>
 	</form>

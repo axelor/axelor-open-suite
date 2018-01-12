@@ -56,7 +56,7 @@
 	onNew="action-hr-default-timesheet-line-project,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-to-invoice-parent"
 	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-set-visible-duration,action-timesheet-line-attrs-set-visible-duration-title" width="large">
 		<panel name="overview" title="Overview">
-			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 			<field name="date" />
 			<field name="product" canEdit="false" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 			<field name="visibleDuration" width="62%" colSpan="3" onChange="action-timesheet-line-record-set-stored-duration" min="0.01"/>
@@ -80,7 +80,7 @@
 			<field name="durationStored" hidden="true" />
 			<field name="toInvoice" if-module="axelor-business-project"/>
 			<field name="comments" />
-			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
+			<field name="user" form-view="user-form" grid-view="user-grid" hidden="true" canNew="false" canEdit="false" canView="false"/>
 		</panel>
 	</form>
 	
@@ -97,7 +97,7 @@
 			<field name="durationStored" hidden="true" />
 			<field name="toInvoice" if-module="axelor-business-project"/>
 			<field name="comments" />
-			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
+			<field name="user" form-view="user-form" grid-view="user-grid" hidden="true" canNew="false" canEdit="false" canView="false"/>
 		</panel>
 	</form>
 

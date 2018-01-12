@@ -76,7 +76,7 @@
         			<field name="$dailySalaryCost" readonly="true"
 					   x-bind="{{hourlyRate*dailyWorkHours}}" title="Daily cost"/>
         			<field name="product" canEdit="false" colSpan="4" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
-        			<field name="manager" canEdit="false" colSpan="4" form-view="user-form" grid-view="user-grid"/>
+        			<field name="manager" colSpan="4" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
         			<field name="department" colSpan="4" form-view="department-form" grid-view="department-grid"/>
         			<field name="timesheetReminder" colSpan="4"/>
         			<field name="external" colSpan="4"/>
