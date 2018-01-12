@@ -39,7 +39,22 @@
 	    <field name="exTaxTotal" aggregate="sum"/>
 	    <field name="inTaxTotal" aggregate="sum"/>
 	</grid>
-    
+
+	<grid name="sale-order-line-project-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
+		<hilite background="danger" if="deliveryState == 1"/>
+		<hilite background="warning" if="deliveryState == 2"/>
+		<hilite background="success" if="deliveryState == 3"/>
+		<field name="deliveryState" hidden="true" if="__config__.app.isApp('supplychain')" readonly="true"/>
+		<field name="productName" readonly="true"/>
+		<field name="qty" aggregate="sum" readonly="true"/>
+		<field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" readonly="true"/>
+		<field name="unit" form-view="unit-form" grid-view="unit-grid" readonly="true"/>
+		<field name="price" x-scale="2" readonly="true"/>
+		<field name="exTaxTotal" aggregate="sum" readonly="true"/>
+		<field name="inTaxTotal" aggregate="sum" readonly="true"/>
+        <field name="toInvoice"/>
+	</grid>
+
 	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
 	onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client" onNew="action-group-sale-saleorderline-onnew" width="large">
 		<panel showIf="typeSelect == 1">

@@ -53,7 +53,21 @@
         <field name="price"/>
         <field name="exTaxTotal" aggregate="sum"/>
 	    <field name="inTaxTotal" aggregate="sum"/>
+		<field name="toInvoice"/>
     </grid>
+
+	<grid name="purchase-order-line-project-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+		<hilite background="danger" if="salePrice &lt; saleMinPrice"/>
+		<field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid" readonly="true"/>
+		<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid" readonly="true"/>
+		<field name="productName" readonly="true"/>
+		<field name="qty" aggregate="sum" readonly="true"/>
+		<field name="unit" form-view="unit-form" grid-view="unit-grid" readonly="true"/>
+		<field name="price" readonly="true"/>
+		<field name="exTaxTotal" aggregate="sum" readonly="true"/>
+		<field name="inTaxTotal" aggregate="sum" readonly="true"/>
+		<field name="toInvoice" readonly="false"/>
+	</grid>
 
 	<form name="purchase-order-line-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine"
 		  onNew="action-group-purchase-purchase-orderline-onnew"
