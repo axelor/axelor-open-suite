@@ -193,7 +193,7 @@
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" onSelect="action-set-payment-mode-domain" onChange="action-invoice-method-fill-company-bank-details"/>
 			<field name="paymentCondition" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 			<field name="bankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="priceList" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-attrs-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
+			<field name="priceList" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-method-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
 			<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-group-saleorder-onchange" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="purchaseOrder" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
 			<field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
@@ -288,7 +288,7 @@
             <button name="ventilate" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
             <button name="validateAndVentilate" hidden="true" title="Validate" onClick="save,action-invoice-method-validate-and-ventilate"/>
             <button name="cancel" hidden="true" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
-            <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save"/>
+            <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save,action-account-invoice-onload-group"/>
             <button name="addPayment" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <button name="addPayment" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment-voucher" if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <field name="statusSelect"/>
@@ -740,6 +740,7 @@
 		<action name="action-invoice-method-fill-company-bank-details"/>
 		<action name="action-invoice-method-fill-advance-payment-set"/>
 		<action name="action-invoice-method-set-default-mail"/>
+		<action name="action-invoice-method-fill-price-list"/>
 		<action name="action-invoice-attrs-interco-supplychain"/>
 		<action name="action-invoice-record-interco-supplychain"/>
     </action-group>
@@ -756,7 +757,6 @@
 
 	<action-group name="action-invoice-group-invoice-line-onchange">
 		<action name="action-invoice-method-compute"/>
-		<action name="action-invoice-method-fill-advance-payment-set"/>
 		<action name="save"/>
 	</action-group>
 	<action-attrs name="action-invoice-attrs-in-ati">
@@ -809,8 +809,6 @@
     	<field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
 		<field name="address" expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
     	<field name="currency" expr="eval: partner?.currency"/>
-		<field name="priceList" expr="eval: partner?.salePriceList" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
-		<field name="priceList" expr="eval: partner?.purchasePriceList" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
 		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : bankDetails" />
     	<field name="contactPartner" expr="eval:null" />
     	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect"/>
@@ -898,11 +896,6 @@
 		<attribute name="domain" for="partnerAccount" expr="eval: &quot;self.company.id = ${company.id} AND (self.accountType.technicalTypeSelect = 'receivable' OR self.accountType.technicalTypeSelect = 'payable') AND self.useForPartnerBalance = true &quot;" if="company"/>
 	</action-attrs>
 	
-	<action-attrs name="action-invoice-attrs-domain-priceList">
-		<attribute name="domain" for="priceList" expr="eval: &quot; self.typeSelect = 1 &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
-		<attribute name="domain" for="priceList" expr="eval: &quot; self.typeSelect = 2 &quot;" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
-	</action-attrs>
-
 	<action-attrs name="action-invoice-attrs-domain-address">
 		<attribute name="domain" for="address" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isInvoicingAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
     </action-attrs>
@@ -1006,6 +999,16 @@
 
 	<action-method name="action-invoice-method-filter-printing-settings">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="filterPrintingSettings"/>
+	</action-method>
+
+	<action-method name="action-invoice-method-fill-price-list">
+		<call class="com.axelor.apps.account.web.InvoiceController"
+			  method="fillPriceList"/>
+	</action-method>
+
+	<action-method name="action-invoice-method-domain-priceList">
+		<call class="com.axelor.apps.account.web.InvoiceController"
+			  method="changePriceListDomain"/>
 	</action-method>
 
     <action-view name="action-invoice-view-register-payment" title="Register a payment" model="com.axelor.apps.account.db.InvoicePayment">

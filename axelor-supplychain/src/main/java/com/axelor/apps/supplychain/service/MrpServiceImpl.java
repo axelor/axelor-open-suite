@@ -510,7 +510,7 @@ public class MrpServiceImpl implements MrpService  {
 		if(mrp.getSaleOrderLineSet().isEmpty())  {
 			
 			saleOrderLineList.addAll(saleOrderLineRepository.all()
-				.filter("self.product in (?1) AND self.saleOrder.stockocation in (?2) AND self.saleOrder.deliveryState = ?3 "
+				.filter("self.product in (?1) AND self.saleOrder.stockLocation in (?2) AND self.saleOrder.deliveryState = ?3 "
 						+ "AND self.saleOrder.statusSelect IN (?4)",
 						this.productMap.keySet(), this.stockLocationList, SaleOrderRepository.STATE_NOT_DELIVERED, statusList).fetch());
 			

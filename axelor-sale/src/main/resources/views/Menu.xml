@@ -189,7 +189,17 @@
 		<domain>self.isShippingCostsProduct = true</domain>
 		<context name="_isShippingCostsProduct" expr="true"/>
 	</action-view>
-		
+
+	<menuitem name="sc-root-sale-conf-partner-price-list" parent="sc-root-sale-conf"
+			  title="Partner price lists" action="sc.root.sale.conf.partner.price.list" />
+
+	<action-view name="sc.root.sale.conf.partner.price.list" title="Partner price lists"
+				 model="com.axelor.apps.base.db.PartnerPriceList" >
+		<view type="grid" name="partner-price-list-grid" />
+		<view type="form" name="sale-partner-price-list-form" />
+		<domain>self.typeSelect = 1</domain>
+	</action-view>
+
 	<menuitem name="sc-root-sale-conf-price-list" parent="sc-root-sale-conf"
 		title="Price lists" action="sc.root.sale.conf.price.list" />
 

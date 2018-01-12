@@ -122,7 +122,7 @@ public interface IExceptionMessage {
 	static final public String IMPORTER_1 = /*$$(*/ "Error : Mapping file is unreachable." /*)*/;
 	static final public String IMPORTER_2 = /*$$(*/ "Error : Data file is unreachable." /*)*/;
 	static final public String IMPORTER_3 = /*$$(*/ "Error : Mapping file is not found." /*)*/;
-	
+
 	/**
 	 * Importer Listener 
 	 */
@@ -215,4 +215,10 @@ public interface IExceptionMessage {
 	static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;
 	static final String IMPORT_CALENDAR = /*$$(*/ "Import calendar" /*)*/;
 
+
+	/**
+	 * Price list
+	 */
+	String PRICE_LIST_DATE_WRONG_ORDER = /*$$(*/ "The end date is before the begin date." /*)*/;
+	String PARTNER_PRICE_LIST_DATE_INCONSISTENT = /*$$(*/ "The price list %s will still be active when the price list %s will become active." /*)*/;
 }

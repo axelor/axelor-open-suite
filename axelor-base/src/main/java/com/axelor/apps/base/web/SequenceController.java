@@ -20,17 +20,28 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 
+import javax.inject.Inject;
+
 public class SequenceController {
+
+    @Inject
+    public SequenceService sequenceService;
+
     public void getDefaultTitle(ActionRequest request, ActionResponse response) {
         Sequence sequence = request.getContext().asType(Sequence.class);
         if (!Strings.isNullOrEmpty(sequence.getCode())) {
-            String defautlTitle = Beans.get(SequenceService.class).getDefaultTitle(sequence);
+            String defautlTitle = sequenceService.getDefaultTitle(sequence);
             response.setValue("name", I18n.get(defautlTitle));
         }
+    }
+
+    public void computeFullName(ActionRequest request, ActionResponse response) {
+        Sequence sequence = request.getContext().asType(Sequence.class);
+        String fullName = sequenceService.computeFullName(sequence);
+        response.setValue("fullName", fullName);
     }
 }

@@ -6,7 +6,6 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="AccountConfig" lang="java" cachable="true">
-  	<integer name="importId" />
     
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
     

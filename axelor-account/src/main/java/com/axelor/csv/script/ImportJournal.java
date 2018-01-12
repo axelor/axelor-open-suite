@@ -32,7 +32,8 @@ public class ImportJournal {
         Journal journal = (Journal) bean;
 
         // Only 'Manual misc ops' Journal
-        if (journal.getImportId() != 24) { return bean; }
+        String importId = journal.getImportId();
+        if (!"24".equals(importId)) { return bean; }
 
         Set<AccountType> accountTypesSet = new HashSet<AccountType>(Beans.get(AccountTypeRepository.class).all().fetch());
         journal.setValidAccountTypeSet(accountTypesSet);

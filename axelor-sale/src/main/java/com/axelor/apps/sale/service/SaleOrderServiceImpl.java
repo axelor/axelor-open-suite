@@ -17,20 +17,6 @@
  */
 package com.axelor.apps.sale.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.persistence.Query;
-
-import com.axelor.apps.report.engine.ReportSettings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.AppSale;
 import com.axelor.apps.base.db.CancelReason;
@@ -40,11 +26,14 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.DurationService;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -74,6 +63,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
@@ -332,7 +322,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		this.computeAddressStr(saleOrder);
 
 		if(priceList == null)  {
-			priceList = clientPartner.getSalePriceList();
+			priceList = Beans.get(PartnerPriceListService.class).getDefaultPriceList(clientPartner, PriceListRepository.TYPE_SALE);
 		}
 		saleOrder.setPriceList(priceList);
 

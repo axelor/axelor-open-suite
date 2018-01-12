@@ -7,7 +7,6 @@
 
 	<entity name="Product" lang="java">
 
-		<integer name="importId" />
 		<string name="name" title="Name" required="true" initParam="true"
 			translatable="true" />
 

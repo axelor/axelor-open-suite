@@ -6,7 +6,6 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Company" lang="java" cachable="true">
-  	<integer name="importId"/>
     <string name="name" title="Name" required="true" unique="true"/>
     <string name="code" title="Code" required="true" unique="true"/>
     <many-to-one name="address" ref="Address" title="Address"/>  <!-- A supprimer si Partner sur company  -->  

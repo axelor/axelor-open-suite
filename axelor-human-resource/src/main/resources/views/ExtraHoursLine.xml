@@ -3,10 +3,10 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="extra-hours-line-grid" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHoursLine" editable="true" onNew="action-extra-hours-line-record-default" orderBy="date">
-		<field name="date"/>
-		<field name="qty" onChange="action-extra-hours-line-validate-qty" aggregate="sum"/>
-		<field name="project"/>
-		<field name="description"/>
+		<field name="date" width="100"/>
+		<field name="qty" width="100" onChange="action-extra-hours-line-validate-qty" aggregate="sum"/>
+		<field name="project" width="200"/>
+		<field name="description" width="400"/>
 		<field name="user" hidden="true"/>
 	</grid>
 

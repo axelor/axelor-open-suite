@@ -17,13 +17,11 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.List;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
@@ -42,8 +40,13 @@ import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
 
 public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 
@@ -127,7 +130,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 							null,
 							stockLocation,
 							this.today,
-							supplierPartner.getPurchasePriceList(),
+							Beans.get(PartnerPriceListService.class).getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
 							supplierPartner));
 
 					purchaseOrder.addPurchaseOrderLineListItem(

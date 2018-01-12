@@ -22,6 +22,8 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.axelor.apps.base.db.Company;
@@ -133,7 +135,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 					null,
 					stockLocation,
 					this.today,
-					supplierPartner.getPurchasePriceList(),
+					Beans.get(PartnerPriceListService.class).getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
 					supplierPartner));
 			if (purchaseOrders != null) {
 				purchaseOrders.put(key, purchaseOrder);

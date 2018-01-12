@@ -5,7 +5,6 @@
 
   <entity sequential="true" name="Invoice" lang="java">
   
- 	<integer name="importId" />
     <!-- NOT DISPLAY -->
   	<many-to-one name="canceledPaymentSchedule" ref="com.axelor.apps.account.db.PaymentSchedule"/> <!--  Field not displayed, used to shift to irrecoverable a payment schedule -->
   	

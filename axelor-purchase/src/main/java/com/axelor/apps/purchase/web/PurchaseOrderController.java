@@ -27,10 +27,12 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -361,4 +363,26 @@ public class PurchaseOrderController {
 		response.setValue("printingSettings", printingSettings);
 		response.setAttr("printingSettings", "domain", domain);
 	}
+
+	/**
+	 * Called from purchase order form view on partner change.
+	 * Get the default price list for the purchase order.
+	 * Call {@link PartnerPriceListService#getDefaultPriceList(Partner, int)}.
+	 * @param request
+	 * @param response
+	 */
+	public void fillPriceList(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		response.setValue("priceList",
+				Beans.get(PartnerPriceListService.class)
+						.getDefaultPriceList(purchaseOrder.getSupplierPartner(), PriceListRepository.TYPE_PURCHASE)
+		);
+	}
+
+	public void changePriceListDomain(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		String domain = Beans.get(PartnerPriceListService.class).getPriceListDomain(purchaseOrder.getSupplierPartner(), PriceListRepository.TYPE_PURCHASE);
+		response.setAttr("priceList", "domain", domain);
+	}
+
 }

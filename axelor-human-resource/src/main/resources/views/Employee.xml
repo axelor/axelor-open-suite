@@ -233,8 +233,7 @@
 				 model="com.axelor.apps.hr.db.Timesheet">
 		<view type="grid" name="my-timesheets-grid"/>
 		<view type="form" name="timesheet-form"/>
-        <domain>self.user = :_user</domain>
-		<context name="_user" expr="eval:__user__"/>
+        <domain>self.user = :__user__</domain>
 	</action-view>
 
 	<action-method name="action-employee-method-show-annual-report">

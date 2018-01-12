@@ -7,7 +7,6 @@
 
   <entity name="Opportunity" lang="java">
     
-    <integer name="importId"/>
     <string name="name" title="Name" required="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>

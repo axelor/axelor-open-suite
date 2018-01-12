@@ -25,7 +25,6 @@
   	</string>
   	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order"/>
   	<integer name="sequence" title="Seq."/>
-  	<integer name="importId" />
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   	<decimal name="qty" title="Qty" default="1"/>
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal / line"/>

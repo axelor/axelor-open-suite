@@ -375,10 +375,6 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 					.computeAddressStr(invoiceMainInvoicingAddress);
 		}
 
-		if (invoicePriceList == null){
-			invoicePriceList = invoiceClientPartner.getSalePriceList();
-		}
-
 		//Concat sequence, internal ref and external ref from all saleOrder
 		String numSeq = "";
 		String internalRef = "";
@@ -544,10 +540,6 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		 * Step 3, check if some other fields are different and assign a default value
 		 *
 		 */
-
-		if (invoicePriceList == null){
-			invoicePriceList = invoiceSupplierPartner.getPurchasePriceList();
-		}
 
 		//Concat sequence, internal ref and external ref from all saleOrder
 		String numSeq = "";

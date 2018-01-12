@@ -17,25 +17,10 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.mail.MessagingException;
-
-import com.axelor.apps.base.db.Company;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
@@ -43,7 +28,9 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.hr.db.Employee;
@@ -81,6 +68,19 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TimesheetServiceImpl implements TimesheetService{
 
@@ -470,7 +470,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		BigDecimal qtyConverted = durationStored;
 		qtyConverted = Beans.get(UnitConversionService.class).convert(appHumanResourceService.getAppBase().getUnitHours(), product.getUnit(), durationStored);
 
-		PriceList priceList = invoice.getPartner().getSalePriceList();
+		PriceList priceList = Beans.get(PartnerPriceListService.class).getDefaultPriceList(invoice.getPartner(), PriceListRepository.TYPE_SALE);
 		if(priceList != null)  {
 			PriceListLine priceListLine = priceListService.getPriceListLine(product, qtyConverted, priceList);
 			if(priceListLine!=null){

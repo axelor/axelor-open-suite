@@ -5,7 +5,6 @@
  
   <entity name="DebtRecoveryMethod" lang="java" cachable="true">
   
-    <integer name="importId"/>
     <string name="name" title="Method name" />
     <string name="code" title="Code" unique="true"/>
     

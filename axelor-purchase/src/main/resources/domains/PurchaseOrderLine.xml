@@ -6,7 +6,6 @@
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
   <entity name="PurchaseOrderLine" lang="java">
-  	<integer name="importId"/>
   	<string name="fullName" namecolumn="true">
 	  	<![CDATA[
 	  		String fullName = "";

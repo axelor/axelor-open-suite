@@ -5,8 +5,6 @@
   
   <entity name="Partner" lang="java">
   
-  	<string name="importId"/>
-  
   	<!-- En-tête  -->
     <many-to-one name="partnerCategory" ref="com.axelor.apps.base.db.PartnerCategory" title="Category" massUpdate="true"/>
     <string name="partnerSeq" title="Reference" readonly="true" unique="true"/>
@@ -51,9 +49,9 @@
     <!--  Page règle de facturation/paiement -->
 <!--     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Default Bank Details"/> -->
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" index="false" massUpdate="true"/>
-  	<many-to-one name="salePriceList" ref="com.axelor.apps.base.db.PriceList" title="Sale Price List" index="false" massUpdate="true"/>
-  	<many-to-one name="purchasePriceList" ref="com.axelor.apps.base.db.PriceList" title="Purchase Price List" index="false" massUpdate="true"/>
-   
+
+    <many-to-one name="salePartnerPriceList" ref="com.axelor.apps.base.db.PartnerPriceList" title="Sale price lists"/>
+    <many-to-one name="purchasePartnerPriceList" ref="com.axelor.apps.base.db.PartnerPriceList" title="Purchase price lists"/>
     <!-- PAGE Blocage -->
 	<one-to-many name="blockingList" ref="com.axelor.apps.base.db.Blocking" title="Blocking follow-up List" mappedBy="partner" orderBy="-blockingToDate"/>
 	

@@ -37,6 +37,7 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
@@ -601,8 +602,7 @@ public class InvoiceController {
                     .getDefaultAdvancePaymentInvoice(invoice);
 			response.setValue("advancePaymentInvoiceSet", invoices);
 		} catch (AxelorException e) {
-			TraceBackService.trace(e);
-			response.setError(e.getMessage());
+			TraceBackService.trace(response, e);
 		}
 	}
 
@@ -612,7 +612,7 @@ public class InvoiceController {
 	 * @param response
 	 * @throws AxelorException
 	 */
-	public void setDefaultMail(ActionRequest request, ActionResponse response) throws AxelorException{
+	public void setDefaultMail(ActionRequest request, ActionResponse response) {
 		Invoice invoice = request.getContext().asType(Invoice.class);
 		Company company = invoice.getCompany();
 		Partner partner = invoice.getPartner();
@@ -639,5 +639,36 @@ public class InvoiceController {
 
 		response.setValue("printingSettings", printingSettings);
 		response.setAttr("printingSettings", "domain", domain);
+	}
+
+	/**
+	 * Called from invoice form view on partner change.
+	 * Get the default price list for the invoice.
+	 * Call {@link PartnerPriceListService#getDefaultPriceList(Partner, int)}.
+	 * @param request
+	 * @param response
+	 */
+	public void fillPriceList(ActionRequest request, ActionResponse response) {
+	    Invoice invoice = request.getContext().asType(Invoice.class);
+	    Partner partner = invoice.getPartner();
+	    int priceListTypeSelect = invoiceService.getPurchaseTypeOrSaleType(invoice);
+		response.setValue("priceList",
+				Beans.get(PartnerPriceListService.class)
+						.getDefaultPriceList(partner, priceListTypeSelect)
+		);
+	}
+
+	/**
+	 * Called from invoice view on price list select.
+	 * Call {@link PartnerPriceListService#getPriceListDomain(Partner, int)}.
+	 * @param request
+	 * @param response
+	 */
+	public void changePriceListDomain(ActionRequest request, ActionResponse response) {
+	    Invoice invoice = request.getContext().asType(Invoice.class);
+		Partner partner = invoice.getPartner();
+		int priceListTypeSelect = invoiceService.getPurchaseTypeOrSaleType(invoice);
+	    String domain = Beans.get(PartnerPriceListService.class).getPriceListDomain(partner, priceListTypeSelect);
+	    response.setAttr("priceList", "domain", domain);
 	}
 }
