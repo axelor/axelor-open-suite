@@ -50,6 +50,7 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Timetable;
@@ -540,20 +541,12 @@ public class ForecastRecapService {
 	}
 	
 	public String getURLForecastRecapPDF(ForecastRecap forecastRecap) throws AxelorException  {
-		String language="";
-		try{
-			language = forecastRecap.getCompany().getPrintingSettings().getLanguageSelect() != null ? forecastRecap.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-		}catch (NullPointerException e) {
-			language = "en";
-		}
-		language = language.equals("")? "en": language;
-		
 		String title = I18n.get("ForecastRecap");
 			title += forecastRecap.getId();
 
 		return reportFactory.createReport(IReport.FORECAST_RECAP, title+"-${date}")
 				.addParam("ForecastRecapId", forecastRecap.getId().toString())
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.generate()
 				.getFileLink();
 

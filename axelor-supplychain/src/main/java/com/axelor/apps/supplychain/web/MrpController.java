@@ -76,7 +76,7 @@ public class MrpController {
 		try {
 			String fileLink = ReportFactory.createReport(IReport.MRP_WEEKS, name)
 					.addParam("mrpId", mrp.getId())
-					.addParam("Locale", AuthUtils.getUser().getLanguage())
+					.addParam("Locale", ReportSettings.getPrintingLocale(null))
 					.addParam("endDate", mrpService.findMrpEndDate(mrp).atStartOfDay().toString())
 					.addFormat(ReportSettings.FORMAT_PDF)
 					.generate()
@@ -104,7 +104,7 @@ public class MrpController {
         try {
             String fileLink = ReportFactory.createReport(IReport.MRP_LIST, name)
                     .addParam("mrpId", mrp.getId())
-                    .addParam("Locale", AuthUtils.getUser().getLanguage())
+                    .addParam("Locale", ReportSettings.getPrintingLocale(null))
                     .addFormat(ReportSettings.FORMAT_PDF)
                     .generate()
                     .getFileLink();

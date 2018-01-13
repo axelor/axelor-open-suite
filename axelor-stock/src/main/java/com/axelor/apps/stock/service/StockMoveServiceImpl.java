@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.axelor.apps.report.engine.ReportSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -852,15 +853,6 @@ public class StockMoveServiceImpl implements StockMoveService {
 		}
 
 		if (!stockMoveIds.equals("")) {
-
-			String language;
-			try{
-				language = stockMove.getPartner().getLanguageSelect() != null? stockMove.getPartner().getLanguageSelect() : stockMove.getCompany().getPrintingSettings().getLanguageSelect() != null ? stockMove.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-			} catch (NullPointerException e) {
-				language = "en";
-			}
-			language = language.equals("")? "en": language;
-
 			String title = I18n.get("Stock move");
 			if(stockMove.getStockMoveSeq() != null)  {
 				title = lstSelectedMove == null ? I18n.get("StockMove") + " " + stockMove.getStockMoveSeq() : I18n.get("StockMove(s)");
@@ -872,7 +864,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 			return ReportFactory.createReport(report, title+"-${date}")
 					.addParam("StockMoveId", stockMoveIds)
-					.addParam("Locale", language)
+					.addParam("Locale", ReportSettings.getPrintingLocale(stockMove.getPartner()))
 					.generate()
 					.getFileLink();
 		} else {

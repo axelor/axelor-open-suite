@@ -34,6 +34,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -103,17 +104,12 @@ public class PartnerController {
 	 * @throws IOException 
 	 */
 	public void showPartnerInfo(ActionRequest request, ActionResponse response) throws AxelorException {
-
-		
 		Partner partner = request.getContext().asType(Partner.class);
-		User user = AuthUtils.getUser();
 
-		String language = (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))? user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en" : partner.getLanguageSelect();
-		
 		String name = I18n.get("Partner")+" "+partner.getPartnerSeq();
 		
 		String fileLink = ReportFactory.createReport(IReport.PARTNER, name+"-${date}")
-					.addParam("Locale", language)
+					.addParam("Locale", ReportSettings.getPrintingLocale(partner))
 					.addParam("PartnerId", partner.getId())
 					.generate()
 					.getFileLink();
@@ -136,14 +132,12 @@ public class PartnerController {
 	 * @throws IOException 
 	 */
 	public void printContactPhonebook(ActionRequest request, ActionResponse response) throws AxelorException {
-
 		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
 
 		String name = I18n.get("Phone Book");
 		
 		String fileLink = ReportFactory.createReport(IReport.PHONE_BOOK, name+"-${date}")
-					.addParam("Locale", language)
+					.addParam("Locale", ReportSettings.getPrintingLocale(null))
 					.addParam("UserId", user.getId())
 					.generate()
 					.getFileLink();
@@ -165,14 +159,12 @@ public class PartnerController {
 	 * @throws IOException 
 	 */
 	public void printCompanyPhonebook(ActionRequest request, ActionResponse response) throws AxelorException {
-
 		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
 
 		String name = I18n.get("Company PhoneBook");
 		
 		String fileLink = ReportFactory.createReport(IReport.COMPANY_PHONE_BOOK, name+"-${date}")
-					.addParam("Locale", language)
+					.addParam("Locale", ReportSettings.getPrintingLocale(null))
 					.addParam("UserId", user.getId())
 					.generate()
 					.getFileLink();
@@ -196,12 +188,11 @@ public class PartnerController {
 		Partner partner = request.getContext().asType(Partner.class);
 
 		User user = AuthUtils.getUser();
-		String language = (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))? user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en" : partner.getLanguageSelect();
 
 		String name = I18n.get("Client Situation");
 		
 		String fileLink = ReportFactory.createReport(IReport.CLIENT_SITUATION, name+"-${date}")
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(partner))
 				.addParam("UserId", user.getId())
 				.addParam("PartnerId", partner.getId())
 				.addParam("PartnerPic",partner.getPicture() != null ? MetaFiles.getPath(partner.getPicture()).toString() : "")

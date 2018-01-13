@@ -56,6 +56,8 @@
 		
 		<boolean name="document" title="Documents" default="true" />
 		
+		<boolean name="enableTradingNamesManagement" default="false"/>
+		
 		
 		<extra-code>
 	   		<![CDATA[

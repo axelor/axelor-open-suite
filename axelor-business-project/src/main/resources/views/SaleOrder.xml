@@ -16,8 +16,8 @@
 		<panel-include view="sale-order-template-form" from="axelor-sale"/>
 	</form>
 	
-	
 	<action-group name="action-group-businness-project-saleorder-onload">
+		<action name="action-sale-method-filter-printing-settings"/>
 		<action name="action-group-supplychain-saleorder-onload"/>
         <action name="action-sale-order-attrs-project"/>
 	</action-group>

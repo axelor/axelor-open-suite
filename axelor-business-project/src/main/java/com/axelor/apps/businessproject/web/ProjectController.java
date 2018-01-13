@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.web;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
+import com.axelor.apps.report.engine.ReportSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,17 +47,13 @@ public class ProjectController {
 	private ProjectService projectService;
 	
 	public void printProject(ActionRequest request,ActionResponse response) throws AxelorException  {
-
 		Project project = request.getContext().asType(Project.class);
-
-		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
 
 		String name = I18n.get("Project") + " " + project.getCode();
 		
 		String fileLink = ReportFactory.createReport(IReport.PROJECT, name+"-${date}")
 				.addParam("ProjectId", project.getId())
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.toAttach(project)
 				.generate()
 				.getFileLink();
@@ -102,9 +99,6 @@ public class ProjectController {
 
 		Project project = request.getContext().asType(Project.class);
 
-		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
-
 		String name = I18n.get("Planification and costs");
 		
 		if (project.getCode() != null) {
@@ -113,7 +107,7 @@ public class ProjectController {
 		
 		String fileLink = ReportFactory.createReport(IReport.PLANNIF_AND_COST, name)
 				.addParam("ProjectId", project.getId())
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.toAttach(project)
 				.generate()
 				.getFileLink();

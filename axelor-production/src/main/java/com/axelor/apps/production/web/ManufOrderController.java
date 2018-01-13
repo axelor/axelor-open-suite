@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.service.TraceBackService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
@@ -184,7 +185,7 @@ public class ManufOrderController {
 			}
 			
 			String fileLink = ReportFactory.createReport(IReport.MANUF_ORDER, name+"-${date}")
-					.addParam("Locale", manufOrderService.getLanguageToPrinting(manufOrder))
+					.addParam("Locale", ReportSettings.getPrintingLocale(null))
 					.addParam("ManufOrderId", manufOrderIds)
 					.generate()
 					.getFileLink();
@@ -234,7 +235,7 @@ public class ManufOrderController {
 		String prodProcessLable = manufOrder.getProdProcess().getName();
 		
 		String fileLink = ReportFactory.createReport(IReport.PROD_PROCESS, prodProcessLable+"-${date}")
-				.addParam("Locale", manufOrderService.getLanguageToPrinting(manufOrder))
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.addParam("ProdProcessId", prodProcessId)
 				.generate()
 				.getFileLink();

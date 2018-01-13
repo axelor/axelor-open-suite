@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.auth.AuthUtils;
@@ -37,7 +38,8 @@ public class LogisticalFormController {
 
 			String fileLink = ReportFactory.createReport(IReport.PACKAGING_LIST, name + " - ${date}")
 					.addParam("LogisticalFormId", logisticalForm.getId())
-					.addParam("Locale", AuthUtils.getUser().getLanguage()).generate().getFileLink();
+					.addParam("Locale", ReportSettings.getPrintingLocale(null))
+					.generate().getFileLink();
 
 			response.setView(ActionView.define(name).add("html", fileLink).map());
 		} catch (Exception e) {

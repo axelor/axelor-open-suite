@@ -61,6 +61,9 @@
   	
   	<string name="priceRequest" title="Message for requesting prices" large="true"/>
 
+	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
+	<many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"/>
+
   	<unique-constraint columns="purchaseOrderSeq,company"/>
   	
 	<track>

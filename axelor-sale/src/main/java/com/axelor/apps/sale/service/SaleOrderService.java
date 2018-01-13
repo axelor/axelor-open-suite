@@ -100,8 +100,6 @@ public interface SaleOrderService {
 	
 	public SaleOrder mergeSaleOrders(List<SaleOrder> saleOrderList, Currency currency, Partner clientPartner, Company company, Partner contactPartner, PriceList priceList, Team team) throws AxelorException;
 
-	public String getLanguageForPrinting(SaleOrder saleOrder);
-	
 	public String getFileName(SaleOrder saleOrder);
 
 	@Transactional

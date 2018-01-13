@@ -413,6 +413,13 @@
 	    <view type="form" name="company-department-form"/>
 	</action-view>
 
+	<menuitem title="Trading names" name="sportcom-trading-name-menu" parent="admin-root-user-configuration" action="action-view-trading-name" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+
+	<action-view name="action-view-trading-name" title="Trading names" model="com.axelor.apps.base.db.TradingName">
+		<view type="grid" name="trading-name-grid" />
+		<view type="form" name="trading-name-form" />
+	</action-view>
+
 	<menuitem name="alarm-root" title="Alarms" order="30"
 		  parent="admin-root"/>
 

@@ -149,19 +149,6 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 	}
 
 	@Override
-	public String getLanguageForPrinting(BillOfMaterial billOfMaterial) {
-		String language="";
-		try{
-			language = billOfMaterial.getCompany().getPrintingSettings().getLanguageSelect() != null ? billOfMaterial.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-		}catch (NullPointerException e) {
-			language = "en";
-		}
-		language = language.equals("")? "en": language;
-		
-		return language;
-	}
-	
-	@Override
 	public String getFileName(BillOfMaterial billOfMaterial) {
 		
 		return I18n.get("Bill of Material") + "-" + billOfMaterial.getName() + ((billOfMaterial.getVersionNumber() > 1) ? "-V" + billOfMaterial.getVersionNumber() : "");

@@ -27,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
+import com.axelor.apps.report.engine.ReportSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -401,16 +402,13 @@ public void historicTimesheetLine(ActionRequest request, ActionResponse response
 	public void printTimesheet(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
-		
-		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
-		
+
 		String name = I18n.get("Timesheet") + " " + timesheet.getFullName()
 												.replace("/", "-");
 		
 		String fileLink = ReportFactory.createReport(IReport.TIMESHEET, name)
 				.addParam("TimesheetId", timesheet.getId())
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.toAttach(timesheet)
 				.generate()
 				.getFileLink();

@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.base.db.PrintingSettings;
+import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import org.eclipse.birt.core.exception.BirtException;
@@ -107,7 +110,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 		
 		String name = saleOrderService.getFileName(saleOrder);
 		
@@ -128,7 +131,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 
 		String name = saleOrderService.getFileName(saleOrder);
 
@@ -145,7 +148,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 
 		String name = saleOrderService.getFileName(saleOrder);
 		
@@ -164,7 +167,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 
 		String name = saleOrderService.getFileName(saleOrder);
 		
@@ -488,6 +491,20 @@ public class SaleOrderController {
             response.setReload(true);
         }
     }
+
+	public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		PrintingSettings printingSettings = saleOrder.getPrintingSettings();
+
+		List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(saleOrder.getTradingName(), saleOrder.getCompany());
+		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
+			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
+		}
+		String domain = !printingSettingsList.isEmpty() ? String.format("self.id IN (%s)", StringTool.getIdListString(printingSettingsList)) : null;
+
+		response.setValue("printingSettings", printingSettings);
+		response.setAttr("printingSettings", "domain", domain);
+	}
 
 	/**
 	 * Called from sale order form view on partner change.
