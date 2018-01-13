@@ -52,7 +52,7 @@
 			<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
        		<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
 		</panel>
-	    	
+
 		<panel name="customerBalance" title="Customer balance"  itemSpan="4" >
 			<field name="balanceCustAccount"/>
 			<field name="balanceDueCustAccount"/>
