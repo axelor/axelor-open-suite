@@ -243,7 +243,6 @@
 	</tree>
 	
 	<action-group name="action-project-group-on-new-project">
-		<action name="action-project-generate-project-from-partner" if="_idPartner != null"/>
 		<action name="action-project-defaults"/>
 		<action name="action-project-attrs-duration-title"/>
 		<action name="action-project-attrs-scale-and-precision"/>
@@ -259,10 +258,6 @@
 		<action name="action-attrs-project-set-project-type"  if="__config__.app.isApp('business-project')" />
 	</action-group>
 
-	<action-method name="action-project-generate-project-from-partner">
-		<call class="com.axelor.apps.project.web.ProjectController" method="generateProjectFromPartner"/>
-	</action-method>
-	
 	<action-record name="action-project-record-inv-type-select" model="com.axelor.apps.project.db.Project">
 		<field name="projInvTypeSelect" expr="eval: project?.projInvTypeSelect"/>
 	</action-record>
