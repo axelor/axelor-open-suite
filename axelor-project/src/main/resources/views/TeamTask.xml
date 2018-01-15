@@ -101,6 +101,22 @@
 		<field name="name"/>
 	</gantt> 
 	
+	<gantt name="project-task-gantt" title="Project Task"
+		model="com.axelor.team.db.TeamTask" taskStart="taskDate" taskEnd="taskEndDate"  taskDuration="durationHours" taskParent="parentTask" taskSequence="sequence"
+		taskProgress="plannedProgress" x-start-to-start="startToStartSet" x-finish-to-start="finishToStartSet"
+		x-start-to-finish="startToFinishSet" x-finish-to-finish="finishToFinishSet">
+		<field name="name" />
+		<field name="project"/>
+	</gantt>
+
+	<gantt name="user-task-gantt" title="User Task"
+		model="com.axelor.team.db.TeamTask" taskStart="taskDate" taskEnd="taskEndDate"  taskDuration="durationHours" taskParent="parentTask" taskSequence="sequence"
+		taskProgress="plannedProgress" x-start-to-start="startToStartSet" x-finish-to-start="finishToStartSet"
+		x-start-to-finish="startToFinishSet" x-finish-to-finish="finishToFinishSet">
+		<field name="name" />
+		<field name="assignedTo" />
+	</gantt>
+	
 	<action-view name="action-view-show-task-tree" title="Task Tree" model="com.axelor.team.db.TeamTask">	
 		<view type="tree" name="task-tree"/>
     	<view type="form" name="team-task-form"/>
