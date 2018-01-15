@@ -42,7 +42,7 @@
 		<toolbar>
 			<button name="printExpense" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-expense"/>
 		</toolbar>
-		<panel title="Status">
+		<panel>
 			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 		</panel>
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
