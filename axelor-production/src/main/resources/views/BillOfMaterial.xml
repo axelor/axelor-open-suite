@@ -48,6 +48,7 @@
 				<field name="originalBillOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" readonly="true"/>
 			</panel>
 		</panel-tabs>
+		<panel-dashlet title="Sub versions" colSpan="12" height="200" action="action-bill-of-material-sub-versions"/>
 	</form>
     
     
@@ -85,6 +86,13 @@
 		</panel-tabs>
 	</form>
 	
+	<action-view name="action-bill-of-material-sub-versions" title="subVersions" model="com.axelor.apps.production.db.BillOfMaterial">
+		<view type="grid" name="bill-of-material-grid"/>
+		<view type="form" name="bill-of-material-form"/>
+		<domain>self.originalBillOfMaterial.versionNumber = :bom</domain>
+		<context name="bom" expr="eval: versionNumber"/>
+	</action-view>
+
 	<action-view name="action-bill-of-material-line-view" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
     	<view type="form" name="bill-of-material-line-form"/>
         <view-param name="popup" value="reload"/>
