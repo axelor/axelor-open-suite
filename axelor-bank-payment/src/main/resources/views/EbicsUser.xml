@@ -29,7 +29,7 @@
 			<field name="userId" help="Name of the user or service" x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$' readonlyIf="statusSelect &gt; 2"/>
 			<field name="securityMedium" readonlyIf="statusSelect == 3"/>
 			<field name="userTypeSelect" widget="RadioSelect" readonlyIf="statusSelect == 3"/>
-			<field name="associatedUser" canEdit="false"/>
+			<field name="associatedUser" canEdit="false" showIf="userTypeSelect == 1"/>
 			<field name="nextOrderId"/>
 			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" readonlyIf="statusSelect &gt; 2"/>
 			<field name="ebicsPartner.ebicsTypeSelect" widget="RadioSelect"/>
