@@ -121,7 +121,7 @@
 				<panel-dashlet action="action-purchase-order-line-view-stock-move-line" colSpan="12"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" title="Project/Task" if-module="axelor-business-project">
-				<field name="project" form-view="project-form" grid-view="project-grid" canEdit="false"/>
+				<field name="project" requiredIf="toInvoice" form-view="project-form" grid-view="project-grid" canEdit="false"/>
                 <field name="toInvoice" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" colSpan="3" if-module="axelor-business-project"/>
                 <field name="invoiced" showIf="toInvoice" colSpan="3"/>
 			</panel>
