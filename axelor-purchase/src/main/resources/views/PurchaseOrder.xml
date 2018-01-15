@@ -115,7 +115,7 @@
 		</panel>
 		<panel-tabs hideIf="supplierPartner == null">
 			<panel name="content" title="Content" colSpan="12">
-				<panel-related field="purchaseOrderLineList" readonlyIf="statusSelect == 3 || statusSelect == 4" grid-view="purchase-order-line-purchase-order-grid" title="PO Lines" colSpan="12" onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form" canMove="true" orderBy="sequence"/>
+				<panel-related field="purchaseOrderLineList" readonlyIf="statusSelect == 3 || statusSelect == 4" grid-view="purchase-order-line-purchase-order-grid" title="PO lines detail" colSpan="12" onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form" canMove="true" orderBy="sequence"/>
 				<panel-related field="purchaseOrderLineTaxList" readonly="true" title="Tax Lines" colSpan="12" grid-view="purchase-order-line-tax-grid" form-view="purchase-order-line-tax-form"/>
 				<field name="notes" colSpan="12" x-lite="true" widget="html"/>
 				<field name="internalNote" colSpan="12" x-lite="true" widget="html"/>
