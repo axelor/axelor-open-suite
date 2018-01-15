@@ -58,6 +58,7 @@
       	<enum name="genProjTypePerOrderLine" ref="GenProjTypePerOrderLine" default="PROJECT_ALONE"/>
 
       	<finder-method name="findAllByParentProject" using="parentProject" all="true"/>
+        <finder-method name="findByName" using="name"/>
 
 	   <extra-code>
    		<![CDATA[

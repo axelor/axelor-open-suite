@@ -36,6 +36,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.axelor.team.db.TeamTask;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -85,6 +86,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional(rollbackOn = { AxelorException.class, Exception.class })
     public Project generateProject(Partner partner) {
+        Preconditions.checkNotNull(partner);
         User user = AuthUtils.getUser();
         Project project = Beans.get(ProjectService.class).generateProject(null, getUniqueProjectName(partner), user,
                 user.getActiveCompany(), partner);
@@ -92,9 +94,20 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private String getUniqueProjectName(Partner partner) {
-        String name = String.format(I18n.get("%s project"), partner.getName());
-        long count = projectRepository.all().filter(String.format("self.name LIKE '%s%%'", name)).count();
-        return count != 0 ? String.format("%s %d", name, count + 1) : name;
+        String baseName = String.format(I18n.get("%s project"), partner.getName());
+        long count = projectRepository.all().filter(String.format("self.name LIKE '%s%%'", baseName)).count();
+
+        if (count == 0) {
+            return baseName;
+        }
+
+        String name;
+
+        do {
+            name = String.format("%s %d", baseName, ++count);
+        } while (projectRepository.findByName(name) != null);
+
+        return name;
     }
 
 	@Override
