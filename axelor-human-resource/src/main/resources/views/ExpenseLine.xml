@@ -20,23 +20,25 @@
 		<field name="expenseProduct.blockExpenseTax" hidden="true"/>
 	</grid>
 	
-	<grid name="expense-line-kilometric-grid" 
-		  title="Kilometric Allowances" 
-		  model="com.axelor.apps.hr.db.ExpenseLine"
-		  onNew="action-expense-line-method-fill-kilometric-expense-product" orderBy="expenseDate">
-		<field name="projectTask" title="Project" requiredIf="toInvoice" canView="false" onSelect="action-expense-line-attrs-domain-project-task" widget="SuggestBox" grid-view="project-task-grid" width="100" hidden="true"/>
-        <field name="expenseDate" title="Date" width="95"/>
-		<field name="kilometricAllowParam" onChange="action-kilometric-allowance-method-compute" width="70"/>
-        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-method-compute" width="85"/>
-        <field name="distance" required="true" onChange="action-kilometric-allowance-method-compute" width="60"/>
-        <field name="fromCity" required="true" width="80"/>
-        <field name="toCity" required="true" width="80"/>
-	    <field name="totalAmount" title="Total A.T.I" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" width="75" readonly="true"/>
-   	    <field name="comments" />
-   	    <field name="user" hidden="true" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company"/>
-   		<field name="expenseProduct" readonly="true" form-view="product-expense-form" grid-view="product-expense-grid" hidden="true"/> 
+	<grid name="expense-line-kilometric-grid" title="Kilometric Allowances" model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
+		  onNew="action-expense-line-default, action-expense-line-method-fill-kilometric-expense-product">
+  		<field name="projectTask" title="Project" requiredIf="toInvoice" canView="false" onSelect="action-expense-line-attrs-domain-project-task" widget="SuggestBox" grid-view="project-task-grid" width="100" hidden="true"/>
+        <field name="expenseDate" title="Date" width="95"
+        	onChange="action-kilometric-allowance-method-compute, action-kilometric-allowance-method-update-kap"/>
+		<field name="kilometricAllowParam" canEdit="false" required="true" width="130"
+			onChange="action-kilometric-allowance-method-compute" onSelect="action-kilometric-allowance-method-domain-on-select-on-kap"/>
+        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-method-compute" width="100"/>
+        <field name="distance" required="true" onChange="action-kilometric-allowance-method-compute" width="240"/>
+        <field name="fromCity" required="true" width="230"/>
+        <field name="toCity" required="true" width="230"/>
+	    <field name="totalAmount" title="Total A.T.I" width="85" readonly="true"
+	    	onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" />
+   	    <field name="comments" width="250"/>
+   	    <field name="user" hidden="true" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company" canNew="false" canEdit="false" canView="false"/>
+  		<field name="untaxedAmount" hidden="true" />
+   		<field name="expenseProduct" readonly="true" form-view="product-expense-form" grid-view="product-expense-grid" hidden="true"/>
 	</grid>
-
+		  
 	<form name="expense-line-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine"
 		onNew="action-expense-line-default"
 		onSave="action-expense-line-validate-expenseDate" width="large">
@@ -69,19 +71,19 @@
 		onNew="action-expense-line-default,action-expense-line-method-fill-kilometric-expense-product"
 		onSave="action-expense-line-validate-expenseDate" width="large">
 
-			<panel name="kilometricAllowance" title="Kilometric Allowance">
-				<field name="projectTask" requiredIf="toInvoice" edit-icon="false" canEdit="false" onSelect="action-expense-line-attrs-domain-project-task" widget="SuggestBox" form-view="project-task-form" grid-view="project-task-grid"/>
-		        <field name="expenseDate"/>
-				<field name="kilometricAllowParam" onChange="action-kilometric-allowance-method-compute"/>
-		        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-method-compute"/>
-		        <field name="distance" onChange="action-kilometric-allowance-method-compute" required="true"/>
-		        <field name="fromCity" required="true"/>
-		        <field name="toCity" required="true"/>
-		    	<field name="totalAmount" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" readonly="true"/>
-	    		<field name="comments" colSpan="12"/>
-				<field name="user" hidden="true" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
-				<field name="expenseProduct" readOnly="true" canEdit="false" domain="self.expense = true AND self.isModel = false" form-view="product-expense-form" grid-view="product-expense-grid" hidden="true"/>
-			</panel>
+		<panel name="kilometricAllowance" title="Kilometric Allowance">
+			<field name="projectTask" requiredIf="toInvoice" edit-icon="false" canEdit="false" onSelect="action-expense-line-attrs-domain-project-task" widget="SuggestBox" form-view="project-task-form" grid-view="project-task-grid"/>
+	        <field name="expenseDate"/>
+			<field name="kilometricAllowParam" onChange="action-kilometric-allowance-method-compute"/>
+	        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-method-compute"/>
+	        <field name="distance" onChange="action-kilometric-allowance-method-compute" required="true"/>
+	        <field name="fromCity" required="true"/>
+	        <field name="toCity" required="true"/>
+	    	<field name="totalAmount" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" readonly="true"/>
+    		<field name="comments" colSpan="12"/>
+			<field name="user" hidden="true" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
+			<field name="expenseProduct" readOnly="true" canEdit="false" domain="self.expense = true AND self.isModel = false" form-view="product-expense-form" grid-view="product-expense-grid" hidden="true"/>
+		</panel>
 		
 		<panel name="analyticDistribution" title="Analytic distribution" if="__config__.general.getManageAnalyticAccounting()" onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
 			<field name="analyticDistributionTemplate" if="__config__.general.getAnalyticDistributionTypeSelect() == 1"/>
