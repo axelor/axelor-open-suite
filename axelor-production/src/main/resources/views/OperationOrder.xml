@@ -79,6 +79,15 @@
 			<field name="prodProcessLine" colSpan="3" onSelect="action-operation-order-attrs-domain-prod-process-line" required="true" readonlyIf="statusSelect == 6" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
 			<field name="prodProcessLine.outsourcing" colSpan="3"/>
 			<field name="isToInvoice" colSpan="3"/>
+			<field name="prodProcessLine.optional" colSpan="3" readonly="true" showTitle="false">
+				<viewer>
+				<![CDATA[
+					<h4>
+						<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.prodProcessLine.optional" x-translate>Optional</span>
+					</h4>
+				]]>
+				</viewer>
+			</field>
 			<field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect" colSpan="12"/>
 			<field name="manufOrder.statusSelect" hidden="true"/>
 		</panel>
