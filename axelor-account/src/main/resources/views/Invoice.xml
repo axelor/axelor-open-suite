@@ -276,6 +276,7 @@
 
         <panel sidebar="true" name="actions" title="Actions"  hideIf="partner == null">
             <field name="amountRemaining" hidden="true"/>
+			<field name="amountPaid" hidden="true"/>
             <field name="hasPendingPayments" hidden="true"/>
             <button name="validate" hidden="true" title="Validate" onClick="save,action-invoice-method-validate"/>
             <button name="ventilate" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
