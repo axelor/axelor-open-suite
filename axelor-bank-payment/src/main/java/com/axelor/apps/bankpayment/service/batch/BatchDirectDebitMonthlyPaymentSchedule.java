@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
+import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.service.PaymentScheduleService;
@@ -85,12 +86,13 @@ public class BatchDirectDebitMonthlyPaymentSchedule extends BatchDirectDebitPaym
         AppBaseService appBaseService = Beans.get(AppBaseService.class);
         BankOrderManagementRepository bankOrderRepo = Beans.get(BankOrderManagementRepository.class);
 
-        AccountingBatch accountingBatch = batch.getAccountingBatch();
+        AccountingBatch accountingBatch = Beans.get(AccountingBatchRepository.class)
+                .find(batch.getAccountingBatch().getId());
         int partnerType = BankOrderRepository.PARTNER_TYPE_CUSTOMER;
         LocalDate bankOrderDate = accountingBatch.getDueDate() != null ? accountingBatch.getDueDate()
                 : appBaseService.getTodayDate();
         Company company = accountingBatch.getCompany();
-        BankDetails companyBankDetails = accountingBatch.getBankDetails();
+        BankDetails companyBankDetails = getCompanyBankDetails(accountingBatch);
         Currency currency = companyBankDetails.getCurrency();
         String senderReference = null;
         String senderLabel = null;
