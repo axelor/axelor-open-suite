@@ -26,7 +26,7 @@
 		<attribute for="interco" name="value" expr="eval: false"
 				   if="eval: createdByInterco || !supplierPartner || __repo__(Company).all().filter('self.partner = ?', supplierPartner).fetchOne() == null"/>
 		<attribute for="interco" name="readonly" expr="eval: true"
-				   if="eval: statusSelect > 3"/>
+				   if="eval: statusSelect &gt; 3"/>
 	</action-attrs>
 
 	<action-record name="action-purchase-order-record-interco"

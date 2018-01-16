@@ -874,7 +874,7 @@
 		<attribute for="interco" name="value" expr="eval: false"
 				   if="eval: createdByInterco || !partner || __repo__(Company).all().filter('self.partner = ?', partner).fetchOne() == null"/>
 	   <attribute for="interco" name="readonly" expr="eval: true"
-				   if="eval: statusSelect > 2"/>
+				   if="eval: statusSelect &gt; 2"/>
 	</action-attrs>
 
     <action-attrs name="action-invoice-attrs-show-validate-button">
