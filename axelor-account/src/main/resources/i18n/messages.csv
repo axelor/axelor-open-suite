@@ -747,6 +747,7 @@
 "Generate Moves",,,
 "Generate account configurations",,,
 "Generate distribution lines",,,
+"Generate invoice",,,
 "Generate irrecoverable report",,,
 "Generate move for advance payment",,,
 "Generate move for payment on invoice",,,

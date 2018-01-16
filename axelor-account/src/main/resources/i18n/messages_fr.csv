@@ -747,6 +747,7 @@
 "Generate Moves","Générer écritures",,
 "Generate account configurations",,,
 "Generate distribution lines","Générer les lignes de répartition",,
+"Generate invoice","Générer facture",,
 "Generate irrecoverable report","Générer le report irrécouvrable",,
 "Generate move for advance payment","Générer des écritures pour les acomptes",,
 "Generate move for payment on invoice","Générer des écritures pour les paiements directs sur facture",,

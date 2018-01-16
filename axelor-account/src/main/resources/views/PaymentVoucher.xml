@@ -169,8 +169,8 @@
 	</action-record>
 
 	<action-attrs name="action-pv-attrs-auto-imputation">
-		<attribute name="hidden" for="hasAutoInput" expr="eval: __repo__.of(AccountConfig).all().filter('self.company.id = ?1',company?.id).fetchOne()?.autoReconcileOnPayment == false"/>
-		<attribute name="value" for="hasAutoInput" expr="eval: __repo__.of(AccountConfig).all().filter('self.company.id = ?1',company?.id).fetchOne()?.autoReconcileOnPayment == true"/>
+		<attribute name="hidden" for="hasAutoInput" expr="eval: __repo__(AccountConfig).all().filter('self.company.id = ?1',company?.id).fetchOne()?.autoReconcileOnPayment == false"/>
+		<attribute name="value" for="hasAutoInput" expr="eval: __repo__(AccountConfig).all().filter('self.company.id = ?1',company?.id).fetchOne()?.autoReconcileOnPayment == true"/>
 	</action-attrs>
 	 
 	<action-attrs name="action-pv-moveLine-attrs">

@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -62,6 +61,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.google.inject.Inject;
@@ -319,27 +319,21 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	}
 
     @Override
-    public void validateChange(SaleOrder saleOrder) {
-        super.validateChange(saleOrder);
-        SaleOrder record = saleOrderRepo.find(saleOrder.getId());
-        List<SaleOrderLine> saleOrderLines = new ArrayList<>();
-
-        if (saleOrder.getSaleOrderLineList() != null) {
-            sortSaleOrderLineList(saleOrder);
-            saleOrder.getSaleOrderLineList().stream().filter(
-                    saleOrderLine -> saleOrderLine.getDeliveryState() <= SaleOrderRepository.STATE_NOT_DELIVERED)
-                    .forEach(saleOrderLines::add);
+    public void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException {
+        super.validateChanges(saleOrder, saleOrderView);
+        if (saleOrder.getSaleOrderLineList() == null) {
+            return;
         }
 
-        if (record.getSaleOrderLineList() != null) {
-            sortSaleOrderLineList(record);
-            record.getSaleOrderLineList().stream()
-                    .filter(saleOrderLine -> saleOrderLine.getDeliveryState() > SaleOrderRepository.STATE_NOT_DELIVERED)
-                    .forEach(saleOrderLines::add);
-        }
+        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+            if (saleOrderLine.getDeliveryState() > SaleOrderRepository.STATE_NOT_DELIVERED
+                    && saleOrderView.getSaleOrderLineList() == null
+                    || !saleOrderView.getSaleOrderLineList().contains(saleOrderLine)) {
+                throw new AxelorException(saleOrderView, IException.INCONSISTENCY,
+                        I18n.get(IExceptionMessage.SO_CANT_REMOVED_DELIVERED_LINE), saleOrderLine.getFullName());
 
-        saleOrder.clearSaleOrderLineList();
-        saleOrderLines.forEach(saleOrder::addSaleOrderLineListItem);
+            }
+        }
     }
 
 }
