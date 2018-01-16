@@ -17,12 +17,8 @@
  */
 package com.axelor.apps.account.web;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.AssistantReportInvoice;
-import com.axelor.apps.account.db.repo.AssistantReportInvoiceRepository;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
@@ -31,6 +27,8 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
 
@@ -48,11 +46,8 @@ public class AssistantReportInvoiceController {
 				.addParam("Locale", this.getLanguageToPrinting())
 				.addParam("assistantId", assistant.getId())
 				.addParam("companyId", assistant.getCompany().getId())
-				.addParam("partnersIds", Joiner.on(",").join(assistant.getPartnerSet()))
-				.addParam("productsIds", Joiner.on(",").join(assistant.getProductSet()))
-				.addParam("productCategoriesIds", Joiner.on(",").join(assistant.getProductCategorySet()))
-				.addParam("chart", Integer.toString(AssistantReportInvoiceRepository.GRAPH_TYPE_TABLE))
                 .addParam("graphType", assistant.getGraphTypeSelect().toString())
+                .addParam("turnoverTypeSelect", assistant.getTurnoverTypeSelect())
 				.addFormat(assistant.getFormatSelect())
 				.generate()
 				.getFileLink();
@@ -79,7 +74,6 @@ public class AssistantReportInvoiceController {
 				.addParam("partnersIds", Joiner.on(",").join(assistant.getPartnerSet()))
 				.addParam("productsIds", Joiner.on(",").join(assistant.getProductSet()))
 				.addParam("productCategoriesIds", Joiner.on(",").join(assistant.getProductCategorySet()))
-				.addParam("chart", Integer.toString(AssistantReportInvoiceRepository.GRAPH_TYPE_TABLE))
 				.addParam("graphType", assistant.getGraphTypeSelect().toString())
 				.addFormat(assistant.getFormatSelect())
 				.generate()
