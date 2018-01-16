@@ -2,8 +2,8 @@
 ## Improvements
 
 ## Bug Fixes
-Fix the default amount on new invoice payment to use the amount remaining of the invoice.
-
+- Fix the default amount on new invoice payment to use the amount remaining of the invoice.
+- Fix demo data en and fr on AppSuplychain to set the correct value on the field supplStockMoveMgtOnSO
 
 # 4.0.1 (2017-06-19)
 
