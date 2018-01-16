@@ -273,11 +273,11 @@ public class PayrollPreparationService {
 		return item;
 	}
 	
-	public String exportMeilleureGestionPayrollPreparation(PayrollPreparation payrollPreparation) throws AxelorException, IOException{
+	public String exportNibelisPayrollPreparation(PayrollPreparation payrollPreparation) throws AxelorException, IOException{
 		
 		List<String[]> list = new ArrayList<String[]>();
 		
-		exportMeilleureGestion(payrollPreparation, list);
+		exportNibelis(payrollPreparation, list);
 		
 		
 		String fileName = this.getPayrollPreparationExportName();
@@ -296,7 +296,7 @@ public class PayrollPreparationService {
 	}
 	
 	@Transactional
-	public void exportMeilleureGestion(PayrollPreparation payrollPreparation, List<String[]> list ) throws AxelorException{
+	public void exportNibelis(PayrollPreparation payrollPreparation, List<String[]> list ) throws AxelorException{
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(payrollPreparation.getCompany());
 		
@@ -356,7 +356,7 @@ public class PayrollPreparationService {
 		
 		payrollPreparation.setExported(true);
 		payrollPreparation.setExportDate(generalService.getTodayDate());
-		payrollPreparation.setExportTypeSelect(HrBatchRepository.EXPORT_TYPE_MEILLEURE_GESTION);
+		payrollPreparation.setExportTypeSelect(HrBatchRepository.EXPORT_TYPE_NIBELIS);
 		payrollPreparationRepo.save(payrollPreparation);
 	}
 	
