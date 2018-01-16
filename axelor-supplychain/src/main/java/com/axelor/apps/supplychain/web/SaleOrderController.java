@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -226,12 +227,14 @@ public class SaleOrderController{
 			if(invoice != null)  {
 				response.setCanClose(true);
 				response.setView(ActionView
-		            .define(I18n.get("Invoice generated"))
-		            .model(Invoice.class.getName())
-		            .add("form", "invoice-form")
-		            .add("grid", "invoice-grid")
-		            .context("_showRecord",String.valueOf(invoice.getId()))
-		            .map());
+						.define(I18n.get("Invoice generated"))
+						.model(Invoice.class.getName())
+						.add("form", "invoice-form")
+						.add("grid", "invoice-grid")
+						.context("_showRecord",String.valueOf(invoice.getId()))
+						.context("_operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+						.context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
+						.map());
 			}
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
