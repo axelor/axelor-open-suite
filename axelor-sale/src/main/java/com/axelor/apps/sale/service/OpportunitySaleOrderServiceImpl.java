@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,12 +18,15 @@
 package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -63,7 +66,7 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
 
 	protected SaleOrder createSaleOrder(Opportunity opportunity, Currency currency) throws AxelorException {
 		return saleOrderService.createSaleOrder(opportunity.getUser(), opportunity.getCompany(), null, currency, null, opportunity.getName(), null,
-				appBaseService.getTodayDate(), opportunity.getPartner().getSalePriceList(), opportunity.getPartner(), opportunity.getTeam());
+				appBaseService.getTodayDate(), Beans.get(PartnerPriceListService.class).getDefaultPriceList(opportunity.getPartner(), PriceListRepository.TYPE_SALE), opportunity.getPartner(), opportunity.getTeam());
 	}
 
 }

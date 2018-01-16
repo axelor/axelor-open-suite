@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,23 +17,6 @@
  */
 package com.axelor.apps.stock.service;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.ProductService;
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.stock.db.Location;
-import com.axelor.apps.stock.db.LocationLine;
-import com.axelor.apps.stock.db.StockConfig;
-import com.axelor.apps.stock.db.StockRules;
-import com.axelor.apps.stock.db.repo.LocationLineRepository;
-import com.axelor.apps.stock.db.repo.LocationRepository;
-import com.axelor.apps.stock.db.repo.StockRulesRepository;
-import com.axelor.apps.stock.service.config.StockConfigService;
-import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -41,24 +24,42 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class LocationServiceImpl implements LocationService{
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.stock.db.StockConfig;
+import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.StockRules;
+import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.stock.db.repo.StockRulesRepository;
+import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
+import com.google.inject.Inject;
+
+public class StockLocationServiceImpl implements StockLocationService {
 	
-	protected LocationRepository locationRepo;
+	protected StockLocationRepository stockLocationRepo;
 	
-	protected LocationLineService locationLineService;
+	protected StockLocationLineService stockLocationLineService;
 	
 	protected ProductRepository productRepo;
 	
-	Set<Long> locationIdSet= new HashSet<Long>();
+	Set<Long> locationIdSet= new HashSet<>();
 
 	@Inject
-	public LocationServiceImpl(LocationRepository locationRepo, LocationLineService locationLineService, ProductRepository productRepo) {
-		this.locationRepo = locationRepo;
-		this.locationLineService = locationLineService;
+	public StockLocationServiceImpl(StockLocationRepository stockLocationRepo, StockLocationLineService stockLocationLineService, ProductRepository productRepo) {
+		this.stockLocationRepo = stockLocationRepo;
+		this.stockLocationLineService = stockLocationLineService;
 		this.productRepo = productRepo;
 	}
 
-	public Location getLocation(Company company) {
+	public StockLocation getLocation(Company company) {
 		try {
 			StockConfigService stockConfigService = Beans.get(StockConfigService.class);
 			StockConfig stockConfig = stockConfigService.getStockConfig(company);
@@ -68,31 +69,31 @@ public class LocationServiceImpl implements LocationService{
 		}
 	}
 
-	public List<Location> getNonVirtualLocations() {
-		return locationRepo.all().filter("self.typeSelect != ?1", LocationRepository.TYPE_VIRTUAL).fetch();
+	public List<StockLocation> getNonVirtualLocations() {
+		return stockLocationRepo.all().filter("self.typeSelect != ?1", StockLocationRepository.TYPE_VIRTUAL).fetch();
 	}
 	
 	@Override
 	public BigDecimal getQty(Long productId, Long locationId, String qtyType) {
 		if (productId != null) {
 			if (locationId == null) {
-				List<Location> locations = getNonVirtualLocations();
+				List<StockLocation> locations = getNonVirtualLocations();
 				if (!locations.isEmpty()) {
 					BigDecimal qty = BigDecimal.ZERO;
-					for (Location location : locations) {
-						LocationLine locationLine = locationLineService.getLocationLine(locationRepo.find(location.getId()), productRepo.find(productId));
+					for (StockLocation stockLocation : locations) {
+						StockLocationLine stockLocationLine = stockLocationLineService.getStockLocationLine(stockLocationRepo.find(stockLocation.getId()), productRepo.find(productId));
 						
-						if (locationLine != null) {
-							qty = qty.add(qtyType.equals("real") ? locationLine.getCurrentQty() : locationLine.getFutureQty());
+						if (stockLocationLine != null) {
+							qty = qty.add(qtyType.equals("real") ? stockLocationLine.getCurrentQty() : stockLocationLine.getFutureQty());
 						}
 					}
 					return qty;
 				}
 			} else {
-				LocationLine locationLine = locationLineService.getLocationLine(locationRepo.find(locationId), productRepo.find(productId));
+				StockLocationLine stockLocationLine = stockLocationLineService.getStockLocationLine(stockLocationRepo.find(locationId), productRepo.find(productId));
 				
-				if (locationLine != null) {
-					return qtyType.equals("real") ? locationLine.getCurrentQty() : locationLine.getFutureQty();
+				if (stockLocationLine != null) {
+					return qtyType.equals("real") ? stockLocationLine.getCurrentQty() : stockLocationLine.getFutureQty();
 				}
 			}
 		}
@@ -113,9 +114,9 @@ public class LocationServiceImpl implements LocationService{
 	@Override
 	public void computeAvgPriceForProduct(Product product) {
 		Long productId = product.getId();
-		String query = "SELECT new list(self.id, self.avgPrice, self.currentQty) FROM LocationLine as self "
-				+ "WHERE self.product.id = " + productId + " AND self.location.typeSelect != "
-				+ LocationRepository.TYPE_VIRTUAL;
+		String query = "SELECT new list(self.id, self.avgPrice, self.currentQty) FROM StockLocationLine as self "
+				+ "WHERE self.product.id = " + productId + " AND self.stockLocation.typeSelect != "
+				+ StockLocationRepository.TYPE_VIRTUAL;
 		int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
 		BigDecimal productAvgPrice = BigDecimal.ZERO;
 		BigDecimal qtyTot = BigDecimal.ZERO;
@@ -145,17 +146,17 @@ public class LocationServiceImpl implements LocationService{
 
 	public List<Long> getBadLocationLineId() {
 
-		List<LocationLine> locationLineList = Beans.get(LocationLineRepository.class)
-				.all().filter("self.location.typeSelect = 1 OR self.location.typeSelect = 2").fetch();
+		List<StockLocationLine> stockLocationLineList = Beans.get(StockLocationLineRepository.class)
+				.all().filter("self.stockLocation.typeSelect = 1 OR self.stockLocation.typeSelect = 2").fetch();
 
 		List<Long> idList = new ArrayList<>();
 
-		for (LocationLine locationLine : locationLineList) {
+		for (StockLocationLine stockLocationLine : stockLocationLineList) {
 			StockRules stockRules = Beans.get(StockRulesRepository.class).all()
-					.filter("self.location = ?1 AND self.product = ?2", locationLine.getLocation(), locationLine.getProduct()).fetchOne();
+					.filter("self.stockLocation = ?1 AND self.product = ?2", stockLocationLine.getStockLocation(), stockLocationLine.getProduct()).fetchOne();
 			if (stockRules != null
-					&& locationLine.getFutureQty().compareTo(stockRules.getMinQty()) < 0) {
-				idList.add(locationLine.getId());
+					&& stockLocationLine.getFutureQty().compareTo(stockRules.getMinQty()) < 0) {
+				idList.add(stockLocationLine.getId());
 			}
 		}
 
@@ -166,13 +167,13 @@ public class LocationServiceImpl implements LocationService{
 		return idList;
 	}
 	
-	private void findLocationIds(List<Location> childLocations) {
+	private void findLocationIds(List<StockLocation> childLocations) {
 		
 		Long id = null;
 		
-		childLocations = Beans.get(LocationRepository.class).all().filter("self.parentLocation IN ?", childLocations).fetch();
+		childLocations = Beans.get(StockLocationRepository.class).all().filter("self.parentLocation IN ?", childLocations).fetch();
 			
-		Iterator<Location> it = childLocations.iterator();
+		Iterator<StockLocation> it = childLocations.iterator();
 		
 		while (it.hasNext()) {
 
@@ -189,13 +190,13 @@ public class LocationServiceImpl implements LocationService{
 	}
 	
 	@Override
-	public Set<Long> getContentLocationIds(Location location) {
+	public Set<Long> getContentLocationIds(StockLocation stockLocation) {
 		
-		List<Location> locations = new ArrayList<Location>();
+		List<StockLocation> locations = new ArrayList<>();
 
-		if(location != null) {
-			locations.add(location);
-			locationIdSet.add(location.getId());
+		if(stockLocation != null) {
+			locations.add(stockLocation);
+			locationIdSet.add(stockLocation.getId());
 			findLocationIds(locations);
 		} else {
 			locationIdSet.add(0l);

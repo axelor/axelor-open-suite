@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -145,7 +145,7 @@ public class ValidateSupplyChain {
 					product.setWeightUnit(stockConfigService.getStockConfig(purchaseOrder.getCompany()).getCustomsWeightUnit());
 				}
 			}
-			if(purchaseOrder.getStatusSelect() == 4 || purchaseOrder.getStatusSelect() == 5 && purchaseOrder.getLocation() == null){
+			if(purchaseOrder.getStatusSelect() == 4 || purchaseOrder.getStatusSelect() == 5 && purchaseOrder.getStockLocation() == null){
 				purchaseOrderServiceSupplychainImpl.createStocksMove(purchaseOrder);
 				StockMove stockMove = stockMoveRepo.all().filter("purchaseOrder.id = ?1",purchaseOrder.getId()).fetchOne();
 				if(stockMove != null){

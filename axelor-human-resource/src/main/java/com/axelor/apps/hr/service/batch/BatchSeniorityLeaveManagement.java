@@ -37,6 +37,7 @@ package com.axelor.apps.hr.service.batch;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Locale;
 
@@ -130,7 +131,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 			
 			List<Employee> employeeList = Lists.newArrayList();
 			if (hrBatch.getCompany() != null){
-				employeeList = JPA.all(Employee.class).filter("EXISTS(SELECT u FROM User u WHERE :company MEMBER OF u.companySet AND self = u.employee) OR NOT EXISTS(SELECT u FROM User u WHERE self = u.employee)").bind("company", hrBatch.getCompany()).fetch();
+				employeeList = JPA.all(Employee.class).filter("self.mainEmploymentContract.payCompany = :company").bind("company", hrBatch.getCompany()).fetch();
 				}
 			else{
 				employeeList = JPA.all(Employee.class).fetch();
@@ -210,9 +211,9 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 					incrementDone();
 					return;
 				}
-				LeaveManagement leaveManagement = leaveManagementService.createLeaveManagement(leaveLine, AuthUtils.getUser(), batch.getHrBatch().getComments(), null, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate(), quantity.setScale(1) );
-				leaveLine.setQuantity(leaveLine.getQuantity().add(quantity.setScale(1)));
-				leaveLine.setTotalQuantity(leaveLine.getTotalQuantity().add(quantity.setScale(1)));
+				LeaveManagement leaveManagement = leaveManagementService.createLeaveManagement(leaveLine, AuthUtils.getUser(), batch.getHrBatch().getComments(), null, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate(), quantity.setScale(1, RoundingMode.HALF_UP) );
+				leaveLine.setQuantity(leaveLine.getQuantity().add(quantity.setScale(1, RoundingMode.HALF_UP)));
+				leaveLine.setTotalQuantity(leaveLine.getTotalQuantity().add(quantity.setScale(1, RoundingMode.HALF_UP)));
 				leaveManagementRepository.save(leaveManagement);
 				leaveLineRepository.save(leaveLine);
 				updateEmployee(employee);

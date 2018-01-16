@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -15,22 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.db.repo;
+package com.axelor.apps.account.db.repo;
 
-import com.axelor.apps.stock.db.Location;
-import com.axelor.apps.stock.service.LocationSaveService;
-import com.axelor.inject.Beans;
+import com.axelor.apps.account.db.AccountingBatch;
 
-public class LocationStockRepository extends LocationRepository {
+public class AccountingBatchAccountRepository extends AccountingBatchRepository {
 
-    /**
-     * Override to remove incompatible locations in partners
-     * @param entity
-     * @return
-     */
     @Override
-    public Location save(Location entity) {
-        Beans.get(LocationSaveService.class).removeForbiddenDefaultLocation(entity);
-        return super.save(entity);
+    public AccountingBatch copy(AccountingBatch entity, boolean deep) {
+        AccountingBatch copy = super.copy(entity, deep);
+        copy.setBatchList(null);
+        return copy;
     }
+
 }

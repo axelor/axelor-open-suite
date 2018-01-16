@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -16,22 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.message;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.lang.invoke.MethodHandles;
-
-import javax.mail.MessagingException;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
@@ -54,6 +38,21 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.mail.MessagingException;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.lang.invoke.MethodHandles;
+import java.net.URLEncoder;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 public class MessageServiceBaseImpl extends MessageServiceImpl {
 
@@ -109,7 +108,15 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 		File file = Beans.get(TemplateMessageServiceBaseImpl.class).generateBirtTemplate(maker, fileName,
 				birtTemplate.getTemplateLink(), birtTemplate.getFormat(), birtTemplate.getBirtTemplateParameterList());
 
-		return "ws/files/report/" + file.getName() + "?name=" + fileName;
+        String fileLink = "ws/files/report/" + file.getName();
+
+        try {
+            fileLink += "?name=" + URLEncoder.encode(fileName, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getLocalizedMessage());
+        }
+
+        return fileLink;
 	}
 
 	

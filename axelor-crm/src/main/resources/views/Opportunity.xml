@@ -88,7 +88,7 @@
 		</toolbar>
 		<menubar>
 	    	<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
-	    		<item title="Convert into quotation" action="action-sale-group-generate-sale-order"  if-module="axelor-sale"/>
+	    		<item title="Convert into quotation" action="action-sale-group-generate-sale-order"  if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
 	    	</menu>
 	  	</menubar>
 	  
@@ -116,7 +116,7 @@
 			<field name="description" colSpan="12" showTitle="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" />
 		</panel>
 
-        <panel-include view="convert-opportunity-form" from="axelor-sale" if-module="axelor-sale"  if="__config__.app.isApp('sale')" />
+        <panel-related field="saleOrderList" title="Sale quotations/orders" showIf="saleOrderList &amp;&amp; saleOrderList.length" if-module="axelor-sale" if="__config__.app.isApp('sale')" form-view="sale-order-form" grid-view="sale-order-opportunity-grid"/>
 
 		<panel name="linkedTo" title="Linked to" sidebar="true">
 			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>

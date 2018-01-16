@@ -38,4 +38,12 @@ public interface ProjectService {
 	ProjectPlanning createPlanning(Project project, TeamTask task);
 	SaleOrder generateQuotation(Project project) throws AxelorException;
 	void cascadeUpdateTeam(Project project, Team team, Boolean synchronisingMembers) throws AxelorException;
+
+	/**
+	 * Generate a project from a partner.
+	 * 
+	 * @param partner
+	 * @return
+	 */
+	Project generateProject(Partner partner);
 }

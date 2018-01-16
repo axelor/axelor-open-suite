@@ -12,22 +12,22 @@
 	    <field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	  </panel>
 	  <panel name="virtualLocationsInformations" title="Virtual locations informations">
-	    <field name="customerVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="location-form" grid-view="location-grid"/>
-	    <field name="supplierVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="location-form" grid-view="location-grid"/>
-	    <field name="inventoryVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="location-form" grid-view="location-grid"/>
-		  <field name="productionVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
+	    <field name="customerVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
+	    <field name="supplierVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
+	    <field name="inventoryVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
+		  <field name="productionVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 	  </panel>
 	  <panel name="stockMoveInformations" title="Stock move informations">
 		  <panel colSpan="12">
-			  <field name="receiptDefaultLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
-			  <field name="pickupDefaultLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
-			  <field name="wasteLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
-			  <field name="componentDefaultLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
-			  <field name="finishedProductsDefaultLocation" domain="self.company = company" colSpan="4" form-view="location-form" grid-view="location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
+			  <field name="receiptDefaultLocation" domain="self.company = company" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+			  <field name="pickupDefaultLocation" domain="self.company = company" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+			  <field name="wasteLocation" domain="self.company = company" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
+			  <field name="componentDefaultLocation" domain="self.company = company" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
+			  <field name="finishedProductsDefaultLocation" domain="self.company = company" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 		  </panel>
 	  </panel>
 		<panel>
-            <field name="defaultLocation" domain="self.company = company and self.typeSelect = 1" form-view="location-form" grid-view="location-grid"/>
+            <field name="defaultLocation" domain="self.company = company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
 		</panel>
 	  <panel name="customsInformation" title="Customs">
 	  	<field name="customsWeightUnit" domain="self.unitTypeSelect = 1"/>

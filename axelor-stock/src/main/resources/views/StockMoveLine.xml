@@ -98,13 +98,13 @@
 
     <form name="stock-move-line-all-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
     	onNew="action-stock-move-line-record-new" onLoad="action-stock-move-line-attrs-scale-and-precision,action-inventory-line-attrs-tracking-number, action-stock-move-line-attrs-show-unit-price-taxed" readonlyIf="stockMove.statusSelect == 3" width="large">
-        <panel name="stockMove" title="Stock Move">
+        <panel name="stockMove" title="Stock move">
 	    	<field name="stockMove.stockMoveSeq"/>
 	    	<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 	    	<field name="stockMove.estimatedDate"/>
 	    	<field name="stockMove.realDate"/>
-	        <field name="stockMove.fromLocation" form-view="location-form" grid-view="location-grid"/>
-	        <field name="stockMove.toLocation" form-view="location-form" grid-view="location-grid"/>
+	        <field name="stockMove.fromLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+	        <field name="stockMove.toLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         </panel>
         <panel name="moveDetails" title="Move details">
             <field name="productName" required="true"/>
@@ -125,10 +125,20 @@
         </panel>
     </form>
 
-    <grid name="stock-move-line-production-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
+    <grid name="stock-move-line-consumed-production-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="productModel" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
         <field name="qty" title="Consumed quantity" aggregate="sum"/>
+        <field name="unitPriceUntaxed" x-scale="2"/>
+        <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
+    </grid>
+
+    <grid name="stock-move-line-produced-production-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
+        <field name="product" form-view="product-form" grid-view="product-grid"/>
+        <field name="productModel" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
+        <field name="qty" title="Produced quantity" aggregate="sum"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>

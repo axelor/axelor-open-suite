@@ -16,7 +16,7 @@
     onNew="action-group-base-basebatch-onnew" width="large">
     	<panel name="main">
 		    <field name="actionSelect" onChange="action-base-batch-attrs-action-select"/>
-		    <field name="code" x-bind="{{code|unaccent|uppercase}}" />
+		    <field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
 		    <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 		</panel>
 	  	<panel-tabs>
@@ -57,5 +57,10 @@
 	    <attribute name="hidden" expr="eval: actionSelect != 1" for="targetPage"/>
 	    <attribute name="hidden" expr="eval: actionSelect != 1" for="targetConfigurationSet"/>
 	</action-attrs>
-	
+
+	<action-condition name="action-base-batch-condition-check-unique-code">
+		<check field="code" if="eval: __repo__(__this__.class).all().filter('self.code = ?', code).fetchOne()"
+			   error="This code is already use by another batch."/>
+	</action-condition>
+
 </object-views>

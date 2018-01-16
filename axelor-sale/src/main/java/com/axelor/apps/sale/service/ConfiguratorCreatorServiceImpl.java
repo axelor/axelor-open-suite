@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -16,16 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.sale.service;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Configurator;
@@ -45,10 +35,21 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.script.ScriptBindings;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
@@ -304,9 +305,11 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         int scale = Beans.get(AppBaseService.class)
                 .getNbDecimalDigitForUnitPrice();
         String fieldName = indicator.getName();
-        fieldName = fieldName.substring(0, fieldName.indexOf("_"));
+        fieldName = fieldName.substring(0, fieldName.indexOf('_'));
 
-        if (!configuratorFormulaService.getMetaField(formula).getName()
+        MetaField metaField = configuratorFormulaService.getMetaField(formula);
+
+        if (!metaField.getName()
                 .equals(fieldName)) {
             return;
         }
@@ -316,10 +319,15 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         } else {
             indicator.setHidden(true);
         }
-        if (configuratorFormulaService.getMetaField(formula)
-                .getTypeName().equals("BigDecimal")) {
+        if (metaField.getTypeName().equals("BigDecimal")) {
             indicator.setPrecision(20);
             indicator.setScale(scale);
+        } else if (!Strings.isNullOrEmpty(metaField.getRelationship())) {
+            indicator.setTargetModel(
+                    Beans.get(MetaModelRepository.class).findByName(
+                            metaField.getTypeName()
+                    ).getFullName()
+            );
         }
     }
 

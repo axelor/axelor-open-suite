@@ -48,8 +48,7 @@
 			<panel title=" " colSpan="12">
 				<field name="taskDate" colSpan="4" required="true" title="Task date" onChange="action-task-attrs-set-task-duration"/>
 				<field name="taskEndDate" colSpan="4"  onChange="action-task-attrs-set-task-duration"/>
-				<field name="taskDuration" colSpan="4" title="Task duration" widget="duration" x-big="true" onChange="action-task-attrs-set-dates"/>
-				<field name="taskDeadline" colSpan="4"/>
+				<field name="taskDeadline" title="Task deadline" colSpan="4"/>
 			</panel>
 			<panel title="Description" colSpan="12">
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>
@@ -59,11 +58,16 @@
 		<panel canCollapse="true">
 			<panel-dashlet action="action-view-show-task-tree" colSpan="12" title="Task Tree"/>
 		</panel>
-		<panel title="Dependencies" canCollapse="true" sidebar="true">
-			<field name="startToStartSet" colSpan="12" widget="TagSelect"/>
-			<field name="finishToStartSet" colSpan="12" widget="TagSelect"/>
-			<field name="startToFinishSet" colSpan="12" widget="TagSelect"/>
-			<field name="finishToFinishSet" colSpan="12" widget="TagSelect"/>
+		<panel sidebar="true" name="attributes" title="Attributes">
+			<field name="status" colSpan="6" required="true"/>
+			<spacer/>
+			<field name="priority" colSpan="6" required="true"/>
+			<field name="category" colSpan="6" onSelect="action-task-attrs-project-category-configurations"/>
+			<field name="progressSelect" colSpan="12" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
+			<panel name="planning" title="Planning">
+				<field name="plannedProgress" widget="progress" colSpan="12" hidden="true"/>
+				<field name="totalPlannedHrs" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" colSpan="12"/>
+			</panel>
 		</panel>
 
         <panel name="followers" title="Followers" sidebar="true">
@@ -78,17 +82,12 @@
 			<field name="currency" colSpan="6"/>
         </panel>
 
-		<panel sidebar="true" name="attributes" title="Attributes">
-			<field name="status" colSpan="6" required="true"/>
-			<spacer/>
-			<field name="priority" colSpan="6" required="true"/>
-			<field name="category" colSpan="6" onSelect="action-task-attrs-project-category-configurations"/>
-			<field name="progressSelect" colSpan="12" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
-            <panel name="planning" title="Planning">
-                <field name="plannedProgress" widget="progress" colSpan="12" hidden="true"/>
-                <field name="totalPlannedHrs" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" colSpan="12"/>
-            </panel>
-	    </panel>
+		<panel title="Dependencies" canCollapse="true" sidebar="true">
+			<field name="startToStartSet" colSpan="12" widget="TagSelect"/>
+			<field name="finishToStartSet" colSpan="12" widget="TagSelect"/>
+			<field name="startToFinishSet" colSpan="12" widget="TagSelect"/>
+			<field name="finishToFinishSet" colSpan="12" widget="TagSelect"/>
+		</panel>
 
 		<panel-mail>
 			<mail-messages/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,7 +25,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
-import com.axelor.apps.stock.service.LocationLineService;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineSupplychainServiceImpl;
 import com.axelor.exception.AxelorException;
@@ -75,7 +75,7 @@ public class SaleOrderLineController {
 	public void checkStocks(ActionRequest request, ActionResponse response) {
 	    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 		SaleOrder saleOrder = saleOrderLineServiceSupplyChainImpl.getSaleOrder(request.getContext());
-		if (saleOrder.getLocation() == null) {
+		if (saleOrder.getStockLocation() == null) {
 			return;
 		}
 		try {
@@ -90,8 +90,8 @@ public class SaleOrderLineController {
 			if(unit != null && !unit.equals(saleOrderLine.getUnit())){
 				qty = Beans.get(UnitConversionService.class).convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
 			}
-			Beans.get(LocationLineService.class).checkIfEnoughStock(
-					saleOrder.getLocation(),
+			Beans.get(StockLocationLineService.class).checkIfEnoughStock(
+					saleOrder.getStockLocation(),
 					saleOrderLine.getProduct(),
 					qty
 			);
@@ -105,7 +105,7 @@ public class SaleOrderLineController {
 		if (saleOrderLine.getSaleOrder() == null) {
 			return;
 		}
-		if (saleOrderLine.getProduct() != null && saleOrderLine.getSaleOrder().getLocation() != null) {
+		if (saleOrderLine.getProduct() != null && saleOrderLine.getSaleOrder().getStockLocation() != null) {
 			response.setValue("$availableStock", saleOrderLineServiceSupplyChainImpl.getAvailableStock(saleOrderLine));
 		}
 	}

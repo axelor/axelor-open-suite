@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,30 +17,30 @@
  */
 package com.axelor.apps.production.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
-import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockConfig;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class ManufOrderStockMoveService {
 
@@ -54,7 +54,7 @@ public class ManufOrderStockMoveService {
 	private ProductionConfigService productionConfigService;
 
 	@Inject
-	private LocationRepository locationRepo;
+	private StockLocationRepository stockLocationRepo;
 
 	private static final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
@@ -94,12 +94,12 @@ public class ManufOrderStockMoveService {
 
 	    StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
 	    StockConfig stockConfig = stockConfigService.getStockConfig(company);
-		Location virtualLocation = stockConfigService.getProductionVirtualLocation(stockConfig);
+	    StockLocation virtualLocation = stockConfigService.getProductionVirtualLocation(stockConfig);
 
-		Location fromLocation;
+	    StockLocation fromLocation;
 
-		if (manufOrder.getProdProcess() != null && manufOrder.getProdProcess().getLocation() != null) {
-			fromLocation = manufOrder.getProdProcess().getLocation();
+		if (manufOrder.getProdProcess() != null && manufOrder.getProdProcess().getStockLocation() != null) {
+			fromLocation = manufOrder.getProdProcess().getStockLocation();
 		} else {
 			fromLocation = stockConfigService.getDefaultLocation(stockConfig);
 		}
@@ -122,7 +122,6 @@ public class ManufOrderStockMoveService {
 
 				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_OUT_PRODUCTIONS);
 				stockMove.addStockMoveLineListItem(stockMoveLine);
-				manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
 
 			}
 
@@ -130,6 +129,12 @@ public class ManufOrderStockMoveService {
 				stockMoveService.plan(stockMove);
 				manufOrder.setOutStockMove(stockMove);
 			}
+
+            if (stockMove.getStockMoveLineList() != null) {
+                for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+                    manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
+                }
+            }
 		}
 
 	}
@@ -138,7 +143,7 @@ public class ManufOrderStockMoveService {
 	private StockMove _createToProduceStockMove(ManufOrder manufOrder, Company company) throws AxelorException  {
 
 		StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
-		Location virtualLocation = stockConfigService.getProductionVirtualLocation(stockConfigService.getStockConfig(company));
+		StockLocation virtualLocation = stockConfigService.getProductionVirtualLocation(stockConfigService.getStockConfig(company));
 
 		LocalDateTime plannedEndDateT = manufOrder.getPlannedEndDateT();
 		LocalDate plannedEndDate = plannedEndDateT != null ? plannedEndDateT.toLocalDate() : null;

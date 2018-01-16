@@ -8,7 +8,7 @@
   <entity name="AccountingBatch" lang="java">
   	
   	<!-- HEADER -->
-  	<string name="code" title="Code" namecolumn="true"/>
+  	<string name="code" title="Code" namecolumn="true" unique="true"/>
     <integer name="actionSelect" title="Action" required="true" selection="iaccounting.batch.action.select"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="BBAN/IBAN to use"/>

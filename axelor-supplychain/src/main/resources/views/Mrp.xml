@@ -7,7 +7,7 @@
         <hilite if="statusSelect == 1" strong="true" color="warning"/>
         <hilite if="statusSelect == 2" strong="true" color="success"/>
         <field name="createdOn"/>
-        <field name="location" form-view="location-form" grid-view="location-grid" colSpan="6"/>
+        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6"/>
         <field name="endDate" colSpan="6"/>
         <field name="statusSelect"/>
 	 </grid>
@@ -23,7 +23,7 @@
 	    <panel name="filters" title="Filters" collapseIf="statusSelect != 0" colSpan="12">
 			<field name="id"/>
 	        <field name="createdOn"/>
-	        <field name="location" form-view="location-form" grid-view="location-grid" colSpan="6"/>
+	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6"/>
 	        <field name="endDate" colSpan="6"/>
 	        <panel-related field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false"/>
 	        <panel-related field="productCategorySet" canEdit="false" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12"/>

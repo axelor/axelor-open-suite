@@ -5,9 +5,9 @@
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="LocationLine" lang="java">
+  <entity name="StockLocationLine" lang="java">
   
-  	<many-to-one name="location" ref="com.axelor.apps.stock.db.Location" title="Stock Location"/>
+  	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
   	
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    
 	<decimal name="currentQty" title="Current Qty"/>
@@ -17,7 +17,7 @@
 	
     <string name="rack" title="Rack"/>
 	<many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber" title="Tracking Nbr"/>
-	<many-to-one name="detailsLocation" ref="com.axelor.apps.stock.db.Location" title="Location Details"/>
+	<many-to-one name="detailsLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Location Details"/>
 	
 	<decimal name="lastInventoryRealQty"/>
 	<datetime name="lastInventoryDateT" tz="true" title="Last inventory date"/>

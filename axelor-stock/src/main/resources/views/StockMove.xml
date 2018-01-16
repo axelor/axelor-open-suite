@@ -8,8 +8,8 @@
 			<button name="printStockMoveGrid" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
     	</toolbar>
         <field name="stockMoveSeq"/>
-        <field name="fromLocation" form-view="location-form" grid-view="location-grid"/>
-        <field name="toLocation" form-view="location-form" grid-view="location-grid"/>
+        <field name="fromLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+        <field name="toLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="estimatedDate"/>
         <field name="realDate"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
@@ -26,7 +26,7 @@
 			<button name="printPickingStockMoveGrid" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
     	</toolbar>
         <field name="stockMoveSeq"/>
-        <field name="fromLocation" form-view="location-form" grid-view="location-grid"/>
+        <field name="fromLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="estimatedDate"/>
         <field name="realDate"/>
         <field name="fromAddressStr" hidden="true"/>
@@ -44,7 +44,7 @@
 			<button name="printStockMoveGrid" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
     	</toolbar>
         <field name="stockMoveSeq"/>
-        <field name="toLocation"  form-view="location-form" grid-view="location-grid"/>
+        <field name="toLocation"  form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="estimatedDate"/>
         <field name="realDate"/>
         <field name="fromAddressStr"/>
@@ -95,8 +95,8 @@
 	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12" readonlyIf="statusSelect != 1" onChange="action-stock-move-record-partner-delivery-informations"/>
 	    </panel>
 	    <panel title="Stock move informations" name="stockMoveInformation">
-	      <field name="fromLocation" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" form-view="location-form" grid-view="location-grid"/>
-	      <field name="toLocation" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1" form-view="location-form" grid-view="location-grid"/>
+	      <field name="fromLocation" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
+	      <field name="toLocation" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	      <field name="estimatedDate" colSpan="6" readonlyIf="statusSelect != 1"/>
 	      <field name="realDate" colSpan="6"/>
 	      <field name="isWithReturnSurplus" colSpan="6" showIf="typeSelect == 3"/>
@@ -169,7 +169,7 @@
     	<panel name="main">
     		<field name="stockFromDate" title="From Date" type="date" required="true"/>
     		<field name="stockToDate" title="To Date" type="date" required="true"/>
-	        <field name="stockLocation" title="Stock location" type="many-to-one" target="com.axelor.apps.stock.db.Location" required="true" />
+	        <field name="stockLocation" title="Stock location" type="many-to-one" target="com.axelor.apps.stock.db.StockLocation" required="true" />
 	        <field name="productSet" title="Products" type="many-to-many" target="com.axelor.apps.base.db.Product" colSpan="12" />
         </panel>
     </form>

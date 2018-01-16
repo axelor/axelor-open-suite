@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,21 +17,22 @@
  */
 package com.axelor.apps.stock.service;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.Location;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
-public interface LocationService {
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.stock.db.StockLocation;
+
+public interface StockLocationService {
 
     /**
      * Get the default location of the given company
      * @param company
      * @return the default location or null
      */
-    public Location getLocation(Company company);
+    public StockLocation getLocation(Company company);
 
 	public BigDecimal getQty(Long productId, Long locationId, String qtyType);
 	
@@ -43,6 +44,6 @@ public interface LocationService {
 
 	public List<Long> getBadLocationLineId();
 	
-	public Set<Long> getContentLocationIds(Location location);
+	public Set<Long> getContentLocationIds(StockLocation stockLocation);
 	
 }

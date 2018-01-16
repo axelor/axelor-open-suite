@@ -299,6 +299,11 @@ public class BankOrderServiceImpl implements BankOrderService {
 		File signatureFileToSend = null;
 
 		if(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+            if (bankOrder.getSignedMetaFile() == null) {
+                throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_NOT_PROPERLY_SIGNED),
+                        IException.NO_VALUE);
+            }
+
 			signatureFileToSend = MetaFiles.getPath(bankOrder.getSignedMetaFile()).toFile();
 		}
 		dataFileToSend = MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
@@ -533,7 +538,7 @@ public class BankOrderServiceImpl implements BankOrderService {
             case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SBB:
                 file = new BankOrderFile00800102Service(bankOrder, BankOrderFileService.SEPA_TYPE_SBB).generateFile();
                 break;
-                
+
             default:
             	throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_FORMAT));
 		}

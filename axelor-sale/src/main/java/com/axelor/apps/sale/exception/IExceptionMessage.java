@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -54,7 +54,7 @@ public interface IExceptionMessage {
 	 */
 
 	String CONFIGURATOR_CREATOR_SCRIPT_ERROR = /*$$(*/ "This script has errors, please see server logs for more details." /*)*/;
-	String CONFIGURATOR_CREATOR_SCRIPT_WORKING = /*$$(*/ "The script is working." /*)*/;
+	String CONFIGURATOR_CREATOR_SCRIPT_WORKING = /*$$(*/ "The syntax of the script is correct." /*)*/;
 
 	/**
 	 * Configurator Service

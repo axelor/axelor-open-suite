@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -3796,16 +3796,16 @@ row["partnerFirstName"]
                                         <detail>
                                             <row id="3498">
                                                 <cell id="3499">
-                                                    <property name="borderBottomColor">#7F7F7F</property>
+                                                    <property name="borderBottomColor">#000000</property>
                                                     <property name="borderBottomStyle">solid</property>
                                                     <property name="borderBottomWidth">thin</property>
-                                                    <property name="borderLeftColor">#7F7F7F</property>
+                                                    <property name="borderLeftColor">#000000</property>
                                                     <property name="borderLeftStyle">solid</property>
                                                     <property name="borderLeftWidth">thin</property>
-                                                    <property name="borderRightColor">#7F7F7F</property>
+                                                    <property name="borderRightColor">#000000</property>
                                                     <property name="borderRightStyle">solid</property>
                                                     <property name="borderRightWidth">thin</property>
-                                                    <property name="borderTopColor">#7F7F7F</property>
+                                                    <property name="borderTopColor">#000000</property>
                                                     <property name="borderTopStyle">solid</property>
                                                     <property name="borderTopWidth">thin</property>
                                                     <text id="3539">
@@ -3815,16 +3815,16 @@ row["partnerFirstName"]
                                                     </text>
                                                 </cell>
                                                 <cell id="3500">
-                                                    <property name="borderBottomColor">#7F7F7F</property>
+                                                    <property name="borderBottomColor">#000000</property>
                                                     <property name="borderBottomStyle">solid</property>
                                                     <property name="borderBottomWidth">thin</property>
-                                                    <property name="borderLeftColor">#7F7F7F</property>
+                                                    <property name="borderLeftColor">#000000</property>
                                                     <property name="borderLeftStyle">solid</property>
                                                     <property name="borderLeftWidth">thin</property>
-                                                    <property name="borderRightColor">#7F7F7F</property>
+                                                    <property name="borderRightColor">#000000</property>
                                                     <property name="borderRightStyle">solid</property>
                                                     <property name="borderRightWidth">thin</property>
-                                                    <property name="borderTopColor">#7F7F7F</property>
+                                                    <property name="borderTopColor">#000000</property>
                                                     <property name="borderTopStyle">solid</property>
                                                     <property name="borderTopWidth">thin</property>
                                                     <text id="3540">
@@ -3834,16 +3834,16 @@ row["partnerFirstName"]
                                                     </text>
                                                 </cell>
                                                 <cell id="3501">
-                                                    <property name="borderBottomColor">#7F7F7F</property>
+                                                    <property name="borderBottomColor">#000000</property>
                                                     <property name="borderBottomStyle">solid</property>
                                                     <property name="borderBottomWidth">thin</property>
-                                                    <property name="borderLeftColor">#7F7F7F</property>
+                                                    <property name="borderLeftColor">#000000</property>
                                                     <property name="borderLeftStyle">solid</property>
                                                     <property name="borderLeftWidth">thin</property>
-                                                    <property name="borderRightColor">#7F7F7F</property>
+                                                    <property name="borderRightColor">#000000</property>
                                                     <property name="borderRightStyle">solid</property>
                                                     <property name="borderRightWidth">thin</property>
-                                                    <property name="borderTopColor">#7F7F7F</property>
+                                                    <property name="borderTopColor">#000000</property>
                                                     <property name="borderTopStyle">solid</property>
                                                     <property name="borderTopWidth">thin</property>
                                                     <text id="3541">

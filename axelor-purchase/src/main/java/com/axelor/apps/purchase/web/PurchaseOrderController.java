@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,7 +26,9 @@ import java.util.Map;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -348,6 +350,27 @@ public class PurchaseOrderController {
 		purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
 		purchaseOrderService.validatePurchaseOrder(purchaseOrder);
 		response.setReload(true);
+	}
+
+	/**
+	 * Called from purchase order form view on partner change.
+	 * Get the default price list for the purchase order.
+	 * Call {@link PartnerPriceListService#getDefaultPriceList(Partner, int)}.
+	 * @param request
+	 * @param response
+	 */
+	public void fillPriceList(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		response.setValue("priceList",
+				Beans.get(PartnerPriceListService.class)
+						.getDefaultPriceList(purchaseOrder.getSupplierPartner(), PriceListRepository.TYPE_PURCHASE)
+		);
+	}
+
+	public void changePriceListDomain(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		String domain = Beans.get(PartnerPriceListService.class).getPriceListDomain(purchaseOrder.getSupplierPartner(), PriceListRepository.TYPE_PURCHASE);
+		response.setAttr("priceList", "domain", domain);
 	}
 
 }

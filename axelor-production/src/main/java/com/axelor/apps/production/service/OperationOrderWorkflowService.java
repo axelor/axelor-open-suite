@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,9 +19,11 @@ package com.axelor.apps.production.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import com.axelor.app.production.db.IManufOrder;
-import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.app.production.db.IWorkCenter;
 import com.axelor.apps.production.db.Machine;
@@ -40,10 +42,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.List;
 
 public class OperationOrderWorkflowService {
 	protected OperationOrderStockMoveService operationOrderStockMoveService;

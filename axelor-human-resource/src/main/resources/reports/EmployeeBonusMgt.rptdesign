@@ -616,10 +616,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">seniority_date</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">presence</property>
+                    <property name="columnName">weekly_planning</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">presence</text-property>
-                    <text-property name="heading">presence</text-property>
+                    <text-property name="displayName">weekly_planning</text-property>
+                    <text-property name="heading">weekly_planning</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">user_name</property>
@@ -665,7 +665,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">presence</property>
+                        <property name="name">weekly_planning</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
@@ -707,8 +707,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">presence</property>
-                    <property name="nativeName">presence</property>
+                    <property name="name">weekly_planning</property>
+                    <property name="nativeName">weekly_planning</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
@@ -724,11 +724,11 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	EmployeeBonusMgtLine.amount,
 	EmployeeBonusMgtLine.coef,
 	EmployeeBonusMgtLine.seniority_date,
-	presence.name AS presence,
+	weekly_planning.name AS weekly_planning,
 	user_val.full_name as user_name
 FROM hr_employee_bonus_mgt_line as EmployeeBonusMgtLine
 LEFT JOIN hr_employee as employee on (EmployeeBonusMgtLine.employee = employee.id)
-LEFT JOIN base_weekly_planning AS presence ON (presence.id = EmployeeBonusMgtLine.presence)
+LEFT JOIN base_weekly_planning AS weekly_planning ON (weekly_planning.id = EmployeeBonusMgtLine.weekly_planning)
 LEFT JOIN hr_employee_bonus_mgt AS EmployeeBonusMgt ON (EmployeeBonusMgt.id = EmployeeBonusMgtLine.employee_bonus_mgt)
 LEFT JOIN auth_user AS user_val ON (user_val.employee = employee.id)
 WHERE EmployeeBonusMgt.id = ?]]></xml-property>
@@ -1333,9 +1333,9 @@ WHERE EmployeeBonusMgt.id = ?]]></xml-property>
                     <property name="dataType">date</property>
                 </structure>
                 <structure>
-                    <property name="name">presence</property>
-                    <text-property name="displayName">presence</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["presence"]</expression>
+                    <property name="name">weekly_planning</property>
+                    <text-property name="displayName">weekly_planning</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["weekly_planning"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -1693,7 +1693,7 @@ WHERE EmployeeBonusMgt.id = ?]]></xml-property>
                             <property name="marginRight">0pt</property>
                             <property name="textAlign">left</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["presence"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["weekly_planning"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="3957">

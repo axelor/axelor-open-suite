@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -57,7 +57,9 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
@@ -167,7 +169,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 			
 		};
 		
-		return invoiceGenerator.generate();
+		Invoice invoice1 = invoiceGenerator.generate();
+		invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
+		return invoice1;
 		
 	}
 	
@@ -325,14 +329,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		
 	}
 	
-	protected String getDraftSequence(Invoice invoice)  {
-		return "*" + invoice.getId();
-	}
-	
-	public void setDraftSequence(Invoice invoice)  {
+    @Override
+	public void setDraftSequence(Invoice invoice) throws AxelorException {
 		
 		if (invoice.getId() != null && Strings.isNullOrEmpty(invoice.getInvoiceId()))  {
-			invoice.setInvoiceId(this.getDraftSequence(invoice));
+			invoice.setInvoiceId(Beans.get(SequenceService.class).getDraftSequenceNumber(invoice));
 		}
 		
 	}
@@ -658,6 +659,17 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         throw new AxelorException(invoice, IException.MISSING_FIELD,
                 I18n.get(IExceptionMessage.PARTNER_BANK_DETAILS_MISSING), partner.getName());
     }
+
+	public int getPurchaseTypeOrSaleType(Invoice invoice) {
+		if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+				|| invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+			return PriceListRepository.TYPE_SALE;
+		} else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+				|| invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+			return PriceListRepository.TYPE_PURCHASE;
+		}
+		return -1;
+	}
 
 }
 

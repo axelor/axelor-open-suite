@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,14 +18,22 @@
 package com.axelor.apps.base.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.base.db.IPartner;
+import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.AddressBaseRepository;
 import com.axelor.apps.base.db.repo.AddressRepository;
+import com.axelor.apps.base.db.repo.AlarmEngineBatchBaseRepository;
+import com.axelor.apps.base.db.repo.AlarmEngineBatchRepository;
 import com.axelor.apps.base.db.repo.BankAddressBaseRepository;
 import com.axelor.apps.base.db.repo.BankAddressRepository;
 import com.axelor.apps.base.db.repo.BankBaseRepository;
 import com.axelor.apps.base.db.repo.BankRepository;
+import com.axelor.apps.base.db.repo.BaseBatchBaseRepository;
+import com.axelor.apps.base.db.repo.BaseBatchRepository;
 import com.axelor.apps.base.db.repo.DurationBaseRepository;
 import com.axelor.apps.base.db.repo.DurationRepository;
+import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
+import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
@@ -46,6 +54,8 @@ import com.axelor.apps.base.service.CompanyServiceImpl;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
+import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -105,5 +115,10 @@ public class BaseModule extends AxelorModule {
         bind(UserRepository.class).to(UserBaseRepository.class);
         bind(BankDetailsService.class).to(BankDetailsServiceImpl.class);
         bind(ImportCityService.class).to(ImportCityServiceImpl.class);
+        bind(BaseBatchRepository.class).to(BaseBatchBaseRepository.class);
+        bind(MailBatchRepository.class).to(MailBatchBaseRepository.class);
+        bind(AlarmEngineBatchRepository.class).to(AlarmEngineBatchBaseRepository.class);
+        bind(PartnerPriceListService.class).to(PartnerPriceListServiceImpl.class);
+        IPartner.modelPartnerFieldMap.put(PartnerAddress.class.getName(), "_parent");
     }
 }

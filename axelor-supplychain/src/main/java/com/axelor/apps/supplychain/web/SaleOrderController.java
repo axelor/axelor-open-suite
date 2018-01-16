@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,9 +33,9 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.service.LocationService;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -84,7 +84,7 @@ public class SaleOrderController{
 
 			if(stockMove != null)  {
 				response.setView(ActionView
-					.define(I18n.get("Stock Move"))
+					.define(I18n.get("Stock move"))
 					.model(StockMove.class.getName())
 					.add("grid", "stock-move-grid")
 					.add("form", "stock-move-form")
@@ -103,10 +103,10 @@ public class SaleOrderController{
 
 		if(saleOrder != null) {
 
-			Location location = Beans.get(LocationService.class).getLocation(saleOrder.getCompany());
+			StockLocation stockLocation = Beans.get(StockLocationService.class).getLocation(saleOrder.getCompany());
 
-			if(location != null) {
-				response.setValue("location", location);
+			if(stockLocation != null) {
+				response.setValue("stockLocation", stockLocation);
 			}
 		}
 	}
@@ -122,7 +122,7 @@ public class SaleOrderController{
 
 				if (request.getContext().get("supplierPartnerSelect") != null) {
 					Partner partner = JPA.em().find(Partner.class, new Long((Integer) ((Map) request.getContext().get("supplierPartnerSelect")).get("id")));
-					List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
+					List<Long> saleOrderLineIdSelected = new ArrayList<>();
 					String saleOrderLineIdSelectedStr = (String) request.getContext().get("saleOrderLineIdSelected");
 					for (String saleOrderId : saleOrderLineIdSelectedStr.split(",")) {
 						saleOrderLineIdSelected.add(new Long(saleOrderId));
@@ -139,7 +139,7 @@ public class SaleOrderController{
 					response.setCanClose(true);
 				} else {
 					Partner supplierPartner = null;
-					List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
+					List<Long> saleOrderLineIdSelected = new ArrayList<>();
 
 					//Check if supplier partners of each sale order line are the same. If it is, send the partner id to view to load this partner by default into select
 					for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
@@ -246,7 +246,7 @@ public class SaleOrderController{
 
 			SaleOrder saleOrder = saleOrderRepo.find( Long.valueOf(saleOrderId) );
 			//Check if at least one row is selected. If yes, then invoiced only the selected rows, else invoiced all rows
-			List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
+			List<Long> saleOrderLineIdSelected = new ArrayList<>();
 			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 				if (saleOrderLine.isSelected()){
 					saleOrderLineIdSelected.add(saleOrderLine.getId());
@@ -282,7 +282,7 @@ public class SaleOrderController{
 	public void getSubscriptionSaleOrdersToInvoice(ActionRequest request, ActionResponse response) throws AxelorException  {
 
 		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.invoiced = false AND self.invoicingDate <= ?1", appSupplychainService.getTodayDate()).fetch();
-		List<Long> listId = new ArrayList<Long>();
+		List<Long> listId = new ArrayList<>();
 		for (Subscription subscription : subscriptionList) {
 			listId.add(subscription.getSaleOrderLine().getSaleOrder().getId());
 		}
@@ -312,7 +312,7 @@ public class SaleOrderController{
 		List<Integer> listSelectedSaleOrder = (List<Integer>) request.getContext().get("_ids");
 		if(listSelectedSaleOrder != null){
 			SaleOrder saleOrder = null;
-			List<Long> listInvoiceId = new ArrayList<Long>();
+			List<Long> listInvoiceId = new ArrayList<>();
 			for (Integer integer : listSelectedSaleOrder) {
 				saleOrder = saleOrderRepo.find(integer.longValue());
 				Invoice invoice = saleOrderInvoiceServiceImpl.generateSubcriptionInvoiceForSaleOrder(saleOrder);
@@ -362,8 +362,8 @@ public class SaleOrderController{
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void mergeSaleOrder(ActionRequest request, ActionResponse response)  {
-		List<SaleOrder> saleOrderList = new ArrayList<SaleOrder>();
-		List<Long> saleOrderIdList = new ArrayList<Long>();
+		List<SaleOrder> saleOrderList = new ArrayList<>();
+		List<Long> saleOrderIdList = new ArrayList<>();
 		boolean fromPopup = false;
 		String lineToMerge;
 		if (request.getContext().get("saleQuotationToMerge") != null){
@@ -402,7 +402,7 @@ public class SaleOrderController{
 		PriceList commonPriceList = null;
 		//Useful to determine if a difference exists between price lists of all sale orders
 		boolean existPriceListDiff = false;
-		Location commonLocation = null;
+		StockLocation commonLocation = null;
 		//Useful to determine if a difference exists between locations of all sale orders
 		boolean existLocationDiff = false;
 		
@@ -418,7 +418,7 @@ public class SaleOrderController{
 				commonContactPartner = saleOrderTemp.getContactPartner();
 				commonTeam = saleOrderTemp.getTeam();
 				commonPriceList = saleOrderTemp.getPriceList();
-				commonLocation = saleOrderTemp.getLocation();
+				commonLocation = saleOrderTemp.getStockLocation();
 			} else {
 				if (commonCurrency != null
 						&& !commonCurrency.equals(saleOrderTemp.getCurrency())){
@@ -448,7 +448,7 @@ public class SaleOrderController{
 					existPriceListDiff = true;
 				}
 				if (commonLocation != null
-						&& !commonLocation.equals(saleOrderTemp.getLocation())){
+						&& !commonLocation.equals(saleOrderTemp.getStockLocation())){
 					commonLocation = null;
 					existLocationDiff = true;
 				}
@@ -488,8 +488,8 @@ public class SaleOrderController{
 		if (request.getContext().get("team") != null){
 			commonTeam = JPA.em().find(Team.class, new Long((Integer)((Map)request.getContext().get("team")).get("id")));
 		}
-		if (request.getContext().get("location") != null){
-			commonLocation = JPA.em().find(Location.class, new Long((Integer)((Map)request.getContext().get("location")).get("id")));
+		if (request.getContext().get("stockLocation") != null){
+			commonLocation = JPA.em().find(StockLocation.class, new Long((Integer)((Map)request.getContext().get("stockLocation")).get("id")));
 		}
 		
 		if (!fromPopup && (existContactPartnerDiff || existPriceListDiff || existTeamDiff)) {

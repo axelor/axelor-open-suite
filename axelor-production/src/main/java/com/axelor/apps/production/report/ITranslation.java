@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -68,7 +68,7 @@ public interface ITranslation {
 	
 	public static final String PRODUCTION_PROCESS_LABEL = /*$$(*/ "ProdProcess.label"; /*)*/
 	public static final String PRODUCTION_PROCESS_NAME = /*$$(*/ "ProdProcess.name"; /*)*/
-	public static final String PRODUCTION_PROCESS_LOCATION = /*$$(*/ "ProdProcess.location"; /*)*/
+	public static final String PRODUCTION_PROCESS_STOCK_LOCATION = /*$$(*/ "ProdProcess.stockLocation"; /*)*/
 	public static final String PRODUCTION_PROCESS_FINAL_LOCATION = /*$$(*/ "ProdProcess.producedProductLocation"; /*)*/
 	public static final String PRODUCTION_PROCESS_PRODUCT = /*$$(*/ "ProdProcess.product"; /*)*/
 	public static final String PRODUCTION_PROCESS_ISOPERATION = /*$$(*/ "ProdProcess.isOperation"; /*)*/

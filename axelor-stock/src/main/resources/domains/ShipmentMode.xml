@@ -6,7 +6,6 @@
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="ShipmentMode" sequential="true" lang="java">
-  	<string name="importId"/>
   	<string name="name" title="Shipment Mode"/>
   	<one-to-many name="freightCarrierMode" title="Freight Carrier Mode" ref="com.axelor.apps.stock.db.FreightCarrierMode" mappedBy="shipmentMode"/>
   </entity>

@@ -7,7 +7,6 @@
 
   <entity name="BankOrder" lang="java" sequential="true">
   
-  	<integer name="importId" />
   	<integer name="orderTypeSelect" title="Order Type" selection="bankpayment.bank.order.type.select"/>
   	<integer name="rejectStatusSelect" title="Rejection Status" selection="bankpayment.bank.order.reject.status.select"/>
   	<string name="bankOrderSeq" title="Sequence" namecolumn="true" readonly="true"/>

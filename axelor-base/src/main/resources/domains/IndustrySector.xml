@@ -7,7 +7,6 @@
 
   <entity name="IndustrySector" lang="java" cachable="true">
      
-    <integer name="importId"/>
     <string name="name" title="Name" required="true" unique="true"/>
   
   </entity>

@@ -7,7 +7,6 @@
 
   <entity name="BankStatementFileFormat" lang="java" sequential="true">
   
-  	<integer name="importId" />
   	<string name="statementFileFormatSelect" title="File format" selection="bankpayment.bank.statement.file.format.statement.file.format.select"/>
 	<string name="name" title="Name"/>
 	<string name="description" title="Description" large="true" multiline="true"/>

@@ -10,7 +10,6 @@
      Filter represents a condition to evaluate.  It stores condition components like operand, operator and value. 
      A sql or groovy condition will be created by using this. 
     ]]>
-    <integer name="importId" />
   	<string name="moduleName" title="Module" />
     <many-to-one name="chartBuilder" ref="com.axelor.studio.db.ChartBuilder" />
   	<many-to-one name="metaField" title="Field" ref="com.axelor.meta.db.MetaField"/>

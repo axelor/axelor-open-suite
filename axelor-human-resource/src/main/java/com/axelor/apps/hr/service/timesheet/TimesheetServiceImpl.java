@@ -17,24 +17,10 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.mail.MessagingException;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
@@ -42,7 +28,9 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.hr.db.Employee;
@@ -81,6 +69,19 @@ import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class TimesheetServiceImpl implements TimesheetService{
 
 	@Inject
@@ -93,7 +94,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	protected AppHumanResourceService appHumanResourceService;
 	
 	@Inject
-	protected ProjectService projectService; 
+	protected ProjectService projectService;
 	
 	@Inject
 	protected PublicHolidayDayRepository publicHolidayDayRepo;
@@ -109,17 +110,17 @@ public class TimesheetServiceImpl implements TimesheetService{
 	
 	@Inject
 	protected TemplateMessageService  templateMessageService;
-	
+
 	@Inject
 	private ProjectRepository projectRepo;
-	
+
 	@Inject
 	private UserRepository userRepo;
-	
+
 	@Inject
 	private UserHrService userHrService;
 
-	
+
 	@Override
 	@Transactional(rollbackOn={Exception.class})
 	public void getTimeFromTask(Timesheet timesheet){
@@ -361,7 +362,12 @@ public class TimesheetServiceImpl implements TimesheetService{
 		Timesheet timesheet = new Timesheet();
 		
 		timesheet.setUser(user);
-		timesheet.setCompany(user.getActiveCompany());
+		Company company = null;
+		if (user.getEmployee() != null
+				&& user.getEmployee().getMainEmploymentContract() != null) {
+			company = user.getEmployee().getMainEmploymentContract().getPayCompany();
+		}
+		timesheet.setCompany(company);
 		timesheet.setFromDate(fromDate);
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
 		timesheet.setFullName(computeFullName(timesheet));
@@ -464,7 +470,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		BigDecimal qtyConverted = durationStored;
 		qtyConverted = Beans.get(UnitConversionService.class).convert(appHumanResourceService.getAppBase().getUnitHours(), product.getUnit(), durationStored);
 
-		PriceList priceList = invoice.getPartner().getSalePriceList();
+		PriceList priceList = Beans.get(PartnerPriceListService.class).getDefaultPriceList(invoice.getPartner(), PriceListRepository.TYPE_SALE);
 		if(priceList != null)  {
 			PriceListLine priceListLine = priceListService.getPriceListLine(product, qtyConverted, priceList);
 			if(priceListLine!=null){
@@ -665,36 +671,36 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		}
 	}
-	
+
 	@Override
 	public List<Map<String,Object>> createDefaultLines(Timesheet timesheet) {
-		
+
 		List<Map<String,Object>> lines =  new ArrayList<Map<String,Object>>();
 		User user = timesheet.getUser();
 		if (user == null || timesheet.getFromDate() == null) {
 			return lines;
 		}
-		
+
 		user = userRepo.find(user.getId());
-		
+
 		Product product = userHrService.getTimesheetProduct(user);
-		
+
 		if (product == null) {
 			return lines;
 		}
-		
+
 		List<Project> projects = projectRepo.all().filter("self.membersUserSet.id = ?1 and "
 				+ "self.imputable = true "
 				+ "and self.statusSelect != 3", user.getId()).fetch();
-		
+
 		for (Project project : projects) {
 			TimesheetLine line = createTimesheetLine(project, product, user, timesheet.getFromDate(), timesheet, new BigDecimal(0), null);
 			lines.add(Mapper.toMap(line));
 		}
-		
-		
+
+
 		return lines;
-	}	
+	}
 
 	@Override
 	public BigDecimal computePeriodTotal(Timesheet timesheet) {
@@ -720,7 +726,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		}
 		return null;
 	}
-	
+
 	@Override
 	public void createValidateDomainTimesheetLine(User user, Employee employee, ActionView.ActionViewBuilder actionView) {
 
