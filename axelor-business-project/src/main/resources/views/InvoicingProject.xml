@@ -13,7 +13,7 @@
 		onNew="action-invoicing-project-attrs-title-project" onLoad="action-invoicing-project-attrs-title-project" width="large">
 		<toolbar>
   			<button name="delete" hidden="true" showIf="invoice == null" title="Delete"/>
-  			<button name="print" title="Print delivery sheet" onClick="action-invoicing-project-method-print"/>
+  			<button name="print" title="Print delivery sheet" hidden="true" showIf="project" onClick="action-invoicing-project-method-print"/>
   		</toolbar>
   		<panel title="Status">
   			<field name="statusSelect" widget="NavSelect" colSpan="12" showTitle="false"/>
