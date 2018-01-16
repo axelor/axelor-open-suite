@@ -282,7 +282,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
-[Unreleased]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...HEAD
+[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...HEAD
 [4.1.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/axelor/axelor-business-suite/compare/v4.0.2...v4.1.0
 [4.0.2]: https://github.com/axelor/axelor-business-suite/compare/v4.0.1...v4.0.2
