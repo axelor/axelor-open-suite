@@ -1,3 +1,10 @@
+# Unreleased 5.x
+## Improvements
+
+## Bug Fixes
+Fix the default amount on new invoice payment to use the amount remaining of the invoice.
+
+
 # 4.0.1 (2017-06-19)
 
 # 4.0.0 (2017-01-30)
