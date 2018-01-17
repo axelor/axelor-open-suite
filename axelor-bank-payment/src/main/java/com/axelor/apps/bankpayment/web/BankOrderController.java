@@ -123,6 +123,7 @@ public class BankOrderController {
 							bankOrderService.validate(bankOrder);
 						}
 					}
+					response.setReload(true);
 				}
 			}
 		} catch (Exception e) {
