@@ -66,4 +66,17 @@ public class UserHrServiceImpl implements UserHrService {
 		user.setEmployee(employee);
 		userRepo.save(user);
 	}
+	
+	@Transactional
+	public Company getPayCompany(User user) {
+		Company payCompany = null;
+		if (user.getEmployee() != null
+				&& user.getEmployee().getMainEmploymentContract() != null
+				&& user.getEmployee().getMainEmploymentContract().getPayCompany() != null) {
+			payCompany = user.getEmployee().getMainEmploymentContract().getPayCompany();
+		} else if (user.getActiveCompany() != null)  {
+			payCompany = user.getActiveCompany();
+		}
+		return payCompany;
+	}
 }

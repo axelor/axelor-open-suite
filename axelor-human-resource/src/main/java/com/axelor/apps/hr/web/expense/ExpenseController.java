@@ -40,6 +40,7 @@ import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.tool.StringTool;
@@ -89,6 +90,9 @@ public class ExpenseController {
 	@Inject
 	private Provider<ExpenseLineRepository> expenseLineRepositoryProvider;
 	
+	@Inject
+	UserHrService userHrService;
+	
 	public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response) throws AxelorException{
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
 		Expense expense = expenseLine.getExpense();
@@ -124,22 +128,23 @@ public class ExpenseController {
 		Company activeCompany = user.getActiveCompany();
 		
 		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1 AND (self.multipleUsers is false OR self.multipleUsers is null)", user, activeCompany).fetch();
-		if(expenseList.isEmpty()){
+		if (expenseList.isEmpty()) {
 			response.setView(ActionView
 									.define(I18n.get("Expense"))
 									.model(Expense.class.getName())
 									.add("form", "expense-form")
+									.context("_payCompany", userHrService.getPayCompany(user))
 									.map());
-		}
-		else if(expenseList.size() == 1){
+			
+		} else if (expenseList.size() == 1) {
 			response.setView(ActionView
 					.define(I18n.get("Expense"))
 					.model(Expense.class.getName())
 					.add("form", "expense-form")
 					.param("forceEdit", "true")
 					.context("_showRecord", String.valueOf(expenseList.get(0).getId())).map());
-		}
-		else{
+			
+		} else {
 			response.setView(ActionView
 					.define(I18n.get("Expense"))
 					.model(Wizard.class.getName())
