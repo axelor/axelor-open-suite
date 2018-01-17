@@ -36,7 +36,8 @@
    	<boolean name="blocked" default="false" help="Specify whether to block the user for an indeterminate times." massUpdate="true"/>
     <string name="homeAction" massUpdate="true"/>
 
-    <finder-method name="findByCode" using="code" filter="LOWER(self.code) = LOWER(:code)"/>
+    <finder-method name="findByCode" using="code" filter="LOWER(self.code) = LOWER(:code)" />
+    <finder-method name="findByName" using="name" filter="LOWER(self.name) = LOWER(:name)" />
   </entity>
 
 </domain-models>

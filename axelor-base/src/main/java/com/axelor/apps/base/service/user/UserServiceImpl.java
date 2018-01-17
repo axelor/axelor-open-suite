@@ -17,12 +17,17 @@
  */
 package com.axelor.apps.base.service.user;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;
@@ -176,5 +181,29 @@ public class UserServiceImpl implements UserService  {
 		user.setPartner(partner);
 		userRepo.save(user);
 	}
+
+    @Override
+    public Map<String, String> getErrors(User user) {
+        Map<String, String> errors = new HashMap<>();
+        User existingUser = userRepo.findByCode(user.getCode());
+
+        if (existingUser != null && !existingUser.getId().equals(user.getId())) {
+            errors.put("code", I18n.get(IExceptionMessage.USER_CODE_ALREADY_EXISTS));
+        }
+
+        existingUser = userRepo.findByName(user.getName());
+
+        if (existingUser != null && !existingUser.getId().equals(user.getId())) {
+            errors.put("name", I18n.get(IExceptionMessage.USER_NAME_ALREADY_EXISTS));
+        }
+
+        existingUser = userRepo.findByEmail(user.getEmail());
+
+        if (existingUser != null && !existingUser.getId().equals(user.getId())) {
+            errors.put("email", I18n.get(IExceptionMessage.USER_EMAIL_ALREADY_EXISTS));
+        }
+
+        return errors;
+    }
+
 }
- 

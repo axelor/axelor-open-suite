@@ -115,7 +115,14 @@ public interface IExceptionMessage {
 	 * Product service
 	 */
 	static final public String PRODUCT_NO_SEQUENCE = /*$$(*/ "There is no configured sequence for product" /*)*/;
-	
+
+    /*
+     * User service
+     */
+    String USER_CODE_ALREADY_EXISTS = /* $$( */ "A user with this login already exists." /* ) */;
+    String USER_NAME_ALREADY_EXISTS = /* $$( */ "A user with this name already exists." /* ) */;
+    String USER_EMAIL_ALREADY_EXISTS = /* $$( */ "A user with this email address already exists." /* ) */;
+
 	/**
 	 * Importer
 	 */

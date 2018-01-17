@@ -13,7 +13,7 @@
     
     
     <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User" 
-    onNew="action-user-apply-applicaton-mode,action-user-default-record,action-user-check-company" onSave="com.axelor.auth.AuthService:validate" onLoad="action-user-apply-applicaton-mode">
+    onNew="action-user-apply-applicaton-mode,action-user-default-record,action-user-check-company" onSave="com.axelor.apps.base.web.UserController:validate" onLoad="action-user-apply-applicaton-mode">
     	<panel name="main" sidebar="true">
 	        <field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 <!-- 	        <field name="timesheetPeriodConfig"/> -->
@@ -118,6 +118,11 @@
     <action-condition name="action-condition-user-validCode" id="base-action-condition-user-validCode">
         <check error="Code length should be greater than 2." field="code" if="code?.length() &lt; 2" />
         <check error="A user with this login already exists." field="code" if="![null, id].contains(__repo__(User).findByCode(code)?.id)" />
+    </action-condition>
+
+    <action-condition name="action-condition-user-validName" id="base-action-condition-user-validName">
+        <check error="Name length should be greater than 2." field="name" if="name?.length() &lt; 2"/>
+        <check error="A user with this name already exists." field="name" if="![null, id].contains(__repo__(User).findByName(name)?.id)" />
     </action-condition>
 
 </object-views>
