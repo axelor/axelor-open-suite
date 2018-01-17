@@ -104,6 +104,8 @@
 				   expr="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
 		<attribute for="interco" name="value" expr="eval: false"
 				   if="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
+		<attribute for="interco" name="readonly" expr="eval: true"
+				   if="eval: statusSelect &gt; 3"/>
 	</action-attrs>
 
 	<action-view name="action-view-show-invoices-from-sale-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">
