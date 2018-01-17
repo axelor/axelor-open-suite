@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased 5.x]
+- New currency conversion API (ECB)
+
+## Improvements
+
+## Bug Fixes
+- Fix the default amount on new invoice payment to use the amount remaining of the invoice.
+- Fix demo data en and fr on AppSuplychain to set the correct value on the field supplStockMoveMgtOnSO
+
 ## [Unreleased 4.x]
 ### Improvements
 
@@ -282,7 +291,8 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
-[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...HEAD
+[Unreleased 5.x]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
+[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...dev
 [4.1.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/axelor/axelor-business-suite/compare/v4.0.2...v4.1.0
 [4.0.2]: https://github.com/axelor/axelor-business-suite/compare/v4.0.1...v4.0.2

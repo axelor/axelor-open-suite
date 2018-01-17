@@ -1,2 +1,2 @@
 "name";"code";"installOrder";"description";"initDataLoaded";"active";"imagePath";"modules";"importId";"currencyWsURL";"defaultPartnerLanguage";"sequence"
-"Base";"base";1;"Basic configuration";"true";"true";"app-base.png";"axelor-exception,axelor-tools,axelor-message,axelor-admin,axelor-studio,axelor-base";1;"https://api.fixer.io/latest?base=%s";"en";24
+"Base";"base";1;"Basic configuration";"true";"true";"app-base.png";"axelor-exception,axelor-tools,axelor-message,axelor-admin,axelor-studio,axelor-base";1;"http://sdw-wsrest.ecb.europa.eu/service/data/EXR/D.%s+%s.EUR.SP00.A?startPeriod=%s";"en";24
