@@ -124,7 +124,7 @@ public class PaymentVoucherController {
 			try {
 				Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
 				if (journal.getExcessPaymentOk()) {
-					response.setAlert(I18n.get("No items has been selected, do you want to continue ?"));
+					response.setAlert(I18n.get("No items have been selected. Do you want to continue?"));
 				}
 			} catch (AxelorException e) {
 				TraceBackService.trace(response, e);
