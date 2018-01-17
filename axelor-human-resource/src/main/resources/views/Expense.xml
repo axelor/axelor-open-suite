@@ -174,7 +174,7 @@
 	    <field name="user" expr="eval:__user__"/>
 	    <field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
         <field name="companyCbSelect" expr="eval: __user__.employee?.companyCbSelect"/>
-        <field name="period" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.allowExpenseCreation = true', __date__, _payCompany).fetchOne()"/>
+        <field name="period" expr="eval: __repo__.of(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2', __date__, _payCompany).fetchOne()"/>
 		<field name="exTaxTotal" expr="eval: 0"/>
     	<field name="taxTotal" expr="eval: 0"/>
     	<field name="inTaxTotal" expr="eval: 0"/>
