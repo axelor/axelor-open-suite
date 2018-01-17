@@ -9,9 +9,9 @@
   	
   	<input file="hr_dayPlanning.csv" separator=";" type="com.axelor.apps.base.db.DayPlanning" search="self.importId  = :importId"/>
 	
-	<input file="hr_publicHolidayPlanning.csv" type="com.axelor.apps.hr.db.PublicHolidayPlanning" separator=";" search="self.importId = :importId"/>
+	<input file="hr_eventsPlanning.csv" type="com.axelor.apps.hr.db.EventsPlanning" separator=";" search="self.importId = :importId"/>
 	
-	<input file="hr_publicHolidayDay.csv" type="com.axelor.apps.hr.db.PublicHolidayDay" separator=";" search="self.importId = :importId"/>
+	<input file="hr_eventsPlanningLine.csv" type="com.axelor.apps.hr.db.EventsPlanning" separator=";" search="self.importId = :importId"/>
 	
 	<input file="hr_leaveReason.csv" type="com.axelor.apps.hr.db.LeaveReason" separator=";" search="self.importId  = :importId"/>
 	

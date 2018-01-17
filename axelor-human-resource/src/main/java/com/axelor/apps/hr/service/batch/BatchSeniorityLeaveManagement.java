@@ -211,9 +211,9 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 					incrementDone();
 					return;
 				}
-				LeaveManagement leaveManagement = leaveManagementService.createLeaveManagement(leaveLine, AuthUtils.getUser(), batch.getHrBatch().getComments(), null, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate(), quantity.setScale(1, RoundingMode.HALF_UP) );
-				leaveLine.setQuantity(leaveLine.getQuantity().add(quantity.setScale(1, RoundingMode.HALF_UP)));
-				leaveLine.setTotalQuantity(leaveLine.getTotalQuantity().add(quantity.setScale(1, RoundingMode.HALF_UP)));
+				LeaveManagement leaveManagement = leaveManagementService.createLeaveManagement(leaveLine, AuthUtils.getUser(), batch.getHrBatch().getComments(), null, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate(), quantity);
+				leaveLine.setQuantity(leaveLine.getQuantity().add(quantity));
+				leaveLine.setTotalQuantity(leaveLine.getTotalQuantity().add(quantity));
 				leaveManagementRepository.save(leaveManagement);
 				leaveLineRepository.save(leaveLine);
 				updateEmployee(employee);

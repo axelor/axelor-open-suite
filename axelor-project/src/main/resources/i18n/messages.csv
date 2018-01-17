@@ -1,4 +1,5 @@
 "key","message","comment","context"
+"%s project",,,
 "+ New",,,
 "0 %",,,
 "10 %",,,
@@ -56,7 +57,7 @@
 "Gantt",,,
 "Gen proj type per order line",,,
 "Generate quotation",,,
-"Generated Project",,,
+"Generated project",,,
 "Hours",,,
 "Imputable",,,
 "In Progress",,,

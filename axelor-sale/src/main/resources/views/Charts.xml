@@ -51,7 +51,7 @@
 				ON _line.sale_order = self.id
 			JOIN
 				auth_user AS _user
-				ON _user.id = :_user_id
+				ON _user.id = :__user__
 			WHERE
 				self.status_select in (3,4)
 				AND self.company = _user.active_company  
@@ -82,7 +82,7 @@
 		      sale_sale_order AS _order  
 		    JOIN
 		      auth_user AS _user
-		      ON _user.id = :_user_id
+		      ON _user.id = :__user__
 		    WHERE
 		      _order.status_select in (3,4)
 		      AND _order.company = _user.active_company    
@@ -171,7 +171,7 @@
 			  sale_sale_order AS _order  
 			JOIN
 			  auth_user AS _user
-			  ON _user.id = :_user_id
+			  ON _user.id = :__user__
 			WHERE
 			  _order.status_select in (3,4)
 			  AND _order.company = _user.active_company  
@@ -248,7 +248,7 @@
 	  		JOIN
 	    		team_team team ON team.id=self.team
 	  		JOIN 
-	    		auth_user _user ON _user.id = :_user_id AND self.company = _user.active_company
+	    		auth_user _user ON _user.id = :__user__ AND self.company = _user.active_company
 	  		WHERE
 	    		self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND self.status_select in (3,4)
 	  		GROUP BY
@@ -276,7 +276,7 @@
 			  ON saleman.id=self.saleman_user
 			JOIN
 			  auth_user _user
-			  ON _user.id = :_user_id
+			  ON _user.id = :__user__
 			  AND self.company = _user.active_company
 			WHERE
 			  self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
@@ -312,7 +312,7 @@
 				ON products.product_family=family.id
 			JOIN
 				auth_user _user
-				ON _user.id = :_user_id
+				ON _user.id = :__user__
 				AND self.company = _user.active_company
 			WHERE
 				self.status_select in (3,4) AND self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
@@ -347,7 +347,7 @@
 				ON product.product_category=category.id
 			JOIN
 				auth_user _user
-				ON _user.id = :_user_id
+				ON _user.id = :__user__
 				AND self.company = _user.active_company
 			WHERE
 				self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND self.status_select in (3,4)    
@@ -377,7 +377,7 @@
 			  ON country.id=address.addressl7country
 			JOIN
 			  auth_user _user
-			  ON _user.id = :_user_id
+			  ON _user.id = :__user__
 			  AND self.company = _user.active_company
 			WHERE
 			  self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
@@ -404,10 +404,10 @@
               sale_sale_order AS self
           JOIN
               auth_user AS _user
-              ON _user.id = :_user_id
+              ON _user.id = :__user__
           WHERE
               self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
-              AND self.saleman_user = :_user_id
+              AND self.saleman_user = :__user__
               AND self.company = _user.active_company
           GROUP BY
               _month
@@ -442,7 +442,7 @@
 			      sale_sale_order_line AS _line ON _sale_order.id = _line.sale_order
 			    JOIN
 			      auth_user _user
-			      ON _user.id = :_user_id
+			      ON _user.id = :__user__
 		      	AND _sale_order.company = _user.active_company    
 			    WHERE
 			      _sale_order.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
@@ -491,7 +491,7 @@
 			    sale_sale_order_line AS _line ON _sale_order.id = _line.sale_order
 			  JOIN
 			    auth_user _user
-			    ON _user.id = :_user_id
+			    ON _user.id = :__user__
 			    AND _sale_order.company = _user.active_company    
 			  WHERE
 			    _sale_order.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)

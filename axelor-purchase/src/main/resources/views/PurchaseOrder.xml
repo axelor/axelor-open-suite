@@ -94,7 +94,7 @@
 				form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect >= 3 || supplierPartner != null" />
 			<field name="currency" canEdit="false" form-view="currency-form"
 				grid-view="currency-grid" readonlyIf="statusSelect >= 3"/>
-			<field name="buyerUser" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="buyerUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="versionNumber"
 				if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
 			<field name="companyBankDetails" widget="SuggestBox"
@@ -115,7 +115,7 @@
 		</panel>
 		<panel-tabs hideIf="supplierPartner == null">
 			<panel name="content" title="Content" colSpan="12">
-				<panel-related field="purchaseOrderLineList" readonlyIf="statusSelect == 3 || statusSelect == 4" grid-view="purchase-order-line-purchase-order-grid" title="PO Lines" colSpan="12" onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form" canMove="true" orderBy="sequence"/>
+				<panel-related field="purchaseOrderLineList" readonlyIf="statusSelect == 3 || statusSelect == 4" grid-view="purchase-order-line-purchase-order-grid" title="PO lines detail" colSpan="12" onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form" canMove="true" orderBy="sequence"/>
 				<panel-related field="purchaseOrderLineTaxList" readonly="true" title="Tax Lines" colSpan="12" grid-view="purchase-order-line-tax-grid" form-view="purchase-order-line-tax-form"/>
 				<field name="notes" colSpan="12" x-lite="true" widget="html"/>
 				<field name="internalNote" colSpan="12" x-lite="true" widget="html"/>
@@ -173,7 +173,7 @@
 				<field name="internalReference"/>
 			</panel>
 			<panel readonly="true">
-				<field name="validatedByUser" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+				<field name="validatedByUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 				<field name="validationDate"/>
 	    	</panel>
 		</panel>
@@ -196,12 +196,12 @@
             </field>
 	   </panel>
 	   <panel name="financialTerms" title="Financial terms" sidebar="true" colSpan="12">
-			<field name="paymentMode" domain="self.inOutSelect = 2"  onChange="action-purchase-order-method-fill-company-bank-details" if-module="axelor-account" form-view="payment-mode-form" grid-view="payment-mode-grid" if="__config__.app.isApp('supplychain')" colSpan="6">
+			<field name="paymentMode" canEdit="false" domain="self.inOutSelect = 2"  onChange="action-purchase-order-method-fill-company-bank-details" if-module="axelor-account" form-view="payment-mode-form" grid-view="payment-mode-grid" if="__config__.app.isApp('supplychain')" colSpan="6">
 				<viewer depends="name,code"><![CDATA[
 					{{record.name}} [{{record.code}}]
 				]]></viewer>
 			</field>
-			<field name="paymentCondition" if-module="axelor-account" form-view="payment-condition-form" grid-view="payment-condition-grid" if="__config__.app.isApp('supplychain')" colSpan="6"/>
+			<field name="paymentCondition" canEdit="false" if-module="axelor-account" form-view="payment-condition-form" grid-view="payment-condition-grid" if="__config__.app.isApp('supplychain')" colSpan="6"/>
 	   </panel>
 	  <panel-mail>
 		  <mail-messages limit="4" />
@@ -593,10 +593,10 @@
 
 	<search-filters name="purchase-order-filters" model="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchases Order filters">
 		<filter title="My RFQs">
-			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.buyerUser.internalUser.id = :_internalUser</domain>
+			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.buyerUser.id = :_internalUser</domain>
 		</filter>
 		<filter title="My Sales">
-			<domain>(self.statusSelect = 3 or self.statusSelect = 4) and self.buyerUser.internalUser.id = :_internalUser</domain>
+			<domain>(self.statusSelect = 3 or self.statusSelect = 4) and self.buyerUser.id = :_internalUser</domain>
 		</filter>
 	</search-filters>
 

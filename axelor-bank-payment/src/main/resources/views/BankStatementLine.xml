@@ -11,6 +11,7 @@
 		<field name="credit"/>
 		<field name="currency" grid-view="currency-grid" form-view="currency-form"/>
 		<field name="bankDetails" grid-view="bank-details-grid" form-view="bank-details-form"/>
+        <field name="bankDetails.code" />
 		<field name="operationInterbankCodeLine" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form"/>
 		<field name="rejectInterbankCodeLine" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form"/>
 		<field name="origin"/>

@@ -23,7 +23,7 @@
 
     <form name="employee-bonus-mgt-line-form" title="Employee bonus" model="com.axelor.apps.hr.db.EmployeeBonusMgtLine">
     	<panel name="main">
-    		<field name="employee" />
+    		<field name="employee" canNew="false" canEdit="false" canView="false"/>
 			<field name="amount" />
 			<field name="coef" />
 			<field name="weeklyPlanning" canEdit="false" />

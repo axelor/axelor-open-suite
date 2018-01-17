@@ -1,4 +1,5 @@
 "key","message","comment","context"
+"%s project","Projet %s",,
 "+ New","+ Nouveau",,
 "0 %",,,
 "10 %",,,
@@ -56,7 +57,7 @@
 "Gantt",,,
 "Gen proj type per order line","Type d'élément généré par ligne de commande",,
 "Generate quotation","Générer un devis",,
-"Generated Project","Générer un projet",,
+"Generated project","Projet généré",,
 "Hours","Heures",,
 "Imputable",,,
 "In Progress","En Cours",,

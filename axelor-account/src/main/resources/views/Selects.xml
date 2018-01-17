@@ -285,6 +285,12 @@
 		<option value="2">Reject/Return code</option>
 	</selection>
 
+	<selection name="assistant.report.invoice.turnover.type.select">
+		<option value="1">Ordered</option>
+		<option value="2">Invoiced</option>
+		<option value="3">Ordered and invoiced</option>
+	</selection>
+
 	<selection name="meta.schedule.batch.service.select" id="account.meta.schedule.batch.service.select">
 		<option value="com.axelor.apps.account.service.batch.AccountingBatchService">com.axelor.apps.account.service.batch.AccountingBatchService</option>
 	</selection>

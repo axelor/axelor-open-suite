@@ -29,13 +29,13 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 
 public class ProjectPlanningController {
-	
+
 	public void showPlanning(ActionRequest request, ActionResponse response) {
-		
+
 		Context context = request.getContext();
-		
+
 		Collection<Map<String, Object>> users = (Collection<Map<String, Object>>) context.get("userSet");
-		
+
 		String userIds = "";
 		if (users != null) {
 			for (Map<String, Object> user : users) {
@@ -47,17 +47,17 @@ public class ProjectPlanningController {
 				}
 			}
 		}
-		
+
 		ActionViewBuilder builder = ActionView.define(I18n.get("Project Planning"))
 				.model(ProjectPlanning.class.getName());
 		String url = "project/planning";
-		
+
 		if (!userIds.isEmpty()) {
 			url += "?userIds=" + userIds;
 			builder.domain("self.user.id in (:userIds)");
 			builder.context("userIds", userIds);
 		}
-		
+
 		builder.add("html", url);
 		response.setView(builder.map());
 	}

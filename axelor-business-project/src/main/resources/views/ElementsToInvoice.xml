@@ -16,7 +16,7 @@
 	onNew="action-element-to-invoice-record-default,action-elements-to-invoice-attrs-scale-and-precision"
 	onLoad="action-elements-to-invoice-attrs-scale-and-precision" width="large">
 		<panel name="main" >
-			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 			<field name="date"/>
 	       	<field name="product" canEdit="false" onChange="action-elements-to-invoice-method-get-product-information" form-view="product-form" grid-view="product-grid"/>
 	  		<field name="qty"/>

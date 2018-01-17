@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.service.bankorder.file.transfer;
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -28,6 +29,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderEconomicReason;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
+import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
@@ -35,6 +37,7 @@ import com.axelor.apps.bankpayment.service.cfonb.CfonbToolService;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Country;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.tool.StringTool;
@@ -54,6 +57,8 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 	protected PartnerService partnerService;
 	protected int sequence = 1;
 	protected static final int NB_CHAR_PER_LINE = 320;
+	protected Currency senderCurrency;
+	protected String qualityOfAmount;
 	
 	/**
 	 *  "Remises informatisées d'ordres de paiement international au format 320 caractères" révisée (code opération "PI")
@@ -79,6 +84,8 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 		this.senderAddress = this.getSenderAddress();
 		this.cfonbToolService = Beans.get(CfonbToolService.class);
 		fileExtension = FILE_EXTENSION_TXT;
+		this.senderCurrency = senderBankDetails.getCurrency();
+		this.qualityOfAmount = bankOrderFileFormat.getQualifyingOfAmountSelect();
 
 	}
 	
@@ -179,7 +186,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			senderRecord += cfonbToolService.createZone(I18n.get("11 - Sender bank details IBAN"), getIban(senderBankDetails), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 34);
 			
 			// Zone 12 : Code devise du compte à débiter à la banque d'éxécution 
-			senderRecord += cfonbToolService.createZone(I18n.get("12 - Bank order currency"), bankOrderCurrency.getCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
+			senderRecord += cfonbToolService.createZone(I18n.get("12 - Bank order currency"), senderCurrency.getCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
 			
 			// Zone 13 : Identification du contrat/client 
 			senderRecord += cfonbToolService.createZone("13", "", cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 16); 
@@ -191,7 +198,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			senderRecord += cfonbToolService.createZone(I18n.get("15 - Sender bank details IBAN"), getIban(senderBankDetails), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 34);
 			
 			// Zone 16 : Code devise du compte émetteur (Norme ISO)
-			senderRecord += cfonbToolService.createZone(I18n.get("16 - Bank order currency"), bankOrderCurrency.getCode(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
+			senderRecord += cfonbToolService.createZone(I18n.get("16 - Bank order currency"), senderCurrency.getCode(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
 			
 			// Zone 17-1 : Zone non utilisée 
 			senderRecord += cfonbToolService.createZone("17-1", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 4);
@@ -240,7 +247,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			return senderRecord;
 		
 		} catch (AxelorException e) {
-			throw new AxelorException(e, senderBankDetails, IException.MISSING_FIELD, 
+			throw new AxelorException(e, senderBankDetails, IException.MISSING_FIELD,
 					I18n.get(IExceptionMessage.BANK_ORDER_WRONG_SENDER_RECORD)
 					+ ": " + e.getMessage(), bankOrderSeq);
 		}
@@ -354,14 +361,33 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			// Zone 10 : Référence de l'opération 
 			detailRecord += cfonbToolService.createZone(I18n.get("10 - Sequence"), bankOrderLine.getSequence(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 16);
 			
-			// Zone 11 : Qualifiant du montant de l'ordre ("T" : Montant exprimé dans la devise du transfert)
-			detailRecord += cfonbToolService.createZone("11", "T", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);
+			// Zone 11 : Qualifiant du montant de l'ordre :
+			// "T" : Montant exprimé dans la devise du transfert
+			// "D" : Montant équivalent exprimé dans la devise du compte à débiter. Cette valeur ne doit être utilisée que lorsque la devise du compte à débiter est différente de celle du transfert.
+			String qualifyngOfAmountStr;
+			if(senderCurrency.equals(bankOrderCurrency))  {
+				qualifyngOfAmountStr = BankOrderFileFormatRepository.QUALIFYING_AMOUNT_TRANSFER_CURRENCY;
+			}
+			else  {
+				qualifyngOfAmountStr = qualityOfAmount;
+				if(Strings.isNullOrEmpty(qualifyngOfAmountStr))  {
+					qualifyngOfAmountStr = BankOrderFileFormatRepository.QUALIFYING_AMOUNT_TRANSFER_CURRENCY;
+				}
+			}
+			detailRecord += cfonbToolService.createZone("11", qualifyngOfAmountStr, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);
 			
 			// Zone 12 : Zone réservée 
 			detailRecord += cfonbToolService.createZone("12", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 4);
 			
 			// Zone 13 : Montant de l'ordre (Le montant comporte le nombre de décimales indiqué dans la zone "Nombre de décimales" du même enregistrement)
-			detailRecord += cfonbToolService.createZone("13", bankOrderLine.getBankOrderAmount(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 14);
+			BigDecimal orderAmount;
+			if(qualifyngOfAmountStr.equals(BankOrderFileFormatRepository.QUALIFYING_AMOUNT_SENDER_BANK_DETAILS_CURRENCY))  {
+				orderAmount = bankOrderLine.getCompanyCurrencyAmount();
+			}
+			else  {
+				orderAmount = bankOrderLine.getBankOrderAmount();
+			}
+			detailRecord += cfonbToolService.createZone("13", orderAmount, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 14);
 			
 			// Zone 14 : Nombre de décimales 
 			detailRecord += cfonbToolService.createZone("14", "2", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 1); //TODO
@@ -395,7 +421,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			// Zone 24-2 : Date ( Cette donnée est obligatoire pour les remises multi dates (zone 19 de l'"Entête" = "3" ou "4"), pour les autres remises, elle ne doit pas être renseignée.)
 			if(isMultiDates)  {
 				String bankOrderDate = "";
-				if(bankOrderLine.getBankOrderDate() != null)  {  bankOrderDate = bankOrderLine.getBankOrderDate().format(DateTimeFormatter.ofPattern("yyyyMMdd"));  } 
+				if(bankOrderLine.getBankOrderDate() != null)  {  bankOrderDate = bankOrderLine.getBankOrderDate().format(DateTimeFormatter.ofPattern("yyyyMMdd"));  }
 				detailRecord += cfonbToolService.createZone(I18n.get("24-2 - Date"), bankOrderDate, cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 8);
 			}  
 			else  {
@@ -483,7 +509,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			return totalRecord;
 		
 		} catch (AxelorException e) {
-			throw new AxelorException(e.getCause(), bankOrderLine, IException.MISSING_FIELD, 
+			throw new AxelorException(e.getCause(), bankOrderLine, IException.MISSING_FIELD,
 					I18n.get(IExceptionMessage.BANK_ORDER_WRONG_BENEFICIARY_BANK_DETAIL_RECORD)
 					+ ": " + e.getMessage(), bankOrderLine.getSequence());
 		}
@@ -549,7 +575,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			return totalRecord;
 		
 		} catch (AxelorException e) {
-			throw new AxelorException(e, bankOrderLine, IException.MISSING_FIELD, 
+			throw new AxelorException(e, bankOrderLine, IException.MISSING_FIELD,
 					I18n.get(IExceptionMessage.BANK_ORDER_WRONG_FURTHER_INFORMATION_DETAIL_RECORD)
 					+ ": " + e.getMessage(), bankOrderLine.getSequence());
 		}
@@ -643,7 +669,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			totalRecord += cfonbToolService.createZone(I18n.get("10 - Bank details IBAN"), getIban(senderBankDetails), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 34);
 			
 			// Zone 11 : Code devise du compte à débiter à la banque d'éxécution 
-			totalRecord += cfonbToolService.createZone(I18n.get("11 - Bank details code"), bankOrderCurrency.getCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
+			totalRecord += cfonbToolService.createZone(I18n.get("11 - Bank details code"), senderCurrency.getCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 3);
 			
 			// Zone 12 : Identification du contrat/client 
 			totalRecord += cfonbToolService.createZone("12", "", cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_ALPHA_NUMERIC, 16); 
@@ -661,7 +687,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			return totalRecord;
 			
 		} catch (AxelorException e) {
-			throw new AxelorException(e, IException.MISSING_FIELD, 
+			throw new AxelorException(e, IException.MISSING_FIELD,
 					I18n.get(IExceptionMessage.BANK_ORDER_WRONG_TOTAL_RECORD)
 					+ ": " + e.getMessage(), bankOrderSeq);
 		}

@@ -92,7 +92,7 @@ public class EmployeeBonusService {
 			EmployeeBonusMgtLine line = new EmployeeBonusMgtLine();
 			line.setEmployeeBonusMgt(bonus);
 			line.setEmployee(employee);
-			maker.setContext(line, "employeeBonusMgtLine");
+			maker.addInContext("EmployeeBonusMgtLine",line);
 			String formula = bonus.getEmployeeBonusType().getApplicationCondition();
 			Integer lineStatus = EmployeeBonusMgtLineRepository.STATUS_CALCULATED;
 			try {
