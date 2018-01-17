@@ -166,41 +166,6 @@
 	<menuitem name="leave-request-conf" parent="leave-request-root" title="Configuration"/>
 
 	<menuitem name="leave-reason-all" parent="leave-request-conf" title="Leave reason" action="leave.reason.all" />
-	
-	<action-view name="lunch.voucher.mgt.all" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt">
-    	<view type="grid" name="lunch-voucher-mgt-grid"/>
-	    <view type="form" name="lunch-voucher-mgt-form"/>
-	</action-view>
-	
-	<menuitem name="all-payroll-preparation" parent="hr-root" title="Payroll Preparations" action="payroll.preparation.all"/>
-	
-	<action-view name="payroll.preparation.all" title="Payroll Preparations" model="com.axelor.apps.hr.db.PayrollPreparation">
-    	<view type="grid" name="payroll-preparation-grid"/>
-	    <view type="form" name="payroll-preparation-form"/>
-	</action-view>
-	
-	<menuitem name="all-employment-contract" parent="hr-root" title="Employment Contracts" action="employment.contracts.all"/>
-	
-	<action-view name="employment.contracts.all" title="Employment Contracts" model="com.axelor.apps.hr.db.EmploymentContract">
-    	<view type="grid" name="employment-contract-grid"/>
-	    <view type="form" name="employment-contract-form"/>
-	</action-view>
-	
-	<menuitem name="hr-conf" parent="hr-root" title="Configuration"/>
-	
-	<menuitem name="employee-all" parent="hr-conf"
-    	title="Employee"
-    	action="employee.all"/>
-
-	<action-view name="employee.all" title="Employee" model="com.axelor.apps.hr.db.Employee">
-    	<view type="grid" name="employee-grid"/>
-	    <view type="form" name="employee-form"/>
-	    <view-param name="search-filters" value="employee-filters"/>
-	</action-view>
-	
-	<menuitem name="leave-reason-all" parent="hr-conf"
-    	title="Leave reason"
-    	action="leave.reason.all"/>
 
 	<action-view name="leave.reason.all" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason">
     	<view type="grid" name="leave-reason-grid"/>
@@ -390,8 +355,8 @@
 	<action-view name="hr.user.dashboard.view" title="Human Resources User">
 		<view type="dashboard" name="hr.user.dashboard.sample" />
 	</action-view>	
-	
-	<!-- Top Menus -->
+
+	<menuitem name="hr-conf" parent="hr-root" title="Configuration"/>
 
 	<menuitem name="hr-conf-payroll-year" parent="hr-conf" title="Payroll years" action="hr.conf.payroll.year"/>
 
@@ -411,6 +376,8 @@
 		<view type="form" name="period-hr-form"/>
 		<domain>self.year.typeSelect = 2</domain>
 	</action-view>
+
+	<!-- Top Menus -->
 
 	<menuitem name="top-menu-hr" title="HR" order="4" top="true" left="false" if="__config__.app.isApp('employee')"/>
 	
