@@ -1,4 +1,6 @@
 # Unreleased 5.x
+- New currency conversion API (ECB)
+
 ## Improvements
 
 ## Bug Fixes
