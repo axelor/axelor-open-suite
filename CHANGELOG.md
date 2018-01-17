@@ -2,6 +2,7 @@
 
 ## [Unreleased 4.x]
 ### Improvements
+- Close pay period automatically when all payroll preparation are exported
 
 ### Bug Fixes
 - Fix demo data en and fr on General config to set the correct value of the fields custStockMoveMgtOnSO and supplStockMoveMgtOnSO.
