@@ -141,7 +141,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 		Company company = employee.getMainEmploymentContract().getPayCompany();
 		BigDecimal duration = BigDecimal.ZERO;
 		
-		WeeklyPlanning weeklyPlanning = employee.getPlanning();
+		WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
 		if(weeklyPlanning == null){
 			HRConfig conf = company.getHrConfig();
 			if(conf != null){

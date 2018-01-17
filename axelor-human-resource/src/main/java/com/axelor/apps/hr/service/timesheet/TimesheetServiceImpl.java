@@ -242,7 +242,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		if(employee == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),user.getName()), IException.CONFIGURATION_ERROR);
 		}
-		WeeklyPlanning planning = user.getEmployee().getPlanning();
+		WeeklyPlanning planning = user.getEmployee().getWeeklyPlanning();
 		if(planning == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING), user.getName()), IException.CONFIGURATION_ERROR);
 		}
@@ -250,7 +250,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		LocalDate fromDate = fromGenerationDate;
 		LocalDate toDate = toGenerationDate;
-		Map<Integer,String> correspMap = new HashMap<Integer,String>();
+		Map<Integer,String> correspMap = new HashMap<>();
 		correspMap.put(1, "monday");
 		correspMap.put(2, "tuesday");
 		correspMap.put(3, "wednesday");
@@ -372,10 +372,10 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException  {
 
-		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+		List<InvoiceLine> invoiceLineList = new ArrayList<>();
 		int count = 0;
 		DateFormat ddmmFormat = new SimpleDateFormat("dd/MM");
-		HashMap<String, Object[]> timeSheetInformationsMap = new HashMap<String, Object[]>();
+		HashMap<String, Object[]> timeSheetInformationsMap = new HashMap<>();
 		//Check if a consolidation by product and user must be done
 		boolean consolidate = generalService.getGeneral().getConsolidateTSLine();
 
@@ -489,7 +489,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 				InvoiceLine invoiceLine = this.createInvoiceLine();
 
-				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+				List<InvoiceLine> invoiceLines = new ArrayList<>();
 				invoiceLines.add(invoiceLine);
 
 				return invoiceLines;
@@ -544,11 +544,11 @@ public class TimesheetServiceImpl implements TimesheetService{
 	}
 	
 	public void getActivities(ActionRequest request, ActionResponse response){
-		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
+		List<Map<String,String>> dataList = new ArrayList<>();
 		try{
 			List<Product> productList = Beans.get(ProductRepository.class).all().filter("self.isActivity = true").fetch();
 			for (Product product : productList) {
-				Map<String, String> map = new HashMap<String,String>();
+				Map<String, String> map = new HashMap<>();
 				map.put("name", product.getName());
 				map.put("id", product.getId().toString());
 				dataList.add(map);
@@ -616,7 +616,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	public void validToDate(Timesheet timesheet) throws AxelorException  {
 		
 		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
-		List<Integer> listId = new ArrayList<Integer>();
+		List<Integer> listId = new ArrayList<>();
 		int count = 0;
 		
 		if(timesheet.getFromDate() == null){

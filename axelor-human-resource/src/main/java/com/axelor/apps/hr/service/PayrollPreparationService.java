@@ -104,7 +104,7 @@ public class PayrollPreparationService {
 	
 	public List<PayrollLeave> fillInLeaves(PayrollPreparation payrollPreparation) throws AxelorException{
 		
-		List<PayrollLeave> payrollLeaveList = new ArrayList<PayrollLeave>();
+		List<PayrollLeave> payrollLeaveList = new ArrayList<>();
 		LocalDate fromDate = payrollPreparation.getPeriod().getFromDate();
 		LocalDate toDate = payrollPreparation.getPeriod().getToDate();
 		Employee employee = payrollPreparation.getEmployee();
@@ -112,7 +112,7 @@ public class PayrollPreparationService {
 		if(employee.getPublicHolidayEventsPlanning() == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY),employee.getName()), IException.CONFIGURATION_ERROR);
 		}
-		if(employee.getPlanning()== null){
+		if(employee.getWeeklyPlanning()== null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),employee.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -150,7 +150,7 @@ public class PayrollPreparationService {
 		BigDecimal workingDays = BigDecimal.ZERO;
 		BigDecimal leaveDays = BigDecimal.ZERO;
 		while(!itDate.isAfter(toDate)){
-			workingDays = workingDays.add(new BigDecimal(weeklyPlanningService.workingDayValue(payrollPreparation.getEmployee().getPlanning(), itDate)));
+			workingDays = workingDays.add(new BigDecimal(weeklyPlanningService.workingDayValue(payrollPreparation.getEmployee().getWeeklyPlanning(), itDate)));
 			itDate = itDate.plusDays(1);
 		}
 		if(payrollLeaveList != null){
@@ -232,9 +232,9 @@ public class PayrollPreparationService {
 	@Transactional
 	public String exportSinglePayrollPreparation(PayrollPreparation payrollPreparation) throws IOException, AxelorException{
 		
-		List<String[]> list = new ArrayList<String[]>();
+		List<String[]> list = new ArrayList<>();
 		
-		String item[] = new String[5];
+		String[] item = new String[5];
 		item[0] = payrollPreparation.getEmployee().getName();
 		item[1] = payrollPreparation.getDuration().toString();
 		item[2] = payrollPreparation.getLunchVoucherNumber().toString();
@@ -266,7 +266,7 @@ public class PayrollPreparationService {
 	
 	public String[] createExportFileLine(PayrollPreparation payrollPreparation){
 		
-		String item[] = new String[7];
+		String[] item = new String[7];
 		item[0] = payrollPreparation.getEmployee().getExportCode();
 		item[1] = payrollPreparation.getEmployee().getContactPartner().getName();
 		item[2] = payrollPreparation.getEmployee().getContactPartner().getFirstName();
@@ -275,7 +275,7 @@ public class PayrollPreparationService {
 	
 	public String exportNibelisPayrollPreparation(PayrollPreparation payrollPreparation) throws AxelorException, IOException{
 		
-		List<String[]> list = new ArrayList<String[]>();
+		List<String[]> list = new ArrayList<>();
 		
 		exportNibelis(payrollPreparation, list);
 		
@@ -306,7 +306,7 @@ public class PayrollPreparationService {
 			List<PayrollLeave> payrollLeaveList = fillInLeaves(payrollPreparation);
 			for (PayrollLeave payrollLeave : payrollLeaveList) {
 				if (payrollLeave.getLeaveReason().getPayrollPreprationExport()){
-					String leaveLine[] = createExportFileLine(payrollPreparation);
+					String[] leaveLine = createExportFileLine(payrollPreparation);
 					leaveLine[3] = payrollLeave.getLeaveReason().getExportCode();
 					leaveLine[4] = payrollLeave.getFromDate().toString("dd/MM/YYYY");
 					leaveLine[5] = payrollLeave.getToDate().toString("dd/MM/YYYY");
@@ -318,7 +318,7 @@ public class PayrollPreparationService {
 		
 		// LUNCH VOUCHER MANAGEMENT
 		if (payrollPreparation.getLunchVoucherNumber().compareTo(BigDecimal.ZERO) > 0){
-			String lunchVoucherLine[] = createExportFileLine(payrollPreparation);
+			String[] lunchVoucherLine = createExportFileLine(payrollPreparation);
 			lunchVoucherLine[3] = hrConfig.getExportCodeForLunchVoucherManagement();
 			lunchVoucherLine[6] = payrollPreparation.getLunchVoucherNumber().toString();
 			list.add(lunchVoucherLine);
@@ -327,7 +327,7 @@ public class PayrollPreparationService {
 		
 		// EMPLOYEE BONUS MANAGEMENT
 		if (payrollPreparation.getEmployeeBonusAmount().compareTo(BigDecimal.ZERO) > 0){
-			Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
+			Map<String, BigDecimal> map = new HashMap<>();
 			for (EmployeeBonusMgtLine bonus : payrollPreparation.getEmployeeBonusMgtLineList() ) {
 				if (bonus.getEmployeeBonusMgt().getEmployeeBonusType().getPayrollPreparationExport()){
 						if ( map.containsKey(bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode()) ){
@@ -338,7 +338,7 @@ public class PayrollPreparationService {
 				}
 			}
 			for ( Map.Entry<String, BigDecimal> entry : map.entrySet() ) {
-				String employeeBonusLine[] = createExportFileLine(payrollPreparation);
+				String[] employeeBonusLine = createExportFileLine(payrollPreparation);
 				employeeBonusLine[3] = entry.getKey();
 				employeeBonusLine[6] = entry.getValue().toString();
 				list.add(employeeBonusLine);
@@ -348,7 +348,7 @@ public class PayrollPreparationService {
 		
 		//EXTRA HOURS 
 		if ( payrollPreparation.getExtraHoursNumber().compareTo( BigDecimal.ZERO ) > 0 ){
-			String extraHourLine[] = createExportFileLine(payrollPreparation);
+			String[] extraHourLine = createExportFileLine(payrollPreparation);
 			extraHourLine[3] = hrConfig.getExportCodeForLunchVoucherManagement();
 			extraHourLine[6] = payrollPreparation.getExtraHoursNumber().toString();
 			list.add(extraHourLine);
@@ -367,7 +367,7 @@ public class PayrollPreparationService {
 	
 	public String[] getPayrollPreparationExportHeader(){
 		
-		String headers[] = new String[5];
+		String[] headers = new String[5];
 		headers[0] = I18n.get("Employee");
 		headers[1] = I18n.get("Working days' number");
 		headers[2] = I18n.get("Lunch vouchers' number");
@@ -378,7 +378,7 @@ public class PayrollPreparationService {
 	
 	
 	public String[] getPayrollPreparationMeilleurGestionExportHeader(){
-		String headers[] = new String[7];
+		String[] headers = new String[7];
 		headers[0] = I18n.get("Registration number");
 		headers[1] = I18n.get("Employee lastname");
 		headers[2] = I18n.get("Employee firstname");

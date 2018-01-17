@@ -80,7 +80,7 @@
         			<field name="department" colSpan="4" form-view="department-form" grid-view="department-grid"/>
         			<field name="timesheetReminder" colSpan="4"/>
         			<field name="external" colSpan="4"/>
-        			<field name="planning" colSpan="4" canNew="true" form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
+        			<field name="weeklyPlanning" colSpan="4" canNew="true" form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
                     <field name="publicHolidayEventsPlanning" colSpan="4" form-view="events-planning-form" grid-view="events-planning-grid" canEdit="false"/>
                     <field name="imposedDayEventsPlanning" colSpan="4" form-view="events-planning-form" grid-view="events-planning-grid" canEdit="false"/>
         			<field name="negativeValueLeave" colSpan="4"/>
