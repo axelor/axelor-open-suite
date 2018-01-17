@@ -115,4 +115,9 @@
 		<call class="com.axelor.apps.base.web.UserController" method="applyApplicationMode"/>
 	</action-method>
 
+    <action-condition name="action-condition-user-validCode" id="base-action-condition-user-validCode">
+        <check error="Code length should be greater than 2." field="code" if="code?.length() &lt; 2" />
+        <check error="A user with this login already exists." field="code" if="![null, id].contains(__repo__(User).findByCode(code)?.id)" />
+    </action-condition>
+
 </object-views>

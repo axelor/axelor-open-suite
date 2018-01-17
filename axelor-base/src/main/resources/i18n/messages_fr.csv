@@ -79,6 +79,7 @@
 "<span class='label label-warning'>There is already a partner with this name.</span>","<span class='label label-warning'>Il y a déjà un tiers avec ce nom.</span>",,
 "=",,,
 "A product of type service can't be procured from stock.","Un produit de type service ne peut être réapprovisionné du stock.",,
+"A user with this login already exists.","Un utilisateur avec cet identifiant existe déjà.",,
 "A.T.I. by default","T.T.C. par défaut",,
 "ARTMIN","ARTMIN",,
 "Account Number","N° de compte",,
