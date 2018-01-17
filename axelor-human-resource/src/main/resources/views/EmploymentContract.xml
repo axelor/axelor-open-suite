@@ -30,11 +30,11 @@
 					if="__config__.app.getApp('employee').getPayrollPreparation()"/>
         </toolbar>
         <panel title="Status">
-        	<field name="status" colSpan="12" widget="NavSelect" canEdit="true" showTitle="false"/>    
+        	<field name="status" colSpan="12" widget="NavSelect" canEdit="true" showTitle="false"/>
         </panel>
         <panel-stack>
 			<panel>
-			  <field name="employee" canSuggest="false" hideIf="$popup()" requiredIf="!$popup()"/>
+			  <field name="employee" canSuggest="false" canNew="false" canEdit="false" canView="false" hideIf="$popup()" requiredIf="!$popup()"/>
 			  <field name="payCompany" canEdit="false" canSuggest="false" onChange="action-employment-contract-paycompany-onchange"/>
 			  <field name="companyDepartment" onSelect="action-employment-contract-attrs-department-domain"/>
 			  <field name="employmentContractVersion" canSuggest="false"/>

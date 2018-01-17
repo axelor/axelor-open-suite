@@ -14,7 +14,8 @@
 		<field name="debit" width="90"/>
 		<field name="credit" width="90"/>
 		<field name="currency" grid-view="currency-grid" form-view="currency-form" width="60"/>
-		<field name="bankDetails" grid-view="bank-details-grid" form-view="bank-details-form" width="300"/>
+		<field name="bankDetails" grid-view="bank-details-grid" form-view="bank-details-form" width="400"/>
+        <field name="bankDetails.code" width="60" />
 		<field name="origin" width="70"/>
 		<field name="reference" width="150"/>
 		<field name="description" width="500"/>

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,8 +23,8 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EventsPlanning;
 import com.axelor.apps.hr.db.HRConfig;
-import com.axelor.apps.hr.db.PublicHolidayPlanning;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.auth.db.User;
@@ -56,15 +56,15 @@ public class UserHrServiceImpl implements UserHrService {
 		employee.setDailyWorkHours(appBase.getDailyWorkHours());
 		employee.setNegativeValueLeave(appLeave.getAllowNegativeLeaveEmployees());
 
-		PublicHolidayPlanning planning = null;
+		EventsPlanning planning = null;
 		Company company = user.getActiveCompany();
 		if (company != null) {
 			HRConfig hrConfig = company.getHrConfig();
 			if (hrConfig != null) {
-				planning = hrConfig.getPublicHolidayPlanning();
+				planning = hrConfig.getPublicHolidayEventsPlanning();
 			}
 		}
-		employee.setPublicHolidayPlanning(planning);
+		employee.setPublicHolidayEventsPlanning(planning);
 
 		employee.setUser(user);
 		Beans.get(EmployeeRepository.class).save(employee);

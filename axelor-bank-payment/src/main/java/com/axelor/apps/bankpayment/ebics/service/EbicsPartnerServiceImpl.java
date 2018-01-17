@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,29 +17,37 @@
  */
 package com.axelor.apps.bankpayment.ebics.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
-
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
-import com.axelor.apps.tool.date.DateTool;
+import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementCreateService;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 public class EbicsPartnerServiceImpl implements EbicsPartnerService {
 	
@@ -122,7 +130,52 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
 		
 		return bankStatementList;
 	}
-	
-	
-	
+
+	public void checkBankDetailsMissingCurrency(EbicsPartner ebicsPartner) throws AxelorException {
+		List<com.axelor.apps.bankpayment.db.EbicsPartnerService> ebicsPartnerServiceSet = ebicsPartner.getEbicsPartnerServiceList();
+		if (ebicsPartnerServiceSet == null) {
+			return;
+		}
+		boolean allowOrderCurrDiffFromBankDetails = false;
+		for (com.axelor.apps.bankpayment.db.EbicsPartnerService ebicsPartnerService : ebicsPartnerServiceSet) {
+			allowOrderCurrDiffFromBankDetails = allowOrderCurrDiffFromBankDetails || ebicsPartnerService.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails();
+			if (allowOrderCurrDiffFromBankDetails) {
+				break;
+			}
+		}
+
+		if (!allowOrderCurrDiffFromBankDetails) {
+			return;
+		}
+
+	    Set<BankDetails> bankDetailsSet = ebicsPartner.getBankDetailsSet();
+	    if (bankDetailsSet == null) {
+	    	return;
+		}
+
+		List<String> bankDetailsWithoutCurrency = new ArrayList<>();
+	    for (BankDetails bankDetails : bankDetailsSet) {
+	        if (bankDetails.getCurrency() == null) {
+	            bankDetailsWithoutCurrency.add(bankDetails.getFullName());
+			}
+		}
+
+		if (!bankDetailsWithoutCurrency.isEmpty()) {
+	    	Function<String,String> addLi = new Function<String,String>() {
+				  @Override public String apply(String s) {
+				    return "<li>".concat(s).concat("</li>").toString();
+				  }
+				};
+
+			throw new AxelorException(
+					String.format(
+							I18n.get(IExceptionMessage.EBICS_PARTNER_BANK_DETAILS_WARNING),
+							"<ul>" + Joiner.on("")
+									.join(Iterables.transform(bankDetailsWithoutCurrency, addLi)) + "<ul>"
+					),
+					IException.CONFIGURATION_ERROR,
+					ebicsPartner);
+		}
+	}
+
 }

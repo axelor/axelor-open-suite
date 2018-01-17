@@ -5,9 +5,9 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="PublicHolidayPlanning" cachable="true">
+  <entity name="EventsPlanning" cachable="true">
   	  <string name="name" required="true" namecolumn="true"/>
-  	  <one-to-many name="publicHolidayDayList" ref="com.axelor.apps.hr.db.PublicHolidayDay" mappedBy="publicHolidayPlann"/>
+      <one-to-many name="eventsPlanningLineList" ref="com.axelor.apps.hr.db.EventsPlanningLine" mappedBy="eventsPlanning"/>
   </entity>
   
 </domain-models>

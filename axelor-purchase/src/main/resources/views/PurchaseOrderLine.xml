@@ -43,7 +43,7 @@
         <field name="salePrice" hidden="true"/>
     </grid>
     
-    <grid name="purchase-order-line-invoicing-project-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine" orderBy="sequence" canMove="true">
+    <grid name="purchase-order-line-invoicing-project-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine" orderBy="-purchaseOrder.orderDate" canMove="true">
        	<hilite background="danger" if="salePrice &lt; saleMinPrice"/>
        	<field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
     	<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
