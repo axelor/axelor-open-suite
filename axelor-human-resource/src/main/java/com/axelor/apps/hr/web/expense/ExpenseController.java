@@ -563,38 +563,43 @@ public class ExpenseController {
 		response.setValue("untaxedAmount", amount);
 	}
 
-	public void updateKAPOfKilometricAllowance(ActionRequest request, ActionResponse response) {
+	public void updateKAPOfKilometricAllowance(ActionRequest request, ActionResponse response) throws AxelorException {
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
 		
 		if (expenseLine.getExpense() == null) {
 			setExpense(request, expenseLine);
 		}
 		
-		List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
-		if (kilometricAllowParamList == null || kilometricAllowParamList.isEmpty()) {
-			response.setAttr("kilometricAllowParam", "domain", "self.id IN (0)");
-		} else {
-			response.setAttr("kilometricAllowParam", "domain", "self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList) + ")");
-		}
+		try {
+			List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
+			if (kilometricAllowParamList == null || kilometricAllowParamList.isEmpty()) {
+				response.setAttr("kilometricAllowParam", "domain", "self.id IN (0)");
+			} else {
+				response.setAttr("kilometricAllowParam", "domain", "self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList) + ")");
+			}
 
-		KilometricAllowParam currentKilometricAllowParam = expenseLine.getKilometricAllowParam();
-		boolean vehicleOk = false;
+			KilometricAllowParam currentKilometricAllowParam = expenseLine.getKilometricAllowParam();
+			boolean vehicleOk = false;
 
-		if (kilometricAllowParamList != null && kilometricAllowParamList.size() == 1) {
-			response.setValue("kilometricAllowParam", kilometricAllowParamList.get(0));
-		} else if (kilometricAllowParamList != null) {
-			for (KilometricAllowParam kilometricAllowParam : kilometricAllowParamList) {
-				if (currentKilometricAllowParam != null && currentKilometricAllowParam.equals(kilometricAllowParam)) {
-					expenseLine.setKilometricAllowParam(kilometricAllowParam);
-					vehicleOk = true;
-					break;
+			if (kilometricAllowParamList != null && kilometricAllowParamList.size() == 1) {
+				response.setValue("kilometricAllowParam", kilometricAllowParamList.get(0));
+			} else if (kilometricAllowParamList != null) {
+				for (KilometricAllowParam kilometricAllowParam : kilometricAllowParamList) {
+					if (currentKilometricAllowParam != null && currentKilometricAllowParam.equals(kilometricAllowParam)) {
+						expenseLine.setKilometricAllowParam(kilometricAllowParam);
+						vehicleOk = true;
+						break;
+					}
+				}
+				if (!vehicleOk) {
+					response.setValue("kilometricAllowParam", null);
+				} else {
+					response.setValue("kilometricAllowParam", expenseLine.getKilometricAllowParam());
 				}
 			}
-			if (!vehicleOk) {
-				response.setValue("kilometricAllowParam", null);
-			} else {
-				response.setValue("kilometricAllowParam", expenseLine.getKilometricAllowParam());
-			}
+			
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
 		}
 	}
 
@@ -608,7 +613,7 @@ public class ExpenseController {
 		
 	}
 
-	public void domainOnSelectOnKAP(ActionRequest request, ActionResponse response) {
+	public void domainOnSelectOnKAP(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
 		
@@ -616,7 +621,12 @@ public class ExpenseController {
 			setExpense(request, expenseLine);
 		}
 		
-		List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
-		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList)+ ")");
+		try {
+			List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
+			response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdFromCollection(kilometricAllowParamList)+ ")");
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
+	
 }

@@ -101,5 +101,5 @@ public interface ExpenseService  {
 
 	public void setDraftSequence(Expense expense) throws AxelorException;
 
-	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine);
+	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine) throws AxelorException;
 }

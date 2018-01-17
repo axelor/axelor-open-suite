@@ -630,14 +630,14 @@ public class ExpenseServiceImpl implements ExpenseService {
             return;
         }
 
-    HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
+        HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 		Sequence sequence = hrConfigService.getExpenseSequence(hrConfig);
   
 		expense.setExpenseSeq(Beans.get(SequenceService.class).getSequenceNumber(sequence, expense.getSentDate()));
 	}
 
 	@Override
-	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine) {
+	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine) throws AxelorException {
 		
 		List<KilometricAllowParam> kilometricAllowParamList = new ArrayList<>();
 		
@@ -657,6 +657,10 @@ public class ExpenseServiceImpl implements ExpenseService {
 		
 		List<EmployeeVehicle> vehicleList = expense.getUser().getEmployee().getEmployeeVehicleList();
 		LocalDate expenseDate = expenseLine.getExpenseDate();
+		
+		if (expenseDate == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_NO_DATE_SELECTED)),IException.MISSING_FIELD);
+		}
 
 		for (EmployeeVehicle vehicle : vehicleList) {
 		    if (vehicle.getKilometricAllowParam() == null) {
