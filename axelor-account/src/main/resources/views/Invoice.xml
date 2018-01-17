@@ -112,7 +112,8 @@
 		<menubar>
 			<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
         		<item title="Print" action="save,action-invoice-method-show-invoice" hideIf="partner == null"/>
-        		<item title="Print annex" action="action-invoice-business-project-method-print-annex" if-module="axelor-business-project" hideIf="partner == null"/>
+        		<item title="Print annex" action="action-invoice-business-project-method-print-annex" if-module="axelor-business-project"
+        		showIf="partner != null &amp;&amp; __user__.activeCompany?.accountConfig?.displayTimesheetOnPrinting &amp;&amp; __user__.activeCompany?.accountConfig?.displayExpenseOnPrinting"/>
         	</menu>
         	<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
         		<item title="Send email" action="save,action-send-by-email-with-template" hideIf="partner == null"/>
@@ -425,7 +426,8 @@
 
 		<toolbar>
 			<button name="showInvoice" title="Print" icon="fa-print" onClick="save,action-invoice-method-show-invoice"/>
-			<button name="showAnnex" title="Print annex" icon="fa-print" onClick="action-invoice-business-project-method-print-annex" if-module="axelor-business-project"/>
+			<button name="showAnnex" title="Print annex" icon="fa-print" onClick="action-invoice-business-project-method-print-annex" if-module="axelor-business-project"
+				showIf="__user__.activeCompany?.accountConfig?.displayTimesheetOnPrinting &amp;&amp; __user__.activeCompany?.accountConfig?.displayExpenseOnPrinting"/>
 		</toolbar>
 
 		<panel name="main" >
