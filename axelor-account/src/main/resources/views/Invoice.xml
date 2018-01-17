@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-    
+
     <!-- VUE GENERALE -->
 
     <grid name="invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
@@ -47,7 +47,7 @@
 	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" />
 	            <item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
 	     	</menu>
-		</menubar>   
+		</menubar>
     	<hilite color="primary" if="statusSelect == 1"/>
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
@@ -68,13 +68,13 @@
         <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
-    
+
     <grid name="invoice-light-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<toolbar>
 			<button name="printInvoices" title="Print invoices" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
 			<button name="massInvoiceValidation" title="Validate selected invoices" prompt="Are you sure you want to validate all selected invoices ?" onClick="action-invoice-method-mass-validation"/>
 			<button name="massInvoiceVentilation" title="Ventilate selected invoices" prompt="Are you sure you want to ventilate all selected invoices ?" onClick="action-invoice-method-mass-ventilation"/>
-    	</toolbar>   
+    	</toolbar>
     	<hilite color="primary" if="statusSelect == 1"/>
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
@@ -90,7 +90,7 @@
         <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
     </grid>
-    
+
     <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<hilite color="primary" if="statusSelect == 1"/>
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
@@ -138,7 +138,7 @@
 			             <span class="label label-important" x-translate ng-show="record.operationTypeSelect == 3">Customer sale</span>
 			             <span class="label label-important" x-translate ng-show="record.operationTypeSelect == 4">Customer refund</span>
 			           </h3>
-			
+
 					]]>
 					</viewer>
 				</field>
@@ -146,7 +146,7 @@
 				<field name="operationSubTypeSelect" readonlyIf="statusSelect &gt; 1" showTitle="false" showIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; $readonly()">
 					   <viewer>
 					   		<![CDATA[
-			
+
 			 			<h3>
 			             <span class="label label-default" x-translate ng-show="record.operationSubTypeSelect == 1">Default</span>
 			             <span class="label label-default" x-translate ng-show="record.operationSubTypeSelect == 2">Advance payment invoice</span>
@@ -159,17 +159,17 @@
 					   </viewer>
 				</field>
 			</panel>
-			<field name="company" canEdit="false" widget="SuggestBox" 
-				onChange="action-group-account-invoice-company-onchange" 
+			<field name="company" canEdit="false" widget="SuggestBox"
+				onChange="action-group-account-invoice-company-onchange"
 				form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1 || partner != null"/>
-			<field name="companyBankDetails" widget="SuggestBox" 
-				onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" 
+			<field name="companyBankDetails" widget="SuggestBox"
+				onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
 				form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="currency" canEdit="false" 
-				onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1" 
+			<field name="currency" canEdit="false"
+				onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1"
 				form-view="currency-form" grid-view="currency-grid"/>
-			<field name="project" if-module="axelor-business-project" 
-				onSelect="action-invoice-attrs-domain-project" form-view="project-form" 
+			<field name="project" if-module="axelor-business-project"
+				onSelect="action-invoice-attrs-domain-project" form-view="project-form"
 				grid-view="project-grid" if="__config__.app.isApp('project')"/>
 			<field name="interco"/>
 			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
@@ -226,18 +226,19 @@
 					</panel>
 				</panel>
 			</panel>
-			<panel name="blockings" title="Blockings" showIf="statusSelect == 3" 
+			<panel name="blockings" title="Blockings" showIf="statusSelect == 3"
 				showTitle="false">
 				<field name="debitBlockingOk"/>
 				<field name="debtRecoveryBlockingOk"/>
 				<panel name="debitBlockingGroup" title="Direct debit blocking"  showIf="debitBlockingOk" colSpan="12">
-					<field name="debitBlockingByUser" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+					<field name="debitBlockingByUser" canNew="false" canEdit="false" canView="false"
+						form-view="user-form" grid-view="user-grid"/>
 					<field name="debitBlockingToDate" />
 					<field name="debitBlockingReason" form-view="stop-reason-form" grid-view="stop-reason-grid" />
 				</panel>
 				<panel showIf="debtRecoveryBlockingOk" name="debtRecoveryBlocking"
 					title="Debt recovery blocking" colSpan="12">
-					<field name="debtRecoveryBlockingByUser" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+					<field name="debtRecoveryBlockingByUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 					<field name="debtRecoveryBlockingToDate"/>
 					<field name="debtRecoveryBlockingReason" form-view="stop-reason-form" grid-view="stop-reason-grid" />
 				</panel>
@@ -287,7 +288,7 @@
             <button name="addPayment" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <button name="addPayment" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment-voucher" if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <field name="statusSelect"/>
-            <field name="validatedByUser" canEdit="false" grid-view="user-grid" form-view="user-form"/>
+            <field name="validatedByUser" canNew="false" canEdit="false" canView="false" grid-view="user-grid" form-view="user-form"/>
         </panel>
 
         <panel-stack sidebar="true" hideIf="partner == null">
@@ -357,16 +358,16 @@
                     <dl class="dl-horizontal">
                         <dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a>  <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
                         <dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        
+
                         <dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
                         <dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        
+
                         <dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
                         <dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        
+
                         <dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
                         <dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        
+
                         <dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
                         <dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
 
@@ -375,7 +376,7 @@
 
                         <dd ng-if="record.statusSelect == 1">-{{record.amount}} {{record.currency.symbol}}</dd>
                         <dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{record.amount}} {{record.currency.symbol}})</dd>
-                    </dl> 
+                    </dl>
                   </span>]]>
                 </viewer>
                 <editor layout="table" x-show-titles="false"> <label title="Paid on"/>
@@ -505,7 +506,7 @@
             <field name="amountRemaining" hidden="true"/>
             <field name="hasPendingPayments" hidden="true"/>
             <field name="statusSelect"/>
-	        <field name="validatedByUser" grid-view="user-grid" form-view="user-form" canView="false"/>
+	        <field name="validatedByUser" grid-view="user-grid" form-view="user-form" canNew="false" canEdit="false" canView="false"/>
 	    </panel>
 
 		<panel sidebar="true" name="totals" title="Totals" itemSpan="6">
@@ -534,10 +535,10 @@
 
               			<dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
            		 		<dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-              			
+
               			<dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
            		 		<dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-              			
+
               			<dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
            		 		<dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
 
@@ -546,7 +547,7 @@
 
 	           		 	<dd ng-if="record.statusSelect == 1">-{{record.amount}} {{record.currency.symbol}}</dd>
 	           		 	<dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{record.amount}} {{record.currency.symbol}})</dd>
-	           		</dl> 
+	           		</dl>
            	      </span>]]>
 				</viewer>
 				<editor layout="table" x-show-titles="false"> <label title="Paid on"/>
@@ -568,10 +569,10 @@
 
                         <dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
                         <dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        
+
                         <dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
                         <dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        
+
                         <dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
                         <dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
 
@@ -580,7 +581,7 @@
 
                         <dd ng-if="record.statusSelect == 1">-{{record.amount}} {{record.currency.symbol}}</dd>
                         <dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{record.amount}} {{record.currency.symbol}})</dd>
-                    </dl> 
+                    </dl>
                   </span>]]>
                 </viewer>
                 <editor layout="table" x-show-titles="false"> <label title="Paid on"/>
@@ -604,7 +605,7 @@
 
 
     <!-- invoice-account  -->
-    <grid name="invoice-account-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">			        
+    <grid name="invoice-account-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">
 		<field name="invoiceId"/>
 		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="operationTypeSelect"/>
@@ -617,9 +618,9 @@
 		<field name="currency"/>
 		<field name="statusSelect"/>
     </grid>
-    
+
     <!-- invoice-direct-debit  -->
-    <grid name="invoice-direct-debit-grid" title="Debited invoices" model="com.axelor.apps.account.db.Invoice">			        
+    <grid name="invoice-direct-debit-grid" title="Debited invoices" model="com.axelor.apps.account.db.Invoice">
 		<field name="invoiceId"/>
 		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="operationTypeSelect"/>
@@ -632,7 +633,7 @@
 		<field name="currency"/>
 		<field name="statusSelect"/>
     </grid>
-    
+
 	<!-- VIEW LITE  -->
     <grid name="invoice-lite-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">
     	<toolbar>
@@ -663,10 +664,10 @@
     <form name="customer-invoices-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge Cust. Invoices" width="large">
 		<panel-related field="$invoiceToMerge" form-view="invoice-form" grid-view="invoice-grid" title="Cust. Invoices to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.Invoice" domain="self.statusSelect = 1 AND self.operationTypeSelect = 3" canNew="false" canEdit="false" />
 		<panel sidebar="true" title="Actions">
-			<button name="generateMergedCustInvoices" title="Merge into single cust. invoice" onClick="action-validate-invoice-check-selection,action-group-invoice-merge-action"/>			
+			<button name="generateMergedCustInvoices" title="Merge into single cust. invoice" onClick="action-validate-invoice-check-selection,action-group-invoice-merge-action"/>
 	  	</panel>
     </form>
-    
+
     <form name="customer-invoices-merge-confirm-form" model="com.axelor.apps.base.db.Wizard" title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-invoice">
 		<panel colSpan="6" colOffset="3">
             <field name="contactPartnerToCheck" hidden="true" colOffset="12" />
@@ -680,14 +681,14 @@
 			<button name="confirm" title="Confirm" onClick="action-group-invoice-merge-action" colSpan="12" width="200px"/>
 		</panel>
     </form>
-    
+
     <action-group name="action-group-invoice-merge-action">
 	    <action name="action-invoice-method-merge-account" if="__repo__(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
 	    <action name="action-invoice-method-merge-supplychain" if="__repo__(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == true &amp;&amp; __repo__(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == false"/>
 	    <action name="action-invoice-method-merge-business-project" if="__repo__(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == true"/>
-	    
+
 	</action-group>
-	
+
     <action-group name="action-account-invoice-onnew-group">
 	    <action name="action-invoice-record-default"/>
 		<action name="action-invoice-method-payment-mode-condition" if="company != null"/>
@@ -702,7 +703,7 @@
 		<action name="action-invoice-record-interco-supplychain"/>
 		<action name="action-invoice-attrs-change-create-refund-title"/>
     </action-group>
-    
+
     <action-group name="action-account-invoice-onload-group" >
 	    <action name="action-invoice-attrs-hide-cancel-button"/>
 	    <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
@@ -714,18 +715,18 @@
 		<action name="action-invoice-attrs-interco-supplychain"/>
 		<action name="action-invoice-attrs-change-create-refund-title"/>
     </action-group>
-    
+
     <action-group name="action-group-account-invoice-operationtype-onchange">
 		<action name="action-invoice-method-payment-mode-condition"/>
     	<action name="action-invoice-record-partner-change"/>
     </action-group>
-    
+
     <action-group name="action-group-account-invoice-company-onchange">
     	<action name="action-invoice-method-fill-company-bank-details"/>
     	<action name="action-invoice-attrs-hide-cancel-button"/>
-    	
+
     </action-group>
-    
+
     <action-group name="action-group-account-invoice-partner-onchange">
     	<action name="action-invoice-record-partner-change"/>
 		<action name="action-invoice-method-payment-mode-condition"/>
@@ -759,7 +760,7 @@
     	<attribute name="hidden" for="inAti" expr=" eval: __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 1
 										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2"/>
     </action-attrs>
-    
+
     <action-attrs name="action-invoice-attrs-domain-project">
     	<attribute name="domain" for="project" expr="eval: &quot; self.projectTypeSelect = 1 AND self.clientPartner.id = ${partner?.id} AND self.isBusinessProject = true &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
     </action-attrs>
@@ -769,20 +770,20 @@
     </action-attrs>
 
 	<!-- ACTION RECORD -->
-	
+
 	<action-record name="action-invoice-record-estimated-payment-date" model="com.axelor.apps.account.db.Invoice" if-module="axelor-cash-management">
 		<field name="estimatedPaymentDate" expr="eval: dueDate?.plusDays(partner?.paymentDelay?.intValue())" if="__config__.app.isApp('cash-management')" />
 	</action-record>
-	
+
 	<action-record name="action-invoice-record-hide-discount" model="com.axelor.apps.account.db.Invoice">
 		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
 	</action-record>
-	
+
 	<action-record name="action-invoice-record-in-ati" model="com.axelor.apps.account.db.Invoice">
 		<field name="inAti" expr="eval: __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2
 										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 4"/>
 	</action-record>
-	
+
     <action-record name="action-invoice-record-default" model="com.axelor.apps.account.db.Invoice">
     	<field name="exTaxTotal" expr="eval: 0"/>
     	<field name="taxTotal" expr="eval: 0"/>
@@ -807,15 +808,15 @@
     	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect"/>
     	<field name="project" expr="eval: null"/>
     </action-record>
-    
+
     <action-record name="action-invoice-record-due-date" model="com.axelor.apps.account.db.Invoice">
     	<field name="dueDate" expr="call: com.axelor.apps.account.service.invoice.InvoiceToolService:getDueDate(paymentCondition,invoiceDate)" if="paymentCondition != null &amp;&amp; invoiceDate!=null"/>
     </action-record>
-    
+
     <action-record name="action-invoice-record-draft" model="com.axelor.apps.account.db.Invoice">
     	<field name="statusSelect" expr="eval: __repo__(Invoice).STATUS_DRAFT"/>
     </action-record>
-    
+
 	<action-record name="action-record-load-dummy-field-confirm-merge-invoice" model="com.axelor.apps.base.db.Wizard">
 		<field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>
 		<field name="partnerId" expr="eval: contextPartnerId"/>
@@ -831,32 +832,32 @@
 	</action-record>
 
     <!-- ACTION ATTRS -->
-    
+
     <action-attrs name="action-invoice-attrs-bank-details-from-partner-domain">
 		<attribute name="domain" for="bankDetails" expr="eval: &quot; self = null&quot;"/>
     	<attribute name="domain" for="bankDetails" expr="eval: &quot; self.id IN (${partner.bankDetailsList.collect{it.id}.join(',')}) AND self.active = true &quot;" if="partner?.bankDetailsList &amp;&amp; !partner.bankDetailsList.isEmpty()"/>
     </action-attrs>
-    
+
     <action-attrs name="action-invoice-attrs-hide-cancel-button">
     	<attribute name="hidden" for="cancel" expr="statusSelect == 4 || (statusSelect == 3 &amp;&amp; !company?.accountConfig?.allowCancelVentilatedInvoice)"/>
     </action-attrs>
-	
+
 	<action-attrs name="action-set-partner-domain">
 		<attribute name="domain" for="partner" expr="eval:&quot;self.id != ${company.partner.id} AND self.isContact = false AND self.isSupplier = true&quot;" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
  		<attribute name="domain" for="partner" expr="eval:&quot;self.id != ${company.partner.id} AND self.isContact = false AND self.isCustomer = true&quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
 		<attribute for="contactPartner" name="domain" expr="eval: &quot;self = null&quot;"/>
 		<attribute for="contactPartner" name="domain" expr="eval: &quot;self.id IN (${partner.contactPartnerSet?.collect{it.id}.join(',')})&quot;" if="partner?.contactPartnerSet &amp;&amp; !partner.contactPartnerSet.isEmpty()"/>
 	</action-attrs>
-	
+
 	<action-attrs name="action-invoice-attrs-collapse-irrecoverable-group">
 		<attribute name="collapse" for="irrecoverableGroup" expr="eval: irrecoverablestatusSelect == null || irrecoverablestatusSelect == 0"/>
 	</action-attrs>
-	
+
 	<action-attrs name="action-invoice-attrs-change-total-title">
 		<attribute name="title" for="accountingTotalGroup" expr="eval: 'Totaux en devise comptable (${:self.currency.symbol})'"/>
 		<attribute name="title" for="invoiceTotalGroup" expr="eval: 'Totaux en devise de la facture (${:self.partner.currency.symbol})'"/>
 	</action-attrs>
-	
+
 	<action-attrs name="action-invoice-attrs-printing-fields" if-module="axelor-business-project">
 		<attribute name="hidden" for="printing" expr="eval: __repo__(InvoicingProject).all().filter('self.invoice.id = ?1', id).fetch().isEmpty()" if="__config__.app.isApp('business-project')" />
 		<attribute name="hidden" for="showAnnex" expr=" eval: __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayTimesheetOnPrinting == false
@@ -884,25 +885,25 @@
 	</action-attrs>
 
 	<!-- DOMAIN -->
-	
+
 	<action-attrs name="action-invoice-partner-account-domain">
 		<attribute name="domain" for="partnerAccount" expr="eval: &quot;self.company.id = ${company.id} AND (self.accountType.technicalTypeSelect = 'receivable' OR self.accountType.technicalTypeSelect = 'payable') AND self.useForPartnerBalance = true &quot;" if="company"/>
 	</action-attrs>
-	
+
 	<action-attrs name="action-invoice-attrs-domain-address">
 		<attribute name="domain" for="address" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isInvoicingAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
     </action-attrs>
 
     <!-- ACTION VALIDATE -->
-    
+
     <action-validate name="action-validate-invoice-check-selection">
 		<error message="You have to choose at least one invoice" if="invoiceToMerge == null || invoiceToMerge.size() == 0"/>
 	</action-validate>
-	
+
 	<action-validate name="action-validate-send-email-remove-access-for-client">
 		<error message="Error - You are not authorized to perform this action" if="__user__.group.isClient"/>
     </action-validate>
-   
+
 
 	<!-- ACTION METHOD -->
 
@@ -917,23 +918,23 @@
 	<action-method name="action-invoice-method-fill-in-lines">
 		<call class="com.axelor.apps.supplychain.web.InvoiceController" method="fillInLines"/>
 	</action-method>
-	
+
 	<action-method name="action-invoice-method-mass-validation">
     	<call class="com.axelor.apps.account.web.InvoiceController" method="massValidation"/>
     </action-method>
-    
+
     <action-method name="action-invoice-method-mass-ventilation">
     	<call class="com.axelor.apps.account.web.InvoiceController" method="massVentilation"/>
     </action-method>
-	
+
 	<action-method name="action-invoice-method-show-invoice">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="showInvoice"/>
 	</action-method>
-		
+
 	<action-method name="action-invoice-method-validate">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="validate"/>
 	</action-method>
-	
+
 	<action-method name="action-invoice-method-ventilate">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="ventilate"/>
 	</action-method>
@@ -941,15 +942,15 @@
     <action-method name="action-invoice-method-validate-and-ventilate">
         <call class="com.axelor.apps.account.web.InvoiceController" method="validateAndVentilate"/>
     </action-method>
-	
+
 	<action-method name="action-invoice-method-cancel">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="cancel"/>
 	</action-method>
-	
+
 	<action-method name="action-invoice-method-create-refund">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="createRefund"/>
 	</action-method>
-	
+
 	<action-method name="action-invoice-method-compute">
         <call class="com.axelor.apps.account.web.InvoiceController" method="compute"/>
     </action-method>
@@ -961,11 +962,11 @@
 	<action-method name="action-invoice-method-merge-account">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="mergeInvoice"/>
 	</action-method>
-	
+
 	<action-method name="action-invoice-method-merge-supplychain">
 		<call class="com.axelor.apps.supplychain.web.InvoiceController" method="mergeInvoice"/>
 	</action-method>
-	
+
 	<action-method name="action-invoice-method-merge-business-project">
 		<call class="com.axelor.apps.businessproject.web.InvoiceController" method="mergeInvoice"/>
 	</action-method>
@@ -1016,7 +1017,7 @@
     <action-view name="action-invoice-mergecustinvoices" title="Merge Cust. Invoices" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="customer-invoices-merge-form"/>
 	</action-view>
-	
+
 	<search-filters name="customer-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Customer invoices filters">
 		<filter title="Validated">
 			<domain>self.statusSelect = 2</domain>
@@ -1040,7 +1041,7 @@
 			<domain>self.partner.partnerTypeSelect = 2</domain>
 		</filter>
 	</search-filters>
-	
+
 	<search-filters name="customer-refunds-filters" model="com.axelor.apps.account.db.Invoice" title="Customer refunds filters">
 		<filter title="Validated">
 			<domain>self.statusSelect = 2</domain>
@@ -1055,7 +1056,7 @@
 			<domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
 		</filter>
 	</search-filters>
-	
+
 	<search-filters name="supplier-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Supplier invoices filters">
 		<filter title="Draft">
 			<domain>self.statusSelect = 1</domain>
@@ -1073,7 +1074,7 @@
 			<domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
 		</filter>
 	</search-filters>
-	
+
 	<search-filters name="supplier-refunds-filters" model="com.axelor.apps.account.db.Invoice" title="Supplier refunds filters">
 		<filter title="Draft">
 			<domain>self.statusSelect = 1</domain>
@@ -1091,5 +1092,5 @@
 			<domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
 		</filter>
 	</search-filters>
-	
+
 </object-views>

@@ -70,7 +70,7 @@
 			</field>
 			<panel name="overview" title="Overview" colSpan="12">
 				<field name="company" form-view="company-form" grid-view="company-grid"/>
-				<field name="assignedTo" title="Person In Charge" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
+				<field name="assignedTo" canNew="false" canEdit="false" canView="false" title="Person In Charge" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
 			</panel>
 			<panel if-module="axelor-business-project" name="project" title=" " showIf="isProject" colSpan="12">
 				<field name="projectTypeSelect" onChange="action-project-record-empty-parent-project" requiredIf="isProject"/>
@@ -102,7 +102,7 @@
 			</panel>
 		</panel>
 		<panel title="Members">
-			<field name="membersUserSet" readonlyIf="synchronisable == true" showTitle="false" colSpan="12" widget="TagSelect" canNew="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="membersUserSet" readonlyIf="synchronisable == true" showTitle="false" colSpan="12" widget="TagSelect" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="team" title="Team" colSpan="6" canNew="true" canEdit="false"/>
 			<field name="synchronisable" colSpan="3" widget="boolean-switch"/>
 			<button name="selectTeam" title="Select a team" showIf="team != null" colSpan="3" onClick="save,action-project-method-select-team"/>

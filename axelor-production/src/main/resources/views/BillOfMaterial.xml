@@ -33,8 +33,8 @@
 		</panel>
 		<panel-tabs>
 			<panel title="Components" >
-				<button name="openBomTree" title="Open tree"  onClick="save,action-bill-of-material-method-open-bom-tree" colSpan="3"/> 
-				<panel-related field="billOfMaterialSet" title="Components" colSpan="12" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
+				<button name="openBomTree" title="Open tree"  onClick="save,action-bill-of-material-method-open-bom-tree" colSpan="3"/>
+				<panel-related field="billOfMaterialSet" title="Components" colSpan="12" orderBy="priority" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
 			</panel>
 			<panel-related field="prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form" if="__config__.app.getApp('production').getManageResidualProductOnBom()"/>	        
 			<panel name="cost" title="Cost">
@@ -140,11 +140,11 @@
     <action-method name="action-bill-of-material-method-validate-prod-process">
     	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="validateProdProcess" if="id != null"/>
     </action-method>
-    
+
     <action-method name="action-bill-of-material-method-open-bom-tree">
     	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="openBomTree" />
     </action-method>
-    
+
     <action-attrs name="action-bill-of-material-attrs-price-digits">
     	<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     </action-attrs>

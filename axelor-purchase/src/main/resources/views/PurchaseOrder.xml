@@ -94,7 +94,7 @@
 				form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect >= 3 || supplierPartner != null" />
 			<field name="currency" canEdit="false" form-view="currency-form"
 				grid-view="currency-grid" readonlyIf="statusSelect >= 3"/>
-			<field name="buyerUser" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="buyerUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="versionNumber"
 				if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
 			<field name="companyBankDetails" widget="SuggestBox"
@@ -173,7 +173,7 @@
 				<field name="internalReference"/>
 			</panel>
 			<panel readonly="true">
-				<field name="validatedByUser" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+				<field name="validatedByUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 				<field name="validationDate"/>
 	    	</panel>
 		</panel>
@@ -593,10 +593,10 @@
 
 	<search-filters name="purchase-order-filters" model="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchases Order filters">
 		<filter title="My RFQs">
-			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.buyerUser.internalUser.id = :_internalUser</domain>
+			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.buyerUser.id = :_internalUser</domain>
 		</filter>
 		<filter title="My Sales">
-			<domain>(self.statusSelect = 3 or self.statusSelect = 4) and self.buyerUser.internalUser.id = :_internalUser</domain>
+			<domain>(self.statusSelect = 3 or self.statusSelect = 4) and self.buyerUser.id = :_internalUser</domain>
 		</filter>
 	</search-filters>
 

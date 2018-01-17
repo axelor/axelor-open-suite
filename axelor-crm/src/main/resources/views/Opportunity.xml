@@ -91,7 +91,7 @@
 	    		<item title="Convert into quotation" action="action-sale-group-generate-sale-order"  if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
 	    	</menu>
 	  	</menubar>
-	  
+
 		<panel name="main" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
 			<field name="name" css="label-bold bold"/>
 			<field name="opportunityType" widget="SuggestBox" canEdit="false" colSpan="3" grid-view="opportunity-type-grid" form-view="opportunity-type-form"/>
@@ -124,14 +124,14 @@
 		</panel>
 		
 		<panel name="assignedTo" title="Assigned to" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" sidebar="true">
-		  <field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+		  <field name="user" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 		  <button name="grabOpportunity" title="Assign to me" hideIf="user.id == _internalUserId"   icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
 		  <field name="team" canEdit="false" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
 		  <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 		  <field name="bankDetails" widget="SuggestBox"  if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()"/>
 		  <field name="lostReason" canNew="true" />
 		</panel>
-		
+
 		<panel>
 			<field name="attrs" colSpan="12" />
 		</panel>

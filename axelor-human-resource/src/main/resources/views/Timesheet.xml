@@ -82,7 +82,7 @@
 	    <panel sidebar="true" stacked="true">
 		    <panel>
 				<field name="company" colSpan="6" form-view="company-form" grid-view="company-grid"/>
-				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"/>
+				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 				<field name="user.employee" hidden="true" />
 		    </panel>
 	    </panel>
@@ -138,7 +138,7 @@
 		<action name="action-timesheet-attrs-panels"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
 	</action-group>
-	
+
 	<action-group name="action-timesheet-group-onload">
 		<action name="action-timesheet-method-set-show-activity"/>
 		<action name="action-timesheet-attrs-buttons"/>
@@ -153,7 +153,7 @@
 	<action-attrs name="action-hr-timesheet-attrs-domain-product">
 		<attribute name="domain" expr="eval:$project == null || __repo__(Project).find($project.id).productSet?.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :$project AND self MEMBER OF p.productSet)&quot;" for="$product"/>
 	</action-attrs>
-	
+
 	<action-group name="action-timesheet-group-confirm">
 		<action name="save"/>
 		<action name="action-timesheet-method-confirm"/>
@@ -205,7 +205,7 @@
 		<action name="action-timesheet-attrs-from-date-on-new"/>
 		<action name="action-timesheet-attrs-panels"/>
 	</action-group>
-	
+
 
 	<action-method name="action-timesheet-method-timesheet-compute-period-total">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="timesheetPeriodTotalController"/>
@@ -228,7 +228,7 @@
 	    <field name="$fromGenerationDate" expr="eval:fromDate"/>
 	    <field name="$toGenerationDate" expr="eval:toDate" if="toDate != null"/>
 	</action-record>
-	
+
 	<action-record name="action-timesheet-record-to-date" model="com.axelor.apps.hr.db.Timesheet">
 		<field name="toDate" expr="eval:fromDate.with(java.time.DayOfWeek.FRIDAY)" if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet').getDefaultEndFormat() == 1"/>
 		<field name="toDate" expr="eval:fromDate.withDayOfMonth(fromDate.lengthOfMonth())" if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet').getDefaultEndFormat() == 2"/>
@@ -301,20 +301,20 @@
 	<action-attrs name="action-timesheet-attrs-from-date">
 		<attribute name="readonly" for="fromDate" expr="eval: fromDate != null"/>
 	</action-attrs>
-	
+
 	<action-attrs name="action-timesheet-attrs-refresh-editor">
 		<attribute name="refresh" for="timesheetLineEditor" expr="eval:true" if="showEditor"/>
 	</action-attrs>
-	
+
 	<action-attrs name="action-timesheet-attrs-panels">
 		<attribute name="hidden" for="actions" expr="eval:id == null" if="__config__.app.getApp('timesheet').getTimesheetEditor()"/>
-		<attribute name="hidden" for="lines" expr="eval:id == null" if="__config__.app.getApp('timesheet').getTimesheetEditor()"/>	
+		<attribute name="hidden" for="lines" expr="eval:id == null" if="__config__.app.getApp('timesheet').getTimesheetEditor()"/>
 	</action-attrs>
-	
+
 	<action-attrs name="action-timesheet-set-show-editor">
 		<attribute name="value" for="showEditor" expr="eval:true"/>
 	</action-attrs>
-	
+
 	<action-record name="action-timesheet-record-from-period-date" model="com.axelor.apps.hr.db.Timesheet">
 		<field name="fromDate" expr="eval: __repo__(Timesheet).all().filter('self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__, TimesheetRepository.STATUS_CANCELED).fetchOne()?.toDate?.plusDays(1)"/>
 	</action-record>
@@ -366,15 +366,15 @@
 	<action-method name="action-print-timesheet">
     	<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="printTimesheet"/>
     </action-method>
-    
+
     <action-method name="action-timesheet-method-set-show-activity">
     	<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="setShowActivity"/>
     </action-method>
-	
+
 	<action-method name="action-timesheet-method-open-timesheet-editor">
     	<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="openTimesheetEditor"/>
     </action-method>
-    
+
 	<action-view name="action-timesheet-view-total-hours-per-day" title="">
   		<view name="chart.total.hours.per.day" type="chart"/>
     	<context name="timesheet_id" expr="eval: __self__.id"/>
@@ -389,26 +389,26 @@
 	  	<view-param name="forceEdit" value="true" />
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
-    
+
     <action-view name="action-timesheet-show-timesheet-line-editor" title="Timesheet lines">
     	<view type="html" name="hr/timesheet?timesheetId={{id}}&amp;showActivity={{$showActivity}}" />
     </action-view>
-    
-    <action-view name="action-timesheet-see-timesheet-lines" title="See timesheet lines" 
+
+    <action-view name="action-timesheet-see-timesheet-lines" title="See timesheet lines"
 		model="com.axelor.apps.hr.db.TimesheetLine">
-		<view type="grid" name="timesheet-line-grid"/>	
+		<view type="grid" name="timesheet-line-grid"/>
 		<view type="form" name="timesheet-line-form"/>
 		<domain>self.timesheet.user = :user_id AND self.timesheet.company = :company_id</domain>
 		<context name="user_id" expr="eval: user_id"/>
 		<context name="company_id" expr="eval: company_id"/>
 	</action-view>
-	
+
 	<action-method name="action-timesheet-method-timesheet-line-validate">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validateTimesheetLine"/>
 	</action-method>
-	
+
 	<action-method name="action-timesheet-method-timesheet-line-historic">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="historicTimesheetLine"/>
 	</action-method>
-	
+
 </object-views>

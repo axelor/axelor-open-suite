@@ -14,7 +14,7 @@ axelor {
 
 dependencies {
 	compile project(":modules:axelor-base")
-	
+
 	compile 'xalan:xalan:2.7.2'
 
 	compile group: 'jdom', name: 'jdom', version: '1.1'

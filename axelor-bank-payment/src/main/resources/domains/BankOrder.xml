@@ -24,6 +24,7 @@
 	<boolean name="isMultiDate" title="Multidate"/>
 	<boolean name="isMultiCurrency" title="Multicurrency"/>
 	<decimal name="arithmeticTotal" title="Arithmetic total" readonly="true"/>
+	<boolean name="testMode" title="Test mode"/>
 	
 	<!-- Sender -->
 	<many-to-one name="senderCompany" ref="com.axelor.apps.base.db.Company" title="Company"/>

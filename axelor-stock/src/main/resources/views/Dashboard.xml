@@ -25,13 +25,11 @@
 	<action-view title="Customer deliveries statistics" name="dashlet.stockMove.deliveries.time.delay.in.nbr">
 	  <view type="chart" name="chart.stockMove.deliveries.time.delay.in.nbr"/>  
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
-	  <context name="userId" expr="eval:__user__.id" />
 	</action-view>
 	
 	<action-view title="Customer average delivery delay" name="dashlet.stockMove.average.delivery.time.delay">
 	  <view type="chart" name="chart.stockMove.average.delivery.time.delay"/>  
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
-	  <context name="userId" expr="eval:__user__.id" />
 	</action-view>
 
 <!-- 	Stock Dashboard -->
@@ -75,7 +73,7 @@
 		<domain>self.id IN (:stockLocationLineIdList)</domain>
 		<context name="stockLocationLineIdList" expr="call:com.axelor.apps.stock.service.StockLocationService:getBadLocationLineId()"/>
 	</action-view>
-	
+
 	<action-view name="dashlet.stock.dashboard.upcoming.deliveries" title="Upcoming customer deliveries"
 		model="com.axelor.apps.stock.db.StockMove">
 		<view type="grid" name="stock-move-grid" />

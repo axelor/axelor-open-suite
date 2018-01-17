@@ -40,7 +40,7 @@
 	 	<panel name="main" >
 			<field name="company" canEdit="false" onChange="action-forecast-record-bank, action-forecast-recap-record-currency" colSpan="4" required="true"/>
 	       	<field name="bankDetails" onSelect="action-accounting-batch-attrs-bank-details-domain" if="__config__.app.getApp('base').getManageMultiBanks()" colSpan="4"/>
-	       	<field name="salesMan" colSpan="4"/>
+	       	<field name="salesMan" canNew="false" canEdit="false" canView="false" colSpan="4"/>
 	       	<field name="fromDate" onChange="action-forecast-recap-validate-dates" required="true"/>
        		<field name="toDate" onChange="action-forecast-recap-validate-dates" required="true"/>
        		<field name="opportunitiesTypeSelect" colSpan="12" width="50%"/>

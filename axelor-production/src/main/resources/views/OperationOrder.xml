@@ -122,8 +122,8 @@
 		</panel>
 		
 		<panel-related field="operationOrderDurationList" canNew="false" canEdit="false" canRemove="false" sidebar="true" showIf="id"/>
-		
-<!--	    <panel-related field="timesheetLineList" title="Timesheet lines" form-view="timesheet-line-production-form" grid-view="timesheet-line-production-grid" colSpan="12"/>  --> 
+
+<!--	    <panel-related field="timesheetLineList" title="Timesheet lines" form-view="timesheet-line-production-form" grid-view="timesheet-line-production-grid" colSpan="12"/>  -->
 	</form>
 	
 	<action-attrs name="action-operation-order-attrs-domain-machine">
@@ -149,7 +149,7 @@
 		<action name="action-operation-order-method-start" if="statusSelect == 3"/>
 		<action name="action-operation-order-method-resume" if="statusSelect == 5"/>
 	</action-group>
-    
+
     <action-group name="action-operation-order-group-start">
     	<action name="action-operation-order-method-start"/>
     	<action name="action-operation-order-method-start-manuf-order" if="_parent?.statusSelect == 3"/>
@@ -179,7 +179,7 @@
     <action-method name="action-operation-order-method-start">
 		<call class="com.axelor.apps.production.web.OperationOrderController" method="start"/>
     </action-method>
-    
+
     <action-method name="action-operation-order-method-print">
 		<call class="com.axelor.apps.production.web.OperationOrderController" method="print"/>
 	</action-method>
@@ -199,7 +199,7 @@
     <action-method name="action-operation-order-method-plan">
     	<call class="com.axelor.apps.production.web.OperationOrderController" method="plan"/>
     </action-method>
-    
+
     <action-method name="action-operation-order-method-machine-change">
     	<call class="com.axelor.apps.production.web.OperationOrderController" method="machineChange"/>
     </action-method>
