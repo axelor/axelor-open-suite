@@ -22,15 +22,15 @@
 	
 	<grid name="expense-line-kilometric-grid" title="Kilometric Allowances" model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
 		  onNew="action-expense-line-default, action-expense-line-method-fill-kilometric-expense-product">
-  		<field name="projectTask" title="Project" requiredIf="toInvoice" canView="false" onSelect="action-expense-line-attrs-domain-project-task" widget="SuggestBox" grid-view="project-task-grid" width="100" hidden="true"/>
+  		<field name="projectTask" requiredIf="toInvoice" canView="false" onSelect="action-expense-line-attrs-domain-project-task" widget="SuggestBox" grid-view="project-task-grid" width="120"/>
         <field name="expenseDate" title="Date" width="95"
         	onChange="action-kilometric-allowance-method-compute, action-kilometric-allowance-method-update-kap"/>
-		<field name="kilometricAllowParam" canEdit="false" required="true" width="130"
+		<field name="kilometricAllowParam" canEdit="false" required="true" width="60"
 			onChange="action-kilometric-allowance-method-compute" onSelect="action-kilometric-allowance-method-domain-on-select-on-kap"/>
         <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-method-compute" width="100"/>
-        <field name="distance" required="true" onChange="action-kilometric-allowance-method-compute" width="240"/>
-        <field name="fromCity" required="true" width="230"/>
-        <field name="toCity" required="true" width="230"/>
+        <field name="distance" required="true" onChange="action-kilometric-allowance-method-compute" width="150"/>
+        <field name="fromCity" required="true" width="150"/>
+        <field name="toCity" required="true" width="150"/>
 	    <field name="totalAmount" title="Total A.T.I" width="85" readonly="true"
 	    	onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" />
    	    <field name="comments" width="250"/>
