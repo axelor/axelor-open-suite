@@ -76,4 +76,9 @@
 		<option value="4">Invoice an advance payment</option>
 	</selection>
 
+	<selection name="supplychain.sale.order.type.select">
+		<option value="1">Normal</option>
+		<option value="2">Subscription</option>
+	</selection>
+
 </object-views>
