@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,12 +28,10 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
@@ -45,10 +43,8 @@ import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.bankpayment.db.BankOrder;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -58,7 +54,6 @@ import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -68,16 +63,6 @@ import com.google.inject.persist.Transactional;
 public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-    protected PaymentMode directDebitPaymentMode;
-    protected boolean generateBankOrderFlag;
-
-    @Override
-    protected void start() throws IllegalAccessException, AxelorException {
-        super.start();
-        directDebitPaymentMode = getDirectDebitPaymentMode();
-        generateBankOrderFlag = directDebitPaymentMode != null && directDebitPaymentMode.getGenerateBankOrder();
-    }
 
     @Override
     protected void process() {
@@ -92,33 +77,6 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
                 logger.error(e.getLocalizedMessage());
             }
         }
-    }
-
-    protected PaymentMode getDirectDebitPaymentMode() {
-        AccountingBatch accountingBatch = batch.getAccountingBatch();
-        Company company = accountingBatch.getCompany();
-
-        if (company == null) {
-            return null;
-        }
-
-        AccountConfig accountConfig = company.getAccountConfig();
-        return accountConfig.getDirectDebitPaymentMode();
-    }
-
-    protected BankDetails getCompanyBankDetails(AccountingBatch accountingBatch) {
-        BankDetails companyBankDetails = accountingBatch.getBankDetails();
-
-        if (companyBankDetails == null && accountingBatch.getCompany() != null) {
-            companyBankDetails = accountingBatch.getCompany().getDefaultBankDetails();
-        }
-
-        if (companyBankDetails == null && generateBankOrderFlag) {
-            throw new IllegalArgumentException(
-                    I18n.get(IExceptionMessage.BATCH_DIRECT_DEBIT_MISSING_COMPANY_BANK_DETAILS));
-        }
-
-        return companyBankDetails;
     }
 
     protected List<PaymentScheduleLine> processPaymentScheduleLines(int paymentScheduleType) {
