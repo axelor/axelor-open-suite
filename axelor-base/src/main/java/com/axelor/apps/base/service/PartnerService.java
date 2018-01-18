@@ -393,4 +393,24 @@ public class PartnerService {
         return true;
     }
 
+    /**
+     * If there is only one bank details item, set it as default.
+     * 
+     * @param partner
+     * @return
+     */
+    public boolean setDefaultBankDetailsIfSingle(Partner partner) {
+        Preconditions.checkNotNull(partner);
+
+        if (partner.getBankDetailsList() == null || partner.getBankDetailsList().isEmpty()
+                || partner.getBankDetailsList().size() > 1) {
+            return false;
+        }
+
+        BankDetails bankDetails = partner.getBankDetailsList().get(0);
+        bankDetails.setIsDefault(true);
+
+        return true;
+    }
+
 }

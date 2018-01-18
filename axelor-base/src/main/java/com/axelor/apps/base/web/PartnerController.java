@@ -333,11 +333,16 @@ public class PartnerController {
 				!partnerService.isThereDuplicatePartner(partner));
 	}
 
-    public void setDefaultPartnerAddressIfSingle(ActionRequest request, ActionResponse response) {
+    public void setDefaultsIfSingle(ActionRequest request, ActionResponse response) {
         try {
             Partner partner = request.getContext().asType(Partner.class);
-            if (Beans.get(PartnerService.class).setDefaultPartnerAdressIfSingle(partner)) {
+
+            if (partnerService.setDefaultPartnerAdressIfSingle(partner)) {
                 response.setValue("partnerAddressList", partner.getPartnerAddressList());
+            }
+
+            if (partnerService.setDefaultBankDetailsIfSingle(partner)) {
+                response.setValue("bankDetailsList", partner.getBankDetailsList());
             }
         } catch (Exception e) {
             TraceBackService.trace(response, e);

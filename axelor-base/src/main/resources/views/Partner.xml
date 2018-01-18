@@ -633,7 +633,7 @@
 
     <action-group name="action-group-partner-onsave">
         <action name="action-partner-iban-check-on-save" />
-        <action name="action-partner-method-default-partner-address-if-single" />
+        <action name="action-partner-method-defaults-if-single" />
     </action-group>
 
 	<action-group name="action-group-base-partner-contact-name-onchange">
@@ -835,8 +835,8 @@
         <field name="isCarrier" expr="eval: false" />
     </action-record>
 
-    <action-method name="action-partner-method-default-partner-address-if-single">
-        <call class="com.axelor.apps.base.web.PartnerController" method="setDefaultPartnerAddressIfSingle" />
+    <action-method name="action-partner-method-defaults-if-single">
+        <call class="com.axelor.apps.base.web.PartnerController" method="setDefaultsIfSingle" />
     </action-method>
 
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
