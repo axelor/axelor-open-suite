@@ -19,12 +19,12 @@ package com.axelor.apps.account.service;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +47,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -526,5 +527,25 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
 		this.cancelPaymentSchedule(paymentSchedule);
 		paymentScheduleRepo.save(paymentSchedule);
 	}
+
+    @Override
+    public BankDetails getBankDetails(PaymentSchedule paymentSchedule) throws AxelorException {
+        BankDetails bankDetails = paymentSchedule.getBankDetails();
+
+        if (bankDetails != null) {
+            return bankDetails;
+        }
+
+        Partner partner = paymentSchedule.getPartner();
+        Preconditions.checkNotNull(partner);
+        bankDetails = partnerService.getDefaultBankDetails(partner);
+
+        if (bankDetails != null) {
+            return bankDetails;
+        }
+
+        throw new AxelorException(partner, IException.MISSING_FIELD,
+                I18n.get(IExceptionMessage.PARTNER_BANK_DETAILS_MISSING), partner.getName());
+    }
 
 }

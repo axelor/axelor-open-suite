@@ -390,6 +390,7 @@
 "Bank Statement Batch",,,
 "Bank account","Compte bancaire",,
 "Bank details","Coordonnées bancaires",,
+"Bank details are missing for partner %s.","RIB manquant pour le tiers %s",,
 "Bank name","Nom de la banque",,
 "Bank statement retrieval configuration",,,
 "Base W.T.","Base H.T.",,

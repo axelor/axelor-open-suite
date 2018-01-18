@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -128,7 +128,7 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
 		List<Invoice> invoiceList;
 		InvoicePaymentCreateService invoicePaymentCreateService = Beans.get(InvoicePaymentCreateService.class);
 		BankDetailsRepository bankDetailsRepo = Beans.get(BankDetailsRepository.class);
-		BankDetails companyBankDetails = batch.getAccountingBatch().getBankDetails();
+		BankDetails companyBankDetails = getCompanyBankDetails(batch.getAccountingBatch());
 
 		while (!(invoiceList = query.fetch(FETCH_LIMIT)).isEmpty()) {
 			if (!JPA.em().contains(companyBankDetails)) {

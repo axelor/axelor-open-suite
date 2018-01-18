@@ -148,4 +148,9 @@ public interface IExceptionMessage {
     static final String BANK_STATEMENT_MISSING_FILE_FORMAT = /*$$(*/ "Missing bank statement file format" /*)*/;
     static final String BANK_STATEMENT_EBICS_PARTNER = /*$$(*/ "Error with EBICS partner %s: %s" /*)*/;
 
+    /*
+     * Batch direct debit
+     */
+    static final String BATCH_DIRECT_DEBIT_MISSING_COMPANY_BANK_DETAILS = /*$$(*/ "Company bank details is missing in batch." /*)*/;
+
 }

@@ -21,14 +21,13 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,9 +53,13 @@ public class BankOrderFileService {
 
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
-	protected final String FILE_EXTENSION_XML = "xml";
-	protected final String FILE_EXTENSION_TXT = "txt";
-	
+    public static final String SEPA_TYPE_CORE = "CORE";
+    public static final String SEPA_TYPE_SBB = "SBB";
+
+	protected static final String FILE_EXTENSION_XML = "xml";
+	protected static final String FILE_EXTENSION_TXT = "txt";
+
+
 	protected PaymentMode paymentMode;
 	protected BankOrderFileFormat bankOrderFileFormat;
 	protected LocalDate bankOrderDate;
@@ -77,7 +80,7 @@ public class BankOrderFileService {
 	protected String fileExtension;
 	
 	public BankOrderFileService(BankOrder bankOrder)  {
-		
+
 		this.paymentMode = bankOrder.getPaymentMode();
 		this.bankOrderFileFormat = bankOrder.getBankOrderFileFormat();
 		this.bankOrderDate = bankOrder.getBankOrderDate();

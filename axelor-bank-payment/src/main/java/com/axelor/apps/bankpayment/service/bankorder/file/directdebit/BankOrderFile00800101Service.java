@@ -17,6 +17,15 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder.file.directdebit;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
@@ -53,20 +62,10 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import java.io.File;
-import java.io.IOException;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
 public class BankOrderFile00800101Service extends BankOrderFileService {
 
     private ObjectFactory factory;
     private String sepaType;
-    public static String SEPA_TYPE_CORE = "CORE";
-    public static String SEPA_TYPE_SBB = "SBB";
 
 	@Inject
 	public BankOrderFile00800101Service(BankOrder bankOrder, String sepaType) {
@@ -286,14 +285,14 @@ public class BankOrderFile00800101Service extends BankOrderFileService {
              *        allowed in the same message.
              */
         switch (sepaType) {
-            case "CORE":
-                localInstrument1Choice.setCd("CORE");
+            case SEPA_TYPE_CORE:
+                localInstrument1Choice.setCd(SEPA_TYPE_CORE);
                 break;
-            case "B2B":
-                localInstrument1Choice.setCd("B2B");
+            case SEPA_TYPE_SBB:
+                localInstrument1Choice.setCd(SEPA_TYPE_SBB);
                 break;
             default:
-                throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_SEPA_TYPE), IException.CONFIGURATION_ERROR);
+                throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_SEPA_TYPE));
         }
         paymentTypeInformation2.setLclInstrm(localInstrument1Choice);
 
