@@ -10,12 +10,13 @@
   		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
   		<field name="costPrice"/>
   		<field name="salePrice"/>
+        <field name="invoiced"/>
 	</grid>
 
-	<form name="elements-to-invoice-form" title="Element To Invoice" model="com.axelor.apps.businessproject.db.ElementsToInvoice" 
-	onNew="action-element-to-invoice-record-default,action-elements-to-invoice-attrs-scale-and-precision"
-	onLoad="action-elements-to-invoice-attrs-scale-and-precision" width="large">
-		<panel name="main" >
+	<form name="elements-to-invoice-form" title="Element To Invoice" model="com.axelor.apps.businessproject.db.ElementsToInvoice"
+          onNew="action-element-to-invoice-record-default,action-elements-to-invoice-attrs-scale-and-precision"
+          onLoad="action-elements-to-invoice-attrs-scale-and-precision" width="large">
+		<panel name="main">
 			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 			<field name="date"/>
 	       	<field name="product" canEdit="false" onChange="action-elements-to-invoice-method-get-product-information" form-view="product-form" grid-view="product-grid"/>
@@ -23,8 +24,17 @@
             <field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 	  		<field name="costPrice"/>
 	  		<field name="salePrice"/>
-	  		<field name="toInvoice"/>
-	  		<field name="invoiced" showIf="toInvoice"/>
+            <field name="toInvoice" colSpan="3"/>
+            <field name="invoiced" showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" colSpan="3" showTitle="false">
+                <viewer>
+                    <![CDATA[
+                        <h4>
+                            <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoiced" x-translate>Invoiced</span>
+                            <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="!record.invoiced" x-translate>Not invoiced</span>
+                        </h4>
+                    ]]>
+                </viewer>
+            </field>
 		</panel>
 	</form>
 	
