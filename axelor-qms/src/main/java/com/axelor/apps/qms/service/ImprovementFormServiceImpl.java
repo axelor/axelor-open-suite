@@ -35,7 +35,7 @@ public class ImprovementFormServiceImpl implements ImprovementFormService {
 
 		String sequence = sequenceService.getSequenceNumber(IAdministration.QMS_IMPROVEMENT_FORM, company);
 		if(sequence == null) {
-			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.IMPROVEMENT_FORM_MISSING_SEQUENCE),company.getName());
+			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.IMPROVEMENT_FORM_MISSING_SEQUENCE), company.getName());
 		}
 		return sequence;
 	}

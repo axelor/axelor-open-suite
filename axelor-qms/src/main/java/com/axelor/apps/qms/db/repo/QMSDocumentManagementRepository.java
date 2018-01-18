@@ -19,7 +19,7 @@ public class QMSDocumentManagementRepository extends QMSDocumentRepository {
 		if(Strings.isNullOrEmpty(entity.getReference())) {
 			final String index = sequenceService.getSequenceNumber("qmsDocument", entity.getCompany());
 			if(index == null) {
-				throw new PersistenceException(I18n.get(IExceptionMessage.DOCUMENT_MISSING_SEQUENCE));
+				throw new PersistenceException(String.format(I18n.get(IExceptionMessage.DOCUMENT_MISSING_SEQUENCE), entity.getCompany().getName()));
 			}
 			// TODO should we make pattern configurable?
 			entity.setReference(String.format("%s-%s-%s", entity.getProcess().getCode(), entity.getType().getCode(), index));
