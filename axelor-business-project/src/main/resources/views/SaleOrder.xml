@@ -29,10 +29,12 @@
 	</action-attrs>
 
 	<form name="sale-order-business-project-invoicing-wizard" onLoad="action-business-project-record-sale-order-invoincing-wizard-default" title="Invoicing project wizard" model="com.axelor.apps.sale.db.SaleOrder" cols="12"  >
-    	<field name="invoicingTypeSelect" title="Invoicing type" type="INTEGER" selection="business.project.default.invoice.type.select" colSpan="6" />
-    	<field name="deadline" title="Deadline" type="DATE" hidden="true" showIf="invoicingTypeSelect > 1" colSpan="6"/>
-    	<button name="createInvoicingProject" title="Invoice" colSpan="6" onClick="action-business-project-sale-order-condition-invoicing,action-supplychain-sale-order-group-generate-invoice-popup" />
-    </form>
+		<panel colSpan="12">
+			<field name="invoicingTypeSelect" title="Invoicing type" type="INTEGER" selection="business.project.default.invoice.type.select" colSpan="6" />
+			<field name="deadline" title="Deadline" type="DATE" hidden="true" showIf="invoicingTypeSelect > 1" colSpan="6"/>
+			<button name="createInvoicingProject" title="Invoice" colSpan="6" onClick="action-business-project-sale-order-condition-invoicing,action-supplychain-sale-order-group-generate-invoice-popup" />
+		</panel>
+	</form>
     
     <action-record name="action-business-project-record-sale-order-invoincing-wizard-default" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="invoicingTypeSelect" expr="eval: __config__.app.getApp('business-project').defaultInvoiceTypeSelect"/>

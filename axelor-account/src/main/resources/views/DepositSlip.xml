@@ -21,7 +21,7 @@
             <button name="loadPaymentsBtn" title="Load cheques" icon="fa-list" onClick="save,action-deposit-slip-load-payments"
                 hideIf="publicationDate" />
             <button name="publishBtn" title="Publish deposit slip" icon="fa-print" onClick="save,action-deposit-slip-publish"
-                hideIf="publicationDate" readonlyIf="!paymentVoucherList" />
+                hideIf="publicationDate" readonlyIf="!paymentVoucherList" prompt="Are you sure you want to publish this deposit slip?" />
         </toolbar>
 
         <panel colSpan="12" if="!__config__.app.getApp('account')?.paymentVouchersOnInvoice">

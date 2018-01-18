@@ -76,7 +76,7 @@
 
 			<panel name="overview" title="Overview" colSpan="12">
 				<field name="company" form-view="company-form" grid-view="company-grid"/>
-				<field name="assignedTo" title="Person In Charge" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
+				<field name="assignedTo" canNew="false" canEdit="false" canView="false" title="Person In Charge" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
 			</panel>
 			<panel if-module="axelor-business-project" name="project" title=" " showIf="isProject" colSpan="12">
 				<field name="projectTypeSelect" onChange="action-project-record-empty-parent-project" requiredIf="isProject"/>
@@ -465,5 +465,17 @@
 	<action-record name="action-project-record-status-canceled" model="com.axelor.apps.project.db.Project">
 		<field name="statusSelect" expr="eval: __repo__(Project).STATE_CANCELED"/>
 	</action-record>
+
+    <action-attrs name="action-project-attrs-po-lines-set-domain" model="com.axelor.apps.project.db.Project">
+        <attribute for="purchaseOrderLineList" name="domain" expr="eval: &quot;self.project = NULL AND self.invoiced = false&quot;"/>
+    </action-attrs>
+
+    <action-attrs name="action-project-attrs-so-lines-set-domain" model="com.axelor.apps.project.db.Project">
+        <attribute for="saleOrderLineList" name="domain" expr="eval: &quot;self.project = NULL AND self.amountInvoiced = 0 AND self.saleOrder.clientPartner.id = ${clientPartner?.id} AND self.invoiced = false&quot;"/>
+    </action-attrs>
+
+    <action-attrs name="action-project-attrs-expense-lines-set-domain" model="com.axelor.apps.project.db.Project">
+        <attribute for="expensesLineList" name="domain" expr="eval: &quot;self.project.id = ${id} AND self.invoiced = false&quot;"/>
+    </action-attrs>
 
 </object-views>

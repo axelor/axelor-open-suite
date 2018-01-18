@@ -40,7 +40,7 @@
 		<panel>
 			<panel name="context" title="Context" colSpan="12">
 				<field name="team" form-view="team-form" grid-view="grid-form" colSpan="6" readonly="true"/>
-				<field name="assignedTo" canEdit="false" form-view="user-form" grid-view="user-grid" colSpan="6" readonlyIf="project == null" required="true" onSelect="action-task-attrs-project-assigned-to-configurations"/>
+				<field name="assignedTo" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" colSpan="6" readonlyIf="project == null" required="true" onSelect="action-task-attrs-project-assigned-to-configurations"/>
 				<spacer/>
 				<field name="createdBy" readonly="true" title="Created By" colSpan="6"/>
 				<field name="createdOn" title="Created on" colSpan="6"/>

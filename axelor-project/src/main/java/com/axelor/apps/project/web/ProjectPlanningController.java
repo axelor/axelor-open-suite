@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.project.web;
 
 import java.util.Collection;
@@ -12,13 +29,13 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 
 public class ProjectPlanningController {
-	
+
 	public void showPlanning(ActionRequest request, ActionResponse response) {
-		
+
 		Context context = request.getContext();
-		
+
 		Collection<Map<String, Object>> users = (Collection<Map<String, Object>>) context.get("userSet");
-		
+
 		String userIds = "";
 		if (users != null) {
 			for (Map<String, Object> user : users) {
@@ -30,17 +47,17 @@ public class ProjectPlanningController {
 				}
 			}
 		}
-		
+
 		ActionViewBuilder builder = ActionView.define(I18n.get("Project Planning"))
 				.model(ProjectPlanning.class.getName());
 		String url = "project/planning";
-		
+
 		if (!userIds.isEmpty()) {
 			url += "?userIds=" + userIds;
 			builder.domain("self.user.id in (:userIds)");
 			builder.context("userIds", userIds);
 		}
-		
+
 		builder.add("html", url);
 		response.setView(builder.map());
 	}

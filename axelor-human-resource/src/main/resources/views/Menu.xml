@@ -66,7 +66,7 @@
     	<view type="grid" name="end-of-contract-reason-grid"/>
 	    <view type="form" name="end-of-contract-reason-form"/>
 	</action-view>
-	
+
 	<menuitem name="employment-contract-template-all" parent="hr-root-emp-mgt-conf"
     	title="Employment Contract Templates"
     	action="employment.contract.templat.all"/>
@@ -75,38 +75,38 @@
     	<view type="grid" name="employment-contract-template-grid"/>
 	    <view type="form" name="employment-contract-template-form"/>
 	</action-view>
-	
+
 	<menuitem name="hr-employee-bonus-type" parent="hr-root-emp-mgt-conf" title="Employee bonus type" action="employee.bonus.type.all"
 			  if="__config__.app.getApp('employee').getEmployeeBonus()"/>
-	
+
 	<action-view name="employee.bonus.type.all" title="Employee bonus type" model="com.axelor.apps.hr.db.EmployeeBonusType">
     	<view type="grid" name="employee-bonus-type-grid"/>
 	    <view type="form" name="employee-bonus-type-form"/>
 	</action-view>
-	
+
 	<menuitem name="hr-employment-contract-type" parent="hr-root-emp-mgt-conf" title="Employment contract type" action="employment.contract.type.all"/>
-	
+
 	<action-view name="employment.contract.type.all" title="Employment contract type" model="com.axelor.apps.hr.db.EmploymentContractType">
 		<view type="grid" name="employment-contract-type-grid"/>
 	    <view type="form" name="employment-contract-type-form"/>
 	</action-view>
-	
+
 	<menuitem name="plannings-all" parent="hr-root-emp-mgt-conf" title="Plannings" />
-	
+
 	<menuitem name="event-planning-all" parent="plannings-all" title="Event planning" action="hr.public.holiday.planning.all"/>
-	
+
 	<action-view name="hr.public.holiday.planning.all" title="Public Holiday Plannings" model="com.axelor.apps.hr.db.PublicHolidayPlanning">
     	<view type="grid" name="public-holiday-planning-grid"/>
 	    <view type="form" name="public-holiday-planning-form"/>
 	</action-view>
-	
+
 	<menuitem name="weekly-planning-all" parent="plannings-all" title="Weekly planning" action="hr.weekly.planning.all"/>
-	
+
 	<action-view name="hr.weekly.planning.all" title="Weekly Planning" model="com.axelor.apps.base.db.WeeklyPlanning">
     	<view type="grid" name="weekly-planning-grid"/>
 	    <view type="form" name="weekly-planning-form"/>
 	</action-view>
-	
+
 	<!-- Leave App -->
 	<menuitem name="leave-request-root" parent="hr-root" if="__config__.app.isApp('leave')" icon="fa-plane" icon-background="#84429f"
     	title="Leave Requests"/>
@@ -123,9 +123,8 @@
 		title="My Leave Requests">
 		<view name="leave-request-grid" type="grid" />
 		<view name="leave-request-form" type="form" />
-		<domain>self.user = :user_id AND self.company = :company_id AND self.toJustifyLeaveReason = :to_justify_leave_reason</domain>
+		<domain>self.user = :user_id AND self.toJustifyLeaveReason = :to_justify_leave_reason</domain>
 		<context name="user_id" expr="eval:__user__" />
-		<context name="company_id" expr="eval:__user__.activeCompany" />
 		<context name="to_justify_leave_reason" expr="eval: false"/>
 	</action-view>
 	
@@ -157,50 +156,14 @@
 	<action-view name="leave.request.to.justify" title="Leave to justify" model="com.axelor.apps.hr.db.LeaveRequest">
 		<view name="leave-request-form" type="form" />
 		<view name="leave-request-validate-grid" type="grid" />
-		<domain>self.user = :user_id AND self.company = :company_id AND self.toJustifyLeaveReason = :to_justify_leave_reason</domain>
+		<domain>self.user = :user_id AND self.toJustifyLeaveReason = :to_justify_leave_reason</domain>
 		<context name="user_id" expr="eval:__user__" />
-		<context name="company_id" expr="eval:__user__.activeCompany" />
 		<context name="to_justify_leave_reason" expr="eval: true"/>
 	</action-view>
 
 	<menuitem name="leave-request-conf" parent="leave-request-root" title="Configuration"/>
 
 	<menuitem name="leave-reason-all" parent="leave-request-conf" title="Leave reason" action="leave.reason.all" />
-	
-	<action-view name="lunch.voucher.mgt.all" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt">
-    	<view type="grid" name="lunch-voucher-mgt-grid"/>
-	    <view type="form" name="lunch-voucher-mgt-form"/>
-	</action-view>
-	
-	<menuitem name="all-payroll-preparation" parent="hr-root" title="Payroll Preparations" action="payroll.preparation.all"/>
-	
-	<action-view name="payroll.preparation.all" title="Payroll Preparations" model="com.axelor.apps.hr.db.PayrollPreparation">
-    	<view type="grid" name="payroll-preparation-grid"/>
-	    <view type="form" name="payroll-preparation-form"/>
-	</action-view>
-	
-	<menuitem name="all-employment-contract" parent="hr-root" title="Employment Contracts" action="employment.contracts.all"/>
-	
-	<action-view name="employment.contracts.all" title="Employment Contracts" model="com.axelor.apps.hr.db.EmploymentContract">
-    	<view type="grid" name="employment-contract-grid"/>
-	    <view type="form" name="employment-contract-form"/>
-	</action-view>
-	
-	<menuitem name="hr-conf" parent="hr-root" title="Configuration"/>
-	
-	<menuitem name="employee-all" parent="hr-conf"
-    	title="Employee"
-    	action="employee.all"/>
-
-	<action-view name="employee.all" title="Employee" model="com.axelor.apps.hr.db.Employee">
-    	<view type="grid" name="employee-grid"/>
-	    <view type="form" name="employee-form"/>
-	    <view-param name="search-filters" value="employee-filters"/>
-	</action-view>
-	
-	<menuitem name="leave-reason-all" parent="hr-conf"
-    	title="Leave reason"
-    	action="leave.reason.all"/>
 
 	<action-view name="leave.reason.all" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason">
     	<view type="grid" name="leave-reason-grid"/>
@@ -224,13 +187,12 @@
 		title="My Expenses">
 		<view name="expense-grid" type="grid" />
 		<view name="expense-form" type="form" />
-		<domain>self.user = :user_id AND self.company = :company_id</domain>
+		<domain>self.user = :user_id</domain>
 		<context name="user_id" expr="eval:__user__" />
-		<context name="company_id" expr="eval:__user__.activeCompany" />
 	</action-view>
 
 	<menuitem name="validate-expense"  parent="expense-root" title="Expenses to Validate" action="expense.validate" />
-	
+
 	<action-method name="expense.validate">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="validateExpense"/>
 	</action-method>
@@ -242,7 +204,7 @@
 		<view type="form" name="expense-form"/>
 		<domain>self.statusSelect = 3 AND self.ventilated = false</domain>
 	</action-view>
-	
+
 	<menuitem name="multiple-users-expense" parent="expense-root" title="Multiple users expenses" action="multiple.users.expense"  />
 
 	<action-view name="multiple.users.expense" title="Multiple users expenses" model="com.axelor.apps.hr.db.Expense">
@@ -297,9 +259,8 @@
 		title="My Timesheets">
 		<view name="my-timesheets-grid" type="grid" />
 		<view name="timesheet-form" type="form" />
-		<domain>self.user = :user_id AND self.company = :company_id</domain>
+		<domain>self.user = :user_id</domain>
 		<context name="user_id" expr="eval:__user__" />
-		<context name="company_id" expr="eval:__user__.activeCompany" />
 	</action-view>
 	
 	<menuitem name="validate-timesheet"  parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate" />
@@ -337,9 +298,8 @@
 		title="My Extra Hours">
 		<view name="extra-hours-grid" type="grid" />
 		<view name="extra-hours-form" type="form" />
-		<domain>self.user = :user_id AND self.company = :company_id</domain>
+		<domain>self.user = :user_id</domain>
 		<context name="user_id" expr="eval:__user__" />
-		<context name="company_id" expr="eval:__user__.activeCompany" />
 	</action-view>
 	
 	<menuitem name="validate-extra-hours"  parent="extra-hours-root" title="Extra hours to validate" action="extra.hours.validate"/>
@@ -390,8 +350,8 @@
 	<action-view name="hr.user.dashboard.view" title="Human Resources User">
 		<view type="dashboard" name="hr.user.dashboard.sample" />
 	</action-view>	
-	
-	<!-- Top Menus -->
+
+	<menuitem name="hr-conf" parent="hr-root" title="Configuration"/>
 
 	<menuitem name="hr-conf-payroll-year" parent="hr-conf" title="Payroll years" action="hr.conf.payroll.year"/>
 
@@ -412,12 +372,14 @@
 		<domain>self.year.typeSelect = 2</domain>
 	</action-view>
 
+	<!-- Top Menus -->
+
 	<menuitem name="top-menu-hr" title="HR" order="4" top="true" left="false" if="__config__.app.isApp('employee')"/>
-	
+
 	<menuitem name="top-menu-hr-my-timesheet" parent="top-menu-hr" title="My timesheet" action="edit.timesheet" top="true" if="__config__.app.isApp('timesheet')"/>
 
 	<menuitem name="top-menu-hr-my-expense" parent="top-menu-hr" title="My expense" action="edit.expense" top="true" if="__config__.app.isApp('expense')"/>
-	
+
 	<menuitem name="top-menu-hr-my-leave-request" parent="top-menu-hr" title="My leave request" action="edit.leave.request" top="true" if="__config__.app.isApp('leave')"/>
 
 	<menuitem name="top-menu-hr--my-extra-hours" parent="top-menu-hr" title="My extra hours" action="edit.extra.hours" top="true" if="__config__.app.isApp('exthrs')"  />

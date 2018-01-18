@@ -25,8 +25,10 @@ import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -94,21 +96,26 @@ public class InvoicingProjectController {
      * @param response
      * @throws AxelorException
      */
-	public void print(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void print(ActionRequest request, ActionResponse response) {
         InvoicingProject invoicingProject = invoicingProjectRepo.find(request.getContext().asType(InvoicingProject.class).getId());
 
         String name = I18n.get("Invoicing Project");
 
-        String fileLink = ReportFactory.createReport(IReport.INVOICING_PROJECT, name + " - ${date}")
-                                       .addParam("InvoicingProjectId", invoicingProject.getId())
-                                       .addParam("Locale", invoicingProject.getProject().getClientPartner().getLanguageSelect())
-                                       .generate()
-                                       .getFileLink();
+		try {
+			String fileLink = ReportFactory.createReport(IReport.INVOICING_PROJECT, name + " - ${date}")
+					.addParam("InvoicingProjectId", invoicingProject.getId())
+					.addParam("Locale", invoicingProject.getProject().getClientPartner().getLanguageSelect())
+					.addFormat(ReportSettings.FORMAT_PDF)
+					.generate()
+					.getFileLink();
 
-        log.debug("Printing " + name);
+			log.debug("Printing " + name);
 
-        response.setView(ActionView.define(name)
-                                   .add("html", fileLink)
-                                   .map());
+			response.setView(ActionView.define(name)
+					.add("html", fileLink)
+					.map());
+		} catch (Exception e) {
+			TraceBackService.trace(response,e);
+		}
     }
 }

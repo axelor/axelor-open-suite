@@ -171,6 +171,10 @@
 		<option value="1">Google</option>
 	</selection>
 	
+	<selection name="base.app.base.currency.api.select">
+		<option value="http://sdw-wsrest.ecb.europa.eu/service/data/EXR/D.%s+%s.EUR.SP00.A?startPeriod=%s">ECB</option>
+	</selection>
+	
 	<selection name="base.tracking.number.configuration.sale.tracking.order.select">
 		<option value="1">FIFO</option>
 		<option value="2">LIFO</option>
