@@ -20,7 +20,7 @@
 			<field name="date"/>
 	       	<field name="product" canEdit="false" onChange="action-elements-to-invoice-method-get-product-information" form-view="product-form" grid-view="product-grid"/>
 	  		<field name="qty"/>
-	  		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+            <field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 	  		<field name="costPrice"/>
 	  		<field name="salePrice"/>
 	  		<field name="toInvoice"/>

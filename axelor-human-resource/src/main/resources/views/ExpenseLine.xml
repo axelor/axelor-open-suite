@@ -44,6 +44,7 @@
 		<field name="totalTax" aggregate="sum" readonly="true"/>
 		<field name="comments" readonly="true"/>
 		<field name="toInvoice"/>
+        <field name="invoiced"/>
 	</grid>
 
 	<form name="expense-line-project-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine" canEdit="false">

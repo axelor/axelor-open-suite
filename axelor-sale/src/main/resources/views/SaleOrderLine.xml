@@ -62,6 +62,7 @@
 		<field name="exTaxTotal" aggregate="sum" readonly="true"/>
 		<field name="inTaxTotal" aggregate="sum" readonly="true"/>
         <field name="toInvoice"/>
+        <field name="invoiced"/>
 	</grid>
 
 	<form name="sale-order-line-project-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" canEdit="false">
