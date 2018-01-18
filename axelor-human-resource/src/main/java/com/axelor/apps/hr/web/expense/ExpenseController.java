@@ -532,7 +532,7 @@ public class ExpenseController {
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
 		
 		if (expenseLine.getKilometricAllowParam() == null || expenseLine.getDistance().compareTo(BigDecimal.ZERO) == 0
-				|| expenseLine.getExpenseDate() == null || expenseLine.getKilometricTypeSelect() == 0) {
+				|| expenseLine.getExpenseDate() == null) {
 			return;
 		}
 		
