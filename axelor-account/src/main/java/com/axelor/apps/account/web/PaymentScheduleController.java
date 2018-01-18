@@ -29,6 +29,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class PaymentScheduleController {
@@ -65,25 +66,28 @@ public class PaymentScheduleController {
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 	
-	//Called on onSave event
-	public void paymentScheduleScheduleId(ActionRequest request, ActionResponse response){
+    // Called on onSave event
+    public void paymentScheduleScheduleId(ActionRequest request, ActionResponse response) {
+        try {
+            PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
 
-		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
-		
-		if (paymentSchedule.getPaymentScheduleSeq() == null) {
-		
-			String num = Beans.get(SequenceService.class).getSequenceNumber(IAdministration.PAYMENT_SCHEDULE, paymentSchedule.getCompany());
-		
-			if(num == null || num.isEmpty()) {
-				
-				response.setError(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5), paymentSchedule.getCompany().getName())); 
-			}
-			else {
-				response.setValue("paymentScheduleSeq", num);			
-			}
-		}
-	}
-	
+            if (Strings.isNullOrEmpty(paymentSchedule.getPaymentScheduleSeq())) {
+
+                String num = Beans.get(SequenceService.class).getSequenceNumber(IAdministration.PAYMENT_SCHEDULE,
+                        paymentSchedule.getCompany());
+
+                if (Strings.isNullOrEmpty(num)) {
+                    response.setError(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5),
+                            paymentSchedule.getCompany().getName()));
+                } else {
+                    response.setValue("paymentScheduleSeq", num);
+                }
+            }
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
+
 	// Creating payment schedule lines button
 	public void createPaymentScheduleLines(ActionRequest request, ActionResponse response) {
 
