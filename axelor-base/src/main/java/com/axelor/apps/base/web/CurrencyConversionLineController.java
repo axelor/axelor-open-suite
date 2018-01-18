@@ -21,19 +21,15 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyConversionService;
-import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
@@ -52,9 +48,6 @@ public class CurrencyConversionLineController {
 	
 	@Inject
 	private AppBaseService appBaseService;
-	
-	@Inject
-	private AppBaseRepository appBaseRepo;
 	
 	@Inject
 	private CurrencyRepository currencyRepo;
@@ -80,51 +73,6 @@ public class CurrencyConversionLineController {
 //			response.setValue("fromDate", "");
 		}
 	
-	}
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void applyExchangeRate(ActionRequest request, ActionResponse response) {
-		Context context = request.getContext();
-		
-		LOG.debug("Apply Conversion Rate Context: {}", new Object[]{context});
-		
-		Map<String, Object> currencyFrom = (Map<String, Object>) context.get("startCurrency");
-		Map<String, Object> currencyTo = (Map<String, Object>) context.get("endCurrency");
-		
-		if(currencyFrom.get("id") != null && currencyTo.get("id") != null){
-			Currency fromCurrency = currencyRepo.find(Long.parseLong(currencyFrom.get("id").toString()));
-			Currency toCurrency  = currencyRepo.find(Long.parseLong(currencyTo.get("id").toString()));
-			LocalDate today = appBaseService.getTodayDate();
-			CurrencyConversionLine cclCoverd = cclRepo.all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate >= ?3 AND (toDate <= ?3 OR toDate = null)",fromCurrency,toCurrency,today).fetchOne();
-			
-			if(cclCoverd == null){
-				CurrencyConversionLine ccl = cclRepo.all().filter("startCurrency = ?1 AND endCurrency = ?2",fromCurrency,toCurrency).order("-fromDate").fetchOne();
-				LOG.debug("Last conversion line {}",ccl);
-				
-				if(ccl != null && ccl.getToDate() == null){
-					ccl.setToDate(today.minusDays(1));
-					ccs.saveCurrencyConversionLine(ccl);
-				}
-				
-				BigDecimal rate = new BigDecimal(context.get("newExchangeRate").toString());
-				String variation = null;
-			    if(ccl != null)
-			    	variation = ccs.getVariations(rate, ccl.getExchangeRate());
-			    AppBase appBase = null;
-			    
-			    if(context.get("general") != null && ((Map)context.get("general")).get("id") != null)
-			    	appBase = appBaseRepo.find(Long.parseLong(((Map)context.get("general")).get("id").toString()));
-			    
-				ccs.createCurrencyConversionLine(fromCurrency,toCurrency,today,rate,appBase,variation);
-				
-			}
-			else
-				response.setFlash(I18n.get(IExceptionMessage.CURRENCY_3));
-		}
-		else
-			response.setFlash(I18n.get(IExceptionMessage.CURRENCY_5));
-		LOG.debug("Set can close for wizarBoth currencies must be saved before currency rate applyd");
-		response.setCanClose(true);
 	}
 	
 	@SuppressWarnings("unchecked")

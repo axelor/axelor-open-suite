@@ -23,7 +23,10 @@ import java.math.RoundingMode;
 import java.net.URL;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Period;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,13 +34,15 @@ import wslite.http.HTTPClient;
 import wslite.http.HTTPMethod;
 import wslite.http.HTTPRequest;
 import wslite.http.HTTPResponse;
+import wslite.json.JSONArray;
+import wslite.json.JSONException;
+import wslite.json.JSONObject;
 
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
-import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
@@ -46,9 +51,6 @@ import com.google.inject.persist.Transactional;
 public class CurrencyConversionService {
 
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-
-	@Inject
-	private CurrencyRepository currencyRepo;
 
 	@Inject
 	protected AppBaseService appBaseService;
@@ -71,25 +73,72 @@ public class CurrencyConversionService {
 			try{
 		        HTTPClient httpclient = new HTTPClient();
 		        HTTPRequest request = new HTTPRequest();
-		        URL url = new URL(String.format(wsUrl,currencyFrom.getCode(),currencyTo.getCode()));
+		        Map<String, Object> headers = new HashMap<>();
+				headers.put("Accept", "application/json");
+				request.setHeaders(headers);
+		        URL url = new URL(String.format(wsUrl,currencyFrom.getCode(),currencyTo.getCode(), LocalDate.now().minus(Period.ofDays(1))));
+//		        URL url = new URL(String.format(wsUrl,currencyFrom.getCode()));
 		        LOG.debug("Currency conversion webservice URL: {}" ,new Object[]{url.toString()});
 		        request.setUrl(url);
 		        request.setMethod(HTTPMethod.GET);
 		        HTTPResponse response = httpclient.execute(request);
+//		        JSONObject json = new JSONObject(response.getContentAsString());
 		        LOG.debug("Webservice response code: {}, reponse mesasage: {}",response.getStatusCode(),response.getStatusMessage());
 		        if(response.getStatusCode() != 200)
 		        	return rate;
-		        Float rt = Float.parseFloat(response.getContentAsString());
-		        rate = BigDecimal.valueOf(rt).setScale(4,RoundingMode.HALF_EVEN);
+
+		        Float rt = this.getRateFromJson(currencyFrom, currencyTo, response);
+		        rate = BigDecimal.valueOf(rt).setScale(8, RoundingMode.HALF_EVEN);
+
+//		        Float rt = Float.parseFloat(json.getJSONObject("rates").get(currencyTo.getCode()).toString());
+//		        rate = BigDecimal.valueOf(rt).setScale(4,RoundingMode.HALF_EVEN);
 			} catch (Exception e) {
 				TraceBackService.trace(e);
-				e.printStackTrace();
 			}
 		}
 		else
 			LOG.info("Currency from and to must be filled to get rate");
 		LOG.debug("Currerncy conversion rate: {}",new Object[] {rate});
 		return rate;
+	}
+
+	private Float getRateFromJson(Currency currencyFrom, Currency currencyTo, HTTPResponse response) throws JSONException {
+		int compareCode = currencyFrom.getCode().compareTo(currencyTo.getCode());
+        Float rt = null;
+        String[] currencyRateArr = new String[2];
+
+        JSONObject jsonResult = new JSONObject(response.getContentAsString());
+        JSONObject dataSets = new JSONObject(jsonResult.getJSONArray("dataSets").get(0).toString());
+        JSONObject series = new JSONObject(dataSets.getJSONObject("series").toString());
+        JSONObject seriesOf = null;
+        JSONObject observations = null;
+        JSONArray rateValue = null;
+
+        if (series.size() > 1) {
+        	for (int i = 0; i < series.size(); i++) {
+        		seriesOf = new JSONObject(series.getJSONObject("0:"+i+":0:0:0").toString());
+		        observations = new JSONObject(seriesOf.getJSONObject("observations").toString());
+		        rateValue = new JSONArray(observations.get(observations.length() - 1).toString());
+		        currencyRateArr[i] = rateValue.get(0).toString();
+        	}
+        	if (compareCode > 0) {
+        		rt = Float.parseFloat(currencyRateArr[0]) / Float.parseFloat(currencyRateArr[1]);
+        	} else {
+        		rt = Float.parseFloat(currencyRateArr[1]) / Float.parseFloat(currencyRateArr[0]);
+        	}
+
+        } else {
+        	seriesOf = new JSONObject(series.getJSONObject("0:0:0:0:0").toString());
+	        observations = new JSONObject(seriesOf.getJSONObject("observations").toString());
+	        rateValue = new JSONArray(observations.get(observations.length() - 1).toString());
+
+        	if (currencyTo.getCode().equals("EUR")) {
+        		rt = 1.0f / Float.parseFloat(rateValue.get(0).toString());
+        	} else {
+        		rt = Float.parseFloat(rateValue.get(0).toString());
+        	}
+        }
+        return rt;
 	}
 
 	public String getVariations(BigDecimal currentRate, BigDecimal previousRate){
@@ -129,23 +178,23 @@ public class CurrencyConversionService {
 	}
 
 
-	public BigDecimal getRate(Currency currencyFrom, Currency currencyTo, LocalDateTime rateDate){
-
-		LOG.debug("Get Last rate for CurrencyFrom: {} CurrencyTo: {} RateDate: {}",new Object[]{currencyFrom,currencyTo,rateDate});
-
-		BigDecimal rate = null;
-
-		if(currencyFrom != null && currencyTo != null && rateDate != null){
-			currencyFrom = currencyRepo.find(currencyFrom.getId());
-			currencyTo = currencyRepo.find(currencyTo.getId());
-			CurrencyConversionLine ccl = cclRepo.all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate <= ?3 AND (toDate >= ?3 OR toDate = null)",currencyFrom,currencyTo,rateDate).fetchOne();
-			if(ccl != null)
-				rate =  ccl.getExchangeRate();
-		}
-
-		LOG.debug("Current Rate: {}",new Object[]{rate});
-
-		return rate;
-	}
+//	public BigDecimal getRate(Currency currencyFrom, Currency currencyTo, LocalDate rateDate){
+//
+//		LOG.debug("Get Last rate for CurrencyFrom: {} CurrencyTo: {} RateDate: {}",new Object[]{currencyFrom,currencyTo,rateDate});
+//
+//		BigDecimal rate = null;
+//
+//		if(currencyFrom != null && currencyTo != null && rateDate != null){
+//			currencyFrom = currencyRepo.find(currencyFrom.getId());
+//			currencyTo = currencyRepo.find(currencyTo.getId());
+//			CurrencyConversionLine ccl = cclRepo.all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate <= ?3 AND (toDate >= ?3 OR toDate = null)",currencyFrom,currencyTo,rateDate).fetchOne();
+//			if(ccl != null)
+//				rate =  ccl.getExchangeRate();
+//		}
+//
+//		LOG.debug("Current Rate: {}",new Object[]{rate});
+//
+//		return rate;
+//	}
 	
 }

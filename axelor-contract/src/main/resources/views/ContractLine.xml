@@ -40,27 +40,6 @@
         <call class="com.axelor.apps.contract.web.ContractLineController" method="compute"/>
     </action-method>
 
-    <grid name="consumption-line-grid" title="Consumption Lines" model="com.axelor.apps.contract.db.ConsumptionLine">
-    	<hilite if="isError" background="danger"/>
-    	<field name="consumptionLineDate" />
-        <field name="reference" />
-        <field name="product" />
-        <field name="qty"/>
-        <field name="unit" />
-    </grid>
-
-    <form name="consumption-line-form" title="Consumption Line" model="com.axelor.apps.contract.db.ConsumptionLine">
-        <panel>
-        	<field name="consumptionLineDate" required="true" />
-        	<field name="product" required="true" />
-        	<field name="reference" />
-        	<field name="unit" />
-            <field name="qty"/>
-            <field name="isInvoiced" readonly="true" />
-            <field name="isError" readonly="true" />
-        </panel>
-    </form>
-    
     <grid name="additional-contract-line-grid" title="Additional benefit lines" model="com.axelor.apps.contract.db.ContractLine">
        <field name="productName"/>
        <field name="qty"/>

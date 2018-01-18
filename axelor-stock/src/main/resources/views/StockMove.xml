@@ -156,7 +156,7 @@
     <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard">
     	<panel name="main">
 	        <field name="splitQty" widget="INTEGER" title="Split in Qty of"/>
-	        <button name="split" title="Split" onClick="action-stock-move-method-split-stock-move-lines-speical"/>
+	        <button name="split" title="Split" onClick="action-stock-move-method-split-stock-move-lines-special"/>
         </panel>
     </form>
     
@@ -177,7 +177,8 @@
     <action-view title="Special split" model="com.axelor.apps.base.db.Wizard" name="action-stock-move-wizard-special-split">
 	    <view type="form" name="stock-move-wizard-special-split-form"/>
 	    <view-param name="popup" value="reload"/>
-	    <view-param name="forceEdit" value="true"/> 
+        <view-param name="forceEdit" value="true"/>
+        <view-param name="show-toolbar" value="false"/>
 	    <view-param name="show-confirm" value="false" />
    	  	<view-param name="popup-save" value="false"/>
 	    <view-param name="width" value="200" />
@@ -346,7 +347,7 @@
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="splitInto2"/>
 	</action-method>
 	
-	<action-method name="action-stock-move-method-split-stock-move-lines-speical">
+	<action-method name="action-stock-move-method-split-stock-move-lines-special">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="splitStockMoveLinesSpecial"/>
 	</action-method>
 	

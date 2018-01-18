@@ -240,7 +240,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void ventilate( Invoice invoice ) throws AxelorException {
 		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-			if (invoiceLine.getAccount() == null) {
+			if (!invoiceLine.getIsTitleLine() && invoiceLine.getAccount() == null) {
 				throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.VENTILATE_STATE_6), invoiceLine.getProductName());
 			}
 		}

@@ -22,7 +22,7 @@
 	       <field name="fromDate"/>
 	       <field name="toDate"/>
 	       <field name="company" canEdit="false"/>
-	       <field name="inChargeUser" canEdit="false"/>
+	       <field name="inChargeUser" canNew="false" canEdit="false" canView="false"/>
        </panel>
        <panel-related field="budgetLineList" onChange="action-budget-method-compute-total-amount"/>
        <panel sidebar="true" name="periodsGenerationAssistant" title="Periods generation assistant">

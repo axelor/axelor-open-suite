@@ -232,7 +232,7 @@
 					<field name="partnerSeq" colSpan="6"/>
 					<field name="languageSelect" colSpan="6"/>
 					<panel title="Assigned to" colSpan="12">
-						<field name="user" canEdit="false" colSpan="6" form-view="user-form" grid-view="user-grid" hideIf="isEmployee"/>
+						<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" hideIf="isEmployee" canNew="false" canEdit="false" canView="false"/>
 						<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" hideIf="isEmployee"/>
 						<field name="companySet" colSpan="12" widget="TagSelect" onChange="action-partner-method-generate-customer-credit-line" canNew="false" form-view="company-form" grid-view="company-grid"/>
 					</panel>
@@ -433,7 +433,7 @@
 			<field name="partnerSeq"/>
 			<field name="languageSelect"/>
 			<panel title="Assigned to" canCollapse="true" colSpan="12">
-				<field name="user" canEdit="false" colSpan="6" form-view="user-form" grid-view="user-grid"/>
+				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 				<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
 				<field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 			</panel>
@@ -599,7 +599,7 @@
 			<field name="partnerSeq"/>
 			<field name="languageSelect"/>
 			<panel title="Assigned to" canCollapse="true" colSpan="12">
-				<field name="user" canEdit="false" colSpan="6" form-view="user-form" grid-view="user-grid"/>
+				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 				<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
 				<field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 			</panel>

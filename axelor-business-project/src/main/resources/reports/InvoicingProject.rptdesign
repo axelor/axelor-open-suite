@@ -101,6 +101,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="AttachmentPath" id="3818">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">false</property>
             <property name="dataType">string</property>
@@ -132,6 +133,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="InvoicingProjectId" id="4338">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
@@ -1689,47 +1691,18 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                 <cell id="3869"/>
                 <cell id="3870"/>
             </row>
-            <row id="3871">
-                <cell id="3872">
-                    <property name="colSpan">3</property>
-                    <property name="rowSpan">1</property>
-                    <text id="3875">
-                        <property name="fontWeight">bold</property>
-                        <property name="textAlign">center</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'InvoicingProject.saleOrderLines'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="4333">
-                <property name="height">0.5cm</property>
-                <cell id="4334"/>
-                <cell id="4335"/>
-                <cell id="4336"/>
-            </row>
             <row id="3822">
                 <cell id="3823">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <table id="3827">
                         <property name="dataSet">SaleOrderDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["rowCount"] &lt;1</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">product_name</property>
@@ -1768,6 +1741,19 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                                 <property name="dataType">string</property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">rowCount</property>
+                                <text-property name="displayName">rowCount</text-property>
+                                <property name="dataType">integer</property>
+                                <property name="aggregateFunction">COUNT</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["qty"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <column id="3861">
                             <property name="width">1.8333333333333333in</property>
@@ -1780,6 +1766,46 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                         <column id="3865"/>
                         <column id="3866"/>
                         <header>
+                            <row id="4426">
+                                <cell id="4427">
+                                    <property name="colSpan">6</property>
+                                    <property name="rowSpan">1</property>
+                                    <text id="3875">
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'InvoicingProject.saleOrderLines'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                            </row>
+                            <row id="4419">
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">thin</property>
+                                <property name="height">0.5cm</property>
+                                <cell id="4420"/>
+                                <cell id="4421"/>
+                                <cell id="4422"/>
+                                <cell id="4423"/>
+                                <cell id="4424"/>
+                                <cell id="4425"/>
+                            </row>
                             <row id="3828">
                                 <property name="borderBottomStyle">solid</property>
                                 <property name="borderBottomWidth">thin</property>
@@ -2083,47 +2109,18 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                 <cell id="3878"/>
                 <cell id="3879"/>
             </row>
-            <row id="3880">
-                <cell id="3881">
-                    <property name="colSpan">3</property>
-                    <property name="rowSpan">1</property>
-                    <text id="3885">
-                        <property name="fontWeight">bold</property>
-                        <property name="textAlign">center</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'InvoicingProject.purchaseOrderLines'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="3886">
-                <property name="height">0.5cm</property>
-                <cell id="3887"/>
-                <cell id="3888"/>
-                <cell id="3889"/>
-            </row>
             <row id="3890">
                 <cell id="3891">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <table id="3938">
                         <property name="dataSet">PurchaseOrderDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["rowCount"] &lt;1</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">purchase_order_seq</property>
@@ -2174,6 +2171,19 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                                 <property name="dataType">string</property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">rowCount</property>
+                                <text-property name="displayName">rowCount</text-property>
+                                <property name="dataType">integer</property>
+                                <property name="aggregateFunction">COUNT</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["qty"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <column id="3982">
                             <property name="width">19%</property>
@@ -2200,6 +2210,47 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                             <property name="width">8%</property>
                         </column>
                         <header>
+                            <row id="4348">
+                                <cell id="4349">
+                                    <property name="colSpan">8</property>
+                                    <property name="rowSpan">1</property>
+                                    <text id="3885">
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'InvoicingProject.purchaseOrderLines'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                            </row>
+                            <row id="4339">
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">thin</property>
+                                <cell id="4340"/>
+                                <cell id="4341"/>
+                                <cell id="4342"/>
+                                <cell id="4343"/>
+                                <cell id="4344"/>
+                                <cell id="4345"/>
+                                <cell id="4346"/>
+                                <cell id="4347"/>
+                            </row>
                             <row id="3939">
                                 <property name="borderBottomStyle">solid</property>
                                 <property name="borderBottomWidth">thin</property>
@@ -2591,47 +2642,18 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                 <cell id="3896"/>
                 <cell id="3897"/>
             </row>
-            <row id="3990">
-                <cell id="3991">
-                    <property name="colSpan">3</property>
-                    <property name="rowSpan">1</property>
-                    <text id="4020">
-                        <property name="fontWeight">bold</property>
-                        <property name="textAlign">center</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'InvoicingProject.logTimes'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="3994">
-                <property name="height">0.5cm</property>
-                <cell id="3995"/>
-                <cell id="3996"/>
-                <cell id="3997"/>
-            </row>
             <row id="3998">
                 <cell id="3999">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <table id="4021">
                         <property name="dataSet">LogTimesDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["rowCount"] &lt;1</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">user</property>
@@ -2676,6 +2698,19 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                                 <expression name="expression" type="javascript">dataSetRow["comments"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
+                            <structure>
+                                <property name="name">rowCount</property>
+                                <text-property name="displayName">rowCount</text-property>
+                                <property name="dataType">integer</property>
+                                <property name="aggregateFunction">COUNT</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["visible_duration"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <column id="4060"/>
                         <column id="4061"/>
@@ -2685,6 +2720,47 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                         <column id="4065"/>
                         <column id="4066"/>
                         <header>
+                            <row id="4365">
+                                <cell id="4366">
+                                    <property name="colSpan">7</property>
+                                    <property name="rowSpan">1</property>
+                                    <text id="4020">
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'InvoicingProject.logTimes'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                            </row>
+                            <row id="4357">
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">thin</property>
+                                <property name="height">0.5cm</property>
+                                <cell id="4358"/>
+                                <cell id="4359"/>
+                                <cell id="4360"/>
+                                <cell id="4361"/>
+                                <cell id="4362"/>
+                                <cell id="4363"/>
+                                <cell id="4364"/>
+                            </row>
                             <row id="4022">
                                 <property name="borderBottomStyle">solid</property>
                                 <property name="borderBottomWidth">thin</property>
@@ -2962,6 +3038,7 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <data id="4045">
+                                        <property name="textAlign">right</property>
                                         <property name="resultSetColumn">visible_duration</property>
                                     </data>
                                 </cell>
@@ -3016,47 +3093,18 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                 <cell id="4069"/>
                 <cell id="4070"/>
             </row>
-            <row id="4071">
-                <cell id="4072">
-                    <property name="colSpan">3</property>
-                    <property name="rowSpan">1</property>
-                    <text id="4099">
-                        <property name="fontWeight">bold</property>
-                        <property name="textAlign">center</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'InvoicingProject.expenseLines'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="4075">
-                <property name="height">0.5cm</property>
-                <cell id="4076"/>
-                <cell id="4077"/>
-                <cell id="4078"/>
-            </row>
             <row id="4079">
                 <cell id="4080">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <table id="4100">
                         <property name="dataSet">ExpenseLineDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["rowCount"] &lt;1</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">expenseProduct</property>
@@ -3088,6 +3136,19 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                                 <expression name="expression" type="javascript">dataSetRow["comments"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
+                            <structure>
+                                <property name="name">rowCount</property>
+                                <text-property name="displayName">rowCount</text-property>
+                                <property name="dataType">integer</property>
+                                <property name="aggregateFunction">COUNT</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["total_amount"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <column id="4129"/>
                         <column id="4130"/>
@@ -3095,6 +3156,45 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                         <column id="4132"/>
                         <column id="4133"/>
                         <header>
+                            <row id="4379">
+                                <cell id="4380">
+                                    <property name="colSpan">5</property>
+                                    <property name="rowSpan">1</property>
+                                    <text id="4099">
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'InvoicingProject.expenseLines'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                            </row>
+                            <row id="4373">
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">thin</property>
+                                <property name="height">0.5cm</property>
+                                <cell id="4374"/>
+                                <cell id="4375"/>
+                                <cell id="4376"/>
+                                <cell id="4377"/>
+                                <cell id="4378"/>
+                            </row>
                             <row id="4101">
                                 <property name="borderBottomStyle">solid</property>
                                 <property name="borderBottomWidth">thin</property>
@@ -3343,47 +3443,18 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                 <cell id="4085"/>
                 <cell id="4086"/>
             </row>
-            <row id="4087">
-                <cell id="4088">
-                    <property name="colSpan">3</property>
-                    <property name="rowSpan">1</property>
-                    <text id="4147">
-                        <property name="fontWeight">bold</property>
-                        <property name="textAlign">center</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'InvoicingProject.businessProject'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="4091">
-                <property name="height">0.5cm</property>
-                <cell id="4092"/>
-                <cell id="4093"/>
-                <cell id="4094"/>
-            </row>
             <row id="4095">
                 <cell id="4096">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <table id="4149">
                         <property name="dataSet">ProjectDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["rowCount"] &lt;1</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">code</property>
@@ -3433,6 +3504,19 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                                 <expression name="expression" type="javascript">dataSetRow["due_date"]</expression>
                                 <property name="dataType">date-time</property>
                             </structure>
+                            <structure>
+                                <property name="name">rowCount</property>
+                                <text-property name="displayName">rowCount</text-property>
+                                <property name="dataType">integer</property>
+                                <property name="aggregateFunction">COUNT</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["clientPartner"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <column id="4193"/>
                         <column id="4194"/>
@@ -3443,6 +3527,48 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                         <column id="4199"/>
                         <column id="4200"/>
                         <header>
+                            <row id="4394">
+                                <cell id="4395">
+                                    <property name="colSpan">8</property>
+                                    <property name="rowSpan">1</property>
+                                    <text id="4147">
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'InvoicingProject.businessProject'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                            </row>
+                            <row id="4385">
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">thin</property>
+                                <property name="height">0.5cm</property>
+                                <cell id="4386"/>
+                                <cell id="4387"/>
+                                <cell id="4388"/>
+                                <cell id="4389"/>
+                                <cell id="4390"/>
+                                <cell id="4391"/>
+                                <cell id="4392"/>
+                                <cell id="4393"/>
+                            </row>
                             <row id="4150">
                                 <property name="borderBottomStyle">solid</property>
                                 <property name="borderBottomWidth">thin</property>
@@ -3817,47 +3943,18 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                 <cell id="4211"/>
                 <cell id="4212"/>
             </row>
-            <row id="4213">
-                <cell id="4214">
-                    <property name="colSpan">3</property>
-                    <property name="rowSpan">1</property>
-                    <text id="4221">
-                        <property name="fontWeight">bold</property>
-                        <property name="textAlign">center</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'InvoicingProject.elementsToInvoice'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="4217">
-                <property name="height">0.5cm</property>
-                <cell id="4218"/>
-                <cell id="4219"/>
-                <cell id="4220"/>
-            </row>
             <row id="4222">
                 <cell id="4223">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <table id="4279">
                         <property name="dataSet">ElementToInvoiceDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["rowCount"] &lt;1</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">user</property>
@@ -3901,6 +3998,19 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                                 <expression name="expression" type="javascript">dataSetRow["sale_price"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
+                            <structure>
+                                <property name="name">rowCount</property>
+                                <text-property name="displayName">rowCount</text-property>
+                                <property name="dataType">integer</property>
+                                <property name="aggregateFunction">COUNT</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["qty"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <column id="4318"/>
                         <column id="4319"/>
@@ -3910,6 +4020,47 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                         <column id="4323"/>
                         <column id="4324"/>
                         <header>
+                            <row id="4411">
+                                <cell id="4412">
+                                    <property name="colSpan">7</property>
+                                    <property name="rowSpan">1</property>
+                                    <text id="4221">
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'InvoicingProject.elementsToInvoice'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                            </row>
+                            <row id="4403">
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">thin</property>
+                                <property name="height">0.5cm</property>
+                                <cell id="4404"/>
+                                <cell id="4405"/>
+                                <cell id="4406"/>
+                                <cell id="4407"/>
+                                <cell id="4408"/>
+                                <cell id="4409"/>
+                                <cell id="4410"/>
+                            </row>
                             <row id="4280">
                                 <property name="borderBottomStyle">solid</property>
                                 <property name="borderBottomWidth">thin</property>
