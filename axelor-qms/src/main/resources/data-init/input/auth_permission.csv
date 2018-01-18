@@ -5,3 +5,10 @@
 "perm.qms.ImprovementForm.own";"com.axelor.apps.qms.db.ImprovementForm";"false";"true";"false";"false";"false";"(self.statusSelect = 1 and self.createdBy.id = ?) or (self.statusSelect between 3 and 6 and ? member of self.responsibles)";"__user__.id,__user__.employee?.id"
 "perm.qms.RootCause.r";"com.axelor.apps.quality.db.RootCause";"true";"false";"false";"false";"false";;
 "perm.qms.Employee.r";"com.axelor.apps.hr.db.Employee";"true";"false";"false";"false";"false";;
+"perm.qms.MetaMenu.r";"com.axelor.meta.db.MetaMenu";"true";"false";"false";"false";"false";;
+"perm.qms.QMSProcess.r";"com.axelor.apps.qms.db.QMSProcess";"true";"false";"false";"false";"false";;
+"perm.qms.QMSDocumentType.r";"com.axelor.apps.qms.db.QMSDocumentType";"true";"false";"false";"false";"false";;
+"perm.qms.QMSDocument.rwe";"com.axelor.apps.qms.db.QMSDocument";"true";"true";"false";"false";"true";;
+"perm.qms.QMSDocument.responsible.w";"com.axelor.apps.qms.db.QMSDocument";"false";"true";"false";"false";"false";"(? member of self.responsibles)";"__user__.employee?.id"
+"perm.qms.QMSDocumentVersion.rwce";"com.axelor.apps.qms.db.QMSDocumentVersion";"true";"true";"true";"false";"true";;
+"perm.qms.QMSDocumentVersion.responsible.w";"com.axelor.apps.qms.db.QMSDocumentVersion";"false";"true";"false";"false";"false";"(? in (select resp.id from self.document.responsibles resp))";"__user__.employee?.id"

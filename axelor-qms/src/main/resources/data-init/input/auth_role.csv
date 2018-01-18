@@ -1,4 +1,4 @@
 "name";"description";"permissions"
 "role.admin";"Access to all objects for all modules";"perm.qms.all"
 "role.qms.manager";"Access to all QMS' objects";"perm.qms.ImprovementForm.rwce"
-"role.user";"Basic user";"perm.qms.ImprovementForm.rce|perm.qms.ImprovementForm.own|perm.qms.RootCause.r|perm.qms.Employee.r"
+"role.user";"Basic user";"perm.qms.MetaMenu.r|perm.qms.ImprovementForm.rce|perm.qms.ImprovementForm.own|perm.qms.RootCause.r|perm.qms.Employee.r|perm.qms.QMSProcess.r|perm.qms.QMSDocumentType.r|perm.qms.QMSDocument.rwe|perm.qms.QMSDocument.responsible.w|perm.qms.QMSDocumentVersion.rwce|perm.qms.QMSDocumentVersion.responsible.w"
