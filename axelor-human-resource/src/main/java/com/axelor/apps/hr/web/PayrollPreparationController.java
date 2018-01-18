@@ -89,6 +89,7 @@ public class PayrollPreparationController {
 		}else if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_NIBELIS){
 			response.setExportFile( payrollPreparationService.exportNibelisPayrollPreparation(payrollPreparation) );
 		}
+		payrollPreparationService.closePayPeriodIfExported(payrollPreparation);
 		
 		response.setReload(true);
 		

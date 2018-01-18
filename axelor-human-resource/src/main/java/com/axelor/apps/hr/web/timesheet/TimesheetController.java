@@ -23,6 +23,7 @@ import java.text.Bidi;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
@@ -285,7 +286,13 @@ public class TimesheetController {
     }
 	
 	
-	//action called when validating a timesheet. Changing status + Sending mail to Applicant
+	/**
+	 * Action called when validating a timesheet.
+	 * Changing status + Sending mail to Applicant
+	 * @param request
+	 * @param response
+	 * @throws AxelorException
+	 */
 	public void valid(ActionRequest request, ActionResponse response) throws AxelorException{
 		
 		try{
@@ -299,8 +306,8 @@ public class TimesheetController {
 			Message message = timesheetService.sendValidationEmail(timesheet);
 			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
-			} 
-			
+			}
+			Beans.get(PeriodService.class).checkPeriod(timesheet.getCompany(), timesheet.getToDate(), timesheet.getFromDate());
 		}  catch(Exception e)  {
 			TraceBackService.trace(response, e);
 		}

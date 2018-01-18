@@ -23,6 +23,7 @@ import java.util.Map;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExtraHours;
@@ -222,7 +223,12 @@ public class LeaveController {
 		}
 	}
 
-	//validating leave request and sending an email to the applicant
+	/**
+	 * validating leave request and sending an email to the applicant
+	 * @param request
+	 * @param response
+	 * @throws AxelorException
+	 */
 	public void validate(ActionRequest request, ActionResponse response) throws AxelorException{
 
 		try{
@@ -236,6 +242,7 @@ public class LeaveController {
 			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
 			}
+			Beans.get(PeriodService.class).checkPeriod(leaveRequest.getCompany(), leaveRequest.getToDate(), leaveRequest.getFromDate());
 
 		}  catch(Exception e)  {
 			TraceBackService.trace(response, e);
