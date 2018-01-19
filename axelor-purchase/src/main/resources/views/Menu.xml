@@ -257,10 +257,10 @@
 
 	<menuitem name="top-menu-purchase" title="Purchases" order="3" top="true" left="false" if="__config__.app.isApp('purchase')"/>
 	
-	<menuitem name="top-menu-purchase-quotations" title="Quotations" top="true"
+	<menuitem name="top-menu-purchase-quotations" title="Sale quotations" top="true"
 		 action="top.menu.purchase.quotations" parent="top-menu-purchase"/>
 		
-	<action-view name="top.menu.purchase.quotations" title="Quotations"
+	<action-view name="top.menu.purchase.quotations" title="Sale quotations"
 		model="com.axelor.apps.purchase.db.PurchaseOrder" >
 		<view type="cards" name="purchase-order-cards" />
 		<view type="grid" name="purchase-order-quotation-grid" />
