@@ -10,6 +10,14 @@
 		
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
+	
+	<form name="sale-order-form-partner" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form-partner" 
+	onNew="action-group-supplychain-saleorder-onnew,action-group-partner-saleorder-onnew"
+	onLoad="action-group-supplychain-saleorder-onload"
+    onSave="action-supplychain-saleorder-onsave">
+    
+		<panel-include view="sale-order-form" from="axelor-sale"/>
+	</form>
 
 	<form name="sale-order-generate-po-select-supplierpartner-form" model="com.axelor.apps.sale.db.SaleOrder" title="Confirm Purchase order generation" onNew="action-record-load-dummy-supplier-partner">
 		<panel name="main" >

@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.x]
 - New currency conversion API (ECB)
+- Create sale order from partner and contact
 
 ## Improvements
 - Added filter on fields of 'Related Elements' in Project
