@@ -42,6 +42,7 @@ public class OpportunitySaleOrderController{
 				.define("Sale order")
 				.model(SaleOrder.class.getName())
 				.add("form", "sale-order-form")
+				.param("forceEdit", "true")
 				.context("_showRecord", String.valueOf(saleOrder.getId())).map());
 	}
 }
