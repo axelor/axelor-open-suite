@@ -105,7 +105,14 @@
 				<field name="saleOrder" domain="self.clientPartner = :clientPartner" form-view="sale-order-form" grid-view="sale-order-grid"/>
 				<field name="contactPartner" onSelect="action-attrs-domain-on-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
 				<field name="projInvTypeSelect" colSpan="4"/>
-				<field name="invoiced" showIf="projInvTypeSelect == 2 || projInvTypeSelect == 3" colSpan="2"/>
+				<field name="invoiced" showIf="projInvTypeSelect == 2 || projInvTypeSelect == 3" colSpan="2" showTitle="false">
+				<viewer><![CDATA[
+					<h4>
+						<span class="label label-important"  ng-show="!record.invoiced"  x-translate>Not invoiced</span>
+						<span class="label label-success" ng-show="record.invoiced" x-translate>Invoiced</span>
+					</h4>
+				]]></viewer>
+				</field>
 				<field name="priceList" showIf="priceList != null" readonly="true"/>
 			</panel>
 			<panel name="date" title="Dates" colSpan="12">

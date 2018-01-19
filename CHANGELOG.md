@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.x]
 - New currency conversion API (ECB)
+- Create sale order from partner and contact
 - Multiple Project Gantt View with User and Project.
 - Label "hours" on Project and Task with the field totalPlannedHrs.
 

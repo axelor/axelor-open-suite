@@ -144,6 +144,13 @@
 
 		<panel-include view="sale-order-form"/>
 	</form>
+	
+	<form name="sale-order-form-partner" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" 
+	onNew="action-group-sale-saleorder-onnew,action-group-partner-saleorder-onnew"
+	onLoad="action-group-sale-saleorder-onload">
+    
+		<panel-include view="sale-order-form"/>
+	</form>
 
 	<form name="sale-order-form" title="Sale order"
 		model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form"
@@ -756,6 +763,16 @@
 	<action-attrs name="action-attrs-sale-other-reason">
 		<attribute for="cancelReasonStr" name="hidden" expr="cancelReason.freeText == false"/>
 	</action-attrs>
+	
+	<action-group name="action-group-partner-saleorder-onnew">
+		<action name="action-sale-order-record-from-partner"/>
+		<action name="action-sale-order-record-partner"/>
+        <action name="action-partner-attrs-hide-contact-partner"/>
+		<action name="action-sale-order-validate-information"/>
+        <action name="action-sale-order-method-address-str"/>
+		<action name="action-sale-order-method-fill-price-list"/>
+		<action name="action-sale-order-record-compute-end-of-validity-date"/>
+	</action-group>
 
 	<action-group name="action-group-sale-order-merge-action">
 	    <action name="action-sale-order-method-merge-sale" if="!__config__.app.isApp('supplychain')"/>
@@ -818,6 +835,7 @@
 				if="__config__.app.isApp('supplychain')"/>
 		<action name="action-sale-order-record-interco"
 				if="__config__.app.isApp('supplychain')"/>
+		<action name="action-sale-order-record-set-contact-partner"/>
 	</action-group>
 
     <action-attrs name="action-sale-order-attrs-in-ati">
@@ -826,6 +844,16 @@
     	<attribute name="hidden" for="inAti" expr=" eval: __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 1
     									|| __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2"/>
     </action-attrs>
+    
+    <action-record name="action-sale-order-record-set-contact-partner" model="com.axelor.apps.sale.db.SaleOrder">
+    	<field name="contactPartner" expr="eval:null"/>
+    </action-record>
+    
+    <action-record name="action-sale-order-record-from-partner" model="com.axelor.apps.sale.db.SaleOrder">
+    	<field name="clientPartner" expr="eval: _partner" if="_partner.isContact == false"/>
+    	<field name="clientPartner" expr="eval: __repo__(Partner).find(_partner.mainPartner.id)" if="_partner.isContact == true &amp; _partner.mainPartner != null"/>
+    	<field name="contactPartner" expr="eval: _partner" if="_partner.isContact == true"/>
+    </action-record>
 
     <action-record name="action-sale-order-record-in-ati" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="inAti" expr="eval: __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2
@@ -957,7 +985,6 @@
     		if="clientPartner != null &amp;&amp; __repo__(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails?.active"/>
     	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
     		if="!(clientPartner != null &amp;&amp; __repo__(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails?.active) &amp;&amp; company?.defaultBankDetails?.active"/>
-    	<field name="contactPartner" expr="eval:null" />
     	<field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"/>
     	<field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
     </action-record>
@@ -1079,7 +1106,7 @@
 	</action-view>
 
 	<action-validate name="action-sale-order-validate-information">
-		<info message="${clientPartner.saleOrderInformation}" if="clientPartner.saleOrderInformation != null &amp;&amp; !clientPartner.saleOrderInformation.isEmpty()"/>
+		<info message="${clientPartner?.saleOrderInformation}" if="clientPartner?.saleOrderInformation != null &amp;&amp; !clientPartner?.saleOrderInformation.isEmpty()"/>
 	</action-validate>
 
 	<action-validate name="action-validate-sale-order-check-selection">
