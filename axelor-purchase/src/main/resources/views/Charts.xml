@@ -290,7 +290,7 @@
 				_month
 		</dataset>
 		<category key="_month" type="month" title="Month"/>
-		<series key="_orders" type="bar" title="Orders"/>
+		<series key="_orders" type="bar" title="Sale orders"/>
 		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
