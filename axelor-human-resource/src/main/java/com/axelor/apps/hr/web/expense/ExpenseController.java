@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +72,12 @@ import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.persist.Transactional;
 
+/**
+ * @author axelor
+ *
+ */
 public class ExpenseController {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
@@ -421,14 +427,13 @@ public class ExpenseController {
 			expenseService.refuse(expense);
 
 			Message message = expenseService.sendRefusalEmail(expense);
-			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
+			if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
 			} 
 			
-		}  catch(Exception e)  {
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
-		}
-		finally {
+		} finally {
 			response.setReload(true);
 		}
 
@@ -449,6 +454,40 @@ public class ExpenseController {
 		}
 	}
 	
+	/**
+	 * This method is used in mobile application.
+	 * @param request
+	 * @param response
+	 * @throws AxelorException
+	 */
+	@Transactional
+	public void insertKMExpenses(ActionRequest request, ActionResponse response) throws AxelorException {
+		User user = AuthUtils.getUser();
+		if (user != null) {
+			Expense expense = expenseServiceProvider.get().getOrCreateExpense(user);
+			ExpenseLine expenseLine = new ExpenseLine();
+			expenseLine.setDistance(new BigDecimal(request.getData().get("kmNumber").toString()));
+			expenseLine.setFromCity(request.getData().get("locationFrom").toString());
+			expenseLine.setToCity(request.getData().get("locationTo").toString());
+			expenseLine.setKilometricTypeSelect(new Integer(request.getData().get("allowanceTypeSelect").toString()));
+			expenseLine.setComments(request.getData().get("comments").toString());
+			expenseLine.setExpenseDate(new LocalDate(request.getData().get("date").toString()));
+
+			Employee employee = user.getEmployee();
+			if (employee != null) {
+				expenseLine.setKilometricAllowParam(
+						expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine).get(0));
+				expenseLine.setTotalAmount(
+						Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
+				expenseLine.setUntaxedAmount(expenseLine.getTotalAmount());
+			}
+
+			expense.addGeneralExpenseLineListItem(expenseLine);
+
+			Beans.get(ExpenseRepository.class).save(expense);
+		}
+	}
+	
 	public void computeAmounts(ActionRequest request, ActionResponse response){
 		
 		Expense expense = request.getContext().asType(Expense.class);
@@ -464,6 +503,39 @@ public class ExpenseController {
 			}
 			response.setValue("kilometricExpenseLineList", expense.getKilometricExpenseLineList() );
 		}
+	}
+	
+	
+	/**
+	 * This method is used in mobile application.
+	 * @param request
+	 * @param response
+	 */
+	public void removeLines(ActionRequest request, ActionResponse response) {
+
+		Expense expense = request.getContext().asType(Expense.class);
+
+		List<ExpenseLine> expenseLineList = expense.getGeneralExpenseLineList();
+
+		try {
+			if (expenseLineList != null && !expenseLineList.isEmpty()) {
+				Iterator<ExpenseLine> expenseLineIter = expenseLineList.iterator();
+				while (expenseLineIter.hasNext()) {
+					ExpenseLine generalExpenseLine = expenseLineIter.next();
+
+					if (generalExpenseLine.getKilometricExpense() != null
+							&& (expense.getKilometricExpenseLineList() != null
+									&& !expense.getKilometricExpenseLineList().contains(generalExpenseLine)
+									|| expense.getKilometricExpenseLineList() == null)) {
+
+						expenseLineIter.remove();
+					}
+				}
+			}
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+		response.setValue("expenseLineList", expenseLineList);
 	}
 	
 	public void computeKilometricExpense(ActionRequest request, ActionResponse response) throws AxelorException {
