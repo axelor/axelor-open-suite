@@ -5,6 +5,7 @@
 
 ### Bug Fixes
 - Fix demo data en and fr on General config to set the correct value of the fields custStockMoveMgtOnSO and supplStockMoveMgtOnSO.
+- Fixes in invoicing timetable in sale order
 
 
 ## [4.1.1] - 2018-01-10

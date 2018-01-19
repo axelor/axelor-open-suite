@@ -174,10 +174,12 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 		boolean isPurchase = Beans.get(InvoiceLineService.class).isPurchase(invoice);
 
-		Tax tax = Beans.get(AccountManagementService.class).getProductTax(Beans.get(AccountManagementService.class).getAccountManagement(product, invoice.getCompany()), isPurchase);
-		TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
+		if (product != null) {
+			Tax tax = Beans.get(AccountManagementService.class).getProductTax(Beans.get(AccountManagementService.class).getAccountManagement(product, invoice.getCompany()), isPurchase);
+			TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
 
-		invoiceLine.setTaxEquiv(taxEquiv);
+			invoiceLine.setTaxEquiv(taxEquiv);
+		}
 
 		invoiceLine.setTaxLine(taxLine);
 		
