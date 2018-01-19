@@ -24,6 +24,7 @@ import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -70,6 +71,7 @@ public class PaymentScheduleController {
     public void paymentScheduleScheduleId(ActionRequest request, ActionResponse response) {
         try {
             PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
+            paymentScheduleService.checkTotalLineAmount(paymentSchedule);
 
             if (Strings.isNullOrEmpty(paymentSchedule.getPaymentScheduleSeq())) {
 
@@ -84,7 +86,7 @@ public class PaymentScheduleController {
                 }
             }
         } catch (Exception e) {
-            TraceBackService.trace(response, e);
+            TraceBackService.trace(response, e, ResponseMessageType.ERROR);
         }
     }
 

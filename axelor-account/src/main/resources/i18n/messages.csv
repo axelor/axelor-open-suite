@@ -1473,6 +1473,7 @@
 "The sale account or the purchase account are associated to another company. Please make sure to select the right account in the company chart before changing the company.",,,
 "The sale account or the purchase account or the cash account are associated to another company. Please make sure to select the right account in the company chart before changing the company.",,,
 "The sale order must be the same for all invoices",,,
+"The sum of line amounts (%s) must match the amount of the payment schedule (%s).",,,
 "The validation of a move brings irrevocable integration of a move in Moves book",,,
 "There's no accounting situation.",,,
 "This batch requires the bank payment module.",,,

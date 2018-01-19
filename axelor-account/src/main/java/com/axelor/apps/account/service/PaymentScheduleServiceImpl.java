@@ -310,6 +310,16 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
 		return moveLines;
 	}
 
+	@Override
+	public void checkTotalLineAmount(PaymentSchedule paymentSchedule) throws AxelorException {
+        BigDecimal total = getInvoiceTermTotal(paymentSchedule);
+
+        if (total.compareTo(paymentSchedule.getInTaxAmount()) != 0) {
+            throw new AxelorException(paymentSchedule, IException.INCONSISTENCY,
+                    I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_LINE_AMOUNT_MISMATCH), total,
+                    paymentSchedule.getInTaxAmount());
+        }
+	}
 
 	/**
 	 * Permet de valider un échéancier.
@@ -319,21 +329,27 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
 	 */
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validatePaymentSchedule(PaymentSchedule paymentSchedule) throws AxelorException {
+    public void validatePaymentSchedule(PaymentSchedule paymentSchedule) throws AxelorException {
 
-		log.debug("Validation de l'échéancier {}", paymentSchedule.getPaymentScheduleSeq());
+        log.debug("Validation de l'échéancier {}", paymentSchedule.getPaymentScheduleSeq());
 
-		if(paymentSchedule.getPaymentScheduleLineList() == null || paymentSchedule.getPaymentScheduleLineList().size() == 0)  {
-			throw new AxelorException(paymentSchedule, IException.INCONSISTENCY, I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_6), AppAccountServiceImpl.EXCEPTION, paymentSchedule.getPaymentScheduleSeq());
-		}
+        if (paymentSchedule.getPaymentScheduleLineList() == null
+                || paymentSchedule.getPaymentScheduleLineList().isEmpty()) {
+            throw new AxelorException(paymentSchedule, IException.INCONSISTENCY,
+                    I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_6), AppAccountServiceImpl.EXCEPTION,
+                    paymentSchedule.getPaymentScheduleSeq());
+        }
 
-//		this.updateInvoices(paymentSchedule); //TODO
+        checkTotalLineAmount(paymentSchedule);
 
-		paymentSchedule.setStatusSelect(PaymentScheduleRepository.STATUS_CONFIRMED);
+        for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
+            paymentScheduleLine.setStatusSelect(PaymentScheduleLineRepository.STATUS_IN_PROGRESS);
+        }
 
-		paymentScheduleRepo.save(paymentSchedule);
-	}
+        // this.updateInvoices(paymentSchedule); //TODO
 
+        paymentSchedule.setStatusSelect(PaymentScheduleRepository.STATUS_CONFIRMED);
+    }
 
 	@Override
 	public void updateInvoices(PaymentSchedule paymentSchedule)  {

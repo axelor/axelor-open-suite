@@ -156,6 +156,7 @@ public interface IExceptionMessage {
 	static final String PAYMENT_SCHEDULE_4 = /*$$(*/ "%s : You must configure a direct debit reject sequence\n for the company %s for the journal %s" /*)*/ ;
 	static final String PAYMENT_SCHEDULE_5 = /*$$(*/ "You must configure a timetable sequence for the company %s" /*)*/ ;
 	static final String PAYMENT_SCHEDULE_6 = /*$$(*/ "%s : Error : You must, at first, create timetable lines for the timetable %s" /*)*/ ;
+    static final String PAYMENT_SCHEDULE_LINE_AMOUNT_MISMATCH = /*$$(*/ "The sum of line amounts (%s) must match the amount of the payment schedule (%s)." /*)*/ ;
 
 	/**
 	 * Reconcile service
