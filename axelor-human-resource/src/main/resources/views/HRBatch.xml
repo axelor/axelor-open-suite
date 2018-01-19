@@ -18,7 +18,7 @@
 		    <field name="company" canEdit="false"/>
 		</panel>
 		<panel-tabs>
-            <panel name="leaveManagementPage" title="Leave management page" hidden="true" showIf="actionSelect == 1">
+            <panel name="leaveManagementPage" title="Leave management" hidden="true" showIf="actionSelect == 1">
                 <field name="leaveReason" colSpan="3" onChange="action-hr-batch-record-day-number-default" required="true"/>
 			    <field name="comments" colSpan="9"/>
                 <field name="dayNumber" colSpan="3" required="true"/>
@@ -55,7 +55,7 @@
 				<button name="payrollPreparationExportBatch" readonlyIf="period == null || payrollPreparationExportTypeSelect == null" title="Payroll preparation export batch" onClick="save,action-hrbatch-method-hr-batch"/>
 			</panel>
 
-            <panel name="leaveManagementResetPage" title="Leave management reset page" hidden="true" showIf="actionSelect == 5">
+            <panel name="leaveManagementResetPage" title="Leave counter reset" hidden="true" showIf="actionSelect == 5">
                 <field name="leaveReason" colSpan="3" onChange="action-hr-batch-record-day-number-default"/>
                 <field name="comments" colSpan="9"/>
                 <field name="startDate" colSpan="3"/>
