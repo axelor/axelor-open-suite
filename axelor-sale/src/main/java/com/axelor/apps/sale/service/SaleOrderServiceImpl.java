@@ -18,18 +18,29 @@
 package com.axelor.apps.sale.service;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.db.*;
+import com.axelor.apps.base.db.AppSale;
+import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.StopReason;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.sale.db.*;
+import com.axelor.apps.sale.db.AdvancePayment;
+import com.axelor.apps.sale.db.ISaleOrder;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.exception.IExceptionMessage;
@@ -353,19 +364,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
 	    Partner partner = saleOrder.getClientPartner();
 
-	    boolean isSaleBlocked = false;
-        for (Blocking blocking : partner.getBlockingList()) {
-            if (blocking.getCompanySet().contains(saleOrder.getCompany()) && blocking.getBlockingSelect().equals(BlockingRepository.SALE_BLOCKING) && blocking.getBlockingToDate().compareTo(Beans.get(AppBaseService.class).getTodayDate()) >= 0) {
-                isSaleBlocked = true;
-                break;
-            }
-        }
+	    StopReason blockingReason = Beans.get(BlockingService.class).isBlocked(partner, saleOrder.getCompany(), BlockingRepository.SALE_BLOCKING);
 
-        if (isSaleBlocked) {
+        if (blockingReason != null) {
             saleOrder.setBloqued(true);
             if (!saleOrder.getManualUnblock()) {
                 saleOrderRepo.save(saleOrder);
-                throw new BlockedSaleOrderException(partner, I18n.get("Client is sale blocked."));
+                throw new BlockedSaleOrderException(partner, I18n.get("Client is sale blocked : ") + blockingReason.getName());
             }
         }
 
