@@ -45,6 +45,7 @@
 "Check the script","Vérifier le script",,
 "Class %s is not a model class.","La classe %s n'est pas un modèle existant",,
 "Client box in sale order","Encadré client sur commande",,
+"Client is sale blocked.","Le client est bloqué pour les commandes client",,
 "Code","Code",,
 "Company","Société",,
 "Company Currency","Devise de la société",,
