@@ -120,8 +120,12 @@
 				<field name="$visibleTimeSpent" title="Time Spent" readonly="true"  type="decimal" onChange="action-project-method-set-stored-time-spent"/>
 			</panel>
 			<panel if="__config__.app.isApp('employee')" if-module="axelor-human-resource" name="humanResource" title=" " colSpan="12">
-				<field name="imputable" widget="boolean-switch"/>
-				<field name="totalPlannedHrs" readonly="true"/>
+				<field name="imputable" widget="boolean-switch" colSpan="4"/>
+				<field name="totalPlannedHrs" readonly="true" colSpan="2">
+				<viewer><![CDATA[
+            		<span>{{record.totalPlannedHrs}}</span><span x-translate>Hours</span> 
+        		]]></viewer>
+				</field>
 			</panel>
 		</panel>
 
