@@ -84,4 +84,12 @@ public interface PaymentScheduleService {
 	 */
 	BankDetails getBankDetails(PaymentSchedule paymentSchedule) throws AxelorException;
 
+    /**
+     * Check total line amount.
+     * 
+     * @param paymentSchedule
+     * @throws AxelorException
+     */
+    void checkTotalLineAmount(PaymentSchedule paymentSchedule) throws AxelorException;
+
 }

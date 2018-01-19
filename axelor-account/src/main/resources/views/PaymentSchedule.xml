@@ -50,7 +50,7 @@
 
 		<panel name="actions" title="Actions" sidebar="true">
 			<button name="validate" title="Validate" onClick="action-group-account-payment-schedule-validate-click" readonlyIf="statusSelect != 1" colSpan="6" />
-			<button name="cancel" title="Cancel" onClick="action-payment-schedule-method-cancel,save" readonlyIf="statusSelect == 4" colSpan="6" />
+			<button name="cancel" title="Cancel" onClick="save,action-payment-schedule-method-cancel,save" readonlyIf="statusSelect == 4" colSpan="6" />
 			<button name="createPaymentScheduleLines" title="Create schedule lines" onClick="action-group-account-payment-schedule-create-click" showIf="statusSelect == 1" colSpan="12" />
 		</panel>
 		<panel name="irrecoverable" title="Irrecoverable" sidebar="true">
