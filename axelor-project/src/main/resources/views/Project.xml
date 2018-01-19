@@ -4,6 +4,12 @@
 
 	
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
+	<menubar>
+		<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
+				<item title="Gantt with user" action="action-project-open-popup-select-users"/>
+				<item title="Gantt with project" action="action-project-open-popup-select-projects"/>
+		</menu>
+	</menubar>
 		<hilite background="primary" if="isProject &amp;&amp; projectTypeSelect == 1"/>
 		<hilite background="info" if="isProject &amp;&amp; projectTypeSelect == 2"/>
 		<field name="code"/>
@@ -121,8 +127,12 @@
 				<field name="$visibleTimeSpent" title="Time Spent" readonly="true"  type="decimal" onChange="action-project-method-set-stored-time-spent"/>
 			</panel>
 			<panel if="__config__.app.isApp('employee')" if-module="axelor-human-resource" name="humanResource" title=" " colSpan="12">
-				<field name="imputable" widget="boolean-switch"/>
-				<field name="totalPlannedHrs" readonly="true"/>
+				<field name="imputable" widget="boolean-switch" colSpan="4"/>
+				<field name="totalPlannedHrs" readonly="true" colSpan="2">
+				<viewer><![CDATA[
+            		<span>{{record.totalPlannedHrs}}</span><span x-translate>Hours</span> 
+        		]]></viewer>
+				</field>
 			</panel>
 		</panel>
 
@@ -191,6 +201,20 @@
 		</panel-mail>
 	</form>
 
+	 <form name="project-select-wizard-form" title="Select Projects"   model="com.axelor.apps.base.db.Wizard">
+		<panel>
+			<field name="projectSet"  title="Projects"  type="many-to-many" colSpan="12" target="com.axelor.apps.project.db.Project" canNew="false"/>
+			<button name="gantt" title="Open gantt" onClick="action-wizard-validate-project-select,action-open-project-gantt,close" colSpan="3" />
+		</panel>
+	</form>
+	
+	<form name="user-select-wizard-form" title="Select Users"  model="com.axelor.apps.base.db.Wizard">
+		<panel>
+			<field name="userSet" title="Users" type="many-to-many" colSpan="12" target="com.axelor.auth.db.User" canNew="false"/>
+			<button name="gantt" title="Open gantt" onClick="action-wizard-validate-user-select,action-open-user-gantt,close" colSpan="3"  />
+		</panel>
+	</form>
+	
 	<kanban columnBy="statusSelect" sequenceBy="statusSelect" limit="10"
 	 name="project-kanban" title="Projects" model="com.axelor.apps.project.db.Project">
 		<field name="fullName"/>
@@ -252,6 +276,8 @@
      	<context name="_id" expr="eval: id"/>
 	</action-view>
 	
+
+
 	<tree name="project-task-tree" title="Tasks">
     	
     	<column name="name" type="string"/>
@@ -389,6 +415,36 @@
 		<context name="_project" expr="eval:__self__"/>
 	</action-view>
 	
+	<action-view name="action-project-open-popup-select-users" title="Select Users" model="com.axelor.apps.base.db.Wizard">
+	<view type="form" name="user-select-wizard-form"/>
+	 <view-param name="show-toolbar" value="false"/>
+	  <view-param name="show-confirm" value="false"/>
+	  <view-param name="popup-save" value="false"/>
+	</action-view>
+	
+	<action-view name="action-project-open-popup-select-projects" title="Select Projects" model="com.axelor.apps.base.db.Wizard">
+	<view type="form" name="project-select-wizard-form"/>
+	 <view-param name="show-toolbar" value="false"/>
+	  <view-param name="show-confirm" value="false"/>
+	  <view-param name="popup-save" value="false"/>
+	</action-view>
+	 
+	 <action-view name="action-open-project-gantt" title="Project Gantt" model="com.axelor.team.db.TeamTask">
+		<view type="gantt" name="project-task-gantt" />
+		<view type="grid" name="team-task-grid" />
+		<view type="form" name="team-task-form" />
+		<domain>self.project.id IN (:_projectIds) OR self.project.parentProject.id IN (:_projectIds)</domain>
+		<context name="_projectIds" expr="eval: projectSet.collect{it.id}"/>
+	</action-view>
+	
+	 <action-view name="action-open-user-gantt" title="User Gantt" model="com.axelor.team.db.TeamTask">
+		<view type="gantt" name="user-task-gantt" />
+		<view type="grid" name="team-task-grid" />
+		<view type="form" name="team-task-form" />
+		<domain>self.assignedTo.id IN (:_userIds) </domain>
+		 <context name="_userIds" expr="eval: userSet.collect{it.id}"/>
+	 	</action-view>
+	 
 	<action-record name="action-project-record-compute-exTaxTotal" model="com.axelor.apps.project.db.Project">
 		<field name="exTaxTotal" expr="eval: price*qty"/>
 	</action-record>
@@ -477,6 +533,14 @@
 	<action-record name="action-project-record-status-canceled" model="com.axelor.apps.project.db.Project">
 		<field name="statusSelect" expr="eval: __repo__(Project).STATE_CANCELED"/>
 	</action-record>
+	
+	 <action-validate name="action-wizard-validate-user-select">
+    	<error message="Please select user"  if="eval: userSet == null || userSet  == 0"/>
+    </action-validate>
+    
+     <action-validate name="action-wizard-validate-project-select">
+    	<error message="Please select project"  if="eval: projectSet == null || projectSet  == 0"/>
+    </action-validate>
 
     <action-attrs name="action-project-attrs-po-lines-set-domain" model="com.axelor.apps.project.db.Project">
         <attribute for="purchaseOrderLineList" name="domain" expr="eval: &quot;self.project = NULL AND self.invoiced = false&quot;"/>
