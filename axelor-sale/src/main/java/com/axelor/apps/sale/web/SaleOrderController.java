@@ -499,8 +499,8 @@ public class SaleOrderController {
 	public void fillPriceList(ActionRequest request, ActionResponse response) {
 	    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 	    response.setValue("priceList",
-				Beans.get(PartnerPriceListService.class)
-						.getDefaultPriceList(saleOrder.getClientPartner(), PriceListRepository.TYPE_SALE)
+				saleOrder.getClientPartner() != null ? Beans.get(PartnerPriceListService.class)
+						.getDefaultPriceList(saleOrder.getClientPartner(), PriceListRepository.TYPE_SALE) : null
 		);
     }
 
