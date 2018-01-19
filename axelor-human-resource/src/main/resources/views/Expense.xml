@@ -85,11 +85,10 @@
 	    </panel>
 		
 		<panel-tabs>
-			<panel-related field="expenseLineList" height="20" title="General expenses" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute,action-expense-method-remove-lines" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" colSpan="12" />
-			<panel-related field="kilometricExpenseLineList" title="Kilometric Allowances"
-				editable="true" form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid"
-				showIf="!setMultipleUsers" readonlyIf="statusSelect &gt; 1" colSpan="12"
-				onChange="action-expense-method-compute"/>
+			<panel-related field="generalExpenseLineList" title="General expenses" readonlyIf="statusSelect &gt; 1" colSpan="12"
+				editable="true" form-view="general-expense-line-form" grid-view="general-expense-line-grid" onChange="action-expense-method-compute" />
+			<panel-related field="kilometricExpenseLineList" title="Kilometric Allowances" readonlyIf="statusSelect &gt; 1" colSpan="12" showIf="!setMultipleUsers"
+				editable="true" form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid" onChange="action-expense-method-compute"/>
 			<panel-related showIf="!setMultipleUsers" field="employeeAdvanceUsageList" title="Employee advance list" readonly="false" canNew="false" canSelect="false" canEdit="true" editable="true" form-view="employee-advance-usage-expense-form" grid-view="employee-advance-usage-expense-grid" />
 			<panel title="Account information" showIf="statusSelect == 3 || statusSelect == 4">
 				<panel title="Account information" showIf="move">
@@ -259,10 +258,6 @@
     
     <action-method name="action-expense-method-compute-amounts">
     	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeAmounts"/>
-    </action-method>
-    
-    <action-method name="action-expense-method-remove-lines">
-    	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="removeLines"/>
     </action-method>
     
 </object-views>

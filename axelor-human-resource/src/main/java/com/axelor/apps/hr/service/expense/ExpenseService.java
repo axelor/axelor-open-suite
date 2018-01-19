@@ -87,9 +87,6 @@ public interface ExpenseService  {
 
 	public void getExpensesTypes(ActionRequest request, ActionResponse response);
 	
-	@Transactional
-	public void insertExpenseLine(ActionRequest request, ActionResponse response);
-
 	/**
 	 * Get the expense from user, if no expense is found create one.
 	 * @param user
@@ -102,4 +99,6 @@ public interface ExpenseService  {
 	public void setDraftSequence(Expense expense) throws AxelorException;
 
 	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine) throws AxelorException;
+
+	public List<ExpenseLine> getExpenseLineList(Expense expense);
 }

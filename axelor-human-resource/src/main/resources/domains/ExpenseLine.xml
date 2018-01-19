@@ -18,6 +18,7 @@
 	    <boolean name="toInvoice"/>
 		<boolean name="invoiced" readonly="true"/>
 		<many-to-one name="expense" ref="com.axelor.apps.hr.db.Expense" title="Expense" />
+		<many-to-one name="generalExpense" ref="com.axelor.apps.hr.db.Expense" title="General Expense"/>
 		<many-to-one name="kilometricExpense" ref="com.axelor.apps.hr.db.Expense" title="Kilometric Allowance" />
 		<one-to-many name="analyticMoveLineList" ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines" mappedBy="expenseLine"/>
 		<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
