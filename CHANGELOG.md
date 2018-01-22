@@ -8,6 +8,7 @@
 - Add a version management on Production process
 
 ## Improvements
+- Added 'sale blocking' in Partner
 - Added filter on fields of 'Related Elements' in Project
 - New report for InvoicingProject
 - Added fullname in Sequence
