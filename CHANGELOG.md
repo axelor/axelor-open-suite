@@ -5,6 +5,7 @@
 - Create sale order from partner and contact
 - Multiple Project Gantt View with User and Project.
 - Label "hours" on Project and Task with the field totalPlannedHrs.
+- Add a version management on Production process
 
 ## Improvements
 - Added filter on fields of 'Related Elements' in Project
