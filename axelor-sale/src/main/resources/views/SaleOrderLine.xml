@@ -110,15 +110,6 @@
 		   	<field name="priceDiscounted" colSpan="4" hidden="true"/>
 		   	<field name="exTaxTotal" readonly="true" hideIf="typeSelect == 2" />
 		   	<field name="inTaxTotal" readonly="true" hideIf="typeSelect == 2" />
-		   	<field name="toInvoice"  hideIf="typeSelect == 2" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" if-module="axelor-business-project" />
-			<field name="invoiced" showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" showTitle="false">
-			<viewer><![CDATA[
-				<h4>
-                    <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoiced" x-translate>Invoiced</span>
-                	<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="!record.invoiced" x-translate>Not invoiced</span>
-                </h4>
-			]]></viewer>
-			</field>
 		</panel>
 
 		<panel name="discount" title="Discount" hideIf="typeSelect != 0">
@@ -171,7 +162,16 @@
 			<panel name="projectPanel" hideIf="typeSelect == 2"  if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" title="Project/Task" if-module="axelor-business-project">
 				<field name="project" canEdit="false" onSelect="action-sale-order-line-attrs-domain-project" onChange="action-sale-order-line-record-progress" form-view="project-form" grid-view="project-grid"/>
                 <field name="toInvoice" colSpan="3" hideIf="typeSelect == 2" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" if-module="axelor-business-project" />
-                <field name="invoiced" colSpan="3" showIf="toInvoice"/>
+                <field name="invoiced" colSpan="3" showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" showTitle="false">
+                    <viewer>
+                        <![CDATA[
+                            <h4>
+                                <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoiced" x-translate>Invoiced</span>
+                                <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="!record.invoiced" x-translate>Not invoiced</span>
+                            </h4>
+                        ]]>
+                    </viewer>
+                </field>
 			</panel>
 
 			<panel name="analyticDistribution"  hideIf="typeSelect == 2" title="Analytic distribution" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
