@@ -40,7 +40,7 @@
 		<panel>
 			<panel name="context" title="Context" colSpan="12">
 				<field name="team" form-view="team-form" grid-view="grid-form" colSpan="6" readonly="true"/>
-				<field name="assignedTo" canEdit="false" form-view="user-form" grid-view="user-grid" colSpan="6" readonlyIf="project == null" required="true" onSelect="action-task-attrs-project-assigned-to-configurations"/>
+				<field name="assignedTo" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" colSpan="6" readonlyIf="project == null" required="true" onSelect="action-task-attrs-project-assigned-to-configurations"/>
 				<spacer/>
 				<field name="createdBy" readonly="true" title="Created By" colSpan="6"/>
 				<field name="createdOn" title="Created on" colSpan="6"/>
@@ -48,8 +48,7 @@
 			<panel title=" " colSpan="12">
 				<field name="taskDate" colSpan="4" required="true" title="Task date" onChange="action-task-attrs-set-task-duration"/>
 				<field name="taskEndDate" colSpan="4"  onChange="action-task-attrs-set-task-duration"/>
-				<field name="taskDuration" colSpan="4" title="Task duration" widget="duration" x-big="true" onChange="action-task-attrs-set-dates"/>
-				<field name="taskDeadline" colSpan="4"/>
+				<field name="taskDeadline" title="Task deadline" colSpan="4"/>
 			</panel>
 			<panel title="Description" colSpan="12">
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>
@@ -59,11 +58,21 @@
 		<panel canCollapse="true">
 			<panel-dashlet action="action-view-show-task-tree" colSpan="12" title="Task Tree"/>
 		</panel>
-		<panel title="Dependencies" canCollapse="true" sidebar="true">
-			<field name="startToStartSet" colSpan="12" widget="TagSelect"/>
-			<field name="finishToStartSet" colSpan="12" widget="TagSelect"/>
-			<field name="startToFinishSet" colSpan="12" widget="TagSelect"/>
-			<field name="finishToFinishSet" colSpan="12" widget="TagSelect"/>
+		<panel sidebar="true" name="attributes" title="Attributes">
+			<field name="status" colSpan="6" required="true"/>
+			<spacer/>
+			<field name="priority" colSpan="6" required="true"/>
+			<field name="category" colSpan="6" onSelect="action-task-attrs-project-category-configurations"/>
+			<field name="progressSelect" colSpan="12" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
+			<panel name="planning" title="Planning">
+				<field name="plannedProgress" widget="progress" colSpan="12" hidden="true"/>
+				<field name="totalPlannedHrs" if-module="axelor-human-resource" if="__config__.app.isApp('employee')">
+				<viewer><![CDATA[
+            		<span>{{record.totalPlannedHrs}}</span><span x-translate>Hours</span> 
+        		]]></viewer>
+				</field>
+				<label name="hours" title="Hours" showIf="!$readonly()" />
+			</panel>
 		</panel>
 
         <panel name="followers" title="Followers" sidebar="true">
@@ -78,17 +87,12 @@
 			<field name="currency" colSpan="6"/>
         </panel>
 
-		<panel sidebar="true" name="attributes" title="Attributes">
-			<field name="status" colSpan="6" required="true"/>
-			<spacer/>
-			<field name="priority" colSpan="6" required="true"/>
-			<field name="category" colSpan="6" onSelect="action-task-attrs-project-category-configurations"/>
-			<field name="progressSelect" colSpan="12" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
-            <panel name="planning" title="Planning">
-                <field name="plannedProgress" widget="progress" colSpan="12" hidden="true"/>
-                <field name="totalPlannedHrs" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" colSpan="12"/>
-            </panel>
-	    </panel>
+		<panel title="Dependencies" canCollapse="true" sidebar="true">
+			<field name="startToStartSet" colSpan="12" widget="TagSelect"/>
+			<field name="finishToStartSet" colSpan="12" widget="TagSelect"/>
+			<field name="startToFinishSet" colSpan="12" widget="TagSelect"/>
+			<field name="finishToFinishSet" colSpan="12" widget="TagSelect"/>
+		</panel>
 
 		<panel-mail>
 			<mail-messages/>
@@ -101,6 +105,22 @@
 		x-start-to-finish="startToFinishSet" x-finish-to-finish="finishToFinishSet">	
 		<field name="name"/>
 	</gantt> 
+	
+	<gantt name="project-task-gantt" title="Project Task"
+		model="com.axelor.team.db.TeamTask" taskStart="taskDate" taskEnd="taskEndDate"  taskDuration="durationHours" taskParent="parentTask" taskSequence="sequence"
+		taskProgress="plannedProgress" x-start-to-start="startToStartSet" x-finish-to-start="finishToStartSet"
+		x-start-to-finish="startToFinishSet" x-finish-to-finish="finishToFinishSet">
+		<field name="name" />
+		<field name="project"/>
+	</gantt>
+
+	<gantt name="user-task-gantt" title="User Task"
+		model="com.axelor.team.db.TeamTask" taskStart="taskDate" taskEnd="taskEndDate"  taskDuration="durationHours" taskParent="parentTask" taskSequence="sequence"
+		taskProgress="plannedProgress" x-start-to-start="startToStartSet" x-finish-to-start="finishToStartSet"
+		x-start-to-finish="startToFinishSet" x-finish-to-finish="finishToFinishSet">
+		<field name="name" />
+		<field name="assignedTo" />
+	</gantt>
 	
 	<action-view name="action-view-show-task-tree" title="Task Tree" model="com.axelor.team.db.TeamTask">	
 		<view type="tree" name="task-tree"/>

@@ -6,14 +6,14 @@
   <module name="production" package="com.axelor.apps.production.db"/>
 
   <entity name="ProdProcess" lang="java">
-  
-  	<integer name="importId"/>
-  
+
   	<one-to-many name="prodProcessLineList" ref="com.axelor.apps.production.db.ProdProcessLine" mappedBy="prodProcess" title="Phases"/>
   	<string name="name" title="Label" required="true"/>
   	<string name="code" title="Code"/>
   	<boolean name="outsourcing" title="Outsourcing"/>
-	  <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
+	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
+	<string name="fullName" namecolumn="true" title="Label"/>
+	 
   	
   	<boolean name="isConsProOnOperation" title="Manage consumed products on phases?"/>
   	
@@ -21,5 +21,8 @@
   	<many-to-one name="producedProductLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Location for produced product"/>
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   	
+  	<integer name="versionNumber" title="Version number" default="1"/>
+    <many-to-one name="originalProdProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Original production process" />
+   	
   </entity>
 </domain-models>

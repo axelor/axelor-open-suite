@@ -67,13 +67,6 @@ public interface ConfiguratorService {
     void generateProduct(Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, JSONException, ClassNotFoundException, AxelorException;
 
     /**
-     * Return the right configurator for the given product
-     * @param product
-     * @return the configurator or null if not found.
-     */
-    Configurator getConfiguratorFromProduct(Product product);
-
-    /**
      * Generate a product, then generate a sale order line
      * with the created product, then add this line to the sale order.
      * @param configurator

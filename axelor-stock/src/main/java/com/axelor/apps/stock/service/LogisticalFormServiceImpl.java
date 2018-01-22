@@ -61,6 +61,7 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
+import com.axelor.rpc.ContextEntity;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
 import com.google.common.base.Preconditions;
@@ -362,7 +363,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         logisticalFormLine.setQty(qty);
         logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
         logisticalFormLine.setUnitNetWeight(stockMoveLine.getNetWeight());
-        logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
+        addLogisticalFormLineListItem(logisticalForm, logisticalFormLine);
     }
 
     @Override
@@ -371,7 +372,21 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         logisticalFormLine.setTypeSelect(typeSelect);
         logisticalFormLine.setParcelPalletNumber(getNextParcelPalletNumber(logisticalForm, typeSelect));
         logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
-        logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
+        addLogisticalFormLineListItem(logisticalForm, logisticalFormLine);
+    }
+
+    // Workaround for #9759
+    protected void addLogisticalFormLineListItem(LogisticalForm logisticalForm, LogisticalFormLine logisticalFormLine) {
+        if (logisticalForm instanceof ContextEntity) {
+            List<LogisticalFormLine> logisticalFormLineList = logisticalForm.getLogisticalFormLineList();
+            if (logisticalFormLineList == null) {
+                logisticalFormLineList = new ArrayList<>();
+                logisticalForm.setLogisticalFormLineList(logisticalFormLineList);
+            }
+            logisticalFormLineList.add(logisticalFormLine);
+        } else {
+            logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
+        }
     }
 
     @Override
@@ -488,8 +503,8 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
         TypedQuery<LogisticalForm> query = JPA.em().createQuery("SELECT DISTINCT self FROM LogisticalForm self "
                 + "JOIN self.logisticalFormLineList logisticalFormLine "
-                + "WHERE logisticalFormLine.stockMoveLine.stockMove = :stockMove", LogisticalForm.class);
-        query.setParameter("stockMove", stockMove);
+                + "WHERE logisticalFormLine.stockMoveLine.stockMove.id = :stockMoveId", LogisticalForm.class);
+        query.setParameter("stockMoveId", stockMove.getId());
         List<LogisticalForm> resultList = query.getResultList();
 
         return resultList.isEmpty() ? Lists.newArrayList(0L)

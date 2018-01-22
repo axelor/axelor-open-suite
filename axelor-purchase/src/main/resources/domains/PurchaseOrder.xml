@@ -6,8 +6,7 @@
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
   <entity name="PurchaseOrder" lang="java">
-  
-  	<integer name="importId" />
+
   	<string name="fullName" namecolumn="true">
   	<![CDATA[
   		if(purchaseOrderSeq==null && supplierPartner == null){

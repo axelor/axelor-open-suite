@@ -26,6 +26,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.SaleOrderLineService;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -227,7 +228,7 @@ public class SaleOrderLineController {
 			newSaleOrderLine.setId(saleOrderLine.getId());
 			newSaleOrderLine.setVersion(saleOrderLine.getVersion());
 			newSaleOrderLine.setTypeSelect(saleOrderLine.getTypeSelect());
-			response.setValues(newSaleOrderLine);
+			response.setValues(Mapper.toMap(newSaleOrderLine));
 		}
 	}
 	

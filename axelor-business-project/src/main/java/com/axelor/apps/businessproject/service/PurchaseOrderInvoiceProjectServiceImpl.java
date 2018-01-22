@@ -17,11 +17,6 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
@@ -31,7 +26,8 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -39,7 +35,13 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoiceServiceImpl{
 
@@ -66,7 +68,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 		BigDecimal discountAmount = product.getCostPrice();
 		int discountTypeSelect = 1;
 		if(invoice.getPartner().getChargeBackPurchaseSelect() == PartnerRepository.CHARGING_BACK_TYPE_PRICE_LIST){
-			PriceList priceList = invoice.getPartner().getSalePriceList();
+			PriceList priceList = Beans.get(PartnerPriceListService.class).getDefaultPriceList(invoice.getPartner(), PriceListRepository.TYPE_SALE);
 			if(priceList != null)  {
 				PriceListLine priceListLine = purchaseOrderLineServiceImpl.getPriceListLine(purchaseOrderLine, priceList);
 				if(priceListLine!=null){

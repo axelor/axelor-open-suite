@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,25 +17,10 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.mail.MessagingException;
-
-import com.axelor.apps.base.db.Company;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
@@ -43,18 +28,19 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EventsPlanningLine;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
-import com.axelor.apps.hr.db.PublicHolidayDay;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
-import com.axelor.apps.hr.db.repo.PublicHolidayDayRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -82,6 +68,19 @@ import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class TimesheetServiceImpl implements TimesheetService{
 
 	@Inject
@@ -95,10 +94,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	
 	@Inject
 	protected ProjectService projectService;
-	
-	@Inject
-	protected PublicHolidayDayRepository publicHolidayDayRepo;
-	
+
 	@Inject
 	protected EmployeeRepository employeeRepo;
 	
@@ -282,7 +278,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		List<LeaveRequest> leaveList = LeaveRequestRepository.of(LeaveRequest.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", user).fetch();
 		
 		//Public holidays list
-		List<PublicHolidayDay> publicHolidayList = employee.getPublicHolidayPlanning().getPublicHolidayDayList();
+		List<EventsPlanningLine> publicHolidayList = employee.getPublicHolidayEventsPlanning().getEventsPlanningLineList();
 		 
 		while(!fromDate.isAfter(toDate)){
 			DayPlanning dayPlanningCurr = new DayPlanning();
@@ -310,7 +306,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 				/*Check if the day is not a public holiday */
 				boolean noPublicHoliday = true;
 				if(publicHolidayList != null){
-					for (PublicHolidayDay publicHoliday : publicHolidayList) {
+					for (EventsPlanningLine publicHoliday : publicHolidayList) {
 						if(publicHoliday.getDate().isEqual(fromDate))
 						{
 							noPublicHoliday = false;
@@ -470,7 +466,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		BigDecimal qtyConverted = durationStored;
 		qtyConverted = Beans.get(UnitConversionService.class).convert(appHumanResourceService.getAppBase().getUnitHours(), product.getUnit(), durationStored);
 
-		PriceList priceList = invoice.getPartner().getSalePriceList();
+		PriceList priceList = Beans.get(PartnerPriceListService.class).getDefaultPriceList(invoice.getPartner(), PriceListRepository.TYPE_SALE);
 		if(priceList != null)  {
 			PriceListLine priceListLine = priceListService.getPriceListLine(product, qtyConverted, priceList);
 			if(priceListLine!=null){

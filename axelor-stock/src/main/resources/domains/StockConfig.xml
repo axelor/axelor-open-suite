@@ -6,8 +6,7 @@
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="StockConfig" lang="java" cachable="true">
-  	<integer name="importId"/>
-    
+
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
     <many-to-one name="defaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Default stock location"/>

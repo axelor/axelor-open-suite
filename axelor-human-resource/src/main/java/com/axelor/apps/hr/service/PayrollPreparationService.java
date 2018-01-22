@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -60,10 +60,10 @@ public class PayrollPreparationService {
 	
 	@Inject
 	protected AppBaseService appBaseService;
-	
+
 	@Inject
 	HRConfigService hrConfigService;
-	
+
 	@Inject
 	public PayrollPreparationService(LeaveService leaveService, LeaveRequestRepository leaveRequestRepo, WeeklyPlanningService weeklyPlanningService){
 		
@@ -111,7 +111,7 @@ public class PayrollPreparationService {
 		LocalDate toDate = payrollPreparation.getPeriod().getToDate();
 		Employee employee = payrollPreparation.getEmployee();
 		
-		if(employee.getPublicHolidayPlanning() == null){
+		if(employee.getPublicHolidayEventsPlanning() == null){
 			throw new AxelorException(payrollPreparation, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY),employee.getName());
 		}
 		if(employee.getPlanning()== null){

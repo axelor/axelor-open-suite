@@ -122,7 +122,6 @@ public class ManufOrderStockMoveService {
 
 				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_OUT_PRODUCTIONS);
 				stockMove.addStockMoveLineListItem(stockMoveLine);
-				manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
 
 			}
 
@@ -130,6 +129,12 @@ public class ManufOrderStockMoveService {
 				stockMoveService.plan(stockMove);
 				manufOrder.setOutStockMove(stockMove);
 			}
+
+            if (stockMove.getStockMoveLineList() != null) {
+                for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+                    manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
+                }
+            }
 		}
 
 	}

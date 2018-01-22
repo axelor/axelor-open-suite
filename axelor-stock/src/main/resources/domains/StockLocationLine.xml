@@ -7,18 +7,18 @@
 
   <entity name="StockLocationLine" lang="java">
   
-  	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
+  	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location" readonly="true"/>
   	
-	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    
-	<decimal name="currentQty" title="Current Qty"/>
-	<decimal name="futureQty" title="Future Qty"/>
+	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" readonly="true"/>
+	<decimal name="currentQty" title="Current Qty" readonly="true"/>
+	<decimal name="futureQty" title="Future Qty" readonly="true"/>
 	<decimal name="avgPrice" precision="20" scale="10" readonly="true" title="Average Price"/>
-	<date name="lastFutureStockMoveDate" title="Last Future Stock Move"/>
+	<date name="lastFutureStockMoveDate" title="Last Future Stock Move" readonly="true"/>
 	
     <string name="rack" title="Rack"/>
-	<many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber" title="Tracking Nbr"/>
-	<many-to-one name="detailsStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location details"/>
-	
+	<many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber" title="Tracking Nbr" readonly="true"/>
+	<many-to-one name="detailsStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location details" readonly="true"/>
+
 	<decimal name="lastInventoryRealQty"/>
 	<datetime name="lastInventoryDateT" tz="true" title="Last inventory date"/>
 	

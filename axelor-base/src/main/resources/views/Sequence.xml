@@ -13,10 +13,14 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     </grid>
     
     <form name="sequence-form" title="Sequence" model="com.axelor.apps.base.db.Sequence" onNew="action-group-base-sequence-onnew" onLoad="action-sequence-attrs" onSave="action-sequence-validate">
-		<panel name="main" itemSpan="12">
+		<panel name="main">
+            <field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
+                <editor>
+                    <field name="name" showTitle="false" colSpan="6" css="label-bold bold large" placeholder="Name" onChange="action-sequence-method-compute-fullname"/>
+                </editor>
+            </field>
 			<field name="code" onChange="action-sequence-attrs,action-method-sequence-document-concerned-onchange"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-			<field name="name"/>
 		</panel>
 		<panel name="tips" title="Tips" sidebar="true" itemSpan="12">
 			<label title="The tags below can be used as a prefix or a suffix" />
@@ -28,9 +32,9 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
 			<label title="%WY : Week number" />
 		</panel>
 		<panel name="sequenceDefinition" title="Sequence Definition" colSpan="12">
-			<field name="prefixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$" />
-			<field name="suffixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$" />
-			<field name="padding"/>
+			<field name="prefixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$" onChange="action-sequence-method-compute-fullname"/>
+			<field name="suffixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$" onChange="action-sequence-method-compute-fullname"/>
+			<field name="padding" onChange="action-sequence-method-compute-fullname"/>
 			<field name="toBeAdded"/>
 			<field name="yearlyResetOk" readonlyIf="monthlyResetOk" />
 			<field name="monthlyResetOk" onChange="action-sequence-monthly-reset" />
@@ -86,5 +90,9 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
 	<action-method name="action-method-sequence-document-concerned-onchange">
 		<call class="com.axelor.apps.base.web.SequenceController" method="getDefaultTitle"/>
 	</action-method>
+
+    <action-method name="action-sequence-method-compute-fullname">
+        <call class="com.axelor.apps.base.web.SequenceController" method="computeFullName"/>
+    </action-method>
 
 </object-views>

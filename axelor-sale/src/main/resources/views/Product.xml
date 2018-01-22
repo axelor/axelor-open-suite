@@ -7,9 +7,4 @@
 		<attribute name="readonly" for="sellable" expr="eval:true"/>
 	</action-attrs>
 
-
-	<action-method name="action-product-method-show-product-configurator">
-		<call class="com.axelor.apps.sale.web.ProductSaleController" method="showConfigurator"/>
-	</action-method>
-
 </object-views>

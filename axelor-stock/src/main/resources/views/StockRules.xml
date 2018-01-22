@@ -42,7 +42,7 @@
 			<field name="reOrderQty" colSpan="2" validIf="$number(reOrderQty) >= 0" />
         </panel>
 		<panel name="reorderingManagedBy" title="Reordering managed by"  showIf="orderAlertSelect == 1">
-			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="user" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 	        <field name="team" canEdit="false" form-view="team-form" grid-view="team-grid"/>
 		</panel>
     </form>

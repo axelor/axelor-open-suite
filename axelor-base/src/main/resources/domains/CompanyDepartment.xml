@@ -7,7 +7,6 @@
 
 	<entity name="CompanyDepartment" lang="java">
 
-	<integer name="importId"/>
 	<string name="name" title="Name"/>
 	<string name="code" title="Code"/>
 	<many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>

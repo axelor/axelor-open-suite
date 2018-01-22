@@ -510,7 +510,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
  (SO.company_ex_tax_total-SO.company_cost_total) as so_margin
 from sale_sale_order SO
 left join project_project project on (project.id = SO.project)
-where SO.status_select = 3 and (project.id = ? or project.project = ?)]]></xml-property>
+where SO.status_select = 3 and (project.id = ? or project.parent_project = ?)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -768,8 +768,8 @@ where SO.status_select = 3 and (project.id = ? or project.project = ?)]]></xml-p
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
 left join project_project project on (project.id = invl.project)
-where (project.id = ? or project.project = ?)
-and invoice.status_select = 3 
+where (project.id = ? or project.parent_project = ?)
+and invoice.status_select = 3
 and invoice.operation_type_select in (?,?)
 group by invoice.invoice_id,invoice.invoice_date]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -1003,7 +1003,7 @@ left join hr_expense expense on (expense.id = expl.expense)
 left join auth_user authuser on (authuser.id = expense.user_id)
 left join hr_employee emp on (emp.id = authuser.employee)
 left join project_project task on (task.id = expl.project)
-where (task.project = ? or task.id = ?)
+where (task.parent_project = ? or task.id = ?)
 and expense.status_select = 3
 group by emp.id,emp.name]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -1175,7 +1175,7 @@ left join hr_timesheet tm on (tm.id = tml.timesheet)
 left join auth_user usr on (usr.id = tm.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
 left join project_project task on (task.id = tml.project)
-where tm.status_select = 3 and (task.id = ? or task.project = ?)
+where tm.status_select = 3 and (task.id = ? or task.parent_project = ?)
 group by emp.id,emp.name,emp.hourly_rate]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1307,7 +1307,7 @@ from account_analytic_move_line aml
 left join project_project project on (project.id = aml.project)
 left join account_analytic_axis axis on (axis.id = aml.analytic_axis)
 left join account_analytic_account account on (account.id = aml.analytic_account)
-where project.id = ? or project.project = ? 
+where project.id = ? or project.parent_project = ?
 group by axis.name,account.name]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ChartSales" id="4942">
@@ -1415,7 +1415,7 @@ group by axis.name,account.name]]></xml-property>
  sum(SO.company_cost_total) as so_costs
 from sale_sale_order SO
 left join project_project project on (project.id = SO.project)
-where SO.status_select = 3 and (project.id = ? or project.project = ?)
+where SO.status_select = 3 and (project.id = ? or project.parent_project = ?)
 group by so_date;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1714,7 +1714,7 @@ group by so_date;]]></xml-property>
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
 left join project_project project on (project.id = invl.project)
-where (project.id =  ? or project.project = ?)
+where (project.id =  ? or project.parent_project = ?)
 and invoice.status_select = 3 
 and invoice.operation_type_select in (3,4)
 group by month
@@ -1724,7 +1724,7 @@ from (select to_char(invoice.invoice_date,'YYYY-MM') as month,sum(invl.company_e
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
 left join project_project project on (project.id = invl.project)
-where (project.id =  ? or project.project = ?)
+where (project.id =  ? or project.parent_project = ?)
 and invoice.status_select = 3 
 and invoice.operation_type_select in (1,2)
 group by month
@@ -1733,7 +1733,7 @@ select to_char(expense_date,'YYYY-MM') as month,sum(expl.untaxed_amount) as cost
 from hr_expense_line expl
 left join project_project task on (task.id = expl.project)
 left join hr_expense expense on (expense.id = expl.expense)
-where (task.project = ? or task.id = ?)
+where (task.parent_project = ? or task.id = ?)
 and expense.status_select = 3
 group by month
 union
@@ -1743,13 +1743,13 @@ left join hr_timesheet tm on (tm.id = tml.timesheet)
 left join auth_user usr on (usr.id = tm.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
 left join project_project task on (task.id = tml.project)
-where tm.status_select = 3 and (task.id = ? or task.project = ?)
+where tm.status_select = 3 and (task.id = ? or task.parent_project = ?)
 group by month
 union
 select to_char(date_val,'YYYY-MM') as month,-1*sum(aml.amount) as cost
 from account_analytic_move_line aml
 left join project_project project on (project.id = aml.project)
-where project.id =  ? or project.project = ?
+where project.id =  ? or project.parent_project = ?
 group by month) CostData group by month)) ChartData group by month order by month]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">

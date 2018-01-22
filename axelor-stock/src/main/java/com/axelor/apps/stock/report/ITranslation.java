@@ -45,7 +45,7 @@ public interface ITranslation {
 	public static final String INVENTORY_DESCRIPTION = /*$$(*/ "Inventory.description"; /*)*/
 	public static final String INVENTORY_RACK = /*$$(*/ "Inventory.rack"; /*)*/
 	public static final String INVENTORY_TRACKING_NUMBER = /*$$(*/ "Inventory.trackingNumber"; /*)*/
-	
+
 	public static final String STOCK_MOVE_INTERNAL_MOVE = /*$$(*/ "StockMove.internalMove"; /*)*/
 	public static final String STOCK_MOVE_DELIVERY_ORDER = /*$$(*/ "StockMove.deliveryOrder"; /*)*/
 	public static final String STOCK_MOVE_RECEPTION_ORDER = /*$$(*/ "StockMove.receptionOrder"; /*)*/
@@ -66,6 +66,7 @@ public interface ITranslation {
 	public static final String STOCK_MOVE_PACKAGE = /*$$(*/ "StockMove.numOfPackages"; /*)*/
 	public static final String STOCK_MOVE_PALETTES = /*$$(*/ "StockMove.numOfPalettes"; /*)*/
 	public static final String STOCK_MOVE_GROSS_WEIGHT = /*$$(*/ "StockMove.grossWeight"; /*)*/
+	public static final String STOCK_MOVE_DESCRIPTION = /*$$(*/ "StockMove.description"; /*)*/
 
 	//PickingStockMove
 	public static final String STOCK_MOVE_PICKING_ORDER = /*$$(*/ "StockMove.pickingOrder"; /*)*/

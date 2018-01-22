@@ -97,18 +97,9 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         }
         fixRelationalFields(product);
         product.setProductTypeSelect(ProductRepository.PRODUCT_TYPE_STORABLE);
-        product = Beans.get(ProductRepository.class).save(product);
-        configurator.setProductId(product.getId());
-        Beans.get(ConfiguratorRepository.class).save(configurator);
-    }
-
-    @Override
-    public Configurator getConfiguratorFromProduct(Product product) {
-        return Beans.get(ConfiguratorRepository.class)
-                .all()
-                .filter("self.productId = :_id")
-                .bind("_id", product.getId())
-                .fetchOne();
+        configurator.setProduct(product);
+        product.setConfigurator(configurator);
+        Beans.get(ProductRepository.class).save(product);
     }
 
     @Transactional
@@ -125,9 +116,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
             saleOrderLine.setSaleOrder(saleOrder);
             generateProduct(configurator, jsonAttributes, jsonIndicators);
 
-            Product product = Beans.get(ProductRepository.class)
-                    .find(configurator.getProductId());
-            saleOrderLine.setProduct(product);
+            saleOrderLine.setProduct(configurator.getProduct());
             this.fillSaleOrderWithProduct(saleOrderLine);
             Beans.get(SaleOrderLineService.class)
                     .computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);

@@ -6,8 +6,7 @@
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="TrackingNumber" lang="java">
-  
-	<integer name="importId"/>
+
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
 	<date name="warrantyExpirationDate" title="Warranty expiration date" readonly="true"/>
 	<date name="perishableExpirationDate" title="Perishable expiration date" readonly="true"/>

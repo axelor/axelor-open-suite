@@ -12,7 +12,7 @@
 	    	<field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	  	</panel>
 	  	<panel name="general" title="General">
-	  		<field name="publicHolidayPlanning" canNew="true"/>
+	  		<field name="publicHolidayEventsPlanning" canNew="true"/>
 	  		<field name="weeklyPlanning" canNew="true"/>
 	  	</panel>
 	  	<panel-tabs>
@@ -93,7 +93,7 @@
     	<context name="_showRecord" expr="eval: __self__.hrConfig?.id"/>
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
-    
-	
-	
+
+
+
 </object-views>

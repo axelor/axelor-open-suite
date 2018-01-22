@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -226,12 +227,14 @@ public class SaleOrderController{
 			if(invoice != null)  {
 				response.setCanClose(true);
 				response.setView(ActionView
-		            .define(I18n.get("Invoice generated"))
-		            .model(Invoice.class.getName())
-		            .add("form", "invoice-form")
-		            .add("grid", "invoice-grid")
-		            .context("_showRecord",String.valueOf(invoice.getId()))
-		            .map());
+						.define(I18n.get("Invoice generated"))
+						.model(Invoice.class.getName())
+						.add("form", "invoice-form")
+						.add("grid", "invoice-grid")
+						.context("_showRecord",String.valueOf(invoice.getId()))
+						.context("_operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+						.context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
+						.map());
 			}
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -279,7 +282,7 @@ public class SaleOrderController{
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 
-	public void getSubscriptionSaleOrdersToInvoice(ActionRequest request, ActionResponse response) throws AxelorException  {
+	public void getSubscriptionSaleOrdersToInvoice(ActionRequest request, ActionResponse response) {
 
 		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.invoiced = false AND self.invoicingDate <= ?1", appSupplychainService.getTodayDate()).fetch();
 		List<Long> listId = new ArrayList<>();
@@ -287,9 +290,13 @@ public class SaleOrderController{
 			listId.add(subscription.getSaleOrderLine().getSaleOrder().getId());
 		}
 		if (listId.isEmpty()) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No Subscription to Invoice"));
+			TraceBackService.trace(response, new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No Subscription to Invoice")));
 		}
-		if(listId.size() == 1){
+		else {
+			String domain = "self.id in ("+Joiner.on(",").join(listId)+")";
+			if (listId.size() == 1) {
+				domain = "self.id = "+listId.get(0);
+			}
 			response.setView(ActionView
 		            .define(I18n.get("Subscription Sale orders"))
 		            .model(SaleOrder.class.getName())
@@ -373,7 +380,7 @@ public class SaleOrderController{
 		}
 		
 		if (request.getContext().get(lineToMerge) != null){
-			
+
 			if (request.getContext().get(lineToMerge) instanceof List){
 				//No confirmation popup, sale orders are content in a parameter list
 				List<Map> saleOrderMap = (List<Map>)request.getContext().get(lineToMerge);
@@ -477,7 +484,7 @@ public class SaleOrderController{
 			response.setFlash(fieldErrors.toString());
 			return;
 		}
-		
+
 		//Check if priceList or contactPartner are content in parameters
 		if (request.getContext().get("priceList") != null){
 			commonPriceList = JPA.em().find(PriceList.class, new Long((Integer)((Map)request.getContext().get("priceList")).get("id")));
@@ -503,7 +510,7 @@ public class SaleOrderController{
 										.param("show-confirm", "false")
 										.param("popup-save", "false")
 										.param("forceEdit", "true");
-			
+
 			if (existPriceListDiff){
 				confirmView.context("contextPriceListToCheck", "true");
 			}
@@ -524,7 +531,7 @@ public class SaleOrderController{
 
 			return;
 		}
-		
+
 		try{
 			SaleOrder saleOrder = saleOrderServiceSupplychain.mergeSaleOrders(saleOrderList, commonCurrency, commonClientPartner, commonCompany, commonLocation, commonContactPartner, commonPriceList, commonTeam);
 			if (saleOrder != null){

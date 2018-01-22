@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+
+    <grid name="partner-price-list-grid" title="Price lists"
+          model="com.axelor.apps.base.db.PartnerPriceList">
+        <field name="label"/>
+        <field name="typeSelect"/>
+        <field name="isExclusive"/>
+    </grid>
+
+    <form name="sale-partner-price-list-form" title="Price lists"
+          model="com.axelor.apps.base.db.PartnerPriceList"
+          onNew="action-record-partner-price-list-record-sale-type"
+          width="large">
+        <panel name="main">
+            <field name="label"/>
+            <field name="typeSelect" readonly="true" colSpan="4"/>
+            <field name="isExclusive"/>
+            <field name="priceListSet"
+                   grid-view="price-list-grid"
+                   form-view="sale-price-list-form"
+                   onChange="action-method-partner-price-list-check-dates"
+                   domain="self.typeSelect = 1"
+                   colSpan="12"/>
+        </panel>
+    </form>
+
+    <form name="purchase-partner-price-list-form" title="Price lists"
+          model="com.axelor.apps.base.db.PartnerPriceList"
+          onNew="action-record-partner-price-list-record-purchase-type"
+          width="large">
+        <panel name="main">
+            <field name="label"/>
+            <field name="typeSelect" readonly="true" colSpan="4"/>
+            <field name="isExclusive"/>
+            <field name="priceListSet"
+                   grid-view="price-list-grid"
+                   form-view="purchase-price-list-form"
+                   onChange="action-method-partner-price-list-check-dates"
+                   domain="self.typeSelect = 2"
+                   colSpan="12"/>
+        </panel>
+    </form>
+
+    <action-record name="action-record-partner-price-list-record-sale-type"
+                   model="com.axelor.apps.base.db.PartnerPriceList">
+        <field name="typeSelect" expr="1"/>
+    </action-record>
+
+    <action-record name="action-record-partner-price-list-record-purchase-type"
+                   model="com.axelor.apps.base.db.PartnerPriceList">
+        <field name="typeSelect" expr="2"/>
+    </action-record>
+
+    <action-method name="action-method-partner-price-list-check-dates">
+        <call class="com.axelor.apps.base.web.PartnerPriceListController"
+              method="checkDates"/>
+    </action-method>
+</object-views>

@@ -43,10 +43,10 @@ public class StockLocationSaveService {
 	    PartnerDefaultStockLocationRepository partnerDefaultRepo = Beans.get(PartnerDefaultStockLocationRepository.class);
 		List<PartnerDefaultStockLocation> partnerDefaultStockLocations = partnerDefaultRepo.all()
 				.filter("(self.partner.id != :partnerId OR self.company.id != :companyId)"
-						+ " AND (self.defaultStockLocation = :stockLocation)")
+						+ " AND (self.defaultStockLocation.id = :stockLocationId)")
 				.bind("partnerId", partnerId)
 				.bind("companyId", companyId)
-				.bind("stockLocation", defaultStockLocation)
+				.bind("stockLocationId", stockLocation.getId())
 				.fetch();
 		for (PartnerDefaultStockLocation partnerDefaultStockLocation : partnerDefaultStockLocations) {
 			Partner partnerToClean = partnerDefaultStockLocation.getPartner();

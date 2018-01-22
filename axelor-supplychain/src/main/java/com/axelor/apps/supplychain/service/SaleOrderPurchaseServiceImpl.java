@@ -17,18 +17,10 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.lang.invoke.MethodHandles;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -45,6 +37,15 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 
@@ -130,7 +131,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 				saleOrder.getExternalReference(),
 				Beans.get(StockLocationService.class).getDefaultStockLocation(saleOrder.getCompany()),
 				today,
-				supplierPartner.getPurchasePriceList(),
+				Beans.get(PartnerPriceListService.class).getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
 				supplierPartner);
 
 		Integer atiChoice =  Beans.get(PurchaseConfigService.class).getPurchaseConfig(saleOrder.getCompany()).getPurchaseOrderInAtiSelect();
