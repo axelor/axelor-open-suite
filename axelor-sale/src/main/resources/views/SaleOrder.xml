@@ -235,7 +235,7 @@
 				<field name="amountToBeSpreadOverTheTimetable" colSpan="12" />
 				<panel-related field="timetableList" colSpan="12"
 					grid-view="timetable-grid" form-view="timetable-form"
-					onChange="action-sale-order-method-update-amount-to-be-spread-over-the-timetable"
+					onChange="action-sale-order-method-update-amount-to-be-spread-over-the-timetable,action-supplychain-sale-order-validate-check-amount-timetable"
 					if-module="axelor-supplychain" />
 			</panel>
 
@@ -648,7 +648,8 @@
 	</action-group>
 
 	<action-group name="action-sale-group-confirmed">
-		<action name="action-supplychain-sale-order-validate-check-location" />
+		<action name="action-sale-order-validate-check-on-confirm"/>
+		<action name="action-supplychain-sale-order-validate-check-on-confirm"/>
 		<action name="action-sale-order-method-confirm" />
 		<action name="action-sale-order-method-generate-project" if="eval: __config__.general.getAutomaticProject()" />
 	</action-group>
@@ -946,5 +947,9 @@
 	<action-method name="action-sale-order-method-fill-company-bank-details">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="fillCompanyBankDetails"/>
 	</action-method>
-    
+
+	<action-validate name="action-sale-order-validate-check-on-confirm">
+		<alert message="The total amount is zero." if="inTaxTotal &lt;= 0"/>
+	</action-validate>
+
 </object-views>

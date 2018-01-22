@@ -4,26 +4,27 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
     <grid name="timetable-grid" title="Timetables" model="com.axelor.apps.supplychain.db.Timetable" editable="true">
-       <field name="estimatedDate"/>
-       <field name="amount"/>
-       <field name="comments"/>
-       <field name="product" if="__config__.general.getAllowTimetableInvoicing()"/>
-       <field name="productName" if="__config__.general.getAllowTimetableInvoicing()"/>
-       <field name="unit" if="__config__.general.getAllowTimetableInvoicing()"/>
-       <field name="qty" if="__config__.general.getAllowTimetableInvoicing()"/>
-       <button name="generateInvoice" help="Generate Invoice" icon="fa-credit-card" onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly" if="__config__.general.getAllowTimetableInvoicing()"/>
+       <field name="estimatedDate" readonlyIf="invoice"/>
+       <field name="amount" readonlyIf="invoice"/>
+       <field name="comments" readonlyIf="invoice"/>
+       <field name="product" readonlyIf="invoice" if="__config__.general.getAllowTimetableInvoicing()"/>
+       <field name="productName" required="true" readonlyIf="invoice" if="__config__.general.getAllowTimetableInvoicing()"/>
+       <field name="unit" readonlyIf="invoice" if="__config__.general.getAllowTimetableInvoicing()"/>
+       <field name="qty" readonlyIf="invoice" if="__config__.general.getAllowTimetableInvoicing()"/>
+       <button name="generateInvoice" readonlyIf="invoice" help="Generate Invoice" icon="fa-credit-card" onClick="save, action-timetable-method-generate-invoice" if="__config__.general.getAllowTimetableInvoicing()"/>
+        <field name="invoice" hidden="true"/>
     </grid>
  
 	 <form name="timetable-form" title="Timetable" model="com.axelor.apps.supplychain.db.Timetable">
-	 	<panel name="main" >
+	 	<panel name="main" readonlyIf="invoice">
 			<field name="estimatedDate"/>
       		<field name="amount"/>
       		<field name="product" canEdit="false" if="__config__.general.getAllowTimetableInvoicing()"/>
        		<field name="productName" if="__config__.general.getAllowTimetableInvoicing()"/>
        		<field name="unit" if="__config__.general.getAllowTimetableInvoicing()"/>
        		<field name="qty" if="__config__.general.getAllowTimetableInvoicing()"/>
-       		<button name="generateInvoice" colOffset="9" colSpan="3" title="Generate Invoice" onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly" if="__config__.general.getAllowTimetableInvoicing()" readonlyIf="invoice != null"/>
-            <field name="invoice" hidden="true"/>
+       		<button name="generateInvoice" colOffset="9" colSpan="3" title="Generate Invoice" onClick="save, action-timetable-method-generate-invoice" if="__config__.general.getAllowTimetableInvoicing()" showIf="invoice == null"/>
+            <field name="invoice" hideIf="!invoice"/>
        		<field name="comments" colSpan="12"/>
 	 	</panel>
 	 </form>
@@ -31,13 +32,5 @@
 	 <action-method name="action-timetable-method-generate-invoice">
 	 	<call class="com.axelor.apps.supplychain.web.TimetableController" method="generateInvoice"/>
 	 </action-method>
-	 
-	 <action-attrs name="action-timetable-attrs-readonly">
-	 	<attribute name="readonly" for="generateInvoice" expr="true"/>
-	 	<attribute name="readonly" for="product" expr="true"/>
-	 	<attribute name="readonly" for="productName" expr="true"/>
-	 	<attribute name="readonly" for="unit" expr="true"/>
-	 	<attribute name="readonly" for="qty" expr="true"/>
-	 </action-attrs>
-    
+
 </object-views>
