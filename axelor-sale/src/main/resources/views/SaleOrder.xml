@@ -251,7 +251,6 @@
 			  </field>
 		  </panel>
 	      <field name="priceList" onSelect="action-sale-order-method-price-list-domain" onChange="action-sale-order-record-hide-discount" form-view="price-list-form"  grid-view="price-list-grid" readonlyIf="statusSelect >= 3"/>
-	      <field name="hideDiscount"/>
       	  <field name="externalReference"/>
       </panel>
 	  <panel-tabs hideIf="clientPartner == null">
@@ -303,6 +302,7 @@
 
 		<panel-related field="advancePaymentList" colSpan="12" grid-view="advance-payment-grid" form-view="advance-payment-form" readonly="true" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice()" />
         <panel name="printing" title="Printing">
+            <field name="hideDiscount"/>
             <field name="specificNotes" colSpan="12" readonly="true"/>
         </panel>
 	  </panel-tabs>
@@ -388,14 +388,12 @@
       <panel sidebar="true"  hideIf="clientPartner == null">
       	<panel name="salesFollowUp" title="Sales follow-up" colSpan="12">
 	        <field name="salemanUser" canNew="false" canEdit="false" canView="false" grid-view="user-grid" form-view="user-form"/>
-	        <field name="team" onSelect="action-sale-order-domain-on-team"
-	        	form-view="team-form" grid-view="team-grid"
-	        	if="__config__.app.getApp('base').getTeamManagement()" />
+            <field name="team" canEdit="false" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
 	        <field name="opportunity" colSpan="12" readonly="true" form-view="opportunity-form" grid-view="opportunity-grid" />
 	    </panel>
-	    <panel name="financialTerms" title="Financial terms" colSpan="12" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" >
-	        <field name="paymentMode" onChange="action-sale-order-method-fill-company-bank-details" domain="self.inOutSelect = 1"  form-view="payment-mode-form" grid-view="payment-mode-grid"/>
-	        <field name="paymentCondition" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+	    <panel name="financialTerms" title="Financial terms" colSpan="12" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')">
+	        <field name="paymentMode" canEdit="false" onChange="action-sale-order-method-fill-company-bank-details" domain="self.inOutSelect = 1"  form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+	        <field name="paymentCondition" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 	    </panel>
       </panel>
 
