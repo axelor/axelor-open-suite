@@ -43,10 +43,10 @@ public class LocationSaveService {
 	    PartnerDefaultLocationRepository partnerDefaultRepo = Beans.get(PartnerDefaultLocationRepository.class);
 		List<PartnerDefaultLocation> partnerDefaultLocations = partnerDefaultRepo.all()
 				.filter("(self.partner.id != :partnerId OR self.company.id != :companyId)"
-						+ " AND (self.stockLocation = :stockLocation)")
+						+ " AND (self.defaultStockLocation.id = :stockLocationId)")
 				.bind("partnerId", partnerId)
 				.bind("companyId", companyId)
-				.bind("stockLocation", stockLocation)
+				.bind("stockLocationId", stockLocation.getId())
 				.fetch();
 		for (PartnerDefaultLocation partnerDefaultLocation : partnerDefaultLocations) {
 			Partner partnerToClean = partnerDefaultLocation.getPartner();
