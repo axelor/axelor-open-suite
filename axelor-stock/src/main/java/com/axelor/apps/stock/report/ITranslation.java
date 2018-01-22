@@ -33,12 +33,12 @@ public interface ITranslation {
 	public static final String STOCK_LOCATION_ACCOUNTING_VALUE = /*$$(*/ "StockLocation.accountingValue"; /*)*/
 	public static final String STOCK_LOCATION_UNIT_VALUE = /*$$(*/ "StockLocation.unitValue"; /*)*/
 	public static final String STOCK_LOCATION_TOTAL = /*$$(*/ "StockLocation.total"; /*)*/
-	public static final String STOCK_LOCATION_DETAILS_BY_LOCATION = /*$$(*/ "StockLocation.detailsByLocation"; /*)*/
+	public static final String STOCK_LOCATION_DETAILS_BY_STOCK_LOCATION = /*$$(*/ "StockLocation.detailsByStockLocation"; /*)*/
 	
 	public static final String INVENTORY_TITLE = /*$$(*/ "Inventory.title"; /*)*/
 	public static final String INVENTORY_NAME = /*$$(*/ "Inventory.name"; /*)*/
 	public static final String INVENTORY_DATE = /*$$(*/ "Inventory.date"; /*)*/
-	public static final String INVENTORY_LOCATION = /*$$(*/ "Inventory.stockLocation"; /*)*/
+	public static final String INVENTORY_STOCK_LOCATION = /*$$(*/ "Inventory.stockLocation"; /*)*/
 	public static final String INVENTORY_CODE = /*$$(*/ "Inventory.code"; /*)*/
 	public static final String INVENTORY_UNIT = /*$$(*/ "Inventory.unit"; /*)*/
 	public static final String INVENTORY_REAL_QTY = /*$$(*/ "Inventory.realQty"; /*)*/

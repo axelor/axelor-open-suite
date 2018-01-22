@@ -77,10 +77,10 @@ public class StockLocationServiceImpl implements StockLocationService {
 	public BigDecimal getQty(Long productId, Long locationId, String qtyType) {
 		if (productId != null) {
 			if (locationId == null) {
-				List<StockLocation> locations = getNonVirtualStockLocations();
-				if (!locations.isEmpty()) {
+				List<StockLocation> stockLocations = getNonVirtualStockLocations();
+				if (!stockLocations.isEmpty()) {
 					BigDecimal qty = BigDecimal.ZERO;
-					for (StockLocation stockLocation : locations) {
+					for (StockLocation stockLocation : stockLocations) {
 						StockLocationLine stockLocationLine = stockLocationLineService.getStockLocationLine(stockLocationRepo.find(stockLocation.getId()), productRepo.find(productId));
 						
 						if (stockLocationLine != null) {
@@ -144,7 +144,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 		productRepo.save(product);
 	}
 
-	public List<Long> getBadLocationLineId() {
+	public List<Long> getBadStockLocationLineId() {
 
 		List<StockLocationLine> stockLocationLineList = Beans.get(StockLocationLineRepository.class)
 				.all().filter("self.stockLocation.typeSelect = 1 OR self.stockLocation.typeSelect = 2").fetch();
@@ -192,12 +192,12 @@ public class StockLocationServiceImpl implements StockLocationService {
 	@Override
 	public Set<Long> getContentStockLocationIds(StockLocation stockLocation) {
 		
-		List<StockLocation> locations = new ArrayList<>();
+		List<StockLocation> stockLocations = new ArrayList<>();
 
 		if(stockLocation != null) {
-			locations.add(stockLocation);
+			stockLocations.add(stockLocation);
 			locationIdSet.add(stockLocation.getId());
-			findLocationIds(locations);
+			findLocationIds(stockLocations);
 		} else {
 			locationIdSet.add(0l);
 		}

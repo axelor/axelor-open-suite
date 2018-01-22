@@ -11,8 +11,8 @@
 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="createStockMove"/>
 	</action-method>
 	
-	<action-method name="action-purchase-order-method-get-location">
-    	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="getLocation"/>
+	<action-method name="action-purchase-order-method-get-stock-location">
+    	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="getStockLocation"/>
     </action-method>
     
     <action-method name="action-purchase-order-method-cancel-receipt">

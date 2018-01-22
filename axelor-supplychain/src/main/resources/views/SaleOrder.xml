@@ -42,7 +42,7 @@
 		<action name="action-sale-order-record-default"/>
 		<action name="action-sale-order-record-payment-mode"/>
 		<action name="action-sale-order-record-company-configuration"/>
-		<action name="action-supplychain-sale-order-method-get-location"/>
+		<action name="action-supplychain-sale-order-method-get-stock-location"/>
 		<action name="action-sale-order-record-currency"/>
 		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
 		<action name="action-sale-order-record-in-ati"/>
@@ -67,8 +67,8 @@
         <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="onSave" />
     </action-method>
 
-	<action-method name="action-supplychain-sale-order-method-get-location">
-    	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
+	<action-method name="action-supplychain-sale-order-method-get-stock-location">
+    	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getStockLocation"/>
     </action-method>
     
     <action-group name="action-supplychain-sale-order-group-generate-invoice">
@@ -81,15 +81,11 @@
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createStockMove"/>
 	</action-method>
 	
-	<action-method name="action-sale-order-method-get-location" >
-    	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
-    </action-method>
-	
 	<action-method name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" >
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generatePurchaseOrdersFromSelectedSOLines"/>
 	</action-method>
 
-	<action-validate name="action-supplychain-sale-order-validate-check-location">
+	<action-validate name="action-supplychain-sale-order-validate-check-stock-location">
 		<error message="The stock location must be filled." if="stockLocation == null"/>
 	</action-validate>
 	

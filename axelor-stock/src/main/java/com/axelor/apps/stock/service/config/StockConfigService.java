@@ -42,7 +42,7 @@ public class StockConfigService
 	
 	
 	
-	/******************************** LOCATION ********************************************/
+	/******************************** STOCK LOCATION ********************************************/
 	
 	public StockLocation getInventoryVirtualStockLocation(StockConfig stockConfig) throws AxelorException  {
 		

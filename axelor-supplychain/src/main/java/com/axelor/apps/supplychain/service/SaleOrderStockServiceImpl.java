@@ -162,7 +162,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 
-	    //check external or internal location
+	    //check external or internal stock location
 	    Optional<StockLocation> candidateNonVirtualStockLocation = candidateStockLocations
 				.stream()
 				.filter(stockLocation -> stockLocation.getTypeSelect() == StockLocationRepository.TYPE_EXTERNAL
@@ -171,7 +171,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 	    if (candidateNonVirtualStockLocation.isPresent()) {
 	    	return candidateNonVirtualStockLocation.get();
 		} else {
-	    	//no external location found, search for virtual
+	    	//no external stock location found, search for virtual
 	    	return candidateStockLocations
 					.stream()
 					.filter(stockLocation -> stockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL)

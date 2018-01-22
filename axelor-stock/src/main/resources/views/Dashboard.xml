@@ -71,7 +71,7 @@
 		<view type="grid" name="stock-location-line-bad-line-grid"/>
 		<view type="form" name="stock-location-line-bad-line-form"/>
 		<domain>self.id IN (:stockLocationLineIdList)</domain>
-		<context name="stockLocationLineIdList" expr="call:com.axelor.apps.stock.service.StockLocationService:getBadLocationLineId()"/>
+		<context name="stockLocationLineIdList" expr="call:com.axelor.apps.stock.service.StockLocationService:getBadStockLocationLineId()"/>
 	</action-view>
 
 	<action-view name="dashlet.stock.dashboard.upcoming.deliveries" title="Upcoming customer deliveries"

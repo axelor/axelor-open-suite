@@ -283,7 +283,7 @@
 "ProdProcess.outsourcing","Outsourcing",,
 "ProdProcess.phases","Phases",,
 "ProdProcess.priority","Priority",,
-"ProdProcess.producedProductLocation","Location for produced product",,
+"ProdProcess.producedProductStockLocation","Stock location for produced product",,
 "ProdProcess.product","Product",,
 "ProdProcess.qty","Qty",,
 "ProdProcess.stockLocation","Product Location",,

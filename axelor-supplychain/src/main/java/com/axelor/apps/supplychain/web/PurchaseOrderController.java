@@ -85,7 +85,7 @@ public class PurchaseOrderController {
 		}
 	}
 
-	public void getLocation(ActionRequest request, ActionResponse response) {
+	public void getStockLocation(ActionRequest request, ActionResponse response) {
 
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
@@ -149,7 +149,7 @@ public class PurchaseOrderController {
 		//Useful to determine if a difference exists between price lists of all purchase orders
 		boolean existPriceListDiff = false;
 		StockLocation commonLocation = null;
-		//Useful to determine if a difference exists between locations of all purchase orders
+		//Useful to determine if a difference exists between stock locations of all purchase orders
 		boolean existLocationDiff = false;
 		
 		PurchaseOrder purchaseOrderTemp;
@@ -219,7 +219,7 @@ public class PurchaseOrderController {
 			return;
 		}
 
-		//Check if priceList or contactPartner or location are content in parameters
+		//Check if priceList or contactPartner or stock location are content in parameters
 		if (request.getContext().get("priceList") != null){
 			commonPriceList = JPA.em().find(PriceList.class, new Long((Integer)((Map)request.getContext().get("priceList")).get("id")));
 		}

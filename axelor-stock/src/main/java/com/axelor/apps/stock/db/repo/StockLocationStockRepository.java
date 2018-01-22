@@ -24,7 +24,7 @@ import com.axelor.inject.Beans;
 public class StockLocationStockRepository extends StockLocationRepository {
 
     /**
-     * Override to remove incompatible locations in partners
+     * Override to remove incompatible stock locations in partners
      * @param entity
      * @return
      */

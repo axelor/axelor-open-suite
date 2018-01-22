@@ -98,7 +98,7 @@ public class SaleOrderController{
 		}
 	}
 
-	public void getLocation(ActionRequest request, ActionResponse response) {
+	public void getStockLocation(ActionRequest request, ActionResponse response) {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
@@ -410,7 +410,7 @@ public class SaleOrderController{
 		//Useful to determine if a difference exists between price lists of all sale orders
 		boolean existPriceListDiff = false;
 		StockLocation commonLocation = null;
-		//Useful to determine if a difference exists between locations of all sale orders
+		//Useful to determine if a difference exists between stock locations of all sale orders
 		boolean existLocationDiff = false;
 		
 		SaleOrder saleOrderTemp;

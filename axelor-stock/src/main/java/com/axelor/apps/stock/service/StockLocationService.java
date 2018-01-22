@@ -42,7 +42,7 @@ public interface StockLocationService {
 
 	public void computeAvgPriceForProduct(Product product);
 
-	public List<Long> getBadLocationLineId();
+	public List<Long> getBadStockLocationLineId();
 	
 	public Set<Long> getContentStockLocationIds(StockLocation stockLocation);
 	

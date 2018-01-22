@@ -6,7 +6,7 @@
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 	
-	<selection name="stock.location.type.select">
+	<selection name="stock.stock.location.type.select">
 		<option value="1">Internal</option>
 		<option value="2">External</option>
 		<option value="3">Virtual</option>

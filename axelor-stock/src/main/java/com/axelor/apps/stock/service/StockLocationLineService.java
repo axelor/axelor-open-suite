@@ -51,7 +51,7 @@ public interface StockLocationLineService {
 	public void checkStockMin(StockLocationLine stockLocationLine, boolean isDetailLocationLine) throws AxelorException;
 
 	/**
-	 * Check if the location has more than qty units of the product
+	 * Check if the stock location has more than qty units of the product
 	 * @param stockLocation
 	 * @param product
 	 * @param qty

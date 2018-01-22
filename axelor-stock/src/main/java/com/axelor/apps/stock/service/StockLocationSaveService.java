@@ -31,7 +31,7 @@ import com.google.inject.persist.Transactional;
 public class StockLocationSaveService {
 
 	/**
-	 * Remove default stock locations in partner that are not linked with this location anymore.
+	 * Remove default stock locations in partner that are not linked with this stock location anymore.
 	 * @param defaultStockLocation
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
