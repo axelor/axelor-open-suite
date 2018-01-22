@@ -27,21 +27,21 @@ import com.axelor.i18n.I18n;
 
 public class StockConfigProductionService extends StockConfigSupplychainService {
 
-    public StockLocation getProductionVirtualLocation(StockConfig stockConfig) throws AxelorException {
+    public StockLocation getProductionVirtualStockLocation(StockConfig stockConfig) throws AxelorException {
 
-        if (stockConfig.getProductionVirtualLocation() == null) {
+        if (stockConfig.getProductionVirtualStockLocation() == null) {
             throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_CONFIG_2), stockConfig.getCompany().getName());
         }
 
-        return stockConfig.getProductionVirtualLocation();
+        return stockConfig.getProductionVirtualStockLocation();
 
     }
 
-    public StockLocation getWasteLocation(StockConfig stockConfig) throws AxelorException {
-        if (stockConfig.getWasteLocation() == null) {
+    public StockLocation getWasteStockLocation(StockConfig stockConfig) throws AxelorException {
+        if (stockConfig.getWasteStockLocation() == null) {
             throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_CONFIG_3), stockConfig.getCompany().getName());
         }
-        return stockConfig.getWasteLocation();
+        return stockConfig.getWasteStockLocation();
     }
 
 }

@@ -88,7 +88,7 @@ public class OperationOrderStockMoveService {
 
 		StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
 		StockConfig stockConfig = stockConfigService.getStockConfig(company);
-		StockLocation virtualLocation = stockConfigService.getProductionVirtualLocation(stockConfig);
+		StockLocation virtualStockLocation = stockConfigService.getProductionVirtualStockLocation(stockConfig);
 
 		StockLocation fromLocation;
 
@@ -98,10 +98,10 @@ public class OperationOrderStockMoveService {
 		} else if (!operationOrder.getManufOrder().getIsConsProOnOperation() && prodProcessLine != null && prodProcessLine.getProdProcess() != null && prodProcessLine.getProdProcess().getStockLocation() != null) {
 			fromLocation = prodProcessLine.getProdProcess().getStockLocation();
 		} else {
-			fromLocation = stockConfigService.getDefaultLocation(stockConfig);
+			fromLocation = stockConfigService.getDefaultStockLocation(stockConfig);
 		}
 
-		return stockMoveService.createStockMove(null, null, company, null, fromLocation, virtualLocation,
+		return stockMoveService.createStockMove(null, null, company, null, fromLocation, virtualStockLocation,
 				null, operationOrder.getPlannedStartDateT().toLocalDate(), null, null, null);
 
 	}

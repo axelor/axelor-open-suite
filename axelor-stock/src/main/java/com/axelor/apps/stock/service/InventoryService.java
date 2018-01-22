@@ -296,21 +296,21 @@ public class InventoryService {
 			}
 		}
 
-		List<StockLocationLine> detailsLocationLineList = inventory.getStockLocation().getDetailsLocationLineList();
+		List<StockLocationLine> detailsStockLocationLineList = inventory.getStockLocation().getDetailsStockLocationLineList();
 
-		if (detailsLocationLineList != null) {
-			for (StockLocationLine detailsLocationLine : detailsLocationLineList) {
-				Product product = detailsLocationLine.getProduct();
-				TrackingNumber trackingNumber = detailsLocationLine.getTrackingNumber();
+		if (detailsStockLocationLineList != null) {
+			for (StockLocationLine detailsStockLocationLine : detailsStockLocationLineList) {
+				Product product = detailsStockLocationLine.getProduct();
+				TrackingNumber trackingNumber = detailsStockLocationLine.getTrackingNumber();
 				BigDecimal realQty = realQties.get(Pair.of(product, trackingNumber));
 				if (realQty != null) {
-					detailsLocationLine.setLastInventoryRealQty(realQty);
-					detailsLocationLine.setLastInventoryDateT(inventory.getDateT());
+					detailsStockLocationLine.setLastInventoryRealQty(realQty);
+					detailsStockLocationLine.setLastInventoryDateT(inventory.getDateT());
 				}
 				
 				String rack = realRacks.get(product);
 				if (rack != null) {
-					detailsLocationLine.setRack(rack);
+					detailsStockLocationLine.setRack(rack);
 				}
 			}
 		}
@@ -382,7 +382,7 @@ public class InventoryService {
 	public StockMove createStockMoveHeader(Inventory inventory, Company company, StockLocation toLocation, LocalDate inventoryDate, String name) throws AxelorException  {
 
 		StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(null, null, company, null,
-				stockConfigService.getInventoryVirtualLocation(stockConfigService.getStockConfig(company)), toLocation, inventoryDate, inventoryDate, null, null, null);
+				stockConfigService.getInventoryVirtualStockLocation(stockConfigService.getStockConfig(company)), toLocation, inventoryDate, inventoryDate, null, null, null);
 
 		stockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
 		stockMove.setName(name);
@@ -417,7 +417,7 @@ public class InventoryService {
 
 	public List<? extends StockLocationLine> getStockLocationLines(Inventory inventory)  {
 
-		String query = "(self.stockLocation = ? OR self.detailsLocation = ?)";
+		String query = "(self.stockLocation = ? OR self.detailsStockLocation = ?)";
 		List<Object> params = new ArrayList<>();
 
 		params.add(inventory.getStockLocation());

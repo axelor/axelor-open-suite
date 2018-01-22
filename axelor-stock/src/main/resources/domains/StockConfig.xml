@@ -10,11 +10,11 @@
     
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
-    <many-to-one name="defaultLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Default location"/>
+    <many-to-one name="defaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Default stock location"/>
 
-   	<many-to-one name="customerVirtualLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Customer virtual location"/>
-    <many-to-one name="supplierVirtualLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Supplier virtual location"/>
-    <many-to-one name="inventoryVirtualLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Inventory virtual location"/>
+   	<many-to-one name="customerVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Customer virtual stock location"/>
+    <many-to-one name="supplierVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Supplier virtual stock location"/>
+    <many-to-one name="inventoryVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Inventory virtual stock location"/>
     
 	<many-to-one name="customsWeightUnit" ref="com.axelor.apps.base.db.Unit" title="Unit of weight"/>
 

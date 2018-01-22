@@ -84,10 +84,10 @@ public interface IExceptionMessage {
 	 * Stock Config Service
 	 */
 	static final String STOCK_CONFIG_1 = /*$$(*/ "You must configure a Stock module for the company %s" /*)*/;
-	static final String STOCK_CONFIG_2 = /*$$(*/ "You must configure an inventory virtual location for the company %s" /*)*/;
-	static final String STOCK_CONFIG_3 = /*$$(*/ "You must configure a supplier virtual location for the company %s" /*)*/;
-	static final String STOCK_CONFIG_4 = /*$$(*/ "You must configure a customer virtual location for the company %s" /*)*/;
-	static final String STOCK_CONFIG_5 = /*$$(*/ "You must configure a default location for the company %s" /*)*/;
+	static final String STOCK_CONFIG_2 = /*$$(*/ "You must configure an inventory virtual stock location for the company %s" /*)*/;
+	static final String STOCK_CONFIG_3 = /*$$(*/ "You must configure a supplier virtual stock location for the company %s" /*)*/;
+	static final String STOCK_CONFIG_4 = /*$$(*/ "You must configure a customer virtual stock location for the company %s" /*)*/;
+	static final String STOCK_CONFIG_5 = /*$$(*/ "You must configure a default stock location for the company %s" /*)*/;
 
 	/**
 	 * Location Controller

@@ -141,7 +141,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 				externalReference, orderDate, priceList, clientPartner, team);
 
 		if(stockLocation == null)  {
-			stockLocation = Beans.get(StockLocationService.class).getLocation(company);
+			stockLocation = Beans.get(StockLocationService.class).getDefaultStockLocation(company);
 		}
 		
 		saleOrder.setStockLocation(stockLocation);

@@ -18,7 +18,7 @@
 package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.service.LocationSaveService;
+import com.axelor.apps.stock.service.StockLocationSaveService;
 import com.axelor.inject.Beans;
 
 public class StockLocationStockRepository extends StockLocationRepository {
@@ -30,7 +30,7 @@ public class StockLocationStockRepository extends StockLocationRepository {
      */
     @Override
     public StockLocation save(StockLocation entity) {
-        Beans.get(LocationSaveService.class).removeForbiddenDefaultLocation(entity);
+        Beans.get(StockLocationSaveService.class).removeForbiddenDefaultStockLocation(entity);
         return super.save(entity);
     }
 }

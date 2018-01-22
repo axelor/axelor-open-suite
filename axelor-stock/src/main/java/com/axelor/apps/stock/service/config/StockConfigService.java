@@ -44,43 +44,43 @@ public class StockConfigService
 	
 	/******************************** LOCATION ********************************************/
 	
-	public StockLocation getInventoryVirtualLocation(StockConfig stockConfig) throws AxelorException  {
+	public StockLocation getInventoryVirtualStockLocation(StockConfig stockConfig) throws AxelorException  {
 		
-		if (stockConfig.getInventoryVirtualLocation() == null) {
+		if (stockConfig.getInventoryVirtualStockLocation() == null) {
 			throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_2), stockConfig.getCompany().getName());
 		}
 		
-		return stockConfig.getInventoryVirtualLocation();
+		return stockConfig.getInventoryVirtualStockLocation();
 		
 	}
 	
-	public StockLocation getSupplierVirtualLocation(StockConfig stockConfig) throws AxelorException  {
+	public StockLocation getSupplierVirtualStockLocation(StockConfig stockConfig) throws AxelorException  {
 		
-		if (stockConfig.getSupplierVirtualLocation() == null) {
+		if (stockConfig.getSupplierVirtualStockLocation() == null) {
 			throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_3), stockConfig.getCompany().getName());
 		}
 		
-		return stockConfig.getSupplierVirtualLocation();
+		return stockConfig.getSupplierVirtualStockLocation();
 		
 	}
 	
-	public StockLocation getCustomerVirtualLocation(StockConfig stockConfig) throws AxelorException  {
+	public StockLocation getCustomerVirtualStockLocation(StockConfig stockConfig) throws AxelorException  {
 		
-		if (stockConfig.getCustomerVirtualLocation() == null) {
+		if (stockConfig.getCustomerVirtualStockLocation() == null) {
 			throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_4), stockConfig.getCompany().getName());
 		}
 		
-		return stockConfig.getCustomerVirtualLocation();
+		return stockConfig.getCustomerVirtualStockLocation();
 		
 	}
 
-	public StockLocation getDefaultLocation(StockConfig stockConfig) throws AxelorException  {
+	public StockLocation getDefaultStockLocation(StockConfig stockConfig) throws AxelorException  {
 
-		if (stockConfig.getDefaultLocation() == null) {
+		if (stockConfig.getDefaultStockLocation() == null) {
 			throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_5), stockConfig.getCompany().getName());
 		}
 
-		return stockConfig.getDefaultLocation();
+		return stockConfig.getDefaultStockLocation();
 
 	}
 }
