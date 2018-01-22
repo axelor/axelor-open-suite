@@ -121,7 +121,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 		paymentScheduleLine.setScheduleLineSeq(scheduleLineSeq);
 		paymentScheduleLine.setScheduleDate(scheduleDate);
 		paymentScheduleLine.setInTaxAmount(inTaxAmount);
-		paymentScheduleLine.setStatusSelect(PaymentScheduleLineRepository.STATUS_IN_PROGRESS);
+		paymentScheduleLine.setStatusSelect(PaymentScheduleLineRepository.STATUS_DRAFT);
 
 		log.debug("Création de la ligne de l'échéancier numéro {} pour la date du {} et la somme de {}",
 				new Object[] { paymentScheduleLine.getScheduleLineSeq(), paymentScheduleLine.getScheduleDate(),
