@@ -52,8 +52,8 @@
 		</panel>
 		
 		<panel sidebar="true" name="actions" title="Actions" stacked="true">
-			<button name="confirmPaymentVoucher" title="Confirm payment" onClick="action-group-account-payment-voucher-confirm-click" showIf="statusSelect == 1"/>
-			<button name="printPaymentVoucher" title="Print receipt" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher" showIf="statusSelect == 2"/>
+			<button name="confirmPaymentVoucher" title="Confirm payment" hidden="true" onClick="action-group-account-payment-voucher-confirm-click"/>
+			<button name="printPaymentVoucher" title="Print receipt" hidden="true" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher"/>
 		</panel>
 		
 		<panel name="payer" title="Payer" itemSpan="12" readonlyIf="statusSelect == 2">
