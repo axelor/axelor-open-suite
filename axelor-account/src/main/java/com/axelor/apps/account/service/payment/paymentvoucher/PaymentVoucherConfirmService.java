@@ -229,9 +229,9 @@ public class PaymentVoucherConfirmService  {
 		
 		if(paymentVoucher.getPayVoucherElementToPayList() == null)  {   return;  }
 		
-		paymentVoucher.getPayVoucherElementToPayList().clear();
+		paymentVoucher.getPayVoucherDueElementList().clear();
 		
-		List<PayVoucherElementToPay> payVoucherElementToPayToRemove = Lists.newArrayList();
+		List<PayVoucherElementToPay> payVoucherElementToPayToRemove = new ArrayList<>();
 		
 		for(PayVoucherElementToPay payVoucherElementToPay : paymentVoucher.getPayVoucherElementToPayList())  {
 			
