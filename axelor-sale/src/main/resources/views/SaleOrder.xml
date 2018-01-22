@@ -18,11 +18,12 @@
         <field name="endOfValidityDate" hidden="true"/>
         <field name="saleOrderSeq"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
-        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
         <field name="creationDate"/>
+        <field name="exTaxTotal" aggregate="sum"/>
         <field name="inTaxTotal" aggregate="sum"/>
+        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="statusSelect"/>
         <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
@@ -43,11 +44,12 @@
         <field name="endOfValidityDate" hidden="true"/>
         <field name="saleOrderSeq"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
-        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
-        <field name="creationDate"/>
+        <field name="confirmationDate"/>
+        <field name="exTaxTotal" aggregate="sum"/>
         <field name="inTaxTotal" aggregate="sum"/>
+        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="statusSelect"/>
         <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
@@ -59,11 +61,12 @@
 	    </toolbar>
         <field name="saleOrderSeq"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
-        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
         <field name="creationDate"/>
+        <field name="exTaxTotal" aggregate="sum"/>
         <field name="inTaxTotal" aggregate="sum"/>
+        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="statusSelect"/>
         <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
@@ -77,10 +80,11 @@
 	    </menubar>
         <field name="saleOrderSeq"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
-        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="externalReference"/>
         <field name="creationDate"/>
+        <field name="exTaxTotal" aggregate="sum"/>
         <field name="inTaxTotal" aggregate="sum"/>
+        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="statusSelect"/>
         <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
@@ -93,7 +97,9 @@
         <field name="saleOrderSeq"/>
         <field name="externalReference"/>
         <field name="creationDate"/>
+        <field name="exTaxTotal" aggregate="sum"/>
         <field name="inTaxTotal" aggregate="sum"/>
+        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="statusSelect"/>
         <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
         <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
@@ -409,11 +415,12 @@
 	<grid name="sale-order-template-grid" title="Templates" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
         <field name="saleOrderSeq"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
-        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
         <field name="creationDate"/>
+        <field name="exTaxTotal" aggregate="sum"/>
         <field name="inTaxTotal" aggregate="sum"/>
+        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     </grid>
 
     <form name="sale-order-template-form-wizard" title="Template" model="com.axelor.apps.sale.db.SaleOrder"
@@ -535,11 +542,12 @@
 	<grid name="sale-order-grid-client" title="Sale orders" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
         <field name="saleOrderSeq"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
-        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
         <field name="creationDate"/>
+        <field name="exTaxTotal" aggregate="sum"/>
         <field name="inTaxTotal" aggregate="sum"/>
+        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="statusSelect"/>
         <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
     </grid>
