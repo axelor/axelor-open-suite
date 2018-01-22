@@ -52,9 +52,6 @@ import com.google.common.base.Strings;
 public class BankOrderFileService {
 
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-    public static final String SEPA_TYPE_CORE = "CORE";
-    public static final String SEPA_TYPE_SBB = "SBB";
 
 	protected static final String FILE_EXTENSION_XML = "xml";
 	protected static final String FILE_EXTENSION_TXT = "txt";
