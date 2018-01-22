@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -28,14 +29,20 @@ import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class ProjectBusinessService extends ProjectServiceImpl {
 
 	@Inject
 	protected AppBusinessProjectService appBusinessProjectService;
+
+    @Inject
+    protected ProjectRepository projectRepo;
 
 	@Inject
 	public ProjectBusinessService(ProjectPlanningRepository projectPlanningRepo, ProjectRepository projectRepository) {
@@ -86,4 +93,22 @@ public class ProjectBusinessService extends ProjectServiceImpl {
 		saleOrderLine.setProject(project);
 		return project;
 	}
+
+    /**
+     * Manages invoice lines for project dashlets
+     *
+     * @param invoiceLine InvoiceLine to add or remove
+     * @param project Project to add or remove the invoice line
+     */
+    @Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void manageInvoiceLine(InvoiceLine invoiceLine, Project project) {
+        List<InvoiceLine> invoiceLines = project.getInvoiceLineList();
+        if (invoiceLines.contains(invoiceLine)) {
+            project.removeInvoiceLineListItem(invoiceLine);
+        } else {
+            project.addInvoiceLineListItem(invoiceLine);
+        }
+
+        projectRepo.save(project);
+    }
 }

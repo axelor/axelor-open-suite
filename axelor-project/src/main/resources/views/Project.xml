@@ -161,9 +161,19 @@
 				<panel-related field="purchaseOrderLineList" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowPurchaseOrderLineRelatedToProject()" if-module="axelor-business-project" colSpan="12" form-view="purchase-order-line-project-form" grid-view="purchase-order-line-project-grid" canSelect="true" canNew="false" canEdit="true" editable="true"/>
 				<panel-related field="saleOrderLineList" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject()" if-module="axelor-business-project" colSpan="12" form-view="sale-order-line-project-form" grid-view="sale-order-line-project-grid" canSelect="true" canNew="false" canEdit="true" editable="true"/>
 				<panel-related field="expensesLineList" if="eval: __config__.app.isApp('business-project') &amp;&amp;  __config__.app.getApp('business-project').getShowExpenseLineRelatedToProject()" if-module="axelor-business-project" colSpan="12" form-view="expense-line-project-form" grid-view="expense-line-project-grid" canSelect="true" canNew="false" canEdit="true" editable="true"/>
-				<panel-related field="invoiceLineList" if="eval:  __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()" if-module="axelor-business-production" title="Purchase invoice lines" colSpan="12" domain="self.operationTypeSelect = 1" canSelect="true" canNew="false" canEdit="false"/>
-				<panel-related field="invoiceLineList" if="eval:  __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()" if-module="axelor-business-production" title="Sale invoice lines" colSpan="12" domain="self.operationTypeSelect = 3" canSelect="true" canNew="false" canEdit="false"/>
-				<panel-related field="productionOrderList" if="eval:  __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject()" if-module="axelor-business-production" colSpan="12" canSelect="true" canNew="false" canEdit="false"/>
+                <panel colSpan="12" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()" if-module="axelor-business-production">
+                    <panel-dashlet action="action-project-dashlet-show-purchase-invoice-lines" colSpan="12"/>
+                    <field title="Purchase invoice line" name="$purchaseInvoiceLine" domain="self.invoice.operationTypeSelect = 1" onChange="action-project-attrs-ro-purchase-order-line-buttons" widget="ManyToOne" target="com.axelor.apps.account.db.InvoiceLine"/>
+                    <button name="addPurchaseInvoiceLine" title="Add" colSpan="3" onClick="com.axelor.apps.businessproject.web.ProjectController:managePurchaseInvoiceLine"/>
+                    <button name="remPurchaseInvoiceLine" title="Remove" readonly="true" colSpan="3" onClick="com.axelor.apps.businessproject.web.ProjectController:managePurchaseInvoiceLine"/>
+                </panel>
+                <panel colSpan="12" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()" if-module="axelor-business-production">
+                    <panel-dashlet action="action-project-dashlet-show-sale-invoice-lines" colSpan="12"/>
+                    <field title="Sale invoice line" name="$saleInvoiceLine" domain="self.invoice.operationTypeSelect = 3" onChange="action-project-attrs-ro-sale-order-line-buttons" widget="ManyToOne" target="com.axelor.apps.account.db.InvoiceLine"/>
+                    <button name="addSaleInvoiceLine" title="Add" colSpan="3" onClick="com.axelor.apps.businessproject.web.ProjectController:manageSaleInvoiceLine"/>
+                    <button name="remSaleInvoiceLine" title="Remove" readonly="true" colSpan="3" onClick="com.axelor.apps.businessproject.web.ProjectController:manageSaleInvoiceLine"/>
+                </panel>
+				<panel-related field="productionOrderList" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject()" if-module="axelor-business-production" colSpan="12" canSelect="true" canNew="false" canEdit="false"/>
 			</panel>
 
 			<panel title="Other elements to invoice" name="otherElementsToInvoice" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" showIf="isBusinessProject">
@@ -444,6 +454,18 @@
 		<domain>self.assignedTo.id IN (:_userIds) </domain>
 		 <context name="_userIds" expr="eval: userSet.collect{it.id}"/>
 	 	</action-view>
+
+    <action-view name="action-project-dashlet-show-purchase-invoice-lines" title="Purchase invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
+        <view type="grid" name="invoice-line-grid"/>
+        <view type="form" name="invoice-line-form"/>
+        <domain>self.invoice.operationTypeSelect = 1 AND self.project.id = :_id</domain>
+    </action-view>
+
+    <action-view name="action-project-dashlet-show-sale-invoice-lines" title="Sale invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
+        <view type="grid" name="invoice-line-grid"/>
+        <view type="form" name="invoice-line-form"/>
+        <domain>self.invoice.operationTypeSelect = 3 AND self.project.id = :_id</domain>
+    </action-view>
 	 
 	<action-record name="action-project-record-compute-exTaxTotal" model="com.axelor.apps.project.db.Project">
 		<field name="exTaxTotal" expr="eval: price*qty"/>
@@ -552,6 +574,16 @@
 
     <action-attrs name="action-project-attrs-expense-lines-set-domain" model="com.axelor.apps.project.db.Project">
         <attribute for="expensesLineList" name="domain" expr="eval: &quot;self.project.id = ${id} AND self.invoiced = false&quot;"/>
+    </action-attrs>
+
+    <action-attrs name="action-project-attrs-ro-purchase-order-line-buttons">
+        <attribute for="addPurchaseInvoiceLine" name="readonly" expr="eval: invoiceLineList.collect{ (Integer) it.id }.contains((Integer) purchaseInvoiceLine.id)"/>
+        <attribute for="remPurchaseInvoiceLine" name="readonly" expr="eval: !invoiceLineList.collect{ (Integer) it.id }.contains((Integer) purchaseInvoiceLine.id)"/>
+    </action-attrs>
+
+    <action-attrs name="action-project-attrs-ro-sale-order-line-buttons">
+        <attribute for="addSaleInvoiceLine" name="readonly" expr="eval: invoiceLineList.collect{ (Integer) it.id }.contains((Integer) saleInvoiceLine.id)"/>
+        <attribute for="remSaleInvoiceLine" name="readonly" expr="eval: !invoiceLineList.collect{ (Integer) it.id }.contains((Integer) saleInvoiceLine.id)"/>
     </action-attrs>
 
 </object-views>
