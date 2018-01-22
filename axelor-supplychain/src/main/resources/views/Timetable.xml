@@ -11,7 +11,7 @@
        <field name="productName" required="true" readonlyIf="invoice" if="__config__.general.getAllowTimetableInvoicing()"/>
        <field name="unit" readonlyIf="invoice" if="__config__.general.getAllowTimetableInvoicing()"/>
        <field name="qty" readonlyIf="invoice" if="__config__.general.getAllowTimetableInvoicing()"/>
-       <button name="generateInvoice" readonlyIf="invoice" help="Generate Invoice" icon="fa-credit-card" onClick="save, action-timetable-method-generate-invoice" if="__config__.general.getAllowTimetableInvoicing()"/>
+       <button name="generateInvoice" readonlyIf="!id || invoice" help="Generate Invoice" icon="fa-credit-card" onClick="save, action-timetable-method-generate-invoice" if="__config__.general.getAllowTimetableInvoicing()"/>
         <field name="invoice" hidden="true"/>
     </grid>
  
