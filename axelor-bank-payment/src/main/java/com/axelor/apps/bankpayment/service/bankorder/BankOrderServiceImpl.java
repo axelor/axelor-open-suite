@@ -50,9 +50,9 @@ import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
-import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800102Service;
+import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile008Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100103Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160ICTService;
@@ -532,19 +532,19 @@ public class BankOrderServiceImpl implements BankOrderService {
 	    		break;
 
             case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SDD:
-                file = new BankOrderFile00800101Service(bankOrder, BankOrderFileService.SEPA_TYPE_CORE).generateFile();
+                file = new BankOrderFile00800101Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_CORE).generateFile();
                 break;
 
             case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SBB:
-                file = new BankOrderFile00800101Service(bankOrder, BankOrderFileService.SEPA_TYPE_SBB).generateFile();
+                file = new BankOrderFile00800101Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_SBB).generateFile();
                 break;
 
             case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SDD:
-                file = new BankOrderFile00800102Service(bankOrder, BankOrderFileService.SEPA_TYPE_CORE).generateFile();
+                file = new BankOrderFile00800102Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_CORE).generateFile();
                 break;
 
             case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SBB:
-                file = new BankOrderFile00800102Service(bankOrder, BankOrderFileService.SEPA_TYPE_SBB).generateFile();
+                file = new BankOrderFile00800102Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_SBB).generateFile();
                 break;
 
             default:

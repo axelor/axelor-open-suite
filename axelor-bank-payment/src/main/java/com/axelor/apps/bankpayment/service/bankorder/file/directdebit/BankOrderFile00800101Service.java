@@ -29,7 +29,6 @@ import javax.xml.datatype.DatatypeFactory;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
-import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.AccountIdentification3Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.BranchAndFinancialInstitutionIdentification3;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.CashAccount7;
@@ -62,7 +61,7 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
-public class BankOrderFile00800101Service extends BankOrderFileService {
+public class BankOrderFile00800101Service extends BankOrderFile008Service {
 
     private ObjectFactory factory;
     private String sepaType;
