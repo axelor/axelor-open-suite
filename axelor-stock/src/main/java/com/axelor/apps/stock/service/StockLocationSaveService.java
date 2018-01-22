@@ -46,7 +46,7 @@ public class StockLocationSaveService {
 						+ " AND (self.defaultStockLocation.id = :stockLocationId)")
 				.bind("partnerId", partnerId)
 				.bind("companyId", companyId)
-				.bind("stockLocationId", stockLocation.getId())
+				.bind("stockLocationId", defaultStockLocation.getId())
 				.fetch();
 		for (PartnerDefaultStockLocation partnerDefaultStockLocation : partnerDefaultStockLocations) {
 			Partner partnerToClean = partnerDefaultStockLocation.getPartner();
