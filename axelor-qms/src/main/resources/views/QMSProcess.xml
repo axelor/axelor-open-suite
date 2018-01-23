@@ -9,7 +9,7 @@
 
 			<field name="title" title="	Title" nullable="false" required="true" colSpan="12" />
 
-			<field name="responsibles" title="Responsibles" widget="tagSelect" colSpan="12" canNew="false"/>
+			<field name="responsibles" title="Responsibles" widget="TagSelect" colSpan="12" canNew="false" form-view="employee-form"/>
 		</panel>
 	</form>
 

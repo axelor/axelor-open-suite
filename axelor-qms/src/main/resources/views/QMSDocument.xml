@@ -9,7 +9,7 @@
 
 			<field name="title" title="	Title" nullable="false" required="true" colSpan="12" />
 
-			<field name="responsibles" title="Responsibles" colSpan="12" grid-view="employee-lite-grid" form-view="employee-form" canNew="false" canEdit="false"/>
+			<field name="responsibles" title="Responsibles" widget="TagSelect" colSpan="12" canNew="false"/>
 
 			<!-- We need to save on change in order to have proper versionIndex computation (putting save in onNew doesn't work…) -->
 			<panel-related field="versions" form-view="qms-document-version-form" grid-view="qms-document-versions-grid" onChange="save" colSpan="12" readonlyIf="id == null"/>

@@ -22,7 +22,7 @@
 			<field name="description" colSpan="12" height="8" widget="Html" />
 
 			<field name="partner" domain="(self.isCustomer = true or self.isSupplier = true) and self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12" hideIf="statusSelect &gt; 1 &amp;&amp; partner == null" onChange="action-qms-improvement-form-group-partner-change"/>
-			<field name="contactPartners" widget="tagSelect" domain="self.isContact = true" form-view="partner-form" grid-view="partner-grid" colSpan="12" hideIf="partner == null || (statusSelect &gt; 1 &amp;&amp; (contactPartners == null || contactPartners.length == 0))" onSelect="action-qms-improvement-form-attrs-domain-on-contact-partners"/>
+			<field name="contactPartners" widget="TagSelect" domain="self.isContact = true" form-view="partner-form" grid-view="partner-grid" colSpan="12" hideIf="partner == null || (statusSelect &gt; 1 &amp;&amp; (contactPartners == null || contactPartners.length == 0))" onSelect="action-qms-improvement-form-attrs-domain-on-contact-partners"/>
 		</panel>
 
 		<panel name="assignmentInformation" title="Assignment" canCollapse="true" hideIf="statusSelect &lt; 2" readonlyIf="statusSelect &gt;= 3">
