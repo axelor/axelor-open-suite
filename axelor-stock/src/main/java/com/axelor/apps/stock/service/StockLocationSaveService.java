@@ -21,36 +21,36 @@ import java.util.List;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.stock.db.PartnerDefaultLocation;
+import com.axelor.apps.stock.db.PartnerDefaultStockLocation;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.repo.PartnerDefaultLocationRepository;
+import com.axelor.apps.stock.db.repo.PartnerDefaultStockLocationRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 
-public class LocationSaveService {
+public class StockLocationSaveService {
 
 	/**
-	 * Remove default locations in partner that are not linked with this location anymore.
-	 * @param stockLocation
+	 * Remove default stock locations in partner that are not linked with this stock location anymore.
+	 * @param defaultStockLocation
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void removeForbiddenDefaultLocation(StockLocation stockLocation) {
-	    Partner currentPartner = stockLocation.getPartner();
-		Company currentCompany = stockLocation.getCompany();
+	public void removeForbiddenDefaultStockLocation(StockLocation defaultStockLocation) {
+	    Partner currentPartner = defaultStockLocation.getPartner();
+		Company currentCompany = defaultStockLocation.getCompany();
 	    Long partnerId = currentPartner != null ? currentPartner.getId() : 0L;
 		Long companyId = currentCompany != null ? currentCompany.getId() : 0L;
-	    PartnerDefaultLocationRepository partnerDefaultRepo = Beans.get(PartnerDefaultLocationRepository.class);
-		List<PartnerDefaultLocation> partnerDefaultLocations = partnerDefaultRepo.all()
+	    PartnerDefaultStockLocationRepository partnerDefaultRepo = Beans.get(PartnerDefaultStockLocationRepository.class);
+		List<PartnerDefaultStockLocation> partnerDefaultStockLocations = partnerDefaultRepo.all()
 				.filter("(self.partner.id != :partnerId OR self.company.id != :companyId)"
 						+ " AND (self.defaultStockLocation.id = :stockLocationId)")
 				.bind("partnerId", partnerId)
 				.bind("companyId", companyId)
-				.bind("stockLocationId", stockLocation.getId())
+				.bind("stockLocationId", defaultStockLocation.getId())
 				.fetch();
-		for (PartnerDefaultLocation partnerDefaultLocation : partnerDefaultLocations) {
-			Partner partnerToClean = partnerDefaultLocation.getPartner();
-			partnerToClean.removePartnerDefaultLocationListItem(partnerDefaultLocation);
+		for (PartnerDefaultStockLocation partnerDefaultStockLocation : partnerDefaultStockLocations) {
+			Partner partnerToClean = partnerDefaultStockLocation.getPartner();
+			partnerToClean.removePartnerDefaultStockLocationListItem(partnerDefaultStockLocation);
 		}
 
 	}

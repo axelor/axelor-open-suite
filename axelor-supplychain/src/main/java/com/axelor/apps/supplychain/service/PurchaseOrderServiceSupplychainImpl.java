@@ -154,7 +154,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 			StockLocation startLocation = Beans.get(StockLocationRepository.class).findByPartner(purchaseOrder.getSupplierPartner());
 
 			if (startLocation == null) {
-				startLocation = stockConfigService.getSupplierVirtualLocation(stockConfig);
+				startLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
 			}
 			if (startLocation == null) {
 				throw new AxelorException(purchaseOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PURCHASE_ORDER_1), company.getName());

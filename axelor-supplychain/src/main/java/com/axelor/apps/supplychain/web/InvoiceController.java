@@ -96,7 +96,7 @@ public class InvoiceController {
 			//Useful to determine if a difference exists between price lists of all purchase orders
 			boolean existPriceListDiff = false;
 			PaymentMode commonPaymentMode = null;
-			//Useful to determine if a difference exists between locations of all purchase orders
+			//Useful to determine if a difference exists between stock locations of all purchase orders
 			boolean existPaymentModeDiff = false;
 			SaleOrder commonSaleOrder = null;
 			//Useful to check if all sale orders are null (since this field is not required)

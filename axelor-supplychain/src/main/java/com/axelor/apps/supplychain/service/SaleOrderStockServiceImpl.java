@@ -36,7 +36,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderService;
-import com.axelor.apps.stock.db.PartnerDefaultLocation;
+import com.axelor.apps.stock.db.PartnerDefaultStockLocation;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -125,10 +125,10 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
 	@Override
 	public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException  {
-		StockLocation toLocation = findSaleOrderToLocation(saleOrder);
+		StockLocation toStockLocation = findSaleOrderToStockLocation(saleOrder);
 
 		StockMove stockMove = stockMoveService.createStockMove(null, saleOrder.getDeliveryAddress(), company,
-				saleOrder.getClientPartner(), saleOrder.getStockLocation(), toLocation, null, saleOrder.getShipmentDate(),
+				saleOrder.getClientPartner(), saleOrder.getStockLocation(), toStockLocation, null, saleOrder.getShipmentDate(),
 				saleOrder.getDescription(), saleOrder.getShipmentMode(), saleOrder.getFreightCarrierMode());
 
 		stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
@@ -139,44 +139,44 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
 	/**
 	 * @param saleOrder
-	 * @return  the first default location corresponding to the partner
-	 * 			and the company. Choose first the external location, else virtual.
+	 * @return  the first default stock location corresponding to the partner
+	 * 			and the company. Choose first the external stock location, else virtual.
 	 *
-	 * 			null if there is no default location
+	 * 			null if there is no default stock location
 	 */
-	protected StockLocation findSaleOrderToLocation(SaleOrder saleOrder) throws AxelorException {
+	protected StockLocation findSaleOrderToStockLocation(SaleOrder saleOrder) throws AxelorException {
 		Partner partner = saleOrder.getClientPartner();
 		Company company = saleOrder.getCompany();
 	    if (partner == null || company == null) {
 	    	return null;
 		}
-		List<PartnerDefaultLocation> defaultLocations = partner.getPartnerDefaultLocationList();
-	    if (defaultLocations == null) {
+		List<PartnerDefaultStockLocation> defaultStockLocations = partner.getPartnerDefaultStockLocationList();
+	    if (defaultStockLocations == null) {
 	    	return null;
 		}
-		List<StockLocation> candidateLocations = defaultLocations
+		List<StockLocation> candidateStockLocations = defaultStockLocations
 				.stream()
 				.filter(Objects::nonNull)
-				.filter(partnerDefaultLocation1 -> partnerDefaultLocation1.getCompany().equals(company))
-				.map(PartnerDefaultLocation::getDefaultStockLocation)
+				.filter(partnerDefaultStockLocation1 -> partnerDefaultStockLocation1.getCompany().equals(company))
+				.map(PartnerDefaultStockLocation::getDefaultStockLocation)
 				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 
-	    //check external or internal location
-	    Optional<StockLocation> candidateNonVirtualLocation = candidateLocations
+	    //check external or internal stock location
+	    Optional<StockLocation> candidateNonVirtualStockLocation = candidateStockLocations
 				.stream()
 				.filter(stockLocation -> stockLocation.getTypeSelect() == StockLocationRepository.TYPE_EXTERNAL
 						|| stockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL)
 				.findAny();
-	    if (candidateNonVirtualLocation.isPresent()) {
-	    	return candidateNonVirtualLocation.get();
+	    if (candidateNonVirtualStockLocation.isPresent()) {
+	    	return candidateNonVirtualStockLocation.get();
 		} else {
-	    	//no external location found, search for virtual
-	    	return candidateLocations
+	    	//no external stock location found, search for virtual
+	    	return candidateStockLocations
 					.stream()
 					.filter(stockLocation -> stockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL)
 					.findAny()
-					.orElse(stockConfigService.getCustomerVirtualLocation(stockConfigService.getStockConfig(company)));
+					.orElse(stockConfigService.getCustomerVirtualStockLocation(stockConfigService.getStockConfig(company)));
 		}
 	}
 

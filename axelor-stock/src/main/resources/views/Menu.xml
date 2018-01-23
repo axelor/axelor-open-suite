@@ -15,7 +15,7 @@
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-form"/>
 		<view-param name="search-filters" value="customer-deliveries-filters"/>
-		<domain>self.toLocation.typeSelect = 2 OR self.toLocation.typeSelect = 3</domain>
+		<domain>self.toStockLocation.typeSelect = 2 OR self.toStockLocation.typeSelect = 3</domain>
 		<context name="_typeSelect" expr="2"/>
 	</action-view>
 	
@@ -28,7 +28,7 @@
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-form"/>
 		<view-param name="search-filters" value="supplier-arrivals-filters"/>
-		<domain>self.fromLocation.typeSelect = 2 OR self.fromLocation.typeSelect = 3</domain>
+		<domain>self.fromStockLocation.typeSelect = 2 OR self.fromStockLocation.typeSelect = 3</domain>
 		<context name="_typeSelect" expr="3"/>
 		<context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
 	</action-view>	
@@ -67,7 +67,7 @@
 		<view type="grid" name="stock-move-grid"/>
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-form"/>
-		<domain>self.statusSelect = 2 and self.toLocation.id = 5</domain>
+		<domain>self.statusSelect = 2 and self.toStockLocation.id = 5</domain>
 	</action-view>	
 	
 	<menuitem name="stock-root-outcoming-production" parent="stock-root-planned"
@@ -78,7 +78,7 @@
 		<view type="grid" name="stock-move-grid"/>
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-form"/>
-		<domain>self.statusSelect = 2 and self.fromLocation.id = 5</domain>
+		<domain>self.statusSelect = 2 and self.fromStockLocation.id = 5</domain>
 	</action-view>	
 	
 	<menuitem name="stock-root-incoming-supplier" parent="stock-root-planned"
@@ -89,7 +89,7 @@
 		<view type="grid" name="stock-move-grid"/>
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-form"/>
-		<domain>self.statusSelect = 2 and self.fromLocation.id = 3</domain>
+		<domain>self.statusSelect = 2 and self.fromStockLocation.id = 3</domain>
 	</action-view>	
 	
 	<menuitem name="stock-root-outcoming-supplier" parent="stock-root-planned"
@@ -100,7 +100,7 @@
 		<view type="grid" name="stock-move-grid"/>
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-form"/>
-		<domain>self.statusSelect = 2 and self.toLocation.id = 3</domain>
+		<domain>self.statusSelect = 2 and self.toStockLocation.id = 3</domain>
 	</action-view>	
 	
 	<menuitem name="stock-root-outcoming-client" parent="stock-root-planned"
@@ -111,7 +111,7 @@
 		<view type="grid" name="stock-move-grid"/>
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-form"/>
-		<domain>self.statusSelect = 2 and self.toLocation.id = 2</domain>
+		<domain>self.statusSelect = 2 and self.toStockLocation.id = 2</domain>
 	</action-view>	
 	
 	<menuitem name="stock-root-incoming-client" parent="stock-root-planned"
@@ -122,7 +122,7 @@
 		<view type="grid" name="stock-move-grid"/>
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-form"/>
-		<domain>self.statusSelect = 2 and self.fromLocation.id = 2</domain>
+		<domain>self.statusSelect = 2 and self.fromStockLocation.id = 2</domain>
 	</action-view>	
 	
 <!-- END MUST BE DELETED -->

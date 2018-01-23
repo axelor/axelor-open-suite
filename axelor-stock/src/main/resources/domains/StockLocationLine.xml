@@ -17,7 +17,7 @@
 	
     <string name="rack" title="Rack"/>
 	<many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber" title="Tracking Nbr" readonly="true"/>
-	<many-to-one name="detailsLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Location Details" readonly="true"/>
+	<many-to-one name="detailsStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location details" readonly="true"/>
 
 	<decimal name="lastInventoryRealQty"/>
 	<datetime name="lastInventoryDateT" tz="true" title="Last inventory date"/>

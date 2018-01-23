@@ -58,7 +58,7 @@
 	<form name="purchase-order-merge-confirm-form" model="com.axelor.apps.base.db.Wizard" title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-purchaseorder">
 		<panel colSpan="6" colOffset="3">
 			<field name="$priceList" title="Price List" type="many-to-one" target="com.axelor.apps.base.db.PriceList" domain="self.typeSelect = 2 and self.isActive = true" colSpan="6" colOffset="3" width="200px" showIf="priceListToCheck" canSelect="true" form-view="price-list-form" grid-view="price-list-grid"/>
-			<field name="$stockLocation" title="Location" showIf="locationToCheck" if-module="axelor-supplychain" colSpan="6" colOffset="3" width="200px" type="many-to-one" canSelect="true" target="com.axelor.apps.stock.db.StockLocation" domain="self.company = company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid" if="__config__.app.isApp('supplychain')" />
+			<field name="$stockLocation" title="Stock location" showIf="locationToCheck" if-module="axelor-supplychain" colSpan="6" colOffset="3" width="200px" type="many-to-one" canSelect="true" target="com.axelor.apps.stock.db.StockLocation" domain="self.company = company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid" if="__config__.app.isApp('supplychain')" />
 			<field name="$contactPartner" title="Contact partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))" colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<button name="confirm" title="Confirm" onClick="action-group-purchase-order-merge-action" colSpan="12" width="200px"/>
 		</panel>
@@ -331,8 +331,8 @@
     <action-group name="action-group-purchase-order-on-new-actions">
     	<action name="action-purchase-order-record-new"/>
     	<action name="action-purchase-order-record-company-configuration"/>
-    	<action name="action-purchase-order-method-get-location"/>
-    	<action name="action-purchase-order-attrs-location-address"/>
+    	<action name="action-purchase-order-method-get-stock-location"/>
+    	<action name="action-purchase-order-attrs-stock-location-address"/>
     	<action name="action-purchase-order-record-in-ati"/>
     	<action name="action-purchase-order-attrs-in-ati"/>
     	<action name="action-purchase-order-dispaly-price"/>
@@ -355,11 +355,11 @@
     <action-group name="action-group-purchase-order-company-change-actions">
 	    <action name="action-purchase-order-record-company-configuration"/>
 		<action name="action-purchase-order-method-fill-company-bank-details"/>
-	    <action name="action-purchase-order-method-get-location"/>
+	    <action name="action-purchase-order-method-get-stock-location"/>
     </action-group>
 
     <action-group name="action-group-purchase-order-on-validate-actions">
-    	<action name="action-purchase-order-validate-location"/>
+    	<action name="action-purchase-order-validate-stock-location"/>
     	<action name="save"/>
     	<action name="action-purchase-order-method-validate"/>
     </action-group>
@@ -398,7 +398,7 @@
     									|| __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2"/>
     </action-attrs>
 
-    <action-attrs name="action-purchase-order-attrs-location-address">
+    <action-attrs name="action-purchase-order-attrs-stock-location-address">
     	<attribute name="value" for="stockLocation.address" expr="eval: stockLocation.address"/>
     </action-attrs>
 
@@ -537,7 +537,7 @@
 		<context name="id" expr="eval: id"/>
 	</action-view>
 
-  	<action-validate name="action-purchase-order-validate-location">
+  	<action-validate name="action-purchase-order-validate-stock-location">
    		<error message="The field 'Stock Location' must be filled." if="stockLocation == null"/>
 	</action-validate>
 

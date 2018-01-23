@@ -42,7 +42,7 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
 
         } else if (isDetailLocationLine && stockLocationLine.getCurrentQty().compareTo(stockLocationLine.getReservedQty()) < 0
                 && ((stockLocationLine.getStockLocation() != null && stockLocationLine.getStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL)
-                || (stockLocationLine.getDetailsLocation() != null && stockLocationLine.getDetailsLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL))) {
+                || (stockLocationLine.getDetailsStockLocation() != null && stockLocationLine.getDetailsStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL))) {
 
             String trackingNumber = "";
             if (stockLocationLine.getTrackingNumber() != null) {

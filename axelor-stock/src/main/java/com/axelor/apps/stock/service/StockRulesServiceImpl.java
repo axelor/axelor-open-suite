@@ -88,7 +88,7 @@ public class StockRulesServiceImpl implements StockRulesService  {
 	 * Called on creating a new purchase or production order.
 	 * Takes into account the reorder qty and the min/ideal quantity in stock rules.
 	 *
-	 * with L the quantity that will be left in the location, M the min/ideal qty,
+	 * with L the quantity that will be left in the stock location, M the min/ideal qty,
 	 * R the reorder quantity and O the quantity to order :
 	 *
 	 * O = max(R, M - L)
@@ -107,11 +107,11 @@ public class StockRulesServiceImpl implements StockRulesService  {
 		BigDecimal stockLocationLineQty = (type == StockRulesRepository.TYPE_CURRENT) ? stockLocationLine.getCurrentQty()
 				: stockLocationLine.getFutureQty();
 
-		// Get the quantity left in location line.
+		// Get the quantity left in stock location line.
 		BigDecimal qtyToOrder = stockLocationLineQty.subtract(qty);
 
 		// The quantity to reorder is the difference between the min/ideal
-		// quantity and the quantity left in the location.
+		// quantity and the quantity left in the stock location.
 		BigDecimal targetQty = stockRules.getUseIdealQty() ? stockRules.getIdealQty() : stockRules.getMinQty();
 		qtyToOrder = targetQty.subtract(qtyToOrder);
 

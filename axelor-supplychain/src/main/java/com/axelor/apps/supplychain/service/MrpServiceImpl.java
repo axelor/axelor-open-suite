@@ -168,7 +168,7 @@ public class MrpServiceImpl implements MrpService  {
 		this.stockLocationList = this.getAllLocationAndSubLocation(mrp.getStockLocation());
 		this.assignProductAndLevel(this.getProductList());
 		
-		// Get the stock for each product on each location
+		// Get the stock for each product on each stock location
 		this.createAvailableStockMrpLines();
 		
 		this.createPurchaseMrpLines();

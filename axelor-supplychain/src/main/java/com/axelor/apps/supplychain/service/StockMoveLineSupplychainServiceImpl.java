@@ -136,7 +136,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 	}
 
 	@Override
-	public void updateLocations(StockLocation fromLocation, StockLocation toLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList,
+	public void updateLocations(StockLocation fromStockLocation, StockLocation toStockLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList,
 								LocalDate lastFutureStockMoveDate, boolean realQty) throws AxelorException {
 		for (StockMoveLine stockMoveLine : stockMoveLineList) {
 
@@ -159,10 +159,10 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 					reservedQty = Beans.get(UnitConversionService.class).convertWithProduct(stockMoveLineUnit, productUnit, reservedQty, stockMoveLine.getProduct());
 				}
 
-				if (toLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-					this.updateAveragePriceLocationLine(toLocation, stockMoveLine, toStatus);
+				if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+					this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, toStatus);
 				}
-				this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
+				this.updateLocations(fromStockLocation, toStockLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
 						lastFutureStockMoveDate, stockMoveLine.getTrackingNumber(), reservedQty);
 				Beans.get(StockLocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct());
 			}

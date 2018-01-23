@@ -1450,7 +1450,7 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'StockLocation.detailsByLocation'</value>
+                                        <value type="javascript">'StockLocation.detailsByStockLocation'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>

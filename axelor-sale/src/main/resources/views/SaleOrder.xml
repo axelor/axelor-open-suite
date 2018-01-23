@@ -787,7 +787,7 @@
 
     <action-group name="action-sale-group-onchange-company">
     	<action name="action-sale-order-record-company-configuration"/>
-    	<action name="action-sale-order-method-get-location" />
+    	<action name="action-supplychain-sale-order-method-get-stock-location" />
         <action name="action-sale-order-method-fill-company-bank-details"/>
     </action-group>
 
@@ -819,7 +819,7 @@
     </action-group>
 
     <action-group name="action-sale-group-confirmed">
-    	<action name="action-supplychain-sale-order-validate-check-location" />
+    	<action name="action-supplychain-sale-order-validate-check-stock-location" />
     	<action name="action-sale-order-method-confirm"/>
     	<action name="action-sale-order-method-generate-project" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
     </action-group>
