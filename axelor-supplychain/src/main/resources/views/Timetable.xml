@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
     
-    <grid name="timetable-grid" title="Timetables" model="com.axelor.apps.supplychain.db.Timetable" editable="true">
+    <grid name="timetable-grid" title="Timetables" model="com.axelor.apps.supplychain.db.Timetable" orderBy="estimatedDate" editable="true">
        <field name="estimatedDate" readonlyIf="invoice"/>
        <field name="amount" readonlyIf="invoice"/>
        <field name="comments" readonlyIf="invoice"/>
