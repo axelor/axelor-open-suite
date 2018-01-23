@@ -505,39 +505,6 @@ public class ExpenseController {
 		}
 	}
 	
-	
-	/**
-	 * This method is used in mobile application.
-	 * @param request
-	 * @param response
-	 */
-	public void removeLines(ActionRequest request, ActionResponse response) {
-
-		Expense expense = request.getContext().asType(Expense.class);
-
-		List<ExpenseLine> expenseLineList = expense.getGeneralExpenseLineList();
-
-		try {
-			if (expenseLineList != null && !expenseLineList.isEmpty()) {
-				Iterator<ExpenseLine> expenseLineIter = expenseLineList.iterator();
-				while (expenseLineIter.hasNext()) {
-					ExpenseLine generalExpenseLine = expenseLineIter.next();
-
-					if (generalExpenseLine.getKilometricExpense() != null
-							&& (expense.getKilometricExpenseLineList() != null
-									&& !expense.getKilometricExpenseLineList().contains(generalExpenseLine)
-									|| expense.getKilometricExpenseLineList() == null)) {
-
-						expenseLineIter.remove();
-					}
-				}
-			}
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-		response.setValue("expenseLineList", expenseLineList);
-	}
-	
 	public void computeKilometricExpense(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
