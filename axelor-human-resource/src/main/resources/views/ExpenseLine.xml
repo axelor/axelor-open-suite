@@ -44,6 +44,7 @@
 		<field name="totalTax" aggregate="sum" readonly="true"/>
 		<field name="comments" readonly="true"/>
 		<field name="toInvoice"/>
+        <field name="invoiced"/>
 	</grid>
 
 	<form name="expense-line-project-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine" canEdit="false">
@@ -61,8 +62,17 @@
 			<field name="totalAmount" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
 			<field name="totalTax" onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution" readonlyIf="expenseProduct.blockExpenseTax == true"/>
 			<field name="untaxedAmount" />
-			<field name="toInvoice"/>
-			<field name="invoiced" showIf="toInvoice"/>
+            <field name="toInvoice" colSpan="3"/>
+            <field name="invoiced" colSpan="3" showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" showTitle="false">
+                <viewer>
+                    <![CDATA[
+                        <h4>
+                            <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoiced" x-translate>Invoiced</span>
+                            <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="!record.invoiced" x-translate>Not invoiced</span>
+                        </h4>
+                    ]]>
+                </viewer>
+			</field>
 			<field name="justification"/>
 			<field name="comments" colSpan="12"/>
 			<field name="expense" hidden="true"/>

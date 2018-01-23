@@ -158,7 +158,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 				.stream()
 				.filter(Objects::nonNull)
 				.filter(partnerDefaultLocation1 -> partnerDefaultLocation1.getCompany().equals(company))
-				.map(PartnerDefaultLocation::getDefaultLocation)
+				.map(PartnerDefaultLocation::getDefaultStockLocation)
 				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 

@@ -54,6 +54,7 @@
         <field name="exTaxTotal" aggregate="sum"/>
 	    <field name="inTaxTotal" aggregate="sum"/>
 		<field name="toInvoice"/>
+        <field name="invoiced"/>
     </grid>
 
 	<grid name="purchase-order-line-project-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -67,6 +68,7 @@
 		<field name="exTaxTotal" aggregate="sum" readonly="true"/>
 		<field name="inTaxTotal" aggregate="sum" readonly="true"/>
 		<field name="toInvoice"/>
+        <field name="invoiced"/>
 	</grid>
 
 	<form name="purchase-order-line-project-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine" canEdit="false">
@@ -123,7 +125,14 @@
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" title="Project/Task" if-module="axelor-business-project">
 				<field name="project" requiredIf="toInvoice" form-view="project-form" grid-view="project-grid" canEdit="false"/>
                 <field name="toInvoice" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" colSpan="3" if-module="axelor-business-project"/>
-                <field name="invoiced" showIf="toInvoice" colSpan="3"/>
+                <field name="invoiced" showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" colSpan="3" showTitle="false">
+                <viewer><![CDATA[
+					<h4>
+                        <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoiced" x-translate>Invoiced</span>
+                    	<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="!record.invoiced" x-translate>Not invoiced</span>
+                    </h4>
+				]]></viewer>
+                </field>
 			</panel>
 			<panel name="supplierRequests" title="Suppliers requests" if-module="axelor-supplier-management" if="__config__.app.getApp('purchase').getSupplierRequestMgt()" >
 				<button name="generateSuppliersRequests" title="Generate suppliers requests"   onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>

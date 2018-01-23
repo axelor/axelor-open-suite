@@ -66,7 +66,12 @@
 			<field name="progressSelect" colSpan="12" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
 			<panel name="planning" title="Planning">
 				<field name="plannedProgress" widget="progress" colSpan="12" hidden="true"/>
-				<field name="totalPlannedHrs" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" colSpan="12"/>
+				<field name="totalPlannedHrs" if-module="axelor-human-resource" if="__config__.app.isApp('employee')">
+				<viewer><![CDATA[
+            		<span>{{record.totalPlannedHrs}}</span><span x-translate>Hours</span> 
+        		]]></viewer>
+				</field>
+				<label name="hours" title="Hours" showIf="!$readonly()" />
 			</panel>
 		</panel>
 
@@ -100,6 +105,22 @@
 		x-start-to-finish="startToFinishSet" x-finish-to-finish="finishToFinishSet">	
 		<field name="name"/>
 	</gantt> 
+	
+	<gantt name="project-task-gantt" title="Project Task"
+		model="com.axelor.team.db.TeamTask" taskStart="taskDate" taskEnd="taskEndDate"  taskDuration="durationHours" taskParent="parentTask" taskSequence="sequence"
+		taskProgress="plannedProgress" x-start-to-start="startToStartSet" x-finish-to-start="finishToStartSet"
+		x-start-to-finish="startToFinishSet" x-finish-to-finish="finishToFinishSet">
+		<field name="name" />
+		<field name="project"/>
+	</gantt>
+
+	<gantt name="user-task-gantt" title="User Task"
+		model="com.axelor.team.db.TeamTask" taskStart="taskDate" taskEnd="taskEndDate"  taskDuration="durationHours" taskParent="parentTask" taskSequence="sequence"
+		taskProgress="plannedProgress" x-start-to-start="startToStartSet" x-finish-to-start="finishToStartSet"
+		x-start-to-finish="startToFinishSet" x-finish-to-finish="finishToFinishSet">
+		<field name="name" />
+		<field name="assignedTo" />
+	</gantt>
 	
 	<action-view name="action-view-show-task-tree" title="Task Tree" model="com.axelor.team.db.TeamTask">	
 		<view type="tree" name="task-tree"/>

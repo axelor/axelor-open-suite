@@ -1,12 +1,23 @@
 # Changelog
 
 ## [Unreleased 5.x]
+## Features
 - New currency conversion API (ECB)
 - Split accounting report VAT statement in two, VAT on amount received and VAT on invoicing
+- Create sale order from partner and contact
+- Multiple Project Gantt View with User and Project.
+- Add a version management on Production process
+- Added 'sale blocking' in Partner
 
 ## Improvements
+- Label "hours" on Project and Task with the field totalPlannedHrs.
+- Added filter on fields of 'Related Elements' in Project
+- New report for InvoicingProject
+- Added fullname in Sequence
+- Generate sale order from Opportunity in edit mode directly
 
 ## Bug Fixes
+- All StockMoveLines now appear in Produced products grid (ManufOrder)
 - Fix the default amount on new invoice payment to use the amount remaining of the invoice.
 - Fix demo data en and fr on AppSuplychain to set the correct value on the field supplStockMoveMgtOnSO
 

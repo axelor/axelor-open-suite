@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,21 +17,71 @@
  */
 package com.axelor.apps.bankpayment.service.batch;
 
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountingBatch;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 
 public abstract class BatchDirectDebit extends com.axelor.apps.account.service.batch.BatchStrategy {
+    protected PaymentMode directDebitPaymentMode;
+    protected boolean generateBankOrderFlag;
 
-	@Override
-	protected void stop() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(I18n.get(IExceptionMessage.ABSTRACT_BATCH_REPORT)).append(" ");
-		sb.append(String.format(I18n.get(IExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR,
-				IExceptionMessage.ABSTRACT_BATCH_DONE_PLURAL, batch.getDone()) + " ", batch.getDone()));
-		sb.append(String.format(I18n.get(IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
-				IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL, batch.getAnomaly()), batch.getAnomaly()));
-		addComment(sb.toString());
-		super.stop();
-	}
+    @Inject
+    protected BankDetailsService bankDetailsService;
+
+    @Override
+    protected void start() throws IllegalAccessException, AxelorException {
+        super.start();
+        directDebitPaymentMode = getDirectDebitPaymentMode();
+        generateBankOrderFlag = directDebitPaymentMode != null && directDebitPaymentMode.getGenerateBankOrder();
+    }
+
+    @Override
+    protected void stop() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_REPORT)).append(" ");
+        sb.append(String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR,
+                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_PLURAL, batch.getDone()) + " ",
+                batch.getDone()));
+        sb.append(String
+                .format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+                        com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
+                        batch.getAnomaly()), batch.getAnomaly()));
+        addComment(sb.toString());
+        super.stop();
+    }
+
+    private PaymentMode getDirectDebitPaymentMode() {
+        AccountingBatch accountingBatch = batch.getAccountingBatch();
+        Company company = accountingBatch.getCompany();
+
+        if (company == null) {
+            return null;
+        }
+
+        AccountConfig accountConfig = company.getAccountConfig();
+        return accountConfig.getDirectDebitPaymentMode();
+    }
+
+    protected BankDetails getCompanyBankDetails(AccountingBatch accountingBatch) {
+        BankDetails companyBankDetails = accountingBatch.getBankDetails();
+
+        if (companyBankDetails == null && accountingBatch.getCompany() != null) {
+            companyBankDetails = accountingBatch.getCompany().getDefaultBankDetails();
+        }
+
+        if (companyBankDetails == null && generateBankOrderFlag) {
+            throw new IllegalArgumentException(
+                    I18n.get(IExceptionMessage.BATCH_DIRECT_DEBIT_MISSING_COMPANY_BANK_DETAILS));
+        }
+
+        return companyBankDetails;
+    }
 
 }

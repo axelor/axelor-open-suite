@@ -9,7 +9,7 @@
     <entity name="PartnerDefaultLocation" lang="java" cachable="true">
         <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
         <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
-        <many-to-one name="defaultLocation" title="Default location" ref="com.axelor.apps.stock.db.StockLocation"/>
+        <many-to-one name="defaultStockLocation" title="Default stock location" ref="com.axelor.apps.stock.db.StockLocation"/>
     </entity>
 
 </domain-models>

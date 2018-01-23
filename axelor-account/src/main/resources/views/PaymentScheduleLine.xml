@@ -21,11 +21,11 @@
 	<form name="payment-schedule-line-form" title="Schedule line"
 		model="com.axelor.apps.account.db.PaymentScheduleLine" width="large">
 		<panel name="main" >
-			<field name="paymentSchedule" form-view="payment-schedule-form" grid-view="payment-schedule-grid" />
+			<field name="paymentSchedule" form-view="payment-schedule-form" grid-view="payment-schedule-grid" readonly="true" />
 			<field name="scheduleLineSeq" />
-			<field name="inTaxAmount" readonlyIf="fromReject"/>
-			<field name="inTaxAmountPaid" />
-			<field name="scheduleDate" />
+			<field name="inTaxAmount" readonlyIf="fromReject || statusSelect > 2" />
+			<field name="inTaxAmountPaid" readonlyIf="fromReject || statusSelect > 2" />
+			<field name="scheduleDate" readonlyIf="statusSelect > 2" />
 			<field name="debitBlockingOk" if="__config__.app.getApp('account').getManageDirectDebitPayment()"  />
 			<field name="rejectDate" if="__config__.app.getApp('account').getManageDirectDebitPayment()"  />
 			<field name="interbankCodeLine" if="__config__.app.getApp('account').getManageDirectDebitPayment()"  form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
@@ -55,8 +55,8 @@
 		model="com.axelor.apps.account.db.PaymentScheduleLine" width="large">
 		<panel name="main">
 			<field name="scheduleLineSeq" />
-			<field name="inTaxAmount" readonlyIf="fromReject"/>
-			<field name="scheduleDate" />
+			<field name="inTaxAmount" readonlyIf="fromReject || statusSelect > 2" />
+			<field name="scheduleDate" readonlyIf="statusSelect > 2" />
 			<field name="debitBlockingOk" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
 			<field name="rejectDate" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
 			<field name="interbankCodeLine" if="__config__.app.getApp('account').getManageDirectDebitPayment()" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>

@@ -17,6 +17,22 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
@@ -36,6 +52,7 @@ import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800102Service;
+import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile008Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100103Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160ICTService;
@@ -55,20 +72,6 @@ import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
 public class BankOrderServiceImpl implements BankOrderService {
 
@@ -529,19 +532,19 @@ public class BankOrderServiceImpl implements BankOrderService {
 	    		break;
 
             case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SDD:
-                file = new BankOrderFile00800101Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_CORE).generateFile();
+                file = new BankOrderFile00800101Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_CORE).generateFile();
                 break;
 
             case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SBB:
-                file = new BankOrderFile00800101Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_SBB).generateFile();
+                file = new BankOrderFile00800101Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_SBB).generateFile();
                 break;
 
             case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SDD:
-                file = new BankOrderFile00800102Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_CORE).generateFile();
+                file = new BankOrderFile00800102Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_CORE).generateFile();
                 break;
 
             case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SBB:
-                file = new BankOrderFile00800102Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_SBB).generateFile();
+                file = new BankOrderFile00800102Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_SBB).generateFile();
                 break;
 
             default:

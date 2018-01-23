@@ -16,7 +16,10 @@
 	
 	<input file="production_prodHumanResource.csv" separator=";" type="com.axelor.apps.production.db.ProdHumanResource"/>
 	
-	<input file="production_prodProcess.csv" separator=";" type="com.axelor.apps.production.db.ProdProcess"/>
+	<input file="production_prodProcess.csv" separator=";" type="com.axelor.apps.production.db.ProdProcess">
+		<bind to="name" column="name"/>
+		<bind to="fullName" column="name"/>
+	</input>
 	
 	<input file="production_prodProcessLine.csv" separator=";" type="com.axelor.apps.production.db.ProdProcessLine"/>
 

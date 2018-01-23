@@ -130,7 +130,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 				    if (!saleOrder.getManualUnblock()) {
 	                    String message = accountingSituation.getCompany().getOrderBloquedMessage();
 	                    if (Strings.isNullOrEmpty(message)) {
-	                        message = I18n.get("Client bloqued");
+	                        message = I18n.get("Client blocked : maximal accepted credit exceeded.");
 	                    }
 	                    throw new BlockedSaleOrderException(accountingSituation, message);
 				    }

@@ -17,41 +17,41 @@
  */
 package com.axelor.apps.base.service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.StopReason;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 
+import java.time.LocalDate;
+import java.util.List;
 
 public class BlockingService {
 
-	private LocalDate today;
+    protected LocalDate today;
 
-	@Inject
-	public BlockingService() {
+    public BlockingService() {
+        this.today = Beans.get(AppBaseService.class).getTodayDate();
+    }
 
-		this.today = Beans.get(AppBaseService.class).getTodayDate();
-	}
+    /**
+     * Checks if {@code partner} is blocked for the {@code blockingType}
+     *
+     * @param partner      Partner to check blocking
+     * @param company      Company associated with the blocking
+     * @param blockingType Type of blocking
+     * @return blocking reason if partner is blocked for provided company and blocking type, null otherwise
+     */
+    public StopReason isBlocked(Partner partner, Company company, int blockingType) {
+        List<Blocking> blockings = partner.getBlockingList();
 
-
-	public List<Blocking> getBlockings(Partner partner, Company company, int blockingType)  {
-        if (partner != null && company != null && partner.getBlockingList() != null) {
-            List<Blocking> blockings = new ArrayList<Blocking>();
-            for (Blocking blocking : partner.getBlockingList()) {
-                if (blocking.getCompanySet().contains(company) && blocking.getBlockingSelect() == blockingType) {
-                    blockings.add(blocking);
-                }
+        for (Blocking blocking : blockings) {
+            if (blocking.getCompanySet().contains(company) && blocking.getBlockingSelect().equals(blockingType) && blocking.getBlockingToDate().compareTo(today) >= 0) {
+                return blocking.getBlockingReason();
             }
-
-            return blockings;
         }
 
         return null;
-	}
+    }
 }

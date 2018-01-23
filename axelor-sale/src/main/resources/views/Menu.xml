@@ -261,9 +261,9 @@
 	<menuitem name="top-menu-sales" top="true" order="2" title="Sales" if="__config__.app.isApp('sale')" left="false"/>
 
 	<menuitem name="top-menu-sales-quotations" parent="top-menu-sales"
-		 title="Quotations" action="top.menu.sales.quotations" top="true"/>
+		 title="Sale quotations" action="top.menu.sales.quotations" top="true"/>
 	
-	<action-view name="top.menu.sales.quotations" title="Quotations"
+	<action-view name="top.menu.sales.quotations" title="Sale quotations"
 		model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="cards" name="sale-order-quotation-cards" />
 		<view type="grid" name="sale-order-quotation-grid" />

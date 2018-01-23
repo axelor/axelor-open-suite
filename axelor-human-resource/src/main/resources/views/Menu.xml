@@ -91,6 +91,25 @@
 	    <view type="form" name="employment-contract-type-form"/>
 	</action-view>
 
+	<menuitem name="hr-conf-payroll-year" parent="hr-root-emp-mgt-conf" title="Payroll years" action="hr.conf.payroll.year"/>
+
+	<action-view name="hr.conf.payroll.year" title="Payroll years"
+		model="com.axelor.apps.base.db.Year">
+		<view type="grid" name="year-grid"/>
+		<view type="form" name="year-hr-form"/>
+		<domain>self.typeSelect = 2</domain>
+	</action-view>
+
+	<menuitem name="hr-conf-payroll-period" parent="hr-root-emp-mgt-conf"
+			  title="Payroll periods" action="hr.conf.payroll.period"/>
+
+	<action-view name="hr.conf.payroll.period" title="Payroll periods"
+				 model="com.axelor.apps.base.db.Period">
+		<view type="grid" name="period-hr-grid"/>
+		<view type="form" name="period-hr-form"/>
+		<domain>self.year.typeSelect = 2</domain>
+	</action-view>
+
 	<menuitem name="plannings-all" parent="hr-root-emp-mgt-conf" title="Plannings" />
 
 	<menuitem name="event-planning-all" parent="plannings-all" title="Event planning" action="hr.public.holiday.planning.all"/>
@@ -350,27 +369,6 @@
 	<action-view name="hr.user.dashboard.view" title="Human Resources User">
 		<view type="dashboard" name="hr.user.dashboard.sample" />
 	</action-view>	
-
-	<menuitem name="hr-conf" parent="hr-root" title="Configuration"/>
-
-	<menuitem name="hr-conf-payroll-year" parent="hr-conf" title="Payroll years" action="hr.conf.payroll.year"/>
-
-	<action-view name="hr.conf.payroll.year" title="Payroll years"
-		model="com.axelor.apps.base.db.Year">
-		<view type="grid" name="year-grid"/>
-		<view type="form" name="year-hr-form"/>
-		<domain>self.typeSelect = 2</domain>
-	</action-view>
-
-	<menuitem name="hr-conf-payroll-period" parent="hr-conf"
-			  title="Payroll periods" action="hr.conf.payroll.period"/>
-
-	<action-view name="hr.conf.payroll.period" title="Payroll periods"
-				 model="com.axelor.apps.base.db.Period">
-		<view type="grid" name="period-hr-grid"/>
-		<view type="form" name="period-hr-form"/>
-		<domain>self.year.typeSelect = 2</domain>
-	</action-view>
 
 	<!-- Top Menus -->
 
