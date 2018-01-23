@@ -27,6 +27,7 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Strings;
 
 public class AccountConfigBankPaymentService extends AccountConfigService  {
 
@@ -106,5 +107,21 @@ public class AccountConfigBankPaymentService extends AccountConfigService  {
 		}
 		return accountConfig.getDefaultSignatoryUser();
 	}
-	
+
+    /**
+     * Get ICS number.
+     * 
+     * @param accountConfig
+     * @return
+     * @throws AxelorException
+     */
+    public String getIcsNumber(AccountConfig accountConfig) throws AxelorException {
+        if (Strings.isNullOrEmpty(accountConfig.getIcsNumber())) {
+            throw new AxelorException(accountConfig, IException.CONFIGURATION_ERROR,
+                    I18n.get(IExceptionMessage.ACCOUNT_CONFIG_MISSING_ICS_NUMBER), AppBaseServiceImpl.EXCEPTION,
+                    accountConfig.getCompany().getName());
+        }
+        return accountConfig.getIcsNumber();
+    }
+
 }
