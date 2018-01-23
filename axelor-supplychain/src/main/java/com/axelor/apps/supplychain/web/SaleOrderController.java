@@ -30,6 +30,8 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -58,6 +60,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class SaleOrderController{
@@ -568,5 +571,24 @@ public class SaleOrderController{
             response.setReload(true);
         }
     }
+
+	/**
+	 * Called from sale order generate purchase order form.
+	 * Set domain for supplier partner.
+	 * @param request
+	 * @param response
+	 */
+	public void supplierPartnerSelectDomain(ActionRequest request, ActionResponse response) {
+        SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+        String domain = "self.isContact = false AND self.isSupplier = true";
+
+		String blockedPartnerQuery = Beans.get(BlockingService.class)
+				.listOfBlockedPartner(saleOrder.getCompany(), BlockingRepository.PURCHASE_BLOCKING);
+
+		if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
+			domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
+		}
+		response.setAttr("supplierPartnerSelect", "domain", domain);
+	}
 
 }

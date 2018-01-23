@@ -21,7 +21,7 @@
 
 	<form name="sale-order-generate-po-select-supplierpartner-form" model="com.axelor.apps.sale.db.SaleOrder" title="Confirm Purchase order generation" onNew="action-record-load-dummy-supplier-partner">
 		<panel name="main" >
-			<field name="supplierPartnerSelect" title="Select supplier partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact = false AND self.isSupplier = true" required="true"/>
+			<field name="supplierPartnerSelect" title="Select supplier partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" onSelect="action-supplychain-so-generate-supplier-partner-domain" required="true"/>
 			<button name="generatePOConfirm" title="Confirm Purchase order generation" onClick="action-supplychain-so-generate-po-check-supplier-partner,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
 		</panel>
     </form>
@@ -80,9 +80,13 @@
 	<action-method name="action-supplychain-sale-order-create-stock-move" >
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createStockMove"/>
 	</action-method>
-	
+
 	<action-method name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" >
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generatePurchaseOrdersFromSelectedSOLines"/>
+	</action-method>
+
+	<action-method name="action-supplychain-so-generate-supplier-partner-domain">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="supplierPartnerSelectDomain"/>
 	</action-method>
 
 	<action-validate name="action-supplychain-sale-order-validate-check-stock-location">

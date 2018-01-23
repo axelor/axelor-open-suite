@@ -19,6 +19,7 @@ package com.axelor.apps.sale.service;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.AppSale;
+import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -364,13 +365,14 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
 	    Partner partner = saleOrder.getClientPartner();
 
-	    StopReason blockingReason = Beans.get(BlockingService.class).isBlocked(partner, saleOrder.getCompany(), BlockingRepository.SALE_BLOCKING);
+	    Blocking blocking = Beans.get(BlockingService.class).getBlocking(partner, saleOrder.getCompany(), BlockingRepository.SALE_BLOCKING);
 
-        if (blockingReason != null) {
+        if (blocking != null) {
             saleOrder.setBloqued(true);
             if (!saleOrder.getManualUnblock()) {
                 saleOrderRepo.save(saleOrder);
-                throw new BlockedSaleOrderException(partner, I18n.get("Client is sale blocked : ") + blockingReason.getName());
+				String reason = blocking.getBlockingReason() != null ? blocking.getBlockingReason().getName() : "";
+                throw new BlockedSaleOrderException(partner, I18n.get("Client is sale blocked:") + " " + reason);
             }
         }
 
