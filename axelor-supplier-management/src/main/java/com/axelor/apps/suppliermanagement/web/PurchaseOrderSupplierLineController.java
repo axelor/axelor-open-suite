@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.suppliermanagement.web;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine;
@@ -26,6 +29,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class PurchaseOrderSupplierLineController {
@@ -49,5 +53,28 @@ public class PurchaseOrderSupplierLineController {
 			response.setReload(true);
 		}
 		catch (Exception e) { TraceBackService.trace(response, e); }
+	}
+
+	/**
+	 * Called on supplier partner select.
+	 * Set the domain for the field supplierPartner
+	 * @param request
+	 * @param response
+	 */
+	public void supplierPartnerDomain(ActionRequest request, ActionResponse response) {
+		PurchaseOrderSupplierLine purchaseOrderSupplierLine = request.getContext().asType(PurchaseOrderSupplierLine.class);
+		if (purchaseOrderSupplierLine.getPurchaseOrderLine() == null
+				||purchaseOrderSupplierLine.getPurchaseOrderLine().getPurchaseOrder() == null ) {
+			return;
+		}
+		Company company = purchaseOrderSupplierLine.getPurchaseOrderLine().getPurchaseOrder().getCompany();
+		String domain = "self.id != " + company.getPartner().getId() + " AND self.isContact = false AND self.isSupplier = true";
+		String blockedPartnerQuery = Beans.get(BlockingService.class)
+				.listOfBlockedPartner(company, BlockingRepository.PURCHASE_BLOCKING);
+
+		if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
+			domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
+		}
+		response.setAttr("supplierPartner", "domain", domain);
 	}
 }

@@ -378,6 +378,12 @@ public class PurchaseOrderController {
 		response.setAttr("priceList", "domain", domain);
 	}
 
+	/**
+	 * Called on supplier partner select.
+	 * Set the domain for the field supplierPartner
+	 * @param request
+	 * @param response
+	 */
 	public void supplierPartnerDomain(ActionRequest request, ActionResponse response) {
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 		Company company = purchaseOrder.getCompany();
