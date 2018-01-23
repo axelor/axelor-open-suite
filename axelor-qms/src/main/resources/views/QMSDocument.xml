@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-	<form name="qms-document-form" title="QMS Document" model="com.axelor.apps.qms.db.QMSDocument" id="qms-document-form" width="large">
+	<form name="qms-document-form" title="QMS Document" model="com.axelor.apps.qms.db.QMSDocument" id="qms-document-form" width="large" onNew="qms-document-record-default,qms-document-attr-readonly-if-parent">
 		<panel>
-			<field name="company" title="Company" readonlyIf="id != null" />
+			<!-- readonly attribute for company and process is overriden through action-attrs, this allows us to
+			lock them on edit ('cause no action is called onLoad) but selectively lock them on create. -->
+			<field name="company" title="Company" readonly="true"/>
 			<field name="reference" css="bold label-bold" hiddenIf="reference == null" readonly="true"/>
-			<field name="process" title="Process" required="true" readonlyIf="id != null" />
+			<field name="process" title="Process" readonly="true"/>
+
 			<field name="type" title="Type" required="true" readonlyIf="id != null" />
 
 			<field name="title" title="	Title" nullable="false" required="true" colSpan="12" />
@@ -22,4 +25,13 @@
 		<field name="title" />
 		<field name="currentVersion.versionMetaFile" widget="binary-link" title="Current version"/>
 	</grid>
+
+	 <action-record name="qms-document-record-default" model="com.axelor.apps.qms.db.QMSDocument">
+		<field name="company" expr="eval:__repo__(Company).find(_parent.company.id)" if="_parent != null &amp;&amp; _parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.qms.db.QMSProcess'"/>
+		<field name="process" expr="eval:__repo__(QMSProcess).find(_parent.id)" if="_parent != null &amp;&amp; _parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.qms.db.QMSProcess'"/>
+	</action-record>
+
+	<action-attrs name="qms-document-attr-readonly-if-parent" model="com.axelor.apps.qms.db.QMSDocument">
+		<attribute name="readonly" for="company,process" expr="eval: _parent != null &amp;&amp; _parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.qms.db.QMSProcess'"/>
+	</action-attrs>
 </object-views>

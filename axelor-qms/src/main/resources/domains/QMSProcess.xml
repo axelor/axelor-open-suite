@@ -15,6 +15,7 @@
 
 		<many-to-many name="responsibles" ref="com.axelor.apps.hr.db.Employee" title="Responsibles" required="true"/>
 		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" />
+		<one-to-many name="documents" ref="com.axelor.apps.qms.db.QMSDocument" mappedBy="process"/>
 
 		<unique-constraint columns="company,code"/>
 	</entity>

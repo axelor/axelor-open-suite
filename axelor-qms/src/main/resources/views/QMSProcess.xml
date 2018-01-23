@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-	<form name="qms-process-form" title="QMS Process" model="com.axelor.apps.qms.db.QMSProcess" id="qms-process-form">
+	<form name="qms-process-form" title="QMS Process" model="com.axelor.apps.qms.db.QMSProcess" id="qms-process-form" width="large">
 		<panel>
 			<field name="company" title="Company" readonlyIf="id != null" />
 			<spacer/>
@@ -11,6 +11,9 @@
 
 			<field name="responsibles" title="Responsibles" widget="TagSelect" colSpan="12" canNew="false" form-view="employee-form"/>
 		</panel>
+		<panel-tabs hideIf="id == null">
+			<panel-related field="documents" title="Documents"></panel-related>
+		</panel-tabs>
 	</form>
 
 	<grid model="com.axelor.apps.qms.db.QMSProcess" title="QMS processes" name="qms-process-grid" freeSearch="all" editable="false">
