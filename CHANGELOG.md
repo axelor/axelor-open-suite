@@ -1,14 +1,16 @@
 # Changelog
 
 ## [Unreleased 5.x]
+## Features
 - New currency conversion API (ECB)
+- Split accounting report VAT statement in two, VAT on amount received and VAT on invoicing
 - Create sale order from partner and contact
 - Multiple Project Gantt View with User and Project.
-- Label "hours" on Project and Task with the field totalPlannedHrs.
 - Add a version management on Production process
+- Added 'sale blocking' in Partner
 
 ## Improvements
-- Added 'sale blocking' in Partner
+- Label "hours" on Project and Task with the field totalPlannedHrs.
 - Added filter on fields of 'Related Elements' in Project
 - New report for InvoicingProject
 - Added fullname in Sequence

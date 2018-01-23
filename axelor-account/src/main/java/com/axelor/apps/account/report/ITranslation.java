@@ -107,7 +107,15 @@ public interface ITranslation {
 	public static final String ACCOUNTING_REPORT_2_DEBIT = /*$$(*/ "AccountingReportType2.debit"; /*)*/
 	public static final String ACCOUNTING_REPORT_2_CREDIT = /*$$(*/ "AccountingReportType2.credit"; /*)*/
 	public static final String ACCOUNTING_REPORT_2_GENERAL_BALANCE = /*$$(*/ "AccountingReportType2.generalBalance"; /*)*/
-	
+
+	public static final String ACCOUNTING_REPORT_15_TITLE = /*$$(*/ "AccountingReportType15.title"; /*)*/
+	public static final String ACCOUNTING_REPORT_15_COMPANY = /*$$(*/ "AccountingReportType15.company"; /*)*/
+	public static final String ACCOUNTING_REPORT_15_FROM = /*$$(*/ "AccountingReportType15.from"; /*)*/
+	public static final String ACCOUNTING_REPORT_15_TO = /*$$(*/ "AccountingReportType15.to"; /*)*/
+	public static final String ACCOUNTING_REPORT_15_YEAR = /*$$(*/ "AccountingReportType15.year"; /*)*/
+	public static final String ACCOUNTING_REPORT_15_VAT_TOTAL = /*$$(*/ "AccountingReportType15.vatTotal"; /*)*/
+	public static final String ACCOUNTING_REPORT_15_PRINT_DATE = /*$$(*/ "AccountingReportType15.printDate"; /*)*/
+
 	public static final String ACCOUNTING_REPORT_2000_TITLE = /*$$(*/ "AccountingReportType2000.title"; /*)*/
 	public static final String ACCOUNTING_REPORT_2000_ANALYTIC_JOURNAL = /*$$(*/ "AccountingReportType2000.analyticJournal"; /*)*/
 	public static final String ACCOUNTING_REPORT_2000_COMPANY = /*$$(*/ "AccountingReportType2000.company"; /*)*/
