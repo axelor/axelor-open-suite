@@ -162,8 +162,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 		stockMove.setRealDate(realDate);
 		stockMove.setEstimatedDate(estimatedDate);
 		stockMove.setPartner(clientPartner);
-		stockMove.setFromLocation(fromLocation);
-		stockMove.setToLocation(toLocation);
+		stockMove.setFromStockLocation(fromLocation);
+		stockMove.setToStockLocation(toLocation);
 		stockMove.setDescription(description);
 		stockMove.setShipmentMode(shipmentMode);
 		stockMove.setFreightCarrierMode(freightCarrierMode);
@@ -207,8 +207,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 			stockMove.setExTaxTotal(compute(stockMove));
 		}
 
-		StockLocation fromLocation = stockMove.getFromLocation();
-		StockLocation toLocation = stockMove.getToLocation();
+		StockLocation fromLocation = stockMove.getFromStockLocation();
+		StockLocation toLocation = stockMove.getToStockLocation();
 
 		if (fromLocation == null) {
 			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_5), stockMove.getName());
@@ -281,8 +281,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 		stockMoveLineService.checkExpirationDates(stockMove);
 
 		stockMoveLineService.updateLocations(
-				stockMove.getFromLocation(),
-				stockMove.getToLocation(),
+				stockMove.getFromStockLocation(),
+				stockMove.getToStockLocation(),
 				stockMove.getStatusSelect(),
 				StockMoveRepository.STATUS_REALIZED,
 				stockMove.getStockMoveLineList(),
@@ -333,12 +333,12 @@ public class StockMoveServiceImpl implements StockMoveService {
 	private void checkOngoingInventory(StockMove stockMove) throws AxelorException {
 		List<StockLocation> stockLocationList = new ArrayList<>();
 
-		if (stockMove.getFromLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-			stockLocationList.add(stockMove.getFromLocation());
+		if (stockMove.getFromStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+			stockLocationList.add(stockMove.getFromStockLocation());
 		}
 
-		if (stockMove.getToLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-			stockLocationList.add(stockMove.getToLocation());
+		if (stockMove.getToStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+			stockLocationList.add(stockMove.getToStockLocation());
 		}
 
 		if (stockLocationList.isEmpty()) {
@@ -420,13 +420,13 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 	private boolean checkWeightsRequired(StockMove stockMove) {
 		Address fromAddress = stockMove.getFromAddress();
-		if (fromAddress == null && stockMove.getFromLocation() != null) {
-			fromAddress = stockMove.getFromLocation().getAddress();
+		if (fromAddress == null && stockMove.getFromStockLocation() != null) {
+			fromAddress = stockMove.getFromStockLocation().getAddress();
 		}
 
 		Address toAddress = stockMove.getToAddress();
-		if (toAddress == null && stockMove.getToLocation() != null) {
-			toAddress = stockMove.getToLocation().getAddress();
+		if (toAddress == null && stockMove.getToStockLocation() != null) {
+			toAddress = stockMove.getToStockLocation().getAddress();
 		}
 
 		Country fromCountry = fromAddress != null ? fromAddress.getAddressL7Country() : null;
@@ -488,8 +488,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 		newStockMove.setCompany(stockMove.getCompany());
 		newStockMove.setPartner(stockMove.getPartner());
-		newStockMove.setFromLocation(stockMove.getToLocation());
-		newStockMove.setToLocation(stockMove.getFromLocation());
+		newStockMove.setFromStockLocation(stockMove.getToStockLocation());
+		newStockMove.setToStockLocation(stockMove.getFromStockLocation());
 		newStockMove.setEstimatedDate(stockMove.getEstimatedDate());
 		newStockMove.setFromAddress(stockMove.getFromAddress());
 		if(stockMove.getToAddress() != null)
@@ -540,8 +540,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 		LOG.debug("Annulation du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
 
 		stockMoveLineService.updateLocations(
-				stockMove.getFromLocation(),
-				stockMove.getToLocation(),
+				stockMove.getFromStockLocation(),
+				stockMove.getToStockLocation(),
 				stockMove.getStatusSelect(),
 				StockMoveRepository.STATUS_CANCELED,
 				stockMove.getStockMoveLineList(),

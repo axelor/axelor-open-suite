@@ -149,7 +149,7 @@ public class ManufOrderStockMoveService {
 		LocalDate plannedEndDate = plannedEndDateT != null ? plannedEndDateT.toLocalDate() : null;
 
 		StockMove stockMove = stockMoveService.createStockMove(null, null, company, null, virtualStockLocation,
-				manufOrder.getProdProcess().getProducedProductLocation(), null, plannedEndDate, null, null, null);
+				manufOrder.getProdProcess().getProducedProductStockLocation(), null, plannedEndDate, null, null, null);
 		stockMove.setTypeSelect(StockMoveRepository.TYPE_INCOMING);
 
 		return stockMove;

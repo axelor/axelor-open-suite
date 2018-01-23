@@ -102,7 +102,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 							}
 							else  {
 								// Rechercher le numéro de suivi d'apèrs FIFO/LIFO
-								this.assignTrackingNumber(stockMoveLine, product, stockMove.getFromLocation());
+								this.assignTrackingNumber(stockMoveLine, product, stockMove.getFromStockLocation());
 							}
 						}
 						break;
@@ -123,7 +123,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 					case StockMoveLineService.TYPE_IN_PRODUCTIONS:
 						if (trackingNumberConfiguration.getHasProductAutoSelectTrackingNbr()) {
 						    //searching for the tracking number using FIFO or LIFO
-							this.assignTrackingNumber(stockMoveLine, product, stockMove.getFromLocation());
+							this.assignTrackingNumber(stockMoveLine, product, stockMove.getFromStockLocation());
 						}
 						break;
 					case StockMoveLineService.TYPE_WASTE_PRODUCTIONS:
