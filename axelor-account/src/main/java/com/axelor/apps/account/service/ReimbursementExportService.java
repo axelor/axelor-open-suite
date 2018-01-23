@@ -281,7 +281,7 @@ public class ReimbursementExportService {
      * @return true if partner can be reimbursed, false otherwise
      */
     public boolean canBeReimbursed(Partner partner, Company company) {
-        return Beans.get(BlockingService.class).isBlocked(partner, company, BlockingRepository.REIMBURSEMENT_BLOCKING) == null;
+        return Beans.get(BlockingService.class).getBlocking(partner, company, BlockingRepository.REIMBURSEMENT_BLOCKING) == null;
     }
 
 

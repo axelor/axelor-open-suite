@@ -138,7 +138,7 @@
 		   	<panel name="settingsPanel" title="Settings" hideIf="typeSelect == 2">
 		      	<field name="saleSupplySelect" onChange="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 		      	<field name="standardDelay" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" hidden="true"  showIf="saleSupplySelect == 2 || saleSupplySelect ==3" />
-		       	<field name="supplierPartner" showIf="saleSupplySelect == 2" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
+		       	<field name="supplierPartner" showIf="saleSupplySelect == 2" onSelect="action-sale-order-line-method-supplier-partner-domain" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" form-view="partner-form" grid-view="partner-grid"/>
 		       	<field name="billOfMaterial" onSelect="action-sale-order-line-attrs-bill-of-material-domain" if-module="axelor-production" form-view="bill-of-material-form" grid-view="bill-of-material-grid" if="__config__.app.isApp('production')" />
 		       	<button name="customizeBOM" title="Customize BOM" onClick="action-production-method-customize-bill-of-material" if-module="axelor-production" if="__config__.app.isApp('production')" />
 		   	</panel>
@@ -214,7 +214,7 @@
 			<panel name="settingsPanel" title="Settings" hideIf="typeSelect == 2">
 				<field name="saleSupplySelect" onChange="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 				<field name="standardDelay" if-module="axelor-supplychain" hidden="true" showIf="saleSupplySelect == 2 || saleSupplySelect ==3" />
-				<field name="supplierPartner" showIf="saleSupplySelect == 2" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
+				<field name="supplierPartner" showIf="saleSupplySelect == 2"  onSelect="action-sale-order-line-method-supplier-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
 				<field name="billOfMaterial" onSelect="action-sale-order-line-attrs-bill-of-material-domain" if-module="axelor-production" form-view="bill-of-material-form" grid-view="bill-of-material-grid" if="__config__.app.isApp('production')" />
 				<button name="customizeBOM" title="Customize BOM" onClick="action-production-method-customize-bill-of-material" if-module="axelor-production" if="__config__.app.isApp('production')" />
 			</panel>
@@ -323,6 +323,7 @@
     	<action name="action-sale-order-line-method-compute-subMargin" />
     	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
     	<action name="action-sale-order-line-get-production-information"/>
+		<action name="action-sale-order-line-method-supplier-partner-default" if="__config__.app.isApp('supplychain')"/>
     	<action name="action-sale-order-line-attrs-title-subscription"/>
     	<action name="action-sale-order-line-attrs-hidden-subscription"/>
     	<action name="action-supplychain-record-periodicity"/>
@@ -342,6 +343,7 @@
 
     <action-group name="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-production">
     	<action name="action-sale-order-line-get-production-information" if="__config__.app.isApp('production')"/>
+		<action name="action-sale-order-line-method-supplier-partner-default" if="__config__.app.isApp('production')"/>
     	<action name="action-sale-order-line-attrs-hide-bill-of-material" if="__config__.app.isApp('production')"/>
 		<action name="action-sale-order-line-method-check-stock"
 				if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getCheckSaleStocks()"/>
@@ -371,7 +373,6 @@
     <action-record name="action-sale-order-line-get-production-information" model="com.axelor.apps.sale.db.SaleOrderLine">
     	<field name="billOfMaterial" expr="eval: product?.defaultBillOfMaterial" if="saleSupplySelect == 3 &amp;&amp; product?.defaultBillOfMaterial != null"/>
     	<field name="billOfMaterial" expr="eval: product?.parentProduct?.defaultBillOfMaterial" if="saleSupplySelect == 3 &amp;&amp; product?.defaultBillOfMaterial == null"/>
-    	<field name="supplierPartner" expr="eval: product?.defaultSupplierPartner" if="saleSupplySelect == 2"/>
     	<field name="standardDelay" expr="eval: product?.standardDelay" if="saleSupplySelect == 2 || saleSupplySelect == 3" />
     	<field name="standardDelay" expr="eval: 0" if="saleSupplySelect != 2 &amp;&amp; saleSupplySelect != 3" />
     </action-record>
@@ -405,6 +406,13 @@
 		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="createPackLines"/>
 	</action-method>
 
+	<action-method name="action-sale-order-line-method-supplier-partner-domain" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="supplierPartnerDomain"/>
+	</action-method>
+
+	<action-method name="action-sale-order-line-method-supplier-partner-default" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="supplierPartnerDefault"/>
+	</action-method>
 	
   	<!-- ACTION ATTRS -->
     
@@ -476,6 +484,7 @@
 	<action-attrs name="action-sale-order-line-template-attrs-hidden-fields-for-client">
 		<attribute name="hidden" for="allPanelTabs" if="eval: __user__.group.isClient" expr="true"/>
 	</action-attrs>
+
 
 <!-- 	ACTION VIEW -->
 	<action-view name="action-sale-order-line-view-stock-move-line" title="" model="com.axelor.apps.stock.db.StockMoveLine">

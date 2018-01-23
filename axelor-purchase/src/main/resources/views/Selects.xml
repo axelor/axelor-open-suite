@@ -30,5 +30,8 @@
 		<option value="7">Refused</option>
 		<option value="8">Canceled</option>
 	</selection>
-	
+
+	<selection name="base.blocking.select" id="purchase.blocking.select">
+		<option value="6">Purchase blocking</option>
+	</selection>
 </object-views>

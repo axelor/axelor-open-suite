@@ -24,6 +24,10 @@ import java.util.List;
 
 import java.time.LocalDate;
 
+import com.axelor.apps.base.db.Blocking;
+import com.axelor.apps.base.db.StopReason;
+import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import org.slf4j.Logger;
@@ -222,19 +226,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		return partnerRepo.save(supplierPartner);
 	}
 
-//	@Override
-//	@Transactional(rollbackOn = {Exception.class})
-//	public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception{
-//		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_REQUESTED);
-//		if (purchaseOrder.getVersionNumber() == 1){
-//			purchaseOrder.setPurchaseOrderSeq(this.getSequence(purchaseOrder.getCompany()));
-//		}
-//		this.save(purchaseOrder);
-//		if (GeneralService.getGeneral().getManagePurchaseOrderVersion()){
-//			this.savePurchaseOrderPDFAsAttachment(purchaseOrder);
-//		}
-//	}
-
 	@Override
 	public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws AxelorException  {
 
@@ -262,6 +253,14 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	@Transactional(rollbackOn = {Exception.class})
 	public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception{
 		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_REQUESTED);
+		Partner partner = purchaseOrder.getSupplierPartner();
+		Company company = purchaseOrder.getCompany();
+		Blocking blocking = Beans.get(BlockingService.class).getBlocking(partner, company, BlockingRepository.PURCHASE_BLOCKING);
+
+        if (blocking != null) {
+            String reason = blocking.getBlockingReason() != null ? blocking.getBlockingReason().getName() : "";
+			throw new AxelorException(IException.FUNCTIONNAL, I18n.get("This supplier is blocked:") + " " + reason, partner);
+        }
 		if (purchaseOrder.getVersionNumber() == 1){
 			purchaseOrder.setPurchaseOrderSeq(this.getSequence(purchaseOrder.getCompany()));
 		}

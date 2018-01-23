@@ -25,10 +25,13 @@ import java.util.Map;
 
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerPriceListService;
+import com.google.common.base.Strings;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,14 +159,16 @@ public class PurchaseOrderController {
 			
 	}
 
-	public void requestPurchaseOrder(ActionRequest request, ActionResponse response) throws Exception {
+	public void requestPurchaseOrder(ActionRequest request, ActionResponse response) {
 
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
-		purchaseOrderService.requestPurchaseOrder(purchaseOrderRepo.find(purchaseOrder.getId()));
-
-		response.setReload(true);
-
+		try {
+			purchaseOrderService.requestPurchaseOrder(purchaseOrderRepo.find(purchaseOrder.getId()));
+			response.setReload(true);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 	
 	public void updateCostPrice(ActionRequest request, ActionResponse response) throws Exception {
@@ -373,4 +378,16 @@ public class PurchaseOrderController {
 		response.setAttr("priceList", "domain", domain);
 	}
 
+	public void supplierPartnerDomain(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		Company company = purchaseOrder.getCompany();
+		String domain = "self.id != " + company.getPartner().getId() + " AND self.isContact = false AND self.isSupplier = true";
+		String blockedPartnerQuery = Beans.get(BlockingService.class)
+				.listOfBlockedPartner(company, BlockingRepository.PURCHASE_BLOCKING);
+
+		if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
+			domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
+		}
+		response.setAttr("supplierPartner", "domain", domain);
+	}
 }

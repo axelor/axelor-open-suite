@@ -20,7 +20,6 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.StopReason;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
 
@@ -41,17 +40,32 @@ public class BlockingService {
      * @param partner      Partner to check blocking
      * @param company      Company associated with the blocking
      * @param blockingType Type of blocking
-     * @return blocking reason if partner is blocked for provided company and blocking type, null otherwise
+     * @return blocking if partner is blocked for provided company and blocking type, null otherwise
      */
-    public StopReason isBlocked(Partner partner, Company company, int blockingType) {
+    public Blocking getBlocking(Partner partner, Company company, int blockingType) {
         List<Blocking> blockings = partner.getBlockingList();
 
         for (Blocking blocking : blockings) {
             if (blocking.getCompanySet().contains(company) && blocking.getBlockingSelect().equals(blockingType) && blocking.getBlockingToDate().compareTo(today) >= 0) {
-                return blocking.getBlockingReason();
+                return blocking;
             }
         }
 
         return null;
+    }
+
+    /**
+     * @param company
+     * @param blockingType
+     * @return the query to get blocked partners ids for the given company and blocking type
+     */
+    public String listOfBlockedPartner(Company company, int blockingType) {
+        return "SELECT DISTINCT partner.id " +
+				"FROM Partner partner " +
+				"LEFT JOIN partner.blockingList blocking " +
+				"LEFT JOIN blocking.companySet company " +
+				"WHERE blocking.blockingSelect =" + blockingType +
+				" AND blocking.blockingToDate >= :__date__ " +
+				"AND company.id = " + company.getId();
     }
 }

@@ -587,9 +587,9 @@
 		<attribute for="companyBankDetails" name="hidden" expr="eval: !__config__.app.getApp('base').getManageMultiBanks()"/>
 	</action-attrs>
 
-	<action-attrs name="action-set-supplier-partner-domain">
- 		<attribute name="domain" for="supplierPartner" expr="eval:&quot;self.id != ${company.partner.id} AND self.isContact = false AND self.isSupplier = true&quot;"/>
- 	</action-attrs>
+	<action-method name="action-set-supplier-partner-domain">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="supplierPartnerDomain"/>
+	</action-method>
 
 	<search-filters name="purchase-order-filters" model="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchases Order filters">
 		<filter title="My RFQs">

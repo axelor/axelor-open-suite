@@ -8,6 +8,7 @@
 - Multiple Project Gantt View with User and Project.
 - Add a version management on Production process
 - Added 'sale blocking' in Partner
+- Added 'purchase blocking' in Partner
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
