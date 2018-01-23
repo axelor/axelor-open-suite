@@ -96,15 +96,15 @@ public class ManufOrderStockMoveService {
 	    StockConfig stockConfig = stockConfigService.getStockConfig(company);
 	    StockLocation virtualStockLocation = stockConfigService.getProductionVirtualStockLocation(stockConfig);
 
-	    StockLocation fromLocation;
+	    StockLocation fromStockLocation;
 
 		if (manufOrder.getProdProcess() != null && manufOrder.getProdProcess().getStockLocation() != null) {
-			fromLocation = manufOrder.getProdProcess().getStockLocation();
+			fromStockLocation = manufOrder.getProdProcess().getStockLocation();
 		} else {
-			fromLocation = stockConfigService.getDefaultStockLocation(stockConfig);
+			fromStockLocation = stockConfigService.getDefaultStockLocation(stockConfig);
 		}
 
-		return stockMoveService.createStockMove(null, null, company, null, fromLocation, virtualStockLocation,
+		return stockMoveService.createStockMove(null, null, company, null, fromStockLocation, virtualStockLocation,
 				null, manufOrder.getPlannedStartDateT().toLocalDate(), null, null, null);
 
 	}

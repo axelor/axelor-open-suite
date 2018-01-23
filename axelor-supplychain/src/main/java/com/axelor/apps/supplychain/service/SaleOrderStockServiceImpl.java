@@ -125,10 +125,10 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
 	@Override
 	public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException  {
-		StockLocation toLocation = findSaleOrderToLocation(saleOrder);
+		StockLocation toStockLocation = findSaleOrderToStockLocation(saleOrder);
 
 		StockMove stockMove = stockMoveService.createStockMove(null, saleOrder.getDeliveryAddress(), company,
-				saleOrder.getClientPartner(), saleOrder.getStockLocation(), toLocation, null, saleOrder.getShipmentDate(),
+				saleOrder.getClientPartner(), saleOrder.getStockLocation(), toStockLocation, null, saleOrder.getShipmentDate(),
 				saleOrder.getDescription(), saleOrder.getShipmentMode(), saleOrder.getFreightCarrierMode());
 
 		stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
@@ -144,7 +144,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 	 *
 	 * 			null if there is no default stock location
 	 */
-	protected StockLocation findSaleOrderToLocation(SaleOrder saleOrder) throws AxelorException {
+	protected StockLocation findSaleOrderToStockLocation(SaleOrder saleOrder) throws AxelorException {
 		Partner partner = saleOrder.getClientPartner();
 		Company company = saleOrder.getCompany();
 	    if (partner == null || company == null) {

@@ -319,17 +319,17 @@ public class InventoryService {
 
 	public StockMove generateStockMove(Inventory inventory) throws AxelorException {
 
-		StockLocation toLocation = inventory.getStockLocation();
-		Company company = toLocation.getCompany();
+		StockLocation toStockLocation = inventory.getStockLocation();
+		Company company = toStockLocation.getCompany();
 		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
 
 		if (company == null) {
-			throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_6), toLocation.getName());
+			throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_6), toStockLocation.getName());
 		}
 
 		String inventorySeq = inventory.getInventorySeq();
 
-		StockMove stockMove = this.createStockMoveHeader(inventory, company, toLocation, inventory.getDateT().toLocalDate(), inventorySeq);
+		StockMove stockMove = this.createStockMoveHeader(inventory, company, toStockLocation, inventory.getDateT().toLocalDate(), inventorySeq);
 
 		for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
 			BigDecimal currentQty = inventoryLine.getCurrentQty();
@@ -379,10 +379,10 @@ public class InventoryService {
 	}
 
 
-	public StockMove createStockMoveHeader(Inventory inventory, Company company, StockLocation toLocation, LocalDate inventoryDate, String name) throws AxelorException  {
+	public StockMove createStockMoveHeader(Inventory inventory, Company company, StockLocation toStockLocation, LocalDate inventoryDate, String name) throws AxelorException  {
 
 		StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(null, null, company, null,
-				stockConfigService.getInventoryVirtualStockLocation(stockConfigService.getStockConfig(company)), toLocation, inventoryDate, inventoryDate, null, null, null);
+				stockConfigService.getInventoryVirtualStockLocation(stockConfigService.getStockConfig(company)), toStockLocation, inventoryDate, inventoryDate, null, null, null);
 
 		stockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
 		stockMove.setName(name);

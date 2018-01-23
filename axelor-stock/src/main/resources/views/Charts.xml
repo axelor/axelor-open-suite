@@ -20,7 +20,7 @@
 				self.typeSelect = 2 AND
 				self.statusSelect = 3 AND
 				self.company =:activeCompany AND    
-				self.toLocation = stockLocation AND
+				self.toStockLocation = stockLocation AND
 				stockLocation.typeSelect = 2 AND
 				self.toAddress = address AND
 				address.addressL7Country = country AND
@@ -52,7 +52,7 @@
 				stockMove.company = :activeCompany AND
 				stockMove.realDate BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND DATE(:todayDate) AND
 				self.stockMove = stockMove AND
-				stockMove.toLocation = stockLocation AND
+				stockMove.toStockLocation = stockLocation AND
 				stockLocation.typeSelect = 2 AND
 				stockMove.toAddress = address AND
 				address.addressL7Country = country
@@ -86,7 +86,7 @@
 				stockMove.company = :activeCompany AND
 				stockMove.realDate BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND DATE(:todayDate) AND
 				self.stockMove = stockMove AND
-				stockMove.toLocation = stockLocation AND
+				stockMove.toStockLocation = stockLocation AND
 				stockLocation.typeSelect = 2 AND
 				stockMove.toAddress = address AND
 				address.addressL7Country = country AND
@@ -305,9 +305,9 @@
 		LEFT JOIN
 		    _stockMoveLine.stockMove as _stockMove
 		LEFT JOIN
-		    _stockMove.fromLocation AS _from_location
+		    _stockMove.fromStockLocation AS _from_location
 		LEFT JOIN
-		    _stockMove.toLocation AS _to_location
+		    _stockMove.toStockLocation AS _to_location
 		WHERE
 		    _product.id = :id AND _stockMoveLine.product.id = _product.id AND (_from_location.typeSelect = 1 OR _to_location.typeSelect = 1 ) AND _stockMove.estimatedDate > current_date
 		GROUP BY

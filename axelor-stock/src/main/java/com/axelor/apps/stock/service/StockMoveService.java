@@ -55,8 +55,8 @@ public interface StockMoveService {
 	 * @param toAddress
 	 * @param company
 	 * @param clientPartner
-	 * @param fromLocation
-	 * @param toLocation
+	 * @param fromStockLocation
+	 * @param toStockLocation
 	 * @param realDate
 	 * @param estimatedDate
 	 * @param description
@@ -65,10 +65,10 @@ public interface StockMoveService {
 	 * @return
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
-	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, StockLocation fromLocation,
-			StockLocation toLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException;
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, StockLocation fromStockLocation,
+			StockLocation toStockLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException;
 
-	public int getStockMoveType(StockLocation fromLocation, StockLocation toLocation);
+	public int getStockMoveType(StockLocation fromStockLocation, StockLocation toStockLocation);
 
 	public void validate(StockMove stockMove) throws AxelorException;
 

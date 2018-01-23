@@ -151,7 +151,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 
 	@Override
-	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, StockLocation fromLocation, StockLocation toLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException {
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, StockLocation fromStockLocation, StockLocation toStockLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException {
 
 		StockMove stockMove = new StockMove();
 		stockMove.setFromAddress(fromAddress);
@@ -162,8 +162,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 		stockMove.setRealDate(realDate);
 		stockMove.setEstimatedDate(estimatedDate);
 		stockMove.setPartner(clientPartner);
-		stockMove.setFromStockLocation(fromLocation);
-		stockMove.setToStockLocation(toLocation);
+		stockMove.setFromStockLocation(fromStockLocation);
+		stockMove.setToStockLocation(toStockLocation);
 		stockMove.setDescription(description);
 		stockMove.setShipmentMode(shipmentMode);
 		stockMove.setFreightCarrierMode(freightCarrierMode);
@@ -173,15 +173,15 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 
 	@Override
-	public int getStockMoveType(StockLocation fromLocation, StockLocation toLocation)  {
+	public int getStockMoveType(StockLocation fromStockLocation, StockLocation toStockLocation)  {
 
-		if(fromLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL && toLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL) {
+		if(fromStockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL && toStockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL) {
 			return StockMoveRepository.TYPE_INTERNAL;
 		}
-		else if(fromLocation.getTypeSelect() != StockLocationRepository.TYPE_INTERNAL && toLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL) {
+		else if(fromStockLocation.getTypeSelect() != StockLocationRepository.TYPE_INTERNAL && toStockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL) {
 			return StockMoveRepository.TYPE_INCOMING;
 		}
-		else if(fromLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL && toLocation.getTypeSelect() != StockLocationRepository.TYPE_INTERNAL) {
+		else if(fromStockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL && toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_INTERNAL) {
 			return StockMoveRepository.TYPE_OUTGOING;
 		}
 		return 0;
@@ -207,20 +207,20 @@ public class StockMoveServiceImpl implements StockMoveService {
 			stockMove.setExTaxTotal(compute(stockMove));
 		}
 
-		StockLocation fromLocation = stockMove.getFromStockLocation();
-		StockLocation toLocation = stockMove.getToStockLocation();
+		StockLocation fromStockLocation = stockMove.getFromStockLocation();
+		StockLocation toStockLocation = stockMove.getToStockLocation();
 
-		if (fromLocation == null) {
+		if (fromStockLocation == null) {
 			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_5), stockMove.getName());
 		}
-		if (toLocation == null) {
+		if (toStockLocation == null) {
 			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_6), stockMove.getName());
 
 		}
 
 		// Set the type select
 		if(stockMove.getTypeSelect() == null || stockMove.getTypeSelect() == 0)  {
-			stockMove.setTypeSelect(this.getStockMoveType(fromLocation, toLocation));
+			stockMove.setTypeSelect(this.getStockMoveType(fromStockLocation, toStockLocation));
 		}
 
 
@@ -244,8 +244,8 @@ public class StockMoveServiceImpl implements StockMoveService {
         }
 
 		stockMoveLineService.updateLocations(
-				fromLocation,
-				toLocation,
+				fromStockLocation,
+				toStockLocation,
 				stockMove.getStatusSelect(),
 				StockMoveRepository.STATUS_PLANNED,
 				stockMove.getStockMoveLineList(),
@@ -722,11 +722,11 @@ public class StockMoveServiceImpl implements StockMoveService {
     private Double getStock(Long locationId, Long productId, LocalDate date) {
 		
 		List<StockMoveLine> inLines = stockMoveLineRepo.all()
-			.filter("self.product.id = ?1 AND self.stockMove.toLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)"
+			.filter("self.product.id = ?1 AND self.stockMove.toStockLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)"
 			,productId, locationId, StockMoveRepository.STATUS_CANCELED, date).fetch();
 		
 		List<StockMoveLine> outLines = stockMoveLineRepo.all()
-				.filter("self.product.id = ?1 AND self.stockMove.fromLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)"
+				.filter("self.product.id = ?1 AND self.stockMove.fromStockLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)"
 				,productId, locationId, StockMoveRepository.STATUS_CANCELED, date).fetch();
 		
 		Double inQty = inLines.stream().mapToDouble(inl->Double.parseDouble(inl.getQty().toString())).sum();
