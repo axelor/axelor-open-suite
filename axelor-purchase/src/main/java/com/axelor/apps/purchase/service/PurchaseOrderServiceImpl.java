@@ -259,7 +259,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
         if (blocking != null) {
             String reason = blocking.getBlockingReason() != null ? blocking.getBlockingReason().getName() : "";
-			throw new AxelorException(IException.FUNCTIONNAL, I18n.get("This supplier is blocked:") + " " + reason, partner);
+			throw new AxelorException(IException.FUNCTIONNAL, I18n.get(IExceptionMessage.SUPPLIER_BLOCKED) + " " + reason, partner);
         }
 		if (purchaseOrder.getVersionNumber() == 1){
 			purchaseOrder.setPurchaseOrderSeq(this.getSequence(purchaseOrder.getCompany()));

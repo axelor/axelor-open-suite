@@ -17,9 +17,13 @@
  */
 package com.axelor.apps.suppliermanagement.service;
 
+import com.axelor.apps.base.db.Blocking;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
@@ -94,13 +98,16 @@ public class PurchaseOrderSupplierService {
 	public void generateSuppliersRequests(PurchaseOrderLine purchaseOrderLine)  {
 
 		Product product = purchaseOrderLine.getProduct();
+		Company company = purchaseOrderLine.getPurchaseOrder().getCompany();
 
 		if(product != null && product.getSupplierCatalogList() != null)  {
 
 			for(SupplierCatalog supplierCatalog : product.getSupplierCatalogList())  {
-
-				purchaseOrderLine.addPurchaseOrderSupplierLineListItem(purchaseOrderSupplierLineService.create(supplierCatalog.getSupplierPartner(), supplierCatalog.getPrice()));
-
+				Partner supplierPartner = supplierCatalog.getSupplierPartner();
+				Blocking blocking = Beans.get(BlockingService.class).getBlocking(supplierPartner, company, BlockingRepository.PURCHASE_BLOCKING);
+				if (blocking == null) {
+					purchaseOrderLine.addPurchaseOrderSupplierLineListItem(purchaseOrderSupplierLineService.create(supplierPartner, supplierCatalog.getPrice()));
+				}
 			}
 		}
 
