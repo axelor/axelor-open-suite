@@ -17,10 +17,25 @@
  */
 package com.axelor.apps.sale.service;
 
+import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
+import javax.validation.constraints.NotNull;
+
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
@@ -43,16 +58,6 @@ import com.axelor.script.ScriptBindings;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
@@ -368,33 +373,34 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void addRequiredFormulas(ConfiguratorCreator creator) throws AxelorException {
 		if (creator.getGenerateProduct()) {
-			creator.addConfiguratorFormulaListItem(createFormula("Product", "code"));
-			creator.addConfiguratorFormulaListItem(createFormula("Product", "name"));
-			creator.addConfiguratorFormulaListItem(createFormula("Product", "productTypeSelect", "'storable'"));
-			creator.addConfiguratorFormulaListItem(createFormula("Product", "productFamily", "__repo__(ProductFamily).all().filter('self.code = :_code').bind('_code', 'COMP').fetchOne()"));
+			for (Field field : Product.class.getDeclaredFields()) {
+				if (field.getAnnotation(NotNull.class) != null) {
+					creator.addConfiguratorFormulaListItem(createFormula("Product", field.getName()));
+				}
+			}
 		} else {
-			creator.addConfiguratorFormulaListItem(createFormula("SaleOrderLine", "productName"));
+			for (Field field : SaleOrderLine.class.getDeclaredFields()) {
+				if (field.getAnnotation(NotNull.class) != null) {
+					creator.addConfiguratorFormulaListItem(createFormula("SaleOrderLine", field.getName()));
+				}
+			}
 		}
 		configuratorCreatorRepo.save(creator);
 	}
 
-	private ConfiguratorFormula createFormula(String metaFieldType, String name) throws AxelorException {
-		return createFormula(metaFieldType, name, "' '");
-	}
 
 	/**
-	 * Create a configuratorFormula for the given MetaField.
+	 * Create a configuratorFormula with an empty formula for the given MetaField.
 	 * 
 	 * @param metaFieldType
 	 * @param name
-	 * @param formula
 	 * @return
 	 * @throws AxelorException
 	 */
-	private ConfiguratorFormula createFormula(String metaFieldType, String name, String formula) throws AxelorException {
+	private ConfiguratorFormula createFormula(String metaFieldType, String name) throws AxelorException {
 		ConfiguratorFormula configuratorFormula = new ConfiguratorFormula();
 		configuratorFormula.setShowOnConfigurator(true);
-		configuratorFormula.setFormula(formula);
+		configuratorFormula.setFormula("");
 
 		Long productModelId = JPA.all(MetaModel.class).filter("self.name = ?", metaFieldType).fetchOne().getId();
 		MetaField metaField = JPA.all(MetaField.class)

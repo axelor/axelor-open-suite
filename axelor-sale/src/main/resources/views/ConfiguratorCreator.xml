@@ -104,8 +104,7 @@
 	</action-method>
 
     <action-method name="action-configurator-creator-method-update-activate">
-        <call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
-              method="updateAndActivate"/>
+        <call class="com.axelor.apps.sale.web.ConfiguratorCreatorController" method="updateAndActivate"/>
     </action-method>
 
 	<action-group name="action-configurator-creator-group-activate">
@@ -113,8 +112,7 @@
 		<action name="action-configurator-creator-method-update-activate"/>
 	</action-group>
 
-	<action-record name="action-configurator-creator-record-desactivate"
-				   model="com.axelor.apps.sale.db.ConfiguratorCreator">
+	<action-record name="action-configurator-creator-record-desactivate" model="com.axelor.apps.sale.db.ConfiguratorCreator">
 		<field name="isActive" expr="eval: false"/>
 	</action-record>
 
