@@ -54,14 +54,11 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     	if (configurator.getConfiguratorCreator() == null) {
             return;
         }
-    	List<MetaJsonField> indicators =
-                configurator.getConfiguratorCreator().getIndicators();
+		List<MetaJsonField> indicators = configurator.getConfiguratorCreator().getIndicators();
         for (MetaJsonField indicator : indicators) {
             try {
-                Object calculatedValue = computeIndicatorValue(
-                        configurator, indicator.getName(), jsonAttributes);
-                jsonIndicators.put(indicator.getName(),
-                        calculatedValue);
+				Object calculatedValue = computeIndicatorValue(configurator, indicator.getName(), jsonAttributes);
+				jsonIndicators.put(indicator.getName(), calculatedValue);
             } catch (MissingPropertyException e) {
                 //if a field is missing, the value needs to be set to null
                 continue;
@@ -118,11 +115,9 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
             saleOrderLine.setProduct(configurator.getProduct());
             this.fillSaleOrderWithProduct(saleOrderLine);
-            Beans.get(SaleOrderLineService.class)
-                    .computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+			Beans.get(SaleOrderLineService.class).computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
         } else {
-            saleOrderLine = generateSaleOrderLine(configurator, jsonAttributes,
-                    jsonIndicators, saleOrder);
+			saleOrderLine = generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
         }
         saleOrder.addSaleOrderLineListItem(saleOrderLine);
         Beans.get(SaleOrderService.class).computeSaleOrder(saleOrder);
