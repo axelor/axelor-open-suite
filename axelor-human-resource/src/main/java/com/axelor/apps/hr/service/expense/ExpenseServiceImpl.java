@@ -17,6 +17,20 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.mail.MessagingException;
+
+import org.joda.time.LocalDate;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
@@ -77,18 +91,6 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.joda.time.LocalDate;
-
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class ExpenseServiceImpl implements ExpenseService {
 
@@ -171,18 +173,14 @@ public class ExpenseServiceImpl implements ExpenseService {
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
 		BigDecimal taxTotal = BigDecimal.ZERO;
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
-		List<ExpenseLine> expenseLineList = expense.getExpenseLineList();
+		List<ExpenseLine> expenseLineList = expense.getGeneralExpenseLineList();
 		List<ExpenseLine> kilometricExpenseLineList = expense.getKilometricExpenseLineList();
 
 		if (expenseLineList != null) {
 			for (ExpenseLine expenseLine : expenseLineList) {
-				//if the distance in expense line is not null or zero, the expenseline is a kilometricExpenseLine
-				//so we ignore it, it will be taken into account in the next loop.
-				if (expenseLine.getDistance() == null || expenseLine.getDistance().compareTo(BigDecimal.ZERO) == 0) {
-					exTaxTotal = exTaxTotal.add(expenseLine.getUntaxedAmount());
-					taxTotal = taxTotal.add(expenseLine.getTotalTax());
-					inTaxTotal = inTaxTotal.add(expenseLine.getTotalAmount());
-				}
+				exTaxTotal = exTaxTotal.add(expenseLine.getUntaxedAmount());
+				taxTotal = taxTotal.add(expenseLine.getTotalTax());
+				inTaxTotal = inTaxTotal.add(expenseLine.getTotalAmount());
 			}
 		}
 		if (kilometricExpenseLineList != null) {
@@ -331,7 +329,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 		int expenseLineId = 1;
 		moveLines.add(moveLineService.createMoveLine(move, expense.getUser().getPartner(), accountConfigService.getExpenseEmployeeAccount(accountConfig), expense.getInTaxTotal(), false, moveDate, moveDate, moveLineId++, ""));
 
-		for (ExpenseLine expenseLine : expense.getExpenseLineList()) {
+		for (ExpenseLine expenseLine : getExpenseLineList(expense)) {
 			analyticAccounts.clear();
 			Product product = expenseLine.getExpenseProduct();
 			accountManagement = accountManagementService.getAccountManagement(product, expense.getCompany());
@@ -358,7 +356,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 		moveLineService.consolidateMoveLines(moveLines);
 		account = accountConfigService.getExpenseTaxAccount(accountConfig);
 		BigDecimal taxTotal = BigDecimal.ZERO;
-		for (ExpenseLine expenseLine : expense.getExpenseLineList()) {
+		for (ExpenseLine expenseLine : getExpenseLineList(expense)) {
 			exTaxTotal = expenseLine.getTotalTax();
 			taxTotal = taxTotal.add(exTaxTotal);
 		}
@@ -544,14 +542,14 @@ public class ExpenseServiceImpl implements ExpenseService {
 			response.setError(e.getMessage());
 		}
 	}
-
+	
 	@Transactional
 	public void insertExpenseLine(ActionRequest request, ActionResponse response) {
 		User user = AuthUtils.getUser();
 		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
 		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("expenseProduct").toString()));
 		if (user != null) {
-		    Expense expense = getOrCreateExpense(user);
+			Expense expense = getOrCreateExpense(user);
 			ExpenseLine expenseLine = new ExpenseLine();
 			expenseLine.setExpenseDate(new LocalDate(request.getData().get("date").toString()));
 			expenseLine.setComments(request.getData().get("comments").toString());
@@ -563,7 +561,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 			expenseLine.setTotalTax(new BigDecimal(request.getData().get("vatAmount").toString()));
 			expenseLine.setTotalAmount(expenseLine.getUntaxedAmount().add(expenseLine.getTotalTax()));
 			expenseLine.setJustification((byte[]) request.getData().get("justification"));
-			expense.addExpenseLineListItem(expenseLine);
+			expense.addGeneralExpenseLineListItem(expenseLine);
 
 			Beans.get(ExpenseRepository.class).save(expense);
 		}
@@ -594,12 +592,10 @@ public class ExpenseServiceImpl implements ExpenseService {
 	public BigDecimal computePersonalExpenseAmount(Expense expense) {
 
 		BigDecimal personalExpenseAmount = new BigDecimal("0.00");
-
-		if (expense.getExpenseLineList() != null && !expense.getExpenseLineList().isEmpty()) {
-			for (ExpenseLine expenseLine : expense.getExpenseLineList()) {
-				if (expenseLine.getExpenseProduct() != null && expenseLine.getExpenseProduct().getPersonalExpense()) {
-					personalExpenseAmount = personalExpenseAmount.add(expenseLine.getTotalAmount());
-				}
+		
+		for (ExpenseLine expenseLine : getExpenseLineList(expense)) {
+			if (expenseLine.getExpenseProduct() != null && expenseLine.getExpenseProduct().getPersonalExpense()) {
+				personalExpenseAmount = personalExpenseAmount.add(expenseLine.getTotalAmount());
 			}
 		}
 		return personalExpenseAmount;
@@ -685,4 +681,16 @@ public class ExpenseServiceImpl implements ExpenseService {
 		
 		return kilometricAllowParamList;
 	}
+	
+	public List<ExpenseLine> getExpenseLineList(Expense expense) {
+		List<ExpenseLine> expenseLineList = new ArrayList<>();
+		if (expense.getGeneralExpenseLineList() != null) {
+			expenseLineList.addAll(expense.getGeneralExpenseLineList());
+		}
+		if (expense.getKilometricExpenseLineList() != null) {
+			expenseLineList.addAll(expense.getKilometricExpenseLineList());
+		}
+		return expenseLineList;
+	}
+	
 }
