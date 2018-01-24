@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.axelor.apps.report.engine.ReportSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -176,15 +177,12 @@ public class AccountingReportController {
 			else {
 
 				accountingReportService.setPublicationDateTime(accountingReport);
-				
-				User user = AuthUtils.getUser();
-				String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 
 				String name = I18n.get("Accounting reporting") + " " + accountingReport.getRef();
 				
 				String fileLink = ReportFactory.createReport(String.format(IReport.ACCOUNTING_REPORT_TYPE, accountingReport.getTypeSelect()), name+"-${date}")
 						.addParam("AccountingReportId", accountingReport.getId())
-						.addParam("Locale", language)
+						.addParam("Locale", ReportSettings.getPrintingLocale(null))
 						.addFormat(accountingReport.getExportTypeSelect())
 						.toAttach(accountingReport)
 						.generate()

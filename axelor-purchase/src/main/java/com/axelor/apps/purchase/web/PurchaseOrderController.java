@@ -25,10 +25,14 @@ import java.util.Map;
 
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.google.common.base.Strings;
@@ -132,13 +136,7 @@ public class PurchaseOrderController {
 		}else if(purchaseOrder.getId() != null){
 			purchaseOrderIds = purchaseOrder.getId().toString();
 		}
-		String language="";
-		try{
-			language = purchaseOrder.getSupplierPartner().getLanguageSelect() != null? purchaseOrder.getSupplierPartner().getLanguageSelect() : purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-		}catch (NullPointerException e) {
-			language = "en";
-		}
-		language = language.equals("")? "en": language;
+		String language = ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner());
 
 		String title = I18n.get("Purchase order");
 		if(purchaseOrder.getPurchaseOrderSeq() != null)  {
@@ -355,6 +353,20 @@ public class PurchaseOrderController {
 		purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
 		purchaseOrderService.validatePurchaseOrder(purchaseOrder);
 		response.setReload(true);
+	}
+
+	public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		PrintingSettings printingSettings = purchaseOrder.getPrintingSettings();
+
+		List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(purchaseOrder.getTradingName(), purchaseOrder.getCompany());
+		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
+			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
+		}
+		String domain = !printingSettingsList.isEmpty() ? String.format("self.id IN (%s)", StringTool.getIdListString(printingSettingsList)) : null;
+
+		response.setValue("printingSettings", printingSettings);
+		response.setAttr("printingSettings", "domain", domain);
 	}
 
 	/**

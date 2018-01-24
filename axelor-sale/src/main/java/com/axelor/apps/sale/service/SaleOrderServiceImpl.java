@@ -37,6 +37,7 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -470,11 +471,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	
 	@Override
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException  {
-		
-		String language = this.getLanguageForPrinting(saleOrder);
-		
 		ReportFactory.createReport(IReport.SALES_ORDER, this.getFileName(saleOrder)+"-${date}")
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(saleOrder.getClientPartner()))
 				.addParam("SaleOrderId", saleOrder.getId())
 				.toAttach(saleOrder)
 				.generate()
@@ -484,19 +482,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		
 	}
 
-	@Override
-	public String getLanguageForPrinting(SaleOrder saleOrder)  {
-		String language="";
-		try{
-			language = saleOrder.getClientPartner().getLanguageSelect() != null? saleOrder.getClientPartner().getLanguageSelect() : saleOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? saleOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-		}catch (NullPointerException e) {
-			language = "en";
-		}
-		language = language.equals("")? "en": language;
-		
-		return language;
-	}
-	
 	@Override
 	public String getFileName(SaleOrder saleOrder)  {
 		

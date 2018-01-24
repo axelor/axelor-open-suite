@@ -27,6 +27,7 @@ import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -152,7 +153,7 @@ public class BankOrderController {
 		
 		String fileLink = ReportFactory.createReport(IReport.BANK_ORDER, name + "-${date}")
 				.addParam("BankOrderId", bankOrder.getId())
-				.addParam("Locale", AuthUtils.getUser().getLanguage())
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.generate()
 				.getFileLink();
 

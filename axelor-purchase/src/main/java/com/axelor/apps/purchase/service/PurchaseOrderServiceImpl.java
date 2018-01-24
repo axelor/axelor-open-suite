@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ShippingCoefService;
+import com.axelor.apps.report.engine.ReportSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -229,14 +230,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	@Override
 	public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws AxelorException  {
 
-		String language="";
-		try{
-			language = purchaseOrder.getSupplierPartner().getLanguageSelect() != null? purchaseOrder.getSupplierPartner().getLanguageSelect() : purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-		}catch (NullPointerException e) {
-			language = "en";
-		}
-		language = language.equals("")? "en": language;
-		
+		String language= ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner());
+
 		String title = I18n.get("Purchase order") + purchaseOrder.getPurchaseOrderSeq() + ((purchaseOrder.getVersionNumber() > 1) ? "-V" + purchaseOrder.getVersionNumber() : "");
 
 		ReportFactory.createReport(IReport.PURCHASE_ORDER, title+"-${date}")

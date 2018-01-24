@@ -26,8 +26,8 @@ import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -53,17 +53,13 @@ public class ProjectController {
     private ProjectBusinessService projectBusinessService;
 	
 	public void printProject(ActionRequest request,ActionResponse response) throws AxelorException  {
-
 		Project project = request.getContext().asType(Project.class);
-
-		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
 
 		String name = I18n.get("Project") + " " + project.getCode();
 		
 		String fileLink = ReportFactory.createReport(IReport.PROJECT, name+"-${date}")
 				.addParam("ProjectId", project.getId())
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.toAttach(project)
 				.generate()
 				.getFileLink();
@@ -109,9 +105,6 @@ public class ProjectController {
 
 		Project project = request.getContext().asType(Project.class);
 
-		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
-
 		String name = I18n.get("Planification and costs");
 		
 		if (project.getCode() != null) {
@@ -120,7 +113,7 @@ public class ProjectController {
 		
 		String fileLink = ReportFactory.createReport(IReport.PLANNIF_AND_COST, name)
 				.addParam("ProjectId", project.getId())
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.toAttach(project)
 				.generate()
 				.getFileLink();

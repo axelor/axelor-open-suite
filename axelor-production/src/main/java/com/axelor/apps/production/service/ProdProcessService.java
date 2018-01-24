@@ -32,6 +32,7 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -47,7 +48,7 @@ public class ProdProcessService {
 	
 	@Inject
 	ProdProcessRepository prodProcessRepo;
-	
+
 	public void validateProdProcess(ProdProcess prodProcess, BillOfMaterial bom) throws AxelorException{
 		Map<Product,BigDecimal> bomMap = new HashMap<Product,BigDecimal>();
 		for (BillOfMaterial bomIt : bom.getBillOfMaterialSet()) {
@@ -81,27 +82,27 @@ public class ProdProcessService {
 		}
 		return prodProcess;
 	}
-	
+
 	public String getLanguageToPrinting(ProdProcess prodProcess)  {
-		
+
 		User user = AuthUtils.getUser();
-		
+
 		String language = "en";
-		
+
 		if(user != null && !Strings.isNullOrEmpty(user.getLanguage()))  {
 			return user.getLanguage();
 		}
-		
+
 		if(prodProcess == null)  {  return language;  }
 		Company company = prodProcess.getCompany();
-		
-		if(company != null && company.getPrintingSettings() != null && !Strings.isNullOrEmpty(company.getPrintingSettings().getLanguageSelect())) {
-			language = company.getPrintingSettings().getLanguageSelect();
+
+		if(company != null && company.getPartner() != null) {
+			language = ReportSettings.getPrintingLocale(company.getPartner());
 		}
-		
+
 		return language;
 	}
-	
+
 	@Transactional
 	public ProdProcess generateNewVersion(ProdProcess prodProcess) {
 

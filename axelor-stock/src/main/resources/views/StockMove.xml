@@ -13,6 +13,7 @@
         <field name="estimatedDate"/>
         <field name="realDate"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="statusSelect"/>
         <field name="typeSelect" hidden="true" />
         <field name="toAddressStr" hidden="true" form-view="address-form" grid-view="address-grid"/>
@@ -32,6 +33,7 @@
         <field name="fromAddressStr" hidden="true"/>
         <field name="toAddressStr"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="statusSelect"/>
         <field name="typeSelect" hidden="true" />
@@ -50,6 +52,7 @@
         <field name="fromAddressStr"/>
         <field name="toAddressStr" hidden="true"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="partner"  form-view="partner-form" grid-view="partner-grid"/>
         <field name="statusSelect"/>
         <field name="typeSelect" hidden="true" />
@@ -63,7 +66,7 @@
     </calendar>
 
 	<form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove"
-		 onLoad="action-stock-move-attrs-typeselect-change,action-stock-move-hide-reserved-qty" onNew="action-group-stock-stockmove-onnew">
+		 onLoad="action-stock-move-attrs-typeselect-change,action-stock-move-hide-reserved-qty,action-stock-move-method-filter-printing-settings" onNew="action-group-stock-stockmove-onnew">
 		 
 		 <menubar>
 		 		<menu title="Reports">
@@ -91,7 +94,10 @@
 	    <panel title="Stock move reference" name="stockMoveRef">
 	      <field name="stockMoveSeq" colSpan="12"/>
 	      <field name="name" colSpan="12" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
-	      <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" colSpan="12" readonlyIf="statusSelect != 1" grid-view="company-grid"/>
+	      <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" colSpan="12" readonlyIf="statusSelect != 1" grid-view="company-grid"
+				 onChange="action-stock-move-record-update-info-company"/>
+		  <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" colSpan="12" if="__config__.app.getApp('base').enableTradingNamesManagement"
+				 readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-stock-move-method-filter-printing-settings"/>
 	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12" readonlyIf="statusSelect != 1" onChange="action-stock-move-record-partner-delivery-informations"/>
 	    </panel>
 	    <panel title="Stock move informations" name="stockMoveInformation">
@@ -118,6 +124,7 @@
 	      <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="sale-order-form" grid-view="sale-order-grid"/>
 	      <field name="purchaseOrder" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
 	      <field name="invoice" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="invoice-form" grid-view="invoice-grid"/>
+          <field name="printingSettings" required="true" canEdit="false"/>
 	    </panel>
 	  </panel-tabs>
 
@@ -293,6 +300,7 @@
 		<field if="_typeSelect == '3'" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierVirtualStockLocation"/>
 		<field if="_typeSelect == '2'" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.defaultStockLocation"/>
 		<field if="_typeSelect == '2'" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.customerVirtualStockLocation"/>
+		<field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings" if="__user__.activeCompany != null"/>
 	</action-record>
 	
 	<action-record name="action-stock-move-set-from-address" model="com.axelor.apps.stock.db.StockMove">
@@ -460,5 +468,14 @@
 			<button readonlyIf="cancelReason == null" name="cancelConfirm" title="Confirm cancellation" onClick="action-stock-move-method-cancel" colOffset="4" colSpan="4"/>
 		</panel>
 	</form>
+
+	<action-record name="action-stock-move-record-update-info-company" model="com.axelor.apps.stock.db.StockMove">
+		<field name="tradingName" expr="eval: null" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+		<field name="printingSettings" expr="eval: company?.printingSettings"/>
+	</action-record>
+
+	<action-method name="action-stock-move-method-filter-printing-settings">
+		<call class="com.axelor.apps.stock.web.StockMoveController" method="filterPrintingSettings"/>
+	</action-method>
 
 </object-views>

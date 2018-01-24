@@ -25,6 +25,7 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.ProdProcessService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -73,7 +74,7 @@ public class ProdProcessController {
 		String prodProcessLabel = prodProcess.getName().toString();
 		
 		String fileLink = ReportFactory.createReport(IReport.PROD_PROCESS, prodProcessLabel+"-${date}")
-				.addParam("Locale", prodProcessService.getLanguageToPrinting(prodProcess))
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.addParam("ProdProcessId", prodProcessId)
 				.generate()
 				.getFileLink();

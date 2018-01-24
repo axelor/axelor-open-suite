@@ -139,7 +139,7 @@ public class BillOfMaterialController {
 		
 		BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
 		
-		String language = billOfMaterialService.getLanguageForPrinting(billOfMaterial);
+		String language = ReportSettings.getPrintingLocale(null);
 		
 		String name = billOfMaterialService.getFileName(billOfMaterial);
 		

@@ -27,6 +27,7 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementFileAFB120Service;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -107,7 +108,7 @@ public class BankStatementService {
 
         return ReportFactory.createReport(reportName, bankStatement.getName() + "-${date}")
                 .addParam("BankStatementId", bankStatement.getId())
-                .addParam("Locale", AuthUtils.getUser().getLanguage()).addFormat("pdf").toAttach(bankStatement)
+                .addParam("Locale", ReportSettings.getPrintingLocale(null)).addFormat("pdf").toAttach(bankStatement)
                 .generate().getFileLink();
     }
 

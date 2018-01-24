@@ -25,13 +25,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -299,4 +302,17 @@ public class StockMoveController {
 	    response.setValues(stockMove);
 	}
 
+	public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
+		StockMove stockMove = request.getContext().asType(StockMove.class);
+		PrintingSettings printingSettings = stockMove.getPrintingSettings();
+
+		List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(stockMove.getTradingName(), stockMove.getCompany());
+		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
+			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
+		}
+		String domain = !printingSettingsList.isEmpty() ? String.format("self.id IN (%s)", StringTool.getIdListString(printingSettingsList)) : null;
+
+		response.setValue("printingSettings", printingSettings);
+		response.setAttr("printingSettings", "domain", domain);
+	}
 }

@@ -57,8 +57,6 @@ public interface ManufOrderService {
 	public String getManufOrderSeq() throws AxelorException;
 	
 	public boolean isManagedConsumedProduct(BillOfMaterial billOfMaterial);
-	
-	public String getLanguageToPrinting(ManufOrder manufOrder);
 
 	public BigDecimal getProducedQuantity(ManufOrder manufOrder);
 

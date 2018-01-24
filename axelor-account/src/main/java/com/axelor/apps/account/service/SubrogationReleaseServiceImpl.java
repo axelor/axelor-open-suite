@@ -87,7 +87,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 	public String printToPDF(SubrogationRelease subrogationRelease, String name) throws AxelorException {
 		ReportSettings reportSettings = ReportFactory.createReport(IReport.SUBROGATION_RELEASE, name);
 		reportSettings.addParam("SubrogationReleaseId", subrogationRelease.getId());
-		reportSettings.addParam("Locale", AuthUtils.getUser().getLanguage());
+		reportSettings.addParam("Locale", ReportSettings.getPrintingLocale(null));
 		reportSettings.addFormat("pdf");
 		reportSettings.toAttach(subrogationRelease);
 		reportSettings.generate();
