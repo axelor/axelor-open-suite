@@ -40,7 +40,7 @@
 		<panel name="head">
 			<field name="sentDate" colSpan="4"/>
 			<field name="company" canEdit="false" colSpan="4" form-view="company-form" grid-view="company-grid"/>
-			<field name="user" canEdit="false" colSpan="4" form-view="user-form" grid-view="user-grid"/>
+			<field name="user" colSpan="4" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 		</panel>
 		<panel-related field="extraHoursLineList"/>
 		<panel>

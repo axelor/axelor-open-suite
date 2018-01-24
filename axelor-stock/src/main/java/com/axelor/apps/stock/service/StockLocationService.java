@@ -28,11 +28,11 @@ import com.axelor.apps.stock.db.StockLocation;
 public interface StockLocationService {
 
     /**
-     * Get the default location of the given company
+     * Get the default stock location of the given company
      * @param company
-     * @return the default location or null
+     * @return the default stock location or null
      */
-    public StockLocation getLocation(Company company);
+    public StockLocation getDefaultStockLocation(Company company);
 
 	public BigDecimal getQty(Long productId, Long locationId, String qtyType);
 	
@@ -42,8 +42,8 @@ public interface StockLocationService {
 
 	public void computeAvgPriceForProduct(Product product);
 
-	public List<Long> getBadLocationLineId();
+	public List<Long> getBadStockLocationLineId();
 	
-	public Set<Long> getContentLocationIds(StockLocation stockLocation);
+	public Set<Long> getContentStockLocationIds(StockLocation stockLocation);
 	
 }

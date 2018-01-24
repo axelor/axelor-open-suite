@@ -67,8 +67,8 @@
     <grid name="stock-move-line-all-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
     	<field name="stockMove.stockMoveSeq"/>
     	<field name="stockMove.realDate"/>
-        <field name="stockMove.fromLocation"/>
-        <field name="stockMove.toLocation"/>
+        <field name="stockMove.fromStockLocation"/>
+        <field name="stockMove.toStockLocation"/>
         <field name="productName" />
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="stockMove.partner"/>
@@ -83,8 +83,8 @@
 	<grid name="stock-move-line-all-grid-planned" title="Planned stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
 		<field name="stockMove.stockMoveSeq" />
 		<field name="stockMove.estimatedDate" />
-		<field name="stockMove.fromLocation" />
-		<field name="stockMove.toLocation" />
+		<field name="stockMove.fromStockLocation" />
+		<field name="stockMove.toStockLocation" />
 		<field name="productName" />
 		<field name="product" form-view="product-form" grid-view="product-grid" />
 		<field name="stockMove.partner" />
@@ -103,8 +103,8 @@
 	    	<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 	    	<field name="stockMove.estimatedDate"/>
 	    	<field name="stockMove.realDate"/>
-	        <field name="stockMove.fromLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-	        <field name="stockMove.toLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+	        <field name="stockMove.fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+	        <field name="stockMove.toStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         </panel>
         <panel name="moveDetails" title="Move details">
             <field name="productName" required="true"/>
@@ -125,10 +125,20 @@
         </panel>
     </form>
 
-    <grid name="stock-move-line-production-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
+    <grid name="stock-move-line-consumed-production-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="productModel" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
         <field name="qty" title="Consumed quantity" aggregate="sum"/>
+        <field name="unitPriceUntaxed" x-scale="2"/>
+        <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
+    </grid>
+
+    <grid name="stock-move-line-produced-production-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
+        <field name="product" form-view="product-form" grid-view="product-grid"/>
+        <field name="productModel" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
+        <field name="qty" title="Produced quantity" aggregate="sum"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -230,14 +240,14 @@
 		model="com.axelor.apps.stock.db.StockMoveLine" >
 		<view type="grid" name="stock-move-line-all-grid-planned"/>
 		<view type="form" name="stock-move-line-all-form"/>
-		<domain>self.stockMove.statusSelect = 2 and (self.stockMove.fromLocation.typeSelect = 1 or self.stockMove.toLocation.typeSelect = 1) and self.product.id = :_id</domain>
+		<domain>self.stockMove.statusSelect = 2 and (self.stockMove.fromStockLocation.typeSelect = 1 or self.stockMove.toStockLocation.typeSelect = 1) and self.product.id = :_id</domain>
 	</action-view>	
 	
 	<action-view name="action-stock-move-line-product-default-realized" title="${fullName} real st. move"
 		model="com.axelor.apps.stock.db.StockMoveLine" >
 		<view type="grid" name="stock-move-line-all-grid"/>
 		<view type="form" name="stock-move-line-all-form"/>
-		<domain>self.stockMove.statusSelect = 3 and (self.stockMove.fromLocation.typeSelect = 1 or self.stockMove.toLocation.typeSelect = 1) and self.product.id = :_id</domain>
+		<domain>self.stockMove.statusSelect = 3 and (self.stockMove.fromStockLocation.typeSelect = 1 or self.stockMove.toStockLocation.typeSelect = 1) and self.product.id = :_id</domain>
 	</action-view>	
 		
 	

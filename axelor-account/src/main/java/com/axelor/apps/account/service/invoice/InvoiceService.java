@@ -230,11 +230,19 @@ public interface InvoiceService {
 									 Set<Invoice> advancePaymentInvoices) throws AxelorException;
 
 	/**
-	 * Get the bank details from the invoice's payment schedule, the invoice itself, or the partner's default.
-	 * 
+     * Get the bank details from the invoice's payment schedule, the invoice itself, or the partner's default.
+     * 
 	 * @param invoice
 	 * @return
+	 * @throws AxelorException
 	 */
-	BankDetails getBankDetails(Invoice invoice);
+	BankDetails getBankDetails(Invoice invoice) throws AxelorException;
+
+	/**
+	 * @param invoice
+	 * @return {@link com.axelor.apps.base.db.repo.PriceListRepository#TYPE_SALE}
+	 *        OR {@link com.axelor.apps.base.db.repo.PriceListRepository#TYPE_PURCHASE}
+	 */
+	int getPurchaseTypeOrSaleType(Invoice invoice);
 
 }

@@ -7,7 +7,6 @@
 
     <entity name="Account" lang="java" cachable="true">
 
-        <integer name="importId" />
         <string name="name" title="Name" required="true"/>
         <string name="code" title="Code" required="true" hashKey="true"/>
         <many-to-one name="parentAccount" ref="Account" title="Parent Account"/>

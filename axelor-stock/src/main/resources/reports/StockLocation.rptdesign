@@ -691,7 +691,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 FROM 
 	stock_stock_location as Location 
 LEFT OUTER JOIN 
-	stock_location_line as StockLocationLine ON (StockLocationLine.stock_location = Location.id)
+	stock_stock_location_line as StockLocationLine ON (StockLocationLine.stock_location = Location.id)
 LEFT JOIN 
 	base_product AS Product ON (Product.id = StockLocationLine.product)	
 LEFT JOIN
@@ -1450,7 +1450,7 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'StockLocation.detailsByLocation'</value>
+                                        <value type="javascript">'StockLocation.detailsByStockLocation'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>

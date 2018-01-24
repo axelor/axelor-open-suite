@@ -23,6 +23,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +57,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.ContextEntity;
 
 public abstract class InvoiceGenerator  {
 	
@@ -214,15 +217,6 @@ public abstract class InvoiceGenerator  {
 
 		invoice.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
 
-		if (priceList == null) {
-			if(InvoiceToolService.isPurchase(invoice))  {
-				priceList = partner.getPurchasePriceList();
-			}
-			else  {
-				priceList = partner.getSalePriceList();
-			}
-		}
-
 		invoice.setPriceList(priceList);
 
 		invoice.setInternalReference(internalReference);
@@ -299,10 +293,17 @@ public abstract class InvoiceGenerator  {
 
 		initCollections( invoice );
 
-	    invoiceLines.stream().forEach(invoice::addInvoiceLineListItem);
+		// Create tax lines.
+        List<InvoiceLineTax> invoiceTaxLines = (new TaxInvoiceLine(invoice, invoiceLines)).creates();
 
-		// create Tva lines
-		(new TaxInvoiceLine(invoice, invoiceLines)).creates().stream().forEach(invoice::addInvoiceLineTaxListItem);
+        // Workaround for #9759
+	    if (invoice instanceof ContextEntity) {
+	        invoice.getInvoiceLineList().addAll(invoiceLines);
+	        invoice.getInvoiceLineTaxList().addAll(invoiceTaxLines);
+	    } else {
+	        invoiceLines.stream().forEach(invoice::addInvoiceLineListItem);
+	        invoiceTaxLines.stream().forEach(invoice::addInvoiceLineTaxListItem);
+	    }
 
 		computeInvoice(invoice);
 

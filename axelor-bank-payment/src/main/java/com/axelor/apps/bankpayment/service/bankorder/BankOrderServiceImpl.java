@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -16,6 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service.bankorder;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -36,6 +52,7 @@ import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800102Service;
+import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile008Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100103Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160ICTService;
@@ -55,20 +72,6 @@ import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
 public class BankOrderServiceImpl implements BankOrderService {
 
@@ -245,7 +248,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 	public void confirm(BankOrder bankOrder)  throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
 		checkBankDetails(bankOrder.getSenderBankDetails(), bankOrder);
-		
+
 		if(bankOrder.getGeneratedMetaFile() == null)  {
 			checkLines(bankOrder);
 		}
@@ -315,7 +318,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
 		
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
-
+		bankOrder.setTestMode(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTestMode());
 		bankOrderRepo.save(bankOrder);
 	}
 	
@@ -416,7 +419,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 		// filter on the currency if it is set in file format and in the bankdetails
 		Currency currency = bankOrder.getBankOrderCurrency();
-		if (currency != null) {
+		if (currency != null && !bankOrder.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails()) {
 			String fileFormatCurrencyId = currency.getId().toString();
 			domain += " AND (self.currency IS NULL OR self.currency.id = " + fileFormatCurrencyId + ")";
 		}
@@ -454,9 +457,17 @@ public class BankOrderServiceImpl implements BankOrderService {
 			if (!this.checkBankDetailsTypeCompatible(bankDetails, bankOrder.getBankOrderFileFormat())) {
 				throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE));
 			}
-			if (!this.checkBankDetailsCurrencyCompatible(bankDetails, bankOrder)) {
+			if (!bankOrder.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails()
+					&& !this.checkBankDetailsCurrencyCompatible(bankDetails, bankOrder)) {
 				throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE));
 			}
+		}
+
+		if (bankOrder.getBankOrderFileFormat() != null
+				&& bankOrder.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails()
+				&& bankDetails.getCurrency() == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING_CURRENCY),
+					IException.MISSING_FIELD);
 		}
 	}
 
@@ -521,19 +532,19 @@ public class BankOrderServiceImpl implements BankOrderService {
 	    		break;
 
             case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SDD:
-                file = new BankOrderFile00800101Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_CORE).generateFile();
+                file = new BankOrderFile00800101Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_CORE).generateFile();
                 break;
 
             case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SBB:
-                file = new BankOrderFile00800101Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_SBB).generateFile();
+                file = new BankOrderFile00800101Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_SBB).generateFile();
                 break;
 
             case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SDD:
-                file = new BankOrderFile00800102Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_CORE).generateFile();
+                file = new BankOrderFile00800102Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_CORE).generateFile();
                 break;
 
             case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SBB:
-                file = new BankOrderFile00800102Service(bankOrder, BankOrderFile00800101Service.SEPA_TYPE_SBB).generateFile();
+                file = new BankOrderFile00800102Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_SBB).generateFile();
                 break;
 
             default:

@@ -9,10 +9,11 @@
 
     <form name="configurator-form" title="Configurator"
           model="com.axelor.apps.sale.db.Configurator"
-          onNew="action-configurator-group-on-new">
-        <panel readonlyIf="productId">
-            <field name="productId" readonly="true" showTitle="false"
-                   showIf="productId" colSpan="12">
+          onNew="action-configurator-group-on-new"
+          onLoad="action-configurator-update-indicators,save">
+        <panel readonlyIf="product">
+            <field name="product" readonly="true" showTitle="false"
+                   showIf="product" colSpan="12">
                 <viewer>
                     <![CDATA[
 			 			<h3>
@@ -29,7 +30,7 @@
         <panel readonly="true">
             <field name="indicators" colSpan="12"/>
         </panel>
-        <panel showIf="configuratorCreator.generateProduct" readonlyIf="productId" >
+        <panel showIf="configuratorCreator.generateProduct" readonlyIf="product" >
             <button name="generateProduct" title="Generate Product"
                     onClick="save,action-configurator-generate-product"/>
             <field name="configuratorCreator.generateProduct" hidden="true"/>

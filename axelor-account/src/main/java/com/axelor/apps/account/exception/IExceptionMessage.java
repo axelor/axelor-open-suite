@@ -156,6 +156,7 @@ public interface IExceptionMessage {
 	static final String PAYMENT_SCHEDULE_4 = /*$$(*/ "%s : You must configure a direct debit reject sequence\n for the company %s for the journal %s" /*)*/ ;
 	static final String PAYMENT_SCHEDULE_5 = /*$$(*/ "You must configure a timetable sequence for the company %s" /*)*/ ;
 	static final String PAYMENT_SCHEDULE_6 = /*$$(*/ "%s : Error : You must, at first, create timetable lines for the timetable %s" /*)*/ ;
+    static final String PAYMENT_SCHEDULE_LINE_AMOUNT_MISMATCH = /*$$(*/ "The sum of line amounts (%s) must match the amount of the payment schedule (%s)." /*)*/ ;
 
 	/**
 	 * Reconcile service
@@ -591,5 +592,10 @@ public interface IExceptionMessage {
 	static final String DEPOSIT_SLIP_ALREADY_PUBLISHED = /*$$(*/ "The deposit slip has already been published." /*)*/;
 	static final String DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE = /*$$(*/ "Unsupported payment mode type" /*)*/;;
     static final String DEPOSIT_SLIP_MISSING_CHEQUE_INFORMATION = /*$$(*/ "Missing cheque information on payment %s" /*)*/;;
+
+    /*
+     * Partner
+     */
+    String PARTNER_BANK_DETAILS_MISSING = /*$$(*/ "Bank details are missing for partner %s." /*)*/;
 
 }

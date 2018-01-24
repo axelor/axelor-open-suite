@@ -150,7 +150,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 		
 		} else if (isDetailLocationLine && stockLocationLine.getCurrentQty().compareTo(BigDecimal.ZERO) < 0 
 				&& ((stockLocationLine.getStockLocation() != null && stockLocationLine.getStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL)
-				    || (stockLocationLine.getDetailsLocation() != null && stockLocationLine.getDetailsLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL))) {
+				    || (stockLocationLine.getDetailsStockLocation() != null && stockLocationLine.getDetailsStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL))) {
 
 			String trackingNumber = "";
 			if (stockLocationLine.getTrackingNumber() != null) {
@@ -162,7 +162,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 	}
 
 	public void checkIfEnoughStock(StockLocation stockLocation, Product product, BigDecimal qty) throws AxelorException{
-		StockLocationLine stockLocationLine = this.getLocationLine(stockLocation.getStockLocationLineList(), product);
+		StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation.getStockLocationLineList(), product);
 
 	    if(stockLocationLine != null && stockLocationLine.getCurrentQty().compareTo(qty) < 0) {
 			throw new AxelorException(stockLocationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
@@ -195,7 +195,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 	
 	public StockLocationLine getStockLocationLine(StockLocation stockLocation, Product product)  {
 		
-		StockLocationLine stockLocationLine = this.getLocationLine(stockLocation.getStockLocationLineList(), product);
+		StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation.getStockLocationLineList(), product);
 		
 		if(stockLocationLine == null)  {
 			stockLocationLine = this.createLocationLine(stockLocation, product);
@@ -228,7 +228,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 	 */
 	public StockLocationLine getDetailLocationLine(StockLocation detailLocation, Product product, TrackingNumber trackingNumber)  {
 		
-		StockLocationLine detailLocationLine = this.getDetailLocationLine(detailLocation.getDetailsLocationLineList(), product, trackingNumber);
+		StockLocationLine detailLocationLine = this.getDetailLocationLine(detailLocation.getDetailsStockLocationLineList(), product, trackingNumber);
 		
 		if(detailLocationLine == null)  {
 			
@@ -237,7 +237,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 		}
 		
 		LOG.debug("Récupération ligne de détail de stock: Entrepot? {}, Produit? {}, Qté actuelle? {}, Qté future? {}, Date? {}, Variante? {}, Num de suivi? {} ", 
-				new Object[] { detailLocationLine.getDetailsLocation().getName(), product.getCode(), 
+				new Object[] { detailLocationLine.getDetailsStockLocation().getName(), product.getCode(), 
 				detailLocationLine.getCurrentQty(), detailLocationLine.getFutureQty(), detailLocationLine.getLastFutureStockMoveDate(), detailLocationLine.getTrackingNumber() });
 		
 		return detailLocationLine;
@@ -253,7 +253,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 	 * @return
 	 * 		La ligne de stock
 	 */
-	public StockLocationLine getLocationLine(List<StockLocationLine> stockLocationLineList, Product product)  {
+	public StockLocationLine getStockLocationLine(List<StockLocationLine> stockLocationLineList, Product product)  {
 		
 		for(StockLocationLine stockLocationLine : stockLocationLineList)  {
 			
@@ -338,8 +338,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 		
 		StockLocationLine detailLocationLine = new StockLocationLine();
 		
-		detailLocationLine.setDetailsLocation(stockLocation);
-		stockLocation.addDetailsLocationLineListItem(detailLocationLine);
+		detailLocationLine.setDetailsStockLocation(stockLocation);
+		stockLocation.addDetailsStockLocationLineListItem(detailLocationLine);
 		detailLocationLine.setProduct(product);
 		detailLocationLine.setCurrentQty(BigDecimal.ZERO);
 		detailLocationLine.setFutureQty(BigDecimal.ZERO);

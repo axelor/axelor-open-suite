@@ -22,6 +22,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -141,7 +143,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 				externalReference, orderDate, priceList, clientPartner, team);
 
 		if(stockLocation == null)  {
-			stockLocation = Beans.get(StockLocationService.class).getLocation(company);
+			stockLocation = Beans.get(StockLocationService.class).getDefaultStockLocation(company);
 		}
 		
 		saleOrder.setStockLocation(stockLocation);
@@ -178,7 +180,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 			saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(client));
 			this.computeAddressStr(saleOrder);
 			saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(client));
-			saleOrder.setPriceList(client.getSalePriceList());
+			saleOrder.setPriceList(Beans.get(PartnerPriceListService.class).getDefaultPriceList(client, PriceListRepository.TYPE_SALE));
 		}
 		return saleOrder;
 	}

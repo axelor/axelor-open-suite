@@ -80,8 +80,28 @@
 		        <field name="generatedMetaFile" widget="binary-link" showIf="statusSelect &gt;= 2"/>
 	        </panel>
 	        <panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 3">  
-		        <field name="signatoryUser" canEdit="false" form-view="user-form" grid-view="user-grid" canView="false" hidden="true"/>
+		        <field name="signatoryUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
 		        <field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" canView="false" onChange="action-bank-order-record-fill-signatory-user" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.userTypeSelect = 1" showIf="senderBankDetails"/>
+		        <field name="signatoryEbicsUser.ebicsPartner.testMode" hidden="true"/>
+		        <field name="$viewerPartnerTestMode" readonly="true" showTitle="false" hideIf="!signatoryEbicsUser.ebicsPartner.testMode || statusSelect >= 4">
+		        	<viewer depends="signatoryEbicsUser.ebicsPartner.testMode">
+		        	<![CDATA[
+		        		<h4>
+		        			<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.signatoryEbicsUser.ebicsPartner.testMode" x-translate="true">Test mode</span>
+		        		</h4>
+		        	]]>
+		        	</viewer>
+		        </field>
+		        <field name="testMode" hidden="true"/>
+		        <field name="$viewerTestMode" showTitle="false" showIf="testMode">
+		        	<viewer depends="testMode">
+		        	<![CDATA[
+		        		<h4>
+		        			<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.testMode" x-translate="true">Test mode</span>
+		        		</h4>
+		        	]]>
+		        	</viewer>
+		        </field>
 	    		<field name="isMultiDate" hidden="true"/>
 	    		<field name="isMultiCurrency" hidden="true"/>
 	  		</panel>
@@ -93,7 +113,7 @@
 			
 			<panel hidden="true" hideIf="isMultiCurrency" >
 				<field name="bankOrderTotalAmount" colSpan="6" readonly="true"/>
-				<field name="bankOrderCurrency" canView="false" grid-view="currency-grid" form-view="currency-form" colSpan="6" readonlyIf="orderTypeSelect == 1 || orderTypeSelect == 2 || orderTypeSelect == 5 || bankOrderLineList.length > 0"/>
+				<field name="bankOrderCurrency" onChange="action-bank-order-record-currency-onchange" canView="false" grid-view="currency-grid" form-view="currency-form" colSpan="6" readonlyIf="orderTypeSelect == 1 || orderTypeSelect == 2 || orderTypeSelect == 5 || bankOrderLineList.length > 0"/>
 			</panel>
 			<panel readonly="true">
 				<field name="companyCurrencyTotalAmount" colSpan="6"/>
@@ -109,10 +129,10 @@
 					<field name="sequence" css="label-bold bold" readonly="true" hideIf="sequence == null" colSpan="6"/>
 					<field name="bankOrderDate" hidden="true"/>
 					<panel colSpan="6" itemSpan="12">
-						<field name="receiverCompany" canEdit="false" form-view="company-form" grid-view="company-grid" css="label-bold bold" onChange="action-bank-order-line-group-receiver-company-change"/>
-						<field name="partner" canView="false" form-view="partner-form" grid-view="partner-grid" css="label-bold bold" onSelect="action-bank-order-line-attrs-partner-domain" onChange="action-bank-order-line-method-fill-bank-details"/>
+						<field name="receiverCompany" canEdit="false" form-view="company-form" grid-view="company-grid" css="label-bold bold" onChange="action-bank-order-line-group-receiver-company-change,action-bank-order-line-record-receiver-bank-details-onchange"/>
+						<field name="partner" canView="false" form-view="partner-form" grid-view="partner-grid" css="label-bold bold" onSelect="action-bank-order-line-attrs-partner-domain" onChange="action-bank-order-line-method-fill-bank-details,action-bank-order-line-record-receiver-bank-details-onchange"/>
 					</panel>
-					<field name="receiverBankDetails" canView="false" onSelect="action-bank-order-line-method-set-bank-details-domain" required="true" onChange="action-bank-order-line-record-bank-order-currency"/>
+					<field name="receiverBankDetails" canView="false" onSelect="action-bank-order-line-method-set-bank-details-domain" required="true" onChange="action-bank-order-line-record-receiver-bank-details-onchange"/>
 					<field name="bankOrderAmount" colSpan="4" min="0.00" required="true" onChange="action-bank-order-line-method-compute-company-currency-amount"/>
 					<panel stacked="true" colSpan="2" itemSpan="12">
 						<field name="bankOrder.bankOrderCurrency" canView="false" hidden="true"/>
@@ -205,7 +225,27 @@
 			</panel>
 	        <panel colSpan="12" readonlyIf="statusSelect &gt;= 3">  	
 				<field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" requiredIf="statusSelect == 2" onChange="action-bank-order-record-fill-signatory-user" colSpan="6" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet" showIf="senderBankDetails"/>
-				<field name="signatoryUser" canEdit="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
+				<field name="signatoryUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
+				<field name="signatoryEbicsUser.ebicsPartner.testMode" hidden="true"/>
+				<field name="$viewerPartnerTestMode" readonly="true" showTitle="false" hideIf="!signatoryEbicsUser.ebicsPartner.testMode || statusSelect >= 4">
+					<viewer depends="signatoryEbicsUser.ebicsPartner.testMode">
+					<![CDATA[
+					<h4>
+						<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.signatoryEbicsUser.ebicsPartner.testMode" x-translate="true">Test mode</span>
+					</h4>
+					]]>
+					</viewer>
+				</field>
+				<field name="testMode" hidden="true"/>
+				<field name="$viewerTestMode" showTitle="false" showIf="testMode">
+					<viewer depends="testMode">
+					<![CDATA[
+					<h4>
+						<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.testMode" x-translate="true">Test mode</span>
+					</h4>
+					]]>
+					</viewer>
+				</field>
 			</panel>
 		</panel>
 		<panel name="action" title="Action" itemSpan="12" sidebar="true" hideIf="statusSelect == 4 || statusSelect == 5">
@@ -381,6 +421,10 @@
 		<field name="signatoryUser" expr="eval: signatoryEbicsUser?.associatedUser"/>
 	</action-record>
 
+	<action-record name="action-bank-order-record-currency-onchange" model="com.axelor.apps.bankpayment.db.BankOrder">
+		<field name="senderBankDetails" if="!bankOrderFileFormat?.allowOrderCurrDiffFromBankDetails" expr="eval: null"/>
+	</action-record>
+
 		<!-- Actions Methods -->
 	
 	<action-method name="action-bank-order-method-confirm">
@@ -466,8 +510,9 @@
 		<field name="partner" expr="eval: receiverCompany?.partner"/>
 	</action-record>
 
-	<action-record name="action-bank-order-line-record-bank-order-currency" model="com.axelor.apps.bankpayment.db.BankOrderLine">
+	<action-record name="action-bank-order-line-record-receiver-bank-details-onchange" model="com.axelor.apps.bankpayment.db.BankOrderLine">
 		<field name="bankOrderCurrency" expr="eval: receiverBankDetails?.currency" if="__parent__?.isMultiCurrency"/>
+		<field name="receiverCountry" expr="eval: receiverBankDetails?.bank?.country" if="__parent__?.bankOrderFileFormat?.orderFileFormatSelect?.equals('pain.xxx.cfonb320.xct')"/>
 	</action-record>
 
 	<!-- Actions Methods -->

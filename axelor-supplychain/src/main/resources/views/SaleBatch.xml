@@ -14,7 +14,7 @@
 	<form onLoad="action-group-supplychain-salebatch-onload" onNew="action-group-supplychain-salebatch-onnew" name="sale-batch-form" title="Sale Batch" model="com.axelor.apps.sale.db.SaleBatch" width="large">
 	  <panel name="main" >
 	    <field name="actionSelect" onChange="action-sale-batch-attrs-action-select"/>
-	    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+	    <field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
 	    <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" />
 	  </panel>
 	  <panel>

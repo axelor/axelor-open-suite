@@ -56,17 +56,18 @@
 	</selection>
 	
 	<selection name='accounting.report.type.select'>
-		<option value="1">General ledger</option>
-		<option value="2">General balance</option>
-		<option value="3">Detailed customers balance</option>
-		<option value="4">Aged Balance</option>
-		<option value="5">Cheque deposit slip</option>
-		<option value="10">Cash payments summary</option>
-		<option value="11">Journal</option>
-		<option value="12">VAT Statement</option>
-		<option value="13">Payment differences</option>
-		<option value="14">General ledger 2</option>
-		<option value="2000">Analytic balance</option>
+		<option order="1" value="1">General ledger</option>
+		<option order="2" value="2">General balance</option>
+		<option order="3" value="3">Detailed customers balance</option>
+		<option order="4" value="4">Aged Balance</option>
+		<option order="5" value="5">Cheque deposit slip</option>
+		<option order="10" value="10">Cash payments summary</option>
+		<option order="11" value="11">Journal</option>
+		<option order="12" value="12">VAT Statement on invoices</option>
+		<option order="14" value="13">Payment differences</option>
+		<option order="15" value="14">General ledger 2</option>
+		<option order="13" value="15">VAT Statement on amount received</option>
+		<option order="2000" value="2000">Analytic balance</option>
 	</selection>
 	
 	<selection name='accounting.report.type.select.export'>
@@ -274,15 +275,18 @@
 	</selection>
 
     <selection name="base.blocking.select" id="account.blocking.select">
-        <option value="1">Reminder blocking</option>
-        <option value="2">Invoicing blocking</option>
-        <option value="3">Reimbursement blocking</option>
         <option value="4">Debit blocking</option>
     </selection>
     
 	<selection name="account.interbankcode.type.select">
 		<option value="1">Operation code</option>
 		<option value="2">Reject/Return code</option>
+	</selection>
+
+	<selection name="assistant.report.invoice.turnover.type.select">
+		<option value="1">Ordered</option>
+		<option value="2">Invoiced</option>
+		<option value="3">Ordered and invoiced</option>
 	</selection>
 
 	<selection name="meta.schedule.batch.service.select" id="account.meta.schedule.batch.service.select">

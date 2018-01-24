@@ -80,7 +80,7 @@ public interface StockMoveLineService {
 
 
 
-	public List<? extends StockLocationLine> getLocationLines(Product product, StockLocation stockLocation) throws AxelorException;
+	public List<? extends StockLocationLine> getStockLocationLines(Product product, StockLocation stockLocation) throws AxelorException;
 
 
 
@@ -88,11 +88,11 @@ public interface StockMoveLineService {
 
 
 
-	public void updateLocations(StockLocation fromLocation, StockLocation toLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList,
+	public void updateLocations(StockLocation fromStockLocation, StockLocation toStockLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList,
 			LocalDate lastFutureStockMoveDate, boolean realQty) throws AxelorException;
 
 
-	public void updateLocations(StockLocation fromLocation, StockLocation toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
+	public void updateLocations(StockLocation fromStockLocation, StockLocation toStockLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
 			lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException;
 
 	public void updateAveragePriceLocationLine(StockLocation stockLocation, StockMoveLine stockMoveLine, int toStatus);

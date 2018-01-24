@@ -17,16 +17,14 @@
  */
 package com.axelor.apps.businessproject.web;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.businessproject.report.IReport;
+import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -37,13 +35,22 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.Map;
 
 public class ProjectController {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	@Inject
-	private ProjectService projectService;
+    @Inject
+    private ProjectService projectService;
+
+    @Inject
+    private ProjectBusinessService projectBusinessService;
 	
 	public void printProject(ActionRequest request,ActionResponse response) throws AxelorException  {
 
@@ -124,4 +131,21 @@ public class ProjectController {
 				.add("html", fileLink).map());	
 	}
 
+    public void managePurchaseInvoiceLine(ActionRequest request, ActionResponse response) {
+	    Project project = Beans.get(ProjectRepository.class).find(request.getContext().asType(Project.class).getId());
+	    InvoiceLine purchaseInvoiceLine = Beans.get(InvoiceLineRepository.class).find(Long.valueOf(((Integer) ((Map) request.getContext().get("purchaseInvoiceLine")).get("id"))));
+
+        projectBusinessService.manageInvoiceLine(purchaseInvoiceLine, project);
+
+	    response.setReload(true);
+    }
+
+    public void manageSaleInvoiceLine(ActionRequest request, ActionResponse response) {
+        Project project = Beans.get(ProjectRepository.class).find(request.getContext().asType(Project.class).getId());
+        InvoiceLine saleInvoiceLine = Beans.get(InvoiceLineRepository.class).find(Long.valueOf(((Integer) ((Map) request.getContext().get("saleInvoiceLine")).get("id"))));
+
+        projectBusinessService.manageInvoiceLine(saleInvoiceLine, project);
+
+        response.setReload(true);
+    }
 }

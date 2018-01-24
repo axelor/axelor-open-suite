@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="contract" package="com.axelor.apps.contract.db" />
+
+	<entity name="InvoicePeriod" repository="none">
+
+		<string name="fullName" namecolumn="true">
+			<![CDATA[
+			String fullname = "";
+			if( startDate != null && endDate != null) {
+				fullname = startDate.toString() + " - " + endDate.toString();
+			}
+	  		return fullname;
+	  	]]>
+		</string>
+
+		<integer name="statusSelect" title="Statut" selection="contract.invoice.period.statut.select" default="1" readonly="true"/>
+		<boolean name="isLastPeriod" title="Last Invoicing period" default="false" readonly="true"/>
+		<date name="startDate" title="Start date" readonly="true"/>
+		<date name="endDate" title="End date" readonly="true"/>
+		
+		<one-to-many name="consumptionLineList" ref="com.axelor.apps.contract.db.ConsumptionLine" title="Consumptions"/>
+		<one-to-many name="additionalBenefitList" ref="com.axelor.apps.contract.db.ContractLine" title="Additional benefit"/>
+
+		<many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Linked invoice" readonly="true"/>
+
+		<many-to-one name="contract" ref="com.axelor.apps.contract.db.Contract" title="Contract"/>
+
+	</entity>
+	
+</domain-models>

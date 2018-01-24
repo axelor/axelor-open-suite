@@ -20,7 +20,7 @@
 				self.typeSelect = 2 AND
 				self.statusSelect = 3 AND
 				self.company =:activeCompany AND    
-				self.toLocation = stockLocation AND
+				self.toStockLocation = stockLocation AND
 				stockLocation.typeSelect = 2 AND
 				self.toAddress = address AND
 				address.addressL7Country = country AND
@@ -52,7 +52,7 @@
 				stockMove.company = :activeCompany AND
 				stockMove.realDate BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND DATE(:todayDate) AND
 				self.stockMove = stockMove AND
-				stockMove.toLocation = stockLocation AND
+				stockMove.toStockLocation = stockLocation AND
 				stockLocation.typeSelect = 2 AND
 				stockMove.toAddress = address AND
 				address.addressL7Country = country
@@ -86,7 +86,7 @@
 				stockMove.company = :activeCompany AND
 				stockMove.realDate BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND DATE(:todayDate) AND
 				self.stockMove = stockMove AND
-				stockMove.toLocation = stockLocation AND
+				stockMove.toStockLocation = stockLocation AND
 				stockLocation.typeSelect = 2 AND
 				stockMove.toAddress = address AND
 				address.addressL7Country = country AND
@@ -114,12 +114,12 @@
  				stock_stock_move AS self
 			JOIN
 				auth_user AS _user
-				ON _user.id = :userId
+				ON _user.id = :__user__
 				AND self.company = _user.active_company      
 			JOIN
 				stock_stock_location AS _location
 				ON _location.type_select = 2
-				AND self.to_location = _location.id
+				AND self.to_stock_location = _location.id
 			WHERE
 				self.type_select = 2 AND
 				self.status_select = 3 AND                 
@@ -144,11 +144,11 @@
 				stock_stock_move AS self
 			JOIN
 				auth_user AS _user
-				ON _user.id = :userId 
+				ON _user.id = :__user__ 
 				AND self.company = _user.active_company
 			JOIN
 				stock_stock_location AS _location
-				ON self.to_location = _location.id
+				ON self.to_stock_location = _location.id
 				AND _location.type_select = 2
 			WHERE
 				self.type_select = 2 AND
@@ -162,7 +162,7 @@
 	</chart>
 	  
 	<!-- This chart is used in stock-location-form -->
-	<chart name="chart.stockLocationLine.stockLocation.value" title="Location value">
+	<chart name="chart.stockLocationLine.stockLocation.value" title="Stock location value">
 		<dataset type="jpql">
 			SELECT
 				SUM(
@@ -181,7 +181,7 @@
 			WHERE
 				self.stockLocation.id =:id
 		</dataset>
-		<category key="label" type="text" title="Location"/>
+		<category key="label" type="text" title="Stock location"/>
 		<series key="value" type="bar" title="Value"/>
 	</chart>
 	
@@ -194,8 +194,8 @@
   			SELECT estimatedate,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,estimatedate) AS qty 
 			FROM (
 				(SELECT DATE(:todayDate) AS estimatedate,location.name AS locat,
-	               		(SELECT SUM(CASE WHEN move.from_location = loc.id THEN -1*qty
-	                           WHEN move.to_location = loc.id THEN qty
+	               		(SELECT SUM(CASE WHEN move.from_stock_location = loc.id THEN -1*qty
+	                           WHEN move.to_stock_location = loc.id THEN qty
 	                           END) AS qty                                                                 
                			FROM 	stock_stock_move_line line,
 	                    		stock_stock_move move,
@@ -205,7 +205,7 @@
 							AND move.status_select in (2,3)
 							AND line.product = :id
 							AND loc.id = location.id
-							AND (move.from_location = loc.id OR move.to_location = loc.id)
+							AND (move.from_stock_location = loc.id OR move.to_stock_location = loc.id)
 							AND loc.type_select = 1) AS qty
 				FROM stock_stock_location_line loc_line, stock_stock_location location
 				WHERE loc_line.stock_location = location.id 
@@ -215,12 +215,12 @@
 		   		UNION ALL
 		   		(SELECT estimated_date AS dt,locat,sum(qty)
 		                FROM (SELECT location.name AS locat,move.estimated_date AS estimated_date,
-		         	           	CASE WHEN move.from_location = location.id THEN -1*line.qty
-		                        WHEN move.to_location = location.id THEN line.qty
+		         	           	CASE WHEN move.from_stock_location = location.id THEN -1*line.qty
+		                        WHEN move.to_stock_location = location.id THEN line.qty
 		                        END AS qty
 		                     FROM stock_stock_move_line line 
 		                     LEFT JOIN stock_stock_move move ON (line.stock_move = move.id)
-		                     LEFT JOIN stock_stock_location location ON (move.from_location = location.id OR move.to_location = location.id)
+		                     LEFT JOIN stock_stock_location location ON (move.from_stock_location = location.id OR move.to_stock_location = location.id)
       	             		 WHERE  line.product = :id
 			                     AND move.estimated_date > DATE(:todayDate)
 			                     AND location.type_select = 1) location
@@ -242,7 +242,7 @@
 		         real_date,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,real_date) AS qty 
 			FROM 
 				 ((SELECT DATE(:fromDate) AS real_date,location.name AS locat,
-			     (SELECT SUM(CASE WHEN move.from_location = loc.id THEN -1*qty WHEN move.to_location = loc.id THEN qty END) AS qty                                                                 
+			     (SELECT SUM(CASE WHEN move.from_stock_location = loc.id THEN -1*qty WHEN move.to_stock_location = loc.id THEN qty END) AS qty                                                                 
        		FROM  
        			stock_stock_move_line line,
        			stock_stock_move move,	        
@@ -253,7 +253,7 @@
 				AND move.status_select in (2,3)
 				AND line.product = :id
 				AND loc.id = location.id
-				AND (move.from_location = loc.id OR move.to_location = loc.id)
+				AND (move.from_stock_location = loc.id OR move.to_stock_location = loc.id)
 				AND loc.type_select = 1) AS qty
 		    FROM 
 		   		stock_stock_location_line loc_line, stock_stock_location location
@@ -267,15 +267,15 @@
 		   	    (SELECT real_date AS dt,locat,sum(qty)
 		    FROM 
 		        (SELECT location.name AS locat,move.real_date AS real_date,
-     	           	CASE WHEN move.from_location = location.id THEN -1*line.qty
-                    	 WHEN move.to_location = location.id THEN line.qty
+     	           	CASE WHEN move.from_stock_location = location.id THEN -1*line.qty
+                    	 WHEN move.to_stock_location = location.id THEN line.qty
                     END AS qty
 		    FROM 
 		     	stock_stock_move_line line 
             LEFT JOIN 
              	stock_stock_move move ON (line.stock_move = move.id)
             LEFT JOIN 
-             	stock_stock_location location ON (move.from_location = location.id OR move.to_location = location.id)
+             	stock_stock_location location ON (move.from_stock_location = location.id OR move.to_stock_location = location.id)
 		    WHERE  
 		    	line.product = :id
 	            AND move.real_date > DATE(:fromDate)
@@ -305,9 +305,9 @@
 		LEFT JOIN
 		    _stockMoveLine.stockMove as _stockMove
 		LEFT JOIN
-		    _stockMove.fromLocation AS _from_location
+		    _stockMove.fromStockLocation AS _from_location
 		LEFT JOIN
-		    _stockMove.toLocation AS _to_location
+		    _stockMove.toStockLocation AS _to_location
 		WHERE
 		    _product.id = :id AND _stockMoveLine.product.id = _product.id AND (_from_location.typeSelect = 1 OR _to_location.typeSelect = 1 ) AND _stockMove.estimatedDate > current_date
 		GROUP BY
@@ -331,8 +331,8 @@
   			SELECT estimatedate,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,estimatedate) AS qty 
 					FROM (
 						(SELECT DATE(:todayDate) AS estimatedate,location.name AS locat,
-			               		(SELECT SUM(CASE WHEN move.from_location = loc.id THEN -1*qty
-			                           WHEN move.to_location = loc.id THEN qty
+			               		(SELECT SUM(CASE WHEN move.from_stock_location = loc.id THEN -1*qty
+			                           WHEN move.to_stock_location = loc.id THEN qty
 			                           END) AS qty                                                                 
 		               			FROM 	stock_stock_move_line line,
 			                    		stock_stock_move move,
@@ -344,7 +344,7 @@
 									AND line.product = prod.id
 									AND prod.parent_product = :id
 									AND loc.id = location.id
-									AND (move.from_location = loc.id OR move.to_location = loc.id)
+									AND (move.from_stock_location = loc.id OR move.to_stock_location = loc.id)
 									AND loc.type_select = 1) AS qty
 						FROM stock_stock_location_line loc_line, 
 							 stock_stock_location location,
@@ -357,12 +357,12 @@
 				   		UNION ALL
 				   		(SELECT estimated_date AS dt,locat,sum(qty)
 				                FROM (SELECT location.name AS locat,move.estimated_date AS estimated_date,
-				         	           	CASE WHEN move.from_location = location.id THEN -1*line.qty
-				                        WHEN move.to_location = location.id THEN line.qty
+				         	           	CASE WHEN move.from_stock_location = location.id THEN -1*line.qty
+				                        WHEN move.to_stock_location = location.id THEN line.qty
 				                        END AS qty
 				                     FROM stock_stock_move_line line 
 				                     LEFT JOIN stock_stock_move move ON (line.stock_move = move.id)
-				                     LEFT JOIN stock_stock_location location ON (move.from_location = location.id OR move.to_location = location.id)
+				                     LEFT JOIN stock_stock_location location ON (move.from_stock_location = location.id OR move.to_stock_location = location.id)
 				                     LEFT JOIN base_product prod ON (line.product = prod.id)
 		      	             		 WHERE prod.parent_product = :id 
 					                     AND move.estimated_date > DATE(:todayDate)
@@ -391,7 +391,7 @@
 		         real_date,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,real_date) AS qty 
 			FROM 
 				 ((SELECT DATE(:fromDate) AS real_date,location.name AS locat,
-			     (SELECT SUM(CASE WHEN move.from_location = loc.id THEN -1*qty WHEN move.to_location = loc.id THEN qty END) AS qty                                                                 
+			     (SELECT SUM(CASE WHEN move.from_stock_location = loc.id THEN -1*qty WHEN move.to_stock_location = loc.id THEN qty END) AS qty                                                                 
        		FROM  
        			stock_stock_move_line line,
        			stock_stock_move move,	        
@@ -404,7 +404,7 @@
 				AND line.product = prod.id
 				AND prod.parent_product = :id
 				AND loc.id = location.id
-				AND (move.from_location = loc.id OR move.to_location = loc.id)
+				AND (move.from_stock_location = loc.id OR move.to_stock_location = loc.id)
 				AND loc.type_select = 1) AS qty
 		    FROM 
 		   		stock_stock_location_line loc_line, 
@@ -421,15 +421,15 @@
 		   	    (SELECT real_date AS dt,locat,sum(qty)
 		    FROM 
 		        (SELECT location.name AS locat,move.real_date AS real_date,
-     	           	CASE WHEN move.from_location = location.id THEN -1*line.qty
-                    	 WHEN move.to_location = location.id THEN line.qty
+     	           	CASE WHEN move.from_stock_location = location.id THEN -1*line.qty
+                    	 WHEN move.to_stock_location = location.id THEN line.qty
                     END AS qty
 		    FROM 
 		     	stock_stock_move_line line 
             LEFT JOIN 
              	stock_stock_move move ON (line.stock_move = move.id)
             LEFT JOIN 
-             	stock_stock_location location ON (move.from_location = location.id OR move.to_location = location.id)
+             	stock_stock_location location ON (move.from_stock_location = location.id OR move.to_stock_location = location.id)
 		    WHERE  
 		    	line.product = :id
 	            AND move.real_date > DATE(:fromDate)

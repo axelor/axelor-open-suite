@@ -27,21 +27,21 @@ import com.axelor.i18n.I18n;
 
 public class StockConfigSupplychainService extends StockConfigService {
 
-    public StockLocation getReceiptLocation(StockConfig stockConfig) throws AxelorException {
+    public StockLocation getReceiptStockLocation(StockConfig stockConfig) throws AxelorException {
 
-        if (stockConfig.getReceiptDefaultLocation() == null) {
+        if (stockConfig.getReceiptDefaultStockLocation() == null) {
             throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_SUPPLYCHAIN_RECEIPT), stockConfig.getCompany().getName());
         }
 
-        return stockConfig.getReceiptDefaultLocation();
+        return stockConfig.getReceiptDefaultStockLocation();
 
     }
 
-    public StockLocation getPickupLocation(StockConfig stockConfig) throws AxelorException {
-        if (stockConfig.getPickupDefaultLocation() == null) {
+    public StockLocation getPickupStockLocation(StockConfig stockConfig) throws AxelorException {
+        if (stockConfig.getPickupDefaultStockLocation() == null) {
             throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_SUPPLYCHAIN_PICKUP), stockConfig.getCompany().getName());
         }
-        return stockConfig.getPickupDefaultLocation();
+        return stockConfig.getPickupDefaultStockLocation();
     }
 
 }

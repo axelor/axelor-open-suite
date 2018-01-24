@@ -35,74 +35,73 @@
 		<field name="statusSelect"/>
 	</grid>
 
-	<form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large" canNew="false"
-	    onNew="action-expense-record-default,action-expense-attrs-buttons,action-expense-attrs-multiple-users" 
-	    onLoad="action-expense-attrs-buttons,action-expense-attrs-expense-company-cb,action-expense-attrs-multiple-users"
-	    onSave="action-expense-method-validate-date,action-expense-method-compute-amounts,action-expense-method-compute" canCopy="false">
+	<form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large"
+		  onNew="action-expense-record-default,action-expense-attrs-buttons,action-expense-attrs-multiple-users"
+		  onLoad="action-expense-attrs-buttons,action-expense-attrs-expense-company-cb,action-expense-attrs-multiple-users"
+		  onSave="action-expense-method-validate-date,action-expense-method-compute-amounts,action-expense-method-compute" canCopy="false">
+
 		<toolbar>
 			<button name="printExpense" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-expense"/>
 		</toolbar>
-		<panel title="Status">
-			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
-		</panel>
-	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
-	    	<button name="sendExpenses" colSpan="4" title="Send Expenses" onClick="action-expense-group-send" readonlyIf="statusSelect &gt; 1"/>
-			<button name="ventilate" colSpan="4" title="Ventilate" onClick="action-expense-method-ventilate" readonlyIf="statusSelect != 3 || ventilated"/>
-	    	<button name="validateButton" onClick="action-expense-group-validate" title="Validate"/>
-	    	<button name="refuseButton" onClick="action-expense-group-refuse" title="Refuse"/>
-	    	<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-buttons" hideIf="statusSelect == 6" readonlyIf="move != null" title="Cancel" icon="fa-close"/>
-	    	<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
-	    	<button name="addPaymentButton" title="Register payment" onClick="action-expense-method-add-payment" showIf="statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)" readonlyIf="move == null"/>
-	    	<button name="cancelPaymentButton" title="Cancel payment"
-					showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3)"
-					onClick="action-expense-method-cancel-payment"/>
-	    </panel>
 		<panel>
-			<field name="expenseSeq"/>
-			<panel itemSpan="12" colSpan="6">
-				<field name="move" readonly="true" showTitle="false" showIf="move">
-					<viewer>
-						<![CDATA[
+			<panel colSpan="9">
+				<field name="expenseSeq"/>
+				<panel itemSpan="12" colSpan="6">
+					<field name="move" readonly="true" showTitle="false" showIf="move">
+						<viewer>
+							<![CDATA[
 			 			<h3>
 			             <span class="label label-important" x-translate>Ventilated</span>
 			           </h3>
 					]]>
-					</viewer>
-				</field>
-			</panel>
+						</viewer>
+					</field>
+				</panel>
 
-			<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
-			<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" readonlyIf="ventilated"/>
-			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
-			<field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()"/>
-			<field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" readonlyIf="ventilated"/>
-			<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb" readonlyIf="ventilated"/>
-			<field name="withdrawnCash" hidden="true" showIf="companyCbSelect > 1" />
-            <field name="user.employee.companyCbDetails" colSpan="12" hidden="true" showIf="user != null &amp;&amp; user.employee != null &amp;&amp; companyCbSelect &gt; 1"/>
-			<field name="personalExpenseAmount" hidden="true" />
-			<field name="advanceAmount" hidden="true" />
-		</panel>
+				<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
+				<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
+				<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" readonlyIf="ventilated"/>
+				<field name="user"  form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
+				<field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()" />
+				<field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" readonlyIf="ventilated"/>
+				<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb" readonlyIf="ventilated"/>
+				<field name="withdrawnCash" hidden="true" showIf="companyCbSelect > 1" />
+				<field name="user.employee.companyCbDetails" colSpan="12" hidden="true" showIf="user != null &amp;&amp; user.employee != null &amp;&amp; companyCbSelect &gt; 1"/>
+				<field name="personalExpenseAmount" hidden="true" />
+				<field name="advanceAmount" hidden="true" />
+			</panel>
+			<panel name="actions" title="Actions" colSpan="3" stacked="true">
+				<button name="sendExpenses" colSpan="4" title="Send Expenses" onClick="action-expense-group-send" readonlyIf="statusSelect &gt; 1"/>
+				<button name="ventilate" colSpan="4" title="Ventilate" onClick="action-expense-method-ventilate" readonlyIf="statusSelect != 3 || ventilated"/>
+				<button name="validateButton" onClick="action-expense-group-validate" title="Validate"/>
+				<button name="refuseButton" onClick="action-expense-group-refuse" title="Refuse"/>
+				<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-buttons" hideIf="statusSelect == 6" readonlyIf="move != null" title="Cancel" icon="fa-close"/>
+				<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
+				<button name="addPaymentButton" title="Register payment" onClick="action-expense-method-add-payment" showIf="statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)" readonlyIf="move == null"/>
+				<button name="cancelPaymentButton" title="Cancel payment"
+						showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3)"
+						onClick="action-expense-method-cancel-payment"/>
+			</panel>
+	    </panel>
 		<panel-tabs>
 			<panel-related field="expenseLineList" height="20" title="General expenses" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute,action-expense-method-remove-lines" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" colSpan="12" />
-			<panel title="Kilometric Allowances" showIf="!setMultipleUsers">
-				<field name="kilometricExpenseLineList" readonlyIf="statusSelect &gt; 1" colSpan="12" showTitle="false" onChange="action-expense-method-compute" >
-				<editor x-show-on-new="false" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4" onNew="action-kilometric-allowance-record-default,action-expense-line-method-fill-kilometric-expense-product" >
-					<field name="expenseDate" title="Date" onChange="action-kilometric-allowance-method-compute,action-kilometric-allowance-method-update-kap" />
-					<field name="kilometricAllowParam" onSelect="action-kilometric-allowance-method-domain-on-select-on-kap" onChange="action-kilometric-allowance-method-compute" canEdit="false" required="true"/>
-			        <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-method-compute" />
-			        <field name="fromCity" required="true" onChange="action-kilometric-allowance-method-compute-distance" />
-			        <field name="toCity" required="true" onChange="action-kilometric-allowance-method-compute-distance" />
-			        <field name="distance" required="true" onChange="action-kilometric-allowance-method-compute" />
-				    <field name="totalAmount" title="Total A.T.I" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" colSpan="2" readonly="true"/>
-			   	    <field name="project" title="Project" requiredIf="toInvoice" canView="false" domain="self.imputable = true" widget="SuggestBox" colSpan="4" grid-view="project-grid"/>
-			   	    <field name="comments" colSpan="6" height="2" />
-			   		<field name="untaxedAmount" hidden="true" />
-			   		<field name="expenseProduct" readonly="true" form-view="product-expense-form" grid-view="product-expense-grid" hidden="true"/>
-					<field name="toInvoice" hidden="true"/>
-				</editor>
-				</field>
-			</panel>
+			<panel-related field="kilometricExpenseLineList" title="Kilometric Allowances"
+				editable="true" form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid"
+				showIf="!setMultipleUsers" readonlyIf="statusSelect &gt; 1" colSpan="12"
+				onChange="action-expense-method-compute"/>
 			<panel-related showIf="!setMultipleUsers" field="employeeAdvanceUsageList" title="Employee advance list" readonly="false" canNew="false" canSelect="false" canEdit="true" editable="true" form-view="employee-advance-usage-expense-form" grid-view="employee-advance-usage-expense-grid" />
+			<panel title="Account information" showIf="statusSelect == 3 || statusSelect == 4">
+				<panel title="Account information" showIf="move">
+					<field name="moveDate" hidden="true" readonly="true" showIf="moveDate" colSpan="4"/>
+					<field name="move" showIf="move" readonlyIf="move" colSpan="6" form-view="move-form" grid-view="move-grid"/>
+				</panel>
+				<panel colSpan="12" title="Payment information">
+					<field name="paymentStatusSelect" colSpan="4"/>
+					<field name="paymentMode" hidden="true" showIf="paymentMode" readonlyIf="$contains([1, 3], paymentStatusSelect)" colSpan="4"/>
+					<field name="paymentDate" showIf="paymentDate" colSpan="4"/>
+					<field name="bankOrder" hidden="true" showIf="bankOrder" colSpan="4"/>
+				</panel>
+			</panel>
 		</panel-tabs>
 		<panel showIf="statusSelect == 3 || statusSelect == 4">
 			<panel title="Account information" showIf="move">
@@ -134,7 +133,7 @@
 		<panel>
 			<field name="attrs" colSpan="12" />
 		</panel>
-		<panel sidebar="true" readonly="true"  colSpan="4">
+		<panel readonly="true"  colSpan="4">
             <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
                 <viewer depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect">
                     <![CDATA[

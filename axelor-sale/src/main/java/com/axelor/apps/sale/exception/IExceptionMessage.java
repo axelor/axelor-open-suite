@@ -54,7 +54,7 @@ public interface IExceptionMessage {
 	 */
 	String CONFIGURATOR_CREATOR_UNVALID_METAFIELD = /*$$(*/ "The metafield type provided is not valid. You must choose a Product or a SaleOrderLine." /*)*/;
 	String CONFIGURATOR_CREATOR_SCRIPT_ERROR = /*$$(*/ "This script has errors, please see server logs for more details." /*)*/;
-	String CONFIGURATOR_CREATOR_SCRIPT_WORKING = /*$$(*/ "The script is working." /*)*/;
+	String CONFIGURATOR_CREATOR_SCRIPT_WORKING = /*$$(*/ "The syntax of the script is correct." /*)*/;
 
 	/**
 	 * Configurator Service

@@ -6,13 +6,11 @@
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="StockMove" lang="java">
-  
-	<integer name="importId" />
 
 	<string name="stockMoveSeq" namecolumn="true" title="Ref." readonly="true"/>
     <string name="name" title="Name"/>
-    <many-to-one name="fromLocation" ref="com.axelor.apps.stock.db.StockLocation" required="true" title="From location"/>
-    <many-to-one name="toLocation" ref="com.axelor.apps.stock.db.StockLocation" required="true" title="To location"/>
+    <many-to-one name="fromStockLocation" ref="com.axelor.apps.stock.db.StockLocation" required="true" title="From stock location"/>
+    <many-to-one name="toStockLocation" ref="com.axelor.apps.stock.db.StockLocation" required="true" title="To stock location"/>
     
     <date name="estimatedDate" title="Estimated date"/>
     <date name="realDate" title="Move date" readonly="true"/>

@@ -177,9 +177,9 @@ public class IrrecoverableService{
 	 * @return
 	 */
 	public List<Invoice> getInvoiceList(Company company)   {
-		return invoiceRepo.all().filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.statusSelect = ?3 " +
-				"AND self.companyInTaxTotalRemaining > 0 AND self.rejectMoveLine IS NULL ORDER BY self.dueDate ASC",
-				InvoiceRepository.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE, company, InvoiceRepository.STATUS_VENTILATED).fetch();
+		return invoiceRepo.all().filter("self.irrecoverableStatusSelect = ?1 AND self.company = ?2 AND self.statusSelect = ?3 " +
+				"AND self.companyInTaxTotalRemaining > 0 AND self.rejectMoveLine IS NULL",
+				InvoiceRepository.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE, company, InvoiceRepository.STATUS_VENTILATED).order("dueDate").fetch();
 	}
 
 	/**
@@ -189,9 +189,9 @@ public class IrrecoverableService{
 	 * @return
 	 */
 	public List<Invoice> getRejectInvoiceList(Company company)   {
-		return invoiceRepo.all().filter("self.irrecoverableStateSelect = ?1 AND self.company = ?2 AND self.statusSelect = ?3 " +
-				"AND self.companyInTaxTotalRemaining = 0 AND self.rejectMoveLine IS NOT NULL ORDER BY self.dueDate ASC",
-				InvoiceRepository.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE, company, InvoiceRepository.STATUS_VENTILATED).fetch();
+		return invoiceRepo.all().filter("self.irrecoverableStatusSelect = ?1 AND self.company = ?2 AND self.statusSelect = ?3 " +
+				"AND self.companyInTaxTotalRemaining = 0 AND self.rejectMoveLine IS NOT NULL",
+				InvoiceRepository.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE, company, InvoiceRepository.STATUS_VENTILATED).order("dueDate").fetch();
 	}
 
 
@@ -203,9 +203,9 @@ public class IrrecoverableService{
 	 */
 	public List<PaymentScheduleLine> getPaymentScheduleLineList(Company company)   {
 		return paymentScheduleLineRepo.all()
-				.filter("self.paymentSchedule.irrecoverableStateSelect = ?1 AND self.paymentSchedule.company = ?2 " +
-						"AND self.paymentSchedule.stateSelect = ?3 AND self.rejectMoveLine.amountRemaining > 0 ORDER BY self.scheduleDate ASC",
-						PaymentScheduleRepository.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE, company, PaymentScheduleRepository.STATUS_CONFIRMED).fetch();
+				.filter("self.paymentSchedule.irrecoverableStatusSelect = ?1 AND self.paymentSchedule.company = ?2 " +
+						"AND self.paymentSchedule.statusSelect = ?3 AND self.rejectMoveLine.amountRemaining > 0",
+						PaymentScheduleRepository.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE, company, PaymentScheduleRepository.STATUS_CONFIRMED).order("scheduleDate").fetch();
 	}
 
 

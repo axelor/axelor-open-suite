@@ -8,8 +8,6 @@
   <entity name="Event" lang="java" extends="com.axelor.apps.base.db.ICalendarEvent">
 
 <!-- Commun   -->
-	<integer name="importId" />
-  	
 	<datetime name="limitDateT" title="Limit Date"/>
   	
   	<long name="duration" title="Duration"/>

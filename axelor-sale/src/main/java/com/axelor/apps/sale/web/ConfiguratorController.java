@@ -82,13 +82,13 @@ public class ConfiguratorController {
         try {
             configuratorService.generate(configurator, jsonAttributes, jsonIndicators);
             response.setReload(true);
-            if (configurator.getProductId() != null) {
+            if (configurator.getProduct() != null) {
                 response.setView(ActionView
                         .define(I18n.get("Product generated"))
                         .model(Product.class.getName())
                         .add("form", "product-form")
                         .add("grid", "product-grid")
-                        .context("_showRecord", configurator.getProductId())
+                        .context("_showRecord", configurator.getProduct().getId())
                         .map());
             }
         } catch (Exception e) {

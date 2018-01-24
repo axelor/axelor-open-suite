@@ -45,9 +45,10 @@
 		public static final int REPORT_CHEQUE_DEPOSIT = 5;
 		public static final int REPORT_CASH_PAYMENTS = 10;
 		public static final int REPORT_JOURNAL = 11;
-		public static final int REPORT_VAT_STATEMENT = 12;
+		public static final int REPORT_VAT_STATEMENT_INVOICE = 12;
 		public static final int REPORT_PAYMENT_DIFFERENCES = 13;
 		public static final int REPORT_GENERAL_LEDGER2 = 14;
+		public static final int REPORT_VAT_STATEMENT_RECEIVED = 15;
 		public static final int REPORT_ANALYTIC_BALANCE = 2000;
 		
 		// EXPORT TYPE SELECT

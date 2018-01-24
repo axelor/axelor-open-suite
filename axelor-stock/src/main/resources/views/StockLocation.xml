@@ -32,7 +32,7 @@
 			<panel name="locationContent" title="Location Content">
 				<panel-dashlet title="Location Lines" field="stockLocationLineList" canNew="false" colSpan="12" action="action-location-view-location-content" canSearch="true"/>
 			</panel> 
-			<panel-dashlet title="Stock Details" field="detailsLocationLineList" action="action-location-details-view-location-content" canSearch="true"/>
+			<panel-dashlet title="Stock location details" field="detailsStockLocationLineList" action="action-location-details-view-location-content" canSearch="true"/>
 		</panel-tabs>   
 		<panel-dashlet height="350" hideIf="$popup()" colSpan="12" action="dashlet.stockLocationLine.stockLocation.value"/>      
 	</form>
@@ -57,14 +57,14 @@
 		<view type="grid" name="stock-location-line-grid" />
 		<view type="form" name="stock-location-line-form" />
 		<domain>self.stockLocation.id IN :contentLocationIds</domain>
-  		<context name="contentLocationIds" expr="call:com.axelor.apps.stock.service.StockLocationService:getContentLocationIds(__self__)" />
+  		<context name="contentLocationIds" expr="call:com.axelor.apps.stock.service.StockLocationService:getContentStockLocationIds(__self__)" />
     </action-view>
 
     <action-view name="action-location-details-view-location-content" title="Location content details" model="com.axelor.apps.stock.db.StockLocationLine">
 		<view type="grid" name="stock-location-line-details-grid" />
 		<view type="form" name="stock-location-line-details-form" />
-		<domain>self.detailsLocation.id IN :contentLocationIds</domain>
-  		<context name="contentLocationIds" expr="call:com.axelor.apps.stock.service.StockLocationService:getContentLocationIds(__self__)" />
+		<domain>self.detailsStockLocation.id IN :contentLocationIds</domain>
+  		<context name="contentLocationIds" expr="call:com.axelor.apps.stock.service.StockLocationService:getContentStockLocationIds(__self__)" />
     </action-view>
 
 </object-views>

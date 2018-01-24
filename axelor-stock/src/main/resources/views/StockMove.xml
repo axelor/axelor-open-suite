@@ -8,8 +8,8 @@
 			<button name="printStockMoveGrid" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
     	</toolbar>
         <field name="stockMoveSeq"/>
-        <field name="fromLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="toLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+        <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+        <field name="toStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="estimatedDate"/>
         <field name="realDate"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
@@ -26,7 +26,7 @@
 			<button name="printPickingStockMoveGrid" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
     	</toolbar>
         <field name="stockMoveSeq"/>
-        <field name="fromLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+        <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="estimatedDate"/>
         <field name="realDate"/>
         <field name="fromAddressStr" hidden="true"/>
@@ -44,7 +44,7 @@
 			<button name="printStockMoveGrid" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
     	</toolbar>
         <field name="stockMoveSeq"/>
-        <field name="toLocation"  form-view="stock-location-form" grid-view="stock-location-grid"/>
+        <field name="toStockLocation"  form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="estimatedDate"/>
         <field name="realDate"/>
         <field name="fromAddressStr"/>
@@ -84,7 +84,7 @@
 		  <field name="cancelReason" canView="false" showIf="cancelReason != null" readonly="true" colSpan="4"/>
 	  </panel>
 	  <panel name="main">
-		  <field name="typeSelect" title="Type" colSpan="4" onChange="action-stock-move-set-default-locations, action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1"/>
+		  <field name="typeSelect" title="Type" colSpan="4" onChange="action-stock-move-set-default-stock-locations, action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1"/>
 		  <field name="conformitySelect" onChange="action-stock-move-method-change-conformity" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
 	  </panel>
 	  <panel>
@@ -95,8 +95,8 @@
 	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12" readonlyIf="statusSelect != 1" onChange="action-stock-move-record-partner-delivery-informations"/>
 	    </panel>
 	    <panel title="Stock move informations" name="stockMoveInformation">
-	      <field name="fromLocation" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
-	      <field name="toLocation" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
+	      <field name="fromStockLocation" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
+	      <field name="toStockLocation" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	      <field name="estimatedDate" colSpan="6" readonlyIf="statusSelect != 1"/>
 	      <field name="realDate" colSpan="6"/>
 	      <field name="isWithReturnSurplus" colSpan="6" showIf="typeSelect == 3"/>
@@ -156,7 +156,7 @@
     <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard">
     	<panel name="main">
 	        <field name="splitQty" widget="INTEGER" title="Split in Qty of"/>
-	        <button name="split" title="Split" onClick="action-stock-move-method-split-stock-move-lines-speical"/>
+	        <button name="split" title="Split" onClick="action-stock-move-method-split-stock-move-lines-special"/>
         </panel>
     </form>
     
@@ -177,7 +177,8 @@
     <action-view title="Special split" model="com.axelor.apps.base.db.Wizard" name="action-stock-move-wizard-special-split">
 	    <view type="form" name="stock-move-wizard-special-split-form"/>
 	    <view-param name="popup" value="reload"/>
-	    <view-param name="forceEdit" value="true"/> 
+        <view-param name="forceEdit" value="true"/>
+        <view-param name="show-toolbar" value="false"/>
 	    <view-param name="show-confirm" value="false" />
    	  	<view-param name="popup-save" value="false"/>
 	    <view-param name="width" value="200" />
@@ -208,7 +209,7 @@
 	</action-view>
 	
     <!-- <action-attrs name="action-stock-move-attrs-title-realize-button">
-    	<attribute name="title" for="realize" expr="eval: (fromLocation) ? ((fromLocation?.typeSelect != 1 &amp;&amp; toLocation?.typeSelect == 1) ? 'Receive' : 'Send') : ((toLocation?.typeSelect == 1) ? 'Receive' : 'Send')"/>
+    	<attribute name="title" for="realize" expr="eval: (fromStockLocation) ? ((fromStockLocation?.typeSelect != 1 &amp;&amp; toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send') : ((toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send')"/>
     </action-attrs> -->
     
     <action-group name="action-group-stock-stockmove-onnew">
@@ -288,25 +289,25 @@
 	    <field name="isWithBackorder" expr="eval:true" />
 	    <field name="estimatedDate" expr="eval:__config__.app.getTodayDate()"/>
 	    <field name="typeSelect" expr="eval: _typeSelect"/>
-	    <field if="_typeSelect == '3'" name="toLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.defaultLocation"/>
-		<field if="_typeSelect == '3'" name="fromLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierVirtualLocation"/>
-		<field if="_typeSelect == '2'" name="fromLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.defaultLocation"/>
-		<field if="_typeSelect == '2'" name="toLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.customerVirtualLocation"/>
+	    <field if="_typeSelect == '3'" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.defaultStockLocation"/>
+		<field if="_typeSelect == '3'" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierVirtualStockLocation"/>
+		<field if="_typeSelect == '2'" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.defaultStockLocation"/>
+		<field if="_typeSelect == '2'" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.customerVirtualStockLocation"/>
 	</action-record>
 	
 	<action-record name="action-stock-move-set-from-address" model="com.axelor.apps.stock.db.StockMove">
-		<field name="fromAddress" expr="eval:fromLocation?.address" />
+		<field name="fromAddress" expr="eval:fromStockLocation?.address" />
 	</action-record>
 	
 	<action-record name="action-stock-move-set-to-address" model="com.axelor.apps.stock.db.StockMove">
-		<field name="toAddress" expr="eval:toLocation?.address" />
+		<field name="toAddress" expr="eval:toStockLocation?.address" />
 	</action-record>
 	
-	<action-record name="action-stock-move-set-default-locations" model="com.axelor.apps.stock.db.StockMove">
-	    <field if="typeSelect == 2" name="fromLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.defaultLocation"/>
-  		<field if="typeSelect == 2" name="toLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.customerVirtualLocation"/>
-  		<field if="typeSelect == 3" name="toLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.defaultLocation"/>
-  		<field if="typeSelect == 3" name="fromLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.supplierVirtualLocation"/>
+	<action-record name="action-stock-move-set-default-stock-locations" model="com.axelor.apps.stock.db.StockMove">
+	    <field if="typeSelect == 2" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.defaultStockLocation"/>
+  		<field if="typeSelect == 2" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.customerVirtualStockLocation"/>
+  		<field if="typeSelect == 3" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.defaultStockLocation"/>
+  		<field if="typeSelect == 3" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.supplierVirtualStockLocation"/>
 	</action-record>
 	
 	<action-record name="action-stock-move-record-partner-delivery-informations" model="com.axelor.apps.stock.db.StockMove">
@@ -346,7 +347,7 @@
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="splitInto2"/>
 	</action-method>
 	
-	<action-method name="action-stock-move-method-split-stock-move-lines-speical">
+	<action-method name="action-stock-move-method-split-stock-move-lines-special">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="splitStockMoveLinesSpecial"/>
 	</action-method>
 	
@@ -387,8 +388,8 @@
 	</action-validate>
 	
 	<action-validate name="action-stock-move-validate-address">
-	    <error message="Both source location address and delivery (to) address are required to define the delivery itinerary" if="fromLocation?.address == null &amp;&amp; toAddress == null"/>
-	    <error message="Please fill in the source (from) location address to get the delivery itinerary." if="fromLocation?.address == null"/>
+	    <error message="Both source location address and delivery (to) address are required to define the delivery itinerary" if="fromStockLocation?.address == null &amp;&amp; toAddress == null"/>
+	    <error message="Please fill in the source (from) location address to get the delivery itinerary." if="fromStockLocation?.address == null"/>
 	    <error message="Please fill in the delivery (to) address to get the delivery itinerary." if="toAddress == null"/>
 	</action-validate>
 

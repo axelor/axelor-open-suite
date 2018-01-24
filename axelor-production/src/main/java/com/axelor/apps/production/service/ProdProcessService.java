@@ -30,6 +30,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
+import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -38,8 +39,14 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class ProdProcessService {
+	
+	@Inject
+	ProdProcessRepository prodProcessRepo;
 	
 	public void validateProdProcess(ProdProcess prodProcess, BillOfMaterial bom) throws AxelorException{
 		Map<Product,BigDecimal> bomMap = new HashMap<Product,BigDecimal>();
@@ -93,5 +100,41 @@ public class ProdProcessService {
 		}
 		
 		return language;
+	}
+	
+	@Transactional
+	public ProdProcess generateNewVersion(ProdProcess prodProcess) {
+
+		ProdProcess copy = prodProcessRepo.copy(prodProcess, true);
+
+		copy.getProdProcessLineList().forEach(list -> list.setProdProcess(copy));
+		copy.setOriginalProdProcess(prodProcess);
+		copy.setVersionNumber(this.getLatestProdProcessVersion(prodProcess, prodProcess.getVersionNumber(), true) + 1);
+		return prodProcessRepo.save(copy);
+	}
+
+	public int getLatestProdProcessVersion(ProdProcess prodProcess, int latestVersion, boolean deep) {
+		List<ProdProcess> prodProcessSet = Lists.newArrayList();
+		ProdProcess up = prodProcess;
+		Long previousId = Long.valueOf(0);
+		do {
+
+			prodProcessSet = prodProcessRepo.all().filter("self.originalProdProcess = :origin AND self.id != :id")
+					.bind("origin", up).bind("id", previousId).order("-versionNumber").fetch();
+			if (!prodProcessSet.isEmpty()) {
+				latestVersion = (prodProcessSet.get(0).getVersionNumber() > latestVersion)
+						? prodProcessSet.get(0).getVersionNumber()
+						: latestVersion;
+				for (ProdProcess prodProcessIterator : prodProcessSet) {
+					int search = this.getLatestProdProcessVersion(prodProcessIterator, latestVersion, false);
+					latestVersion = (search > latestVersion) ? search : latestVersion;
+				}
+			}
+			previousId = up.getId();
+			up = up.getOriginalProdProcess();
+		} while (up != null && deep);
+
+		return latestVersion;
+
 	}
 }

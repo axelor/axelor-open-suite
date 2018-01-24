@@ -7,7 +7,6 @@
 
   <entity name="DebtRecoveryLevel" lang="java" cachable="true">
   
-    <integer name="importId"/>
   	<integer name="name" title="Level" unique="true" required="true"/>
     <string name="code"  title="Code"/> 
   	<string name="label" title="Label"/>

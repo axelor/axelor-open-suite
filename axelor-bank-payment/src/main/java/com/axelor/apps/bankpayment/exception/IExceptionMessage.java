@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -51,8 +51,9 @@ public interface IExceptionMessage {
 
 	static final String ACCOUNT_CONFIG_EXTERNAL_BANK_TO_BANK_ACCOUNT = /*$$(*/ "%s : Please, configure an account for the bank order for the external bank to bank transfer for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_INTERNAL_BANK_TO_BANK_ACCOUNT = /*$$(*/ "%s : Please, configure an account for the bank order for the internal bank to bank transfer for the company %s" /*)*/;
-	
-	
+
+    static final String ACCOUNT_CONFIG_MISSING_ICS_NUMBER = /*$$(*/ "%s : Please configure an ICS number for the company %s." /*)*/;
+
 	/**
 	 *  BankOrder service
 	 */
@@ -76,7 +77,8 @@ public interface IExceptionMessage {
 	static final String BANK_ORDER_BANK_DETAILS_EMPTY_IBAN = /*$$(*/ "The Iban is mandatory for the partner %s, bank order %s" /*)*/;
 	static final String BANK_ORDER_BANK_DETAILS_NOT_ACTIVE = /*$$(*/ "The bank details is inactive." /*)*/;
 	static final String BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/ "The bank details type is not compatible with the accepted types in file format." /*)*/;
-	static final String BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/ "The bank details currency is not compatible with the currency in bank order." /*)*/;
+	static final String BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/ "The sender bank details currency is not compatible with the currency in bank order." /*)*/;
+	static final String BANK_ORDER_BANK_DETAILS_MISSING_CURRENCY = /*$$(*/ "Please fill the sender bank details currency." /*)*/;
 	static final String BANK_ORDER_NOT_PROPERLY_SIGNED = /*$$(*/ "The bank order is not properly signed. Please correct it and sign it again." /*)*/;
 
 	String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS = /*$$(*/ "Please fill the bank address in the receiver bank details." /*)*/;
@@ -132,6 +134,8 @@ public interface IExceptionMessage {
 	static final String EBICS_MISSING_USER_TRANSPORT = /*$$(*/ "Please insert a EBICS user for transport in the EBICS partner" /*)*/;
 	static final String EBICS_NO_SERVICE_CONFIGURED = /*$$(*/ "No service configured on EBICS partner %s for file format %s" /*)*/;
 
+	static final String EBICS_PARTNER_BANK_DETAILS_WARNING = /*$$(*/ "At least one bank details you have entered is missing currency. Here is the list of invalid bank details : %s" /*)*/;
+
 	/**
 	 * Batch bank statement
 	 */
@@ -144,5 +148,10 @@ public interface IExceptionMessage {
     static final String BANK_STATEMENT_MISSING_FILE = /*$$(*/ "Missing bank statement file" /*)*/;
     static final String BANK_STATEMENT_MISSING_FILE_FORMAT = /*$$(*/ "Missing bank statement file format" /*)*/;
     static final String BANK_STATEMENT_EBICS_PARTNER = /*$$(*/ "Error with EBICS partner %s: %s" /*)*/;
+
+    /*
+     * Batch direct debit
+     */
+    static final String BATCH_DIRECT_DEBIT_MISSING_COMPANY_BANK_DETAILS = /*$$(*/ "Company bank details is missing in batch." /*)*/;
 
 }
