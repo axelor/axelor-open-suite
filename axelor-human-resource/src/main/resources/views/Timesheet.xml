@@ -74,7 +74,7 @@
 	    	<button name="confirmContinueButton" onClick="action-timesheet-group-confirm-continue,close" title="Confirm &amp; Continue" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
 	    	<button name="validateButton" onClick="action-timesheet-group-validate" title="Validate" icon="fa-check" css="btn-success"/>
 	    	<button name="refuseButton" onClick="action-timesheet-group-refuse" title="Refuse" icon="fa-times" css="btn-danger" />
-	    	<button name="cancelButton" onClick="action-timesheet-method-cancel,action-timesheet-attrs-buttons" title="Cancel" icon="fa-close" css="btn-danger"/>
+	    	<button name="cancelButton" onClick="save,action-timesheet-method-cancel,action-timesheet-attrs-buttons" title="Cancel" icon="fa-close" css="btn-danger"/>
 	    	<button name="draftButton" onClick="action-timesheet-record-draft,save,action-timesheet-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    	<button name="startStopForm" title="Start&amp;Stop Timer" onClick="action-timesheet-method-timesheet-timer" hideIf="statusSelect != 1"
 			    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getEnableTimer()"/>
@@ -179,6 +179,7 @@
 	</action-group>
 	
 	<action-group name="action-timesheet-group-validate">
+		<action name="save"/>
 		<action name="action-timesheet-method-valid"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
@@ -186,8 +187,8 @@
 	</action-group>
 	
 	<action-group name="action-timesheet-group-refuse">
-		<action name="action-timesheet-method-refuse"/>
 		<action name="save"/>
+		<action name="action-timesheet-method-refuse"/>
 		<action name="action-timesheet-refusal-popup-form"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
