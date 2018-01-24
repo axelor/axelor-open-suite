@@ -27,7 +27,7 @@
   	
   	<integer name="defaultPartnerTypeSelect" title="Partner Type" selection="company.partner.type.select" default="1"/>
 
-    <many-to-many name="tradingNameSet" ref="com.axelor.apps.base.db.TradingName" title="Trading names" mappedBy="companySet"/>
+    <many-to-many name="tradingNameSet" ref="com.axelor.apps.base.db.TradingName" title="Trading names"/>
     <one-to-many name="tradingNamePrintingSettingsList" ref="com.axelor.apps.base.db.TradingNamePrintingSettings" mappedBy="company"/>
 
   </entity>
