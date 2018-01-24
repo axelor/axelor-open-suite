@@ -231,7 +231,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	public List<? extends StockLocationLine> getStockLocationLines(Product product, StockLocation stockLocation) throws AxelorException  {
 
 		List<? extends StockLocationLine> stockLocationLineList = Beans.get(StockLocationLineRepository.class).all().
-				filter("self.product = ?1 AND self.futureQty > 0 AND self.trackingNumber IS NOT NULL AND self.detailsLocation = ?2"
+				filter("self.product = ?1 AND self.futureQty > 0 AND self.trackingNumber IS NOT NULL AND self.detailsStockLocation = ?2"
 						+trackingNumberService.getOrderMethod(product.getTrackingNumberConfiguration()), product, stockLocation).fetch();
 
 		return stockLocationLineList;
