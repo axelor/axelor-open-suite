@@ -557,6 +557,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		}
 	}
 	
+	// Method used for mobile application
 	@Transactional
 	public void insertTSLine(ActionRequest request, ActionResponse response){
 		
