@@ -139,6 +139,7 @@
 	</action-group>
 	
 	<action-group name="action-timesheet-group-validate">
+		<action name="save"/>
 		<action name="action-timesheet-method-valid"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
@@ -146,8 +147,8 @@
 	</action-group>
 	
 	<action-group name="action-timesheet-group-refuse">
-		<action name="action-timesheet-method-refuse"/>
 		<action name="save"/>
+		<action name="action-timesheet-method-refuse"/>
 		<action name="action-timesheet-refusal-popup-form"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
