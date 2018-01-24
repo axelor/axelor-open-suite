@@ -138,9 +138,8 @@ public class AccountConfigBankPaymentService extends AccountConfigService  {
      */
     public String getIcsNumber(AccountConfig accountConfig) throws AxelorException {
         if (Strings.isNullOrEmpty(accountConfig.getIcsNumber())) {
-            throw new AxelorException(accountConfig, IException.CONFIGURATION_ERROR,
-                    I18n.get(IExceptionMessage.ACCOUNT_CONFIG_MISSING_ICS_NUMBER), AppBaseServiceImpl.EXCEPTION,
-                    accountConfig.getCompany().getName());
+            throw new AxelorException(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_MISSING_ICS_NUMBER), IException.CONFIGURATION_ERROR,
+                     GeneralServiceImpl.EXCEPTION, accountConfig.getCompany().getName());
         }
         return accountConfig.getIcsNumber();
     }
