@@ -16,6 +16,8 @@
 - Bank order improvements
 - HR improvments
 - Some fixes
+- KilometricExpenseLineList are no more duplicated in ExpenseLineList. ExpenseLineList is renamed into GeneralExpenseLineList.
+- The distinction between round-trip and one way ticket in kilometric expenses is now only informative.
 
 
 ## [4.1.0] - 2017-06-19
