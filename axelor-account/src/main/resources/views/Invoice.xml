@@ -113,7 +113,7 @@
 			<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
         		<item title="Print" action="save,action-invoice-method-show-invoice" hideIf="partner == null"/>
         		<item title="Print annex" action="action-invoice-business-project-method-print-annex" if-module="axelor-business-project"
-        		showIf="partner != null &amp;&amp; __user__.activeCompany?.accountConfig?.displayTimesheetOnPrinting &amp;&amp; __user__.activeCompany?.accountConfig?.displayExpenseOnPrinting"/>
+        		showIf="partner != null &amp;&amp; (displayTimesheetOnPrinting || displayExpenseOnPrinting)"/>
         	</menu>
         	<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
         		<item title="Send email" action="save,action-send-by-email-with-template" hideIf="partner == null"/>
@@ -427,7 +427,7 @@
 		<toolbar>
 			<button name="showInvoice" title="Print" icon="fa-print" onClick="save,action-invoice-method-show-invoice"/>
 			<button name="showAnnex" title="Print annex" icon="fa-print" onClick="action-invoice-business-project-method-print-annex" if-module="axelor-business-project"
-				showIf="__user__.activeCompany?.accountConfig?.displayTimesheetOnPrinting &amp;&amp; __user__.activeCompany?.accountConfig?.displayExpenseOnPrinting"/>
+				showIf="partner != null &amp;&amp; (displayTimesheetOnPrinting || displayExpenseOnPrinting)"/>
 		</toolbar>
 
 		<panel name="main" >
@@ -702,6 +702,7 @@
 		<action name="action-invoice-attrs-interco-supplychain"/>
 		<action name="action-invoice-record-interco-supplychain"/>
 		<action name="action-invoice-attrs-change-create-refund-title"/>
+	    <action name="action-invoice-record-printing-fields"/>
     </action-group>
 
     <action-group name="action-account-invoice-onload-group" >
@@ -715,7 +716,7 @@
 		<action name="action-invoice-attrs-interco-supplychain"/>
 		<action name="action-invoice-attrs-change-create-refund-title"/>
     </action-group>
-
+    
     <action-group name="action-group-account-invoice-operationtype-onchange">
 		<action name="action-invoice-method-payment-mode-condition"/>
     	<action name="action-invoice-record-partner-change"/>
@@ -724,7 +725,6 @@
     <action-group name="action-group-account-invoice-company-onchange">
     	<action name="action-invoice-method-fill-company-bank-details"/>
     	<action name="action-invoice-attrs-hide-cancel-button"/>
-
     </action-group>
 
     <action-group name="action-group-account-invoice-partner-onchange">
@@ -754,6 +754,7 @@
 		<action name="action-invoice-method-compute"/>
 		<action name="save"/>
 	</action-group>
+	
 	<action-attrs name="action-invoice-attrs-in-ati">
     	<attribute name="hidden" for="invoiceLineList.exTaxTotal" expr="inAti"/>
     	<attribute name="hidden" for="invoiceLineList.inTaxTotal" expr="!inAti"/>
@@ -830,6 +831,11 @@
 		<field name="interco"
 			   expr="eval: __config__.app.getApp('supplychain').getIntercoFromInvoice()"/>
 	</action-record>
+	
+    <action-record name="action-invoice-record-printing-fields" model="com.axelor.apps.account.db.Invoice">
+    	<field name="displayTimesheetOnPrinting" expr="eval: __user__.activeCompany?.accountConfig?.displayTimesheetOnPrinting"/>
+    	<field name="displayExpenseOnPrinting" expr="eval: __user__.activeCompany?.accountConfig?.displayExpenseOnPrinting"/>
+    </action-record>
 
     <!-- ACTION ATTRS -->
 
@@ -859,10 +865,14 @@
 	</action-attrs>
 
 	<action-attrs name="action-invoice-attrs-printing-fields" if-module="axelor-business-project">
-		<attribute name="hidden" for="displayTimesheetOnPrinting" expr="eval: __repo__(InvoicingProject).all().filter('self.invoice.id = ?1', id).fetch().isEmpty()" if="__config__.app.isApp('business-project')" />
-		<attribute name="hidden" for="displayExpenseOnPrinting" expr="eval: __repo__(InvoicingProject).all().filter('self.invoice.id = ?1', id).fetch().isEmpty()" if="__config__.app.isApp('business-project')" />
-		<attribute name="hidden" for="showAnnex" expr=" eval: __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayTimesheetOnPrinting == false
-										&amp;&amp; __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.displayExpenseOnPrinting == false"/>
+		<attribute name="hidden" for="displayTimesheetOnPrinting" if="__config__.app.isApp('business-project')"
+			expr="eval: __repo__(InvoicingProject).all().filter('self.invoice.id = ?1', id).fetch().isEmpty() &amp;&amp; !__user__.activeCompany?.accountConfig?.displayTimesheetOnPrinting"/>
+		<attribute name="value" for="displayTimesheetOnPrinting" if="__config__.app.isApp('business-project') &amp;&amp; __repo__(InvoicingProject).all().filter('self.invoice.id = ?1', id).fetch().isEmpty() &amp;&amp; !__user__.activeCompany?.accountConfig?.displayTimesheetOnPrinting"
+			expr="eval: false"/>
+		<attribute name="hidden" for="displayExpenseOnPrinting" if="__config__.app.isApp('business-project')"
+			expr="eval: __repo__(InvoicingProject).all().filter('self.invoice.id = ?1', id).fetch().isEmpty() &amp;&amp; !__user__.activeCompany?.accountConfig?.displayExpenseOnPrinting"/>
+		<attribute name="value" for="displayExpenseOnPrinting" if="__config__.app.isApp('business-project') &amp;&amp; __repo__(InvoicingProject).all().filter('self.invoice.id = ?1', id).fetch().isEmpty() &amp;&amp; !__user__.activeCompany?.accountConfig?.displayExpenseOnPrinting"
+			expr="eval: false"/>
 	</action-attrs>
 
 	<action-attrs name="action-invoice-attrs-hidden-bank-details">
