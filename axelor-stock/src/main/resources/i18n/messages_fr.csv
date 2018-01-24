@@ -254,7 +254,7 @@
 "Parcel %d is empty.","Le colis n<sup>o</sup> %d est vide.",,
 "Parcel/pallet number","<span>N<sup>o</sup> colis/palette</span>",,
 "Parent customs code","Code douanier parent",,
-"Parent stock location",,,
+"Parent stock location","Emplacement parent",,
 "Partial stock move (From","Reliquat (Du",,
 "Partner","Tiers",,
 "Partner is missing.","Le tiers est manquant.",,

@@ -8,7 +8,7 @@
     		<button name="print" title="Print" icon="fa-print" onClick="action-stock-location-method-print"/>
     	</toolbar>
         <field name="name"/>
-        <field name="parentLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+        <field name="parentStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="address" form-view="address-form" grid-view="address-grid"/>
@@ -23,7 +23,7 @@
 		<panel name="main">
 			<field name="name"/>
 			<field name="typeSelect" colSpan="3"/>
-			<field name="parentLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+			<field name="parentStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="address" form-view="address-form" grid-view="address-grid"/>

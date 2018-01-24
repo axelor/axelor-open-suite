@@ -1,4 +1,4 @@
-"importId";"name";"name_en_EN";"parentLocation.importId";"company.importId";"partner.importId";"typeSelect";"address.importId"
+"importId";"name";"name_en_EN";"parentStockLocation.importId";"company.importId";"partner.importId";"typeSelect";"address.importId"
 1;"Entrepôt principal";"Main Warehouse";;1;90000;1;90000
 2;"Client";"Customer";;1;90000;3;
 3;"Fournisseur";"Supplier";;1;90000;3;
