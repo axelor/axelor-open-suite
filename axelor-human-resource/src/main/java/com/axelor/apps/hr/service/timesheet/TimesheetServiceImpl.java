@@ -76,6 +76,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author axelor
+ *
+ */
 public class TimesheetServiceImpl implements TimesheetService{
 
 	@Inject
@@ -110,7 +114,6 @@ public class TimesheetServiceImpl implements TimesheetService{
 		for (TimesheetLine timesheetLine : timesheetLineList) {
 			timesheet.addTimesheetLineListItem(timesheetLine);
 		}
-		Beans.get(TimesheetRepository.class).save(timesheet);
 	}
 
 	
@@ -122,7 +125,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_CONFIRMED);
 		timesheet.setSentDate(generalService.getTodayDate());
 		
-		if(timesheet.getToDate() == null)  {
+		if (timesheet.getToDate() == null) {
 			List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
 			LocalDate timesheetLineLastDate = timesheetLineList.get(0).getDate();
 			for (TimesheetLine timesheetLine : timesheetLineList.subList(1, timesheetLineList.size())) {
@@ -133,9 +136,6 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 			timesheet.setToDate(timesheetLineLastDate);
 		}
-		
-		timesheetRepository.save(timesheet);
-		
 	}
 	
 	
@@ -159,9 +159,6 @@ public class TimesheetServiceImpl implements TimesheetService{
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
 		timesheet.setValidatedBy(AuthUtils.getUser());
 		timesheet.setValidationDate(generalService.getTodayDate());
-		
-		timesheetRepository.save(timesheet);
-		
 	}
 	
 	
@@ -169,10 +166,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 		
-		if(hrConfig.getTimesheetMailNotification())  {
-				
+		if (hrConfig.getTimesheetMailNotification()) {
 			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getValidatedTimesheetTemplate(hrConfig));
-				
 		}
 		
 		return null;
@@ -185,19 +180,14 @@ public class TimesheetServiceImpl implements TimesheetService{
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_REFUSED);
 		timesheet.setRefusedBy(AuthUtils.getUser());
 		timesheet.setRefusalDate(generalService.getTodayDate());
-		
-		timesheetRepository.save(timesheet);
-		
 	}
 	
 	public Message sendRefusalEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 		
-		if(hrConfig.getTimesheetMailNotification())  {
-				
+		if (hrConfig.getTimesheetMailNotification()) {
 			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getRefusedTimesheetTemplate(hrConfig));
-				
 		}
 		
 		return null;
@@ -207,17 +197,14 @@ public class TimesheetServiceImpl implements TimesheetService{
 	@Transactional(rollbackOn={Exception.class})
 	public void cancel(Timesheet timesheet){
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_CANCELED);
-		Beans.get(TimesheetRepository.class).save(timesheet);
 	}
 	
 	public Message sendCancellationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
 
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 
-		if(hrConfig.getTimesheetMailNotification())  {
-
+		if (hrConfig.getTimesheetMailNotification()) {
 			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getCanceledTimesheetTemplate(hrConfig));
-
 		}
 
 		return null;
@@ -561,6 +548,9 @@ public class TimesheetServiceImpl implements TimesheetService{
 		}
 	}
 	
+	
+	
+	// Method used for mobile application
 	@Transactional
 	public void insertTSLine(ActionRequest request, ActionResponse response){
 		
