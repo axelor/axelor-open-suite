@@ -27,6 +27,7 @@ import com.axelor.apps.project.exception.IExceptionMessage;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -35,6 +36,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.axelor.team.db.TeamTask;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -80,6 +82,33 @@ public class ProjectServiceImpl implements ProjectService {
 		project.setProgress(BigDecimal.ZERO);
 		return project;
 	}
+
+    @Override
+    @Transactional(rollbackOn = { AxelorException.class, Exception.class })
+    public Project generateProject(Partner partner) {
+        Preconditions.checkNotNull(partner);
+        User user = AuthUtils.getUser();
+        Project project = Beans.get(ProjectService.class).generateProject(null, getUniqueProjectName(partner), user,
+                user.getActiveCompany(), partner);
+        return projectRepository.save(project);
+    }
+
+    private String getUniqueProjectName(Partner partner) {
+        String baseName = String.format(I18n.get("%s project"), partner.getName());
+        long count = projectRepository.all().filter(String.format("self.name LIKE '%s%%'", baseName)).count();
+
+        if (count == 0) {
+            return baseName;
+        }
+
+        String name;
+
+        do {
+            name = String.format("%s %d", baseName, ++count);
+        } while (projectRepository.findByName(name) != null);
+
+        return name;
+    }
 
 	@Override
 	public Partner getClientPartnerFromProject(Project project) throws AxelorException{

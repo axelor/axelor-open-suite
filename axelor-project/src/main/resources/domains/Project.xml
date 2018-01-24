@@ -17,7 +17,7 @@
 		<many-to-many name="categorySet" ref="com.axelor.apps.project.db.ProjectCategory" title="Type of authorized categories"/>
 		<one-to-many name="teamTaskList" ref="com.axelor.team.db.TeamTask" title="Tasks" mappedBy="project"/>
 		<boolean name="synchronisable"/>
-		<many-to-one name="parentProject" ref="com.axelor.apps.project.db.Project" title="Project Parent"/>
+		<many-to-one name="parentProject" ref="com.axelor.apps.project.db.Project" title="Parent project"/>
 		<one-to-many name="wikiList" ref="com.axelor.apps.project.db.Wiki" title="Wiki" mappedBy="project"/>
 		
 		<string name="code" title="Code" />
@@ -58,6 +58,7 @@
       	<enum name="genProjTypePerOrderLine" ref="GenProjTypePerOrderLine" default="PROJECT_ALONE"/>
 
       	<finder-method name="findAllByParentProject" using="parentProject" all="true"/>
+        <finder-method name="findByName" using="name"/>
 
 	   <extra-code>
    		<![CDATA[

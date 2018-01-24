@@ -86,9 +86,9 @@ public class StockLocationController {
 		if(!locationIds.equals("")){
 			String language = ReportSettings.getPrintingLocale(null);
 
-			String title = I18n.get("Location");
+			String title = I18n.get("Stock location");
 			if(stockLocation.getName() != null)  {
-				title = lstSelectedLocations == null ? I18n.get("Location") + " " + stockLocation.getName() : I18n.get("Location(s)");
+				title = lstSelectedLocations == null ? I18n.get("Stock location") + " " + stockLocation.getName() : I18n.get("Stock location(s)");
 			}
 		
 			String fileLink = ReportFactory.createReport(IReport.STOCK_LOCATION, title+"-${date}")

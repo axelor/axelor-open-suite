@@ -18,7 +18,12 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.db.Blocking;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.StopReason;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -35,6 +40,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 import java.math.BigDecimal;
@@ -126,6 +133,76 @@ public class SaleOrderLineController {
 		} catch (AxelorException e) {
 			TraceBackService.trace(response, e);
 		}
+	}
+
+	/**
+	 * Called from sale order line form.
+	 * Set domain for supplier partner.
+	 * @param request
+	 * @param response
+	 */
+	public void supplierPartnerDomain(ActionRequest request, ActionResponse response) {
+        SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+        String domain = "self.isContact = false AND self.isSupplier = true";
+        SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+        if (saleOrder == null) {
+        	Context parentContext = request.getContext().getParent();
+        	if (parentContext == null) {
+				response.setAttr("supplierPartner", "domain", domain);
+        		return;
+			}
+			saleOrder = parentContext.asType(SaleOrder.class);
+        	if (saleOrder == null) {
+				response.setAttr("supplierPartner", "domain", domain);
+        		return;
+			}
+		}
+		String blockedPartnerQuery = Beans.get(BlockingService.class)
+				.listOfBlockedPartner(saleOrder.getCompany(), BlockingRepository.PURCHASE_BLOCKING);
+
+		if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
+			domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
+		}
+		response.setAttr("supplierPartner", "domain", domain);
+	}
+
+	/**
+	 * Called from sale order line form, on product change
+	 * and on sale supply select change
+	 * @param request
+	 * @param response
+	 */
+	public void supplierPartnerDefault(ActionRequest request, ActionResponse response) {
+		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+		if (saleOrderLine.getSaleSupplySelect() != SaleOrderLineRepository.SALE_SUPPLY_PURCHASE) {
+			return;
+		}
+
+		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+		if (saleOrder == null) {
+			Context parentContext = request.getContext().getParent();
+			if (parentContext == null) {
+			    return;
+			}
+			saleOrder = parentContext.asType(SaleOrder.class);
+		}
+		if (saleOrder == null) {
+			return;
+		}
+
+		Partner supplierPartner = null;
+		if (saleOrderLine.getProduct() != null) {
+			supplierPartner = saleOrderLine.getProduct().getDefaultSupplierPartner();
+		}
+
+		if (supplierPartner != null) {
+		    Blocking blocking = Beans.get(BlockingService.class).getBlocking(supplierPartner, saleOrder.getCompany(), BlockingRepository.PURCHASE_BLOCKING);
+		    if (blocking != null) {
+		        supplierPartner = null;
+			}
+		}
+
+		response.setValue("supplierPartner", supplierPartner);
 	}
 
 }

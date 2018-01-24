@@ -56,5 +56,9 @@
 		<option value="0">Update from product</option>
 		<option value="1">Update from configurator</option>
 	</selection>
+
+    <selection name="base.blocking.select" id="sale.blocking.select">
+        <option value="5">Sale blocking</option>
+    </selection>
 	
 </object-views>

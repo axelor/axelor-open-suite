@@ -25,6 +25,8 @@
               public static final Integer REMINDER_BLOCKING = 1;
               public static final Integer INVOICING_BLOCKING = 2;
               public static final Integer REIMBURSEMENT_BLOCKING = 3;
+
+              public static final int PURCHASE_BLOCKING = 6;
           ]]>
       </extra-code>
     

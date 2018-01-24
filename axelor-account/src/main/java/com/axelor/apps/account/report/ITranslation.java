@@ -107,7 +107,15 @@ public interface ITranslation {
 	public static final String ACCOUNTING_REPORT_2_DEBIT = /*$$(*/ "AccountingReportType2.debit"; /*)*/
 	public static final String ACCOUNTING_REPORT_2_CREDIT = /*$$(*/ "AccountingReportType2.credit"; /*)*/
 	public static final String ACCOUNTING_REPORT_2_GENERAL_BALANCE = /*$$(*/ "AccountingReportType2.generalBalance"; /*)*/
-	
+
+	public static final String ACCOUNTING_REPORT_15_TITLE = /*$$(*/ "AccountingReportType15.title"; /*)*/
+	public static final String ACCOUNTING_REPORT_15_COMPANY = /*$$(*/ "AccountingReportType15.company"; /*)*/
+	public static final String ACCOUNTING_REPORT_15_FROM = /*$$(*/ "AccountingReportType15.from"; /*)*/
+	public static final String ACCOUNTING_REPORT_15_TO = /*$$(*/ "AccountingReportType15.to"; /*)*/
+	public static final String ACCOUNTING_REPORT_15_YEAR = /*$$(*/ "AccountingReportType15.year"; /*)*/
+	public static final String ACCOUNTING_REPORT_15_VAT_TOTAL = /*$$(*/ "AccountingReportType15.vatTotal"; /*)*/
+	public static final String ACCOUNTING_REPORT_15_PRINT_DATE = /*$$(*/ "AccountingReportType15.printDate"; /*)*/
+
 	public static final String ACCOUNTING_REPORT_2000_TITLE = /*$$(*/ "AccountingReportType2000.title"; /*)*/
 	public static final String ACCOUNTING_REPORT_2000_ANALYTIC_JOURNAL = /*$$(*/ "AccountingReportType2000.analyticJournal"; /*)*/
 	public static final String ACCOUNTING_REPORT_2000_COMPANY = /*$$(*/ "AccountingReportType2000.company"; /*)*/
@@ -126,19 +134,34 @@ public interface ITranslation {
 	public static final String ACCOUNTING_REPORT_2000_TOTAL_PER_ANALYTIC_JOURNAL = /*$$(*/ "AccountingReportType2000.totalPerAnalyticJournal"; /*)*/
 	public static final String ACCOUNTING_REPORT_2000_TOTAL_PER_ANALYTIC_AXIS = /*$$(*/ "AccountingReportType2000.totalPerAnalyticAxis"; /*)*/
 	public static final String ACCOUNTING_REPORT_2000_TOTAL_PER_ANALYTIC_ACCOUNT = /*$$(*/ "AccountingReportType2000.totalPerAnalyticAccount"; /*)*/
-	
+
+	public static final String SALE_INVOICE_DETAILS_REPORT_TITLE = /*$$(*/ "SaleInvoicesDetails.title"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_COMPANY = /*$$(*/ "SaleInvoicesDetails.company"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_PUBLICATION_DATE = /*$$(*/ "SaleInvoicesDetails.publicationDate"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_PRODUCT_CATEGORIES = /*$$(*/ "SaleInvoicesDetails.productCategories"; /*)*/
 	public static final String SALE_INVOICE_DETAILS_REPORT_INVOICED = /*$$(*/ "SaleInvoicesDetails.invoiced"; /*)*/
 	public static final String SALE_INVOICE_DETAILS_REPORT_ORDERED = /*$$(*/ "SaleInvoicesDetails.ordered"; /*)*/
 	public static final String SALE_INVOICE_DETAILS_REPORT_SUBTOTAL = /*$$(*/ "SaleInvoicesDetails.subtotal"; /*)*/
 	public static final String SALE_INVOICE_DETAILS_REPORT_SUM_BY_PARTNER = /*$$(*/ "SaleInvoicesDetails.sumByPartner"; /*)*/
 	public static final String SALE_INVOICE_DETAILS_REPORT_SUM_BY_PRODUCT = /*$$(*/ "SaleInvoicesDetails.sumByProduct"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_TOTAL_ORDER = /*$$(*/ "SaleInvoicesDetails.totalOrder"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_TOTAL_INVOICE = /*$$(*/ "SaleInvoicesDetails.totalInvoice"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_TOTAL_TURNOVER = /*$$(*/ "SaleInvoicesDetails.totalTurnover"; /*)*/
 
+
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_TITLE = /*$$(*/ "PurchaseInvoicesDetails.title"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_COMPANY = /*$$(*/ "PurchaseInvoicesDetails.company"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_PUBLICATION_DATE = /*$$(*/ "PurchaseInvoicesDetails.publicationDate"; /*)*/
+	public static final String PURCHASE_INVOICE_ETAILS_REPORT_PRODUCT_CATEGORIES = /*$$(*/ "PurchaseInvoicesDetails.productCategories"; /*)*/
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_INVOICED = /*$$(*/ "PurchaseInvoicesDetails.invoiced"; /*)*/
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_ORDERED = /*$$(*/ "PurchaseInvoicesDetails.ordered"; /*)*/
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUBTOTAL = /*$$(*/ "PurchaseInvoicesDetails.subtotal"; /*)*/
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUM_BY_PARTNER = /*$$(*/ "PurchaseInvoicesDetails.sumByPartner"; /*)*/
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUM_BY_PRODUCT = /*$$(*/ "PurchaseInvoicesDetails.sumByProduct"; /*)*/
-	
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_TOTAL_ORDER = /*$$(*/ "PurchaseInvoicesDetails.totalOrder"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_TOTAL_INVOICE = /*$$(*/ "PurchaseInvoicesDetails.totalInvoice"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_TOTAL_TURNOVER = /*$$(*/ "PurchaseInvoicesDetails.totalTurnover"; /*)*/
+
 	public static final String ACCOUNT_MOVE_REFERENCE = /*$$(*/ "move.reference"; /*)*/
 	public static final String ACCOUNT_MOVE_JOURNAL = /*$$(*/ "move.journal"; /*)*/
 	public static final String ACCOUNT_MOVE_PARTNER = /*$$(*/ "move.partner"; /*)*/

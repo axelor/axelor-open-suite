@@ -5,8 +5,8 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="PublicHolidayDay" cachable="true">
-  	  <many-to-one name="publicHolidayPlann" ref="com.axelor.apps.hr.db.PublicHolidayPlanning"/>
+  <entity name="EventsPlanningLine" cachable="true">
+  	  <many-to-one name="eventsPlanning" ref="com.axelor.apps.hr.db.EventsPlanning"/>
   	  <integer name="year" required="true" title="Year"/>
   	  <date name="date" column="date_val" required="true" title="Date"/>
   	  <string name="description" title="Description"/>

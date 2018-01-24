@@ -91,7 +91,7 @@
 90;28;"SaleOrderId";"$SaleOrder.id$";"string"
 91;29;"__locale";"en_EN";"string"
 92;29;"Locale";"en";"string"
-93;29;"StockLocationId";"$Location.id$";"string"
+93;29;"StockLocationId";"$StockLocation.id$";"string"
 94;30;"__locale";"en_EN";"string"
 95;30;"Locale";"en";"string"
 96;30;"StockMoveId";"$StockMove.id$";"string"

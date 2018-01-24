@@ -49,7 +49,7 @@
 					  	<field name="languageSelect"/>
 					  	<label title="Assigned to"/>
 					    <field name="companySet"  widget="TagSelect" canNew="false" grid-view="company-grid" form-view="company-form"/>
-					    <field name="user" form-view="user-form" grid-view="user-grid"/>
+					    <field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 					    <field name="team" form-view="team-form" grid-view="team-grid"/>
 					</editor>
 				</field>
@@ -94,7 +94,7 @@
 				        <field name="$otherCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
 	   			
 	   			<field name="$partner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="partner-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
-					<editor x-show-titles="false" onNew="action-convert-lead-wizard-record-default-partner">		
+					<editor x-show-titles="false" onNew="action-convert-lead-wizard-record-default-partner">
 	   					<label title="Contact" colSpan="12"/>
 						<field name="fixedPhone"/>
 						<field name="mobilePhone" hideIf="partnerTypeSelect == 1"/>
@@ -110,7 +110,7 @@
 					  	
 					  	<label title="Assigned to" colSpan="12"/>
 					    <field name="companySet"  widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
-					    <field name="user" form-view="user-form" grid-view="user-grid"/>
+					    <field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 					    <field name="team" form-view="team-form" grid-view="team-grid"/>
 					</editor>
 				</field>
@@ -146,7 +146,7 @@
 					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="4"/>
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
-					    <field name="user" colSpan="4"/>
+					    <field name="user" colSpan="4" canNew="false" canEdit="false" canView="false"/>
 					    <field name="team" onSelect="action-event-attrs-team-domain" colSpan="4"/>
 					    <field name="company" widget="SuggestBox" colSpan="4"/>
 					</editor>
@@ -171,7 +171,7 @@
 					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
-					    <field name="user"/>
+					    <field name="user" canNew="false" canEdit="false" canView="false"/>
 					    <field name="team" onSelect="action-event-attrs-team-domain"/>
 					</editor>
 				</field>
@@ -194,7 +194,7 @@
 					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="3"/>
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
-					    <field name="user"/>
+					    <field name="user" canNew="false" canEdit="false" canView="false"/>
 					    <field name="team" onSelect="action-event-attrs-team-domain"/>
 					</editor>
 				</field>
@@ -218,30 +218,30 @@
 					    <field name="limitDateT" colSpan="3"/>
 					    <label title="Assigned to" css="label-bold"/>
 					    <spacer/>
-					    <field name="user"/>
+					    <field name="user" canNew="false" canEdit="false" canView="false"/>
 					    <field name="team" onSelect="action-event-attrs-team-domain"/>
 					</editor>
 				</field>
 			</panel>
 		 </panel-tabs>
 	</form>
-	
+
     <action-method name="action-convert-lead-wizard-record-default-contact">
     	<call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="setConvertLeadIntoContact"/>
     </action-method>
-    
+
      <action-method name="action-convert-lead-wizard-record-default-partner">
     	<call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="setConvertLeadIntoPartner"/>
     </action-method>
-    
+
      <action-method name="action-opportunity-record-from-lead">
     	<call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="setConvertLeadIntoOpportunity"/>
     </action-method>
-    
+
     <action-method name="action-convert-lead-wizard-address">
     	<call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="setConvertLeadWizardAddress"/>
     </action-method>
-    
+
     <action-method name="action-convert-lead-wizard-default-call-event">
     	<call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="setConvertLeadCallEvent"/>
     </action-method>
@@ -249,11 +249,11 @@
      <action-method name="action-convert-lead-wizard-default-meeting-event">
     	<call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="setConvertLeadMeetingEvent"/>
     </action-method>
-    
+
       <action-method name="action-convert-lead-wizard-default-task-event">
     	<call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="setConvertLeadTaskEvent"/>
     </action-method>
-    
+
 <!-- 	<action-record name="action-convert-lead-wizard-address" model="com.axelor.apps.base.db.Wizard"> -->
 <!-- 	    <field name="$primaryAddress" expr="eval: _lead.primaryAddress"/> -->
 <!--     	<field name="$primaryCity" expr="eval: _lead.primaryCity"/> -->
@@ -312,7 +312,7 @@
 			  <field name="languageSelect"/>
 			  <panel title="Assigned to">
 			    <field name="companySet"  widget="TagSelect" canNew="false"/>
-			    <field name="user"/>
+			    <field name="user" canNew="false" canEdit="false" canView="false"/>
 			    <field name="team"/>
 			  </panel>
 			</panel>
@@ -376,7 +376,7 @@
 		    <field name="languageSelect" colSpan="12"/>
 		    <panel title="Assigned to" colSpan="12" >
 		      <field name="companySet" widget="TagSelect" canNew="false"/>
-		      <field name="user"/>
+		      <field name="user" canNew="false" canEdit="false" canView="false"/>
 		      <field name="team"/>
 		    </panel>
 		  </panel>
@@ -413,7 +413,7 @@
 <!--     	<attribute for="otherPostalCode" name="value" expr="eval: _parent._lead.otherPostalCode"/> -->
 <!--     	<attribute for="otherCountry" name="value" expr="eval: _parent._lead.otherCountry"/> -->
 <!-- 	</action-attrs> -->
-    
+
     <action-record name="action-convert-lead-wizard-attrs-default-contact-address" model="com.axelor.apps.base.db.Partner">
 		<field name="primaryAddress" expr="eval: _lead.primaryAddress"/>
 		<field name="primaryCity" expr="eval: _lead.primaryCity"/>
@@ -469,7 +469,7 @@
 	    </panel>
 	  </panel>
 	  <panel name="assignedTo" title="Assigned to" >
-	    <field name="user"/>
+	    <field name="user" canNew="false" canEdit="false" canView="false"/>
 	    <field name="team"/>
 	    <field name="company" widget="SuggestBox"/>
 	  </panel>
@@ -492,7 +492,7 @@
 	      <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
 	    </panel>
 	  <panel name="assignment" title="Assignment">
-	    <field name="user"/>
+	    <field name="user" canNew="false" canEdit="false" canView="false"/>
 	    <field name="team" onSelect="action-event-attrs-team-domain"/>
 	  </panel>
 	</form>
@@ -513,11 +513,11 @@
 	      <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
 	    </panel>
 	  <panel name="assignment" title="Assignment">
-	    <field name="user"/>
+	    <field name="user" canNew="false" canEdit="false" canView="false"/>
 	    <field name="team" onSelect="action-event-attrs-team-domain"/>
 	  </panel>
 	</form>
-    
+
 	<form   name="crm-task-lead-converted-form" title="Task" model="com.axelor.apps.crm.db.Event">
 	  <panel name="informations" title="Informations">
 	    <field name="subject" />
@@ -534,7 +534,7 @@
 	      <field name="limitDateT"/>
 	    </panel>
 	  <panel name="assignedTo" title="Assigned to">
-	    <field name="user"/>
+	    <field name="user" canNew="false" canEdit="false" canView="false"/>
 	    <field name="team" onSelect="action-event-attrs-team-domain"/>
 	  </panel>
 	</form>
@@ -543,6 +543,6 @@
 		<call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="convertLead"/>
     </action-method>
     
-    
-    
+
+
 </object-views>

@@ -129,7 +129,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 				null,
 				saleOrder.getSaleOrderSeq(),
 				saleOrder.getExternalReference(),
-				Beans.get(StockLocationService.class).getLocation(saleOrder.getCompany()),
+				Beans.get(StockLocationService.class).getDefaultStockLocation(saleOrder.getCompany()),
 				today,
 				Beans.get(PartnerPriceListService.class).getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
 				supplierPartner);

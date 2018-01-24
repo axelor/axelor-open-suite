@@ -94,17 +94,17 @@ public class ManufOrderStockMoveService {
 
 	    StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
 	    StockConfig stockConfig = stockConfigService.getStockConfig(company);
-	    StockLocation virtualLocation = stockConfigService.getProductionVirtualLocation(stockConfig);
+	    StockLocation virtualStockLocation = stockConfigService.getProductionVirtualStockLocation(stockConfig);
 
-	    StockLocation fromLocation;
+	    StockLocation fromStockLocation;
 
 		if (manufOrder.getProdProcess() != null && manufOrder.getProdProcess().getStockLocation() != null) {
-			fromLocation = manufOrder.getProdProcess().getStockLocation();
+			fromStockLocation = manufOrder.getProdProcess().getStockLocation();
 		} else {
-			fromLocation = stockConfigService.getDefaultLocation(stockConfig);
+			fromStockLocation = stockConfigService.getDefaultStockLocation(stockConfig);
 		}
 
-		return stockMoveService.createStockMove(null, null, company, null, fromLocation, virtualLocation,
+		return stockMoveService.createStockMove(null, null, company, null, fromStockLocation, virtualStockLocation,
 				null, manufOrder.getPlannedStartDateT().toLocalDate(), null, null, null);
 
 	}
@@ -143,13 +143,13 @@ public class ManufOrderStockMoveService {
 	private StockMove _createToProduceStockMove(ManufOrder manufOrder, Company company) throws AxelorException  {
 
 		StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
-		StockLocation virtualLocation = stockConfigService.getProductionVirtualLocation(stockConfigService.getStockConfig(company));
+		StockLocation virtualStockLocation = stockConfigService.getProductionVirtualStockLocation(stockConfigService.getStockConfig(company));
 
 		LocalDateTime plannedEndDateT = manufOrder.getPlannedEndDateT();
 		LocalDate plannedEndDate = plannedEndDateT != null ? plannedEndDateT.toLocalDate() : null;
 
-		StockMove stockMove = stockMoveService.createStockMove(null, null, company, null, virtualLocation,
-				manufOrder.getProdProcess().getProducedProductLocation(), null, plannedEndDate, null, null, null);
+		StockMove stockMove = stockMoveService.createStockMove(null, null, company, null, virtualStockLocation,
+				manufOrder.getProdProcess().getProducedProductStockLocation(), null, plannedEndDate, null, null, null);
 		stockMove.setTypeSelect(StockMoveRepository.TYPE_INCOMING);
 
 		return stockMove;
