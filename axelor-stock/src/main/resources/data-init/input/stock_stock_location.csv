@@ -1,4 +1,4 @@
-"importId";"name";"parentLocation.importId";"company.importId";"partner.importId";"typeSelect";"address.importId"
+"importId";"name";"parentStockLocation.importId";"company.importId";"partner.importId";"typeSelect";"address.importId"
 1;"Main Warehouse";;1;90000;1;90000
 2;"Customer";;1;90000;3;
 3;"Supplier";;1;90000;3;

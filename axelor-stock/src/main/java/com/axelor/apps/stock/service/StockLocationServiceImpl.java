@@ -167,13 +167,13 @@ public class StockLocationServiceImpl implements StockLocationService {
 		return idList;
 	}
 	
-	private void findLocationIds(List<StockLocation> childLocations) {
+	private void findLocationIds(List<StockLocation> childStockLocations) {
 		
 		Long id = null;
 		
-		childLocations = Beans.get(StockLocationRepository.class).all().filter("self.parentLocation IN ?", childLocations).fetch();
+		childStockLocations = Beans.get(StockLocationRepository.class).all().filter("self.parentStockLocation IN ?", childStockLocations).fetch();
 			
-		Iterator<StockLocation> it = childLocations.iterator();
+		Iterator<StockLocation> it = childStockLocations.iterator();
 		
 		while (it.hasNext()) {
 
@@ -185,8 +185,8 @@ public class StockLocationServiceImpl implements StockLocationService {
 			}
 		}
 
-		if(!childLocations.isEmpty()) 
-			findLocationIds(childLocations);
+		if(!childStockLocations.isEmpty()) 
+			findLocationIds(childStockLocations);
 	}
 	
 	@Override

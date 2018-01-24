@@ -23,7 +23,7 @@
 	    	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	        <field name="stockLocation" required="true" grid-view="stock-location-grid" form-view="stock-location-form" onChange="action-prod-process-record-set-second-location"/>
 	        <field name="product" canEdit="false" grid-view="product-grid" form-view="product-form"/>
-	        <field name="producedProductLocation" grid-view="stock-location-grid" form-view="stock-location-form"/>
+	        <field name="producedProductStockLocation" grid-view="stock-location-grid" form-view="stock-location-form"/>
 	        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"/>
 	        <field name="outsourcing" onChange="action-prod-process-method-change-prodprocesslist-outsourcing"/>
             <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
@@ -65,6 +65,6 @@
      </action-method>
 	
 	<action-record name="action-prod-process-record-set-second-location" model="com.axelor.apps.production.db.ProdProcess">
-		<field name="producedProductLocation" expr="eval: stockLocation" if="producedProductLocation == null"/>
+		<field name="producedProductStockLocation" expr="eval: stockLocation" if="producedProductStockLocation == null"/>
 	</action-record>
 </object-views>
