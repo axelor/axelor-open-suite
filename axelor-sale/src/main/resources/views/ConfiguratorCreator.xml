@@ -25,7 +25,7 @@
 
     	<panel>
     		<field name="name"/>
-    		<button name="configure" title="Configure" showIf="id == null" onClick="save, action-configurator-creator-method-authorize-current-user"/>
+    		<button name="configure" title="Configure" showIf="id == null" onClick="save, action-configurator-creator-method-configure"/>
     		<panel-related field="attributes" hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save"
     				colSpan="12" readonlyIf="id == null" form-view="sale-json-field-form" grid-view="sale-json-field-grid" canMove="true" orderBy="sequence"/>
     	</panel>
@@ -33,11 +33,12 @@
 		<panel sidebar="true" title="Actions" hideIf="id == null">
 			<button name="activate" title="Activate" readonlyIf="isActive || !(attributes.length &gt; 0) || !(configuratorFormulaList.length &gt; 0)" onClick="action-configurator-creator-group-activate"/>
 			<button name="test" title="Test this creator" showIf="generateProduct" readonlyIf="!isActive" onClick="action-configurator-creator-view-test"/>
-			<field name="generateProduct" widget="boolean-switch"/>
+			<field name="generateProduct" widget="boolean-switch" onChange="action-configurator-creator-attrs-hide-metafield"/>
 			<field name="isActive" hidden="true"/>
 		</panel>
 
-		<panel-related field="configuratorFormulaList" form-view="configurator-formula-form" grid-view="configurator-formula-grid" hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save"/>
+		<panel-related field="configuratorFormulaList" hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save"
+			form-view="configurator-formula-form" grid-view="configurator-formula-grid"/>
 
 		<panel title="Authorizations" hideIf="id == null">
 			<field name="authorizedUserSet" widget="TagSelect" canEdit="false" canNew="false" form-view="user-form" grid-view="user-grid" colSpan="12"/>
@@ -98,13 +99,12 @@
 
     </form>
 
-	<action-method name="action-configurator-creator-method-authorize-current-user" model="com.axelor.apps.sale.db.ConfiguratorCreator">
-		<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController" method="authorizeCurrentUser"/>
+	<action-method name="action-configurator-creator-method-configure" model="com.axelor.apps.sale.db.ConfiguratorCreator">
+		<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController" method="configure"/>
 	</action-method>
 
     <action-method name="action-configurator-creator-method-update-activate">
-        <call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
-              method="updateAndActivate"/>
+        <call class="com.axelor.apps.sale.web.ConfiguratorCreatorController" method="updateAndActivate"/>
     </action-method>
 
 	<action-group name="action-configurator-creator-group-activate">
@@ -112,14 +112,23 @@
 		<action name="action-configurator-creator-method-update-activate"/>
 	</action-group>
 
-	<action-record name="action-configurator-creator-record-desactivate"
-				   model="com.axelor.apps.sale.db.ConfiguratorCreator">
+	<action-record name="action-configurator-creator-record-desactivate" model="com.axelor.apps.sale.db.ConfiguratorCreator">
 		<field name="isActive" expr="eval: false"/>
 	</action-record>
 
     <action-view name="action-configurator-creator-view-test" title="Configurator" model="com.axelor.apps.sale.db.Configurator">
         <view type="form" name="configurator-form"/>
+        <view type="grid" name="configurator-grid"/>
         <context name="_configuratorCreator" expr="eval: __self__"/>
     </action-view>
+    
+    <action-attrs name="action-configurator-creator-attrs-hide-metafield">
+<!--     	These two lines are not working, it seems we can't set the domain in a O2M field -->
+<!--       	<attribute name="domain" for="configuratorFormulaList" expr="eval: &quot; !self.productMetaField.empty &quot;" if="generateProduct"/> -->
+<!--        	<attribute name="domain" for="configuratorFormulaList" expr="eval: &quot; !self.saleOrderLineMetaField.empty &quot;" if="!generateProduct"/> -->
+        <attribute for="configuratorFormulaList.productMetaField" name="hidden" expr="!generateProduct"/>
+        <attribute for="configuratorFormulaList.saleOrderLineMetaField" name="hidden" expr="generateProduct"/>
+        <attribute for="configuratorFormulaList.updateFromSelect" name="hidden" expr="generateProduct"/>
+    </action-attrs>
 
 </object-views>

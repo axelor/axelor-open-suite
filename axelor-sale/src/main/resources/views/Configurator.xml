@@ -7,8 +7,7 @@
         <field name="configuratorCreator"/>
     </grid>
 
-    <form name="configurator-form" title="Configurator"
-          model="com.axelor.apps.sale.db.Configurator"
+    <form name="configurator-form" title="Configurator" model="com.axelor.apps.sale.db.Configurator"
           onNew="action-configurator-group-on-new"
           onLoad="action-configurator-update-indicators,save">
         <panel readonlyIf="product">
@@ -23,7 +22,7 @@
                 </viewer>
             </field>
             <field name="configuratorCreator"
-                   onSelect="action-configurator-method-creator-domain"/>
+                   onSelect="action-configurator-method-creator-domain" onChange="save,action-configurator-update-indicators"/>
             <field name="attributes" colSpan="12"/>
         </panel>
         <panel readonly="true">
@@ -71,12 +70,13 @@
     </action-method>
 
     <action-group name="action-configurator-group-on-new">
-        <action name="action-configurator-record-on-new"/>
-        <action name="action-configurator-attrs-on-new"/>
+        <action name="action-configurator-record-on-new" if="eval: _configuratorCreator != null"/>
+        <action name="action-configurator-attrs-on-new" if="eval: _configuratorCreator != null"/>
+       	<action name="save" if="eval: _configuratorCreator != null"/>
+       	<action name="action-configurator-update-indicators" if="eval: _configuratorCreator != null"/>
     </action-group>
 
-    <action-record name="action-configurator-record-on-new"
-                   model="com.axelor.apps.sale.db.Configurator">
+    <action-record name="action-configurator-record-on-new" model="com.axelor.apps.sale.db.Configurator">
         <field name="configuratorCreator" expr="eval: _configuratorCreator"/>
     </action-record>
 

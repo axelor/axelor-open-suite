@@ -60,9 +60,17 @@ public interface ConfiguratorCreatorService {
 	 */
 	void authorizeUser(ConfiguratorCreator creator, User user);
 
-    /**
+	/**
+	 * Add required fields of Product to the formula list
+	 * @param creator
+	 * @throws AxelorException 
+	 */
+	void addRequiredFormulas(ConfiguratorCreator creator) throws AxelorException;
+	
+	 /**
      * Activates the creator and saves it.
      * @param creator
      */
 	void activate(ConfiguratorCreator creator);
+
 }

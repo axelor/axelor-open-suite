@@ -34,6 +34,8 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
 
+import wslite.json.JSONObject;
+
 public class ConfiguratorController {
 
     private ConfiguratorRepository configuratorRepository;
@@ -61,7 +63,7 @@ public class ConfiguratorController {
         try {
             configuratorService.updateIndicators(configurator, jsonAttributes, jsonIndicators);
             response.setValue("indicators", request.getContext().get("indicators"));
-        } catch (AxelorException e) {
+        } catch (Exception e) {
             TraceBackService.trace(response, e);
         }
     }
