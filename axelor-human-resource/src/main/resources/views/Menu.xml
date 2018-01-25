@@ -93,7 +93,7 @@
 		<view name="expense-form" type="form" />
 		<domain>self.user = :user_id</domain>
 		<context name="user_id" expr="eval:__user__" />
-		<context name="_payCompany" expr="eval: __user__.employee.mainEmploymentContract.payCompany ?: __user__.activeCompany"/>
+		<context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-view>
 	
 	<menuitem name="validate-expense" groups="MNGT,admins" parent="expense-root" title="Expenses to Validate" action="expense.validate" icon="fa-flag"
@@ -110,7 +110,7 @@
 		<view type="grid" name="expense-grid"/>
 		<view type="form" name="expense-form"/>
 		<domain>self.statusSelect = 3 AND self.ventilated = false</domain>
-		<context name="_payCompany" expr="eval: __user__.employee.mainEmploymentContract.payCompany ?: __user__.activeCompany"/>
+		<context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-view>
 	
 	<menuitem name="multiple-users-expense" parent="expense-root" title="Multiple users expenses" action="multiple.users.expense"  order="-3000"/>
@@ -120,7 +120,7 @@
 		<view type="form" name="expense-form"/>
 		<domain>self.multipleUsers IS TRUE</domain>
 		<context name="setMultipleUsers" expr="eval: true"/>
-		<context name="_payCompany" expr="eval: __user__.employee.mainEmploymentContract.payCompany ?: __user__.activeCompany"/>
+		<context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-view>
 	
 	<menuitem name="historic-expense" groups="MNGT,admins" parent="expense-root" title="Historic colleague Expenses" action="expense.historic"/>
@@ -253,7 +253,7 @@
 		<domain>self.isModel = false AND self.expense = true</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="false"/>
-		<context name="_payCompany" expr="eval: __user__.employee.mainEmploymentContract.payCompany ?: __user__.activeCompany"/>
+		<context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-view>
 	
 	<menuitem name="admin-root-conf-hr-config" parent="admin-root-conf"
