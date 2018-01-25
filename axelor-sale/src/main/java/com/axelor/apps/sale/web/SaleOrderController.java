@@ -533,4 +533,13 @@ public class SaleOrderController {
 	    response.setAttr("priceList", "domain", domain);
 	}
 
+    public void removeSubLines(ActionRequest request, ActionResponse response) {
+        try {
+            SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+            response.setValue("saleOrderLineList",  saleOrderService.removeSubLines(saleOrder.getSaleOrderLineList()));
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+            response.setReload(true);
+        }
+    }
 }

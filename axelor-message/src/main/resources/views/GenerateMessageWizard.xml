@@ -11,7 +11,7 @@
 	      	<field name="language" title="Language" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.base.db.Language" target-name="name"
 				   form-view="language-form" grid-view="language-grid" onChange="action-on-change-language-template"/>
 			<spacer/>
-	      	<button name="validate" title="Validate" onClick="action-generate-message-method-generate-message"/>
+	      	<button name="validate" title="Validate" onClick="save, action-generate-message-method-generate-message"/>
       	</panel>
 	</form>
 

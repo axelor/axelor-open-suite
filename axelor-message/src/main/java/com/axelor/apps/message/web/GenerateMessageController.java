@@ -101,7 +101,8 @@ public class GenerateMessageController {
 		Long objectId =  Long.parseLong( context.get("_objectId").toString() );
 		String model = (String) context.get("_templateContextModel");
 		String tag = (String) context.get("_tag");
-
+		response.setCanClose(true);
+		
 		try { response.setView( generateMessage( objectId, model, tag, template ) ); } 
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
