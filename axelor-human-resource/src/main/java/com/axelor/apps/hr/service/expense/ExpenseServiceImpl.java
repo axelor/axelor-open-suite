@@ -173,11 +173,11 @@ public class ExpenseServiceImpl implements ExpenseService {
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
 		BigDecimal taxTotal = BigDecimal.ZERO;
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
-		List<ExpenseLine> expenseLineList = expense.getGeneralExpenseLineList();
+		List<ExpenseLine> generalExpenseLineList = expense.getGeneralExpenseLineList();
 		List<ExpenseLine> kilometricExpenseLineList = expense.getKilometricExpenseLineList();
 
-		if (expenseLineList != null) {
-			for (ExpenseLine expenseLine : expenseLineList) {
+		if (generalExpenseLineList != null) {
+			for (ExpenseLine expenseLine : generalExpenseLineList) {
 				exTaxTotal = exTaxTotal.add(expenseLine.getUntaxedAmount());
 				taxTotal = taxTotal.add(expenseLine.getTotalTax());
 				inTaxTotal = inTaxTotal.add(expenseLine.getTotalAmount());
