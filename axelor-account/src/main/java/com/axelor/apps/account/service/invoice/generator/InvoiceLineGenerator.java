@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -88,11 +87,10 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	protected int discountTypeSelect;
 	protected BigDecimal exTaxTotal;
 	protected BigDecimal inTaxTotal;
-	protected Integer typeSelect = 0;
-	protected boolean isSubLine;
+	protected boolean isTitleLine;
 
 	public static final int DEFAULT_SEQUENCE = 0;
-	
+
 	protected InvoiceLineGenerator() { }
 
 	protected InvoiceLineGenerator( Invoice invoice ) {
@@ -106,7 +104,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
 
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
-			Unit unit, int sequence, boolean isTaxInvoice, boolean isSubLine) {
+			Unit unit, int sequence, boolean isTaxInvoice) {
 		
 		this(invoice);
 		
@@ -119,14 +117,13 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.isTaxInvoice = isTaxInvoice;
         this.today = Beans.get(AppAccountService.class).getTodayDate();
         this.currencyService = new CurrencyService(this.today);
-        this.isSubLine = isSubLine;
 	}
 	
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, BigDecimal priceDiscounted, String description, BigDecimal qty,
 			Unit unit, TaxLine taxLine, int sequence, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal,
-			BigDecimal inTaxTotal, boolean isTaxInvoice, boolean isSubLine) {
+			BigDecimal inTaxTotal, boolean isTaxInvoice) {
 
-        this(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice, isSubLine);
+        this(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);
 		
         this.price = price;
         this.priceDiscounted = priceDiscounted;
@@ -175,7 +172,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 		invoiceLine.setDescription(description);
 		invoiceLine.setPrice(price);
-		invoiceLine.setIsSubLine(isSubLine);
+
 		invoiceLine.setPriceDiscounted(priceDiscounted);
 		invoiceLine.setQty(qty);
 		invoiceLine.setUnit(unit);
@@ -212,7 +209,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		invoiceLine.setDiscountTypeSelect(discountTypeSelect);
 		invoiceLine.setDiscountAmount(discountAmount);
 		
-		invoiceLine.setTypeSelect(typeSelect);
+		invoiceLine.setIsTitleLine(isTitleLine);
 
 		return invoiceLine;
 
@@ -232,7 +229,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 	public void computeTotal()  {
 		
-		if(typeSelect == InvoiceLineRepository.TYPE_TITLE)  {  return;  }
+		if(isTitleLine)  {  return;  }
 		
 		BigDecimal taxRate = BigDecimal.ZERO;
 		if(taxLine != null)  {  taxRate = taxLine.getValue();  }
@@ -249,7 +246,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	
 	public void computeCompanyTotal(InvoiceLine invoiceLine) throws AxelorException  {
 		
-		if(typeSelect == InvoiceLineRepository.TYPE_TITLE)  {  return;  }
+		if(isTitleLine)  {  return;  }
 		
 		Company company = invoice.getCompany();
 

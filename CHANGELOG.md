@@ -9,9 +9,6 @@
 - Add a version management on Production process
 - Added 'sale blocking' in Partner
 - Added 'purchase blocking' in Partner
-- Pack Price Select and Qty update from packLine to subLine.
-- Implement PackLine and SubLine for InvoiceLine and StockMoveLine.
-- Added open draft email after close email wizard.
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
@@ -24,8 +21,6 @@
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
 - Fix the default amount on new invoice payment to use the amount remaining of the invoice.
 - Fix demo data en and fr on AppSuplychain to set the correct value on the field supplStockMoveMgtOnSO
-- Fix social network icons for employee
-- Added new filter for invoice project (for SaleOrderLine, PurchaseOrderLine, and ExpenseLine o2m)
 
 ## [Unreleased 4.x]
 ### Improvements
