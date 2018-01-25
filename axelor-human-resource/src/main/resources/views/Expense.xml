@@ -189,6 +189,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-expense-attrs-domain-period">
+		<attribute name="value" for="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 		<attribute name="domain" for="period" expr="eval: &quot; self.fromDate &lt;= CURRENT_DATE AND self.statusSelect = 1 AND self.allowExpenseCreation = true AND self.year.company = :_payCompany AND self.year.typeSelect = 1 &quot;"/>
 	</action-attrs>
 	

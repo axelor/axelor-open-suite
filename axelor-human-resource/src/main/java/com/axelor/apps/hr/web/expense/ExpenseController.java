@@ -166,6 +166,7 @@ public class ExpenseController {
 	@SuppressWarnings("unchecked")
 	public void editExpenseSelected(ActionRequest request, ActionResponse response){
 		Map<String, Object> expenseMap = (Map<String, Object>) request.getContext().get("expenseSelect");
+
 		Long expenseId = new Long((Integer) expenseMap.get("id"));
 		response.setView(ActionView
 				.define(I18n.get("Expense"))
@@ -176,7 +177,7 @@ public class ExpenseController {
 				.context("_showRecord", expenseId).map());
 	}
 
-	public void validateExpense(ActionRequest request, ActionResponse response) throws AxelorException{
+	public void validateExpense(ActionRequest request, ActionResponse response) {
 		
 		User user = AuthUtils.getUser();
 		Employee employee = user.getEmployee();
@@ -390,6 +391,7 @@ public class ExpenseController {
 				.define(I18n.get("Expense"))
 				.model(Expense.class.getName())
 				.add("form", "expense-form")
+				.context("_payCompany", userHrService.getPayCompany(AuthUtils.getUser()))
 				.map());
 	}
 	
