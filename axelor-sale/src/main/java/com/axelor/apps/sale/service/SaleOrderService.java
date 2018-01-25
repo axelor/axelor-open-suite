@@ -27,7 +27,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.team.db.Team;
@@ -152,7 +151,5 @@ public interface SaleOrderService {
      * @param saleOrder
      */
     void sortSaleOrderLineList(SaleOrder saleOrder);
-    
-    public List<SaleOrderLine> removeSubLines(List<SaleOrderLine> lines);
 
 }

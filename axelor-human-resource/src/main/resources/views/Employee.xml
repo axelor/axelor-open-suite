@@ -19,7 +19,7 @@
 	</grid>
 
 	<form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee"
-		onNew="action-employee-record-default" onLoad="action-employee-method-set-social-network-url" width="large">
+		onNew="action-employee-record-default" width="large">
 		<toolbar>
 			<button name="annualReport" title="Show expenses annual report" readonlyIf="!id" onClick="action-employee-view-annual-report-wizard"/>
 		</toolbar>
@@ -39,8 +39,8 @@
 					<panel colSpan="9">
 						<panel colSpan="12">
 							<field name="titleSelect" css="bold" colSpan="2"/>
-							<field name="name" title="Name"  css="bold" onChange="action-partner-record-full-name, action-employee-contact-method-set-social-network-url" colSpan="5"/>
-							<field name="firstName"  css="bold" onChange="action-partner-record-full-name, action-employee-contact-method-set-social-network-url" colSpan="5"/>
+							<field name="name" title="Name"  css="bold" onChange="action-partner-record-full-name" colSpan="5"/>
+							<field name="firstName"  css="bold" onChange="action-partner-record-full-name" colSpan="5"/>
 				            <field name="emailAddress" form-view="email-address-simple-form" canNew="true" />
 							<field name="fax" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
 							<field name="fixedPhone"  placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
@@ -238,14 +238,6 @@
 
 	<action-method name="action-employee-method-show-annual-report">
 		<call class="com.axelor.apps.hr.web.EmployeeController" method="showAnnualReport"/>
-	</action-method>
-	
-	<action-method name="action-employee-method-set-social-network-url">
-		<call class="com.axelor.apps.hr.web.EmployeeController" method="setEmployeeSocialNetworkUrl"/>
-	</action-method>
-	
-	<action-method name="action-employee-contact-method-set-social-network-url">
-		<call class="com.axelor.apps.hr.web.EmployeeController" method="setContactSocialNetworkUrl"/>
 	</action-method>
 	
 	<search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee" title="Employee filters">

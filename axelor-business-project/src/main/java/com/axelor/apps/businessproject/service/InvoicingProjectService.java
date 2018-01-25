@@ -39,6 +39,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PartnerPriceListRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
@@ -55,6 +56,7 @@ import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
@@ -185,7 +187,7 @@ public class InvoicingProjectService {
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName(),
 				saleOrderLine.getDescription(), saleOrderLine.getQty(), saleOrderLine.getUnit(),
-				priority, false, saleOrderLine, null, null, false)  {
+				priority, false, saleOrderLine, null, null)  {
 
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
@@ -220,7 +222,7 @@ public class InvoicingProjectService {
 
 		InvoiceLineGeneratorSupplyChain invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, purchaseOrderLine.getProductName(),
 				purchaseOrderLine.getDescription(), purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(),
-				priority, false, null, purchaseOrderLine, null, false)  {
+				priority, false, null, purchaseOrderLine, null)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 
@@ -262,7 +264,7 @@ public class InvoicingProjectService {
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, project.getName(), project.getPrice(),
 					project.getPrice(), null, project.getQty(), project.getUnit(), null, priority, BigDecimal.ZERO, IPriceListLine.AMOUNT_TYPE_NONE,
-					project.getPrice().multiply(project.getQty()), null,false, false)  {
+					project.getPrice().multiply(project.getQty()), null,false)  {
 
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
@@ -322,32 +324,32 @@ public class InvoicingProjectService {
 		if(project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_FLAT_RATE || project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_TIME_BASED)  {
 			if (invoicingProject.getDeadlineDate() != null){
 				invoicingProject.getSaleOrderLineSet().addAll(Beans.get(SaleOrderLineRepository.class)
-						.all().filter("self.saleOrder.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.saleOrder.creationDate < ?2 AND (self.saleOrder.statusSelect = 3 OR self.saleOrder.statusSelect = 4)", project,invoicingProject.getDeadlineDate()).fetch());
+						.all().filter("self.saleOrder.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.saleOrder.creationDate < ?2", project,invoicingProject.getDeadlineDate()).fetch());
 				
 				invoicingProject.getPurchaseOrderLineSet().addAll(Beans.get(PurchaseOrderLineRepository.class)
-						.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.purchaseOrder.orderDate < ?2 AND (self.purchaseOrder.statusSelect = 3 OR self.purchaseOrder.statusSelect = 4)", project, invoicingProject.getDeadlineDate()).fetch());
+						.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.purchaseOrder.orderDate < ?2", project, invoicingProject.getDeadlineDate()).fetch());
 				
 				invoicingProject.getLogTimesSet().addAll(Beans.get(TimesheetLineRepository.class)
 						.all().filter("self.timesheet.statusSelect = 3 AND self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.date < ?2", project,invoicingProject.getDeadlineDate()).fetch());
 				
 				invoicingProject.getExpenseLineSet().addAll(Beans.get(ExpenseLineRepository.class)
-						.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.expenseDate < ?2 AND (self.expense.statusSelect = 3 OR self.expense.statusSelect = 4)", project, invoicingProject.getDeadlineDate()).fetch());
+						.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.expenseDate < ?2", project, invoicingProject.getDeadlineDate()).fetch());
 				
 				invoicingProject.getElementsToInvoiceSet().addAll(Beans.get(ElementsToInvoiceRepository.class)
 						.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.date < ?2", project,invoicingProject.getDeadlineDate()).fetch());
 			}
 			else {
 				invoicingProject.getSaleOrderLineSet().addAll(Beans.get(SaleOrderLineRepository.class)
-						.all().filter("self.saleOrder.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.saleOrder.statusSelect = 3 OR self.saleOrder.statusSelect = 4)", project).fetch());
+						.all().filter("self.saleOrder.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).fetch());
 				
 				invoicingProject.getPurchaseOrderLineSet().addAll(Beans.get(PurchaseOrderLineRepository.class)
-						.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.purchaseOrder.statusSelect = 3 OR self.purchaseOrder.statusSelect = 4)", project).fetch());
+						.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).fetch());
 				
 				invoicingProject.getLogTimesSet().addAll(Beans.get(TimesheetLineRepository.class)
 						.all().filter("self.timesheet.statusSelect = 3 AND self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).fetch());
 				
 				invoicingProject.getExpenseLineSet().addAll(Beans.get(ExpenseLineRepository.class)
-						.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.expense.statusSelect = 3 OR self.expense.statusSelect = 4)", project).fetch());
+						.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).fetch());
 				
 				invoicingProject.getElementsToInvoiceSet().addAll(Beans.get(ElementsToInvoiceRepository.class)
 						.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).fetch());
