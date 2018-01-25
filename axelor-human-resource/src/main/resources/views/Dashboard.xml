@@ -47,7 +47,6 @@
 		<view type="form" name="expense-form"/>
 		  <domain>self.user.id = :userId</domain>
 		 <context name="userId" expr="eval: __user__.id"/>
-		 <context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-view>
 	
 	<action-view name="hr.dashboard.my.leave.requests" title="My leave requests" model="com.axelor.apps.hr.db.LeaveRequest">

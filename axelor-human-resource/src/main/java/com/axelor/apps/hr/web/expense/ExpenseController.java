@@ -146,7 +146,6 @@ public class ExpenseController {
 					.model(Expense.class.getName())
 					.add("form", "expense-form")
 					.param("forceEdit", "true")
-					.context("_payCompany", userHrService.getPayCompany(user))
 					.context("_showRecord", String.valueOf(expenseList.get(0).getId())).map());
 			
 		} else {
@@ -175,7 +174,6 @@ public class ExpenseController {
 				.add("form", "expense-form")
 				.param("forceEdit", "true")
 				.domain("self.id = " + expenseId)
-				.context("_payCompany", userHrService.getPayCompany(AuthUtils.getUser()))
 				.context("_showRecord", expenseId).map());
 	}
 
@@ -187,8 +185,7 @@ public class ExpenseController {
 		ActionViewBuilder actionView = ActionView.define(I18n.get("Expenses to Validate"))
 				.model(Expense.class.getName())
 				.add("grid","expense-validate-grid")
-				.add("form","expense-form")
-				.context("_payCompany", userHrService.getPayCompany(user));
+				.add("form","expense-form");
 
 		Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
 
@@ -203,8 +200,7 @@ public class ExpenseController {
 		ActionViewBuilder actionView = ActionView.define(I18n.get("Historic colleague Expenses"))
 					.model(Expense.class.getName())
 					.add("grid","expense-grid")
-					.add("form","expense-form")
-					.context("_payCompany", userHrService.getPayCompany(user));
+					.add("form","expense-form");
 
 		actionView.domain("self.company = :_activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
 				.context("_activeCompany", user.getActiveCompany());
@@ -226,8 +222,7 @@ public class ExpenseController {
 		ActionViewBuilder actionView = ActionView.define(I18n.get("Expenses to be Validated by your subordinates"))
 				   	.model(Expense.class.getName())
 				   	.add("grid","expense-grid")
-				   	.add("form","expense-form")
-					.context("_payCompany", userHrService.getPayCompany(user));
+				   	.add("form","expense-form");
 		
 		String domain = "self.user.employee.manager.employee.manager = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
 
