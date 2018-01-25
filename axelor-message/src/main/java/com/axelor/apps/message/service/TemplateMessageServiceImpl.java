@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
@@ -74,16 +75,16 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	}
 
 	@Override
-	public Message generateMessage(Model model, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
+	public Message generateMessage(Model model, Template template, MailAccount emailAccount) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
 		Class<?> klass = EntityHelper.getEntityClass(model);
-		return generateMessage( model.getId(), klass.getCanonicalName(), klass.getSimpleName(), template);
+		return generateMessage( model.getId(), klass.getCanonicalName(), klass.getSimpleName(), template, emailAccount);
 		
 	}
 	
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Message generateMessage( long objectId, String model, String tag, Template template ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
+	public Message generateMessage( long objectId, String model, String tag, Template template, MailAccount emailAccount ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
 		if (!model.equals(template.getMetaModel().getFullName())) {
 			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.TEMPLATE_SERVICE_3), template.getMetaModel().getFullName());
@@ -147,13 +148,13 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 			log.debug( "BCC ::: {}", bccRecipients );
 		}
 		
-		mediaTypeSelect = template.getMediaTypeSelect();
+		mediaTypeSelect = this.getMediaTypeSelect(template);
 		log.debug( "Media ::: {}", mediaTypeSelect );
 		log.debug( "Content ::: {}", content );
 		
 		Message message = messageService.createMessage( model, Long.valueOf(objectId).intValue(), subject,  content, getEmailAddress(from), getEmailAddresses(replyToRecipients),
 				getEmailAddresses(toRecipients), getEmailAddresses(ccRecipients), getEmailAddresses(bccRecipients),
-				null, addressBlock, mediaTypeSelect );	
+				null, addressBlock, mediaTypeSelect, emailAccount );	
 		
 		message = Beans.get(MessageRepository.class).save(message);
 		
@@ -161,11 +162,16 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 		
 		return message;
 	}
+	
+	@Override
+	public Integer getMediaTypeSelect(Template template) {
+		return template.getMediaTypeSelect();
+	}
 
 	@Override
-	public Message generateAndSendMessage(Model model, Template template) throws MessagingException, IOException, AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
+	public Message generateAndSendMessage(Model model, Template template, MailAccount emailAccount) throws MessagingException, IOException, AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
 		
-		Message message = this.generateMessage(model, template);
+		Message message = this.generateMessage(model, template, emailAccount);
 		messageService.sendMessage(message);
 	
 		return message;

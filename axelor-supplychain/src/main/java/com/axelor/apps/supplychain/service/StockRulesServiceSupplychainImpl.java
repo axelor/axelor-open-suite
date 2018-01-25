@@ -96,7 +96,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 
 				Template template = templateRepo.all().filter("self.metaModel.fullName = ?1 AND self.isSystem != true",  StockRules.class.getName()).fetchOne();
 				try {
-					Message message = templateMessageService.generateMessage(stockRules, template);
+					Message message = templateMessageService.generateMessage(stockRules, template, null);
 					messageRepo.save(message);
 //					if (JPA.em().getTransaction().isActive()) {
 //						JPA.em().getTransaction().commit();

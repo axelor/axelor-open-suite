@@ -29,6 +29,7 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.apps.marketing.exception.IExceptionMessage;
+import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
@@ -52,16 +53,17 @@ public class CampaignServiceImpl implements CampaignService {
 	@Inject
 	private TargetListService targetListService;
 	
-	
 	public MetaFile sendEmail(Campaign campaign) {
 		
 		String errorPartners = "";
 		String errorLeads = "";
 			
 		if(campaign.getPartnerTemplate() != null){
-			errorPartners = sendToPartners(campaign.getPartnerSet(), campaign.getPartnerTemplate());
-		} else if(campaign.getLeadTemplate() != null) {
-			errorLeads = sendToLeads(campaign.getLeads(), campaign.getLeadTemplate());
+			errorPartners = sendToPartners(campaign.getPartnerSet(), campaign.getPartnerTemplate(), campaign.getEmailAccount());
+		} 
+		
+		if(campaign.getLeadTemplate() != null) {
+			errorLeads = sendToLeads(campaign.getLeadSet(), campaign.getLeadTemplate(), campaign.getEmailAccount());
 		}
 	
 		if (errorPartners.isEmpty() && errorLeads.isEmpty()) {
@@ -71,15 +73,14 @@ public class CampaignServiceImpl implements CampaignService {
 		return generateLog(errorPartners, errorLeads, campaign.getEmailLog(), campaign.getId());
 	}
 
-	private String sendToPartners(Set<Partner> partnerSet,
-			Template template) {
+	private String sendToPartners(Set<Partner> partnerSet, Template template, MailAccount emailAccount) {
 		
 		StringBuilder errors = new StringBuilder();
 		
 		for (Partner partner : partnerSet) {
 			
 			try {
-				templateMessageService.generateAndSendMessage(partner, template);
+				templateMessageService.generateAndSendMessage(partner, template, emailAccount);
 			} catch (ClassNotFoundException | InstantiationException
 					| IllegalAccessException | MessagingException | IOException
 					| AxelorException e) {
@@ -92,14 +93,14 @@ public class CampaignServiceImpl implements CampaignService {
 		return errors.toString();
 	}
 	
-	private String sendToLeads(Set<Lead> leadSet, Template template) {
+	private String sendToLeads(Set<Lead> leadSet, Template template, MailAccount emailAccount) {
 		
 		StringBuilder errors = new StringBuilder();
 		
 		for (Lead lead : leadSet) {
 			
 			try {
-				templateMessageService.generateAndSendMessage(lead, template);
+				templateMessageService.generateAndSendMessage(lead, template, emailAccount);
 			} catch (ClassNotFoundException | InstantiationException
 					| IllegalAccessException | MessagingException | IOException
 					| AxelorException e) {

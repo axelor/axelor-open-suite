@@ -18,6 +18,7 @@
   	<many-to-many name="partners" ref="com.axelor.apps.base.db.Partner" title="Partners" />
   	<many-to-one name="eventUser" ref="com.axelor.auth.db.User" title="Assigned to"/>
   	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
+  	<many-to-one name="emailAccount" ref="com.axelor.apps.message.db.MailAccount" title="Email Account"/>
   	<string name="subject" title="Subject"/>
   	<integer name="eventType" title="Event type" selection="icalendar.event.type.select"/>
   	<datetime name="eventStartDateTime" title="Start date time"/>
