@@ -119,14 +119,14 @@
 		  <field name="statusSelect" colSpan="6"/>    
 		</panel>
 	
-		<panel sidebar="true" name="followUp" title="Follow-up" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
-			<field name="user" canNew="false" canEdit="false" canView="false" colSpan="6" form-view="user-form" grid-view="user-grid"/>
-			<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
-			<button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
-			<field name="createdBy" colSpan="6"/>
-			<field name="createdOn" colSpan="6"/>
-			<field name="contactDate" colSpan="6"/>
-			<field name="lostReason" colSpan="12" canNew="true"/>
+		<panel sidebar="true" name="followUp" title="Follow-up" colSpan="12">
+			<field name="user" canNew="false" canEdit="false" canView="false" colSpan="6" form-view="user-form" grid-view="user-grid" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
+			<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
+			<button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
+			<field name="createdBy" colSpan="6" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
+			<field name="createdOn" colSpan="6" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
+			<field name="contactDate" colSpan="6" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
+			<field name="lostReason" colSpan="12" canNew="true" readonlyIf="statusSelect == 4" requiredIf="statusSelect == 6"/>
 		</panel>
 		
 		<panel sidebar="true" name="marketing" title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 6" colSpan="12">
