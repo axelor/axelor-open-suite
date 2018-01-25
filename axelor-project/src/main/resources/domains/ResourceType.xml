@@ -5,7 +5,7 @@
 
 	<module name="project" package="com.axelor.apps.project.db"/>
 	
-	<entity name="ResourceCategory">
+	<entity name="ResourceType">
   		<string name="name" required="true"/>
 	</entity>
  
