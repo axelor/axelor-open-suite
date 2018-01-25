@@ -102,6 +102,9 @@
 
 	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
 	<many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"/>
+	<string name="trainingName" title="Training name"/>
+	<string name="trainingDescription" title="Description" large="true" />
+	<one-to-many name="customerTrainingSessionList" ref="CustomerTrainingSession" title="Sessions" mappedBy="saleOrder"/>
 
  	<unique-constraint columns="saleOrderSeq,company"/>
 

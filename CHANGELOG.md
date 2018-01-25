@@ -9,6 +9,8 @@
 - Add a version management on Production process
 - Added 'sale blocking' in Partner
 - Added 'purchase blocking' in Partner
+- Pack Price Select and Qty update from packLine to subLine.
+- Implement PackLine and SubLine for InvoiceLine and StockMoveLine.
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
