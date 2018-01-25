@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.employee;
 import java.math.BigDecimal;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.Employee;
@@ -36,5 +37,7 @@ public interface EmployeeService extends UserService{
 	public BigDecimal getDaysWorksInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate) throws AxelorException;
 	
 	public BigDecimal getDaysWorkedInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate) throws AxelorException;
+	
+	public Map<String,String> getSocialNetworkUrl(String name,String firstName);
 
 }
