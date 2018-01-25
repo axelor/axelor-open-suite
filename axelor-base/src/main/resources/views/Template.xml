@@ -29,13 +29,13 @@
 		<panel name="recipientAddress" title="Recipient address" showIf="mediaTypeSelect == 1">
 			<field name="addressBlock" colSpan="12" widget="html" x-lite="false" height="5" showTitle="false"/>
 		</panel>
-        <panel name="from" title="From" showIf="mediaTypeSelect == 2">
+        <panel name="from" title="From" showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4">
         	<field name="fromAdress" height="2" colSpan="12"/>
         </panel>
-        <panel name="replyTo" title="Reply to" showIf="mediaTypeSelect == 2">
+        <panel name="replyTo" title="Reply to" showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4">
         	<field name="replyToRecipients" height="2" colSpan="12"/>
         </panel>
-        <panel name="recipients" title="Recipients" showIf="mediaTypeSelect == 2">
+        <panel name="recipients" title="Recipients" showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4">
         	<field name="toRecipients" height="2" colSpan="12"/>
         	<field name="ccRecipients" height="2" colSpan="12"/>
         	<field name="bccRecipients" height="2" colSpan="12"/>

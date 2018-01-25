@@ -39,6 +39,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
@@ -159,7 +160,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 	
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Message generateMessage( long objectId, String model, String tag, Template template ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
+	public Message generateMessage( long objectId, String model, String tag, Template template, MailAccount emailAccount ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
 		if (!model.equals(template.getMetaModel().getFullName())) {
 			throw new AxelorException(IException.INCONSISTENCY, I18n.get(com.axelor.apps.message.exception.IExceptionMessage.TEMPLATE_SERVICE_3), template.getMetaModel().getFullName());
@@ -221,13 +222,13 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 			logger.debug( "BCC ::: {}", bccRecipients );
 		}
 		
-		mediaTypeSelect = template.getMediaTypeSelect();
+		mediaTypeSelect = this.getMediaTypeSelect(template);
 		logger.debug( "Media ::: {}", mediaTypeSelect );
 		logger.debug( "Content ::: {}", content );
 		
 		Message message = messageService.createMessage( model, Long.valueOf(objectId).intValue(), subject,  content, getEmailAddress(from), getEmailAddresses(replyToRecipients),
 				getEmailAddresses(toRecipients), getEmailAddresses(ccRecipients), getEmailAddresses(bccRecipients),
-				null, addressBlock, mediaTypeSelect );	
+				null, addressBlock, mediaTypeSelect, emailAccount );	
 		
 		message = Beans.get(MessageRepository.class).save(message);
 		

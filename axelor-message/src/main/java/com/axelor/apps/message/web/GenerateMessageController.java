@@ -115,7 +115,7 @@ public class GenerateMessageController {
 		LOG.debug("model : {} ", model);
 		LOG.debug("tag : {} ", tag);
 		
-		Message message = templateMessageService.generateMessage(objectId, model, tag, template);
+		Message message = templateMessageService.generateMessage(objectId, model, tag, template, null);
 
 		return ActionView.define( I18n.get(IExceptionMessage.MESSAGE_3) )
 				.model( Message.class.getName() )

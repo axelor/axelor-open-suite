@@ -24,6 +24,7 @@ import java.util.Set;
 import javax.mail.MessagingException;
 
 import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaAttachment;
@@ -34,7 +35,7 @@ public interface MessageService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> replytoEmailAddressList, List<EmailAddress> toEmailAddressList, 
-			List<EmailAddress> ccEmailAddressList, List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect);
+			List<EmailAddress> ccEmailAddressList, List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect, MailAccount emailAccount);
 
 	@Transactional(rollbackOn = Exception.class)
 	public void attachMetaFiles( Message message, Set<MetaFile> metaFiles );
