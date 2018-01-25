@@ -9,22 +9,32 @@
 
 	<form name="stock-config-form" title="Stock configuration" model="com.axelor.apps.stock.db.StockConfig" onNew="action-stock-config-record-default" width="large">
 	  <panel name="main" >
-	    <field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
+	    <field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	  </panel>
-	  <panel name="virtualLocationsInformations" title="Virtual locations informations">
-	    <field name="customerVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="location-form" grid-view="location-grid"/>
-	    <field name="supplierVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="location-form" grid-view="location-grid"/>
-	    <field name="inventoryVirtualLocation" domain="self.typeSelect = 3" colSpan="4" form-view="location-form" grid-view="location-grid"/>
+	  <panel name="virtualStockLocationsInformations" title="Virtual stock locations informations">
+	    <field name="customerVirtualStockLocation" domain="self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
+	    <field name="supplierVirtualStockLocation" domain="self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
+	    <field name="inventoryVirtualStockLocation" domain="self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
+		  <field name="productionVirtualStockLocation" domain="self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 	  </panel>
 	  <panel name="stockMoveInformations" title="Stock move informations">
-	    <field name="hasOutSmForStorableProduct"/>
-	    <field name="hasOutSmForNonStorableProduct"/>
-	    <field name="hasInSmForStorableProduct"/>
-	    <field name="hasInSmForNonStorableProduct"/>
+		  <panel colSpan="12">
+			  <field name="receiptDefaultStockLocation" domain="self.company = company" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+			  <field name="pickupDefaultStockLocation" domain="self.company = company" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+			  <field name="wasteStockLocation" domain="self.company = company" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
+			  <field name="componentDefaultStockLocation" domain="self.company = company" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
+			  <field name="finishedProductsDefaultStockLocation" domain="self.company = company" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
+		  </panel>
 	  </panel>
+		<panel>
+            <field name="defaultStockLocation" domain="self.company = company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
+		</panel>
 	  <panel name="customsInformation" title="Customs">
 	  	<field name="customsWeightUnit" domain="self.unitTypeSelect = 1"/>
 	  </panel>
+      <panel title="Logistical forms">
+        <field name="realizeStockMovesUponParcelPalletCollection" />
+      </panel>
 	</form>
 	
 	<action-record name="action-stock-config-record-default" model="com.axelor.apps.stock.db.StockConfig">

@@ -6,8 +6,7 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Region" lang="java" cachable="true">
-     
-    <integer name="importId"/>
+
     <string name="name" title="Region name" required="true" unique="true"/>
     <string name="code" title="Region code" required="true" unique="true" />
     <many-to-one name="country" ref="Country" title="Country"/>

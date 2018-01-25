@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,7 +30,7 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
-import com.axelor.apps.bankpayment.service.bankorder.file.cfonb.CfonbToolService;
+import com.axelor.apps.bankpayment.service.cfonb.CfonbToolService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.exception.AxelorException;
@@ -156,7 +156,9 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 	 */
 	protected String getSenderC13Area()  {
 	
-		return this.bankOrderDate.format(DateTimeFormatter.ofPattern("ddMMy"));
+		int year = this.bankOrderDate.getYear();
+		
+		return this.bankOrderDate.format(DateTimeFormatter.ofPattern("ddMM")) + (String.valueOf(year).substring(3));
 	
 	}
 
@@ -205,7 +207,6 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS), IException.MISSING_FIELD);
 		}
 		return bankOrderLine.getReceiverBankDetails().getBankAddress().getAddress();
-		
 	}
 	
 	protected String getDetailD2Area(BankOrderLine bankOrderLine)  {
@@ -465,7 +466,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			totalRecord += cfonbToolService.createZone(I18n.get("F - Receiver label"), bankOrderLine.getPaymentReasonLine1(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_ALPHA_NUMERIC, 31);
 			
 			// Zone G1 : Code établissement de la banque qui tient le compte du bénéficiaire 
-			totalRecord += cfonbToolService.createZone(I18n.get("G1 - Code établissement de la banque"), receiverBankDetails.getBankCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 5);
+			totalRecord += cfonbToolService.createZone(I18n.get("G1 - Bank establisment code"), receiverBankDetails.getBankCode(), cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 5);
 			
 			// Zone G2 : Zone réservée 
 			totalRecord += cfonbToolService.createZone("G2", "", cfonbToolService.STATUS_NOT_USED, cfonbToolService.FORMAT_ALPHA_NUMERIC, 6);

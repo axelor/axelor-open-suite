@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,41 +17,55 @@
  */
 package com.axelor.apps.base.service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 
+import java.time.LocalDate;
+import java.util.List;
 
 public class BlockingService {
 
-	private LocalDate today;
+    protected LocalDate today;
 
-	@Inject
-	public BlockingService() {
+    public BlockingService() {
+        this.today = Beans.get(AppBaseService.class).getTodayDate();
+    }
 
-		this.today = Beans.get(AppBaseService.class).getTodayDate();
-	}
+    /**
+     * Checks if {@code partner} is blocked for the {@code blockingType}
+     *
+     * @param partner      Partner to check blocking
+     * @param company      Company associated with the blocking
+     * @param blockingType Type of blocking
+     * @return blocking if partner is blocked for provided company and blocking type, null otherwise
+     */
+    public Blocking getBlocking(Partner partner, Company company, int blockingType) {
+        List<Blocking> blockings = partner.getBlockingList();
 
-
-	public List<Blocking> getBlockings(Partner partner, Company company, int blockingType)  {
-        if (partner != null && company != null && partner.getBlockingList() != null) {
-            List<Blocking> blockings = new ArrayList<Blocking>();
-            for (Blocking blocking : partner.getBlockingList()) {
-                if (blocking.getCompanySet().contains(company) && blocking.getBlockingSelect() == blockingType) {
-                    blockings.add(blocking);
-                }
+        for (Blocking blocking : blockings) {
+            if (blocking.getCompanySet().contains(company) && blocking.getBlockingSelect().equals(blockingType) && blocking.getBlockingToDate().compareTo(today) >= 0) {
+                return blocking;
             }
-
-            return blockings;
         }
 
         return null;
-	}
+    }
+
+    /**
+     * @param company
+     * @param blockingType
+     * @return the query to get blocked partners ids for the given company and blocking type
+     */
+    public String listOfBlockedPartner(Company company, int blockingType) {
+        return "SELECT DISTINCT partner.id " +
+				"FROM Partner partner " +
+				"LEFT JOIN partner.blockingList blocking " +
+				"LEFT JOIN blocking.companySet company " +
+				"WHERE blocking.blockingSelect =" + blockingType +
+				" AND blocking.blockingToDate >= :__date__ " +
+				"AND company.id = " + company.getId();
+    }
 }

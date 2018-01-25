@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,23 +23,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.i18n.I18n;
-
-import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.inject.Beans;
-
+import com.axelor.apps.base.db.PrintingSettings;
+import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -48,10 +49,13 @@ import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
@@ -106,7 +110,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 		
 		String name = saleOrderService.getFileName(saleOrder);
 		
@@ -127,7 +131,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 
 		String name = saleOrderService.getFileName(saleOrder);
 
@@ -144,7 +148,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 
 		String name = saleOrderService.getFileName(saleOrder);
 		
@@ -163,7 +167,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 
 		String name = saleOrderService.getFileName(saleOrder);
 		
@@ -215,7 +219,7 @@ public class SaleOrderController {
 		SaleOrder context = request.getContext().asType(SaleOrder.class);
 		context = saleOrderRepo.find(context.getId());
 		response.setView(ActionView
-	            .define("Sale Order")
+	            .define("Sale order")
 	            .model(SaleOrder.class.getName())
 	            .add("form", "sale-order-form-wizard")
 	            .context("_idCopy", context.getId().toString())
@@ -235,14 +239,18 @@ public class SaleOrderController {
 
 	public void createSaleOrder(ActionRequest request, ActionResponse response)  {
 		SaleOrder origin = saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
-		SaleOrder copy = saleOrderService.createSaleOrder(origin);
-		response.setValues(copy);
+		if (origin != null) {
+			SaleOrder copy = saleOrderService.createSaleOrder(origin);
+			response.setValues(copy);
+		}
 	}
 
 	public void createTemplate(ActionRequest request, ActionResponse response)  {
-		if (request.getContext().get("_idCopy") != null) {
-			SaleOrder origin = saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
-			SaleOrder copy = saleOrderService.createTemplate(origin);
+	    Context context = request.getContext();
+	    if (context.get("_idCopy") != null) {
+	    	String idCopy = context.get("_idCopy").toString();
+			SaleOrder origin = saleOrderRepo.find(Long.parseLong(idCopy));
+			SaleOrder copy = saleOrderService.createSaleOrder(origin);
 			response.setValues(copy);
 		}
 	}
@@ -263,18 +271,24 @@ public class SaleOrderController {
 		List<SaleOrder> saleOrderList = new ArrayList<SaleOrder>();
 		List<Long> saleOrderIdList = new ArrayList<Long>();
 		boolean fromPopup = false;
+		String lineToMerge;
+		if (request.getContext().get("saleQuotationToMerge") != null){
+			lineToMerge = "saleQuotationToMerge";
+		} else {
+			lineToMerge = "saleOrderToMerge";
+		}
 		
-		if (request.getContext().get("saleOrderToMerge") != null){
+		if (request.getContext().get(lineToMerge) != null){
 			
-			if (request.getContext().get("saleOrderToMerge") instanceof List){
+			if (request.getContext().get(lineToMerge) instanceof List){
 				//No confirmation popup, sale orders are content in a parameter list
-				List<Map> saleOrderMap = (List<Map>)request.getContext().get("saleOrderToMerge");
+				List<Map> saleOrderMap = (List<Map>)request.getContext().get(lineToMerge);
 				for (Map map : saleOrderMap) {
 					saleOrderIdList.add(new Long((Integer)map.get("id")));
 				}
 			} else {
 				//After confirmation popup, sale order's id are in a string separated by ","
-				String saleOrderIdListStr = (String)request.getContext().get("saleOrderToMerge");
+				String saleOrderIdListStr = (String)request.getContext().get(lineToMerge);
 				for (String saleOrderId : saleOrderIdListStr.split(",")) {
 					saleOrderIdList.add(new Long(saleOrderId));
 				}
@@ -396,7 +410,7 @@ public class SaleOrderController {
 				confirmView.context("contextTeamToCheck", "true");
 			}
 
-			confirmView.context("saleOrderToMerge", Joiner.on(",").join(saleOrderIdList));
+			confirmView.context(lineToMerge, Joiner.on(",").join(saleOrderIdList));
 
 			response.setView(confirmView.map());
 
@@ -408,7 +422,7 @@ public class SaleOrderController {
 			if (saleOrder != null){
 				//Open the generated sale order in a new tab
 				response.setView(ActionView
-						.define("Sale Order")
+						.define("Sale order")
 						.model(SaleOrder.class.getName())
 						.add("grid", "sale-order-grid")
 						.add("form", "sale-order-form")
@@ -454,4 +468,69 @@ public class SaleOrderController {
 				.getDefaultCompanyBankDetails(company, paymentMode, partner);
 		response.setValue("companyBankDetails", defaultBankDetails);
 	}
+
+	public void enableEditOrder(ActionRequest request, ActionResponse response) {
+	    SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(request.getContext().asType(SaleOrder.class).getId());
+
+		try {
+			Beans.get(SaleOrderService.class).enableEditOrder(saleOrder);
+			response.setReload(true);
+		} catch (Exception e) {
+		    TraceBackService.trace(response, e);
+		}
+	}
+
+    public void validateChanges(ActionRequest request, ActionResponse response) {
+        try {
+            SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);
+            SaleOrder saleOrder = saleOrderRepo.find(saleOrderView.getId());
+            saleOrderService.validateChanges(saleOrder, saleOrderView);
+            response.setValue("orderBeingEdited", false);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+            response.setReload(true);
+        }
+    }
+
+	public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		PrintingSettings printingSettings = saleOrder.getPrintingSettings();
+
+		List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(saleOrder.getTradingName(), saleOrder.getCompany());
+		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
+			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
+		}
+		String domain = !printingSettingsList.isEmpty() ? String.format("self.id IN (%s)", StringTool.getIdListString(printingSettingsList)) : null;
+
+		response.setValue("printingSettings", printingSettings);
+		response.setAttr("printingSettings", "domain", domain);
+	}
+
+	/**
+	 * Called from sale order form view on partner change.
+	 * Get the default price list for the sale order.
+	 * Call {@link PartnerPriceListService#getDefaultPriceList(Partner, int)}.
+	 * @param request
+	 * @param response
+	 */
+	public void fillPriceList(ActionRequest request, ActionResponse response) {
+	    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+	    response.setValue("priceList",
+				saleOrder.getClientPartner() != null ? Beans.get(PartnerPriceListService.class)
+						.getDefaultPriceList(saleOrder.getClientPartner(), PriceListRepository.TYPE_SALE) : null
+		);
+    }
+
+	/**
+	 * Called from sale order view on price list select.
+	 * Call {@link PartnerPriceListService#getPriceListDomain(Partner, int)}.
+	 * @param request
+	 * @param response
+	 */
+	public void changePriceListDomain(ActionRequest request, ActionResponse response) {
+	    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+	    String domain = Beans.get(PartnerPriceListService.class).getPriceListDomain(saleOrder.getClientPartner(), PriceListRepository.TYPE_SALE);
+	    response.setAttr("priceList", "domain", domain);
+	}
+
 }

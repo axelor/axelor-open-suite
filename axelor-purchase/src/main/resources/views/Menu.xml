@@ -222,7 +222,17 @@
 			
 	<menuitem name="sc-root-purchase-conf" parent="sc-root-purchase"
 		title="Configuration" order="300"/>
-		
+
+	<menuitem name="sc-root-purchase-conf-partner-price-list" parent="sc-root-purchase-conf"
+		title="Partner price lists" action="sc.root.purchase.conf.partner.price.list" />
+
+	<action-view name="sc.root.purchase.conf.partner.price.list" title="Partner price lists"
+		model="com.axelor.apps.base.db.PartnerPriceList" >
+		<view type="grid" name="partner-price-list-grid" />
+		<view type="form" name="purchase-partner-price-list-form" />
+		<domain>self.typeSelect = 2</domain>
+	</action-view>
+
 	<menuitem name="sc-root-purchase-conf-price-list" parent="sc-root-purchase-conf"
 		title="Price lists" action="sc.root.purchase.conf.price.list" />
 
@@ -247,10 +257,10 @@
 
 	<menuitem name="top-menu-purchase" title="Purchases" order="3" top="true" left="false" if="__config__.app.isApp('purchase')"/>
 	
-	<menuitem name="top-menu-purchase-quotations" title="Quotations" top="true"
+	<menuitem name="top-menu-purchase-quotations" title="Sale quotations" top="true"
 		 action="top.menu.purchase.quotations" parent="top-menu-purchase"/>
 		
-	<action-view name="top.menu.purchase.quotations" title="Quotations"
+	<action-view name="top.menu.purchase.quotations" title="Sale quotations"
 		model="com.axelor.apps.purchase.db.PurchaseOrder" >
 		<view type="cards" name="purchase-order-cards" />
 		<view type="grid" name="purchase-order-quotation-grid" />
@@ -292,9 +302,9 @@
 	</action-view>
 	
 	<menuitem name="menu-purchase-dashboard-3" parent="sc-root-purchase-report"  
-		title="Purchase Orders"  action="purchase.purchase.dashboard.3" />	
+		title="Purchase orders"  action="purchase.purchase.dashboard.3" />
 		
-	<action-view name="purchase.purchase.dashboard.3" title="Purchase Orders Details">
+	<action-view name="purchase.purchase.dashboard.3" title="Purchase orders Details">
 		<view type="dashboard" name="purchase.dashboard.3" />	    
 	</action-view>
 	

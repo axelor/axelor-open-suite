@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,7 +27,12 @@ public class QualityControlManagementRepository extends QualityControlRepository
 	
 	@Inject
 	private SequenceService sequenceService;
-	
+
+	/**
+	 * Generate and set sequence in reference with predefined prefix.
+	 * @param qualityControl  Overridden quality control object to set reference on onSave event.
+	 * 
+	 */
 	@Override
 	public QualityControl save(QualityControl qualityControl) {
 		

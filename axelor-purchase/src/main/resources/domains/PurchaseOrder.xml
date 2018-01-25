@@ -6,8 +6,7 @@
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
   <entity name="PurchaseOrder" lang="java">
-  
-  	<integer name="importId" />
+
   	<string name="fullName" namecolumn="true">
   	<![CDATA[
   		if(purchaseOrderSeq==null && supplierPartner == null){
@@ -62,13 +61,16 @@
   	
   	<string name="priceRequest" title="Message for requesting prices" large="true"/>
 
+	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
+	<many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"/>
+
   	<unique-constraint columns="purchaseOrderSeq,company"/>
   	
 	<track>
       <field name="purchaseOrderSeq" />
       <field name="supplierPartner" />
       <field name="statusSelect" on="UPDATE"/>
-      <message if="true" on="CREATE">Purchase Order created</message>
+      <message if="true" on="CREATE">Purchase order created</message>
       <message if="statusSelect == 1" tag="important">Draft</message>
       <message if="statusSelect == 2" tag="important">Requested</message>
       <message if="statusSelect == 3" tag="info">Validated</message>

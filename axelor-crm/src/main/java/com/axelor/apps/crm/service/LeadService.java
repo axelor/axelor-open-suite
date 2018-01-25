@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,6 +40,7 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -184,6 +185,34 @@ public class LeadService {
 		lead.setUser(user);
 		lead.setTeam(user.getActiveTeam());
 		return lead;
+	}
+
+	/**
+	 * Check if the lead in view has a duplicate.
+	 * @param lead a context lead object
+	 * @return if there is a duplicate lead
+	 */
+	public boolean isThereDuplicateLead(Lead lead) {
+		String newName = lead.getFullName();
+		if (Strings.isNullOrEmpty(newName)) {
+		    return false;
+		}
+		Long leadId = lead.getId();
+		if (leadId == null) {
+			Lead existingLead = leadRepo.all()
+					.filter("lower(self.fullName) = lower(:newName) ")
+					.bind("newName", newName)
+					.fetchOne();
+			return existingLead != null;
+		} else {
+			Lead existingLead = leadRepo.all()
+					.filter("lower(self.fullName) = lower(:newName) " +
+							"and self.id != :leadId ")
+					.bind("newName", newName)
+					.bind("leadId", leadId)
+					.fetchOne();
+			return existingLead != null;
+		}
 	}
 	
 }

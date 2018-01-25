@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,6 @@ package com.axelor.apps.stock.service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -28,8 +27,11 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.exception.InvalidLogisticalFormLineDimensions;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.script.ScriptHelper;
 import com.google.common.base.Strings;
@@ -41,17 +43,9 @@ public class LogisticalFormLineServiceImpl implements LogisticalFormLineService 
 
 	@Override
 	public BigDecimal getUnspreadQty(LogisticalFormLine logisticalFormLine) {
-		LogisticalForm logisticalForm = logisticalFormLine.getLogisticalForm();
 		StockMoveLine stockMoveLine = logisticalFormLine.getStockMoveLine();
-
-		if (logisticalForm == null || stockMoveLine == null) {
-			return BigDecimal.ZERO;
-		}
-
-		Map<StockMoveLine, BigDecimal> stockMoveLineMap = Beans.get(LogisticalFormService.class)
-				.getStockMoveLineQtyMap(logisticalForm);
-		BigDecimal qty = stockMoveLineMap.getOrDefault(stockMoveLine, BigDecimal.ZERO);
-		return stockMoveLine.getRealQty().subtract(qty);
+		return Beans.get(StockMoveLineService.class).computeSpreadableQtyOverLogisticalFormLines(stockMoveLine,
+				logisticalFormLine.getLogisticalForm());
 	}
 
 	@Override
@@ -61,14 +55,19 @@ public class LogisticalFormLineServiceImpl implements LogisticalFormLineService 
 		LogisticalForm logisticalForm = logisticalFormLine.getLogisticalForm();
 
 		if (logisticalForm != null) {
-			Partner deliverToCustomer = logisticalForm.getDeliverToCustomer();
+			Partner deliverToCustomerPartner = logisticalForm.getDeliverToCustomerPartner();
 
-			if (deliverToCustomer != null) {
-				partnerId = deliverToCustomer.getId();
+			if (deliverToCustomerPartner != null) {
+				partnerId = deliverToCustomerPartner.getId();
 			}
 		}
 
 		domainList.add(String.format("self.stockMove.partner.id = %d", partnerId));
+		domainList.add(String.format("self.stockMove.typeSelect = %d", StockMoveRepository.TYPE_OUTGOING));
+        domainList.add(String.format("self.stockMove.statusSelect = %d", StockMoveRepository.STATUS_PLANNED));
+        domainList.add("self.realQty > 0");
+		domainList.add(
+				"self.stockMove.fullySpreadOverLogisticalFormsFlag IS NULL OR self.stockMove.fullySpreadOverLogisticalFormsFlag = FALSE");
 
 		List<StockMoveLine> fullySpreadStockMoveLineList = Beans.get(LogisticalFormService.class)
 				.getFullySpreadStockMoveLineList(logisticalForm);
@@ -82,16 +81,18 @@ public class LogisticalFormLineServiceImpl implements LogisticalFormLineService 
 	}
 
 	@Override
-	public void validateDimensions(LogisticalFormLine logisticalFormLine) throws InvalidLogisticalFormLineDimensions {
+	public void validateDimensions(LogisticalFormLine logisticalFormLine) throws LogisticalFormError {
 		String dimensions = logisticalFormLine.getDimensions();
 		if (!Strings.isNullOrEmpty(dimensions) && !DIMENSIONS_PATTERN.matcher(dimensions).matches()) {
-			throw new InvalidLogisticalFormLineDimensions(logisticalFormLine);
+			throw new LogisticalFormError(logisticalFormLine,
+					I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS),
+					logisticalFormLine.getSequence() + 1);
 		}
 	}
 
 	@Override
 	public BigDecimal evalVolume(LogisticalFormLine logisticalFormLine, ScriptHelper scriptHelper)
-			throws InvalidLogisticalFormLineDimensions {
+			throws LogisticalFormError {
 		validateDimensions(logisticalFormLine);
 		String script = logisticalFormLine.getDimensions();
 

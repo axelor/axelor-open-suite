@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,6 +31,12 @@ public class QualityControlServiceImpl  implements QualityControlService {
 	@Inject
 	ControlPointRepository controlPointRepo;
 	
+	/**
+	 * Copy control point model to control point and set it to the quality control.
+	 * @param qualityControl Set control point model to control point of this object.
+	 * @throws AxelorException
+	 * 
+	 */
 	@Override
 	@Transactional
 	public void preFillOperations(QualityControl qualityControl) throws AxelorException {
@@ -38,9 +44,9 @@ public class QualityControlServiceImpl  implements QualityControlService {
 		if (qualityControl.getQualityProcess() != null) {
 			QualityProcess process = qualityControl.getQualityProcess();
 			
-			if (process != null && process.getControlPointModel() != null) {
-				qualityControl.getControlPoint().clear();
-				for(ControlPointModel model : process.getControlPointModel() ) {
+			if (process != null && process.getControlPointModelList() != null) {
+				qualityControl.getControlPointList().clear();
+				for(ControlPointModel model : process.getControlPointModelList() ) {
 					ControlPoint point = new ControlPoint();
 					point.setStatus(1);
 					point.setName(model.getName());
@@ -57,7 +63,7 @@ public class QualityControlServiceImpl  implements QualityControlService {
 					point.setControlPointDate(qualityControl.getStartDate());
 					point.setQualityControl(qualityControl);
 					controlPointRepo.save(point);
-					qualityControl.addControlPoint(point);
+					qualityControl.addControlPointListItem(point);
 				}
 			}
 		}

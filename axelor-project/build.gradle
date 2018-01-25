@@ -13,6 +13,7 @@ axelor {
 
 dependencies {
 	compile project(":modules:axelor-base")
+	compile project(":modules:axelor-sale")
 }
 
 task copyWebapp(type: Copy) {

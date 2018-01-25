@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,91 +24,122 @@ import java.util.Map;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.exception.InconsistentLogisticalFormLines;
-import com.axelor.apps.stock.exception.InvalidLogisticalFormLineDimensions;
+import com.axelor.apps.stock.exception.LogisticalFormWarning;
+import com.axelor.exception.AxelorException;
+import com.axelor.apps.stock.exception.LogisticalFormError;
 
+/**
+ * @author axelor
+ *
+ */
 public interface LogisticalFormService {
 
-	/**
-	 * Add detail lines from the stock move.
-	 * 
-	 * @param logisticalForm
-	 * @param stockMove
-	 */
-	void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove);
+    /**
+     * Add detail lines from the stock move. If there were no lines, add a parcel
+     * line first.
+     * 
+     * @param logisticalForm
+     * @param stockMove
+     * @throws AxelorException
+     */
+    void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove) throws AxelorException;
 
-	/**
-	 * Add parcel or pallet line.
-	 * 
-	 * @param logisticalForm
-	 * @param typeSelect
-	 */
-	void addParcelPalletLine(LogisticalForm logisticalForm, int typeSelect);
+    /**
+     * Add parcel or pallet line.
+     * 
+     * @param logisticalForm
+     * @param typeSelect
+     */
+    void addParcelPalletLine(LogisticalForm logisticalForm, int typeSelect);
 
-	/**
-	 * Compute totals.
-	 * 
-	 * @param logisticalForm
-	 * @throws InvalidLogisticalFormLineDimensions
-	 */
-	void computeTotals(LogisticalForm logisticalForm) throws InvalidLogisticalFormLineDimensions;
+    /**
+     * Compute totals.
+     * 
+     * @param logisticalForm
+     * @throws LogisticalFormError
+     */
+    void computeTotals(LogisticalForm logisticalForm) throws LogisticalFormError;
 
-	/**
-	 * Check for inconsistent lines.
-	 * 
-	 * @param logisticalForm
-	 * @throws InconsistentLogisticalFormLines
-	 * @throws InvalidLogisticalFormLineDimensions
-	 */
-	void checkInconsistentLines(LogisticalForm logisticalForm) throws InconsistentLogisticalFormLines;
+    /**
+     * Check lines.
+     * 
+     * @param logisticalForm
+     * @throws LogisticalFormWarning
+     * @throws LogisticalFormError
+     */
+    void checkLines(LogisticalForm logisticalForm) throws LogisticalFormWarning, LogisticalFormError;
 
-	/**
-	 * Check for invalid dimensions in lines.
-	 * 
-	 * @param logisticalForm
-	 * @throws InvalidLogisticalFormLineDimensions
-	 */
-	void checkInvalidLineDimensions(LogisticalForm logisticalForm) throws InvalidLogisticalFormLineDimensions;
+    /**
+     * Get list of full spread stock move lines.
+     * 
+     * @param logisticalForm
+     * @return
+     */
+    List<StockMoveLine> getFullySpreadStockMoveLineList(LogisticalForm logisticalForm);
 
-	/**
-	 * Get list of full spread stock move lines.
-	 * 
-	 * @param logisticalForm
-	 * @return
-	 */
-	List<StockMoveLine> getFullySpreadStockMoveLineList(LogisticalForm logisticalForm);
+    /**
+     * Get map of spreadable quantity for each stock move line.
+     * 
+     * @param logisticalForm
+     * @return
+     */
+    Map<StockMoveLine, BigDecimal> getSpreadableQtyMap(LogisticalForm logisticalForm);
 
-	/**
-	 * Get map of spread quantity for each stock move line.
-	 * 
-	 * @param logisticalForm
-	 * @return
-	 */
-	Map<StockMoveLine, BigDecimal> getStockMoveLineQtyMap(LogisticalForm logisticalForm);
+    /**
+     * Get map of spread quantity for each stock move line.
+     * 
+     * @param logisticalForm
+     * @return
+     */
+    Map<StockMoveLine, BigDecimal> getSpreadQtyMap(LogisticalForm logisticalForm);
 
-	/**
-	 * Get domain for stock move.
-	 * 
-	 * @param logisticalForm
-	 * @return
-	 */
-	String getStockMoveDomain(LogisticalForm logisticalForm);
+    /**
+     * Get domain for stock move.
+     * 
+     * @param logisticalForm
+     * @return
+     */
+    String getStockMoveDomain(LogisticalForm logisticalForm);
 
-	/**
-	 * Get next parcel/pallet number.
-	 * 
-	 * @param logisticalForm
-	 * @param typeSelect
-	 * @return
-	 */
-	int getNextParcelPalletNumber(LogisticalForm logisticalForm, int typeSelect);
+    /**
+     * Get next parcel/pallet number.
+     * 
+     * @param logisticalForm
+     * @param typeSelect
+     * @return
+     */
+    int getNextParcelPalletNumber(LogisticalForm logisticalForm, int typeSelect);
 
-	/**
-	 * Get next line sequence.
-	 * 
-	 * @param logisticalForm
-	 * @return
-	 */
-	int getNextLineSequence(LogisticalForm logisticalForm);
+    /**
+     * Get next line sequence.
+     * 
+     * @param logisticalForm
+     * @return
+     */
+    int getNextLineSequence(LogisticalForm logisticalForm);
+
+    /**
+     * Sort lines by sequence.
+     * 
+     * @param logisticalForm
+     */
+    void sortLines(LogisticalForm logisticalForm);
+
+    /**
+     * Get the list of logistical form IDs for the given stock move.
+     * 
+     * @param stockMove
+     * @return
+     * @throws AxelorException
+     */
+    List<Long> getIdList(StockMove stockMove) throws AxelorException;
+
+    /**
+     * Process collected parcels/pallets.
+     * 
+     * @param logisticalForm
+     * @throws AxelorException
+     */
+    void processCollected(LogisticalForm logisticalForm) throws AxelorException;
 
 }

@@ -30,13 +30,13 @@
 			<field name="stateSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>	
 		</panel>
 	   <panel name="main" >
-    	 <field name="supplierPartner" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
+    	 <field name="supplierPartner" onSelect="action-purchase-order-supplier-line-method-supplier-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
     	 <field name="availableQty"/>
     	 <field name="purchaseOrderLine.unit" form-view="unit-form" grid-view="unit-grid"/>
     	 <field name="price"/>
     	 <field name="estimatedDelivDate"/>
   	   </panel>
-  	   <panel name="purchaseOrderDetails" title="Purchase Order Details" readOnly="true">
+  	   <panel name="purchaseOrderDetails" title="Purchase order Details" readOnly="true">
   	   	 <field name="purchaseOrderLine"/>
   		 <field name="purchaseOrderLine.product"/>
     	 <field name="purchaseOrderLine.qty" title="Ordered quantity"/>
@@ -102,6 +102,10 @@
 
 	<action-method name="action-purchase-order-supplier-line-method-accept">
 		<call class="com.axelor.apps.suppliermanagement.web.PurchaseOrderSupplierLineController" method="accept"/>
+	</action-method>
+
+	<action-method name="action-purchase-order-supplier-line-method-supplier-partner-domain">
+		<call class="com.axelor.apps.suppliermanagement.web.PurchaseOrderSupplierLineController" method="supplierPartnerDomain"/>
 	</action-method>
 
 	<action-attrs name="action-purchase-order-supplier-line-attrs-new">

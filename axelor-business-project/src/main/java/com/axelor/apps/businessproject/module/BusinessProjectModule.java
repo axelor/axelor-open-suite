@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,17 +20,21 @@ package com.axelor.apps.businessproject.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectManagementRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
+import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
 import com.axelor.apps.businessproject.service.ExpenseServiceProjectImpl;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
+import com.axelor.apps.businessproject.service.TeamTaskBusinessServiceImpl;
 import com.axelor.apps.businessproject.service.TimesheetProjectServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
-import com.axelor.apps.project.service.ProjectService;
+import com.axelor.apps.project.service.TeamTaskServiceImpl;
+import com.axelor.apps.project.service.ProjectServiceImpl;
+import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
@@ -43,9 +47,11 @@ public class BusinessProjectModule extends AxelorModule{
 	    	 bind(PurchaseOrderInvoiceServiceImpl.class).to(PurchaseOrderInvoiceProjectServiceImpl.class);
 	    	 bind(TimesheetServiceImpl.class).to(TimesheetProjectServiceImpl.class);
 	    	 bind(ExpenseServiceImpl.class).to(ExpenseServiceProjectImpl.class);
-	    	 bind(ProjectService.class).to(ProjectBusinessService.class);
+	    	 bind(ProjectServiceImpl.class).to(ProjectBusinessService.class);
 	    	 bind(InvoicingProjectRepository.class).to(InvoicingProjectManagementRepository.class);
 	    	 bind(AppBusinessProjectService.class).to(AppBusinessProjectServiceImpl.class);
 	    	 bind(InvoiceServiceSupplychainImpl.class).to(InvoiceServiceProjectImpl.class);
+	    	 bind(TeamTaskServiceImpl.class).to(TeamTaskBusinessServiceImpl.class);
+            bind(SaleOrderSupplychainRepository.class).to(SaleOrderProjectRepository.class);
 	    }
 }

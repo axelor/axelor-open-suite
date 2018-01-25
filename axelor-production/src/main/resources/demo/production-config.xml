@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.0.xsd">
   
-     <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId">
+     <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId" call="com.axelor.csv.script.SequenceScript:computeFullname">
     	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
     	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
@@ -16,7 +16,10 @@
 	
 	<input file="production_prodHumanResource.csv" separator=";" type="com.axelor.apps.production.db.ProdHumanResource"/>
 	
-	<input file="production_prodProcess.csv" separator=";" type="com.axelor.apps.production.db.ProdProcess"/>
+	<input file="production_prodProcess.csv" separator=";" type="com.axelor.apps.production.db.ProdProcess">
+		<bind to="name" column="name"/>
+		<bind to="fullName" column="name"/>
+	</input>
 	
 	<input file="production_prodProcessLine.csv" separator=";" type="com.axelor.apps.production.db.ProdProcessLine"/>
 
@@ -29,7 +32,8 @@
 	</input>
 	
 	<input file="production_productionConfig.csv" separator=";" type="com.axelor.apps.production.db.ProductionConfig" search="self.importId = :importId"/>
-	
+	<input file="stock_stockConfig.csv" separator=";" type="com.axelor.apps.stock.db.StockConfig" search="self.importId = :importId"/>
+
 	<input file="production_costSheetGroup.csv" separator=";" type="com.axelor.apps.production.db.CostSheetGroup" search="self.importId = :importId"/>
 	
 <!-- 	Update default BOM -->
@@ -40,5 +44,5 @@
 	</input>
 	
 	<input file="base_appProduction.csv" separator=";" type="com.axelor.apps.base.db.AppProduction" search="self.code = :code" update="true" />
-	
+
 </csv-inputs>

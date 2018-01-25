@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -162,11 +162,11 @@ public class AccountingReportServiceImpl implements AccountingReportService  {
 			this.addParams("self.move.paymentMode = ?%d", accountingReport.getPaymentMode());
 		}
 
-		if(accountingReport.getTypeSelect() == 5)	{
+		if(accountingReport.getTypeSelect() == AccountingReportRepository.REPORT_CHEQUE_DEPOSIT)	{
 			this.addParams("self.amountPaid > 0 AND self.credit > 0");
 		}
 
-		if(accountingReport.getTypeSelect() == 4)  {
+		if(accountingReport.getTypeSelect() == AccountingReportRepository.REPORT_AGED_BALANCE)  {
 			this.addParams("self.amountRemaining > 0 AND self.debit > 0");
 		}
 
@@ -277,7 +277,7 @@ public class AccountingReportServiceImpl implements AccountingReportService  {
 	}
 
 	public Account getAccount(AccountingReport accountingReport)  {
-		if(accountingReport.getTypeSelect() ==  13 && accountingReport.getCompany() != null)  {
+		if(accountingReport.getTypeSelect() == AccountingReportRepository.REPORT_PAYMENT_DIFFERENCES && accountingReport.getCompany() != null)  {
 			return accountRepo.all().filter("self.company = ?1 AND self.code LIKE '58%'", accountingReport.getCompany()).fetchOne();
 		}
 		return null;
@@ -380,7 +380,7 @@ public class AccountingReportServiceImpl implements AccountingReportService  {
 
 	public BigDecimal getCreditBalance(AccountingReport accountingReport, String queryFilter) {
 
-		if(accountingReport.getTypeSelect() == 4) {
+		if(accountingReport.getTypeSelect() == AccountingReportRepository.REPORT_AGED_BALANCE) {
 			return this.getCreditBalanceType4();
 		}
 

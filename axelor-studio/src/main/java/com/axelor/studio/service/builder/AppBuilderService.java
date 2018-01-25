@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,12 +17,8 @@
  */
 package com.axelor.studio.service.builder;
 
-import java.lang.invoke.MethodHandles;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.repo.AppRepository;
@@ -30,12 +26,11 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBuilder;
+import com.axelor.studio.exception.IExceptionMessage;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class AppBuilderService {
-	
-	private Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	
 	@Inject
 	private AppRepository appRepo;
@@ -75,7 +70,7 @@ public class AppBuilderService {
 		
 		if (app != null && app != appBuilder.getGeneratedApp()) {
 			throw new AxelorException(IException.INCONSISTENCY, 
-					I18n.get("Please provide unique code. The code '%s' is already used"), 
+					I18n.get(IExceptionMessage.APP_BUILDER_1), 
 					appBuilder.getCode());
 		}
 	}

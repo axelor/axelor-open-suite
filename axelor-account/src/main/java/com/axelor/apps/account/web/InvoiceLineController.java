@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -271,7 +272,7 @@ public class InvoiceLineController {
 			newInvoiceLine.setQty(BigDecimal.ZERO);
 			newInvoiceLine.setId(invoiceLine.getId());
 			newInvoiceLine.setVersion(invoiceLine.getVersion());
-			response.setValues(newInvoiceLine);
+			response.setValues(Mapper.toMap(newInvoiceLine));
 		}
 	}
 	

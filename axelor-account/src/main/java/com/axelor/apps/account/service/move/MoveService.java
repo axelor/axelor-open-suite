@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -418,24 +418,4 @@ public class MoveService {
 		return moveRepository.save(newMove);
 	}
 
-	public String getLanguageToPrinting(Move move)  {
-		
-		User user = AuthUtils.getUser();
-		
-		String language = "en";
-		
-		if(user != null && !Strings.isNullOrEmpty(user.getLanguage()))  {
-			return user.getLanguage();
-		}
-		
-		if(move == null)  {  return language;  }
-		Company company = move.getCompany();
-		
-		if(company != null && company.getPrintingSettings() != null && !Strings.isNullOrEmpty(company.getPrintingSettings().getLanguageSelect())) {
-			language = company.getPrintingSettings().getLanguageSelect();
-		}
-		
-		return language;
-	}
-		
 }

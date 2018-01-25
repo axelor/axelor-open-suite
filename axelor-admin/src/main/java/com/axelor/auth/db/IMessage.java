@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,7 +27,7 @@ public interface IMessage {
 	
 	static final public String BAD_FILE = /*$$(*/ "Bad import file" /*)*/;
 	static final public String NO_HEADER = /*$$(*/ "No header row found" /*)*/;
-	static final public String BAD_HEADER = /*$$(*/ "Bad header row: " /*)*/;
+	static final public String BAD_HEADER = /*$$(*/ "Bad header row:" /*)*/;
 	static final public String NO_GROUP = /*$$(*/ "Groups not found: %s" /*)*/;
 	static final public String NO_ROLE = /*$$(*/ "Roles not found: %s" /*)*/;
 	static final public String NO_OBJECT = /*$$(*/ "Object not found: %s" /*)*/;

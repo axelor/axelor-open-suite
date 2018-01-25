@@ -6,20 +6,18 @@
   <module name="project" package="com.axelor.apps.project.db"/>
 
   <entity name="Project">
-      
-     	<integer name="importId"/>
+
 		<string name="name" required="true" unique="true"/>
 		<string name="description" multiline="true" large="true"/>
 		<many-to-one name="team" ref="com.axelor.team.db.Team"/>
-		<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>      
 		<many-to-many name="projectFolderSet" ref="com.axelor.apps.project.db.ProjectFolder" title="Project Folders"/>
-		<one-to-many name="childProjectList" ref="com.axelor.apps.project.db.Project" title="Child Projects" mappedBy="project"/>
+		<one-to-many name="childProjectList" ref="com.axelor.apps.project.db.Project" title="Child Projects" mappedBy="parentProject"/>
 		<many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
 		<integer name="statusSelect" selection="project.status.select" title="Status" default="1"/>
 		<many-to-many name="categorySet" ref="com.axelor.apps.project.db.ProjectCategory" title="Type of authorized categories"/>
 		<one-to-many name="teamTaskList" ref="com.axelor.team.db.TeamTask" title="Tasks" mappedBy="project"/>
 		<boolean name="synchronisable"/>
-		<many-to-one name="projectParent" ref="com.axelor.apps.project.db.Project" title="Project Parent"/>
+		<many-to-one name="parentProject" ref="com.axelor.apps.project.db.Project" title="Parent project"/>
 		<one-to-many name="wikiList" ref="com.axelor.apps.project.db.Wiki" title="Wiki" mappedBy="project"/>
 		
 		<string name="code" title="Code" />
@@ -39,9 +37,6 @@
 		<decimal name="sequence" title="Sequence" />
 		<integer name="orderByState"/>
 	  
-		<integer name="projectTypeSelect" selection="project.type.select" default="1"/>
-	  
-	  
 		<boolean name="imputable" default="1"/>
 	  
 		<many-to-many name="finishToStartTaskSet" ref="com.axelor.apps.project.db.Project" title="Finish tasks to start"/>
@@ -57,18 +52,31 @@
 		
 		<string name="fullName" namecolumn="true" title="Name"/>
 	 	
-	 	<boolean name="isProject" title="Project" default="true" />
-	 	
+	 	<boolean name="isProject" title="Project/Phase" default="true" />
+
+        <integer name="projectTypeSelect" selection="project.project.project.type.select" default="1"/>
+      	<enum name="genProjTypePerOrderLine" ref="GenProjTypePerOrderLine" default="PROJECT_ALONE"/>
+
+      	<finder-method name="findAllByParentProject" using="parentProject" all="true"/>
+        <finder-method name="findByName" using="name"/>
+
 	   <extra-code>
    		<![CDATA[
-   			public static final String TYPE_PROJECT = "project";
-   			public static final String TYPE_TASK = "task";
-   			
-   			public static final Integer STATE_PLANNED = 1;
+   			public static final Integer TYPE_PROJECT = 1;
+   			public static final Integer TYPE_PHASE = 2;
+
+   			public static final Integer STATE_NEW = 1;
    			public static final Integer STATE_IN_PROGRESS = 2;
    			public static final Integer STATE_FINISHED = 3;
+   			public static final Integer STATE_CANCELED = 4;
    		]]>
    	</extra-code>
   </entity>
+
+	<enum name="GenProjTypePerOrderLine">
+		<item name="PROJECT_ALONE" title="Project alone"/>
+		<item name="PHASE_BY_LINE" title="Phase by line"/>
+        <item name="TASK_BY_LINE" title="Task by line"/>
+	</enum>
   
 </domain-models>

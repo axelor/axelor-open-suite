@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -60,10 +60,10 @@ public class PayrollPreparationService {
 	
 	@Inject
 	protected AppBaseService appBaseService;
-	
+
 	@Inject
 	HRConfigService hrConfigService;
-	
+
 	@Inject
 	public PayrollPreparationService(LeaveService leaveService, LeaveRequestRepository leaveRequestRepo, WeeklyPlanningService weeklyPlanningService){
 		
@@ -111,7 +111,7 @@ public class PayrollPreparationService {
 		LocalDate toDate = payrollPreparation.getPeriod().getToDate();
 		Employee employee = payrollPreparation.getEmployee();
 		
-		if(employee.getPublicHolidayPlanning() == null){
+		if(employee.getPublicHolidayEventsPlanning() == null){
 			throw new AxelorException(payrollPreparation, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY),employee.getName());
 		}
 		if(employee.getPlanning()== null){
@@ -179,7 +179,19 @@ public class PayrollPreparationService {
 	
 	public BigDecimal computeExpenseAmount(PayrollPreparation payrollPreparation){
 		BigDecimal expenseAmount = BigDecimal.ZERO;
-		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user.employee = ?1 AND self.statusSelect = 3 AND (self.payrollPreparation = null OR self.payrollPreparation.id = ?2) AND self.companyCbSelect = 1 AND self.period = ?3", payrollPreparation.getEmployee(), payrollPreparation.getId(), payrollPreparation.getPeriod()).fetch();
+        List<Expense> expenseList = Beans.get(ExpenseRepository.class).all()
+                .filter("self.user.employee = ?1 "
+                        + "AND self.statusSelect = ?2 "
+                        + "AND (self.payrollPreparation IS NULL OR self.payrollPreparation.id = ?3) "
+                        + "AND self.companyCbSelect = ?4 "
+                        + "AND self.validationDate BETWEEN ?5 AND ?6",
+                        payrollPreparation.getEmployee(),
+                        ExpenseRepository.STATUS_VALIDATED,
+                        payrollPreparation.getId(),
+                        ExpenseRepository.COMPANY_CB_PAYMENT_NO,
+                        payrollPreparation.getPeriod().getFromDate(),
+                        payrollPreparation.getPeriod().getToDate())
+                .fetch();
 		for (Expense expense : expenseList) {
 			expenseAmount = expenseAmount.add(expense.getInTaxTotal());
 			payrollPreparation.addExpenseListItem(expense);
@@ -192,6 +204,7 @@ public class PayrollPreparationService {
 		List<LunchVoucherMgtLine> lunchVoucherList = Beans.get(LunchVoucherMgtLineRepository.class).all().filter("self.employee = ?1 AND self.lunchVoucherMgt.statusSelect = 3 AND (self.payrollPreparation = null OR self.payrollPreparation.id = ?2) AND self.lunchVoucherMgt.payPeriod = ?3", payrollPreparation.getEmployee(), payrollPreparation.getId(), payrollPreparation.getPeriod()).fetch();
 		for (LunchVoucherMgtLine lunchVoucherMgtLine : lunchVoucherList) {
 			lunchVoucherNumber = lunchVoucherNumber.add(new BigDecimal(lunchVoucherMgtLine.getLunchVoucherNumber()) );
+			lunchVoucherNumber = lunchVoucherNumber.add(new BigDecimal(lunchVoucherMgtLine.getInAdvanceNbr()));
 			payrollPreparation.addLunchVoucherMgtLineListItem(lunchVoucherMgtLine);
 		}
 		return lunchVoucherNumber;

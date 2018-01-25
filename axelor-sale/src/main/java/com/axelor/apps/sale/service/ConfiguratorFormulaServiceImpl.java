@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,14 @@ package com.axelor.apps.sale.service;
 
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
+import com.axelor.script.GroovyScriptHelper;
+import com.axelor.script.ScriptBindings;
 
 public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaService {
 
@@ -35,5 +42,16 @@ public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaServic
         } else {
             return configuratorFormula.getSaleOrderLineMetaField();
         }
+    }
+
+    @Override
+    public void checkFormula(ConfiguratorFormula formula, ConfiguratorCreator creator) throws AxelorException {
+        ScriptBindings defaultValueBindings = Beans.get(ConfiguratorCreatorService.class).getTestingValues(creator);
+        Object result = new GroovyScriptHelper(defaultValueBindings).eval(formula.getFormula());
+        if (result == null) {
+            throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR), formula);
+        }
+
+
     }
 }

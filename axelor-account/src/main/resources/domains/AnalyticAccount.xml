@@ -7,7 +7,6 @@
 
   <entity name="AnalyticAccount" lang="java">
   
-    <integer name="importId"/>
     <string name="code" title="Code" required="true" unique="true"/>
     <string name="name" title="Name" required="true" unique="true"/>
     <many-to-one name="analyticAxis" ref="com.axelor.apps.account.db.AnalyticAxis" title="Analytic axis"/>

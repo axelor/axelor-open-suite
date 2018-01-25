@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,6 +34,8 @@ public interface IExceptionMessage {
 	static final String INVOICING_PROJECT_PROJECT_COMPANY = /*$$(*/ "You haven't select a company on the main project"/*)*/ ;
 	static final String SALE_ORDER_NO_PROJECT = /*$$(*/ "No Project selected"/*)*/ ;
 	static final String SALE_ORDER_NO_LINES = /*$$(*/ "No Line can be used for tasks"/*)*/ ;
+	static final String SALE_ORDER_NO_TYPE_GEN_PROJECT = /*$$(*/ "No type of generation project has been selected"/*)*/;
+	static final String SALE_ORDER_PROJECT_ALONE = /*$$*/ "The project is configured to be alone" /*)*/;
 	static final String INVOICING_PROJECT_GENERATION = /*$$(*/ "Invoicing project generated"/*)*/ ;
 	static final String JOB_COSTING_APP = /*$$(*/ "Job costing"/*)*/ ;
 }

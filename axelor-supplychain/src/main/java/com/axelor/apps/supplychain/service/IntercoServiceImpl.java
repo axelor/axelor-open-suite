@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -72,7 +72,7 @@ public class IntercoServiceImpl implements IntercoService {
 
         //copy delivery info
         saleOrder.setDeliveryDate(purchaseOrder.getDeliveryDate());
-        saleOrder.setLocation(purchaseOrder.getLocation());
+        saleOrder.setStockLocation(purchaseOrder.getStockLocation());
         saleOrder.setShipmentMode(purchaseOrder.getShipmentMode());
         saleOrder.setFreightCarrierMode(purchaseOrder.getFreightCarrierMode());
 
@@ -127,7 +127,7 @@ public class IntercoServiceImpl implements IntercoService {
 
         //copy delivery info
         purchaseOrder.setDeliveryDate(saleOrder.getDeliveryDate());
-        purchaseOrder.setLocation(saleOrder.getLocation());
+        purchaseOrder.setStockLocation(saleOrder.getStockLocation());
         purchaseOrder.setShipmentMode(saleOrder.getShipmentMode());
         purchaseOrder.setFreightCarrierMode(saleOrder.getFreightCarrierMode());
 

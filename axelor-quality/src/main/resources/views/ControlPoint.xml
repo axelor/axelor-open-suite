@@ -22,13 +22,13 @@
 			<field name="name"/>
 			<field name="priority"/>
 			<field name="product"  readonly="true"/>
-			<field name="team"/>
+			<field name="team" domain="self.typeSelect = 'quality'"/>
 			<field name="responsible"/>
 			<field name="controlType" readonly="true"/>
 			<field name="testType" readonly="true"/>
 			<field name="controlPointDate"/>
 		</panel>
-		<panel name="ControlFrequency" showIf="controlType == 2 || controlType == 3" title="Cotrol Frequency" readonly="true">
+		<panel name="ControlFrequency" showIf="controlType == 2 || controlType == 3" title="Control Frequency" readonly="true">
 			<field name="cf" title="Control Frequency" type="string" colSpan="12" showIf="controlType == 2" showTitle="false">
 				<viewer>
 				<![CDATA[

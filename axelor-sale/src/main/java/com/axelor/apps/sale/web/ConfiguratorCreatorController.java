@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,6 +39,8 @@ import com.axelor.auth.db.User;
 import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -52,84 +54,59 @@ public class ConfiguratorCreatorController {
 	private ConfiguratorCreatorRepository configuratorCreatorRepo;
     private ConfiguratorCreatorService configuratorCreatorService;
 
-    @Inject
-    public ConfiguratorCreatorController(ConfiguratorCreatorRepository configuratorCreatorRepo,
-                                         ConfiguratorCreatorService configuratorCreatorService) {
-        this.configuratorCreatorRepo = configuratorCreatorRepo;
-        this.configuratorCreatorService = configuratorCreatorService;
-    }
+	@Inject
+	public ConfiguratorCreatorController(ConfiguratorCreatorRepository configuratorCreatorRepo,
+			ConfiguratorCreatorService configuratorCreatorService) {
+		this.configuratorCreatorRepo = configuratorCreatorRepo;
+		this.configuratorCreatorService = configuratorCreatorService;
+	}
 
-    /*    public void testCreator(ActionRequest request, ActionResponse response) {
-        ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
+	/**
+	 * Called from the configurator creator form on attributes changes
+	 * 
+	 * @param request
+	 * @param response
+	 */
+	public void updateAttributes(ActionRequest request, ActionResponse response) {
+		ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
+		creator = configuratorCreatorRepo.find(creator.getId());
+		response.setSignal("refresh-app", true);
+	}
 
-        creator = configuratorCreatorRepo.find(creator.getId());
-        try {
-            ScriptBindings testingValues =
-                    configuratorCreatorService.getTestingValues(creator);
-            try {
-                configuratorCreatorService.testCreator(creator, testingValues);
-                response.setFlash(
-                        I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_WORKING)
-                );
-            } catch (Exception e) {
-                response.setAlert(e.getMessage());
-            }
-        } catch (AxelorException e) {
-            response.setAlert(e.getMessage());
-        }
-    }*/
+	/**
+	 * Called from the configurator creator form on formula changes
+	 * 
+	 * @param request
+	 * @param response
+	 */
+	public void updateAndActivate(ActionRequest request, ActionResponse response) {
+		ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
+		creator = configuratorCreatorRepo.find(creator.getId());
+		configuratorCreatorService.updateAttributes(creator);
+		configuratorCreatorService.updateIndicators(creator);
+		configuratorCreatorService.activate(creator);
+		response.setSignal("refresh-app", true);
+	}
 
-    /**
-     * Called from the sale order generate configurator wizard form.
-     * @param request
-     * @param response
-     */
-    public void createWizardDomain(ActionRequest request, ActionResponse response) {
-        response.setAttr(
-                "configuratorCreator",
-                "domain",
-                configuratorCreatorService.getConfiguratorCreatorDomain()
-        );
-    }
-
-    /**
-     * Called from the configurator creator form on attributes changes
-     * @param request
-     * @param response
-     */
-    public void updateAttributes(ActionRequest request, ActionResponse response) {
-        ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
-        creator = configuratorCreatorRepo.find(creator.getId());
-        response.setSignal("refresh-app", true);
-    }
-
-    /**
-     * Called from the configurator creator form on formula changes
-     * @param request
-     * @param response
-     */
-    public void updateAndActivate(ActionRequest request, ActionResponse response) {
-        ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
-        creator = configuratorCreatorRepo.find(creator.getId());
-        configuratorCreatorService.updateAttributes(creator);
-        configuratorCreatorService.updateIndicators(creator);
-        configuratorCreatorService.activate(creator);
-        response.setSignal("refresh-app", true);
-    }
-    
-
-    /**
-     * Called from the configurator creator form on new
-     * @param request
-     * @param response
-     */
-    public void authorizeCurrentUser(ActionRequest request, ActionResponse response) {
-        ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
-        creator = configuratorCreatorRepo.find(creator.getId());
-        User currentUser = AuthUtils.getUser();
+	/**
+	 * Called from the configurator creator form on new
+	 * 
+	 * @param request
+	 * @param response
+	 */
+	public void configure(ActionRequest request, ActionResponse response) {
+		ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
+		creator = configuratorCreatorRepo.find(creator.getId());
+		User currentUser = AuthUtils.getUser();
 		configuratorCreatorService.authorizeUser(creator, currentUser);
-        response.setReload(true);
-    }
+		try {
+			configuratorCreatorService.addRequiredFormulas(creator);
+		} catch (AxelorException e) {
+			TraceBackService.trace(e);
+			response.setError(e.getMessage());
+		}
+		response.setReload(true);
+	}
     
     @Transactional
 	public void importConfiguratorCreators(ActionRequest request, ActionResponse response) {

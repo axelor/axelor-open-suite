@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,41 +17,34 @@
  */
 package com.axelor.apps.sale.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Query;
-
-import com.axelor.apps.base.service.AddressService;
-import com.axelor.apps.sale.db.AdvancePayment;
-import com.axelor.apps.sale.db.CancelReason;
-import com.google.common.base.Strings;
-import java.time.LocalDate;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.AppSale;
+import com.axelor.apps.base.db.Blocking;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.team.db.Team;
+import com.axelor.apps.base.db.StopReason;
+import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.DurationService;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -62,8 +55,21 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.team.db.Team;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.Query;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
 
@@ -186,8 +192,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	/**
 	 * Compute the sale order total amounts
 	 *
-	 * @param invoice
-	 * @param vatLines
+	 * @param saleOrder
 	 * @throws AxelorException
 	 */
 	@Override
@@ -322,7 +327,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		this.computeAddressStr(saleOrder);
 
 		if(priceList == null)  {
-			priceList = clientPartner.getSalePriceList();
+			priceList = Beans.get(PartnerPriceListService.class).getDefaultPriceList(clientPartner, PriceListRepository.TYPE_SALE);
 		}
 		saleOrder.setPriceList(priceList);
 
@@ -357,8 +362,21 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	}
 
     @Override
-    @Transactional(rollbackOn = { AxelorException.class, Exception.class })
+    @Transactional(rollbackOn = { AxelorException.class, Exception.class }, ignore = { BlockedSaleOrderException.class })
     public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
+	    Partner partner = saleOrder.getClientPartner();
+
+	    Blocking blocking = Beans.get(BlockingService.class).getBlocking(partner, saleOrder.getCompany(), BlockingRepository.SALE_BLOCKING);
+
+        if (blocking != null) {
+            saleOrder.setBloqued(true);
+            if (!saleOrder.getManualUnblock()) {
+                saleOrderRepo.save(saleOrder);
+				String reason = blocking.getBlockingReason() != null ? blocking.getBlockingReason().getName() : "";
+                throw new BlockedSaleOrderException(partner, I18n.get("Client is sale blocked:") + " " + reason);
+            }
+        }
+
         saleOrder.setStatusSelect(ISaleOrder.STATUS_FINALIZE);
         saleOrderRepo.save(saleOrder);
         if (appSaleService.getAppSale().getManageSaleOrderVersion()) {
@@ -453,11 +471,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	
 	@Override
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException  {
-		
-		String language = this.getLanguageForPrinting(saleOrder);
-		
 		ReportFactory.createReport(IReport.SALES_ORDER, this.getFileName(saleOrder)+"-${date}")
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(saleOrder.getClientPartner()))
 				.addParam("SaleOrderId", saleOrder.getId())
 				.toAttach(saleOrder)
 				.generate()
@@ -467,19 +482,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		
 	}
 
-	@Override
-	public String getLanguageForPrinting(SaleOrder saleOrder)  {
-		String language="";
-		try{
-			language = saleOrder.getClientPartner().getLanguageSelect() != null? saleOrder.getClientPartner().getLanguageSelect() : saleOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? saleOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-		}catch (NullPointerException e) {
-			language = "en";
-		}
-		language = language.equals("")? "en": language;
-		
-		return language;
-	}
-	
 	@Override
 	public String getFileName(SaleOrder saleOrder)  {
 		
@@ -492,6 +494,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		SaleOrder copy = saleOrderRepo.copy(context, true);
 		copy.setTemplate(false);
 		copy.setTemplateUser(null);
+		copy.setCreationDate(appSaleService.getTodayDate());
+		this.computeEndOfValidityDate(copy);
 		return copy;
 	}
 
@@ -507,12 +511,11 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
 	@Override
 	public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder)  {
-
-		saleOrder.setEndOfValidityDate(
-				Beans.get(DurationService.class).computeDuration(saleOrder.getDuration(), saleOrder.getCreationDate()));
-
+		if (saleOrder.getDuration() != null && saleOrder.getCreationDate() != null) {
+			saleOrder.setEndOfValidityDate(
+					Beans.get(DurationService.class).computeDuration(saleOrder.getDuration(), saleOrder.getCreationDate()));
+		}
 		return saleOrder;
-
 	}
 	
 	@Override
@@ -571,7 +574,26 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		}
 		return price;
 	}
+
+	@Override
+    @Transactional(rollbackOn = { Exception.class, AxelorException.class })
+	public void enableEditOrder(SaleOrder saleOrder) throws AxelorException {
+	    if (saleOrder.getStatusSelect() == ISaleOrder.STATUS_FINISHED) {
+	        throw new AxelorException(saleOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.SALES_ORDER_FINISHED));
+	    }
+
+		saleOrder.setOrderBeingEdited(true);
+	}
+
+    @Override
+    public void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException {
+    }
+
+    @Override
+    public void sortSaleOrderLineList(SaleOrder saleOrder) {
+        if (saleOrder.getSaleOrderLineList() != null) {
+            saleOrder.getSaleOrderLineList().sort(Comparator.comparing(SaleOrderLine::getSequence));
+        }
+    }
+
 }
-
-
-

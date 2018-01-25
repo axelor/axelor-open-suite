@@ -5,6 +5,7 @@
   
   <entity name="Partner" lang="java">
   	<string name="prestaShopId"/>
+	<string name="secureKey"/>
   </entity>
   
 </domain-models>

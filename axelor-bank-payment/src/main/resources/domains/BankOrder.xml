@@ -7,7 +7,6 @@
 
   <entity name="BankOrder" lang="java" sequential="true">
   
-  	<integer name="importId" />
   	<integer name="orderTypeSelect" title="Order Type" selection="bankpayment.bank.order.type.select"/>
   	<integer name="rejectStatusSelect" title="Rejection Status" selection="bankpayment.bank.order.reject.status.select"/>
   	<string name="bankOrderSeq" title="Sequence" namecolumn="true" readonly="true"/>
@@ -22,16 +21,17 @@
 	<datetime name="sendingDateTime" title="Sending date"/>
 	<many-to-one name="bankOrderCurrency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 	<many-to-one name="companyCurrency" ref="com.axelor.apps.base.db.Currency" title="Company currency"/>
-	<boolean name="isMultiDate" title="Multi dates"/>
-	<boolean name="isMultiCurrency" title="Multi currencies"/>
+	<boolean name="isMultiDate" title="Multidate"/>
+	<boolean name="isMultiCurrency" title="Multicurrency"/>
 	<decimal name="arithmeticTotal" title="Arithmetic total" readonly="true"/>
+	<boolean name="testMode" title="Test mode"/>
 	
 	<!-- Sender -->
 	<many-to-one name="senderCompany" ref="com.axelor.apps.base.db.Company" title="Company"/>
 	<many-to-one name="senderBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Account"/>
 	<decimal name="bankOrderTotalAmount" title="Total amount"/>
 	<decimal name="companyCurrencyTotalAmount" title="Total amount in company currency" readonly="true"/>
-	<string name="senderReference" title="Reference" unique="true"/>
+	<string name="senderReference" title="Reference"/>
 	<string name="senderLabel" title="Label"/>
 	<integer name="nbOfLines" title="Number of lines"/>
 	

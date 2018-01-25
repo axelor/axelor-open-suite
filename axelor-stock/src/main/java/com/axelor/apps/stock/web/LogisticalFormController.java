@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,76 +21,95 @@ import java.util.Map;
 
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.InconsistentLogisticalFormLines;
-import com.axelor.apps.stock.exception.InvalidLogisticalFormLineDimensions;
+import com.axelor.apps.stock.exception.LogisticalFormError;
+import com.axelor.apps.stock.exception.LogisticalFormWarning;
 import com.axelor.apps.stock.service.LogisticalFormService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
 public class LogisticalFormController {
 
-	public void addStockMove(ActionRequest request, ActionResponse response) {
-		try {
-			@SuppressWarnings("unchecked")
-			Map<String, Object> stockMoveMap = (Map<String, Object>) request.getContext().get("stockMove");
-			if (stockMoveMap != null) {
-				StockMove stockMove = Mapper.toBean(StockMove.class, stockMoveMap);
-				stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+    public void addStockMove(ActionRequest request, ActionResponse response) {
+        try {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> stockMoveMap = (Map<String, Object>) request.getContext().get("stockMove");
+            if (stockMoveMap != null) {
+                StockMove stockMove = Mapper.toBean(StockMove.class, stockMoveMap);
+                stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
 
-				if (stockMove.getStockMoveLineList() != null) {
-					LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
-					Beans.get(LogisticalFormService.class).addDetailLines(logisticalForm, stockMove);
-					response.setValue("logisticalFormLineList", logisticalForm.getLogisticalFormLineList());
-					response.setValue("stockMove", null);
-				}
-			}
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
+                if (stockMove.getStockMoveLineList() != null) {
+                    LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+                    LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
 
-	public void computeTotals(ActionRequest request, ActionResponse response) {
-		try {
-			LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
-			Beans.get(LogisticalFormService.class).computeTotals(logisticalForm);
-			response.setValue("totalNetWeight", logisticalForm.getTotalNetWeight());
-			response.setValue("totalGrossWeight", logisticalForm.getTotalGrossWeight());
-			response.setValue("totalVolume", logisticalForm.getTotalVolume());
-		} catch (InvalidLogisticalFormLineDimensions e) {
-			response.setError(e.getLocalizedMessage());
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
+                    logisticalFormService.addDetailLines(logisticalForm, stockMove);
+                    response.setValue("logisticalFormLineList", logisticalForm.getLogisticalFormLineList());
+                    response.setValue("$stockMove", null);
+                }
+            }
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
 
-	public void checkLines(ActionRequest request, ActionResponse response) {
-		try {
-			LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
-			LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
+    public void computeTotals(ActionRequest request, ActionResponse response) {
+        try {
+            LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+            Beans.get(LogisticalFormService.class).computeTotals(logisticalForm);
+            response.setValue("totalNetWeight", logisticalForm.getTotalNetWeight());
+            response.setValue("totalGrossWeight", logisticalForm.getTotalGrossWeight());
+            response.setValue("totalVolume", logisticalForm.getTotalVolume());
+        } catch (LogisticalFormError e) {
+            response.setError(e.getLocalizedMessage());
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
 
-			logisticalFormService.checkInconsistentLines(logisticalForm);
-			logisticalFormService.checkInvalidLineDimensions(logisticalForm);
-		} catch (InconsistentLogisticalFormLines e) {
-			response.setAlert(e.getLocalizedMessage());
-		} catch (InvalidLogisticalFormLineDimensions e) {
-			response.setError(e.getLocalizedMessage());
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
+    public void checkLines(ActionRequest request, ActionResponse response) {
+        try {
+            LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+            LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
 
-	public void setStockMoveDomain(ActionRequest request, ActionResponse response) {
-		try {
-			LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
-			String domain = Beans.get(LogisticalFormService.class).getStockMoveDomain(logisticalForm);
-			response.setAttr("stockMove", "domain", domain);
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
+            logisticalFormService.sortLines(logisticalForm);
+            logisticalFormService.checkLines(logisticalForm);
+        } catch (LogisticalFormWarning e) {
+            response.setAlert(e.getLocalizedMessage());
+        } catch (LogisticalFormError e) {
+            response.setError(e.getLocalizedMessage());
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
+
+    public void setStockMoveDomain(ActionRequest request, ActionResponse response) {
+        try {
+            LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+            String domain = Beans.get(LogisticalFormService.class).getStockMoveDomain(logisticalForm);
+            response.setAttr("$stockMove", "domain", domain);
+
+            if (logisticalForm.getDeliverToCustomerPartner() == null) {
+                response.setNotify(I18n.get("Deliver to customer is not set."));
+            }
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
+
+    public void processCollected(ActionRequest request, ActionResponse response) {
+        try {
+            LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+            logisticalForm = Beans.get(LogisticalFormRepository.class).find(logisticalForm.getId());
+            Beans.get(LogisticalFormService.class).processCollected(logisticalForm);
+            response.setReload(true);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
 
 }

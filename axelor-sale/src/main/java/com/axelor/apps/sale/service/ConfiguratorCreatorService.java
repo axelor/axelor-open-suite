@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.sale.service;
 
-import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.auth.db.User;
@@ -41,15 +40,6 @@ public interface ConfiguratorCreatorService {
     void updateIndicators(ConfiguratorCreator creator);
 
     /**
-     * Test all the formulas included in the creator
-     * @param creator
-     * @param testingValues the values used to do the test
-     * @throws AxelorException
-     */
-    void testCreator(ConfiguratorCreator creator,
-                     ScriptBindings testingValues) throws AxelorException;
-
-    /**
      * Get the testing values in {@link ConfiguratorCreator#attributes}
      * @param creator
      * @return
@@ -70,9 +60,17 @@ public interface ConfiguratorCreatorService {
 	 */
 	void authorizeUser(ConfiguratorCreator creator, User user);
 
-    /**
+	/**
+	 * Add required fields of Product to the formula list
+	 * @param creator
+	 * @throws AxelorException 
+	 */
+	void addRequiredFormulas(ConfiguratorCreator creator) throws AxelorException;
+	
+	 /**
      * Activates the creator and saves it.
      * @param creator
      */
 	void activate(ConfiguratorCreator creator);
+
 }

@@ -3,6 +3,16 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
+    <grid title="Debt Recoveries" name="debt-recovery-grid" model="com.axelor.apps.account.db.DebtRecovery">
+        <field name="name"/>
+        <field name="referenceDate"/>
+        <field name="debtRecoveryDate"/>
+        <field name="debtRecoveryMethod"/>
+        <field name="debtRecoveryMethodLine"/>
+        <field name="balanceDue"/>
+        <field name="balanceDueDebtRecovery"/>
+    </grid>
+
     <form name="debt-recovery-form" title="Debt Recovery"
           model="com.axelor.apps.account.db.DebtRecovery">
         <panel title="Overview">

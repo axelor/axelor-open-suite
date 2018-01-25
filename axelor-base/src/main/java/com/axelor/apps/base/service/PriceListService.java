@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.base.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,11 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -181,7 +186,21 @@ public class PriceListService {
 		priceListRepo.save(priceList);
 		return priceList;
 	}
-	
-	
+
+	/**
+	 * Check applicationBeginDate and applicationEndDate
+	 * @param priceList
+	 * @throws AxelorException if the two dates are not an interval
+	 */
+	public void checkDates(PriceList priceList) throws AxelorException {
+	    LocalDate beginDate = priceList.getApplicationBeginDate();
+		LocalDate endDate = priceList.getApplicationEndDate();
+		if (beginDate == null || endDate == null) {
+			return;
+		}
+		if (beginDate.compareTo(endDate) > 0) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRICE_LIST_DATE_WRONG_ORDER));
+		}
+	}
 
 }

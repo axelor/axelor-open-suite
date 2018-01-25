@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.axelor.apps.prestashop.service.exports.batch;
 
 import java.lang.invoke.MethodHandles;
@@ -23,13 +22,13 @@ import java.time.ZonedDateTime;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.axelor.apps.crm.exception.IExceptionMessage;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.prestashop.db.PrestaShopBatch;
-import com.axelor.apps.prestashop.service.exports.PrestaShopServiceExport;
+import com.axelor.apps.prestashop.exception.IExceptionMessage;
+import com.axelor.apps.prestashop.exports.PrestaShopServiceExport;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.db.MetaFile;
 import com.google.inject.persist.Transactional;
 
 public class ExportPrestaShop extends BatchStrategyExport {
@@ -57,21 +56,20 @@ public class ExportPrestaShop extends BatchStrategyExport {
 			try {
 				PrestaShopBatch prestaShopBatch = (PrestaShopBatch) model;
 				Integer size = prestaShopBatch.getBatchList().size();
-				MetaFile exportFile;
+				Batch batchObj;
 				
 				if(size == 1) {
-					exportFile = prestaShopServiceExport.exportPrestShop(null);
+					batchObj = prestaShopServiceExport.exportPrestShop(null, batch);
 				} else {
 					ZonedDateTime endDate = prestaShopBatch.getBatchList().get(size - 2).getEndDate();
-					exportFile = prestaShopServiceExport.exportPrestShop(endDate);
+					batchObj = prestaShopServiceExport.exportPrestShop(endDate, batch);
 				}
-				batch.getPrestaShopBatch().setPrestaShopBatchLog(exportFile);
-				batchRepo.save(batch);
+				batchRepo.save(batchObj);
 				i++;
 				
 			} catch (Exception e) {
+
 				incrementAnomaly();
-				
 				LOG.error("Bug(Anomalie) généré(e) pour le rappel de l'évènement {}", batch.getId());
 				
 			} finally {
@@ -87,12 +85,9 @@ public class ExportPrestaShop extends BatchStrategyExport {
 	@Override
 	protected void stop() {
 
-		String comment = I18n.get(IExceptionMessage.BATCH_TARGET_2);
-		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_TARGET_3)+"\n", batch.getDone());
-		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+		String comment = I18n.get(IExceptionMessage.BATCH_EXPORT);
 		
 		super.stop();
 		addComment(comment);
-		
 	}
 }

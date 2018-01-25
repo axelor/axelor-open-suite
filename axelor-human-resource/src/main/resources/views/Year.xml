@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+
+    <form onSave="action-year-check-date" onLoad="action-attrs-account-year-read-only-dates"
+          onNew="action-year-record-new,action-year-hr-record-new"
+          name="year-hr-form" title="Payroll Year" model="com.axelor.apps.base.db.Year">
+        <panel name="main">
+            <field name="name"/>
+            <field name="code" colSpan="3"/>
+            <field name="company" widget="SuggestBox" form-view="company-form" required="true" colSpan="3" grid-view="company-grid"/>
+            <panel name="dates" title="Dates" colSpan="12">
+                <field name="fromDate" colSpan="3"/>
+                <field name="toDate" colSpan="3"/>
+            </panel>
+        </panel>
+        <panel-related field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>
+        <panel sidebar="true" readonlyIf="statusSelect == 2">
+            <field name="typeSelect" readonly="true" colSpan="6"/>
+            <field name="statusSelect" colSpan="6"/>
+        </panel>
+        <panel sidebar="true" name="periodsGenerationAssistant" title="Periods generation assistant">
+            <field name="periodDurationSelect"/>
+            <button name="generatePeriods" title="Generate periods" onClick="action-group-account-year-generateperiod-click" />
+        </panel>
+    </form>
+
+    <action-record name="action-year-hr-record-new" model="com.axelor.apps.base.db.Year">
+    	<field name="typeSelect"  expr="eval:2"/>
+    </action-record>
+
+</object-views>

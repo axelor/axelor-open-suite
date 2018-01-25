@@ -10,10 +10,10 @@
 		<field name="ebicsBank"/>
 	</grid>
 	
-	<form name="ebics-partner-form" title="Ebics partner" model="com.axelor.apps.bankpayment.db.EbicsPartner">
+	<form name="ebics-partner-form" title="Ebics partner" onSave="action-ebics-partner-method-onsave" model="com.axelor.apps.bankpayment.db.EbicsPartner">
 	
-		<panel title="General informations">
-			<field name="partnerId" max="35" x-bind="{{partnerId|uppercase}}" pattern='^[A-Z0-9]+$'/>
+		<panel title="General information">
+			<field name="partnerId" help="Name of the contract/subscription" max="35" x-bind="{{partnerId|uppercase}}" pattern='^[A-Z0-9]+$'/>
 			<field name="ebicsBank" />
 			<field name="ebicsTypeSelect" widget="RadioSelect"/>
 			<field name="testMode"/>
@@ -43,7 +43,10 @@
 		</panel>
 		
 		<panel-related field="bankDetailsSet" colSpan="12" canNew="true" showIf="ebicsBank" hidden="true" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-ebics-partner-method-bank-details-set-domain"/>
-		
+
+        <panel-related field="ebicsPartnerServiceList" colSpan="12" canNew="true" grid-view="ebics-partner-service-grid"
+            form-view="ebics-partner-service-form" editable="true" />
+
 		<panel-dashlet action="action-ebics-partner-view-ebics-users"/>
 
 	</form>
@@ -51,6 +54,10 @@
 	
 	<action-method name="action-ebics-partner-method-get-bank-statement">
 		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsPartnerController" method="getBankStatement"/>
+	</action-method>
+
+	<action-method name="action-ebics-partner-method-onsave">
+		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsPartnerController" method="checkBankDetailsSet"/>
 	</action-method>
 	
 	<action-attrs name="action-ebics-partner-method-bank-details-set-domain">

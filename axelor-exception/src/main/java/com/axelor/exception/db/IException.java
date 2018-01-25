@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -56,5 +56,7 @@ public interface IException {
 	public static final String CRM = "crm";
 	public static final String IMPORT = "import";
 	public static final String LEAVE_MANAGEMENT = "leaveManagement";
+	public static final String BANK_STATEMENT = "bankStatement";
+	public static final String CREDIT_TRANSFER = "creditTransfer";
 	
 }

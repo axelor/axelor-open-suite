@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -16,15 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.web.expense;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Move;
@@ -51,6 +42,7 @@ import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -70,6 +62,15 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class ExpenseController {
 
@@ -226,18 +227,22 @@ public class ExpenseController {
 		response.setValues(expense);
 	}
 
-	public void ventilate(ActionRequest request, ActionResponse response) throws AxelorException{
-		Expense expense = request.getContext().asType(Expense.class);
-		expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-		Move move = expenseServiceProvider.get().ventilate(expense);
-		response.setReload(true);
-		if (move != null) {
-			response.setView(ActionView.define(I18n.get("Move"))
-					.model(Move.class.getName())
-					.add("grid", "move-grid")
-					.add("form", "move-form")
-					.context("_showRecord", String.valueOf(move.getId()))
-					.map());
+	public void ventilate(ActionRequest request, ActionResponse response) throws AxelorException {
+		try {
+			Expense expense = request.getContext().asType(Expense.class);
+			expense = Beans.get(ExpenseRepository.class).find(expense.getId());
+			Move move = expenseServiceProvider.get().ventilate(expense);
+			response.setReload(true);
+			if (move != null) {
+                response.setView(ActionView.define(I18n.get("Move"))
+                        .model(Move.class.getName())
+                        .add("grid", "move-grid")
+                        .add("form", "move-form")
+                        .context("_showRecord", String.valueOf(move.getId()))
+                        .map());
+            }
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
 		}
 	}
 
@@ -245,7 +250,7 @@ public class ExpenseController {
 		Expense expense = request.getContext().asType(Expense.class);
 		if(expense.getExpenseLineList()!= null){
 			List<ExpenseLine> expenseLineList = expense.getExpenseLineList();
-			List<Integer> expenseLineId = new ArrayList<Integer>();
+			List<Integer> expenseLineId = new ArrayList<>();
 			int compt = 0;
 			for (ExpenseLine expenseLine : expenseLineList) {
 				compt++;
@@ -255,7 +260,7 @@ public class ExpenseController {
 			}
 			if(!expenseLineId.isEmpty()){
 				String ids =  Joiner.on(",").join(expenseLineId);
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("Date problem for line(s) : "+ids));
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("Date problem for line(s) :")+" "+ids);
 			}
 		}
 	}
@@ -263,16 +268,13 @@ public class ExpenseController {
 	public void printExpense(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Expense expense = request.getContext().asType(Expense.class);
-		
-		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
-		
+
 		String name = I18n.get("Expense") + " " + expense.getFullName()
 												.replace("/", "-");
 		
 		String fileLink = ReportFactory.createReport(IReport.EXPENSE, name)
 				.addParam("ExpenseId", expense.getId())
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.toAttach(expense)
 				.generate()
 				.getFileLink();
@@ -459,6 +461,33 @@ public class ExpenseController {
 		
 	}
 	
+	public void removeLines(ActionRequest request, ActionResponse response) {
+
+		Expense expense = request.getContext().asType(Expense.class);
+
+		List<ExpenseLine> expenseLineList = expense.getExpenseLineList();
+
+		try {
+			if (expenseLineList != null && !expenseLineList.isEmpty()) {
+				Iterator<ExpenseLine> expenseLineIter = expenseLineList.iterator();
+				while (expenseLineIter.hasNext()) {
+					ExpenseLine generalExpenseLine = expenseLineIter.next();
+
+					if (generalExpenseLine.getKilometricExpense() != null
+							&& (expense.getKilometricExpenseLineList() != null
+									&& !expense.getKilometricExpenseLineList().contains(generalExpenseLine)
+									|| expense.getKilometricExpenseLineList() == null)) {
+
+						expenseLineIter.remove();
+					}
+				}
+			}
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+		response.setValue("expenseLineList", expenseLineList);
+	}
+
 	public void computeKilometricExpense(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
@@ -502,14 +531,18 @@ public class ExpenseController {
 		}
 		
 		List<KilometricAllowParam> kilometricAllowParamList = expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine);
-		response.setAttr("kilometricAllowParam","domain","self.id IN (" + StringTool.getIdListString(kilometricAllowParamList)+ ")");
+		if (kilometricAllowParamList == null || kilometricAllowParamList.isEmpty()) {
+			response.setAttr("kilometricAllowParam", "domain", "self.id IN (0)");
+		} else {
+			response.setAttr("kilometricAllowParam", "domain", "self.id IN (" + StringTool.getIdListString(kilometricAllowParamList) + ")");
+		}
 
 		KilometricAllowParam currentKilometricAllowParam = expenseLine.getKilometricAllowParam();
 		boolean vehicleOk = false;
 
-		if (kilometricAllowParamList.size() == 1) {
+		if (kilometricAllowParamList != null && kilometricAllowParamList.size() == 1) {
 			response.setValue("kilometricAllowParam", kilometricAllowParamList.get(0));
-		} else {
+		} else if (kilometricAllowParamList != null) {
 			for (KilometricAllowParam kilometricAllowParam : kilometricAllowParamList) {
 				if (currentKilometricAllowParam != null && currentKilometricAllowParam.equals(kilometricAllowParam)) {
 					expenseLine.setKilometricAllowParam(kilometricAllowParam);

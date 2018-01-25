@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,11 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.tool.StringTool;
 import com.google.inject.Inject;
+import org.iban4j.CountryCode;
+import org.iban4j.IbanFormatException;
+import org.iban4j.IbanUtil;
+import org.iban4j.InvalidCheckDigitException;
+import org.iban4j.UnsupportedCountryException;
 
 public class BankDetailsServiceImpl implements BankDetailsService {
 	
@@ -117,4 +122,13 @@ public class BankDetailsServiceImpl implements BankDetailsService {
 		}
 	}
 
+	public void validateIban(String iban) throws IbanFormatException, InvalidCheckDigitException, UnsupportedCountryException {
+		CountryCode countryCode = CountryCode.getByCode(IbanUtil.getCountryCode(iban));
+		if (countryCode == null) {
+			throw new UnsupportedCountryException("Country code is not supported.");
+		}
+		if (IbanUtil.isSupportedCountry(countryCode)) {
+			IbanUtil.validate(iban);
+		}
+	}
 }

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,9 +17,13 @@
  */
 package com.axelor.apps.bankpayment.ebics.web;
 
+import java.util.List;
+
+import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
@@ -39,14 +43,23 @@ public class EbicsPartnerController {
 		try {
 			EbicsPartner ebicsPartner = request.getContext().asType(EbicsPartner.class);
 		
-			int statementNb = ebicsPartnerService.getBankStatements(ebicsPartnerRepository.find(ebicsPartner.getId()));
-			response.setFlash(String.format(I18n.get("%s bank statements get."), statementNb));
+			List<BankStatement> bankStatementList = ebicsPartnerService.getBankStatements(ebicsPartnerRepository.find(ebicsPartner.getId()));
+			response.setFlash(String.format(I18n.get("%s bank statements get."), bankStatementList.size()));
 		}
 		catch(Exception e)  {
 			TraceBackService.trace(response, e);
 		}
 		response.setReload(true);
 		
+	}
+
+	public void checkBankDetailsSet(ActionRequest request, ActionResponse response) {
+		EbicsPartner ebicsPartner = request.getContext().asType(EbicsPartner.class);
+	    try {
+	    	ebicsPartnerService.checkBankDetailsMissingCurrency(ebicsPartner);
+		} catch (AxelorException e) {
+	    	response.setFlash(e.getMessage());
+		}
 	}
 	
 }

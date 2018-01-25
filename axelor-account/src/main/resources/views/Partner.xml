@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-	<form name="incl-invoice-payment-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
+	<form name="incl-invoice-payment-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-show-specific-tax-note">
 	    <panel colSpan="12">
 	    	<field name="invoiceSendingFormatSelect" hideIf="isEmployee"/>
 	        <field name="invoicesCopySelect" hideIf="!isCustomer || isEmployee"/>
@@ -11,9 +11,9 @@
 	        <field name="outPaymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 2"/>
 	        <field name="paymentCondition" grid-view="payment-condition-grid" form-view="payment-condition-form" hideIf="isEmployee"/>
 	        <field name="currency" canEdit="false" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2" form-view="currency-form" grid-view="currency-grid"/>
-	        <field name="fiscalPosition" form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
+	        <field name="fiscalPosition" form-view="fiscal-position-form" grid-view="fiscal-position-grid" onChange="action-partner-attrs-show-specific-tax-note"/>
 	        <field name="invoicesCopySelect" hideIf="!isCustomer"/>
-            <field name="specificTaxNote" hidden="true"/>
+            <field name="specificTaxNote" colSpan="12" hidden="true"/>
 	        <field name="analyticDistributionTemplate" canNew="true"/>
 	        <panel colSpan="6" hideIf="isEmployee">
 	    		<button name="showAllInvoices" title="Show invoices"  onClick="save,action-partner-view-partner-invoice"/>
@@ -24,19 +24,20 @@
 	        <field name="bankDetailsList" colSpan="12" showTitle="false" >
                 <viewer depends="isDefault,fullName,bankCode,sortCode,accountNbr,bbanKey"><![CDATA[
                     <dl>
-                        <dd ng-if="!record.isDefault"> {{fullName}} </dd>
-                        <dd ng-if="record.isDefault"> <b>{{fullName}}</b> </dd>
+                      <dd ng-if="!record.isDefault" ng-style="!record.active && {'color':'orange'}"> {{record.fullName}} </dd>
+                      <dd ng-if="record.isDefault" ng-style="!record.active && {'color':'orange'}"> <b>{{record.fullName}}</b> </dd>
                     </dl>
                 ]]></viewer>
 			    <editor onNew="action-set-default-partner" x-show-on-new="false">
 					<field name="ownerName"/>
-					<field name="iban" onChange="action-group-account-bankdetails-iban-onchange" min="14" max="34" />
+					<field name="iban" onChange="action-group-account-bankdetails-iban-onchange"/>
 					<field name="bank" onChange="action-group-account-bankdetails-iban-onchange" canNew="true"/>
 					<field name="bankAddress" showIf="bank" grid-view="bank-address-grid"
 						   onSelect="action-attrs-account-bankdetails-bank-set-address-domain"
 						   canNew="true" form-view="bank-address-form"/>
 					<field name="label"/>
 					<field name="isDefault" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star" x-exclusive="true" />
+                    <field name="active" widget="boolean-switch"/>
 					<field name="ibanBic" hidden="true" x-bind="{{iban + ' ' + bank.code}}"/>
 			    </editor>
 			</field>
@@ -67,7 +68,7 @@
                     <field name="companySet" colSpan="12" widget="TagSelect" onSelect="action-blocking-attrs-domain-companySet"/>
                     <field name="blockingSelect" colSpan="12" selection="base.blocking.select" widget="RadioSelect" required="true"/>
                     <field name="blockingToDate" colSpan="3" required="true"/>
-                    <field name="blockingReason" colSpan="3" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
+                    <field name="blockingReason" colSpan="3" canNew="true" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
                     <field name="blockingByUser" colSpan="3" readonly="true" form-view="user-form" grid-view="user-grid"/>
                 </editor>
             </field>

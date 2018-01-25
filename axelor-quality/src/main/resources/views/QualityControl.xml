@@ -23,7 +23,7 @@
 			<field name="reference"/>
 			<field name="product"/>
 			<field name="qualityProcess"/>
-			<field name="team"/>
+			<field name="team" domain="self.typeSelect = 'quality'"/>
 			<field name="responsible"/>
 			<field name="startDate"/>
 			<field name="endDate"/>
@@ -37,7 +37,7 @@
 			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 3 || statusSelect == 4" onClick="action-quality-control-record-status-canceled,save"/>
 		</panel>
 		<panel name="control-point">
-			<panel-related field="controlPoint" colSpan="12" grid-view="control-point-grid" form-view="control-point-form" onNew="save"/>
+			<panel-related field="controlPointList" colSpan="12" grid-view="control-point-grid" form-view="control-point-form" onNew="save"/>
 		</panel>
 		<panel sidebar="true">
 			<button name="preFillControlPoints" title="Pre-fill control points" onClick="save,action-quality-control-method-pre-fill-operations" showIf="statusSelect == 1"/>
@@ -64,7 +64,7 @@
 	</kanban>
     
     <action-attrs name="action-quality-control-attrs-hide-quality-control-on-grid">
-		<attribute name="hidden" for="controlPoint.qualityControl" expr="true"/>
+		<attribute name="hidden" for="controlPointList.qualityControl" expr="true"/>
 	</action-attrs>
     
 	<action-record name="action-quality-control-record-default" model="com.axelor.apps.quality.db.QualityControl">
@@ -101,10 +101,10 @@
 	
 	<search-filters name="quality-control-filters" model="com.axelor.apps.quality.db.QualityControl" title="Quality control filters">
 		<filter title="My quality controls">
-			<domain>self.responsible.user.id = :_id</domain>
+			<domain>self.responsible.user.id = :_userId</domain>
 		</filter>
 		<filter title="My team quality controls">
-			<domain>self.responsible.user.activeTeam = :_myActiveTeam</domain>
+			<domain>self.team.id = :_myActiveTeamId</domain>
 		</filter>
 	</search-filters>
 	

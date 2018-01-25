@@ -8,6 +8,7 @@
 			<field name="custStockMoveMgtOnSO" readonlyIf="customerStockMoveGenerationAuto || terminateSaleOrderOnDelivery" widget="boolean-switch" colSpan="4"/>
 			<field name="customerStockMoveGenerationAuto" showIf="custStockMoveMgtOnSO"  widget="boolean-switch" colSpan="4"/>
 			<field name="terminateSaleOrderOnDelivery"  showIf="custStockMoveMgtOnSO" widget="boolean-switch" colSpan="4"/>
+			<field name="cancelReasonOnChangingSaleOrder" domain="self.applicationType = 'com.axelor.apps.stock.db.StockMove'" if="__config__.app.getApp('sale').allowPendingOrderModification" />
 		</panel>
 		<panel>
 			<field name="supplStockMoveMgtOnSO" readonlyIf="supplierStockMoveGenerationAuto || terminatePurchaseOrderOnReceipt" widget="boolean-switch" colSpan="4"/>
@@ -35,7 +36,15 @@
 		<panel>
 			<field name="manageStockReservation" widget="boolean-switch"/>
 		</panel>
+		<panel>
+			<panel-dashlet action="admin.root.conf.supply.chain.config" colSpan="12"/>
+		</panel>
 	</form>
 
+	<action-view name="admin.root.conf.supply.chain.config" title="Supply chain configurations"
+		model="com.axelor.apps.supplychain.db.SupplyChainConfig" >
+		<view type="grid" name="supply-chain-config-grid"/>
+		<view type="form" name="supply-chain-config-form"/>
+	</action-view>
 	
 </object-views>

@@ -8,7 +8,6 @@
 	</grid>
 	
 	<form model="com.axelor.apps.helpdesk.db.TicketType" title="Ticket type" name="ticket-type-form">
-	
 		<panel>
 			<field name="name"/>
 		</panel>

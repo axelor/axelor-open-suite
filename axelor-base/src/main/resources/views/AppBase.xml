@@ -19,6 +19,7 @@
 		<panel-tabs>
 			<panel name="configuration" title="Configuration" colSpan="12">
 		    	<field name="defaultPartnerLanguage" />
+				<field name="enableTradingNamesManagement" widget="boolean-switch"/>
 		    	<field name="activateSendingEmail" widget="boolean-switch"/>
 		    	<field name="mailAccountByUser" widget="boolean-switch"/>
 		    	<field name="productInAtiSelect"/>
@@ -59,41 +60,15 @@
 		</panel-tabs>
 	</form>
 	
-	<form model="com.axelor.apps.base.db.Wizard" title="Check duplicate" name="wizard-check-duplicate-form" onNew="action-check-duplicate-on-new-attrs">
-		<panel-related field="$fieldsSet" title="Fields" readonly="true" colSpan="12" type="many-to-many" target="com.axelor.meta.db.MetaField" grid-view="meta-field-light-grid"/>
-  		<panel name="main" >
-    		<button name="showDuplicate" title="Show" colSpan="6" onClick="action-base-method-show-duplicate"/>
-  		</panel>
-	</form>
-	
-	
 	<!-- ACTION METHOD -->
 
 	<action-method name="action-base-method-update-currency-conversion">
 		<call class="com.axelor.apps.base.web.AppBaseController" method="updateCurrencyConversion" />
 	</action-method>
 	
-	<action-method name="action-base-method-show-duplicate">
-		<call method="showDuplicate" class="com.axelor.apps.base.web.AppBaseController"/>
-	</action-method>
-	
 	<action-method name="action-base-general-export-objects">
 	    <call method="exportObjects" class="com.axelor.apps.base.web.AppBaseController"/>
 	</action-method>
-	
-	<action-attrs name="action-check-duplicate-on-new-attrs" model="com.axelor.apps.base.db.Wizard">
-    	<attribute name="value" for="$fieldsSet" expr="call:com.axelor.apps.base.web.AppBaseController:setFields(object)" />
-    </action-attrs>
-    
-	<action-view name="action-general-check-duplicate-records" title="Check duplicate" model="com.axelor.apps.base.db.Wizard">
-		<view type="form" name="wizard-check-duplicate-form" />
-		<view-param name="show-toolbar" value="false"/>
-		<view-param name="width" value="500" />
-		<view-param name="popup" value="true" />  
-		<context name="object" expr="eval:_model"/>
-		<context name="_domain_" expr="eval:_domain"/>
-		<context name="_ids" expr="eval:_ids"/>
-	</action-view>
 	
 	<action-method name="action-method-general-remind-timesheet">
 		<call class="com.axelor.apps.base.web.MailBatchController" method="remindTimesheetGeneral"/>

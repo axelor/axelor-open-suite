@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,9 @@ import com.axelor.apps.crm.db.Opportunity;
 public class OpportunityManagementRepository extends OpportunityRepository {
 	@Override
 	public Opportunity copy(Opportunity entity, boolean deep) {
-		entity.setSalesStageSelect(1);
-		return super.copy(entity, deep);
+		Opportunity copy = super.copy(entity, deep);
+		copy.setSalesStageSelect(OpportunityRepository.SALES_STAGE_NEW);
+		copy.setLostReason(null);
+		return copy;
 	}
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -130,9 +130,11 @@ public class WkfService {
 	
 	private void setView() {
 		
+		clearOldStatusField();
+		
 		MetaJsonField panel = getJsonField("wkfPanel", "panel");
 		panel.setSequence(-103);
-		panel.setHiddenInGrid(true);
+		panel.setVisibleInGrid(false);
 		panel.setIsWkf(true);
 		panel.setWidgetAttrs("{\"colSpan\": \"12\"}");
 		saveJsonField(panel);
@@ -142,7 +144,8 @@ public class WkfService {
 		status.setSelection(getSelectName());
 		status.setWidget(null);
 		status.setIsWkf(true);
-		status.setWidgetAttrs("{\"colSpan\": \"10\",\"readonly\": \"true\"}");
+		status.setReadonly(true);
+		status.setWidgetAttrs("{\"colSpan\": \"10\"}");
 		if (workflow.getDisplayTypeSelect() == 0) {
 			status.setWidget("NavSelect");
 		}
@@ -154,12 +157,12 @@ public class WkfService {
 		trackFlow.setWidgetAttrs("{\"colSpan\": \"2\"}");
 		trackFlow.setOnClick(WkfTrackingService.ACTION_OPEN_TRACK);
 		trackFlow.setIsWkf(true);
-		trackFlow.setHiddenInGrid(true);
+		trackFlow.setVisibleInGrid(false);
 		saveJsonField(trackFlow);
 		
 		MetaJsonField wkfEnd = getJsonField("wkfSeparator", "separator");
 		wkfEnd.setSequence(-1);
-		wkfEnd.setHiddenInGrid(true);
+		wkfEnd.setVisibleInGrid(false);
 		wkfEnd.setIsWkf(true);
 		wkfEnd.setWidgetAttrs("{\"colSpan\": \"12\"}");
 		saveJsonField(panel);
@@ -168,6 +171,42 @@ public class WkfService {
 		
 	}
 	
+	@Transactional
+	public void clearOldStatusField() {
+		
+		MetaJsonField field  = null;
+		if (workflow.getIsJson()) {
+			field = jsonFieldRepo.all().filter("self.isWkf = true "
+					+ "and self.jsonModel.name = ?1 "
+					+ "and self.type in ('string','integer')", 
+					workflow.getModel()).fetchOne();
+		}
+		else {
+			field = jsonFieldRepo.all().filter("self.isWkf = true "
+					+ "and self.model = ?1 "
+					+ "and self.modelField = ?2 "
+					+ "and self.type in ('string','integer')", 
+					workflow.getModel(), workflow.getJsonField()).fetchOne();
+		}
+		
+		if (field != null) {
+			if (field.getSelection() != null) {
+				log.debug("Cleaning old status field: {}", field);
+				MetaSelect oldSelect = metaSelectRepo.findByName(field.getSelection());
+				if (oldSelect != null) {
+					log.debug("Removing old wkf selection: {}", oldSelect);
+					metaSelectRepo.remove(oldSelect);
+				}
+			}
+			field.setIsWkf(false);
+			field.setSelection(null);
+			field.setSequence(0);
+			field.setReadonly(false);
+			jsonFieldRepo.save(field);
+		}
+		
+	}
+
 	public String getSelectName() {
 		
 		if (workflow != null) {

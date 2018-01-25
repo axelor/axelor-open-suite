@@ -13,11 +13,11 @@
 		 <panel>
 		  	<panel colSpan="12">
     			<field name="vehicle" title="Vehicle">
-      				<editor>
-        				<field name="name"/>
-        				<field name="vehicleOdometer"/>
-      				</editor>
-    			</field>
+      			<editor>
+        			<field name="name" colSpan="12"/>
+        			<field name="vehicleOdometer"/>
+      			</editor>
+    		</field>
       		</panel>
     		<panel title="Information">
 		  		<field name="purchasePartner"/>

@@ -17,7 +17,7 @@
 				<field name="birtTemplateParameterList" showTitle="false" colSpan="12">
 					<viewer depends="name,value">
 						<![CDATA[                                         
-	        				<birtTemplateParameterList>{{name}} : {{value}}</birtTemplateParameterList>
+	        				<birtTemplateParameterList>{{record.name}} : {{record.value}}</birtTemplateParameterList>
 	        			]]>
 	        		</viewer>
 					<editor x-show-titles="false" itemSpan="4">

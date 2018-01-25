@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -30,14 +32,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.app.AppSettings;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.MetaFile;
-import com.axelor.meta.db.repo.MetaFileRepository;
-import com.google.common.base.Joiner;
-import com.google.common.base.Throwables;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
@@ -47,13 +46,13 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
-import com.axelor.apps.stock.db.Location;
-import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
-import com.axelor.apps.stock.db.repo.LocationLineRepository;
+import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
@@ -63,10 +62,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class InventoryService {
 
@@ -91,16 +89,16 @@ public class InventoryService {
 	private StockMoveRepository stockMoveRepo;
 	
 
-	public Inventory createInventory(LocalDate date, String description, Location location, boolean excludeOutOfStock, boolean includeObsolete,
+	public Inventory createInventory(LocalDate date, String description, StockLocation stockLocation, boolean excludeOutOfStock, boolean includeObsolete,
 			ProductFamily productFamily, ProductCategory productCategory) throws AxelorException  {
 
-		if (location == null) {
+		if (stockLocation == null) {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_1));
 		}
 
 		Inventory inventory = new Inventory();
 
-		inventory.setInventorySeq(this.getInventorySequence(location.getCompany()));
+		inventory.setInventorySeq(this.getInventorySequence(stockLocation.getCompany()));
 
 		inventory.setDateT(date.atStartOfDay(ZoneOffset.UTC));
 
@@ -108,7 +106,7 @@ public class InventoryService {
 
 		inventory.setFormatSelect(IAdministration.PDF);
 
-		inventory.setLocation(location);
+		inventory.setStockLocation(stockLocation);
 
 		inventory.setExcludeOutOfStock(excludeOutOfStock);
 
@@ -136,11 +134,11 @@ public class InventoryService {
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void importFile(String filePath, char separator, Inventory inventory) throws IOException, AxelorException {
+	public Path importFile(Inventory inventory) throws AxelorException {
 
 		List<InventoryLine> inventoryLineList = inventory.getInventoryLineList();
-
-		List<String[]> data = this.getDatas(filePath, separator);
+		Path filePath = MetaFiles.getPath(inventory.getImportFile());
+		List<String[]> data = this.getDatas(filePath);
 
 		HashMap<String,InventoryLine> inventoryLineMap = this.getInventoryLines(inventory);
 
@@ -149,16 +147,17 @@ public class InventoryService {
 				throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
 
 			String code = line[1].replace("\"", "");
+			String rack = line[2].replace("\"", "");
 			String trackingNumberSeq = line[3].replace("\"", "");
 
 			BigDecimal realQty;
 			try {
-				realQty = new BigDecimal(line[6].replace("\"", ""));
+				realQty = new BigDecimal(line[5].replace("\"", ""));
 			} catch (NumberFormatException e) {
 				throw new AxelorException(e.getCause(), inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
 			}
 
-			String description = line[7].replace("\"", "");
+			String description = line[6].replace("\"", "");
 
 			if (inventoryLineMap.containsKey(code)) {
 				inventoryLineMap.get(code).setRealQty(realQty);
@@ -183,6 +182,7 @@ public class InventoryService {
 					throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_4)+" "+code);
 				inventoryLine.setProduct(product);
 				inventoryLine.setInventory(inventory);
+				inventoryLine.setRack(rack);
 				inventoryLine.setCurrentQty(currentQty);
 				inventoryLine.setRealQty(realQty);
 				inventoryLine.setDescription(description);
@@ -193,14 +193,16 @@ public class InventoryService {
 		inventory.setInventoryLineList(inventoryLineList);
 
 		inventoryRepo.save(inventory);
+		return filePath;
 	}
 
 
-	public List<String[]> getDatas(String filePath, char separator) throws AxelorException  {
+	public List<String[]> getDatas(Path filePath) throws AxelorException  {
 
 		List<String[]> data = null;
+		char separator = ';';
 		try {
-			data = CsvTool.cSVFileReader(filePath, separator);	
+			data = CsvTool.cSVFileReader(filePath.toString(), separator);
 		} catch (Exception e) {
 			throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_5));
 		}
@@ -208,7 +210,8 @@ public class InventoryService {
 		if (data == null || data.isEmpty()) {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
 		}
-
+		
+		data.remove(0); /* Skip headers */
 		return data;
 
 
@@ -216,7 +219,7 @@ public class InventoryService {
 
 
 	public HashMap<String,InventoryLine> getInventoryLines(Inventory inventory)  {
-		HashMap<String,InventoryLine> inventoryLineMap = new HashMap<String,InventoryLine>();
+		HashMap<String,InventoryLine> inventoryLineMap = new HashMap<>();
 
 		for (InventoryLine line : inventory.getInventoryLineList()) {
 			String key = "";
@@ -275,39 +278,39 @@ public class InventoryService {
 			}
 		}
 
-		List<LocationLine> locationLineList = inventory.getLocation().getLocationLineList();
+		List<StockLocationLine> stockLocationLineList = inventory.getStockLocation().getStockLocationLineList();
 
-		if (locationLineList != null) {
-			for (LocationLine locationLine : locationLineList) {
-				Product product = locationLine.getProduct();
+		if (stockLocationLineList != null) {
+			for (StockLocationLine stockLocationLine : stockLocationLineList) {
+				Product product = stockLocationLine.getProduct();
 				BigDecimal realQty = consolidatedRealQties.get(product);
 				if (realQty != null) {
-					locationLine.setLastInventoryRealQty(realQty);
-					locationLine.setLastInventoryDateT(inventory.getDateT());
+					stockLocationLine.setLastInventoryRealQty(realQty);
+					stockLocationLine.setLastInventoryDateT(inventory.getDateT());
 				}
 				
 				String rack = realRacks.get(product);
 				if (rack != null) {
-					locationLine.setRack(rack);
+					stockLocationLine.setRack(rack);
 				}
 			}
 		}
 
-		List<LocationLine> detailsLocationLineList = inventory.getLocation().getDetailsLocationLineList();
+		List<StockLocationLine> detailsStockLocationLineList = inventory.getStockLocation().getDetailsStockLocationLineList();
 
-		if (detailsLocationLineList != null) {
-			for (LocationLine detailsLocationLine : detailsLocationLineList) {
-				Product product = detailsLocationLine.getProduct();
-				TrackingNumber trackingNumber = detailsLocationLine.getTrackingNumber();
+		if (detailsStockLocationLineList != null) {
+			for (StockLocationLine detailsStockLocationLine : detailsStockLocationLineList) {
+				Product product = detailsStockLocationLine.getProduct();
+				TrackingNumber trackingNumber = detailsStockLocationLine.getTrackingNumber();
 				BigDecimal realQty = realQties.get(Pair.of(product, trackingNumber));
 				if (realQty != null) {
-					detailsLocationLine.setLastInventoryRealQty(realQty);
-					detailsLocationLine.setLastInventoryDateT(inventory.getDateT());
+					detailsStockLocationLine.setLastInventoryRealQty(realQty);
+					detailsStockLocationLine.setLastInventoryDateT(inventory.getDateT());
 				}
 				
 				String rack = realRacks.get(product);
 				if (rack != null) {
-					detailsLocationLine.setRack(rack);
+					detailsStockLocationLine.setRack(rack);
 				}
 			}
 		}
@@ -316,17 +319,17 @@ public class InventoryService {
 
 	public StockMove generateStockMove(Inventory inventory) throws AxelorException {
 
-		Location toLocation = inventory.getLocation();
-		Company company = toLocation.getCompany();
+		StockLocation toStockLocation = inventory.getStockLocation();
+		Company company = toStockLocation.getCompany();
 		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
 
 		if (company == null) {
-			throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_6), toLocation.getName());
+			throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_6), toStockLocation.getName());
 		}
 
 		String inventorySeq = inventory.getInventorySeq();
 
-		StockMove stockMove = this.createStockMoveHeader(inventory, company, toLocation, inventory.getDateT().toLocalDate(), inventorySeq);
+		StockMove stockMove = this.createStockMoveHeader(inventory, company, toStockLocation, inventory.getDateT().toLocalDate(), inventorySeq);
 
 		for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
 			BigDecimal currentQty = inventoryLine.getCurrentQty();
@@ -376,10 +379,10 @@ public class InventoryService {
 	}
 
 
-	public StockMove createStockMoveHeader(Inventory inventory, Company company, Location toLocation, LocalDate inventoryDate, String name) throws AxelorException  {
+	public StockMove createStockMoveHeader(Inventory inventory, Company company, StockLocation toStockLocation, LocalDate inventoryDate, String name) throws AxelorException  {
 
 		StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(null, null, company, null,
-				stockConfigService.getInventoryVirtualLocation(stockConfigService.getStockConfig(company)), toLocation, inventoryDate, inventoryDate, null, null, null);
+				stockConfigService.getInventoryVirtualStockLocation(stockConfigService.getStockConfig(company)), toStockLocation, inventoryDate, inventoryDate, null, null, null);
 
 		stockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
 		stockMove.setName(name);
@@ -391,18 +394,18 @@ public class InventoryService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Boolean fillInventoryLineList(Inventory inventory) throws AxelorException {
 
-		if (inventory.getLocation() == null) {
+		if (inventory.getStockLocation() == null) {
 			throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_1));
 		}
 
 		this.initInventoryLines(inventory);
 
-		List<? extends LocationLine> locationLineList = this.getLocationLines(inventory);
+		List<? extends StockLocationLine> stockLocationLineList = this.getStockLocationLines(inventory);
 
-		if (locationLineList != null) {
+		if (stockLocationLineList != null) {
 			Boolean succeed = false;
-			for (LocationLine locationLine : locationLineList) {
-				inventory.addInventoryLineListItem(this.createInventoryLine(inventory, locationLine));
+			for (StockLocationLine stockLocationLine : stockLocationLineList) {
+				inventory.addInventoryLineListItem(this.createInventoryLine(inventory, stockLocationLine));
 				succeed = true;
 			}
 			inventoryRepo.save(inventory);
@@ -412,13 +415,13 @@ public class InventoryService {
 	}
 
 
-	public List<? extends LocationLine> getLocationLines(Inventory inventory)  {
+	public List<? extends StockLocationLine> getStockLocationLines(Inventory inventory)  {
 
-		String query = "(self.location = ? OR self.detailsLocation = ?)";
-		List<Object> params = new ArrayList<Object>();
+		String query = "(self.stockLocation = ? OR self.detailsStockLocation = ?)";
+		List<Object> params = new ArrayList<>();
 
-		params.add(inventory.getLocation());
-		params.add(inventory.getLocation());
+		params.add(inventory.getStockLocation());
+		params.add(inventory.getStockLocation());
 
 		if (inventory.getExcludeOutOfStock()) {
 			query += " and self.currentQty > 0";
@@ -439,19 +442,19 @@ public class InventoryService {
 			params.add(inventory.getProductCategory());
 		}
 
-		return Beans.get(LocationLineRepository.class).all().filter(query, params.toArray()).fetch();
+		return Beans.get(StockLocationLineRepository.class).all().filter(query, params.toArray()).fetch();
 
 	}
 
 
-	public InventoryLine createInventoryLine(Inventory inventory, LocationLine locationLine)  {
+	public InventoryLine createInventoryLine(Inventory inventory, StockLocationLine stockLocationLine)  {
 
 		return inventoryLineService.createInventoryLine(
 				inventory,
-				locationLine.getProduct(),
-				locationLine.getCurrentQty(),
-				locationLine.getRack(),
-				locationLine.getTrackingNumber());
+				stockLocationLine.getProduct(),
+				stockLocationLine.getCurrentQty(),
+				stockLocationLine.getRack(),
+				stockLocationLine.getTrackingNumber());
 	}
 
 
@@ -464,19 +467,18 @@ public class InventoryService {
 	@Transactional
 	public void exportInventoryAsCSV(Inventory inventory) throws IOException {
 
-		List<String[]> list = new ArrayList<String[]>();
+		List<String[]> list = new ArrayList<>();
 
 		for (InventoryLine inventoryLine:inventory.getInventoryLineList()) {
-			String item[] = new String[8];
+			String item[] = new String[7];
 			
 			item[0] = (inventoryLine.getProduct() == null) ? "" : inventoryLine.getProduct().getName();
 			item[1] = (inventoryLine.getProduct() == null) ? "" : inventoryLine.getProduct().getCode();
-			item[2] = "";
+			item[2] = (inventoryLine.getRack() == null) ? "" : inventoryLine.getRack();
 			item[3] = (inventoryLine.getTrackingNumber() == null) ? "" : inventoryLine.getTrackingNumber().getTrackingNumberSeq();
 			item[4] = inventoryLine.getCurrentQty().toString();
-			item[5] = "";
-			item[6] = inventoryLine.getRealQty().toString();
-			item[7] = (inventoryLine.getDescription() == null) ? "" : inventoryLine.getDescription();
+			item[5] = inventoryLine.getRealQty().toString();
+			item[6] = (inventoryLine.getDescription() == null) ? "" : inventoryLine.getDescription();
 			list.add(item);
 		}
 
@@ -487,7 +489,8 @@ public class InventoryService {
 
 		log.debug("File Located at: {}" , path);
 
-		CsvTool.csvWriter(filePath,fileName,',','"',null,list);
+		String[] headers = {"Product Name", "Product Code", "Rack", "Tracking Number", "Current Quantity", "Real Quantity", "Description"};
+		CsvTool.csvWriter(filePath, fileName, ';', '"', headers, list);
 
 		try (InputStream is = new FileInputStream(file)) {
 			Beans.get(MetaFiles.class).attach(is, fileName, inventory);

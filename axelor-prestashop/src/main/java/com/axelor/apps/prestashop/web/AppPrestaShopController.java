@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import javax.xml.transform.TransformerException;
 
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.prestashop.app.AppPrestaShopService;
-import com.axelor.apps.prestashop.service.PrestaShopWebserviceException;
+import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -31,10 +31,17 @@ public class AppPrestaShopController {
 	@Inject
 	private AppPrestaShopService service;
 	
+	/**
+	 * Test connection with prestashop
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws PrestaShopWebserviceException 
+	 * @throws TransformerException
+	 */
 	public void testConnection(ActionRequest request, ActionResponse response) throws PrestaShopWebserviceException, TransformerException {
 		
 		AppPrestashop ps = request.getContext().asType(AppPrestashop.class);
-		
 		boolean test = service.connection(ps);
 		
 		if(test) {
@@ -44,6 +51,12 @@ public class AppPrestaShopController {
 		}
 	}
 	
+	/**
+	 * Validate url which are set in configuration
+	 * 
+	 * @param request
+	 * @param response
+	 */
 	public void validUrl(ActionRequest request, ActionResponse response) {
 		
 		AppPrestashop ps = request.getContext().asType(AppPrestashop.class);

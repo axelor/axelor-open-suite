@@ -8,8 +8,6 @@
   <entity name="Event" lang="java" extends="com.axelor.apps.base.db.ICalendarEvent">
 
 <!-- Commun   -->
-	<integer name="importId" />
-  	
 	<datetime name="limitDateT" title="Limit Date"/>
   	
   	<long name="duration" title="Duration"/>
@@ -28,7 +26,7 @@
 	
 	<one-to-many name="eventReminderList" ref="com.axelor.apps.crm.db.EventReminder" mappedBy="event" title="Reminders"/>
 	
-	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
 	<many-to-one name="lead" ref="com.axelor.apps.crm.db.Lead" title="Lead"/>
 	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" title="Supplier"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -50,14 +50,6 @@ public interface ConfiguratorService {
             throws AxelorException;
 
     /**
-     * Test a formula, with the script variables defined
-     * in the values map.
-     * @param groovyFormula
-     * @param values
-     */
-    void testFormula(String groovyFormula, ScriptBindings values) throws AxelorException;
-
-    /**
      * Generate the product, and the bill of material
      * if we are in the right module
      * @param configurator
@@ -73,13 +65,6 @@ public interface ConfiguratorService {
      * @param jsonIndicators
      */
     void generateProduct(Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, JSONException, ClassNotFoundException, AxelorException;
-
-    /**
-     * Return the right configurator for the given product
-     * @param product
-     * @return the configurator or null if not found.
-     */
-    Configurator getConfiguratorFromProduct(Product product);
 
     /**
      * Generate a product, then generate a sale order line

@@ -22,6 +22,7 @@
 	</selection>
 	
 	<selection name="fleet.vehicle.contract.cost.frequency.select">
+		<option value="0">None</option>
 		<option value="1">Daily</option>
 		<option value="2">Weekly</option>
 		<option value="3">Monthly</option>

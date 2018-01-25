@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,8 +32,10 @@ public class LogisticalFormLineController {
 	public void setQty(ActionRequest request, ActionResponse response) {
 		try {
 			LogisticalFormLine logisticalFormLine = getLogisticalFormLine(request);
-			BigDecimal qty = Beans.get(LogisticalFormLineService.class).getUnspreadQty(logisticalFormLine);
-			response.setValue("qty", qty);
+			if (logisticalFormLine.getQty() == null) {
+				BigDecimal qty = Beans.get(LogisticalFormLineService.class).getUnspreadQty(logisticalFormLine);
+				response.setValue("qty", qty);
+			}
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}

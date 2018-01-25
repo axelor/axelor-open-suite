@@ -16,10 +16,10 @@
 	
 	<form title="Task" id="project-team-task-grid" name="team-task-form"  model="com.axelor.team.db.TeamTask" onNew="action-task-defaults">
 		<toolbar>
-			<button name="grabEvent" icon="fa-suitcase" />
-			<button name="start" icon="fa-play"/>
-			<button name="accept" icon="fa-check"/>
-			<button name="stop" icon="fa-power-off"/>
+			<button name="grabEvent" icon="fa-suitcase" onClick="action-team-task-record-assigned-yourself,save"/>
+			<button name="start" icon="fa-play" onClick="action-team-task-record-status-in-progress,save"/>
+			<button name="accept" icon="fa-check" onClick="action-team-task-record-status-closed,save"/>
+			<button name="stop" icon="fa-power-off" onClick="action-team-task-record-status-canceled,save"/>
 		</toolbar>
 		<menubar>
 	        <menu title="Tools">   
@@ -34,13 +34,13 @@
                 </editor>
             </field>
 			<field name="parentTask" colSpan="6" readonlyIf="project == null" onSelect="action-task-attrs-project-parent-task-configurations"/>
-			<field name="project" colSpan="6" onChange="action-task-record-project-configurations" required="true"/>
+			<field name="project" canEdit="false" colSpan="6" onChange="action-task-record-project-configurations" required="true"/>
 		</panel>
 		
 		<panel>
 			<panel name="context" title="Context" colSpan="12">
 				<field name="team" form-view="team-form" grid-view="grid-form" colSpan="6" readonly="true"/>
-				<field name="assignedTo" form-view="user-form" grid-view="user-grid" colSpan="6" readonlyIf="project == null" required="true" onSelect="action-task-attrs-project-assigned-to-configurations"/>
+				<field name="assignedTo" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" colSpan="6" readonlyIf="project == null" required="true" onSelect="action-task-attrs-project-assigned-to-configurations"/>
 				<spacer/>
 				<field name="createdBy" readonly="true" title="Created By" colSpan="6"/>
 				<field name="createdOn" title="Created on" colSpan="6"/>
@@ -48,8 +48,7 @@
 			<panel title=" " colSpan="12">
 				<field name="taskDate" colSpan="4" required="true" title="Task date" onChange="action-task-attrs-set-task-duration"/>
 				<field name="taskEndDate" colSpan="4"  onChange="action-task-attrs-set-task-duration"/>
-				<field name="taskDuration" colSpan="4" title="Task duration" widget="duration" x-big="true" onChange="action-task-attrs-set-dates"/>
-				<field name="taskDeadline" colSpan="4"/>
+				<field name="taskDeadline" title="Task deadline" colSpan="4"/>
 			</panel>
 			<panel title="Description" colSpan="12">
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>
@@ -59,11 +58,21 @@
 		<panel canCollapse="true">
 			<panel-dashlet action="action-view-show-task-tree" colSpan="12" title="Task Tree"/>
 		</panel>
-		<panel title="Dependencies" canCollapse="true" sidebar="true">
-			<field name="startToStartSet" colSpan="12" widget="TagSelect"/>
-			<field name="finishToStartSet" colSpan="12" widget="TagSelect"/>
-			<field name="startToFinishSet" colSpan="12" widget="TagSelect"/>
-			<field name="finishToFinishSet" colSpan="12" widget="TagSelect"/>
+		<panel sidebar="true" name="attributes" title="Attributes">
+			<field name="status" colSpan="6" required="true"/>
+			<spacer/>
+			<field name="priority" colSpan="6" required="true"/>
+			<field name="category" colSpan="6" onSelect="action-task-attrs-project-category-configurations"/>
+			<field name="progressSelect" colSpan="12" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
+			<panel name="planning" title="Planning">
+				<field name="plannedProgress" widget="progress" colSpan="12" hidden="true"/>
+				<field name="totalPlannedHrs" if-module="axelor-human-resource" if="__config__.app.isApp('employee')">
+				<viewer><![CDATA[
+            		<span>{{record.totalPlannedHrs}}</span><span x-translate>Hours</span> 
+        		]]></viewer>
+				</field>
+				<label name="hours" title="Hours" showIf="!$readonly()" />
+			</panel>
 		</panel>
 
         <panel name="followers" title="Followers" sidebar="true">
@@ -75,19 +84,15 @@
             <field name="salePrice" colSpan="6"/>
             <field name="quantity" colSpan="6"/>
             <field name="unit" form-view="unit-form" grid-view="unit-grid" colSpan="6"/>
+			<field name="currency" colSpan="6"/>
         </panel>
 
-		<panel sidebar="true" name="attributes" title="Attributes">
-			<field name="status" colSpan="6" required="true"/>
-			<spacer/>
-			<field name="priority" colSpan="6" required="true"/>
-			<field name="category" colSpan="6" onSelect="action-task-attrs-project-category-configurations"/>
-			<field name="progressSelect" colSpan="12" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
-            <panel name="planning" title="Planning">
-                <field name="plannedProgress" widget="progress" colSpan="12" hidden="true"/>
-                <field name="totalPlannedHrs" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" colSpan="12"/>
-            </panel>
-	    </panel>
+		<panel title="Dependencies" canCollapse="true" sidebar="true">
+			<field name="startToStartSet" colSpan="12" widget="TagSelect"/>
+			<field name="finishToStartSet" colSpan="12" widget="TagSelect"/>
+			<field name="startToFinishSet" colSpan="12" widget="TagSelect"/>
+			<field name="finishToFinishSet" colSpan="12" widget="TagSelect"/>
+		</panel>
 
 		<panel-mail>
 			<mail-messages/>
@@ -101,11 +106,27 @@
 		<field name="name"/>
 	</gantt> 
 	
+	<gantt name="project-task-gantt" title="Project Task"
+		model="com.axelor.team.db.TeamTask" taskStart="taskDate" taskEnd="taskEndDate"  taskDuration="durationHours" taskParent="parentTask" taskSequence="sequence"
+		taskProgress="plannedProgress" x-start-to-start="startToStartSet" x-finish-to-start="finishToStartSet"
+		x-start-to-finish="startToFinishSet" x-finish-to-finish="finishToFinishSet">
+		<field name="name" />
+		<field name="project"/>
+	</gantt>
+
+	<gantt name="user-task-gantt" title="User Task"
+		model="com.axelor.team.db.TeamTask" taskStart="taskDate" taskEnd="taskEndDate"  taskDuration="durationHours" taskParent="parentTask" taskSequence="sequence"
+		taskProgress="plannedProgress" x-start-to-start="startToStartSet" x-finish-to-start="finishToStartSet"
+		x-start-to-finish="startToFinishSet" x-finish-to-finish="finishToFinishSet">
+		<field name="name" />
+		<field name="assignedTo" />
+	</gantt>
+	
 	<action-view name="action-view-show-task-tree" title="Task Tree" model="com.axelor.team.db.TeamTask">	
 		<view type="tree" name="task-tree"/>
     	<view type="form" name="team-task-form"/>
-    	<domain>self.task.id = :id</domain>
-     	<context name="id" expr="eval: id"/>
+    	<domain>self.id = :_id</domain>
+     	<context name="_id" expr="eval: id"/>
 	</action-view>
 	
 	<tree name="task-tree" title="Tasks">
@@ -113,23 +134,23 @@
     	<column name="name" type="string"/>
     	<column name="assignedTo" type="reference"/>
     	<column name="progress" type="decimal"/>
-		
-		<node model="com.axelor.team.db.TeamTask" domain="self.task.id = :id" onClick="action-task-view">
+
+		<node model="com.axelor.team.db.TeamTask" domain="self.id = :_id" onClick="action-team-task-view-task">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
-			<field name="progress" as="progress" />
+			<field name="progressSelect" as="progress" />
 		</node>    	
 		
-		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-task-view">
+		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-team-task-view-task">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
-			<field name="progress" as="progress"/>
+			<field name="progressSelect" as="progress"/>
 		</node>
-		
-    
+
+
 	</tree>
-	
-	<action-view name="action-task-view" title="Tasks" model="com.axelor.team.db.TeamTask">
+
+	<action-view name="action-team-task-view-task" title="Tasks" model="com.axelor.team.db.TeamTask">
     	<view type="form" name="team-task-form"/>
         <view-param name="popup" value="reload"/>
         <view-param name="show-toolbar" value="false"/>
@@ -137,10 +158,17 @@
 	  	<view-param name="popup-save" value="false"/>
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
-    
-    <action-view name="action-team-task-edit-task" title="Task" model="com.axelor.team.db.TeamTask">
+
+	<action-view name="action-team-task-open-task" title="Task" model="com.axelor.team.db.TeamTask">
+		<view type="form" name="team-task-form"/>
+		<context name="_showRecord" expr="eval: id"/>
+	</action-view>
+
+	<action-view name="action-team-task-edit-task" title="Task" model="com.axelor.team.db.TeamTask">
     	<view type="form" name="team-task-form"/>
         <view-param name="popup" value="reload"/>
+		<view-param name="show-toolbar" value="true"/>
+		<view-param name="forceEdit" value="true" />
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
 	
@@ -198,5 +226,20 @@
 		<context name="_task" expr="eval:__self__"/>
 	</action-view>
 	
+	<action-record name="action-team-task-record-assigned-yourself" model="com.axelor.team.db.TeamTask">
+		<field name="assignedTo" expr="eval: __user__"/>
+	</action-record>
 	
+	<action-record name="action-team-task-record-status-in-progress" model="com.axelor.team.db.TeamTask">
+		<field name="status" expr="in-progress"/>
+	</action-record>
+
+	<action-record name="action-team-task-record-status-closed" model="com.axelor.team.db.TeamTask">
+		<field name="status" expr="closed"/>
+	</action-record>
+
+	<action-record name="action-team-task-record-status-canceled" model="com.axelor.team.db.TeamTask">
+		<field name="status" expr="canceled"/>
+	</action-record>
+
 </object-views>

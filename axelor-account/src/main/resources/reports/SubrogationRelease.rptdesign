@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706142203</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -649,11 +649,13 @@ order by account_invoice.invoice_date, account_invoice.due_date, account_invoice
 	base_partner.seller_code,
 	base_currency.code as currency_code
 from account_subrogation_release
-join base_company
+left join base_company
 on account_subrogation_release.company = base_company.id
-join base_partner
-on base_company.factor = base_partner.id
-join base_currency
+left join account_account_config
+on account_account_config.company = base_company.id
+left join base_partner
+on account_account_config.factor_partner = base_partner.id
+left join base_currency
 on base_company.currency = base_currency.id
 where account_subrogation_release.id = ?]]></xml-property>
         </oda-data-set>
@@ -773,6 +775,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         </cell>
                         <cell id="234">
                             <text id="250">
+                                <property name="textAlign">right</property>
                                 <property name="contentType">html</property>
                                 <text-property name="content"><![CDATA[<value-of>new Date()</value-of>]]></text-property>
                             </text>
@@ -1203,7 +1206,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="paddingRight">20pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Currency</property>
-                                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                            <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                                         </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">in_tax_total</property>
@@ -1277,7 +1280,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="paddingRight">20pt</property>
                                     <structure name="numberFormat">
                                         <property name="category">Currency</property>
-                                        <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                        <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                                     </structure>
                                     <property name="textAlign">right</property>
                                     <property name="resultSetColumn">Aggregation</property>
@@ -1337,7 +1340,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="paddingRight">20pt</property>
                                     <structure name="numberFormat">
                                         <property name="category">Currency</property>
-                                        <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                        <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                                     </structure>
                                     <property name="textAlign">right</property>
                                     <property name="resultSetColumn">Aggregation_1</property>
@@ -1397,7 +1400,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="paddingRight">20pt</property>
                                     <structure name="numberFormat">
                                         <property name="category">Currency</property>
-                                        <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                        <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                                     </structure>
                                     <property name="textAlign">right</property>
                                     <property name="resultSetColumn">Aggregation_2</property>

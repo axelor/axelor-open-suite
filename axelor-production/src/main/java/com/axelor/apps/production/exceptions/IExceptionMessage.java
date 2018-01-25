@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -65,8 +65,8 @@ public interface IExceptionMessage {
 	 * Production Config Service
 	 */
 	static final String PRODUCTION_CONFIG_1 = /*$$(*/ "You must configure a production for company %s" /*)*/;
-	static final String PRODUCTION_CONFIG_2 = /*$$(*/ "You must configure a Production Virtual Location for company %s" /*)*/;
-	static final String PRODUCTION_CONFIG_3 = /*$$(*/ "You must configure a waste location for company %s." /*)*/;
+	static final String PRODUCTION_CONFIG_2 = /*$$(*/ "You must configure a production virtual stock location for company %s" /*)*/;
+	static final String PRODUCTION_CONFIG_3 = /*$$(*/ "You must configure a waste stock location for company %s." /*)*/;
 
 	/**
 	 * Manuf Order Controller
@@ -79,7 +79,7 @@ public interface IExceptionMessage {
 	static final String OPERATION_ORDER_1 = /*$$(*/ "Please select the Operation order(s) to print." /*)*/;
 
 	/**
-	 * Sale Order Line Controller
+	 * Sale order line Controller
 	 */
 	static final String SALE_ORDER_LINE_1 = /*$$(*/ "Personalized nomenclature created" /*)*/;
 

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,12 +25,14 @@ import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
+import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.BankOrderLine;
+import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.AccountIdentification3Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.AmountType2Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.BranchAndFinancialInstitutionIdentification3;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.CashAccount7;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.CreditTransferTransactionInformation1;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.CreditorReferenceInformation1;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.CurrencyAndAmount;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.Document;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.FinancialInstitutionIdentification5Choice;
@@ -46,10 +48,6 @@ import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.PaymentTypeInformati
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.RemittanceInformation1;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.ServiceLevel1Code;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.ServiceLevel2Choice;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.StructuredRemittanceInformation6;
-import com.axelor.apps.bankpayment.db.BankOrder;
-import com.axelor.apps.bankpayment.db.BankOrderLine;
-import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;

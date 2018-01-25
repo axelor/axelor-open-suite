@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,13 +19,20 @@ package com.axelor.apps.suppliermanagement.service;
 
 import java.math.BigDecimal;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.suppliermanagement.db.IPurchaseOrderSupplierLine;
 import com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine;
 import com.axelor.apps.suppliermanagement.db.repo.PurchaseOrderSupplierLineRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -35,12 +42,18 @@ public class PurchaseOrderSupplierLineService {
 	PurchaseOrderSupplierLineRepository poSupplierLineRepo;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void accept(PurchaseOrderSupplierLine purchaseOrderSupplierLine)  {
+	public void accept(PurchaseOrderSupplierLine purchaseOrderSupplierLine) throws AxelorException {
 		
 		PurchaseOrderLine purchaseOrderLine = purchaseOrderSupplierLine.getPurchaseOrderLine();
 
 		purchaseOrderLine.setEstimatedDelivDate(purchaseOrderSupplierLine.getEstimatedDelivDate());
-		purchaseOrderLine.setSupplierPartner(purchaseOrderSupplierLine.getSupplierPartner());
+
+		Partner supplierPartner = purchaseOrderSupplierLine.getSupplierPartner();
+		Company company = purchaseOrderLine.getPurchaseOrder().getCompany();
+		if (Beans.get(BlockingService.class).getBlocking(supplierPartner, company, BlockingRepository.PURCHASE_BLOCKING) != null) {
+		    throw new AxelorException(IException.FUNCTIONNAL, I18n.get(IExceptionMessage.SUPPLIER_BLOCKED), supplierPartner);
+		}
+		purchaseOrderLine.setSupplierPartner(supplierPartner);
 		
 		purchaseOrderLine.setPrice(purchaseOrderSupplierLine.getPrice());
 		purchaseOrderLine.setExTaxTotal(PurchaseOrderLineServiceImpl.computeAmount(purchaseOrderLine.getQty(), purchaseOrderLine.getPrice()));

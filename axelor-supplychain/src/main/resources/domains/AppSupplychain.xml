@@ -10,7 +10,7 @@
 		<boolean name="customerStockMoveGenerationAuto" title="Generate customer deliveries automatically" default="false"/>
 		<boolean name="supplStockMoveMgtOnSO" title="Supplier arrivals management" default="false"/>
 		<boolean name="supplierStockMoveGenerationAuto" title="Generate supplier arrivals automatically" default="false"/>
-		<boolean name="allowSusbcriptionSaleOrder" title="Allow Subscriptions for Sale Orders" default="false"/>
+		<boolean name="allowSusbcriptionSaleOrder" title="Allow Subscriptions for Sale orders" default="false"/>
 		<boolean name="checkSaleStocks" title="Check stocks in a sale order" default="false"/>
 		<boolean name="generateInvoiceFromStockMove" title="Generate invoice from stock move" default="false"/>
 		
@@ -33,6 +33,7 @@
 				 title="Create purchase counterpart on this status"
 				 selection="sale.order.status.select"/>
 		<boolean name="manageStockReservation" title="Manage stock reservation"/>
+		<many-to-one name="cancelReasonOnChangingSaleOrder" ref="com.axelor.apps.base.db.CancelReason"/>
 	</entity>
 
 </domain-models>

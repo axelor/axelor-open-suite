@@ -12,12 +12,13 @@
   		<decimal name="price" title="Unit price" precision="20" scale="10"/>
   		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
   		<decimal name="exTaxTotal" title="Total W.T."/>
-		<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Original Sale Order"/>
+		<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Original Sale order"/>
 		<integer name="projInvTypeSelect" selection="project.invoicing.type.select" title="Invoicing Type" default="1"/>
 		<decimal name="totalSaleOrdersFinalized" title="Finalized Orders Total" readonly="true"/>
 		<decimal name="totalSaleOrdersConfirmed" title="Confirmed Orders Total" readonly="true"/>
 		<decimal name="totalSaleOrdersInvoiced" title="Invoiced Orders Total" readonly="true"/>
-		
+		<many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
+
 		<decimal name="totalPurchaseOrdersFinalized" title="Finalized Orders Total" readonly="true"/>
 		<decimal name="totalPurchaseOrdersConfirmed" title="Confirmed Orders Total" readonly="true"/>
 		<decimal name="totalPurchaseOrdersInvoiced" title="Invoiced Orders Total" readonly="true"/>
@@ -43,6 +44,7 @@
 	  	<one-to-many name="purchaseOrderLineList" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order lines" mappedBy="project" orphanRemoval="false"/>
 	  	<one-to-many name="saleOrderLineList" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sale order lines" mappedBy="project" orphanRemoval="false"/>
 	  	<one-to-many name="expensesLineList" ref="com.axelor.apps.hr.db.ExpenseLine" title="Expense lines" mappedBy="project" orphanRemoval="false"/>
+		<one-to-many name="invoiceLineList" ref="com.axelor.apps.account.db.InvoiceLine" title="Invoice lines" mappedBy="project" orphanRemoval="false"/>
 		
 		
 		<boolean name="isBusinessProject" title="Business project" />
@@ -54,6 +56,9 @@
 			public static final int INVOICING_TYPE_TIME_BASED = 2;
 			public static final int INVOICING_TYPE_FLAT_RATE = 3;
 		
+   			public static final int TASK_PER_LINE_ALONE = 1;
+   			public static final int TASK_PER_LINE_PHASE = 2;
+   			public static final int TASK_PER_LINE_TASK = 3;
 		]]></extra-code>
 		
 		

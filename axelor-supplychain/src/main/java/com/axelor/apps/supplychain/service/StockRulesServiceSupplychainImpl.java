@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,34 +17,36 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.List;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.purchase.db.SupplierCatalog;
-
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
-import com.axelor.apps.stock.db.Location;
-import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
 
 public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 
@@ -73,22 +75,22 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException  {
+	public void generatePurchaseOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type) throws AxelorException  {
 
-		Location location = locationLine.getLocation();
+		StockLocation stockLocation = stockLocationLine.getStockLocation();
 
 		//TODO à supprimer après suppression des variantes
-		if(location == null)  {
+		if(stockLocation == null)  {
 			return;
 		}
 
-		StockRules stockRules = this.getStockRules(product, location, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
+		StockRules stockRules = this.getStockRules(product, stockLocation, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
 
 		if(stockRules == null)  {
 			return;
 		}
 
-		if(this.useMinStockRules(locationLine, stockRules, qty, type))  {
+		if(this.useMinStockRules(stockLocationLine, stockRules, qty, type))  {
 
 			if(stockRules.getOrderAlertSelect() ==  StockRulesRepository.ORDER_ALERT_ALERT)  {
 
@@ -111,12 +113,12 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 			else if(stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PURCHASE_ORDER)  {
 
 				BigDecimal minReorderQty = getDefaultSupplierMinQty(product);
-				BigDecimal qtyToOrder = this.getQtyToOrder(qty, locationLine, type, stockRules, minReorderQty);
+				BigDecimal qtyToOrder = this.getQtyToOrder(qty, stockLocationLine, type, stockRules, minReorderQty);
 				Partner supplierPartner = product.getDefaultSupplierPartner();
 
 				if(supplierPartner != null)  {
 
-					Company company = location.getCompany();
+					Company company = stockLocation.getCompany();
 
 					PurchaseOrder purchaseOrder = purchaseOrderRepo.save(purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
 							this.user,
@@ -126,9 +128,9 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 							this.today.plusDays(supplierPartner.getDeliveryDelay()),
 							stockRules.getName(),
 							null,
-							location,
+							stockLocation,
 							this.today,
-							supplierPartner.getPurchasePriceList(),
+							Beans.get(PartnerPriceListService.class).getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
 							supplierPartner));
 
 					purchaseOrder.addPurchaseOrderLineListItem(

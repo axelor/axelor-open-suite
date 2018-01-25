@@ -14,8 +14,8 @@
 <form  onNew="action-accounting-batch-record-on-new" name="accounting-batch-form" title="Accounting Batch" model="com.axelor.apps.account.db.AccountingBatch">
 	<panel name="main" >
 		<field name="actionSelect" onChange="action-accounting-batch-record-default-currency"/>
-		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-		<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+		<field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
+		<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 		<field name="bankDetails" hideIf="actionSelect &amp;&amp; ([14,15,16,17,18,20].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitDataTypeSelect == 2))" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 		<field name="archived" title="Archived ?"/>
 	</panel>
@@ -38,7 +38,7 @@
 			<field name="creditTransferTypeSelect"/>
 			<field name="customerReimbursementTypeSelect" showIf="$contains([3], creditTransferTypeSelect)" />
 			<field name="paymentMode" domain="self.typeSelect in (2,9)" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-			<field name="period" showIf="$contains([1], creditTransferTypeSelect)" form-view="period-form" grid-view="period-grid"/>
+			<field name="period" showIf="$contains([1], creditTransferTypeSelect)" form-view="period-form" grid-view="period-grid" canEdit="false"/>
 			<field name="dueDate" showIf="$contains([2, 3], creditTransferTypeSelect)" />
 			<field name="currency" showIf="$contains([2, 3], creditTransferTypeSelect)" />
 			<field name="includeOtherBankAccounts" showIf="$contains([1, 2, 3], creditTransferTypeSelect)" if="__config__.app.getApp('base').getManageMultiBanks()" />
@@ -66,6 +66,7 @@
 		</panel>
 		<panel name="bankStatementPage" title="Bank statement retrieval configuration" hideIf="actionSelect != 20">
 			<field name="ebicsPartnerSet" canNew="false" widget="TagSelect" colSpan="12" domain="self.transportEbicsUser.statusSelect = 3"/>
+            <field name="bankStatementFileFormatSet" canNew="false" widget="TagSelect" colSpan="12"/>
 		</panel>
 		<panel name="information" title="Information"  >
 			<field name="createdOn" title="Created on"/>
@@ -141,5 +142,5 @@
        	<attribute name="domain" expr="eval: &quot;self.id = ${company?.defaultBankDetails?.id} AND self.active = true&quot;" for="bankDetails"
         	if="company.bankDetailsSet.isEmpty()"/>
     </action-attrs>
-	
+
 </object-views>

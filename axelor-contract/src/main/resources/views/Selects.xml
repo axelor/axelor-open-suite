@@ -39,7 +39,7 @@
 		<option value="supplierContract">Supplier contracts</option>
 	</selection>
 	
-	<selection name='iinvoice.operation.sub.type.select' id="fnath.iinvoice.operation.sub.type.select">
+	<selection name='iinvoice.operation.sub.type.select' id="contract.iinvoice.operation.sub.type.select">
 		<option value='4'>Contract invoice</option>
 		<option value='5'>Contract closing invoice</option>
 	</selection>

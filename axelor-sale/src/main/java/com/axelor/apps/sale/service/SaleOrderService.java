@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,7 +25,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.sale.db.CancelReason;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -100,8 +100,6 @@ public interface SaleOrderService {
 	
 	public SaleOrder mergeSaleOrders(List<SaleOrder> saleOrderList, Currency currency, Partner clientPartner, Company company, Partner contactPartner, PriceList priceList, Team team) throws AxelorException;
 
-	public String getLanguageForPrinting(SaleOrder saleOrder);
-	
 	public String getFileName(SaleOrder saleOrder);
 
 	@Transactional
@@ -129,7 +127,29 @@ public interface SaleOrderService {
 	 * @return  total price from the sale order lines
 	 */
 	public BigDecimal getTotalSaleOrderPrice(SaleOrder saleOrder);
+
+	/**
+	 * Enable edit order.
+	 * 
+	 * @param saleOrder
+	 * @throws AxelorException
+	 */
+	void enableEditOrder(SaleOrder saleOrder) throws AxelorException;
+
+    /**
+     * Validate changes.
+     * 
+     * @param saleOrder
+     * @param saleOrderView
+     * @throws AxelorException
+     */
+    void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException;
+
+    /**
+     * Sort detail lines by sequence.
+     * 
+     * @param saleOrder
+     */
+    void sortSaleOrderLineList(SaleOrder saleOrder);
+
 }
-
-
-

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,8 +35,10 @@ import com.axelor.studio.db.WkfTransition;
 import com.axelor.studio.db.repo.WkfNodeRepository;
 import com.axelor.studio.db.repo.WkfRepository;
 import com.axelor.studio.db.repo.WkfTransitionRepository;
+import com.axelor.studio.exception.IExceptionMessage;
 import com.axelor.studio.service.wkf.WkfDesignerService;
 import com.axelor.studio.service.wkf.WkfService;
+import com.axelor.studio.translation.ITranslation;
 import com.google.inject.Inject;
 
 public class WkfController {
@@ -80,7 +82,7 @@ public class WkfController {
 							node.getWkf().getId(), node.getXmlId()).fetchOne();
 			if (found != null) {
 				Map<String, Object> view = ActionView
-						.define(I18n.get("Edit Node"))
+						.define(I18n.get(ITranslation.WKF_EDIT_NODE))
 						.add("form", "wkf-node-form")
 						.model(WkfNode.class.getName())
 						.context("_showRecord", found.getId())
@@ -88,10 +90,10 @@ public class WkfController {
 						.param("forceEdit", "true").map();
 				response.setView(view);
 			} else {
-				response.setFlash(I18n.get("Workflow is not saved"));
+				response.setFlash(I18n.get(IExceptionMessage.WKF_1));
 			}
 		} else {
-			response.setFlash(I18n.get("Workflow is not saved"));
+			response.setFlash(I18n.get(IExceptionMessage.WKF_1));
 		}
 	}
 
@@ -105,7 +107,7 @@ public class WkfController {
 		if (found != null) {
 
 			Map<String, Object> view = ActionView
-					.define(I18n.get("Edit Transition"))
+					.define(I18n.get(ITranslation.WKF_EDIT_TRANSITION))
 					.add("form", "wkf-transition-form")
 					.model(WkfTransition.class.getName())
 					.context("_showRecord", found.getId())
@@ -114,7 +116,7 @@ public class WkfController {
 
 			response.setView(view);
 		} else {
-			response.setFlash(I18n.get("Workflow is not saved"));
+			response.setFlash(I18n.get(IExceptionMessage.WKF_1));
 		}
 	}
 

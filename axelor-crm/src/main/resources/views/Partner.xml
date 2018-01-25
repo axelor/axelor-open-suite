@@ -21,9 +21,10 @@
     <form name="incl-event-actions-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" id="incl-event-actions-crm-partner-form" >
         <menubar>
 	        <menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
-	            <item title="Schedule Event" action="save,action-partner-view-schedule-event" readonlyIf="id == null"/>
-	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null"/>
-	            <item title="Generate Project" action="action-partner-view-generate-project" readonlyIf="id == null || id &lt; 1" if-module="axelor-project" />
+	            <item title="Schedule Event" action="save,action-partner-view-schedule-event" readonlyIf="id == null" if="__config__.app.isApp('crm')"/>
+	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null" if="__config__.app.isApp('crm')"/>
+	            <item title="Create order" action="save,action-partner-view-create-order" readonlyIf="id == null || id &lt; 1" if-module="axelor-sale" if="__config__.app.isApp('sale')" />
+	            <item title="Generate Project" action="action-partner-method-generate-project" readonlyIf="id == null || id &lt; 1" if-module="axelor-project" if="__config__.app.isApp('project')"/>
 	            <item title="Send email" action="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message" />
 	        </menu>
 	        
@@ -43,12 +44,19 @@
 		<context name="_internalUserId" expr="eval: __user__.id"/>
     </action-view>
     
+    <!--  CREATE SALE OBJECT FROM PARTNER -->
+    
+    <action-view name="action-partner-view-create-order" title="Create order (${ fullName })" model="com.axelor.apps.sale.db.SaleOrder">
+    	<view type="form" name="sale-order-form-partner"/>
+    	<context name="_partner" expr="eval: __this__"/>
+    </action-view>
+    
     <!--     PORTLET -->
     
     <action-view name="action-partner-view-upcoming-events" title="Upcoming events" model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
-		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) and self.startDateTime &gt; :_todayTime</domain>
+		<domain>(self.partner.id = :id OR self.contactPartner.id = :id) and self.startDateTime &gt; :_todayTime</domain>
 		<context name="id" expr="eval: id"/>
 		<context name="_todayTime" expr="eval: __datetime__"/>
 	</action-view>
@@ -64,7 +72,7 @@
 	<action-view name="action-partner-view-historical-events-completed" title="Historical events completed" model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
-		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) and self.endDateTime &lt; :_todayTime</domain>
+		<domain>(self.partner.id = :id OR self.contactPartner.id = :id) and self.endDateTime &lt; :_todayTime</domain>
 		<context name="id" expr="eval: id"/>
 		<context name="_todayTime" expr="eval: __datetime__"/>
 	</action-view>
@@ -83,6 +91,17 @@
 		<domain>self.partner.id = :id</domain>
 		<context name="id" expr="eval: id"/>
 	</action-view>
+		
+   	<action-view name="action-partner-view-events" title="Events" model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="list-event-grid"/>
+		<view type="form" name="event-form"/>
+	  	<domain>self.partner.id = :_id</domain>
+	</action-view>
+	
+	<action-view name="action-contact-view-events" title="Events" model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="list-event-grid"/>
+		<view type="form" name="event-form"/>
+		<domain>self.contactPartner.id = :_id</domain>
+	</action-view>
    	
-
 </object-views>

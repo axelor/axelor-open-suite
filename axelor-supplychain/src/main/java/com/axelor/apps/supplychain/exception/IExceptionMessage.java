@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,20 +26,20 @@ package com.axelor.apps.supplychain.exception;
  */
 public interface IExceptionMessage {
 	/**
-	 * Purchase Order Invoice Service and controller
+	 * Purchase order Invoice Service and controller
 	 */
 
 	static final String PO_INVOICE_1 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
 	static final String PO_INVOICE_2 = /*$$(*/ "Invoice created" /*)*/;
 
 	/**
-	 * Purchase Order Service
+	 * Purchase order Service
 	 */
 	static final String PURCHASE_ORDER_1 = /*$$(*/ "%s please configure a virtual supplier stock location for the company %s" /*)*/;
 	static final String PURCHASE_ORDER_2 = /*$$(*/ "Error : you have exceeded the budget %s for this period" /*)*/;
 
 	/**
-	 * Sale Order Invoice Service
+	 * Sale order Invoice Service
 	 */
 	static final String SO_INVOICE_6 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
 	static final String SO_INVOICE_NO_LINES_SELECTED = /*$$(*/ "There are no lines to invoice" /*)*/;
@@ -51,7 +51,7 @@ public interface IExceptionMessage {
 
 
 	/**
-	 * Sale Order Purchase Service
+	 * Sale order Purchase Service
 	 */
 	static final String SO_PURCHASE_1 = /*$$(*/ "Please, select a supplier for the line %s" /*)*/;
 	static final String SO_LINE_PURCHASE_AT_LEAST_ONE = /*$$(*/ "At least one sale order line must be selected" /*)*/;
@@ -80,16 +80,16 @@ public interface IExceptionMessage {
 	/**
 	 * Batch Outgoing stock move invoicing
 	 */
-	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_REPORT = /*$$(*/ "Outgoing stock move invoicing report: " /*)*/;
-	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_SINGULAR = /*$$(*/ "%d outgoing stock move processed successfully, " /*)*/;
-	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_PLURAL = /*$$(*/ "%d outgoing stock moves processed successfully, " /*)*/;
+	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_REPORT = /*$$(*/ "Outgoing stock move invoicing report:" /*)*/;
+	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_SINGULAR = /*$$(*/ "%d outgoing stock move processed successfully," /*)*/;
+	String BATCH_OUTGOING_STOCK_MOVE_INVOICING_DONE_PLURAL = /*$$(*/ "%d outgoing stock moves processed successfully," /*)*/;
 
 	/**
 	 * Batch Order invoicing
 	 */
-	String BATCH_ORDER_INVOICING_REPORT = /*$$(*/ "Order invoicing report: " /*)*/;
-	String BATCH_ORDER_INVOICING_DONE_SINGULAR = /*$$(*/ "%d order invoiced successfully, " /*)*/;
-	String BATCH_ORDER_INVOICING_DONE_PLURAL = /*$$(*/ "%d orders invoiced successfully, " /*)*/;
+	String BATCH_ORDER_INVOICING_REPORT = /*$$(*/ "Order invoicing report:" /*)*/;
+	String BATCH_ORDER_INVOICING_DONE_SINGULAR = /*$$(*/ "%d order invoiced successfully," /*)*/;
+	String BATCH_ORDER_INVOICING_DONE_PLURAL = /*$$(*/ "%d orders invoiced successfully," /*)*/;
 
 	/**
 	 * Mrp Line Service
@@ -100,10 +100,11 @@ public interface IExceptionMessage {
 
 
 	/**
-	 * Sale Order Stock Service Implement
+	 * Sale order Stock Service Implement
 	 */
 	static final String SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/ "No delivery stock move to generate for this sale order" /*)*/;
-	static final String SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXIST = /*$$(*/ "An active stock move already exists for the sale order %s" /*)*/;
+	static final String SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXISTS = /*$$(*/ "An active stock move (%s) already exists for the sale order %s." /*)*/;
+	String SO_CANT_REMOVED_DELIVERED_LINE = /*$$(*/ "Can't remove delivered detail line %s." /*)*/;
 
 	/**
 	 * Timetable Controller
@@ -114,5 +115,20 @@ public interface IExceptionMessage {
 	 * Ventilate State Service
 	 */
 	String VENTILATE_STATE_MISSING_ADVANCE_ACCOUNT = /*$$(*/ "Please configure the advance payment account for the company %s" /*)*/;
+
+	/**
+	 * Stock Config
+	 */
+	String STOCK_CONFIG_SUPPLYCHAIN_RECEIPT = /*$$(*/ "You must configure a receipt stock location for company %s" /*)*/;
+	String STOCK_CONFIG_SUPPLYCHAIN_PICKUP = /*$$(*/ "You must configure a pickup stock location for company %s." /*)*/;
+	
+	/**
+	 * Supply Chain Config
+	 */
+	
+	static final String SUPPLY_CHAIN_CONFIG = /*$$(*/ "You must configure a Supply chain module for the company %s" /*)*/;
+
+	String SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_SALE_ORDER = /*$$(*/ "You must configure a cancel reason on changing sale order in app supplychain." /*)*/;
+
 }
 

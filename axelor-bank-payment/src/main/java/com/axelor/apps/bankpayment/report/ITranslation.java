@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,5 +35,26 @@ public interface ITranslation {
 	public static final String EBICS_CERTIFICATE_AUTHENTICATION_VERSION = /*$$(*/ "EbicsCertificateReport.authenticationVersion"; /*)*/
 	public static final String EBICS_CERTIFICATE_ENCRYPTION_VERSION = /*$$(*/ "EbicsCertificateReport.encryptionVersion"; /*)*/
 	
+    public static final String BANK_STATEMENT_TITLE = /*$$(*/ "BankStatement.title"; /*)*/;
+    public static final String BANK_STATEMENT_CREATION_DATE_FROM = /*$$(*/ "BankStatement.creationDateFrom"; /*)*/;
+    public static final String BANK_STATEMENT_CREATION_DATE_TO = /*$$(*/ "BankStatement.creationDateTo"; /*)*/;
+    public static final String BANK_STATEMENT_HEADER_TEXT = /*$$(*/ "BankStatement.headerText"; /*)*/;
+    public static final String BANK_STATEMENT_OPERATION_DATE = /*$$(*/ "BankStatement.operationDate"; /*)*/;
+    public static final String BANK_STATEMENT_VALUE_DATE = /*$$(*/ "BankStatement.valueDate"; /*)*/;
+    public static final String BANK_STATEMENT_LABEL = /*$$(*/ "BankStatement.label"; /*)*/;
+    public static final String BANK_STATEMENT_REFERENCE = /*$$(*/ "BankStatement.reference"; /*)*/;
+    public static final String BANK_STATEMENT_EXEMPT = /*$$(*/ "BankStatement.exempt"; /*)*/;
+    public static final String BANK_STATEMENT_UNAVAILABLE = /*$$(*/ "BankStatement.unavailable"; /*)*/;
+    public static final String BANK_STATEMENT_ORIGIN = /*$$(*/ "BankStatement.origin"; /*)*/;
+    public static final String BANK_STATEMENT_DEBIT = /*$$(*/ "BankStatement.debit"; /*)*/;
+    public static final String BANK_STATEMENT_CREDIT = /*$$(*/ "BankStatement.credit"; /*)*/;
+    public static final String BANK_STATEMENT_YES= /*$$(*/ "BankStatement.yes"; /*)*/
+    public static final String BANK_STATEMENT_INITIAL_BALANCE = /*$$(*/ "BankStatement.initialBalance"; /*)*/;
+    public static final String BANK_STATEMENT_MOVEMENT = /*$$(*/ "BankStatement.movement"; /*)*/;
+    public static final String BANK_STATEMENT_FINAL_BALANCE = /*$$(*/ "BankStatement.finalBalance"; /*)*/;
+    public static final String BANK_STATEMENT_TOTAL_OF_OPERATIONS = /*$$(*/ "BankStatement.totalOfOperations"; /*)*/;
+    public static final String BANK_STATEMENT_BANK_ACCOUNT = /*$$(*/ "BankStatement.bankAccount"; /*)*/;
+    public static final String BANK_STATEMENT_IBAN = /*$$(*/ "BankStatement.iban"; /*)*/;
+    public static final String BANK_STATEMENT_ACCOUNT_CURRENCY = /*$$(*/ "BankStatement.accountCurrency"; /*)*/;
 
 }

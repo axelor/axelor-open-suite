@@ -16,16 +16,16 @@
 		<many-to-one name="lead" ref="com.axelor.apps.crm.db.Lead" title="Lead"/>
 		<many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
 		<many-to-one name="responsible" ref="com.axelor.auth.db.User" title="User in charge of the issue"/>
-		<integer name="statusSelect" selection="helpdesk.ticket.status.select" title="Status" default="0"/>
+		<integer name="statusSelect" selection="helpdesk.status.select" title="Status"/>
 		<many-to-one name="ticketType" ref="com.axelor.apps.helpdesk.db.TicketType" title="Ticket type"/>
-		<datetime name="startDate" title="Start date"/>
-		<datetime name="endDate" title="End date"/>
-		<datetime name="deadline" title="Deadline"/>
-		<boolean name="slaCompleted" title="SLA completed" default="false"/>
+		<datetime name="startDateT" title="Start date"/>
+		<datetime name="endDateT" title="End date"/>
+		<datetime name="deadlineDateT" title="Deadline"/>
+		<boolean name="isSlaCompleted" title="SLA completed" default="false"/>
 		<long name="duration" title="Duration"/>
 		<string name="description" title="Description" large="true"/>
 		<integer name="progressSelect" title="Progress (%)" selection="helpdesk.ticket.progress.select"/>
-		<integer name="priority" title="Priority" selection="helpdesk.ticket.priority.select" default="1"/>
+		<integer name="priority" title="Priority" selection="helpdesk.priority.select" default="2"/>
 		
 		<track>
 		  <field name="ticketSeq"/>
@@ -34,8 +34,7 @@
 	      <message if="true" on="CREATE">Ticket created</message>
 	      <message if="statusSelect == 1" tag="info">Ticket In Progress</message>
 	      <message if="statusSelect == 2" tag="success">Ticket In Resolved</message>
-	      <message if="statusSelect == 3" tag="info">Ticket in Feedback status</message>
-	      <message if="statusSelect == 4" tag="info">Ticket Closed</message>
+	      <message if="statusSelect == 3" tag="info">Ticket Closed</message>
     	</track>
 		
   </entity>

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -219,7 +219,7 @@ public class EbicsController {
 					testSignatureFile = MetaFiles.getPath(testSignatureMetaFile).toFile();
 				}
 				
-				ebicsService.sendFULRequest(ebicsUser, ebicsUser.getTestSignatoryEbicsUser(), null, MetaFiles.getPath(testDataMetaFile).toFile(), bankOrderFileFormat.getOrderFileFormatSelect(), testSignatureFile);
+				ebicsService.sendFULRequest(ebicsUser, ebicsUser.getTestSignatoryEbicsUser(), null, MetaFiles.getPath(testDataMetaFile).toFile(), bankOrderFileFormat, testSignatureFile);
 			}
 			else  {
 				response.setFlash(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));

@@ -5,10 +5,8 @@
   
   <entity name="Partner" lang="java">
   
-  	<string name="importId"/>
-  
   	<!-- En-tête  -->
-    <many-to-one name="partnerCategory" ref="com.axelor.apps.base.db.PartnerCategory" title="Category"/>
+    <many-to-one name="partnerCategory" ref="com.axelor.apps.base.db.PartnerCategory" title="Category" massUpdate="true"/>
     <string name="partnerSeq" title="Reference" readonly="true" unique="true"/>
     
     <!-- ERP -->
@@ -33,7 +31,7 @@
     
     <many-to-many name="contactPartnerSet" ref="com.axelor.apps.base.db.Partner" title="Contacts"/>
     <many-to-one name="mainPartner" ref="com.axelor.apps.base.db.Partner" title="Main company" index="false"/>
-    <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source" index="false"/>
+    <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source" index="false" massUpdate="true"/>
     
     <!-- From contact -->
     <one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Email"/>
@@ -50,20 +48,20 @@
    
     <!--  Page règle de facturation/paiement -->
 <!--     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Default Bank Details"/> -->
-  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" index="false"/>
-  	<many-to-one name="salePriceList" ref="com.axelor.apps.base.db.PriceList" title="Sale Price List" index="false"/>
-  	<many-to-one name="purchasePriceList" ref="com.axelor.apps.base.db.PriceList" title="Purchase Price List" index="false"/>
-   
+  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" index="false" massUpdate="true"/>
+
+    <many-to-one name="salePartnerPriceList" ref="com.axelor.apps.base.db.PartnerPriceList" title="Sale price lists"/>
+    <many-to-one name="purchasePartnerPriceList" ref="com.axelor.apps.base.db.PartnerPriceList" title="Purchase price lists"/>
     <!-- PAGE Blocage -->
 	<one-to-many name="blockingList" ref="com.axelor.apps.base.db.Blocking" title="Blocking follow-up List" mappedBy="partner" orderBy="-blockingToDate"/>
 	
    	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
    
-    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to" index="false"/>
-	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" index="false"/>
+    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to" index="false" massUpdate="true"/>
+	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" index="false" massUpdate="true"/>
 	<many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner" title="Reports to" massUpdate="true" index="false"/>
     <string name="description" title="Description"  large="true"/>
-   	<many-to-one name="industrySector" title="Industry" ref="com.axelor.apps.base.db.IndustrySector" index="false"/> 
+   	<many-to-one name="industrySector" title="Industry sector" ref="com.axelor.apps.base.db.IndustrySector" index="false" massUpdate="true"/>
 	<integer name="nbrEmployees" title="Employees (Nbr)"/>
 	<integer name="saleTurnover" title="Turnover"/>
 	<string name="registrationCode" title="Registration code"/>
@@ -71,7 +69,7 @@
 	
  	<string name="fullName" title="Name" namecolumn="true"/>
 	 
-   	<many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition" title="Fiscal position"/>
+   	<many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition" title="Fiscal position" massUpdate="true"/>
 	<many-to-one name="contactAddress" ref="com.axelor.apps.base.db.Address" title="Address" />
 	
 	<!-- -Json fields -->

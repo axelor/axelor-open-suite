@@ -25,13 +25,11 @@
 	<action-view title="Customer deliveries statistics" name="dashlet.stockMove.deliveries.time.delay.in.nbr">
 	  <view type="chart" name="chart.stockMove.deliveries.time.delay.in.nbr"/>  
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
-	  <context name="userId" expr="eval:__user__.id" />
 	</action-view>
 	
 	<action-view title="Customer average delivery delay" name="dashlet.stockMove.average.delivery.time.delay">
 	  <view type="chart" name="chart.stockMove.average.delivery.time.delay"/>  
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
-	  <context name="userId" expr="eval:__user__.id" />
 	</action-view>
 
 <!-- 	Stock Dashboard -->
@@ -57,7 +55,7 @@
 		<dashlet action="dashlet.production.stock.move.in.realized" canSearch="true" height="350" colSpan="12"/>	
 		<dashlet action="dashlet.production.stock.move.out.planned" canSearch="true" height="350" colSpan="12"/>	
 		<dashlet action="dashlet.production.stock.move.out.realized" canSearch="true" height="350" colSpan="12"/>
-		<dashlet action="dashlet.location.line.bad.futur.stock.mini" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.stock.location.line.bad.futur.stock.mini" canSearch="true" height="350" colSpan="12"/>
 	</dashboard>
 
 	<dashboard title="Dashboard" name="stock.dashboard.two"  >
@@ -68,39 +66,39 @@
   	    <dashlet action="dashlet.stockMove.average.delivery.time.delay" height="350"/>
 	</dashboard>
 
-	<action-view name="dashlet.location.line.bad.futur.stock.mini" title="Bad location lines"
-				 model="com.axelor.apps.stock.db.LocationLine">
-		<view type="grid" name="location-line-bad-line-grid"/>
-		<view type="form" name="location-line-bad-line-form"/>
-		<domain>self.id IN (:locationLineIdList)</domain>
-		<context name="locationLineIdList" expr="call:com.axelor.apps.stock.service.LocationService:getBadLocationLineId()"/>
+	<action-view name="dashlet.stock.location.line.bad.futur.stock.mini" title="Bad stock location lines"
+				 model="com.axelor.apps.stock.db.StockLocationLine">
+		<view type="grid" name="stock-location-line-bad-line-grid"/>
+		<view type="form" name="stock-location-line-bad-line-form"/>
+		<domain>self.id IN (:stockLocationLineIdList)</domain>
+		<context name="stockLocationLineIdList" expr="call:com.axelor.apps.stock.service.StockLocationService:getBadStockLocationLineId()"/>
 	</action-view>
-	
+
 	<action-view name="dashlet.stock.dashboard.upcoming.deliveries" title="Upcoming customer deliveries"
 		model="com.axelor.apps.stock.db.StockMove">
 		<view type="grid" name="stock-move-grid" />
 		<view type="form" name="stock-move-form" />
-		<domain>self.toLocation.typeSelect = 3 AND (self.estimatedDate between CURRENT_DATE and CURRENT_DATE + 5) AND self.statusSelect = 2</domain>
+		<domain>self.toStockLocation.typeSelect = 3 AND (self.estimatedDate between CURRENT_DATE and CURRENT_DATE + 5) AND self.statusSelect = 2</domain>
 	</action-view>
 
 	<action-view title="Late customer deliveries" model="com.axelor.apps.stock.db.StockMove" name="dashlet.stock.move.late.cust.late.deliveries">
 	   <view type="grid" name="stock-move-grid"/>
 	   <view type="form" name="stock-move-form"/>
-	   <domain>self.toLocation.typeSelect = 3 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect= 2 AND self.company=:active_company</domain>
+	   <domain>self.toStockLocation.typeSelect = 3 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect= 2 AND self.company=:active_company</domain>
 	   <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
 	</action-view>
 
 	<action-view title="Upcoming supplier arrivals" model="com.axelor.apps.stock.db.StockMove" name="dashlet.stock.move.upcoming.suppl.arrivals">
 		  <view type="grid" name="stock-move-grid"/>
 		  <view type="form" name="stock-move-form"/>
-		  <domain>self.fromLocation.typeSelect = 2 AND (self.estimatedDate between CURRENT_DATE and CURRENT_DATE + 5) AND self.statusSelect = 2 AND self.company=:active_company</domain>
+		  <domain>self.fromStockLocation.typeSelect = 2 AND (self.estimatedDate between CURRENT_DATE and CURRENT_DATE + 5) AND self.statusSelect = 2 AND self.company=:active_company</domain>
 		  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
 	</action-view>
 
 	<action-view title="Late supplier arrivals" model="com.axelor.apps.stock.db.StockMove" name="dashlet.stock.move.late.suppl.arrivals">
 		  <view type="grid" name="stock-move-grid"/>
 		  <view type="form" name="stock-move-form"/>
-		  <domain>self.fromLocation.typeSelect = 2 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect = 2 AND self.company=:active_company</domain>
+		  <domain>self.fromStockLocation.typeSelect = 2 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect = 2 AND self.company=:active_company</domain>
 		  <context name="active_company" expr="eval:__user__.activeCompany" />
 	</action-view>
 	
@@ -128,24 +126,24 @@
 	    <domain>self.id IN (SELECT outStockMove FROM ManufOrder WHERE statusSelect = 6)</domain>
 	</action-view>
 
-	<!-- This portlet is used in location-form -->
-	<action-view title="Location value" name="dashlet.locationLine.location.value">
-	  <view type="chart" name="chart.locationLine.location.value"/>
+	<!-- This portlet is used in stock-location-form -->
+	<action-view title="Location value" name="dashlet.stockLocationLine.stockLocation.value">
+	  <view type="chart" name="chart.stockLocationLine.stockLocation.value"/>
 	</action-view>
 
 	<!-- 	Product-form Actions Portlets -->
 	
-	<action-view name="action-product-view-stock" title="Stock" model="com.axelor.apps.stock.db.LocationLine">
-    	<view type="grid" name="location-line-product-grid"/>
-    	<view type="form" name="location-line-product-form"/>
-    	<domain>self.product.id = :id and self.location.typeSelect != 3</domain>
+	<action-view name="action-product-view-stock" title="Stock" model="com.axelor.apps.stock.db.StockLocationLine">
+    	<view type="grid" name="stock-location-line-product-grid"/>
+    	<view type="form" name="stock-location-line-product-form"/>
+    	<domain>self.product.id = :id and self.stockLocation.typeSelect != 3</domain>
     </action-view>
     
-    <action-view name="action-stock-report-for-product" title="Stock" model="com.axelor.apps.stock.db.LocationLine">
+    <action-view name="action-stock-report-for-product" title="Stock" model="com.axelor.apps.stock.db.StockLocationLine">
     	<view type="chart" name="chart.stock.report.for.product"/>
      </action-view>
   	
-  	 <action-view name="action-stock-history-report-for-product" title="Stock History" model="com.axelor.apps.stock.db.LocationLine">
+  	 <action-view name="action-stock-history-report-for-product" title="Stock History" model="com.axelor.apps.stock.db.StockLocationLine">
     	<view type="chart" name="chart.stock.history.report.for.product"/>
      </action-view>	
      
@@ -163,7 +161,7 @@
 		model="com.axelor.apps.stock.db.StockMoveLine">
 		<view type="grid" name="stock-move-line-all-grid"/>
 		<view type="form" name="stock-move-line-all-form"/>
-		<domain>self.product.id = :_id and self.stockMove.statusSelect = 2 and self.stockMove.toLocation.typeSelect = 3</domain>
+		<domain>self.product.id = :_id and self.stockMove.statusSelect = 2 and self.stockMove.toStockLocation.typeSelect = 3</domain>
 		<context name="_id" expr="eval: id"/>
 	</action-view>
 	
@@ -171,7 +169,7 @@
 		model="com.axelor.apps.stock.db.StockMoveLine">
 		<view type="grid" name="stock-move-line-all-grid"/>
 		<view type="form" name="stock-move-line-all-form"/>
-		<domain>self.product.id = :_id and self.stockMove.toLocation.typeSelect = 3</domain>
+		<domain>self.product.id = :_id and self.stockMove.toStockLocation.typeSelect = 3</domain>
 		<context name="_id" expr="eval: id"/>
 	</action-view>	
 	

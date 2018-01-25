@@ -5,7 +5,7 @@
 	
     <grid name="debt-recovery-history-line-grid" title="Debt recovery history" model="com.axelor.apps.account.db.DebtRecoveryHistory">
     	<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
-    	<field name="debt.recovery.accountingSituation.partner" form-view="partner-form" grid-view="partner-grid"/>
+    	<field name="debtRecovery.accountingSituation.partner" form-view="partner-form" grid-view="partner-grid"/>
     	<field name="debtRecoveryMethod" grid-view="debt-recovery-method-grid" form-view="debt-recovery-method-form"/>
     	<field name="setToIrrecoverableOK"/>
     	<field name="unknownAddressOK"/>
@@ -13,7 +13,6 @@
     	<field name="balanceDueDebtRecovery"/>
     	<field name="referenceDate"/>
         <field name="userDebtRecovery" grid-view="user-grid" form-view="user-form"/>
-        <field name="debtRecoveryMessage" grid-view="message-grid" form-view="message-form"/>
     	<field name="debtRecoveryDate"/>
         <field name="debtRecoveryMethodLine" grid-view="debt-recovery-method-line-grid" form-view="debt-recovery-method-line-form"/>
     </grid>
@@ -22,12 +21,12 @@
 		<panel name="debtRecoverySettings" title="Debt recovery settings">
         	<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
         	<field name="debtRecoveryMethod" widget="SuggestBox" grid-view="debt-recovery-method-grid" form-view="debt-recovery-method-form"/>
-        	<field name="userDebtRecovery" grid-view="user-grid" form-view="user-form"/>
+        	<field name="userDebtRecovery" canNew="false" canEdit="false" canView="false" grid-view="user-grid" form-view="user-form"/>
         	<field name="unknownAddressOK"/>
         	<field name="setToIrrecoverableOK"/>
     	</panel>
     	<panel name="partnerInformation" title="Partner information">
-        	<field name="debt.recovery.accountingSituation.partner" form-view="partner-form" grid-view="partner-grid"/>
+        	<field name="debtRecovery.accountingSituation.partner" form-view="partner-form" grid-view="partner-grid"/>
         	<field name="balanceDue"/>
         	<field name="balanceDueDebtRecovery"/>
         	<field name="referenceDate"/>
@@ -35,7 +34,7 @@
         	<field name="debtRecoveryDate"/>
     	</panel>
     	<panel name="debtRecoveryContent" title="Debt recovery content">
-        	<field name="debtRecoveryMessage" grid-view="message-grid" form-view="message-form"/>
+        	<field name="debtRecoveryMessageSet" grid-view="message-grid" form-view="message-form" colSpan="12"/>
     	</panel>
 	</form>
     
@@ -47,7 +46,6 @@
     	<field name="balanceDueDebtRecovery"/>
     	<field name="referenceDate"/>
         <field name="userDebtRecovery" grid-view="user-grid" form-view="user-form"/>
-        <field name="debtRecoveryMessage" grid-view="message-grid" form-view="message-form"/>
     	<field name="debtRecoveryDate"/>
         <field name="debtRecoveryMethodLine" grid-view="debt-recovery-method-line-grid" form-view="debt-recovery-method-line-form"/>
     </grid>
@@ -59,10 +57,10 @@
 	        <field name="setToIrrecoverableOK"/>
 	        <field name="balanceDueDebtRecovery"/>
 	        <field name="unknownAddressOK"/>
-	        <field name="userDebtRecovery" grid-view="user-grid" form-view="user-form"/>
+	        <field name="userDebtRecovery" canNew="false" canEdit="false" canView="false" grid-view="user-grid" form-view="user-form"/>
 	        <field name="debtRecoveryDate"/>
 	        <field name="debtRecoveryMethodLine" grid-view="debt-recovery-method-line-grid" form-view="debt-recovery-method-line-form"/>
-	        <field name="debtRecoveryMessage" grid-view="message-grid" form-view="message-form"/>
+	        <field name="debtRecoveryMessageSet" grid-view="message-grid" form-view="message-form"/>
 	    </panel>
 	    
     </form>

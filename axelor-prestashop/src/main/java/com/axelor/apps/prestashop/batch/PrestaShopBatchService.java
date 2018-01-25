@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,20 +19,17 @@ package com.axelor.apps.prestashop.batch;
 
 
 import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.crm.db.CrmBatch;
-import com.axelor.apps.crm.db.ICrmBatch;
-import com.axelor.apps.crm.db.repo.CrmBatchRepository;
+import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.db.IPrestaShopBatch;
 import com.axelor.apps.prestashop.db.PrestaShopBatch;
-import com.axelor.apps.prestashop.db.repo.PrestaShopBatchRepository;
+import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.exports.batch.ExportPrestaShop;
 import com.axelor.apps.prestashop.service.imports.batch.ImportPrestaShop;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 
 /**
  * InvoiceBatchService est une classe implémentant l'ensemble des batchs de
@@ -42,12 +39,8 @@ import com.google.inject.Inject;
  * 
  * @version 0.1
  */
-public class PrestaShopBatchService {
+public class PrestaShopBatchService extends AbstractBatchService {
 
-	
-	@Inject
-	protected PrestaShopBatchRepository prestaShopBatchRepo;
-	
 // Appel 	
 	
 	/**
@@ -58,10 +51,12 @@ public class PrestaShopBatchService {
 	 * 
 	 * @throws AxelorException
 	 */
-	public Batch run(String batchCode) throws AxelorException {
+	@SuppressWarnings("deprecation")
+	@Override
+	public Batch run(Model batchCode) throws AxelorException {
 				
 		Batch batch;
-		PrestaShopBatch prestaShopBatch = prestaShopBatchRepo.findByCode(batchCode);
+		PrestaShopBatch prestaShopBatch = (PrestaShopBatch) batchCode;
 		
 		if (prestaShopBatch != null){
 			switch (prestaShopBatch.getActionSelect()) {
@@ -75,25 +70,33 @@ public class PrestaShopBatchService {
 				break;
 				
 			default:
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), prestaShopBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PRESTASHOP_BATCH_1), prestaShopBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
 			}
 		}
 		else {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_2), batchCode), IException.INCONSISTENCY);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PRESTASHOP_BATCH_2), batchCode), IException.INCONSISTENCY);
 		}
 		return batch;
 	}
 	
-	
+	/**
+	 * Batch run import prestashop to ABS
+	*/
 	public Batch importPrestaShop(PrestaShopBatch prestaShopBatch) {
-		
+
 		return Beans.get(ImportPrestaShop.class).run(prestaShopBatch);
-		
 	}
 	
+	/**
+	 * Batch run export ABS to prestashop
+	*/
 	public Batch exportPrestaShop(PrestaShopBatch prestaShopBatch) {
 		
 		return Beans.get(ExportPrestaShop.class).run(prestaShopBatch);
-		
+	}
+
+	@Override
+	protected Class<? extends Model> getModelClass() {
+		return PrestaShopBatch.class;
 	}
 }

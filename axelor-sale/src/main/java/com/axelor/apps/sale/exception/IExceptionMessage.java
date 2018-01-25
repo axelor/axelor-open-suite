@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,7 +34,8 @@ public interface IExceptionMessage {
 	 * Sales Order Service Impl
 	 */
 	static final String SALES_ORDER_1 = /*$$(*/ "The company %s doesn't have any configured sequence for sale orders" /*)*/ ;
-	
+	static final String SALES_ORDER_FINISHED = /*$$(*/ "This sale order is finished." /*)*/ ;
+
 	/**
 	 * Sale Config Service
 	 */
@@ -49,13 +50,11 @@ public interface IExceptionMessage {
 	static final public String SALE_ORDER_MERGE_ERROR_COMPANY = /*$$(*/ "The company is required and must be the same for all sale orders" /*)*/;
 
 	/**
-	 * Configurator generator
+	 * Configurator creator
 	 */
-
-	static final String CONFIGURATOR_GENERATED = /*$$(*/ "The configurator is generated. Please check the configurators menu." /*)*/;
-	String CONFIGURATOR_CREATOR_MISSING_VALUES = /*$$(*/ "Please fill the default values in the attribute list in order to test this configurator creator." /*)*/;
-	String CONFIGURATOR_CREATOR_SCRIPT_ERROR = /*$$(*/ "At least one script has errors, please see the logs for more details." /*)*/;
-	String CONFIGURATOR_CREATOR_SCRIPT_WORKING = /*$$(*/ "All scripts are working." /*)*/;
+	String CONFIGURATOR_CREATOR_UNVALID_METAFIELD = /*$$(*/ "The metafield type provided is not valid. You must choose a Product or a SaleOrderLine." /*)*/;
+	String CONFIGURATOR_CREATOR_SCRIPT_ERROR = /*$$(*/ "This script has errors, please see server logs for more details." /*)*/;
+	String CONFIGURATOR_CREATOR_SCRIPT_WORKING = /*$$(*/ "The syntax of the script is correct." /*)*/;
 
 	/**
 	 * Configurator Service

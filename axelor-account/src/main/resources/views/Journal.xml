@@ -25,7 +25,7 @@
 		<panel name="main" >
 			<field name="name"/>
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" />
-			<field name="company" readonlyIf="statusSelect == 1 || statusSelect == 2" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" readonlyIf="statusSelect == 1 || statusSelect == 2" form-view="company-form" grid-view="company-grid"/>
 			<field name="type" grid-view="journal-type-grid" form-view="journal-type-form"/>
 			<field name="isObsolete" onChange="account-journal-record-status-archived"/>
 		</panel>
@@ -36,7 +36,7 @@
 		
 			<panel name="configurations" title="Configurations" hideIf="$popup()">
 				<panel name="moveLine" title="MoveLine" colSpan="12">
-					<field name="sequence" domain="self.code = 'move' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
+					<field name="sequence" domain="self.code = 'move' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canEdit="true" canNew="true"/>
 					<field name="isInvoiceMoveConsolidated" widget="Boolean-switch"/>
 					<field name="descriptionModel" showIf="!isInvoiceMoveConsolidated" hidden="true"/>
 					<field name="descriptionIdentificationOk" showIf="!isInvoiceMoveConsolidated" hidden="true"/>

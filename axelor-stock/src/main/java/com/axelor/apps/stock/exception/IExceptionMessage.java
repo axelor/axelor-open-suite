@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,7 +43,7 @@ public interface IExceptionMessage {
 	static final String INVENTORY_12 = /*$$(*/ "An error occurred while importing the file data, there are multiple products with code :" /*)*/;
 
 	/**
-	 * Location Line Service Impl
+	 * Stock Location Line Service Impl
 	 */
 	static final String LOCATION_LINE_1 = /*$$(*/ "Product's stocks %s (%s) are not in sufficient quantity to realize the delivery" /*)*/;
 	static final String LOCATION_LINE_2 = /*$$(*/ "Product's stocks %s (%s), tracking number {} are not in sufficient quantity to realize the delivery" /*)*/;
@@ -56,8 +56,8 @@ public interface IExceptionMessage {
 	static final String STOCK_MOVE_2 = /*$$(*/ "There's no configured sequence for stock's receptions for the company %s" /*)*/;
 	static final String STOCK_MOVE_3 = /*$$(*/ "There's no configured sequence for stock's delivery for the company %s" /*)*/;
 	static final String STOCK_MOVE_4 = /*$$(*/ "Stock's movement's type undefined" /*)*/;
-	static final String STOCK_MOVE_5 = /*$$(*/ "There's no source location selected for the stock's movement %s" /*)*/;
-	static final String STOCK_MOVE_6 = /*$$(*/ "There's no destination location selected for the stock's movement %s" /*)*/;
+	static final String STOCK_MOVE_5 = /*$$(*/ "There's no source stock location selected for the stock's movement %s" /*)*/;
+	static final String STOCK_MOVE_6 = /*$$(*/ "There's no destination stock location selected for the stock's movement %s" /*)*/;
 	static final String STOCK_MOVE_7 = /*$$(*/ "Partial stock move (From" /*)*/;
 	static final String STOCK_MOVE_8 = /*$$(*/ "Reverse stock move (From" /*)*/;
 	static final String STOCK_MOVE_9 = /*$$(*/ "A partial stock move has been generated (%s)" /*)*/;
@@ -84,12 +84,13 @@ public interface IExceptionMessage {
 	 * Stock Config Service
 	 */
 	static final String STOCK_CONFIG_1 = /*$$(*/ "You must configure a Stock module for the company %s" /*)*/;
-	static final String STOCK_CONFIG_2 = /*$$(*/ "You must configure an inventory virtual location for the company %s" /*)*/;
-	static final String STOCK_CONFIG_3 = /*$$(*/ "You must configure a supplier virtual location for the company %s" /*)*/;
-	static final String STOCK_CONFIG_4 = /*$$(*/ "You must configure a customer virtual location for the company %s" /*)*/;
+	static final String STOCK_CONFIG_2 = /*$$(*/ "You must configure an inventory virtual stock location for the company %s" /*)*/;
+	static final String STOCK_CONFIG_3 = /*$$(*/ "You must configure a supplier virtual stock location for the company %s" /*)*/;
+	static final String STOCK_CONFIG_4 = /*$$(*/ "You must configure a customer virtual stock location for the company %s" /*)*/;
+	static final String STOCK_CONFIG_5 = /*$$(*/ "You must configure a default stock location for the company %s" /*)*/;
 
 	/**
-	 * Location Controller
+	 * Stock Location Controller
 	 */
 	static final String LOCATION_1 = /*$$(*/ "There's already an existing storage, you must deactivate it first" /*)*/;
 	static final String LOCATION_2 = /*$$(*/ "Please select the Stock Location(s) to print." /*)*/;
@@ -110,7 +111,16 @@ public interface IExceptionMessage {
 	 * Logistical form
 	 */
 	String LOGISTICAL_FORM_MISSING_SEQUENCE = /*$$(*/ "Missing logistical form sequence for company %s" /*)*/;
+	String LOGISTICAL_FORM_PARTNER_MISMATCH = /*$$(*/ "Partner mismatch: %s" /*)*/;
 	String LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS = /*$$(*/ "Invalid dimensions on packaging line No. %d" /*)*/;
+    String LOGISTICAL_FORM_LINE_REQUIRED_TYPE = /*$$(*/ "Type is required on line %d." /*)*/;
+	String LOGISTICAL_FORM_LINE_REQUIRED_STOCK_MOVE_LINE = /*$$(*/ "Stock move line is required on line %d." /*)*/;
+    String LOGISTICAL_FORM_LINE_REQUIRED_QUANTITY = /*$$(*/ "Quantity is required on line %d." /*)*/;
 	String LOGISTICAL_FORM_LINES_INCONSISTENT_QUANTITY = /*$$(*/ "Total quantity for %s: %s (expected: %s)" /*)*/;
+	String LOGISTICAL_FORM_LINES_EMPTY_PARCEL = /*$$(*/ "Parcel %d is empty." /*)*/;
+	String LOGISTICAL_FORM_LINES_EMPTY_PALLET = /*$$(*/ "Pallet %d is empty." /*)*/;
+	String LOGISTICAL_FORM_LINES_ORPHAN_DETAIL = /*$$(*/ "Detail line(s) not inside a parcel/pallet" /*)*/;
 
+	String CANCEL_REASON_MISSING = /*$$(*/ "A cancel reason must be selected" /*)*/;
+	String CANCEL_REASON_BAD_TYPE = /*$$(*/ "The type of cancel reason doesn't match with stock move" /*)*/;
 }

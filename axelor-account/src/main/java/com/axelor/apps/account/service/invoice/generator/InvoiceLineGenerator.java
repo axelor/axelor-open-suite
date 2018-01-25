@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,19 +17,12 @@
  */
 package com.axelor.apps.account.service.invoice.generator;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
-
-import java.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
@@ -47,12 +40,22 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.tool.date.Period;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Classe de création de ligne de facture abstraite.
@@ -67,7 +70,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	protected AppAccountService appAccountService;
 	protected InvoiceLineService invoiceLineService;
 	protected AccountManagementAccountService accountManagementService;
-	
+
 	protected Invoice invoice;
 	protected Product product;
 	protected String productName;
@@ -157,7 +160,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		invoiceLine.setInvoice(invoice);
 
 		invoiceLine.setProduct(product);
-		
+
 		invoiceLine.setProductName(productName);
 		if(product != null)  {
 			boolean isPurchase = invoiceLineService.isPurchase(invoice);
@@ -166,7 +169,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 			Account account = accountManagementService.getProductAccount(accountManagement, isPurchase);
 			invoiceLine.setAccount(account);
 		}
-		
+
 		invoiceLine.setDescription(description);
 		invoiceLine.setPrice(price);
 
@@ -174,9 +177,17 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		invoiceLine.setQty(qty);
 		invoiceLine.setUnit(unit);
 		
-		if(taxLine == null)  {
+		if(taxLine == null) {
 			this.determineTaxLine();
 		}
+
+		boolean isPurchase = Beans.get(InvoiceLineService.class).isPurchase(invoice);
+
+		Tax tax = Beans.get(AccountManagementService.class).getProductTax(Beans.get(AccountManagementService.class).getAccountManagement(product, invoice.getCompany()), isPurchase);
+		TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
+
+		invoiceLine.setTaxEquiv(taxEquiv);
+
 		invoiceLine.setTaxLine(taxLine);
 		
 		if(taxLine != null)  {

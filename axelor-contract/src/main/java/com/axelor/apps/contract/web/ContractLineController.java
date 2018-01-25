@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.contract.web;
 
 import java.math.BigDecimal;
@@ -20,9 +37,18 @@ public class ContractLineController {
 	
 	public void changeProduct(ActionRequest request, ActionResponse response) {
 		ContractLine contractLine = request.getContext().asType(ContractLine.class);
-		
-		if(contractLine == null || contractLine.getProduct() == null) {
-			this.resetProductInformation(response);
+		Partner partner = null;
+		Company company = null;
+		if(request.getContext().getParentContext().getContextClass() == Contract.class){
+			Contract contract = request.getContext().getParentContext().asType(Contract.class);
+			partner = contract.getPartner();
+			company = contract.getCompany();
+		}else if (request.getContext().getParentContext().getContextClass() == ContractVersion.class){
+			ContractVersion contractVersion = request.getContext().getParentContext().asType(ContractVersion.class);
+			Contract contract = contractVersion.getContract();
+			partner = contract.getPartner();
+			company = contract.getCompany();
+		}else {
 			return;
 		}
 		

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,12 +20,13 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.message.db.Message;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -88,16 +89,19 @@ public interface ExpenseService  {
 	
 	@Transactional
 	public void insertExpenseLine(ActionRequest request, ActionResponse response);
-	
-	@Transactional
-	public void insertKMExpenses(ActionRequest request, ActionResponse response) throws AxelorException;
-	
+
+	/**
+	 * Get the expense from user, if no expense is found create one.
+	 * @param user
+	 * @return
+	 */
+	public Expense getOrCreateExpense(User user);
 	public BigDecimal computePersonalExpenseAmount(Expense expense);
 	public BigDecimal computeAdvanceAmount(Expense expense);
-	
+
 	public Product getKilometricExpenseProduct(Expense expense) throws AxelorException;
 
-	public void setDraftSequence(Expense expense);
+	public void setDraftSequence(Expense expense) throws AxelorException;
 
 	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine);
 }

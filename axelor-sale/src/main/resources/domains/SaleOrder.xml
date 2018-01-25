@@ -8,7 +8,6 @@
   <entity name="SaleOrder" lang="java">
   	
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company"/>
-  	<integer name="importId" />
 	<string name="fullName" namecolumn="true"/>
   	<string name="saleOrderSeq"  title="Internal Number" readonly="true"/>
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true" title="Currency" massUpdate="true"/>
@@ -79,7 +78,7 @@
     
     <boolean name="template" title="Template" hidden="true"/>
     <integer name="versionNumber" title="Version Number" readonly="true" default="1"/>
-    <many-to-one name="cancelReason" title="Cancel reason" ref="com.axelor.apps.sale.db.CancelReason"/>
+    <many-to-one name="cancelReason" title="Cancel reason" ref="com.axelor.apps.base.db.CancelReason"/>
 	<string name="cancelReasonStr" title="Cancel Reason" large="true"/>
     <integer name="deliveryState" title="Delivery State" selection="sale.order.delivery.state" readonly="true" default="1"/>
     <many-to-one name="templateUser" ref="com.axelor.auth.db.User" title="Template created by" readonly="true"/>
@@ -96,15 +95,22 @@
 	
 	<!-- Impression -->
     <string name="specificNotes" title="Specific notes" large="true"/>
-	
+
+	<boolean name="orderBeingEdited" />
+
+    <many-to-one name="opportunity" ref="com.axelor.apps.crm.db.Opportunity" />
+
+	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
+	<many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"/>
+
  	<unique-constraint columns="saleOrderSeq,company"/>
 
  	//TODO move into supplychain ?
     <extra-code>
    		<![CDATA[
-   			public static final Integer STATE_NOT_DELIVERED = 1;
-   			public static final Integer STATE_PARTIALLY_DELIVERED = 2;
-   			public static final Integer STATE_DELIVERED = 3;
+   			public static final int STATE_NOT_DELIVERED = 1;
+   			public static final int STATE_PARTIALLY_DELIVERED = 2;
+   			public static final int STATE_DELIVERED = 3;
    		]]>
    	</extra-code>
    	
@@ -115,7 +121,7 @@
       <field name="creationDate" on="CREATE" />
       <field name="confirmationDate" on="UPDATE"/>
       <field name="inTaxTotal" />
-      <message if="true" on="CREATE">Sale Order created</message>
+      <message if="true" on="CREATE">Sale order created</message>
       <message if="statusSelect == 1" tag="important">Draft</message>
       <message if="statusSelect == 2" tag="info">Finalize</message>
       <message if="statusSelect == 3" tag="success">Order confirmed</message>

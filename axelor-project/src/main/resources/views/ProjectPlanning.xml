@@ -10,7 +10,7 @@
 		<field name="task"/>
 		<field name="timepercent" widget="SelectProgress"/>
 	</grid>
-	
+
 	<grid name="project-planning-db-grid" title="Project Plannings" model="com.axelor.apps.project.db.ProjectPlanning">
 		<field name="project"/>
 		<field name="task"/>
@@ -37,19 +37,19 @@
 			<button name="showPlanning" title="Project Planning" onClick="action-project-planning-method-show-planning" colSpan="3" />
 		</panel>
 	</form>
-	
+
 	<gantt name="project-planning-gantt" model="com.axelor.apps.project.db.ProjectPlanning" title="Project planning"
 	 	taskStart="fromDate"  taskEnd="toDate" >
 		<field name="user"/>
 	</gantt>
 	
-	<calendar name="project-planning-calendar" model="com.axelor.apps.project.db.ProjectPlanning" 
+	<calendar name="project-planning-calendar" model="com.axelor.apps.project.db.ProjectPlanning"
 		eventStart="fromDate" eventStop="toDate" title="Project planning" colorBy="user">
 		<field name="user"/>
 		<field name="project"/>
 		<field name="task"/>
 	</calendar>
-	
+
 	<action-method name="action-project-planning-method-show-planning">
 		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="showPlanning"/>
 	</action-method>
@@ -57,5 +57,5 @@
 	<action-attrs name="action-project-planning-attrs-project-domain">
 	   <attribute name="domain" expr="eval:&quot;self.employee != null and self.id in (${([0]+__repo__(Project).all().filter('self.excludePlanning = false and self.statusSelect in (1,2)').fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;" for="userSet"/>
 	</action-attrs>
-	
+
 </object-views>

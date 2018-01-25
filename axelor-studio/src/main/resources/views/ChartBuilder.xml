@@ -33,7 +33,7 @@
 	        <field name="aggregateOnTarget" title="Target" onChange="action-chart-builder-update-aggregate-on-target-type" showIf="!isJsonAggregateOn &amp;&amp; aggregateOn.relationship != null || isJsonAggregateOn &amp;&amp; (aggregateOnJson.targetModel != null || aggregateOnJson.targetJsonModel != null)" requiredIf="!isJsonAggregateOn &amp;&amp; aggregateOn.relationship != null || isJsonAggregateOn &amp;&amp; (aggregateOnJson.targetModel != null || aggregateOnJson.targetJsonModel != null)" />
 	        <field name="aggregateDateType" showIf="['LocalDateTime','LocalDate','ZonedDateTime','Date','Datetime'].indexOf(aggregateOnTargetType) > -1" requiredIf="['LocalDateTime','LocalDate','ZonedDateTime','Date','Datetime'].indexOf(aggregateOnTargetType) > -1" />
         </panel>
-        <panel colSpan="6" itemSpan="12" title="Group" hideIf="model == null">
+        <panel colSpan="6" itemSpan="12" title="ChartBuilder.Group" hideIf="model == null">
         	<field name="isJsonGroupOn" colSpan="2" />
         	<panel itemSpan="12" colSpan="10">
         		<field name="groupOnJson" requiredIf="isJsonGroupOn" domain="self.jsonModel.name = :model AND self.type IN ('string', 'datetime','date','many-to-one','json-many-to-one')"  widget="SuggestBox" onChange="action-chart-builder-group-on-change,action-chart-builder-update-group-on-target-type" showIf="isJsonGroupOn" />

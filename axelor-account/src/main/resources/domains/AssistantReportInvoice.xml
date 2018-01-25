@@ -15,6 +15,8 @@
 	<many-to-many name="productCategorySet" ref="com.axelor.apps.base.db.ProductCategory" title="Product categories"/>
 	<integer name="graphTypeSelect" title="Graph type" selection="assistant.report.invoice.graph.type.select" default="1"/>
 	<string name="formatSelect" title="Format" selection="iadministration.export.type.select" default="pdf"/>
+	<datetime name="publicationDateTime" title="Last print date" tz="true" readonly="true"/>
+	<integer name="turnoverTypeSelect" selection="assistant.report.invoice.turnover.type.select" default="3" title="Turnover type"/>
 	<integer name="type"/>
 	
  	<extra-code><![CDATA[
@@ -23,6 +25,10 @@
 		public static final int GRAPH_TYPE_GRAPH = 1;
 		public static final int GRAPH_TYPE_TABLE = 2;
 	
+	   	// TURNOVER TYPE SELECT
+		public static final int TURNOVER_TYPE_ORDER = 1;
+		public static final int TURNOVER_TYPE_INVOICE = 2;
+		public static final int TURNOVER_TYPE_ORDER_AND_INVOICE = 3;
 	]]></extra-code>
 	
   </entity>

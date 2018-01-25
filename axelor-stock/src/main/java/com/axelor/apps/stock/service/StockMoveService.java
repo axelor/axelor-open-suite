@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,22 +17,24 @@
  */
 package com.axelor.apps.stock.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.FreightCarrierMode;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public interface StockMoveService {
 
@@ -53,8 +55,8 @@ public interface StockMoveService {
 	 * @param toAddress
 	 * @param company
 	 * @param clientPartner
-	 * @param fromLocation
-	 * @param toLocation
+	 * @param fromStockLocation
+	 * @param toStockLocation
 	 * @param realDate
 	 * @param estimatedDate
 	 * @param description
@@ -63,10 +65,10 @@ public interface StockMoveService {
 	 * @return
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
-	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation,
-			Location toLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException;
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, StockLocation fromStockLocation,
+			StockLocation toStockLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException;
 
-	public int getStockMoveType(Location fromLocation, Location toLocation);
+	public int getStockMoveType(StockLocation fromStockLocation, StockLocation toStockLocation);
 
 	public void validate(StockMove stockMove) throws AxelorException;
 
@@ -87,8 +89,8 @@ public interface StockMoveService {
 
 	public StockMove copyAndSplitStockMoveReverse(StockMove stockMove, boolean split) throws AxelorException;
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancel(StockMove stockMove) throws AxelorException;
+	void cancel(StockMove stockMove) throws AxelorException;
+    void cancel(StockMove stockMove, CancelReason cancelReason) throws AxelorException;
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty);
@@ -153,4 +155,30 @@ public interface StockMoveService {
 	String printStockMove(StockMove stockMove,
 						  List<Integer> lstSelectedMove,
 						  boolean isPicking) throws AxelorException;
+
+	/**
+	 * Update fully spread over logistical forms flag on stock move.
+	 * 
+	 * @param stockMove
+	 */
+	void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove);
+
+    /**
+     * Compute stock move name.
+     * 
+     * @param stockMove
+     * @return
+     */
+    String computeName(StockMove stockMove);
+
+
+    /**
+     * Compute stock move name with the given name.
+     * 
+     * @param stockMove
+     * @param name
+     * @return
+     */
+    String computeName(StockMove stockMove, String name);
+
 }

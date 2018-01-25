@@ -16,7 +16,6 @@
 		onNew="action-bill-of-material-default-record" onLoad="action-bill-of-material-attrs-price-digits" width="large">
 		<toolbar>
 			<button name="newVersion" title="Generate new version"  if="__config__.app.getApp('production').manageBillOfMaterialVersion" onClick="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"/>
-			<button name="archive" prompt="Do you really wish to archive this bill of material ?" title="Archive" if="__config__.app.getApp('production').manageBillOfMaterialVersion" onClick="action-bill-of-material-archive,save" />
 		</toolbar>
 		<menubar>
 			<menu title="Reports">
@@ -26,16 +25,16 @@
 		<panel name="main">
 			<field name="fullName" hidden="true" showIf="$readonly()" colSpan="12" showTitle="false" css="label-bold bold large"/>
 			<field name="name" hidden="true" showIf="!$readonly()" colSpan="12"/>
-			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process" domain="self.product = :product AND self.company = :company"/>
-			<field name="product" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3" form-view="product-form" grid-view="product-grid"/>
+			<field name="product" canEdit="false" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" colSpan="3"/>
 			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
 		</panel>
 		<panel-tabs>
 			<panel title="Components" >
-				<button name="openBomTree" title="Open tree"  onClick="save,action-bill-of-material-method-open-bom-tree" colSpan="3"/> 
-				<panel-related field="billOfMaterialSet" title="Components" colSpan="12" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
+				<button name="openBomTree" title="Open tree"  onClick="save,action-bill-of-material-method-open-bom-tree" colSpan="3"/>
+				<panel-related field="billOfMaterialSet" title="Components" colSpan="12" orderBy="priority" domain="self.isRawMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
 			</panel>
 			<panel-related field="prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form" if="__config__.app.getApp('production').getManageResidualProductOnBom()"/>	        
 			<panel name="cost" title="Cost">
@@ -68,7 +67,7 @@
 		onSave="save,action-bill-of-material-record-name" onLoad="action-bill-of-material-attrs-product-def-sub-bom"
 		onNew="action-bill-of-material-line-default-record" width="large">
 		<panel name="main">
-			<field name="product" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
+			<field name="product" canEdit="false" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
 			<field name="defineSubBillOfMaterial" colSpan="3"/>
 			<field name="hasNoManageStock" colSpan="3"/>
 			<field name="qty" colSpan="3"/>
@@ -118,10 +117,6 @@
     	<field name="name" expr="eval: product.name + ' - ' + qty + unit.name + ' - ' + id" if="name == null"/>
     </action-record>
     
-    <action-record name="action-bill-of-material-archive" model="com.axelor.apps.production.db.BillOfMaterial">
-    	<field name="archived" expr="eval: true"/>
-    </action-record>
-    
     <action-method name="action-bill-of-material-method-compute-cost-price">
     	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="computeCostPrice"/>
     </action-method>
@@ -145,11 +140,11 @@
     <action-method name="action-bill-of-material-method-validate-prod-process">
     	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="validateProdProcess" if="id != null"/>
     </action-method>
-    
+
     <action-method name="action-bill-of-material-method-open-bom-tree">
     	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="openBomTree" />
     </action-method>
-    
+
     <action-attrs name="action-bill-of-material-attrs-price-digits">
     	<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     </action-attrs>

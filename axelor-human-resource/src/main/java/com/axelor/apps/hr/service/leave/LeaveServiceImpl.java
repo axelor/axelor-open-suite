@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,19 +17,7 @@
  */
 package com.axelor.apps.hr.service.leave;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.mail.MessagingException;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.WeeklyPlanning;
@@ -39,11 +27,11 @@ import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EventsPlanning;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
-import com.axelor.apps.hr.db.PublicHolidayPlanning;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
@@ -63,6 +51,17 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class LeaveServiceImpl  implements  LeaveService  {
 	
 	protected DurationService durationService;
@@ -75,7 +74,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	protected TemplateMessageService templateMessageService;
 	protected ICalendarEventRepository icalEventRepo;
 	protected ICalendarService icalendarService;
-	
+
 	@Inject
 	public LeaveServiceImpl(DurationService durationService, LeaveLineRepository leaveLineRepo, WeeklyPlanningService weeklyPlanningService,
 			PublicHolidayService publicHolidayService, LeaveRequestRepository leaveRequestRepo, AppBaseService appBaseService,
@@ -169,11 +168,11 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			if (weeklyPlanning == null) {
 				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PLANNING), employee.getName());
 			}
-			PublicHolidayPlanning publicHolidayPlanning = employee.getPublicHolidayPlanning();
+			EventsPlanning publicHolidayPlanning = employee.getPublicHolidayEventsPlanning();
 			if(publicHolidayPlanning == null){
 				HRConfig conf = leave.getCompany().getHrConfig();
 				if(conf != null){
-					publicHolidayPlanning = conf.getPublicHolidayPlanning();
+					publicHolidayPlanning = conf.getPublicHolidayEventsPlanning();
 				}
 			}
 
@@ -407,7 +406,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		ICalendarEvent event = icalendarService.createEvent(fromDateTime, toDateTime, leave.getUser(), leave.getComments(), 4, leave.getLeaveLine().getLeaveReason().getLeaveReason()+" "+leave.getUser().getFullName());
 		icalEventRepo.save(event);
 		leave.setIcalendarEvent(event);
-		
+
 		return leave;
 	}
 	
@@ -471,32 +470,38 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	@Transactional
 	public void insertLeave(ActionRequest request, ActionResponse response) throws AxelorException{
 		User user = AuthUtils.getUser();
-		LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(new Long(request.getData().get("leaveReason").toString()));
+		Map<String, Object> requestData = request.getData();
+		LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(new Long(requestData.get("leaveReason").toString()));
 		if (user.getEmployee() == null) {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), user.getName());
 		}
 		if (user != null && leaveReason != null) {
 			LeaveRequest leave = new LeaveRequest();
 			leave.setUser(user);
-			leave.setCompany(user.getActiveCompany());
+			Company company = null;
+			if (user.getEmployee() != null
+					&& user.getEmployee().getMainEmploymentContract() != null) {
+				company = user.getEmployee().getMainEmploymentContract().getPayCompany();
+			}
+			leave.setCompany(company);
 			LeaveLine leaveLine = leaveLineRepo.all().filter("self.employee = ?1 AND self.leaveReason = ?2", user.getEmployee(), leaveReason).fetchOne();
 			if (leaveLine == null) {
 				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_LINE), user.getEmployee().getName(), leaveReason.getLeaveReason());
 			}
 			leave.setLeaveLine(leaveLine);
 			leave.setRequestDate(appBaseService.getTodayDate());
-			if (request.getData().get("fromDate") != null) {
-				leave.setFromDate(LocalDate.parse(request.getData().get("fromDate").toString(), DateTimeFormatter.ISO_DATE));
+			if (requestData.get("fromDate") != null) {
+				leave.setFromDate(LocalDate.parse(requestData.get("fromDate").toString(), DateTimeFormatter.ISO_DATE));
 			}
-			leave.setStartOnSelect(new Integer(request.getData().get("startOn").toString()));
-			if (request.getData().get("toDate") != null) {
-				leave.setToDate(LocalDate.parse(request.getData().get("toDate").toString(), DateTimeFormatter.ISO_DATE));
+			leave.setStartOnSelect(new Integer(requestData.get("startOn").toString()));
+			if (requestData.get("toDate") != null) {
+				leave.setToDate(LocalDate.parse(requestData.get("toDate").toString(), DateTimeFormatter.ISO_DATE));
 			}
-			leave.setEndOnSelect(new Integer(request.getData().get("endOn").toString()));
+			leave.setEndOnSelect(new Integer(requestData.get("endOn").toString()));
 			leave.setDuration(this.computeDuration(leave));
 			leave.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
-			if(request.getData().get("comments") != null){
-				leave.setComments(request.getData().get("comments").toString());
+			if(requestData.get("comments") != null){
+				leave.setComments(requestData.get("comments").toString());
 			}
 			leave = Beans.get(LeaveRequestRepository.class).save(leave);
 			response.setTotal(1);
@@ -546,7 +551,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
 		leaveRequest.setRequestDate(appBaseService.getTodayDate());
-		
+
 		leaveRequestRepo.save(leaveRequest);
 
 	}
@@ -576,9 +581,9 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_VALIDATED);
 		leaveRequest.setValidatedBy(AuthUtils.getUser());
 		leaveRequest.setValidationDate(appBaseService.getTodayDate());
-		
+
 		leaveRequestRepo.save(leaveRequest);
-		
+
 		createEvents(leaveRequest);
 	}
 	
@@ -630,10 +635,10 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		
 		LocalDate todayDate = appBaseService.getTodayDate();
 		LocalDate beginDate = leaveRequest.getFromDate() ;
-			
+
 		int interval = ( beginDate.getYear() - todayDate.getYear() ) *12 + beginDate.getMonthValue() - todayDate.getMonthValue();
 		BigDecimal num = leaveRequest.getLeaveLine().getQuantity().add( leaveRequest.getUser().getEmployee().getPlanning().getLeaveCoef().multiply( leaveRequest.getLeaveLine().getLeaveReason().getDefaultDayNumberGain()).multiply(new BigDecimal( interval )) );
-		
+
 		if (leaveRequest.getDuration().compareTo( num ) == 1){
 			return false;
 		}else{

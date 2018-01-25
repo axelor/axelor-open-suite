@@ -9,7 +9,7 @@
 		<string name="prestaShopUrl" title="PrestaShop URL"/>
 		<string name="prestaShopKey" title="PrestaShop Key"/>
 		<many-to-one  name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Default payment mode"/>
-		<one-to-many name="saleOrderStatus" ref="com.axelor.apps.prestashop.db.SaleOrderStatus" title="Sale Order Status" />
+		<one-to-many name="saleOrderStatusList" ref="com.axelor.apps.prestashop.db.SaleOrderStatus" title="Sale Order Status" />
 	</entity>
 
 </domain-models>

@@ -8,7 +8,7 @@
 		<string name="name" title="Label" required="true"/>
 		<string name="code" title="Code" />
         <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" />
-        <one-to-many name="controlPointModel" ref="ControlPointModel" mappedBy="qualityProcess"/>
+        <one-to-many name="controlPointModelList" ref="ControlPointModel" mappedBy="qualityProcess"/>
 	</entity>
 
 </domain-models>

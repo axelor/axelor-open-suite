@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -109,7 +109,7 @@ public class KilometricService {
 		Year year = Beans.get(YearServiceImpl.class).getYear(date, employee.getMainEmploymentContract().getPayCompany());
 		
 		if (year == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.KILOMETRIC_LOG_NO_YEAR), employee.getUser().getActiveCompany(), date);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.KILOMETRIC_LOG_NO_YEAR), employee.getMainEmploymentContract().getPayCompany(), date);
 		}
 		
 		return createKilometricLog(employee, new BigDecimal("0.00"), year);
@@ -131,11 +131,14 @@ public class KilometricService {
 		KilometricAllowanceRate allowance = Beans.get(KilometricAllowanceRateRepository.class).all().filter("self.kilometricAllowParam = ?1", expenseLine.getKilometricAllowParam() ).fetchOne();
 		
 		List<KilometricAllowanceRule> ruleList = new ArrayList<KilometricAllowanceRule>();
-		
-		for (KilometricAllowanceRule rule : allowance.getKilometricAllowanceRuleList() ) {
-			
-			if (rule.getMinimumCondition().compareTo( previousDistance.add(distance)) <= 0 && rule.getMaximumCondition().compareTo(previousDistance) >= 0 ){
-				ruleList.add(rule);				
+
+		List<KilometricAllowanceRule> allowanceRuleList = allowance.getKilometricAllowanceRuleList();
+		if (allowanceRuleList != null) {
+			for (KilometricAllowanceRule rule : allowanceRuleList) {
+
+				if (rule.getMinimumCondition().compareTo(previousDistance.add(distance)) <= 0 && rule.getMaximumCondition().compareTo(previousDistance) >= 0) {
+					ruleList.add(rule);
+				}
 			}
 		}
 		
@@ -192,7 +195,7 @@ public class KilometricService {
 
 	/**
 	 * Compute the distance between two cities.
-	 * 
+	 *
 	 * @param fromCity
 	 * @param toCity
 	 * @return
@@ -225,7 +228,7 @@ public class KilometricService {
 
 	/**
 	 * Get JSON response from Google Maps Distance Matrix API.
-	 * 
+	 *
 	 * @param origins
 	 * @param destinations
 	 * @param language

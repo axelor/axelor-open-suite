@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -15,20 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.axelor.apps.prestashop.service.imports.batch;
 
 import java.lang.invoke.MethodHandles;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.axelor.apps.crm.exception.IExceptionMessage;
-import com.axelor.apps.prestashop.service.imports.PrestaShopServiceImport;
+import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.prestashop.exception.IExceptionMessage;
+import com.axelor.apps.prestashop.imports.PrestaShopServiceImport;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.db.MetaFile;
 import com.google.inject.persist.Transactional;
 
 public class ImportPrestaShop extends BatchStrategyImport {
@@ -47,7 +45,6 @@ public class ImportPrestaShop extends BatchStrategyImport {
 		super.start();
 		
 	}
-
 	
 	@Override
 	@Transactional
@@ -56,14 +53,13 @@ public class ImportPrestaShop extends BatchStrategyImport {
 			int i = 0;
 			
 			try {
-				MetaFile importFile = prestaShopServiceImport.importPrestShop();
-				batch.getPrestaShopBatch().setPrestaShopBatchLog(importFile);
-				batchRepo.save(batch);
+				Batch batchObj = prestaShopServiceImport.importPrestShop(batch);
+				batchRepo.save(batchObj);
 				i++;
 				
 			} catch (Exception e) {
+
 				incrementAnomaly();
-				
 				LOG.error("Bug(Anomalie) généré(e) pour le rappel de l'évènement {}", batch.getId());
 				
 			} finally {
@@ -79,12 +75,9 @@ public class ImportPrestaShop extends BatchStrategyImport {
 	@Override
 	protected void stop() {
 
-		String comment = I18n.get(IExceptionMessage.BATCH_TARGET_2);
-		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_TARGET_3)+"\n", batch.getDone());
-		comment += String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+		String comment = I18n.get(IExceptionMessage.BATCH_IMPORT);
 		
 		super.stop();
 		addComment(comment);
-		
 	}
 }

@@ -6,7 +6,6 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="AccountConfig" lang="java" cachable="true">
-  	<integer name="importId" />
     
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
     
@@ -44,8 +43,6 @@
     <boolean name="autoReconcileOnInvoice" title="Authorize auto reconcile on invoice"/>
     <boolean name="autoReconcileOnPayment" title="Authorize auto reconcile on payment"/>
    	
-   	<many-to-one name="cashRegisterTemplate" ref="com.axelor.apps.message.db.Template" title="Cashier email template"/>
-   	<string name="cashRegisterAddressEmail" title="Cashier email address"/>
    	<many-to-one name="payingBackTax" ref="com.axelor.apps.account.db.Tax" title="Tax for management fee"/>
 
 	<!-- Default Payment Modes -->
@@ -67,6 +64,7 @@
 	<!-- DebtRecovery -->
    	<one-to-many name="debtRecoveryConfigLineList" ref="com.axelor.apps.account.db.DebtRecoveryConfigLine" mappedBy="accountConfig"  title="Debt recovery configuration table"/>
    	<integer name="mailTransitTime" title="Mail transit time"/>
+    <many-to-one name="factorPartner" ref="com.axelor.apps.base.db.Partner" title="Factor" />
 
 	<!-- Reimbursement -->
    	<string name="reimbursementExportFolderPathCFONB" title="Path for reimbursement files (CFONB)"/>

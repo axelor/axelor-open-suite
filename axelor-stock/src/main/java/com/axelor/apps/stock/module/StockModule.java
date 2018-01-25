@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,16 +23,18 @@ import com.axelor.apps.base.db.repo.ProductBaseRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryManagementRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
-import com.axelor.apps.stock.db.repo.LogisticalFormStockRepository;
+import com.axelor.apps.stock.db.repo.StockLocationStockRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
+import com.axelor.apps.stock.db.repo.LogisticalFormStockRepository;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.AddressServiceStockImpl;
-import com.axelor.apps.stock.service.LocationLineService;
-import com.axelor.apps.stock.service.LocationLineServiceImpl;
-import com.axelor.apps.stock.service.LocationService;
-import com.axelor.apps.stock.service.LocationServiceImpl;
+import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
+import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.service.StockLocationServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormLineService;
 import com.axelor.apps.stock.service.LogisticalFormLineServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormService;
@@ -57,15 +59,16 @@ public class StockModule extends AxelorModule {
         bind(AddressServiceStockImpl.class);
         bind(InventoryRepository.class).to(InventoryManagementRepository.class);
         bind(StockMoveRepository.class).to(StockMoveManagementRepository.class);
-        bind(LocationLineService.class).to(LocationLineServiceImpl.class);
+        bind(StockLocationLineService.class).to(StockLocationLineServiceImpl.class);
 		bind(StockMoveLineService.class).to(StockMoveLineServiceImpl.class);
         bind(StockMoveService.class).to(StockMoveServiceImpl.class);
-        bind(LocationService.class).to(LocationServiceImpl.class);
+        bind(StockLocationService.class).to(StockLocationServiceImpl.class);
         bind(ProductBaseRepository.class).to(ProductStockRepository.class);
         bind(PartnerProductQualityRatingService.class).to(PartnerProductQualityRatingServiceImpl.class);
         bind(LogisticalFormService.class).to(LogisticalFormServiceImpl.class);
         bind(LogisticalFormLineService.class).to(LogisticalFormLineServiceImpl.class);
 		bind(LogisticalFormRepository.class).to(LogisticalFormStockRepository.class);
+        bind(StockLocationRepository.class).to(StockLocationStockRepository.class);
 		bind(AppStockService.class).to(AppStockServiceImpl.class);
         IPartner.modelPartnerFieldMap.put(StockMove.class.getName(), "partner");
     }

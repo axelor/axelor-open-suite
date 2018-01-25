@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,18 @@
  */
 package com.axelor.apps.production.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -26,12 +38,18 @@ import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.production.db.*;
+import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.ProdProcess;
+import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.apps.production.db.ProdProduct;
+import com.axelor.apps.production.db.ProdResidualProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.apps.production.service.config.ProductionConfigService;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.production.service.config.StockConfigProductionService;
+import com.axelor.apps.stock.db.StockConfig;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveLineService;
@@ -45,13 +63,6 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.*;
 
 public class ManufOrderServiceImpl implements  ManufOrderService  {
 
@@ -294,27 +305,6 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		return billOfMaterial;
 		
 	}
-	
-	@Override
-	public String getLanguageToPrinting(ManufOrder manufOrder)  {
-		
-		User user = AuthUtils.getUser();
-		
-		String language = "en";
-		
-		if(user != null && !Strings.isNullOrEmpty(user.getLanguage()))  {
-			return user.getLanguage();
-		}
-		
-		if(manufOrder == null)  {  return language;  }
-		Company company = manufOrder.getCompany();
-		
-		if(company != null && company.getPrintingSettings() != null && !Strings.isNullOrEmpty(company.getPrintingSettings().getLanguageSelect())) {
-			language = company.getPrintingSettings().getLanguageSelect();
-		}
-		
-		return language;
-	}
 
 	@Override
 	public BigDecimal getProducedQuantity(ManufOrder manufOrder) {
@@ -336,17 +326,17 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 			return wasteStockMove;
 		}
 
-		ProductionConfigService productionConfigService = Beans.get(ProductionConfigService.class);
+		StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
 		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
 		StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
 		AppBaseService appBaseService = Beans.get(AppBaseService.class);
 
-		ProductionConfig productionConfig = productionConfigService.getProductionConfig(company);
-		Location virtualLocation = productionConfigService.getProductionVirtualLocation(productionConfig);
-		Location wasteLocation = productionConfigService.getWasteLocation(productionConfig);
+		StockConfig stockConfig = stockConfigService.getStockConfig(company);
+		StockLocation virtualStockLocation = stockConfigService.getProductionVirtualStockLocation(stockConfig);
+		StockLocation wasteStockLocation = stockConfigService.getWasteStockLocation(stockConfig);
 
-		wasteStockMove = stockMoveService.createStockMove(virtualLocation.getAddress(), wasteLocation.getAddress(),
-				company, company.getPartner(), virtualLocation, wasteLocation, null, appBaseService.getTodayDate(),
+		wasteStockMove = stockMoveService.createStockMove(virtualStockLocation.getAddress(), wasteStockLocation.getAddress(),
+				company, company.getPartner(), virtualStockLocation, wasteStockLocation, null, appBaseService.getTodayDate(),
 				manufOrder.getWasteProdDescription(), null, null);
 
 		for (ProdProduct prodProduct : manufOrder.getWasteProdProductList()) {

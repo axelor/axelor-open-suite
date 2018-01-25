@@ -9,10 +9,10 @@
 
 	<form name="hr-config-form" title="Human Resources configuration" model="com.axelor.apps.hr.db.HRConfig" onNew="action-hr-config-record-default" width="large">
 	  	<panel name="main">
-	    	<field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
+	    	<field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	  	</panel>
 	  	<panel name="general" title="General">
-	  		<field name="publicHolidayPlanning" canNew="true"/>
+	  		<field name="publicHolidayEventsPlanning" canNew="true"/>
 	  		<field name="weeklyPlanning" canNew="true"/>
 	  	</panel>
 	  	<panel-tabs>
@@ -44,7 +44,7 @@
 			    	<field name="refusedExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
 					<field name="canceledExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
 			  	</panel>
-		  		<field name="kilometricExpenseProduct" canView="false" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid" />
+		  		<field name="kilometricExpenseProduct" canEdit="false" canView="false" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid" />
 				<field name="expenseSequence" domain="self.code = 'expense' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
 			  	<panel-related field="kilometricAllowanceRateList" colSpan="12" form-view="kilometric-allowance-rate-form" grid-view="kilometric-allowance-rate-grid"/>
 			</panel>
@@ -93,7 +93,7 @@
     	<context name="_showRecord" expr="eval: __self__.hrConfig?.id"/>
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
-    
-	
-	
+
+
+
 </object-views>

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,7 +41,7 @@ public class ProjectManagementRepository extends ProjectRepository {
 	@Override
 	public Project copy(Project entity, boolean deep) {
 		Project project = super.copy(entity, false);
-		project.setStatusSelect(STATE_PLANNED);
+		project.setStatusSelect(STATE_NEW);
 		return project;
 	
 	}

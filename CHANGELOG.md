@@ -1,7 +1,78 @@
-# 4.0.1 (2017-06-19)
+# Changelog
 
-# 4.0.0 (2017-01-30)
+## [Unreleased 5.x]
+## Features
+- New currency conversion API (ECB)
+- Split accounting report VAT statement in two, VAT on amount received and VAT on invoicing
+- Create sale order from partner and contact
+- Multiple Project Gantt View with User and Project.
+- Add a version management on Production process
+- Added 'sale blocking' in Partner
+- Added 'purchase blocking' in Partner
+
 ## Improvements
+- Label "hours" on Project and Task with the field totalPlannedHrs.
+- Added filter on fields of 'Related Elements' in Project
+- New report for InvoicingProject
+- Added fullname in Sequence
+- Generate sale order from Opportunity in edit mode directly
+
+## Bug Fixes
+- All StockMoveLines now appear in Produced products grid (ManufOrder)
+- Fix the default amount on new invoice payment to use the amount remaining of the invoice.
+- Fix demo data en and fr on AppSuplychain to set the correct value on the field supplStockMoveMgtOnSO
+
+## [Unreleased 4.x]
+### Improvements
+
+### Bug Fixes
+- Fix demo data en and fr on General config to set the correct value of the fields custStockMoveMgtOnSO and supplStockMoveMgtOnSO.
+
+
+## [4.1.1] - 2018-01-10
+- Ebics TS improvements
+- Bank order improvements
+- HR improvments
+- Some fixes
+
+
+## [4.1.0] - 2017-06-19
+- Ebics TS implementation
+- Bank ordre implementation
+- Lunch voucher management
+- Employee bonus management
+- Expense improvements (multi user, kilometric compute with some rates)
+- Leave request improvements
+
+
+## [4.0.2] - 2018-01-09
+- BOM Componants tab order by priority
+- Set all field of all locationline view in readonly
+- Copy fix ICalendar and MailAccount
+- Fix NPE when generating an invoice from a stock move.
+- Fix currency conversion
+- Update translations
+- Fix google map api with api key
+- Toolbar does not show in special split popup anymore
+- Popup now closes after special split
+- Fixed multiple bug reported
+- Fix irrecoverable getInvoiceList request
+- Replace all __user__ context by __user__ directly on sql
+- Fix bad domain
+- STOCKMOVE - report with tracking number
+- Remove seeMonth Button on Project/MyPlanning
+- Timesheet lines and related elements are sorted by date DESC
+- Catch exception in TraceBack
+- Manage duplicate move lines in reports
+- CURRENCY CONVERSION : WS
+- Update license
+
+
+## [4.0.1] - 2017-06-19
+
+
+## [4.0.0] - 2017-01-30
+### Improvements
 - Default partner type
 - Remove sublines of SOlines : SubLine will be replaced per a title line to group some lines.
 - Rename saleOrder status and field :
@@ -165,8 +236,8 @@ The conversion is done with conversion unit lines or with a formule on Product f
 - STOCK MOVE : cancel a stock move and update the sale order or purchase order
 
 
-# 3.0.3 (2017-02-28)
-## Bug Fixes
+## [3.0.3] - 2017-02-28
+### Bug Fixes
 
 - Fixed issue on the method to get the next period
 - Changed display of CFONB field, by using nested, on AccontConfig
@@ -178,8 +249,8 @@ The conversion is done with conversion unit lines or with a formule on Product f
 - Sequence onNew fix: nextNum removed
 
 
-# 3.0.2 (2015-09-09)
-## Bug Fixes
+## [3.0.2] - 2015-09-09
+### Bug Fixes
 - Domain on Partner account in Invoice
 - JPA context of the project during generation of invoice
 - Removed unused selection for social network
@@ -195,31 +266,31 @@ The conversion is done with conversion unit lines or with a formule on Product f
 - Fixed some issue with conversion of lead
 - Contact dashboard
 
-## Improvements
+### Improvements
 - Sequence management
 - Management of number of decimal for unit price
 - Company logo became a MetaFile instead of a path
 - MoveLine and move is generated during ventilation of invoice only if the amount on line or invoice is not null.
 - Controle on sequence and date for customer invoice only
-- Improve translations for printing (Purchase Order) and Lead
+- Improve translations for printing (Purchase order) and Lead
 - Attribute 'x-show-titles' updated in 'editor' according ADK improvement
 - Change management of manageCustomerCredit field
 - No check of account config if amount if null on a line of invoice during ventilation
 - Per default, translation doesn't contains the context, according ADK improvement
 
-# 3.0.1 (2015-05-13)
-## Bug Fixes
+## [3.0.1] - 2015-05-13
+### Bug Fixes
 - Fixed somes issues
 
-## Improvements
+### Improvements
 - Sequence management
 - Message management
 
 
-# 3.0.0 (2015-01-21)
+## [3.0.0] - 2015-01-21
 Fully responsive mobile ready views, gradle based build system and much more.
 
-## Features
+### Features
 - migrated to gradle build system
 - fully responsive mobile ready views
 - Split object per modules
@@ -231,3 +302,16 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Inventory and Supply Chain Management
 - Production Management
 - Multi-company, multi-currency and multi-lingual
+
+
+[Unreleased 5.x]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
+[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...dev
+[4.1.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.0...v4.1.1
+[4.1.0]: https://github.com/axelor/axelor-business-suite/compare/v4.0.2...v4.1.0
+[4.0.2]: https://github.com/axelor/axelor-business-suite/compare/v4.0.1...v4.0.2
+[4.0.1]: https://github.com/axelor/axelor-business-suite/compare/v4.0.0...v4.0.1
+[4.0.0]: https://github.com/axelor/axelor-business-suite/compare/v3.0.3...v4.0.0
+[3.0.3]: https://github.com/axelor/axelor-business-suite/compare/v3.0.2...v3.0.3
+[3.0.2]: https://github.com/axelor/axelor-business-suite/compare/v3.0.1...v3.0.2
+[3.0.1]: https://github.com/axelor/axelor-business-suite/compare/v3.0.0...v3.0.1
+[3.0.0]: https://github.com/axelor/axelor-business-suite/compare/0f38e90dcd9126079eac78c1639a40c728e63d94...v3.0.0

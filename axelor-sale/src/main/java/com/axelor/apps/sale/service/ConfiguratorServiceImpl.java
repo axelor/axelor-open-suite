@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,20 +26,17 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.JsonContext;
 import com.axelor.script.GroovyScriptHelper;
-import com.axelor.script.ScriptBindings;
 import com.axelor.script.ScriptHelper;
 import com.google.inject.persist.Transactional;
 import groovy.lang.MissingPropertyException;
@@ -54,17 +51,14 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     public void updateIndicators(Configurator configurator,
                                  JsonContext jsonAttributes,
                                  JsonContext jsonIndicators) throws AxelorException {
-        List<MetaJsonField> indicators =
-                configurator.getConfiguratorCreator().getIndicators();
-        if (configurator.getConfiguratorCreator() == null) {
+    	if (configurator.getConfiguratorCreator() == null) {
             return;
         }
+		List<MetaJsonField> indicators = configurator.getConfiguratorCreator().getIndicators();
         for (MetaJsonField indicator : indicators) {
             try {
-                Object calculatedValue = computeIndicatorValue(
-                        configurator, indicator.getName(), jsonAttributes);
-                jsonIndicators.put(indicator.getName(),
-                        calculatedValue);
+				Object calculatedValue = computeIndicatorValue(configurator, indicator.getName(), jsonAttributes);
+				jsonIndicators.put(indicator.getName(), calculatedValue);
             } catch (MissingPropertyException e) {
                 //if a field is missing, the value needs to be set to null
                 continue;
@@ -100,18 +94,9 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         }
         fixRelationalFields(product);
         product.setProductTypeSelect(ProductRepository.PRODUCT_TYPE_STORABLE);
-        product = Beans.get(ProductRepository.class).save(product);
-        configurator.setProductId(product.getId());
-        Beans.get(ConfiguratorRepository.class).save(configurator);
-    }
-
-    @Override
-    public Configurator getConfiguratorFromProduct(Product product) {
-        return Beans.get(ConfiguratorRepository.class)
-                .all()
-                .filter("self.productId = :_id")
-                .bind("_id", product.getId())
-                .fetchOne();
+        configurator.setProduct(product);
+        product.setConfigurator(configurator);
+        Beans.get(ProductRepository.class).save(product);
     }
 
     @Transactional
@@ -128,15 +113,11 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
             saleOrderLine.setSaleOrder(saleOrder);
             generateProduct(configurator, jsonAttributes, jsonIndicators);
 
-            Product product = Beans.get(ProductRepository.class)
-                    .find(configurator.getProductId());
-            saleOrderLine.setProduct(product);
+            saleOrderLine.setProduct(configurator.getProduct());
             this.fillSaleOrderWithProduct(saleOrderLine);
-            Beans.get(SaleOrderLineService.class)
-                    .computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+			Beans.get(SaleOrderLineService.class).computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
         } else {
-            saleOrderLine = generateSaleOrderLine(configurator, jsonAttributes,
-                    jsonIndicators, saleOrder);
+			saleOrderLine = generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
         }
         saleOrder.addSaleOrderLineListItem(saleOrderLine);
         Beans.get(SaleOrderService.class).computeSaleOrder(saleOrder);
@@ -150,7 +131,9 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
      */
     protected void fillSaleOrderWithProduct(SaleOrderLine saleOrderLine) throws AxelorException {
         SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
-        saleOrderLineService.computeProductInformation(saleOrderLine, saleOrderLine.getSaleOrder());
+        if (saleOrderLine.getProduct() != null) {
+            saleOrderLineService.computeProductInformation(saleOrderLine, saleOrderLine.getSaleOrder());
+        }
     }
 
     protected void overwriteFieldToUpdate(Configurator configurator,
@@ -211,15 +194,6 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         ScriptHelper scriptHelper = new GroovyScriptHelper(values);
 
         return scriptHelper.eval(groovyFormula);
-    }
-
-    @Override
-    public void testFormula(String groovyFormula, ScriptBindings values)
-            throws AxelorException {
-        ScriptHelper scriptHelper = new GroovyScriptHelper(values);
-        if (scriptHelper.eval(groovyFormula) == null) {
-            throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR));
-        }
     }
 
     /**

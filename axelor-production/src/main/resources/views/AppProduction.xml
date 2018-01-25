@@ -13,8 +13,11 @@
 			    <field name="manageResidualProductOnBom" widget="boolean-switch"/>
 			</panel>
 			<panel name="manufacturingProcess" title="Manufacturing process">
-   				<field name="workCenterProduct" form-view="product-form" grid-view="product-grid"/>
+   				<field name="workCenterProduct" form-view="product-form" grid-view="product-grid" canEdit="false"/>
 			</panel>
+			<panel name="prodProcess" title="Production process">
+ 				<field name="manageProdProcessVersion" widget="boolean-switch"/>
+ 			</panel>
 			<panel name="costSheet" title="Cost sheet">
 			    <field name="productCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
   				<field name="workCenterCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>

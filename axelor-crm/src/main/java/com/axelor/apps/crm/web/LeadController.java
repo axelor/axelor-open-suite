@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.report.engine.ReportSettings;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,19 +92,6 @@ public class LeadController {
 		}
 		
 		if(!leadIds.equals("")){
-			
-			User user = AuthUtils.getUser();
-			String language = "en";
-			try {
-			
-				if(user != null && !Strings.isNullOrEmpty(user.getLanguage()))  {
-					language = user.getLanguage();
-				}
-				else if (lead.getPartner().getLanguageSelect()!= null){
-					language = lead.getPartner().getLanguageSelect()!= null? lead.getPartner().getLanguageSelect():"en";
-				} 
-			}catch(Exception e){}
-			
 			String title = " ";
 			if(lead.getFirstName() != null)  {
 				title += lstSelectedleads == null ? "Lead "+lead.getFirstName():"Leads";
@@ -111,7 +99,7 @@ public class LeadController {
 
 			String fileLink = ReportFactory.createReport(IReport.LEAD, title+"-${date}")
 					.addParam("LeadId", leadIds)
-					.addParam("Locale", language)
+					.addParam("Locale", ReportSettings.getPrintingLocale(lead.getPartner()))
 					.generate()
 					.getFileLink();
 
@@ -164,19 +152,17 @@ public class LeadController {
 		}
 	}
 
+	/**
+	 * Called from lead view on name change and onLoad.
+	 * Call {@link LeadService#isThereDuplicateLead(Lead)}
+	 * @param request
+	 * @param response
+	 */
 	public void checkLeadName(ActionRequest request, ActionResponse response) {
 		Lead lead = request.getContext().asType(Lead.class);
-
-		if (lead.getName() != null && !lead.getName().isEmpty() &&
-				lead.getFirstName() != null && !lead.getFirstName().isEmpty()) {
-			Lead existingLead = leadRepo.all()
-					.filter("lower(self.name) = lower(?1) and lower(self.firstName) = lower(?2)",
-							lead.getName(), lead.getFirstName())
-					.fetchOne();
-			if (existingLead != null) {
-				response.setAlert("There is already a lead with these first name and last name");
-			}
-		}
+		response.setAttr("duplicateLeadText",
+				"hidden",
+				!leadService.isThereDuplicateLead(lead));
 	}
 	
 }

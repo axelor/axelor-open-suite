@@ -17,7 +17,7 @@
     </toolbar>
 	  <panel name="main" >
 		  <field name="name" />
-		  <field name="user"/>
+		  <field name="user" canNew="false" canEdit="false" canView="false"/>
 		  <field name="keepRemote" />
 	  </panel>
 	  <panel name="connectionSettings" title="Connection settings">

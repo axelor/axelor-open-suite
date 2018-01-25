@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,7 +38,7 @@ public interface IExceptionMessage {
 	/**
 	 * Purchase config service
 	 */
-	static final public String PURCHASE_CONFIG_1 = /*$$(*/ "%s : You must configure Purchase module for the company %s" /*)*/;
+	static final public String PURCHASE_CONFIG_1 = /*$$(*/ "You must configure Purchase module for the company %s" /*)*/;
 
 	/**
 	 * Merge purchase order
@@ -47,4 +47,9 @@ public interface IExceptionMessage {
 	static final public String PURCHASE_ORDER_MERGE_ERROR_CURRENCY = /*$$(*/ "The currency is required and must be the same for all purchase orders" /*)*/;
 	static final public String PURCHASE_ORDER_MERGE_ERROR_SUPPLIER_PARTNER = /*$$(*/ "The supplier Partner is required and must be the same for all purchase orders" /*)*/;
 	static final public String PURCHASE_ORDER_MERGE_ERROR_COMPANY = /*$$(*/ "The company is required and must be the same for all purchase orders" /*)*/;
+
+	/**
+	 * Blocking supplier
+	 */
+	String SUPPLIER_BLOCKED = /*$$(*/ "This supplier is blocked:" /*)*/;
 }

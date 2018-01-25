@@ -7,7 +7,6 @@
 
   	<entity name="Address" lang="java">
 
-    <string name="importId"/>
     <string name="addressL2" title="Recipient details"/>
     <string name="addressL3" title="Address precisions" />
     <string name="addressL4" title="N° and Street label" required="true"/>
@@ -21,7 +20,8 @@
     <string name="inseeCode" title="National Code" readonly="true"/>
     <boolean name="certifiedOk" title="Address certified by QAS engine" default="false" readonly="true"/>
     <one-to-many name="pickList" ref="com.axelor.apps.base.db.PickListEntry" title="QAS Proposal lists" mappedBy="address"/>
-    
+    <string name="zip" title="Zip code"/>
+
     <string name="fullName" namecolumn="true" search="addressL2,addressL3,addressL4,addressL5,addressL6" title="Address"/>
     
   </entity>

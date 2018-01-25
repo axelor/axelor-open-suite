@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,22 +17,25 @@
  */
 package com.axelor.apps.production.service;
 
+import java.math.BigDecimal;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.service.config.ProductionConfigService;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.production.service.config.StockConfigProductionService;
+import com.axelor.apps.stock.db.StockConfig;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-
-import java.math.BigDecimal;
 
 public class OperationOrderStockMoveService {
 
@@ -46,7 +49,7 @@ public class OperationOrderStockMoveService {
 	private ProductionConfigService productionConfigService;
 
 	@Inject
-	private LocationRepository locationRepo;
+	private StockLocationRepository stockLocationRepo;
 
 
 	public void createToConsumeStockMove(OperationOrder operationOrder) throws AxelorException {
@@ -83,20 +86,22 @@ public class OperationOrderStockMoveService {
 
 	private StockMove _createToConsumeStockMove(OperationOrder operationOrder, Company company) throws AxelorException  {
 
-		Location virtualLocation = productionConfigService.getProductionVirtualLocation(productionConfigService.getProductionConfig(company));
+		StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
+		StockConfig stockConfig = stockConfigService.getStockConfig(company);
+		StockLocation virtualStockLocation = stockConfigService.getProductionVirtualStockLocation(stockConfig);
 
-		Location fromLocation;
+		StockLocation fromStockLocation;
 
 		ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
-		if (operationOrder.getManufOrder().getIsConsProOnOperation() && prodProcessLine != null && prodProcessLine.getLocation() != null) {
-			fromLocation = prodProcessLine.getLocation();
-		} else if (!operationOrder.getManufOrder().getIsConsProOnOperation() && prodProcessLine != null && prodProcessLine.getProdProcess() != null && prodProcessLine.getProdProcess().getLocation() != null) {
-			fromLocation = prodProcessLine.getProdProcess().getLocation();
+		if (operationOrder.getManufOrder().getIsConsProOnOperation() && prodProcessLine != null && prodProcessLine.getStockLocation() != null) {
+			fromStockLocation = prodProcessLine.getStockLocation();
+		} else if (!operationOrder.getManufOrder().getIsConsProOnOperation() && prodProcessLine != null && prodProcessLine.getProdProcess() != null && prodProcessLine.getProdProcess().getStockLocation() != null) {
+			fromStockLocation = prodProcessLine.getProdProcess().getStockLocation();
 		} else {
-			fromLocation = locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", company, true, LocationRepository.TYPE_INTERNAL).fetchOne();
+			fromStockLocation = stockConfigService.getDefaultStockLocation(stockConfig);
 		}
 
-		return stockMoveService.createStockMove(null, null, company, null, fromLocation, virtualLocation,
+		return stockMoveService.createStockMove(null, null, company, null, fromStockLocation, virtualStockLocation,
 				null, operationOrder.getPlannedStartDateT().toLocalDate(), null, null, null);
 
 	}

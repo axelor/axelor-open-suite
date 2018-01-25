@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,7 @@ package com.axelor.apps.stock.service;
 import java.math.BigDecimal;
 
 import com.axelor.apps.stock.db.LogisticalFormLine;
-import com.axelor.apps.stock.exception.InvalidLogisticalFormLineDimensions;
+import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.script.ScriptHelper;
 
 public interface LogisticalFormLineService {
@@ -45,9 +45,9 @@ public interface LogisticalFormLineService {
 	 * Validate dimensions
 	 * 
 	 * @param logisticalFormLine
-	 * @throws InvalidLogisticalFormLineDimensions
+	 * @throws LogisticalFormError
 	 */
-	void validateDimensions(LogisticalFormLine logisticalFormLine) throws InvalidLogisticalFormLineDimensions;
+	void validateDimensions(LogisticalFormLine logisticalFormLine) throws LogisticalFormError;
 
 	/**
 	 * Evaluate volume.
@@ -55,10 +55,10 @@ public interface LogisticalFormLineService {
 	 * @param logisticalFormLine
 	 * @param scriptHelper
 	 * @return
-	 * @throws InvalidLogisticalFormLineDimensions
+	 * @throws LogisticalFormError
 	 */
 	BigDecimal evalVolume(LogisticalFormLine logisticalFormLine, ScriptHelper scriptHelper)
-			throws InvalidLogisticalFormLineDimensions;
+			throws LogisticalFormError;
 
 	/**
 	 * Initialize parcel/pallet line.

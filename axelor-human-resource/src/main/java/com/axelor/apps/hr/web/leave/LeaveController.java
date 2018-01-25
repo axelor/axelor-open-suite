@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -139,8 +139,7 @@ public class LeaveController {
 				.add("grid","leave-request-grid")
 				.add("form","leave-request-form");
 
-		actionView.domain("self.company = :_activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
-		.context("_activeCompany", user.getActiveCompany());
+		actionView.domain("self.statusSelect = 3 OR self.statusSelect = 4");
 
 		if(employee == null || !employee.getHrManager())  {
 			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
@@ -160,7 +159,7 @@ public class LeaveController {
 				   .add("grid","leave-request-grid")
 				   .add("form","leave-request-form");
 
-		String domain = "self.user.employee.manager.employee.manager = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
+		String domain = "self.user.employee.manager.employee.manager = :_user AND self.statusSelect = 2";
 
 		long nbLeaveRequests =  Query.of(ExtraHours.class).filter(domain).bind("_user", user).bind("_activeCompany", activeCompany).count();
 
@@ -194,7 +193,7 @@ public class LeaveController {
 			LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
 			leaveRequest = leaveRequestRepositoryProvider.get().find(leaveRequest.getId());
 
-			if(leaveRequest.getLeaveLine().getQuantity().subtract(leaveRequest.getDuration()).compareTo(BigDecimal.ZERO ) == -1 ){
+			if(leaveRequest.getLeaveLine().getQuantity().subtract(leaveRequest.getDuration()).compareTo(BigDecimal.ZERO) < 0){
 				if(!leaveRequest.getLeaveLine().getLeaveReason().getAllowNegativeValue() && !leaveService.willHaveEnoughDays(leaveRequest)){
 					String instruction = leaveRequest.getLeaveLine().getLeaveReason().getInstruction();
 					if (instruction == null) { instruction = ""; }

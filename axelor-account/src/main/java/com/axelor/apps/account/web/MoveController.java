@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,6 +27,7 @@ import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.service.PeriodService;
 
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -173,7 +174,7 @@ public class MoveController {
 		String moveName = move.getReference().toString();
 				
 		String fileLink = ReportFactory.createReport(IReport.ACCOUNT_MOVE, moveName+"-${date}")
-						.addParam("Locale", moveService.getLanguageToPrinting(move))
+						.addParam("Locale", ReportSettings.getPrintingLocale(null))
 						.addParam("moveId", move.getId())
 						.generate()
 						.getFileLink();

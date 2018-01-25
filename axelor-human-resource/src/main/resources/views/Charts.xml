@@ -49,6 +49,7 @@
 	<chart onInit="action.hr.chart.set.period.last.month" title="Expense Per Employee" name="chart.expense.per.employee">
 		<search-fields>
 			<field name="period" title="Period" type="reference"
+				   domain="self.year.typeSelect = 1"
 				   target="com.axelor.apps.base.db.Period" x-required="true"/>
 		</search-fields>
 		<dataset type="jpql"><![CDATA[

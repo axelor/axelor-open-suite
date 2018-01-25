@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,16 +17,31 @@
  */
 package com.axelor.apps.sale.service;
 
+import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
+import javax.validation.constraints.NotNull;
+
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
-import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.User;
+import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
@@ -36,16 +51,13 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.script.ScriptBindings;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
@@ -107,34 +119,89 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     }
 
     @Override
-    public void testCreator(ConfiguratorCreator creator,
-                            ScriptBindings testingValues)
-            throws AxelorException  {
-        List<ConfiguratorFormula> formulas = creator.getConfiguratorFormulaList();
-        if (formulas == null) {
-            //nothing to test
-            return;
-        }
-        ConfiguratorService configuratorService =
-                Beans.get(ConfiguratorService.class);
-        for (ConfiguratorFormula formula : formulas) {
-            configuratorService.testFormula(formula.getFormula(), testingValues);
-        }
-    }
-
-    @Override
     public ScriptBindings getTestingValues(ConfiguratorCreator creator) throws AxelorException {
         Map<String, Object> attributesValues = new HashMap<>();
         List<MetaJsonField> attributes = creator.getAttributes();
         if (attributes != null) {
             for (MetaJsonField attribute : attributes) {
-                if (attribute.getDefaultValue() == null) {
-                    throw new AxelorException(creator, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_MISSING_VALUES));
+                Object defaultAttribute = getAttributesDefaultValue(attribute);
+                if (defaultAttribute != null) {
+                    attributesValues.put(attribute.getName(), getAttributesDefaultValue(attribute));
                 }
-                attributesValues.put(attribute.getName(), attribute.getDefaultValue());
             }
         }
         return new ScriptBindings(attributesValues);
+    }
+
+    /**
+     * Get a default value to test a script.
+     * @param attribute
+     * @return
+     */
+    protected Object getAttributesDefaultValue(MetaJsonField attribute) {
+        switch (attribute.getType()) {
+            case "string":
+                return "a";
+            case "integer":
+                return 1;
+            case "decimal":
+                return BigDecimal.ONE;
+            case "boolean":
+                return true;
+            case "datetime":
+                return LocalDateTime.of(LocalDate.now(), LocalTime.now());
+            case "date":
+                return LocalDate.now();
+            case "time":
+                return LocalTime.now();
+            case "panel":
+                return null;
+            case "enum":
+                return null;
+            case "button":
+                return null;
+            case "separator":
+                return null;
+            case "many-to-one":
+                return getAttributeRelationalField(attribute, "many-to-one");
+            case "many-to-many":
+                return getAttributeRelationalField(attribute, "many-to-many");
+            case "one-to-many":
+                return getAttributeRelationalField(attribute, "one-to-many");
+            case "json-many-to-one":
+                return null;
+            case "json-many-to-many":
+                return null;
+            case "json-one-to-many":
+                return null;
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * Get a default value to test a script for a relational field.
+     * @param attribute
+     * @param relation
+     * @return
+     */
+    protected Object getAttributeRelationalField(MetaJsonField attribute, String relation) {
+        try {
+            Class targetClass = Class.forName(attribute.getTargetModel());
+            if (relation.equals("many-to-one")) {
+                return JPA.all(targetClass).fetchOne();
+            } else if (relation.equals("one-to-many")) {
+                return JPA.all(targetClass).fetch(1);
+            } else if (relation.equals("many-to-many")) {
+                return new HashSet(JPA.all(targetClass).fetch(1));
+            }
+            else {
+                return null;
+            }
+        } catch (Exception e) {
+            TraceBackService.trace(e);
+            return null;
+        }
     }
 
     /**
@@ -246,9 +313,11 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         int scale = Beans.get(AppBaseService.class)
                 .getNbDecimalDigitForUnitPrice();
         String fieldName = indicator.getName();
-        fieldName = fieldName.substring(0, fieldName.indexOf("_"));
+        fieldName = fieldName.substring(0, fieldName.indexOf('_'));
 
-        if (!configuratorFormulaService.getMetaField(formula).getName()
+        MetaField metaField = configuratorFormulaService.getMetaField(formula);
+
+        if (!metaField.getName()
                 .equals(fieldName)) {
             return;
         }
@@ -258,10 +327,15 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         } else {
             indicator.setHidden(true);
         }
-        if (configuratorFormulaService.getMetaField(formula)
-                .getTypeName().equals("BigDecimal")) {
+        if (metaField.getTypeName().equals("BigDecimal")) {
             indicator.setPrecision(20);
             indicator.setScale(scale);
+        } else if (!Strings.isNullOrEmpty(metaField.getRelationship())) {
+            indicator.setTargetModel(
+                    Beans.get(MetaModelRepository.class).findByName(
+                            metaField.getTypeName()
+                    ).getFullName()
+            );
         }
     }
 
@@ -293,6 +367,54 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 	@Transactional
 	public void authorizeUser(ConfiguratorCreator creator, User user) {
 		creator.addAuthorizedUserSetItem(user);
+	}
+	
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void addRequiredFormulas(ConfiguratorCreator creator) throws AxelorException {
+		if (creator.getGenerateProduct()) {
+			for (Field field : Product.class.getDeclaredFields()) {
+				if (field.getAnnotation(NotNull.class) != null) {
+					creator.addConfiguratorFormulaListItem(createFormula("Product", field.getName()));
+				}
+			}
+		} else {
+			for (Field field : SaleOrderLine.class.getDeclaredFields()) {
+				if (field.getAnnotation(NotNull.class) != null) {
+					creator.addConfiguratorFormulaListItem(createFormula("SaleOrderLine", field.getName()));
+				}
+			}
+		}
+		configuratorCreatorRepo.save(creator);
+	}
+
+
+	/**
+	 * Create a configuratorFormula with an empty formula for the given MetaField.
+	 * 
+	 * @param metaFieldType
+	 * @param name
+	 * @return
+	 * @throws AxelorException
+	 */
+	private ConfiguratorFormula createFormula(String metaFieldType, String name) throws AxelorException {
+		ConfiguratorFormula configuratorFormula = new ConfiguratorFormula();
+		configuratorFormula.setShowOnConfigurator(true);
+		configuratorFormula.setFormula("");
+
+		Long productModelId = JPA.all(MetaModel.class).filter("self.name = ?", metaFieldType).fetchOne().getId();
+		MetaField metaField = JPA.all(MetaField.class)
+				.filter("self.name = ? AND self.metaModel.id = ?", name, productModelId).fetchOne();
+		if (metaFieldType == "Product") {
+			configuratorFormula.setProductMetaField(metaField);
+		} else if (metaFieldType == "SaleOrderLine") {
+			configuratorFormula.setSaleOrderLineMetaField(metaField);
+		} else {
+			throw new AxelorException(ConfiguratorFormula.class, IException.NO_VALUE,
+					I18n.get(com.axelor.apps.sale.exception.IExceptionMessage.CONFIGURATOR_CREATOR_UNVALID_METAFIELD));
+		}
+
+		return configuratorFormula;
 	}
 
 	@Override

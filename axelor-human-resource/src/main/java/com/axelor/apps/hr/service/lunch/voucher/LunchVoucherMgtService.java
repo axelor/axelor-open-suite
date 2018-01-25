@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,8 +35,8 @@ public interface LunchVoucherMgtService {
 	public void validate(LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
 
 	@Transactional
-	public LunchVoucherMgt updateStock(LunchVoucherMgt lunchVoucherMgt,
-                     List<LunchVoucherMgtLine> oldLunchVoucherMgtLines)
+	public int updateStock(List<LunchVoucherMgtLine> newLunchVoucherMgtLines,
+						   List<LunchVoucherMgtLine> oldLunchVoucherMgtLines, Company company)
             throws AxelorException;
 
 	@Transactional

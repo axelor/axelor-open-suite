@@ -17,12 +17,12 @@
 			<field name="name"/>
 			<field name="priority"/>
 			<field name="product"/>
-			<field name="team"/>
+			<field name="team" domain="self.typeSelect = 'quality'"/>
 			<field name="responsible"/>
 			<field name="controlType"/>
 			<field name="testType"/>
 		</panel>
-		<panel name="ControlFrequency" showIf="controlType == 2 || controlType == 3" title="Cotrol Frequency">
+		<panel name="ControlFrequency" showIf="controlType == 2 || controlType == 3" title="Control Frequency">
 			<field name="cf" title="Control Frequency" type="string" colSpan="12" showIf="controlType == 2" showTitle="false">
 				<viewer>
 				<![CDATA[

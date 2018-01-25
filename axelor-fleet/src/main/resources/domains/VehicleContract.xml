@@ -16,7 +16,7 @@
 		<string name="reference" title="Contract Reference" />
 		<integer name="statusSelect" title="Status" selection="fleet.vehicle.contract.status.select"/>
 		<string name="notes" title="Notes" large="true" />
-		<many-to-many name="recurringCost" title="Recurring Cost" ref="com.axelor.apps.fleet.db.RecurringCost" />
+		<decimal name="recurringCost" title="Recurring Cost" />
 		<integer name="costFrequencySelect" title="Recurring Cost Frequency" selection="fleet.vehicle.contract.cost.frequency.select" />
 		<one-to-many name="vehicleService" ref="com.axelor.apps.fleet.db.VehicleService"/>		
 		<decimal name="totalCost" title="Total cost" />

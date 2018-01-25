@@ -5,11 +5,10 @@
  
   <entity name="DebtRecoveryMethod" lang="java" cachable="true">
   
-    <integer name="importId"/>
     <string name="name" title="Method name" />
     <string name="code" title="Code" unique="true"/>
     
-  	<one-to-many name="debtRecoveryMethodLineList" ref="com.axelor.apps.account.db.DebtRecoveryMethodLine" mappedBy ="debtRecoveryMethod" title="Debt recovery method lines"/>
+  	<one-to-many name="debtRecoveryMethodLineList" ref="com.axelor.apps.account.db.DebtRecoveryMethodLine" mappedBy="debtRecoveryMethod" title="Debt recovery method lines"/>
     
   </entity>
   

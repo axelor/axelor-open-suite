@@ -12,15 +12,22 @@
 		<boolean name="showPurchaseOrderLineRelatedToProject" title="Show purchase order lines related to the project"/>
 		<boolean name="showSaleOrderLineRelatedToProject" title="Show sale order lines related to the project" />
 		<boolean name="showExpenseLineRelatedToProject" title="Show expense order lines related to the project" />
-		
+		<boolean name="showProductionOrderRelatedToProject" title="Show production orders related to the project" />
+        <boolean name="showPurchaseInvoiceLineRelatedToProject" title="Show purchase invoice line related to the project"/>
+		<boolean name="showSaleInvoiceLineRelatedToProject" title="Show sale invoice line related to the project"/>
+
 		<boolean name="enableToInvoiceTimesheet" title="Enable to invoice timesheet" />
 		<boolean name="enableToInvoiceExpense" title="Enable to invoice expense" />
 		<integer name="defaultInvoiceTypeSelect" title="Default invoice type" selection="business.project.default.invoice.type.select" />
 		
 		<boolean name="generateProjectOrder" title="Generate/Select Project for Order"/>
 		<boolean name="automaticProject" title="Automatic Project"/>
-		<boolean name="projectSaleOrderLines" title="Project in Sale Order Lines"/>
-		<boolean name="projectPurchaseOrderLines" title="Project in Purchase Order Lines"/>
+
+		<integer name="generatedElementTypeSelect" title="Generated element type" default="3" selection="business.project.config.generated.element.type"/>
+
+		<boolean name="projectSaleOrderLines" title="Project in Sale order lines"/>
+		<boolean name="projectPurchaseOrderLines" title="Project in Purchase order lines"/>
+
 		<boolean name="projectInvoiceLines" title="Project in Invoice Lines"/>
 		
 	</entity>

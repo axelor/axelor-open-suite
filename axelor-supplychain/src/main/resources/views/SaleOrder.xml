@@ -5,14 +5,23 @@
 	
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form"
 	onNew="action-group-supplychain-saleorder-onnew"
-	onLoad="action-group-supplychain-saleorder-onload">
+	onLoad="action-group-supplychain-saleorder-onload"
+    onSave="action-supplychain-saleorder-onsave">
 		
+		<panel-include view="sale-order-form" from="axelor-sale"/>
+	</form>
+	
+	<form name="sale-order-form-partner" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form-partner" 
+	onNew="action-group-supplychain-saleorder-onnew,action-group-partner-saleorder-onnew"
+	onLoad="action-group-supplychain-saleorder-onload"
+    onSave="action-supplychain-saleorder-onsave">
+    
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
 
 	<form name="sale-order-generate-po-select-supplierpartner-form" model="com.axelor.apps.sale.db.SaleOrder" title="Confirm Purchase order generation" onNew="action-record-load-dummy-supplier-partner">
 		<panel name="main" >
-			<field name="supplierPartnerSelect" title="Select supplier partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact = false AND self.isSupplier = true" required="true"/>
+			<field name="supplierPartnerSelect" title="Select supplier partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" onSelect="action-supplychain-so-generate-supplier-partner-domain" required="true"/>
 			<button name="generatePOConfirm" title="Confirm Purchase order generation" onClick="action-supplychain-so-generate-po-check-supplier-partner,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
 		</panel>
     </form>
@@ -24,7 +33,7 @@
 	</form>
 	
 	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-template-form"
-		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
+		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template"
 		onLoad="action-group-sale-saleorder-onload">
 		<panel-include view="sale-order-template-form" from="axelor-sale"/>
 	</form>
@@ -33,7 +42,7 @@
 		<action name="action-sale-order-record-default"/>
 		<action name="action-sale-order-record-payment-mode"/>
 		<action name="action-sale-order-record-company-configuration"/>
-		<action name="action-supplychain-sale-order-method-get-location"/>
+		<action name="action-supplychain-sale-order-method-get-stock-location"/>
 		<action name="action-sale-order-record-currency"/>
 		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
 		<action name="action-sale-order-record-in-ati"/>
@@ -54,8 +63,12 @@
 		<action name="save"/>
 	</action-group>
 
-	<action-method name="action-supplychain-sale-order-method-get-location">
-    	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
+    <action-method name="action-supplychain-saleorder-onsave">
+        <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="onSave" />
+    </action-method>
+
+	<action-method name="action-supplychain-sale-order-method-get-stock-location">
+    	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getStockLocation"/>
     </action-method>
     
     <action-group name="action-supplychain-sale-order-group-generate-invoice">
@@ -67,17 +80,17 @@
 	<action-method name="action-supplychain-sale-order-create-stock-move" >
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createStockMove"/>
 	</action-method>
-	
-	<action-method name="action-sale-order-method-get-location" >
-    	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
-    </action-method>
-	
+
 	<action-method name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" >
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generatePurchaseOrdersFromSelectedSOLines"/>
 	</action-method>
 
-	<action-validate name="action-supplychain-sale-order-validate-check-location">
-		<error message="The location must be filled." if="location == null"/>
+	<action-method name="action-supplychain-so-generate-supplier-partner-domain">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="supplierPartnerSelectDomain"/>
+	</action-method>
+
+	<action-validate name="action-supplychain-sale-order-validate-check-stock-location">
+		<error message="The stock location must be filled." if="stockLocation == null"/>
 	</action-validate>
 	
 	<action-record name="action-record-load-dummy-supplier-partner" model="com.axelor.apps.sale.db.SaleOrder">
@@ -99,6 +112,8 @@
 				   expr="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
 		<attribute for="interco" name="value" expr="eval: false"
 				   if="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
+		<attribute for="interco" name="readonly" expr="eval: true"
+				   if="eval: statusSelect &gt; 3"/>
 	</action-attrs>
 
 	<action-view name="action-view-show-invoices-from-sale-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">
@@ -123,5 +138,5 @@
     <action-condition name="action-supplychain-so-generate-po-check-supplier-partner">
 		<check error="A supplier partner must be selected" field="supplierPartnerSelect" if="supplierPartnerSelect == null"/>
 	</action-condition>
-	
+
 </object-views>

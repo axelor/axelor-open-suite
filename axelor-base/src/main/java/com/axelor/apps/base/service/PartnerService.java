@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,21 +17,18 @@
  */
 package com.axelor.apps.base.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
+import com.axelor.apps.base.db.PartnerPriceList;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.db.JPA;
@@ -42,7 +39,14 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-	
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class PartnerService {
 
 	@Inject
@@ -55,7 +59,7 @@ public class PartnerService {
 		partner.setFirstName(firstName);
 		partner.setFullName(this.computeFullName(partner));
 		partner.setPartnerTypeSelect(IPartner.PARTNER_TYPE_SELECT_ENTERPRISE);
-		partner.setIsCustomer(true);
+		partner.setIsProspect(true);
 		partner.setFixedPhone(fixedPhone);
 		partner.setMobilePhone(mobilePhone);
 		partner.setEmailAddress(emailAddress);
@@ -290,5 +294,74 @@ public class PartnerService {
 		partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
 		addPartnerAddress(partner, partner.getContactAddress(), true, false, false);
 		partner.setContactAddress(null);
+	}
+
+	/**
+	 * Check if the partner in view has a duplicate.
+	 * @param partner a context partner object
+	 * @return if there is a duplicate partner
+	 */
+	public boolean isThereDuplicatePartner(Partner partner) {
+		String newName = this.computeFullName(partner);
+		if (Strings.isNullOrEmpty(newName)) {
+		    return false;
+		}
+		Long partnerId = partner.getId();
+		if (partnerId == null) {
+			Partner existingPartner = partnerRepo.all()
+					.filter("lower(self.fullName) = lower(:newName) " +
+							"and self.partnerTypeSelect = :_partnerTypeSelect")
+					.bind("newName", newName)
+					.bind("_partnerTypeSelect", partner.getPartnerTypeSelect())
+					.fetchOne();
+			return existingPartner != null;
+		} else {
+			Partner existingPartner = partnerRepo.all()
+					.filter("lower(self.fullName) = lower(:newName) " +
+							"and self.id != :partnerId " +
+							"and self.partnerTypeSelect = :_partnerTypeSelect")
+					.bind("newName", newName)
+					.bind("partnerId", partnerId)
+					.bind("_partnerTypeSelect", partner.getPartnerTypeSelect())
+					.fetchOne();
+			return existingPartner != null;
+		}
+	}
+
+	/**
+     * Search for the sale price list for the current date in the partner.
+	 * @param partner
+	 * @return  the sale price list for the partner
+	 *          null if no active price list has been found
+	 */
+	public PriceList getSalePriceList(Partner partner) {
+		PartnerPriceList partnerPriceList = partner.getSalePartnerPriceList();
+		if (partnerPriceList == null) {
+			return null;
+		}
+		Set<PriceList> priceListSet =  partnerPriceList.getPriceListSet();
+		if (priceListSet == null) {
+			return null;
+		}
+		LocalDate today = Beans.get(AppBaseService.class).getTodayDate();
+		List<PriceList> candidatePriceListList = new ArrayList<>();
+		for (PriceList priceList : priceListSet) {
+			LocalDate beginDate = priceList.getApplicationBeginDate() != null
+					? priceList.getApplicationBeginDate()
+					: LocalDate.MIN;
+			LocalDate endDate = priceList.getApplicationEndDate() != null
+					? priceList.getApplicationEndDate()
+					: LocalDate.MAX;
+			if (beginDate.compareTo(today) <= 0 && today.compareTo(endDate) <= 0) {
+			    candidatePriceListList.add(priceList);
+			}
+		}
+
+		//if we found multiple price list, then the user will have to select one
+		if (candidatePriceListList.size() == 1) {
+			return candidatePriceListList.get(0);
+		} else {
+			return null;
+		}
 	}
 }

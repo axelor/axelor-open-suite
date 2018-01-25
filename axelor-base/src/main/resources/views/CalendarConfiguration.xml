@@ -14,7 +14,7 @@
 		<panel name="main" >
 			<field name="name" />
 			<field name="metaAction" form-view="meta-action-form" grid-view="meta-action-grid" />
-			<field name="calendarUser" form-view="user-form" grid-view="user-grid"/>
+			<field name="calendarUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="calendarGroup" form-view="group-form" grid-view="group-grid"/>
 		</panel>
 		<panel sidebar="true" name="action" title="Actions">

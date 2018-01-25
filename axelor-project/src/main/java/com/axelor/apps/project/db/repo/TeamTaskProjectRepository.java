@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.project.db.repo;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -64,7 +65,7 @@ public class TeamTaskProjectRepository extends TeamTaskRepository {
     		if (json.get("durationHours") != null) {
 	    		BigDecimal durationHours = new BigDecimal(json.get("durationHours").toString());
 	    		if (durationHours != null && savedTask.getDurationHours().intValue() != durationHours.intValue()) {
-	    			logger.debug("Updating taskDuration: {}",  durationHours.divide(new BigDecimal(24)).intValue());
+	    			logger.debug("Updating taskDuration: {}",  durationHours.divide(new BigDecimal(24), RoundingMode.HALF_EVEN).intValue());
 	    			json.put("taskDuration", durationHours.multiply(new BigDecimal(3600)).intValue());
 	    		}
     		} else if (json.get("taskDuration") != null) {

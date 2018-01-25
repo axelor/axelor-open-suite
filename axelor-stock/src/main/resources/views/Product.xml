@@ -4,8 +4,8 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <action-record name="action-product-set-stock" model="com.axelor.apps.base.db.Product" if-module="axelor-stock">
-        <field name="$realQty" expr="call:com.axelor.apps.stock.service.LocationService:getRealQty(id, null)" if="__config__.app.isApp('stock')" />
-        <field name="$futureQty" expr="call:com.axelor.apps.stock.service.LocationService:getFutureQty(id, null)" if="__config__.app.isApp('stock')" />
+        <field name="$realQty" expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQty(id, null)" if="__config__.app.isApp('stock')" />
+        <field name="$futureQty" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(id, null)" if="__config__.app.isApp('stock')" />
     </action-record>
 
     <action-attrs name="action-product-attrs-scale-and-precision-stock" if-module="axelor-stock">

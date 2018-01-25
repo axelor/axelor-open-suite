@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,6 +24,8 @@ import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderManagementRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.db.repo.ProdProcessManagementRepository;
+import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.apps.production.service.ConfiguratorBomService;
@@ -53,11 +55,14 @@ import com.axelor.apps.production.service.StockRulesServiceProductionImpl;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.app.AppProductionServiceImpl;
 import com.axelor.apps.production.service.app.ConfiguratorServiceProductionImpl;
+import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.sale.service.ConfiguratorServiceImpl;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.config.StockConfigSupplychainService;
 
 public class ProductionModule extends AxelorModule {
 
@@ -79,11 +84,13 @@ public class ProductionModule extends AxelorModule {
 		bind(SaleOrderServiceSupplychainImpl.class).to(SaleOrderServiceProductionImpl.class);
 		bind(StockRulesServiceSupplychainImpl.class).to(StockRulesServiceProductionImpl.class);
 		bind(BillOfMaterialRepository.class).to(BillOfMaterialManagementRepository.class);
+		bind(StockConfigSupplychainService.class).to(StockConfigProductionService.class);
 		bind(ConfiguratorBomService.class).to(ConfiguratorBomServiceImpl.class);
 		bind(ConfiguratorProdProcessService.class).to(ConfiguratorProdProcessServiceImpl.class);
 		bind(ConfiguratorProdProcessLineService.class).to(ConfiguratorProdProcessLineServiceImpl.class);
 		bind(ConfiguratorServiceImpl.class).to(ConfiguratorServiceProductionImpl.class);
 		bind(AppProductionService.class).to(AppProductionServiceImpl.class);
+		bind(ProdProcessRepository.class).to(ProdProcessManagementRepository.class);
 	}
 
 }

@@ -20,16 +20,18 @@
     	<panel name="main" >
     		<field name="fromDate" required="true"/>
     		<field name="toDate" required="true"/>
-    		<field name="company" required="true"/>
+    		<field name="company" canEdit="false" required="true"/>
     		<field name="partnerSet" colSpan="12" widget="TagSelect" title="Customers" domain="self.isContact = false AND self.isCustomer = true"/>
-    		<field name="productSet" colSpan="12" widget="TagSelect"/>
+    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect"/>
     		<label title="OR"/>
     		<field name="productCategorySet" colSpan="12" widget="TagSelect"/>
     	</panel>
     	<panel name="options" title="Options" sidebar="true">
     		<field name="graphTypeSelect" widget="RadioSelect"/>
     		<field name="formatSelect" widget="RadioSelect"/>
-    		<button name="printReport" title="Print" onClick="save,action-print-invoices-details-method-print-sales"/>
+			<field name="turnoverTypeSelect" widget="RadioSelect"/>
+    		<button name="printReport" title="Print" onClick="action-print-invoices-details-group-print-sales"/>
+            <field name="publicationDateTime"/>
     		<field name="type" hidden="true"/>
     	</panel>
     </form>
@@ -39,16 +41,18 @@
     	<panel name="main" >
     		<field name="fromDate" required="true"/>
     		<field name="toDate" required="true"/>
-    		<field name="company" required="true"/>
+    		<field name="company" canEdit="false" required="true"/>
     		<field name="partnerSet" colSpan="12" widget="TagSelect" title="Suppliers" domain="self.isContact = false AND self.isSupplier = true"/>
-    		<field name="productSet" colSpan="12" widget="TagSelect"/>
+    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect"/>
     		<label title="OR"/>
     		<field name="productCategorySet" colSpan="12" widget="TagSelect"/>
     	</panel>
     	<panel name="options" title="Options" sidebar="true">
             <field name="graphTypeSelect" widget="RadioSelect"/>
             <field name="formatSelect" widget="RadioSelect"/>
-    		<button name="printReport" title="Print" onClick="save,action-print-invoices-details-method-print-purchases"/>
+			<field name="turnoverTypeSelect" widget="RadioSelect"/>
+    		<button name="printReport" title="Print" onClick="action-print-invoices-details-group-print-purchases"/>
+			<field name="publicationDateTime"/>
     		<field name="type" hidden="true"/>
     	</panel>
     </form>
@@ -67,7 +71,23 @@
     	<field name="company" expr="eval: __user__.activeCompany"/>
     	<field name="type" expr="2"/>
     </action-record>
-    
+
+	<action-record name="action-print-invoices-details-record-set-publication-date-time" model="com.axelor.apps.account.db.AssistantReportInvoice">
+		<field name="publicationDateTime" expr="eval: __datetime__"/>
+	</action-record>
+
+	<action-group name="action-print-invoices-details-group-print-sales">
+		<action name="action-print-invoices-details-record-set-publication-date-time"/>
+		<action name="save"/>
+		<action name="action-print-invoices-details-method-print-sales"/>
+	</action-group>
+
+	<action-group name="action-print-invoices-details-group-print-purchases">
+		<action name="action-print-invoices-details-record-set-publication-date-time"/>
+		<action name="save"/>
+		<action name="action-print-invoices-details-method-print-purchases"/>
+	</action-group>
+
     <action-method name="action-print-invoices-details-method-print-sales">
     	<call class="com.axelor.apps.account.web.AssistantReportInvoiceController" method="printSales"/>
     </action-method>

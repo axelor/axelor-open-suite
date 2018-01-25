@@ -29,7 +29,7 @@
       			AND status_select = 2 
 		</dataset>
   	<category key="_status" type="text" title="Status"/>
-	<series key="total_row" type="bar" title="Tickets"/>
+	<series key="total_row" type="bar" title="Total tickets"/>
 	</chart>
 	
 	<chart name="chart.ticket.no.of.solved.my.team.ticket" title="My team tickets" onInit="action.ticket.chart.set.date.1m">
@@ -74,7 +74,7 @@
     			AND _ticket.status_select = 2
 		</dataset>
 		<category key="_status" type="text" title="Status"/>
-		<series key="total_row" type="bar" title="Tickets"/>
+		<series key="total_row" type="bar" title="Total tickets"/>
 	</chart>
 
 	
@@ -103,6 +103,208 @@
 		</dataset>
 		<category key="_status" type="text" title="Status"/>
 		<series key="total_row" type="bar" title="Tickets"/>
+	</chart>
+	
+	<chart name="chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.team" title="Percentage of ticket per SLA &amp; per team">
+	  <search-fields>
+	    <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.SLA" x-required="true"/>
+	    <field name="team" title="Team" type="reference" target="com.axelor.team.db.Team" x-required="true"/>
+	  </search-fields>
+	  <dataset type="sql">
+		SELECT
+			COUNT(*) * 100 / (SELECT COUNT(*) FROM helpdesk_ticket) AS _percentage,
+			'Solved' AS _status
+		FROM 
+			helpdesk_ticket AS _ticket1
+		JOIN
+			auth_user AS _user
+		ON
+			_user.id = _ticket1.assigned_to
+		JOIN
+			team_team AS _team
+		ON
+			_team.id = _user.active_team
+		JOIN
+			helpdesk_sla AS _sla
+		ON
+			_sla.id = _ticket1.sla_policy
+		WHERE 
+			_ticket1.is_sla_completed = true
+			AND _sla.id = :sla
+			AND _team.id = :team
+		UNION ALL
+		SELECT
+			COUNT(*) * 100 / (SELECT COUNT(*) FROM helpdesk_ticket) AS _percentage,
+			'Unsolved' AS _status
+		FROM
+			helpdesk_ticket AS _ticket1
+		JOIN
+			auth_user AS _user
+		ON
+			_user.id = _ticket1.assigned_to
+		JOIN
+			team_team AS _team
+		ON
+			_team.id = _user.active_team
+		JOIN
+			helpdesk_sla AS _sla
+		ON
+			_sla.id = _ticket1.sla_policy
+		WHERE 
+			_ticket1.is_sla_completed = false
+			AND _sla.id = :sla
+			AND _team.id = :team
+	</dataset>
+	  <category key="_status" type="text" title="Status"/>
+	  <series key="_percentage" type="pie" title="Percentage"/>
+	  <config name="percent" value="true"/>
+	</chart>
+	
+	<chart name="chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.user" title="Percentage of ticket per SLA &amp; per user">
+	  <search-fields>
+	    <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.SLA" x-required="true"/>
+	    <field name="user" title="User" type="reference" target="com.axelor.auth.db.User" x-required="true"/>
+	  </search-fields>
+	  <dataset type="sql">
+		SELECT
+			COUNT(*) * 100 / (SELECT COUNT(*) FROM helpdesk_ticket) AS _percentage,
+			'Solved' AS _status
+		FROM 
+			helpdesk_ticket AS _ticket1
+		JOIN
+			auth_user AS _user
+		ON
+			_user.id = _ticket1.assigned_to
+		JOIN
+			helpdesk_sla AS _sla
+		ON
+			_sla.id = _ticket1.sla_policy
+		WHERE 
+			_ticket1.is_sla_completed = true
+			AND _sla.id = :sla
+			AND _user.id = :user
+		UNION ALL
+		SELECT
+			COUNT(*) * 100 / (SELECT COUNT(*) FROM helpdesk_ticket) AS _percentage,
+			'Unsolved' AS _status
+		FROM
+			helpdesk_ticket AS _ticket1
+		JOIN
+			auth_user AS _user
+		ON
+			_user.id = _ticket1.assigned_to
+		JOIN
+			helpdesk_sla AS _sla
+		ON
+			_sla.id = _ticket1.sla_policy
+		WHERE 
+			_ticket1.is_sla_completed = false
+			AND _sla.id = :sla
+			AND _user.id = :user
+	</dataset>
+	  <category key="_status" type="text" title="Status"/>
+	  <series key="_percentage" type="pie" title="Percentage"/>
+	  <config name="percent" value="true"/>
+	</chart>
+	
+	<chart name="chart.SLA.number.of.ticket.solved.not.solved.in.time.per.SLA.per.team" title="Number of ticket per SLA &amp; per team">
+	  <search-fields>
+	    <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.SLA" x-required="true"/>
+	    <field name="team" title="Team" type="reference" target="com.axelor.team.db.Team" x-required="true"/>
+	  </search-fields>
+	  <dataset type="sql">
+		SELECT
+			COUNT(*) AS _total,
+			'Solved' AS _status
+		FROM 
+			helpdesk_ticket AS _ticket1
+		JOIN
+			auth_user AS _user
+		ON
+			_user.id = _ticket1.assigned_to
+		JOIN
+			team_team AS _team
+		ON
+			_team.id = _user.active_team
+		JOIN
+			helpdesk_sla AS _sla
+		ON
+			_sla.id = _ticket1.sla_policy
+		WHERE 
+			_ticket1.is_sla_completed = true
+			AND _sla.id = :sla
+			AND _team.id = :team
+		UNION ALL
+		SELECT
+			COUNT(*) AS _total,
+			'Unsolved' AS _status
+		FROM
+			helpdesk_ticket AS _ticket1
+		JOIN
+			auth_user AS _user
+		ON
+			_user.id = _ticket1.assigned_to
+		JOIN
+			team_team AS _team
+		ON
+			_team.id = _user.active_team
+		JOIN
+			helpdesk_sla AS _sla
+		ON
+			_sla.id = _ticket1.sla_policy
+		WHERE 
+			_ticket1.is_sla_completed = false
+			AND _sla.id = :sla
+			AND _team.id = :team
+	</dataset>
+	  <category key="_status" type="text" title="Status"/>
+	  <series key="_total" type="bar" title="Total tickets"/>
+	</chart>
+	
+	<chart name="chart.SLA.number.of.ticket.solved.not.solved.in.time.per.SLA.per.user" title="Number of ticket per SLA &amp; per user">
+	  <search-fields>
+	    <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.SLA" x-required="true"/>
+	    <field name="user" title="User" type="reference" target="com.axelor.auth.db.User" x-required="true"/>
+	  </search-fields>
+	  <dataset type="sql">
+		SELECT
+			COUNT(*) AS _total,
+			'Solved' AS _status
+		FROM 
+			helpdesk_ticket AS _ticket1
+		JOIN
+			auth_user AS _user
+		ON
+			_user.id = _ticket1.assigned_to
+		JOIN
+			helpdesk_sla AS _sla
+		ON
+			_sla.id = _ticket1.sla_policy
+		WHERE 
+			_ticket1.is_sla_completed = true
+			AND _sla.id = :sla
+			AND _user.id = :user
+		UNION ALL
+		SELECT
+			COUNT(*) AS _total,
+			'Unsolved' AS _status
+		FROM
+			helpdesk_ticket AS _ticket1
+		JOIN
+			auth_user AS _user
+		ON
+			_user.id = _ticket1.assigned_to
+		JOIN
+			helpdesk_sla AS _sla
+		ON
+			_sla.id = _ticket1.sla_policy
+		WHERE 
+			_ticket1.is_sla_completed = false
+			AND _sla.id = :sla
+			AND _user.id = :user
+	</dataset>
+	  <category key="_status" type="text" title="Status"/>
+	  <series key="_total" type="bar" title="Total tickets"/>
 	</chart>
 	
 	<action-record model="com.axelor.apps.helpdesk.db.Ticket" name="action.ticket.chart.set.date.1m">

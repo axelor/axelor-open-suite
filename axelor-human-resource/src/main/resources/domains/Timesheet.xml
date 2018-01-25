@@ -6,8 +6,7 @@
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
   <entity name="Timesheet" cachable="true">
-      
-      <integer name="importId"/>
+
       <date name="sentDate" title="Sent Date" readonly="true"/>
       <integer name="statusSelect" title="Status" selection="hrs.timesheet.status.select" default="1" readonly="true"/>
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id" required="true" readonly="true"/>
@@ -19,8 +18,8 @@
       <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By" readonly="true"/>
       <date name="validationDate" title="Validation Date" readonly="true"  />
       <date name="refusalDate" title="Refusal Date" readonly="true" />
-      <string name="groundForRefusal" title="Ground For Refusal" large="true"></string>
-	  
+      <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
+	  <decimal name="periodTotal" title="Total on period (hours)"/>
 	  <boolean name="showEditor" title="Show editor" />
 
       <string name="fullName" namecolumn="true" readonly="true">

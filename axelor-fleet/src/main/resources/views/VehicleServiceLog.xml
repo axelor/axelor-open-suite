@@ -10,7 +10,7 @@
     	<panel title="Information">
     		<field name="vehicle" title="Vehicle">
       			<editor>
-        			<field name="name"/>
+        			<field name="name" colSpan="12"/>
         			<field name="vehicleOdometer"/>
       			</editor>
     		</field>

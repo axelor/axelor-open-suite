@@ -3,36 +3,36 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-    <grid name="crm-batch-grid" title="CRM batches" model="com.axelor.apps.crm.db.CrmBatch">
-    	<field name="actionSelect" />
-    	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
+	<grid name="crm-batch-grid" title="CRM batches" model="com.axelor.apps.crm.db.CrmBatch">
+		<field name="actionSelect" />
+		<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="createdOn"/>
 		<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
-    </grid>
+	</grid>
  
- <form onLoad="action-crm-batch-attrs-action-select" onNew="action-group-crm-crmbatch-onnew" name="crm-batch-form" title="CRM Batch" model="com.axelor.apps.crm.db.CrmBatch" width="large">
-  <panel name="main" >
-    <field name="actionSelect" onChange="action-crm-batch-attrs-action-select"/>
-    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-    <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-  </panel>
-  <panel-tabs>
-    <panel name="eventReminderPage" title="Event reminder page">
-      <button name="eventReminderBatch" title="Event reminder batch"   onClick="save,action-crm-batch-method-action-event-reminder"/>
-    </panel>
-    <panel name="targetPage" title="Target page">
-      <field name="targetConfigurationSet" colSpan="12" form-view="target-configuration-form" grid-view="target-configuration-grid"/>
-      <button name="targetBatch" title="Target batch" colSpan="4" onClick="save,action-crm-batch-method-action-target"/>
-    </panel>
-    <panel name="information" title="Information" >
-      <field name="createdOn" title="Created on"/>
-      <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
-      <field name="description" colSpan="12" />
-      <panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
-    </panel>
-  </panel-tabs>
-</form>
+	<form onLoad="action-crm-batch-attrs-action-select" onNew="action-group-crm-crmbatch-onnew" name="crm-batch-form" title="CRM Batch" model="com.axelor.apps.crm.db.CrmBatch" width="large">
+		<panel name="main" >
+		  <field name="actionSelect" onChange="action-crm-batch-attrs-action-select"/>
+		  <field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
+		  <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+		</panel>
+		<panel-tabs>
+		  <panel name="eventReminderPage" title="Event reminder page">
+		    <button name="eventReminderBatch" title="Event reminder batch"   onClick="save,action-crm-batch-method-action-event-reminder"/>
+		  </panel>
+		  <panel name="targetPage" title="Target page">
+		    <field name="targetConfigurationSet" colSpan="12" form-view="target-configuration-form" grid-view="target-configuration-grid"/>
+		    <button name="targetBatch" title="Target batch" colSpan="4" onClick="save,action-crm-batch-method-action-target"/>
+		  </panel>
+		  <panel name="information" title="Information" >
+		    <field name="createdOn" title="Created on"/>
+		    <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
+		    <field name="description" colSpan="12" />
+		    <panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+		  </panel>
+		</panel-tabs>
+	</form>
 
     
     <action-group name="action-group-crm-crmbatch-onnew">

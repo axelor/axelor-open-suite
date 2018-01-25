@@ -1,12 +1,12 @@
 "name";"code";"exportCustomsDeclaration";"carriageToPortOfExport";"unloadingOfTruckInPortOfExport";"loadingInPortOfExport";"carriageToPortOfImport";"insurance";"unloadingInPortOfImport";"loadingOnTruckInPortOfImport";"carriageToPlaceOfDestination";"importCustomsClearance";"importDutiesAndTaxes"
-"EN Usine… lieu convenu";"ENU";1;1;1;1;1;1;1;1;1;1;1
-"FranCo Transporteur… lieu convenu";"FCT";2;2;1;1;1;1;1;1;1;1;1
-"Franco le Long du navire… port d’embarquement convenu";"FLB";2;2;2;1;1;1;1;1;1;1;1
-"Chargé A Bord... port d’embarquement convenu";"CAB";2;2;2;2;1;1;1;1;1;1;1
-"Port Payé jusqu’à… port de destination convenu";"POP";2;2;2;2;2;1;3;3;2;1;1
-"Coût et Fret… port de destination convenu";"CFR";2;2;2;2;2;1;3;1;1;1;1
-"Coût, Assurance et Fret… port de destination convenu";"CAF";2;2;2;2;2;2;3;1;1;1;1
-"Port et Assurance Payés… port de destination convenu";"PAP";2;2;2;2;2;2;3;3;2;1;1
-"Rendu au Terminal… port de destination convenu";"RPD";2;2;2;2;2;3;2;1;1;1;1
-"Rendu au… lieu de destination convenu";"RLD";2;2;2;2;2;3;2;2;2;1;1
-"Rendu Droits Acquittés… lieu de destination convenu";"RDA";2;2;2;2;2;3;2;2;2;2;2
+"Sortie d’usine";"ENU";1;1;1;1;1;1;1;1;1;1;1
+"Franco transporteur";"FCT";2;2;1;1;1;1;1;1;1;1;1
+"Franco le long du navire";"FLB";2;2;2;1;1;1;1;1;1;1;1
+"Chargé à bord";"CAB";2;2;2;2;1;1;1;1;1;1;1
+"Port payé jusqu’à";"POP";2;2;2;2;2;1;3;3;2;1;1
+"Coût et fret";"CFR";2;2;2;2;2;1;3;1;1;1;1
+"Coût assurance et fret";"CAF";2;2;2;2;2;2;3;1;1;1;1
+"Port payé assurance comprise jusqu’à";"PAP";2;2;2;2;2;2;3;3;2;1;1
+"Rendu au terminal";"RPD";2;2;2;2;2;3;2;1;1;1;1
+"Rendu au lieu de destination";"RLD";2;2;2;2;2;3;2;2;2;1;1
+"Rendu droits acquittés";"RDA";2;2;2;2;2;3;2;2;2;2;2

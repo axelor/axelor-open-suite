@@ -6,9 +6,7 @@
   <module name="production" package="com.axelor.apps.production.db"/>
 
   <entity name="ProdHumanResource" lang="java">
-  
-  	<integer name="importId"/>
-  
+
   	<many-to-one name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Profile" initParam="true"/>
     <long name="duration" title="Duration" initParam="true"/>

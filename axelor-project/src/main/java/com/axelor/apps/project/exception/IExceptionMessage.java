@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,5 +30,6 @@ public interface IExceptionMessage {
 	static final String PROJECT_CUSTOMER_PARTNER = /*$$(*/ "The selected project/task doesn't contain any customers"/*)*/ ;
 	static final String PROJECT_DEEP_LIMIT_REACH = /*$$(*/ "The deep limit of the project is too high"/*)*/ ;
 	static final String PROJECT_NO_ACTIVE_TEAM = /*$$(*/ "You have no active team, the planning can't be generated"/*)*/ ;
+	static final String PROJECT_NO_TEAM = /*$$(*/ "You have selected no team for this project" /*)*/;
 
 }

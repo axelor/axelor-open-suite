@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,14 +18,19 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.db.Blocking;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.StopReason;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
-import com.axelor.apps.stock.service.LocationLineService;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineSupplychainServiceImpl;
 import com.axelor.exception.AxelorException;
@@ -35,6 +40,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 import java.math.BigDecimal;
@@ -75,7 +82,7 @@ public class SaleOrderLineController {
 	public void checkStocks(ActionRequest request, ActionResponse response) {
 	    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 		SaleOrder saleOrder = saleOrderLineServiceSupplyChainImpl.getSaleOrder(request.getContext());
-		if (saleOrder.getLocation() == null) {
+		if (saleOrder.getStockLocation() == null) {
 			return;
 		}
 		try {
@@ -83,13 +90,15 @@ public class SaleOrderLineController {
 				return;
 			}
 			//Use the unit to get the right quantity
-			Unit unit = saleOrderLine.getProduct().getUnit();
+			Unit unit = null;
+			if (saleOrderLine.getProduct() != null)
+				unit = saleOrderLine.getProduct().getUnit();
 			BigDecimal qty = saleOrderLine.getQty();
 			if(unit != null && !unit.equals(saleOrderLine.getUnit())){
 				qty = Beans.get(UnitConversionService.class).convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
 			}
-			Beans.get(LocationLineService.class).checkIfEnoughStock(
-					saleOrder.getLocation(),
+			Beans.get(StockLocationLineService.class).checkIfEnoughStock(
+					saleOrder.getStockLocation(),
 					saleOrderLine.getProduct(),
 					qty
 			);
@@ -103,7 +112,7 @@ public class SaleOrderLineController {
 		if (saleOrderLine.getSaleOrder() == null) {
 			return;
 		}
-		if (saleOrderLine.getProduct() != null && saleOrderLine.getSaleOrder().getLocation() != null) {
+		if (saleOrderLine.getProduct() != null && saleOrderLine.getSaleOrder().getStockLocation() != null) {
 			response.setValue("$availableStock", saleOrderLineServiceSupplyChainImpl.getAvailableStock(saleOrderLine));
 		}
 	}
@@ -124,6 +133,76 @@ public class SaleOrderLineController {
 		} catch (AxelorException e) {
 			TraceBackService.trace(response, e);
 		}
+	}
+
+	/**
+	 * Called from sale order line form.
+	 * Set domain for supplier partner.
+	 * @param request
+	 * @param response
+	 */
+	public void supplierPartnerDomain(ActionRequest request, ActionResponse response) {
+        SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+        String domain = "self.isContact = false AND self.isSupplier = true";
+        SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+        if (saleOrder == null) {
+        	Context parentContext = request.getContext().getParent();
+        	if (parentContext == null) {
+				response.setAttr("supplierPartner", "domain", domain);
+        		return;
+			}
+			saleOrder = parentContext.asType(SaleOrder.class);
+        	if (saleOrder == null) {
+				response.setAttr("supplierPartner", "domain", domain);
+        		return;
+			}
+		}
+		String blockedPartnerQuery = Beans.get(BlockingService.class)
+				.listOfBlockedPartner(saleOrder.getCompany(), BlockingRepository.PURCHASE_BLOCKING);
+
+		if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
+			domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
+		}
+		response.setAttr("supplierPartner", "domain", domain);
+	}
+
+	/**
+	 * Called from sale order line form, on product change
+	 * and on sale supply select change
+	 * @param request
+	 * @param response
+	 */
+	public void supplierPartnerDefault(ActionRequest request, ActionResponse response) {
+		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+		if (saleOrderLine.getSaleSupplySelect() != SaleOrderLineRepository.SALE_SUPPLY_PURCHASE) {
+			return;
+		}
+
+		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+		if (saleOrder == null) {
+			Context parentContext = request.getContext().getParent();
+			if (parentContext == null) {
+			    return;
+			}
+			saleOrder = parentContext.asType(SaleOrder.class);
+		}
+		if (saleOrder == null) {
+			return;
+		}
+
+		Partner supplierPartner = null;
+		if (saleOrderLine.getProduct() != null) {
+			supplierPartner = saleOrderLine.getProduct().getDefaultSupplierPartner();
+		}
+
+		if (supplierPartner != null) {
+		    Blocking blocking = Beans.get(BlockingService.class).getBlocking(supplierPartner, saleOrder.getCompany(), BlockingRepository.PURCHASE_BLOCKING);
+		    if (blocking != null) {
+		        supplierPartner = null;
+			}
+		}
+
+		response.setValue("supplierPartner", supplierPartner);
 	}
 
 }

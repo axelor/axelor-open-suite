@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,12 +20,14 @@ package com.axelor.apps.marketing.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.marketing.service.CampaignService;
 import com.axelor.apps.marketing.service.CampaignServiceImpl;
+import com.axelor.apps.marketing.service.TargetListService;
+import com.axelor.apps.marketing.service.TargetListServiceImpl;
 
 public class MarketingModule extends AxelorModule{
 
 	@Override
 	protected void configure() {
 		bind(CampaignService.class).to(CampaignServiceImpl.class);
+		bind(TargetListService.class).to(TargetListServiceImpl.class);
 	}
-	
 }

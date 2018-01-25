@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,9 +39,9 @@ import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.ObjectViews;
-import com.axelor.meta.schema.actions.ActionRecord.RecordField;
 import com.axelor.studio.db.ChartBuilder;
 import com.axelor.studio.db.Filter;
+import com.axelor.studio.exception.IExceptionMessage;
 import com.axelor.studio.service.StudioMetaService;
 import com.axelor.studio.service.filter.FilterCommonService;
 import com.axelor.studio.service.filter.FilterSqlService;
@@ -68,9 +68,11 @@ public class ChartBuilderService {
 
 	private List<String> searchFields;
 
-	private List<RecordField> onNewFields;
+//	private List<RecordField> onNewFields;
 	
 	private List<String> joins;
+	
+	private String categType;
 
 	@Inject
 	private MetaModelRepository metaModelRepo;
@@ -97,12 +99,13 @@ public class ChartBuilderService {
 	public void build(ChartBuilder chartBuilder) throws JAXBException, AxelorException {
 		
 		if (chartBuilder.getName().contains(" ")) {
-			throw new AxelorException(IException.MISSING_FIELD, I18n.get("Name must not contains space"));
+			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.CHART_BUILDER_1));
 		}
 		
 		searchFields = new ArrayList<String>();
-		onNewFields = new ArrayList<RecordField>();
+//		onNewFields = new ArrayList<RecordField>();
 		joins = new ArrayList<String>();
+		categType = "text";
 
 		String[] queryString = prepareQuery(chartBuilder);
 //		setOnNewAction(chartBuilder);
@@ -146,7 +149,7 @@ public class ChartBuilderService {
 		xml += "\t<dataset type=\"sql\"><![CDATA[";
 		xml += Tab2 + queryString[0];
 		xml += Tab2 + " ]]></dataset>";
-		xml += Tab1 + "<category key=\"group_field\" type=\"text\" title=\""
+		xml += Tab1 + "<category key=\"group_field\" type=\"" + categType +  "\" title=\""
 				+ groupLabel  + "\" />";
 		xml += Tab1 + "<series key=\"sum_field\" type=\""
 				+ chartBuilder.getChartType() + "\" title=\""
@@ -283,7 +286,6 @@ public class ChartBuilderService {
 		
 		if (dateType != null && typeName != null && dateTypes.contains(typeName.toUpperCase())) {
 			group = getDateTypeGroup(dateType, typeName, group);
-
 		} 
 		
 		return group;
@@ -291,10 +293,6 @@ public class ChartBuilderService {
 
 	private String getDateTypeGroup(String dateType, String typeName, String group) {
 		
-//		String dtype = "timestamp";
-//		if ("Date,date,LocalDate,LocalDateTime,ZonedDateTime".contains(typeName)) {
-//			dtype = "date";
-//		}
 		switch (dateType) {
 		case "year":
 			group = "to_char(cast(" + group + " as date), 'yyyy')";
@@ -302,6 +300,8 @@ public class ChartBuilderService {
 		case "month":
 			group =  "to_char(cast(" + group + " as date), 'yyyy-mm')";
 			break;
+		default:
+			categType = "date";
 		}
 		
 		return group;
@@ -338,37 +338,37 @@ public class ChartBuilderService {
 	 *            It is for relational field. String array with first element as
 	 *            Model name and second as its field.
 	 */
-	private void setDefaultValue(String fieldName, String typeName,
-			String defaultValue, String[] modelField) {
-
-		if (defaultValue == null) {
-			return;
-		}
-
-		RecordField field = new RecordField();
-		field.setName(fieldName);
-
-		defaultValue = filterCommonService.getTagValue(defaultValue, false);
-
-		if (modelField != null) {
-			if (typeName.equals("STRING")) {
-				defaultValue = "__repo__(" + modelField[0]
-						+ ").all().filter(\"LOWER(" + modelField[1] + ") LIKE "
-						+ defaultValue + "\").fetchOne()";
-			} else {
-				defaultValue = "__repo__(" + modelField[0]
-						+ ").all().filter(\"" + modelField[1] + " = "
-						+ defaultValue + "\").fetchOne()";
-			}
-
-		}
-
-		log.debug("Default value: {}", defaultValue);
-
-		field.setExpression("eval:" + defaultValue);
-
-		onNewFields.add(field);
-	}
+//	private void setDefaultValue(String fieldName, String typeName,
+//			String defaultValue, String[] modelField) {
+//
+//		if (defaultValue == null) {
+//			return;
+//		}
+//
+//		RecordField field = new RecordField();
+//		field.setName(fieldName);
+//
+//		defaultValue = filterCommonService.getTagValue(defaultValue, false);
+//
+//		if (modelField != null) {
+//			if (typeName.equals("STRING")) {
+//				defaultValue = "__repo__(" + modelField[0]
+//						+ ").all().filter(\"LOWER(" + modelField[1] + ") LIKE "
+//						+ defaultValue + "\").fetchOne()";
+//			} else {
+//				defaultValue = "__repo__(" + modelField[0]
+//						+ ").all().filter(\"" + modelField[1] + " = "
+//						+ defaultValue + "\").fetchOne()";
+//			}
+//
+//		}
+//
+//		log.debug("Default value: {}", defaultValue);
+//
+//		field.setExpression("eval:" + defaultValue);
+//
+//		onNewFields.add(field);
+//	}
 
 	/**
 	 * It will create onNew action from onNew fields.
