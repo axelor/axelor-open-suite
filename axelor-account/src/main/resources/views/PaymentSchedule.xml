@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="payment-schedule-grid" title="Payment schedule"
-		model="com.axelor.apps.account.db.PaymentSchedule">
+		model="com.axelor.apps.account.db.PaymentSchedule" orderBy="-paymentScheduleSeq">
 		<field name="paymentScheduleSeq" />
 		<field name="creationDate" />
 		<field name="partner" form-view="partner-form" grid-view="partner-grid" />
