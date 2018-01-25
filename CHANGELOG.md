@@ -11,6 +11,7 @@
 - Added 'purchase blocking' in Partner
 - Pack Price Select and Qty update from packLine to subLine.
 - Implement PackLine and SubLine for InvoiceLine and StockMoveLine.
+- Added open draft email after close email wizard.
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
