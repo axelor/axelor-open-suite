@@ -30,6 +30,8 @@
         <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" width="90"/>
         <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" width="90"/>
 		<field name="amountRemaining" hidden="true" width="150"/>
+        <field name="origin"/>
+        <field name="description"/>
 	</grid>
     
     <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false"
