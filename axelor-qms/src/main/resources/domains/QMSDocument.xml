@@ -11,6 +11,9 @@
 	<entity name="QMSDocument" lang="java" cachable="true" sequential="true">
 		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"/>
 		<many-to-one name="process" ref="com.axelor.apps.qms.db.QMSProcess" required="true"/>
+		<!-- This is fake field, only here to allow in-process editing, it'll always contain one
+		unique entry, synced with process -->
+		<many-to-many name="processes" ref="com.axelor.apps.qms.db.QMSProcess" mappedBy="documents"/>
 		<many-to-one name="type" ref="com.axelor.apps.qms.db.QMSDocumentType" required="true" />
 		<string name="title" nullable="false" required="true" title="Title"/>
 		<!-- [process code]-[type code]-[quality document sequence]

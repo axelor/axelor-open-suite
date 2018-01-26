@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-	<form name="qms-document-form" title="QMS Document" model="com.axelor.apps.qms.db.QMSDocument" id="qms-document-form" width="large" onNew="qms-document-record-default,qms-document-attr-readonly-if-parent">
+	<form name="qms-document-form" title="QMS Document" model="com.axelor.apps.qms.db.QMSDocument" id="qms-document-form" width="large" onNew="qms-document-record-default,qms-document-attr-readonly-if-parent" onSave="save,qms-document-method-add-to-process">
 		<panel>
-			<!-- readonly attribute for company and process is overriden through action-attrs, this allows us to
+			<!-- readonly attribute for company and process is overridden through action-attrs, this allows us to
 			lock them on edit ('cause no action is called onLoad) but selectively lock them on create. -->
 			<field name="company" title="Company" readonly="true"/>
 			<field name="reference" css="bold label-bold" hiddenIf="reference == null" readonly="true"/>
@@ -34,4 +34,9 @@
 	<action-attrs name="qms-document-attr-readonly-if-parent" model="com.axelor.apps.qms.db.QMSDocument">
 		<attribute name="readonly" for="company,process" expr="eval: _parent != null &amp;&amp; _parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.qms.db.QMSProcess'"/>
 	</action-attrs>
+
+	<!-- Registers the document into process documents' collection (since we use splitted fields, this is not done automagically -->
+	<action-method name="qms-document-method-add-to-process">
+		<call class="com.axelor.apps.qms.web.QMSDocumentController" method="addDocumentToProcess"/>
+	</action-method>
 </object-views>
