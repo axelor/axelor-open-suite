@@ -94,8 +94,8 @@ public class BatchDirectDebitMonthlyPaymentSchedule extends BatchDirectDebitPaym
         Company company = accountingBatch.getCompany();
         BankDetails companyBankDetails = getCompanyBankDetails(accountingBatch);
         Currency currency = companyBankDetails.getCurrency();
-        String senderReference = null;
-        String senderLabel = null;
+        String senderReference = "";
+        String senderLabel = "";
 
         PaymentMode paymentMode = Beans.get(PaymentModeRepository.class).find(directDebitPaymentMode.getId());
         company = Beans.get(CompanyRepository.class).find(company.getId());

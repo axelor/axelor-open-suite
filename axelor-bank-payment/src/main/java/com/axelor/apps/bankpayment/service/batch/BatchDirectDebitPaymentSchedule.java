@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -42,6 +43,7 @@ import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.PaymentScheduleService;
+import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.db.BankDetails;
@@ -49,6 +51,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.QueryBuilder;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -81,6 +84,20 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
     protected List<PaymentScheduleLine> processPaymentScheduleLines(int paymentScheduleType) {
         AccountingBatch accountingBatch = batch.getAccountingBatch();
+
+        if (generateBankOrderFlag) {
+            Preconditions.checkNotNull(accountingBatch.getCompany());
+            Preconditions.checkNotNull(accountingBatch.getCompany().getAccountConfig());
+            Preconditions.checkArgument(
+                    !StringUtils.isBlank(accountingBatch.getCompany().getAccountConfig().getIcsNumber()));
+            Preconditions.checkNotNull(accountingBatch.getPaymentMode());
+            AccountManagement accountManagement = Beans.get(PaymentModeService.class).getAccountManagement(
+                    accountingBatch.getPaymentMode(), accountingBatch.getCompany(),
+                    getCompanyBankDetails(accountingBatch));
+            Preconditions.checkNotNull(accountManagement);
+            Preconditions.checkNotNull(accountManagement.getBankDetails());
+        }
+
         QueryBuilder<PaymentScheduleLine> queryBuilder = QueryBuilder.of(PaymentScheduleLine.class);
 
         queryBuilder.add("self.paymentSchedule.statusSelect = :paymentScheduleStatusSelect");
