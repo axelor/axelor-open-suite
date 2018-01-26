@@ -42,7 +42,7 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
             return null;
         }
         List<ConfiguratorProdProcessLine> confLines =
-                confProdProcess.getConfiguratorProdProcessLine();
+                confProdProcess.getConfiguratorProdProcessLineList();
         ProdProcess prodProcess = new ProdProcess();
         prodProcess.setName(confProdProcess.getName());
         prodProcess.setCompany(confProdProcess.getCompany());
