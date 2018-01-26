@@ -23,9 +23,11 @@ import java.util.List;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -42,15 +44,15 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.inject.Beans;
 
 
-public class InvoiceLineSupplychainService extends InvoiceLineService  {
+public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 	
 	protected PurchaseProductService purchaseProductService;
 
 	@Inject
-	public InvoiceLineSupplychainService(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService, 
-			AppAccountService appAccountService, AnalyticMoveLineService analyticMoveLineService, ProductService productService)  {
+	public InvoiceLineSupplychainService(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService,
+										 AppAccountService appAccountService, AnalyticMoveLineService analyticMoveLineService, ProductService productService, AccountManagementAccountService accountManagementAccountService)  {
 		
-		super(accountManagementService, currencyService, priceListService, appAccountService, analyticMoveLineService, productService);
+		super(accountManagementService, currencyService, priceListService, appAccountService, analyticMoveLineService, productService, accountManagementAccountService);
 		
 	}
 	

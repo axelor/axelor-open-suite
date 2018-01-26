@@ -73,6 +73,8 @@ import com.axelor.apps.account.service.SubrogationReleaseService;
 import com.axelor.apps.account.service.SubrogationReleaseServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelService;
@@ -183,6 +185,8 @@ public class AccountModule extends AxelorModule {
         bind(DepositSlipRepository.class).to(DepositSlipAccountRepository.class);
 
         bind(DepositSlipService.class).to(DepositSlipServiceImpl.class);
+
+        bind(InvoiceLineService.class).to(InvoiceLineServiceImpl.class);
 
         IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }
