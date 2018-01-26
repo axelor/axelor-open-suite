@@ -131,7 +131,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 		queryBuilder.add("self.product = :product");
 		queryBuilder.bind("stockLocation", saleOrderLine.getSaleOrder().getStockLocation());
 		queryBuilder.bind("product", saleOrderLine.getProduct());
-		StockLocationLine stockLocationLine = queryBuilder.create().fetchOne();
+		StockLocationLine stockLocationLine = queryBuilder.build().fetchOne();
 		if (stockLocationLine == null) {
 			return BigDecimal.ZERO;
 		}
