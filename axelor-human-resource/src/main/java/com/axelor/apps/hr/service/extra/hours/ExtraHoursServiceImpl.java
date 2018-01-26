@@ -64,7 +64,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService  {
 
 		if(hrConfig.getTimesheetMailNotification())  {
 
-			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getCanceledExtraHoursTemplate(hrConfig));
+			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getCanceledExtraHoursTemplate(hrConfig), null);
 
 		}
 
@@ -90,7 +90,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService  {
 		
 		if(hrConfig.getExtraHoursMailNotification())  {
 				
-			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getSentExtraHoursTemplate(hrConfig));
+			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getSentExtraHoursTemplate(hrConfig), null);
 				
 		}
 		
@@ -117,7 +117,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService  {
 		
 		if(hrConfig.getExtraHoursMailNotification())  {
 				
-			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getValidatedExtraHoursTemplate(hrConfig));
+			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getValidatedExtraHoursTemplate(hrConfig), null);
 				
 		}
 		
@@ -142,7 +142,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService  {
 		
 		if(hrConfig.getExtraHoursMailNotification())  {
 				
-			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getRefusedExtraHoursTemplate(hrConfig));
+			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getRefusedExtraHoursTemplate(hrConfig), null);
 				
 		}
 		

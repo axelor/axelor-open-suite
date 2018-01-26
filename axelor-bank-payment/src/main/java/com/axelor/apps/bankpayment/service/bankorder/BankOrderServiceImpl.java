@@ -187,7 +187,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 	@Override
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public BankOrder generateSequence(BankOrder bankOrder) throws AxelorException {
-		if (bankOrder.getBankOrderSeq() == null && bankOrder.getId() != null) {
+		if (bankOrder.getBankOrderSeq() == null) {
 
 			Sequence sequence = getSequence(bankOrder);
 			setBankOrderSeq(bankOrder, sequence);
