@@ -17,12 +17,18 @@
  */
 package com.axelor.apps.base.web;
 
+import java.util.Map;
+
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.user.UserService;
+import com.axelor.auth.AuthService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -55,5 +61,22 @@ public class UserController {
 			 response.setAttr("testing", "hidden", false);
 		 }
 	}
+
+    public void validate(ActionRequest request, ActionResponse response) {
+        try {
+            User user = request.getContext().asType(User.class);
+            UserService userService = Beans.get(UserService.class);
+            Map<String, String> errors = userService.getErrors(user);
+
+            if (!errors.isEmpty()) {
+                response.setErrors(errors);
+                return;
+            }
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+
+        Beans.get(AuthService.class).validate(request, response);
+    }
 
 }
