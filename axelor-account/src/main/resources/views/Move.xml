@@ -60,7 +60,7 @@
                     </viewer>
                     <editor>
                         <field name="statusSelect"/>
-                        <field name="adjustingMove" showIf="adjustingMove"/>
+                        <field name="adjustingMove" showIf="adjustingMove" readonly="true"/>
                     </editor>
                 </field>
                 <field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect >= 3"/>
