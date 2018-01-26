@@ -5,28 +5,28 @@
 			<!-- readonly attribute for company and process is overridden through action-attrs, this allows us to
 			lock them on edit ('cause no action is called onLoad) but selectively lock them on create. -->
 			<field name="company" title="Company" readonly="true"/>
-			<field name="reference" css="bold label-bold" hiddenIf="reference == null" readonly="true"/>
+			<field name="reference" css="bold label-bold" hideIf="reference == null" readonly="true"/>
 			<field name="process" title="Process" readonly="true"/>
 
-			<field name="type" title="Type" required="true" readonlyIf="id != null" />
+			<field name="type" title="Type" required="true" readonlyIf="id != null"/>
 
-			<field name="title" title="	Title" nullable="false" required="true" colSpan="12" />
+			<field name="title" title="Title" nullable="false" required="true" colSpan="12"/>
 
 			<field name="responsibles" title="Responsibles" widget="TagSelect" colSpan="12" canNew="false"/>
 
 			<!-- We need to save on change in order to have proper versionIndex computation (putting save in onNew doesn't work…) -->
-			<panel-related field="versions" form-view="qms-document-version-form" grid-view="qms-document-versions-grid" onChange="save" colSpan="12" readonlyIf="id == null"/>
+			<panel-related field="versions" form-view="qms-document-version-form" grid-view="qms-document-versions-grid" onChange="save" colSpan="12" hideIf="id == null"/>
 		</panel>
 	</form>
 
 	<grid model="com.axelor.apps.qms.db.QMSDocument" title="QMS documents" name="qms-document-grid" freeSearch="all" editable="false">
-		<field name="company" />
-		<field name="reference" />
-		<field name="title" />
+		<field name="company"/>
+		<field name="reference"/>
+		<field name="title"/>
 		<field name="currentVersion.versionMetaFile" widget="binary-link" title="Current version"/>
 	</grid>
 
-	 <action-record name="qms-document-record-default" model="com.axelor.apps.qms.db.QMSDocument">
+	<action-record name="qms-document-record-default" model="com.axelor.apps.qms.db.QMSDocument">
 		<field name="company" expr="eval:__repo__(Company).find(_parent.company.id)" if="_parent != null &amp;&amp; _parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.qms.db.QMSProcess'"/>
 		<field name="process" expr="eval:__repo__(QMSProcess).find(_parent.id)" if="_parent != null &amp;&amp; _parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.qms.db.QMSProcess'"/>
 	</action-record>
