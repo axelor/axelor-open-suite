@@ -15,9 +15,8 @@
     <boolean name="isCarrier" title="Carrier ?"/>
     <one-to-many name="partnerProductQualityRatingList" ref="com.axelor.apps.stock.db.PartnerProductQualityRating" mappedBy="partner" title="Partner product quality rating"/>
     <one-to-many name="freightCarrierModeList" ref="com.axelor.apps.stock.db.FreightCarrierMode" mappedBy="freightCarrier"/>
-    <one-to-many name="partnerDefaultStockLocationList" title="Default stock locations" ref="com.axelor.apps.stock.db.PartnerDefaultStockLocation" mappedBy="partner"/>
 
-    <one-to-many name="partnerStockMoveMailSettingsList" title="Automatic Mail Settings" ref="com.axelor.apps.stock.db.PartnerStockMoveMailSettings" mappedBy="partner"/>
+    <one-to-many name="partnerStockSettingsList" title="Partner stock settings" ref="com.axelor.apps.stock.db.PartnerStockSettings" mappedBy="partner"/>
   </entity>
 
 </domain-models>

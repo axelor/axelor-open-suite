@@ -19,10 +19,10 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.stock.db.PartnerStockMoveMailSettings;
+import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.exception.AxelorException;
 
-public interface PartnerStockMoveMailSettingsService {
+public interface PartnerStockSettingsService {
 
     /**
      * get the mail settings from the partner and the company,
@@ -30,13 +30,13 @@ public interface PartnerStockMoveMailSettingsService {
      * @param partner
      * @param company
      */
-    PartnerStockMoveMailSettings getOrCreateMailSettings(Partner partner, Company company) throws AxelorException;
+    PartnerStockSettings getOrCreateMailSettings(Partner partner, Company company) throws AxelorException;
 
     /**
-     * Create PartnerStockMoveMailSettings in the given partner
+     * Create PartnerStockSettings in the given partner
      * @param partner
      * @param company
      */
-    PartnerStockMoveMailSettings createMailSettings(Partner partner, Company company) throws AxelorException;
+    PartnerStockSettings createMailSettings(Partner partner, Company company) throws AxelorException;
 
 }

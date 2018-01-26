@@ -19,9 +19,9 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.stock.db.PartnerStockMoveMailSettings;
+import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockConfig;
-import com.axelor.apps.stock.db.repo.PartnerStockMoveMailSettingsRepository;
+import com.axelor.apps.stock.db.repo.PartnerStockSettingsRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -29,30 +29,30 @@ import com.google.inject.persist.Transactional;
 
 import java.util.List;
 
-public class PartnerStockMoveMailSettingsServiceImpl implements PartnerStockMoveMailSettingsService{
+public class PartnerStockSettingsServiceImpl implements PartnerStockSettingsService {
 
     @Override
-    public PartnerStockMoveMailSettings getOrCreateMailSettings(Partner partner, Company company) throws AxelorException {
-        List<PartnerStockMoveMailSettings> mailSettingsList = partner.getPartnerStockMoveMailSettingsList();
+    public PartnerStockSettings getOrCreateMailSettings(Partner partner, Company company) throws AxelorException {
+        List<PartnerStockSettings> mailSettingsList = partner.getPartnerStockSettingsList();
         if (mailSettingsList == null || mailSettingsList.isEmpty()) {
             return createMailSettings(partner, company);
         }
         return  mailSettingsList.stream()
-                .filter(partnerStockMoveMailSettings ->
-                        company.equals(partnerStockMoveMailSettings.getCompany()))
+                .filter(partnerStockSettings ->
+                        company.equals(partnerStockSettings.getCompany()))
                 .findAny()
                 .orElse(createMailSettings(partner, company));
     }
 
     @Override
     @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-    public PartnerStockMoveMailSettings createMailSettings(Partner partner, Company company) throws AxelorException {
-        PartnerStockMoveMailSettings mailSettings = new PartnerStockMoveMailSettings();
+    public PartnerStockSettings createMailSettings(Partner partner, Company company) throws AxelorException {
+        PartnerStockSettings mailSettings = new PartnerStockSettings();
         mailSettings.setCompany(company);
         StockConfig stockConfig = Beans.get(StockConfigService.class).getStockConfig(company);
         mailSettings.setStockMoveAutomaticMail(stockConfig.getStockMoveAutomaticMail());
         mailSettings.setStockMoveMessageTemplate(stockConfig.getStockMoveMessageTemplate());
-        partner.addPartnerStockMoveMailSettingsListItem(mailSettings);
-        return Beans.get(PartnerStockMoveMailSettingsRepository.class).save(mailSettings);
+        partner.addPartnerStockSettingsListItem(mailSettings);
+        return Beans.get(PartnerStockSettingsRepository.class).save(mailSettings);
     }
 }

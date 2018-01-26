@@ -37,8 +37,7 @@ import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.InventoryLine;
-import com.axelor.apps.stock.db.Location;
-import com.axelor.apps.stock.db.PartnerStockMoveMailSettings;
+import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
@@ -171,7 +170,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		stockMove.setShipmentMode(shipmentMode);
 		stockMove.setFreightCarrierMode(freightCarrierMode);
 
-		stockMove.setTypeSelect(getStockMoveType(fromLocation, toLocation));
+		stockMove.setTypeSelect(getStockMoveType(fromStockLocation, toStockLocation));
 		if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
 			setDefaultAutoMailSettings(stockMove);
 		}
@@ -187,7 +186,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		Partner partner = stockMove.getPartner();
 		Company company = stockMove.getCompany();
 
-		PartnerStockMoveMailSettings mailSettings = Beans.get(PartnerStockMoveMailSettingsService.class)
+		PartnerStockSettings mailSettings = Beans.get(PartnerStockSettingsService.class)
 				.getOrCreateMailSettings(partner, company);
 		boolean stockMoveAutomaticMail = mailSettings.getStockMoveAutomaticMail();
 		Template stockMoveMessageTemplate = mailSettings.getStockMoveMessageTemplate();

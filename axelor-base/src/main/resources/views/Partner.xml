@@ -284,13 +284,10 @@
                 <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-partner-record-empty-freight-carrier-mode" title="Shipment Mode" if="__config__.app.isApp('stock')" />
                 <field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode" if="__config__.app.isApp('stock')" />
                 <field name="freightCarrier" if-module="axelor-stock" form-view="partner-form" grid-view="partner-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
-				<field name="partnerStockMoveMailSettingsList" if-module="axelor-stock"
+				<field name="partnerStockSettingsList" if-module="axelor-stock"
 					   if="__config__.app.isApp('stock')"
 					   colSpan="12"
-					   form-view="partner-stock-move-mail-settings-form" grid-view="partner-stock-move-mail-settings-grid"/>
-            <field name="partnerDefaultStockLocationList" if-module="axelor-stock"  colSpan="12"
-					   form-view="partner-default-stock-location-form" grid-view="partner-default-stock-location-grid"
-					   if="__config__.app.isApp('stock')"/>
+					   form-view="partner-stock-settings-form" grid-view="partner-stock-settings-grid"/>
             </panel>
         </panel-tabs>
         <panel>
