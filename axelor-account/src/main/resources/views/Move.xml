@@ -41,7 +41,7 @@
                     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"/>
                     <field name="date" onChange="action-move-method-get-period" hideIf="statusSelect == 3"/>
                 </panel>
-                <field name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false AND :company MEMBER OF self.companySet" canNew="false"/>
+                <field name="partner" domain="self.isContact = false AND :company MEMBER OF self.companySet" colSpan="12" canNew="false" form-view="partner-form" grid-view="partner-grid"/>
             </panel>
 
             <panel colSpan="3">
