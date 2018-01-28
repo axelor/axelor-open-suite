@@ -493,7 +493,7 @@ public interface IExceptionMessage {
 	static final String VENTILATE_STATE_2 = /*$$(*/ "Invoice's or credit note's date can't be previous last invoice ventilated on month's date" /*)*/;
 	static final String VENTILATE_STATE_3 = /*$$(*/ "Invoice's or credit note's date can't be previous last invoice ventilated on year's date" /*)*/;
 	static final String VENTILATE_STATE_4 = /*$$(*/ "Company %s does not have any invoice's nor credit note's sequence" /*)*/;
-	static final String VENTILATE_STATE_5 = /*$$(*/ "The partner account can not be determined. Please set up the partner account on the invoice or configure the partner's accounting situation." /*)*/;
+	static final String VENTILATE_STATE_5 = /*$$(*/ "The partner account can not be determined. Please set up the partner account on the invoice or configure the partner's accounting situation or configure the company's default customer account." /*)*/;
 	static final String VENTILATE_STATE_6 = /*$$(*/ "The account of a product could not be determined or is not filled. Please fill the missing account on invoice line %s" /*)*/;
 
 	static final String VENTILATE_STATE_FUTURE_DATE = /*$$(*/ "Invoice date can't be in the future." /*)*/;

@@ -17,26 +17,16 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.List;
-
-import java.time.LocalDate;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.axelor.inject.Beans;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.JournalService;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.app.AppAccountService;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.JournalService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
@@ -46,10 +36,18 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 public class VentilateState extends WorkflowInvoice {
 	
@@ -126,7 +124,11 @@ public class VentilateState extends WorkflowInvoice {
 			Account account = InvoiceToolService.isPurchase(invoice) ? accountSituation.getSupplierAccount() : accountSituation.getCustomerAccount();
 
 			if (account == null) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_5));
+				AccountConfig accountConfigCompany = accountSituation.getCompany().getAccountConfig();
+				if (accountConfigCompany != null)
+					account = InvoiceToolService.isPurchase(invoice) ? accountConfigCompany.getSupplierAccount() : accountConfigCompany.getCustomerAccount();
+				if (account == null)
+					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_5));
 			}
 
 			invoice.setPartnerAccount(account);
