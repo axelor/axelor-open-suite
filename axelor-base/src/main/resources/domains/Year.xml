@@ -17,7 +17,9 @@
 	<integer name="statusSelect" title="Status" readonly="true" selection="base.year.status.select" default="1" help="true"/>
     <integer name="periodDurationSelect" title="Period duration" selection="account.year.period.duration.select"/>
     <integer name="typeSelect" title="Type" selection="account.year.type.select" required="true" help="true"/>
-  
+
+    <unique-constraint columns="code,company,typeSelect"/>
+
   	<extra-code><![CDATA[
 	
 	   	// STATUS SELECT
