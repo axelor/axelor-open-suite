@@ -20,16 +20,19 @@ package com.axelor.apps.prestashop.exports.service;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.time.ZonedDateTime;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
 import org.xml.sax.SAXException;
+
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 
 public interface ExportCategoryService {
-	
+
 	/**
 	 * Export axelor ProductCategory object
-	 * 
+	 *
 	 * @param endDate date of last batch run
 	 * @param bwExport  object of log file
 	 * @return log file object
@@ -39,5 +42,5 @@ public interface ExportCategoryService {
 	 * @throws SAXException
 	 * @throws TransformerException
 	 */
-	public BufferedWriter exportCategory(ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException;
+	public void exportCategory(ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException;
 }

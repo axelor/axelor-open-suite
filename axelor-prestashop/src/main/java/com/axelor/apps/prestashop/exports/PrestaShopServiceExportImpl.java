@@ -104,13 +104,13 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	 * @throws JAXBException
 	 * @throws TransformerFactoryConfigurationError
 	 */
-	public void exportAxelorBase(ZonedDateTime endDate) throws PrestaShopWebserviceException, TransformerException, IOException, ParserConfigurationException, SAXException, JAXBException, TransformerFactoryConfigurationError {
-		bwExport = currencyService.exportCurrency(endDate, bwExport);
-		bwExport = countryService.exportCountry(endDate, bwExport);
-		bwExport = customerService.exportCustomer(endDate, bwExport);
-		bwExport = addressService.exportAddress(endDate, bwExport);
-		bwExport = categoryService.exportCategory(endDate, bwExport);
-		bwExport = productService.exportProduct(endDate, bwExport);
+	public void exportAxelorBase(AppPrestashop appConfig, ZonedDateTime endDate) throws PrestaShopWebserviceException, TransformerException, IOException, ParserConfigurationException, SAXException, JAXBException, TransformerFactoryConfigurationError {
+		currencyService.exportCurrency(endDate, bwExport);
+		countryService.exportCountry(endDate, bwExport);
+		customerService.exportCustomer(endDate, bwExport);
+		addressService.exportAddress(endDate, bwExport);
+		categoryService.exportCategory(endDate, bwExport);
+		productService.exportProduct(endDate, bwExport);
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	 */
 	@Override
 	public void export(AppPrestashop appConfig, ZonedDateTime endDate, Batch batch) throws PrestaShopWebserviceException, TransformerException, IOException, ParserConfigurationException, SAXException, JAXBException, TransformerFactoryConfigurationError {
-		this.exportAxelorBase(endDate);
+		exportAxelorBase(appConfig, endDate);
 
 		orderService.exportOrder(appConfig, endDate, bwExport);
 		detailService.exportOrderDetail(appConfig, endDate, bwExport);

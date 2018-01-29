@@ -29,10 +29,10 @@ import org.xml.sax.SAXException;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 
 public interface ExportCountryService {
-	
+
 	/**
 	 * Export axelor Country object
-	 * 
+	 *
 	 * @param endDate date of last batch run
 	 * @param bwExport  object of log file
 	 * @return log file object
@@ -42,5 +42,5 @@ public interface ExportCountryService {
 	 * @throws SAXException
 	 * @throws TransformerException
 	 */
-	public BufferedWriter exportCountry(ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException;
+	public void exportCountry(ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException;
 }

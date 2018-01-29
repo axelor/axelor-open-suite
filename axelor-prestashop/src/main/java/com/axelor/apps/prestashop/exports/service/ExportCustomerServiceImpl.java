@@ -52,12 +52,12 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ExportCustomerServiceImpl implements ExportCustomerService {
-	
+
 	Integer done = 0;
 	Integer anomaly = 0;
 	private final String shopUrl;
 	private final String key;
-	
+
 	@Inject
 	private PartnerRepository partnerRepo;
 
@@ -69,37 +69,37 @@ public class ExportCustomerServiceImpl implements ExportCustomerService {
 		shopUrl = prestaShopObj.getPrestaShopUrl();
 		key = prestaShopObj.getPrestaShopKey();
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
-	public BufferedWriter exportCustomer(ZonedDateTime endDate, BufferedWriter bwExport)
+	public void exportCustomer(ZonedDateTime endDate, BufferedWriter bwExport)
 			throws IOException, TransformerConfigurationException, TransformerException, ParserConfigurationException,
 			SAXException, PrestaShopWebserviceException, JAXBException, TransformerFactoryConfigurationError {
-		
+
 		String prestaShopId = null;
 		List<Partner> partners = null;
-		String schema = null; 
+		String schema = null;
 		Document document = null;
-		
+
 		bwExport.newLine();
 		bwExport.write("-----------------------------------------------");
 		bwExport.newLine();
 		bwExport.write("Customer");
-		
+
 		if(endDate == null) {
 			partners = Beans.get(PartnerRepository.class).all().filter("self.isCustomer = true").fetch();
 		} else {
 			partners = Beans.get(PartnerRepository.class).all().filter("self.isCustomer = true AND (self.createdOn > ?1 OR self.updatedOn > ?2 OR self.emailAddress.createdOn > ?3 OR self.emailAddress.updatedOn > ?4 OR self.prestaShopId = null)", endDate, endDate, endDate, endDate).fetch();
 		}
-		
+
 		for (Partner partner : partners) {
-			
-			try { 
-				
+
+			try {
+
 				Customers customer = new Customers();
 				customer.setId(partner.getPrestaShopId());
-				
+
 				if (partner.getPartnerTypeSelect() == 1) {
 					if (partner.getContactPartnerSet().size() != 0) {
 						customer.setCompany(partner.getName());
@@ -113,7 +113,7 @@ public class ExportCustomerServiceImpl implements ExportCustomerService {
 						throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CONTACT), IException.NO_VALUE);
 					}
 				} else {
-					
+
 					if (!partner.getName().isEmpty() && !partner.getFirstName().isEmpty()) {
 						customer.setFirstname(partner.getFirstName());
 						customer.setLastname(partner.getName());
@@ -121,17 +121,17 @@ public class ExportCustomerServiceImpl implements ExportCustomerService {
 						throw new AxelorException(I18n.get(IExceptionMessage.INVALID_INDIVIDUAL),IException.NO_VALUE);
 					}
 				}
-				
+
 				if (partner.getPaymentCondition() != null) {
 					customer.setMax_payment_days(partner.getPaymentCondition().getPaymentTime().toString());
 				}
-				
+
 				if (partner.getEmailAddress() != null) {
 					customer.setEmail(partner.getEmailAddress().getAddress());
 				} else {
 					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_EMAIL), IException.NO_VALUE);
 				}
-				
+
 				customer.setId_default_group("3");
 				customer.setWebsite(partner.getWebSite());
 				customer.setSecure_key(partner.getSecureKey());
@@ -139,22 +139,22 @@ public class ExportCustomerServiceImpl implements ExportCustomerService {
 				customer.setId_shop("1");
 				customer.setId_shop_group("1");
 				customer.setPasswd("NULL"); // required
-				
+
 				Prestashop prestaShop = new Prestashop();
 				prestaShop.setPrestashop(customer);
-				
+
 				StringWriter sw = new StringWriter();
 				JAXBContext contextObj = JAXBContext.newInstance(Prestashop.class);
-				Marshaller marshallerObj = contextObj.createMarshaller();  
-				marshallerObj.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);  
+				Marshaller marshallerObj = contextObj.createMarshaller();
+				marshallerObj.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 				marshallerObj.marshal(prestaShop, sw);
 				schema = sw.toString();
-				
+
 				PSWebServiceClient ws = new PSWebServiceClient(shopUrl + "/api/" + "customers" + "?schema=synopsis", key);
 				HashMap<String, Object> opt = new HashMap<String, Object>();
 				opt.put("resource", "customers");
 				opt.put("postXml", schema);
-				
+
 				if (partner.getPrestaShopId() == null) {
 					document = ws.add(opt);
 				} else {
@@ -162,20 +162,20 @@ public class ExportCustomerServiceImpl implements ExportCustomerService {
 					ws = new PSWebServiceClient(shopUrl, key);
 					document = ws.edit(opt);
 				}
-				
+
 				prestaShopId = document.getElementsByTagName("id").item(0).getTextContent();
 				partner.setSecureKey(document.getElementsByTagName("secure_key").item(0).getTextContent());
 				partner.setPrestaShopId(prestaShopId);
 				partnerRepo.save(partner);
 				done++;
-				
+
 			} catch (AxelorException e) {
 				bwExport.newLine();
 				bwExport.newLine();
 				bwExport.write("Id - " + partner.getId().toString() + " " + e.getMessage());
 				anomaly++;
 				continue;
-				
+
 			} catch (Exception e) {
 				bwExport.newLine();
 				bwExport.newLine();
@@ -184,10 +184,9 @@ public class ExportCustomerServiceImpl implements ExportCustomerService {
 				continue;
 			}
 		}
-		
+
 		bwExport.newLine();
 		bwExport.newLine();
 		bwExport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);
-		return bwExport;
 	}
 }

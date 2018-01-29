@@ -20,24 +20,27 @@ package com.axelor.apps.prestashop.exports.service;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.time.ZonedDateTime;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
 import org.xml.sax.SAXException;
+
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 
 public interface ExportAddressService {
-	
+
 	/**
 	 * Export axelor Address object
-	 * 
+	 *
 	 * @param endDate date of last batch run
 	 * @param bwExport object of log file
 	 * @return log file object
-	 * @throws IOException 
+	 * @throws IOException
 	 * @throws PrestaShopWebserviceException
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws TransformerException
 	 */
-	public BufferedWriter exportAddress(ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException;
+	public void exportAddress(ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException;
 }

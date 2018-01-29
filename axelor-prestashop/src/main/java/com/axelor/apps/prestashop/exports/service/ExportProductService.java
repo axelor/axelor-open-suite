@@ -32,10 +32,10 @@ import org.xml.sax.SAXException;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 
 public interface ExportProductService {
-	
+
 	/**
 	 * Export axelor Product object
-	 * 
+	 *
 	 * @param endDate date of last batch run
 	 * @param bwExport  object of log file
 	 * @return log file object
@@ -48,5 +48,5 @@ public interface ExportProductService {
 	 * @throws JAXBException
 	 * @throws TransformerFactoryConfigurationError
 	 */
-	public BufferedWriter exportProduct(ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, TransformerConfigurationException, TransformerException, ParserConfigurationException, SAXException, PrestaShopWebserviceException, JAXBException, TransformerFactoryConfigurationError;
+	public void exportProduct(ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, TransformerConfigurationException, TransformerException, ParserConfigurationException, SAXException, PrestaShopWebserviceException, JAXBException, TransformerFactoryConfigurationError;
 }

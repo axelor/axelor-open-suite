@@ -23,15 +23,18 @@ import java.io.StringWriter;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.repo.AppPrestashopRepository;
@@ -51,15 +54,15 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ExportCountryServiceImpl implements ExportCountryService {
-	
+
 	Integer done = 0;
 	Integer anomaly = 0;
 	private final String shopUrl;
 	private final String key;
-	
+
 	@Inject
 	private CountryRepository countryRepo;
-	
+
 	/**
 	 * Initialization
 	 */
@@ -68,16 +71,16 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 		shopUrl = prestaShopObj.getPrestaShopUrl();
 		key = prestaShopObj.getPrestaShopKey();
 	}
-	
+
 	/**
 	 *  Check on prestashop country is already there
-	 * 
+	 *
 	 * @param countryCode unique code of country
 	 * @return id of prestashop's country if it is.
 	 * @throws PrestaShopWebserviceException
 	 */
 	public String isCountry(String countryCode) throws PrestaShopWebserviceException {
-		
+
 		String prestaShopId = null;
 		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
 		HashMap<String, String> countryMap = new HashMap<String, String>();
@@ -86,7 +89,7 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 		opt.put("resource", "countries");
 		opt.put("filter", countryMap);
 		Document str =  ws.get(opt);
-		
+
 		NodeList list = str.getElementsByTagName("countries");
 		for(int i = 0; i < list.getLength(); i++) {
 		    Element element = (Element) list.item(i);
@@ -99,12 +102,12 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 		}
 		return prestaShopId;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
-	public BufferedWriter exportCountry(ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException {
-		
+	public void exportCountry(ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException {
+
 		PSWebServiceClient ws = null;
 		HashMap<String, Object> opt = null;
 		bwExport.newLine();
@@ -115,36 +118,36 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 		Document document = null;
 		String schema = null;
 		String prestaShopId = null;
-		
+
 		if(endDate == null) {
 			countries = Beans.get(CountryRepository.class).all().fetch();
 		} else {
 			countries = Beans.get(CountryRepository.class).all().filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null", endDate, endDate).fetch();
 		}
-		
+
 		for(Country countryObj : countries) {
 			try {
-				
+
 				prestaShopId = this.isCountry(countryObj.getAlpha2Code());
-				
+
 				if(countryObj.getName() == null) {
-					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_COUNTRY), IException.NO_VALUE);		
+					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_COUNTRY), IException.NO_VALUE);
 				}
-				
+
 				LanguageDetails languageObj = new LanguageDetails();
 				languageObj.setId("1");
 				languageObj.setValue(countryObj.getName());
-				
+
 				Language language = new Language();
 				language.setLanguage(languageObj);
-				
+
 				Countries country = new Countries();
 				if(prestaShopId != null) {
 					country.setId(prestaShopId);
 				} else {
 					country.setId(countryObj.getPrestaShopId());
 				}
-				
+
 				country.setName(language);
 				country.setIso_code(countryObj.getAlpha2Code());
 				country.setId_zone("1");
@@ -154,46 +157,46 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 				country.setActive("1");
 				Prestashop prestaShop = new Prestashop();
 				prestaShop.setPrestashop(country);
-				
+
 				StringWriter sw = new StringWriter();
 				JAXBContext contextObj = JAXBContext.newInstance(Prestashop.class);
-				Marshaller marshallerObj = contextObj.createMarshaller();  
-				marshallerObj.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);  
+				Marshaller marshallerObj = contextObj.createMarshaller();
+				marshallerObj.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 				marshallerObj.marshal(prestaShop, sw);
 				schema = sw.toString();
-				
+
 				ws = new PSWebServiceClient(shopUrl + "/api/" + "countries" + "?schema=synopsis", key);
 				opt = new HashMap<String, Object>();
 				opt.put("resource", "countries");
 				opt.put("postXml", schema);
-				
+
 				if (countryObj.getPrestaShopId() == null && prestaShopId == null) {
 					document = ws.add(opt);
-					
+
 				} else if (prestaShopId != null){
 					opt.put("id", prestaShopId);
 					ws = new PSWebServiceClient(shopUrl, key);
 					document = ws.edit(opt);
-					
+
 				} else {
 					opt.put("id", countryObj.getPrestaShopId());
 					ws = new PSWebServiceClient(shopUrl, key);
 					document = ws.edit(opt);
 				}
-				
+
 				countryObj.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
 				countryRepo.save(countryObj);
 				done++;
-				
+
 			} catch (AxelorException e) {
 				bwExport.newLine();
 				bwExport.newLine();
 				bwExport.write("Id - " + countryObj.getId().toString() + " " + e.getMessage());
 				anomaly++;
 				continue;
-				
+
 			} catch (Exception e) {
-				
+
 				bwExport.newLine();
 				bwExport.newLine();
 				bwExport.write("Id - " + countryObj.getId().toString() + " " + e.getMessage());
@@ -201,10 +204,9 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 				continue;
 			}
 		}
-		
+
 		bwExport.newLine();
 		bwExport.newLine();
 		bwExport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);
-		return bwExport;
 	}
 }
