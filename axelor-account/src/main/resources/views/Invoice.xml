@@ -704,6 +704,7 @@
     <action-group name="action-group-account-invoice-operationtype-onchange">
 		<action name="action-invoice-method-payment-mode-condition"/>
     	<action name="action-invoice-record-partner-change"/>
+        <action name="action-invoice-record-reset-suboperationtype"/>
     </action-group>
 
     <action-group name="action-group-account-invoice-company-onchange">
@@ -821,6 +822,10 @@
     <action-record name="action-invoice-record-printing-fields" model="com.axelor.apps.account.db.Invoice">
     	<field name="displayTimesheetOnPrinting" expr="eval: __user__.activeCompany?.accountConfig?.displayTimesheetOnPrinting"/>
     	<field name="displayExpenseOnPrinting" expr="eval: __user__.activeCompany?.accountConfig?.displayExpenseOnPrinting"/>
+    </action-record>
+
+    <action-record name="action-invoice-record-reset-operationsubtype" model="com.axelor.apps.account.db.Invoice">
+        <field name="operationSubTypeSelect" expr="eval: null"/>
     </action-record>
 
     <!-- ACTION ATTRS -->
