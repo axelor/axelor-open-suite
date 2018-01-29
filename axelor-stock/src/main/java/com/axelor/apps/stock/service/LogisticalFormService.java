@@ -98,8 +98,9 @@ public interface LogisticalFormService {
      * 
      * @param logisticalForm
      * @return
+     * @throws AxelorException 
      */
-    String getStockMoveDomain(LogisticalForm logisticalForm);
+    String getStockMoveDomain(LogisticalForm logisticalForm) throws AxelorException;
 
     /**
      * Get next parcel/pallet number.
