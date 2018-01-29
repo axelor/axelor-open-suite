@@ -146,7 +146,13 @@
                 </viewer>
             </field>
 
-            <field name="invoiceId" colSpan="12" css="label-bold bold large" showTitle="false" showIf="id"/>
+            <field name="invoiceId" colSpan="12" css="label-bold bold large" showTitle="false" showIf="id">
+                <viewer>
+                    <![CDATA[
+                        <span ng-show="record.statusSelect &lt; 3" x-translate>Proforma</span> <span>{{record.invoiceId}}</span>
+                    ]]>
+                </viewer>
+            </field>
 
             <field name="operationTypeSelect" hideIf="statusSelect &gt; 1 || partner != null || $readonly()" onChange="action-group-account-invoice-operationtype-onchange"/>
             <field name="operationSubTypeSelect" hideIf="statusSelect &gt; 1 || (operationTypeSelect != 1 &amp;&amp; operationTypeSelect != 3) || $readonly()" showTitle="true"/>
