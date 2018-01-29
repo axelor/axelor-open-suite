@@ -29,43 +29,41 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class AppPrestaShopController {
-	
+
 	@Inject
 	private AppPrestaShopService service;
-	
+
 	/**
 	 * Test connection with prestashop
-	 * 
+	 *
 	 * @param request
 	 * @param response
-	 * @throws PrestaShopWebserviceException 
+	 * @throws PrestaShopWebserviceException
 	 * @throws TransformerException
 	 */
 	public void testConnection(ActionRequest request, ActionResponse response) throws PrestaShopWebserviceException, TransformerException {
-		
+
 		AppPrestashop ps = request.getContext().asType(AppPrestashop.class);
 		boolean test = service.connection(ps);
-		
+
 		if(test) {
 			response.setAlert("Connection Sucessfully");
 		} else {
 			response.setAlert("Connection Fail");
 		}
 	}
-	
+
 	/**
 	 * Validate url which are set in configuration
-	 * 
+	 *
 	 * @param request
 	 * @param response
 	 */
 	public void validUrl(ActionRequest request, ActionResponse response) {
-		
+
 		AppPrestashop ps = request.getContext().asType(AppPrestashop.class);
-		boolean valid = service.urlTest(ps);
-		
-		if(valid) {
-			response.setError("Invalid url");
+		if(service.validateUrl(ps) == false) {
+			response.setError("URL is invalid, it should not be empty nor contain the trailing slash");
 		}
 	}
 }

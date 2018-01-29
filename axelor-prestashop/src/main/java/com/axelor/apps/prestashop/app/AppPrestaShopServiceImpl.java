@@ -18,61 +18,48 @@
 package com.axelor.apps.prestashop.app;
 
 import java.util.HashMap;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
 
 public class AppPrestaShopServiceImpl implements AppPrestaShopService {
-	
 	/**
 	 * Check connection with prestashop
-	 * 
+	 *
 	 * @param ps object of AppPrestashop contains configuration details
 	 * @return true or false
 	 */
 	@Override
 	public boolean connection(AppPrestashop ps) {
-		
+
 		String shopUrl = ps.getPrestaShopUrl();
 		String key = ps.getPrestaShopKey();
-		
-		try {
-			char end = shopUrl.charAt(shopUrl.length() - 1);
 
-			if (end == '/')
+		try {
+			if(validateUrl(ps) == false) {
 				return false;
-			
+			}
+
 			PSWebServiceClient ws = new PSWebServiceClient(shopUrl + "/api", key);
 			HashMap<String, Object> opt = new HashMap<String, Object>();
 			opt.put("url", shopUrl + "/api");
 			ws.get(opt);
 			return true;
-			
+
 		} catch (Exception e) {
 			return false;
 		}
 	}
-	
-	/**
-	 * Check prestashop url is valid or not
-	 * 
-	 * @param ps  object of AppPrestashop contains configuration details
-	 * @return true or false
-	 */
+
 	@Override
-	public boolean urlTest(AppPrestashop ps) {
-		
-		String url = null; 
-		url = ps.getPrestaShopUrl();		
-		
-		if (url == null)
-			return true;
-		
-		char end = url.charAt(url.length() - 1);
+	public boolean validateUrl(AppPrestashop ps) {
 
-		if(end == '/')
-			return true;
+		String url = null;
+		url = ps.getPrestaShopUrl();
 
-		return false;
+		return StringUtils.isNotBlank(url) && url.endsWith("/") == false;
 	}
 
 }
