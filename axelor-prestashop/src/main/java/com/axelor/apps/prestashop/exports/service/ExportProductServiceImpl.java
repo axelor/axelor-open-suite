@@ -104,9 +104,9 @@ public class ExportProductServiceImpl implements ExportProductService {
 		String prestaShopId = null;
 
 		if(endDate == null) {
-			products = Beans.get(ProductRepository.class).all().fetch();
+			products = Beans.get(ProductRepository.class).all().filter("self.sellable = true").fetch();
 		} else {
-			products = Beans.get(ProductRepository.class).all().filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null", endDate, endDate).fetch();
+			products = Beans.get(ProductRepository.class).all().filter("self.sellable = true AND (self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null)", endDate, endDate).fetch();
 		}
 		
 		
