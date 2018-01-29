@@ -22,11 +22,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.ZonedDateTime;
+
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
+
 import org.xml.sax.SAXException;
+
+import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.prestashop.exports.service.ExportAddressService;
 import com.axelor.apps.prestashop.exports.service.ExportCategoryService;
@@ -42,44 +46,44 @@ import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 
 public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
-	
+
 	@Inject
 	private MetaFiles metaFiles;
-	
+
 	@Inject
 	private ExportCurrencyService currencyService;
-	
+
 	@Inject
 	private ExportCountryService countryService;
-	
+
 	@Inject
 	private ExportCustomerService customerService;
-	
+
 	@Inject
 	private ExportAddressService addressService;
-	
+
 	@Inject
-	private ExportCategoryService categoryService; 
-	
+	private ExportCategoryService categoryService;
+
 	@Inject
 	private ExportProductService productService;
-	
+
 	@Inject
 	private ExportOrderService orderService;
-	
+
 	@Inject
 	private ExportOrderDetailService detailService;
-	
-	
+
+
 	File exportFile = File.createTempFile("Export Log", ".txt");
 	FileWriter fwExport = null;
 	BufferedWriter bwExport = null;
 	Integer totalDone = 0;
     Integer totalAnomaly = 0;
-	
+
 	/**
-	 * Initialize constructor.  
-	 * 
+	 * Initialize constructor.
+	 *
 	 * @throws IOException
 	 */
 	public PrestaShopServiceExportImpl() throws IOException {
@@ -87,10 +91,10 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 		fwExport = new FileWriter(exportFile);
 		bwExport = new BufferedWriter(fwExport);
 	}
-	
+
 	/**
 	 * Export axelor base module
-	 * 
+	 *
 	 * @param endDate
 	 * @throws PrestaShopWebserviceException
 	 * @throws TransformerException
@@ -101,34 +105,31 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	 * @throws TransformerFactoryConfigurationError
 	 */
 	public void exportAxelorBase(ZonedDateTime endDate) throws PrestaShopWebserviceException, TransformerException, IOException, ParserConfigurationException, SAXException, JAXBException, TransformerFactoryConfigurationError {
-		
 		bwExport = currencyService.exportCurrency(endDate, bwExport);
 		bwExport = countryService.exportCountry(endDate, bwExport);
 		bwExport = customerService.exportCustomer(endDate, bwExport);
 		bwExport = addressService.exportAddress(endDate, bwExport);
 		bwExport = categoryService.exportCategory(endDate, bwExport);
 		bwExport = productService.exportProduct(endDate, bwExport);
-	}	
-	
+	}
+
 	/**
 	 * Export Axelor modules (Base, SaleOrder)
 	 */
 	@Override
-	public Batch exportPrestShop(ZonedDateTime endDate, Batch batch) throws PrestaShopWebserviceException, TransformerException, IOException, ParserConfigurationException, SAXException, JAXBException, TransformerFactoryConfigurationError {
-		
+	public void export(AppPrestashop appConfig, ZonedDateTime endDate, Batch batch) throws PrestaShopWebserviceException, TransformerException, IOException, ParserConfigurationException, SAXException, JAXBException, TransformerFactoryConfigurationError {
 		this.exportAxelorBase(endDate);
-		
-		bwExport = orderService.exportOrder(endDate, bwExport);
-		bwExport = detailService.exportOrderDetail(endDate, bwExport);
+
+		orderService.exportOrder(appConfig, endDate, bwExport);
+		detailService.exportOrderDetail(appConfig, endDate, bwExport);
 		File exportFile = closeLog();
 		MetaFile exporMetatFile = metaFiles.upload(exportFile);
 		batch.setPrestaShopBatchLog(exporMetatFile);
-		return batch;
 	}
-	
+
 	/**
 	 * Close export log file
-	 * 
+	 *
 	 * @return
 	 * @throws IOException
 	 */
@@ -139,5 +140,5 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 		fwExport.close();
 		return exportFile;
 	}
-	
+
 }

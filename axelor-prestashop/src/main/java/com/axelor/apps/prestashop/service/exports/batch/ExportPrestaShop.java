@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.prestashop.db.PrestaShopBatch;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
@@ -37,10 +37,12 @@ public class ExportPrestaShop extends AbstractBatch {
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private PrestaShopServiceExport prestaShopServiceExport;
+	private AppPrestashopRepository appRepository;
 
 	@Inject
-	public ExportPrestaShop(PrestaShopServiceExport prestaShopServiceExport) {
+	public ExportPrestaShop(PrestaShopServiceExport prestaShopServiceExport, AppPrestashopRepository appRepository) {
 		this.prestaShopServiceExport = prestaShopServiceExport;
+		this.appRepository = appRepository;
 	}
 
 	@Override
@@ -54,7 +56,9 @@ public class ExportPrestaShop extends AbstractBatch {
 				// environment, so using end date could cause elements updated during last batch run to be missed.
 				ZonedDateTime fromDate = (size <= 1 ? null : prestaShopBatch.getBatchList().get(size - 2).getStartDate());
 
-				batchRepo.save(prestaShopServiceExport.exportPrestShop(fromDate, batch));
+				prestaShopServiceExport.export(appRepository.all().fetchOne(), fromDate, batch);
+
+				batchRepo.save(batch);
 				incrementDone();
 			} catch (Exception e) {
 				incrementAnomaly();

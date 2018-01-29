@@ -27,23 +27,25 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.xml.sax.SAXException;
 
+import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 
 public interface PrestaShopServiceExport {
-	
+
 	/**
-	 * Export ABS object's details to prestashop
-	 * 
-	 * @param endDate get as par last batch executed
-	 * @return exported log file object
+	 * Exports ABS data to prestashop
+	 * @param appConfig Configuration allowing to tune which objects are exported
+	 * @param referenceDate Only objects created or modified after this timestamp
+	 * will be exported (or those without filled prestashop id)
+	 * @param batch Handle to currently running batch
 	 * @throws PrestaShopWebserviceException
 	 * @throws TransformerException
 	 * @throws IOException
-	 * @throws SAXException 
-	 * @throws ParserConfigurationException 
-	 * @throws TransformerFactoryConfigurationError 
-	 * @throws JAXBException 
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws JAXBException
+	 * @throws TransformerFactoryConfigurationError
 	 */
-	public Batch exportPrestShop(ZonedDateTime endDate, Batch batch) throws PrestaShopWebserviceException, TransformerException, IOException, ParserConfigurationException, SAXException, JAXBException, TransformerFactoryConfigurationError;
+	public void export(AppPrestashop appConfig, ZonedDateTime referenceDate, Batch batch) throws PrestaShopWebserviceException, TransformerException, IOException, ParserConfigurationException, SAXException, JAXBException, TransformerFactoryConfigurationError;
 }
