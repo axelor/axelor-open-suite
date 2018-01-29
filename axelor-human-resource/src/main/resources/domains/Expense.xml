@@ -14,7 +14,7 @@
       <integer name="statusSelect" title="Status" selection="hrs.expenses.status.select" default="1" readonly="true"/>
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id" readonly="true"/>
 
-      <one-to-many name="expenseLineList" ref="com.axelor.apps.hr.db.ExpenseLine" title="Expense lines" mappedBy="expense"/>
+      <one-to-many name="generalExpenseLineList" ref="com.axelor.apps.hr.db.ExpenseLine" title="General expense lines" mappedBy="generalExpense"/>
       <one-to-many name="kilometricExpenseLineList" ref="com.axelor.apps.hr.db.ExpenseLine" title="Kilometric lines" mappedBy="kilometricExpense"/>
 
       <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>

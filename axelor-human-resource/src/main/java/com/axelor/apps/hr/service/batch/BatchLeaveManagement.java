@@ -19,7 +19,6 @@ package com.axelor.apps.hr.service.batch;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -167,7 +166,7 @@ public class BatchLeaveManagement extends BatchStrategy {
 		if(employee != null){
 			leaveLine = leaveServiceProvider.get().addLeaveReasonOrCreateIt(employee, leaveReason);
 			
-			BigDecimal dayNumber = batch.getHrBatch().getUseWeeklyPlanningCoef() ? batch.getHrBatch().getDayNumber().multiply(employee.getPlanning().getLeaveCoef()) : batch.getHrBatch().getDayNumber();
+			BigDecimal dayNumber = batch.getHrBatch().getUseWeeklyPlanningCoef() ? batch.getHrBatch().getDayNumber().multiply(employee.getWeeklyPlanning().getLeaveCoef()) : batch.getHrBatch().getDayNumber();
 			dayNumber = dayNumber.subtract(new BigDecimal( publicHolidayService.getImposedDayNumber(employee, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate()) ));
 			LeaveManagement leaveManagement = leaveManagementService.createLeaveManagement(leaveLine, AuthUtils.getUser(), batch.getHrBatch().getComments(), null, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate(), dayNumber );
 			leaveLine.setQuantity(leaveLine.getQuantity().add(dayNumber));

@@ -18,17 +18,18 @@
 	    <boolean name="toInvoice"/>
 		<boolean name="invoiced" readonly="true"/>
 		<many-to-one name="expense" ref="com.axelor.apps.hr.db.Expense" title="Expense" />
+		<many-to-one name="generalExpense" ref="com.axelor.apps.hr.db.Expense" title="General Expense"/>
 		<many-to-one name="kilometricExpense" ref="com.axelor.apps.hr.db.Expense" title="Kilometric Allowance" />
 		<one-to-many name="analyticMoveLineList" ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines" mappedBy="expenseLine"/>
 		<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 	  	<binary name="justification" image="true" title="Justification"/>
 	  
 		<!-- integration of KilometricAllowance -->
-  		<many-to-one name="kilometricAllowParam" ref="com.axelor.apps.hr.db.KilometricAllowParam" title="Kilometric Allowance Param"/>
+  		<many-to-one name="kilometricAllowParam" ref="com.axelor.apps.hr.db.KilometricAllowParam" title="K.A.P."/>
         <integer name="kilometricTypeSelect" title="Type"  selection="hr.kilometric.allowance.type.select"/>
-        <decimal name="distance" title="Distance between the two cities (km)" min="0"/>
-        <string name="fromCity" title="Starting city with Zip" />
-        <string name="toCity" title="Arriving city with Zip" />
+        <decimal name="distance" title="Distance travelled" min="0"/>
+        <string name="fromCity" title="Starting city" />
+        <string name="toCity" title="Arriving city" />
 
 		<extra-code>
 		<![CDATA[

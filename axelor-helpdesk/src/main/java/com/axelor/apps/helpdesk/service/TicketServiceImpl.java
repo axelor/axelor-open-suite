@@ -171,7 +171,7 @@ public class TicketServiceImpl implements TicketService {
 	 */
 	private void calculateWorkingDays(LocalDateTime fromDate, Employee employee, int days) throws AxelorException {
 
-		if (weeklyPlanningService.workingDayValue(employee.getPlanning(), fromDate.toLocalDate()) == 0
+		if (weeklyPlanningService.workingDayValue(employee.getWeeklyPlanning(), fromDate.toLocalDate()) == 0
 				|| publicHolidayService.checkPublicHolidayDay(fromDate.toLocalDate(), employee)) {
 
 			fromDate = fromDate.plusDays(1);

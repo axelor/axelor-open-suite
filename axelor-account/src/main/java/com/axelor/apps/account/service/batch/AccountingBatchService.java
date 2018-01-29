@@ -63,15 +63,6 @@ public class AccountingBatchService extends AbstractBatchService {
 		case AccountingBatchRepository.ACTION_DEBT_RECOVERY:
 			batch = debtRecovery(accountingBatch);
 			break;
-		case AccountingBatchRepository.ACTION_INTERBANK_PAYMENT_ORDER:
-			if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatchRepository.INTERBANK_PAYMENT_ORDER_TYPE_IMPORT)  {
-				batch = interbankPaymentOrderImport(accountingBatch);
-			}
-			else if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatchRepository.INTERBANK_PAYMENT_ORDER_TYPE_REJECT_IMPORT)  {
-				batch = interbankPaymentOrderRejectImport(accountingBatch);
-			}
-			batch = null;
-			break;
 		case AccountingBatchRepository.ACTION_DOUBTFUL_CUSTOMER:
 			batch = doubtfulCustomer(accountingBatch);
 			break;
@@ -114,18 +105,8 @@ public class AccountingBatchService extends AbstractBatchService {
 		return Beans.get(BatchReimbursementImport.class).run(accountingBatch);
 		
 	}
-
-	public Batch interbankPaymentOrderImport(AccountingBatch accountingBatch) {
-		
-		return Beans.get(BatchInterbankPaymentOrderImport.class).run(accountingBatch);
-		
-	}
 	
-	public Batch interbankPaymentOrderRejectImport(AccountingBatch accountingBatch) {
-		
-		return Beans.get(BatchInterbankPaymentOrderRejectImport.class).run(accountingBatch);
-		
-	}
+
 	
 	public Batch accountCustomer(AccountingBatch accountingBatch) {
 
@@ -168,7 +149,7 @@ public class AccountingBatchService extends AbstractBatchService {
 
 		return Beans.get(batchStrategyClass).run(accountingBatch);
 	}
-	
+
 	public Batch directDebit(AccountingBatch accountingBatch) {
 		throw new UnsupportedOperationException(I18n.get("This batch requires the bank payment module."));
 	}

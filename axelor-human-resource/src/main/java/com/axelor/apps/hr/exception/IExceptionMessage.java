@@ -90,6 +90,7 @@ public interface IExceptionMessage {
 	static final String KILOMETRIC_LOG_NO_YEAR = /*$$(*/ "There is no year for society %s which includes date %s"/*)*/ ;
 	
 	static final String KILOMETRIC_ALLOWANCE_NO_RULE = /*$$(*/ "There is no matching condition for the allowance %s"/*)*/ ;
+	static final String KILOMETRIC_ALLOWANCE_NO_DATE_SELECTED = /*$$(*/ "There is no year selected for the allowance."/*)*/ ;
 	
 	static final String PAYROLL_PREPARATION_DUPLICATE = /*$$(*/ "There is already a payroll preparation for the employee %s, the company %s and the period %s"/*)*/ ;
 

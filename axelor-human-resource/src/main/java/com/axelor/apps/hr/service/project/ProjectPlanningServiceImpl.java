@@ -67,7 +67,7 @@ public class ProjectPlanningServiceImpl implements ProjectPlanningService {
 				
 				log.debug("Create Planning for the date: {}", date);
 				
-				double dayHrs = weeklyPlanningService.workingDayValue(employee.getPlanning(), date);
+				double dayHrs = weeklyPlanningService.workingDayValue(employee.getWeeklyPlanning(), date);
 				
 				if (dayHrs > 0 && !holidayService.checkPublicHolidayDay(date, employee)) {
 					

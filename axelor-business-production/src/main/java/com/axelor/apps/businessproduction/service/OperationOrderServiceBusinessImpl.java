@@ -17,14 +17,10 @@
  */
 package com.axelor.apps.businessproduction.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
-//import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
@@ -32,8 +28,12 @@ import com.axelor.apps.production.service.OperationOrderServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
+
+//import com.axelor.apps.production.db.ProdHumanResource;
 
 public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl  {
 

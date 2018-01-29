@@ -84,11 +84,10 @@
 			</panel>
 	    </panel>
 		<panel-tabs>
-			<panel-related field="expenseLineList" height="20" title="General expenses" readonlyIf="statusSelect &gt; 1" onChange="action-expense-method-compute,action-expense-method-remove-lines" editable="true" form-view="expense-line-form" grid-view="expense-line-grid" colSpan="12" />
-			<panel-related field="kilometricExpenseLineList" title="Kilometric Allowances"
-				editable="true" form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid"
-				showIf="!setMultipleUsers" readonlyIf="statusSelect &gt; 1" colSpan="12"
-				onChange="action-expense-method-compute"/>
+			<panel-related field="generalExpenseLineList" title="General expenses" readonlyIf="statusSelect &gt; 1" colSpan="12"
+				editable="true" form-view="general-expense-line-form" grid-view="general-expense-line-grid" onChange="action-expense-method-compute" />
+			<panel-related field="kilometricExpenseLineList" title="Kilometric Allowances" readonlyIf="statusSelect &gt; 1" colSpan="12" showIf="!setMultipleUsers"
+				editable="true" form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid" onChange="action-expense-method-compute"/>
 			<panel-related showIf="!setMultipleUsers" field="employeeAdvanceUsageList" title="Employee advance list" readonly="false" canNew="false" canSelect="false" canEdit="true" editable="true" form-view="employee-advance-usage-expense-form" grid-view="employee-advance-usage-expense-grid" />
 			<panel title="Account information" showIf="statusSelect == 3 || statusSelect == 4">
 				<panel title="Account information" showIf="move">
@@ -196,7 +195,7 @@
 	    <field name="user" expr="eval:__user__"/>
 	    <field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
         <field name="companyCbSelect" expr="eval: __user__.employee?.companyCbSelect"/>
-	    <field name="period" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true',__date__).fetchOne()"/>
+        <field name="period" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2', __date__, _payCompany).fetchOne()"/>
 		<field name="exTaxTotal" expr="eval: 0"/>
     	<field name="taxTotal" expr="eval: 0"/>
     	<field name="inTaxTotal" expr="eval: 0"/>
@@ -212,7 +211,8 @@
 	</action-attrs>
 	
 	<action-attrs name="action-expense-attrs-domain-period">
-		<attribute name="domain" for="period" expr="eval: &quot; self.fromDate &lt;= CURRENT_DATE AND self.statusSelect = 1 AND self.allowExpenseCreation = true&quot;"/>
+		<attribute name="value" for="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
+		<attribute name="domain" for="period" expr="eval: &quot; self.fromDate &lt;= CURRENT_DATE AND self.statusSelect = 1 AND self.allowExpenseCreation = true AND self.year.company = :_payCompany AND self.year.typeSelect = 1 &quot;"/>
 	</action-attrs>
 	
 	<action-method name="action-expense-method-compute">
@@ -258,11 +258,11 @@
 	</action-attrs>
 	
 	<action-attrs name="action-expense-attrs-multiple-users">
-		<attribute name="hidden" for="expenseLineList.user" expr="eval: !multipleUsers"/>
+		<attribute name="hidden" for="generalExpenseLineList.user" expr="eval: !multipleUsers"/>
 	</action-attrs>
 	
 	<action-attrs name="action-expense-attrs-expense-company-cb">
-		<attribute name="hidden" for="expenseLineList.companyCbPaymentSelect" expr="eval: companyCbSelect == 1"/>
+		<attribute name="hidden" for="generalExpenseLineList.companyCbPaymentSelect" expr="eval: companyCbSelect == 1"/>
 	</action-attrs>
 	
 	<action-validate name="action-expense-validate-period">
@@ -282,9 +282,7 @@
     <action-method name="action-expense-method-compute-amounts">
     	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeAmounts"/>
     </action-method>
+    
 
-    <action-method name="action-expense-method-remove-lines">
-    	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="removeLines"/>
-    </action-method>
-
+    
 </object-views>

@@ -30,9 +30,6 @@
    	
    	<string name="transferOperationCodeImportCFONB" title="Rejected wire transfer operation code" default="21"/>
    	<string name="directDebitOperationCodeImportCFONB" title="Unpaid direct debit operation code" default="81"/>
-   	<string name="ipoRejectOperationCodeImportCFONB" title="Unpaid IPO operation code" default="71"/>
-   	<string name="ipoOperationCodeImportCFONB" title="IPO operation code" default="07"/>
-	<string name="ipoAndChequeOperationCodeImportCFONB" title="IPO and Cheque operation code" default="97"/>
    	
   </entity>
   

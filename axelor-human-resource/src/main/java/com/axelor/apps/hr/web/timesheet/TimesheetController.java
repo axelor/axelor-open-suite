@@ -22,9 +22,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.base.service.PeriodService;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -327,7 +327,13 @@ public void historicTimesheetLine(ActionRequest request, ActionResponse response
     }
 	
 	
-	//action called when validating a timesheet. Changing status + Sending mail to Applicant
+	/**
+	 * Action called when validating a timesheet.
+	 * Changing status + Sending mail to Applicant
+	 * @param request
+	 * @param response
+	 * @throws AxelorException
+	 */
 	public void valid(ActionRequest request, ActionResponse response) throws AxelorException{
 		
 		try{
@@ -341,9 +347,9 @@ public void historicTimesheetLine(ActionRequest request, ActionResponse response
 			Message message = timesheetService.sendValidationEmail(timesheet);
 			if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
-			}
-
-		} catch (Exception e) {
+			} 
+			Beans.get(PeriodService.class).checkPeriod(timesheet.getCompany(), timesheet.getToDate(), timesheet.getFromDate());
+		}  catch(Exception e)  {
 			TraceBackService.trace(response, e);
 		} finally {
 			response.setReload(true);
