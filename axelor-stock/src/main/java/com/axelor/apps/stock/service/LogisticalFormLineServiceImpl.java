@@ -38,78 +38,77 @@ import com.google.common.base.Strings;
 
 public class LogisticalFormLineServiceImpl implements LogisticalFormLineService {
 
-	private static final Pattern DIMENSIONS_PATTERN = Pattern
-			.compile("\\s*\\d+(\\.\\d*)?\\s*[x\\*]\\s*\\d+(\\.\\d*)?\\s*[x\\*]\\s*\\d+(\\.\\d*)?\\s*");
+    private static final Pattern DIMENSIONS_PATTERN = Pattern
+            .compile("\\s*\\d+(\\.\\d*)?\\s*[x\\*]\\s*\\d+(\\.\\d*)?\\s*[x\\*]\\s*\\d+(\\.\\d*)?\\s*");
 
-	@Override
-	public BigDecimal getUnspreadQty(LogisticalFormLine logisticalFormLine) {
-		StockMoveLine stockMoveLine = logisticalFormLine.getStockMoveLine();
-		return Beans.get(StockMoveLineService.class).computeSpreadableQtyOverLogisticalFormLines(stockMoveLine,
-				logisticalFormLine.getLogisticalForm());
-	}
+    @Override
+    public BigDecimal getUnspreadQty(LogisticalFormLine logisticalFormLine) {
+        StockMoveLine stockMoveLine = logisticalFormLine.getStockMoveLine();
+        return Beans.get(StockMoveLineService.class).computeSpreadableQtyOverLogisticalFormLines(stockMoveLine,
+                logisticalFormLine.getLogisticalForm());
+    }
 
-	@Override
-	public String getStockMoveLineDomain(LogisticalFormLine logisticalFormLine) {
-		long partnerId = 0;
-		List<String> domainList = new ArrayList<>();
-		LogisticalForm logisticalForm = logisticalFormLine.getLogisticalForm();
+    @Override
+    public String getStockMoveLineDomain(LogisticalFormLine logisticalFormLine) {
+        long partnerId = 0;
+        List<String> domainList = new ArrayList<>();
+        LogisticalForm logisticalForm = logisticalFormLine.getLogisticalForm();
 
-		if (logisticalForm != null) {
-			Partner deliverToCustomerPartner = logisticalForm.getDeliverToCustomerPartner();
+        if (logisticalForm != null) {
+            Partner deliverToCustomerPartner = logisticalForm.getDeliverToCustomerPartner();
 
-			if (deliverToCustomerPartner != null) {
-				partnerId = deliverToCustomerPartner.getId();
-			}
-		}
+            if (deliverToCustomerPartner != null) {
+                partnerId = deliverToCustomerPartner.getId();
+            }
+        }
 
-		domainList.add(String.format("self.stockMove.partner.id = %d", partnerId));
-		domainList.add(String.format("self.stockMove.typeSelect = %d", StockMoveRepository.TYPE_OUTGOING));
+        domainList.add(String.format("self.stockMove.partner.id = %d", partnerId));
+        domainList.add(String.format("self.stockMove.typeSelect = %d", StockMoveRepository.TYPE_OUTGOING));
         domainList.add(String.format("self.stockMove.statusSelect = %d", StockMoveRepository.STATUS_PLANNED));
         domainList.add("self.realQty > 0");
-		domainList.add(
-				"self.stockMove.fullySpreadOverLogisticalFormsFlag IS NULL OR self.stockMove.fullySpreadOverLogisticalFormsFlag = FALSE");
+        domainList.add("COALESCE(self.stockMove.fullySpreadOverLogisticalFormsFlag, FALSE) = FALSE");
 
-		List<StockMoveLine> fullySpreadStockMoveLineList = Beans.get(LogisticalFormService.class)
-				.getFullySpreadStockMoveLineList(logisticalForm);
+        List<StockMoveLine> fullySpreadStockMoveLineList = Beans.get(LogisticalFormService.class)
+                .getFullySpreadStockMoveLineList(logisticalForm);
 
-		if (!fullySpreadStockMoveLineList.isEmpty()) {
-			String idListString = StringTool.getIdListString(fullySpreadStockMoveLineList);
-			domainList.add(String.format("self.id NOT IN (%s)", idListString));
-		}
+        if (!fullySpreadStockMoveLineList.isEmpty()) {
+            String idListString = StringTool.getIdListString(fullySpreadStockMoveLineList);
+            domainList.add(String.format("self.id NOT IN (%s)", idListString));
+        }
 
-		return domainList.stream().map(domain -> String.format("(%s)", domain)).collect(Collectors.joining(" AND "));
-	}
+        return domainList.stream().map(domain -> String.format("(%s)", domain)).collect(Collectors.joining(" AND "));
+    }
 
-	@Override
-	public void validateDimensions(LogisticalFormLine logisticalFormLine) throws LogisticalFormError {
-		String dimensions = logisticalFormLine.getDimensions();
-		if (!Strings.isNullOrEmpty(dimensions) && !DIMENSIONS_PATTERN.matcher(dimensions).matches()) {
-			throw new LogisticalFormError(logisticalFormLine,
-					I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS),
-					logisticalFormLine.getSequence() + 1);
-		}
-	}
+    @Override
+    public void validateDimensions(LogisticalFormLine logisticalFormLine) throws LogisticalFormError {
+        String dimensions = logisticalFormLine.getDimensions();
+        if (!Strings.isNullOrEmpty(dimensions) && !DIMENSIONS_PATTERN.matcher(dimensions).matches()) {
+            throw new LogisticalFormError(logisticalFormLine,
+                    I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS),
+                    logisticalFormLine.getSequence() + 1);
+        }
+    }
 
-	@Override
-	public BigDecimal evalVolume(LogisticalFormLine logisticalFormLine, ScriptHelper scriptHelper)
-			throws LogisticalFormError {
-		validateDimensions(logisticalFormLine);
-		String script = logisticalFormLine.getDimensions();
+    @Override
+    public BigDecimal evalVolume(LogisticalFormLine logisticalFormLine, ScriptHelper scriptHelper)
+            throws LogisticalFormError {
+        validateDimensions(logisticalFormLine);
+        String script = logisticalFormLine.getDimensions();
 
-		if (Strings.isNullOrEmpty(script)) {
-			return BigDecimal.ZERO;
-		}
+        if (Strings.isNullOrEmpty(script)) {
+            return BigDecimal.ZERO;
+        }
 
-		return (BigDecimal) scriptHelper.eval(String.format("new BigDecimal(%s)", script.replaceAll("x", "*")));
-	}
+        return (BigDecimal) scriptHelper.eval(String.format("new BigDecimal(%s)", script.replaceAll("x", "*")));
+    }
 
-	@Override
-	public void initParcelPallet(LogisticalFormLine logisticalFormLine) {
-		LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
-		logisticalFormLine.setParcelPalletNumber(logisticalFormService
-				.getNextParcelPalletNumber(logisticalFormLine.getLogisticalForm(), logisticalFormLine.getTypeSelect()));
-		logisticalFormLine
-				.setSequence(logisticalFormService.getNextLineSequence(logisticalFormLine.getLogisticalForm()));
-	}
+    @Override
+    public void initParcelPallet(LogisticalFormLine logisticalFormLine) {
+        LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
+        logisticalFormLine.setParcelPalletNumber(logisticalFormService
+                .getNextParcelPalletNumber(logisticalFormLine.getLogisticalForm(), logisticalFormLine.getTypeSelect()));
+        logisticalFormLine
+                .setSequence(logisticalFormService.getNextLineSequence(logisticalFormLine.getLogisticalForm()));
+    }
 
 }
