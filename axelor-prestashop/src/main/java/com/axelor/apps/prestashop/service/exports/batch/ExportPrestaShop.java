@@ -19,45 +19,39 @@ package com.axelor.apps.prestashop.service.exports.batch;
 
 import java.lang.invoke.MethodHandles;
 import java.time.ZonedDateTime;
+
 import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.prestashop.db.PrestaShopBatch;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.exports.PrestaShopServiceExport;
-import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 
-public class ExportPrestaShop extends BatchStrategyExport {
-
+public class ExportPrestaShop extends AbstractBatch {
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
+
+	private PrestaShopServiceExport prestaShopServiceExport;
+
 	@Inject
 	public ExportPrestaShop(PrestaShopServiceExport prestaShopServiceExport) {
-		
-		super(prestaShopServiceExport);
-	}
-
-	@Override
-	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
-		
-		super.start();
+		this.prestaShopServiceExport = prestaShopServiceExport;
 	}
 
 	@Override
 	@Transactional
 	protected void process() {
-			
-			int i = 0;
-			
+
 			try {
 				PrestaShopBatch prestaShopBatch = (PrestaShopBatch) model;
 				Integer size = prestaShopBatch.getBatchList().size();
 				Batch batchObj;
-				
+
 				if(size == 1) {
 					batchObj = prestaShopServiceExport.exportPrestShop(null, batch);
 				} else {
@@ -65,17 +59,11 @@ public class ExportPrestaShop extends BatchStrategyExport {
 					batchObj = prestaShopServiceExport.exportPrestShop(endDate, batch);
 				}
 				batchRepo.save(batchObj);
-				i++;
-				
 			} catch (Exception e) {
 
 				incrementAnomaly();
-				LOG.error("Bug(Anomalie) généré(e) pour le rappel de l'évènement {}", batch.getId());
-				
-			} finally {
-				
-				if (i % 1 == 0) { JPA.clear(); }
-		}
+				LOG.error("An error occured while running prestashop export batch #{}", batch.getId());
+			}
 	}
 
 	/**
@@ -86,7 +74,7 @@ public class ExportPrestaShop extends BatchStrategyExport {
 	protected void stop() {
 
 		String comment = I18n.get(IExceptionMessage.BATCH_EXPORT);
-		
+
 		super.stop();
 		addComment(comment);
 	}
