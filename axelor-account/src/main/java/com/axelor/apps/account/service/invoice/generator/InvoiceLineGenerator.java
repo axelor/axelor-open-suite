@@ -153,7 +153,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	 * @return
 	 * @throws AxelorException
 	 */
-	protected InvoiceLine createInvoiceLine() throws AxelorException  {
+	protected InvoiceLine createInvoiceLine() throws AxelorException {
 
 		InvoiceLine invoiceLine = new InvoiceLine();
 
@@ -162,7 +162,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		invoiceLine.setProduct(product);
 
 		invoiceLine.setProductName(productName);
-		if(product != null)  {
+		if (product != null) {
 			boolean isPurchase = invoiceLineService.isPurchase(invoice);
 			invoiceLine.setProductCode(product.getCode());
 			AccountManagement accountManagement = accountManagementService.getAccountManagement(product, invoice.getCompany());
@@ -176,17 +176,19 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		invoiceLine.setPriceDiscounted(priceDiscounted);
 		invoiceLine.setQty(qty);
 		invoiceLine.setUnit(unit);
-		
-		if(taxLine == null) {
+
+		if (taxLine == null) {
 			this.determineTaxLine();
 		}
 
 		boolean isPurchase = Beans.get(InvoiceLineService.class).isPurchase(invoice);
 
-		Tax tax = Beans.get(AccountManagementService.class).getProductTax(Beans.get(AccountManagementService.class).getAccountManagement(product, invoice.getCompany()), isPurchase);
-		TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
+		if (product != null) {
+			Tax tax = Beans.get(AccountManagementService.class).getProductTax(Beans.get(AccountManagementService.class).getAccountManagement(product, invoice.getCompany()), isPurchase);
+			TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
 
-		invoiceLine.setTaxEquiv(taxEquiv);
+			invoiceLine.setTaxEquiv(taxEquiv);
+		}
 
 		invoiceLine.setTaxLine(taxLine);
 		

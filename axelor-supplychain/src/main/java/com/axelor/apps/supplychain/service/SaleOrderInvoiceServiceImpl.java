@@ -461,8 +461,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
 
+			String productTypeSelect = "";
+			Product product = saleOrderLine.getProduct();
+			if (product != null) {
+				productTypeSelect = product.getProductTypeSelect();
+			}
 			//Lines of subscription type are invoiced directly from sale order line or from the subscription batch
-			if (!ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(saleOrderLine.getProduct().getProductTypeSelect())
+			if (!ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(productTypeSelect)
 					&& qtyToInvoiceMap.containsKey(saleOrderLine.getId())) {
 				invoiceLineList.addAll(
 						this.createInvoiceLine(invoice, saleOrderLine,
