@@ -48,7 +48,7 @@
 				<field name="originalBillOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" readonly="true"/>
 			</panel>
 		</panel-tabs>
-		<panel-dashlet title="Sub versions" colSpan="12" height="200" action="action-bill-of-material-sub-versions"/>
+		<panel-dashlet name="subVersions" title="Sub versions" colSpan="12" height="200" action="action-bill-of-material-sub-versions" if="__config__.app.getApp('production')?.manageBillOfMaterialVersion"/>
 	</form>
     
     
@@ -89,8 +89,9 @@
 	<action-view name="action-bill-of-material-sub-versions" title="subVersions" model="com.axelor.apps.production.db.BillOfMaterial">
 		<view type="grid" name="bill-of-material-grid"/>
 		<view type="form" name="bill-of-material-form"/>
-		<domain>self.originalBillOfMaterial.versionNumber = :bom</domain>
+		<domain>self.originalBillOfMaterial.versionNumber = :bom AND self.originalBillOfMaterial.id = :id</domain>
 		<context name="bom" expr="eval: versionNumber"/>
+		<context name="id" expr="eval: id"/>
 	</action-view>
 
 	<action-view name="action-bill-of-material-line-view" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">

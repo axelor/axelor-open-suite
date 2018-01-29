@@ -368,6 +368,7 @@
 "Stock moves out",,,
 "Stopped by",,,
 "Stopping Date",,,
+"Sub versions",,,
 "Sub-process configuration",,,
 "Subtract the product residuals cost on Cost sheet",,,
 "Surcharge",,,
@@ -420,3 +421,4 @@
 "You must select a nomenclature",,,
 "name",,,
 "value:Manufacturing",,,
+"subVersions",,,

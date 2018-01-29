@@ -368,6 +368,7 @@
 "Stock moves out","Mouvements en sortie",,
 "Stopped by","Arrêté par",,
 "Stopping Date","Date d'arrêt",,
+"Sub versions","Sous versions",,
 "Sub-process configuration","Configuration des sous-process",,
 "Subtract the product residuals cost on Cost sheet","Soustraire le coût des produits résiduels sur la feuille de coût",,
 "Surcharge",,,
@@ -420,3 +421,4 @@
 "You must select a nomenclature","Veuillez sélectionner une nomenclature",,
 "name","nom",,
 "value:Manufacturing","Production",,
+"subVersions",,,
