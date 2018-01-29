@@ -138,6 +138,12 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 			filter.append("self.statusSelect = 1");
 		}
 
+		if(appConfig.getExportNonPrestashopOrders() == Boolean.FALSE) {
+			// Only push back orders that come from prestashop
+			if(filter.length() > 0) filter.append(" AND ");
+			filter.append("self.prestaShopId IS NOT NULL");
+		}
+
 		for (SaleOrder saleOrder : Beans.get(SaleOrderRepository.class).all().filter(filter.toString(), params.toArray(new Object[] {})).fetch()) {
 
 			List<Cart_row> cartRowList = new ArrayList<Cart_row>();
