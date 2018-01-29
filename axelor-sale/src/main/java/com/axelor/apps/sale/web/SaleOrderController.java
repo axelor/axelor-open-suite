@@ -492,6 +492,12 @@ public class SaleOrderController {
         }
     }
 
+	/**
+	 * Called on load from sale order form view and on trading name change.
+	 * Set the default value and the domain for {@link SaleOrder#printingSettings}
+	 * @param request
+	 * @param response
+	 */
 	public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		PrintingSettings printingSettings = saleOrder.getPrintingSettings();
@@ -500,7 +506,7 @@ public class SaleOrderController {
 		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
 			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
 		}
-		String domain = !printingSettingsList.isEmpty() ? String.format("self.id IN (%s)", StringTool.getIdListString(printingSettingsList)) : null;
+		String domain = String.format("self.id IN (%s)", !printingSettingsList.isEmpty() ? StringTool.getIdListString(printingSettingsList) : "0");
 
 		response.setValue("printingSettings", printingSettings);
 		response.setAttr("printingSettings", "domain", domain);
