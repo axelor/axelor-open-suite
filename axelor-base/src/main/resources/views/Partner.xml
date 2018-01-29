@@ -57,6 +57,7 @@
 		<field name="fixedPhone"/>
 		<field name="mobilePhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"/>
+		<field name="jobTitle"/>
 		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
 	</grid>
