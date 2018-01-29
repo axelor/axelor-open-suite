@@ -22,6 +22,7 @@ import javax.xml.transform.TransformerException;
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.prestashop.app.AppPrestaShopService;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -47,9 +48,9 @@ public class AppPrestaShopController {
 		boolean test = service.connection(ps);
 
 		if(test) {
-			response.setAlert("Connection Sucessfully");
+			response.setAlert(I18n.get("Connection was successful"));
 		} else {
-			response.setAlert("Connection Fail");
+			response.setAlert(I18n.get("Connection failed"));
 		}
 	}
 
@@ -63,7 +64,7 @@ public class AppPrestaShopController {
 
 		AppPrestashop ps = request.getContext().asType(AppPrestashop.class);
 		if(service.validateUrl(ps) == false) {
-			response.setError("URL is invalid, it should not be empty nor contain the trailing slash");
+			response.setError(I18n.get("URL is invalid, it should not be empty nor contain the trailing slash"));
 		}
 	}
 }
