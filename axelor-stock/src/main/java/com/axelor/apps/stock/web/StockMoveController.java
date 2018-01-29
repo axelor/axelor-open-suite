@@ -302,6 +302,12 @@ public class StockMoveController {
 	    response.setValues(stockMove);
 	}
 
+	/**
+	 * Called on load from stock move form view and on trading name change.
+	 * Set the default value and the domain for {@link StockMove#printingSettings}
+	 * @param request
+	 * @param response
+	 */
 	public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 		PrintingSettings printingSettings = stockMove.getPrintingSettings();
@@ -310,7 +316,7 @@ public class StockMoveController {
 		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
 			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
 		}
-		String domain = !printingSettingsList.isEmpty() ? String.format("self.id IN (%s)", StringTool.getIdListString(printingSettingsList)) : null;
+		String domain = String.format("self.id IN (%s)", !printingSettingsList.isEmpty() ? StringTool.getIdListString(printingSettingsList) : "0");
 
 		response.setValue("printingSettings", printingSettings);
 		response.setAttr("printingSettings", "domain", domain);
