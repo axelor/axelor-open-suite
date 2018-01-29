@@ -16,10 +16,14 @@
         	<field name="securitySelect" onChange="action-mail-account-onchange-security-select"/>
         	<field name="port"/>
         </panel>
-        <panel name="loginPanel" title="Login" readonlyIf="isValid" >
-       	 	<field name="login"/>
-        	<field name="password" widget="password"/>
-        </panel>
+        <panel name="loginPanel" title="Login" readonlyIf="isValid">
+		    <field name="login"/>
+		    <field name="$change" title="Change password?" showIf="id" widget="boolean"/>
+		  </panel>
+		  <panel showIf="$change || !id" colSpan="12">
+		    <field name="$loginPassword" title="Password" widget="password" onChange="action-method-mail-account-validate-password"/>
+		    <field name="password" hidden="true"/>
+		</panel>
 		<panel name="user" title="User" sidebar="true" if="__config__.app.getApp('base').getMailAccountByUser()">
         	<field name="user" required="true" showTitle="false" colSpan="12" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 		</panel>
