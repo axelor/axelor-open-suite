@@ -64,7 +64,7 @@
                                 <![CDATA[
                                     <h4 style="text-align: right;">
                                         <span class="label label-default" style="background-color: #86BC25; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProject &amp;&amp; record.projectTypeSelect == 1" x-translate>Project</span>
-                                        <span class="label label-default" style="background-color: #86BC25; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProject &amp;&amp; record.projectTypeSelect == 2" x-translate>Phase</span>
+                                        <span class="label label-default" style="background-color: #86BC25; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProject &amp;&amp; record.projectTypeSelect == 2" x-translate>Project phase</span>
                                         <span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isBusinessProject" x-translate>Business</span>
                                     </h4>
                                 ]]>
