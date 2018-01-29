@@ -30,6 +30,7 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
+import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.AccountIdentification3Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.BranchAndFinancialInstitutionIdentification3;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.CashAccount7;
@@ -399,7 +400,7 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
      * @param directDebitTransactionInformation1List the list to add the {@link DirectDebitTransactionInformation1} objects into
      * @param creditor the creditor of the SEPA Direct Debit file
      * @throws DatatypeConfigurationException
-     * @throws AxelorException 
+     * @throws AxelorException
      */
     private void createDrctDbtTxInf(List<DirectDebitTransactionInformation1> directDebitTransactionInformation1List, PartyIdentification8 creditor) throws DatatypeConfigurationException, AxelorException {
         DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();

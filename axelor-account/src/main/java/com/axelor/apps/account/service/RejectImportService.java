@@ -100,11 +100,8 @@ public class RejectImportService{
 	 * @param operation
 	 * 	 	Le type d'opération :
 	 * 		<ul>
-     *      <li>0 = Virement</li>
-     *      <li>1 = Prélèvement</li>
-     *      <li>2 = TIP impayé</li>
-     *      <li>3 = TIP</li>
-     *      <li>4 = TIP + chèque</li>
+     *          <li>0 = Virement</li>
+     *          <li>1 = Prélèvement</li>
      *  	</ul>
 	 * @return
 	 * @throws AxelorException
@@ -127,11 +124,8 @@ public class RejectImportService{
 	 * @param operation
 	 * 	 	Le type d'opération :
 	 * 		<ul>
-     *      <li>0 = Virement</li>
-     *      <li>1 = Prélèvement</li>
-     *      <li>2 = TIP impayé</li>
-     *      <li>3 = TIP</li>
-     *      <li>4 = TIP + chèque</li>
+     *          <li>0 = Virement</li>
+     *          <li>1 = Prélèvement</li>
      *  	</ul>
 	 * @return
 	 * @throws AxelorException

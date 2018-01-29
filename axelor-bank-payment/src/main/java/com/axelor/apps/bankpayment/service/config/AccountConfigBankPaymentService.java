@@ -110,7 +110,7 @@ public class AccountConfigBankPaymentService extends AccountConfigService  {
 
     /**
      * Get ICS number.
-     * 
+     *
      * @param accountConfig
      * @return
      * @throws AxelorException

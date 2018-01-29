@@ -154,7 +154,7 @@
 	<selection name='ibase.batch.action.select'>
 		<option value='1'>Target</option>
 	</selection>
-	
+
 	<selection name="base.keyword.type.select">
 		<option value="1">Tools</option>
 		<option value="2">Sector</option>
@@ -174,7 +174,7 @@
 	<selection name="base.app.base.currency.api.select">
 		<option value="http://sdw-wsrest.ecb.europa.eu/service/data/EXR/D.%s+%s.EUR.SP00.A?startPeriod=%s">ECB</option>
 	</selection>
-	
+
 	<selection name="base.tracking.number.configuration.sale.tracking.order.select">
 		<option value="1">FIFO</option>
 		<option value="2">LIFO</option>
@@ -196,7 +196,7 @@
 		<option value="2">Fixed</option>
 		<option value="3">No Discount</option>
 	</selection>
-	
+
 	<selection name="day.month.select">
 		<option value="0">00</option>
 		<option value="1">01</option>
@@ -229,7 +229,7 @@
 		<option value="28">28</option>
 		<option value="28">28</option>
 	</selection>
-	
+
 	<selection name="ibase.product.variant.value.application.price.select">
 		<option value="0">Sale price</option>
 		<option value="1">cost price</option>
@@ -367,8 +367,8 @@
 	<selection name="iaccount.payment.mode.type.select">
 		<option value="1">Other</option>
 		<option value="2">Direct debit</option>
-		<option value="3">IPO</option>
-		<option value="4">IPO + Cheque</option>
+        <option value="3">IPO</option>
+        <option value="4">IPO + Cheque</option>
 		<option value="5">Cash</option>
 		<option value="6">Bank card</option>
 		<option value="7">Cheque</option>
@@ -379,15 +379,15 @@
 	<selection name="iaccount.payment.mode.in.out.select">
 		<option value="1">In</option>
 		<option value="2">Out</option>
-	</selection>			
-  
+	</selection>
+
 	<selection name="printing.setting.logo.position">
 		<option value="0">None</option>
 		<option value="1">Left</option>
 		<option value="2">Center</option>
 		<option value="3">Right</option>
-	</selection>	
-	
+	</selection>
+
 	<selection name="icrm.calendar.type.select">
 		<option value="1">ICAL_SERVER</option>
 		<option value="2">CALENDAR_SERVER</option>
@@ -397,7 +397,7 @@
 		<option value="6">CGP</option>
 		<option value="7">CHANDLER</option>
 	</selection>
-	
+
 	<selection name="icalendar.event.type.select">
 		<option value="0">Event</option>
 		<option value="1">Call</option>
@@ -405,7 +405,7 @@
 		<option value="3">Task</option>
 		<option value="4">Leave</option>
 	</selection>
-	
+
 	<selection name="base.birt.template.parameter.type.select">
 		<option value="string">String</option>
 		<option value="float">Float</option>
@@ -433,7 +433,7 @@
 		<option value="com.axelor.apps.base.service.batch.BaseBatchService">com.axelor.apps.base.service.batch.BaseBatchService</option>
 		<option value="com.axelor.apps.base.service.batch.MailBatchService">com.axelor.apps.base.service.batch.MailBatchService</option>
 	</selection>
-	
+
 	<selection name="team.type.select">
 		<option value="general">General</option>
 	</selection>

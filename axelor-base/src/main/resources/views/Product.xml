@@ -132,7 +132,7 @@
 					<field name="shippingCoef" showIf="!defShipCoefByPartner"/>
 					<field name="defShipCoefByPartner" onChange="action-product-method-supplier-catalog-coeff"/>
 	      		</panel>
-	      		<panel-related field="supplierCatalogList" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid" title="Suppliers catalog" showIf="purchasable" colSpan="12" 
+	      		<panel-related field="supplierCatalogList" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid" title="Suppliers catalog" showIf="purchasable" colSpan="12"
 	      		if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
 	    	</panel>
             <panel name="accounting" title="Accounting" if="__config__.app.isApp('account')">
@@ -238,11 +238,11 @@
   		<panel>
   			<field name="attrs" colSpan="12" />
   		</panel>
-  		
+
   		<panel-mail>
     		<mail-messages />
     	</panel-mail>
-	</form>    
+	</form>
 	
 	<cards name="product-cards" title="Product" model="com.axelor.apps.base.db.Product" width="25%" css="rect-image" orderBy="code,name">
 	    <toolbar>
@@ -403,7 +403,7 @@
     </action-record>
     
     <action-record name="action-product-set-total-variants" model="com.axelor.apps.base.db.Product">
-    	<field name="$totalVariants" expr="eval:__repo__(Product).all().filter('self.parentProduct.id = ?',id).fetch().size"/>    
+    	<field name="$totalVariants" expr="eval:__repo__(Product).all().filter('self.parentProduct.id = ?',id).fetch().size"/>
     </action-record>
 	
 	<action-record name="action-product-record-calculate-volume-diameter" model="com.axelor.apps.base.db.Product">

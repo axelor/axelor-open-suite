@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706142203</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -25,14 +25,11 @@
     <property name="imageDPI">96</property>
     <parameters>
         <scalar-parameter name="PaymentVoucherId" id="570">
-            <property name="hidden">false</property>
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">8</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -42,7 +39,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DBName" id="2479">
-            <property name="hidden">false</property>
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -54,7 +51,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="UserName" id="2480">
-            <property name="hidden">false</property>
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -66,7 +63,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Password" id="2481">
-            <property name="hidden">false</property>
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -97,9 +94,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite-dev-40</property>
-            <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -396,17 +391,11 @@ PaymentScheduleLine.name as "PaymentScheduleName", PaymentScheduleLine.id as "Pa
 from public.account_payment_voucher as PaymentVoucher
 left outer join public.account_pay_voucher_element_to_pay as InvoiceToPay on (InvoiceToPay.payment_voucher = PaymentVoucher.id)
 left outer join public.account_move_line as MoveLineGenerated on (InvoiceToPay.move_line_generated = MoveLineGenerated.id)
-left outer join public.account_payment_schedule_line as PaymentScheduleLine on (InvoiceToPay.payment_schedule_line = PaymentScheduleLine.id)
-left outer join public.contact_partner as Partner on (MoveLineGenerated.partner = Partner.id)
-left outer join public.contact_contact as Contact on (Partner.main_contact = Contact.id)
-left outer join public.account_account as Account on (MoveLineGenerated.account = Account.id)
-left outer join public.contract_contract_line as ContractLine on (MoveLineGenerated.contract_line = ContractLine.id)
-left outer join public.account_move_line as MoveLine on (InvoiceToPay.move_line = MoveLine.id)
-left outer join public.account_move as Move on (MoveLine.move = Move.id)
-left outer join public.account_move_line as MoveLineGenerated on (InvoiceToPay.move_line_generated = MoveLineGenerated.id)
-left outer join public.account_payment_schedule_line as PaymentScheduleLine on (MoveLine.payment_schedule_line = PaymentScheduleLine.id)
 left outer join public.base_partner as Partner on (MoveLineGenerated.partner = Partner.id)
 left outer join public.account_account as Account on (MoveLineGenerated.account = Account.id)
+left outer join public.account_move_line as MoveLine on (InvoiceToPay.move_line = MoveLine.id)
+left outer join public.account_move as Move on (MoveLine.move = Move.id)
+left outer join public.account_payment_schedule_line as PaymentScheduleLine on (MoveLine.payment_schedule_line = PaymentScheduleLine.id)
 left outer join public.account_invoice as Invoice on (Move.invoice = Invoice.id)
 where PaymentVoucher.id = ? and MoveLineGenerated.amount_paid > 0.00]]></xml-property>
         </oda-data-set>

@@ -32,9 +32,6 @@
 	       	<field name="endingRecordCodeImportCFONB"/>
 	       	<field name="transferOperationCodeImportCFONB"/>
 	       	<field name="directDebitOperationCodeImportCFONB"/>
-	       	<field name="ipoRejectOperationCodeImportCFONB"/>
-	       	<field name="ipoOperationCodeImportCFONB"/>
-	       	<field name="ipoAndChequeOperationCodeImportCFONB"/>
        </panel>
     </form>
 	

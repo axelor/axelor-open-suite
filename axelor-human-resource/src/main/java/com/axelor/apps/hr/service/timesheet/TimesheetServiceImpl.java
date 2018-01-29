@@ -81,6 +81,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author axelor
+ *
+ */
 public class TimesheetServiceImpl implements TimesheetService{
 
 	@Inject
@@ -94,7 +98,6 @@ public class TimesheetServiceImpl implements TimesheetService{
 	
 	@Inject
 	protected ProjectService projectService;
-
 	@Inject
 	protected EmployeeRepository employeeRepo;
 	
@@ -175,8 +178,10 @@ public class TimesheetServiceImpl implements TimesheetService{
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 		
-		if (hrConfig.getTimesheetMailNotification()) {
+		if(hrConfig.getTimesheetMailNotification())  {
+				
 			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getValidatedTimesheetTemplate(hrConfig), null);
+				
 		}
 		
 		return null;
@@ -195,8 +200,10 @@ public class TimesheetServiceImpl implements TimesheetService{
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 		
-		if (hrConfig.getTimesheetMailNotification()) {
+		if(hrConfig.getTimesheetMailNotification())  {
+				
 			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getRefusedTimesheetTemplate(hrConfig), null);
+				
 		}
 		
 		return null;
@@ -212,7 +219,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 
-		if (hrConfig.getTimesheetMailNotification()) {
+		if(hrConfig.getTimesheetMailNotification())  {
+
 			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getCanceledTimesheetTemplate(hrConfig), null);
 		}
 
@@ -238,7 +246,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		if (employee == null) {
 			throw new AxelorException(timesheet, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),user.getName());
 		}
-		WeeklyPlanning planning = user.getEmployee().getPlanning();
+		WeeklyPlanning planning = user.getEmployee().getWeeklyPlanning();
 		if (planning == null) {
 			throw new AxelorException(timesheet, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING),user.getName());
 		}
@@ -685,8 +693,10 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
 
-		for (TimesheetLine timesheetLine : timesheetLines) {
-			periodTotal = periodTotal.add(timesheetLine.getDurationStored());
+		if (timesheetLines != null) {
+			for (TimesheetLine timesheetLine : timesheetLines) {
+				periodTotal = periodTotal.add(timesheetLine.getDurationStored());
+			}
 		}
 
 		return periodTotal;

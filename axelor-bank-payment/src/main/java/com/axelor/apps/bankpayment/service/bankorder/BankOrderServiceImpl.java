@@ -17,22 +17,6 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
@@ -62,6 +46,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -72,6 +57,20 @@ import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class BankOrderServiceImpl implements BankOrderService {
 
@@ -258,7 +257,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 		setSequenceOnBankOrderLines(bankOrder);
 
 		generateFile(bankOrder);
-
+		
+		bankOrder.setConfirmationDateTime(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
 		makeEbicsUserFollow(bankOrder);
 

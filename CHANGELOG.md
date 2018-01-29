@@ -24,9 +24,17 @@
 
 ## [Unreleased 4.x]
 ### Improvements
+- Close pay period automatically when all payroll preparation are exported
+- KilometricExpenseLineList are no more duplicated in ExpenseLineList. ExpenseLineList is renamed into GeneralExpenseLineList.
+- The distinction between round-trip and one way ticket in kilometric expenses is now only informative.
 
 ### Bug Fixes
 - Fix demo data en and fr on General config to set the correct value of the fields custStockMoveMgtOnSO and supplStockMoveMgtOnSO.
+- Fixes in invoicing timetable in sale order
+- Fix payment voucher report.
+- Check ICS number on direct debit sepa file generation
+- Fix receiver bank details filter in BankOrder
+- Years can have the same code as long as the company/type differ.
 
 
 ## [4.1.1] - 2018-01-10
