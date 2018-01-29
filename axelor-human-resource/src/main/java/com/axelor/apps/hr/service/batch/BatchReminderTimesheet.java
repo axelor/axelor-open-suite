@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -86,7 +86,7 @@ public class BatchReminderTimesheet extends AbstractBatch{
 		for (Timesheet timesheet : timesheetList) {
 			Message message = new Message();
 			try{
-				message = templateMessageService.generateMessage(timesheet.getUser().getEmployee().getId(), model, tag, template);
+				message = templateMessageService.generateMessage(timesheet.getUser().getEmployee().getId(), model, tag, template, null);
 				message = messageService.sendByEmail(message);
 				incrementDone();
 			}
@@ -143,7 +143,7 @@ public class BatchReminderTimesheet extends AbstractBatch{
 		String tag = template.getMetaModel().getName();
 		for (Employee employee : employeeList) {
 			try{
-				Message message = templateMessageService.generateMessage(employee.getId(), model, tag, template);
+				Message message = templateMessageService.generateMessage(employee.getId(), model, tag, template, null);
 				message = messageService.sendByEmail(message);
 				incrementDone();
 			}

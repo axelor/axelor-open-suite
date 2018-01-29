@@ -57,6 +57,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -120,7 +121,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 		paymentScheduleLine.setScheduleLineSeq(scheduleLineSeq);
 		paymentScheduleLine.setScheduleDate(scheduleDate);
 		paymentScheduleLine.setInTaxAmount(inTaxAmount);
-		paymentScheduleLine.setStatusSelect(PaymentScheduleLineRepository.STATUS_IN_PROGRESS);
+		paymentScheduleLine.setStatusSelect(PaymentScheduleLineRepository.STATUS_DRAFT);
 
 		log.debug("Création de la ligne de l'échéancier numéro {} pour la date du {} et la somme de {}",
 				new Object[] { paymentScheduleLine.getScheduleLineSeq(), paymentScheduleLine.getScheduleDate(),
@@ -174,12 +175,14 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 	public Move createPaymentMove(PaymentScheduleLine paymentScheduleLine, BankDetails companyBankDetails)
 			throws AxelorException {
 
+	    Preconditions.checkNotNull(paymentScheduleLine);
+        Preconditions.checkNotNull(companyBankDetails);
+
 		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
 		Company company = paymentSchedule.getCompany();
 		AccountConfig accountConfig = company.getAccountConfig();
 		PaymentMode paymentMode = accountConfig.getDirectDebitPaymentMode();
 		Partner partner = paymentSchedule.getPartner();
-		BankDetails bankDetails = paymentSchedule.getBankDetails();
 		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
 		BigDecimal amount = paymentScheduleLine.getInTaxAmount();
 		String name = paymentScheduleLine.getName();

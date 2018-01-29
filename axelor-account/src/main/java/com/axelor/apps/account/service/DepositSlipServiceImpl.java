@@ -63,7 +63,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
 
         ReportSettings settings = ReportFactory.createReport(getReportName(depositSlip), getFilename(depositSlip));
         settings.addParam("DepositSlipId", depositSlip.getId());
-        settings.addParam("Locale", AuthUtils.getUser().getLanguage());
+        settings.addParam("Locale", ReportSettings.getPrintingLocale(null));
         settings.addFormat("pdf");
         String fileLink = settings.toAttach(depositSlip).generate().getFileLink();
         depositSlip.setPublicationDate(Beans.get(AppBaseService.class).getTodayDate());

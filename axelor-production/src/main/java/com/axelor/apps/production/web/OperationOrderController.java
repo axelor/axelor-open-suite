@@ -30,6 +30,7 @@ import java.util.Set;
 
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.apps.production.service.OperationOrderService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.service.TraceBackService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
@@ -229,7 +230,7 @@ public class OperationOrderController {
 			}
 			
 			String fileLink = ReportFactory.createReport(IReport.OPERATION_ORDER, name+"-${date}")
-					.addParam("Locale", manufOrderService.getLanguageToPrinting(operationOrder.getManufOrder()))
+					.addParam("Locale", ReportSettings.getPrintingLocale(null))
 					.addParam("OperationOrderId", operationOrderIds)
 					.generate()
 					.getFileLink();

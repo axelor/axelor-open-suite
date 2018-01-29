@@ -25,13 +25,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -51,7 +54,7 @@ public class StockMoveController {
 
 	@Inject
 	protected AppBaseService appBaseService;
-	
+
 
 	public void plan(ActionRequest request, ActionResponse response) {
 
@@ -71,7 +74,7 @@ public class StockMoveController {
 			StockMove stockMove = stockMoveRepo.find(stockMoveFromRequest.getId());
 			String newSeq = stockMoveService.realize(stockMove);
 			
-			
+
 			response.setReload(true);
 
 			if(newSeq != null)  {
@@ -86,8 +89,8 @@ public class StockMoveController {
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
-	
-	
+
+
 
 	public void cancel(ActionRequest request, ActionResponse response)  {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
@@ -175,8 +178,7 @@ public class StockMoveController {
 		response.setCanClose(true);
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void  splitStockMoveLinesSpecial(ActionRequest request, ActionResponse response) {
+	@SuppressWarnings({ "unchecked", "rawtypes" })public void  splitStockMoveLinesSpecial(ActionRequest request, ActionResponse response) {
 		List<HashMap> stockMoveLines = (List<HashMap>) request.getContext().get("stockMoveLineList");
 		if(stockMoveLines == null){
 			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_14));
@@ -185,12 +187,12 @@ public class StockMoveController {
 		Integer splitQty = (Integer)request.getContext().get("splitQty");
 		if(splitQty != null && splitQty < 1){
 			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_16));
-			return ;
-		}
+			return ;}
+
 		Boolean selected = stockMoveService.splitStockMoveLinesSpecial(stockMoveLines, new BigDecimal(splitQty));
-		if(!selected)
+		if(!selected){
 			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_15));
-		response.setReload(true);
+		}
 		response.setCanClose(true);
 	}
 
@@ -240,13 +242,19 @@ public class StockMoveController {
 
 	public void changeConformityStockMove(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		response.setValue("stockMoveLineList", stockMoveService.changeConformityStockMove(stockMove));
+		
+
+			response.setValue("stockMoveLineList", stockMoveService.changeConformityStockMove(stockMove));
 	}
+	
 
 	public void changeConformityStockMoveLine(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		response.setValue("conformitySelect", stockMoveService.changeConformityStockMoveLine(stockMove));
+		
+
+							response.setValue("conformitySelect", stockMoveService.changeConformityStockMoveLine(stockMove));
 	}
+	
 
 	public void  compute(ActionRequest request, ActionResponse response) {
 		
@@ -254,24 +262,24 @@ public class StockMoveController {
 		response.setValue("exTaxTotal", stockMoveService.compute(stockMove));
 		
 	}
-	
+
 	public void openStockPerDay(ActionRequest request, ActionResponse response) {
-		
+
 		Context context = request.getContext();
-		
+
 		Long locationId = Long.parseLong(((Map<String,Object>)context.get("stockLocation")).get("id").toString());
 		LocalDate fromDate = LocalDate.parse(context.get("stockFromDate").toString());
 		LocalDate toDate = LocalDate.parse(context.get("stockToDate").toString());
-		
+
 		Collection<Map<String,Object>> products = (Collection<Map<String,Object>>)context.get("productSet");
-		
+
 		String domain = null;
 		List<Object> productIds = null;
 		if (products != null && !products.isEmpty()) {
 			productIds = Arrays.asList(products.stream().map(p->p.get("id")).toArray());
 			domain = "self.id in (:productIds)";
 		}
-		
+
 		response.setView(ActionView.define(I18n.get("Stocks"))
 			.model(Product.class.getName())
 			.add("cards", "stock-product-cards")
@@ -284,7 +292,7 @@ public class StockMoveController {
 			.context("stockToDate", toDate)
 			.context("locationId", locationId)
 			.map());
-		
+
 	}
 
 	public void fillAddressesStr(ActionRequest request, ActionResponse response) {
@@ -294,4 +302,23 @@ public class StockMoveController {
 	    response.setValues(stockMove);
 	}
 
+	/**
+	 * Called on load from stock move form view and on trading name change.
+	 * Set the default value and the domain for {@link StockMove#printingSettings}
+	 * @param request
+	 * @param response
+	 */
+	public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
+		StockMove stockMove = request.getContext().asType(StockMove.class);
+		PrintingSettings printingSettings = stockMove.getPrintingSettings();
+
+		List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(stockMove.getTradingName(), stockMove.getCompany());
+		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
+			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
+		}
+		String domain = String.format("self.id IN (%s)", !printingSettingsList.isEmpty() ? StringTool.getIdListString(printingSettingsList) : "0");
+
+		response.setValue("printingSettings", printingSettings);
+		response.setAttr("printingSettings", "domain", domain);
+	}
 }

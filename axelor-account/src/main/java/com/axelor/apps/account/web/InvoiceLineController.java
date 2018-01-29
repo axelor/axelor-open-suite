@@ -33,8 +33,10 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -106,7 +108,7 @@ public class InvoiceLineController {
 			response.setValue("taxRate", taxRate);
 			response.setValue("taxCode", invoiceLine.getTaxLine().getTax().getCode());
 		}
-		
+
 		if(!invoice.getInAti()) {
 			exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine,invoice));
 			inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
@@ -127,79 +129,22 @@ public class InvoiceLineController {
 	
 	
 	public void getProductInformation(ActionRequest request, ActionResponse response) throws AxelorException {
-
 		Context context = request.getContext();
-		
 		InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-
 		Invoice invoice = this.getInvoice(context);
-		
 		Product product = invoiceLine.getProduct();
+		Map<String, Object> productInformation = invoiceLineService.resetProductInformation();
 
-		if(invoice == null || product == null) { 
-			this.resetProductInformation(response);
-			return;
-		}
-
-		try  {
-
-			boolean isPurchase = invoiceLineService.isPurchase(invoice);
-
-			TaxLine taxLine = invoiceLineService.getTaxLine(invoice, invoiceLine, isPurchase);
-			response.setValue("taxLine", taxLine);
-			response.setValue("taxRate", taxLine.getValue());
-			response.setValue("taxCode", taxLine.getTax().getCode());
-
-			Tax tax = accountManagementService.getProductTax(accountManagementService.getAccountManagement(product, invoice.getCompany()), isPurchase);
-            TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
-            response.setValue("taxEquiv", taxEquiv);
-
-			BigDecimal price = invoiceLineService.getUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
-
-			response.setValue("productName", invoiceLine.getProduct().getName());
-			response.setValue("unit", invoiceLineService.getUnit(invoiceLine.getProduct(), isPurchase));
-
-			// getting correct account for the product
-			AccountManagement accountManagement = accountManagementService.getAccountManagement(product, invoice.getCompany());
-			Account account = accountManagementService.getProductAccount(accountManagement, isPurchase);
-			response.setValue("account", account);
-
-			Map<String, Object> discounts = invoiceLineService.getDiscount(invoice, invoiceLine, price);
-			
-			if(discounts != null)  {
-				response.setValue("discountAmount", discounts.get("discountAmount"));
-				response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-				if(discounts.get("price") != null)  {
-					price = (BigDecimal) discounts.get("price");
-				}
+		if(invoice != null && product != null) {
+			try  {
+			    productInformation = invoiceLineService.fillProductInformation(invoice, invoiceLine);
 			}
-			response.setValue("price", price);
+			catch(Exception e) {
+				TraceBackService.trace(response, e);
+			}
 		}
-		catch(Exception e) {
-			response.setFlash(e.getMessage());
-			this.resetProductInformation(response);
-		}
+		response.setValues(productInformation);
 	}
-
-
-	public void resetProductInformation(ActionResponse response)  {
-
-		response.setValue("taxLine", null);
-		response.setValue("taxEquiv", null);
-		response.setValue("taxCode", null);
-		response.setValue("taxRate", null);
-		response.setValue("productName", null);
-		response.setValue("unit", null);
-		response.setValue("discountAmount", null);
-		response.setValue("discountTypeSelect", null);
-		response.setValue("price", null);
-		response.setValue("exTaxTotal", null);
-		response.setValue("inTaxTotal", null);
-		response.setValue("companyInTaxTotal", null);
-		response.setValue("companyExTaxTotal", null);
-
-	}
-
 
 	public void getDiscount(ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -271,14 +216,14 @@ public class InvoiceLineController {
 			newInvoiceLine.setQty(BigDecimal.ZERO);
 			newInvoiceLine.setId(invoiceLine.getId());
 			newInvoiceLine.setVersion(invoiceLine.getVersion());
-			response.setValues(newInvoiceLine);
+			response.setValues(Mapper.toMap(newInvoiceLine));
 		}
 	}
 	
 	
 	public Invoice getInvoice(Context context)  {
 		
-		Context parentContext = context.getParentContext();
+		Context parentContext = context.getParent();
 		
 		Invoice invoice = parentContext.asType(Invoice.class);
 		

@@ -70,7 +70,7 @@
 168;"expense";"N° de note de frais";1;8;"NF%YY%FM";;1;1;1
 1;"partner";"Numéro identifiant tiers";4;13;"T";;1;0;1
 2;"saleOrder";"Devis/Cmde client";1;11;"VTE";;1;0;1
-3;"purchaseOrder";"Cotations/Cmde fournisseur";1;11;"ACH";;1;0;1
+3;"purchaseOrder";"Cotations/Cmde fournisseur";1;6;"ACH";;1;0;1
 5;"intStockMove";"N° de bon de transfert de marchandise";1;12;"BT";;1;0;1
 6;"outStockMove";"N° de bon de livraison";1;12;"BL";;1;0;1
 7;"inStockMove";"N° de bon de réception";1;12;"BR";;1;0;1

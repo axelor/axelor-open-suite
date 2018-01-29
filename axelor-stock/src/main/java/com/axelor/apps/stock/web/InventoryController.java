@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
 
+import com.axelor.apps.report.engine.ReportSettings;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,15 +72,12 @@ public class InventoryController {
 	public void showInventory(ActionRequest request, ActionResponse response) {
 		try {
 			Inventory inventory = request.getContext().asType(Inventory.class);
-	
-			User user = AuthUtils.getUser();
-			String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
-	
+
 			String name = I18n.get("Inventory")+" "+inventory.getInventorySeq();
 	
 			String fileLink = ReportFactory.createReport(IReport.INVENTORY, name + "-${date}")
 					.addParam("InventoryId", inventory.getId())
-					.addParam("Locale", language)
+					.addParam("Locale", ReportSettings.getPrintingLocale(null))
 					.addFormat(inventory.getFormatSelect())
 					.generate()
 					.getFileLink();

@@ -33,19 +33,19 @@ public interface ITranslation {
 	public static final String STOCK_LOCATION_ACCOUNTING_VALUE = /*$$(*/ "StockLocation.accountingValue"; /*)*/
 	public static final String STOCK_LOCATION_UNIT_VALUE = /*$$(*/ "StockLocation.unitValue"; /*)*/
 	public static final String STOCK_LOCATION_TOTAL = /*$$(*/ "StockLocation.total"; /*)*/
-	public static final String STOCK_LOCATION_DETAILS_BY_LOCATION = /*$$(*/ "StockLocation.detailsByLocation"; /*)*/
+	public static final String STOCK_LOCATION_DETAILS_BY_STOCK_LOCATION = /*$$(*/ "StockLocation.detailsByStockLocation"; /*)*/
 	
 	public static final String INVENTORY_TITLE = /*$$(*/ "Inventory.title"; /*)*/
 	public static final String INVENTORY_NAME = /*$$(*/ "Inventory.name"; /*)*/
 	public static final String INVENTORY_DATE = /*$$(*/ "Inventory.date"; /*)*/
-	public static final String INVENTORY_LOCATION = /*$$(*/ "Inventory.stockLocation"; /*)*/
+	public static final String INVENTORY_STOCK_LOCATION = /*$$(*/ "Inventory.stockLocation"; /*)*/
 	public static final String INVENTORY_CODE = /*$$(*/ "Inventory.code"; /*)*/
 	public static final String INVENTORY_UNIT = /*$$(*/ "Inventory.unit"; /*)*/
 	public static final String INVENTORY_REAL_QTY = /*$$(*/ "Inventory.realQty"; /*)*/
 	public static final String INVENTORY_DESCRIPTION = /*$$(*/ "Inventory.description"; /*)*/
 	public static final String INVENTORY_RACK = /*$$(*/ "Inventory.rack"; /*)*/
 	public static final String INVENTORY_TRACKING_NUMBER = /*$$(*/ "Inventory.trackingNumber"; /*)*/
-	
+
 	public static final String STOCK_MOVE_INTERNAL_MOVE = /*$$(*/ "StockMove.internalMove"; /*)*/
 	public static final String STOCK_MOVE_DELIVERY_ORDER = /*$$(*/ "StockMove.deliveryOrder"; /*)*/
 	public static final String STOCK_MOVE_RECEPTION_ORDER = /*$$(*/ "StockMove.receptionOrder"; /*)*/
@@ -66,6 +66,7 @@ public interface ITranslation {
 	public static final String STOCK_MOVE_PACKAGE = /*$$(*/ "StockMove.numOfPackages"; /*)*/
 	public static final String STOCK_MOVE_PALETTES = /*$$(*/ "StockMove.numOfPalettes"; /*)*/
 	public static final String STOCK_MOVE_GROSS_WEIGHT = /*$$(*/ "StockMove.grossWeight"; /*)*/
+	public static final String STOCK_MOVE_DESCRIPTION = /*$$(*/ "StockMove.description"; /*)*/
 
 	//PickingStockMove
 	public static final String STOCK_MOVE_PICKING_ORDER = /*$$(*/ "StockMove.pickingOrder"; /*)*/

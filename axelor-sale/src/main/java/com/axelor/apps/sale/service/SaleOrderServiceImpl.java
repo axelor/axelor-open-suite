@@ -17,44 +17,34 @@
  */
 package com.axelor.apps.sale.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.persistence.Query;
-
-import com.axelor.apps.base.db.PartnerPriceList;
-import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.axelor.apps.base.service.PartnerPriceListService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.AppSale;
+import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.StopReason;
+import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.DurationService;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -78,6 +68,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
@@ -371,8 +362,21 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	}
 
     @Override
-    @Transactional(rollbackOn = { AxelorException.class, Exception.class })
+    @Transactional(rollbackOn = { AxelorException.class, Exception.class }, ignore = { BlockedSaleOrderException.class })
     public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
+	    Partner partner = saleOrder.getClientPartner();
+
+	    Blocking blocking = Beans.get(BlockingService.class).getBlocking(partner, saleOrder.getCompany(), BlockingRepository.SALE_BLOCKING);
+
+        if (blocking != null) {
+            saleOrder.setBloqued(true);
+            if (!saleOrder.getManualUnblock()) {
+                saleOrderRepo.save(saleOrder);
+				String reason = blocking.getBlockingReason() != null ? blocking.getBlockingReason().getName() : "";
+                throw new BlockedSaleOrderException(partner, I18n.get("Client is sale blocked:") + " " + reason);
+            }
+        }
+
         saleOrder.setStatusSelect(ISaleOrder.STATUS_FINALIZE);
         saleOrderRepo.save(saleOrder);
         if (appSaleService.getAppSale().getManageSaleOrderVersion()) {
@@ -467,11 +471,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	
 	@Override
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException  {
-		
-		String language = this.getLanguageForPrinting(saleOrder);
-		
 		ReportFactory.createReport(IReport.SALES_ORDER, this.getFileName(saleOrder)+"-${date}")
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(saleOrder.getClientPartner()))
 				.addParam("SaleOrderId", saleOrder.getId())
 				.toAttach(saleOrder)
 				.generate()
@@ -481,19 +482,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		
 	}
 
-	@Override
-	public String getLanguageForPrinting(SaleOrder saleOrder)  {
-		String language="";
-		try{
-			language = saleOrder.getClientPartner().getLanguageSelect() != null? saleOrder.getClientPartner().getLanguageSelect() : saleOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? saleOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-		}catch (NullPointerException e) {
-			language = "en";
-		}
-		language = language.equals("")? "en": language;
-		
-		return language;
-	}
-	
 	@Override
 	public String getFileName(SaleOrder saleOrder)  {
 		

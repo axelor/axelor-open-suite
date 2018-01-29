@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
+import com.axelor.apps.report.engine.ReportSettings;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,21 +84,11 @@ public class StockLocationController {
 		}
 		
 		if(!locationIds.equals("")){
-			
-			User user = AuthUtils.getUser();
-			Company company = stockLocation.getCompany();
-			
-			String language = "en";
-			if(user != null && !Strings.isNullOrEmpty(user.getLanguage()))  {
-				language = user.getLanguage();
-			}
-			else if(company != null && company.getPrintingSettings() != null && !Strings.isNullOrEmpty(company.getPrintingSettings().getLanguageSelect())) {
-				language = company.getPrintingSettings().getLanguageSelect();
-			}
+			String language = ReportSettings.getPrintingLocale(null);
 
-			String title = I18n.get("Location");
+			String title = I18n.get("Stock location");
 			if(stockLocation.getName() != null)  {
-				title = lstSelectedLocations == null ? I18n.get("Location") + " " + stockLocation.getName() : I18n.get("Location(s)");
+				title = lstSelectedLocations == null ? I18n.get("Stock location") + " " + stockLocation.getName() : I18n.get("Stock location(s)");
 			}
 		
 			String fileLink = ReportFactory.createReport(IReport.STOCK_LOCATION, title+"-${date}")

@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="payment-schedule-grid" title="Payment schedule"
-		model="com.axelor.apps.account.db.PaymentSchedule">
+		model="com.axelor.apps.account.db.PaymentSchedule" orderBy="-paymentScheduleSeq">
 		<field name="paymentScheduleSeq" />
 		<field name="creationDate" />
 		<field name="partner" form-view="partner-form" grid-view="partner-grid" />
@@ -30,7 +30,7 @@
 			<field name="nbrTerm" readonlyIf="statusSelect != 1" />
 			<panel colSpan="12">
 				<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1" onChange="action-payment-schedule-record-partner" domain="self.isContact = false" />
-<!-- 				<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-payment-schedule-attrs-bank-details-domain" /> -->
+				<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-payment-schedule-attrs-bank-details-domain" />
 			</panel>
 			<panel colSpan="12">
 				<field name="company" canEdit="false" readonlyIf="statusSelect != 1" widget="SuggestBox" form-view="company-form" grid-view="company-grid" />
@@ -43,14 +43,14 @@
 		
 		<panel-related title="Invoices" field="invoiceSet" grid-view="invoice-account-grid" form-view="invoice-form" 
 			domain="self.partner = :partner and self.schedulePaymentOk = 'f' and self.company=:company and self.statusSelect = 3 and self.companyInTaxTotalRemaining > 0.0 AND self.currency = :currency"
-			readonlyIf="statusSelect != 1" onChange="action-payment-schedule-record-in-tax-amount" hideIf="typeSelect == 3" />
+			readonlyIf="statusSelect != 1" onChange="action-payment-schedule-record-in-tax-amount" hideIf="typeSelect == 2" canNew="false" />
 			
 		<panel-related title="Payment Schedule Line" field="paymentScheduleLineList" grid-view="payment-schedule-line-payment-schedule-grid" form-view="payment-schedule-line-payment-schedule-form"
 			readonlyIf="statusSelect != 3" />
 
 		<panel name="actions" title="Actions" sidebar="true">
 			<button name="validate" title="Validate" onClick="action-group-account-payment-schedule-validate-click" readonlyIf="statusSelect != 1" colSpan="6" />
-			<button name="cancel" title="Cancel" onClick="action-payment-schedule-method-cancel,save" readonlyIf="statusSelect == 4" colSpan="6" />
+			<button name="cancel" title="Cancel" onClick="save,action-payment-schedule-method-cancel,save" readonlyIf="statusSelect == 4" colSpan="6" />
 			<button name="createPaymentScheduleLines" title="Create schedule lines" onClick="action-group-account-payment-schedule-create-click" showIf="statusSelect == 1" colSpan="12" />
 		</panel>
 		<panel name="irrecoverable" title="Irrecoverable" sidebar="true">
@@ -77,6 +77,7 @@
 	<action-group name="action-group-account-payment-schedule-validate-click">
 		<action name="save" />
 		<action name="action-payment-schedule-payment-schedule-id" />
+        <action name="save" />
 		<action name="action-payment-schedule-method-validate" />
 		<action name="save" />
 	</action-group>
@@ -115,7 +116,7 @@
 	<action-attrs
 		name="action-payment-schedule-attrs-bank-details-domain">
 		<attribute name="domain" for="bankDetails"
-			expr="eval: &quot;self.id IN (${partner.bankDetailsList.collect{it.id}.join(',')})&quot;"
+			expr="eval: &quot;self.id IN (${partner.bankDetailsList.collect{it.id}.join(',')}) AND self.active = TRUE&quot;"
 			if="partner &amp;&amp; partner.bankDetailsList" />
 	</action-attrs>
 

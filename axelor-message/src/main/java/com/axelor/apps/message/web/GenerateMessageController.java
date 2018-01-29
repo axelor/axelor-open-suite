@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -114,7 +114,7 @@ public class GenerateMessageController {
 		LOG.debug("model : {} ", model);
 		LOG.debug("tag : {} ", tag);
 		
-		Message message = templateMessageService.generateMessage(objectId, model, tag, template);
+		Message message = templateMessageService.generateMessage(objectId, model, tag, template, null);
 
 		return ActionView.define( I18n.get(IExceptionMessage.MESSAGE_3) )
 				.model( Message.class.getName() )

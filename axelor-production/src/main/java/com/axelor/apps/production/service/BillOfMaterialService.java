@@ -46,9 +46,7 @@ public interface BillOfMaterialService {
 	public BillOfMaterial generateNewVersion(BillOfMaterial billOfMaterial);
 	
 	public String getFileName(BillOfMaterial billOfMaterial);
-	
-	public String getLanguageForPrinting(BillOfMaterial billOfMaterial);
-	
+
 	public String getReportLink(BillOfMaterial billOfMaterial, String name, String language, String format) throws AxelorException;
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

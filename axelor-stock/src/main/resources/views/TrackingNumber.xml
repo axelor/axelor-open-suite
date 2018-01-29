@@ -64,13 +64,13 @@
 			</where>
 		</select>
 		<select model="com.axelor.apps.stock.db.StockLocation" title="Stock location">
-			<field name="detailsLocationLineList[].trackingNumber" as="trackingNumber"/>
-			<field name="detailsLocationLineList[].product.name" as="product"/>
-			<field name="detailsLocationLineList[].stockLocation.name" as="stockLocation"/>
-			<field name="detailsLocationLineList[].currentQty" as="currentQty"/>
-			<field name="detailsLocationLineList[].futureQty" as="futureQty"/>
+			<field name="detailsStockLocationLineList[].trackingNumber" as="trackingNumber"/>
+			<field name="detailsStockLocationLineList[].product.name" as="product"/>
+			<field name="detailsStockLocationLineList[].stockLocation.name" as="stockLocation"/>
+			<field name="detailsStockLocationLineList[].currentQty" as="currentQty"/>
+			<field name="detailsStockLocationLineList[].futureQty" as="futureQty"/>
 			<where>
-				<input name="trackingNumber" field="detailsLocationLineList[].trackingNumber"/>
+				<input name="trackingNumber" field="detailsStockLocationLineList[].trackingNumber"/>
 			</where>
 		</select>
 	</search>

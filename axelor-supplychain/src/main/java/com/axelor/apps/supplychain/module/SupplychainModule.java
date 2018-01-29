@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
@@ -129,7 +130,7 @@ public class SupplychainModule extends AxelorModule {
         bind(AnalyticMoveLineMngtRepository.class).to(AnalyticMoveLineSupplychainRepository.class);
         bind(StockMoveLineServiceImpl.class).to(StockMoveLineSupplychainServiceImpl.class);
         bind(BudgetService.class).to(BudgetSupplychainService.class);
-        bind(InvoiceLineService.class).to(InvoiceLineSupplychainService.class);
+        bind(InvoiceLineServiceImpl.class).to(InvoiceLineSupplychainService.class);
         bind(SaleOrderStockService.class).to(SaleOrderStockServiceImpl.class);
         bind(PurchaseOrderManagementRepository.class).to(PurchaseOrderSupplychainRepository.class);
         bind(AppSupplychainService.class).to(AppSupplychainServiceImpl.class);

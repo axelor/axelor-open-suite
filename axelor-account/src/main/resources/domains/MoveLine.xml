@@ -55,6 +55,8 @@
     
     <decimal name="taxRate"  scale="3" precision="20" readonly="true"/>
     <string name="taxCode" readonly="true"/>
+      
+    <decimal name="taxAmount" title="Tax amount" readonly="true"/>
 	
     
     <string name="name" title="Name" namecolumn="true">

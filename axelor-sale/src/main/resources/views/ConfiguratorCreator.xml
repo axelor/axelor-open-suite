@@ -2,8 +2,12 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-
+    
     <grid name="configurator-creator-grid" title="ConfiguratorCreators" model="com.axelor.apps.sale.db.ConfiguratorCreator">
+	    <toolbar>
+	    	<button name="exportCreators" title="Export" onClick="action-configurator-creator-export"/>
+	    	<button name="importCreators" title="Import" onClick="action-configurator-creator-view-import"/>
+	    </toolbar>
     	<field name="name"/>
 		<field name="isActive"/>
     </grid>
@@ -25,7 +29,7 @@
 
     	<panel>
     		<field name="name"/>
-    		<button name="configure" title="Configure" showIf="id == null" onClick="save, action-configurator-creator-method-authorize-current-user"/>
+    		<button name="configure" title="Configure" showIf="id == null" onClick="save, action-configurator-creator-method-configure"/>
     		<panel-related field="attributes" hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save"
     				colSpan="12" readonlyIf="id == null" form-view="sale-json-field-form" grid-view="sale-json-field-grid" canMove="true" orderBy="sequence"/>
     	</panel>
@@ -33,78 +37,207 @@
 		<panel sidebar="true" title="Actions" hideIf="id == null">
 			<button name="activate" title="Activate" readonlyIf="isActive || !(attributes.length &gt; 0) || !(configuratorFormulaList.length &gt; 0)" onClick="action-configurator-creator-group-activate"/>
 			<button name="test" title="Test this creator" showIf="generateProduct" readonlyIf="!isActive" onClick="action-configurator-creator-view-test"/>
-			<field name="generateProduct" widget="boolean-switch"/>
+			<field name="generateProduct" widget="boolean-switch" onChange="action-configurator-creator-attrs-hide-metafield"/>
 			<field name="isActive" hidden="true"/>
 		</panel>
 
-		<panel-related field="configuratorFormulaList" form-view="configurator-formula-form" grid-view="configurator-formula-grid" hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save"/>
+		<panel-related field="configuratorFormulaList" hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save"
+			form-view="configurator-formula-form" grid-view="configurator-formula-grid"/>
 
 		<panel title="Authorizations" hideIf="id == null">
 			<field name="authorizedUserSet" widget="TagSelect" canEdit="false" canNew="false" form-view="user-form" grid-view="user-grid" colSpan="12"/>
             <field name="authorizedGroupSet" widget="TagSelect" canEdit="false" canNew="false" form-view="group-form" grid-view="group-grid" colSpan="12"/>
 		</panel>
-
-		<panel if-module="axelor-production" if="__config__.app.getApp('production').getEnableConfigurator()">
-			<panel title="Configurator BoM" if-module="axelor-production" colSpan="12" hideIf="id == null || $hideBOMConfigurator">
-	            <field name="configuratorBom" if-module="axelor-production"  if="__config__.app.isApp('production')" colSpan="12">
-	                <editor>
-	                    <field name="company"/>
-	                    <panel title="Label">
-	                        <field name="defNameAsFormula" colSpan="6"/>
-	                        <field name="name" colSpan="12" showIf="!defNameAsFormula"/>
-	                        <field name="nameFormula" colSpan="12" height="120"
-	                               widget="CodeEditor" x-code-syntax="groovy"
-	                               showTitle="false" showIf="defNameAsFormula"/>
-	                    </panel>
-	                    <field name="useCondition" widget="CodeEditor" height="120" colSpan="12"
-	                           x-code-syntax="groovy"/>
-	                    <panel title="Product">
-	                        <field name="defProductFromConfigurator" colSpan="6" showIf="!defProductAsFormula"/>
-	                        <field name="defProductAsFormula" colSpan="6" showIf="!defProductFromConfigurator"/>
-	                        <field name="product" colSpan="12"
-	                               showIf="!defProductAsFormula &amp;&amp; !defProductFromConfigurator"
-	                               form-view="product-view" grid-view="product-grid"/>
-	                        <field name="productFormula" colSpan="12" height="120" widget="CodeEditor"
-	                               x-code-syntax="groovy" showTitle="false" showIf="defProductAsFormula"/>
-	                    </panel>
-	                    <panel title="Qty">
-	                        <field name="defQtyAsFormula" colSpan="6" type="boolean"/>
-	                        <field name="qty" colSpan="12" showIf="!defQtyAsFormula"/>
-	                        <field name="qtyFormula" colSpan="12" height="120" widget="CodeEditor"
-	                               showTitle="false" x-code-syntax="groovy" showIf="defQtyAsFormula"/>
-	                    </panel>
-	                    <panel title="Unit">
-	                        <field name="defUnitAsFormula" colSpan="6" type="boolean"/>
-	                        <field name="unit" colSpan="12" showIf="!defUnitAsFormula"
-	                        form-view="unit-view" grid-view="unit-grid"/>
-	                        <field name="unitFormula" colSpan="12" height="120" widget="CodeEditor"
-	                               showTitle="false" x-code-syntax="groovy" showIf="defUnitAsFormula"/>
-	                    </panel>
-	                    <panel title="Production process">
-	                        <field name="defProdProcessAsFormula" readonlyIf="defProdProcessAsConfigurator" colSpan="6" type="boolean"/>
-	                        <field name="defProdProcessAsConfigurator" readonlyIf="defProdProcessAsFormula" colSpan="6" type="boolean"/>
-	                        <field name="prodProcess" form-view="prod-process-form" grid-view="prod-process-form"
-	                               colSpan="12" showIf="!defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
-	                        <field name="prodProcessFormula" colSpan="12" height="120" widget="CodeEditor"
-	                               showTitle="false" x-code-syntax="groovy" showIf="defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
-	                        <field name="configuratorProdProcess" colSpan="12"
-	                               canNew="true" showIf="defProdProcessAsConfigurator"/>
-	                    </panel>
-	                    <field name="configuratorBomList" colSpan="12"/>
-	                </editor>
-	            </field>
-	        </panel>
-		</panel>
-
+		
+		<panel title="Configurator BoM" if-module="axelor-production" colSpan="12">
+            <field name="configuratorBom" if-module="axelor-production" colSpan="12">
+                <editor>
+                    <field name="company"/>
+                    <panel title="Label">
+                        <field name="defNameAsFormula" colSpan="6"/>
+                        <field name="name" colSpan="12" showIf="!defNameAsFormula"/>
+                        <field name="nameFormula" colSpan="12" height="120"
+                               widget="CodeEditor" x-code-syntax="groovy"
+                               showTitle="false" showIf="defNameAsFormula"/>
+                    </panel>
+                    <field name="useCondition" widget="CodeEditor" height="120" colSpan="12"
+                           x-code-syntax="groovy"/>
+                    <panel title="Product">
+                        <field name="defProductFromConfigurator" colSpan="6" showIf="!defProductAsFormula"/>
+                        <field name="defProductAsFormula" colSpan="6" showIf="!defProductFromConfigurator"/>
+                        <field name="product" colSpan="12"
+                               showIf="!defProductAsFormula &amp;&amp; !defProductFromConfigurator"
+                               form-view="product-view" grid-view="product-grid"/>
+                        <field name="productFormula" colSpan="12" height="120" widget="CodeEditor"
+                               x-code-syntax="groovy" showTitle="false" showIf="defProductAsFormula"/>
+                    </panel>
+                    <panel title="Qty">
+                        <field name="defQtyAsFormula" colSpan="6" type="boolean"/>
+                        <field name="qty" colSpan="12" showIf="!defQtyAsFormula"/>
+                        <field name="qtyFormula" colSpan="12" height="120" widget="CodeEditor"
+                               showTitle="false" x-code-syntax="groovy" showIf="defQtyAsFormula"/>
+                    </panel>
+                    <panel title="Unit">
+                        <field name="defUnitAsFormula" colSpan="6" type="boolean"/>
+                        <field name="unit" colSpan="12" showIf="!defUnitAsFormula"
+                        form-view="unit-view" grid-view="unit-grid"/>
+                        <field name="unitFormula" colSpan="12" height="120" widget="CodeEditor"
+                               showTitle="false" x-code-syntax="groovy" showIf="defUnitAsFormula"/>
+                    </panel>
+                    <panel title="Production process">
+                        <field name="defProdProcessAsFormula" readonlyIf="defProdProcessAsConfigurator" colSpan="6" type="boolean"/>
+                        <field name="defProdProcessAsConfigurator" readonlyIf="defProdProcessAsFormula" colSpan="6" type="boolean"/>
+                        <field name="prodProcess" form-view="prod-process-form" grid-view="prod-process-form"
+                               colSpan="12" showIf="!defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
+                        <field name="prodProcessFormula" colSpan="12" height="120" widget="CodeEditor"
+                               showTitle="false" x-code-syntax="groovy" showIf="defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
+                        <field name="configuratorProdProcess" colSpan="12"
+                               canNew="true" showIf="defProdProcessAsConfigurator"/>
+                    </panel>
+                    <field name="configuratorBomList" colSpan="12"/>
+                </editor>
+            </field>
+        </panel>
+        
+        <panel>
+			<button name="createConfigurator" readonlyIf="!isActive" colSpan="3"
+					title="Create configurator" onClick="action-configurator-creator-group-create-configurator"/>
+	
+			<panel if-module="axelor-production" if="__config__.app.getApp('production').getEnableConfigurator()">
+				<panel title="Configurator BoM" if-module="axelor-production" colSpan="12" hideIf="id == null || $hideBOMConfigurator">
+		            <field name="configuratorBom" if-module="axelor-production"  if="__config__.app.getApp('production')" colSpan="12">
+		                <editor>
+		                    <field name="company"/>
+		                    <panel title="Label">
+		                        <field name="defNameAsFormula" colSpan="6"/>
+		                        <field name="name" colSpan="12" showIf="!defNameAsFormula"/>
+		                        <field name="nameFormula" colSpan="12" height="120"
+		                               widget="CodeEditor" x-code-syntax="groovy"
+		                               showTitle="false" showIf="defNameAsFormula"/>
+		                    </panel>
+		                    <field name="useCondition" widget="CodeEditor" height="120" colSpan="12"
+		                           x-code-syntax="groovy"/>
+		                    <panel title="Product">
+		                        <field name="defProductFromConfigurator" colSpan="6" showIf="!defProductAsFormula"/>
+		                        <field name="defProductAsFormula" colSpan="6" showIf="!defProductFromConfigurator"/>
+		                        <field name="product" colSpan="12"
+		                               showIf="!defProductAsFormula &amp;&amp; !defProductFromConfigurator"
+		                               form-view="product-view" grid-view="product-grid"/>
+		                        <field name="productFormula" colSpan="12" height="120" widget="CodeEditor"
+		                               x-code-syntax="groovy" showTitle="false" showIf="defProductAsFormula"/>
+		                    </panel>
+		                    <panel title="Qty">
+		                        <field name="defQtyAsFormula" colSpan="6" type="boolean"/>
+		                        <field name="qty" colSpan="12" showIf="!defQtyAsFormula"/>
+		                        <field name="qtyFormula" colSpan="12" height="120" widget="CodeEditor"
+		                               showTitle="false" x-code-syntax="groovy" showIf="defQtyAsFormula"/>
+		                    </panel>
+		                    <panel title="Unit">
+		                        <field name="defUnitAsFormula" colSpan="6" type="boolean"/>
+		                        <field name="unit" colSpan="12" showIf="!defUnitAsFormula"
+		                        form-view="unit-view" grid-view="unit-grid"/>
+		                        <field name="unitFormula" colSpan="12" height="120" widget="CodeEditor"
+		                               showTitle="false" x-code-syntax="groovy" showIf="defUnitAsFormula"/>
+		                    </panel>
+		                    <panel title="Production process">
+		                        <field name="defProdProcessAsFormula" readonlyIf="defProdProcessAsConfigurator" colSpan="6" type="boolean"/>
+		                        <field name="defProdProcessAsConfigurator" readonlyIf="defProdProcessAsFormula" colSpan="6" type="boolean"/>
+		                        <field name="prodProcess" form-view="prod-process-form" grid-view="prod-process-form"
+		                               colSpan="12" showIf="!defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
+		                        <field name="prodProcessFormula" colSpan="12" height="120" widget="CodeEditor"
+		                               showTitle="false" x-code-syntax="groovy" showIf="defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
+		                        <field name="configuratorProdProcess" colSpan="12"
+		                               canNew="true" showIf="defProdProcessAsConfigurator"/>
+		                    </panel>
+		                    <field name="configuratorBomList" colSpan="12"/>
+		                </editor>
+		            </field>
+		        </panel>
+		
+				<panel if-module="axelor-production" if="__config__.app.getApp('production').getEnableConfigurator()">
+					<panel title="Configurator BoM" if-module="axelor-production" colSpan="12" hideIf="id == null || $hideBOMConfigurator">
+			            <field name="configuratorBom" if-module="axelor-production"  if="__config__.app.getApp('production')" colSpan="12">
+			                <editor>
+			                    <field name="company"/>
+			                    <panel title="Label">
+			                        <field name="defNameAsFormula" colSpan="6"/>
+			                        <field name="name" colSpan="12" showIf="!defNameAsFormula"/>
+			                        <field name="nameFormula" colSpan="12" height="120"
+			                               widget="CodeEditor" x-code-syntax="groovy"
+			                               showTitle="false" showIf="defNameAsFormula"/>
+			                    </panel>
+			                    <field name="useCondition" widget="CodeEditor" height="120" colSpan="12"
+			                           x-code-syntax="groovy"/>
+			                    <panel title="Product">
+			                        <field name="defProductFromConfigurator" colSpan="6" showIf="!defProductAsFormula"/>
+			                        <field name="defProductAsFormula" colSpan="6" showIf="!defProductFromConfigurator"/>
+			                        <field name="product" colSpan="12"
+			                               showIf="!defProductAsFormula &amp;&amp; !defProductFromConfigurator"
+			                               form-view="product-view" grid-view="product-grid"/>
+			                        <field name="productFormula" colSpan="12" height="120" widget="CodeEditor"
+			                               x-code-syntax="groovy" showTitle="false" showIf="defProductAsFormula"/>
+			                    </panel>
+			                    <panel title="Qty">
+			                        <field name="defQtyAsFormula" colSpan="6" type="boolean"/>
+			                        <field name="qty" colSpan="12" showIf="!defQtyAsFormula"/>
+			                        <field name="qtyFormula" colSpan="12" height="120" widget="CodeEditor"
+			                               showTitle="false" x-code-syntax="groovy" showIf="defQtyAsFormula"/>
+			                    </panel>
+			                    <panel title="Unit">
+			                        <field name="defUnitAsFormula" colSpan="6" type="boolean"/>
+			                        <field name="unit" colSpan="12" showIf="!defUnitAsFormula"
+			                        form-view="unit-view" grid-view="unit-grid"/>
+			                        <field name="unitFormula" colSpan="12" height="120" widget="CodeEditor"
+			                               showTitle="false" x-code-syntax="groovy" showIf="defUnitAsFormula"/>
+			                    </panel>
+			                    <panel title="Production process">
+			                        <field name="defProdProcessAsFormula" readonlyIf="defProdProcessAsConfigurator" colSpan="6" type="boolean"/>
+			                        <field name="defProdProcessAsConfigurator" readonlyIf="defProdProcessAsFormula" colSpan="6" type="boolean"/>
+			                        <field name="prodProcess" form-view="prod-process-form" grid-view="prod-process-form"
+			                               colSpan="12" showIf="!defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
+			                        <field name="prodProcessFormula" colSpan="12" height="120" widget="CodeEditor"
+			                               showTitle="false" x-code-syntax="groovy" showIf="defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
+			                        <field name="configuratorProdProcess" colSpan="12"
+			                               canNew="true" showIf="defProdProcessAsConfigurator"/>
+			                    </panel>
+			                    <field name="configuratorBomList" colSpan="12"/>
+			                </editor>
+			            </field>
+			        </panel>
+				</panel>
+		    </panel>
+	    </panel>
     </form>
+    
+    <form name="import-configurator-creator-form" title="Import Configurator Creator" model="com.axelor.apps.sale.db.ConfiguratorCreator" >
+		<panel>
+			<field name="dataFile" type="many-to-one" target="com.axelor.meta.db.MetaFile" widget="binary-link" title="Data file"/>
+			<button name="importCreators" title="Import Configurator Creators" onClick="action-configurator-creator-method-import-configurator-creators" showIf="dataFile != null" colSpan="4" />
+			<field name="importLog" type="text" colSpan="12" readonly="true" title="Import log"/>
+		</panel>	
+	</form>
 
-	<action-method name="action-configurator-creator-method-authorize-current-user" model="com.axelor.apps.sale.db.ConfiguratorCreator">
-		<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController" method="authorizeCurrentUser"/>
+	
+	<action-group name="action-configurator-creator-group-create-configurator">
+        <action name="save"/>
+		<action name="action-configurator-creator-create-configurator"/>
+	</action-group>
+	
+	<action-method name="action-configurator-creator-method-import-configurator-creators">
+    	<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController" method="importConfiguratorCreators"/>
+    </action-method>
+    
+    <action-method name="action-configurator-creator-create-configurator">
+    	<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
+			  method="createConfigurator"/>
+    </action-method>
+
+	<action-method name="action-configurator-creator-method-configure" model="com.axelor.apps.sale.db.ConfiguratorCreator">
+		<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController" method="configure"/>
 	</action-method>
 
     <action-method name="action-configurator-creator-method-update-activate">
-        <call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
-              method="updateAndActivate"/>
+        <call class="com.axelor.apps.sale.web.ConfiguratorCreatorController" method="updateAndActivate"/>
     </action-method>
 
 	<action-group name="action-configurator-creator-group-activate">
@@ -112,14 +245,36 @@
 		<action name="action-configurator-creator-method-update-activate"/>
 	</action-group>
 
-	<action-record name="action-configurator-creator-record-desactivate"
-				   model="com.axelor.apps.sale.db.ConfiguratorCreator">
+	<action-record name="action-configurator-creator-record-desactivate" model="com.axelor.apps.sale.db.ConfiguratorCreator">
 		<field name="isActive" expr="eval: false"/>
 	</action-record>
+	
+	<!-- 19 is the index of the ZoneTime part of the ZonedDateTime __datetime__ and there's no need to display it to the user -->
+	<action-export name="action-configurator-creator-export" output="${date}${time}" download="true">
+  		<export name="ConfiguratorCreatorExport-${__datetime__.toString().substring(0, 19)}.xml" template="data-export/export-configurator-creator.tmpl" engine="groovy"/>
+	</action-export>
+	
+	<action-view name="action-configurator-creator-view-import" model="com.axelor.apps.sale.db.ConfiguratorCreator" title="Import configurator creators">
+		<view name="import-configurator-creator-form" type="form"/>
+		<view-param name="popup" value="true"/>
+		<view-param name="popup-save" value="false"/>
+		<view-param name="show-confirm" value="false"/>
+		<view-param name="show-toolbar" value="false"/>
+	</action-view>
 
     <action-view name="action-configurator-creator-view-test" title="Configurator" model="com.axelor.apps.sale.db.Configurator">
         <view type="form" name="configurator-form"/>
+        <view type="grid" name="configurator-grid"/>
         <context name="_configuratorCreator" expr="eval: __self__"/>
     </action-view>
+    
+    <action-attrs name="action-configurator-creator-attrs-hide-metafield">
+<!--     	These two lines are not working, it seems we can't set the domain in a O2M field -->
+<!--       	<attribute name="domain" for="configuratorFormulaList" expr="eval: &quot; !self.productMetaField.empty &quot;" if="generateProduct"/> -->
+<!--        	<attribute name="domain" for="configuratorFormulaList" expr="eval: &quot; !self.saleOrderLineMetaField.empty &quot;" if="!generateProduct"/> -->
+        <attribute for="configuratorFormulaList.productMetaField" name="hidden" expr="!generateProduct"/>
+        <attribute for="configuratorFormulaList.saleOrderLineMetaField" name="hidden" expr="generateProduct"/>
+        <attribute for="configuratorFormulaList.updateFromSelect" name="hidden" expr="generateProduct"/>
+    </action-attrs>
 
 </object-views>

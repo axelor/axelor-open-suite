@@ -36,7 +36,6 @@
 		<date name="taskEndDate" title="Task end" />
 	  
 	 <track>
-	 	<field name="description"/>
 	 	<field name="sequence"/>
 	 	<field name="project"/>
 	 	<field name="parentTask"/>

@@ -17,6 +17,18 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
@@ -46,33 +58,21 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * InvoiceService est une classe implémentant l'ensemble des services de
@@ -239,7 +239,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void ventilate( Invoice invoice ) throws AxelorException {
 		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-			if (invoiceLine.getAccount() == null) {
+			if (!invoiceLine.getIsTitleLine() && invoiceLine.getAccount() == null) {
 				throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.VENTILATE_STATE_6), invoiceLine.getProductName());
 			}
 		}
@@ -408,29 +408,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 			invoiceLine.setInvoice(invoice);
 		}
 	}
-	
-	protected String getDefaultPrintingLocale(Invoice invoice, Company company) {
-		String locale = null;
-		
-		if(invoice != null && invoice.getPartner() != null) {
-			locale = invoice.getPartner().getLanguageSelect();
-		}
-		
-		if(locale == null && company != null && company.getPrintingSettings() != null) {
-			locale = company.getPrintingSettings().getLanguageSelect();
-		}
-		
-		User user = AuthUtils.getUser();
-		if(user != null && user.getLanguage() != null) {
-			locale = user.getLanguage();
-		}
-		
-		return locale == null ? "en" : locale;
-	}
-	
+
 	@Override
 	public ReportSettings printInvoice(Invoice invoice, boolean toAttach) throws AxelorException {
-		String locale = getDefaultPrintingLocale(invoice, invoice.getCompany());
+		String locale = ReportSettings.getPrintingLocale(invoice.getPartner());
 		
 		String title = I18n.get("Invoice");
 		if(invoice.getInvoiceId() != null) { title += " " + invoice.getInvoiceId(); }
@@ -446,8 +427,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	
 	@Override
 	public ReportSettings printInvoices(List<Long> ids) throws AxelorException {
-		User user = AuthUtils.getUser();
-		String locale = getDefaultPrintingLocale(null, user == null ? null : user.getActiveCompany());
+		String locale = Beans.get(AppBaseService.class).getAppBase().getDefaultPartnerLanguage();
 		
 		String title = I18n.get("Invoices");
 		
@@ -631,23 +611,33 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	}
 
 	@Override
-	public BankDetails getBankDetails(Invoice invoice) {
-		BankDetails bankDetails = null;
+    public BankDetails getBankDetails(Invoice invoice) throws AxelorException {
+        BankDetails bankDetails;
 
-		if (invoice.getSchedulePaymentOk() && invoice.getPaymentSchedule() != null) {
-			bankDetails = invoice.getPaymentSchedule().getBankDetails();
-		}
+        if (invoice.getSchedulePaymentOk() && invoice.getPaymentSchedule() != null) {
+            bankDetails = invoice.getPaymentSchedule().getBankDetails();
+            if (bankDetails != null) {
+                return bankDetails;
+            }
+        }
 
-		if (bankDetails == null) {
-			bankDetails = invoice.getBankDetails();
-		}
+        bankDetails = invoice.getBankDetails();
 
-		if (bankDetails == null) {
-			bankDetails = Beans.get(BankDetailsRepository.class).findDefaultByPartner(invoice.getPartner());
-		}
+        if (bankDetails != null) {
+            return bankDetails;
+        }
 
-		return bankDetails;
-	}
+        Partner partner = invoice.getPartner();
+        Preconditions.checkNotNull(partner);
+        bankDetails = Beans.get(BankDetailsRepository.class).findDefaultByPartner(partner);
+
+        if (bankDetails != null) {
+            return bankDetails;
+        }
+
+        throw new AxelorException(invoice, IException.MISSING_FIELD,
+                I18n.get(IExceptionMessage.PARTNER_BANK_DETAILS_MISSING), partner.getName());
+    }
 
 	public int getPurchaseTypeOrSaleType(Invoice invoice) {
 		if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE

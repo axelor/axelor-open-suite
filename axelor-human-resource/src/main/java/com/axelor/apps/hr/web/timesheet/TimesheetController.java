@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
+import com.axelor.apps.report.engine.ReportSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -296,20 +297,19 @@ public void historicTimesheetLine(ActionRequest request, ActionResponse response
 			timesheetService.confirm(timesheet);
 
 			Message message = timesheetService.sendConfirmationEmail(timesheet);
-			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
+			if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
 			} 
 			
-		}  catch(Exception e)  {
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
-		}
-		finally {
+		} finally {
 			response.setReload(true);
 		}
 	}
 
     // Continue button
-    public void continueBtn(ActionRequest request, ActionResponse response) throws AxelorException {
+    public void continueBtn(ActionRequest request, ActionResponse response) {
         response.setView(ActionView
                 .define(I18n.get("Timesheet"))
                 .model(Timesheet.class.getName())
@@ -339,14 +339,13 @@ public void historicTimesheetLine(ActionRequest request, ActionResponse response
 			computeTimeSpent(request, response);
 
 			Message message = timesheetService.sendValidationEmail(timesheet);
-			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
+			if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
-			} 
-			
-		}  catch(Exception e)  {
+			}
+
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
-		}
-		finally {
+		} finally {
 			response.setReload(true);
 		}
 		
@@ -355,7 +354,7 @@ public void historicTimesheetLine(ActionRequest request, ActionResponse response
 	//action called when refusing a timesheet. Changing status + Sending mail to Applicant
 	public void refuse(ActionRequest request, ActionResponse response) throws AxelorException{
 		
-		try{
+		try {
 			Timesheet timesheet = request.getContext().asType(Timesheet.class);
 			timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
 			TimesheetService timesheetService = timesheetServiceProvider.get();
@@ -363,23 +362,22 @@ public void historicTimesheetLine(ActionRequest request, ActionResponse response
 			timesheetService.refuse(timesheet);
 
 			Message message = timesheetService.sendRefusalEmail(timesheet);
-			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
+			if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
 			} 
 			
-		}  catch(Exception e)  {
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
-		}
-		finally {
+		} finally {
 			response.setReload(true);
 		}
 	}
 	
 	
-	public void computeTimeSpent(ActionRequest request, ActionResponse response){
+	public void computeTimeSpent(ActionRequest request, ActionResponse response) {
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
-		if(timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()){
+		if (timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()) {
 			timesheetServiceProvider.get().computeTimeSpent(timesheet);
 		}
 	}
@@ -395,22 +393,18 @@ public void historicTimesheetLine(ActionRequest request, ActionResponse response
 	public String timesheetValidateMenuTag()  {
 		
 		return hrMenuTagServiceProvider.get().countRecordsTag(Timesheet.class, TimesheetRepository.STATUS_CONFIRMED);
-	
 	}
 	
 	public void printTimesheet(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
-		
-		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
-		
+
 		String name = I18n.get("Timesheet") + " " + timesheet.getFullName()
 												.replace("/", "-");
 		
 		String fileLink = ReportFactory.createReport(IReport.TIMESHEET, name)
 				.addParam("TimesheetId", timesheet.getId())
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.toAttach(timesheet)
 				.generate()
 				.getFileLink();

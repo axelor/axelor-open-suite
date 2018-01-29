@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.hr.web;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.report.IReport;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -42,14 +43,13 @@ public class EmployeeController {
 		int yearId = new JSONObject(year).getInt("id");
 		String yearName = new JSONObject(year).getString("name");
 		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
-		
+
 		String name = I18n.get("Annual expenses report") + " :  " + user.getFullName() + " (" + yearName + ")";
 		
 		String fileLink = ReportFactory.createReport(IReport.EMPLOYEE_ANNUAL_REPORT, name)
 				.addParam("EmployeeId", Long.valueOf(employeeId) )
 				.addParam("YearId",  Long.valueOf(yearId) )
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.toAttach(Beans.get(EmployeeRepository.class).find(Long.valueOf(employeeId)))
 				.generate()
 				.getFileLink();

@@ -30,6 +30,8 @@
         <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" width="90"/>
         <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" width="90"/>
 		<field name="amountRemaining" hidden="true" width="150"/>
+        <field name="origin"/>
+        <field name="description"/>
 	</grid>
     
     <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false"
@@ -95,6 +97,7 @@
 	        <field name="amountRemaining"/>
 	        <field name="description"/>
 	        <field name="origin"/>
+			<field name="taxAmount" showIf="taxAmount != 0"/>
 	   	</panel>
 	   	<panel name="irrecoverablePanel" title="Irrecoverable" showIf="id &amp;&amp; move.statusSelect &gt; 1">
 	        <field name="passageReason" showIf="$number(debit) &gt; 0.00"/>
@@ -154,6 +157,7 @@
 				<field name="origin" colSpan="6" />
 				<field name="taxLine" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge'"
 					   colSpan="6" grid-view="tax-line-grid" form-view="tax-line-form"/>
+				<field name="taxAmount" showIf="taxAmount != 0"/>
 				<field name="description" colSpan="12" />
                 <field name="account.accountType.technicalTypeSelect" hidden="true"/>
 			</panel>

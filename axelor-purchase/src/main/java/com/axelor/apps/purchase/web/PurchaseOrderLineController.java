@@ -28,6 +28,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -272,7 +273,7 @@ public class PurchaseOrderLineController {
 			newPurchaseOrderLine.setQty(BigDecimal.ZERO);
 			newPurchaseOrderLine.setId(purchaseOrderLine.getId());
 			newPurchaseOrderLine.setVersion(purchaseOrderLine.getVersion());
-			response.setValues(purchaseOrderLine);
+			response.setValues(Mapper.toMap(purchaseOrderLine));
 		}
 	}
 

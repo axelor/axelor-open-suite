@@ -168,7 +168,7 @@ public class MrpServiceImpl implements MrpService  {
 		this.stockLocationList = this.getAllLocationAndSubLocation(mrp.getStockLocation());
 		this.assignProductAndLevel(this.getProductList());
 		
-		// Get the stock for each product on each location
+		// Get the stock for each product on each stock location
 		this.createAvailableStockMrpLines();
 		
 		this.createPurchaseMrpLines();
@@ -737,7 +737,7 @@ public class MrpServiceImpl implements MrpService  {
 	
 	protected List<StockLocation> getAllLocationAndSubLocation(StockLocation stockLocation)  {
 	
-		List<StockLocation> subLocationList =  stockLocationRepository.all().filter("self.parentLocation = ?1", stockLocation).fetch();
+		List<StockLocation> subLocationList =  stockLocationRepository.all().filter("self.parentStockLocation = ?1", stockLocation).fetch();
 	
 		for(StockLocation subLocation : subLocationList)  {
 			

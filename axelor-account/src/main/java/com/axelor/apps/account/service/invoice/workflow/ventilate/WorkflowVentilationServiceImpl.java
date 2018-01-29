@@ -63,7 +63,7 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
         //send message
         if (invoice.getInvoiceAutomaticMail()) {
             try {
-                Beans.get(TemplateMessageService.class).generateAndSendMessage(invoice, invoice.getInvoiceMessageTemplate());
+                Beans.get(TemplateMessageService.class).generateAndSendMessage(invoice, invoice.getInvoiceMessageTemplate(), null);
             } catch (Exception e) {
                 throw new AxelorException(IException.CONFIGURATION_ERROR, e.getMessage(), invoice);
             }

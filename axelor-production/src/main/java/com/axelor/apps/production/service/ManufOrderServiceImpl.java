@@ -305,27 +305,6 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		return billOfMaterial;
 		
 	}
-	
-	@Override
-	public String getLanguageToPrinting(ManufOrder manufOrder)  {
-		
-		User user = AuthUtils.getUser();
-		
-		String language = "en";
-		
-		if(user != null && !Strings.isNullOrEmpty(user.getLanguage()))  {
-			return user.getLanguage();
-		}
-		
-		if(manufOrder == null)  {  return language;  }
-		Company company = manufOrder.getCompany();
-		
-		if(company != null && company.getPrintingSettings() != null && !Strings.isNullOrEmpty(company.getPrintingSettings().getLanguageSelect())) {
-			language = company.getPrintingSettings().getLanguageSelect();
-		}
-		
-		return language;
-	}
 
 	@Override
 	public BigDecimal getProducedQuantity(ManufOrder manufOrder) {
@@ -353,11 +332,11 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		AppBaseService appBaseService = Beans.get(AppBaseService.class);
 
 		StockConfig stockConfig = stockConfigService.getStockConfig(company);
-		StockLocation virtualLocation = stockConfigService.getProductionVirtualLocation(stockConfig);
-		StockLocation wasteLocation = stockConfigService.getWasteLocation(stockConfig);
+		StockLocation virtualStockLocation = stockConfigService.getProductionVirtualStockLocation(stockConfig);
+		StockLocation wasteStockLocation = stockConfigService.getWasteStockLocation(stockConfig);
 
-		wasteStockMove = stockMoveService.createStockMove(virtualLocation.getAddress(), wasteLocation.getAddress(),
-				company, company.getPartner(), virtualLocation, wasteLocation, null, appBaseService.getTodayDate(),
+		wasteStockMove = stockMoveService.createStockMove(virtualStockLocation.getAddress(), wasteStockLocation.getAddress(),
+				company, company.getPartner(), virtualStockLocation, wasteStockLocation, null, appBaseService.getTodayDate(),
 				manufOrder.getWasteProdDescription(), null, null);
 
 		for (ProdProduct prodProduct : manufOrder.getWasteProdProductList()) {

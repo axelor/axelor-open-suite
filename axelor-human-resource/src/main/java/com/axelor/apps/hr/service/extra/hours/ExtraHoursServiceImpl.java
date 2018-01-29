@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -64,7 +64,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService  {
 
 		if(hrConfig.getTimesheetMailNotification())  {
 
-			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getCanceledExtraHoursTemplate(hrConfig));
+			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getCanceledExtraHoursTemplate(hrConfig), null);
 
 		}
 
@@ -90,7 +90,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService  {
 		
 		if(hrConfig.getExtraHoursMailNotification())  {
 				
-			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getSentExtraHoursTemplate(hrConfig));
+			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getSentExtraHoursTemplate(hrConfig), null);
 				
 		}
 		
@@ -117,7 +117,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService  {
 		
 		if(hrConfig.getExtraHoursMailNotification())  {
 				
-			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getValidatedExtraHoursTemplate(hrConfig));
+			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getValidatedExtraHoursTemplate(hrConfig), null);
 				
 		}
 		
@@ -142,7 +142,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService  {
 		
 		if(hrConfig.getExtraHoursMailNotification())  {
 				
-			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getRefusedExtraHoursTemplate(hrConfig));
+			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getRefusedExtraHoursTemplate(hrConfig), null);
 				
 		}
 		

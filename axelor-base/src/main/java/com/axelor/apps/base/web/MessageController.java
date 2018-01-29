@@ -101,16 +101,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
 		}
 		
 		if(!messageIds.equals("")){
-			User user = AuthUtils.getUser();
-			Company company = message.getCompany();
-			
-			String language = "en";
-			if(user != null && user.getLanguage() != null && !user.getLanguage().isEmpty())  {
-				language = user.getLanguage();
-			}
-			else if(company != null && company.getPrintingSettings() != null && company.getPrintingSettings().getLanguageSelect() !=null && !company.getPrintingSettings().getLanguageSelect().isEmpty() ) {
-				language = company.getPrintingSettings().getLanguageSelect();
-			}
+			String language = ReportSettings.getPrintingLocale(null);
 
 			String title = " ";
 			if(message.getSubject() != null)  {

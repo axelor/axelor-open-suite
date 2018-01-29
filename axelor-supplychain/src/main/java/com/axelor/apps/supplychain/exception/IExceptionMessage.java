@@ -119,8 +119,8 @@ public interface IExceptionMessage {
 	/**
 	 * Stock Config
 	 */
-	String STOCK_CONFIG_SUPPLYCHAIN_RECEIPT = /*$$(*/ "You must configure a receipt location for company %s" /*)*/;
-	String STOCK_CONFIG_SUPPLYCHAIN_PICKUP = /*$$(*/ "You must configure a pickup location for company %s." /*)*/;
+	String STOCK_CONFIG_SUPPLYCHAIN_RECEIPT = /*$$(*/ "You must configure a receipt stock location for company %s" /*)*/;
+	String STOCK_CONFIG_SUPPLYCHAIN_PICKUP = /*$$(*/ "You must configure a pickup stock location for company %s." /*)*/;
 	
 	/**
 	 * Supply Chain Config

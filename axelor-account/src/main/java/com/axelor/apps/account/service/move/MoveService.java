@@ -418,24 +418,4 @@ public class MoveService {
 		return moveRepository.save(newMove);
 	}
 
-	public String getLanguageToPrinting(Move move)  {
-		
-		User user = AuthUtils.getUser();
-		
-		String language = "en";
-		
-		if(user != null && !Strings.isNullOrEmpty(user.getLanguage()))  {
-			return user.getLanguage();
-		}
-		
-		if(move == null)  {  return language;  }
-		Company company = move.getCompany();
-		
-		if(company != null && company.getPrintingSettings() != null && !Strings.isNullOrEmpty(company.getPrintingSettings().getLanguageSelect())) {
-			language = company.getPrintingSettings().getLanguageSelect();
-		}
-		
-		return language;
-	}
-		
 }

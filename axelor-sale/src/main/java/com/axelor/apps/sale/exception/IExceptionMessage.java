@@ -50,9 +50,9 @@ public interface IExceptionMessage {
 	static final public String SALE_ORDER_MERGE_ERROR_COMPANY = /*$$(*/ "The company is required and must be the same for all sale orders" /*)*/;
 
 	/**
-	 * Configurator generator
+	 * Configurator creator
 	 */
-
+	String CONFIGURATOR_CREATOR_UNVALID_METAFIELD = /*$$(*/ "The metafield type provided is not valid. You must choose a Product or a SaleOrderLine." /*)*/;
 	String CONFIGURATOR_CREATOR_SCRIPT_ERROR = /*$$(*/ "This script has errors, please see server logs for more details." /*)*/;
 	String CONFIGURATOR_CREATOR_SCRIPT_WORKING = /*$$(*/ "The syntax of the script is correct." /*)*/;
 

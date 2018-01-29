@@ -2,10 +2,8 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<action-view name="action-partner-view-generate-project" title="Generated Project" model="com.axelor.apps.project.db.Project">
-		<view type="form" name="project-form"/>
-		<view type="grid" name="project-grid"/>
-		<context name="_idPartner" expr="eval: id"/>
-	</action-view>
+    <action-method name="action-partner-method-generate-project">
+        <call class="com.axelor.apps.project.web.PartnerController" method="generateProject"/>
+    </action-method>
 
 </object-views>

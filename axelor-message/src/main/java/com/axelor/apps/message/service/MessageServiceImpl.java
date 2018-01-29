@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -85,10 +85,10 @@ public class MessageServiceImpl implements MessageService {
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
-			List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect)  {
+			List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect, MailAccount emailAccount)  {
 		
 		Message message = createMessage( content, fromEmailAddress,	model, id, null, 0, getTodayLocalTime(), false,	MessageRepository.STATUS_DRAFT, subject, MessageRepository.TYPE_SENT,
-				replyToEmailAddressList, toEmailAddressList, ccEmailAddressList, bccEmailAddressList, addressBlock, mediaTypeSelect) ;
+				replyToEmailAddressList, toEmailAddressList, ccEmailAddressList, bccEmailAddressList, addressBlock, mediaTypeSelect, emailAccount) ;
 		
 		messageRepo.save( message );
 		
@@ -115,7 +115,7 @@ public class MessageServiceImpl implements MessageService {
 	
 	protected Message createMessage(String content, EmailAddress fromEmailAddress, String relatedTo1Select, int relatedTo1SelectId, String relatedTo2Select, int relatedTo2SelectId, 
 			LocalDateTime sentDate, boolean sentByEmail, int statusSelect, String subject, int typeSelect,List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList, 
-			List<EmailAddress> ccEmailAddressList, List<EmailAddress> bccEmailAddressList, String addressBlock, int mediaTypeSelect)  {
+			List<EmailAddress> ccEmailAddressList, List<EmailAddress> bccEmailAddressList, String addressBlock, int mediaTypeSelect, MailAccount emailAccount)  {
 
 		Set<EmailAddress> 
 			replyToEmailAddressSet = Sets.newHashSet(),
@@ -131,7 +131,8 @@ public class MessageServiceImpl implements MessageService {
 			if ( ccEmailAddressList != null ) { ccEmailAddressSet.addAll(ccEmailAddressList); }
 		}
 		
-		MailAccount mailAccount = mailAccountService.getDefaultMailAccount(MailAccountRepository.SERVER_TYPE_SMTP);
+		MailAccount mailAccount = emailAccount == null ? mailAccountService.getDefaultMailAccount(MailAccountRepository.SERVER_TYPE_SMTP) : emailAccount;
+		
 		if ( mailAccount != null ) {
 			mailAccount = mailAccountRepo.find( mailAccount.getId() );
 			content += "<p></p><p></p>" + mailAccountService.getSignature(mailAccount);

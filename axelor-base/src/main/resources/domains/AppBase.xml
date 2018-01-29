@@ -20,7 +20,7 @@
 		<string name="googleMapApiKey" title="Google Map Api Key"/>
 		
 		<!-- Currency Conversion Webservice URL -->
-		<string name="currencyWsURL" title="Currency Ws URL"/>
+		<string name="currencyWsURL" title="Currency Ws URL" selection="base.app.base.currency.api.select"/>
 
 		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="appBase" title="Currency conversion table"/>
 		
@@ -55,6 +55,8 @@
 		<boolean name="enterpriseCommunication" title="Messaging" default="true"/>
 		
 		<boolean name="document" title="Documents" default="true" />
+		
+		<boolean name="enableTradingNamesManagement" default="false"/>
 		
 		
 		<extra-code>

@@ -8,6 +8,8 @@
     	<field name="title"/>
     	<field name="typeSelect"/>
     	<field name="isActive"/>
+		<field name="applicationBeginDate"/>
+		<field name="applicationEndDate"/>
     </grid>
     
     <grid name="price-list-hist-grid" title="Price lists" model="com.axelor.apps.base.db.PriceList"> 

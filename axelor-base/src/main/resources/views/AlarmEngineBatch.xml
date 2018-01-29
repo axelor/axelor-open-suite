@@ -33,7 +33,7 @@
 	</action-method>
 
 	<action-attrs name="alarm-engine-batch-attrs-alarm-engine-domain">
-		<attribute name="domain" for="alarmEngineSet" if="metaModelSet"
+		<attribute name="domain" for="alarmEngineSet" if="metaModelSet ?: false"
 			expr="eval: &quot;self.externalOk = false AND self.metaModel.id IN (${metaModelSet?.collect{it.id}?.join(',')})&quot;" />
 	</action-attrs>
 
