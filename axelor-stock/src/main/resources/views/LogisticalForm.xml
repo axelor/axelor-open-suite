@@ -53,7 +53,7 @@
                 <field name="internalDeliveryComment" />
                 <field name="externalDeliveryComment" />
             </panel>
-            <panel title="Lines">
+            <panel title="Lines" showIf="deliverToCustomerPartner">
                 <panel colSpan="12" hideIf="$readonly()">
                     <field name="$stockMove" title="Stock move" type="reference" widget="many-to-one"
                         target="com.axelor.apps.stock.db.StockMove" grid-view="stock-move-out-grid" form-view="stock-move-form"

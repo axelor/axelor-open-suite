@@ -469,6 +469,11 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
     @Override
     public String getStockMoveDomain(LogisticalForm logisticalForm) throws AxelorException {
+
+        if (logisticalForm.getDeliverToCustomerPartner() == null) {
+            return "self IS NULL";
+        }
+
         List<String> domainList = new ArrayList<>();
 
         StockConfig stockConfig = Beans.get(StockConfigService.class).getStockConfig(logisticalForm.getCompany());
