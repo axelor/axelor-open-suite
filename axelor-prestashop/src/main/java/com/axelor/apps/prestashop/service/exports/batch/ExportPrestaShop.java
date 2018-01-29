@@ -46,21 +46,17 @@ public class ExportPrestaShop extends AbstractBatch {
 	@Override
 	@Transactional
 	protected void process() {
-
 			try {
 				PrestaShopBatch prestaShopBatch = (PrestaShopBatch) model;
 				Integer size = prestaShopBatch.getBatchList().size();
-				Batch batchObj;
 
-				if(size == 1) {
-					batchObj = prestaShopServiceExport.exportPrestShop(null, batch);
-				} else {
-					ZonedDateTime endDate = prestaShopBatch.getBatchList().get(size - 2).getEndDate();
-					batchObj = prestaShopServiceExport.exportPrestShop(endDate, batch);
-				}
-				batchRepo.save(batchObj);
+				// We use the start date of previous batch as a starting point since we are in a transactional
+				// environment, so using end date could cause elements updated during last batch run to be missed.
+				ZonedDateTime fromDate = (size <= 1 ? null : prestaShopBatch.getBatchList().get(size - 2).getStartDate());
+
+				batchRepo.save(prestaShopServiceExport.exportPrestShop(fromDate, batch));
+				incrementDone();
 			} catch (Exception e) {
-
 				incrementAnomaly();
 				LOG.error("An error occured while running prestashop export batch #{}", batch.getId());
 			}
