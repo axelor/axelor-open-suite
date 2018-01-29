@@ -17,11 +17,18 @@
  */
 package com.axelor.apps.supplychain.service.app;
 
+import java.util.List;
+
 import com.axelor.apps.base.db.AppSupplychain;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.AppSupplychainRepository;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.apps.supplychain.db.SupplyChainConfig;
+import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 
 @Singleton
 public class AppSupplychainServiceImpl extends AppBaseServiceImpl implements AppSupplychainService {
@@ -29,9 +36,29 @@ public class AppSupplychainServiceImpl extends AppBaseServiceImpl implements App
 	@Inject
 	private AppSupplychainRepository appSupplychainRepo;
 	
+	@Inject
+	private CompanyRepository companyRepo;
+	
+	@Inject
+	private SupplyChainConfigRepository supplyChainConfigRepo;
+	
 	@Override
 	public AppSupplychain getAppSupplychain() {
 		return appSupplychainRepo.all().fetchOne();
+	}
+
+	@Override
+	@Transactional
+	public void generateSupplychainConfigurations() {
+		
+		List<Company> companies = companyRepo.all().filter("self.supplyChainConfig is null").fetch();
+		
+		for (Company company : companies) {
+			SupplyChainConfig  supplyChainConfig = new SupplyChainConfig();
+			supplyChainConfig.setCompany(company);
+			supplyChainConfigRepo.save(supplyChainConfig);
+		}
+		
 	}
 
 }
