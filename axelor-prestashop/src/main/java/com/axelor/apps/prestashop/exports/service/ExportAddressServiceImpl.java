@@ -68,7 +68,6 @@ public class ExportAddressServiceImpl implements ExportAddressService {
 		key = prestaShopObj.getPrestaShopKey();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
 	public void exportAddress(ZonedDateTime endDate, BufferedWriter bwExport) throws IOException,
@@ -106,10 +105,10 @@ public class ExportAddressServiceImpl implements ExportAddressService {
 							address.setLastname(partnerAddress.getPartner().getContactPartnerSet().iterator().next().getName());
 
 						} else {
-							throw new AxelorException(I18n.get(IExceptionMessage.INVALID_COMPANY), IException.NO_VALUE);
+							throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_COMPANY));
 						}
 					} else {
-						throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CONTACT), IException.NO_VALUE);
+						throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_CONTACT));
 					}
 
 				} else {
@@ -117,7 +116,7 @@ public class ExportAddressServiceImpl implements ExportAddressService {
 						address.setFirstname(partnerAddress.getPartner().getFirstName());
 						address.setLastname(partnerAddress.getPartner().getName());
 					} else {
-						throw new AxelorException(I18n.get(IExceptionMessage.INVALID_COMPANY), IException.NO_VALUE);
+						throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_COMPANY));
 					}
 				}
 
@@ -141,7 +140,7 @@ public class ExportAddressServiceImpl implements ExportAddressService {
 					address.setPostcode(postCode);
 					address.setCity(partnerAddress.getAddress().getCity().getName());
 				} else {
-					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CITY), IException.NO_VALUE);
+					throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_CITY));
 				}
 
 				Prestashop prestaShop = new Prestashop();
