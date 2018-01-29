@@ -107,20 +107,21 @@
         <button name="showInvoice" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
     </grid>
 
-	<form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
-		  onNew="action-account-invoice-onnew-group"
-		  onLoad="action-account-invoice-onload-group">
+    <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
+          onNew="action-account-invoice-onnew-group"
+          onLoad="action-account-invoice-onload-group">
 
-		<menubar>
-			<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
-        		<item title="Print" action="save,action-invoice-method-show-invoice" hideIf="partner == null"/>
-        		<item title="Print annex" action="action-invoice-business-project-method-print-annex" if-module="axelor-business-project"
-        		showIf="partner != null &amp;&amp; (displayTimesheetOnPrinting || displayExpenseOnPrinting)"/>
-        	</menu>
-        	<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
-        		<item title="Send email" action="save,action-send-by-email-with-template" hideIf="partner == null"/>
-        	</menu>
-		</menubar>
+        <menubar>
+            <menu title="Reports" icon="fa-files-o" showTitle="true">
+                <item title="Print" action="save,action-invoice-method-show-invoice" readonlyIf="partner == null"/>
+                <item title="Print annex" action="action-invoice-business-project-method-print-annex" showIf="partner != null &amp;&amp; (displayTimesheetOnPrinting || displayExpenseOnPrinting)" if-module="axelor-business-project"/>
+            </menu>
+
+            <menu title="Tools" icon="fa-cogs" showTitle="true">
+                <item title="Send email" action="save,action-send-by-email-with-template" readonlyIf="partner == null"/>
+            </menu>
+        </menubar>
+
 		<panel title="Status">
             <field name="statusSelect" widget="NavSelect" colSpan="12"
                    showIf="operationSubTypeSelect != 2"/>
