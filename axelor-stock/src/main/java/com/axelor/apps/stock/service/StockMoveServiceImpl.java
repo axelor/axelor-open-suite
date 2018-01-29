@@ -22,14 +22,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.axelor.apps.report.engine.ReportSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +46,7 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.ShipmentMode;
@@ -346,12 +345,12 @@ public class StockMoveServiceImpl implements StockMoveService {
 			return;
 		}
 
-		List<Product> productList = stockMove.getStockMoveLineList().stream().map(StockMoveLine::getProduct)
-				.collect(Collectors.toList());
+        List<Product> productList = stockMove.getStockMoveLineList().stream().map(StockMoveLine::getProduct)
+                .filter(Objects::nonNull).collect(Collectors.toList());
 
-		if (productList.isEmpty()) {
-			return;
-		}
+        if (productList.isEmpty()) {
+            return;
+        }
 
 		InventoryLineRepository inventoryLineRepo = Beans.get(InventoryLineRepository.class);
 
@@ -399,7 +398,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		for (StockMoveLine stockMoveLine : stockMoveLineList) {
 			Product product = stockMoveLine.getProduct();
 
-			if (!ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())) {
+			if (product == null || !ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())) {
 				continue;
 			}
 
