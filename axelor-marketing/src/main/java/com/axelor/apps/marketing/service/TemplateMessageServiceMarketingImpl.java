@@ -11,6 +11,7 @@ import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.MessageService;
 
 public class TemplateMessageServiceMarketingImpl extends TemplateMessageServiceBaseImpl {
@@ -27,7 +28,7 @@ public class TemplateMessageServiceMarketingImpl extends TemplateMessageServiceB
 	@Override
 	protected Integer getMediaTypeSelect(Template template) {
 		
-		if (template.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_EMAILING) {
+		if (template.getMediaTypeSelect() == TemplateRepository.MEDIA_TYPE_EMAILING) {
 			return MessageRepository.MEDIA_TYPE_EMAIL;
 		}
 		
