@@ -106,7 +106,7 @@ public interface StockMoveService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public StockMove generateReversion(StockMove stockMove) throws AxelorException;
 
-	public Long splitInto2(Long originalStockMoveId, List<StockMoveLine> stockMoveLines);
+	public StockMove splitInto2(StockMove originalStockMove, List<StockMoveLine> modifiedStockMoveLines) throws AxelorException;
 	
 	public BigDecimal compute(StockMove stockMove);
 	

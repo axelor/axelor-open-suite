@@ -67,7 +67,7 @@ public interface IExceptionMessage {
 	static final String STOCK_MOVE_13 = /*$$(*/ "<B>%s or %s</B> not found" /*)*/;
 	static final String STOCK_MOVE_14 = /*$$(*/ "No move lines to split" /*)*/;
 	static final String STOCK_MOVE_15 = /*$$(*/ "Please select lines to split" /*)*/;
-	static final String STOCK_MOVE_16 = /*$$(*/ "Please entry proper split qty" /*)*/;
+	static final String STOCK_MOVE_16 = /*$$(*/ "Please enter a valid split quantity" /*)*/;
 	static final String STOCK_MOVE_17 = /*$$(*/ "Must set weight unit in stock configuration for customs." /*)*/;
 	static final String STOCK_MOVE_18 = /*$$(*/ "All storable products must have net weight information for customs." /*)*/;
 	static final String STOCK_MOVE_19 = /*$$(*/ "Can't realize this stock move because of the ongoing inventory %s." /*)*/;
