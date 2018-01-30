@@ -11,7 +11,7 @@
 		<field name="taskDeadline"/>
 		<field name="status"/>
 		<field name="priority"/>
-		<field name="category"/>
+		<field name="projectCategory"/>
 	</grid>
 	
 	<form title="Task" id="project-team-task-grid" name="team-task-form"  model="com.axelor.team.db.TeamTask" onNew="action-task-defaults">
@@ -62,7 +62,7 @@
 			<field name="status" colSpan="6" required="true"/>
 			<spacer/>
 			<field name="priority" colSpan="6" required="true"/>
-			<field name="category" colSpan="6" onSelect="action-task-attrs-project-category-configurations"/>
+			<field name="projectCategory" colSpan="6" onSelect="action-task-attrs-project-category-configurations"/>
 			<field name="progressSelect" colSpan="12" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
 			<panel name="planning" title="Planning">
 				<field name="plannedProgress" widget="progress" colSpan="12" hidden="true"/>
@@ -174,7 +174,7 @@
 	
 	
 	<action-record name="action-task-record-project-configurations" model="com.axelor.team.db.TeamTask">
-		<field name="category" expr="eval: null"/>
+		<field name="projectCategory" expr="eval: null"/>
 		<field name="assignedTo" expr="eval: project?.membersUserSet?.collect{it.id}.contains(assignedTo.id) ? assignedTo : null" if="project != null &amp;&amp; assignedTo != null"/>
 		<field name="parentTask" expr="eval: null"/>
 		<field name="membersUserSet" expr="eval: null"/>
@@ -195,7 +195,7 @@
 	</action-record>
 	
 	<action-attrs name="action-task-attrs-project-category-configurations" model="com.axelor.team.db.TeamTask">
-		<attribute name="domain" for="category" expr="eval: (project?.projectCategorySet !=  null &amp;&amp; project?.projectCategorySet?.size() &gt; 0) ? &quot;self.id IN (${project?.projectCategorySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+		<attribute name="domain" for="projectCategory" expr="eval: (project?.projectCategorySet !=  null &amp;&amp; project?.projectCategorySet?.size() &gt; 0) ? &quot;self.id IN (${project?.projectCategorySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-task-attrs-project-assigned-to-configurations" model="com.axelor.team.db.TeamTask">
