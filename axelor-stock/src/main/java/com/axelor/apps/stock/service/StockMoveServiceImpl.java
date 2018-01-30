@@ -453,21 +453,32 @@ public class StockMoveServiceImpl implements StockMoveService {
 	}
 
 	private boolean checkWeightsRequired(StockMove stockMove) {
-		Address fromAddress = stockMove.getFromAddress();
-		if (fromAddress == null && stockMove.getFromStockLocation() != null) {
-			fromAddress = stockMove.getFromStockLocation().getAddress();
-		}
-
-		Address toAddress = stockMove.getToAddress();
-		if (toAddress == null && stockMove.getToStockLocation() != null) {
-			toAddress = stockMove.getToStockLocation().getAddress();
-		}
+		Address fromAddress = getFromAddress(stockMove);
+		Address toAddress = getToAddress(stockMove);
 
 		Country fromCountry = fromAddress != null ? fromAddress.getAddressL7Country() : null;
 		Country toCountry = toAddress != null ? toAddress.getAddressL7Country() : null;
 
 		return fromCountry != null && toCountry != null && !fromCountry.equals(toCountry);
 	}
+
+	@Override
+	public Address getFromAddress(StockMove stockMove) {
+        Address fromAddress = stockMove.getFromAddress();
+        if (fromAddress == null && stockMove.getFromStockLocation() != null) {
+            fromAddress = stockMove.getFromStockLocation().getAddress();
+        }
+        return fromAddress;
+	}
+
+	@Override
+    public Address getToAddress(StockMove stockMove) {
+        Address toAddress = stockMove.getToAddress();
+        if (toAddress == null && stockMove.getToStockLocation() != null) {
+            toAddress = stockMove.getToStockLocation().getAddress();
+        }
+        return toAddress;
+    }
 
 	@Override
 	public boolean mustBeSplit(List<StockMoveLine> stockMoveLineList)  {
