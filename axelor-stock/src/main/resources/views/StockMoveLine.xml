@@ -42,7 +42,7 @@
 		<field name="productName" readonly="true" />
 		<field name="product" readonly="true" form-view="product-form" grid-view="product-grid"/>
 		<field name="productModel" readonly="true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
-		<field name="qty" aggregate="sum"/>
+		<field name="qty" aggregate="sum" onChange="action-stock-move-line-validate-check-split-quantity"/>
 		<field name="unitPriceUntaxed" x-scale="2"/>
 		<field name="unitPriceTaxed" x-scale="2" hidden="true"/>
 		<field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
@@ -111,8 +111,8 @@
 	        <field name="product" canEdit="false" domain="self.expense = false" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
 	        <field name="productModel" canEdit="false" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
 	        <field name="stockMove.partner"/>
-			<field name="qty" colSpan="3" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price"/>
-	        <field name="realQty" colSpan="3"/>
+			<field name="qty" colSpan="3" min="0" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price"/>
+	        <field name="realQty" colSpan="3" min="0"/>
 	        <field name="unitPriceUntaxed"/>
        		<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
@@ -250,5 +250,9 @@
 		<domain>self.stockMove.statusSelect = 3 and (self.stockMove.fromStockLocation.typeSelect = 1 or self.stockMove.toStockLocation.typeSelect = 1) and self.product.id = :_id</domain>
 	</action-view>	
 		
-	
+	<action-validate name="action-stock-move-line-validate-check-split-quantity">
+		<error message="Split quantity cannot be negative." if="qty &lt; 0"/>
+		<error message="Split quantity cannot be higher than real quantity." if="qty &gt; realQty"/>
+	</action-validate>
+
 </object-views>

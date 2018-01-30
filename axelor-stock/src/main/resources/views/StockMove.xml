@@ -74,11 +74,11 @@
 					<item title="Print picking order" action="save,action-print-picking-stock-move" showIf="statusSelect != 1 &amp;&amp; typeSelect == 2"/>
 		 		</menu>
 		 		<menu title="Tools">
-		 			<item title="View Direction" showIf="typeSelect == 2 &amp;&amp; statusSelect!=4" action="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
-		 			<item title="Split into 2" action="save,action-stock-move-split-into-2"/>
-				    <item title="Split by unit" action="save,action-stock-move-method-split-stock-move-lines-unit"/>
-				    <item title="Special split"  action="save,action-stock-move-wizard-special-split"/>
-				    <item title="Ship/Receive all products" action="save,action-stock-move-ship-recieve-all-products"/>
+					<item title="View Direction" showIf="typeSelect == 2 &amp;&amp; statusSelect!=4" action="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
+					<item title="Split into 2" action="save,action-stock-move-split-into-2" showIf="statusSelect &lt;= 2"/>
+					<item title="Split by unit" action="save,action-stock-move-method-split-stock-move-lines-unit" showIf="statusSelect &lt;= 2"/>
+					<item title="Special split"  action="save,action-stock-move-wizard-special-split" showIf="statusSelect &lt;= 2"/>
+					<item title="Ship/Receive all products" action="save,action-stock-move-ship-recieve-all-products"/>
 		 		</menu>
 		 </menubar>
 		 
