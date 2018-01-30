@@ -16,16 +16,6 @@
 		<field name="inTaxTotal" aggregate="sum"/>
 	</grid>
 
-    <grid name="sale-order-line-project-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="-saleOrder.orderDate">
-        <field name="saleOrder"/>
-        <field name="productName"/>
-        <field name="qty" aggregate="sum"/>
-        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="price" x-scale="2"/>
-        <field name="exTaxTotal" aggregate="sum"/>
-        <field name="inTaxTotal" aggregate="sum"/>
-    </grid>
-
     <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
       	<field name="saleOrder"/>
   		<field name="saleOrder.clientPartner"/>
@@ -49,7 +39,7 @@
 	    <field name="inTaxTotal" aggregate="sum"/>
 	</grid>
 
-    <grid name="sale-order-line-project-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
+    <grid name="sale-order-line-project-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="-saleOrder.orderDate">
         <hilite color="success" if="invoiced"/>
         <hilite color="warning" if="!invoiced"/>
         <field name="saleOrder.saleOrderSeq" title="Reference"/>
