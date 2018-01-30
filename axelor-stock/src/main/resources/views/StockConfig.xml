@@ -35,6 +35,12 @@
       <panel title="Logistical forms">
         <field name="realizeStockMovesUponParcelPalletCollection" />
       </panel>
+		<panel>
+            <field name="stockMoveAutomaticMail"/>
+			<field name="stockMoveMessageTemplate" requiredIf="stockMoveAutomaticMail"
+				   showIf="stockMoveAutomaticMail"
+				   form-view="template-form" grid-view="template-grid"/>
+		</panel>
 	</form>
 	
 	<action-record name="action-stock-config-record-default" model="com.axelor.apps.stock.db.StockConfig">

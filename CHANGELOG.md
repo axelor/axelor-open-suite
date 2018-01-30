@@ -9,6 +9,7 @@
 - Add a version management on Production process
 - Added 'sale blocking' in Partner
 - Added 'purchase blocking' in Partner
+- Automatic mail on stock move realization
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.

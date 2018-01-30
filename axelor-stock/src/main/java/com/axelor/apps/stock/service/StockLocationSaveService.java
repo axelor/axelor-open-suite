@@ -17,16 +17,16 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.util.List;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.stock.db.PartnerDefaultStockLocation;
+import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.repo.PartnerDefaultStockLocationRepository;
+import com.axelor.apps.stock.db.repo.PartnerStockSettingsRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
+
+import java.util.List;
 
 public class StockLocationSaveService {
 
@@ -40,17 +40,17 @@ public class StockLocationSaveService {
 		Company currentCompany = defaultStockLocation.getCompany();
 	    Long partnerId = currentPartner != null ? currentPartner.getId() : 0L;
 		Long companyId = currentCompany != null ? currentCompany.getId() : 0L;
-	    PartnerDefaultStockLocationRepository partnerDefaultRepo = Beans.get(PartnerDefaultStockLocationRepository.class);
-		List<PartnerDefaultStockLocation> partnerDefaultStockLocations = partnerDefaultRepo.all()
+	    PartnerStockSettingsRepository partnerStockSettingsRepo = Beans.get(PartnerStockSettingsRepository.class);
+		List<PartnerStockSettings> partnerStockSettingsToRemove = partnerStockSettingsRepo.all()
 				.filter("(self.partner.id != :partnerId OR self.company.id != :companyId)"
 						+ " AND (self.defaultStockLocation.id = :stockLocationId)")
 				.bind("partnerId", partnerId)
 				.bind("companyId", companyId)
 				.bind("stockLocationId", defaultStockLocation.getId())
 				.fetch();
-		for (PartnerDefaultStockLocation partnerDefaultStockLocation : partnerDefaultStockLocations) {
-			Partner partnerToClean = partnerDefaultStockLocation.getPartner();
-			partnerToClean.removePartnerDefaultStockLocationListItem(partnerDefaultStockLocation);
+		for (PartnerStockSettings partnerStockSettings : partnerStockSettingsToRemove) {
+			Partner partnerToClean = partnerStockSettings.getPartner();
+			partnerToClean.removePartnerStockSettingsListItem(partnerStockSettings);
 		}
 
 	}

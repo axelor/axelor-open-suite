@@ -17,20 +17,6 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.CancelReason;
@@ -46,9 +32,12 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.InventoryLine;
+import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
@@ -70,6 +59,19 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class StockMoveServiceImpl implements StockMoveService {
 
@@ -168,7 +170,29 @@ public class StockMoveServiceImpl implements StockMoveService {
 		stockMove.setShipmentMode(shipmentMode);
 		stockMove.setFreightCarrierMode(freightCarrierMode);
 
+		stockMove.setTypeSelect(getStockMoveType(fromStockLocation, toStockLocation));
+		if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+			setDefaultAutoMailSettings(stockMove);
+		}
+
 		return stockMove;
+	}
+
+	/**
+	 * Set automatic mail configuration from the partner.
+	 * @param stockMove
+	 */
+	protected void setDefaultAutoMailSettings(StockMove stockMove) throws AxelorException {
+		Partner partner = stockMove.getPartner();
+		Company company = stockMove.getCompany();
+
+		PartnerStockSettings mailSettings = Beans.get(PartnerStockSettingsService.class)
+				.getOrCreateMailSettings(partner, company);
+		boolean stockMoveAutomaticMail = mailSettings.getStockMoveAutomaticMail();
+		Template stockMoveMessageTemplate = mailSettings.getStockMoveMessageTemplate();
+
+		stockMove.setStockMoveAutomaticMail(stockMoveAutomaticMail);
+		stockMove.setStockMoveMessageTemplate(stockMoveMessageTemplate);
 	}
 
 
@@ -221,11 +245,6 @@ public class StockMoveServiceImpl implements StockMoveService {
 		// Set the type select
 		if(stockMove.getTypeSelect() == null || stockMove.getTypeSelect() == 0)  {
 			stockMove.setTypeSelect(this.getStockMoveType(fromStockLocation, toStockLocation));
-		}
-
-
-		if(stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING)  {
-
 		}
 
         String draftSeq;
@@ -317,6 +336,20 @@ public class StockMoveServiceImpl implements StockMoveService {
 		
 		if(stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
 			partnerProductQualityRatingService.calculate(stockMove);
+		}
+		if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+				&& stockMove.getStockMoveAutomaticMail()) {
+			Template template = stockMove.getStockMoveMessageTemplate();
+			if (template == null) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR,
+						I18n.get(IExceptionMessage.STOCK_MOVE_MISSING_TEMPLATE),
+						stockMove);
+			}
+			try {
+				Beans.get(TemplateMessageService.class).generateAndSendMessage(stockMove, template, null);
+			} catch (Exception e) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, e.getMessage(), stockMove);
+			}
 		}
 
 		return newStockSeq;

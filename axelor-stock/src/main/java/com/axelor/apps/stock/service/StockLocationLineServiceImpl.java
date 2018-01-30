@@ -52,13 +52,13 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 	protected StockRulesService stockRulesService;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateLocation(StockLocation StockLocation, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
+	public void updateLocation(StockLocation stockLocation, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
 							   LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException  {
 		
-		this.updateLocation(StockLocation, product, qty, current, future, isIncrement, lastFutureStockMoveDate, reservedQty);
+		this.updateLocation(stockLocation, product, qty, current, future, isIncrement, lastFutureStockMoveDate, reservedQty);
 		
 		if(trackingNumber != null)  {
-			this.updateDetailLocation(StockLocation, product, qty, current, future, isIncrement, lastFutureStockMoveDate, trackingNumber, reservedQty);
+			this.updateDetailLocation(stockLocation, product, qty, current, future, isIncrement, lastFutureStockMoveDate, trackingNumber, reservedQty);
 		}
 		
 	}

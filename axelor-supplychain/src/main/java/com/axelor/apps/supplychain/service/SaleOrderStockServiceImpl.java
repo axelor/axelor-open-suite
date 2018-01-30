@@ -36,7 +36,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderService;
-import com.axelor.apps.stock.db.PartnerDefaultStockLocation;
+import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -108,8 +108,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 			}
 
 			if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
-				if (!stockMove.getStockMoveLineList().stream()
-						.anyMatch(stockMoveLine -> stockMoveLine.getSaleOrderLine() != null && stockMoveLine
+				if (stockMove.getStockMoveLineList().stream()
+						.noneMatch(stockMoveLine -> stockMoveLine.getSaleOrderLine() != null && stockMoveLine
 								.getSaleOrderLine().getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL)) {
 					stockMove.setFullySpreadOverLogisticalFormsFlag(true);
 				}
@@ -150,15 +150,15 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 	    if (partner == null || company == null) {
 	    	return null;
 		}
-		List<PartnerDefaultStockLocation> defaultStockLocations = partner.getPartnerDefaultStockLocationList();
+		List<PartnerStockSettings> defaultStockLocations = partner.getPartnerStockSettingsList();
 	    if (defaultStockLocations == null) {
 	    	return null;
 		}
 		List<StockLocation> candidateStockLocations = defaultStockLocations
 				.stream()
 				.filter(Objects::nonNull)
-				.filter(partnerDefaultStockLocation1 -> partnerDefaultStockLocation1.getCompany().equals(company))
-				.map(PartnerDefaultStockLocation::getDefaultStockLocation)
+				.filter(partnerStockSettings -> partnerStockSettings.getCompany().equals(company))
+				.map(PartnerStockSettings::getDefaultStockLocation)
 				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 
@@ -265,13 +265,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 				|| (ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect()) && supplyChainConfig.getHasOutSmForStorableProduct())) );
 	}
 
-    @Override
-    public boolean activeStockMoveForSaleOrderExists(SaleOrder saleOrder) {
-        return saleOrder.getStockMoveList() != null ? saleOrder.getStockMoveList().stream()
-                .anyMatch(stockMove -> stockMove.getStatusSelect() <= StockMoveRepository.STATUS_PLANNED) : false;
-    }
-
-    @Override
+	@Override
     public Optional<StockMove> findActiveStockMoveForSaleOrder(SaleOrder saleOrder) {
         return saleOrder.getStockMoveList() != null ? saleOrder.getStockMoveList().stream()
                 .filter(stockMove -> stockMove.getStatusSelect() <= StockMoveRepository.STATUS_PLANNED).findFirst() : Optional.empty();
