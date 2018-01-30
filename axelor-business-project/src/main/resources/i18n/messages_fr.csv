@@ -19,7 +19,6 @@
 "Charging Back Purchases Type","Type de refacturation des achats",,
 "Comments","Observations",,
 "Confirmed Orders Total","Total Commandes confirmées",,
-"Cost price","Prix de revient",,
 "Date",,,
 "Deadline","Date d'échéance",,
 "Default Invoicing Product for Projects",,,
@@ -226,3 +225,4 @@
 "You haven't select any element to invoice","Vous n'avez sélectionné aucun élément à facturer",,
 "You must add a sale order template","Merci de rentrer un modèle de devis",,
 "You must select a project/task","Veuillez sélectionner un(e) projet/tâche",,
+"abp-Cost price","Coût de revient",,

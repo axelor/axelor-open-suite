@@ -176,8 +176,8 @@
 				<panel-related field="productionOrderList" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject()" if-module="axelor-business-production" colSpan="12" canSelect="true" canNew="false" canEdit="false"/>
 			</panel>
 
-			<panel title="Other elements to invoice" name="otherElementsToInvoice" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" showIf="isBusinessProject">
-				<panel-related colSpan="12" field="elementsToInvoiceList"/>
+			<panel title="Additional elements to be invoiced" name="additionalElementsToBeInvoiced" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" showIf="isBusinessProject">
+				<panel-related colSpan="12" field="elementsToInvoiceList" grid-view="elements-to-invoice-grid" form-view="elements-to-invoice-form"/>
 			</panel>
 
 			<panel if="__config__.app.isApp('timesheet')" if-module="axelor-human-resource" name="logTimes" title="Log Times">
