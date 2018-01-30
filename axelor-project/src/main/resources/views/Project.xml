@@ -192,7 +192,7 @@
 
 			<panel name="configurations" title="Configurations">
 				<field name="productSet" canEdit="false" if-module="axelor-human-resource"  if="__config__.app.isApp('employee')" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12" widget="TagSelect"/>
-				<field name="categorySet" colSpan="12" widget="TagSelect"/>
+				<field name="projectCategorySet" colSpan="12" widget="TagSelect"/>
 				<field name="projectFolderSet" colSpan="12" widget="TagSelect"/>
                 <field name="excludeTimesheetEditor"/>
 				<field name="childProjectList" hidden="true"/>
