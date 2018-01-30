@@ -346,7 +346,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 						stockMove);
 			}
 			try {
-				Beans.get(TemplateMessageService.class).generateAndSendMessage(stockMove, template);
+				Beans.get(TemplateMessageService.class).generateAndSendMessage(stockMove, template, null);
 			} catch (Exception e) {
 				throw new AxelorException(IException.CONFIGURATION_ERROR, e.getMessage(), stockMove);
 			}
