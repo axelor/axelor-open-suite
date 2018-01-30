@@ -17,32 +17,6 @@
  */
 package com.axelor.apps.base.service.message;
 
-import com.axelor.apps.base.db.BirtTemplate;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.PrintingSettings;
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.MailAccount;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.service.MailAccountService;
-import com.axelor.apps.message.service.MessageServiceImpl;
-import com.axelor.auth.AuthUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaFile;
-import com.axelor.meta.db.repo.MetaAttachmentRepository;
-import com.axelor.tool.template.TemplateMaker;
-import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.mail.MessagingException;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -55,20 +29,42 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.mail.MessagingException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.PrintingSettings;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.message.db.MailAccount;
+import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.service.MessageServiceImpl;
+import com.axelor.auth.AuthUtils;
+import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.repo.MetaAttachmentRepository;
+import com.axelor.tool.template.TemplateMaker;
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+
 public class MessageServiceBaseImpl extends MessageServiceImpl {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
-	@Inject
 	protected UserService userService;
 
 	@Inject
-	protected AppBaseService appBaseService;
-	
-
-	@Inject
-	public MessageServiceBaseImpl( MetaAttachmentRepository metaAttachmentRepository, MailAccountService mailAccountService, UserService userService ) {
-		super(metaAttachmentRepository, mailAccountService);
+	public MessageServiceBaseImpl( MetaAttachmentRepository metaAttachmentRepository, MessageRepository messageRepository, UserService userService) {
+		super(metaAttachmentRepository, messageRepository);
 		this.userService = userService;
 	}
 
@@ -83,7 +79,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 		message.setSenderUser(AuthUtils.getUser());
 		message.setCompany(userService.getUserActiveCompany());
 
-		return messageRepo.save(message);
+		return messageRepository.save(message);
 
 	}
 
@@ -103,7 +99,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 		String language = AuthUtils.getUser().getLanguage();
 
 		TemplateMaker maker = new TemplateMaker( new Locale(language), '$', '$');
-		maker.setContext( messageRepo.find(message.getId()), "Message" );
+		maker.setContext( messageRepository.find(message.getId()), "Message" );
 
 		String fileName = "Message " + message.getSubject() + "-" + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
 		File file = Beans.get(TemplateMessageServiceBaseImpl.class).generateBirtTemplate(maker, fileName,
@@ -125,14 +121,14 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	@Transactional(rollbackOn = { MessagingException.class, IOException.class, Exception.class })
 	public Message sendByEmail(Message message) throws MessagingException, IOException, AxelorException  {
 				
-		if(appBaseService.getAppBase().getActivateSendingEmail())  {  return super.sendByEmail(message);  }
+		if(Beans.get(AppBaseService.class).getAppBase().getActivateSendingEmail())  {  return super.sendByEmail(message);  }
 		
 		message.setSentByEmail(true);
 		message.setStatusSelect(MessageRepository.STATUS_SENT);
 		message.setSentDateT(LocalDateTime.now());
 		message.setSenderUser(AuthUtils.getUser());
 		
-		return messageRepo.save(message);
+		return messageRepository.save(message);
 		
 	}
 	

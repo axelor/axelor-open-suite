@@ -29,11 +29,10 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.apps.marketing.exception.IExceptionMessage;
-import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
@@ -41,29 +40,30 @@ import com.google.inject.persist.Transactional;
 
 public class CampaignServiceImpl implements CampaignService {
 	
-	@Inject
-	private TemplateMessageService templateMessageService;
+	protected TemplateMessageServiceMarketingImpl templateMessageServiceMarketingImpl;
+	
+	protected EventRepository eventRepo;
 	
 	@Inject
-	private MetaFiles metaFiles;
-	
-	@Inject
-	private EventRepository eventRepo;
-	
-	@Inject
-	private TargetListService targetListService;
+	public CampaignServiceImpl(TemplateMessageServiceMarketingImpl templateMessageServiceMarketingImpl, EventRepository eventRepo)  {
+		this.templateMessageServiceMarketingImpl = templateMessageServiceMarketingImpl;
+		this.eventRepo = eventRepo;
+		
+	}
 	
 	public MetaFile sendEmail(Campaign campaign) {
 		
 		String errorPartners = "";
 		String errorLeads = "";
 			
+		templateMessageServiceMarketingImpl.setEmailAccount(campaign.getEmailAccount());
+		
 		if(campaign.getPartnerTemplate() != null){
-			errorPartners = sendToPartners(campaign.getPartnerSet(), campaign.getPartnerTemplate(), campaign.getEmailAccount());
+			errorPartners = sendToPartners(campaign.getPartnerSet(), campaign.getPartnerTemplate());
 		} 
 		
 		if(campaign.getLeadTemplate() != null) {
-			errorLeads = sendToLeads(campaign.getLeadSet(), campaign.getLeadTemplate(), campaign.getEmailAccount());
+			errorLeads = sendToLeads(campaign.getLeadSet(), campaign.getLeadTemplate());
 		}
 	
 		if (errorPartners.isEmpty() && errorLeads.isEmpty()) {
@@ -73,14 +73,14 @@ public class CampaignServiceImpl implements CampaignService {
 		return generateLog(errorPartners, errorLeads, campaign.getEmailLog(), campaign.getId());
 	}
 
-	private String sendToPartners(Set<Partner> partnerSet, Template template, MailAccount emailAccount) {
+	protected String sendToPartners(Set<Partner> partnerSet, Template template) {
 		
 		StringBuilder errors = new StringBuilder();
 		
 		for (Partner partner : partnerSet) {
 			
 			try {
-				templateMessageService.generateAndSendMessage(partner, template, emailAccount);
+				templateMessageServiceMarketingImpl.generateAndSendMessage(partner, template);
 			} catch (ClassNotFoundException | InstantiationException
 					| IllegalAccessException | MessagingException | IOException
 					| AxelorException e) {
@@ -93,14 +93,14 @@ public class CampaignServiceImpl implements CampaignService {
 		return errors.toString();
 	}
 	
-	private String sendToLeads(Set<Lead> leadSet, Template template, MailAccount emailAccount) {
+	protected String sendToLeads(Set<Lead> leadSet, Template template) {
 		
 		StringBuilder errors = new StringBuilder();
 		
 		for (Lead lead : leadSet) {
 			
 			try {
-				templateMessageService.generateAndSendMessage(lead, template, emailAccount);
+				templateMessageServiceMarketingImpl.generateAndSendMessage(lead, template);
 			} catch (ClassNotFoundException | InstantiationException
 					| IllegalAccessException | MessagingException | IOException
 					| AxelorException e) {
@@ -114,7 +114,7 @@ public class CampaignServiceImpl implements CampaignService {
 		
 	}
 	
-	private MetaFile generateLog(String errorPartners, String errorLeads, MetaFile metaFile, Long campaignId) {
+	protected MetaFile generateLog(String errorPartners, String errorLeads, MetaFile metaFile, Long campaignId) {
 		
 		if (metaFile == null) {
 			metaFile = new MetaFile();
@@ -136,7 +136,7 @@ public class CampaignServiceImpl implements CampaignService {
 		ByteArrayInputStream stream = new ByteArrayInputStream(builder.toString().getBytes());
 		
 		try {
-			return metaFiles.upload(stream, metaFile.getFileName());
+			return Beans.get(MetaFiles.class).upload(stream, metaFile.getFileName());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -178,6 +178,8 @@ public class CampaignServiceImpl implements CampaignService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generateTargets(Campaign campaign) {
+		
+		TargetListService targetListService = Beans.get(TargetListService.class);
 		
 		Set<Partner> partnerSet= targetListService.getAllPartners(campaign.getTargetModelSet());
 		Set<Lead> leadSet = targetListService.getAllLeads(campaign.getTargetModelSet());

@@ -533,7 +533,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 
 		if(hrConfig.getLeaveMailNotification())  {
 
-			return templateMessageService.generateAndSendMessage(leaveRequest, hrConfigService.getCanceledLeaveTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(leaveRequest, hrConfigService.getCanceledLeaveTemplate(hrConfig));
 
 		}
 
@@ -562,7 +562,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		
 		if(hrConfig.getLeaveMailNotification())  {
 				
-			return templateMessageService.generateAndSendMessage(leaveRequest, hrConfigService.getSentLeaveTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(leaveRequest, hrConfigService.getSentLeaveTemplate(hrConfig));
 				
 		}
 		
@@ -594,7 +594,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		
 		if(hrConfig.getLeaveMailNotification())  {
 				
-			return templateMessageService.generateAndSendMessage(leaveRequest, hrConfigService.getValidatedLeaveTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(leaveRequest, hrConfigService.getValidatedLeaveTemplate(hrConfig));
 				
 		}
 		
@@ -623,7 +623,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		
 		if(hrConfig.getLeaveMailNotification())  {
 				
-			return templateMessageService.generateAndSendMessage(leaveRequest, hrConfigService.getRefusedLeaveTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(leaveRequest, hrConfigService.getRefusedLeaveTemplate(hrConfig));
 				
 		}
 		

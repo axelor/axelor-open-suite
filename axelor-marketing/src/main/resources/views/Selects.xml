@@ -23,7 +23,7 @@
 		<option value="com.axelor.apps.base.db.Partner">Partner</option>
 	</selection>
 	
-	<selection id="marketing.message.media.type.select" name="message.media.type.select">
+	<selection id="marketing.template.media.type.select" name="template.media.type.select">
 		<option value="4">Emailing</option>
 	</selection>
 	

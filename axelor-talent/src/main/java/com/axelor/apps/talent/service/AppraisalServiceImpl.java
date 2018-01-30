@@ -76,7 +76,7 @@ public class AppraisalServiceImpl implements AppraisalService {
 		
 		if (template != null && email != null) {
 			try {
-				Message message = templateMessageService.generateMessage(appraisal, template, null);
+				Message message = templateMessageService.generateMessage(appraisal, template);
 				message.addToEmailAddressSetItem(email);
 				messageService.sendByEmail(message);
 			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | AxelorException
