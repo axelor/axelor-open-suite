@@ -591,41 +591,32 @@ public class StockMoveServiceImpl implements StockMoveService {
 		return selected;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Boolean splitStockMoveLinesSpecial(List<HashMap> stockMoveLines, BigDecimal splitQty){
+	public void splitStockMoveLinesSpecial(StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty){
 
-		Boolean selected = false;
 		LOG.debug("SplitQty: {}",new Object[] {splitQty});
 
-		for(HashMap moveLine : stockMoveLines){
+		for(StockMoveLine moveLine : stockMoveLines){
 			LOG.debug("Move line: {}",new Object[]{moveLine});
-			if((Boolean)(moveLine.get("selected"))){
-				selected = true;
-				StockMoveLine line = stockMoveLineRepo.find(Long.parseLong(moveLine.get("id").toString()));
-				BigDecimal totalQty = line.getQty();
-				LOG.debug("Move Line selected: {}, Qty: {}",new Object[]{line,totalQty});
-				while(splitQty.compareTo(totalQty) < 0){
-					totalQty = totalQty.subtract(splitQty);
-					StockMoveLine newLine = JPA.copy(line, false);
-					newLine.setQty(splitQty);
-					newLine.setRealQty(splitQty);
-					stockMoveLineRepo.save(newLine);
-				}
-				LOG.debug("Qty remains: {}",totalQty);
-				if(totalQty.compareTo(BigDecimal.ZERO) > 0){
-					StockMoveLine newLine = JPA.copy(line, false);
-					newLine.setQty(totalQty);
-					newLine.setRealQty(totalQty);
-					stockMoveLineRepo.save(newLine);
-					LOG.debug("New line created: {}",newLine);
-				}
-				stockMoveLineRepo.remove(line);
+			BigDecimal totalQty = moveLine.getQty();
+			while(splitQty.compareTo(totalQty) < 0){
+				totalQty = totalQty.subtract(splitQty);
+				StockMoveLine newLine = stockMoveLineRepo.copy(moveLine, false);
+				newLine.setQty(splitQty);
+				newLine.setRealQty(splitQty);
+				stockMove.addStockMoveLineListItem(newLine);
 			}
+			LOG.debug("Qty remains: {}",totalQty);
+			if(totalQty.compareTo(BigDecimal.ZERO) > 0){
+				StockMoveLine newLine = stockMoveLineRepo.copy(moveLine, false);
+				newLine.setQty(totalQty);
+				newLine.setRealQty(totalQty);
+				stockMove.addStockMoveLineListItem(newLine);
+				LOG.debug("New line created: {}",newLine);
+			}
+			stockMove.removeStockMoveLineListItem(moveLine);
 		}
-
-		return selected;
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
