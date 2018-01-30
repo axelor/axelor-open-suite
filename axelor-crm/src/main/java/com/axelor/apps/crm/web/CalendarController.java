@@ -52,16 +52,7 @@ public class CalendarController {
 	
 	public void showMyEvents(ActionRequest request, ActionResponse response){
 		User user = AuthUtils.getUser();
-		List<Long> eventIdlist = new ArrayList<Long>();
-		eventIdlist.add(new Long(0));
-		
-		List<Event> eventList = eventRepo.all().filter("self.user.id = ?1 or self.calendar.user.id = ?1 "
-				+ " or self.attendees.user.id = ?1 or self.organizer.user.id = ?1",
-				user.getId()).fetch();
-		eventIdlist.addAll(Lists.transform(eventList, it->it.getId()));
-		
-		log.debug("My event ids found: {}", eventIdlist);
-		
+
 		response.setView(ActionView
 	            .define(I18n.get("My Calendar"))
 	            .model(Event.class.getName())
@@ -69,7 +60,7 @@ public class CalendarController {
 	            .add("grid", "event-grid")
 	            .add("form", "event-form")
 	            .context("_typeSelect", 2)
-	            .domain("self.id in (" + Joiner.on(',').join(eventIdlist) + ")")
+	            .domain("self.user.id = "+ user.getId() +" or self.calendar.user.id = "+ user.getId() +" or self.attendees.user.id = "+ user.getId() +" or self.organizer.user.id = "+ user.getId())
 	            .map());
 	}
 	
@@ -104,7 +95,7 @@ public class CalendarController {
 	            .add("form", "event-form")
 	            .context("_typeSelect", 2)
 	            .context("_internalUser", user.getId())
-	            .domain("self.id in ("+Joiner.on(",").join(eventIdlist)+")")
+	            .domain("self.team.id = "+ user.getActiveTeam().getId() +" and self.id in ("+Joiner.on(",").join(eventIdlist)+")")
 	            .map());
 	}
 	
