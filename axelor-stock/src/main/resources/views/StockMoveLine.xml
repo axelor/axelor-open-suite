@@ -7,12 +7,13 @@
         <field name="productName" required="true" />
         <field name="product" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
         <field name="productModel" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
-        <field name="qty"  aggregate="sum" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price"/>
-        <field name="realQty" aggregate="sum"/>
+        <field name="qty"  aggregate="sum" onChange="action-stock-move-line-group-qty-onchange"/>
+        <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange" />
 		<field name="reservedQty" if-module="axelor-supplychain" onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="netWeight" onChange="action-stock-move-line-group-net-weight-onchange" />
         <field name="trackingNumber" form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"/>
         <field name="conformitySelect"/>
     </grid>
@@ -23,14 +24,14 @@
             <field name="productName" />
 	        <field name="product" canEdit="false" domain="self.expense = false" onChange="action-stock-move-line-tracking-number-attrs,action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
 	        <field name="productModel" canEdit="false" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
-	        <field name="qty" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price" colSpan="3"/>
-	        <field name="realQty" colSpan="3"/>
+	        <field name="qty" onChange="action-stock-move-line-group-qty-onchange" colSpan="3"/>
+	        <field name="realQty" colSpan="3" onChange="action-stock-move-line-group-real-qty-onchange" />
 			<field name="reservedQty" onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
 	        <field name="unitPriceUntaxed"/>
         	<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
-    	    <field name="netWeight" readonly="true" showIf="netWeight != 0"/>
-	        <field name="totalNetWeight" readonly="true" showIf="totalNetWeight != 0"/>
+    	    <field name="netWeight" onChange="action-stock-move-line-group-net-weight-onchange" />
+	        <field name="totalNetWeight" readonly="true" showIf="totalNetWeight"/>
 	        <field name="trackingNumber" canNew="true" onChange="action-stock-move-line-record-product" form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"/>
 	        <field name="conformitySelect" onChange="action-stock-move-attrs-change-conformity"/>
 	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true AND self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('business-project')"  />
@@ -55,8 +56,8 @@
         <field name="productName" required="true" />
         <field name="product" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
         <field name="productModel" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
-        <field name="qty"  aggregate="sum" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price"/>
-        <field name="realQty" aggregate="sum"/>
+        <field name="qty"  aggregate="sum" onChange="action-stock-move-line-group-qty-onchange"/>
+        <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -72,7 +73,7 @@
         <field name="productName" />
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="stockMove.partner"/>
-        <field name="realQty" aggregate="sum"/>
+        <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -88,7 +89,7 @@
 		<field name="productName" />
 		<field name="product" form-view="product-form" grid-view="product-grid" />
 		<field name="stockMove.partner" />
-		<field name="realQty" aggregate="sum" />
+		<field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange" />
 		<field name="unitPriceUntaxed" x-scale="2" />
 		<field name="unitPriceTaxed" hidden="true" />
 		<field name="unit" form-view="unit-form" grid-view="unit-grid" />
@@ -111,12 +112,12 @@
 	        <field name="product" canEdit="false" domain="self.expense = false" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
 	        <field name="productModel" canEdit="false" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
 	        <field name="stockMove.partner"/>
-			<field name="qty" colSpan="3" min="0" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price"/>
-	        <field name="realQty" colSpan="3" min="0"/>
+			<field name="qty" colSpan="3" min="0" onChange="action-stock-move-line-group-qty-onchange"/>
+	        <field name="realQty" colSpan="3" min="0" onChange="action-stock-move-line-group-real-qty-onchange"/>
 	        <field name="unitPriceUntaxed"/>
        		<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
-            <field name="netWeight" readonly="true" showIf="netWeight != 0"/>
+            <field name="netWeight" readonly="true" showIf="netWeight != 0" onChange="action-stock-move-line-group-net-weight-onchange" />
 	        <field name="totalNetWeight" readonly="true" showIf="totalNetWeight != 0"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
 	        <field name="stockMove.statusSelect" hidden="true"/>
@@ -151,7 +152,7 @@
 		    <field name="productName" required="true" />
 	        <field name="product" canEdit="false" domain="self.expense = false" onChange="action-stock-move-line-set-product-info" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
 	        <field name="productModel" canEdit="false" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
-	        <field name="qty" onChange="action-stock-move-line-record-qty, action-stock-move-line-compute-price" title="Consumed quantity"/>
+	        <field name="qty" onChange="action-stock-move-line-group-qty-onchange" title="Consumed quantity"/>
 	        <field name="unitPriceUntaxed"/>
         	<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
@@ -207,16 +208,34 @@
 	    <field name="qty" expr="1"/>
 	    <field name="realQty" expr="1"/>
 	</action-record>
-	
+
+    <action-group name="action-stock-move-line-group-qty-onchange">
+        <action name="action-stock-move-line-record-qty"/>
+        <action name="action-stock-move-line-group-real-qty-onchange"/>
+    </action-group>
+
+    <action-group name="action-stock-move-line-group-real-qty-onchange">
+        <action name="action-stock-move-line-compute-price"/>
+        <action name="action-stock-move-line-record-total-net-weight"/>
+    </action-group>
+
+    <action-group name="action-stock-move-line-group-net-weight-onchange">
+        <action name="action-stock-move-line-group-real-qty-onchange"/>
+    </action-group>
+
 	<action-record name="action-stock-move-line-record-qty" model="com.axelor.apps.stock.db.StockMoveLine">
 		<field name="realQty" expr="eval: qty" if="_parent?.statusSelect &lt;= 2"/>
 	</action-record>
 	
 	<action-record name="action-stock-move-line-set-product-info" model="com.axelor.apps.stock.db.StockMoveLine">
-	    <field name="unit" expr="eval: product.unit"/>
-	    <field name="price" expr="eval: product.costPrice"/>
-	    <field name="productName" expr="eval: product.name"/>
-	    <field name="productModel" expr="eval: product.parentProduct" if="__config__.app.getApp('base').getManageProductVariants()"/>
+	    <field name="unit" expr="eval: product?.unit"/>
+	    <field name="price" expr="eval: product?.costPrice"/>
+	    <field name="productName" expr="eval: product?.name"/>
+    	    <field name="productModel" expr="eval: product?.parentProduct" if="__config__.app.getApp('base').getManageProductVariants()"/>
+        <field name="netWeight"
+            expr="call: com.axelor.apps.base.service.UnitConversionService:convert(
+                product.weightUnit, __parent__.company.stockConfig.customsWeightUnit, product.netWeight)"
+            if="product?.weightUnit &amp;&amp; __parent__?.company?.stockConfig.customsWeightUnit &amp;&amp; product?.netWeight" />
 	</action-record>
 	
 	<action-record name="action-stock-move-line-record-product" model="com.axelor.apps.stock.db.StockMoveLine">
@@ -226,6 +245,10 @@
 	<action-record name="action-stock-move-line-store-product-type" model="com.axelor.apps.stock.db.StockMoveLine">
 		<field name="productTypeSelect" expr="eval: product?.productTypeSelect"/>
 	</action-record>
+
+    <action-record name="action-stock-move-line-record-total-net-weight" model="com.axelor.apps.stock.db.StockMoveLine">
+        <field name="totalNetWeight" expr="eval: netWeight * realQty"/>
+    </action-record>
 
 	<action-attrs name="action-stock-move-line-product-domain">
 		<attribute name="domain" for="product" expr="eval:&quot;self.isModel = false AND self.isShippingCostsProduct = false AND self.parentProduct.id = ${productModel.id}&quot;" if="productModel"/>
