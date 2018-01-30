@@ -17,6 +17,7 @@
 - New report for InvoicingProject
 - Added fullname in Sequence
 - Generate sale order from Opportunity in edit mode directly
+- Improved architecture of Message generation from a template, send email, and manage specific email account in a module without change the original behavior in the others
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
