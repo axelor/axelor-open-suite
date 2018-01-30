@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
     <grid name="sale-order-line-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
 		<hilite background="danger" if="deliveryState == 1"/>
 		<hilite background="warning" if="deliveryState == 2"/>
@@ -15,16 +16,6 @@
 		<field name="exTaxTotal" aggregate="sum"/>
 		<field name="inTaxTotal" aggregate="sum"/>
 	</grid>
-
-    <grid name="sale-order-line-project-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="-saleOrder.orderDate">
-        <field name="saleOrder"/>
-        <field name="productName"/>
-        <field name="qty" aggregate="sum"/>
-        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="price" x-scale="2"/>
-        <field name="exTaxTotal" aggregate="sum"/>
-        <field name="inTaxTotal" aggregate="sum"/>
-    </grid>
 
     <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
       	<field name="saleOrder"/>
@@ -49,9 +40,9 @@
 	    <field name="inTaxTotal" aggregate="sum"/>
 	</grid>
 
-    <grid name="sale-order-line-project-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
-        <hilite color="success" if="invoiced"/>
-        <hilite color="warning" if="!invoiced"/>
+    <grid name="sale-order-line-project-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="-saleOrder.orderDate">
+        <hilite if="$get('saleOrder.statusSelect') &lt; 3 &amp;&amp; toInvoice &amp;&amp; !invoiced" color="info"/>
+        <hilite if="invoiced" color="success"/>
         <field name="saleOrder.saleOrderSeq" title="Reference"/>
         <field name="saleOrder.creationDate"/>
         <field name="productName" readonly="true"/>
@@ -60,20 +51,20 @@
         <field name="unit" form-view="unit-form" grid-view="unit-grid" readonly="true"/>
         <field name="price" x-scale="2" readonly="true"/>
         <field name="exTaxTotal" aggregate="sum" readonly="true"/>
-        <field name="inTaxTotal" aggregate="sum" readonly="true"/>
         <field name="saleOrder.currency"/>
         <field name="toInvoice"/>
         <field name="invoiced"/>
-	</grid>
+        <field name="saleOrder.statusSelect" hidden="true"/>
+    </grid>
 
-	<form name="sale-order-line-project-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" canEdit="false">
+    <form name="sale-order-line-project-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" readonlyIf="true" canEdit="false">
         <panel title="Sale order">
             <field name="saleOrder.saleOrderSeq" title="Reference" colSpan="4"/>
             <field name="saleOrder.creationDate" colSpan="4"/>
             <field name="saleOrder.currency" colSpan="4"/>
         </panel>
-		<panel-include view="sale-order-line-form"/>
-	</form>
+        <panel-include view="sale-order-line-form"/>
+    </form>
     
 	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine"
           onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client"
