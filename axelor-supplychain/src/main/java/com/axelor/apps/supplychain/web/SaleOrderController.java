@@ -39,8 +39,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.apps.supplychain.db.Subscription;
-import com.axelor.apps.supplychain.db.repo.SubscriptionRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
@@ -49,7 +47,6 @@ import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -285,90 +282,6 @@ public class SaleOrderController{
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 
-	public void getSubscriptionSaleOrdersToInvoice(ActionRequest request, ActionResponse response) {
-
-		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.invoiced = false AND self.invoicingDate <= ?1", appSupplychainService.getTodayDate()).fetch();
-		List<Long> listId = new ArrayList<>();
-		for (Subscription subscription : subscriptionList) {
-			listId.add(subscription.getSaleOrderLine().getSaleOrder().getId());
-		}
-		if (listId.isEmpty()) {
-			TraceBackService.trace(response, new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No Subscription to Invoice")));
-		}
-		else {
-			String domain = "self.id in ("+Joiner.on(",").join(listId)+")";
-			if (listId.size() == 1) {
-				domain = "self.id = "+listId.get(0);
-			}
-			response.setView(ActionView
-		            .define(I18n.get("Subscription Sale orders"))
-		            .model(SaleOrder.class.getName())
-		            .add("grid", "sale-order-subscription-grid")
-		            .add("form", "sale-order-form")
-		            .domain("self.id = "+listId.get(0))
-		            .map());
-		}
-		response.setView(ActionView
-	            .define(I18n.get("Subscription Sale orders"))
-	            .model(SaleOrder.class.getName())
-	            .add("grid", "sale-order-subscription-grid")
-	            .add("form", "sale-order-form")
-	            .domain("self.id in ("+Joiner.on(",").join(listId)+")")
-	            .map());
-	}
-
-	@SuppressWarnings("unchecked")
-	public void invoiceSubscriptions(ActionRequest request, ActionResponse response) throws AxelorException{
-		List<Integer> listSelectedSaleOrder = (List<Integer>) request.getContext().get("_ids");
-		if(listSelectedSaleOrder != null){
-			SaleOrder saleOrder = null;
-			List<Long> listInvoiceId = new ArrayList<>();
-			for (Integer integer : listSelectedSaleOrder) {
-				saleOrder = saleOrderRepo.find(integer.longValue());
-				Invoice invoice = saleOrderInvoiceServiceImpl.generateSubcriptionInvoiceForSaleOrder(saleOrder);
-				if(invoice != null){
-					listInvoiceId.add(invoice.getId());
-				}
-			}
-			if (listInvoiceId.isEmpty()) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No sale order selected or no subscription to invoice"));
-			}
-			response.setReload(true);
-			if(listInvoiceId.size() == 1){
-				response.setView(ActionView
-			            .define(I18n.get("Invoice Generated"))
-			            .model(Invoice.class.getName())
-			            .add("grid", "invoice-grid")
-			            .add("form", "invoice-form")
-			            .domain("self.id = "+listInvoiceId.get(0))
-			            .map());
-			}
-			response.setView(ActionView
-		            .define(I18n.get("Invoices Generated"))
-		            .model(Invoice.class.getName())
-		            .add("grid", "invoice-grid")
-		            .add("form", "invoice-form")
-		            .domain("self.id in ("+Joiner.on(",").join(listInvoiceId)+")")
-		            .map());
-		}
-	}
-
-	public void invoiceSubscriptionsSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException{
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		saleOrder = saleOrderRepo.find(saleOrder.getId());
-		Invoice invoice = saleOrderInvoiceServiceImpl.generateSubcriptionInvoiceForSaleOrder(saleOrder);
-		if (invoice == null) {
-			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get("No Subscription to Invoice"));
-		}
-		response.setReload(true);
-		response.setView(ActionView
-	            .define(I18n.get("Invoice Generated"))
-	            .model(Invoice.class.getName())
-	            .add("form", "invoice-form")
-	            .add("grid", "invoice-grid")
-	            .context("_showRecord",String.valueOf(invoice.getId()))
-	            .map());
-	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void mergeSaleOrder(ActionRequest request, ActionResponse response)  {

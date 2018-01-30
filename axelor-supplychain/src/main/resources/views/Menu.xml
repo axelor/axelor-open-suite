@@ -44,36 +44,6 @@
 			if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" />
 	</action-view>
 	
-	<menuitem name="subscription-root"  if="__config__.app.isApp('subscription')" parent="sc-root-sale"
-		title="Subscriptions" order="50"  icon="fa-clone" icon-background="#e0a83c" />
-	
-	<menuitem name="subscription-root-subscription-to-invoice" parent="subscription-root" 
-    	title="Subscriptions to invoice" action="subscription.root.subscription.to.invoice" /> 
-
-	<action-view name="subscription.root.subscription.to.invoice" title="Subscriptions to invoice" model="com.axelor.apps.supplychain.db.Subscription">
-    	<view type="grid" name="subscription-from-menu-grid"/>
-	    <view type="form" name="subscription-from-menu-form"/>
-	    <domain>self.invoicingDate &lt;= :todayDate AND self.invoiced = false</domain>
-	    <context name="todayDate" expr="eval: eval:__config__.app.getTodayDate()"/>
-	</action-view>
-	
-	<menuitem name="subscription-root-subscription-products" parent="subscription-root"
-		title="Subscription products" action="subscription.root.subscription.products" />
-
-	<action-view name="subscription.root.subscription.products" title="Subscription products"
-		model="com.axelor.apps.base.db.Product" >
-		<view type="cards" name="product-cards" />
-		<view type="grid" name="product-grid" />
-		<view type="form" name="product-form" />
-	  	<view-param name="limit" value="39"/>
-		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect </domain>
-		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
-		<context name="_isModel" expr="false"/>
-		<context name="_productTypeSelect" expr="subscriptable"/>
-	</action-view>
-	
-	
 <!-- 	MRP -->
 	
 	<menuitem name="stock-mrp" parent="stock-root" title="MRP" if="__config__.app.isApp('supplychain')"  order="40"/> 

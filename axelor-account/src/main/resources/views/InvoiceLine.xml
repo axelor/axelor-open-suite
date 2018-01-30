@@ -72,10 +72,6 @@
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines()" title="Project/Task" if-module="axelor-business-project" >
 				<field name="project" onSelect="action-invoice-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 			</panel>
-			<panel name="subscriptionPanel" title="Subscription">
-				<field name="subscriptionFromDate"/>
-				<field name="subscriptionToDate"/>
-			</panel>
 			<panel name="analyticDistribution" title="Analytic distribution" if-module="axelor-supplychain" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" if="__config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
 				<button name="generateDistributionLinesButton" onClick="action-invoice-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
@@ -149,7 +145,6 @@
 		<attribute name="readonly" for="informations" expr="eval: __parent__?.statusSelect &gt; 1"/>
 		<attribute name="readonly" for="description" expr="eval: __parent__?.statusSelect &gt; 1"/>
 		<attribute name="readonly" for="projectPanel" expr="eval: __parent__?.statusSelect &gt; 1"/>
-		<attribute name="readonly" for="subscriptionPanel" expr="eval: __parent__?.statusSelect &gt; 1"/>
 		<attribute name="readonly" for="analyticDistribution" expr="eval: __parent__?.statusSelect &gt; 1"/>
 		<attribute name="readonly" for="budgetPanel" expr="eval: __parent__?.statusSelect &gt; 1"/>
 
@@ -162,7 +157,6 @@
 		<attribute name="readonly" for="informations" expr="eval: invoice.statusSelect &gt; 1"/>
 		<attribute name="readonly" for="description" expr="eval: invoice.statusSelect &gt; 1"/>
 		<attribute name="readonly" for="projectPanel" expr="eval: invoice.statusSelect &gt; 1"/>
-		<attribute name="readonly" for="subscriptionPanel" expr="eval: invoice.statusSelect &gt; 1"/>
 		<attribute name="readonly" for="analyticDistribution" expr="eval: invoice.statusSelect &gt; 1"/>
 		<attribute name="readonly" for="budgetPanel" expr="eval: invoice.statusSelect &gt; 1"/>
 
@@ -221,7 +215,6 @@
 		<!-- Show Elements -->
 		<attribute name="title" for="projectPanel" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
 		<attribute name="title" for="project" expr="eval:  __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
-		<attribute name="hidden" for="subscriptionPanel" expr="eval: _parent?.isSubscription" if="__config__.app.isApp('business-project')"/>
 		<attribute name="hidden" for="saleOrderLine" expr="eval: _parent?.operationTypeSelect != 3 &amp;&amp; _parent?.operationTypeSelect != 4" if="__config__.app.isApp('business-project')"/>
 		<attribute name="hidden" for="purchaseOrderLine" expr="eval: _parent?.operationTypeSelect != 1 &amp;&amp; _parent?.operationTypeSelect != 2" if="__config__.app.isApp('business-project')"/>
 		<attribute name="hidden" for="budgetPanel" expr="eval: _parent?.operationTypeSelect != 1 &amp;&amp; _parent?.operationTypeSelect != 2" if="__config__.app.isApp('business-project')" />

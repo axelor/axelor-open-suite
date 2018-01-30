@@ -66,12 +66,10 @@
     		<panel colSpan="10">
       
       			<panel name="productTypology" title="Product typology" colSpan="6" colWidths="30%,70%">
-			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange" selection-in="['service','storable']" if="!__config__.app.isApp('subscription')"/>
-			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange" if="__config__.app.isApp('subscription')"/>
+			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange"/>
 			        <field name="productSubTypeSelect" colSpan="12"  showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('production')"/>
            			<field name="isShippingCostsProduct" colSpan="4"/>
 			        <field name="isActivity" showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
-			        <field name="periodicitySelect" showIf="productTypeSelect == 'subscriptable'" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 			        <field name="saleSupplySelect" colSpan="12" onChange="action-product-validate-sale-supply-select" hideIf="isShippingCostsProduct"/>
 			        <field name="standardDelay" colSpan="12" showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       			</panel>
@@ -303,7 +301,6 @@
     <action-group name="action-group-base-product-producttype-onchange">
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-validate-sale-supply-select"/>
-    	<action name="action-product-attrs-title-sale-price"/>
     	<action name="action-product-record-product-sub-type-select"/>
     </action-group>
     
@@ -321,7 +318,6 @@
         <action name="action-product-attrs-scale-and-precision"/>
         <action name="action-product-attrs-scale-and-precision-production"/>
 		<action name="action-product-attrs-scale-and-precision-stock"/>
-        <action name="action-product-attrs-title-sale-price"/>
         <action name="action-product-attrs-title-unit"/>
 		<action name="action-product-attrs-in-ati"/>
         <action name="action-product-set-stock"/>
@@ -479,11 +475,6 @@
 		<attribute name="readonly" for="createProductionOrder" expr="eval: __repo__(BillOfMaterial).all().filter('(self.product.id = ?1 OR self.product.id = ?2) AND self.defineSubBillOfMaterial = false', parentProduct?.id, id).fetch().isEmpty()"/>
 	</action-attrs>
 	
-	<action-attrs name="action-product-attrs-title-sale-price">
-		<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale Price (for periodicity selected)')" if="productTypeSelect == 'subscriptable'"/>
-		<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price')" if="productTypeSelect != 'subscriptable'"/>
-	</action-attrs>
-
     <action-attrs name="action-product-attrs-title-unit" if-module="axelor-stock">
         <attribute name="title" for="unit" expr="eval: com.axelor.i18n.I18n.get('Unit')"/>
         <attribute name="title" for="unit" expr="eval: com.axelor.i18n.I18n.get('Stock Unit')" if="__config__.app.getApp('sale').getManageSalesUnits()"/>

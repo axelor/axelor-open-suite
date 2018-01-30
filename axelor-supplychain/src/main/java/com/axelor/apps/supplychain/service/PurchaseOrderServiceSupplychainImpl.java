@@ -175,8 +175,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 				// Check if the company field 'hasInSmForStorableProduct' = true and productTypeSelect = 'storable' or 'hasInSmForNonStorableProduct' = true and productTypeSelect = 'service' or productTypeSelect = 'other'
 				if(product != null
 						&& ((supplyChainConfig.getHasInSmForStorableProduct() && ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect()))
-								|| (supplyChainConfig.getHasInSmForNonStorableProduct() && !ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())))
-						&& !ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(product.getProductTypeSelect())) {
+								|| (supplyChainConfig.getHasInSmForNonStorableProduct() && !ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())))) {
 					
 					Unit unit = purchaseOrderLine.getProduct().getUnit();
 					BigDecimal qty = purchaseOrderLine.getQty();
