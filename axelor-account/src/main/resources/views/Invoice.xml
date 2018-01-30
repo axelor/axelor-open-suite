@@ -259,7 +259,7 @@
 				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>
 				<field name="hideDiscount" colSpan="6"/>
 				<field name="note" colSpan="12"/>
-				<field name="specificNotes" colSpan="12" readonly="true"/>
+				<field name="specificNotes" colSpan="12" readonly="true" showIf="specificNotes"/>
 				<field name="displayTimesheetOnPrinting" if-module="axelor-business-project" hidden="true"/>
 				<field name="displayExpenseOnPrinting" if-module="axelor-business-project" hidden="true"/>
 			</panel>

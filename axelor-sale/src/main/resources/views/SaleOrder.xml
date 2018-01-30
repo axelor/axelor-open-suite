@@ -327,7 +327,7 @@
         <panel name="printing" title="Printing">
 			<field name="printingSettings" required="true" canEdit="false"/>
             <field name="hideDiscount"/>
-            <field name="specificNotes" colSpan="12" readonly="true"/>
+            <field name="specificNotes" colSpan="12" readonly="true" showIf="specificNotes"/>
         </panel>
 	  </panel-tabs>
 

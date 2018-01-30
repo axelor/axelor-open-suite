@@ -74,6 +74,7 @@ public interface IExceptionMessage {
 	static final String STOCK_MOVE_SPLIT_NOT_GENERATED = /*$$(*/ "No new stock move was generated" /*)*/;
 	static final String STOCK_MOVE_INCOMING_PARTIAL_GENERATED = /*$$(*/ "An incoming partial stock move has been generated (%s)" /*)*/;
 	static final String STOCK_MOVE_OUTGOING_PARTIAL_GENERATED = /*$$(*/ "An outgoing partial stock move has been generated (%s)" /*)*/;
+	static final String STOCK_MOVE_MISSING_TEMPLATE = /*$$(*/ "The template to send message on realization is missing." /*)*/;
 
 	/**
 	 * Tracking Number Service
