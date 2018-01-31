@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -651,4 +651,40 @@
 
 .content-yellow input{
 	color: yellow !important;
+}
+
+.btn-custom {
+    background-color: transparent;
+    color: #0275D8;
+    border: none;
+    height: 19px !important;
+    line-height: 13px;
+}
+
+.btn-custom.disabled {
+    background-color: transparent !important;
+    color: #67ACE7 !important;
+    cursor: not-allowed !important;
+}
+
+.btn-custom .fa {
+    margin: 0 4px;
+}
+
+.btn-custom:hover span {
+    text-decoration: underline;
+}
+
+.btn-custom.disabled:hover span {
+    text-decoration: none;
+}
+
+.btn-custom:hover, .btn-custom:focus, .btn-custom:active {
+    background-color: transparent !important;
+    color: #0275D8;
+}
+
+.btn-custom:active {
+    -webkit-box-shadow: unset;
+            box-shadow: unset;
 }
