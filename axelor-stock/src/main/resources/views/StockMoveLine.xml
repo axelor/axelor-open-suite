@@ -227,17 +227,10 @@
 		<field name="realQty" expr="eval: qty" if="_parent?.statusSelect &lt;= 2"/>
 	</action-record>
 	
-	<action-record name="action-stock-move-line-set-product-info" model="com.axelor.apps.stock.db.StockMoveLine">
-	    <field name="unit" expr="eval: product?.unit"/>
-	    <field name="price" expr="eval: product?.costPrice"/>
-	    <field name="productName" expr="eval: product?.name"/>
-    	    <field name="productModel" expr="eval: product?.parentProduct" if="__config__.app.getApp('base').getManageProductVariants()"/>
-        <field name="netWeight"
-            expr="call: com.axelor.apps.base.service.UnitConversionService:convert(
-                product.weightUnit, __parent__.company.stockConfig.customsWeightUnit, product.netWeight)"
-            if="product?.weightUnit &amp;&amp; __parent__?.company?.stockConfig.customsWeightUnit &amp;&amp; product?.netWeight" />
-	</action-record>
-	
+    <action-method name="action-stock-move-line-set-product-info">
+        <call class="com.axelor.apps.stock.web.StockMoveLineController" method="setProductInfo"/>
+    </action-method>
+
 	<action-record name="action-stock-move-line-record-product" model="com.axelor.apps.stock.db.StockMoveLine">
 	    <field name="product" expr="eval: trackingNumber.product" if="trackingNumber"/>
 	</action-record>
