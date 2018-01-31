@@ -621,7 +621,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
                 && company.getStockConfig().getCustomsWeightUnit() != null) {
             Unit startUnit = product.getWeightUnit();
             Unit endUnit = company.getStockConfig().getCustomsWeightUnit();
-            netWeight = Beans.get(UnitConversionService.class).convert(startUnit, endUnit, product.getNetWeight());
+            netWeight = Beans.get(UnitConversionService.class).convertWithProduct(startUnit, endUnit,
+                    product.getNetWeight(), product);
         } else {
             netWeight = BigDecimal.ZERO;
         }
