@@ -69,7 +69,7 @@ public interface IExceptionMessage {
 	static final String STOCK_MOVE_15 = /*$$(*/ "Please select lines to split" /*)*/;
 	static final String STOCK_MOVE_16 = /*$$(*/ "Please enter a valid split quantity" /*)*/;
 	static final String STOCK_MOVE_17 = /*$$(*/ "Must set weight unit in stock configuration for customs." /*)*/;
-	static final String STOCK_MOVE_18 = /*$$(*/ "All storable products must have net weight information for customs." /*)*/;
+	static final String STOCK_MOVE_18 = /*$$(*/ "All storable products must have net weight and weight unit information for customs." /*)*/;
 	static final String STOCK_MOVE_19 = /*$$(*/ "Can't realize this stock move because of the ongoing inventory %s." /*)*/;
 	static final String STOCK_MOVE_SPLIT_NOT_GENERATED = /*$$(*/ "No new stock move was generated" /*)*/;
 	static final String STOCK_MOVE_INCOMING_PARTIAL_GENERATED = /*$$(*/ "An incoming partial stock move has been generated (%s)" /*)*/;

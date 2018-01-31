@@ -19,7 +19,7 @@
 "Add","Ajouter",,
 "Address","Adresse",,
 "Alert","Alerte",,
-"All storable products must have net weight information for customs.","Tous les produits stockables doivent avoir un poids net pour les douanes.",,
+"All storable products must have net weight and weight unit information for customs.","Tous les produits stockables doivent avoir un poids net et une unité de poids pour les douanes.",,
 "Allocations of costs","Répartition des coûts",,
 "An error occurred while importing the file data, product not found with code :","Une erreur est survenue lors de l'import, aucun produit stockable avec le code ",,
 "An error occurred while importing the file data, there are multiple products with code :","Une erreur est survenue lors de l'import : il y plus d'un produit ayant le code ",,

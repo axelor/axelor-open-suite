@@ -19,7 +19,7 @@
 "Add",,,
 "Address",,,
 "Alert",,,
-"All storable products must have net weight information for customs.",,,
+"All storable products must have net weight and weight unit information for customs.",,,
 "Allocations of costs",,,
 "An error occurred while importing the file data, product not found with code :",,,
 "An error occurred while importing the file data, there are multiple products with code :",,,
