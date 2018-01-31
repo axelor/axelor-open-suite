@@ -70,7 +70,7 @@
 
     <action-record name="action-logistical-form-new" model="com.axelor.apps.stock.db.LogisticalForm">
         <field name="company" expr="eval: __user__.activeCompany" />
-        <field name="collectionDate" expr="eval: __date__" />
+        <field name="collectionDate" expr="eval: __config__.app.getTodayDate()" />
     </action-record>
 
     <action-group name="action-logistical-form-change-status">
