@@ -8,6 +8,7 @@
         <field name="company" form-view="company-form" grid-view="company-grid" canEdit="false" />
         <field name="deliverToCustomerPartner" form-view="partner-customer-form" grid-view="partner-customer-grid"
             canEdit="false" />
+        <field name="carrierPartner" />
         <field name="collectionDate" />
         <field name="statusSelect" />
     </grid>
