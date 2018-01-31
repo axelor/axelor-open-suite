@@ -190,8 +190,8 @@ public class ExportProductServiceImpl implements ExportProductService {
 								stock_id = element.getElementsByTagName("id").item(0).getTextContent().toString();
 							}
 						}
-						
-						List<StockMoveLine> moveLine = Beans.get(StockMoveLineRepository.class).all().filter("self.stockMove.statusSelect = 3 and (self.stockMove.fromLocation.typeSelect = 1 or self.stockMove.toLocation.typeSelect = 1) and self.product = ?", productObj).fetch();
+
+						List<StockMoveLine> moveLine = Beans.get(StockMoveLineRepository.class).all().filter("self.stockMove.statusSelect = 3 and (self.stockMove.fromStockLocation.typeSelect = 1 or self.stockMove.toStockLocation.typeSelect = 1) and self.product = ?", productObj).fetch();
 						BigDecimal totalRealQty = BigDecimal.ZERO;
 						
 						if(!moveLine.isEmpty()) {
