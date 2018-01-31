@@ -109,4 +109,11 @@ public interface ExpenseService  {
 	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine) throws AxelorException;
 
 	public List<ExpenseLine> getExpenseLineList(Expense expense);
+
+	/**
+	 * fill {@link ExpenseLine#expense} in {@link Expense#generalExpenseLineList}
+	 * and {@link Expense#kilometricExpenseLineList}
+	 * @param expense
+	 */
+	void completeExpenseLines(Expense expense);
 }
