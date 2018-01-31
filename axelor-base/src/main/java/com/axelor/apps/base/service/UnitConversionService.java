@@ -17,18 +17,21 @@
  */
 package com.axelor.apps.base.service;
 
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
-
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Locale;
 
+import javax.validation.constraints.Digits;
+
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -43,10 +46,14 @@ import com.axelor.tool.template.TemplateMaker;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
+
 public class UnitConversionService {
-	
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
 	private static final char TEMPLATE_DELIMITER = '$';
-	private static final int MAX_COEFFICIENT_SCALE = 12;
+	private static final int DEFAULT_COEFFICIENT_SCALE = 12;
 	protected TemplateMaker maker;
 	
 	@Inject
@@ -192,7 +199,18 @@ public class UnitConversionService {
             return (int) Math.log10(unitConversion.getCoef().intValue());
         }
 
-        return MAX_COEFFICIENT_SCALE;
+        return getCoefficientScale();
+    }
+
+    private int getCoefficientScale() {
+        try {
+            Field field = UnitConversion.class.getDeclaredField("coef");
+            Digits digits = field.getAnnotation(Digits.class);
+            return digits.fraction();
+        } catch (NoSuchFieldException e) {
+            logger.error(e.getMessage());
+            return DEFAULT_COEFFICIENT_SCALE;
+        }
     }
 
 }
