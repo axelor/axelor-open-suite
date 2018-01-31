@@ -57,7 +57,7 @@
                 <panel colSpan="12" hideIf="$readonly()">
                     <field name="$stockMove" title="Stock move" type="reference" widget="many-to-one"
                         target="com.axelor.apps.stock.db.StockMove" grid-view="stock-move-out-grid" form-view="stock-move-form"
-                        colSpan="10" onSelect="action-logistical-form-stock-move-domain" canEdit="false" />
+                        colSpan="4" onSelect="action-logistical-form-stock-move-domain" canEdit="false" />
                     <button name="addStockMoveBtn" title="Add" onClick="action-logistical-form-add-stock-move"
                         colSpan="2" readonlyIf="!$stockMove" />
                 </panel>
