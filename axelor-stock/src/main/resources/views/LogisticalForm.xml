@@ -8,6 +8,7 @@
         <field name="company" form-view="company-form" grid-view="company-grid" canEdit="false" />
         <field name="deliverToCustomerPartner" form-view="partner-customer-form" grid-view="partner-customer-grid"
             canEdit="false" />
+        <field name="carrierPartner" />
         <field name="collectionDate" />
         <field name="statusSelect" />
     </grid>
@@ -57,7 +58,7 @@
                 <panel colSpan="12" hideIf="$readonly()">
                     <field name="$stockMove" title="Stock move" type="reference" widget="many-to-one"
                         target="com.axelor.apps.stock.db.StockMove" grid-view="stock-move-out-grid" form-view="stock-move-form"
-                        colSpan="10" onSelect="action-logistical-form-stock-move-domain" canEdit="false" />
+                        colSpan="4" onSelect="action-logistical-form-stock-move-domain" canEdit="false" />
                     <button name="addStockMoveBtn" title="Add" onClick="action-logistical-form-add-stock-move"
                         colSpan="2" readonlyIf="!$stockMove" />
                 </panel>
@@ -70,7 +71,7 @@
 
     <action-record name="action-logistical-form-new" model="com.axelor.apps.stock.db.LogisticalForm">
         <field name="company" expr="eval: __user__.activeCompany" />
-        <field name="collectionDate" expr="eval: __date__" />
+        <field name="collectionDate" expr="eval: __config__.app.getTodayDate()" />
     </action-record>
 
     <action-group name="action-logistical-form-carrier-validated">
