@@ -170,6 +170,9 @@ public class StockMoveServiceImpl implements StockMoveService {
 		stockMove.setDescription(description);
 		stockMove.setShipmentMode(shipmentMode);
 		stockMove.setFreightCarrierMode(freightCarrierMode);
+		stockMove.setIsIspmRequired(
+				this.getDefaultISPM(clientPartner, toAddress)
+		);
 
 		stockMove.setTypeSelect(getStockMoveType(fromStockLocation, toStockLocation));
 		if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
@@ -194,6 +197,21 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 		stockMove.setStockMoveAutomaticMail(stockMoveAutomaticMail);
 		stockMove.setStockMoveMessageTemplate(stockMoveMessageTemplate);
+	}
+
+	/**
+	 * @param clientPartner
+	 * @param toAddress
+     * @return default value for {@link StockMove#isIspmRequired}
+	 */
+	protected boolean getDefaultISPM(Partner clientPartner, Address toAddress) {
+	    if (clientPartner != null && clientPartner.getIsIspmRequired()) {
+			return true;
+		} else  {
+			return toAddress != null
+					&& toAddress.getAddressL7Country() != null
+					&& toAddress.getAddressL7Country().getIsIspmRequired();
+		}
 	}
 
 

@@ -284,6 +284,7 @@
                 <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-partner-record-empty-freight-carrier-mode" title="Shipment Mode" if="__config__.app.isApp('stock')" />
                 <field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode" if="__config__.app.isApp('stock')" />
                 <field name="carrierPartner" if-module="axelor-stock" form-view="partner-form" grid-view="partner-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
+				<field name="isIspmRequired" if-module="axelor-stock" if="__config__.app.isApp('stock')" hidden="true" showIf="isCustomer || isProspect"/>
 				<field name="partnerStockSettingsList" if-module="axelor-stock"
 					   if="__config__.app.isApp('stock')"
 					   colSpan="12"
