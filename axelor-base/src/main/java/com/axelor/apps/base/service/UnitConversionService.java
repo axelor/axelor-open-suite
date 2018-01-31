@@ -162,7 +162,7 @@ public class UnitConversionService {
 
 			if (unitConversion.getStartUnit().equals(endUnit) && unitConversion.getEndUnit().equals(startUnit)) { 
 				if(unitConversion.getTypeSelect() == UnitConversionRepository.TYPE_COEFF && unitConversion.getCoef().compareTo(BigDecimal.ZERO) != 0){
-					return BigDecimal.ONE.divide(unitConversion.getCoef(), getCoefficientScale(unitConversion), RoundingMode.HALF_EVEN);
+					return BigDecimal.ONE.divide(unitConversion.getCoef(), getInverseCoefficientScale(unitConversion), RoundingMode.HALF_EVEN);
 				} else if (product != null) {
 					maker.setTemplate(unitConversion.getFormula());
 					eval = maker.make();
@@ -174,7 +174,7 @@ public class UnitConversionService {
 					GroovyShell shell = new GroovyShell(binding,conf);
 					BigDecimal result = new BigDecimal(shell.evaluate(eval).toString()); 
 					if(result.compareTo(BigDecimal.ZERO) != 0){
-						return BigDecimal.ONE.divide(result, getCoefficientScale(unitConversion), RoundingMode.HALF_EVEN);
+						return BigDecimal.ONE.divide(result, getInverseCoefficientScale(unitConversion), RoundingMode.HALF_EVEN);
 					}
 				}
 			}
@@ -185,7 +185,7 @@ public class UnitConversionService {
 
 	}
 
-    private int getCoefficientScale(UnitConversion unitConversion) {
+    private int getInverseCoefficientScale(UnitConversion unitConversion) {
         Preconditions.checkNotNull(unitConversion.getCoef());
 
         if (unitConversion.getCoef().doubleValue() % 10 == 0) {
