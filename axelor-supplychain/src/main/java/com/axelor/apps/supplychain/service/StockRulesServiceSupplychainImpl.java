@@ -96,12 +96,8 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 
 				Template template = templateRepo.all().filter("self.metaModel.fullName = ?1 AND self.isSystem != true",  StockRules.class.getName()).fetchOne();
 				try {
-					Message message = templateMessageService.generateMessage(stockRules, template, null);
+					Message message = templateMessageService.generateMessage(stockRules, template);
 					messageRepo.save(message);
-//					if (JPA.em().getTransaction().isActive()) {
-//						JPA.em().getTransaction().commit();
-//						JPA.em().getTransaction().begin();
-//					}
 				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException e) {
 					throw new AxelorException(e, IException.TECHNICAL);
 				}
@@ -147,13 +143,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 					purchaseOrderRepo.save(purchaseOrder);
 
 				}
-
-
 			}
-
-
-
-
 		}
 
 	}

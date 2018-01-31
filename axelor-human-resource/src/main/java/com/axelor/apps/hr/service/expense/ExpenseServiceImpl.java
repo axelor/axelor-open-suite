@@ -222,7 +222,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 		if (hrConfig.getExpenseMailNotification()) {
 
-			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getSentExpenseTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getSentExpenseTemplate(hrConfig));
 
 		}
 
@@ -271,7 +271,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 		if (hrConfig.getExpenseMailNotification()) {
 
-			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getValidatedExpenseTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getValidatedExpenseTemplate(hrConfig));
 
 		}
 
@@ -295,7 +295,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 		if (hrConfig.getExpenseMailNotification()) {
 
-			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getRefusedExpenseTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getRefusedExpenseTemplate(hrConfig));
 
 		}
 
@@ -424,7 +424,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 		if (hrConfig.getTimesheetMailNotification()) {
 
-			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getCanceledExpenseTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getCanceledExpenseTemplate(hrConfig));
 
 		}
 

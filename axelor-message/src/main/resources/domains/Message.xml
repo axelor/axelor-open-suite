@@ -45,7 +45,7 @@
 		public static final int STATUS_SENT = 2; 
 		public static final int STATUS_DELETED = 3; 
 		
-		// MESSAGE STATUS SELECT
+		// MEDIA TYPE SELECT
 		public static final int MEDIA_TYPE_MAIL = 1;
 		public static final int MEDIA_TYPE_EMAIL = 2; 
 		public static final int MEDIA_TYPE_CHAT = 3; 

@@ -40,7 +40,6 @@ public class CrmModule extends AxelorModule {
 
     @Override
     protected void configure() {
-        bind(MessageServiceBaseImpl.class).to(MessageServiceCrmImpl.class);
         bind(EventRepository.class).to(EventManagementRepository.class);
         bind(OpportunityRepository.class).to(OpportunityManagementRepository.class);
         bind(OpportunityService.class).to(OpportunityServiceImpl.class);

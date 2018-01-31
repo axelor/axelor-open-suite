@@ -158,7 +158,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 		
 		if (hrConfig.getTimesheetMailNotification()) {
-			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getSentTimesheetTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getSentTimesheetTemplate(hrConfig));
 		}
 		
 		return null;
@@ -180,7 +180,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		
 		if(hrConfig.getTimesheetMailNotification())  {
 				
-			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getValidatedTimesheetTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getValidatedTimesheetTemplate(hrConfig));
 				
 		}
 		
@@ -202,7 +202,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		
 		if(hrConfig.getTimesheetMailNotification())  {
 				
-			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getRefusedTimesheetTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getRefusedTimesheetTemplate(hrConfig));
 				
 		}
 		
@@ -221,7 +221,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		if(hrConfig.getTimesheetMailNotification())  {
 
-			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getCanceledTimesheetTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getCanceledTimesheetTemplate(hrConfig));
 		}
 
 		return null;

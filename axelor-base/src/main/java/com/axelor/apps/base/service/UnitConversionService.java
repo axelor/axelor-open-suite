@@ -40,11 +40,13 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.tool.template.TemplateMaker;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
 public class UnitConversionService {
 	
 	private static final char TEMPLATE_DELIMITER = '$';
+	private static final int MAX_COEFFICIENT_SCALE = 12;
 	protected TemplateMaker maker;
 	
 	@Inject
@@ -160,7 +162,7 @@ public class UnitConversionService {
 
 			if (unitConversion.getStartUnit().equals(endUnit) && unitConversion.getEndUnit().equals(startUnit)) { 
 				if(unitConversion.getTypeSelect() == UnitConversionRepository.TYPE_COEFF && unitConversion.getCoef().compareTo(BigDecimal.ZERO) != 0){
-					return BigDecimal.ONE.divide(unitConversion.getCoef(), appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);  
+					return BigDecimal.ONE.divide(unitConversion.getCoef(), getCoefficientScale(unitConversion), RoundingMode.HALF_EVEN);
 				} else if (product != null) {
 					maker.setTemplate(unitConversion.getFormula());
 					eval = maker.make();
@@ -172,7 +174,7 @@ public class UnitConversionService {
 					GroovyShell shell = new GroovyShell(binding,conf);
 					BigDecimal result = new BigDecimal(shell.evaluate(eval).toString()); 
 					if(result.compareTo(BigDecimal.ZERO) != 0){
-						return BigDecimal.ONE.divide(result, appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
+						return BigDecimal.ONE.divide(result, getCoefficientScale(unitConversion), RoundingMode.HALF_EVEN);
 					}
 				}
 			}
@@ -182,5 +184,15 @@ public class UnitConversionService {
 		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.UNIT_CONVERSION_1), startUnit.getName(), endUnit.getName());
 
 	}
-	
+
+    private int getCoefficientScale(UnitConversion unitConversion) {
+        Preconditions.checkNotNull(unitConversion.getCoef());
+
+        if (unitConversion.getCoef().doubleValue() % 10 == 0) {
+            return (int) Math.log10(unitConversion.getCoef().intValue());
+        }
+
+        return MAX_COEFFICIENT_SCALE;
+    }
+
 }

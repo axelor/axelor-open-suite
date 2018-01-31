@@ -5,11 +5,11 @@
   
   <module name="message" package="com.axelor.apps.message.db"/>
   
-  <entity name="Message" lang="java">
+  <entity name="Template" lang="java">
   	
   	<extra-code><![CDATA[
 
-		// MESSAGE STATUS SELECT
+		// MEDIA TYPE SELECT
 		public static final int MEDIA_TYPE_EMAILING = 4; 
 	
 	]]></extra-code>
