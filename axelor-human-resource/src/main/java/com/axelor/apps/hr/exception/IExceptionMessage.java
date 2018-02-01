@@ -106,4 +106,9 @@ public interface IExceptionMessage {
 	static final String EXPENSE_MISSING_PERIOD = /*$$(*/ "Please fill the period" /*)*/;
 	static final String EXPENSE_MISSING_PAYMENT_MODE = /*$$(*/ "Please fill the payment mode." /*)*/;
     static final String EXPENSE_PAYMENT_CANCEL = /*$$(*/ "The bank order linked to this expense has already been carried out/rejected, and thus can't be canceled" /*)*/;
+
+	/**
+	 * Kilometric service
+	 */
+	static final String KILOMETRIC_ALLOWANCE_RATE_MISSING = /*$$(*/ "The kilometric allowance rate corresponding to the kilometric allow param %s is missing" /*)*/;
 }
