@@ -6,7 +6,7 @@
 		 <field name="contactPartner.fullName"/>
 		 <field name="contactPartner.fixedPhone" />
 		 <field name="contactPartner.mobilePhone" />
-		 <field name="manager" form-view="user-form" grid-view="user-grid" />
+		 <field name="managerUser" form-view="user-form" grid-view="user-grid" />
 		 <field name="mainEmploymentContract.companyDepartment" form-view="company-department-form" grid-view="company-department-grid"/>
 		 <field name="mainEmploymentContract.payCompany"/>
 		 <field name="archived" hidden="true" />
@@ -14,7 +14,7 @@
 	
 	<grid name="employee-lite-grid" title="Employee" model="com.axelor.apps.hr.db.Employee">
 		 <field name="contactPartner" grid-view="partner-contact-grid" form-view="partner-contact-form"/>
-		 <field name="manager" form-view="user-form" grid-view="user-grid" />
+		 <field name="managerUser" form-view="user-form" grid-view="user-grid" />
 		 <field name="mainEmploymentContract.companyDepartment" form-view="company-department-form" grid-view="company-department-grid"/>
 	</grid>
 
@@ -82,7 +82,7 @@
       			</panel>
       			<panel name="rhInfo" title="HR Info." colSpan="12">
         			<field if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" name="bankDetails" colSpan="4" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-        			<field name="manager" colSpan="4" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
+        			<field name="managerUser" colSpan="4" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
         			<field name="mainEmploymentContract.companyDepartment" colSpan="4" form-view="company-department-form" grid-view="company-department-grid"/>
         			<field name="timesheetReminder" colSpan="4"/>
         			<field name="external" colSpan="4"/>

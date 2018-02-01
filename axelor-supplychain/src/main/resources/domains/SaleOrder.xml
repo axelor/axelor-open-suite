@@ -16,11 +16,6 @@
         <integer name="saleOrderTypeSelect" title="Type" required="true" default="1" selection="supplychain.sale.order.type.select"/>
         <!-- 	Onglet échéancier -->
         <one-to-many name="saleOrderScheduleLineList" ref="com.axelor.apps.sale.db.SaleOrderScheduleLine" mappedBy="saleOrder" title="Schedule line list"/>
-        <integer name="periodicity" selection="product.periodicity.subscription.select"/>
-        <date name="fromSubDate" title="Date From"/>
-        <integer name="periodNumber" title="Number of Periods"/>
-        <date name="toSubDate" title="Date To"/>
-        <integer name="subscripInvTypeSelect" title="Invoicing Type" selection="supplychain.subscription.invoicing.type.select"/>
         <one-to-many name="timetableList" ref="com.axelor.apps.supplychain.db.Timetable" title="Timetable" mappedBy="saleOrder"/>
         <boolean name="interco" title="Interco"/>
         <boolean name="createdByInterco" default="false"/>
@@ -30,8 +25,6 @@
 
         <extra-code>
             <![CDATA[
-                public static final int SUBSCRIPTION_PERIOD_BEGINNING = 1;
-                public static final int SUBSCRIPTION_PERIOD_ENDING = 2;
 
                 public static final int INVOICE_ALL = 1;
                 public static final int INVOICE_PART = 2;
@@ -39,7 +32,6 @@
                 public static final int INVOICE_ADVANCE_PAYMENT = 4;
 
                 public static final int SALE_ORDER_TYPE_NORMAL = 1;
-                public static final int SALE_ORDER_TYPE_SUBSCRIPTION = 2;
             ]]>
         </extra-code>
 	

@@ -2,8 +2,10 @@
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-	<module name="base" package="com.axelor.apps.base.db"/>
+	<module name="talent" package="com.axelor.apps.talent.db"/>
 
-	<entity name="AppSubscription" lang="java" cachable="true" extends="App" />
+	<entity name="Skill" lang="java" cachable="true">
+		<string name="name" title="Name" required="true" />
+	</entity>
 
 </domain-models>

@@ -141,6 +141,7 @@
                             <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 3">Balance invoice</span>
                             <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 4">Contract invoice</span>
                             <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 5">Contract closing invoice</span>
+                        	<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 6">Subscription</span>
                         </h4>
 					]]>
                 </viewer>
@@ -163,7 +164,6 @@
             <field name="project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if-module="axelor-business-project" if="__config__.app.isApp('project')"/>
             <field name="interco"/>
             <field name="inAti" onChange="action-invoice-attrs-in-ati"/>
-            <field name="isSubscription" hidden="true"/>
         </panel>
 
         <panel title="Invoicing informations" hideIf="company == null">
@@ -183,7 +183,12 @@
             <field name="purchaseOrder" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
             <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
         </panel>
-
+		
+		<panel name="subscriptionPanel" title="Subscription period" showIf="operationSubTypeSelect == 6">
+        	<field name="subscriptionFromDate" />
+        	<field name="subscriptionToDate" />
+        </panel>
+        
 		<panel-tabs hideIf="partner == null">
 			<panel name="invoiceContent" title="Invoice content" showTitle="false">
 				<panel-related field="invoiceLineList" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-onchange" canMove="true" orderBy="sequence"/>
@@ -445,7 +450,6 @@
 			<field name="currency" canEdit="false" onChange="action-invoice-attrs-change-total-title" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="project" if-module="axelor-business-project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')"/>
 			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
-			<field name="isSubscription" hidden="true"/>
 		</panel>
 
 		<panel name="invoicingInformations" title="Invoicing informations">

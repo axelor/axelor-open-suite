@@ -21,6 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.sale.db.SaleBatch;
+import com.axelor.apps.sale.db.repo.SaleBatchRepository;
+import com.axelor.apps.supplychain.service.batch.BatchInvoicing;
 import com.axelor.apps.supplychain.service.batch.SaleBatchService;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
@@ -31,6 +34,12 @@ public class SaleBatchController {
 
 	@Inject
 	private SaleBatchService saleBatchService;
+	
+	@Inject
+	private BatchInvoicing batchInvoicing;
+	
+	@Inject
+	private SaleBatchRepository saleBatchRepo;
 
 	/**
 	 * Lancer le batch à travers un web service.
@@ -45,5 +54,15 @@ public class SaleBatchController {
 	    Map<String,Object> mapData = new HashMap<String,Object>();
 		mapData.put("anomaly", batch.getAnomaly());
 		response.setData(mapData);
+	}
+	
+	public void actionInvoicing(ActionRequest request, ActionResponse response) throws AxelorException{
+		
+		SaleBatch saleBatch = request.getContext().asType(SaleBatch.class);
+		saleBatch = saleBatchRepo.find(saleBatch.getId());
+		Batch batch = batchInvoicing.run(saleBatch);
+		response.setFlash(batch.getComments());
+		response.setReload(true);
+		
 	}
 }

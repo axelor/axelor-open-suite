@@ -72,6 +72,8 @@ public interface ITranslation {
 
 	public static final String INVOICE_PRODUCT_CODE = /*$$(*/ "Invoice.productCode"; /*)*/
 	public static final String INVOICE_TERMS_AND_CONDITIONS = /*$$(*/ "Invoice.termsAndConditions"; /*)*/
+	
+	public static final String INVOICE_SUBSCRIPTION_PERIOD = /*$$(*/ "Invoice.subscriptionPeriod"; /*)*/
 
 	
 	public static final String ACCOUNTING_REPORT_1_TITLE = /*$$(*/ "AccountingReportType1.title"; /*)*/

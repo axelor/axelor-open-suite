@@ -40,7 +40,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -55,7 +54,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 	protected SaleOrderLine saleOrderLine;
 	protected PurchaseOrderLine purchaseOrderLine;
 	protected StockMoveLine stockMoveLine;
-	protected Subscription subscription;
 
 	@Inject
 	public InvoiceLineGeneratorSupplyChain(Invoice invoice, Product product, String productName,
@@ -110,16 +108,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     }
 	
 
-	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
-			Unit unit, int sequence, boolean isTaxInvoice, SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, 
-			StockMoveLine stockMoveLine, Subscription subscription) throws AxelorException {
-
-		this(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice, saleOrderLine, purchaseOrderLine, stockMoveLine);
-
-		this.subscription = subscription;
-    }
-
-
 	/**
 	 * @return
 	 * @throws AxelorException
@@ -129,13 +117,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
 		InvoiceLine invoiceLine = super.createInvoiceLine();
 		
-		// Update for subscription SaleOrderLine
-		if (saleOrderLine != null && product != null && ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(product.getProductTypeSelect())
-				&& saleOrderLine.getSubscriptionList() != null && !saleOrderLine.getSubscriptionList().isEmpty())  {
-			BigDecimal subscriptionListSize = new BigDecimal(saleOrderLine.getSubscriptionList().size());
-			this.exTaxTotal = this.exTaxTotal.divide(subscriptionListSize, 2, RoundingMode.HALF_EVEN);
-			this.inTaxTotal = this.inTaxTotal.divide(subscriptionListSize, 2, RoundingMode.HALF_EVEN);
-		}
 
 		this.assignOriginElements(invoiceLine);
 		

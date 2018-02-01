@@ -122,7 +122,6 @@
 				// PRODUCT TYPE SELECT
 				public static final String PRODUCT_TYPE_SERVICE = "service";
 				public static final String PRODUCT_TYPE_STORABLE = "storable";
-				public static final String PRODUCT_TYPE_SUBSCRIPTABLE = "subscriptable";
 				
 				// SALE TRACKING ORDER SELECT
 				public static final int SALE_TRACKING_ORDER_FIFO = 1;

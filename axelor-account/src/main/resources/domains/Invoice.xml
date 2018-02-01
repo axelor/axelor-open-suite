@@ -23,7 +23,6 @@
     <many-to-one name="partnerAccount" ref="com.axelor.apps.account.db.Account" title="Partner account"/>
 	<many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
     <string name="addressStr" title="Address" large="true" multiline="true"/>
-    <boolean name="isSubscription" title="Subscription ?" default="false"/>
     <string name="internalReference" title="Internal Ref."/>
     <string name="externalReference" title="External Ref."/>
     <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
@@ -119,6 +118,9 @@
 
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
     <many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"/>
+    
+    <date name="subscriptionFromDate" title="From" />
+    <date name="subscriptionToDate" title="To" />
 
   	<unique-constraint columns="invoiceId,company"/>
 

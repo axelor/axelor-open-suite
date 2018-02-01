@@ -3,27 +3,27 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	
-	<grid name="SLA-grid" title="All SLA" model="com.axelor.apps.helpdesk.db.SLA">
+	<grid name="sla-grid" title="All SLA" model="com.axelor.apps.helpdesk.db.Sla">
 		<field name="name"/>
 		<field name="team"/>
 		<field name="ticketType"/>
-		<field name="reachStage" />
-		<field name="priority"/>
+		<field name="reachStageSelect" />
+		<field name="prioritySelect"/>
 	</grid>
 	
-	<form model="com.axelor.apps.helpdesk.db.SLA" title="SLA" name="SLA-form">
+	<form model="com.axelor.apps.helpdesk.db.Sla" title="SLA" name="sla-form">
 	
 		<panel>
 			<field name="name" colSpan="12"/>
 			
 			<panel name="applyOn" title="Apply on" colSpan="12">
 				<field name="team" form-view="team-form" grid-view="team-grid"/>
-				<field name="priority"/>
+				<field name="prioritySelect"/>
 				<field name="ticketType"/>
 			</panel>
 			
 			<panel name="target" title="Target" colSpan="12">
-				<field name="reachStage"/>
+				<field name="reachStageSelect"/>
 				<field name="reachIn" title="Reach in">
 					<viewer>
 					<![CDATA[

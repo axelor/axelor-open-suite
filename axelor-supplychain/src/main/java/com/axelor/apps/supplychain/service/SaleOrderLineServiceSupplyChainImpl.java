@@ -69,16 +69,6 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 
 		BigDecimal amount = saleOrderLine.getQty().multiply(price).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 
-		if (ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(saleOrderLine.getProduct().getProductTypeSelect())) {
-			if(saleOrderLine.getSubscriptionList() != null
-				&& !saleOrderLine.getSubscriptionList().isEmpty()){
-				amount = amount.multiply(new BigDecimal(saleOrderLine.getSubscriptionList().size())).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
-			}
-			else  {
-				amount = BigDecimal.ZERO;
-			}
-		}
-
 		LOG.debug("Calcul du montant HT avec une quantité de {} pour {} : {}", new Object[] { saleOrderLine.getQty(), price, amount });
 
 		return amount;

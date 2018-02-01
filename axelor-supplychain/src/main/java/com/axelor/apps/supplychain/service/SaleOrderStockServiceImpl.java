@@ -190,8 +190,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
 		Product product = saleOrderLine.getProduct();
 
-		if(product != null && this.isStockMoveProduct(saleOrderLine)
-				&& !ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(product.getProductTypeSelect())) {
+		if(product != null && this.isStockMoveProduct(saleOrderLine)) {
 			
 			Unit unit = saleOrderLine.getProduct().getUnit();
 			BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();

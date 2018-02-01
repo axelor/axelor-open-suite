@@ -9,7 +9,14 @@
 	<many-to-one name="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchase order"/>
     <boolean name="interco" title="Interco"/>
     <boolean name="createdByInterco" default="false"/>
+	
+	<extra-code><![CDATA[
+	
+	    // OPERATION TYPE SUB SELECT
+	    public static final int OPERATION_SUB_TYPE_SUBSCRIPTION = 6;
 
+	]]></extra-code>
+	
   </entity>
   
 </domain-models>

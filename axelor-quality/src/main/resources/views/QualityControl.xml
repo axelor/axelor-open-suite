@@ -27,7 +27,7 @@
 			<field name="responsible"/>
 			<field name="startDate"/>
 			<field name="endDate"/>
-			<field name="deadLine"/>
+			<field name="deadLineDate"/>
 		</panel>
 		<panel sidebar="true" hideIf="statusSelect == 6">
 			<button name="plan" title="Plan" showIf="statusSelect == 1 || statusSelect == 2" onClick="action-quality-control-record-status-planned,save"/>

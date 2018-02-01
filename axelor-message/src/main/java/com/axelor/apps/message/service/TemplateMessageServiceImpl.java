@@ -30,12 +30,12 @@ import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
-import com.axelor.apps.message.db.repo.MailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.db.EntityHelper;
@@ -229,9 +229,9 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 		return template.getMediaTypeSelect();
 	}
 	
-	protected MailAccount getMailAccount()  {
+	protected EmailAccount getMailAccount()  {
 		
-		MailAccount mailAccount = Beans.get(MailAccountService.class).getDefaultMailAccount(MailAccountRepository.SERVER_TYPE_SMTP);
+		EmailAccount mailAccount = Beans.get(MailAccountService.class).getDefaultMailAccount(EmailAccountRepository.SERVER_TYPE_SMTP);
 		
 		if ( mailAccount != null ) {
 			log.debug( "Email account ::: {}", mailAccount );

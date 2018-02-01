@@ -15,21 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.supplychain.web;
 
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 
-public interface SubscriptionService {
-	@Transactional
-	public SaleOrderLine generateSubscriptions(SaleOrderLine saleOrderLine) throws AxelorException;
-
-	@Transactional
-	public SaleOrderLine generateSubscriptions(SaleOrderLine saleOrderLineIt,SaleOrder saleOrder) throws AxelorException;
+public class AppSupplychainController {
+		
+	@Inject
+	private AppSupplychainService appSupplychainService;
 	
-	@Transactional
-	public void generateAllSubscriptions(SaleOrder saleOrder) throws AxelorException;
+	public void generateSupplychainConfigurations(ActionRequest request, ActionResponse response) {
+		
+		appSupplychainService.generateSupplychainConfigurations();
+		
+		response.setReload(true);
+	}
 
 }

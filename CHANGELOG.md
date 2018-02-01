@@ -16,6 +16,7 @@
 - Cheque deposit slips
 - Direct debit batches
 - Logistical forms
+- New subscription feature.
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.

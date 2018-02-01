@@ -24,14 +24,14 @@
 		<many-to-many name="vehicleTagSet" ref="VehicleTag" title="Tags"/>
 		<decimal name="vehicleOdometer"  title="Odometer" />
 		<integer name="transmissionSelect" title="Transmission" selection="fleet.vehicle.transimission.select" />
-		<integer name="fuelType" title="Fuel type" selection="fleet.vehicle.fuel.type.select" />
-		<integer name="horsepower" title="Horse Power" />
-		<decimal name="horsepowerTax" title="Horse Power Tax" />
+		<integer name="fuelTypeSelect" title="Fuel type" selection="fleet.vehicle.fuel.type.select" />
+		<integer name="horsePower" title="Horse Power" />
+		<decimal name="horsePowerTax" title="Horse Power Tax" />
 		<integer name="powerKw" title="Power(KW)" />
 		<decimal name="co2emission" title="CO2 Emissions" />
 		<many-to-one name="image"  title="Image" ref="com.axelor.meta.db.MetaFile" />
 		<decimal name="carValue" title="Car value" />
-		<boolean name="isarchived" default="false" title="Archived"/>
+		<boolean name="isArchived" default="false" title="Archived"/>
 			
 	</entity>
 

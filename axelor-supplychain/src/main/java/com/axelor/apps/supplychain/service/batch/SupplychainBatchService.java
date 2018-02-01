@@ -27,12 +27,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 
 public class SupplychainBatchService extends AbstractBatchService {
-
-	@Inject
-	protected BatchSubscription batchSubscription;
 
 	@Override
 	protected Class<? extends Model> getModelClass() {
@@ -46,9 +42,6 @@ public class SupplychainBatchService extends AbstractBatchService {
 		SupplychainBatch supplychainBatch = (SupplychainBatch) batchModel;
 
 		switch (supplychainBatch.getActionSelect()) {
-		case SupplychainBatchRepository.ACTION_BILL_SUB:
-			batch = billSubscriptions(supplychainBatch);
-			break;
 		case SupplychainBatchRepository.ACTION_INVOICE_OUTGOING_STOCK_MOVES:
 			batch = invoiceOutgoingStockMoves(supplychainBatch);
 			break;
@@ -62,9 +55,6 @@ public class SupplychainBatchService extends AbstractBatchService {
 		return batch;
 	}
 
-	public Batch billSubscriptions(SupplychainBatch supplychainBatch){
-		return batchSubscription.run(supplychainBatch);
-	}
 
 	public Batch invoiceOutgoingStockMoves(SupplychainBatch supplychainBatch) {
 		return Beans.get(BatchOutgoingStockMoveInvoicing.class).run(supplychainBatch);

@@ -12,7 +12,7 @@
 				return vehicleMake.getName() + " " + model;
 			]]>
 		</string>
-	 	<many-to-many name="vehicleVendors" ref="com.axelor.apps.base.db.Partner" title="Vendors" />
+	 	<many-to-many name="vehicleVendorsSet" ref="com.axelor.apps.base.db.Partner" title="Vendors" />
 	</entity>
 
 </domain-models>

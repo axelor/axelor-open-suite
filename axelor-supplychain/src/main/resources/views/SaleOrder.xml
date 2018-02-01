@@ -38,6 +38,31 @@
 		<panel-include view="sale-order-template-form" from="axelor-sale"/>
 	</form>
 	
+	<form model="com.axelor.apps.sale.db.SaleOrder" title="Sales order" name="incl-sale-order-subscrption-form">
+		<panel name="subscriptionPanel" title="Contract/Subscription" showIf="saleOrderTypeSelect == 2" >
+			<field name="numberOfPeriods" showIf="$readonly()" colSpan="4">
+		      <viewer><![CDATA[
+		                  <span>{{record.numberOfPeriods}}</span>
+		                  <span> </span>
+		                  <span ng-show="record.periodicityTypeSelect == 1" x-translate>day(s)</span>
+		                  <span ng-show="record.periodicityTypeSelect == 2" x-translate>month(s)</span>
+				]]></viewer>
+		    </field>
+		    <field name="numberOfPeriods" showIf="!$readonly()" colSpan="4" />
+		    <field name="periodicityTypeSelect" showIf="!$readonly()" colSpan="4" />
+		    <field name="contractPeriodInMonths" />
+			<field name="currentContractPeriodEndDate" />
+			<field name="contractEndDate" />
+			<field name="isTacitAgreement" />
+			<field name="noticePeriodInDays" />
+			<field name="nextInvoicingDate" />
+			<field name="nextInvoicingStartPeriodDate" />
+			<field name="subscriptionComment" colSpan="12"/>
+			<field name="subscriptionText" colSpan="12"/>
+			<panel-dashlet action="action-sale-order-view-subscription-invoices" colSpan="12"/>
+		</panel>
+	</form>
+	
 	<action-group name="action-group-supplychain-saleorder-onnew">
 		<action name="action-sale-order-record-default"/>
 		<action name="action-sale-order-record-payment-mode"/>
@@ -92,7 +117,7 @@
 	<action-method name="action-supplychain-so-generate-supplier-partner-domain">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="supplierPartnerSelectDomain"/>
 	</action-method>
-
+	
 	<action-validate name="action-supplychain-sale-order-validate-check-stock-location">
 		<error message="The stock location must be filled." if="stockLocation == null"/>
 	</action-validate>
@@ -141,6 +166,15 @@
 		<view-param name="popup-save" value="false"/>
 		<view-param name="forceEdit" value="true" />
 		<context name="_showRecord" expr="eval: id"/>
+	</action-view>
+	
+	<action-view name="action-sale-order-view-subscription-invoices" title="Invoiced periods"
+		model="com.axelor.apps.account.db.Invoice">
+		<view name="subscription-so-invoice-grid" type="grid"/>
+		<view name="invoice-form" type="form"/>
+		<domain>self.operationSubTypeSelect = 6 and (self.saleOrder.id = :saleOrderId OR (self.saleOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.saleOrderLine.id IN (:saleOrderLineIdList))))</domain>
+		<context name="saleOrderId" expr="eval: id"/>
+		<context name="saleOrderLineIdList" expr="eval: (id != null &amp;&amp; saleOrderLineList != null &amp;&amp; !saleOrderLineList.isEmpty()) ? saleOrderLineList.collect{it.id} : null"/>
 	</action-view>
 
     <action-condition name="action-supplychain-so-generate-po-check-supplier-partner">
