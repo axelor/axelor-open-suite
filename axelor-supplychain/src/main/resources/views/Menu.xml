@@ -73,6 +73,18 @@
 	    <view type="form" name="mrp-line-type-form"/>
 	</action-view>
 	
+	<menuitem name="invoice-root-subscription-invoice" parent="invoice-root" title="Subscription invoices to validate" 
+		action="invoice.root.subscription.invoice" order="22"  />
+	
+	<action-view name="invoice.root.subscription.invoice" title="Subscription invoices to validate"
+		model="com.axelor.apps.account.db.Invoice">
+		<view type="grid" name="invoice-light-grid"/>
+		<view type="form" name="invoice-form"/>
+		<domain>self.operationSubTypeSelect = 6 and self.statusSelect = 1</domain>
+		<context name="_operationSubTypeSelect" expr="eval:6"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+	</action-view>
+	
 	<menuitem name="top-menu-purchase-suparrivals" parent="top-menu-purchase" if="__config__.app.isApp('stock')"
 		title="Supplier Arrivals" action="top.menu.purchase.suparrivals" top="true"/>
 

@@ -51,7 +51,7 @@
     
     <!-- ACTION METHOD -->
 	<action-method name="action-sale-batch-method-action-invoicing">
-		<call class="com.axelor.apps.sale.web.SaleBatchController" method="actionInvoicing"/>
+		<call class="com.axelor.apps.supplychain.web.SaleBatchController" method="actionInvoicing"/>
 	</action-method>
 	
     <!-- ACTION ATTRS -->

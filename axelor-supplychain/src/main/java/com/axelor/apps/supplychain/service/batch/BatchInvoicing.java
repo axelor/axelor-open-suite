@@ -18,6 +18,9 @@
 package com.axelor.apps.supplychain.service.batch;
 
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -26,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -55,17 +59,45 @@ public class BatchInvoicing extends BatchStrategy {
 	protected void process() {
 
 		int i = 0;
-		List<SaleOrder> saleOrderList = saleOrderRepo.all().filter("self.statusSelect = ?2 AND self.company = ?3",
-				ISaleOrder.STATUS_ORDER_CONFIRMED, batch.getSaleBatch().getCompany()).fetch();
+		LocalDate todayDate = appBaseService.getTodayDate();
+		
+		List<SaleOrder> subscrptionOrders = saleOrderRepo.all()
+				.filter("self.saleOrderTypeSelect = 2 and self.statusSelect = ?1"
+						+ " and ?2 >= self.nextInvoicingDate and (self.contractEndDate is null OR self.contractEndDate >= ?2)"
+						, ISaleOrder.STATUS_ORDER_CONFIRMED, todayDate).fetch();
+		
+		TemporalUnit temporalUnit = ChronoUnit.MONTHS;
 
-		for (SaleOrder saleOrder : saleOrderList) {
-
+		for (SaleOrder saleOrder : subscrptionOrders) {
+			
 			try {
 
 				Invoice invoice = saleOrderInvoiceService.generateInvoice(saleOrderRepo.find(saleOrder.getId()));
 
 				if(invoice != null)  {
+					
+					invoice = saleOrderInvoiceService.generateInvoice(saleOrder);
+					if (invoice == null) { continue; }
+					if (saleOrder.getPeriodicityTypeSelect() == 1) {
+						temporalUnit = ChronoUnit.DAYS;
+					}
+					invoice.setInvoiceDate(todayDate);
+					invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_SUBSCRIPTION);
 
+					LocalDate invoicingPeriodStartDate = saleOrder.getNextInvoicingStartPeriodDate();
+					invoice.setSubscriptionFromDate(invoicingPeriodStartDate);
+					if (invoicingPeriodStartDate != null) {
+						LocalDate subscriptionToDate = invoicingPeriodStartDate.plus(saleOrder.getNumberOfPeriods(), temporalUnit);
+						saleOrder.setNextInvoicingStartPeriodDate(subscriptionToDate);
+						invoice.setSubscriptionToDate(subscriptionToDate.minusDays(1));
+					}
+					
+					LocalDate nextInvoicingDate = saleOrder.getNextInvoicingDate();
+					if (nextInvoicingDate != null) {
+						nextInvoicingDate = nextInvoicingDate.plus(saleOrder.getNumberOfPeriods(), temporalUnit);
+					}
+					saleOrder.setNextInvoicingDate(nextInvoicingDate);
+					
 					updateSaleOrder(saleOrder);
 					LOG.debug("Facture créée ({}) pour le devis {}", invoice.getInvoiceId(), saleOrder.getSaleOrderSeq());
 					i++;

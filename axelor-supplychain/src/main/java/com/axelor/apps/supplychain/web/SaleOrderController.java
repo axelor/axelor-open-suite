@@ -73,7 +73,7 @@ public class SaleOrderController{
 
 	@Inject
 	private SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
-
+	
 	public void createStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
@@ -503,5 +503,5 @@ public class SaleOrderController{
 		}
 		response.setAttr("supplierPartnerSelect", "domain", domain);
 	}
-
+	
 }

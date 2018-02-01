@@ -61,5 +61,10 @@
         <option value="12">Yearly</option>
 	</selection>
 	
+	<selection name="sale.subscription.periodicity.type.select">
+		<option value="1">Day</option>
+		<option value="2">Month</option>
+	</selection>
+	
 	
 </object-views>

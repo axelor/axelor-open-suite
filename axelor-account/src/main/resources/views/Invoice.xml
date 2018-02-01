@@ -141,6 +141,7 @@
                             <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 3">Balance invoice</span>
                             <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 4">Contract invoice</span>
                             <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 5">Contract closing invoice</span>
+                        	<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 6">Subscription</span>
                         </h4>
 					]]>
                 </viewer>
@@ -182,7 +183,12 @@
             <field name="purchaseOrder" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
             <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
         </panel>
-
+		
+		<panel name="subscriptionPanel" title="Subscription period" showIf="operationSubTypeSelect == 6">
+        	<field name="subscriptionFromDate" />
+        	<field name="subscriptionToDate" />
+        </panel>
+        
 		<panel-tabs hideIf="partner == null">
 			<panel name="invoiceContent" title="Invoice content" showTitle="false">
 				<panel-related field="invoiceLineList" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-onchange" canMove="true" orderBy="sequence"/>

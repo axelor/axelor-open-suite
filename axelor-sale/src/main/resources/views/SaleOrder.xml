@@ -298,6 +298,7 @@
             <field name="hideDiscount"/>
             <field name="specificNotes" colSpan="12" readonly="true" showIf="specificNotes"/>
         </panel>
+        <panel-include view="incl-sale-order-subscrption-form" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()" />
 	  </panel-tabs>
 
 	  <panel>
@@ -906,7 +907,7 @@
 	<action-method name="action-sale-order-method-generate-type-per-order-line">
 		<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="generateTypePerOrderLineForProject"/>
 	</action-method>
-
+	
     <action-record name="action-sale-record-newVersion" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="deliveryState" expr="eval: 1"/>

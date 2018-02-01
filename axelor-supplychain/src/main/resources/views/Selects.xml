@@ -71,6 +71,11 @@
 
 	<selection name="supplychain.sale.order.type.select">
 		<option value="1">Normal</option>
+		<option value="2">Subscription</option>
+	</selection>
+	
+	<selection name='iinvoice.operation.sub.type.select' id="supplychain.iinvoice.operation.sub.type.select">
+		<option value="6">Subscription</option>
 	</selection>
 
 </object-views>

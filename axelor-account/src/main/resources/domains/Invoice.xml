@@ -118,6 +118,9 @@
 
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
     <many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"/>
+    
+    <date name="subscriptionFromDate" title="From" />
+    <date name="subscriptionToDate" title="To" />
 
   	<unique-constraint columns="invoiceId,company"/>
 
