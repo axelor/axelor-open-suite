@@ -11,6 +11,11 @@
 - Added 'purchase blocking' in Partner
 - Automatic mail on stock move realization
 - ISPM15 standard for stock move
+- Customs regulations for stock moves
+- Payment schedules
+- Cheque deposit slips
+- Direct debit batches
+- Logistical forms
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
