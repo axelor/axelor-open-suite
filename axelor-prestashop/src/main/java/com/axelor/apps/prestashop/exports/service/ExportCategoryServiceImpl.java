@@ -34,7 +34,6 @@ import org.xml.sax.SAXException;
 
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.ProductCategory;
-import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.prestashop.db.Categories;
 import com.axelor.apps.prestashop.db.Language;
@@ -46,33 +45,25 @@ import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class ExportCategoryServiceImpl implements ExportCategoryService {
-
-	Integer done = 0;
-	Integer anomaly = 0;
-	private final String shopUrl;
-	private final String key;
-
-	@Inject
 	private ProductCategoryRepository categoryRepo;
 
-	/**
-	 * Initialization
-	 */
-	public ExportCategoryServiceImpl() {
-		AppPrestashop prestaShopObj = Beans.get(AppPrestashopRepository.class).all().fetchOne();
-		shopUrl = prestaShopObj.getPrestaShopUrl();
-		key = prestaShopObj.getPrestaShopKey();
+	@Inject
+	public ExportCategoryServiceImpl(ProductCategoryRepository categoryRepo) {
+		this.categoryRepo = categoryRepo;
 	}
 
 	@Override
 	@Transactional
 	public void exportCategory(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport) throws IOException,
 			PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException {
+		int done = 0;
+		int anomaly = 0;
 
 		bwExport.newLine();
 		bwExport.write("-----------------------------------------------");
@@ -83,9 +74,9 @@ public class ExportCategoryServiceImpl implements ExportCategoryService {
 		Document document = null;
 
 		if(endDate == null) {
-			categories = Beans.get(ProductCategoryRepository.class).all().fetch();
+			categories = categoryRepo.all().fetch();
 		} else {
-			categories = Beans.get(ProductCategoryRepository.class).all().filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null", endDate, endDate).fetch();
+			categories = categoryRepo.all().filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId IS NULL", endDate, endDate).fetch();
 		}
 
 		for (ProductCategory productCategory : categories) {
@@ -134,7 +125,7 @@ public class ExportCategoryServiceImpl implements ExportCategoryService {
 					marshallerObj.marshal(prestaShop, sw);
 					schema = sw.toString();
 
-					PSWebServiceClient ws = new PSWebServiceClient(shopUrl + "/api/" + "categories" + "?schema=synopsis", key);
+					PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/categories?schema=synopsis", appConfig.getPrestaShopKey());
 					HashMap<String, Object> opt = new HashMap<String, Object>();
 					opt.put("resource", "categories");
 					opt.put("postXml", schema);
@@ -143,7 +134,7 @@ public class ExportCategoryServiceImpl implements ExportCategoryService {
 						document = ws.add(opt);
 					} else {
 						opt.put("id", productCategory.getPrestaShopId());
-						ws = new PSWebServiceClient(shopUrl, key);
+						ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
 						document = ws.edit(opt);
 					}
 

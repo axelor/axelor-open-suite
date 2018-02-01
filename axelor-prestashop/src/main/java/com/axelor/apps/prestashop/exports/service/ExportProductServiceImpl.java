@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -44,7 +45,6 @@ import org.xml.sax.SAXException;
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
-import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.prestashop.db.Categories;
@@ -63,28 +63,19 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class ExportProductServiceImpl implements ExportProductService {
 
-	Integer done = 0;
-	Integer anomaly = 0;
-	private final String shopUrl;
-	private final String key;
-
-	@Inject
 	private ProductRepository productRepo;
-
-	@Inject
 	private ProductCategoryRepository productCategoryRepo;
 
-	/**
-	 * Initialization
-	 */
-	public ExportProductServiceImpl() {
-		AppPrestashop prestaShopObj = Beans.get(AppPrestashopRepository.class).all().fetchOne();
-		shopUrl = prestaShopObj.getPrestaShopUrl();
-		key = prestaShopObj.getPrestaShopKey();
+	@Inject
+	public ExportProductServiceImpl(ProductRepository productRepo, ProductCategoryRepository productCategoryRepo) {
+		this.productRepo = productRepo;
+		this.productCategoryRepo = productCategoryRepo;
 	}
 
 	@Override
@@ -92,27 +83,31 @@ public class ExportProductServiceImpl implements ExportProductService {
 	public void exportProduct(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport)
 			throws IOException, TransformerConfigurationException, TransformerException, ParserConfigurationException,
 			SAXException, PrestaShopWebserviceException, JAXBException, TransformerFactoryConfigurationError {
+		int done = 0;
+		int anomaly = 0;
 
 		bwExport.newLine();
 		bwExport.write("-----------------------------------------------");
 		bwExport.newLine();
 		bwExport.write("Product");
-		List<Product> products = null;
 		String schema = null;
 		Document document;
 		PSWebServiceClient ws = null;
 		HashMap<String, Object> opt = null;
 		String prestaShopId = null;
 
-		if(endDate == null) {
-			products = Beans.get(ProductRepository.class).all().filter("self.sellable = true").fetch();
-		} else {
-			products = Beans.get(ProductRepository.class).all().filter("self.sellable = true AND (self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null)", endDate, endDate).fetch();
+		final List<Object> params = new ArrayList<>(2);
+		final StringBuilder filter = new StringBuilder("1 = 1");
+		if(endDate != null) {
+			filter.append(" AND (self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null)");
+			params.add(endDate);
+			params.add(endDate);
+		}
+		if(appConfig.getExportNonSoldProducts() == Boolean.FALSE) {
+			filter.append(" AND (self.sellable = true)");
 		}
 
-
-		for (Product productObj : products) {
-
+		for (Product productObj : productRepo.all().filter(filter.toString(), params.toArray()).fetch()) {
 			try {
 				Products product = new Products();
 				product.setId(productObj.getPrestaShopId());
@@ -127,14 +122,14 @@ public class ExportProductServiceImpl implements ExportProductService {
 					categories.setId(prestaShopCategoryId);
 					product.setCategories(categories);
 
-					product.setPrice(productObj.getSalePrice().setScale(0, RoundingMode.HALF_UP).toString());
+					product.setPrice(productObj.getSalePrice().setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP).toString());
 					product.setWidth(productObj.getWidth().toString());
 					product.setMinimal_quantity("2");
-					product.setOn_sale("0");
 					product.setActive("1");
-					product.setAvailable_for_order("1");
-					product.setShow_price("1");
-					product.setState("1");
+					product.setAvailable_for_order("1"); // 0 means display only
+					product.setShow_price("1"); // should be useless if available for order
+					product.setOn_sale("0"); // on sale!
+					product.setState("1"); // 0 means temporary
 
 					LanguageDetails nameDetails = new LanguageDetails();
 					nameDetails.setId("1");
@@ -167,7 +162,7 @@ public class ExportProductServiceImpl implements ExportProductService {
 					marshallerObj.marshal(prestaShop, sw);
 					schema = sw.toString();
 
-					ws = new PSWebServiceClient(shopUrl + "/api/" + "products" + "?schema=synopsis", key);
+					ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/products?schema=synopsis", appConfig.getPrestaShopKey());
 					opt = new HashMap<String, Object>();
 					opt.put("resource", "products");
 					opt.put("postXml", schema);
@@ -179,7 +174,7 @@ public class ExportProductServiceImpl implements ExportProductService {
 
 						if (productObj.getPicture() != null) {
 							Path path = MetaFiles.getPath(productObj.getPicture());
-							ws = new PSWebServiceClient(shopUrl, key);
+							ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
 							ws.addImg(path.toUri().toString(), Integer.parseInt(prestaShopId));
 						}
 
@@ -201,7 +196,7 @@ public class ExportProductServiceImpl implements ExportProductService {
 								totalRealQty =  totalRealQty.add(moveLine.get(i).getRealQty());
 							}
 
-							ws = new PSWebServiceClient(shopUrl, key);
+							ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
 							opt = new HashMap<String, Object>();
 							opt.put("resource", "stock_availables");
 							opt.put("id", stock_id);
@@ -214,7 +209,7 @@ public class ExportProductServiceImpl implements ExportProductService {
 
 					} else {
 						opt.put("id", productObj.getPrestaShopId());
-						ws = new PSWebServiceClient(shopUrl, key);
+						ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
 						document = ws.edit(opt);
 					}
 

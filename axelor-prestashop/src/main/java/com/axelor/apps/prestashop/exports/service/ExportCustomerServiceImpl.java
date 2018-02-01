@@ -21,6 +21,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,7 +38,6 @@ import org.xml.sax.SAXException;
 
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.prestashop.db.Customers;
 import com.axelor.apps.prestashop.db.Prestashop;
@@ -47,27 +47,17 @@ import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class ExportCustomerServiceImpl implements ExportCustomerService {
-
-	Integer done = 0;
-	Integer anomaly = 0;
-	private final String shopUrl;
-	private final String key;
-
-	@Inject
 	private PartnerRepository partnerRepo;
 
-	/**
-	 * Initialization
-	 */
-	public ExportCustomerServiceImpl() {
-		AppPrestashop prestaShopObj = Beans.get(AppPrestashopRepository.class).all().fetchOne();
-		shopUrl = prestaShopObj.getPrestaShopUrl();
-		key = prestaShopObj.getPrestaShopKey();
+	@Inject
+	public ExportCustomerServiceImpl(PartnerRepository partnerRepo) {
+		this.partnerRepo = partnerRepo;
 	}
 
 	@Override
@@ -75,9 +65,10 @@ public class ExportCustomerServiceImpl implements ExportCustomerService {
 	public void exportCustomer(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport)
 			throws IOException, TransformerConfigurationException, TransformerException, ParserConfigurationException,
 			SAXException, PrestaShopWebserviceException, JAXBException, TransformerFactoryConfigurationError {
+		int done = 0;
+		int anomaly = 0;
 
 		String prestaShopId = null;
-		List<Partner> partners = null;
 		String schema = null;
 		Document document = null;
 
@@ -86,14 +77,24 @@ public class ExportCustomerServiceImpl implements ExportCustomerService {
 		bwExport.newLine();
 		bwExport.write("Customer");
 
-		if(endDate == null) {
-			partners = Beans.get(PartnerRepository.class).all().filter("self.isCustomer = true").fetch();
-		} else {
-			partners = Beans.get(PartnerRepository.class).all().filter("self.isCustomer = true AND (self.createdOn > ?1 OR self.updatedOn > ?2 OR self.emailAddress.createdOn > ?3 OR self.emailAddress.updatedOn > ?4 OR self.prestaShopId = null)", endDate, endDate, endDate, endDate).fetch();
+		final StringBuilder filter = new StringBuilder(128);
+		final List<Object> params = new ArrayList<>(4);
+
+		filter.append("(self.isCustomer = true)");
+
+		if(endDate != null) {
+			filter.append(" AND (self.createdOn > ?1 OR self.updatedOn > ?2 OR self.emailAddress.createdOn > ?3 OR self.emailAddress.updatedOn > ?4 OR self.prestaShopId is null)");
+			params.add(endDate);
+			params.add(endDate);
+			params.add(endDate);
+			params.add(endDate);
 		}
 
-		for (Partner partner : partners) {
+		if(appConfig.getExportNonPrestashopCustomers() == Boolean.FALSE) {
+			filter.append(" AND (self.prestaShopId IS NOT NULL)");
+		}
 
+		for (Partner partner : partnerRepo.all().filter(filter.toString(), params.toArray(new Object[0])).fetch()) {
 			try {
 
 				Customers customer = new Customers();
@@ -149,7 +150,7 @@ public class ExportCustomerServiceImpl implements ExportCustomerService {
 				marshallerObj.marshal(prestaShop, sw);
 				schema = sw.toString();
 
-				PSWebServiceClient ws = new PSWebServiceClient(shopUrl + "/api/" + "customers" + "?schema=synopsis", key);
+				PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/customers?schema=synopsis", appConfig.getPrestaShopKey());
 				HashMap<String, Object> opt = new HashMap<String, Object>();
 				opt.put("resource", "customers");
 				opt.put("postXml", schema);
@@ -158,7 +159,7 @@ public class ExportCustomerServiceImpl implements ExportCustomerService {
 					document = ws.add(opt);
 				} else {
 					opt.put("id", partner.getPrestaShopId());
-					ws = new PSWebServiceClient(shopUrl, key);
+					ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
 					document = ws.edit(opt);
 				}
 

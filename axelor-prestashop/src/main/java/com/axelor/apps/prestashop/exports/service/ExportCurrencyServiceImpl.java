@@ -24,6 +24,7 @@ import java.io.StringWriter;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -31,7 +32,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
@@ -44,7 +44,6 @@ import org.xml.sax.SAXException;
 
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.prestashop.db.Currencies;
 import com.axelor.apps.prestashop.db.Prestashop;
@@ -54,27 +53,17 @@ import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class ExportCurrencyServiceImpl implements ExportCurrencyService {
-
-	Integer done = 0;
-	Integer anomaly = 0;
-	private final String shopUrl;
-	private final String key;
-
-	@Inject
 	CurrencyRepository currencyRepo;
 
-	/**
-	 * Initialization
-	 */
-	public ExportCurrencyServiceImpl() {
-		AppPrestashop prestaShopObj = Beans.get(AppPrestashopRepository.class).all().fetchOne();
-		shopUrl = prestaShopObj.getPrestaShopUrl();
-		key = prestaShopObj.getPrestaShopKey();
+	@Inject
+	public ExportCurrencyServiceImpl(CurrencyRepository currencyRepo) {
+		this.currencyRepo = currencyRepo;
 	}
 
 	/**
@@ -87,7 +76,7 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 	public String currencyExists(AppPrestashop appConfig, String currencyCode) throws PrestaShopWebserviceException {
 
 		String prestaShopId = null;
-		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
+		PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
 		HashMap<String, String> currencyMap = new HashMap<String, String>();
 		currencyMap.put("iso_code", currencyCode);
 		HashMap<String, Object> opt = new HashMap<String, Object>();
@@ -111,6 +100,8 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 	@Override
 	@Transactional
 	public void exportCurrency(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, TransformerException, ParserConfigurationException, SAXException, PrestaShopWebserviceException, JAXBException, TransformerFactoryConfigurationError {
+		int done = 0;
+		int anomaly = 0;
 
 		bwExport.newLine();
 		bwExport.write("-----------------------------------------------");
@@ -122,9 +113,9 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 		Document document = null;
 
 		if(endDate == null) {
-			currencies = Beans.get(CurrencyRepository.class).all().fetch();
+			currencies = currencyRepo.all().fetch();
 		} else {
-			currencies = Beans.get(CurrencyRepository.class).all().filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null", endDate, endDate).fetch();
+			currencies = currencyRepo.all().filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null", endDate, endDate).fetch();
 		}
 
 
@@ -152,8 +143,8 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 				marshallerObj.marshal(prestaShop, sw);
 				schema = sw.toString();
 
-				PSWebServiceClient ws = new PSWebServiceClient(shopUrl + "/api/" + "currencies" + "?schema=synopsis", key);
-				HashMap<String, Object> opt = new HashMap<String, Object>();
+				PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/currencies?schema=synopsis", appConfig.getPrestaShopKey());
+				Map<String, Object> opt = new HashMap<String, Object>();
 				opt.put("resource", "currencies");
 				opt.put("postXml", schema);
 
@@ -161,7 +152,7 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 					document = ws.add(opt);
 				} else {
 					opt.put("id", currencyObj.getPrestaShopId());
-					ws = new PSWebServiceClient(shopUrl, key);
+					ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
 					document = ws.edit(opt);
 				}
 
@@ -196,7 +187,7 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 				}
 
 				if(errorCode.equals("46")) {
-					prestaShopId = this.isCurrency(currencyObj.getCode());
+					prestaShopId = currencyExists(appConfig, currencyObj.getCode());
 					currencyObj.setPrestaShopId(prestaShopId);
 					currencyRepo.save(currencyObj);
 					done++;

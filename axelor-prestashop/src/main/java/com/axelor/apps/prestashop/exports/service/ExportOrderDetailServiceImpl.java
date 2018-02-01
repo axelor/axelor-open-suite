@@ -51,7 +51,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -122,11 +121,10 @@ public class ExportOrderDetailServiceImpl implements ExportOrderDetailService {
 		filter.append("self.saleOrder.prestaShopId IS NOT NULL");
 
 		if(appConfig.getIsOrderStatus() == Boolean.TRUE) {
-			if(filter.length() > 0) filter.append(" AND ");
-			filter.append("self.saleOrder.statusSelect = 1");
+			filter.append("AND (self.saleOrder.statusSelect = 1)");
 		}
 
-		List<SaleOrderLine> saleOrderLines = Beans.get(SaleOrderLineRepository.class).all().filter(filter.toString()).fetch();
+		List<SaleOrderLine> saleOrderLines = saleOrderLineRepo.all().filter(filter.toString()).fetch();
 
 		for(SaleOrderLine orderLine : saleOrderLines) {
 			clearOrderDetails(appConfig, orderLine.getSaleOrder().getPrestaShopId());

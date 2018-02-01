@@ -23,6 +23,7 @@ import java.io.StringWriter;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -37,7 +38,6 @@ import org.xml.sax.SAXException;
 
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.Country;
-import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.prestashop.db.Countries;
 import com.axelor.apps.prestashop.db.Language;
@@ -49,27 +49,17 @@ import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class ExportCountryServiceImpl implements ExportCountryService {
-
-	Integer done = 0;
-	Integer anomaly = 0;
-	private final String shopUrl;
-	private final String key;
-
-	@Inject
 	private CountryRepository countryRepo;
 
-	/**
-	 * Initialization
-	 */
-	public ExportCountryServiceImpl() {
-		AppPrestashop prestaShopObj = Beans.get(AppPrestashopRepository.class).all().fetchOne();
-		shopUrl = prestaShopObj.getPrestaShopUrl();
-		key = prestaShopObj.getPrestaShopKey();
+	@Inject
+	public ExportCountryServiceImpl(CountryRepository countryRepo) {
+		this.countryRepo = countryRepo;
 	}
 
 	/**
@@ -81,7 +71,7 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 	 */
 	public String countryExists(AppPrestashop appConfig, String countryCode) throws PrestaShopWebserviceException {
 		String prestaShopId = null;
-		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
+		PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
 		HashMap<String, String> countryMap = new HashMap<String, String>();
 		countryMap.put("iso_code", countryCode);
 		HashMap<String, Object> opt = new HashMap<String, Object>();
@@ -105,9 +95,11 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 	@Override
 	@Transactional
 	public void exportCountry(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException {
+		int done = 0;
+		int anomaly = 0;
 
-		PSWebServiceClient ws = null;
-		HashMap<String, Object> opt = null;
+		PSWebServiceClient ws;
+		Map<String, Object> opt;
 		bwExport.newLine();
 		bwExport.write("-----------------------------------------------");
 		bwExport.newLine();
@@ -118,15 +110,15 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 		String prestaShopId = null;
 
 		if(endDate == null) {
-			countries = Beans.get(CountryRepository.class).all().fetch();
+			countries = countryRepo.all().fetch();
 		} else {
-			countries = Beans.get(CountryRepository.class).all().filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null", endDate, endDate).fetch();
+			countries = countryRepo.all().filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null", endDate, endDate).fetch();
 		}
 
 		for(Country countryObj : countries) {
 			try {
 
-				prestaShopId = this.isCountry(countryObj.getAlpha2Code());
+				prestaShopId = countryExists(appConfig, countryObj.getAlpha2Code());
 
 				if(countryObj.getName() == null) {
 					throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_COUNTRY));
@@ -163,7 +155,7 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 				marshallerObj.marshal(prestaShop, sw);
 				schema = sw.toString();
 
-				ws = new PSWebServiceClient(shopUrl + "/api/" + "countries" + "?schema=synopsis", key);
+				ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/countries?schema=synopsis", appConfig.getPrestaShopKey());
 				opt = new HashMap<String, Object>();
 				opt.put("resource", "countries");
 				opt.put("postXml", schema);
@@ -173,12 +165,12 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 
 				} else if (prestaShopId != null){
 					opt.put("id", prestaShopId);
-					ws = new PSWebServiceClient(shopUrl, key);
+					ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
 					document = ws.edit(opt);
 
 				} else {
 					opt.put("id", countryObj.getPrestaShopId());
-					ws = new PSWebServiceClient(shopUrl, key);
+					ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
 					document = ws.edit(opt);
 				}
 

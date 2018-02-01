@@ -34,7 +34,6 @@ import org.xml.sax.SAXException;
 
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.PartnerAddress;
-import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.prestashop.db.Addresses;
@@ -45,33 +44,28 @@ import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class ExportAddressServiceImpl implements ExportAddressService {
 
-	Integer done = 0;
-	Integer anomaly = 0;
-	private final String shopUrl;
-	private final String key;
+	private PartnerRepository partnerRepo;
+	private PartnerAddressRepository partnerAddressRepo;
 
 	@Inject
-	private PartnerRepository partnerRepo;
-
-	/**
-	 * Initialization
-	 */
-	public ExportAddressServiceImpl() {
-		AppPrestashop prestaShopObj = Beans.get(AppPrestashopRepository.class).all().fetchOne();
-		shopUrl = prestaShopObj.getPrestaShopUrl();
-		key = prestaShopObj.getPrestaShopKey();
+	public ExportAddressServiceImpl(PartnerRepository partnerRepo, PartnerAddressRepository partnerAddressRepo) {
+		this.partnerRepo = partnerRepo;
+		this.partnerAddressRepo = partnerAddressRepo;
 	}
 
 	@Override
 	@Transactional
 	public void exportAddress(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport) throws IOException,
 			PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException {
+		int done = 0;
+		int anomaly = 0;
 
 		bwExport.newLine();
 		bwExport.write("-----------------------------------------------");
@@ -82,9 +76,9 @@ public class ExportAddressServiceImpl implements ExportAddressService {
 		Document document = null;
 
 		if(endDate == null) {
-			partnerAddresses = Beans.get(PartnerAddressRepository.class).all().filter("self.partner.prestaShopId != null").fetch();
+			partnerAddresses = partnerAddressRepo.all().filter("self.partner.prestaShopId != null").fetch();
 		} else {
-			partnerAddresses = Beans.get(PartnerAddressRepository.class).all().filter("(self.createdOn > ?1 OR self.updatedOn > ?2 OR self.address.updatedOn > ?3 OR self.address.prestaShopId = null) AND self.partner.prestaShopId != null", endDate, endDate, endDate).fetch();
+			partnerAddresses = partnerAddressRepo.all().filter("(self.createdOn > ?1 OR self.updatedOn > ?2 OR self.address.updatedOn > ?3 OR self.address.prestaShopId = null) AND self.partner.prestaShopId != null", endDate, endDate, endDate).fetch();
 		}
 		for (PartnerAddress partnerAddress : partnerAddresses) {
 
@@ -153,7 +147,7 @@ public class ExportAddressServiceImpl implements ExportAddressService {
 				marshallerObj.marshal(prestaShop, sw);
 				schema = sw.toString();
 
-				PSWebServiceClient ws = new PSWebServiceClient(shopUrl + "/api/" + "addresses" + "?schema=synopsis", key);
+				PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/addresses?schema=synopsis", appConfig.getPrestaShopKey());
 				HashMap<String, Object> opt = new HashMap<String, Object>();
 				opt.put("resource", "addresses");
 				opt.put("postXml", schema);
@@ -162,7 +156,7 @@ public class ExportAddressServiceImpl implements ExportAddressService {
 					document = ws.add(opt);
 				} else {
 					opt.put("id", partnerAddress.getAddress().getPrestaShopId());
-					ws = new PSWebServiceClient(shopUrl, key);
+					ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
 					document = ws.edit(opt);
 				}
 

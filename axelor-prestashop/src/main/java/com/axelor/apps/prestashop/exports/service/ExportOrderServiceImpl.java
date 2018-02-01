@@ -126,21 +126,21 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 		final StringBuilder filter = new StringBuilder(128);
 		final List<Object> params = new ArrayList<>(2);
 
+		filter.append("1 = 1");
+
 		if(endDate != null) {
-			filter.append("(self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId IS NULL)");
+			filter.append("AND (self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId IS NULL)");
 			params.add(endDate);
 			params.add(endDate);
 		}
 
 		if(appConfig.getIsOrderStatus() == Boolean.TRUE) {
-			if(filter.length() > 0) filter.append(" AND ");
-			filter.append("self.statusSelect = 1");
+			filter.append("AND (self.statusSelect = 1)");
 		}
 
 		if(appConfig.getExportNonPrestashopOrders() == Boolean.FALSE) {
 			// Only push back orders that come from prestashop
-			if(filter.length() > 0) filter.append(" AND ");
-			filter.append("self.prestaShopId IS NOT NULL");
+			filter.append("AND (self.prestaShopId IS NOT NULL)");
 		}
 
 		for (SaleOrder saleOrder : Beans.get(SaleOrderRepository.class).all().filter(filter.toString(), params.toArray(new Object[] {})).fetch()) {
