@@ -38,14 +38,14 @@
                 onChange="action-logistical-form-partner-change" form-view="partner-customer-form" grid-view="partner-customer-grid"
                 canEdit="false" />
             <field name="collectionDate" />
-            <field name="accountSelect" onChange="action-logistical-form-set-customer-account-number" />
+            <field name="accountSelectionSelect" onChange="action-logistical-form-set-customer-account-number" />
             <field name="customerAccountNumber" />
         </panel>
         <panel-tabs colSpan="12" readonlyIf="statusSelect > 1">
             <panel title="General">
                 <field name="statusSelect" colSpan="12" widget="NavSelect" />
-                <field name="carrierPartner" domain="self.isCarrier = TRUE AND :company MEMBER OF self.companySet"
-                    form-view="partner-form" grid-view="partner-grid" canEdit="false" onChange="action-logistical-form-carrier-change" />
+                <field name="carrierPartner" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
+                    form-view="partner-form" grid-view="partner-grid" canEdit="false" onChange="action-logistical-form-set-customer-account-number" />
                 <field name="forwarderPartner" domain=":company MEMBER OF self.companySet" form-view="partner-form"
                     grid-view="partner-grid" canEdit="false" />
                 <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />

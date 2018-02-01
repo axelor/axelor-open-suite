@@ -121,6 +121,7 @@ public interface IExceptionMessage {
 	String LOGISTICAL_FORM_LINES_EMPTY_PARCEL = /*$$(*/ "Parcel %d is empty." /*)*/;
 	String LOGISTICAL_FORM_LINES_EMPTY_PALLET = /*$$(*/ "Pallet %d is empty." /*)*/;
 	String LOGISTICAL_FORM_LINES_ORPHAN_DETAIL = /*$$(*/ "Detail line(s) not inside a parcel/pallet" /*)*/;
+	String LOGISTICAL_FORM_UNKNOWN_ACCOUNT_SELECTION = /*$$(*/ "Unknown account selection" /*)*/;
 
 	String CANCEL_REASON_MISSING = /*$$(*/ "A cancel reason must be selected" /*)*/;
 	String CANCEL_REASON_BAD_TYPE = /*$$(*/ "The type of cancel reason doesn't match with stock move" /*)*/;

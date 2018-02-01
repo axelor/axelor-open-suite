@@ -557,20 +557,25 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
     @Override
     public Optional<String> getCustomerAccountNumber(LogisticalForm logisticalForm) throws AxelorException {
-        List<FreightCarrierCustomerAccountNumber> freightCarrierCustomerAccountNumberList;
+        Preconditions.checkNotNull(logisticalForm);
+        List<FreightCarrierCustomerAccountNumber> freightCarrierCustomerAccountNumberList = null;
 
-        switch (logisticalForm.getAccountSelect()) {
+        switch (logisticalForm.getAccountSelectionSelect()) {
         case LogisticalFormRepository.ACCOUNT_COMPANY:
-            freightCarrierCustomerAccountNumberList = logisticalForm.getCompany()
-                    .getFreightCarrierCustomerAccountNumberList();
+            if (logisticalForm.getCompany() != null && logisticalForm.getCompany().getStockConfig() != null) {
+                freightCarrierCustomerAccountNumberList = logisticalForm.getCompany().getStockConfig()
+                        .getFreightCarrierCustomerAccountNumberList();
+            }
             break;
         case LogisticalFormRepository.ACCOUNT_CUSTOMER:
-            freightCarrierCustomerAccountNumberList = logisticalForm.getDeliverToCustomerPartner()
-                    .getFreightCarrierCustomerAccountNumberList();
+            if (logisticalForm.getDeliverToCustomerPartner() != null) {
+                freightCarrierCustomerAccountNumberList = logisticalForm.getDeliverToCustomerPartner()
+                        .getFreightCarrierCustomerAccountNumberList();
+            }
             break;
         default:
             throw new AxelorException(logisticalForm, IException.CONFIGURATION_ERROR,
-                    I18n.get("Unknown account select"));
+                    I18n.get(IExceptionMessage.LOGISTICAL_FORM_UNKNOWN_ACCOUNT_SELECTION));
         }
 
         if (freightCarrierCustomerAccountNumberList != null) {

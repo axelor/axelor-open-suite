@@ -6,9 +6,9 @@
 
     <entity name="FreightCarrierCustomerAccountNumber">
         <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" />
-        <many-to-one name="company" ref="com.axelor.apps.base.db.Company" />
-        <many-to-one name="carrierPartner" ref="com.axelor.apps.base.db.Partner" title="Carrier" />
-        <string name="customerAccountNumber" />
+        <many-to-one name="stockConfig" ref="com.axelor.apps.stock.db.StockConfig" />
+        <many-to-one name="carrierPartner" ref="com.axelor.apps.base.db.Partner" title="Carrier" required="true" />
+        <string name="customerAccountNumber" required="true" />
     </entity>
 
 </domain-models>
