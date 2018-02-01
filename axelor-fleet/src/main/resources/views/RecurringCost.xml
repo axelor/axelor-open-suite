@@ -2,12 +2,12 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-	<grid name="vehicle-recurring-cost-grid" title="Vehicle Recurring Cost" model="com.axelor.apps.fleet.db.RecurringCost">
+	<grid name="recurring-cost-grid" title="Vehicle Recurring Cost" model="com.axelor.apps.fleet.db.RecurringCost">
 		<field name="date"/>
 		<field name="amount"/>
 	</grid>
 	
-	<form name="vehicle-recurring-cost-form" title="Vehicle Recurring Cost" model="com.axelor.apps.fleet.db.RecurringCost" width="large">
+	<form name="recurring-cost-form" title="Vehicle Recurring Cost" model="com.axelor.apps.fleet.db.RecurringCost" width="large">
 		<panel>
 			<field name="date"/>
 			<field name="amount"/>

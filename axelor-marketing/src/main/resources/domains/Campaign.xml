@@ -20,7 +20,7 @@
   	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
   	<many-to-one name="emailAccount" ref="com.axelor.apps.message.db.MailAccount" title="Email Account"/>
   	<string name="subject" title="Subject"/>
-  	<integer name="eventType" title="Event type" selection="icalendar.event.type.select"/>
+  	<integer name="eventTypeSelect" title="Event type" selection="icalendar.event.type.select"/>
   	<datetime name="eventStartDateTime" title="Start date time"/>
   	<long name="duration" title="Duration"/>
   	<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Partner/Contacts Target List" />

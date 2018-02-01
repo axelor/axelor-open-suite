@@ -6,8 +6,8 @@
 	<entity name="Booking" lang="java" cachable="true">
 		<string name="name" />
 		<date name="bookingDate" title="BookingDate" />
-		<many-to-many name="contact" ref="com.axelor.apps.base.db.Partner"/>
-		<many-to-many name="partner" ref="com.axelor.apps.base.db.Partner"/>
+		<many-to-many name="contactSet" ref="com.axelor.apps.base.db.Partner"/>
+		<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner"/>
 		<boolean name="isConfirmed" title="Confirmed"/>
 		<many-to-one name="partnerCategory" ref="com.axelor.apps.base.db.PartnerCategory" title="Category"/>
 	</entity>
