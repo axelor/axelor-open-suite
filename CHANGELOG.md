@@ -10,6 +10,7 @@
 - Added 'sale blocking' in Partner
 - Added 'purchase blocking' in Partner
 - Automatic mail on stock move realization
+- ISPM15 standard for stock move
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.

@@ -8,7 +8,7 @@
   <entity name="Partner" lang="java" cachable="true">
     <many-to-one name="shipmentMode" ref="com.axelor.apps.stock.db.ShipmentMode" index="false"/>
     <many-to-one name="freightCarrierMode" ref="com.axelor.apps.stock.db.FreightCarrierMode" index="false"/>
-    <many-to-one name="carrierPartner" ref="com.axelor.apps.base.db.Partner" index="false"/>
+    <many-to-one name="carrierPartner" title="Carrier" ref="com.axelor.apps.base.db.Partner" index="false"/>
     <decimal name="supplierQualityRating" title="Supplier quality rating"/>
     <decimal name="supplierQualityRatingSelect" title="Supplier quality rating" selection="rating.icon.select"/>
     <decimal name="supplierArrivalProductQty" title="Supplier arrival product qty"/>
@@ -16,6 +16,7 @@
     <one-to-many name="partnerProductQualityRatingList" ref="com.axelor.apps.stock.db.PartnerProductQualityRating" mappedBy="partner" title="Partner product quality rating"/>
     <one-to-many name="freightCarrierModeList" ref="com.axelor.apps.stock.db.FreightCarrierMode" mappedBy="carrierPartner"/>
 
+    <boolean name="isIspmRequired" title="Is ISPM15 required ?"/>
     <one-to-many name="partnerStockSettingsList" title="Partner stock settings" ref="com.axelor.apps.stock.db.PartnerStockSettings" mappedBy="partner"/>
   </entity>
 

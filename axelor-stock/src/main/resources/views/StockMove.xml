@@ -66,7 +66,7 @@
     </calendar>
 
 	<form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove"
-		 onLoad="action-stock-move-attrs-typeselect-change,action-stock-move-hide-reserved-qty,action-stock-move-method-filter-printing-settings" onNew="action-group-stock-stockmove-onnew">
+		 onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
 		 
 		 <menubar>
 		 		<menu title="Reports">
@@ -111,7 +111,7 @@
             <field name="fromAddressStr" showIf="typeSelect == 3" readonlyIf="statusSelect &gt; 1" height="5" colSpan="12">
 				<viewer>{{record.fromAddressStr}}</viewer>
 			</field>
-	      <field name="toAddress" showIf="!$readonly() &amp;&amp; statusSelect == 1 &amp;&amp; typeSelect == 2" colSpan="12" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
+	      <field name="toAddress" showIf="!$readonly() &amp;&amp; statusSelect == 1 &amp;&amp; typeSelect == 2" colSpan="12" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
 			<field name="toAddressStr" showIf="typeSelect == 2" readonlyIf="statusSelect &gt; 1" height="5" colSpan="12">
 				<viewer>{{record.toAddressStr}}</viewer>
 			</field>
@@ -147,6 +147,16 @@
 		<field name="numOfPackages" readonlyIf="statusSelect == 3 || statusSelect == 4" />
 		<field name="numOfPalettes" readonlyIf="statusSelect == 3 || statusSelect == 4" />
 		<field name="grossWeight" readonlyIf="statusSelect == 3 || statusSelect == 4" />
+		<field name="isIspmRequired" showIf="!$readonly()"/>
+		<field name="$viewIspm" showTitle="false" showIf="$readonly()">
+			<viewer>
+				<![CDATA[
+                    <h4 class="text-left">
+                        <span class="label label-default" style="background-color: #B6473F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isIspmRequired" x-translate>ISPM standard required</span>
+                    </h4>
+				]]>
+		</viewer>
+		</field>
 		<field name="saleOrder.specificPackage" readonly="true"/>
 	</panel>
 	   
@@ -228,6 +238,12 @@
     	<action name="action-stock-move-attrs-typeselect-change"/>
 		<action name="action-stock-move-hide-reserved-qty"/>
     </action-group>
+
+    <action-group name="action-group-stock-stockmove-onload">
+        <action name="action-stock-move-attrs-typeselect-change"/>
+        <action name="action-stock-move-hide-reserved-qty"/>
+		<action name="action-stock-move-method-filter-printing-settings"/>
+    </action-group>
     
 	<action-group name="action-group-stock-stockmove-plan-click">
 	 	<action name="save"/>
@@ -261,6 +277,7 @@
 	<action-group name="action-stock-move-group-partner-onchange">
 		<action name="action-stock-move-record-partner-delivery-informations"/>
         <action name="action-stock-move-record-auto-mail"/>
+		<action name="action-stock-move-record-ispm-field"/>
 	</action-group>
 
      <action-attrs name="action-stock-move-attrs-typeselect-change">
@@ -317,6 +334,10 @@
 			   expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.stockMoveAutomaticMail"/>
 		<field name="stockMoveMessageTemplate" if="_typeSelect == '2'"
 			   expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.stockMoveMessageTemplate"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-record-ispm-field" model="com.axelor.apps.stock.db.StockMove">
+		<field name="isIspmRequired" expr="eval: println(toAddress?.addressL7Country); partner?.isIspmRequired || toAddress?.addressL7Country?.isIspmRequired"/>
 	</action-record>
 
 	<action-record name="action-stock-move-set-from-address" model="com.axelor.apps.stock.db.StockMove">
