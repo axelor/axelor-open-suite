@@ -72,7 +72,7 @@ public class ExportCategoryServiceImpl implements ExportCategoryService {
 	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
-	public void exportCategory(ZonedDateTime endDate, BufferedWriter bwExport) throws IOException,
+	public void exportCategory(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport) throws IOException,
 			PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException {
 
 		bwExport.newLine();

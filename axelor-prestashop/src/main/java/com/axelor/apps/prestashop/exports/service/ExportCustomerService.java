@@ -29,6 +29,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.xml.sax.SAXException;
 
+import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 
 public interface ExportCustomerService {
@@ -48,5 +49,5 @@ public interface ExportCustomerService {
 	 * @throws JAXBException
 	 * @throws TransformerFactoryConfigurationError
 	 */
-	public void exportCustomer(ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, TransformerConfigurationException, TransformerException, ParserConfigurationException, SAXException, PrestaShopWebserviceException, JAXBException, TransformerFactoryConfigurationError;
+	public void exportCustomer(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, TransformerConfigurationException, TransformerException, ParserConfigurationException, SAXException, PrestaShopWebserviceException, JAXBException, TransformerFactoryConfigurationError;
 }

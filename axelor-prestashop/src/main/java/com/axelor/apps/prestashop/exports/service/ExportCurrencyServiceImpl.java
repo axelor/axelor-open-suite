@@ -83,13 +83,8 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 	 * @param currencyCode unique code of currency
 	 * @return id of prestashop's currency if there it is.
 	 * @throws PrestaShopWebserviceException
-	 * @throws JAXBException
-	 * @throws TransformerConfigurationException
-	 * @throws TransformerException
-	 * @throws TransformerFactoryConfigurationError
-	 * @throws IOException
 	 */
-	public String isCurrency(String currencyCode) throws PrestaShopWebserviceException, JAXBException, TransformerConfigurationException, TransformerException, TransformerFactoryConfigurationError, IOException {
+	public String currencyExists(AppPrestashop appConfig, String currencyCode) throws PrestaShopWebserviceException {
 
 		String prestaShopId = null;
 		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
@@ -116,7 +111,7 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
-	public void exportCurrency(ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, TransformerException, ParserConfigurationException, SAXException, PrestaShopWebserviceException, JAXBException, TransformerFactoryConfigurationError {
+	public void exportCurrency(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, TransformerException, ParserConfigurationException, SAXException, PrestaShopWebserviceException, JAXBException, TransformerFactoryConfigurationError {
 
 		bwExport.newLine();
 		bwExport.write("-----------------------------------------------");

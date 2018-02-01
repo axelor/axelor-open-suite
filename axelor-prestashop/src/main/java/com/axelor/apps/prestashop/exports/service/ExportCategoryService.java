@@ -26,6 +26,7 @@ import javax.xml.transform.TransformerException;
 
 import org.xml.sax.SAXException;
 
+import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 
 public interface ExportCategoryService {
@@ -42,5 +43,5 @@ public interface ExportCategoryService {
 	 * @throws SAXException
 	 * @throws TransformerException
 	 */
-	public void exportCategory(ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException;
+	public void exportCategory(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException;
 }

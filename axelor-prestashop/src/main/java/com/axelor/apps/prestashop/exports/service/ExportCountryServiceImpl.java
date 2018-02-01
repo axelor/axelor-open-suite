@@ -79,8 +79,7 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 	 * @return id of prestashop's country if it is.
 	 * @throws PrestaShopWebserviceException
 	 */
-	public String isCountry(String countryCode) throws PrestaShopWebserviceException {
-
+	public String countryExists(AppPrestashop appConfig, String countryCode) throws PrestaShopWebserviceException {
 		String prestaShopId = null;
 		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
 		HashMap<String, String> countryMap = new HashMap<String, String>();
@@ -106,7 +105,7 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
-	public void exportCountry(ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException {
+	public void exportCountry(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException {
 
 		PSWebServiceClient ws = null;
 		HashMap<String, Object> opt = null;

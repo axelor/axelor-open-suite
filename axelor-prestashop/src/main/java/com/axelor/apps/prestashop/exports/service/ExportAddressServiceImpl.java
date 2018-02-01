@@ -70,7 +70,7 @@ public class ExportAddressServiceImpl implements ExportAddressService {
 
 	@Override
 	@Transactional
-	public void exportAddress(ZonedDateTime endDate, BufferedWriter bwExport) throws IOException,
+	public void exportAddress(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport) throws IOException,
 			PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException {
 
 		bwExport.newLine();

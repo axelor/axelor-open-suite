@@ -90,7 +90,7 @@ public class ExportProductServiceImpl implements ExportProductService {
 	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
-	public void exportProduct(ZonedDateTime endDate, BufferedWriter bwExport)
+	public void exportProduct(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport)
 			throws IOException, TransformerConfigurationException, TransformerException, ParserConfigurationException,
 			SAXException, PrestaShopWebserviceException, JAXBException, TransformerFactoryConfigurationError {
 

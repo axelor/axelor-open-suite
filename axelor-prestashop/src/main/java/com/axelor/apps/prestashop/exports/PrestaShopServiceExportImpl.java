@@ -105,12 +105,12 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	 * @throws TransformerFactoryConfigurationError
 	 */
 	public void exportAxelorBase(AppPrestashop appConfig, ZonedDateTime endDate) throws PrestaShopWebserviceException, TransformerException, IOException, ParserConfigurationException, SAXException, JAXBException, TransformerFactoryConfigurationError {
-		currencyService.exportCurrency(endDate, bwExport);
-		countryService.exportCountry(endDate, bwExport);
-		customerService.exportCustomer(endDate, bwExport);
-		addressService.exportAddress(endDate, bwExport);
-		categoryService.exportCategory(endDate, bwExport);
-		productService.exportProduct(endDate, bwExport);
+		currencyService.exportCurrency(appConfig, endDate, bwExport);
+		countryService.exportCountry(appConfig, endDate, bwExport);
+		customerService.exportCustomer(appConfig, endDate, bwExport);
+		addressService.exportAddress(appConfig, endDate, bwExport);
+		categoryService.exportCategory(appConfig, endDate, bwExport);
+		productService.exportProduct(appConfig, endDate, bwExport);
 	}
 
 	/**
