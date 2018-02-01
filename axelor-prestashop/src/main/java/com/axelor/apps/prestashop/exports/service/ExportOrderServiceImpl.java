@@ -108,7 +108,6 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 		return cart_id;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
 	public void exportOrder(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport)
@@ -177,7 +176,7 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 					cart.setId_lang("1");
 
 					if(id_address_delivery == null) {
-						throw new AxelorException(I18n.get(IExceptionMessage.INVALID_ADDRESS), IException.NO_VALUE);
+						throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_ADDRESS));
 					} else {
 						cart.setId_address_delivery(id_address_delivery);
 					}

@@ -108,7 +108,6 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 		return prestaShopId;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
 	public void exportCurrency(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, TransformerException, ParserConfigurationException, SAXException, PrestaShopWebserviceException, JAXBException, TransformerFactoryConfigurationError {
@@ -133,7 +132,7 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 			try {
 
 				if(currencyObj.getCode() == null && currencyObj.getName() == null) {
-					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CURRENCY),IException.NO_VALUE);
+					throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_CURRENCY));
 				}
 
 				Currencies currency = new Currencies();

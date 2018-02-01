@@ -87,7 +87,6 @@ public class ExportProductServiceImpl implements ExportProductService {
 		key = prestaShopObj.getPrestaShopKey();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
 	public void exportProduct(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport)
@@ -223,7 +222,7 @@ public class ExportProductServiceImpl implements ExportProductService {
 					done++;
 
 				} else {
-					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_PRODUCT), IException.NO_VALUE);
+					throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_PRODUCT));
 				}
 
 			} catch (AxelorException e) {

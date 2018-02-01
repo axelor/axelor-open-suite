@@ -70,7 +70,6 @@ public class ExportCustomerServiceImpl implements ExportCustomerService {
 		key = prestaShopObj.getPrestaShopKey();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
 	public void exportCustomer(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport)
@@ -107,10 +106,10 @@ public class ExportCustomerServiceImpl implements ExportCustomerService {
 							customer.setFirstname(partner.getContactPartnerSet().iterator().next().getFirstName());
 							customer.setLastname(partner.getContactPartnerSet().iterator().next().getName());
 						} else {
-							throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CONTACT), IException.NO_VALUE);
+							throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_CONTACT));
 						}
 					} else {
-						throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CONTACT), IException.NO_VALUE);
+						throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_CONTACT));
 					}
 				} else {
 
@@ -118,7 +117,7 @@ public class ExportCustomerServiceImpl implements ExportCustomerService {
 						customer.setFirstname(partner.getFirstName());
 						customer.setLastname(partner.getName());
 					} else {
-						throw new AxelorException(I18n.get(IExceptionMessage.INVALID_INDIVIDUAL),IException.NO_VALUE);
+						throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_INDIVIDUAL));
 					}
 				}
 
@@ -129,7 +128,7 @@ public class ExportCustomerServiceImpl implements ExportCustomerService {
 				if (partner.getEmailAddress() != null) {
 					customer.setEmail(partner.getEmailAddress().getAddress());
 				} else {
-					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_EMAIL), IException.NO_VALUE);
+					throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_EMAIL));
 				}
 
 				customer.setId_default_group("3");

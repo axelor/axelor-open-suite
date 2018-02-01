@@ -69,7 +69,6 @@ public class ExportCategoryServiceImpl implements ExportCategoryService {
 		key = prestaShopObj.getPrestaShopKey();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
 	public void exportCategory(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport) throws IOException,
@@ -153,7 +152,7 @@ public class ExportCategoryServiceImpl implements ExportCategoryService {
 					done++;
 
 				} else {
-					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_PRODUCT_CATEGORY),	IException.NO_VALUE);
+					throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_PRODUCT_CATEGORY));
 				}
 
 			} catch (AxelorException e) {

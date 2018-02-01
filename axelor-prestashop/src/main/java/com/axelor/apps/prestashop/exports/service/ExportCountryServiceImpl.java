@@ -102,7 +102,6 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 		return prestaShopId;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
 	public void exportCountry(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException {
@@ -130,7 +129,7 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 				prestaShopId = this.isCountry(countryObj.getAlpha2Code());
 
 				if(countryObj.getName() == null) {
-					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_COUNTRY), IException.NO_VALUE);
+					throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_COUNTRY));
 				}
 
 				LanguageDetails languageObj = new LanguageDetails();
