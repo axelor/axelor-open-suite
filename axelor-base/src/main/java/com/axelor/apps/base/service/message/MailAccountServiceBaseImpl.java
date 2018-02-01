@@ -21,7 +21,7 @@ import java.util.List;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.message.db.MailAccount;
+import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.service.MailAccountServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -39,7 +39,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 	}
 
 	@Override
-	public boolean checkDefaultMailAccount(MailAccount mailAccount) {
+	public boolean checkDefaultMailAccount(EmailAccount mailAccount) {
 		if ( appBaseService.getAppBase().getMailAccountByUser() && mailAccount.getIsDefault()) {
 			String request = "self.user = ?1 AND self.isDefault = true";
 			List<Object> params = Lists.newArrayList();
@@ -56,7 +56,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 	}
 
 	@Override
-	public MailAccount getDefaultMailAccount(int serverType)  {
+	public EmailAccount getDefaultMailAccount(int serverType)  {
 
 		if ( appBaseService.getAppBase().getMailAccountByUser() ) {
 			return mailAccountRepo.all()

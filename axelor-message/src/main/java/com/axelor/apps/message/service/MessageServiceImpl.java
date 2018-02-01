@@ -29,8 +29,8 @@ import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
@@ -79,7 +79,7 @@ public class MessageServiceImpl implements MessageService {
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
-			List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect, MailAccount emailAccount)  {
+			List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect, EmailAccount emailAccount)  {
 		
 		Message message = createMessage( content, fromEmailAddress,	model, id, null, 0, getTodayLocalTime(), false,	MessageRepository.STATUS_DRAFT, subject, MessageRepository.TYPE_SENT,
 				replyToEmailAddressList, toEmailAddressList, ccEmailAddressList, bccEmailAddressList, addressBlock, mediaTypeSelect, emailAccount) ;
@@ -109,7 +109,7 @@ public class MessageServiceImpl implements MessageService {
 	
 	protected Message createMessage(String content, EmailAddress fromEmailAddress, String relatedTo1Select, int relatedTo1SelectId, String relatedTo2Select, int relatedTo2SelectId, 
 			LocalDateTime sentDate, boolean sentByEmail, int statusSelect, String subject, int typeSelect,List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList, 
-			List<EmailAddress> ccEmailAddressList, List<EmailAddress> bccEmailAddressList, String addressBlock, int mediaTypeSelect, MailAccount emailAccount)  {
+			List<EmailAddress> ccEmailAddressList, List<EmailAddress> bccEmailAddressList, String addressBlock, int mediaTypeSelect, EmailAccount emailAccount)  {
 
 		Set<EmailAddress> 
 			replyToEmailAddressSet = Sets.newHashSet(),
@@ -184,7 +184,7 @@ public class MessageServiceImpl implements MessageService {
 	@Transactional(rollbackOn = { MessagingException.class, IOException.class, Exception.class })
 	public Message sendByEmail(Message message) throws MessagingException, IOException, AxelorException  {
 		
-		MailAccount mailAccount = message.getMailAccount();
+		EmailAccount mailAccount = message.getMailAccount();
 		
 		if ( mailAccount == null ){ return message; }
 
