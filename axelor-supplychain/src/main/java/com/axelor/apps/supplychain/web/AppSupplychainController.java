@@ -15,14 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service.app;
+package com.axelor.apps.supplychain.web;
 
-import com.axelor.apps.base.db.AppSupplychain;
-import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 
-public interface AppSupplychainService extends AppBaseService {
+public class AppSupplychainController {
+		
+	@Inject
+	private AppSupplychainService appSupplychainService;
 	
-	public AppSupplychain getAppSupplychain();
-	
-	public void generateSupplychainConfigurations();
+	public void generateSupplychainConfigurations(ActionRequest request, ActionResponse response) {
+		
+		appSupplychainService.generateSupplychainConfigurations();
+		
+		response.setReload(true);
+	}
+
 }
