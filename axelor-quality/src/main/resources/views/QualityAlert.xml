@@ -11,10 +11,10 @@
 		<field name="responsible"/>
 		<field name="qualityTagSet"/>
 		<field name="rootCause"/>
-		<field name="priority"/>
+		<field name="prioritySelect"/>
 	</grid>
 	
-	<calendar name="quality-alert-calendar" title="Alert calendar" mode="month" colorBy="priority" 
+	<calendar name="quality-alert-calendar" title="Alert calendar" mode="month" colorBy="prioritySelect" 
     	eventStart="startDate" eventStop="endDate" eventLength="1" model="com.axelor.apps.quality.db.QualityAlert">
     	<field name="fullName" />
  	</calendar>
@@ -30,10 +30,10 @@
 			<field name="team" domain="self.typeSelect = 'quality'"/>
 			<field name="responsible"/>
 			<field name="rootCause"/>
-			<field name="priority"/>
+			<field name="prioritySelect"/>
 			<field name="startDate"/>
 			<field name="endDate"/>
-			<field name="deadLine"/>
+			<field name="deadLineDate"/>
 			<field name="qualityTagSet" widget="TagSelect" colSpan="12"/>
 		</panel>
 		<panel name="description">
@@ -55,7 +55,7 @@
 	    </panel-mail>
 	</form>	
 	
-	<kanban columnBy="statusSelect" sequenceBy="priority" limit="10"
+	<kanban columnBy="statusSelect" sequenceBy="prioritySelect" limit="10"
 	 name="quality-alert-kanban" title="Quality alerts" model="com.axelor.apps.quality.db.QualityAlert">
 		<field name="fullName"/>
 		<field name="team"/>
@@ -71,7 +71,7 @@
     
 	<action-record name="action-quality-alert-record-default" model="com.axelor.apps.quality.db.QualityAlert">
 		<field name="statusSelect" expr="eval: 1"/>
-		<field name="priority" expr="eval: 1"/>
+		<field name="prioritySelect" expr="eval: 1"/>
 		<field name="product" expr="eval: _product" if="eval: _product != null"/>
 		<field name="team" expr="eval: _team" if="eval: _team != null"/>
 	</action-record>

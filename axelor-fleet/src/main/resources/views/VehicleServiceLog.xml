@@ -16,11 +16,11 @@
     		</field>
       	 	<field name="date" />
     		<field name="purchasePartner" />
-    		<field name="invocieRef" />
+    		<field name="invoiceRef" />
     		<field name="vendorPartner" />
     		<field name="notes" colSpan="12" />
     	</panel>
-    		<panel-related field="vehicleService" title="Services" colSpan="12">
+    		<panel-related field="vehicleServiceList" title="Services" colSpan="12">
 				<field name="serviceType"/>
 				<field name="cost"/>
 			</panel-related>

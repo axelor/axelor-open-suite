@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
-import com.axelor.apps.message.db.MailAccount;
+import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.db.repo.TemplateRepository;
@@ -18,7 +18,7 @@ public class TemplateMessageServiceMarketingImpl extends TemplateMessageServiceB
 
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	protected MailAccount emailAccount;
+	protected EmailAccount emailAccount;
 	
 	@Inject
 	public TemplateMessageServiceMarketingImpl(MessageService messageService) {
@@ -35,7 +35,7 @@ public class TemplateMessageServiceMarketingImpl extends TemplateMessageServiceB
 		return super.getMediaTypeSelect(template);
 	}
 	
-	protected MailAccount getMailAccount()  {
+	protected EmailAccount getMailAccount()  {
 		
 		if ( emailAccount != null ) {
 			log.debug( "Email account ::: {}", emailAccount );
@@ -45,7 +45,7 @@ public class TemplateMessageServiceMarketingImpl extends TemplateMessageServiceB
 		return super.getMailAccount();
 	}
 
-	public void setEmailAccount(MailAccount emailAccount)  {
+	public void setEmailAccount(EmailAccount emailAccount)  {
 		
 		this.emailAccount = emailAccount;
 		

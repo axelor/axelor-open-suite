@@ -12,8 +12,8 @@
   	  		<panel>
 	  	  		<field name="name"/>
 		 		<field name="bookingDate"/>
-		 		<field name="contact"/>
-		 		<field name="partner"/>
+		 		<field name="contactSet"/>
+		 		<field name="partnerSet"/>
 		 		<field name="isConfirmed" widget="Boolean-switch"/>
 		 		<field name="partnerCategory"/>
 		 	</panel>

@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
-    <form name="mail-account-form" id="base-mail-account-form" title="Mail account" model="com.axelor.apps.message.db.MailAccount" 
+    <form name="mail-account-form" id="base-mail-account-form" title="Mail account" model="com.axelor.apps.message.db.EmailAccount" 
     	onNew="action-mail-account-default-record">
     	<panel name="informations" title="Informations" >
             <field name="name" />
@@ -31,7 +31,7 @@
 		</panel>
     </form>
     
-	<action-record name="action-mail-account-default-record" model="com.axelor.apps.message.db.MailAccount">
+	<action-record name="action-mail-account-default-record" model="com.axelor.apps.message.db.EmailAccount">
     	<field name="user" expr="eval:__user__" if="__config__.app.getApp('base').getMailAccountByUser()"/>
     </action-record>
     

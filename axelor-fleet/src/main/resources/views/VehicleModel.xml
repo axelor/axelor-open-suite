@@ -14,7 +14,7 @@
    				<field name="vehicleMake"  colSpan="5" />
    				<field name="model" colSpan="5" />
    		</panel>
-   		<panel-related field="vehicleVendors" form-view="partner-form" grid-view="partner-grid"/>
+   		<panel-related field="vehicleVendorsSet" form-view="partner-form" grid-view="partner-grid"/>
    </form>
 
 </object-views>

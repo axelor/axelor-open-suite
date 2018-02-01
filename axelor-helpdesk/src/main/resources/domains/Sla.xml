@@ -5,13 +5,13 @@
 
   <module name="helpdesk" package="com.axelor.apps.helpdesk.db"/>
 
-  <entity name="SLA">
+  <entity name="Sla">
       
 		<string name="name" required="true" title="SLA policy name"/>
 		<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
-		<integer name="priority" title="Minimum priority" selection="helpdesk.priority.select" default="2"/>
+		<integer name="prioritySelect" title="Minimum priority" selection="helpdesk.priority.select" default="2"/>
 		<many-to-one name="ticketType" ref="com.axelor.apps.helpdesk.db.TicketType" title="Ticket type"/>
-		<integer name="reachStage" title="Reach stage" selection="helpdesk.status.select"/>
+		<integer name="reachStageSelect" title="Reach stage" selection="helpdesk.status.select"/>
 		<integer name="days" title="days" min="0"/>
 		<integer name="hours" title="hours" min="0"/>
 		<boolean name="isWorkingDays" title="Working Days"/>

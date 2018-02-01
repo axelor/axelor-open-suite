@@ -9,7 +9,7 @@ import com.axelor.apps.base.db.AppRecruitment;
 import com.axelor.apps.base.db.repo.AppRecruitmentRepository;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.message.db.MailAccount;
+import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.mail.MailParser;
 import com.google.inject.Inject;
@@ -30,7 +30,7 @@ public class MailAccountServiceTalentImpl extends MailAccountServiceBaseImpl{
 	
 	@Transactional
 	@Override
-	public Message createMessage(MailAccount mailAccount, MailParser parser, Date date) throws MessagingException, IOException {
+	public Message createMessage(EmailAccount mailAccount, MailParser parser, Date date) throws MessagingException, IOException {
 		
 		Message message = super.createMessage(mailAccount, parser, date);
 		

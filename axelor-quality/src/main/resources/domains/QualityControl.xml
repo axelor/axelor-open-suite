@@ -23,7 +23,7 @@
 	    <one-to-many name="controlPointList" ref="ControlPoint" mappedBy="qualityControl"/>
 	    <date name="startDate" title="Start date" />
 	    <date name="endDate" title="End date" />
-	    <date name="deadLine" title="Deadline"/>
+	    <date name="deadLineDate" title="Deadline"/>
 	    <integer name="sequence" title="Sequence"/>
 	</entity>
   

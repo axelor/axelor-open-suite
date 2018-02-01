@@ -30,7 +30,7 @@ public class HRMenuValidateService {
 				.context("_statusSelect", ExpenseRepository.STATUS_CONFIRMED);
 
 		if(employee == null || !employee.getHrManager())  {
-			if (employee == null || employee.getManager() == null) {
+			if (employee == null || employee.getManagerUser() == null) {
 				actionView.domain(actionView.get().getDomain() + " AND (self.user = :_user OR self.user.employee.manager = :_user)")
 						.context("_user", user);
 			}

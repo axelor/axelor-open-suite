@@ -10,7 +10,7 @@
 		<decimal name="pericePerLiter" title="Price per Liter" />
 		<decimal name="totalPrice" title="Total Price" required="false"/>
 		<many-to-one name="purchasePartner" ref="com.axelor.apps.base.db.Partner" title="Purchaser" />
-		<string name="invocieRef" title="Invoice Reference" />
+		<string name="invoiceRef" title="Invoice Reference" />
 		<many-to-one name="vendorPartner" ref="com.axelor.apps.base.db.Partner" title="Vendor" />
 		<string name="notes" title="Notes" large="true"/>
 		<date name="date" title="Date" column="date_val" />

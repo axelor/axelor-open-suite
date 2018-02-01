@@ -24,7 +24,7 @@
 	<menuitem name="mail-root-email-conf-mail-account"  parent="mail-conf" title="Email Accounts" action="mail.root.email.conf.mail.account" order="15" />	
 		
 	<action-view name="mail.root.email.conf.mail.account" title="Email Accounts" 
-		model="com.axelor.apps.message.db.MailAccount" >
+		model="com.axelor.apps.message.db.EmailAccount" >
 		<view type="grid" />
 		<view type="form" />
 	</action-view>

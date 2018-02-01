@@ -14,7 +14,7 @@
 		<field name="endDateT"/>
 		<field name="deadlineDateT"/>
 		<field name="assignedTo"/>
-		<field name="priority"/>
+		<field name="prioritySelect"/>
 		<field name="statusSelect"/>
 		<field name="progressSelect" widget="SelectProgress"/>
 		<button name="takeCharge" icon="fa-suitcase" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket"/>
@@ -69,7 +69,7 @@
 		
 		<panel name="attributes" title="Attributes" sidebar="true">
 			<field name="statusSelect" colSpan="3" onChange="action-record-to-set-progress-select,action-ticket-attrs-readonly-to-takeCharge-btn"/>
-			<field name="priority" colSpan="3"/>
+			<field name="prioritySelect" colSpan="3"/>
 			<field name="ticketType" colSpan="6"/>
 			<field name="progressSelect" widget="SelectProgress"/>
 		</panel>
