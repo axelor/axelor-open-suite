@@ -19,7 +19,7 @@
 			<field name="company" />
 			<field name="duration" />
 			<field name="mandatoryTraining" colSpan="4" />
-			<field name="tagSkillSet" colSpan="8" widget="tag-select" />
+			<field name="skillSet" colSpan="8" widget="tag-select" />
 			<field name="requiredTrainingSet" colSpan="12" />
 			<field name="description" colSpan="12" />
 			<field name="program" colSpan="12" widget="html" />

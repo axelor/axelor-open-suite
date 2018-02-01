@@ -6,9 +6,9 @@
 	<module name="human-resource" package="com.axelor.apps.hr.db"/>
 	
 	<entity name="Employee" cachable="true">
-		<many-to-many name="trainingSkillSet" ref="com.axelor.apps.talent.db.TagSkill" title="Training skills"/>
-		<many-to-many name="experienceSkillSet" ref="com.axelor.apps.talent.db.TagSkill" title="Experience skills"/>
-		<many-to-many name="tagSkillSet" ref="com.axelor.apps.talent.db.TagSkill" title="Tag" />
+		<many-to-many name="trainingSkillSet" ref="com.axelor.apps.talent.db.Skill" title="Training skills"/>
+		<many-to-many name="experienceSkillSet" ref="com.axelor.apps.talent.db.Skill" title="Experience skills"/>
+		<many-to-many name="skillSet" ref="com.axelor.apps.talent.db.Skill" title="Other skills" />
 	</entity>
   
 </domain-models>

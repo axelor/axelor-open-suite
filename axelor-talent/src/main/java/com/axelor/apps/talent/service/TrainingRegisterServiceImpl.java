@@ -84,7 +84,7 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
 		
 		trainingRegister.setStatusSelect(2);
 		
-		trainingRegister.getEmployee().getTagSkillSet().addAll(trainingRegister.getTraining().getTagSkillSet());
+		trainingRegister.getEmployee().getSkillSet().addAll(trainingRegister.getTraining().getSkillSet());
 		
 		trainingRegisterRepo.save(trainingRegister);
 		
