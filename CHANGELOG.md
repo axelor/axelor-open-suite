@@ -14,6 +14,7 @@
 - Check ICS number on direct debit sepa file generation
 - Fix receiver bank details filter in BankOrder
 - Years can have the same code as long as the company/type differ.
+- Fixes in expense form
 
 
 ## [4.1.1] - 2018-01-10

@@ -60,7 +60,7 @@
 				</panel>
 			    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 				<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
-				<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" readonlyIf="ventilated"/>
+				<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" onChange="action-expense-record-company-onchange" readonlyIf="ventilated"/>
 				<field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 				<field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.general.getManageMultiBanks()" if-module="axelor-cash-management"/>
 				<field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" readonlyIf="ventilated"/>
@@ -180,6 +180,11 @@
     	<field name="multipleUsers" expr="eval: setMultipleUsers" if="setMultipleUsers"/>
 	</action-record>
 
+	<action-record name="action-expense-record-company-onchange" model="com.axelor.apps.hr.db.Expense">
+		<field name="period" expr="eval: null"/>
+		<field name="bankDetails" expr="eval: null"/>
+	</action-record>
+
 	<action-record name="action-expense-record-draft" model="com.axelor.apps.hr.db.Expense">
 	    <field name="statusSelect" expr="1"/>
 	</action-record>
@@ -189,8 +194,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-expense-attrs-domain-period">
-		<attribute name="value" for="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
-		<attribute name="domain" for="period" expr="eval: &quot; self.fromDate &lt;= CURRENT_DATE AND self.statusSelect = 1 AND self.allowExpenseCreation = true AND self.year.company = :_payCompany AND self.year.typeSelect = 1 &quot;"/>
+		<attribute name="domain" for="period" expr="eval: &quot; self.fromDate &lt;= CURRENT_DATE AND self.statusSelect = 1 AND self.allowExpenseCreation = true AND self.year.company = :company AND self.year.typeSelect = 1 &quot;"/>
 	</action-attrs>
 	
 	<action-method name="action-expense-method-compute">
