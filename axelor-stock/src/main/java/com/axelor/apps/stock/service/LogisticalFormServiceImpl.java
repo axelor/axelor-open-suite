@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,6 +40,7 @@ import javax.persistence.TypedQuery;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.db.StockConfig;
@@ -478,8 +480,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
         StockConfig stockConfig = Beans.get(StockConfigService.class).getStockConfig(logisticalForm.getCompany());
         Integer statusSelect = stockConfig.getRealizeStockMovesUponParcelPalletCollection()
-                ? StockMoveRepository.STATUS_PLANNED
-                : StockMoveRepository.STATUS_REALIZED;
+                ? StockMoveRepository.STATUS_PLANNED : StockMoveRepository.STATUS_REALIZED;
 
         domainList.add("self.partner = :deliverToCustomerPartner");
         domainList.add(String.format("self.typeSelect = %d", StockMoveRepository.TYPE_OUTGOING));
@@ -552,6 +553,37 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         }
 
         logisticalForm.setStatusSelect(LogisticalFormRepository.STATUS_COLLECTED);
+    }
+
+    @Override
+    public Optional<String> getCustomerAccountNumber(LogisticalForm logisticalForm) throws AxelorException {
+        List<FreightCarrierCustomerAccountNumber> freightCarrierCustomerAccountNumberList;
+
+        switch (logisticalForm.getAccountSelect()) {
+        case LogisticalFormRepository.ACCOUNT_COMPANY:
+            freightCarrierCustomerAccountNumberList = logisticalForm.getCompany()
+                    .getFreightCarrierCustomerAccountNumberList();
+            break;
+        case LogisticalFormRepository.ACCOUNT_CUSTOMER:
+            freightCarrierCustomerAccountNumberList = logisticalForm.getDeliverToCustomerPartner()
+                    .getFreightCarrierCustomerAccountNumberList();
+            break;
+        default:
+            throw new AxelorException(logisticalForm, IException.CONFIGURATION_ERROR,
+                    I18n.get("Unknown account select"));
+        }
+
+        if (freightCarrierCustomerAccountNumberList != null) {
+            Optional<FreightCarrierCustomerAccountNumber> freightCarrierCustomerAccountNumber = freightCarrierCustomerAccountNumberList
+                    .stream().filter(it -> it.getCarrierPartner().equals(logisticalForm.getCarrierPartner()))
+                    .findFirst();
+
+            if (freightCarrierCustomerAccountNumber.isPresent()) {
+                return Optional.ofNullable(freightCarrierCustomerAccountNumber.get().getCustomerAccountNumber());
+            }
+        }
+
+        return Optional.empty();
     }
 
 }

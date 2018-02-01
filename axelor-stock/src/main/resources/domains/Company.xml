@@ -8,6 +8,7 @@
   <entity name="Company" lang="java" cachable="true">
   
 	<one-to-one name="stockConfig" ref="com.axelor.apps.stock.db.StockConfig" title="Stock config" mappedBy="company"/>
+    <one-to-many name="freightCarrierCustomerAccountNumberList" ref="com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber" mappedBy="company"/>
 
   </entity>
   

@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.web;
 
 import java.util.Map;
+import java.util.Optional;
 
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMove;
@@ -107,6 +108,17 @@ public class LogisticalFormController {
             logisticalForm = Beans.get(LogisticalFormRepository.class).find(logisticalForm.getId());
             Beans.get(LogisticalFormService.class).processCollected(logisticalForm);
             response.setReload(true);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
+
+    public void setCustomerAccountNumber(ActionRequest request, ActionResponse response) {
+        try {
+            LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+            Optional<String> customerAccountNumber = Beans.get(LogisticalFormService.class)
+                    .getCustomerAccountNumber(logisticalForm);
+            response.setValue("customerAccountNumber", customerAccountNumber.orElse(null));
         } catch (Exception e) {
             TraceBackService.trace(response, e);
         }

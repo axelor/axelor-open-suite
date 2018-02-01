@@ -82,6 +82,11 @@
         <option value="3">Collected</option>
     </selection>
 
+    <selection name="logistical.form.account.select">
+        <option value="1">Company account</option>
+        <option value="2">Customer account</option>
+    </selection>
+
     <selection name="logistical.form.line.type.select">
         <option value="1">Parcel</option>
         <option value="2">Pallet</option>

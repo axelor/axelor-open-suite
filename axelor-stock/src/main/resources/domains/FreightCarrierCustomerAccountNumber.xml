@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+    <module name="stock" package="com.axelor.apps.stock.db" />
+
+    <entity name="FreightCarrierCustomerAccountNumber">
+        <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" />
+        <many-to-one name="company" ref="com.axelor.apps.base.db.Company" />
+        <many-to-one name="carrierPartner" ref="com.axelor.apps.base.db.Partner" title="Carrier" />
+        <string name="customerAccountNumber" />
+    </entity>
+
+</domain-models>
