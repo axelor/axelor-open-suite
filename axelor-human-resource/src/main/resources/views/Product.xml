@@ -30,6 +30,8 @@
 				<field name="deductLunchVoucher" hideIf="!expense" />
 				<field name="blockExpenseTax" />
 				<field name="personalExpense" />
+				<field name="unavailableToUsers"/>
+				<field name="saleSupplySelect" readonly="true" hidden="true"/>
                 <field name="expense" hidden="true"/>
 			</panel>
 			<panel name="categorization" title="Categorization" colSpan="12">
