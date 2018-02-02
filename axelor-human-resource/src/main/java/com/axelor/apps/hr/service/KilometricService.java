@@ -129,6 +129,10 @@ public class KilometricService {
 		}
 		
 		KilometricAllowanceRate allowance = Beans.get(KilometricAllowanceRateRepository.class).all().filter("self.kilometricAllowParam = ?1", expenseLine.getKilometricAllowParam() ).fetchOne();
+		if (allowance == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_RATE_MISSING), expenseLine.getKilometricAllowParam().getName())
+					, IException.CONFIGURATION_ERROR, expenseLine);
+		}
 		
 		List<KilometricAllowanceRule> ruleList = new ArrayList<KilometricAllowanceRule>();
 
