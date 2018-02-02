@@ -36,7 +36,7 @@
         <field name="realizeStockMovesUponParcelPalletCollection" />
       </panel>
       <panel-related field="freightCarrierCustomerAccountNumberList" form-view="freight-carrier-customer-account-number-form"
-          grid-view="freight-carrier-customer-account-number-grid" />
+          grid-view="freight-carrier-customer-account-number-grid" editable="true" />
  		<panel>
             <field name="stockMoveAutomaticMail"/>
 			<field name="stockMoveMessageTemplate" requiredIf="stockMoveAutomaticMail"
