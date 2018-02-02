@@ -39,7 +39,7 @@
                 canEdit="false" />
             <field name="collectionDate" />
             <field name="accountSelectionSelect" onChange="action-logistical-form-set-customer-account-number" />
-            <field name="customerAccountNumber" />
+            <field name="customerAccountNumberToCarrier" />
         </panel>
         <panel-tabs colSpan="12" readonlyIf="statusSelect > 1">
             <panel title="General">
@@ -91,7 +91,7 @@
     <action-record name="action-logistical-form-company-change" model="com.axelor.apps.stock.db.LogisticalForm">
         <field name="deliverToCustomerPartner" expr="eval: null" />
         <field name="logisticalFormLineList" expr="eval: null" />
-        <field name="customerAccountNumber" expr="eval: null" />
+        <field name="customerAccountNumberToCarrier" expr="eval: null" />
     </action-record>
 
     <action-group name="action-logistical-form-partner-change">
@@ -143,7 +143,7 @@
     </action-method>
 
     <action-method name="action-logistical-form-set-customer-account-number">
-        <call class="com.axelor.apps.stock.web.LogisticalFormController" method="setCustomerAccountNumber" />
+        <call class="com.axelor.apps.stock.web.LogisticalFormController" method="setCustomerAccountNumberToCarrier" />
     </action-method>
 
 </object-views>

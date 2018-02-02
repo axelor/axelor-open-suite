@@ -145,12 +145,12 @@ public interface LogisticalFormService {
     void processCollected(LogisticalForm logisticalForm) throws AxelorException;
 
     /**
-     * Get customer account number.
+     * Get customer account number to carrier.
      * 
      * @param logisticalForm
      * @return
      * @throws AxelorException
      */
-    Optional<String> getCustomerAccountNumber(LogisticalForm logisticalForm) throws AxelorException;
+    Optional<String> getCustomerAccountNumberToCarrier(LogisticalForm logisticalForm) throws AxelorException;
 
 }

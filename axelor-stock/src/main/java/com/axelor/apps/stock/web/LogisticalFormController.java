@@ -113,12 +113,12 @@ public class LogisticalFormController {
         }
     }
 
-    public void setCustomerAccountNumber(ActionRequest request, ActionResponse response) {
+    public void setCustomerAccountNumberToCarrier(ActionRequest request, ActionResponse response) {
         try {
             LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
-            Optional<String> customerAccountNumber = Beans.get(LogisticalFormService.class)
-                    .getCustomerAccountNumber(logisticalForm);
-            response.setValue("customerAccountNumber", customerAccountNumber.orElse(null));
+            Optional<String> customerAccountNumberToCarrier = Beans.get(LogisticalFormService.class)
+                    .getCustomerAccountNumberToCarrier(logisticalForm);
+            response.setValue("customerAccountNumberToCarrier", customerAccountNumberToCarrier.orElse(null));
         } catch (Exception e) {
             TraceBackService.trace(response, e);
         }

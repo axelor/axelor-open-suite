@@ -23,7 +23,7 @@
         <string name="internalDeliveryComment" large="true" />
         <string name="externalDeliveryComment" large="true" />
         <integer name="accountSelectionSelect" selection="logistical.form.account.select" title="Account selection" default="1" />
-        <string name="customerAccountNumber" />
+        <string name="customerAccountNumberToCarrier" />
 
         <one-to-many name="logisticalFormLineList" ref="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging lines"
             mappedBy="logisticalForm" />

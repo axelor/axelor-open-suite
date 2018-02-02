@@ -556,7 +556,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     }
 
     @Override
-    public Optional<String> getCustomerAccountNumber(LogisticalForm logisticalForm) throws AxelorException {
+    public Optional<String> getCustomerAccountNumberToCarrier(LogisticalForm logisticalForm) throws AxelorException {
         Preconditions.checkNotNull(logisticalForm);
         List<FreightCarrierCustomerAccountNumber> freightCarrierCustomerAccountNumberList = null;
 
