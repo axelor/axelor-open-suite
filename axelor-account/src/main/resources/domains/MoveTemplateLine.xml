@@ -10,7 +10,7 @@
   	<string name="name" title="Label"/>
   	<string name="debitCreditSelect" title="Debit/Credit" selection="move.template.line.debit.credit.select" required="true"/>
   	<many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>
-  	<many-to-one name="account" title="Account" ref="Account" required="true"/>
+  	<many-to-one name="account" title="Accounting.Account" ref="Account" required="true"/>
 	<decimal name="percentage" title="Percentage" precision="20" scale="2"  min="0" max="100"/>
 	<boolean name="hasPartnerToDebit" title="Partner to debit" />
 	<boolean name="hasPartnerToCredit" title="Partner to credit" />

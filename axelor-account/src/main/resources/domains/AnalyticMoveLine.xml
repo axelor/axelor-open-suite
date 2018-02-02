@@ -17,7 +17,7 @@
     <decimal name="amount" title="Amount"/>
     <date name="date" title="Date" column="date_val"/>
     <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal"/>
-    <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Account"/>
+    <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Accounting.Account"/>
     
     <integer name="typeSelect" title="Type" selection="account.analytic.move.line.type.select" default="1"/>
 
