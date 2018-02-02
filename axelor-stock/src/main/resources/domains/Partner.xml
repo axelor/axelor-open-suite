@@ -18,6 +18,7 @@
 
     <boolean name="isIspmRequired" title="Is ISPM15 required ?"/>
     <one-to-many name="partnerStockSettingsList" title="Partner stock settings" ref="com.axelor.apps.stock.db.PartnerStockSettings" mappedBy="partner"/>
+    <one-to-many name="freightCarrierCustomerAccountNumberList" ref="com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber" title="Customer account numbers to carriers" mappedBy="partner"/>
   </entity>
 
 </domain-models>

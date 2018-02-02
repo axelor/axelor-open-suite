@@ -289,6 +289,7 @@
 					   if="__config__.app.isApp('stock')"
 					   colSpan="12"
 					   form-view="partner-stock-settings-form" grid-view="partner-stock-settings-grid"/>
+                <panel-include view="incl-freight-carrer-customer-account-number-list-partner-form" if="__config__.app.isApp('stock')" />
             </panel>
         </panel-tabs>
         <panel>

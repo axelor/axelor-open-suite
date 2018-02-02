@@ -11,7 +11,7 @@
     <string name="reference" title="Reference" required="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" required="true"/>
     <integer name="typeSelect" title="Type" selection="bankpayment.bank.reconciliation.type.select" required="true"/>
-    <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Account" required="true"/>
+    <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Accounting.Account" required="true"/>
     <decimal name="amount" title="Amount" required="true"/> 
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine" title="Move Line" />
     <boolean name="isPosted" title="Is posted ?"/>

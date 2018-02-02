@@ -27,7 +27,7 @@
 		
 		<panel-tabs>
 			<panel name="accounting" title="Accounting">
-				<panel name="accounts" title="Accounts" colSpan="12">
+				<panel name="accounts" title="Accounting.Accounts" colSpan="12">
 					<field name="customerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="supplierAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="doubtfulCustomerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
