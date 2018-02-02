@@ -49,7 +49,7 @@
 		<panel name="main" title="Main">
 			<field name="user" hidden="true" showIf="expense.multipleUsers" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company" canNew="false" canEdit="false" canView="false"/>
 			<field name="projectTask" requiredIf="toInvoice" edit-icon="false" canEdit="false" onSelect="action-expense-line-attrs-domain-project-task" widget="SuggestBox" form-view="project-task-form" grid-view="project-task-grid"/>
-			<field name="expenseProduct" edit-icon="false" canEdit="false" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
+			<field name="expenseProduct" edit-icon="false" canEdit="false" onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
 			<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
 			<field name="totalAmount" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
 			<field name="totalTax" onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution" readonlyIf="expenseProduct.blockExpenseTax == true"/>
@@ -151,15 +151,16 @@
 		<attribute name="domain" for="user" expr="eval: &quot; ${expense.company.id} MEMBER OF self.companySet &quot;" />
 	</action-attrs>
 
-	<action-attrs name="action-expense-line-attrs-set-product-domain">
-		<attribute name="domain" for="expenseProduct" expr="eval: &quot;self.expense = true&quot;" if="!_parent.setMultipleUsers"/>
-		<attribute name="domain" for="expenseProduct" expr="eval: &quot;self.expense = true and self.personalExpense = false&quot;" if="_parent.setMultipleUsers"/>
-	</action-attrs>
-
 	<action-attrs name="action-expense-line-attrs-expense-product-onchange">
 		<attribute name="value" expr="eval: expenseProduct?.blockExpenseTax" for="$expenseProductBlockExpenseTax"/>
 		<attribute if="expenseProduct?.blockExpenseTax" name="value" expr="eval: null" for="totalTax"/>
 		<attribute for="$hasBeenChanged" name="value" expr="eval: true"/>
 	</action-attrs>
 
+	<action-attrs name="action-expense-line-attrs-set-product-domain">
+		<attribute name="domain" for="expenseProduct" expr="eval: &quot;self.expense = true&quot;"  if="__user__.employee.hrManager &amp;&amp; !__parent__.multipleUsers &amp;&amp; __parent__.companyCbSelect &gt; 1"/>
+		<attribute name="domain" for="expenseProduct" expr="eval: &quot;self.expense = true AND self.unavailableToUsers = false&quot;"  if="!__user__.employee.hrManager &amp;&amp; !__parent__.multipleUsers &amp;&amp; __parent__.companyCbSelect &gt; 1"/>
+		<attribute name="domain" for="expenseProduct" expr="eval: &quot;self.expense = true AND self.personalExpense = false&quot;" if="__user__.employee.hrManager &amp;&amp; (__parent__.companyCbSelect == 1 || __parent__.multipleUsers)"/>
+		<attribute name="domain" for="expenseProduct" expr="eval: &quot;self.expense = true AND self.unavailableToUsers = false AND self.personalExpense = false&quot;"  if="!__user__.employee.hrManager &amp;&amp; (__parent__.companyCbSelect == 1 || __parent__.multipleUsers)"/>
+	</action-attrs>
 </object-views>
