@@ -17,11 +17,22 @@
  */
 package com.axelor.apps.prestashop.app;
 
+import java.util.List;
+
 import com.axelor.apps.base.db.AppPrestashop;
 
 public interface AppPrestaShopService {
-
-	public boolean checkAccess(AppPrestashop ps);
+	/**
+	 * Performs access rights check using the given configuration
+	 * @param appConfig Configuration to check
+	 * @param errors List that'll be filled with error messages (missing
+	 * permissions).
+	 * @param warnings List that'll be filled with warnings (potential
+	 * issues on export/import)
+	 * @param info List that'll be filled with informational messages (extraneous
+	 * access rights).
+	 */
+	public void checkAccess(AppPrestashop appConfig, final List<String> errors, final List<String> warnings, final List<String> info);
 
 	/**
 	 * Check prestashop url is valid or not

@@ -24,19 +24,28 @@ public abstract class XlinkEntry {
 	@XmlAttribute
 	private boolean head;
 
-	public static enum XlinkEntryType {
-		ADDRESSES,
-		CARTS,
-		CATEGORIES,
-		COUNTRIES,
-		CURRENCIES,
-		CUSTOMERS,
-		IMAGES,
-		LANGUAGES,
-		ORDER_DETAILS,
-		ORDER_HISTORIES,
-		ORDERS,
-		PRODUCTS
+	public String getHref() {
+		return href;
+	}
+
+	public boolean isRead() {
+		return read;
+	}
+
+	public boolean isCreate() {
+		return create;
+	}
+
+	public boolean isUpdate() {
+		return update;
+	}
+
+	public boolean isDelete() {
+		return delete;
+	}
+
+	public boolean isHead() {
+		return head;
 	}
 
 	public abstract XlinkEntryType getEntryType();
@@ -51,6 +60,31 @@ public abstract class XlinkEntry {
 				.append("delete", delete)
 				.append("head", head)
 				.toString();
+	}
+
+	public static enum XlinkEntryType {
+		ADDRESSES("addresses"),
+		CARTS("carts"),
+		CATEGORIES("categories"),
+		COUNTRIES("countries"),
+		CURRENCIES("currencies"),
+		CUSTOMERS("customers"),
+		IMAGES("images"),
+		LANGUAGES("languages"),
+		ORDER_DETAILS("order_details"),
+		ORDER_HISTORIES("order_histories"),
+		ORDERS("orders"),
+		PRODUCTS("products");
+
+		final String label;
+
+		private XlinkEntryType(final String label) {
+			this.label = label;
+		}
+
+		public String getLabel() {
+			return label;
+		}
 	}
 
 	@XmlRootElement(name="addresses")

@@ -17,7 +17,12 @@
  */
 package com.axelor.apps.prestashop.web;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.xml.transform.TransformerException;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.prestashop.app.AppPrestaShopService;
@@ -44,12 +49,19 @@ public class AppPrestaShopController {
 	 */
 	public void testConnection(ActionRequest request, ActionResponse response) throws PrestaShopWebserviceException, TransformerException {
 		AppPrestashop appConfig = request.getContext().asType(AppPrestashop.class);
-		boolean test = service.checkAccess(appConfig);
+		final List<String> errors = new LinkedList<>();
+		final List<String> warnings = new LinkedList<>();
+		final List<String> info = new LinkedList<>();
+		service.checkAccess(appConfig, errors, warnings, info);
 
-		if(test) {
-			response.setAlert(I18n.get("Connection was successful"));
+		if(errors.isEmpty() == false) {
+			response.setError(StringUtils.join(errors, "<br/>"));
+		} else if(warnings.isEmpty() == false) {
+			response.setAlert(StringUtils.join(warnings, "<br/>"));
+		} else if(info.isEmpty() == false) {
+			response.setFlash(StringUtils.join(info, "<br/>"));
 		} else {
-			response.setAlert(I18n.get("Connection failed"));
+			response.setFlash(I18n.get("Connection successful"));
 		}
 	}
 
