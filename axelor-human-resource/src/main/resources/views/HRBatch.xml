@@ -40,7 +40,7 @@
 			</panel>
 
 			<panel name="payrollPreparationGenerationPage" title="Payroll preparation generation page" hidden="true" showIf="actionSelect == 3">
-			    <field name="period" domain="self.year.company = :company" colSpan="4" canEdit="false" />
+			    <field name="period" domain="self.year.company = :company" colSpan="4" canEdit="false" canView="false" />
    				<field name="planningSet" grid-view="weekly-planning-grid" form-view="weekly-planning-form" widget="TagSelect" colSpan="8"/>
    			    <field name="comments" colSpan="12"/>
 		   		<panel-related field="employeeSet" target="com.axelor.apps.hr.db.Employee" grid-view="employee-lite-grid" form-view="employee-form" canNew="false" colSpan="12"/>
@@ -48,7 +48,7 @@
 			</panel>
 
 			<panel  name="payrollPreparationExportPage" title="Payroll preparation export page" hidden="true" showIf="actionSelect == 4">
-				<field name="period" domain="self.year.company = :company" colSpan="4" canEdit="false"/>
+				<field name="period" domain="self.year.company = :company" colSpan="4" canEdit="false" canView="false"/>
 				<field name="payrollPreparationExportTypeSelect" colSpan="4"/>
 				<field name="exportAlreadyExported" colSpan="4"/>
 				<spacer/>
