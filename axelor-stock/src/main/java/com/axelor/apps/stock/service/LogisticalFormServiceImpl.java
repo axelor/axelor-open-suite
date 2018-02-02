@@ -560,7 +560,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         Preconditions.checkNotNull(logisticalForm);
         List<FreightCarrierCustomerAccountNumber> freightCarrierCustomerAccountNumberList = null;
 
-        switch (logisticalForm.getAccountSelectionSelect()) {
+        switch (logisticalForm.getAccountSelectionToCarrierSelect()) {
         case LogisticalFormRepository.ACCOUNT_COMPANY:
             if (logisticalForm.getCompany() != null && logisticalForm.getCompany().getStockConfig() != null) {
                 freightCarrierCustomerAccountNumberList = logisticalForm.getCompany().getStockConfig()

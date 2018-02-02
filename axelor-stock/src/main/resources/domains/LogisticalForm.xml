@@ -22,7 +22,7 @@
             readonly="true" />
         <string name="internalDeliveryComment" large="true" />
         <string name="externalDeliveryComment" large="true" />
-        <integer name="accountSelectionSelect" selection="logistical.form.account.select" title="Account selection" default="1" />
+        <integer name="accountSelectionToCarrierSelect" selection="logistical.form.account.to.carrier.select" title="Account selection to carrier" default="1" />
         <string name="customerAccountNumberToCarrier" />
 
         <one-to-many name="logisticalFormLineList" ref="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging lines"

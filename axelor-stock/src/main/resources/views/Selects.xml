@@ -82,7 +82,7 @@
         <option value="3">Collected</option>
     </selection>
 
-    <selection name="logistical.form.account.select">
+    <selection name="logistical.form.account.to.carrier.select">
         <option value="1">Company account</option>
         <option value="2">Customer account</option>
     </selection>
