@@ -110,7 +110,7 @@
 		<domain>self.year.typeSelect = 2</domain>
 	</action-view>
 
-    <menuitem name="hr-conf-fiscal-period" parent="hr-conf"
+    <menuitem name="hr-conf-fiscal-period" parent="hr-root-emp-mgt-conf"
               title="Fiscal periods" action="hr.conf.fiscal.period"/>
 
     <action-view name="hr.conf.fiscal.period" title="Fiscal periods"
