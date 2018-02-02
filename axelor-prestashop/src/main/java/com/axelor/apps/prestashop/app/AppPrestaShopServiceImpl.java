@@ -20,11 +20,14 @@ package com.axelor.apps.prestashop.app;
 import java.util.HashMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
 
 public class AppPrestaShopServiceImpl implements AppPrestaShopService {
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	/**
 	 * Check connection with prestashop
 	 *
@@ -32,7 +35,7 @@ public class AppPrestaShopServiceImpl implements AppPrestaShopService {
 	 * @return true or false
 	 */
 	@Override
-	public boolean connection(AppPrestashop ps) {
+	public boolean checkAccess(AppPrestashop ps) {
 
 		String shopUrl = ps.getPrestaShopUrl();
 		String key = ps.getPrestaShopKey();
@@ -49,6 +52,7 @@ public class AppPrestaShopServiceImpl implements AppPrestaShopService {
 			return true;
 
 		} catch (Exception e) {
+			logger.error("An error occured while checking Prestashop access rights", e);
 			return false;
 		}
 	}

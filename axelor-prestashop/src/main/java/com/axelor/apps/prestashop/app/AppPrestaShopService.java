@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.AppPrestashop;
 
 public interface AppPrestaShopService {
 
-	public boolean connection(AppPrestashop ps);
+	public boolean checkAccess(AppPrestashop ps);
 
 	/**
 	 * Check prestashop url is valid or not

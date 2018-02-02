@@ -43,9 +43,8 @@ public class AppPrestaShopController {
 	 * @throws TransformerException
 	 */
 	public void testConnection(ActionRequest request, ActionResponse response) throws PrestaShopWebserviceException, TransformerException {
-
-		AppPrestashop ps = request.getContext().asType(AppPrestashop.class);
-		boolean test = service.connection(ps);
+		AppPrestashop appConfig = request.getContext().asType(AppPrestashop.class);
+		boolean test = service.checkAccess(appConfig);
 
 		if(test) {
 			response.setAlert(I18n.get("Connection was successful"));
@@ -61,7 +60,6 @@ public class AppPrestaShopController {
 	 * @param response
 	 */
 	public void validUrl(ActionRequest request, ActionResponse response) {
-
 		AppPrestashop ps = request.getContext().asType(AppPrestashop.class);
 		if(service.validateUrl(ps) == false) {
 			response.setError(I18n.get("URL is invalid, it should not be empty nor contain the trailing slash"));
