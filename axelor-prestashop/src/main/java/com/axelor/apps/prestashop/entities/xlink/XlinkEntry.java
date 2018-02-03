@@ -5,6 +5,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
+
 public abstract class XlinkEntry {
 	@XmlAttribute(namespace="http://www.w3.org/1999/xlink", name="href")
 	private String href;
@@ -48,7 +50,7 @@ public abstract class XlinkEntry {
 		return head;
 	}
 
-	public abstract XlinkEntryType getEntryType();
+	public abstract PrestashopResourceType getEntryType();
 
 	@Override
 	public String toString() {
@@ -62,124 +64,99 @@ public abstract class XlinkEntry {
 				.toString();
 	}
 
-	public static enum XlinkEntryType {
-		ADDRESSES("addresses"),
-		CARTS("carts"),
-		CATEGORIES("categories"),
-		COUNTRIES("countries"),
-		CURRENCIES("currencies"),
-		CUSTOMERS("customers"),
-		IMAGES("images"),
-		LANGUAGES("languages"),
-		ORDER_DETAILS("order_details"),
-		ORDER_HISTORIES("order_histories"),
-		ORDERS("orders"),
-		PRODUCTS("products");
-
-		final String label;
-
-		private XlinkEntryType(final String label) {
-			this.label = label;
-		}
-
-		public String getLabel() {
-			return label;
-		}
-	}
-
 	@XmlRootElement(name="addresses")
 	public static class AddressesXlink extends XlinkEntry {
 		@Override
-		public XlinkEntryType getEntryType() {
-			return XlinkEntryType.ADDRESSES;
+		public PrestashopResourceType getEntryType() {
+			return PrestashopResourceType.ADDRESSES;
 		}
 	}
 
 	@XmlRootElement(name="carts")
 	public static class CartsXlink extends XlinkEntry {
 		@Override
-		public XlinkEntryType getEntryType() {
-			return XlinkEntryType.CARTS;
+		public PrestashopResourceType getEntryType() {
+			return PrestashopResourceType.CARTS;
 		}
 	}
 
 	@XmlRootElement(name="categories")
 	public static class CategoriesXlink extends XlinkEntry {
 		@Override
-		public XlinkEntryType getEntryType() {
-			return XlinkEntryType.CATEGORIES;
+		public PrestashopResourceType getEntryType() {
+			return PrestashopResourceType.CATEGORIES;
 		}
 	}
 
 	@XmlRootElement(name="countries")
 	public static class CountriesXlink extends XlinkEntry {
 		@Override
-		public XlinkEntryType getEntryType() {
-			return XlinkEntryType.COUNTRIES;
+		public PrestashopResourceType getEntryType() {
+			return PrestashopResourceType.COUNTRIES;
 		}
 	}
 
 	@XmlRootElement(name="currencies")
 	public static class CurrenciesXlink extends XlinkEntry {
 		@Override
-		public XlinkEntryType getEntryType() {
-			return XlinkEntryType.CURRENCIES;
+		public PrestashopResourceType getEntryType() {
+			return PrestashopResourceType.CURRENCIES;
 		}
 	}
 
 	@XmlRootElement(name="customers")
 	public static class CustomersXlink extends XlinkEntry {
 		@Override
-		public XlinkEntryType getEntryType() {
-			return XlinkEntryType.CUSTOMERS;
+		public PrestashopResourceType getEntryType() {
+			return PrestashopResourceType.CUSTOMERS;
 		}
 	}
 
 	@XmlRootElement(name="images")
 	public static class ImagesXlink extends XlinkEntry {
 		@Override
-		public XlinkEntryType getEntryType() {
-			return XlinkEntryType.IMAGES;
+		public PrestashopResourceType getEntryType() {
+			return PrestashopResourceType.IMAGES;
 		}
 	}
 
 	@XmlRootElement(name="languages")
 	public static class LanguagesXlink extends XlinkEntry {
 		@Override
-		public XlinkEntryType getEntryType() {
-			return XlinkEntryType.LANGUAGES;
+		public PrestashopResourceType getEntryType() {
+			return PrestashopResourceType.LANGUAGES;
 		}
 	}
 
 	@XmlRootElement(name="order_details")
 	public static class OrderDetailsXlink extends XlinkEntry {
 		@Override
-		public XlinkEntryType getEntryType() {
-			return XlinkEntryType.ORDER_DETAILS;
+		public PrestashopResourceType getEntryType() {
+			return PrestashopResourceType.ORDER_DETAILS;
 		}
 	}
 
 	@XmlRootElement(name="order_histories")
 	public static class OrderHistoriesXlink extends XlinkEntry {
 		@Override
-		public XlinkEntryType getEntryType() {
-			return XlinkEntryType.ORDER_HISTORIES;
+		public PrestashopResourceType getEntryType() {
+			return PrestashopResourceType.ORDER_HISTORIES;
 		}
 	}
 
 	@XmlRootElement(name="orders")
 	public static class OrdersXlink extends XlinkEntry {
 		@Override
-		public XlinkEntryType getEntryType() {
-			return XlinkEntryType.ORDERS;
+		public PrestashopResourceType getEntryType() {
+			return PrestashopResourceType.ORDERS;
 		}
 	}
 
 	@XmlRootElement(name="products")
 	public static class ProductsXlink extends XlinkEntry {
 		@Override
-		public XlinkEntryType getEntryType() {
-			return XlinkEntryType.PRODUCTS;
+		public PrestashopResourceType getEntryType() {
+			return PrestashopResourceType.PRODUCTS;
 		}
 	}
 }

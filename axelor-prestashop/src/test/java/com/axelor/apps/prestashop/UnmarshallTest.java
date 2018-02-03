@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.axelor.apps.prestashop.entities.Api;
 import com.axelor.apps.prestashop.entities.Prestashop;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.entities.xlink.XlinkEntry;
 import com.google.common.collect.Sets;
 
@@ -90,18 +91,18 @@ public class UnmarshallTest {
 				"</prestashop>\r\n";
 		Prestashop envelop = (Prestashop) JAXBContext.newInstance("com.axelor.apps.prestashop.entities:com.axelor.apps.prestashop.entities.xlink").createUnmarshaller().unmarshal(new ByteArrayInputStream(xml.getBytes()));
 
-		final Set<XlinkEntry.XlinkEntryType> expectedEntries = Sets.newHashSet(
-				XlinkEntry.XlinkEntryType.ADDRESSES,
-				XlinkEntry.XlinkEntryType.CARTS,
-				XlinkEntry.XlinkEntryType.CATEGORIES,
-				XlinkEntry.XlinkEntryType.COUNTRIES,
-				XlinkEntry.XlinkEntryType.CUSTOMERS,
-				XlinkEntry.XlinkEntryType.IMAGES,
-				XlinkEntry.XlinkEntryType.LANGUAGES,
-				XlinkEntry.XlinkEntryType.ORDER_DETAILS,
-				XlinkEntry.XlinkEntryType.ORDER_HISTORIES,
-				XlinkEntry.XlinkEntryType.ORDERS,
-				XlinkEntry.XlinkEntryType.PRODUCTS
+		final Set<PrestashopResourceType> expectedEntries = Sets.newHashSet(
+				PrestashopResourceType.ADDRESSES,
+				PrestashopResourceType.CARTS,
+				PrestashopResourceType.CATEGORIES,
+				PrestashopResourceType.COUNTRIES,
+				PrestashopResourceType.CUSTOMERS,
+				PrestashopResourceType.IMAGES,
+				PrestashopResourceType.LANGUAGES,
+				PrestashopResourceType.ORDER_DETAILS,
+				PrestashopResourceType.ORDER_HISTORIES,
+				PrestashopResourceType.ORDERS,
+				PrestashopResourceType.PRODUCTS
 		);
 
 		Assert.assertNotNull(envelop.getContent());
