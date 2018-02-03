@@ -43,6 +43,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Consts;
 import org.apache.http.Header;
@@ -123,31 +124,9 @@ public class PSWebServiceClient {
 	 *            Status code of an HTTP return
 	 * @throws pswebservice.PrestaShopWebserviceException
 	 */
-	protected void checkStatusCode(int status_code) throws PrestaShopWebserviceException {
-
-		String error_label = "This call to PrestaShop Web Services failed and returned an HTTP status of %d. That means: %s.";
-		switch (status_code) {
-		case 200:
-		case 201:
-			break;
-		case 204:
-			throw new PrestaShopWebserviceException(String.format(error_label, status_code, "No content"), this);
-		case 400:
-			throw new PrestaShopWebserviceException(String.format(error_label, status_code, "Bad Request"), this);
-		case 401:
-			throw new PrestaShopWebserviceException(String.format(error_label, status_code, "Unauthorized"), this);
-		case 404:
-			throw new PrestaShopWebserviceException(String.format(error_label, status_code, "Not Found"), this);
-		case 405:
-			throw new PrestaShopWebserviceException(String.format(error_label, status_code, "Method Not Allowed"),
-					this);
-		case 500:
-			throw new PrestaShopWebserviceException(String.format(error_label, status_code, "Internal Server Error"),
-					this);
-		default:
-			throw new PrestaShopWebserviceException(
-					"This call to PrestaShop Web Services returned an unexpected HTTP status of:" + status_code);
-		}
+	protected void checkStatusCode(int statusCode) throws PrestaShopWebserviceException {
+		if(statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) return;
+		throw new PrestaShopWebserviceException(String.format("An underlying call to the Prestashop API failed with status code %d (%s)", statusCode, HttpStatus.getStatusText(statusCode)));
 	}
 
 	protected String getResponseContent() {
