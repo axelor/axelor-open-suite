@@ -25,6 +25,7 @@ import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -73,9 +74,8 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 	 * @return id of prestashop's currency if there it is.
 	 * @throws PrestaShopWebserviceException
 	 */
-	public String currencyExists(AppPrestashop appConfig, String currencyCode) throws PrestaShopWebserviceException {
+	public Integer getCurrencyId(AppPrestashop appConfig, String currencyCode) throws PrestaShopWebserviceException {
 
-		String prestaShopId = null;
 		PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
 		HashMap<String, String> currencyMap = new HashMap<String, String>();
 		currencyMap.put("iso_code", currencyCode);
@@ -90,11 +90,10 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 		    NodeList node = element.getElementsByTagName("currency");
 		    Node currency = node.item(i);
 		    if(node.getLength() > 0) {
-		    	prestaShopId = currency.getAttributes().getNamedItem("id").getNodeValue();
-		    	return prestaShopId;
+			return Integer.valueOf(currency.getAttributes().getNamedItem("id").getNodeValue());
 		    }
 		}
-		return prestaShopId;
+		return null;
 	}
 
 	@Override
@@ -127,7 +126,7 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 				}
 
 				Currencies currency = new Currencies();
-				currency.setId(currencyObj.getPrestaShopId());
+				currency.setId(Objects.toString(currencyObj.getPrestaShopId(), null));
 				currency.setName(currencyObj.getName());
 				currency.setIso_code(currencyObj.getCode());
 				currency.setConversion_rate("1.00");
@@ -156,7 +155,7 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 					document = ws.edit(opt);
 				}
 
-				currencyObj.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
+				currencyObj.setPrestaShopId(Integer.valueOf(document.getElementsByTagName("id").item(0).getTextContent()));
 				currencyRepo.save(currencyObj);
 				done++;
 
@@ -187,8 +186,7 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 				}
 
 				if(errorCode.equals("46")) {
-					prestaShopId = currencyExists(appConfig, currencyObj.getCode());
-					currencyObj.setPrestaShopId(prestaShopId);
+					currencyObj.setPrestaShopId(getCurrencyId(appConfig, currencyObj.getCode()));
 					currencyRepo.save(currencyObj);
 					done++;
 					continue;

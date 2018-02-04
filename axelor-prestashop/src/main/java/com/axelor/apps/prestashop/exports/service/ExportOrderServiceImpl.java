@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -98,8 +99,7 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 		for (int i = 0; i < list.getLength(); i++) {
 			if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
 				Element element = (Element) list.item(i);
-				if (element.getElementsByTagName("id").item(0).getTextContent().toString()
-						.equals(saleOrder.getPrestaShopId())) {
+				if (Integer.valueOf(element.getElementsByTagName("id").item(0).getTextContent()) == saleOrder.getPrestaShopId()) {
 					cart_id = element.getElementsByTagName("id_cart").item(0).getTextContent().toString();
 					break;
 				}
@@ -146,12 +146,8 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 		for (SaleOrder saleOrder : Beans.get(SaleOrderRepository.class).all().filter(filter.toString(), params.toArray(new Object[] {})).fetch()) {
 
 			List<Cart_row> cartRowList = new ArrayList<Cart_row>();
-			String id_customer = "";
-			String id_address_delivery = "";
-			String id_address_invoice = "";
 			String secure_key = "";
 			String cartId = "";
-			String id_currency = "";
 
 			if (saleOrder.getPrestaShopId() != null) {
 				cartId = getCartId(appConfig, saleOrder);
@@ -159,38 +155,37 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 
 			try {
 
-				if (!saleOrder.getClientPartner().getPrestaShopId().isEmpty()) {
-
-					id_customer = saleOrder.getClientPartner().getPrestaShopId();
-					id_address_delivery = saleOrder.getDeliveryAddress().getPrestaShopId();
-					id_address_invoice =  saleOrder.getMainInvoicingAddress().getPrestaShopId();
+				if (saleOrder.getClientPartner().getPrestaShopId() != null) {
+					Integer customerId = saleOrder.getClientPartner().getPrestaShopId();
+					Integer deliveryAddressId = saleOrder.getDeliveryAddress().getPrestaShopId();
+					Integer invoiceAddressId =  saleOrder.getMainInvoicingAddress().getPrestaShopId();
 					Currency currency = currencyRepo.findByCode(saleOrder.getCurrency().getCode());
-					id_currency = currency.getPrestaShopId();
+					Integer currencyId = currency.getPrestaShopId();
 
 					Carts cart = new Carts();
 					cart.setId(cartId);
 					cart.setId_shop_group("1");
 					cart.setId_shop("1");
 					cart.setId_carrier("1");
-					cart.setId_currency(id_currency);
+					cart.setId_currency(Objects.toString(currencyId, null));
 					cart.setId_lang("1");
 
-					if(id_address_delivery == null) {
+					if(deliveryAddressId == null) {
 						throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_ADDRESS));
 					} else {
-						cart.setId_address_delivery(id_address_delivery);
+						cart.setId_address_delivery(deliveryAddressId.toString());
 					}
 
-					cart.setId_address_invoice(id_address_invoice);
-					cart.setId_customer(id_customer.toString());
+					cart.setId_address_invoice(invoiceAddressId.toString());
+					cart.setId_customer(customerId.toString());
 					cart.setSecure_key(secure_key.toString());
 
 					for(SaleOrderLine line: saleOrder.getSaleOrderLineList()) {
 						if(line.getProduct() != null) {
 							Cart_row cart_row = new Cart_row();
-							cart_row.setId_product(line.getProduct().getPrestaShopId());
+							cart_row.setId_product(line.getProduct().getPrestaShopId().toString());
 							cart_row.setId_product_attribute("0");
-							cart_row.setId_address_delivery(id_address_delivery);
+							cart_row.setId_address_delivery(deliveryAddressId.toString());
 							cart_row.setQuantity(line.getQty().toString());
 							cartRowList.add(cart_row);
 						}
@@ -229,7 +224,7 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 						cartId = document.getElementsByTagName("id").item(0).getTextContent();
 					}
 
-					this.createOrder(appConfig, saleOrder, id_address_delivery, id_address_invoice, cartId, id_currency, id_customer);
+					this.createOrder(appConfig, saleOrder, deliveryAddressId, invoiceAddressId, cartId, currencyId, customerId);
 				}
 
 				done++;
@@ -269,24 +264,24 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 	 * @throws TransformerException
 	 * @throws JAXBException
 	 */
-	public void createOrder(AppPrestashop appConfig, SaleOrder saleOrder, String id_address_delivery, String id_address_invoice,
-			String cartId, String id_currency, String id_customer) throws PrestaShopWebserviceException, TransformerException, JAXBException {
+	public void createOrder(AppPrestashop appConfig, SaleOrder saleOrder, Integer id_address_delivery, Integer id_address_invoice,
+			String cartId, Integer id_currency, Integer id_customer) throws PrestaShopWebserviceException, TransformerException, JAXBException {
 
 		List<Order_row> orderRowList = new ArrayList<Order_row>();
 		Document document;
 		String orderId = null;
 
 		Orders order = new Orders();
-		order.setId(saleOrder.getPrestaShopId());
+		order.setId(saleOrder.getPrestaShopId().toString());
 		order.setId_shop("1");
 		order.setId_shop_group("1");
 
-		order.setId_address_delivery(id_address_delivery);
-		order.setId_address_invoice(id_address_invoice);
+		order.setId_address_delivery(id_address_delivery.toString());
+		order.setId_address_invoice(id_address_invoice.toString());
 		order.setId_cart(cartId);
-		order.setId_currency(id_currency);
+		order.setId_currency(id_currency.toString());
 		order.setId_lang("1");
-		order.setId_customer(id_customer);
+		order.setId_customer(id_customer.toString());
 		order.setId_carrier("1");
 		order.setTotal_paid_tax_incl(saleOrder.getExTaxTotal().setScale(2, RoundingMode.HALF_UP).toString());
 		order.setTotal_wrapping_tax_incl(saleOrder.getTaxTotal().setScale(2, RoundingMode.HALF_UP).toString());
@@ -306,7 +301,7 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 			for(SaleOrderLine line: saleOrder.getSaleOrderLineList()) {
 				if(line.getProduct() != null) {
 					Order_row order_row = new Order_row();
-					order_row.setProduct_id(line.getProduct().getPrestaShopId());
+					order_row.setProduct_id(line.getProduct().getPrestaShopId().toString());
 					orderRowList.add(order_row);
 				}
 			}
@@ -383,7 +378,7 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 		opt.put("postXml", schema);
 		ws.add(opt);
 
-		saleOrder.setPrestaShopId(orderId);
+		saleOrder.setPrestaShopId(Integer.valueOf(orderId));
 		saleOrderRepo.save(saleOrder);
 	}
 }

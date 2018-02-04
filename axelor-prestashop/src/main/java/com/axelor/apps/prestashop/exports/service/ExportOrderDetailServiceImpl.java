@@ -70,11 +70,11 @@ public class ExportOrderDetailServiceImpl implements ExportOrderDetailService {
 	 * @param orderId
 	 * @throws PrestaShopWebserviceException
 	 */
-	public void clearOrderDetails(AppPrestashop appConfig, String orderId) throws PrestaShopWebserviceException {
+	public void clearOrderDetails(AppPrestashop appConfig, Integer orderId) throws PrestaShopWebserviceException {
 		String orderDetailId = null;
 		PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
 		HashMap<String, String> orderDetailMap = new HashMap<String, String>();
-		orderDetailMap.put("id_order", orderId);
+		orderDetailMap.put("id_order", orderId.toString());
 
 		Map<String, Object> opt = new HashMap<String, Object>();
 		opt.put("resource", "order_details");
@@ -118,6 +118,7 @@ public class ExportOrderDetailServiceImpl implements ExportOrderDetailService {
 
 		final StringBuilder filter = new StringBuilder(128);
 
+		// FIXME add parameter in app config for this
 		filter.append("self.saleOrder.prestaShopId IS NOT NULL");
 
 		if(appConfig.getIsOrderStatus() == Boolean.TRUE) {
@@ -133,8 +134,8 @@ public class ExportOrderDetailServiceImpl implements ExportOrderDetailService {
 				if(orderLine.getProduct() != null && orderLine.getSaleOrder().getPrestaShopId() != null) {
 
 					Order_details details = new Order_details();
-					details.setId_order(orderLine.getSaleOrder().getPrestaShopId());
-					details.setProduct_id(orderLine.getProduct().getPrestaShopId());
+					details.setId_order(orderLine.getSaleOrder().getPrestaShopId().toString()); // Not null thanks to filter
+					details.setProduct_id(orderLine.getProduct().getPrestaShopId().toString());
 					details.setProduct_name(orderLine.getProduct().getName());
 					details.setProduct_quantity(orderLine.getQty().setScale(0, RoundingMode.HALF_UP).toString());
 					details.setUnit_price_tax_excl(orderLine.getPrice().setScale(2, RoundingMode.HALF_UP).toString());
@@ -158,7 +159,7 @@ public class ExportOrderDetailServiceImpl implements ExportOrderDetailService {
 					opt.put("postXml", sw.toString());
 					Document document = ws.add(opt);
 
-					orderLine.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
+					orderLine.setPrestaShopId(Integer.valueOf(document.getElementsByTagName("id").item(0).getTextContent()));
 					saleOrderLineRepo.save(orderLine);
 
 				} else {

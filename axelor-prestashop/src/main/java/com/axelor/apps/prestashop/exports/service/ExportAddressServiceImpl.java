@@ -23,6 +23,7 @@ import java.io.StringWriter;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -84,8 +85,8 @@ public class ExportAddressServiceImpl implements ExportAddressService {
 
 			try {
 				Addresses address = new Addresses();
-				address.setId(partnerAddress.getAddress().getPrestaShopId());
-				address.setId_customer(partnerAddress.getPartner().getPrestaShopId());
+				address.setId(Objects.toString(partnerAddress.getAddress().getPrestaShopId(), null));
+				address.setId_customer(Objects.toString(partnerAddress.getPartner().getPrestaShopId(), null));
 
 				if(partnerAddress.getPartner().getPartnerTypeSelect() == 1) {
 
@@ -114,7 +115,7 @@ public class ExportAddressServiceImpl implements ExportAddressService {
 					}
 				}
 
-				address.setId_country(partnerAddress.getAddress().getAddressL7Country().getPrestaShopId());
+				address.setId_country(Objects.toString(partnerAddress.getAddress().getAddressL7Country().getPrestaShopId(), null));
 				address.setAlias("Main Addresses");
 
 				if (partnerAddress.getAddress().getCity() != null) {
@@ -160,7 +161,7 @@ public class ExportAddressServiceImpl implements ExportAddressService {
 					document = ws.edit(opt);
 				}
 
-				partnerAddress.getAddress().setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
+				partnerAddress.getAddress().setPrestaShopId(Integer.valueOf(document.getElementsByTagName("id").item(0).getTextContent()));
 				partnerRepo.save(partnerAddress.getPartner());
 				done++;
 

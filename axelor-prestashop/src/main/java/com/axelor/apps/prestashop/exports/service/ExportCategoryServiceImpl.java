@@ -23,6 +23,7 @@ import java.io.StringWriter;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -84,21 +85,21 @@ public class ExportCategoryServiceImpl implements ExportCategoryService {
 			try {
 
 				Categories category = new Categories();
-				category.setId(productCategory.getPrestaShopId());
+				category.setId(Objects.toString(productCategory.getPrestaShopId(), null));
 				category.setActive("1");
 
 				if (productCategory.getPrestaShopId() != null) {
-					if(productCategory.getPrestaShopId().equals("1") || productCategory.getPrestaShopId().equals("2")) {
+					if(productCategory.getPrestaShopId() == 1 || productCategory.getPrestaShopId() == 2) {
 						continue;
 					}
 				}
 
 				if (!productCategory.getName().equals("") && !productCategory.getCode().equals("")) {
 
-					if (productCategory.getParentProductCategory() == null || productCategory.getParentProductCategory().getPrestaShopId().equals("1") || productCategory.getParentProductCategory().getPrestaShopId().equals("1")) {
+					if (productCategory.getParentProductCategory() == null || productCategory.getParentProductCategory().getPrestaShopId() == 1) {
 						category.setId_parent("2");
 					} else {
-						category.setId_parent(productCategory.getParentProductCategory().getPrestaShopId());
+						category.setId_parent(Objects.toString(productCategory.getParentProductCategory().getPrestaShopId(), null));
 					}
 
 					LanguageDetails nameDetails = new LanguageDetails();
@@ -138,7 +139,7 @@ public class ExportCategoryServiceImpl implements ExportCategoryService {
 						document = ws.edit(opt);
 					}
 
-					productCategory.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
+					productCategory.setPrestaShopId(Integer.valueOf(document.getElementsByTagName("id").item(0).getTextContent()));
 					categoryRepo.save(productCategory);
 					done++;
 

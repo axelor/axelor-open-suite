@@ -24,6 +24,7 @@ import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -69,8 +70,7 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 	 * @return id of prestashop's country if it is.
 	 * @throws PrestaShopWebserviceException
 	 */
-	public String countryExists(AppPrestashop appConfig, String countryCode) throws PrestaShopWebserviceException {
-		String prestaShopId = null;
+	public Integer getCountryId(AppPrestashop appConfig, String countryCode) throws PrestaShopWebserviceException {
 		PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
 		HashMap<String, String> countryMap = new HashMap<String, String>();
 		countryMap.put("iso_code", countryCode);
@@ -85,11 +85,10 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 		    NodeList node = element.getElementsByTagName("country");
 		    Node country = node.item(i);
 		    if(node.getLength() > 0) {
-		    	prestaShopId = country.getAttributes().getNamedItem("id").getNodeValue();
-		    	return prestaShopId;
+			return Integer.valueOf(country.getAttributes().getNamedItem("id").getNodeValue());
 		    }
 		}
-		return prestaShopId;
+		return null;
 	}
 
 	@Override
@@ -107,7 +106,6 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 		List<Country> countries = null;
 		Document document = null;
 		String schema = null;
-		String prestaShopId = null;
 
 		if(endDate == null) {
 			countries = countryRepo.all().fetch();
@@ -118,7 +116,7 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 		for(Country countryObj : countries) {
 			try {
 
-				prestaShopId = countryExists(appConfig, countryObj.getAlpha2Code());
+				Integer prestaShopId = getCountryId(appConfig, countryObj.getAlpha2Code());
 
 				if(countryObj.getName() == null) {
 					throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_COUNTRY));
@@ -133,9 +131,9 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 
 				Countries country = new Countries();
 				if(prestaShopId != null) {
-					country.setId(prestaShopId);
+					country.setId(prestaShopId.toString());
 				} else {
-					country.setId(countryObj.getPrestaShopId());
+					country.setId(Objects.toString(countryObj.getPrestaShopId(), null));
 				}
 
 				country.setName(language);
@@ -174,7 +172,7 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 					document = ws.edit(opt);
 				}
 
-				countryObj.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
+				countryObj.setPrestaShopId(Integer.valueOf(document.getElementsByTagName("id").item(0).getTextContent()));
 				countryRepo.save(countryObj);
 				done++;
 

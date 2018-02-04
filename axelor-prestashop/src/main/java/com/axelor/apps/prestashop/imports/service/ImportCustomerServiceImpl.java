@@ -51,10 +51,10 @@ public class ImportCustomerServiceImpl implements ImportCustomerService {
     JSONObject schema;
     private final String shopUrl;
 	private final String key;
-	
+
 	@Inject
 	private PartnerRepository partnerRepo;
-	
+
 	/**
 	 * Initialization
 	 */
@@ -63,13 +63,13 @@ public class ImportCustomerServiceImpl implements ImportCustomerService {
 		shopUrl = prestaShopObj.getPrestaShopUrl();
 		key = prestaShopObj.getPrestaShopKey();
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
 	public BufferedWriter importCustomer(BufferedWriter bwImport)
 			throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
-		
+
 		Integer done = 0;
 		Integer anomaly = 0;
 		bwImport.newLine();
@@ -92,44 +92,44 @@ public class ImportCustomerServiceImpl implements ImportCustomerService {
 			String firstName = null;
 			String name = null;
 			String company = null;
-			boolean flag = false; 
+			boolean newPartner = false;
 			Partner partner = null;
 			Partner contactPartner = null;
 
 			try {
-				String prestashopId = String.valueOf(schema.getJSONObject("customer").getInt("id"));
-				partner = Beans.get(PartnerRepository.class).all().filter("self.prestaShopId = ?", prestashopId).fetchOne();
-						
+				Integer prestashopId = schema.getJSONObject("customer").getInt("id");
+				partner = partnerRepo.all().filter("self.prestaShopId = ?", prestashopId).fetchOne();
+
 				if(partner == null) {
-					flag = true;
+					newPartner = true;
 					partner = new Partner();
 					partner.setPrestaShopId(prestashopId);
 				}
-						
-				if (!schema.getJSONObject("customer").getString("firstname").isEmpty() && 
+
+				if (!schema.getJSONObject("customer").getString("firstname").isEmpty() &&
 						!schema.getJSONObject("customer").getString("lastname").isEmpty()) {
-					
+
 					firstName = schema.getJSONObject("customer").getString("firstname");
 					name = schema.getJSONObject("customer").getString("lastname");
 					company =  schema.getJSONObject("customer").get("company").toString();
-					
+
 					if(!company.isEmpty() && company != null && company != "null" && !company.equals("")) {
-						
+
 						partner.setPartnerTypeSelect(1);
 						partner.setName(company);
-						
-						if(flag) {
+
+						if(newPartner) {
 							contactPartner = new Partner();
 						} else {
 							contactPartner = partner.getContactPartnerSet().iterator().next();
 						}
-									
+
 						partner.setFullName(company);
 						contactPartner.setName(name);
 						contactPartner.setFirstName(firstName);
 						contactPartner.setIsContact(true);
 						contactPartner.setMainPartner(partner);
-						
+
 						if(name != null && firstName != null) {
 							contactPartner.setFullName(name + " " + firstName);
 						} else if (name != null && firstName == null) {
@@ -137,16 +137,16 @@ public class ImportCustomerServiceImpl implements ImportCustomerService {
 						} else if (name == null && firstName != null) {
 							contactPartner.setFullName(firstName);
 						}
-									
-						if(flag) {
+
+						if(newPartner) {
 							partner.addContactPartnerSetItem(contactPartner);
 						}
-						
+
 					} else {
-								
+
 						partner.setPartnerTypeSelect(2);
 						partner.setFirstName(firstName);
-						partner.setName(name);		
+						partner.setName(name);
 
 						if(name != null && firstName != null) {
 							partner.setFullName(name + " " + firstName);
@@ -159,20 +159,20 @@ public class ImportCustomerServiceImpl implements ImportCustomerService {
 				} else {
 					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_COMPANY), IException.NO_VALUE);
 				}
-				
+
 						partner.setTitleSelect(Integer.parseInt(schema.getJSONObject("customer").getString("id_gender")));
 						EmailAddress emailAddress = new EmailAddress();
 						emailAddress.setAddress(schema.getJSONObject("customer").getString("email"));
 
 						if (partner != null)
 							emailName = partner.getFullName();
-						
+
 						if (emailAddress.getAddress() != null)
 							emailName = emailAddress.getAddress();
-						
-						if(flag) {
+
+						if(newPartner) {
 							partner.addCompanySetItem(AuthUtils.getUser().getActiveCompany());
-							flag = false;
+							newPartner = false;
 						}
 
 						emailAddress.setName(emailName);
@@ -190,7 +190,7 @@ public class ImportCustomerServiceImpl implements ImportCustomerService {
 				bwImport.write("Id - " + id + " " + e.getMessage());
 				anomaly++;
 				continue;
-				
+
 			} catch (Exception e) {
 				bwImport.newLine();
 				bwImport.newLine();
@@ -199,11 +199,11 @@ public class ImportCustomerServiceImpl implements ImportCustomerService {
 				continue;
 			}
 		}
-		
+
 		bwImport.newLine();
 		bwImport.newLine();
 		bwImport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);
 		return bwImport;
 	}
-	
+
 }

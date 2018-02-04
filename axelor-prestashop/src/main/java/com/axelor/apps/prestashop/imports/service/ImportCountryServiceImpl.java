@@ -50,10 +50,10 @@ public class ImportCountryServiceImpl implements ImportCountryService {
     JSONObject schema;
     private final String shopUrl;
 	private final String key;
-	
+
 	@Inject
 	private CountryRepository countryRepo;
-	
+
 	/**
 	 * Initialization
 	 */
@@ -62,25 +62,25 @@ public class ImportCountryServiceImpl implements ImportCountryService {
 			shopUrl = prestaShopObj.getPrestaShopUrl();
 			key = prestaShopObj.getPrestaShopKey();
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
 	public BufferedWriter importCountry(BufferedWriter bwImport)
 			throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
-		
+
 		Integer done = 0;
 		Integer anomaly = 0;
 		bwImport.newLine();
 		bwImport.write("-----------------------------------------------");
 		bwImport.newLine();
 		bwImport.write("Country");
-		
+
 		ws = new PSWebServiceClient(shopUrl,key);
 		List<Integer> countryIds = ws.fetchApiIds("countries");
 		
 		for (Integer id : countryIds) {
-			
+
 			ws = new PSWebServiceClient(shopUrl,key);
 			opt = new HashMap<String, Object>();
 			opt.put("resource", "countries");
@@ -88,24 +88,24 @@ public class ImportCountryServiceImpl implements ImportCountryService {
 			schema = ws.getJson(opt);
 			
 			try {
-				
+
 				JSONArray names = schema.getJSONObject("country").getJSONArray("name");
 				JSONObject childJSONObject = names.getJSONObject(0);
-				
+
 				if(childJSONObject.getString("value").isEmpty()) {
 					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_COUNTRY), IException.NO_VALUE);
 				}
-						
+
 				Country country = Beans.get(CountryRepository.class).all().filter("self.alpha2Code = ?", schema.getJSONObject("country").getString("iso_code")).fetchOne();
 				if(country == null) {
 					country = new Country();
 				}
 				country.setName(childJSONObject.getString("value"));
 				country.setAlpha2Code(schema.getJSONObject("country").getString("iso_code"));
-				country.setPrestaShopId(String.valueOf(schema.getJSONObject("country").getInt("id")));
+				country.setPrestaShopId(Integer.valueOf(schema.getJSONObject("country").getInt("id")));
 				countryRepo.save(country);
 				done++;
-						
+
 			} catch (AxelorException e) {
 				bwImport.newLine();
 				bwImport.newLine();
@@ -114,7 +114,7 @@ public class ImportCountryServiceImpl implements ImportCountryService {
 				continue;
 
 			} catch (Exception e) {
-						
+
 				bwImport.newLine();
 				bwImport.newLine();
 				bwImport.write("Id - " + id + " " + e.getMessage());
@@ -122,7 +122,7 @@ public class ImportCountryServiceImpl implements ImportCountryService {
 				continue;
 			}
 		}
-		
+
 		bwImport.newLine();
 		bwImport.newLine();
 		bwImport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);

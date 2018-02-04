@@ -56,13 +56,13 @@ public class ImportAddressServiceImpl implements ImportAddressService {
     JSONObject schema;
     private final String shopUrl;
 	private final String key;
-	
+
 	@Inject
 	private CityRepository cityRepo;
-	
+
 	@Inject
 	private PartnerRepository partnerRepo;
-	
+
 	/**
 	 * initialization
 	 */
@@ -71,23 +71,23 @@ public class ImportAddressServiceImpl implements ImportAddressService {
 		shopUrl = prestaShopObj.getPrestaShopUrl();
 		key = prestaShopObj.getPrestaShopKey();
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
 	public BufferedWriter importAddress(BufferedWriter bwImport)
 			throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
-		
+
 		Integer done = 0;
 		Integer anomaly = 0;
 		bwImport.newLine();
 		bwImport.write("-----------------------------------------------");
 		bwImport.newLine();
 		bwImport.write("Address");
-		
+
 		String partnerId = null;
 		String deletedId = null;
-		String addressId = null;
+		Integer addressId = null;
 		String addressL4 = null;
 		String addressL5 = null;
 		String postcode = null;
@@ -97,7 +97,7 @@ public class ImportAddressServiceImpl implements ImportAddressService {
 		Address address = null;
 		PartnerAddress partnerAddress = null;
 		City city = null;
-		
+
 		ws = new PSWebServiceClient(shopUrl,key);
 		List<Integer> addressIds = ws.fetchApiIds("addresses");
 		
@@ -111,32 +111,32 @@ public class ImportAddressServiceImpl implements ImportAddressService {
 
 			deletedId = schema.getJSONObject("address").getString("deleted");
 			partnerId = schema.getJSONObject("address").getString("id_customer");
-					
+
 			if(deletedId.equals("1"))
 				continue;
-			
+
 			try {
 				if(partnerId == null || partnerId.equals("0"))
 					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_ADDRESS), IException.NO_VALUE);
-				
-				addressId = String.valueOf(schema.getJSONObject("address").getInt("id"));
+
+				addressId = schema.getJSONObject("address").getInt("id");
 				addressL4 = schema.getJSONObject("address").getString("address1");
 				addressL5 = schema.getJSONObject("address").getString("address2");
 				cityName = schema.getJSONObject("address").getString("city");
 				postcode = schema.getJSONObject("address").getString("postcode");
 				countryId = schema.getJSONObject("address").getString("id_country");
 				partner = Beans.get(PartnerRepository.class).all().filter("self.prestaShopId = ?", partnerId).fetchOne();
-				address = Beans.get(AddressRepository.class).all().filter("self.prestaShopId = ?", id).fetchOne(); 
+				address = Beans.get(AddressRepository.class).all().filter("self.prestaShopId = ?", id).fetchOne();
 				city = cityRepo.findByName(cityName);
 
 				if(city == null) {
 					city = new City();
 				}
-				
+
 				Country country = Beans.get(CountryRepository.class).all().filter("self.prestaShopId = ?", countryId).fetchOne();
 				if(country == null)
 					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_COUNTRY), IException.NO_VALUE);
-				
+
 				if(address == null) {
 					address = new Address();
 					address.setAddressL4(addressL4);
@@ -155,7 +155,7 @@ public class ImportAddressServiceImpl implements ImportAddressService {
 					partnerAddress.setPartner(partner);
 					address.setPrestaShopId(addressId);
 					partner.addPartnerAddressListItem(partnerAddress);
-					
+
 				} else {
 					address.setAddressL4(addressL4);
 					address.setAddressL5(addressL5);
@@ -169,16 +169,16 @@ public class ImportAddressServiceImpl implements ImportAddressService {
 				}
 				partnerRepo.save(partner);
 				done++;
-				
+
 			} catch (AxelorException e) {
-				
+
 				bwImport.newLine();
 				bwImport.newLine();
 				bwImport.write("Id - " + id + " " + e.getMessage());
 				anomaly++;
 				continue;
 			} catch (Exception e) {
-				
+
 				bwImport.newLine();
 				bwImport.newLine();
 				bwImport.write("Id - " + id + " " + e.getMessage());
@@ -186,10 +186,10 @@ public class ImportAddressServiceImpl implements ImportAddressService {
 				continue;
 			}
 		}
-		
+
 		bwImport.newLine();
 		bwImport.newLine();
 		bwImport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);
 		return bwImport;
 	}
-}	
+}

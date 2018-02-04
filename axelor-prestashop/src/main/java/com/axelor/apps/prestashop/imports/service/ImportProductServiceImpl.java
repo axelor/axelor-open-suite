@@ -71,13 +71,13 @@ public class ImportProductServiceImpl implements ImportProductService {
     JSONObject schema;
     private final String shopUrl;
 	private final String key;
-	
+
 	@Inject
 	private MetaFiles metaFiles;
-	
+
 	@Inject
 	private ProductRepository productRepo;
-	
+
 	/**
 	 * Initialization
 	 */
@@ -86,18 +86,18 @@ public class ImportProductServiceImpl implements ImportProductService {
 		shopUrl = prestaShopObj.getPrestaShopUrl();
 		key = prestaShopObj.getPrestaShopKey();
 	}
-	
+
 	/**
 	 * Import product image prestashop
-	 * 
+	 *
 	 * @param productId of perticular product of prestashop
-	 * @param imgId of product 
+	 * @param imgId of product
 	 * @return metafile object of image
 	 * @throws IOException
 	 */
 	@SuppressWarnings({ "resource", "deprecation" })
-	public MetaFile importProductImages(String productId, String imgId) throws IOException {
-
+	public MetaFile importProductImages(Integer productId, Integer imgId) throws IOException {
+		// FIXME WHAT THE HELL??? This should be rewritten an moved to the WS class!!!
 		String path = AppSettings.get().get("file.upload.dir");
 		String imageUrl = shopUrl + "/api/images/products/" + productId + "/" + imgId;
 		String destinationFile = path + File.separator + productId + ".jpg";
@@ -121,26 +121,25 @@ public class ImportProductServiceImpl implements ImportProductService {
 		MetaFile imgUpload = metaFiles.upload(image);
 		return imgUpload;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
 	public BufferedWriter importProduct(BufferedWriter bwImport)
 			throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
-		
+
 		Integer done = 0;
 		Integer anomaly = 0;
 		bwImport.newLine();
 		bwImport.write("-----------------------------------------------");
 		bwImport.newLine();
 		bwImport.write("Product");
-		String prestashopId = null;
 		
 		ws = new PSWebServiceClient(shopUrl,key);
 		List<Integer> productIds = ws.fetchApiIds("products");
 		
 		for (Integer id : productIds) {
-			
+
 			try {
 				
 				ws = new PSWebServiceClient(shopUrl,key);
@@ -152,8 +151,8 @@ public class ImportProductServiceImpl implements ImportProductService {
 				Product product = null;
 				String name = null;
 				String categoryDefaultId = schema.getJSONObject("product").getString("id_category_default");
-				prestashopId = String.valueOf(schema.getJSONObject("product").getInt("id"));
-				String imgId = schema.getJSONObject("product").getString("id_default_image");
+				Integer prestashopId = schema.getJSONObject("product").getInt("id");
+				Integer imgId = Integer.valueOf(schema.getJSONObject("product").getString("id_default_image"));
 				MetaFile img = this.importProductImages(prestashopId, imgId);
 				BigDecimal price = new BigDecimal((schema.getJSONObject("product").getString("price").isEmpty() ? "000.00"
 										: schema.getJSONObject("product").getString("price")));
@@ -163,37 +162,37 @@ public class ImportProductServiceImpl implements ImportProductService {
 								.parse(schema.getJSONObject("product").getString("date_add"));
 				String formattedDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
 				LocalDate startDate = LocalDate.parse(formattedDate);
-				
+
 				JSONArray descriptionArr = schema.getJSONObject("product").getJSONArray("description");
 				JSONObject childJSONObject = descriptionArr.getJSONObject(0);
 				String description = childJSONObject.getString("value");
-				
+
 				JSONArray linkRewriteArr = schema.getJSONObject("product").getJSONArray("link_rewrite");
 				childJSONObject = linkRewriteArr.getJSONObject(0);
 				String productTypeSelect = childJSONObject.getString("value");
-				
+
 				product = Beans.get(ProductRepository.class).all().filter("self.prestaShopId = ?", prestashopId).fetchOne();
-				
+
 				if(product == null) {
 					product = new Product();
 					product.setPrestaShopId(prestashopId);
-				}		
+				}
 
 				JSONArray nameArr = schema.getJSONObject("product").getJSONArray("name");
 				childJSONObject = nameArr.getJSONObject(0);
 				childJSONObject.getString("value");
-				
+
 				if (!childJSONObject.getString("value").equals(null)) {
 					name = childJSONObject.getString("value");
 				} else {
 					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_PRODUCT), IException.NO_VALUE);
 				}
-				
+
 				if (!name.equals(null)) {
 					product.setCode(name);
 					product.setName(name);
 				}
-						
+
 				ProductCategory category = Beans.get(ProductCategoryRepository.class).all().filter("self.prestaShopId = ?", categoryDefaultId).fetchOne();
 				product.setPicture(img);
 				product.setProductCategory(category);
@@ -206,7 +205,7 @@ public class ImportProductServiceImpl implements ImportProductService {
 				product.setProductTypeSelect(productTypeSelect);
 				productRepo.save(product);
 				done++;
-				
+
 			} catch (AxelorException e) {
 				bwImport.newLine();
 				bwImport.newLine();
@@ -222,7 +221,7 @@ public class ImportProductServiceImpl implements ImportProductService {
 				continue;
 			}
 		}
-		
+
 		bwImport.newLine();
 		bwImport.newLine();
 		bwImport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);

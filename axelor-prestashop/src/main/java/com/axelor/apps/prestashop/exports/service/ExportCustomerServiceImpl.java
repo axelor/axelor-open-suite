@@ -24,6 +24,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -98,7 +99,7 @@ public class ExportCustomerServiceImpl implements ExportCustomerService {
 			try {
 
 				Customers customer = new Customers();
-				customer.setId(partner.getPrestaShopId());
+				customer.setId(Objects.toString(partner.getPrestaShopId(), null));
 
 				if (partner.getPartnerTypeSelect() == 1) {
 					if (partner.getContactPartnerSet().size() != 0) {
@@ -165,7 +166,7 @@ public class ExportCustomerServiceImpl implements ExportCustomerService {
 
 				prestaShopId = document.getElementsByTagName("id").item(0).getTextContent();
 				partner.setSecureKey(document.getElementsByTagName("secure_key").item(0).getTextContent());
-				partner.setPrestaShopId(prestaShopId);
+				partner.setPrestaShopId(Integer.valueOf(prestaShopId));
 				partnerRepo.save(partner);
 				done++;
 

@@ -50,10 +50,10 @@ public class ImportCategoryServiceImpl implements ImportCategoryService  {
     JSONObject schema;
     private final String shopUrl;
 	private final String key;
-	
+
 	@Inject
 	private ProductCategoryRepository productCategoryRepo;
-	
+
 	/**
 	 * Initialization
 	 */
@@ -62,16 +62,16 @@ public class ImportCategoryServiceImpl implements ImportCategoryService  {
 		shopUrl = prestaShopObj.getPrestaShopUrl();
 		key = prestaShopObj.getPrestaShopKey();
 	}
-	
+
 	/**
 	 * Get details of parent category
-	 * 
+	 *
 	 * @param id of parent category
 	 * @return array of category
 	 * @throws PrestaShopWebserviceException
 	 * @throws JSONException
 	 */
-	public String[] getParentCategoryName(String id) throws PrestaShopWebserviceException, JSONException {
+	public String[] getParentCategoryName(Integer id) throws PrestaShopWebserviceException, JSONException {
 		
 		ws = new PSWebServiceClient(shopUrl,key);
 		opt = new HashMap<String, Object>();
@@ -79,32 +79,31 @@ public class ImportCategoryServiceImpl implements ImportCategoryService  {
 		opt.put("id", id);
 		schema = ws.getJson(opt);
 		String[] category = new String[2];
-		
+
 		JSONArray namesArr = schema.getJSONObject("category").getJSONArray("name");
 		JSONObject names = namesArr.getJSONObject(0);
 		String name = names.getString("value");
 		JSONArray linkRewriteArr = schema.getJSONObject("category").getJSONArray("link_rewrite");
 		JSONObject linkRewrites = linkRewriteArr.getJSONObject(0);
 		String code = linkRewrites.getString("value");
-		
+
 		category[0] = name;
 		category[1] = code;
 		return category;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
 	public BufferedWriter importCategory(BufferedWriter bwImport)
 			throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
-		
+
 		Integer done = 0;
 		Integer anomaly = 0;
 		bwImport.newLine();
 		bwImport.write("-----------------------------------------------");
 		bwImport.newLine();
 		bwImport.write("Category");
-		String prestashopId = null;
 		
 		ws = new PSWebServiceClient(shopUrl,key);
 		List<Integer> categoryIds = ws.fetchApiIds("categories");
@@ -122,71 +121,71 @@ public class ImportCategoryServiceImpl implements ImportCategoryService  {
 				JSONArray namesArr = schema.getJSONObject("category").getJSONArray("name");
 				JSONObject names = namesArr.getJSONObject(0);
 				String name = names.getString("value");
-				
+
 				JSONArray linkRewriteArr = schema.getJSONObject("category").getJSONArray("link_rewrite");
 				JSONObject linkRewrites = linkRewriteArr.getJSONObject(0);
 				String code = linkRewrites.getString("value");
-						
-				String parentId = schema.getJSONObject("category").getString("id_parent");
+
+				Integer parentId = schema.getJSONObject("category").getInt("id_parent");
 				ProductCategory categoryObj = productCategoryRepo.findByName(name);
 				ProductCategory parentProductCategory = null;
 				String[] parentCategoryData = new String[2];
-				
+
 				if(categoryObj != null) {
-					categoryObj.setPrestaShopId(String.valueOf(schema.getJSONObject("category").getInt("id")));
+					categoryObj.setPrestaShopId(schema.getJSONObject("category").getInt("id"));
 					parentProductCategory = Beans.get(ProductCategoryRepository.class).all().filter("self.prestaShopId = ?", parentId).fetchOne();
 					categoryObj.setParentProductCategory(parentProductCategory);
 					productCategoryRepo.save(categoryObj);
 					done++;
 					continue;
 				}
-				
-				prestashopId = String.valueOf(schema.getJSONObject("category").getInt("id"));
-				productCategory = Beans.get(ProductCategoryRepository.class).all().filter("self.prestaShopId = ?", prestashopId).fetchOne();
-				
+
+				Integer categoryId = schema.getJSONObject("category").getInt("id");
+				productCategory = Beans.get(ProductCategoryRepository.class).all().filter("self.prestaShopId = ?", categoryId).fetchOne();
+
 				if(productCategory == null) {
 					productCategory = productCategoryRepo.findByCode(code);
 					if(productCategory == null) {
 						productCategory = new ProductCategory();
-						productCategory.setPrestaShopId(prestashopId);
+						productCategory.setPrestaShopId(categoryId);
 					} else {
-						productCategory.setPrestaShopId(prestashopId);
+						productCategory.setPrestaShopId(categoryId);
 					}
 				}
 
 				ProductCategory parentCategory = null;
-				
-				if(!parentId.equals("0")) {
+
+				if(parentId != 0) {
 					parentCategoryData = this.getParentCategoryName(parentId);
 					parentCategory = productCategoryRepo.findByName(parentCategoryData[0]);
-					
+
 					if(parentCategory == null) {
 						parentCategory = new ProductCategory();
 						parentCategory.setName(parentCategoryData[0]);
 						parentCategory.setCode(parentCategoryData[1]);
 					}
-				}			
+				}
 
 				if (name.equals(null) || code.equals(null)) {
 					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_PRODUCT_CATEGORY), IException.NO_VALUE);
-				}	
+				}
 
 				productCategory.setCode(code);
 				productCategory.setName(name);
-				if(!parentId.equals("0")) {
+				if(parentId != 0) {
 					productCategory.setParentProductCategory(parentCategory);
 				}
-				
+
 				productCategoryRepo.save(productCategory);
 				done++;
-				
+
 			} catch (AxelorException e) {
 				bwImport.newLine();
 				bwImport.newLine();
 				bwImport.write("Id - " + id + " " + e.getMessage());
 				anomaly++;
 				continue;
-				
+
 			} catch (Exception e) {
 				bwImport.newLine();
 				bwImport.newLine();
@@ -195,7 +194,7 @@ public class ImportCategoryServiceImpl implements ImportCategoryService  {
 				continue;
 			}
 		}
-		
+
 		bwImport.newLine();
 		bwImport.newLine();
 		bwImport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);

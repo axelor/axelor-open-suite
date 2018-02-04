@@ -59,10 +59,10 @@ public class ImportOrderDetailServiceImpl implements ImportOrderDetailService {
 	private final String key;
 	private final boolean isStatus;
 	private final List<SaleOrderStatus> saleOrderStatus;
-	
+
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
-	
+
 	/**
 	 * Initialization
 	 */
@@ -73,19 +73,19 @@ public class ImportOrderDetailServiceImpl implements ImportOrderDetailService {
 		isStatus = prestaShopObj.getIsOrderStatus();
 		saleOrderStatus = prestaShopObj.getSaleOrderStatusList();
 	}
-	
+
 	/**
 	 * Get order ids which is in draft state
-	 * 
+	 *
 	 * @return sale order ids
 	 * @throws PrestaShopWebserviceException
 	 * @throws JSONException
 	 */
 	public List<Integer> getDraftOrderIds() throws PrestaShopWebserviceException, JSONException {
-		
+
 		List<Integer> orderIds = new ArrayList<Integer>();
 		List<Integer> currentStatus = new ArrayList<Integer>();
-		
+
 		for(SaleOrderStatus orderStatus : saleOrderStatus) {
 			if(orderStatus.getAbsStatus() == 1) {
 				currentStatus.add(orderStatus.getPrestaShopStatus());
@@ -104,9 +104,9 @@ public class ImportOrderDetailServiceImpl implements ImportOrderDetailService {
 			JSONObject schema =  ws.getJson(opt);
 			
 			if(schema != null) {
-				JSONArray jsonMainArr = schema.getJSONArray("orders"); 
-				
-				for (int i = 0; i < jsonMainArr.length(); i++) { 
+				JSONArray jsonMainArr = schema.getJSONArray("orders");
+
+				for (int i = 0; i < jsonMainArr.length(); i++) {
 				     JSONObject childJSONObject = jsonMainArr.getJSONObject(i);
 				     orderIds.add(childJSONObject.getInt("id"));
 				}
@@ -114,19 +114,19 @@ public class ImportOrderDetailServiceImpl implements ImportOrderDetailService {
 		}
 		return orderIds;
 	}
-	
+
 	/**
 	 * Get all order line/ order details ids
-	 * 
+	 *
 	 * @param orderIds
 	 * @return
 	 * @throws PrestaShopWebserviceException
 	 * @throws JSONException
 	 */
 	public List<Integer> getOrderLineIds(List<Integer> orderIds) throws PrestaShopWebserviceException, JSONException {
-		
+
 		List<Integer> orderDetailIds = new ArrayList<Integer>();
-			
+
 		for(Integer id : orderIds) {
 			
 			ws = new PSWebServiceClient(shopUrl, key);
@@ -146,20 +146,20 @@ public class ImportOrderDetailServiceImpl implements ImportOrderDetailService {
 		}
 		return orderDetailIds;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
 	public BufferedWriter importOrderDetail(BufferedWriter bwImport)
 			throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
-		
+
 		Integer done = 0;
 		Integer anomaly = 0;
 		bwImport.newLine();
 		bwImport.write("-----------------------------------------------");
 		bwImport.newLine();
 		bwImport.write("Order Detail");
-		
+
 		List<Integer> orderIds = null;
 		List<Integer> orderLineIds = null;
 		boolean isNewSaleOrderLine = false;
@@ -171,7 +171,7 @@ public class ImportOrderDetailServiceImpl implements ImportOrderDetailService {
 		} else {
 			orderIds = this.getDraftOrderIds();
 		}
-		
+
 		orderLineIds = this.getOrderLineIds(orderIds);
 
 		for(Integer id : orderLineIds) {
@@ -185,26 +185,26 @@ public class ImportOrderDetailServiceImpl implements ImportOrderDetailService {
 				SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).all().filter("self.prestaShopId = ?", schema.getJSONObject("order_detail").getString("id_order")).fetchOne();
 				Product product = Beans.get(ProductRepository.class).all().filter("self.prestaShopId = ?", schema.getJSONObject("order_detail").getString("product_id")).fetchOne();
 				SaleOrderLine saleOrderLine = Beans.get(SaleOrderLineRepository.class).all().filter("self.prestaShopId = ?", id).fetchOne();
-				
+
 				if(saleOrder == null)
 					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_ORDER), IException.NO_VALUE);
-				
+
 				if(saleOrderLine == null) {
 					isNewSaleOrderLine = true;
 					saleOrderLine = new SaleOrderLine();
 				}
-				
+
 				if(product == null)
 					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_PRODUCT), IException.NO_VALUE);
-				
-				saleOrderLine.setProduct(product);	
+
+				saleOrderLine.setProduct(product);
 				saleOrderLine.setProductName(schema.getJSONObject("order_detail").getString("product_name"));
 				saleOrderLine.setQty(new BigDecimal(schema.getJSONObject("order_detail").getString("product_quantity")));
 				saleOrderLine.setPrice(new BigDecimal(schema.getJSONObject("order_detail").getString("product_price")));
 				saleOrderLine.setExTaxTotal(new BigDecimal(schema.getJSONObject("order_detail").getString("total_price_tax_incl")));
 				saleOrderLine.setSaleOrder(saleOrder);
-				saleOrderLine.setPrestaShopId(String.valueOf(id));
-				
+				saleOrderLine.setPrestaShopId(id);
+
 				if(isNewSaleOrderLine) {
 					saleOrder.addSaleOrderLineListItem(saleOrderLine);
 					isNewSaleOrderLine = false;
@@ -218,7 +218,7 @@ public class ImportOrderDetailServiceImpl implements ImportOrderDetailService {
 				bwImport.write("Id - " + id + " " + e.getMessage());
 				anomaly++;
 				continue;
-				
+
 			} catch (Exception e) {
 				bwImport.newLine();
 				bwImport.newLine();
@@ -227,7 +227,7 @@ public class ImportOrderDetailServiceImpl implements ImportOrderDetailService {
 				continue;
 			}
 		}
-		
+
 		bwImport.newLine();
 		bwImport.newLine();
 		bwImport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);

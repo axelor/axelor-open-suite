@@ -27,6 +27,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -110,7 +111,7 @@ public class ExportProductServiceImpl implements ExportProductService {
 		for (Product productObj : productRepo.all().filter(filter.toString(), params.toArray()).fetch()) {
 			try {
 				Products product = new Products();
-				product.setId(productObj.getPrestaShopId());
+				product.setId(Objects.toString(productObj.getPrestaShopId(), null));
 
 				if (!productObj.getName().equals("")) {
 
@@ -170,7 +171,7 @@ public class ExportProductServiceImpl implements ExportProductService {
 					if (productObj.getPrestaShopId() == null) {
 						document = ws.add(opt);
 						prestaShopId = document.getElementsByTagName("id").item(0).getTextContent();
-						productObj.setPrestaShopId(prestaShopId);
+						productObj.setPrestaShopId(Integer.valueOf(prestaShopId));
 
 						if (productObj.getPicture() != null) {
 							Path path = MetaFiles.getPath(productObj.getPicture());

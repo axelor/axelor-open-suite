@@ -21,8 +21,10 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
+
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.AppPrestashopRepository;
@@ -47,10 +49,10 @@ public class ImportCurrencyServiceImpl implements ImportCurrencyService {
     JSONObject schema;
     private final String shopUrl;
 	private final String key;
-	
+
 	@Inject
 	private CurrencyRepository currencyRepo;
-	
+
 	/**
 	 * Initialization
 	 */
@@ -59,12 +61,12 @@ public class ImportCurrencyServiceImpl implements ImportCurrencyService {
 		shopUrl = prestaShopObj.getPrestaShopUrl();
 		key = prestaShopObj.getPrestaShopKey();
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
 	public BufferedWriter importCurrency(BufferedWriter bwImport) throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
-	
+
 		Integer done = 0;
 		Integer anomaly = 0;
 		bwImport.newLine();
@@ -76,7 +78,7 @@ public class ImportCurrencyServiceImpl implements ImportCurrencyService {
 		List<Integer> currencyIds = ws.fetchApiIds("currencies");
 		
 		for (Integer id : currencyIds) {
-		
+
 			try {
 				ws = new PSWebServiceClient(shopUrl,key);
 				opt = new HashMap<String, Object>();
@@ -92,38 +94,38 @@ public class ImportCurrencyServiceImpl implements ImportCurrencyService {
 					if(currency == null) {
 						currency = new Currency();
 					}
-					currency.setPrestaShopId(String.valueOf(schema.getJSONObject("currency").getInt("id")));
+					currency.setPrestaShopId(schema.getJSONObject("currency").getInt("id"));
 				}
 
 				if(!schema.getJSONObject("currency").getString("iso_code").equals(null) &&
 						!schema.getJSONObject("currency").getString("name").equals(null)) {
-					
+
 					currency.setCode(schema.getJSONObject("currency").getString("iso_code"));
 					currency.setName(schema.getJSONObject("currency").getString("name"));
 				} else {
 					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CURRENCY), IException.NO_VALUE);
 				}
-				
+
 				currencyRepo.save(currency);
 				done++;
-				
+
 			} catch (AxelorException e) {
 				bwImport.newLine();
 				bwImport.newLine();
 				bwImport.write("Id - " + id + " " + e.getMessage());
 				anomaly++;
 				continue;
-				
+
 			} catch (Exception e) {
 				bwImport.newLine();
 				bwImport.newLine();
 				bwImport.write("Id - " + id + " " + e.getMessage());
 				anomaly++;
 				continue;
-				
+
 			}
 		}
-		
+
 		bwImport.newLine();
 		bwImport.newLine();
 		bwImport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);
