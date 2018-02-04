@@ -18,9 +18,12 @@
 package com.axelor.apps.prestashop.service.imports.batch;
 
 import java.lang.invoke.MethodHandles;
+
 import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.imports.PrestaShopServiceImport;
@@ -35,35 +38,33 @@ public class ImportPrestaShop extends BatchStrategyImport {
 
 	@Inject
 	public ImportPrestaShop(PrestaShopServiceImport prestaShopServiceImport) {
-		
+
 		super(prestaShopServiceImport);
 	}
 
 	@Override
 	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
-		
+
 		super.start();
-		
+
 	}
-	
+
 	@Override
 	@Transactional
 	protected void process() {
-			
+
 			int i = 0;
-			
+
 			try {
 				Batch batchObj = prestaShopServiceImport.importPrestShop(batch);
 				batchRepo.save(batchObj);
 				i++;
-				
-			} catch (Exception e) {
 
+			} catch (Exception e) {
 				incrementAnomaly();
-				LOG.error("Bug(Anomalie) généré(e) pour le rappel de l'évènement {}", batch.getId());
-				
+				LOG.error(String.format("An exception occured while runing prestashop import batch %d", batch.getId()), e);
 			} finally {
-				
+
 				if (i % 1 == 0) { JPA.clear(); }
 		}
 	}
@@ -76,7 +77,7 @@ public class ImportPrestaShop extends BatchStrategyImport {
 	protected void stop() {
 
 		String comment = I18n.get(IExceptionMessage.BATCH_IMPORT);
-		
+
 		super.stop();
 		addComment(comment);
 	}

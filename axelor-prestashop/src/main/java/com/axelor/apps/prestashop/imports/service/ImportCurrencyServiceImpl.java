@@ -19,7 +19,6 @@ package com.axelor.apps.prestashop.imports.service;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -29,8 +28,10 @@ import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
+import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -44,9 +45,6 @@ import wslite.json.JSONObject;
 
 public class ImportCurrencyServiceImpl implements ImportCurrencyService {
 
-    PSWebServiceClient ws;
-    HashMap<String,Object> opt;
-    JSONObject schema;
     private final String shopUrl;
 	private final String key;
 
@@ -73,18 +71,18 @@ public class ImportCurrencyServiceImpl implements ImportCurrencyService {
 		bwImport.write("-----------------------------------------------");
 		bwImport.newLine();
 		bwImport.write("Currency");
-		
-		ws = new PSWebServiceClient(shopUrl,key);
-		List<Integer> currencyIds = ws.fetchApiIds("currencies");
-		
+
+		PSWebServiceClient ws = new PSWebServiceClient(shopUrl,key);
+		List<Integer> currencyIds = ws.fetchApiIds(PrestashopResourceType.CURRENCIES);
+
 		for (Integer id : currencyIds) {
 
 			try {
-				ws = new PSWebServiceClient(shopUrl,key);
-				opt = new HashMap<String, Object>();
-				opt.put("resource", "currencies");
-				opt.put("id", id);
-				schema = ws.getJson(opt);
+				// FIXME just us display on global fetch instead of having hundreds of individual requests
+				Options options = new Options();
+				options.setResourceType(PrestashopResourceType.CURRENCIES);
+				options.setRequestedId(id);
+				JSONObject schema = ws.getJson(options);
 
 				Currency currency = null;
 				currency = Beans.get(CurrencyRepository.class).all().filter("self.prestaShopId = ?", id).fetchOne();

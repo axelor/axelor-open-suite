@@ -23,9 +23,7 @@ import java.io.StringWriter;
 import java.math.RoundingMode;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import javax.xml.bind.JAXBContext;
@@ -55,8 +53,10 @@ import com.axelor.apps.prestashop.db.Order_rows;
 import com.axelor.apps.prestashop.db.Orders;
 import com.axelor.apps.prestashop.db.Prestashop;
 import com.axelor.apps.prestashop.db.SaleOrderStatus;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
+import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -91,9 +91,9 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 	public String getCartId(AppPrestashop appConfig, SaleOrder saleOrder) throws PrestaShopWebserviceException {
 		String cart_id = "";
 		PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/orders/" + saleOrder.getPrestaShopId(), appConfig.getPrestaShopKey());
-		Map<String, Object> opt = new HashMap<>();
-		opt.put("resource", "orders");
-		Document schema = ws.get(opt);
+		Options options = new Options();
+		options.setResourceType(PrestashopResourceType.ORDERS);
+		Document schema = ws.get(options);
 		NodeList list = schema.getChildNodes();
 
 		for (int i = 0; i < list.getLength(); i++) {
@@ -208,19 +208,19 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 					marshallerObj.marshal(prestaShop, sw);
 					schema = sw.toString();
 
-					HashMap<String, Object> opt = new HashMap<String, Object>();
-					opt.put("resource", "carts");
-					opt.put("postXml", schema);
+					Options options = new Options();
+					options.setResourceType(PrestashopResourceType.CARTS);
+					options.setXmlPayload(schema);
 
 					if (saleOrder.getPrestaShopId() == null) {
 						PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/carts?schema=blank", appConfig.getPrestaShopKey());
-						document = ws.add(opt);
+						document = ws.add(options);
 						cartId = document.getElementsByTagName("id").item(0).getTextContent();
 
 					} else {
 						PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
-						opt.put("id", cartId);
-						document = ws.edit(opt);
+						options.setRequestedId(Integer.valueOf(cartId));
+						document = ws.edit(options);
 						cartId = document.getElementsByTagName("id").item(0).getTextContent();
 					}
 
@@ -324,15 +324,14 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 			String schema = sw.toString();
 
 			PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/orders?schema=blank", appConfig.getPrestaShopKey());
-			Map<String, Object> opt = new HashMap<>();
-			opt.put("resource", "orders");
-			opt.put("postXml", schema);
-			document = ws.add(opt);
+			Options options = new Options();
+			options.setResourceType(PrestashopResourceType.ORDERS);
+			options.setXmlPayload(schema);
+			document = ws.add(options);
 
 			orderId = document.getElementsByTagName("id").item(0).getTextContent();
 
 		} else {
-
 			Prestashop prestaShop = new Prestashop();
 			prestaShop.setPrestashop(order);
 
@@ -343,12 +342,12 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 			marshallerObj.marshal(prestaShop, sw);
 			String schema = sw.toString();
 
-			Map<String, Object> opt = new HashMap<>();
-			opt.put("resource", "orders");
-			opt.put("postXml", schema);
-			opt.put("id", saleOrder.getPrestaShopId());
+			Options options = new Options();
+			options.setResourceType(PrestashopResourceType.ORDERS);
+			options.setXmlPayload(schema);
+			options.setRequestedId(saleOrder.getPrestaShopId());
 			PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopUrl());
-			document = ws.edit(opt);
+			document = ws.edit(options);
 			orderId = document.getElementsByTagName("id").item(0).getTextContent();
 		}
 
@@ -373,10 +372,10 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 		String schema = sw.toString();
 
 		PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/order_histories?schema=blank", appConfig.getPrestaShopKey());
-		Map<String, Object> opt = new HashMap<>();
-		opt.put("resource", "order_histories");
-		opt.put("postXml", schema);
-		ws.add(opt);
+		Options options = new Options();
+		options.setResourceType(PrestashopResourceType.ORDER_HISTORIES);
+		options.setXmlPayload(schema);
+		ws.add(options);
 
 		saleOrder.setPrestaShopId(Integer.valueOf(orderId));
 		saleOrderRepo.save(saleOrder);

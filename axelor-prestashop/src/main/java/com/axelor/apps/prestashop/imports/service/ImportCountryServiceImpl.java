@@ -19,7 +19,6 @@ package com.axelor.apps.prestashop.imports.service;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -29,8 +28,10 @@ import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
+import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -46,7 +47,6 @@ import wslite.json.JSONObject;
 public class ImportCountryServiceImpl implements ImportCountryService {
 
 	PSWebServiceClient ws;
-    HashMap<String,Object> opt;
     JSONObject schema;
     private final String shopUrl;
 	private final String key;
@@ -77,16 +77,16 @@ public class ImportCountryServiceImpl implements ImportCountryService {
 		bwImport.write("Country");
 
 		ws = new PSWebServiceClient(shopUrl,key);
-		List<Integer> countryIds = ws.fetchApiIds("countries");
-		
+		List<Integer> countryIds = ws.fetchApiIds(PrestashopResourceType.COUNTRIES);
+
 		for (Integer id : countryIds) {
 
 			ws = new PSWebServiceClient(shopUrl,key);
-			opt = new HashMap<String, Object>();
-			opt.put("resource", "countries");
-			opt.put("id", id);
-			schema = ws.getJson(opt);
-			
+			Options options = new Options();
+			options.setResourceType(PrestashopResourceType.COUNTRIES);
+			options.setRequestedId(id);
+			schema = ws.getJson(options);
+
 			try {
 
 				JSONArray names = schema.getJSONObject("country").getJSONArray("name");

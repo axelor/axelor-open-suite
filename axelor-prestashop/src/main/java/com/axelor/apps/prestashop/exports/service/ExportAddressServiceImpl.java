@@ -21,7 +21,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,8 +38,10 @@ import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.prestashop.db.Addresses;
 import com.axelor.apps.prestashop.db.Prestashop;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
+import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -149,16 +150,16 @@ public class ExportAddressServiceImpl implements ExportAddressService {
 				schema = sw.toString();
 
 				PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/addresses?schema=synopsis", appConfig.getPrestaShopKey());
-				HashMap<String, Object> opt = new HashMap<String, Object>();
-				opt.put("resource", "addresses");
-				opt.put("postXml", schema);
+				Options options = new Options();
+				options.setResourceType(PrestashopResourceType.ADDRESSES);
+				options.setXmlPayload(schema);
 
 				if (partnerAddress.getAddress().getPrestaShopId() == null) {
-					document = ws.add(opt);
+					document = ws.add(options);
 				} else {
-					opt.put("id", partnerAddress.getAddress().getPrestaShopId());
+					options.setRequestedId(partnerAddress.getAddress().getPrestaShopId());
 					ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
-					document = ws.edit(opt);
+					document = ws.edit(options);
 				}
 
 				partnerAddress.getAddress().setPrestaShopId(Integer.valueOf(document.getElementsByTagName("id").item(0).getTextContent()));

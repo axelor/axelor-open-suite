@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.prestashop.app;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,6 +35,7 @@ import com.axelor.apps.prestashop.entities.Prestashop;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.entities.xlink.XlinkEntry;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
+import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Sets;
 
@@ -56,7 +56,8 @@ public class AppPrestaShopServiceImpl implements AppPrestaShopService {
 			PrestashopResourceType.ORDER_DETAILS,
 			PrestashopResourceType.ORDER_HISTORIES,
 			PrestashopResourceType.ORDERS,
-			PrestashopResourceType.PRODUCTS
+			PrestashopResourceType.PRODUCTS,
+			PrestashopResourceType.STOCK_AVAILABLES
 	);
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
@@ -74,14 +75,15 @@ public class AppPrestaShopServiceImpl implements AppPrestaShopService {
 				return;
 			}
 			PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api", appConfig.getPrestaShopKey());
-			HashMap<String, Object> opt = new HashMap<String, Object>();
-			opt.put("url", appConfig.getPrestaShopUrl() + "/api");
+
+			Options options = new Options();
+			options.setFullUrl(appConfig.getPrestaShopUrl() + "/api");
 
 			// FIXME Should be moved to PSWSC instead of blindly translating php to Java
-			final Document doc = ws.get(opt);
+			final Document doc = ws.get(options);
 			Prestashop envelop = (Prestashop) JAXBContext.newInstance("com.axelor.apps.prestashop.entities:com.axelor.apps.prestashop.entities.xlink")
 					.createUnmarshaller()
-					.unmarshal(ws.get(opt));
+					.unmarshal(doc);
 			if(envelop == null) {
 				errors.add(I18n.get("Server returned an unparseable response, see server logs for details"));
 				logger.warn("Unparseable response from server while trying to check Prestashop's access rights: " + XmlUtil.serialize(doc.getDocumentElement()));

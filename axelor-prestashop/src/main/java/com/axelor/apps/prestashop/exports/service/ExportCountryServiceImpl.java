@@ -23,7 +23,6 @@ import java.io.StringWriter;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import javax.xml.bind.JAXBContext;
@@ -44,8 +43,10 @@ import com.axelor.apps.prestashop.db.Countries;
 import com.axelor.apps.prestashop.db.Language;
 import com.axelor.apps.prestashop.db.LanguageDetails;
 import com.axelor.apps.prestashop.db.Prestashop;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
+import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -74,10 +75,10 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 		PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
 		HashMap<String, String> countryMap = new HashMap<String, String>();
 		countryMap.put("iso_code", countryCode);
-		HashMap<String, Object> opt = new HashMap<String, Object>();
-		opt.put("resource", "countries");
-		opt.put("filter", countryMap);
-		Document str =  ws.get(opt);
+		Options options = new Options();
+		options.setResourceType(PrestashopResourceType.COUNTRIES);
+		options.setFilter(countryMap);
+		Document str =  ws.get(options);
 
 		NodeList list = str.getElementsByTagName("countries");
 		for(int i = 0; i < list.getLength(); i++) {
@@ -85,7 +86,7 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 		    NodeList node = element.getElementsByTagName("country");
 		    Node country = node.item(i);
 		    if(node.getLength() > 0) {
-			return Integer.valueOf(country.getAttributes().getNamedItem("id").getNodeValue());
+		    	return Integer.valueOf(country.getAttributes().getNamedItem("id").getNodeValue());
 		    }
 		}
 		return null;
@@ -98,7 +99,6 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 		int anomaly = 0;
 
 		PSWebServiceClient ws;
-		Map<String, Object> opt;
 		bwExport.newLine();
 		bwExport.write("-----------------------------------------------");
 		bwExport.newLine();
@@ -153,23 +153,22 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 				marshallerObj.marshal(prestaShop, sw);
 				schema = sw.toString();
 
-				ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/countries?schema=synopsis", appConfig.getPrestaShopKey());
-				opt = new HashMap<String, Object>();
-				opt.put("resource", "countries");
-				opt.put("postXml", schema);
+				Options options = new Options();
+				options.setResourceType(PrestashopResourceType.COUNTRIES);
+				options.setXmlPayload(schema);
 
 				if (countryObj.getPrestaShopId() == null && prestaShopId == null) {
-					document = ws.add(opt);
-
+					ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/countries?schema=synopsis", appConfig.getPrestaShopKey());
+					document = ws.add(options);
 				} else if (prestaShopId != null){
-					opt.put("id", prestaShopId);
+					options.setRequestedId(prestaShopId);
 					ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
-					document = ws.edit(opt);
+					document = ws.edit(options);
 
 				} else {
-					opt.put("id", countryObj.getPrestaShopId());
+					options.setRequestedId(countryObj.getPrestaShopId());
 					ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
-					document = ws.edit(opt);
+					document = ws.edit(options);
 				}
 
 				countryObj.setPrestaShopId(Integer.valueOf(document.getElementsByTagName("id").item(0).getTextContent()));

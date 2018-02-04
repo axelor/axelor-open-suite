@@ -27,7 +27,6 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -48,8 +47,10 @@ import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
+import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -65,10 +66,6 @@ import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
 public class ImportProductServiceImpl implements ImportProductService {
-
-	PSWebServiceClient ws;
-    HashMap<String,Object> opt;
-    JSONObject schema;
     private final String shopUrl;
 	private final String key;
 
@@ -134,20 +131,18 @@ public class ImportProductServiceImpl implements ImportProductService {
 		bwImport.write("-----------------------------------------------");
 		bwImport.newLine();
 		bwImport.write("Product");
-		
-		ws = new PSWebServiceClient(shopUrl,key);
-		List<Integer> productIds = ws.fetchApiIds("products");
-		
+
+		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
+		List<Integer> productIds = ws.fetchApiIds(PrestashopResourceType.PRODUCTS);
+		Options options = new Options();
+		options.setResourceType(PrestashopResourceType.PRODUCTS);
+
 		for (Integer id : productIds) {
 
 			try {
-				
-				ws = new PSWebServiceClient(shopUrl,key);
-				opt = new HashMap<String, Object>();
-				opt.put("resource", "products");
-				opt.put("id", id);
-				schema = ws.getJson(opt);
-				
+				options.setRequestedId(id);
+				JSONObject schema = ws.getJson(options);
+
 				Product product = null;
 				String name = null;
 				String categoryDefaultId = schema.getJSONObject("product").getString("id_category_default");

@@ -36,8 +36,10 @@ import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
+import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -99,14 +101,14 @@ public class ImportAddressServiceImpl implements ImportAddressService {
 		City city = null;
 
 		ws = new PSWebServiceClient(shopUrl,key);
-		List<Integer> addressIds = ws.fetchApiIds("addresses");
-		
+		List<Integer> addressIds = ws.fetchApiIds(PrestashopResourceType.ADDRESSES);
+
 		for (Integer id : addressIds) {
-			ws = new PSWebServiceClient(shopUrl,key);
-			opt = new HashMap<String, Object>();
-			opt.put("resource", "addresses");
-			opt.put("id", id);
-			schema = ws.getJson(opt);
+			ws = new PSWebServiceClient(shopUrl, key);
+			Options options = new Options();
+			options.setResourceType(PrestashopResourceType.ADDRESSES);
+			options.setRequestedId(id);
+			schema = ws.getJson(options);
 
 
 			deletedId = schema.getJSONObject("address").getString("deleted");

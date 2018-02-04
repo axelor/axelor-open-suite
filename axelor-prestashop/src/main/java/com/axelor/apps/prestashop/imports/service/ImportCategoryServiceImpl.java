@@ -19,7 +19,6 @@ package com.axelor.apps.prestashop.imports.service;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -29,8 +28,10 @@ import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
+import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -44,10 +45,6 @@ import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
 public class ImportCategoryServiceImpl implements ImportCategoryService  {
-
-	PSWebServiceClient ws;
-    HashMap<String,Object> opt;
-    JSONObject schema;
     private final String shopUrl;
 	private final String key;
 
@@ -72,12 +69,11 @@ public class ImportCategoryServiceImpl implements ImportCategoryService  {
 	 * @throws JSONException
 	 */
 	public String[] getParentCategoryName(Integer id) throws PrestaShopWebserviceException, JSONException {
-		
-		ws = new PSWebServiceClient(shopUrl,key);
-		opt = new HashMap<String, Object>();
-		opt.put("resource", "categories");
-		opt.put("id", id);
-		schema = ws.getJson(opt);
+		PSWebServiceClient ws = new PSWebServiceClient(shopUrl,key);
+		Options options = new Options();
+		options.setResourceType(PrestashopResourceType.CATEGORIES);
+		options.setRequestedId(id);
+		JSONObject schema = ws.getJson(options);
 		String[] category = new String[2];
 
 		JSONArray namesArr = schema.getJSONObject("category").getJSONArray("name");
@@ -104,18 +100,16 @@ public class ImportCategoryServiceImpl implements ImportCategoryService  {
 		bwImport.write("-----------------------------------------------");
 		bwImport.newLine();
 		bwImport.write("Category");
-		
-		ws = new PSWebServiceClient(shopUrl,key);
-		List<Integer> categoryIds = ws.fetchApiIds("categories");
-		
+
+		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
+		List<Integer> categoryIds = ws.fetchApiIds(PrestashopResourceType.CATEGORIES);
+
 		for (Integer id : categoryIds) {
-			
-			ws = new PSWebServiceClient(shopUrl,key);
-			opt = new HashMap<String, Object>();
-			opt.put("resource", "categories");
-			opt.put("id", id);
-			schema = ws.getJson(opt);
-			
+			Options options = new Options();
+			options.setResourceType(PrestashopResourceType.CATEGORIES);
+			options.setRequestedId(id);
+			JSONObject schema = ws.getJson(options);
+
 			try {
 				ProductCategory productCategory = null;
 				JSONArray namesArr = schema.getJSONObject("category").getJSONArray("name");

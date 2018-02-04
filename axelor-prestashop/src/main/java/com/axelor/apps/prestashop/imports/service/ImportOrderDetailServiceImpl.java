@@ -32,8 +32,10 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.prestashop.db.SaleOrderStatus;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
+import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -51,10 +53,7 @@ import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
 public class ImportOrderDetailServiceImpl implements ImportOrderDetailService {
-	
-	PSWebServiceClient ws;
-    HashMap<String,Object> opt;
-    JSONObject schema;
+
     private final String shopUrl;
 	private final String key;
 	private final boolean isStatus;
@@ -91,18 +90,17 @@ public class ImportOrderDetailServiceImpl implements ImportOrderDetailService {
 				currentStatus.add(orderStatus.getPrestaShopStatus());
 			}
 		}
-		
-		ws = new PSWebServiceClient(shopUrl, key);
-		HashMap<String, String> orderMap = null;
-		
+
+		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
+		HashMap<String, String> filter = new HashMap<>();
+		Options options = new Options();
+		options.setResourceType(PrestashopResourceType.ORDERS);
+		options.setFilter(filter);
+
 		for(Integer id : currentStatus) {
-			orderMap = new HashMap<String, String>();
-			orderMap.put("current_state", id.toString());
-			opt = new HashMap<String, Object>();
-			opt.put("resource", "orders");
-			opt.put("filter", orderMap);
-			JSONObject schema =  ws.getJson(opt);
-			
+			filter.put("current_state", id.toString());
+			JSONObject schema =  ws.getJson(options);
+
 			if(schema != null) {
 				JSONArray jsonMainArr = schema.getJSONArray("orders");
 
@@ -128,18 +126,18 @@ public class ImportOrderDetailServiceImpl implements ImportOrderDetailService {
 		List<Integer> orderDetailIds = new ArrayList<Integer>();
 
 		for(Integer id : orderIds) {
-			
-			ws = new PSWebServiceClient(shopUrl, key);
-			HashMap<String, String> orderDetailMap = new HashMap<String, String>();
-			orderDetailMap.put("id_order", id.toString());
-			opt = new HashMap<String, Object>();
-			opt.put("resource", "order_details");
-			opt.put("filter", orderDetailMap);
-			JSONObject schema =  ws.getJson(opt);
-			
-			JSONArray jsonMainArr = schema.getJSONArray("order_details"); 
 
-			for (int i = 0; i < jsonMainArr.length(); i++) { 
+			PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
+			HashMap<String, String> filter = new HashMap<String, String>();
+			filter.put("id_order", id.toString());
+			Options options = new Options();
+			options.setResourceType(PrestashopResourceType.ORDER_DETAILS);
+			options.setFilter(filter);
+			JSONObject schema =  ws.getJson(options);
+
+			JSONArray jsonMainArr = schema.getJSONArray("order_details");
+
+			for (int i = 0; i < jsonMainArr.length(); i++) {
 			     JSONObject childJSONObject = jsonMainArr.getJSONObject(i);
 			     orderDetailIds.add(childJSONObject.getInt("id"));
 			}
@@ -163,25 +161,24 @@ public class ImportOrderDetailServiceImpl implements ImportOrderDetailService {
 		List<Integer> orderIds = null;
 		List<Integer> orderLineIds = null;
 		boolean isNewSaleOrderLine = false;
-		
-		ws = new PSWebServiceClient(shopUrl,key);
-		
+
+		PSWebServiceClient ws = new PSWebServiceClient(shopUrl,key);
+
 		if(isStatus == true) {
-			orderIds = ws.fetchApiIds("orders");
+			orderIds = ws.fetchApiIds(PrestashopResourceType.ORDERS);
 		} else {
 			orderIds = this.getDraftOrderIds();
 		}
 
 		orderLineIds = this.getOrderLineIds(orderIds);
+		Options options = new Options();
+		options.setResourceType(PrestashopResourceType.ORDER_DETAILS);
 
 		for(Integer id : orderLineIds) {
 			try {
-				ws = new PSWebServiceClient(shopUrl,key);
-				opt = new HashMap<String, Object>();
-				opt.put("resource", "order_details");
-				opt.put("id", id);
-				schema = ws.getJson(opt);
-				
+				options.setRequestedId(id);
+				JSONObject schema = ws.getJson(options);
+
 				SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).all().filter("self.prestaShopId = ?", schema.getJSONObject("order_detail").getString("id_order")).fetchOne();
 				Product product = Beans.get(ProductRepository.class).all().filter("self.prestaShopId = ?", schema.getJSONObject("order_detail").getString("product_id")).fetchOne();
 				SaleOrderLine saleOrderLine = Beans.get(SaleOrderLineRepository.class).all().filter("self.prestaShopId = ?", id).fetchOne();

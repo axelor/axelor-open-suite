@@ -46,8 +46,10 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.prestashop.db.SaleOrderStatus;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
+import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -65,9 +67,6 @@ import wslite.json.JSONObject;
 
 public class ImportOrderServiceImpl implements ImportOrderService {
 
-	PSWebServiceClient ws;
-    HashMap<String,Object> opt;
-    JSONObject schema;
     private final String shopUrl;
 	private final String key;
 	private final boolean isStatus;
@@ -116,18 +115,17 @@ public class ImportOrderServiceImpl implements ImportOrderService {
 				currentStatus.add(orderStatus.getPrestaShopStatus());
 			}
 		}
-		
-		ws = new PSWebServiceClient(shopUrl, key);
-		HashMap<String, String> orderMap = null;
-		
+
+		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
+		HashMap<String, String> filter = new HashMap<>();
+		Options options = new Options();
+		options.setResourceType(PrestashopResourceType.ORDERS);
+
 		for(Integer id : currentStatus) {
-			orderMap = new HashMap<String, String>();
-			orderMap.put("current_state", id.toString());
-			opt = new HashMap<String, Object>();
-			opt.put("resource", "orders");
-			opt.put("filter", orderMap);
-			JSONObject schema =  ws.getJson(opt);
-			
+			filter.put("current_state", id.toString());
+			options.setFilter(filter);
+			JSONObject schema =  ws.getJson(options);
+
 			if(schema != null) {
 				JSONArray jsonMainArr = schema.getJSONArray("orders");
 
@@ -235,18 +233,19 @@ public class ImportOrderServiceImpl implements ImportOrderService {
 		List<Integer> orderIds = null;
 
 		if(isStatus == true) {
-			ws = new PSWebServiceClient(shopUrl,key);
-			orderIds = ws.fetchApiIds("orders");
+			PSWebServiceClient ws = new PSWebServiceClient(shopUrl,key);
+			orderIds = ws.fetchApiIds(PrestashopResourceType.ORDERS);
 		} else {
 			orderIds = this.getDraftOrderIds();
 		}
 
 		for (Integer id : orderIds) {
 			try {
-				ws = new PSWebServiceClient(shopUrl + "/api/orders/" + id, key);
-				opt = new HashMap<String, Object>();
-				opt.put("resource", "orders");
-				schema = ws.getJson(opt);
+				PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
+				Options options = new Options();
+				options.setResourceType(PrestashopResourceType.ORDERS);
+				options.setRequestedId(id);
+				JSONObject schema = ws.getJson(options);
 
 				prestashopId = schema.getJSONObject("order").getInt("id");
 				SaleOrder order = null;

@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,8 +41,10 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.prestashop.db.Customers;
 import com.axelor.apps.prestashop.db.Prestashop;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
+import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -151,17 +152,18 @@ public class ExportCustomerServiceImpl implements ExportCustomerService {
 				marshallerObj.marshal(prestaShop, sw);
 				schema = sw.toString();
 
-				PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/customers?schema=synopsis", appConfig.getPrestaShopKey());
-				HashMap<String, Object> opt = new HashMap<String, Object>();
-				opt.put("resource", "customers");
-				opt.put("postXml", schema);
+				PSWebServiceClient ws;
+				Options options = new Options();
+				options.setResourceType(PrestashopResourceType.CUSTOMERS);
+				options.setXmlPayload(schema);
 
 				if (partner.getPrestaShopId() == null) {
-					document = ws.add(opt);
+					ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/customers?schema=synopsis", appConfig.getPrestaShopKey());
+					document = ws.add(options);
 				} else {
-					opt.put("id", partner.getPrestaShopId());
+					options.setRequestedId(partner.getPrestaShopId());
 					ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
-					document = ws.edit(opt);
+					document = ws.edit(options);
 				}
 
 				prestaShopId = document.getElementsByTagName("id").item(0).getTextContent();

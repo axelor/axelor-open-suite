@@ -24,7 +24,6 @@ import java.math.RoundingMode;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -43,8 +42,10 @@ import org.xml.sax.SAXException;
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.prestashop.db.Order_details;
 import com.axelor.apps.prestashop.db.Prestashop;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
+import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -76,13 +77,14 @@ public class ExportOrderDetailServiceImpl implements ExportOrderDetailService {
 		HashMap<String, String> orderDetailMap = new HashMap<String, String>();
 		orderDetailMap.put("id_order", orderId.toString());
 
-		Map<String, Object> opt = new HashMap<String, Object>();
-		opt.put("resource", "order_details");
-		opt.put("filter", orderDetailMap);
-		Document document =  ws.get(opt);
+		Options options = new Options();
+		options.setResourceType(PrestashopResourceType.ORDER_DETAILS);
+		options.setFilter(orderDetailMap);
+		Document document =  ws.get(options);
 
 		NodeList list = document.getElementsByTagName("order_details");
 
+		options.setFilter(null);
 		for(int i = 0; i < list.getLength(); i++) {
 			Element element = (Element) list.item(i);
 		    NodeList nodeList = element.getElementsByTagName("order_detail");
@@ -91,12 +93,10 @@ public class ExportOrderDetailServiceImpl implements ExportOrderDetailService {
 		    	Node order = nodeList.item(j);
 
 		    	if(nodeList.getLength() > 0) {
-		    		orderDetailId =  order.getAttributes().getNamedItem("id").getNodeValue();
 					ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
-			    	opt  = new HashMap<String, Object>();
-			    	opt.put("resource", "order_details");
-			    	opt.put("id", orderDetailId);
-			    	ws.delete(opt);
+
+			    	options.setRequestedId(Integer.valueOf(order.getAttributes().getNamedItem("id").getNodeValue()));
+			    	ws.delete(options);
 			    }
 		    }
 		}
@@ -154,10 +154,10 @@ public class ExportOrderDetailServiceImpl implements ExportOrderDetailService {
 					marshallerObj.marshal(prestaShop, sw);
 
 					PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/order_details?schema=synopsis", appConfig.getPrestaShopKey());
-					Map<String, Object> opt = new HashMap<String, Object>();
-					opt.put("resource", "order_details");
-					opt.put("postXml", sw.toString());
-					Document document = ws.add(opt);
+					Options options = new Options();
+					options.setResourceType(PrestashopResourceType.ORDER_DETAILS);
+					options.setXmlPayload(sw.toString());
+					Document document = ws.add(options);
 
 					orderLine.setPrestaShopId(Integer.valueOf(document.getElementsByTagName("id").item(0).getTextContent()));
 					saleOrderLineRepo.save(orderLine);

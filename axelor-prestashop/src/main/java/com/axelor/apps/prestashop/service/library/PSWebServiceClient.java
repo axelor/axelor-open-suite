@@ -17,21 +17,19 @@
  */
 package com.axelor.apps.prestashop.service.library;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -43,11 +41,14 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.http.Consts;
 import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
@@ -58,6 +59,7 @@ import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -68,6 +70,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 
 import wslite.json.JSONArray;
 import wslite.json.JSONException;
@@ -81,8 +85,6 @@ public class PSWebServiceClient {
 	protected String key;
 
 	private final CloseableHttpClient httpclient;
-	private CloseableHttpResponse response;
-	private HashMap<String, Object> responseReturns;
 
 	/**
 	 * PrestaShopWebservice constructor. <code>
@@ -129,14 +131,6 @@ public class PSWebServiceClient {
 		throw new PrestaShopWebserviceException(String.format("An underlying call to the Prestashop API failed with status code %d (%s)", statusCode, HttpStatus.getStatusText(statusCode)));
 	}
 
-	protected String getResponseContent() {
-		try {
-			return readInputStreamAsString((InputStream) this.responseReturns.get("response"));
-		} catch (IOException ex) {
-			return "";
-		}
-	}
-
 	/**
 	 * Handles request to PrestaShop Webservice. Can throw exception.
 	 *
@@ -146,26 +140,18 @@ public class PSWebServiceClient {
 	 * @return array status_code, response
 	 * @throws pswebservice.PrestaShopWebserviceException
 	 */
-	protected HashMap<String, Object> executeRequest(HttpUriRequest request) throws PrestaShopWebserviceException {
+	protected RequestResult executeRequest(HttpUriRequest request) throws PrestaShopWebserviceException {
+			try {
+				final RequestResult result = new RequestResult();
+				result.response = httpclient.execute(request);
+				checkStatusCode(result.response.getStatusLine().getStatusCode());
+				result.headers = Arrays.asList(result.response.getAllHeaders());
+				result.content = result.response.getEntity().getContent();
 
-		HashMap<String, Object> returns = new HashMap<>();
-
-		try {
-			response = httpclient.execute(request);
-			Header[] headers = response.getAllHeaders();
-			HttpEntity entity = response.getEntity();
-
-			returns.put("status_code", response.getStatusLine().getStatusCode());
-			returns.put("response", entity.getContent());
-			returns.put("header", headers);
-
-			this.responseReturns = returns;
-
-		} catch (IOException ex) {
-			throw new PrestaShopWebserviceException("Bad HTTP response : " + ex.toString());
-		}
-
-		return returns;
+				return result;
+			} catch (UnsupportedOperationException | IOException e) {
+				throw new PrestaShopWebserviceException("Error while processing request", e);
+			}
 	}
 
 	/**
@@ -199,43 +185,32 @@ public class PSWebServiceClient {
 	 * @throws pswebservice.PrestaShopWebserviceException
 	 * @throws TransformerException
 	 */
-	@SuppressWarnings("deprecation")
-	public Document add(Map<String, Object> opt) throws PrestaShopWebserviceException, TransformerException {
-		if ((opt.containsKey("resource") && opt.containsKey("postXml"))
-				|| (opt.containsKey("url") && opt.containsKey("postXml"))) {
-			String completeUrl;
-			completeUrl = (opt.containsKey("resource") ? this.url + "/api/" + (String) opt.get("resource")
-					: (String) opt.get("url"));
-			String xml = (String) opt.get("postXml");
-			if (opt.containsKey("id_shop"))
-				completeUrl += "&id_shop=" + (String) opt.get("id_shop");
-			if (opt.containsKey("id_group_shop"))
-				completeUrl += "&id_group_shop=" + (String) opt.get("id_group_shop");
+	public Document add(Options options) throws PrestaShopWebserviceException {
+		if(options.resourceType == null && StringUtils.isEmpty(options.fullUrl)) throw new IllegalArgumentException("You have to provide an URL or a resource type");
+		if(StringUtils.isEmpty(options.xmlPayload)) throw new IllegalArgumentException("You have to provide the XML payload to send");
 
-			StringEntity entity = new StringEntity(xml, ContentType.create("text/xml", Consts.UTF_8));
-			// entity.setChunked(true);
-
-			HttpPost httppost = new HttpPost(completeUrl);
-			httppost.setEntity(entity);
-
-			HashMap<String, Object> resoult = this.executeRequest(httppost);
-			this.checkStatusCode((Integer) resoult.get("status_code"));
-
-			try {
-				String obj = IOUtils.toString((InputStream) resoult.get("response"));
-				InputStream is = new ByteArrayInputStream(obj.trim().getBytes());
-				Document doc = this.parseXML(is);
-				response.close();
-				return doc;
-			} catch (ParserConfigurationException | SAXException | IOException ex) {
-				ex.printStackTrace();
-				throw new PrestaShopWebserviceException("Response XML Parse exception");
-			}
-
-		} else {
-			throw new PrestaShopWebserviceException("Bad parameters given");
+		final String url = StringUtils.isEmpty(options.fullUrl) ? String.format("%s/api/%s", this.url, options.resourceType.getLabel()) : options.fullUrl;
+		URIBuilder uriBuilder;
+		try {
+			uriBuilder = new URIBuilder(url);
+		} catch (URISyntaxException e) {
+			throw new PrestaShopWebserviceException(String.format("Invalid URI %s provided to webservices", url), e);
 		}
+		if(options.shopId != null) uriBuilder.addParameter("id_shop", options.shopId.toString());
+		if(options.shopGroupId != null) uriBuilder.addParameter("id_group_shop", options.shopGroupId.toString());
 
+		HttpPost post = new HttpPost(uriBuilder.toString());
+		post.setEntity(new StringEntity(options.xmlPayload, ContentType.create("text/xml", Consts.UTF_8)));
+
+		RequestResult result = this.executeRequest(post);
+		try {
+			// FIXME we should unmarshall
+			return parseXML(result.content);
+		} catch (Exception e) {
+			throw new PrestaShopWebserviceException("An error occured while processing add response", e);
+		} finally {
+			IOUtils.closeQuietly(result.response);
+		}
 	}
 
 	/**
@@ -272,119 +247,44 @@ public class PSWebServiceClient {
 	 * @return Document response
 	 * @throws pswebservice.PrestaShopWebserviceException
 	 */
-	@SuppressWarnings("rawtypes")
-	public Document get(Map<String, Object> opt) throws PrestaShopWebserviceException {
-		String completeUrl;
-		if (opt.containsKey("url")) {
-			completeUrl = (String) opt.get("url");
-		} else if (opt.containsKey("resource")) {
-			completeUrl = this.url + "/api/" + opt.get("resource");
-			if (opt.containsKey("id"))
-				completeUrl += "/" + opt.get("id");
+	public Document get(Options options) throws PrestaShopWebserviceException {
+		if(options.resourceType == null && StringUtils.isEmpty(options.fullUrl)) throw new IllegalArgumentException("You have to provide an URL or a resource type");
+		if(options.offset != null && options.limit == null) throw new IllegalArgumentException("Offset is only allowed with limit");
 
-			String[] params = new String[] { "filter", "display", "sort", "limit", "id_shop", "id_group_shop" };
-			for (String p : params)
-				if (opt.containsKey(p))
-					try {
-						Object param = opt.get(p);
 
-						if (param instanceof HashMap) {
-							Map xparams = (HashMap) param;
-							Iterator it = xparams.entrySet().iterator();
-							while (it.hasNext()) {
-								Map.Entry pair = (Map.Entry) it.next();
-								completeUrl += "?" + p + "[" + pair.getKey() + "]="
-										+ URLEncoder.encode((String) pair.getValue(), "UTF-8") + "&";
-								it.remove(); // avoids a ConcurrentModificationException
-							}
-						} else {
-							completeUrl += "?" + p + "=" + URLEncoder.encode((String) opt.get(p), "UTF-8") + "&";
-						}
-					} catch (UnsupportedEncodingException ex) {
-						throw new PrestaShopWebserviceException("URI encodin excepton: " + ex.toString());
-					}
-
-		} else {
-			throw new PrestaShopWebserviceException("Bad parameters given");
-		}
-
-		HttpGet httpget = new HttpGet(completeUrl);
-		HashMap<String, Object> resoult = this.executeRequest(httpget);
-		this.checkStatusCode((int) resoult.get("status_code"));// check the response validity
+		HttpGet httpget = new HttpGet(buildUri(options));
+		RequestResult result = executeRequest(httpget);
 
 		try {
-			Document doc = this.parseXML((InputStream) resoult.get("response"));
-			response.close();
-			return doc;
-		} catch (ParserConfigurationException | SAXException | IOException ex) {
-			throw new PrestaShopWebserviceException("Response XML Parse exception: " + ex.toString());
+			// FIXME we should unmarshall
+			return parseXML(result.content);
+		} catch (Exception e) {
+			throw new PrestaShopWebserviceException("An error occured while processing get response", e);
+		} finally {
+			IOUtils.closeQuietly(result.response);
 		}
-
 	}
 
-	@SuppressWarnings({ "rawtypes", "deprecation" })
-	public JSONObject getJson(Map<String, Object> opt) throws PrestaShopWebserviceException, JSONException {
-		String completeUrl;
-		boolean flag = false;
+	@Deprecated
+	public JSONObject getJson(Options options) throws PrestaShopWebserviceException, JSONException {
+		if(options.resourceType == null && StringUtils.isEmpty(options.fullUrl)) throw new IllegalArgumentException("You have to provide an URL or a resource type");
+		if(options.offset != null && options.limit == null) throw new IllegalArgumentException("Offset is only allowed with limit");
 
-		if (opt.containsKey("url")) {
-			completeUrl = (String) opt.get("url");
-		} else if (opt.containsKey("resource")) {
-			completeUrl = this.url + "/api/" + opt.get("resource");
-			if (opt.containsKey("id"))
-				completeUrl += "/" + opt.get("id");
+		StringBuilder sb = new StringBuilder(buildUri(options));
+		sb.append(sb.indexOf("?") == -1 ? '?' : '&');
+		sb.append("output_format=JSON");
 
-			String[] params = new String[] { "filter", "display", "sort", "limit", "id_shop", "id_group_shop" };
-			for (String p : params)
-				if (opt.containsKey(p))
-					try {
-						flag = true;
-						Object param = opt.get(p);
-
-						if (param instanceof HashMap) {
-							Map xparams = (HashMap) param;
-							Iterator it = xparams.entrySet().iterator();
-							while (it.hasNext()) {
-								Map.Entry pair = (Map.Entry) it.next();
-								completeUrl += "?" + p + "[" + pair.getKey() + "]="
-										+ URLEncoder.encode((String) pair.getValue(), "UTF-8") + "&";
-								it.remove(); // avoids a ConcurrentModificationException
-							}
-						} else {
-							completeUrl += "?" + p + "=" + URLEncoder.encode((String) opt.get(p), "UTF-8") + "&";
-						}
-					} catch (UnsupportedEncodingException ex) {
-						throw new PrestaShopWebserviceException("URI encodin excepton: " + ex.toString());
-					}
-
-		} else {
-			throw new PrestaShopWebserviceException("Bad parameters given");
-		}
-
-		if (flag) {
-			completeUrl += "output_format=JSON";
-		} else {
-			completeUrl += "?output_format=JSON";
-		}
-
-		HttpGet httpget = new HttpGet(completeUrl);
-		HashMap<String, Object> resoult = this.executeRequest(httpget);
-		this.checkStatusCode((int) resoult.get("status_code"));// check the response validity
+		HttpGet httpget = new HttpGet(sb.toString());
+		RequestResult result = executeRequest(httpget);
 
 		try {
-			String jsonStr = IOUtils.toString((InputStream) resoult.get("response"));
-			JSONObject json = null;
-
-			if (!jsonStr.equals("[]")) {
-				json = new JSONObject(jsonStr);
-			}
-			response.close();
-			return json;
-
-		} catch (IOException ex) {
-			throw new PrestaShopWebserviceException("Response JSON Parse exception: " + ex.toString());
+			String json = IOUtils.toString(result.content, Consts.UTF_8);
+			return ("[]".equals(json) ? null : new JSONObject(json));
+		} catch (IOException e) {
+			throw new PrestaShopWebserviceException("An error occured while processing get response", e);
+		} finally {
+			IOUtils.closeQuietly(result.response);
 		}
-
 	}
 
 	/**
@@ -394,36 +294,12 @@ public class PSWebServiceClient {
 	 *            Map representing resource for head request.
 	 * @return XMLElement status_code, response
 	 */
-	public Map<String, String> head(Map<String, Object> opt) throws PrestaShopWebserviceException {
-		String completeUrl;
-		if (opt.containsKey("url")) {
-			completeUrl = (String) opt.get("url");
-		} else if (opt.containsKey("resource")) {
-			completeUrl = this.url + "/api/" + opt.get("resource");
-			if (opt.containsKey("id"))
-				completeUrl += "/" + opt.get("id");
+	public Map<String, String> head(Options options) throws PrestaShopWebserviceException {
+		HttpHead httphead = new HttpHead(buildUri(options));
+		RequestResult result = executeRequest(httphead);
 
-			String[] params = new String[] { "filter", "display", "sort", "limit" };
-			for (String p : params)
-				if (opt.containsKey("p"))
-					try {
-						completeUrl += "?" + p + "=" + URLEncoder.encode((String) opt.get(p), "UTF-8") + "&";
-					} catch (UnsupportedEncodingException ex) {
-						throw new PrestaShopWebserviceException("URI encodin excepton: " + ex.toString());
-					}
-
-		} else
-			throw new PrestaShopWebserviceException("Bad parameters given");
-
-		HttpHead httphead = new HttpHead(completeUrl);
-		HashMap<String, Object> resoult = this.executeRequest(httphead);
-		this.checkStatusCode((int) resoult.get("status_code"));// check the response validity
-
-		HashMap<String, String> headers = new HashMap<String, String>();
-		for (Header h : (Header[]) resoult.get("header")) {
-			headers.put(h.getName(), h.getValue());
-		}
-		return headers;
+		if(result.headers == null) return null;
+		return result.headers.stream().collect(Collectors.toMap(Header::getName, Header::getValue));
 	}
 
 	/**
@@ -441,38 +317,22 @@ public class PSWebServiceClient {
 	 * @return
 	 * @throws TransformerException
 	 */
-	public Document edit(Map<String, Object> opt) throws PrestaShopWebserviceException, TransformerException {
+	public Document edit(Options options) throws PrestaShopWebserviceException, TransformerException {
+		// Existing checks were completely inconsistent
+		if((options.resourceType == null || options.entityId == null) && StringUtils.isEmpty(options.fullUrl)) throw new IllegalArgumentException("You have to provide an URL or a resource type and ID");
+		if(StringUtils.isEmpty(options.xmlPayload)) throw new IllegalArgumentException("You have to provide the XML payload to send");
 
-		String xml = "";
-		String completeUrl;
-		if (opt.containsKey("url"))
-			completeUrl = (String) opt.get("url");
-		else if (((opt.containsKey("resource") && opt.containsKey("id")) || opt.containsKey("url"))
-				&& opt.containsKey("postXml")) {
-			completeUrl = (opt.containsKey("url")) ? (String) opt.get("url")
-					: this.url + "/api/" + opt.get("resource") + "/" + opt.get("id");
-			xml = (String) opt.get("postXml");
-			if (opt.containsKey("id_shop"))
-				completeUrl += "&id_shop=" + opt.get("id_shop");
-			if (opt.containsKey("id_group_shop"))
-				completeUrl += "&id_group_shop=" + opt.get("id_group_shop");
-		} else
-			throw new PrestaShopWebserviceException("Bad parameters given");
-
-		StringEntity entity = new StringEntity(xml, ContentType.create("text/xml", Consts.UTF_8));
-		// entity.setChunked(true);
-
-		HttpPut httpput = new HttpPut(completeUrl);
-		httpput.setEntity(entity);
-		HashMap<String, Object> resoult = this.executeRequest(httpput);
-		this.checkStatusCode((int) resoult.get("status_code"));// check the response validity
+		HttpPut httpput = new HttpPut(buildUri(options));
+		httpput.setEntity(new StringEntity(options.xmlPayload, ContentType.create("text/xml", Consts.UTF_8)));
+		RequestResult result = executeRequest(httpput);
 
 		try {
-			Document doc = this.parseXML((InputStream) resoult.get("response"));
-			response.close();
-			return doc;
-		} catch (ParserConfigurationException | SAXException | IOException ex) {
-			throw new PrestaShopWebserviceException("Response XML Parse exception: " + ex.toString());
+			// FIXME we should unmarshall
+			return parseXML(result.content);
+		} catch (Exception e) {
+			throw new PrestaShopWebserviceException("An error occured while processing add response", e);
+		} finally {
+			IOUtils.closeQuietly(result.response);
 		}
 	}
 
@@ -489,26 +349,11 @@ public class PSWebServiceClient {
 	 * @return
 	 * @throws pswebservice.PrestaShopWebserviceException
 	 */
-	public boolean delete(Map<String, Object> opt) throws PrestaShopWebserviceException {
-		String completeUrl = "";
-		if (opt.containsKey("url"))
-			completeUrl = (String) opt.get("url");
-		else if (opt.containsKey("resource") && opt.containsKey("id"))
-			// if (opt.get("id"))
-			// completeUrl = this.url+"/api/"+opt.get("resource")+"/?id=[".implode(',',
-			// $options['id'])+"]";
-			// else
-			completeUrl = this.url + "/api/" + opt.get("resource") + "/" + opt.get("id");
+	public boolean delete(Options options) throws PrestaShopWebserviceException {
+		if((options.resourceType == null || options.entityId == null) && StringUtils.isEmpty(options.fullUrl)) throw new IllegalArgumentException("You have to provide an URL or a resource type and ID");
 
-		if (opt.containsKey("id_shop"))
-			completeUrl += "&id_shop=" + opt.get("id_shop");
-		if (opt.containsKey("id_group_shop"))
-			completeUrl += "&id_group_shop=" + opt.get("id_group_shop");
-
-		HttpDelete httpdelete = new HttpDelete(completeUrl);
-		HashMap<String, Object> resoult = this.executeRequest(httpdelete);
-
-		this.checkStatusCode((int) resoult.get("status_code"));// check the response validity
+		HttpDelete httpdelete = new HttpDelete(buildUri(options));
+		executeRequest(httpdelete);
 
 		return true;
 	}
@@ -521,56 +366,66 @@ public class PSWebServiceClient {
 	 * @throws pswebservice.PrestaShopWebserviceException
 	 * @throws java.net.MalformedURLException
 	 */
-	public Document addImg(String imgURL, Integer productId)
+	public Document addImg(final Path imagePath, final PrestashopResourceType resourceType, final int resourceId)
 			throws PrestaShopWebserviceException, MalformedURLException, IOException {
 
-		URL imgUrl = new URL(imgURL);
-		InputStream is = imgUrl.openStream();
-
-		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		int nRead;
-		byte[] data = new byte[16384];
-		while ((nRead = is.read(data, 0, data.length)) != -1) {
-			buffer.write(data, 0, nRead);
-		}
-		buffer.flush();
-
-		String completeUrl = this.url + "/api/images/products/" + String.valueOf(productId);
-		HttpPost httppost = new HttpPost(completeUrl);
+		byte[] imageData = IOUtils.toByteArray(new FileInputStream(imagePath.toFile()));
+		String requestUrl = String.format("%s/api/images/%s/%s", this.url, resourceType.getLabel(), Integer.toString(resourceId));
 
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 		builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-		builder.addPart("image", new ByteArrayBody(buffer.toByteArray(), "upload.jpg"));
+		builder.addPart("image", new ByteArrayBody(imageData, "upload.jpg"));
 
-		HttpEntity entity = builder.build();
-		httppost.setEntity(entity);
+		HttpPost httppost = new HttpPost(requestUrl);
+		httppost.setEntity(builder.build());
 
-		HashMap<String, Object> resoult = this.executeRequest(httppost);
-		this.checkStatusCode((Integer) resoult.get("status_code"));
+		RequestResult result = executeRequest(httppost);
 
 		try {
-			Document doc = this.parseXML((InputStream) resoult.get("response"));
-			response.close();
-			return doc;
-		} catch (ParserConfigurationException | SAXException | IOException ex) {
-			throw new PrestaShopWebserviceException("Response XML Parse exception");
+			// FIXME we should unmarshall (and factorize)
+			return parseXML(result.content);
+		} catch (Exception e) {
+			throw new PrestaShopWebserviceException("An error occured while processing add response", e);
+		} finally {
+			IOUtils.closeQuietly(result.response);
 		}
-
 	}
 
-	private String readInputStreamAsString(InputStream in) throws IOException {
-
-		BufferedInputStream bis = new BufferedInputStream(in);
-		ByteArrayOutputStream buf = new ByteArrayOutputStream();
-		int result = bis.read();
-		while (result != -1) {
-			byte b = (byte) result;
-			buf.write(b);
-			result = bis.read();
+	private String buildUri(Options options) throws PrestaShopWebserviceException {
+		final String url;
+		if(StringUtils.isEmpty(options.fullUrl)) {
+			if(options.entityId == null) {
+				url = String.format("%s/api/%s", this.url, options.resourceType.getLabel());
+			} else {
+				url = String.format("%s/api/%s/%d", this.url, options.resourceType.getLabel(), options.entityId);
+			}
+		} else {
+			url = options.fullUrl;
 		}
+		URIBuilder uriBuilder;
+		try {
+			uriBuilder = new URIBuilder(url);
+		} catch (URISyntaxException e) {
+			throw new PrestaShopWebserviceException(String.format("Invalid URI %s provided to webservices", url), e);
+		}
+		if(MapUtils.isNotEmpty(options.filter)) {
+			for(Map.Entry<String, String> e : options.filter.entrySet()) {
+				uriBuilder.addParameter(String.format("filter[%s]", e.getKey()), e.getValue());
+			}
+		}
+		if(CollectionUtils.isNotEmpty(options.display)) {
+			uriBuilder.addParameter("display", "[" + StringUtils.join(options.display, ",") + "]");
+		}
+		if(CollectionUtils.isNotEmpty(options.sort)) {
+			uriBuilder.addParameter("sort", "[" + StringUtils.join(options.sort, ",") + "]");
+		}
+		if(options.limit != null) {
+			uriBuilder.addParameter("limit", (options.offset != null ? options.offset.toString() + "," : "") + options.limit.toString());
+		}
+		if(options.shopId != null) uriBuilder.addParameter("id_shop", options.shopId.toString());
+		if(options.shopGroupId != null) uriBuilder.addParameter("id_group_shop", options.shopGroupId.toString());
 
-		String returns = buf.toString();
-		return returns;
+		return uriBuilder.toString();
 	}
 
 	public String DocumentToString(Document doc) throws TransformerException {
@@ -590,15 +445,14 @@ public class PSWebServiceClient {
 		return xmlString;
 	}
 
-	public List<Integer> fetchApiIds(String resources) throws PrestaShopWebserviceException, JSONException {
+	public List<Integer> fetchApiIds(PrestashopResourceType resourceType) throws PrestaShopWebserviceException, JSONException {
+		Options options = new Options();
+		options.resourceType = resourceType;
+		JSONObject schema = this.getJson(options);
+		if(schema == null) return Collections.emptyList();
 
-		new PSWebServiceClient(this.url, this.key);
-		HashMap<String, Object> opt = new HashMap<String, Object>();
-		opt.put("resource", resources);
-		JSONObject schema = this.getJson(opt);
-		List<Integer> ids = new ArrayList<Integer>();
-
-		JSONArray jsonMainArr = schema.getJSONArray(resources);
+		JSONArray jsonMainArr = schema.getJSONArray(resourceType.getLabel());
+		List<Integer> ids = new ArrayList<Integer>(jsonMainArr.length());
 
 		for (int i = 0; i < jsonMainArr.length(); i++) {
 			JSONObject childJSONObject = jsonMainArr.getJSONObject(i);
@@ -606,5 +460,100 @@ public class PSWebServiceClient {
 		}
 
 		return ids;
+	}
+
+	public static class Options {
+		private PrestashopResourceType resourceType;
+		private String xmlPayload; // TODO Check if we could marshal in WS
+		private Integer entityId;
+		private String fullUrl;
+		private Integer shopId;
+		private Integer shopGroupId;
+		private Integer limit;
+		private Integer offset;
+		private List<String> display;
+		private Map<String, String> filter;
+		private List<String> sort;
+
+		public void setResourceType(PrestashopResourceType resourceType) {
+			this.resourceType = resourceType;
+		}
+
+		public void setXmlPayload(String xmlPayload) {
+			this.xmlPayload = xmlPayload;
+		}
+
+		public void setRequestedId(Integer requestedId) {
+			this.entityId = requestedId;
+		}
+
+		public void setFullUrl(String fullUrl) {
+			this.fullUrl = fullUrl;
+		}
+
+		public void setShopId(int shopId) {
+			this.shopId = shopId;
+		}
+
+		public void setShopGroupId(int shopGroupId) {
+			this.shopGroupId = shopGroupId;
+		}
+
+		public void setLimit(int limit) {
+			this.limit = limit;
+		}
+
+		public void setOffset(int offset) {
+			this.offset = offset;
+		}
+
+		public void setDisplay(List<String> display) {
+			this.display = display;
+		}
+
+		public void setFilter(Map<String, String> filter) {
+			this.filter = filter;
+		}
+
+		public void setSort(List<String> sort) {
+			this.sort = sort;
+		}
+
+		public void clear() {
+			resourceType = null;
+			xmlPayload = null;
+			entityId = null;
+			fullUrl = null;
+			shopId = null;
+			shopGroupId = null;
+			limit = null;
+			offset = null;
+			display = null;
+			filter = null;
+			sort = null;
+		}
+
+		@Override
+		public String toString() {
+			return new ToStringBuilder(this)
+					.append("resource", resourceType)
+					.append("xmlPayload", xmlPayload)
+					.append("requestedId", entityId)
+					.append("fullUrl", fullUrl)
+					.append("shopId", shopId)
+					.append("shopGroupId", shopGroupId)
+					.append("limit", limit)
+					.append("offset", offset)
+					.append("display", display)
+					.append("filter", filter)
+					.append("sort", sort)
+					.toString();
+		}
+	}
+
+	private static class RequestResult {
+		CloseableHttpResponse response;
+		List<Header> headers;
+		InputStream content;
 	}
 }

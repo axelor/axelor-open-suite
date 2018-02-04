@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,8 +52,10 @@ import com.axelor.apps.prestashop.db.Language;
 import com.axelor.apps.prestashop.db.LanguageDetails;
 import com.axelor.apps.prestashop.db.Prestashop;
 import com.axelor.apps.prestashop.db.Products;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
+import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -163,20 +164,19 @@ public class ExportProductServiceImpl implements ExportProductService {
 					marshallerObj.marshal(prestaShop, sw);
 					schema = sw.toString();
 
-					ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/products?schema=synopsis", appConfig.getPrestaShopKey());
-					opt = new HashMap<String, Object>();
-					opt.put("resource", "products");
-					opt.put("postXml", schema);
+					Options options = new Options();
+					options.setResourceType(PrestashopResourceType.PRODUCTS);
+					options.setXmlPayload(schema);
 
 					if (productObj.getPrestaShopId() == null) {
-						document = ws.add(opt);
+						ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/products?schema=synopsis", appConfig.getPrestaShopKey());
+						document = ws.add(options);
 						prestaShopId = document.getElementsByTagName("id").item(0).getTextContent();
 						productObj.setPrestaShopId(Integer.valueOf(prestaShopId));
 
 						if (productObj.getPicture() != null) {
-							Path path = MetaFiles.getPath(productObj.getPicture());
 							ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
-							ws.addImg(path.toUri().toString(), Integer.parseInt(prestaShopId));
+							ws.addImg(MetaFiles.getPath(productObj.getPicture()), PrestashopResourceType.PRODUCTS, Integer.parseInt(prestaShopId));
 						}
 
 						NodeList nodeList = document.getElementsByTagName("stock_availables").item(0).getChildNodes();
@@ -198,20 +198,20 @@ public class ExportProductServiceImpl implements ExportProductService {
 							}
 
 							ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
-							opt = new HashMap<String, Object>();
-							opt.put("resource", "stock_availables");
-							opt.put("id", stock_id);
-							Document stockSchema = ws.get(opt);
+							options.clear();
+							options.setResourceType(PrestashopResourceType.STOCK_AVAILABLES);
+							options.setRequestedId(Integer.valueOf(stock_id));
+							Document stockSchema = ws.get(options);
 							stockSchema.getElementsByTagName("quantity").item(0).setTextContent(totalRealQty.setScale(0, RoundingMode.HALF_UP).toString());
-							opt.put("postXml", ws.DocumentToString(stockSchema));
-							ws.edit(opt);
+							options.setXmlPayload(ws.DocumentToString(stockSchema));
+							ws.edit(options);
 
 						}
 
 					} else {
-						opt.put("id", productObj.getPrestaShopId());
+						options.setRequestedId(productObj.getPrestaShopId());
 						ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
-						document = ws.edit(opt);
+						document = ws.edit(options);
 					}
 
 					productRepo.save(productObj);

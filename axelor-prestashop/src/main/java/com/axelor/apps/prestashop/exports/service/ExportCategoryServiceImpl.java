@@ -21,7 +21,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,8 +39,10 @@ import com.axelor.apps.prestashop.db.Categories;
 import com.axelor.apps.prestashop.db.Language;
 import com.axelor.apps.prestashop.db.LanguageDetails;
 import com.axelor.apps.prestashop.db.Prestashop;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
+import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -126,17 +127,19 @@ public class ExportCategoryServiceImpl implements ExportCategoryService {
 					marshallerObj.marshal(prestaShop, sw);
 					schema = sw.toString();
 
-					PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/categories?schema=synopsis", appConfig.getPrestaShopKey());
-					HashMap<String, Object> opt = new HashMap<String, Object>();
-					opt.put("resource", "categories");
-					opt.put("postXml", schema);
+					PSWebServiceClient ws;
+
+					Options options = new Options();
+					options.setResourceType(PrestashopResourceType.CATEGORIES);
+					options.setXmlPayload(schema);
 
 					if (productCategory.getPrestaShopId() == null) {
-						document = ws.add(opt);
+						ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/categories?schema=synopsis", appConfig.getPrestaShopKey());
+						document = ws.add(options);
 					} else {
-						opt.put("id", productCategory.getPrestaShopId());
 						ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
-						document = ws.edit(opt);
+						options.setRequestedId(productCategory.getPrestaShopId());
+						document = ws.edit(options);
 					}
 
 					productCategory.setPrestaShopId(Integer.valueOf(document.getElementsByTagName("id").item(0).getTextContent()));

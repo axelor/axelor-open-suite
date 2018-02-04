@@ -19,7 +19,6 @@ package com.axelor.apps.prestashop.imports.service;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -30,8 +29,10 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
+import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
@@ -45,10 +46,6 @@ import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
 public class ImportCustomerServiceImpl implements ImportCustomerService {
-	
-	PSWebServiceClient ws;
-    HashMap<String,Object> opt;
-    JSONObject schema;
     private final String shopUrl;
 	private final String key;
 
@@ -76,18 +73,17 @@ public class ImportCustomerServiceImpl implements ImportCustomerService {
 		bwImport.write("-----------------------------------------------");
 		bwImport.newLine();
 		bwImport.write("Customer");
-		
-		ws = new PSWebServiceClient(shopUrl,key);
-		List<Integer> customerIds = ws.fetchApiIds("customers");
-		
+
+		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
+		List<Integer> customerIds = ws.fetchApiIds(PrestashopResourceType.CUSTOMERS);
+
 		for (Integer id : customerIds) {
-			
-			ws = new PSWebServiceClient(shopUrl,key);
-			opt = new HashMap<String, Object>();
-			opt.put("resource", "customers");
-			opt.put("id", id);
-			schema = ws.getJson(opt);
-			
+			Options options = new Options();
+			// FIXME use dispkay options and fetch everything at once
+			options.setResourceType(PrestashopResourceType.CUSTOMERS);
+			options.setRequestedId(id);
+			JSONObject schema = ws.getJson(options);
+
 			String emailName = null;
 			String firstName = null;
 			String name = null;
