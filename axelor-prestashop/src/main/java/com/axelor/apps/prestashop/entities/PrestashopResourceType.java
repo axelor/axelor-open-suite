@@ -17,7 +17,9 @@ public enum PrestashopResourceType {
 	ORDER_DETAILS("order_details"),
 	ORDER_HISTORIES("order_histories"),
 	ORDERS("orders"),
-	PRODUCTS("products");
+	PRODUCTS("products"),
+	// No typo� really
+	STOCK_AVAILABLES("stock_availables");
 
 	final String label;
 
