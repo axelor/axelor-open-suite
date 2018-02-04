@@ -9,7 +9,7 @@ import javax.xml.bind.JAXBException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.axelor.apps.prestashop.entities.Api;
+import com.axelor.apps.prestashop.entities.ApiContainer;
 import com.axelor.apps.prestashop.entities.Prestashop;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.entities.xlink.XlinkEntry;
@@ -106,8 +106,8 @@ public class UnmarshallTest {
 		);
 
 		Assert.assertNotNull(envelop.getContent());
-		Assert.assertEquals(Api.class, envelop.getContent().getClass());
-		Api content = envelop.getContent();
+		Assert.assertEquals(ApiContainer.class, envelop.getContent().getClass());
+		ApiContainer content = envelop.getContent();
 		Assert.assertEquals(expectedEntries.size(), content.getXlinkEntries().size());
 		for(XlinkEntry entry : content.getXlinkEntries()) {
 			Assert.assertTrue(expectedEntries.remove(entry.getEntryType()));

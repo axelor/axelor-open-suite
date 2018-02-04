@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.axelor.apps.base.db.AppPrestashop;
-import com.axelor.apps.prestashop.entities.Api;
+import com.axelor.apps.prestashop.entities.ApiContainer;
 import com.axelor.apps.prestashop.entities.Prestashop;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.entities.xlink.XlinkEntry;
@@ -90,13 +90,13 @@ public class AppPrestaShopServiceImpl implements AppPrestaShopService {
 				return;
 			}
 
-			if((envelop.getContent() instanceof Api) == false) {
+			if((envelop.getContent() instanceof ApiContainer) == false) {
 				errors.add(I18n.get("Server returned an invalid response, see server logs for details"));
 				logger.warn("Invalid response from server while trying to check Prestashop's access rights: " + XmlUtil.serialize(doc.getDocumentElement()));
 				return;
 			}
 
-			Api api = envelop.getContent();
+			ApiContainer api = envelop.getContent();
 
 			@SuppressWarnings("unchecked")
 			Set<PrestashopResourceType> requiredEntries = (HashSet<PrestashopResourceType>)REQUIRED_XLINKS.clone();

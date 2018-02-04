@@ -14,7 +14,7 @@ import org.w3c.dom.Element;
 import com.axelor.apps.prestashop.entities.xlink.XlinkEntry;
 
 @XmlRootElement(name="api")
-public class Api extends PrestashopContainerEntity {
+public class ApiContainer extends PrestashopContainerEntity {
 	@XmlAttribute
 	private String shopName;
 
