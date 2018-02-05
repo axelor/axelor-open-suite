@@ -17,7 +17,7 @@
 	    <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
 
-   <form name="product-expense-form" onNew="action-group-base-product-expense-onnew" onLoad="action-product-attrs-title-sale-price" title="Expense type" model="com.axelor.apps.base.db.Product" >
+   <form name="product-expense-form" onNew="action-group-base-product-expense-onnew" title="Expense type" model="com.axelor.apps.base.db.Product" >
     <toolbar>
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
@@ -84,7 +84,7 @@
 
    <form name="product-activity-form" title="Product Activity" model="com.axelor.apps.base.db.Product" 
    onNew="action-group-base-product-onnew, action-product-activity-record-default-activity" 
-   onLoad="action-product-attrs-scale-and-precision,action-product-attrs-title-sale-price" width="large">
+   onLoad="action-product-attrs-scale-and-precision" width="large">
     <toolbar>
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
