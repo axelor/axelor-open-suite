@@ -81,23 +81,22 @@ public class BankOrderServiceImpl implements BankOrderService {
 	protected BankOrderLineService bankOrderLineService;
 	protected EbicsService ebicsService;
 	protected InvoicePaymentToolService invoicePaymentToolService;
-
-	@Inject
-	private AccountConfigBankPaymentService accountConfigBankPaymentService;
-
-	@Inject
-	private SequenceService sequenceService;
+	protected AccountConfigBankPaymentService accountConfigBankPaymentService;
+	protected SequenceService sequenceService;
 
 	@Inject
 	public BankOrderServiceImpl(BankOrderRepository bankOrderRepo, InvoicePaymentRepository invoicePaymentRepo,
 			BankOrderLineService bankOrderLineService, EbicsService ebicsService,
-			InvoicePaymentToolService invoicePaymentToolService) {
+			InvoicePaymentToolService invoicePaymentToolService, AccountConfigBankPaymentService accountConfigBankPaymentService,
+			SequenceService sequenceService) {
 
 		this.bankOrderRepo = bankOrderRepo;
 		this.invoicePaymentRepo = invoicePaymentRepo;
 		this.bankOrderLineService = bankOrderLineService;
 		this.ebicsService = ebicsService;
 		this.invoicePaymentToolService = invoicePaymentToolService;
+		this.accountConfigBankPaymentService = accountConfigBankPaymentService;
+		this.sequenceService = sequenceService;
 
 	}
 
