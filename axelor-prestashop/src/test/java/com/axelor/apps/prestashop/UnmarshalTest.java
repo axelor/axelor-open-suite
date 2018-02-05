@@ -17,7 +17,7 @@ import com.axelor.apps.prestashop.entities.xlink.ApiContainer;
 import com.axelor.apps.prestashop.entities.xlink.XlinkEntry;
 import com.google.common.collect.Sets;
 
-public class UnmarshallTest {
+public class UnmarshalTest {
 
 	@Test
 	public void testApi() throws JAXBException {
