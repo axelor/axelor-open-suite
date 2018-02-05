@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.prestashop.service.library;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -54,12 +57,14 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -68,9 +73,15 @@ import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import com.axelor.apps.prestashop.entities.ListContainer;
+import com.axelor.apps.prestashop.entities.Prestashop;
+import com.axelor.apps.prestashop.entities.PrestashopContainerEntity;
+import com.axelor.apps.prestashop.entities.PrestashopIdentifiableEntity;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 
 import wslite.json.JSONArray;
@@ -78,6 +89,11 @@ import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
 public class PSWebServiceClient {
+	// HttpClient default content types are ISO-8859-1 encoded (except for JSON)
+	private final static ContentType XML_CONTENT_TYPE = ContentType.create("text/xml", Consts.UTF_8);
+
+	private final Logger log = LoggerFactory.getLogger(getClass());
+	private JAXBContext jaxbContext;
 
 	/** @var string Shop URL */
 	protected String url;
@@ -105,8 +121,6 @@ public class PSWebServiceClient {
 	 *            Root URL for the shop
 	 * @param key
 	 *            Authentification key
-	 * @param debug
-	 *            Debug mode Activated (true) or deactivated (false)
 	 */
 	public PSWebServiceClient(String url, String key) {
 		this.url = url;
@@ -116,6 +130,12 @@ public class PSWebServiceClient {
 		credsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(key, ""));
 
 		this.httpclient = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
+		try {
+			jaxbContext = JAXBContext.newInstance("com.axelor.apps.prestashop.entities:com.axelor.apps.prestashop.entities.xlink");
+		} catch(JAXBException e) {
+			log.error("Unable to create jaxb context", e);
+			throw new RuntimeException("Unable to create JAXB context", e);
+		}
 	}
 
 	/**
@@ -126,9 +146,12 @@ public class PSWebServiceClient {
 	 *            Status code of an HTTP return
 	 * @throws pswebservice.PrestaShopWebserviceException
 	 */
-	protected void checkStatusCode(int statusCode) throws PrestaShopWebserviceException {
+	protected void checkStatusCode(CloseableHttpResponse response) throws PrestaShopWebserviceException {
+		final int statusCode = response.getStatusLine().getStatusCode();
 		if(statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) return;
-		throw new PrestaShopWebserviceException(String.format("An underlying call to the Prestashop API failed with status code %d (%s)", statusCode, HttpStatus.getStatusText(statusCode)));
+		throw new PrestashopHttpException(
+				statusCode,
+				String.format("An underlying call to the Prestashop API failed with status code %d: %s (%s)", statusCode, response.getStatusLine().getReasonPhrase(), HttpStatus.getStatusText(statusCode)));
 	}
 
 	/**
@@ -141,17 +164,21 @@ public class PSWebServiceClient {
 	 * @throws pswebservice.PrestaShopWebserviceException
 	 */
 	protected RequestResult executeRequest(HttpUriRequest request) throws PrestaShopWebserviceException {
-			try {
-				final RequestResult result = new RequestResult();
-				result.response = httpclient.execute(request);
-				checkStatusCode(result.response.getStatusLine().getStatusCode());
-				result.headers = Arrays.asList(result.response.getAllHeaders());
-				result.content = result.response.getEntity().getContent();
+		final RequestResult result = new RequestResult();
+		try {
+			result.response = httpclient.execute(request);
+			checkStatusCode(result.response);
+			result.headers = Arrays.asList(result.response.getAllHeaders());
+			result.content = result.response.getEntity().getContent();
 
-				return result;
-			} catch (UnsupportedOperationException | IOException e) {
-				throw new PrestaShopWebserviceException("Error while processing request", e);
-			}
+			return result;
+		} catch (UnsupportedOperationException | IOException e) {
+			IOUtils.closeQuietly(result.response);
+			throw new PrestaShopWebserviceException("Error while processing request", e);
+		} catch(PrestaShopWebserviceException e) {
+			IOUtils.closeQuietly(result.response);
+			throw e;
+		}
 	}
 
 	/**
@@ -189,27 +216,19 @@ public class PSWebServiceClient {
 		if(options.resourceType == null && StringUtils.isEmpty(options.fullUrl)) throw new IllegalArgumentException("You have to provide an URL or a resource type");
 		if(StringUtils.isEmpty(options.xmlPayload)) throw new IllegalArgumentException("You have to provide the XML payload to send");
 
-		final String url = StringUtils.isEmpty(options.fullUrl) ? String.format("%s/api/%s", this.url, options.resourceType.getLabel()) : options.fullUrl;
-		URIBuilder uriBuilder;
-		try {
-			uriBuilder = new URIBuilder(url);
-		} catch (URISyntaxException e) {
-			throw new PrestaShopWebserviceException(String.format("Invalid URI %s provided to webservices", url), e);
-		}
-		if(options.shopId != null) uriBuilder.addParameter("id_shop", options.shopId.toString());
-		if(options.shopGroupId != null) uriBuilder.addParameter("id_group_shop", options.shopGroupId.toString());
-
-		HttpPost post = new HttpPost(uriBuilder.toString());
+		HttpPost post = new HttpPost(buildUri(options));
 		post.setEntity(new StringEntity(options.xmlPayload, ContentType.create("text/xml", Consts.UTF_8)));
 
-		RequestResult result = this.executeRequest(post);
+		RequestResult result = null;
 		try {
+			result = this.executeRequest(post);
 			// FIXME we should unmarshall
 			return parseXML(result.content);
 		} catch (Exception e) {
 			throw new PrestaShopWebserviceException("An error occured while processing add response", e);
 		} finally {
-			IOUtils.closeQuietly(result.response);
+			log.debug("Closing connection");
+			if(result != null) IOUtils.closeQuietly(result.response);
 		}
 	}
 
@@ -253,15 +272,122 @@ public class PSWebServiceClient {
 
 
 		HttpGet httpget = new HttpGet(buildUri(options));
-		RequestResult result = executeRequest(httpget);
+		RequestResult result = null;
 
 		try {
+			result = executeRequest(httpget);
 			// FIXME we should unmarshall
 			return parseXML(result.content);
 		} catch (Exception e) {
 			throw new PrestaShopWebserviceException("An error occured while processing get response", e);
 		} finally {
-			IOUtils.closeQuietly(result.response);
+			log.debug("Closing connection");
+			if(result != null) IOUtils.closeQuietly(result.response);
+		}
+	}
+
+	/**
+	 * Fetches a single resource by its ID.
+	 * @param resourceType Type of resource
+	 * @param id Id of the resource to fetch
+	 * @return The requested resource or null if such resource does not exists.
+	 * @throws PrestaShopWebserviceException
+	 */
+	public <T extends PrestashopContainerEntity> T fetch(final PrestashopResourceType resourceType, final int id) throws PrestaShopWebserviceException {
+		Options options = new Options();
+		options.setResourceType(resourceType);
+		options.setRequestedId(id);
+
+		HttpGet httpget = new HttpGet(buildUri(options));
+		RequestResult result = null;
+
+		try {
+			result = executeRequest(httpget);
+			return ((Prestashop)jaxbContext
+					.createUnmarshaller()
+					.unmarshal(result.content))
+					.getContent();
+		} catch(PrestashopHttpException e) {
+			if(e.getStatusCode() == HttpStatus.SC_NOT_FOUND) return null;
+			throw e;
+		} catch (JAXBException e) {
+			throw new PrestaShopWebserviceException("Error while unmarshalling respoinse from fetch", e);
+		} finally {
+			log.debug("Closing connection");
+			if(result != null) IOUtils.closeQuietly(result.response);
+		}
+	}
+
+	/**
+	 * Fetches a list of entities based on the given filter. Entities will have all their
+	 * attributes set.
+	 * @param resourceType Type of resource to fetch.
+	 * @param filter Filter to apply (depends on entity)
+	 * @return A (possibly empty) list of entities
+	 * @throws PrestaShopWebserviceException
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends PrestashopContainerEntity> List<T> fetch(final PrestashopResourceType resourceType, final Map<String, String> filter) throws PrestaShopWebserviceException {
+		Options options = new Options();
+		options.setResourceType(resourceType);
+		options.setFilter(filter);
+		options.setDisplay(Collections.singletonList("full"));
+
+		HttpGet httpget = new HttpGet(buildUri(options));
+		RequestResult result = null;
+
+		try {
+			result = executeRequest(httpget);
+			return ((ListContainer<T>)((Prestashop)jaxbContext
+					.createUnmarshaller()
+					.unmarshal(result.content)).getContent())
+					.getEntities();
+		} catch (JAXBException e) {
+			throw new PrestaShopWebserviceException("Error while unmarshalling response from fetch", e);
+		} finally {
+			log.debug("Closing connection");
+			if(result != null) IOUtils.closeQuietly(result.response);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends PrestashopIdentifiableEntity> T save(final PrestashopResourceType resourceType, final T entity) throws PrestaShopWebserviceException {
+		Options options = new Options();
+		options.setResourceType(resourceType);
+		options.setRequestedId(entity.getId());
+
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+		try {
+			Prestashop envelop = new Prestashop();
+			envelop.setContent(entity);
+			jaxbContext
+				.createMarshaller()
+				.marshal(envelop, bos);
+		} catch(JAXBException e) {
+			throw new PrestaShopWebserviceException("Error while marshalling class " + entity.getClass(), e);
+		}
+
+		HttpEntityEnclosingRequestBase request;
+		if(entity.getId() == null) {
+			request = new HttpPost(buildUri(options));
+		} else {
+			request = new HttpPut(buildUri(options));
+		}
+
+		request.setEntity(new ByteArrayEntity(bos.toByteArray(), XML_CONTENT_TYPE));
+		RequestResult result = null;
+
+		try {
+			result = executeRequest(request);
+			return (T)((Prestashop)jaxbContext
+					.createUnmarshaller()
+					.unmarshal(result.content)).getContent();
+		} catch (JAXBException e) {
+			throw new PrestaShopWebserviceException("Error while unmarshalling response from save", e);
+		} finally {
+			log.debug("Closing connection");
+			if(result != null) IOUtils.closeQuietly(result.response);
 		}
 	}
 
@@ -275,14 +401,16 @@ public class PSWebServiceClient {
 		sb.append("output_format=JSON");
 
 		HttpGet httpget = new HttpGet(sb.toString());
-		RequestResult result = executeRequest(httpget);
+		RequestResult result = null;
 
 		try {
+			result = executeRequest(httpget);
 			String json = IOUtils.toString(result.content, Consts.UTF_8);
 			return ("[]".equals(json) ? null : new JSONObject(json));
 		} catch (IOException e) {
 			throw new PrestaShopWebserviceException("An error occured while processing get response", e);
 		} finally {
+			log.debug("Closing connection");
 			IOUtils.closeQuietly(result.response);
 		}
 	}
@@ -324,15 +452,17 @@ public class PSWebServiceClient {
 
 		HttpPut httpput = new HttpPut(buildUri(options));
 		httpput.setEntity(new StringEntity(options.xmlPayload, ContentType.create("text/xml", Consts.UTF_8)));
-		RequestResult result = executeRequest(httpput);
+		RequestResult result = null;
 
 		try {
+			result = executeRequest(httpput);
 			// FIXME we should unmarshall
 			return parseXML(result.content);
 		} catch (Exception e) {
 			throw new PrestaShopWebserviceException("An error occured while processing add response", e);
 		} finally {
-			IOUtils.closeQuietly(result.response);
+			log.debug("Closing connection");
+			if(result != null) IOUtils.closeQuietly(result.response);
 		}
 	}
 
@@ -353,7 +483,14 @@ public class PSWebServiceClient {
 		if((options.resourceType == null || options.entityId == null) && StringUtils.isEmpty(options.fullUrl)) throw new IllegalArgumentException("You have to provide an URL or a resource type and ID");
 
 		HttpDelete httpdelete = new HttpDelete(buildUri(options));
-		executeRequest(httpdelete);
+		RequestResult result = null;
+
+		try {
+			result = executeRequest(httpdelete);
+		} finally {
+			log.debug("Closing connection");
+			if(result != null) IOUtils.closeQuietly(result.response);
+		}
 
 		return true;
 	}
@@ -379,9 +516,10 @@ public class PSWebServiceClient {
 		HttpPost httppost = new HttpPost(requestUrl);
 		httppost.setEntity(builder.build());
 
-		RequestResult result = executeRequest(httppost);
+		RequestResult result = null;
 
 		try {
+			result = executeRequest(httppost);
 			// FIXME we should unmarshall (and factorize)
 			return parseXML(result.content);
 		} catch (Exception e) {
@@ -414,7 +552,9 @@ public class PSWebServiceClient {
 			}
 		}
 		if(CollectionUtils.isNotEmpty(options.display)) {
-			uriBuilder.addParameter("display", "[" + StringUtils.join(options.display, ",") + "]");
+			// you've to use display=full or display=[fields,…], display=[full] or display=field wont work
+			if(options.display.size() == 1 && options.display.get(0).equals("full")) uriBuilder.addParameter("display", "full");
+			else uriBuilder.addParameter("display", "[" + StringUtils.join(options.display, ",") + "]");
 		}
 		if(CollectionUtils.isNotEmpty(options.sort)) {
 			uriBuilder.addParameter("sort", "[" + StringUtils.join(options.sort, ",") + "]");
