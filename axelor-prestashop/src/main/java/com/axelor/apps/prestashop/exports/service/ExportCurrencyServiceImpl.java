@@ -19,189 +19,122 @@ package com.axelor.apps.prestashop.exports.service;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
-import com.axelor.apps.prestashop.db.Currencies;
-import com.axelor.apps.prestashop.db.Prestashop;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.prestashop.entities.PrestashopCurrency;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
-import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
-import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
 @Singleton
 public class ExportCurrencyServiceImpl implements ExportCurrencyService {
+	private Logger log = LoggerFactory.getLogger(getClass());
+
 	CurrencyRepository currencyRepo;
+	CurrencyService currencyService;
 
 	@Inject
-	public ExportCurrencyServiceImpl(CurrencyRepository currencyRepo) {
+	public ExportCurrencyServiceImpl(final CurrencyRepository currencyRepo, final CurrencyService currencyService) {
 		this.currencyRepo = currencyRepo;
-	}
-
-	/**
-	 * Check on prestashop currency is already there
-	 *
-	 * @param currencyCode unique code of currency
-	 * @return id of prestashop's currency if there it is.
-	 * @throws PrestaShopWebserviceException
-	 */
-	public Integer getCurrencyId(AppPrestashop appConfig, String currencyCode) throws PrestaShopWebserviceException {
-
-		PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
-		HashMap<String, String> currencyMap = new HashMap<String, String>();
-		currencyMap.put("iso_code", currencyCode);
-		Options options = new Options();
-		options.setResourceType(PrestashopResourceType.CURRENCIES);
-		options.setFilter(currencyMap);
-		Document str =  ws.get(options);
-
-		NodeList list = str.getElementsByTagName("currencies");
-		for(int i = 0; i < list.getLength(); i++) {
-		    Element element = (Element) list.item(i);
-		    NodeList node = element.getElementsByTagName("currency");
-		    Node currency = node.item(i);
-		    if(node.getLength() > 0) {
-		    	return Integer.valueOf(currency.getAttributes().getNamedItem("id").getNodeValue());
-		    }
-		}
-		return null;
+		this.currencyService = currencyService;
 	}
 
 	@Override
 	@Transactional
-	public void exportCurrency(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, TransformerException, ParserConfigurationException, SAXException, PrestaShopWebserviceException, JAXBException, TransformerFactoryConfigurationError {
+	public void exportCurrency(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter logBuffer) throws IOException, PrestaShopWebserviceException {
 		int done = 0;
-		int anomaly = 0;
+		int errors = 0;
 
-		bwExport.newLine();
-		bwExport.write("-----------------------------------------------");
-		bwExport.newLine();
-		bwExport.write("Currency");
-		List<Currency> currencies = null;
-		String prestaShopId = null;
-		String schema = null;
-		Document document = null;
+		logBuffer.write(String.format("%n====== CURRENCIES ======%n"));
 
+		List<Currency> currencies;
 		if(endDate == null) {
 			currencies = currencyRepo.all().fetch();
 		} else {
 			currencies = currencyRepo.all().filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null", endDate, endDate).fetch();
 		}
 
+		final PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
 
-		for (Currency currencyObj : currencies) {
+		// First, fetch all remote currencies and put them into maps suitable for quick fetching
+		// this will avoid round-trips with remote end and considerably speed up performances
+		final List<PrestashopCurrency> remoteCurrencies = ws.fetch(PrestashopResourceType.CURRENCIES, Collections.emptyMap());
+		final Map<Integer, PrestashopCurrency> currenciesById = new HashMap<>();
+		final Map<String, PrestashopCurrency> currenciesByCode = new HashMap<>();
+		for(PrestashopCurrency c : remoteCurrencies) {
+			currenciesById.put(c.getId(), c);
+			currenciesByCode.put(c.getCode(), c);
+		}
+		final LocalDate today = LocalDate.now();
+
+		for (Currency localCurrency : currencies) {
+			logBuffer.write("Exporting currency " + localCurrency.getCode() + " – ");
 			try {
-
-				if(currencyObj.getCode() == null && currencyObj.getName() == null) {
-					throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_CURRENCY));
-				}
-
-				Currencies currency = new Currencies();
-				currency.setId(Objects.toString(currencyObj.getPrestaShopId(), null));
-				currency.setName(currencyObj.getName());
-				currency.setIso_code(currencyObj.getCode());
-				currency.setConversion_rate("1.00");
-				currency.setDeleted("0");
-				currency.setActive("1");
-				Prestashop prestaShop = new Prestashop();
-				prestaShop.setPrestashop(currency);
-
-				StringWriter sw = new StringWriter();
-				JAXBContext contextObj = JAXBContext.newInstance(Prestashop.class);
-				Marshaller marshallerObj = contextObj.createMarshaller();
-				marshallerObj.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-				marshallerObj.marshal(prestaShop, sw);
-				schema = sw.toString();
-
-				Options options = new Options();
-				options.setResourceType(PrestashopResourceType.CURRENCIES);
-				options.setXmlPayload(schema);
-
-				if(currencyObj.getPrestaShopId() == null) {
-					PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/currencies?schema=synopsis", appConfig.getPrestaShopKey());
-					document = ws.add(options);
+				PrestashopCurrency remoteCurrency;
+				if(localCurrency.getPrestaShopId() != null) {
+					logBuffer.write("prestashop id=" + localCurrency.getPrestaShopId());
+					remoteCurrency = currenciesById.get(localCurrency.getPrestaShopId());
+					if(remoteCurrency == null) {
+						logBuffer.write(String.format(" [ERROR] Not found remotely%n"));
+						log.error("Unable to fetch remote currency #{} ({}), something's probably very wrong, skipping",
+								localCurrency.getPrestaShopId(), localCurrency.getCode());
+						++errors;
+						continue;
+					} else if(localCurrency.getCode().equals(remoteCurrency.getCode()) == false) {
+						log.error("Remote currency #{} as not the same ISO code as the local one ({} vs {}), skipping",
+								localCurrency.getPrestaShopId(), remoteCurrency.getCode(), localCurrency.getCode());
+						logBuffer.write(String.format(" [ERROR] ISO code mismatch: %s vs %s%n", remoteCurrency.getCode(), localCurrency.getCode()));
+						++errors;
+						continue;
+					}
 				} else {
-					options.setRequestedId(currencyObj.getPrestaShopId());
-					PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
-					document = ws.edit(options);
-				}
-
-				currencyObj.setPrestaShopId(Integer.valueOf(document.getElementsByTagName("id").item(0).getTextContent()));
-				currencyRepo.save(currencyObj);
-				done++;
-
-			} catch (AxelorException e) {
-				bwExport.newLine();
-				bwExport.newLine();
-				bwExport.write("Id - " + currencyObj.getId().toString() + " " + e.getMessage());
-				anomaly++;
-				continue;
-
-			} catch (Exception e) {
-
-				String errorXml = e.getMessage();
-				String errorCode = null;
-				errorXml = errorXml.substring(errorXml.indexOf('\n')+1);
-				DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-				InputSource is = new InputSource();
-				is.setCharacterStream(new StringReader(errorXml));
-				Document str = db.parse(is);
-
-				NodeList list = str.getElementsByTagName("errors");
-				for(int i = 0; i < list.getLength(); i++) {
-					if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
-
-						Element element = (Element) list.item(i);
-						errorCode = element.getElementsByTagName("code").item(i).getTextContent();
+					remoteCurrency = currenciesByCode.get(localCurrency.getCode());
+					if(remoteCurrency == null) {
+						logBuffer.write("no ID and code not found, creating");
+						remoteCurrency = new PrestashopCurrency();
+						remoteCurrency.setCode(localCurrency.getCode());
+					} else {
+						logBuffer.write(String.format("found remotely using its code %s", localCurrency.getCode()));
 					}
 				}
 
-				if(errorCode.equals("46")) {
-					currencyObj.setPrestaShopId(getCurrencyId(appConfig, currencyObj.getCode()));
-					currencyRepo.save(currencyObj);
-					done++;
-					continue;
+				remoteCurrency.setName(localCurrency.getName());
+				// TODO Add an option
+				try {
+					remoteCurrency.setConversionRate(currencyService.getCurrencyConversionRate(localCurrency, appConfig.getPrestaShopCurrency(), today));
+				} catch (AxelorException e) {
+					log.debug("Unable to fetch conversion rate for currency {}, let it unchanged", localCurrency.getCode());
 				}
-				bwExport.newLine();
-				bwExport.newLine();
-				bwExport.write("Id - " + currencyObj.getId().toString() + " " + e.getMessage());
-				anomaly++;
-				continue;
+				logBuffer.write(" – setting conversion rate to " + remoteCurrency.getConversionRate());
+				// Do not change any of the other attributes, defaults are suitable for
+				// newly created one, active & deleted should be left untouched.
+				remoteCurrency = ws.save(PrestashopResourceType.CURRENCIES, remoteCurrency);
+				localCurrency.setPrestaShopId(remoteCurrency.getId());
+				logBuffer.write(String.format(" [SUCCESS]%n"));
+				++done;
+			} catch (PrestaShopWebserviceException e) {
+				logBuffer.write(String.format(" [ERROR] %s (full trace is in application logs)%n", e.getLocalizedMessage()));
+				log.error(String.format("Exception while synchronizing currency #%d", localCurrency.getId()), e);
+				++errors;
 			}
 		}
 
-		bwExport.newLine();
-		bwExport.newLine();
-		bwExport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);
+		logBuffer.write(String.format("%n=== END OF CURRENCIES IMPORT, done: %d, errors: %d ===%n", done, errors));
 	}
 }
