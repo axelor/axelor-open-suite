@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.report.IReport;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -34,15 +35,11 @@ public class EmploymentContractService {
 	
 	@Transactional
     public int addAmendment( EmploymentContract EmploymentContract ) throws AxelorException  {
-
-    	User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
-    	
     	String name = EmploymentContract.getFullName() + "_" + EmploymentContract.getEmploymentContractVersion();
 		
     	ReportFactory.createReport(IReport.EMPLYOMENT_CONTRACT, name+"-${date}")
 				.addParam("ContractId", EmploymentContract.getId())
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.toAttach(EmploymentContract)
 				.generate()
 				.getFileLink();

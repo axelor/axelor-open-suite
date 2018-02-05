@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,8 +27,8 @@ import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.message.db.MailAccount;
-import com.axelor.apps.message.db.repo.MailAccountRepository;
+import com.axelor.apps.message.db.EmailAccount;
+import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.service.MailAccountService;
 import com.google.inject.Inject;
 
@@ -44,15 +44,15 @@ public class FetchEmailJob implements Job {
 	private MailAccountService mailAccountService;
 	
 	@Inject
-	private MailAccountRepository mailAccountRepo;
+	private EmailAccountRepository mailAccountRepo;
 	
 	@Override
 	public void execute(JobExecutionContext context) {
 		
-		List<MailAccount> mailAccounts = mailAccountRepo.all().filter("self.isValid = true and self.serverTypeSelect > 1").fetch();
+		List<EmailAccount> mailAccounts = mailAccountRepo.all().filter("self.isValid = true and self.serverTypeSelect > 1").fetch();
 		
 		log.debug("Total email fetching accounts : {}", mailAccounts.size());
-		for (MailAccount account : mailAccounts) {
+		for (EmailAccount account : mailAccounts) {
 			try {
 				Integer total = mailAccountService.fetchEmails(account, true);
 				log.debug("Email fetched for account: {}, total: {} ", account.getName(), total);

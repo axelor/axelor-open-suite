@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -58,10 +58,8 @@ public interface ITranslation {
 	public static final String SALES_ORDER_TOTAL_EXCL_TAX_WITHOUT_DISCOUNT = /*$$(*/ "SaleOrder.totalExclTaxWithoutDiscount"; /*)*/
 	public static final String SALES_ORDER_TOTAL_DISCOUNT = /*$$(*/ "SaleOrder.totalDiscount"; /*)*/
 	public static final String SALES_ORDER_OTHERS = /*$$(*/ "SaleOrder.others"; /*)*/
-	public static final String SALES_ORDER_SUBSCRIPTIONS = /*$$(*/ "SaleOrder.subscriptions"; /*)*/
-
-	
-	
+	public static final String SALES_ORDER_SUBSCRIPTION_CONTRACT = /*$$(*/ "SaleOrder.subscriptionContract"; /*)*/
+	public static final String SALES_ORDER_SUBSCRIPTION_PERIODICITY = /*$$(*/ "SaleOrder.periodicity"; /*)*/
 
 
 }

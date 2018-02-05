@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,6 +34,8 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
 
+import wslite.json.JSONObject;
+
 public class ConfiguratorController {
 
     private ConfiguratorRepository configuratorRepository;
@@ -61,7 +63,7 @@ public class ConfiguratorController {
         try {
             configuratorService.updateIndicators(configurator, jsonAttributes, jsonIndicators);
             response.setValue("indicators", request.getContext().get("indicators"));
-        } catch (AxelorException e) {
+        } catch (Exception e) {
             TraceBackService.trace(response, e);
         }
     }
@@ -80,13 +82,13 @@ public class ConfiguratorController {
         try {
             configuratorService.generate(configurator, jsonAttributes, jsonIndicators);
             response.setReload(true);
-            if (configurator.getProductId() != null) {
+            if (configurator.getProduct() != null) {
                 response.setView(ActionView
                         .define(I18n.get("Product generated"))
                         .model(Product.class.getName())
                         .add("form", "product-form")
                         .add("grid", "product-grid")
-                        .context("_showRecord", configurator.getProductId())
+                        .context("_showRecord", configurator.getProduct().getId())
                         .map());
             }
         } catch (Exception e) {

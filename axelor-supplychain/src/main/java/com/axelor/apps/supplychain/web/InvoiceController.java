@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -96,7 +96,7 @@ public class InvoiceController {
 			//Useful to determine if a difference exists between price lists of all purchase orders
 			boolean existPriceListDiff = false;
 			PaymentMode commonPaymentMode = null;
-			//Useful to determine if a difference exists between locations of all purchase orders
+			//Useful to determine if a difference exists between stock locations of all purchase orders
 			boolean existPaymentModeDiff = false;
 			SaleOrder commonSaleOrder = null;
 			//Useful to check if all sale orders are null (since this field is not required)

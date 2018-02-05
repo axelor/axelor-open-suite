@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,12 +21,16 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.AccountAccountRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountingBatchAccountRepository;
+import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.AccountingReportManagementRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.DepositSlipAccountRepository;
 import com.axelor.apps.account.db.repo.DepositSlipRepository;
+import com.axelor.apps.account.db.repo.InvoiceBatchAccountRepository;
+import com.axelor.apps.account.db.repo.InvoiceBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -69,6 +73,8 @@ import com.axelor.apps.account.service.SubrogationReleaseService;
 import com.axelor.apps.account.service.SubrogationReleaseServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelService;
@@ -104,7 +110,7 @@ public class AccountModule extends AxelorModule {
         bind(AddressServiceImpl.class).to(AddressServiceAccountImpl.class);
 
         bind(AccountManagementServiceImpl.class).to(AccountManagementServiceAccountImpl.class);
-        
+
         bind(AccountManagementAccountService.class).to(AccountManagementServiceAccountImpl.class);
 
         bind(FiscalPositionServiceImpl.class).to(FiscalPositionServiceAccountImpl.class);
@@ -157,6 +163,9 @@ public class AccountModule extends AxelorModule {
 
         bind(MoveLineExportService.class).to(MoveLineExportServiceImpl.class);
 
+        bind(AccountingBatchRepository.class).to(AccountingBatchAccountRepository.class);
+        bind(InvoiceBatchRepository.class).to(InvoiceBatchAccountRepository.class);
+
         bind(AccountRepository.class).to(AccountAccountRepository.class);
 
         bind(WorkflowVentilationService.class).to(WorkflowVentilationServiceImpl.class);
@@ -176,6 +185,8 @@ public class AccountModule extends AxelorModule {
         bind(DepositSlipRepository.class).to(DepositSlipAccountRepository.class);
 
         bind(DepositSlipService.class).to(DepositSlipServiceImpl.class);
+
+        bind(InvoiceLineService.class).to(InvoiceLineServiceImpl.class);
 
         IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }

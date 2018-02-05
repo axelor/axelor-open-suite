@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,6 @@ package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +28,8 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.FreightCarrierMode;
-import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.ShipmentMode;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
@@ -55,8 +54,8 @@ public interface StockMoveService {
 	 * @param toAddress
 	 * @param company
 	 * @param clientPartner
-	 * @param fromLocation
-	 * @param toLocation
+	 * @param fromStockLocation
+	 * @param toStockLocation
 	 * @param realDate
 	 * @param estimatedDate
 	 * @param description
@@ -65,10 +64,10 @@ public interface StockMoveService {
 	 * @return
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
-	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation,
-			Location toLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException;
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, StockLocation fromStockLocation,
+			StockLocation toStockLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException;
 
-	public int getStockMoveType(Location fromLocation, Location toLocation);
+	public int getStockMoveType(StockLocation fromStockLocation, StockLocation toStockLocation);
 
 	public void validate(StockMove stockMove) throws AxelorException;
 
@@ -106,7 +105,7 @@ public interface StockMoveService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public StockMove generateReversion(StockMove stockMove) throws AxelorException;
 
-	public Long splitInto2(Long originalStockMoveId, List<StockMoveLine> stockMoveLines);
+	public StockMove splitInto2(StockMove originalStockMove, List<StockMoveLine> modifiedStockMoveLines) throws AxelorException;
 	
 	public BigDecimal compute(StockMove stockMove);
 	
@@ -180,5 +179,23 @@ public interface StockMoveService {
      * @return
      */
     String computeName(StockMove stockMove, String name);
+
+
+    /**
+     * Get from address from stock move or stock location.
+     * 
+     * @param stockMove
+     * @return
+     */
+    Address getFromAddress(StockMove stockMove);
+
+
+    /**
+     * Get to address from stock move or stock location.
+     * 
+     * @param stockMove
+     * @return
+     */
+    Address getToAddress(StockMove stockMove);
 
 }

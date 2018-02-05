@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,8 +21,8 @@ import java.io.IOException;
 
 import javax.mail.MessagingException;
 
-import com.axelor.apps.message.db.MailAccount;
-import com.axelor.apps.message.db.repo.MailAccountRepository;
+import com.axelor.apps.message.db.EmailAccount;
+import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.exception.service.TraceBackService;
@@ -37,11 +37,11 @@ public class MailAccountController {
 	private MailAccountService mailAccountService;
 	
 	@Inject
-	private MailAccountRepository mailAccountRepo;
+	private EmailAccountRepository mailAccountRepo;
 	
 	public void validateSmtpAccount(ActionRequest request,ActionResponse response){
 		
-		MailAccount account = request.getContext().asType(MailAccount.class);
+		EmailAccount account = request.getContext().asType(EmailAccount.class);
 		
 		try {
 			
@@ -60,7 +60,7 @@ public class MailAccountController {
 	}
 	
 	public void checkDefaultMailAccount(ActionRequest request, ActionResponse response){
-		MailAccount account = request.getContext().asType(MailAccount.class);
+		EmailAccount account = request.getContext().asType(EmailAccount.class);
 		if(!mailAccountService.checkDefaultMailAccount(account)){
 			response.setError(I18n.get(IExceptionMessage.MAIL_ACCOUNT_5));
 			response.setValue("isDefault", false);
@@ -69,7 +69,7 @@ public class MailAccountController {
 	
 	public void fetchEmails(ActionRequest request, ActionResponse response) throws MessagingException, IOException  {
 		
-		MailAccount account = request.getContext().asType(MailAccount.class);
+		EmailAccount account = request.getContext().asType(EmailAccount.class);
 		account = mailAccountRepo.find(account.getId());
 		
 		int totalFetched = mailAccountService.fetchEmails(account, true);

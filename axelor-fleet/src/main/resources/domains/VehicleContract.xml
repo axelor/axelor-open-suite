@@ -7,7 +7,7 @@
 	<entity name="VehicleContract" lang="java" cachable="true">
 		<string name="name" title="Name" />
 		<boolean name="active" title="Active" />
-		<date name="dateStart" title="Contract Start date" />
+		<date name="startDate" title="Contract Start date" />
 		<date name="expiryDate" title="Contract Expiration Date" />
 		<integer name="daysLeft" title="Warning Date" />
 		<many-to-one name="insurerPartner" ref="com.axelor.apps.base.db.Partner" title="Vendor" />
@@ -18,7 +18,7 @@
 		<string name="notes" title="Notes" large="true" />
 		<decimal name="recurringCost" title="Recurring Cost" />
 		<integer name="costFrequencySelect" title="Recurring Cost Frequency" selection="fleet.vehicle.contract.cost.frequency.select" />
-		<one-to-many name="vehicleService" ref="com.axelor.apps.fleet.db.VehicleService"/>		
+		<one-to-many name="vehicleServiceList" ref="com.axelor.apps.fleet.db.VehicleService"/>		
 		<decimal name="totalCost" title="Total cost" />
 		<decimal name="activationCost" title="Activation Cost" />
 		<many-to-one name="vehicle" ref="Vehicle" />

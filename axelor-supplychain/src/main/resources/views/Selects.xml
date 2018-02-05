@@ -6,18 +6,11 @@
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 	
-	<selection name="supplychain.subscription.invoicing.type.select">
-		<option value="1">Period Beginning</option>
-		<option value="2">Period Ending</option>
-	</selection>
-	
 	<selection name="supplychain.batch.action.select">
-		<option value="1">Bill Late Subscriptions</option>
 		<option value="3">Invoice orders</option>
 	</selection>
 
 	<selection name="supplychain.batch.invoice.stock.moves.action.select">
-		<option value="1">Bill Late Subscriptions</option>
 		<option value="2">Invoice outgoing stock moves</option>
 		<option value="3">Invoice orders</option>
 	</selection>
@@ -74,6 +67,15 @@
 		<option value="2">Invoice a fraction</option>
 		<option value="3">Invoice selected lines</option>
 		<option value="4">Invoice an advance payment</option>
+	</selection>
+
+	<selection name="supplychain.sale.order.type.select">
+		<option value="1">Normal</option>
+		<option value="2">Subscription</option>
+	</selection>
+	
+	<selection name='iinvoice.operation.sub.type.select' id="supplychain.iinvoice.operation.sub.type.select">
+		<option value="6">Subscription</option>
 	</selection>
 
 </object-views>

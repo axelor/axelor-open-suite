@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -162,7 +162,7 @@ public class AdvancedExportController {
 		List<Map> allDataList = new ArrayList<>();
 		List<Map<String, Object>> advancedExportLineList = new ArrayList<>();
 		
-		List<AdvancedExportLine> advancedExportLines = advancedExportLineRepo.all().filter("self.advancedExport = ?", advancedExport).fetch();
+		List<AdvancedExportLine> advancedExportLines = advancedExportLineRepo.all().filter("self.advancedExport.id = :advancedExportId").bind("advancedExportId", advancedExport.getId()).fetch();
 		Collections.sort(advancedExportLines, (line1, line2) -> line1.getSequence() - line2.getSequence());
 
 		if (advancedExportLines != null) {
@@ -193,7 +193,7 @@ public class AdvancedExportController {
 		List<Map> allDataList = new ArrayList<>();
 		List<Map<String, Object>> advancedExportLineList = new ArrayList<>();
 		
-		List<AdvancedExportLine> advancedExportLines = advancedExportLineRepo.all().filter("self.advancedExport = ?", advancedExport).fetch();
+		List<AdvancedExportLine> advancedExportLines = advancedExportLineRepo.all().filter("self.advancedExport.id = :advancedExportId").bind("advancedExportId", advancedExport.getId()).fetch();
 		Collections.sort(advancedExportLines, (line1, line2) -> line1.getSequence() - line2.getSequence());
 		
 		if (advancedExportLines != null) {

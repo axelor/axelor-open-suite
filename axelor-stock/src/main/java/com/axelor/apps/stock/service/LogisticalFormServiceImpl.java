@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,6 +40,7 @@ import javax.persistence.TypedQuery;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.db.StockConfig;
@@ -61,6 +63,7 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
+import com.axelor.rpc.ContextEntity;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
 import com.google.common.base.Preconditions;
@@ -362,7 +365,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         logisticalFormLine.setQty(qty);
         logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
         logisticalFormLine.setUnitNetWeight(stockMoveLine.getNetWeight());
-        logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
+        addLogisticalFormLineListItem(logisticalForm, logisticalFormLine);
     }
 
     @Override
@@ -371,7 +374,21 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         logisticalFormLine.setTypeSelect(typeSelect);
         logisticalFormLine.setParcelPalletNumber(getNextParcelPalletNumber(logisticalForm, typeSelect));
         logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
-        logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
+        addLogisticalFormLineListItem(logisticalForm, logisticalFormLine);
+    }
+
+    // Workaround for #9759
+    protected void addLogisticalFormLineListItem(LogisticalForm logisticalForm, LogisticalFormLine logisticalFormLine) {
+        if (logisticalForm instanceof ContextEntity) {
+            List<LogisticalFormLine> logisticalFormLineList = logisticalForm.getLogisticalFormLineList();
+            if (logisticalFormLineList == null) {
+                logisticalFormLineList = new ArrayList<>();
+                logisticalForm.setLogisticalFormLineList(logisticalFormLineList);
+            }
+            logisticalFormLineList.add(logisticalFormLine);
+        } else {
+            logisticalForm.addLogisticalFormLineListItem(logisticalFormLine);
+        }
     }
 
     @Override
@@ -453,14 +470,22 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     }
 
     @Override
-    public String getStockMoveDomain(LogisticalForm logisticalForm) {
+    public String getStockMoveDomain(LogisticalForm logisticalForm) throws AxelorException {
+
+        if (logisticalForm.getDeliverToCustomerPartner() == null) {
+            return "self IS NULL";
+        }
+
         List<String> domainList = new ArrayList<>();
+
+        StockConfig stockConfig = Beans.get(StockConfigService.class).getStockConfig(logisticalForm.getCompany());
+        Integer statusSelect = stockConfig.getRealizeStockMovesUponParcelPalletCollection()
+                ? StockMoveRepository.STATUS_PLANNED : StockMoveRepository.STATUS_REALIZED;
 
         domainList.add("self.partner = :deliverToCustomerPartner");
         domainList.add(String.format("self.typeSelect = %d", StockMoveRepository.TYPE_OUTGOING));
-        domainList.add(String.format("self.statusSelect = %d", StockMoveRepository.STATUS_PLANNED));
-        domainList.add(
-                "self.fullySpreadOverLogisticalFormsFlag IS NULL OR self.fullySpreadOverLogisticalFormsFlag = FALSE");
+        domainList.add(String.format("self.statusSelect = %d", statusSelect));
+        domainList.add("COALESCE(self.fullySpreadOverLogisticalFormsFlag, FALSE) = FALSE");
 
         List<StockMove> fullySpreadStockMoveList = getFullySpreadStockMoveList(logisticalForm);
 
@@ -488,8 +513,8 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
         TypedQuery<LogisticalForm> query = JPA.em().createQuery("SELECT DISTINCT self FROM LogisticalForm self "
                 + "JOIN self.logisticalFormLineList logisticalFormLine "
-                + "WHERE logisticalFormLine.stockMoveLine.stockMove = :stockMove", LogisticalForm.class);
-        query.setParameter("stockMove", stockMove);
+                + "WHERE logisticalFormLine.stockMoveLine.stockMove.id = :stockMoveId", LogisticalForm.class);
+        query.setParameter("stockMoveId", stockMove.getId());
         List<LogisticalForm> resultList = query.getResultList();
 
         return resultList.isEmpty() ? Lists.newArrayList(0L)
@@ -528,6 +553,42 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         }
 
         logisticalForm.setStatusSelect(LogisticalFormRepository.STATUS_COLLECTED);
+    }
+
+    @Override
+    public Optional<String> getCustomerAccountNumberToCarrier(LogisticalForm logisticalForm) throws AxelorException {
+        Preconditions.checkNotNull(logisticalForm);
+        List<FreightCarrierCustomerAccountNumber> freightCarrierCustomerAccountNumberList = null;
+
+        switch (logisticalForm.getAccountSelectionToCarrierSelect()) {
+        case LogisticalFormRepository.ACCOUNT_COMPANY:
+            if (logisticalForm.getCompany() != null && logisticalForm.getCompany().getStockConfig() != null) {
+                freightCarrierCustomerAccountNumberList = logisticalForm.getCompany().getStockConfig()
+                        .getFreightCarrierCustomerAccountNumberList();
+            }
+            break;
+        case LogisticalFormRepository.ACCOUNT_CUSTOMER:
+            if (logisticalForm.getDeliverToCustomerPartner() != null) {
+                freightCarrierCustomerAccountNumberList = logisticalForm.getDeliverToCustomerPartner()
+                        .getFreightCarrierCustomerAccountNumberList();
+            }
+            break;
+        default:
+            throw new AxelorException(logisticalForm, IException.CONFIGURATION_ERROR,
+                    I18n.get(IExceptionMessage.LOGISTICAL_FORM_UNKNOWN_ACCOUNT_SELECTION));
+        }
+
+        if (freightCarrierCustomerAccountNumberList != null) {
+            Optional<FreightCarrierCustomerAccountNumber> freightCarrierCustomerAccountNumber = freightCarrierCustomerAccountNumberList
+                    .stream().filter(it -> it.getCarrierPartner().equals(logisticalForm.getCarrierPartner()))
+                    .findFirst();
+
+            if (freightCarrierCustomerAccountNumber.isPresent()) {
+                return Optional.ofNullable(freightCarrierCustomerAccountNumber.get().getCustomerAccountNumber());
+            }
+        }
+
+        return Optional.empty();
     }
 
 }

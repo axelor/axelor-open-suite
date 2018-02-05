@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -110,8 +110,8 @@ public class PaymentService {
 			log.debug("Emploie du trop perçu (nombre de lignes en débit : {}, nombre de ligne en crédit : {})",
 				new Object[]{debitMoveLines.size(), creditMoveLines.size()});
 
-			BigDecimal amount = null;
-			Reconcile reconcile = null;
+			BigDecimal amount;
+			Reconcile reconcile;
 
 			BigDecimal debitTotalRemaining = BigDecimal.ZERO;
 			BigDecimal creditTotalRemaining = BigDecimal.ZERO;
@@ -137,7 +137,7 @@ public class PaymentService {
 					for(MoveLine debitMoveLine : debitMoveLines){
 						if ((debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1) && (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)) {
 							try {
-								createReconcile(debitMoveLine, creditMoveLine, amount, debitTotalRemaining, creditTotalRemaining, reconcile);
+								createReconcile(debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
 							} catch(AxelorException e) {
 								if(dontThrow) {
 									TraceBackService.trace(e);
@@ -158,13 +158,13 @@ public class PaymentService {
 	 * 
 	 * @param debitMoveLine
 	 * @param creditMoveLine
-	 * @param amount
 	 * @param debitTotalRemaining
 	 * @param creditTotalRemaining
-	 * @param reconcile
 	 * @throws AxelorException
 	 */
-	private void createReconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount, BigDecimal debitTotalRemaining, BigDecimal creditTotalRemaining, Reconcile reconcile) throws AxelorException {
+	private void createReconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal debitTotalRemaining, BigDecimal creditTotalRemaining) throws AxelorException {
+	    BigDecimal amount;
+	    Reconcile reconcile;
 		if(debitMoveLine.getMaxAmountToReconcile() != null && debitMoveLine.getMaxAmountToReconcile().compareTo(BigDecimal.ZERO) > 0)  {
 			amount = debitMoveLine.getMaxAmountToReconcile().min(creditMoveLine.getAmountRemaining());
 			debitMoveLine.setMaxAmountToReconcile(null);

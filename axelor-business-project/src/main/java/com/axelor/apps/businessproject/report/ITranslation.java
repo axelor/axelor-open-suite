@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -77,5 +77,73 @@ public interface ITranslation {
 	public static final String PROJECT_CHART_MONTH_PASSED_COST = /*$$(*/ "Project.chartCostPassedPerMonth"; /*)*/
 	public static final String PROJECT_CHART_MONTH_REMAINING_TIME = /*$$(*/ "Project.chartTimeRemainingPerMonth"; /*)*/
 	public static final String PROJECT_CHART_MONTH_REMAINING_COST = /*$$(*/ "Project.chartCostRemainingPerMonth"; /*)*/
-	
+
+
+    public static final String INVOICING_PROJECT_BUSINESS_PROJECT = /*$$(*/ "InvoicingProject.businessProject"; /*)*/
+    public static final String INVOICING_PROJECT_TITLE = /*$$(*/ "InvoicingProject.title"; /*)*/
+    public static final String INVOICING_PROJECT_COMPANY = /*$$(*/ "InvoicingProject.company"; /*)*/
+
+    public static final String INVOICING_PROJECT_LOG_TIMES = /*$$(*/ "InvoicingProject.logTimes"; /*)*/
+    public static final String INVOICING_PROJECT_LOG_TIMES_USER = /*$$(*/ "InvoicingProject.user"; /*)*/
+    public static final String INVOICING_PROJECT_LOG_TIMES_DATE = /*$$(*/ "InvoicingProject.date"; /*)*/
+    public static final String INVOICING_PROJECT_LOG_TIMES_PRODUCT = /*$$(*/ "InvoicingProject.product"; /*)*/
+    public static final String INVOICING_PROJECT_LOG_TIMES_VISIBLE_DURATION = /*$$(*/ "InvoicingProject.visibleDuration"; /*)*/
+    public static final String INVOICING_PROJECT_LOG_TIMES_DURATION_STORED = /*$$(*/ "InvoicingProject.durationStored"; /*)*/
+    public static final String INVOICING_PROJECT_LOG_TIMES_TIMESHEET = /*$$(*/ "InvoicingProject.timesheet"; /*)*/
+    public static final String INVOICING_PROJECT_LOG_TIMES_TO_INVOICE = /*$$(*/ "InvoicingProject.toInvoice"; /*)*/
+    public static final String INVOICING_PROJECT_LOG_TIMES_COMMENTS = /*$$(*/ "InvoicingProject.comments"; /*)*/
+    public static final String INVOICING_PROJECT_LOG_TIMES_PROJECT = /*$$(*/ "InvoicingProject.project"; /*)*/
+
+    public static final String INVOICING_PROJECT_SALE_ORDER_LINES = /*$$(*/ "InvoicingProject.saleOrderLines"; /*)*/
+    public static final String INVOICING_PROJECT_SALE_ORDER_LINES_PRODUCT_NAME = /*$$(*/ "InvoicingProject.productName"; /*)*/
+    public static final String INVOICING_PROJECT_SALE_ORDER_LINES_QTY = /*$$(*/ "InvoicingProject.qty"; /*)*/
+    public static final String INVOICING_PROJECT_SALE_ORDER_LINES_RESERVED_QTY = /*$$(*/ "InvoicingProject.reservedQty"; /*)*/
+    public static final String INVOICING_PROJECT_SALE_ORDER_LINES_UNIT = /*$$(*/ "InvoicingProject.unit"; /*)*/
+    public static final String INVOICING_PROJECT_SALE_ORDER_LINES_PRICE = /*$$(*/ "InvoicingProject.price"; /*)*/
+    public static final String INVOICING_PROJECT_SALE_ORDER_LINES_EX_TAX_TOTAL = /*$$(*/ "InvoicingProject.exTaxTotal"; /*)*/
+    public static final String INVOICING_PROJECT_SALE_ORDER_LINES_IN_TAX_TOTAL = /*$$(*/ "InvoicingProject.inTaxTotal"; /*)*/
+
+    public static final String INVOICING_PROJECT_PURCHASE_ORDER_LINES = /*$$(*/ "InvoicingProject.purchaseOrderLines"; /*)*/
+    public static final String INVOICING_PROJECT_PURCHASE_ORDER_LINES_PURCHASE_ORDER = /*$$(*/ "InvoicingProject.purchaseOrder"; /*)*/
+    public static final String INVOICING_PROJECT_PURCHASE_ORDER_LINES_SUPPLIER_PARTNER = /*$$(*/ "InvoicingProject.supplierPartner"; /*)*/
+    public static final String INVOICING_PROJECT_PURCHASE_ORDER_LINES_PRODUCT_NAME = /*$$(*/ "InvoicingProject.productName"; /*)*/
+    public static final String INVOICING_PROJECT_PURCHASE_ORDER_LINES_QTY = /*$$(*/ "InvoicingProject.qty"; /*)*/
+    public static final String INVOICING_PROJECT_PURCHASE_ORDER_LINES_UNIT = /*$$(*/ "InvoicingProject.unit"; /*)*/
+    public static final String INVOICING_PROJECT_PURCHASE_ORDER_LINES_PRICE = /*$$(*/ "InvoicingProject.price"; /*)*/
+    public static final String INVOICING_PROJECT_PURCHASE_ORDER_LINES_EX_TAX_TOTAL = /*$$(*/ "InvoicingProject.exTaxTotal"; /*)*/
+    public static final String INVOICING_PROJECT_PURCHASE_ORDER_LINES_IN_TAX_TOTAL = /*$$(*/ "InvoicingProject.inTaxTotal"; /*)*/
+
+    public static final String INVOICING_PROJECT_EXPENSE_LINES = /*$$(*/ "InvoicingProject.expenseLines"; /*)*/
+    public static final String INVOICING_PROJECT_EXPENSE_LINES_PROJECT = /*$$(*/ "InvoicingProject.project"; /*)*/
+    public static final String INVOICING_PROJECT_EXPENSE_LINES_EXPENSE_PRODUCT = /*$$(*/ "InvoicingProject.expenseProduct"; /*)*/
+    public static final String INVOICING_PROJECT_EXPENSE_LINES_EXPENSE_DATE = /*$$(*/ "InvoicingProject.expenseDate"; /*)*/
+    public static final String INVOICING_PROJECT_EXPENSE_LINES_USER = /*$$(*/ "InvoicingProject.user"; /*)*/
+    public static final String INVOICING_PROJECT_EXPENSE_LINES_TOTA_LAMOUNT = /*$$(*/ "InvoicingProject.totalAmount"; /*)*/
+    public static final String INVOICING_PROJECT_EXPENSE_LINES_TOTAL_TAX = /*$$(*/ "InvoicingProject.totalTax"; /*)*/
+    public static final String INVOICING_PROJECT_EXPENSE_LINES_COMMENTS = /*$$(*/ "InvoicingProject.comments"; /*)*/
+    public static final String INVOICING_PROJECT_EXPENSE_LINES_UNTAXED_AMOUNT = /*$$(*/ "InvoicingProject.untaxedAmount"; /*)*/
+    public static final String INVOICING_PROJECT_EXPENSE_LINES_TO_INVOICE = /*$$(*/ "InvoicingProject.toInvoice"; /*)*/
+
+    public static final String INVOICING_PROJECT_ELEMENTS_TO_INVOICE = /*$$(*/ "InvoicingProject.elementsToInvoice"; /*)*/
+    public static final String INVOICING_PROJECT_ELEMENTS_TO_INVOICE_USER = /*$$(*/ "InvoicingProject.user"; /*)*/
+    public static final String INVOICING_PROJECT_ELEMENTS_TO_INVOICE_DATE = /*$$(*/ "InvoicingProject.date"; /*)*/
+    public static final String INVOICING_PROJECT_ELEMENTS_TO_INVOICE_PRODUCT = /*$$(*/ "InvoicingProject.product"; /*)*/
+    public static final String INVOICING_PROJECT_ELEMENTS_TO_INVOICE_QTY = /*$$(*/ "InvoicingProject.qty"; /*)*/
+    public static final String INVOICING_PROJECT_ELEMENTS_TO_INVOICE_UNIT = /*$$(*/ "InvoicingProject.unit"; /*)*/
+    public static final String INVOICING_PROJECT_ELEMENTS_TO_INVOICE_COST_PRICE = /*$$(*/ "InvoicingProject.costPrice"; /*)*/
+    public static final String INVOICING_PROJECT_ELEMENTS_TO_INVOICE_SALE_PRICE = /*$$(*/ "InvoicingProject.salePrice"; /*)*/
+
+    public static final String INVOICING_PROJECT_PROJECTS = /*$$(*/ "InvoicingProject.projects"; /*)*/
+    public static final String INVOICING_PROJECT_PROJECTS_CODE = /*$$(*/ "InvoicingProject.code"; /*)*/
+    public static final String INVOICING_PROJECT_PROJECTS_NAME = /*$$(*/ "InvoicingProject.name"; /*)*/
+    public static final String INVOICING_PROJECT_PROJECTS_PARENT_PROJECT = /*$$(*/ "InvoicingProject.parentProject"; /*)*/
+    public static final String INVOICING_PROJECT_PROJECTS_CLIENT_PARTNER = /*$$(*/ "InvoicingProject.clientPartner"; /*)*/
+    public static final String INVOICING_PROJECT_PROJECTS_ASSIGNED_TO = /*$$(*/ "InvoicingProject.assignedTo"; /*)*/
+    public static final String INVOICING_PROJECT_PROJECTS_FROM_DATE = /*$$(*/ "InvoicingProject.fromDate"; /*)*/
+    public static final String INVOICING_PROJECT_PROJECTS_TO_DATE = /*$$(*/ "InvoicingProject.toDate"; /*)*/
+    public static final String INVOICING_PROJECT_PROJECTS_DUE_DATE = /*$$(*/ "InvoicingProject.dueDate"; /*)*/
+
+    public static final String INVOICING_PROJECT_INVOICE_GENERATED = /*$$(*/ "InvoicingProject.invoiceGenerated"; /*)*/
+    public static final String INVOICING_PROJECT_DEADLINE = /*$$(*/ "InvoicingProject.deadline"; /*)*/
+    public static final String INVOICING_PROJECT_COMMENTS = /*$$(*/ "InvoicingProject.comments"; /*)*/
 }

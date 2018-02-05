@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -60,9 +60,17 @@ public interface ConfiguratorCreatorService {
 	 */
 	void authorizeUser(ConfiguratorCreator creator, User user);
 
-    /**
+	/**
+	 * Add required fields of Product to the formula list
+	 * @param creator
+	 * @throws AxelorException 
+	 */
+	void addRequiredFormulas(ConfiguratorCreator creator) throws AxelorException;
+	
+	 /**
      * Activates the creator and saves it.
      * @param creator
      */
 	void activate(ConfiguratorCreator creator);
+
 }

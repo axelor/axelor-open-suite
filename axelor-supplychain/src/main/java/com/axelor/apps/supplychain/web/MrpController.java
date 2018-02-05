@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -76,7 +76,7 @@ public class MrpController {
 		try {
 			String fileLink = ReportFactory.createReport(IReport.MRP_WEEKS, name)
 					.addParam("mrpId", mrp.getId())
-					.addParam("Locale", AuthUtils.getUser().getLanguage())
+					.addParam("Locale", ReportSettings.getPrintingLocale(null))
 					.addParam("endDate", mrpService.findMrpEndDate(mrp).atStartOfDay().toString())
 					.addFormat(ReportSettings.FORMAT_PDF)
 					.generate()
@@ -104,7 +104,7 @@ public class MrpController {
         try {
             String fileLink = ReportFactory.createReport(IReport.MRP_LIST, name)
                     .addParam("mrpId", mrp.getId())
-                    .addParam("Locale", AuthUtils.getUser().getLanguage())
+                    .addParam("Locale", ReportSettings.getPrintingLocale(null))
                     .addFormat(ReportSettings.FORMAT_PDF)
                     .generate()
                     .getFileLink();

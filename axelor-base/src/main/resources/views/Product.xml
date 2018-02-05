@@ -44,12 +44,12 @@
       			</field>
     		</panel>
     		<panel colSpan="5">
-                <field name="isModel" hidden="true"/>
        			<button name="$totalVariants" title="Total variants" showIf="isModel" colSpan="4" icon="fa-tags" onClick="action-product-view-total-variants" widget="info-button"/>
       			<panel showTitle="false" showIf="productTypeSelect == 'storable'" colSpan="8" if-module="axelor-stock" if="__config__.app.isApp('stock')">
        	 			<button name="$realQty" title="Real qty" colSpan="6" icon="fa-building-o" onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
        	 			<button name="$futureQty" title="Future qty" colSpan="6" icon="fa-line-chart" onClick="action-stock-move-line-product-default-planned" widget="info-button"/>
-    	  		</panel>
+    	  			<field name="isModel" hidden="true"/>
+			</panel>
       		</panel>
     		<panel colSpan="2">
       			<field name="picture" showTitle="false" colSpan="12" widget="Image">
@@ -67,10 +67,9 @@
       
       			<panel name="productTypology" title="Product typology" colSpan="6" colWidths="30%,70%">
 			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange"/>
-			        <field name="productSubTypeSelect" colSpan="12"  showIf="productTypeSelect == 'storable'"/>
+			        <field name="productSubTypeSelect" colSpan="12"  showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('production')"/>
            			<field name="isShippingCostsProduct" colSpan="4"/>
 			        <field name="isActivity" showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
-			        <field name="periodicitySelect" showIf="productTypeSelect == 'subscriptable'" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 			        <field name="saleSupplySelect" colSpan="12" onChange="action-product-validate-sale-supply-select" hideIf="isShippingCostsProduct"/>
 			        <field name="standardDelay" colSpan="12" showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       			</panel>
@@ -97,8 +96,8 @@
 						<field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale').getManageSalesUnits()"/>
 						<field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('purchase').getManagePurchasesUnits()"/>
 					</panel>
-					<panel colSpan="12" title="Configurator" if-module="axelor-sale">
-						<button name="showConfigurator" title="Show Configurator" onClick="action-product-method-show-product-configurator"/>
+					<panel title="Configurator" colSpan="12">
+						<field name="configurator" showTitle="false" form-view="configurator-form" grid-view="configurator-grid" readonly="true" if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
 					</panel>
 				</panel>
 	      		<panel colSpan="6">
@@ -131,10 +130,10 @@
 					<field name="shippingCoef" showIf="!defShipCoefByPartner"/>
 					<field name="defShipCoefByPartner" onChange="action-product-method-supplier-catalog-coeff"/>
 	      		</panel>
-	      		<panel-related field="supplierCatalogList" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid" title="Suppliers catalog" showIf="purchasable" colSpan="12" 
+	      		<panel-related field="supplierCatalogList" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid" title="Suppliers catalog" showIf="purchasable" colSpan="12"
 	      		if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
 	    	</panel>
-            <panel name="accounting" title="Accounting">
+            <panel name="accounting" title="Accounting" if="__config__.app.isApp('account')">
                 <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account" if="__config__.app.isApp('account')"/>
                 <panel-related field="accountManagementList" form-view="account-management-product-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
             </panel>
@@ -237,11 +236,11 @@
   		<panel>
   			<field name="attrs" colSpan="12" />
   		</panel>
-  		
+
   		<panel-mail>
     		<mail-messages />
     	</panel-mail>
-	</form>    
+	</form>
 	
 	<cards name="product-cards" title="Product" model="com.axelor.apps.base.db.Product" width="25%" css="rect-image" orderBy="code,name">
 	    <toolbar>
@@ -302,7 +301,6 @@
     <action-group name="action-group-base-product-producttype-onchange">
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-validate-sale-supply-select"/>
-    	<action name="action-product-attrs-title-sale-price"/>
     	<action name="action-product-record-product-sub-type-select"/>
     </action-group>
     
@@ -320,7 +318,6 @@
         <action name="action-product-attrs-scale-and-precision"/>
         <action name="action-product-attrs-scale-and-precision-production"/>
 		<action name="action-product-attrs-scale-and-precision-stock"/>
-        <action name="action-product-attrs-title-sale-price"/>
         <action name="action-product-attrs-title-unit"/>
 		<action name="action-product-attrs-in-ati"/>
         <action name="action-product-set-stock"/>
@@ -338,7 +335,7 @@
 	</action-group>
 
     <action-attrs name="action-product-attrs-readonly-unit" if-module="axelor-stock">
-    	<attribute name="readonly" for="unit" expr="eval: __repo__(LocationLine).all().filter('self.product.id = ?1 AND (self.currentQty != 0 OR self.futureQty != 0)', id).fetch().size &gt; 0" if="id != null &amp;&amp; __config__.app.isApp('stock')"/>
+    	<attribute name="readonly" for="unit" expr="eval: __repo__(StockLocationLine).all().filter('self.product.id = ?1 AND (self.currentQty != 0 OR self.futureQty != 0)', id).fetch().size &gt; 0" if="id != null &amp;&amp; __config__.app.isApp('stock')"/>
     </action-attrs>
     
     <action-record name="action-product-record-in-ati" model="com.axelor.apps.base.db.Product">
@@ -402,7 +399,7 @@
     </action-record>
     
     <action-record name="action-product-set-total-variants" model="com.axelor.apps.base.db.Product">
-    	<field name="$totalVariants" expr="eval:__repo__(Product).all().filter('self.parentProduct.id = ?',id).fetch().size"/>    
+    	<field name="$totalVariants" expr="eval:__repo__(Product).all().filter('self.parentProduct.id = ?',id).fetch().size"/>
     </action-record>
 	
 	<action-record name="action-product-record-calculate-volume-diameter" model="com.axelor.apps.base.db.Product">
@@ -478,11 +475,6 @@
 		<attribute name="readonly" for="createProductionOrder" expr="eval: __repo__(BillOfMaterial).all().filter('(self.product.id = ?1 OR self.product.id = ?2) AND self.defineSubBillOfMaterial = false', parentProduct?.id, id).fetch().isEmpty()"/>
 	</action-attrs>
 	
-	<action-attrs name="action-product-attrs-title-sale-price">
-		<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale Price (for periodicity selected)')" if="productTypeSelect == 'subscriptable'"/>
-		<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price')" if="productTypeSelect != 'subscriptable'"/>
-	</action-attrs>
-
     <action-attrs name="action-product-attrs-title-unit" if-module="axelor-stock">
         <attribute name="title" for="unit" expr="eval: com.axelor.i18n.I18n.get('Unit')"/>
         <attribute name="title" for="unit" expr="eval: com.axelor.i18n.I18n.get('Stock Unit')" if="__config__.app.getApp('sale').getManageSalesUnits()"/>

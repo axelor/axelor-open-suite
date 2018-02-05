@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -375,10 +375,6 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 					.computeAddressStr(invoiceMainInvoicingAddress);
 		}
 
-		if (invoicePriceList == null){
-			invoicePriceList = invoiceClientPartner.getSalePriceList();
-		}
-
 		//Concat sequence, internal ref and external ref from all saleOrder
 		String numSeq = "";
 		String internalRef = "";
@@ -544,10 +540,6 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		 * Step 3, check if some other fields are different and assign a default value
 		 *
 		 */
-
-		if (invoicePriceList == null){
-			invoicePriceList = invoiceSupplierPartner.getPurchasePriceList();
-		}
 
 		//Concat sequence, internal ref and external ref from all saleOrder
 		String numSeq = "";

@@ -27,7 +27,7 @@
 		
 		<panel-tabs>
 			<panel name="accounting" title="Accounting">
-				<panel name="accounts" title="Accounts" colSpan="12">
+				<panel name="accounts" title="Accounting.Accounts" colSpan="12">
 					<field name="customerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="supplierAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="doubtfulCustomerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
@@ -77,10 +77,10 @@
                 <field name="invoiceAutomaticMail"/>
 
                 <panel title="Invoices sequences" colSpan="12">
-                    <field name="custInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
-                    <field name="custRefSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
-                    <field name="suppInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
-                    <field name="suppRefSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
+                    <field name="custInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+                    <field name="custRefSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+                    <field name="suppInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+                    <field name="suppRefSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
                 </panel>
 
                 <panel title="Products" colSpan="12">
@@ -147,9 +147,6 @@
 						<field name="endingRecordCodeImportCFONB"/>
 						<field name="transferOperationCodeImportCFONB"/>
 						<field name="directDebitOperationCodeImportCFONB"/>
-						<field name="ipoRejectOperationCodeImportCFONB"/>
-						<field name="ipoOperationCodeImportCFONB"/>
-						<field name="ipoAndChequeOperationCodeImportCFONB"/>
 					</editor>
 				</field>
 				</panel>
@@ -174,19 +171,19 @@
                     <field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
                 </panel>
 				<panel name="creditTransferBankOrderSequences" title="Credit transfer bank orders sequences" colSpan="4">
-					<field name="sepaCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
-					<field name="intCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+					<field name="sepaCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+					<field name="intCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
 				</panel>
 				<panel name="directDebitBankOrderSequences" title="Direct debit bank orders sequences" colSpan="4">
-					<field name="sepaDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
-					<field name="intDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+					<field name="sepaDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+					<field name="intDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
 				</panel>
 				<panel name="treasuryTransferBankOrderSequences" title="Treasury transfer Bank orders sequences" colSpan="4">
-					<field name="natTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
-					<field name="intTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+					<field name="natTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+					<field name="intTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
 				</panel>
                 <panel name="other" title="Other" colSpan="12">
-                    <field name="otherBankOrderSequence" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid"/>
+                    <field name="otherBankOrderSequence" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
                 </panel>
 			</panel>
 		
@@ -239,21 +236,11 @@
 				    </editor>
 				</field>
 			</panel>
-			<panel name="ipoPaymentsAndIpoCheque" title="IPO Payments and IPO Cheque">
-				<panel name="paymentsByIpoAndIpoCheque" title="Payments by IPO and IPO Cheque" colSpan="12">
-					<field name="interbankPaymentOrderImportPathCFONB" />
-					<field name="tempInterbankPaymentOrderImportPathCFONB" />
-				</panel>
-				<panel name="paymentsRejectsByIpoAndIpoCheque" title="Payments rejects by IPO and IPO Cheque" colSpan="12">
-					<field name="interbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
-					<field name="tempInterbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
-				</panel>
-			</panel>
+
 
             <panel name="paybox" title="Paybox">
                 <field name="payboxConfig" showTitle="false" grid-view="paybox-config-grid" form-view="paybox-config-form"/>
             </panel>
-
 		</panel-tabs>
 	 
 	</form>
@@ -279,11 +266,11 @@
 		<domain>self.company.id = :id</domain>
 		<context name="id" expr="eval: company.id"/>
 	</action-view>
-	
+
 	<action-view name="action-company-view-account-config" title="Account config (${ name })" model="com.axelor.apps.account.db.AccountConfig">
     	<view type="form" name="account-config-form"/>
     	<context name="_showRecord" expr="eval: __self__.accountConfig?.id"/>
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
-	
+
 </object-views>

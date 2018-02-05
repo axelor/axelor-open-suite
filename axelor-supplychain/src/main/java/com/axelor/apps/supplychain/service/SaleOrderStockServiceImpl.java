@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,11 +36,11 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderService;
-import com.axelor.apps.stock.db.Location;
-import com.axelor.apps.stock.db.PartnerDefaultLocation;
+import com.axelor.apps.stock.db.PartnerStockSettings;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
@@ -60,21 +60,21 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 	protected StockMoveService stockMoveService;
 	protected StockMoveLineService stockMoveLineService;
 	protected StockConfigService stockConfigService;
-	protected LocationRepository locationRepo;
+	protected StockLocationRepository stockLocationRepo;
 	protected StockMoveRepository stockMoveRepo;
 	protected UnitConversionService unitConversionService;
 	protected SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain;
 
     @Inject
     public SaleOrderStockServiceImpl(StockMoveService stockMoveService, StockMoveLineService stockMoveLineService,
-            StockConfigService stockConfigService, LocationRepository locationRepo, StockMoveRepository stockMoveRepo,
+            StockConfigService stockConfigService, StockLocationRepository stockLocationRepo, StockMoveRepository stockMoveRepo,
             UnitConversionService unitConversionService,
             SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain) {
 
         this.stockMoveService = stockMoveService;
         this.stockMoveLineService = stockMoveLineService;
         this.stockConfigService = stockConfigService;
-        this.locationRepo = locationRepo;
+        this.stockLocationRepo = stockLocationRepo;
         this.stockMoveRepo = stockMoveRepo;
         this.unitConversionService = unitConversionService;
         this.saleOrderLineServiceSupplyChain = saleOrderLineServiceSupplyChain;
@@ -107,11 +107,12 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 				}
 			}
 
-			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-                if (!stockMove.getStockMoveLineList().stream().anyMatch(stockMoveLine -> stockMoveLine
-                        .getSaleOrderLine().getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL)) {
-                    stockMove.setFullySpreadOverLogisticalFormsFlag(true);
-                }
+			if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
+				if (stockMove.getStockMoveLineList().stream()
+						.noneMatch(stockMoveLine -> stockMoveLine.getSaleOrderLine() != null && stockMoveLine
+								.getSaleOrderLine().getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL)) {
+					stockMove.setFullySpreadOverLogisticalFormsFlag(true);
+				}
 
 				stockMoveService.plan(stockMove);
 				return stockMove;
@@ -124,10 +125,10 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
 	@Override
 	public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException  {
-	    Location toLocation = findSaleOrderToLocation(saleOrder);
+		StockLocation toStockLocation = findSaleOrderToStockLocation(saleOrder);
 
 		StockMove stockMove = stockMoveService.createStockMove(null, saleOrder.getDeliveryAddress(), company,
-				saleOrder.getClientPartner(), saleOrder.getLocation(), toLocation, null, saleOrder.getShipmentDate(),
+				saleOrder.getClientPartner(), saleOrder.getStockLocation(), toStockLocation, null, saleOrder.getShipmentDate(),
 				saleOrder.getDescription(), saleOrder.getShipmentMode(), saleOrder.getFreightCarrierMode());
 
 		stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
@@ -138,44 +139,44 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
 	/**
 	 * @param saleOrder
-	 * @return  the first default location corresponding to the partner
-	 * 			and the company. Choose first the external location, else virtual.
+	 * @return  the first default stock location corresponding to the partner
+	 * 			and the company. Choose first the external stock location, else virtual.
 	 *
-	 * 			null if there is no default location
+	 * 			null if there is no default stock location
 	 */
-	protected Location findSaleOrderToLocation(SaleOrder saleOrder) throws AxelorException {
+	protected StockLocation findSaleOrderToStockLocation(SaleOrder saleOrder) throws AxelorException {
 		Partner partner = saleOrder.getClientPartner();
 		Company company = saleOrder.getCompany();
 	    if (partner == null || company == null) {
 	    	return null;
 		}
-		List<PartnerDefaultLocation> defaultLocations = partner.getPartnerDefaultLocationList();
-	    if (defaultLocations == null) {
+		List<PartnerStockSettings> defaultStockLocations = partner.getPartnerStockSettingsList();
+	    if (defaultStockLocations == null) {
 	    	return null;
 		}
-		List<Location> candidateLocations = defaultLocations
+		List<StockLocation> candidateStockLocations = defaultStockLocations
 				.stream()
 				.filter(Objects::nonNull)
-				.filter(partnerDefaultLocation1 -> partnerDefaultLocation1.getCompany().equals(company))
-				.map(PartnerDefaultLocation::getLocation)
+				.filter(partnerStockSettings -> partnerStockSettings.getCompany().equals(company))
+				.map(PartnerStockSettings::getDefaultStockLocation)
 				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 
-	    //check external or internal location
-	    Optional<Location> candidateNonVirtualLocation = candidateLocations
+	    //check external or internal stock location
+	    Optional<StockLocation> candidateNonVirtualStockLocation = candidateStockLocations
 				.stream()
-				.filter(location -> location.getTypeSelect() == LocationRepository.TYPE_EXTERNAL
-						|| location.getTypeSelect() == LocationRepository.TYPE_INTERNAL)
+				.filter(stockLocation -> stockLocation.getTypeSelect() == StockLocationRepository.TYPE_EXTERNAL
+						|| stockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL)
 				.findAny();
-	    if (candidateNonVirtualLocation.isPresent()) {
-	    	return candidateNonVirtualLocation.get();
+	    if (candidateNonVirtualStockLocation.isPresent()) {
+	    	return candidateNonVirtualStockLocation.get();
 		} else {
-	    	//no external location found, search for virtual
-	    	return candidateLocations
+	    	//no external stock location found, search for virtual
+	    	return candidateStockLocations
 					.stream()
-					.filter(location -> location.getTypeSelect() == LocationRepository.TYPE_VIRTUAL)
+					.filter(stockLocation -> stockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL)
 					.findAny()
-					.orElse(stockConfigService.getCustomerVirtualLocation(stockConfigService.getStockConfig(company)));
+					.orElse(stockConfigService.getCustomerVirtualStockLocation(stockConfigService.getStockConfig(company)));
 		}
 	}
 
@@ -189,8 +190,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
 		Product product = saleOrderLine.getProduct();
 
-		if(product != null && this.isStockMoveProduct(saleOrderLine)
-				&& !ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(product.getProductTypeSelect())) {
+		if(product != null && this.isStockMoveProduct(saleOrderLine)) {
 			
 			Unit unit = saleOrderLine.getProduct().getUnit();
 			BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
@@ -264,13 +264,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 				|| (ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect()) && supplyChainConfig.getHasOutSmForStorableProduct())) );
 	}
 
-    @Override
-    public boolean activeStockMoveForSaleOrderExists(SaleOrder saleOrder) {
-        return saleOrder.getStockMoveList() != null ? saleOrder.getStockMoveList().stream()
-                .anyMatch(stockMove -> stockMove.getStatusSelect() <= StockMoveRepository.STATUS_PLANNED) : false;
-    }
-
-    @Override
+	@Override
     public Optional<StockMove> findActiveStockMoveForSaleOrder(SaleOrder saleOrder) {
         return saleOrder.getStockMoveList() != null ? saleOrder.getStockMoveList().stream()
                 .filter(stockMove -> stockMove.getStatusSelect() <= StockMoveRepository.STATUS_PLANNED).findFirst() : Optional.empty();
@@ -303,7 +297,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
         }
 
         if (deliveryState == SaleOrderRepository.STATE_NOT_DELIVERED && deliveredCount > 0) {
-            deliveryState = SaleOrderRepository.STATE_PARTIALLY_DELIVERED;
+            return SaleOrderRepository.STATE_PARTIALLY_DELIVERED;
         }
 
         return deliveryState;

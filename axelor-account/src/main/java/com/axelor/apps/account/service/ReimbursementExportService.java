@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,21 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
-
-import java.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
@@ -45,7 +31,9 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
@@ -54,6 +42,14 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
 
 public class ReimbursementExportService {
 
@@ -64,7 +60,6 @@ public class ReimbursementExportService {
 	protected MoveLineService moveLineService;
 	protected ReconcileService reconcileService;
 	protected SequenceService sequenceService;
-	protected AccountBlockingService accountBlockingService;
 	protected ReimbursementRepository reimbursementRepo;
 	protected AccountConfigService accountConfigService;
 	protected PartnerService partnerService;
@@ -73,7 +68,7 @@ public class ReimbursementExportService {
 
 	@Inject
 	public ReimbursementExportService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService, ReconcileService reconcileService,
-			SequenceService sequenceService, AccountBlockingService accountBlockingService, ReimbursementRepository reimbursementRepo, AccountConfigService accountConfigService,
+			SequenceService sequenceService, ReimbursementRepository reimbursementRepo, AccountConfigService accountConfigService,
 			PartnerService partnerService, AppAccountService appAccountService, PartnerRepository partnerRepository) {
 
 		this.moveService = moveService;
@@ -81,7 +76,6 @@ public class ReimbursementExportService {
 		this.moveLineService = moveLineService;
 		this.reconcileService = reconcileService;
 		this.sequenceService = sequenceService;
-		this.accountBlockingService = accountBlockingService;
 		this.reimbursementRepo = reimbursementRepo;
 		this.accountConfigService = accountConfigService;
 		this.partnerService = partnerService;
@@ -281,16 +275,14 @@ public class ReimbursementExportService {
 	}
 
 
-	/**
-	 * Le tiers peux t-il être remboursé ?
-	 * Si le tiers est bloqué en remboursement et que la date de fin de blocage n'est pas passée alors on ne peut pas rembourser.
-	 *
-	 * @return
-	 */
-	public boolean canBeReimbursed(Partner partner, Company company){
-		return !accountBlockingService.isReimbursementBlocking(partner, company);
-	}
-
+    /**
+     * Checks if the partner can be reimbursed
+     *
+     * @return true if partner can be reimbursed, false otherwise
+     */
+    public boolean canBeReimbursed(Partner partner, Company company) {
+        return Beans.get(BlockingService.class).getBlocking(partner, company, BlockingRepository.REIMBURSEMENT_BLOCKING) == null;
+    }
 
 
 	/**

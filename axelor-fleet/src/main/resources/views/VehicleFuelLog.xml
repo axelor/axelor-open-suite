@@ -21,7 +21,7 @@
       		</panel>
     		<panel title="Information">
 		  		<field name="purchasePartner"/>
-		  	    <field name="invocieRef"/>
+		  	    <field name="invoiceRef"/>
 		  	    <field name="vendorPartner"/>
 		  	    <field name="date"/>
 		  	</panel>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,9 +30,11 @@ import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
@@ -64,13 +66,9 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 
 	protected MessageService messageService;
 
-	protected EmailAddressRepository emailAddressRepo;
-
 	@Inject
-	public TemplateMessageServiceImpl(MessageService messageService,
-			EmailAddressRepository emailAddressRepo) {
+	public TemplateMessageServiceImpl(MessageService messageService) {
 		this.messageService = messageService;
-		this.emailAddressRepo = emailAddressRepo;
 	}
 
 	@Override
@@ -83,7 +81,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Message generateMessage( long objectId, String model, String tag, Template template ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
+	public Message generateMessage( long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
 		if (!model.equals(template.getMetaModel().getFullName())) {
 			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.TEMPLATE_SERVICE_3), template.getMetaModel().getFullName());
@@ -147,13 +145,13 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 			log.debug( "BCC ::: {}", bccRecipients );
 		}
 		
-		mediaTypeSelect = template.getMediaTypeSelect();
+		mediaTypeSelect = this.getMediaTypeSelect(template);
 		log.debug( "Media ::: {}", mediaTypeSelect );
 		log.debug( "Content ::: {}", content );
 		
 		Message message = messageService.createMessage( model, Long.valueOf(objectId).intValue(), subject,  content, getEmailAddress(from), getEmailAddresses(replyToRecipients),
 				getEmailAddresses(toRecipients), getEmailAddresses(ccRecipients), getEmailAddresses(bccRecipients),
-				null, addressBlock, mediaTypeSelect );	
+				null, addressBlock, mediaTypeSelect, getMailAccount() );	
 		
 		message = Beans.get(MessageRepository.class).save(message);
 		
@@ -161,7 +159,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 		
 		return message;
 	}
-
+	
 	@Override
 	public Message generateAndSendMessage(Model model, Template template) throws MessagingException, IOException, AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
 		
@@ -213,6 +211,8 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 		
 		if ( Strings.isNullOrEmpty(recipient) ) { return null; }
 		
+		EmailAddressRepository emailAddressRepo = Beans.get(EmailAddressRepository.class);
+		
 		EmailAddress emailAddress = emailAddressRepo.findByAddress(recipient);
 		
 		if ( emailAddress == null )  {
@@ -224,4 +224,20 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 		return emailAddress;
 	}
 	
+	protected Integer getMediaTypeSelect(Template template) {
+		
+		return template.getMediaTypeSelect();
+	}
+	
+	protected EmailAccount getMailAccount()  {
+		
+		EmailAccount mailAccount = Beans.get(MailAccountService.class).getDefaultMailAccount(EmailAccountRepository.SERVER_TYPE_SMTP);
+		
+		if ( mailAccount != null ) {
+			log.debug( "Email account ::: {}", mailAccount );
+			return mailAccount;
+		}
+		
+		return null;
+	}
 }

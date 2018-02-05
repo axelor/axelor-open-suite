@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     
     <grid name="purchase-order-line-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -43,7 +43,7 @@
         <field name="salePrice" hidden="true"/>
     </grid>
     
-    <grid name="purchase-order-line-invoicing-project-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine" orderBy="sequence" canMove="true">
+    <grid name="purchase-order-line-invoicing-project-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine" orderBy="-purchaseOrder.orderDate" canMove="true">
        	<hilite background="danger" if="salePrice &lt; saleMinPrice"/>
        	<field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
     	<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
@@ -53,7 +53,28 @@
         <field name="price"/>
         <field name="exTaxTotal" aggregate="sum"/>
 	    <field name="inTaxTotal" aggregate="sum"/>
+		<field name="toInvoice"/>
+        <field name="invoiced"/>
     </grid>
+
+    <grid name="purchase-order-line-project-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+        <hilite if="$get('purchaseOrder.statusSelect') &lt; 3 &amp;&amp; toInvoice &amp;&amp; !invoiced" color="info"/>
+        <hilite if="invoiced" color="success"/>
+        <field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid" readonly="true"/>
+        <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid" readonly="true"/>
+        <field name="productName" readonly="true"/>
+        <field name="qty" aggregate="sum" readonly="true"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid" readonly="true"/>
+        <field name="price" readonly="true"/>
+        <field name="exTaxTotal" aggregate="sum" readonly="true"/>
+        <field name="toInvoice"/>
+        <field name="invoiced"/>
+        <field name="purchaseOrder.statusSelect" hidden="true"/>
+    </grid>
+
+    <form name="purchase-order-line-project-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine" readonlyIf="true" canEdit="false">
+        <panel-include view="purchase-order-line-form"/>
+    </form>
 
 	<form name="purchase-order-line-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine"
 		  onNew="action-group-purchase-purchase-orderline-onnew"
@@ -72,7 +93,7 @@
 				<label name="minQtyNotRespectedLabel" hidden="true" colSpan="12"/>
 			</panel>
 			<field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
-			<field name="taxLine" onChange="action-purchase-order-line-method-convert-tax,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
+			<field name="taxLine" canEdit="false" onChange="action-purchase-order-line-method-convert-tax,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 			<field name="price" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution">
 				<hilite color="danger" if="salePrice &lt; saleMinPrice"/>
 			</field>
@@ -80,8 +101,6 @@
 			<field name="exTaxTotal" readonly="true"/>
 			<field name="inTaxTotal" readonly="true"/>
 			<field name="saleMinPrice" readonly="true"/>
-			<field name="toInvoice" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" if-module="axelor-business-project"/>
-			<field name="invoiced" showIf="toInvoice"/>
 			<field name="salePrice" hidden="true"/>
 			   <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
 		</panel>
@@ -105,7 +124,16 @@
 				<panel-dashlet action="action-purchase-order-line-view-stock-move-line" colSpan="12"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" title="Project/Task" if-module="axelor-business-project">
-				<field name="project" form-view="project-form" grid-view="project-grid"/>
+				<field name="project" requiredIf="toInvoice" form-view="project-form" grid-view="project-grid" canEdit="false"/>
+                <field name="toInvoice" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" colSpan="3" if-module="axelor-business-project"/>
+                <field name="invoiced" showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" colSpan="3" showTitle="false">
+                <viewer><![CDATA[
+					<h4>
+                        <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoiced" x-translate>Invoiced</span>
+                    	<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="!record.invoiced" x-translate>Not invoiced</span>
+                    </h4>
+				]]></viewer>
+                </field>
 			</panel>
 			<panel name="supplierRequests" title="Suppliers requests" if-module="axelor-supplier-management" if="__config__.app.getApp('purchase').getSupplierRequestMgt()" >
 				<button name="generateSuppliersRequests" title="Generate suppliers requests"   onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>

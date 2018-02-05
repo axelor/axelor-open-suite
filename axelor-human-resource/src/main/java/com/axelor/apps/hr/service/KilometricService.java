@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -109,7 +109,7 @@ public class KilometricService {
 		Year year = Beans.get(YearServiceImpl.class).getYear(date, employee.getMainEmploymentContract().getPayCompany());
 		
 		if (year == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.KILOMETRIC_LOG_NO_YEAR), employee.getUser().getActiveCompany(), date);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.KILOMETRIC_LOG_NO_YEAR), employee.getMainEmploymentContract().getPayCompany(), date);
 		}
 		
 		return createKilometricLog(employee, new BigDecimal("0.00"), year);
@@ -118,7 +118,7 @@ public class KilometricService {
 	
 	public BigDecimal computeKilometricExpense(ExpenseLine expenseLine, Employee employee) throws AxelorException{
 
-		BigDecimal distance =  getDistanceTravelled(expenseLine);
+		BigDecimal distance =  expenseLine.getDistance();
 
 		BigDecimal previousDistance;
 		KilometricLog log = Beans.get(KilometricService.class).getKilometricLog(employee, expenseLine.getExpenseDate());
@@ -129,13 +129,20 @@ public class KilometricService {
 		}
 		
 		KilometricAllowanceRate allowance = Beans.get(KilometricAllowanceRateRepository.class).all().filter("self.kilometricAllowParam = ?1", expenseLine.getKilometricAllowParam() ).fetchOne();
+		if (allowance == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_RATE_MISSING), expenseLine.getKilometricAllowParam().getName())
+					, IException.CONFIGURATION_ERROR, expenseLine);
+		}
 		
 		List<KilometricAllowanceRule> ruleList = new ArrayList<KilometricAllowanceRule>();
-		
-		for (KilometricAllowanceRule rule : allowance.getKilometricAllowanceRuleList() ) {
-			
-			if (rule.getMinimumCondition().compareTo( previousDistance.add(distance)) <= 0 && rule.getMaximumCondition().compareTo(previousDistance) >= 0 ){
-				ruleList.add(rule);				
+
+		List<KilometricAllowanceRule> allowanceRuleList = allowance.getKilometricAllowanceRuleList();
+		if (allowanceRuleList != null) {
+			for (KilometricAllowanceRule rule : allowanceRuleList) {
+
+				if (rule.getMinimumCondition().compareTo(previousDistance.add(distance)) <= 0 && rule.getMaximumCondition().compareTo(previousDistance) >= 0) {
+					ruleList.add(rule);
+				}
 			}
 		}
 		
@@ -168,22 +175,9 @@ public class KilometricService {
 	public void updateKilometricLog(ExpenseLine expenseLine, Employee employee) throws AxelorException{
 		
 		KilometricLog log = getOrCreateKilometricLog(employee, expenseLine.getExpenseDate());
-		log.setDistanceTravelled(log.getDistanceTravelled().add(getDistanceTravelled(expenseLine)));
+		log.setDistanceTravelled(log.getDistanceTravelled().add(expenseLine.getDistance()));
 		log.addExpenseLineListItem(expenseLine);
 		kilometricLogRepo.save(log);
-	}
-
-	/**
-	 * Get distance traveled according to kilometric type.
-	 * 
-	 * @param expenseLine
-	 * @return
-	 */
-	private BigDecimal getDistanceTravelled(ExpenseLine expenseLine) {
-		if (expenseLine.getKilometricTypeSelect().equals(ExpenseLineRepository.KILOMETRIC_TYPE_ROUND_TRIP)) {
-			return expenseLine.getDistance().multiply(new BigDecimal(2));
-		}
-		return expenseLine.getDistance();
 	}
 
 	public BigDecimal computeDistance(ExpenseLine expenseLine) throws AxelorException {
@@ -192,7 +186,7 @@ public class KilometricService {
 
 	/**
 	 * Compute the distance between two cities.
-	 * 
+	 *
 	 * @param fromCity
 	 * @param toCity
 	 * @return
@@ -225,7 +219,7 @@ public class KilometricService {
 
 	/**
 	 * Get JSON response from Google Maps Distance Matrix API.
-	 * 
+	 *
 	 * @param origins
 	 * @param destinations
 	 * @param language

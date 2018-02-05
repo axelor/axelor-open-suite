@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -62,7 +62,7 @@ public class VentilateState extends WorkflowInvoice {
 	private AccountConfigService accountConfigService;
 
 	protected AppAccountService appAccountService;
-	
+
 	private InvoiceRepository invoiceRepo;
 
 	protected WorkflowVentilationService workflowService;
@@ -140,7 +140,7 @@ public class VentilateState extends WorkflowInvoice {
 	}
 
 	protected void setDate( ) throws AxelorException{
-		
+
 		if(invoice.getInvoiceDate() == null)  {
 			invoice.setInvoiceDate(appAccountService.getTodayDate());
 		} else if (invoice.getInvoiceDate().isAfter(appAccountService.getTodayDate())) {
@@ -236,9 +236,7 @@ public class VentilateState extends WorkflowInvoice {
 	 */
 	protected void setInvoiceId(Sequence sequence) throws AxelorException {
 
-		if (!Strings.isNullOrEmpty(invoice.getInvoiceId()) && !invoice.getInvoiceId().contains("*")) {
-			return;
-		}
+		if ( !sequenceService.isEmptyOrDraftSequenceNumber(invoice.getInvoiceId())) { return; }
 
 		invoice.setInvoiceId( sequenceService.getSequenceNumber(sequence, invoice.getInvoiceDate()) );
 

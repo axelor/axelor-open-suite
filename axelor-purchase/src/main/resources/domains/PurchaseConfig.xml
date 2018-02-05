@@ -6,8 +6,7 @@
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
   <entity name="PurchaseConfig" lang="java" cachable="true">
-  	<integer name="importId"/>
-   
+
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
   	<integer name="purchaseOrderInAtiSelect" title="Purchase orders ATI/WT" selection="base.in.ati.select" default="1"/>

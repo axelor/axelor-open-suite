@@ -6,7 +6,7 @@
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 	
-	<selection name="stock.location.type.select">
+	<selection name="stock.stock.location.type.select">
 		<option value="1">Internal</option>
 		<option value="2">External</option>
 		<option value="3">Virtual</option>
@@ -80,6 +80,11 @@
         <option value="1">Provision</option>
         <option value="2">Carrier validated</option>
         <option value="3">Collected</option>
+    </selection>
+
+    <selection name="logistical.form.account.to.carrier.select">
+        <option value="1">Company account</option>
+        <option value="2">Customer account</option>
     </selection>
 
     <selection name="logistical.form.line.type.select">

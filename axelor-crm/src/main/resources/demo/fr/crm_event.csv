@@ -37,7 +37,7 @@
 221;2;"Séminaire commercial";1;"NOW[+7d09H00m]";"NOW[+8d18H00m]";54000;;;;;;8;3;;;;;1;;;;;
 222;2;"Séminaire commercial";1;"NOW[+7d09H00m]";"NOW[+8d18H00m]";54000;;;;;;13;3;;;;;1;;;;;
 223;2;"Séminaire commercial";1;"NOW[+7d09H00m]";"NOW[+8d18H00m]";54000;;;;;;9;1;;;;;1;;;;;
-223;2;"Séminaire commercial";1;"NOW[+7d09H00m]";"NOW[+8d18H00m]";54000;;;;;;10;1;;;;;1;;;;;
+224;2;"Séminaire commercial";1;"NOW[+7d09H00m]";"NOW[+8d18H00m]";54000;;;;;;10;1;;;;;1;;;;;
 300;3;"Préparer le support commerciale";13;"NOW[10H00m]";"NOW[11H00m]";3600;;2;;;;9;1;;;;;;;;;;
 301;3;"Sortir le bilan d'activité";11;"NOW[14H00m]";"NOW[15H00m]";3600;;4;;;;9;1;;;;;;;;;;
 302;3;"Rédiger fiche produit";11;"NOW[14H00m]";"NOW[15H30m]";5400;;3;"com.axelor.apps.base.db.Product";3;;8;3;;;;;;;;;;

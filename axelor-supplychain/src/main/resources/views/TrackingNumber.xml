@@ -15,14 +15,14 @@
 			<field name="product" type="string"/>
 			<field name="futureQty" title="Expected/Future Quantity" type="decimal"/>
 			<field name="currentQty" title="Real/Current Quantity" type="decimal"/>
-			<field name="location" title="Stock location" type="string"/>
+			<field name="stockLocation" title="Stock location" type="string"/>
 			<field name="moveLine" title="Stock move line" type="string"/>
 			<field name="date" type="date"/>
 			<field name="saleOrder" title="Sale order" type="string"/>
 			<field name="purchaseOrder" title="Purchase order" type="string"/>
 		</result-fields>
 
-		<select model="com.axelor.apps.stock.db.StockMove" title="Stock Move">
+		<select model="com.axelor.apps.stock.db.StockMove" title="Stock move">
 			<field name="stockMoveLineList[].trackingNumber" as="trackingNumber"/>
 			<field name="stockMoveLineList[].product.fullName" as="product"/>
 			<field name="stockMoveLineList[].productName" as="moveLine"/>
@@ -35,14 +35,14 @@
 				<input name="trackingNumber" field="stockMoveLineList[].trackingNumber"/>
 			</where>
 		</select>
-		<select model="com.axelor.apps.stock.db.Location" title="Stock Location">
-			<field name="detailsLocationLineList[].trackingNumber" as="trackingNumber"/>
-			<field name="detailsLocationLineList[].product.name" as="product"/>
-			<field name="detailsLocationLineList[].location.name" as="location"/>
-			<field name="detailsLocationLineList[].currentQty" as="currentQty"/>
-			<field name="detailsLocationLineList[].futureQty" as="futureQty"/>
+		<select model="com.axelor.apps.stock.db.StockLocation" title="Stock location">
+			<field name="detailsStockLocationLineList[].trackingNumber" as="trackingNumber"/>
+			<field name="detailsStockLocationLineList[].product.name" as="product"/>
+			<field name="detailsStockLocationLineList[].stockLocation.name" as="stockLocation"/>
+			<field name="detailsStockLocationLineList[].currentQty" as="currentQty"/>
+			<field name="detailsStockLocationLineList[].futureQty" as="futureQty"/>
 			<where>
-				<input name="trackingNumber" field="detailsLocationLineList[].trackingNumber"/>
+				<input name="trackingNumber" field="detailsStockLocationLineList[].trackingNumber"/>
 			</where>
 		</select>
 	</search>

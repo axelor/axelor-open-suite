@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.base.db.PrintingSettings;
+import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,7 +110,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 		
 		String name = saleOrderService.getFileName(saleOrder);
 		
@@ -126,7 +131,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 
 		String name = saleOrderService.getFileName(saleOrder);
 
@@ -143,7 +148,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 
 		String name = saleOrderService.getFileName(saleOrder);
 		
@@ -162,7 +167,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 
 		String name = saleOrderService.getFileName(saleOrder);
 		
@@ -475,14 +480,63 @@ public class SaleOrderController {
 		}
 	}
 
-	public void validateChange(ActionRequest request, ActionResponse response) {
+    public void validateChanges(ActionRequest request, ActionResponse response) {
         try {
-            SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-            saleOrderService.validateChange(saleOrder);
-            response.setValues(saleOrder);
+            SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);
+            SaleOrder saleOrder = saleOrderRepo.find(saleOrderView.getId());
+            saleOrderService.validateChanges(saleOrder, saleOrderView);
+            response.setValue("orderBeingEdited", false);
         } catch (Exception e) {
             TraceBackService.trace(response, e);
+            response.setReload(true);
         }
+    }
+
+	/**
+	 * Called on load from sale order form view and on trading name change.
+	 * Set the default value and the domain for {@link SaleOrder#printingSettings}
+	 * @param request
+	 * @param response
+	 */
+	public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		PrintingSettings printingSettings = saleOrder.getPrintingSettings();
+
+		List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(saleOrder.getTradingName(), saleOrder.getCompany());
+		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
+			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
+		}
+		String domain = String.format("self.id IN (%s)", !printingSettingsList.isEmpty() ? StringTool.getIdListString(printingSettingsList) : "0");
+
+		response.setValue("printingSettings", printingSettings);
+		response.setAttr("printingSettings", "domain", domain);
+	}
+
+	/**
+	 * Called from sale order form view on partner change.
+	 * Get the default price list for the sale order.
+	 * Call {@link PartnerPriceListService#getDefaultPriceList(Partner, int)}.
+	 * @param request
+	 * @param response
+	 */
+	public void fillPriceList(ActionRequest request, ActionResponse response) {
+	    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+	    response.setValue("priceList",
+				saleOrder.getClientPartner() != null ? Beans.get(PartnerPriceListService.class)
+						.getDefaultPriceList(saleOrder.getClientPartner(), PriceListRepository.TYPE_SALE) : null
+		);
+    }
+
+	/**
+	 * Called from sale order view on price list select.
+	 * Call {@link PartnerPriceListService#getPriceListDomain(Partner, int)}.
+	 * @param request
+	 * @param response
+	 */
+	public void changePriceListDomain(ActionRequest request, ActionResponse response) {
+	    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+	    String domain = Beans.get(PartnerPriceListService.class).getPriceListDomain(saleOrder.getClientPartner(), PriceListRepository.TYPE_SALE);
+	    response.setAttr("priceList", "domain", domain);
 	}
 
 }

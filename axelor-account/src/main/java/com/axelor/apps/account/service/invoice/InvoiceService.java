@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -139,7 +139,7 @@ public interface InvoiceService {
 	public Invoice createRefund(Invoice invoice) throws AxelorException;
 	
 	
-	public void setDraftSequence(Invoice invoice);
+	public void setDraftSequence(Invoice invoice) throws AxelorException;
 	
 	
 	public void generateBudgetDistribution(Invoice invoice);
@@ -230,11 +230,19 @@ public interface InvoiceService {
 									 Set<Invoice> advancePaymentInvoices) throws AxelorException;
 
 	/**
-	 * Get the bank details from the invoice's payment schedule, the invoice itself, or the partner's default.
-	 * 
+     * Get the bank details from the invoice's payment schedule, the invoice itself, or the partner's default.
+     * 
 	 * @param invoice
 	 * @return
+	 * @throws AxelorException
 	 */
-	BankDetails getBankDetails(Invoice invoice);
+	BankDetails getBankDetails(Invoice invoice) throws AxelorException;
+
+	/**
+	 * @param invoice
+	 * @return {@link com.axelor.apps.base.db.repo.PriceListRepository#TYPE_SALE}
+	 *        OR {@link com.axelor.apps.base.db.repo.PriceListRepository#TYPE_PURCHASE}
+	 */
+	int getPurchaseTypeOrSaleType(Invoice invoice);
 
 }

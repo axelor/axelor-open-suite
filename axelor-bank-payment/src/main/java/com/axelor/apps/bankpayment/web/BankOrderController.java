@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,6 +27,7 @@ import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -123,6 +124,7 @@ public class BankOrderController {
 							bankOrderService.validate(bankOrder);
 						}
 					}
+					response.setReload(true);
 				}
 			}
 		} catch (Exception e) {
@@ -152,7 +154,7 @@ public class BankOrderController {
 		
 		String fileLink = ReportFactory.createReport(IReport.BANK_ORDER, name + "-${date}")
 				.addParam("BankOrderId", bankOrder.getId())
-				.addParam("Locale", AuthUtils.getUser().getLanguage())
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.generate()
 				.getFileLink();
 

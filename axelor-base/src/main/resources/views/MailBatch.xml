@@ -14,7 +14,7 @@
 	<form  onNew="action-mail-batch-record-on-new" name="mail-batch-form" title="Mail Batch" model="com.axelor.apps.base.db.MailBatch">
 		<panel name="main" >
 			<field name="actionSelect"/>
-			<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+			<field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="template" widget="SuggestBox" form-view="template-form" grid-view="template-grid"/>
 			<field name="archived" title="Archived ?"/>

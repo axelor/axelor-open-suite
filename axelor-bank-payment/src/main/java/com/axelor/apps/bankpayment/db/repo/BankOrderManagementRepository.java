@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,7 +36,7 @@ public class BankOrderManagementRepository extends BankOrderRepository {
 			BankOrderService bankOrderService = Beans.get(BankOrderService.class);
 			bankOrderService.generateSequence(entity);
 			bankOrderService.setSequenceOnBankOrderLines(entity);
-			if (entity.getGeneratedMetaFile() == null && entity.getStatusSelect() == BankOrderRepository.STATUS_DRAFT) {
+			if (entity.getStatusSelect() == BankOrderRepository.STATUS_DRAFT) {
 				bankOrderService.updateTotalAmounts(entity);
 			}		
 			

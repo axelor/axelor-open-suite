@@ -24,14 +24,6 @@
 		<option value="3">Delivered</option>
 	</selection>
 	
-	<selection name="product.periodicity.subscription.select">
-		<option value="1">Monthly</option>
-		<option value="2">Bi-monthly</option>
-		<option value="3">Quarterly</option>
-		<option value="6">Half-yearly</option>
-		<option value="12">Yearly</option>
-	</selection>
-	
 	<selection name="message.related.to.select" id="sale.message.related.to.select">
 	    <option value="com.axelor.apps.sale.db.SaleOrder">Quote/Order</option>
 	</selection>
@@ -56,5 +48,23 @@
 		<option value="0">Update from product</option>
 		<option value="1">Update from configurator</option>
 	</selection>
+
+    <selection name="base.blocking.select" id="sale.blocking.select">
+        <option value="5">Sale blocking</option>
+    </selection>
+    
+    <selection name="product.periodicity.subscription.select">
+        <option value="1">Monthly</option>
+        <option value="2">Bi-monthly</option>
+        <option value="3">Quarterly</option>
+        <option value="6">Half-yearly</option>
+        <option value="12">Yearly</option>
+	</selection>
+	
+	<selection name="sale.subscription.periodicity.type.select">
+		<option value="1">Day</option>
+		<option value="2">Month</option>
+	</selection>
+	
 	
 </object-views>

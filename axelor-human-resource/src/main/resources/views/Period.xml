@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+
+	<grid name="period-hr-grid" title="Period" model="com.axelor.apps.base.db.Period" orderBy="-fromDate">
+		<field name="name"/>
+		<field name="code" />
+		<field name="year" title="Payroll year" form-view="year-hr-form" grid-view="year-grid"/>
+		<field name="fromDate"/>
+		<field name="toDate"/>
+		<field name="year.company" form-view="company-form" readonly="true"/>
+		<field name="statusSelect"/>
+	</grid>
+
+	<form name="period-hr-form" title="Period" model="com.axelor.apps.base.db.Period" width="large">
+		<panel name="main" readonlyIf="statusSelect == 2">
+			<field name="name"/>
+			<field name="code" x-bind="{{code|uppercase}}" colSpan="3"/>
+			<field name="year.company" form-view="company-form" readonly="true" colSpan="3"/>
+			<field name="fromDate" colSpan="3"/>
+			<field name="toDate" colSpan="3"/>
+			<field name="year" title="Payroll year" form-view="year-hr-form" grid-view="year-grid"/>
+		</panel>
+		<panel>
+			<panel colSpan="6">
+				<button name="close" title="Close period" colSpan="6" onClick="action-period-record-status-close,save" showIf="statusSelect == 1"/>
+				<button name="reopen" title="Reopen period" colSpan="6" onClick="action-period-record-status-open,save" showIf="statusSelect == 2"/>
+			</panel>
+			<field name="statusSelect"/>
+			<field name="closureDateTime" showIf="statusSelect == 2"/>
+		</panel>
+	</form>
+
+	<form name="period-hr-fiscal-form" title="Period" model="com.axelor.apps.base.db.Period" width="large">
+		<panel name="main">
+			<field name="name" readonly="true"/>
+			<field name="code" x-bind="{{code|uppercase}}" colSpan="3" readonly="true"/>
+			<field name="year.company" form-view="company-form" readonly="true" colSpan="3"/>
+			<field name="fromDate" colSpan="3" readonly="true"/>
+			<field name="toDate" colSpan="3" readonly="true"/>
+			<field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid" readonly="true"/>
+			<field name="allowExpenseCreation" readonlyIf="statusSelect == 2"/>
+		</panel>
+		<panel readonly="true">
+			<panel colSpan="6">
+				<button name="close" title="Close period" colSpan="6" onClick="action-period-record-status-close,save" showIf="statusSelect == 1"/>
+				<button name="reopen" title="Reopen period" colSpan="6" onClick="action-period-record-status-open,save" showIf="statusSelect == 2"/>
+			</panel>
+			<field name="statusSelect"/>
+			<field name="closureDateTime" showIf="statusSelect == 2"/>
+		</panel>
+	</form>
+
+</object-views>

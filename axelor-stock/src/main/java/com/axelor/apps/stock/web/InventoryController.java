@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,8 +20,8 @@ package com.axelor.apps.stock.web;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
+import com.axelor.apps.report.engine.ReportSettings;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,14 +30,13 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.stock.db.Inventory;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -73,15 +72,12 @@ public class InventoryController {
 	public void showInventory(ActionRequest request, ActionResponse response) {
 		try {
 			Inventory inventory = request.getContext().asType(Inventory.class);
-	
-			User user = AuthUtils.getUser();
-			String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
-	
+
 			String name = I18n.get("Inventory")+" "+inventory.getInventorySeq();
 	
 			String fileLink = ReportFactory.createReport(IReport.INVENTORY, name + "-${date}")
 					.addParam("InventoryId", inventory.getId())
-					.addParam("Locale", language)
+					.addParam("Locale", ReportSettings.getPrintingLocale(null))
 					.addFormat(inventory.getFormatSelect())
 					.generate()
 					.getFileLink();
@@ -175,9 +171,9 @@ public class InventoryController {
 			
 			if(inventory.getInventorySeq() ==  null) {
 				
-				Location location = inventory.getLocation();
+				StockLocation stockLocation = inventory.getStockLocation();
 				
-				response.setValue("inventorySeq", inventoryService.getInventorySequence(location.getCompany()));
+				response.setValue("inventorySeq", inventoryService.getInventorySequence(stockLocation.getCompany()));
 			}
 		} catch(Exception e) {
 			TraceBackService.trace(response, e);

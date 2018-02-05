@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -37,5 +38,15 @@ public class PriceListController {
 		priceList = priceListRepo.find(priceList.getId());
 		priceList = priceListService.historizePriceList(priceList);
 		response.setReload(true);
+	}
+
+	public void checkDates(ActionRequest request, ActionResponse response) {
+		PriceList priceList = request.getContext().asType(PriceList.class);
+		try {
+			priceListService.checkDates(priceList);
+		} catch (AxelorException e) {
+		    response.setError(e.getMessage());
+		}
+
 	}
 }

@@ -6,7 +6,6 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="AccountConfig" lang="java" cachable="true">
-  	<integer name="importId" />
     
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
     
@@ -38,7 +37,7 @@
     <many-to-one name="advancePaymentAccount" ref="com.axelor.apps.account.db.Account" title="Advance Payment Account"/>
     <many-to-one name="factorDebitAccount" ref="com.axelor.apps.account.db.Account" />
     <many-to-one name="factorCreditAccount" ref="com.axelor.apps.account.db.Account" />
-    
+
     <decimal name="thresholdDistanceFromRegulation" title="Allowed payment range"/>
     
     <boolean name="autoReconcileOnInvoice" title="Authorize auto reconcile on invoice"/>
@@ -103,13 +102,6 @@
 	<!--  Onglet Paybox -->
 	<many-to-one name="payboxConfig" ref="com.axelor.apps.account.db.PayboxConfig" title="Paybox configuration"/>
 	  
-	<!-- Onglet Import des paiements par TIP et TIP chèque-->
-   	<string name="interbankPaymentOrderImportPathCFONB" title="Filepath to import IPO, and IPO &amp; Cheque payments"/>
-    <string name="tempInterbankPaymentOrderImportPathCFONB" title="Temporary filepath to import IPO, and IPO &amp; Cheque payments"/>
-  	
-  	<string name="interbankPaymentOrderRejectImportPathCFONB" title="Filepath to import IPO, and IPO &amp; Cheque payments rejects"/>
-    <string name="tempInterbankPaymentOrderRejectImportPathCFONB" title="Temporary filepath to import IPO, and IPO &amp; Cheque payments rejects"/>
-  
     <!-- Invoice page -->
     <boolean name="allowCancelVentilatedInvoice" title="Allow cancelation of ventilated invoice"/>
     <boolean name="allowRemovalValidatedMove" title="Allow removal of validated move"/>
@@ -123,7 +115,7 @@
 
 	<!-- Accounting Daybook (Mode brouillard)-->
 	<boolean name="accountingDaybook" title="Accounting Daybook"/>
-	
+
 <!-- 	Sequence  -->
 	<many-to-one name="custInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Customer invoices sequence"/>
 	<many-to-one name="custRefSequence" ref="com.axelor.apps.base.db.Sequence" title="Customer refunds sequence"/>
@@ -150,9 +142,9 @@
 	<!-- Invoice mail -->
       <boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation" default="false"/>
 	  <many-to-one name="invoiceMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
-  	
+
   	<finder-method name="findByCompany" using="company" />
-  	
+
   	<extra-code><![CDATA[
 	
 	   	// TYPE SELECT
@@ -167,4 +159,4 @@
 	  </entity>
   
 </domain-models>
- 
+

@@ -10,7 +10,7 @@
 		<field name="ebicsBank"/>
 	</grid>
 	
-	<form name="ebics-partner-form" title="Ebics partner" model="com.axelor.apps.bankpayment.db.EbicsPartner">
+	<form name="ebics-partner-form" title="Ebics partner" onSave="action-ebics-partner-method-onsave" model="com.axelor.apps.bankpayment.db.EbicsPartner">
 	
 		<panel title="General information">
 			<field name="partnerId" help="Name of the contract/subscription" max="35" x-bind="{{partnerId|uppercase}}" pattern='^[A-Z0-9]+$'/>
@@ -54,6 +54,10 @@
 	
 	<action-method name="action-ebics-partner-method-get-bank-statement">
 		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsPartnerController" method="getBankStatement"/>
+	</action-method>
+
+	<action-method name="action-ebics-partner-method-onsave">
+		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsPartnerController" method="checkBankDetailsSet"/>
 	</action-method>
 	
 	<action-attrs name="action-ebics-partner-method-bank-details-set-domain">

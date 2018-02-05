@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,8 +18,8 @@
 package com.axelor.apps.production.service.config;
 
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.StockConfig;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.service.config.StockConfigSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -27,21 +27,21 @@ import com.axelor.i18n.I18n;
 
 public class StockConfigProductionService extends StockConfigSupplychainService {
 
-    public Location getProductionVirtualLocation(StockConfig stockConfig) throws AxelorException {
+    public StockLocation getProductionVirtualStockLocation(StockConfig stockConfig) throws AxelorException {
 
-        if (stockConfig.getProductionVirtualLocation() == null) {
+        if (stockConfig.getProductionVirtualStockLocation() == null) {
             throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_CONFIG_2), stockConfig.getCompany().getName());
         }
 
-        return stockConfig.getProductionVirtualLocation();
+        return stockConfig.getProductionVirtualStockLocation();
 
     }
 
-    public Location getWasteLocation(StockConfig stockConfig) throws AxelorException {
-        if (stockConfig.getWasteLocation() == null) {
+    public StockLocation getWasteStockLocation(StockConfig stockConfig) throws AxelorException {
+        if (stockConfig.getWasteStockLocation() == null) {
             throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_CONFIG_3), stockConfig.getCompany().getName());
         }
-        return stockConfig.getWasteLocation();
+        return stockConfig.getWasteStockLocation();
     }
 
 }

@@ -30,6 +30,16 @@
 		</panel>
 	</form>
 	
+	
+	<form name="resource-booking-mgt-form" title="Resource booking"  model="com.axelor.apps.project.db.ResourceBooking" width="large">
+		<panel>
+			<field name="$resourceType" title="Resource type" type="many-to-one" target="com.axelor.apps.project.db.ResourceType" grid="resource-type-grid" form-view="resource-type-form" colSpan="4"/>
+			<field name="$priceFrom" title="Price from" type="decimal" colSpan="4"/>
+			<field name="$priceTo" title="Price to" type="decimal" colSpan="4"/>
+		</panel>
+		<panel-dashlet action="action-dashlet-open-resource-booking" height="900"/>
+	</form>
+	
 	<calendar name="resource-booking-calendar" model="com.axelor.apps.project.db.ResourceBooking" eventStart="fromDate" title="Resource booking" eventStop="toDate" colorBy="resource">
 		<field name="project"/>
 	</calendar>
@@ -45,5 +55,9 @@
 	<action-record name="action-resource-booking-resource-on-change" model="com.axelor.apps.project.db.ResourceBooking">
 		<field name="cost" expr="eval:resource.cost" if="resource != null"/>
 	</action-record>
+	
+	<action-view name="action-dashlet-open-resource-booking" title="Resource booking">
+		<view type="html" name="project-pro/resource-booking?resourceTypeId={{resourceType.id}}&amp;priceFrom={{priceFrom}}&amp;priceTo={{priceTo}}"/>
+	</action-view>
 	
 </object-views>

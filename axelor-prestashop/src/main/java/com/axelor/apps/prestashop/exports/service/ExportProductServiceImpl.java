@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.axelor.apps.prestashop.exports.service;
 
 import java.io.BufferedWriter;
@@ -191,8 +190,8 @@ public class ExportProductServiceImpl implements ExportProductService {
 								stock_id = element.getElementsByTagName("id").item(0).getTextContent().toString();
 							}
 						}
-						
-						List<StockMoveLine> moveLine = Beans.get(StockMoveLineRepository.class).all().filter("self.stockMove.statusSelect = 3 and (self.stockMove.fromLocation.typeSelect = 1 or self.stockMove.toLocation.typeSelect = 1) and self.product = ?", productObj).fetch();
+
+						List<StockMoveLine> moveLine = Beans.get(StockMoveLineRepository.class).all().filter("self.stockMove.statusSelect = 3 and (self.stockMove.fromStockLocation.typeSelect = 1 or self.stockMove.toStockLocation.typeSelect = 1) and self.product = ?", productObj).fetch();
 						BigDecimal totalRealQty = BigDecimal.ZERO;
 						
 						if(!moveLine.isEmpty()) {

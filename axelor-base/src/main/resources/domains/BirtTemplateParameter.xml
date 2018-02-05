@@ -6,7 +6,6 @@
 	<module name="base" package="com.axelor.apps.base.db"/>
 
 	<entity name="BirtTemplateParameter" lang="java">
-		<string name="importId"/>
 		<string name="name" title="Name" required="true"/>
 		<string name="value" title="Value"/>
 		<string name="type" title="Type" selection="base.birt.template.parameter.type.select" default="string"/>

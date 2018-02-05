@@ -4,9 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="prod-process-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcess">
-    	<field name="name"/>
+    	<field name="fullName"/>
     	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        <field name="location" grid-view="location-grid" form-view="location-form"/>
+        <field name="stockLocation" grid-view="stock-location-grid" form-view="stock-location-form"/>
         <field name="product"/>
         <field name="prodProcessLineList" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
     </grid>
@@ -15,18 +15,24 @@
     	onSave="action-prod-process-method-validate-prod-process" width="large">
     	<toolbar>
 			<button name="print" title="Print" icon="fa-print" onClick="save,action-production-process-print"/>
+			<button name="newVersion" title="Generate new version"  if="__config__.app.getApp('production').manageProdProcessVersion" onClick="action-production-process-check-other-version,action-production-process-generate-new-version"/>
 		</toolbar>
 		<panel name="main">
-	    	<field name="name"/>
+			<field name="fullName" hidden="true" showIf="$readonly()" showTitle="false" css="label-bold bold large"/>
+	    	<field name="name" hidden="true" showIf="!$readonly()"/>
 	    	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-	        <field name="location" required="true" grid-view="location-grid" form-view="location-form" onChange="action-prod-process-record-set-second-location"/>
+	        <field name="stockLocation" required="true" grid-view="stock-location-grid" form-view="stock-location-form" onChange="action-prod-process-record-set-second-location"/>
 	        <field name="product" canEdit="false" grid-view="product-grid" form-view="product-form"/>
-	        <field name="producedProductLocation" grid-view="location-grid" form-view="location-form"/>
+	        <field name="producedProductStockLocation" grid-view="stock-location-grid" form-view="stock-location-form"/>
 	        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"/>
 	        <field name="outsourcing" onChange="action-prod-process-method-change-prodprocesslist-outsourcing"/>
             <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
         </panel>
-        <panel-related field="prodProcessLineList" colSpan="12" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>        
+        <panel-related field="prodProcessLineList" colSpan="12" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
+        <panel name="versionManagement" title="Version management" hidden="true" showIf="versionNumber &gt; 1">
+ 				<field name="versionNumber" colSpan="3" />
+ 				<field name="originalProdProcess" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" readonly="true"/>
+ 		</panel>            
     </form>
     
     <action-validate name="action-prod-process-validate-is-cons-pro">
@@ -50,7 +56,15 @@
 		<call class="com.axelor.apps.production.web.ProdProcessController" method="print"/>
 	</action-method>
 	
+	<action-method name="action-production-process-check-other-version">
+     	<call class="com.axelor.apps.production.web.ProdProcessController" method="checkOriginalProductionProcess"/>
+     </action-method>
+     
+     <action-method name="action-production-process-generate-new-version">
+     	<call class="com.axelor.apps.production.web.ProdProcessController" method="generateNewVersion"/>
+     </action-method>
+	
 	<action-record name="action-prod-process-record-set-second-location" model="com.axelor.apps.production.db.ProdProcess">
-		<field name="producedProductLocation" expr="eval: location" if="producedProductLocation == null"/>
+		<field name="producedProductStockLocation" expr="eval: stockLocation" if="producedProductStockLocation == null"/>
 	</action-record>
 </object-views>

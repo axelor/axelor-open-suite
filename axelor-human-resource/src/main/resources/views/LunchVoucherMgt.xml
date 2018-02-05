@@ -5,8 +5,8 @@
     
     <grid name="lunch-voucher-mgt-grid" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt">
         <field name="company"/>
-        <field name="payPeriod"/>
-        <field name="leavePeriod"/>
+        <field name="payPeriod" canEdit="false"/>
+        <field name="leavePeriod" canEdit="false"/>
         <field name="statusSelect"/>
         <field name="requestedLunchVouchers"/>
         <field name="lunchVoucherWageShare"/>
@@ -27,8 +27,8 @@
   					<field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
 		    		<field name="company" canEdit="false" colSpan="6" onChange="action-lunch-voucher-record-company-onchange" />
 		    		<spacer colSpan="6"/>
-		    		<field name="payPeriod"/>
-		        	<field name="leavePeriod"/>
+					<field name="payPeriod" onChange="action-lunch-voucher-method-check-pay-period" canEdit="false" domain="self.year.typeSelect = 2 AND self.statusSelect = 1" grid-view="period-hr-grid" form-view="period-hr-form"/>
+					<field name="leavePeriod" onChange="action-lunch-voucher-method-check-leave-period" canEdit="false" domain="self.year.typeSelect = 2 AND self.statusSelect = 1" grid-view="period-hr-grid" form-view="period-hr-form"/>
   				</panel>
 	        	<panel colSpan="12">
 	        		<button name="calculateBtn" title="Calculate" colSpan="6"
@@ -55,9 +55,8 @@
 					   colSpan="12" showIf="statusSelect == 4"/>
 			</panel>
   		</panel>
-    	<panel title="Line Stock quantity" readonlyIf="statusSelect &gt;= 3"
-			   canCollapse="true" collapseIf="true">
-   			<field name="stockLineQuantity" showTitle="false" colSpan="6" css="label-bold bold" onChange="action-lunch-voucher-method-update-total,action-lunch-voucher-method-check-stock"/>
+    	<panel title="Quantity for stock" readonlyIf="statusSelect &gt;= 3" canCollapse="true" collapseIf="true">
+   			<field name="stockLineQuantity" colSpan="6" css="label-bold bold" onChange="action-lunch-voucher-method-update-total,action-lunch-voucher-method-check-stock"/>
    			<field name="stockLineComment" colSpan="6"/>
    		</panel>
   		<panel-related field="lunchVoucherMgtLineList" form-view="lunch-voucher-mgt-line-form" grid-view="lunch-voucher-mgt-line-grid" canNew="false" canRemove="false" onChange="action-lunch-voucher-method-update-total,action-lunch-voucher-method-check-stock"/>
@@ -90,8 +89,8 @@
 		<field name="company" expr="eval:__user__.activeCompany"/>
 		<field name="lunchVoucherWageShare" expr="eval: __user__.activeCompany?.hrConfig?.lunchVoucherWageShare"/>
 		<field name="lunchVoucherEmployersShare" expr="eval: __user__.activeCompany?.hrConfig?.lunchVoucherEmployersShare"/>
-		<field name="payPeriod" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
-		<field name="leavePeriod" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1',__date__).fetchOne()"/>
+		<field name="payPeriod" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.year.typeSelect = 2 AND self.statusSelect = 1',__date__).fetchOne()"/>
+		<field name="leavePeriod" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.year.typeSelect = 2 AND self.statusSelect = 1',__date__).fetchOne()"/>
 	</action-record>
 		
 	<action-record name="action-lunch-voucher-record-company-onchange" model="com.axelor.apps.hr.db.LunchVoucherMgt">
@@ -130,6 +129,14 @@
 
 	<action-method name="action-lunch-voucher-method-update-stock">
 		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="updateStock"/>
+	</action-method>
+
+	<action-method name="action-lunch-voucher-method-check-pay-period">
+		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="checkPayPeriod"/>
+	</action-method>
+
+	<action-method name="action-lunch-voucher-method-check-leave-period">
+		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="checkLeavePeriod"/>
 	</action-method>
 
 </object-views>

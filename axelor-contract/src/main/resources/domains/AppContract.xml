@@ -2,19 +2,19 @@
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-	<module name="base" package="com.axelor.apps.base.db"/>
+	<module name="base" package="com.axelor.apps.base.db" />
 
 	<entity name="AppContract" lang="java" cachable="true" extends="App">
-	
-	<boolean name="isUnchangableContract" title="Unchangable contract" />
-	<boolean name="isAmendmentManagement" title="Amendment management" />
-	<boolean name="isRenewalManagement" title="Renewal management" />
-	
-	<boolean name="isInvoicingManagement" title="Invoicing management" />
-	<boolean name="isConsumptionManagement" title="Consumption management" />
-	<boolean name="isAdditionalBenefitManagement" title="Additional Benefit Management" />
-	
-	<boolean name="isConfigContract" title="Configurable contract" />
+
+		<boolean name="isUnchangableContract" title="Unchangable contract" />
+		<boolean name="isAmendmentManagement" title="Amendment management" />
+		<boolean name="isRenewalManagement" title="Renewal management" />
+
+		<boolean name="isInvoicingManagement" title="Invoicing management" />
+		<boolean name="isConsumptionManagement" title="Consumption management" />
+		<boolean name="isAdditionalBenefitManagement" title="Additional Benefit Management" />
+
+		<boolean name="isConfigContract" title="Configurable contract" />
 
 	</entity>
 

@@ -39,7 +39,7 @@
 		       		<field name="vehicleOdometer" colSpan="8"/>
 		       		<field name="acquisitionDate" />
 		       		<field name="carValue" />
-		       		<field name="isarchived"/>
+		       		<field name="isArchived"/>
 	       		</panel>
 	       </panel>
 	       <panel colSpan="12" title="Additional Properties">
@@ -50,11 +50,11 @@
 	       		</panel>
 	       		<panel itemSpan="12" title="Engine Options">
 		       		<field name="transmissionSelect"/>
-		       		<field name="fuelType"/>
+		       		<field name="fuelTypeSelect"/>
 		       		<field name="co2emission" colSpan="8"/>
 		       		<label title="g/km" colSpan="2"/>
-		       		<field name="horsepower" />
-		       		<field name="horsepowerTax" />
+		       		<field name="horsePower" />
+		       		<field name="horsePowerTax" />
 		       		<field name="powerKw" />
 	       		</panel>
 	       </panel>

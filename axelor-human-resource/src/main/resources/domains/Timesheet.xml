@@ -6,8 +6,7 @@
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
   <entity name="Timesheet" cachable="true">
-      
-      <integer name="importId"/>
+
       <date name="sentDate" title="Sent Date" readonly="true"/>
       <integer name="statusSelect" title="Status" selection="hrs.timesheet.status.select" default="1" readonly="true"/>
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id" required="true" readonly="true"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -63,7 +63,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
 
         ReportSettings settings = ReportFactory.createReport(getReportName(depositSlip), getFilename(depositSlip));
         settings.addParam("DepositSlipId", depositSlip.getId());
-        settings.addParam("Locale", AuthUtils.getUser().getLanguage());
+        settings.addParam("Locale", ReportSettings.getPrintingLocale(null));
         settings.addFormat("pdf");
         String fileLink = settings.toAttach(depositSlip).generate().getFileLink();
         depositSlip.setPublicationDate(Beans.get(AppBaseService.class).getTodayDate());

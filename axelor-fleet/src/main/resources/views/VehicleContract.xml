@@ -5,7 +5,7 @@
     
     <grid name="vehicle-contract-grid" title="Vehicle Contract" model="com.axelor.apps.fleet.db.VehicleContract">
        <field name="vehicle" />
-       <field name="dateStart" />
+       <field name="startDate" />
        <field name="expiryDate" />
        <field name="typeSelect" />
        <field name="insurerPartner" />
@@ -31,7 +31,7 @@
 	   		</panel>
 	  		<panel itemSpan="12">
 	   			<field name="invoiceDate"/>
-	   			<field name="dateStart"/>
+	   			<field name="startDate"/>
 	   			<field name="expiryDate"/>
 	   		</panel>
 	   		<panel itemSpan="12">
@@ -41,7 +41,7 @@
 	   		</panel>
 	   </panel>
 	   <panel-tabs>
-			<panel-related field="vehicleService" title="Included Services" colSpan="12">
+			<panel-related field="vehicleServiceList" title="Included Services" colSpan="12">
 				<field name="serviceType"/>
 				<field name="cost"/>
 			</panel-related>

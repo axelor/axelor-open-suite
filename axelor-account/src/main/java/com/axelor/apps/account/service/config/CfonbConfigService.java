@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -125,23 +125,4 @@ public class CfonbConfigService extends AccountConfigService  {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_CONFIG_13), AppAccountServiceImpl.EXCEPTION, cfonbConfig.getName());
 		}
 	}
-
-	public void getIpoRejectOperationCodeImportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
-		if(cfonbConfig.getIpoRejectOperationCodeImportCFONB() == null || cfonbConfig.getIpoRejectOperationCodeImportCFONB().isEmpty())  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_CONFIG_14), AppAccountServiceImpl.EXCEPTION, cfonbConfig.getName());
-		}
-	}
-
-	public void getIpoAndChequeOperationCodeImportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
-		if(cfonbConfig.getIpoAndChequeOperationCodeImportCFONB() == null || cfonbConfig.getIpoAndChequeOperationCodeImportCFONB().isEmpty())  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_CONFIG_15), AppAccountServiceImpl.EXCEPTION, cfonbConfig.getName());
-		}
-	}
-
-	public void getIpoOperationCodeImportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
-		if(cfonbConfig.getIpoOperationCodeImportCFONB() == null || cfonbConfig.getIpoOperationCodeImportCFONB().isEmpty())  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_CONFIG_16), AppAccountServiceImpl.EXCEPTION, cfonbConfig.getName());
-		}
-	}
-
 }

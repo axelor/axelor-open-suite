@@ -5,21 +5,21 @@
     <grid model="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging lines" name="logistical-form-line-grid"
         orderBy="sequence">
         <hilite strong="true" color="default" if="$contains([1, 2], typeSelect)" />
-        <field name="typeSelect" onChange="sync,action-logistical-form-line-type-change" required="false" />
-        <field name="stockMoveLine" onSelect="action-logistical-form-line-stock-move-line-domain" onChange="sync,action-logistical-form-line-stock-move-line-change"
+        <field name="typeSelect" width="65" onChange="sync,action-logistical-form-line-type-change" required="false" />
+        <field name="stockMoveLine" width="170" onSelect="action-logistical-form-line-stock-move-line-domain" onChange="sync,action-logistical-form-line-stock-move-line-change"
             readonlyIf="typeSelect != 3" form-view="stock-move-line-form" grid-view="stock-move-line-sale-order-grid"
             canEdit="false" />
-        <field name="stockMoveLine.stockMove" form-view="stock-move-form" />
-        <field name="stockMoveLine.product.code" title="Product code" />
-        <field name="stockMoveLine.product.name" title="Product description" />
-        <field name="stockMoveLine.stockMove.saleOrder.saleOrderSeq" title="Internal number" if="__config__.app.isApp('supplychain')" />
-        <field name="stockMoveLine.stockMove.saleOrder.orderNumber" title="Order number" if="__config__.app.isApp('supplychain')" />
+        <field name="stockMoveLine.stockMove" width="170" form-view="stock-move-form" />
+        <field name="stockMoveLine.product.code" width="120" title="Product code" />
+        <field name="stockMoveLine.product.name" width="170" title="Product description" />
+        <field name="stockMoveLine.stockMove.saleOrder.saleOrderSeq" width="100" title="Internal number" if="__config__.app.isApp('supplychain')" />
+        <field name="stockMoveLine.stockMove.saleOrder.orderNumber" width="120" title="Order number" if="__config__.app.isApp('supplychain')" />
         <!-- <field name="stockMoveLine.netWeight" title="Unit net weight" /> --> <!-- Should be null when stockMoveLine is null -->
-        <field name="unitNetWeight" />
-        <field name="qty" readonlyIf="typeSelect != 3" onChange="sync" />
-        <field name="parcelPalletNumber" readonlyIf="typeSelect == 3" onChange="sync" />
-        <field name="grossWeight" readonlyIf="typeSelect == 3" />
-        <field name="dimensions" readonlyIf="typeSelect == 3" />
+        <field name="unitNetWeight" width="75"/>
+        <field name="qty" width="55" readonlyIf="typeSelect != 3" onChange="sync" />
+        <field name="parcelPalletNumber" width="75" readonlyIf="typeSelect == 3" onChange="sync" />
+        <field name="grossWeight" width="75" readonlyIf="typeSelect == 3" />
+        <field name="dimensions" width="130" readonlyIf="typeSelect == 3" />
         <field name="logisticalForm.deliverToCustomerPartner" form-view="partner-customer-form" hidden="true" />
         <field name="sequence" hidden="true" />
     </grid>

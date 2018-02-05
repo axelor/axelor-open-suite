@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,28 +17,18 @@
  */
 package com.axelor.apps.hr.service.employee;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.List;
-
-import com.axelor.apps.hr.service.leave.LeaveService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EventsPlanning;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
-import com.axelor.apps.hr.db.PublicHolidayPlanning;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -46,11 +36,20 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.List;
 
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
 
 	@Inject
-	private AppBaseService appBaseService;  
+	private AppBaseService appBaseService;
 	
 	@Inject
 	protected WeeklyPlanningService weeklyPlanningService;
@@ -88,7 +87,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 		if(dailyWorkHrs == null || dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0)  {
 			dailyWorkHrs = appBaseService.getAppBase().getDailyWorkHours();
 		}
-		
+
 		if (dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0) {
 			dailyWorkHrs = new BigDecimal(1);
 		}
@@ -145,7 +144,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 		Company company = employee.getMainEmploymentContract().getPayCompany();
 		BigDecimal duration = BigDecimal.ZERO;
 		
-		WeeklyPlanning weeklyPlanning = employee.getPlanning();
+		WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
 		if(weeklyPlanning == null){
 			HRConfig conf = company.getHrConfig();
 			if(conf != null){
@@ -157,11 +156,11 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 			throw new AxelorException(employee, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PLANNING), employee.getName());
 		}
 		
-		PublicHolidayPlanning publicHolidayPlanning = employee.getPublicHolidayPlanning();
+		EventsPlanning publicHolidayPlanning = employee.getPublicHolidayEventsPlanning();
 		if(publicHolidayPlanning == null){
 			HRConfig conf = company.getHrConfig();
 			if(conf != null){
-				publicHolidayPlanning = conf.getPublicHolidayPlanning();
+				publicHolidayPlanning = conf.getPublicHolidayEventsPlanning();
 			}
 		}
 		
@@ -199,6 +198,6 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 		
 		return daysWorks.subtract(daysLeave);
 	}
-	
+
 
 }

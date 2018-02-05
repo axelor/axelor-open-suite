@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,30 +17,13 @@
  */
 package com.axelor.apps.account.web;
 
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.service.AddressService;
-import com.axelor.exception.db.IException;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import javax.annotation.Nullable;
-
-import com.axelor.apps.base.service.BankDetailsService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -49,11 +32,19 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -62,8 +53,19 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nullable;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class InvoiceController {
 
@@ -600,8 +602,7 @@ public class InvoiceController {
                     .getDefaultAdvancePaymentInvoice(invoice);
 			response.setValue("advancePaymentInvoiceSet", invoices);
 		} catch (AxelorException e) {
-			TraceBackService.trace(e);
-			response.setError(e.getMessage());
+			TraceBackService.trace(response, e);
 		}
 	}
 
@@ -611,7 +612,7 @@ public class InvoiceController {
 	 * @param response
 	 * @throws AxelorException
 	 */
-	public void setDefaultMail(ActionRequest request, ActionResponse response) throws AxelorException{
+	public void setDefaultMail(ActionRequest request, ActionResponse response) {
 		Invoice invoice = request.getContext().asType(Invoice.class);
 		Company company = invoice.getCompany();
 		Partner partner = invoice.getPartner();
@@ -624,5 +625,56 @@ public class InvoiceController {
 				response.setValue("invoiceMessageTemplate", accountingSituation.getInvoiceMessageTemplate());
 			}
 		}
+	}
+
+	/**
+	 * Called on load from invoice form view and on trading name change.
+	 * Set the default value and the domain for {@link Invoice#printingSettings}
+	 * @param request
+	 * @param response
+	 */
+	public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
+		Invoice invoice = request.getContext().asType(Invoice.class);
+		PrintingSettings printingSettings = invoice.getPrintingSettings();
+
+		List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(invoice.getTradingName(), invoice.getCompany());
+		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
+			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
+		}
+		String domain = String.format("self.id IN (%s)", !printingSettingsList.isEmpty() ? StringTool.getIdListString(printingSettingsList) : "0");
+
+		response.setValue("printingSettings", printingSettings);
+		response.setAttr("printingSettings", "domain", domain);
+	}
+
+	/**
+	 * Called from invoice form view on partner change.
+	 * Get the default price list for the invoice.
+	 * Call {@link PartnerPriceListService#getDefaultPriceList(Partner, int)}.
+	 * @param request
+	 * @param response
+	 */
+	public void fillPriceList(ActionRequest request, ActionResponse response) {
+	    Invoice invoice = request.getContext().asType(Invoice.class);
+	    Partner partner = invoice.getPartner();
+	    int priceListTypeSelect = invoiceService.getPurchaseTypeOrSaleType(invoice);
+		response.setValue("priceList",
+				Beans.get(PartnerPriceListService.class)
+						.getDefaultPriceList(partner, priceListTypeSelect)
+		);
+	}
+
+	/**
+	 * Called from invoice view on price list select.
+	 * Call {@link PartnerPriceListService#getPriceListDomain(Partner, int)}.
+	 * @param request
+	 * @param response
+	 */
+	public void changePriceListDomain(ActionRequest request, ActionResponse response) {
+	    Invoice invoice = request.getContext().asType(Invoice.class);
+		Partner partner = invoice.getPartner();
+		int priceListTypeSelect = invoiceService.getPurchaseTypeOrSaleType(invoice);
+	    String domain = Beans.get(PartnerPriceListService.class).getPriceListDomain(partner, priceListTypeSelect);
+	    response.setAttr("priceList", "domain", domain);
 	}
 }

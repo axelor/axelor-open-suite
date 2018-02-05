@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -139,7 +139,7 @@ public class MapService {
 					BigDecimal latitude = new BigDecimal(googleResponse.get("lat").toString());
 					BigDecimal longitude = new BigDecimal(googleResponse.get("lng").toString());
 					LOG.debug("URL:"+"map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18");
-					result.put("url","map/gmaps.html?key=" + appBaseService.getAppBase().getGoogleMapApiKey() 
+					result.put("url","map/gmaps.html?key=" + appBaseService.getAppBase().getGoogleMapApiKey()
 							+  "&x="+latitude+"&y="+longitude+"&z=18");
 					result.put("latitude", latitude);
 					result.put("longitude",longitude);
@@ -249,7 +249,7 @@ public class MapService {
 			LOG.debug("arrivalLat = {}, arrivalLng={}", aLat,aLon);
 			if(BigDecimal.ZERO.compareTo(dLat) != 0  && BigDecimal.ZERO.compareTo(dLon) != 0){
 				if(BigDecimal.ZERO.compareTo(aLat) != 0 && BigDecimal.ZERO.compareTo(aLon) != 0){
-					result.put("url","map/directions.html?key=" + appBaseService.getAppBase().getGoogleMapApiKey() 
+					result.put("url","map/directions.html?key=" + appBaseService.getAppBase().getGoogleMapApiKey()
 							+ "&dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon);
 					result.put("aLat", aLat);
 					result.put("dLat", dLat);
@@ -305,7 +305,7 @@ public class MapService {
 		Map<String,Object> responseQuery = new HashMap<String,Object>();
 		responseQuery.put("address", "google");
 		responseQuery.put("sensor", "false");
-		
+
 		Map<String,Object> responseMap = new HashMap<String,Object>();
 		responseMap.put("path", "/maps/api/geocode/json");
 		responseMap.put("accept", ContentType.JSON);
@@ -329,15 +329,15 @@ public class MapService {
 	}
 	
 	public void showMap(String name, String title, ActionResponse response) {
- 		
+
  		AppBase appBase = appBaseService.getAppBase();
 		String googleMapApiKey = appBase.getGoogleMapApiKey();
-		
+
 		String mapUrl = new String("map/gmap-objs.html?key="+ googleMapApiKey  +"&object=" + name);
 		response.setView(ActionView.define(title)
 				.add("html", mapUrl)
 				.map());
-		
+
 	}
-	
+
 }

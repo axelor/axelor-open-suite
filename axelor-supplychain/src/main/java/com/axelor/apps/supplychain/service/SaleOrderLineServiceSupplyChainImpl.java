@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,7 +37,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.SaleOrderLineServiceImpl;
-import com.axelor.apps.stock.db.LocationLine;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -68,16 +68,6 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 
 
 		BigDecimal amount = saleOrderLine.getQty().multiply(price).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
-
-		if (ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(saleOrderLine.getProduct().getProductTypeSelect())) {
-			if(saleOrderLine.getSubscriptionList() != null
-				&& !saleOrderLine.getSubscriptionList().isEmpty()){
-				amount = amount.multiply(new BigDecimal(saleOrderLine.getSubscriptionList().size())).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
-			}
-			else  {
-				amount = BigDecimal.ZERO;
-			}
-		}
 
 		LOG.debug("Calcul du montant HT avec une quantité de {} pour {} : {}", new Object[] { saleOrderLine.getQty(), price, amount });
 
@@ -126,17 +116,17 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 
 	@Override
 	public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine) {
-		QueryBuilder<LocationLine> queryBuilder = QueryBuilder.of(LocationLine.class);
-		queryBuilder.add("self.location = :location");
+		QueryBuilder<StockLocationLine> queryBuilder = QueryBuilder.of(StockLocationLine.class);
+		queryBuilder.add("self.stockLocation = :stockLocation");
 		queryBuilder.add("self.product = :product");
-		queryBuilder.bind("location", saleOrderLine.getSaleOrder().getLocation());
+		queryBuilder.bind("stockLocation", saleOrderLine.getSaleOrder().getStockLocation());
 		queryBuilder.bind("product", saleOrderLine.getProduct());
-		LocationLine locationLine = queryBuilder.build().fetchOne();
-		if (locationLine == null) {
+		StockLocationLine stockLocationLine = queryBuilder.build().fetchOne();
+		if (stockLocationLine == null) {
 			return BigDecimal.ZERO;
 		}
 
-		return locationLine.getCurrentQty().subtract(locationLine.getReservedQty());
+		return stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
 	}
 
 	@Transactional

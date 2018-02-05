@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,9 +20,10 @@ package com.axelor.apps.supplychain.service;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,10 +51,10 @@ import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderLineTaxService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.LocationService;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -62,6 +63,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.google.inject.Inject;
@@ -131,7 +133,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	
 	
 	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
-			LocalDate deliveryDate, String internalReference, String externalReference, Location location, LocalDate orderDate,
+			LocalDate deliveryDate, String internalReference, String externalReference, StockLocation stockLocation, LocalDate orderDate,
 			PriceList priceList, Partner clientPartner, Team team) throws AxelorException  {
 
 		logger.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
@@ -140,11 +142,11 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		SaleOrder saleOrder = super.createSaleOrder(buyerUser, company, contactPartner, currency, deliveryDate, internalReference,
 				externalReference, orderDate, priceList, clientPartner, team);
 
-		if(location == null)  {
-			location = Beans.get(LocationService.class).getLocation(company);
+		if(stockLocation == null)  {
+			stockLocation = Beans.get(StockLocationService.class).getDefaultStockLocation(company);
 		}
 		
-		saleOrder.setLocation(location);
+		saleOrder.setStockLocation(stockLocation);
 
 		saleOrder.setPaymentMode(clientPartner.getInPaymentMode());
 		saleOrder.setPaymentCondition(clientPartner.getPaymentCondition());
@@ -178,14 +180,14 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 			saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(client));
 			this.computeAddressStr(saleOrder);
 			saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(client));
-			saleOrder.setPriceList(client.getSalePriceList());
+			saleOrder.setPriceList(Beans.get(PartnerPriceListService.class).getDefaultPriceList(client, PriceListRepository.TYPE_SALE));
 		}
 		return saleOrder;
 	}
 	
 	@Transactional
 	public SaleOrder mergeSaleOrders(List<SaleOrder> saleOrderList, Currency currency,
-			Partner clientPartner, Company company, Location location, Partner contactPartner,
+			Partner clientPartner, Company company, StockLocation stockLocation, Partner contactPartner,
 			PriceList priceList, Team team) throws AxelorException{
 		String numSeq = "";
 		String externalRef = "";
@@ -211,7 +213,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 				null,
 				numSeq,
 				externalRef,
-				location,
+				stockLocation,
 				LocalDate.now(),
 				priceList,
 				clientPartner,
@@ -288,8 +290,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		
 		List<Invoice> advancePaymentInvoiceList =
 				Beans.get(InvoiceRepository.class).all()
-						.filter("self.saleOrder = :saleOrder AND self.operationSubTypeSelect = 2")
-						.bind("saleOrder", saleOrder)
+						.filter("self.saleOrder.id = :saleOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect")
+						.bind("saleOrderId", saleOrder.getId())
+						.bind("operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
 						.fetch();
 		if (advancePaymentInvoiceList == null || advancePaymentInvoiceList.isEmpty()) {
 			return total;
@@ -319,27 +322,21 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	}
 
     @Override
-    public void validateChange(SaleOrder saleOrder) {
-        super.validateChange(saleOrder);
-        SaleOrder record = saleOrderRepo.find(saleOrder.getId());
-        List<SaleOrderLine> saleOrderLines = new ArrayList<>();
-
-        if (saleOrder.getSaleOrderLineList() != null) {
-            sortSaleOrderLineList(saleOrder);
-            saleOrder.getSaleOrderLineList().stream().filter(
-                    saleOrderLine -> saleOrderLine.getDeliveryState() <= SaleOrderRepository.STATE_NOT_DELIVERED)
-                    .forEach(saleOrderLines::add);
+    public void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException {
+        super.validateChanges(saleOrder, saleOrderView);
+        if (saleOrder.getSaleOrderLineList() == null) {
+            return;
         }
 
-        if (record.getSaleOrderLineList() != null) {
-            sortSaleOrderLineList(record);
-            record.getSaleOrderLineList().stream()
-                    .filter(saleOrderLine -> saleOrderLine.getDeliveryState() > SaleOrderRepository.STATE_NOT_DELIVERED)
-                    .forEach(saleOrderLines::add);
-        }
+        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+            if (saleOrderLine.getDeliveryState() > SaleOrderRepository.STATE_NOT_DELIVERED
+                    && saleOrderView.getSaleOrderLineList() == null
+                    || !saleOrderView.getSaleOrderLineList().contains(saleOrderLine)) {
+                throw new AxelorException(saleOrderView, IException.INCONSISTENCY,
+                        I18n.get(IExceptionMessage.SO_CANT_REMOVED_DELIVERED_LINE), saleOrderLine.getFullName());
 
-        saleOrder.clearSaleOrderLineList();
-        saleOrderLines.forEach(saleOrder::addSaleOrderLineListItem);
+            }
+        }
     }
 
 }

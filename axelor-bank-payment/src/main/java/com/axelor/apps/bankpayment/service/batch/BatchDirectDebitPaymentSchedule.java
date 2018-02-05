@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,10 +23,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -35,37 +37,67 @@ import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
+import com.axelor.apps.account.service.PaymentScheduleService;
+import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.QueryBuilder;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.persist.Transactional;
 
 public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @Override
     protected void process() {
-        processPaymentScheduleLines(PaymentScheduleRepository.TYPE_TERMS);
+        List<PaymentScheduleLine> paymentScheduleLineList = processPaymentScheduleLines(
+                PaymentScheduleRepository.TYPE_TERMS);
+
+        if (!paymentScheduleLineList.isEmpty() && generateBankOrderFlag) {
+            try {
+                mergeBankOrders(paymentScheduleLineList);
+            } catch (AxelorException e) {
+                TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
+                logger.error(e.getLocalizedMessage());
+            }
+        }
     }
 
-    protected void processPaymentScheduleLines(int paymentScheduleType) {
+    protected List<PaymentScheduleLine> processPaymentScheduleLines(int paymentScheduleType) {
         AccountingBatch accountingBatch = batch.getAccountingBatch();
+
+        if (generateBankOrderFlag) {
+            Preconditions.checkNotNull(accountingBatch.getCompany());
+            Preconditions.checkNotNull(accountingBatch.getCompany().getAccountConfig());
+            Preconditions.checkArgument(
+                    !StringUtils.isBlank(accountingBatch.getCompany().getAccountConfig().getIcsNumber()));
+            Preconditions.checkNotNull(accountingBatch.getPaymentMode());
+            AccountManagement accountManagement = Beans.get(PaymentModeService.class).getAccountManagement(
+                    accountingBatch.getPaymentMode(), accountingBatch.getCompany(),
+                    getCompanyBankDetails(accountingBatch));
+            Preconditions.checkNotNull(accountManagement);
+            Preconditions.checkNotNull(accountManagement.getBankDetails());
+        }
+
         QueryBuilder<PaymentScheduleLine> queryBuilder = QueryBuilder.of(PaymentScheduleLine.class);
 
         queryBuilder.add("self.paymentSchedule.statusSelect = :paymentScheduleStatusSelect");
@@ -105,17 +137,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
             queryBuilder.bind("paymentMode", accountingBatch.getPaymentMode());
         }
 
-        List<PaymentScheduleLine> paymentScheduleLineList = processQuery(queryBuilder);
-
-        if (!paymentScheduleLineList.isEmpty()) {
-            try {
-                mergeBankOrders(paymentScheduleLineList);
-            } catch (AxelorException e) {
-                TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
-                LOG.error(e.getMessage());
-            }
-        }
-
+        return processQuery(queryBuilder);
     }
 
     private List<PaymentScheduleLine> processQuery(QueryBuilder<PaymentScheduleLine> queryBuilder) {
@@ -129,10 +151,11 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
         Set<Long> treatedSet = new HashSet<>();
         List<PaymentScheduleLine> paymentScheduleLineList;
+        PaymentScheduleService paymentScheduleService = Beans.get(PaymentScheduleService.class);
         PaymentScheduleLineService paymentScheduleLineService = Beans.get(PaymentScheduleLineService.class);
         BankDetailsRepository bankDetailsRepo = Beans.get(BankDetailsRepository.class);
 
-        BankDetails companyBankDetails = batch.getAccountingBatch().getBankDetails();
+        BankDetails companyBankDetails = getCompanyBankDetails(batch.getAccountingBatch());
 
         while (!(paymentScheduleLineList = query.fetch(FETCH_LIMIT)).isEmpty()) {
             if (!JPA.em().contains(companyBankDetails)) {
@@ -147,6 +170,18 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
                 treatedSet.add(paymentScheduleLine.getId());
 
                 try {
+                    if (generateBankOrderFlag) {
+                        PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
+                        paymentScheduleService.getBankDetails(paymentSchedule);
+
+                        if (directDebitPaymentMode
+                                .getOrderTypeSelect() == PaymentModeRepository.ORDER_TYPE_SEPA_DIRECT_DEBIT) {
+                            Partner partner = paymentSchedule.getPartner();
+                            Preconditions.checkNotNull(partner);
+                            Preconditions.checkNotNull(partner.getActiveUmr());
+                        }
+                    }
+
                     paymentScheduleLineService.createPaymentMove(paymentScheduleLine, companyBankDetails);
                     doneList.add(paymentScheduleLine);
                     incrementDone();
@@ -155,14 +190,15 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
                     anomalyList.add(paymentScheduleLine.getId());
                     query.bind("anomalyList", anomalyList);
                     TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
-                    LOG.error(e.getMessage());
+                    logger.error(e.getMessage());
                 }
             }
 
             JPA.clear();
         }
 
-        return doneList;
+        PaymentScheduleLineRepository paymentScheduleLineRepo = Beans.get(PaymentScheduleLineRepository.class);
+        return doneList.stream().map(line -> paymentScheduleLineRepo.find(line.getId())).collect(Collectors.toList());
     }
 
     /**

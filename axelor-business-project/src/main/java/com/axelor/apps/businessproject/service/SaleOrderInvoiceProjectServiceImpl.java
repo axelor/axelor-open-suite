@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,7 +34,6 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
@@ -53,26 +52,6 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
 											  AppBusinessProjectService appBusinessProjectService) {
 		super(appSupplychainService, saleOrderRepo, invoiceRepo, invoiceService);
 		this.appBusinessProjectService = appBusinessProjectService;
-	}
-
-    @Override
-	public List<InvoiceLine> createSubscriptionInvoiceLines(Invoice invoice, List<Subscription> subscriptionList) throws AxelorException  {
-
-		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-
-		Integer sequence = 10;
-
-		for(Subscription subscription : subscriptionList)  {
-
-			invoiceLineList.addAll(this.createSubscriptionInvoiceLine(invoice, subscription, sequence));
-			invoiceLineList.get(invoiceLineList.size()-1).setProject(subscription.getSaleOrderLine().getProject());
-			subscription.setInvoiced(true);
-
-			sequence += 10;
-		}
-
-		return invoiceLineList;
-
 	}
 
 	@Transactional

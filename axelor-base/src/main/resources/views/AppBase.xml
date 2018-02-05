@@ -19,6 +19,7 @@
 		<panel-tabs>
 			<panel name="configuration" title="Configuration" colSpan="12">
 		    	<field name="defaultPartnerLanguage" />
+				<field name="enableTradingNamesManagement" widget="boolean-switch"/>
 		    	<field name="activateSendingEmail" widget="boolean-switch"/>
 		    	<field name="mailAccountByUser" widget="boolean-switch"/>
 		    	<field name="productInAtiSelect"/>

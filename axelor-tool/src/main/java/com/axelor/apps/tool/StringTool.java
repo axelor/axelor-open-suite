@@ -254,7 +254,9 @@ public final class StringTool {
 			idString = "0";
 		} else {
 			for (Model item : collection) {
-				idList.add(item.getId());
+                if (item != null) {
+                    idList.add(item.getId());
+                }
 			}
 			idString = Joiner.on(",").join(idList);
 		}

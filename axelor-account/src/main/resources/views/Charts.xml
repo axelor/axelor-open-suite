@@ -1,0 +1,917 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+   	<chart name="chart.account.invoice.summary" title="Account Invoice Summary">
+		<dataset type="sql">
+		    <![CDATA[
+			SELECT
+				coalesce(SUM(_invoice._total),0.00) AS _amount,
+				_meta._type AS _invoice_type
+			FROM
+				(SELECT company_in_tax_total_remaining AS _total, operation_type_select FROM account_invoice) AS _invoice
+			RIGHT JOIN
+				(SELECT cast(value as int) AS _select_item, title AS _type 
+				FROM meta_select_item 
+				WHERE select_id IN 
+				(SELECT id FROM meta_select where name='iinvoice.operation.type.select')) AS _meta
+			ON	_invoice.operation_type_select = _meta._select_item
+			GROUP BY
+				_meta._type
+			ORDER BY
+				_meta._type
+    	    ]]>
+	    </dataset>
+	    <category key="_invoice_type" type="text" title="Invoice"/>
+	    <series key="_amount"  type="bar" title="Amount"/>
+	</chart>
+
+	<chart name="chart.invoiced.turnover.ytd.vs.lastyear" title="Invoiced Turnover This year vs Last year">
+	    <dataset type="sql">
+	    <![CDATA[
+			SELECT
+				SUM(_invoice.ex_tax_total) AS _turn_over,
+				DATE_PART('year',_invoice.invoice_date) AS _year
+			FROM
+				account_invoice AS _invoice	
+			WHERE
+				_invoice.status_select != 1
+				AND _invoice.operation_type_select=3
+				AND DATE_PART('year',_invoice.invoice_date) 
+				IN (DATE_PART('year',CURRENT_DATE) - 1, DATE_PART('year',CURRENT_DATE) )
+			GROUP BY
+				_year
+			ORDER BY
+				_year
+	    ]]>
+	    </dataset>
+	    <category key="_year" type="text" title="Year"/>
+		<series key="_turn_over"  type="bar" title="TurnOver" />
+	</chart>
+    
+	
+	
+	<chart stacked="true" name="chart.invoice.turnover.cust.history" title="Customer Turnover history by month (on invoices)" onInit="action.account.chart.set.from.to.date.month">	
+	  	    <search-fields>
+			  <field type="date" name="fromDate" title="From Date" x-required="true"/>
+	 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
+	 	    </search-fields>	 
+	
+		 <dataset type="sql">
+		  
+		 SELECT 
+		    to_char(_invoice.invoice_date,'yyyy-MM') AS _month_no,
+		    coalesce(_product._product_type,'other') AS product,
+		    coalesce(SUM(_invoice._turn_over), 00) AS _turn_over
+		  FROM
+		    (SELECT 
+		      _invoice.id AS _invoice_id,
+		      _invoice.invoice_date as invoice_date,
+		      date_part('mon', _invoice.invoice_date) AS _month,
+		      _line.ex_tax_total AS _turn_over,
+		      _line.product AS _line_product
+		    FROM
+		      account_invoice AS _invoice
+		    JOIN
+		      account_invoice_line AS _line 
+		      ON _line.invoice=_invoice.id
+		    JOIN
+			auth_user as _user
+			ON _user.id = :__user__
+			AND _invoice.company = _user.active_company	
+		    WHERE
+		      _invoice.status_select != 1
+		      AND _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month' 
+		      AND _invoice.operation_type_select=3
+		      
+		    GROUP BY 
+		      _invoice_id, _line_product, _turn_over, _month) AS _invoice
+		  
+		  JOIN
+		
+		    (SELECT 
+		      _category.name AS _product_type, _product.id AS _product_id
+		    FROM
+		      base_product AS _product
+		    JOIN
+		      base_product_category AS _category 
+		      ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product
+		
+		  ON _invoice._line_product=_product._product_id
+		  GROUP BY _month_no, _product._product_type
+		  ORDER BY _month_no, _turn_over DESC
+		   
+		   
+		  </dataset>
+		  <category key="_month_no" type="month" title="Month"/>
+		  <series key="_turn_over" groupBy="product" type="bar" title="TurnOver" aggregate="sum"/>
+		  <config name="xFormat" value="MM-YYYY"/>
+	</chart>
+
+
+	
+	<chart stacked="true" name="chart.invoice.prod.qty.sold.history" title="Total Product Qty sold history by month by category" onInit="action.account.chart.set.from.to.date.month">
+	   <search-fields>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+ 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
+ 	    </search-fields>	
+	  <dataset type="sql">
+	  
+	  SELECT 
+	    to_char(_invoice._invoice_date,'yyyy-MM') AS _month_no,
+	    coalesce(_product._product_type,'other') AS product,
+	    coalesce(SUM(_invoice._turn_over), 00) AS _turn_over
+	  FROM
+	    (SELECT 
+	      _invoice.id AS _invoice_id,
+	     _invoice.invoice_date AS _invoice_date,
+	      _line.qty AS _turn_over,
+	      _line.product AS _line_product
+	    FROM
+	      account_invoice AS _invoice
+	    JOIN
+	      account_invoice_line AS _line 
+	      ON _line.invoice=_invoice.id
+	    JOIN
+			auth_user AS _user
+			ON _user.id = :__user__
+			AND _invoice.company = _user.active_company	  
+	     WHERE
+	      _invoice.status_select != 1
+	      AND _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month' 
+	      AND _invoice.operation_type_select=3
+	      
+	    GROUP BY 
+	      _invoice_id, _line_product, _turn_over
+	    ORDER BY 
+	      _turn_over) AS _invoice
+	  
+	  JOIN
+	
+	    (SELECT 
+	      _category.name AS _product_type, _product.id AS _product_id
+	    FROM
+	      base_product AS _product
+	    JOIN
+	      base_product_category AS _category 
+	      ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product
+	
+	  ON _invoice._line_product=_product._product_id
+	  
+	  GROUP BY _month_no, _product._product_type
+	  ORDER BY _month_no, _turn_over DESC
+	  
+	  </dataset>
+	  <category key="_month_no" type="month" title="Month"/>
+	  <series key="_turn_over" groupBy="product" type="bar" title="No of Units" aggregate="sum"/>
+	  <config name="xFormat" value="MM-YYYY"/>
+	</chart>
+      
+	<chart name="chart.invoice.total.revenue.by.product" title="Total Revenue Distribution by Product" onInit="action.account.chart.set.from.to.date.month">
+	 <search-fields>
+		<field type="date" name="fromDate" title="From Date" x-required="true"/>
+		<field type="date" name="toDate" title="To Date" x-required="true"/>
+	 </search-fields>	 
+ 	<dataset type="sql">
+	  <![CDATA[
+		SELECT 
+		_category.name AS _product_category, 
+			coalesce(SUM(_line.ex_tax_total), 0) AS _revenue
+		FROM
+			account_invoice_line AS _line
+		JOIN
+			account_invoice AS _invoice ON _invoice.id = _line.invoice 
+			AND _invoice.operation_type_select=3
+			AND _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:toDate) 
+		JOIN
+			auth_user AS _user
+			ON _user.id = :__user__
+			AND _invoice.company = _user.active_company	
+		JOIN
+			base_product AS _product ON _line.product = _product.id
+		JOIN
+			base_product_category AS _category ON _category.id = _product.product_category
+		WHERE _invoice.status_select != 1
+		GROUP BY
+			_category.name
+		ORDER BY
+			_revenue DESC
+	  ]]>
+	  </dataset>
+	  <category key="_product_category" type="text" title="Product Category"/>
+	  <series key="_revenue" type="donut" title="Revenue" />
+	</chart>   
+	
+	<chart name="chart.total.revenue.by.geo.region" title="Revenue Generated by Geographical Region" >
+	  <dataset type="sql">
+	  <![CDATA[
+		SELECT 
+			_country.name AS _geo_region, 
+			coalesce(SUM(_line.ex_tax_total), 0.00) AS _revenue
+		FROM
+			account_invoice_line AS _line
+		JOIN
+			account_invoice AS _invoice ON _invoice.id = _line.invoice AND _invoice.operation_type_select=3
+		LEFT JOIN
+			base_address AS _address ON _address.id = _invoice.address
+		LEFT JOIN
+			base_country AS _country ON _country.id = _address.addressl7country
+		GROUP BY
+			_geo_region  
+	  ]]>
+	  </dataset>
+	  <category key="_geo_region" type="text" title="Country"/>
+	  <series key="_revenue" type="donut" title="Revenue" />
+	</chart>  
+	
+	
+   
+	<chart stacked="true" name="chart.purchase.buyer.dashboard.prod.qty.suppl.invoices.last.12m" title="Number Of Units On Supplier Invoices On Last 12 Month">
+	  <dataset type="sql">
+	      SELECT 
+	        to_char(_invoice._invoice_date,'yyyy-MM') AS _month,
+	        coalesce(_product._product_type,'other') AS _product,
+	        SUM(_invoice._qty) AS _qty
+	      FROM  
+	        (SELECT 
+	          _invoice.id AS _invoice_id,
+	         _invoice.invoice_date AS _invoice_date,
+	          _line.qty AS _qty,
+	          _line.product AS _line_product
+	        FROM
+	          account_invoice AS _invoice
+	        JOIN
+	          account_invoice_line AS _line 
+	          ON _line.invoice=_invoice.id
+	        WHERE
+	          _invoice.status_select != 1
+	          AND _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
+	          AND _invoice.operation_type_select=1
+	        GROUP BY 
+	          _invoice_id, _line_product, _qty, _invoice_date
+	        ORDER BY 
+	          _qty) AS _invoice
+	      JOIN
+	        (SELECT 
+	          _category.name AS _product_type, _product.id AS _product_id
+	        FROM
+	          base_product AS _product
+	        JOIN
+	          base_product_category AS _category 
+	          ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product
+	      
+	      ON _invoice._line_product=_product._product_id
+	      GROUP BY _product._product_type,_month
+	      ORDER BY _month  
+	  </dataset>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="_qty" groupBy="_product" type="bar" title="Units"/>
+	  <config name="xFormat" value="MM-YYYY"/>
+	</chart>
+
+	  
+	<chart stacked="true" name="chart.purchase.buyer.dashboard.prod.turnover.suppl.invoices.last.12m" title="Turnover On Supplier Invoices On Last 12 Month">
+	  <dataset type="sql">
+	  SELECT 
+	    to_char(_invoice._invoice_date,'yyyy-MM') AS _month,
+	    coalesce(_product._product_type,'other') AS _product,
+	    coalesce(SUM(_invoice._turn_over),00) AS _turn_over
+	  FROM  
+	    (SELECT 
+	      _invoice.id AS _invoice_id,
+	      _invoice.invoice_date AS _invoice_date,
+	      _line.company_ex_tax_total AS _turn_over,
+	      _line.product AS _line_product
+	    FROM
+	      account_invoice AS _invoice
+	    JOIN
+	      account_invoice_line AS _line 
+	      ON _line.invoice=_invoice.id
+	    WHERE
+	      _invoice.status_select != 1
+	      AND _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
+	      AND _invoice.operation_type_select=1
+	      
+	    GROUP BY 
+	      _invoice_id, _line_product, _turn_over, _invoice_date
+	    ORDER BY 
+	      _turn_over) AS _invoice
+	  JOIN
+	   (SELECT 
+	      _category.name AS _product_type, _product.id AS _product_id
+	    FROM
+	      base_product AS _product
+	    JOIN
+	      base_product_category AS _category 
+	      ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product
+	  
+	  ON _invoice._line_product=_product._product_id
+	  GROUP BY _product._product_type,_month 
+	  ORDER BY _month    
+	  </dataset>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="_turn_over" groupBy="_product" type="bar" title="Units"/>
+	  <config name="xFormat" value="MM-YYYY"/>
+	</chart>
+	  
+	 <chart name="chart.purchase.buyer.dashboard.supplier.invoices.per.month" title="Number Of Supplier Invoices Per Month">
+	  <dataset type="sql">
+	   
+	    SELECT  
+	    	to_char(_invoices._invoice_date,'yyyy-MM') AS _month,
+	        SUM(_invoices._amount) AS _amount
+	    FROM
+	        (SELECT 
+	          count(_invoice.id) AS _amount,
+	         _invoice.invoice_date AS _invoice_date
+	        FROM
+	            account_invoice AS _invoice
+	        WHERE
+	          _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
+	        AND 
+	          _invoice.operation_type_select=1
+	        GROUP BY 
+	           _invoice_date) AS _invoices
+	    GROUP BY
+	       _month 
+	    ORDER BY 
+	      _month  
+	  </dataset>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="_amount" type="bar" title="Units"/>
+	  <config name="xFormat" value="MM-YYYY"/>
+	</chart>
+
+	  
+ 	  <chart name="chart.paymentVoucher.customer.paymentMode.distribution.nbr" onInit="action.account.chart.default.month.value" title="Customer Payment mode distribution by transactions">
+ 	    <search-fields>
+ 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
+ 	    </search-fields>
+	    <dataset type="jpql">
+	     <![CDATA[
+	     	SELECT 
+	     		COUNT(self.id) AS total,
+	     		_paymentMode.name AS paymentMode
+	     	FROM 
+	     		PaymentVoucher self
+	     	LEFT JOIN
+	     		self.paymentMode AS _paymentMode
+	     	WHERE
+				self.operationTypeSelect=3 
+			AND
+				self.paymentDate >= DATE(:todayDate) - (CAST(:monthSelect as int)*30)
+			AND 
+				self.paymentDate <= DATE(:todayDate)
+	     	GROUP BY
+	     		_paymentMode
+	     	
+	    ]]>
+	    </dataset>
+	    <category key="paymentMode" type="text" title="Payment Mode"/>
+	    <series key="total" type="donut" title="Amount" />
+	  </chart>
+ 	  
+ 	  <action-record name="action.account.chart.set.from.to.date.month" model="com.axelor.apps.account.db.Account">
+ 	      <field name="toDate" expr="eval:todayDate" />
+ 	      <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusYears(1)"/>
+ 	      <field name="monthSelect" expr="eval:12"/>
+ 	  </action-record>
+ 	  
+	  <action-record model="com.axelor.apps.account.db.Account" name="action.account.chart.default.month.value">
+	      <field name="monthSelect" expr="eval:12"/>
+	  </action-record>
+ 	  
+ 	  <chart name="chart.paymentVoucher.customer.paymentMode.distribution.amount" onInit="action.account.chart.default.month.value" title="Customer Payment mode distribution by amount">
+ 	    <search-fields> 	        
+ 	         <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
+ 	    </search-fields>
+	    <dataset type="jpql">
+	     <![CDATA[
+	     	SELECT 
+	     		SUM(self.paidAmount) AS total,
+	     		_paymentMode.name AS paymentMode
+	     	FROM 
+	     		PaymentVoucher self
+	     	LEFT JOIN
+	     		self.paymentMode AS _paymentMode
+	     	WHERE
+				self.operationTypeSelect=3 
+			AND
+				self.paymentDate >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30)
+			AND 
+				self.paymentDate <= DATE(:todayDate)
+	     	GROUP BY
+	     		_paymentMode
+	     	
+	    ]]>
+	    </dataset>
+	    <category key="paymentMode" type="text" title="Payment Mode"/>
+	    <series key="total" type="donut" title="Amount paid" />
+	  </chart>
+	  
+ 	  
+ 	  <chart name="chart.paymentVoucher.customer.paymentMode.by.amount" onInit="action.account.chart.default.month.value" title="Customer Payment mode by amount">
+ 	    <search-fields>
+ 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
+ 	    </search-fields>
+	    <dataset type="jpql">
+	     <![CDATA[
+	     	SELECT 
+	     		SUM(self.paidAmount) AS total,
+	     		_paymentMode.name AS paymentMode
+	     	FROM 
+	     		PaymentVoucher self
+	     	LEFT JOIN
+	     		self.paymentMode AS _paymentMode
+	     	WHERE
+				self.operationTypeSelect=3 
+			AND
+				self.paymentDate >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30)
+			AND 
+				self.paymentDate <= DATE(:todayDate)
+	     	GROUP BY
+	     		_paymentMode
+	     	
+	    ]]>
+	    </dataset>
+	    <category key="paymentMode" type="text" title="Payment Mode"/>
+	    <series key="total" type="bar" title="Amount paid" />
+	  </chart>
+
+	<action-record name="action.account.active.fiscal.year" model="com.axelor.apps.account.db.Move">
+	  <field name="year" expr="eval:__repo__(Year).all().filter('self.company=?1 AND ?2 BETWEEN self.fromDate AND self.toDate',activeCompany,todayDate).fetchOne()" />  
+	</action-record>
+	
+	<chart onInit="action.account.active.fiscal.year" name="chart.moveLines.revenues.vs.expenses" title="Revenues vs Expenses">
+	  
+	  <search-fields>
+	    <field name="year" type="reference" target="com.axelor.apps.base.db.Year" widget="many-to-one" title="Year" x-required="true"/>
+	    <field name="period" type="reference" target="com.axelor.apps.base.db.Period" widget="many-to-one" title="Period" domain="self.year=:year" x-required="true"/>  
+	  </search-fields>
+	  
+	  <dataset type="jpql">
+	    
+	    SELECT
+	      SUM(
+	        (CASE     
+	          WHEN self.account.accountType.technicalTypeSelect = 'income' then self.credit
+	          WHEN self.account.accountType.technicalTypeSelect = 'charge' then self.debit
+	        END)
+	      ) AS _amount,
+	      item.title AS _label
+	      
+	    FROM
+	      MoveLine self,
+	      MetaSelect meta,
+	      MetaSelectItem item
+	    
+	    WHERE  
+	      meta.name = 'account.account.type.select'
+	      AND item.select = meta
+	      AND self.account.accountType.technicalTypeSelect = item.value  
+	      AND self.move.statusSelect = 3
+	      AND self.move.period.year = :year
+	      AND (self.move.period = :period OR :period IS NULL)
+	      AND self.move.company = :active_company
+	      AND item.value IN ('income','charge')
+	    GROUP BY
+	      item.title  
+	    
+	  </dataset>
+	  <category key="_label" type="text"/>
+	  <series key="_amount" type="bar" title="Amount"/>
+	</chart>
+	     
+	 <chart onInit="action.account.chart.default.month.value" name="chart.invoice.sale.amount.by.month" title="Invoice Sale by month (tax excl.)">
+	  <search-fields>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
+	  </search-fields>
+	  <dataset type="sql">
+	    SELECT
+	      coalesce(SUM(self.ex_tax_total),0.00)  AS ex_tax_total,
+	      to_char(self.invoice_date,'yyyy-MM') AS _month
+	    FROM
+	      account_invoice self
+	    JOIN
+	          auth_user AS _user
+	          ON _user.id = :__user__
+	    JOIN
+	          base_company AS _company
+	          ON  _company.id = _user.active_company
+	          AND _company.id = self.company
+	    WHERE self.status_select != 1 AND self.operation_type_select=3 AND self.invoice_date &lt; DATE(:todayDate) 
+	        AND self.invoice_date &gt; DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'  
+	    GROUP BY 
+	          _month
+	    ORDER BY
+	          _month
+	  </dataset>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="ex_tax_total" type="bar" title="Amount"/>
+	  <config name="xFormat" value="MM-YYYY"/>
+	</chart>
+
+	<chart onInit="action.account.chart.default.month.value"  name="chart.invoice.sale.amount.by.currency" title="Invoice Sale by currency (tax excl.)">
+	  <search-fields>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
+	  </search-fields>
+	  <dataset type="sql">
+	    SELECT
+		     coalesce(SUM(_account_invoice._ex_tax_total),0) AS ex_tax_total,
+		    _currency.name AS _currency
+		FROM
+			base_currency AS _currency
+		CROSS JOIN (SELECT _invoice.ex_tax_total As _ex_tax_total,
+						  _invoice.currency AS _currency
+				    FROM account_invoice _invoice
+				    JOIN 
+				 	    auth_user AS _user
+		        		ON _user.id = :__user__
+		      		JOIN 
+		      		    base_company AS _company
+		        		ON  _company.id = _user.active_company
+		        		AND _company.id = _invoice.company
+			     	WHERE _invoice.operation_type_select = 3 AND _invoice.status_select != 1
+			     		AND _invoice.invoice_date &lt; DATE(:todayDate) 
+			     		AND _invoice.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' 
+			   ) AS _account_invoice
+		WHERE _currency.id=_account_invoice._currency	 
+		GROUP BY _currency.name
+	  </dataset>
+	  <category key="_currency" type="month" title="Month"/>
+	  <series key="ex_tax_total" type="bar" title="Amount"/>
+	</chart>
+	
+	<chart onInit="action.account.chart.default.month.value"  name="chart.invoice.sale.paymentCondition.distribution" title="Invoice Sale Payment Condition distribution">
+	  <search-fields>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
+	  </search-fields>
+	  <dataset type="sql">
+	    SELECT
+	         coalesce(SUM(_account_invoice._ex_tax_total),0) AS ex_tax_total,
+	        _payment_condition.name AS _payment_condition 
+	    FROM
+	  	    account_payment_condition AS _payment_condition
+	    CROSS JOIN 
+	            	(SELECT _invoice.ex_tax_total As _ex_tax_total,
+	                   _invoice.payment_condition AS _payment_condition
+	                FROM account_invoice _invoice
+			        JOIN 
+			            auth_user AS _user
+	                    ON _user.id = :__user__
+	                JOIN
+	                    base_company AS _company
+	                    ON  _company.id = _user.active_company
+	                    AND _company.id = _invoice.company
+	                WHERE _invoice.operation_type_select = 3 AND _invoice.status_select != 1
+	                	AND _invoice.invoice_date &lt; DATE(:todayDate) 
+	                	AND _invoice.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'
+	            ) AS _account_invoice
+	    WHERE 
+	        _payment_condition.id=_account_invoice._payment_condition	 
+	    GROUP BY 
+	        _payment_condition.name
+	 </dataset>
+	  <category key="_payment_condition" type="month" title="Month"/>
+	  <series key="ex_tax_total" type="donut" title="Amount"/>
+	</chart>
+	
+	<chart onInit="action.account.chart.default.month.value" name="chart.invoice.purchase.amount.by.month" title="Invoice Purchase by month (tax excl.)">
+	  <search-fields>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
+	  </search-fields>
+	  <dataset type="sql">
+	    
+	  SELECT
+	     coalesce(SUM(self.company_ex_tax_total),0.00)  AS ex_tax_total,
+	     to_char(self.invoice_date,'yyyy-MM') AS _month
+	  FROM
+	      account_invoice self
+	  JOIN   
+	       auth_user AS _user
+	       ON _user.id = :__user__
+	  JOIN   
+	      base_company AS _company
+	      ON  _company.id = _user.active_company
+	      AND _company.id = self.company
+	  WHERE 
+	     self.status_select != 1 AND self.operation_type_select=1 AND self.invoice_date &lt; DATE(:todayDate) 
+	     AND self.invoice_date &gt; DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'   
+	  GROUP BY _month
+	  ORDER BY
+    	_month
+	  </dataset>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="ex_tax_total" type="bar" title="Amount"/>
+	  <config name="xFormat" value="MM-YYYY"/>
+	</chart>
+
+	
+	<chart onInit="action.account.chart.default.month.value"  name="chart.invoice.purchase.amount.by.currency" title="Invoice Purchase by currency (tax excl.)">
+	  <search-fields>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
+	  </search-fields>
+	  <dataset type="sql">
+	      
+	    SELECT
+	  	   	 coalesce(SUM(_account_invoice._ex_tax_total),0) AS ex_tax_total,
+	   		 _currency.name AS _currency
+	    FROM
+			base_currency AS _currency
+    	CROSS JOIN 
+    		(SELECT _invoice.ex_tax_total As _ex_tax_total,
+					_invoice.currency AS _currency
+		     FROM account_invoice _invoice
+			 JOIN
+			        auth_user AS _user
+			        ON _user.id = :__user__
+	      	JOIN
+		        base_company AS _company
+		        ON  _company.id = _user.active_company
+		        AND _company.id = _invoice.company
+		    WHERE _invoice.status_select != 1 AND _invoice.operation_type_select=1 AND _invoice.invoice_date &lt; DATE(:todayDate) 
+		    AND _invoice.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' 
+		   ) AS _account_invoice
+	   WHERE _currency.id=_account_invoice._currency	 
+	   GROUP BY _currency.name
+	  </dataset>
+	  <category key="_currency" type="text" title="Currency"/>
+	  <series key="ex_tax_total" type="bar" title="Amount"/>
+	</chart>
+	
+	<chart onInit="action.account.chart.default.month.value" name="chart.invoice.purchase.paymentCondition.distribution" title="Invoice Purchase Payment Condition distribution">
+	  <search-fields>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
+	  </search-fields>
+	  <dataset type="sql">
+	    SELECT
+	         coalesce(SUM(_account_invoice._ex_tax_total),0) AS ex_tax_total,
+	        _payment_condition.name AS _payment_condition 
+	    FROM
+	  	    account_payment_condition AS _payment_condition
+	    CROSS JOIN 
+	            (SELECT _invoice.company_ex_tax_total As _ex_tax_total,
+	                  _invoice.payment_condition AS _payment_condition
+	                FROM account_invoice _invoice
+			        JOIN  
+			             auth_user AS _user
+	                     ON _user.id = :__user__
+	                JOIN 
+	                     base_company AS _company
+	                     ON  _company.id = _user.active_company
+	                     AND _company.id = _invoice.company
+	                WHERE _invoice.status_select != 1 AND _invoice.operation_type_select=1 AND _invoice.invoice_date &lt; DATE(:todayDate) AND _invoice.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'
+	            ) AS _account_invoice
+	    WHERE 
+	        _payment_condition.id=_account_invoice._payment_condition	 
+	    GROUP BY 
+	        _payment_condition.name
+	 </dataset>
+	  <category key="_payment_condition" type="text" title="Payment Condition"/>
+	  <series key="ex_tax_total" type="donut" title="Amount"/>
+	</chart>
+	<chart onInit="action.account.chart.default.month.value" name="chart.invoice.sale.refund.situation" title="Invoice and Refunds Sale situation (tax incl.)">
+	
+	  <search-fields>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
+	  </search-fields>
+	  
+	  <dataset type="sql">
+	
+	    SELECT
+	      coalesce(SUM(_sum),0.00) AS _amount,
+	      _label AS _situation
+	    FROM
+	    (
+	      (SELECT 
+	        'Invoices' as _label,
+	        self.in_tax_total as _sum
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        auth_user AS _user
+	        ON _user.id = :__user__
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.operation_type_select=3 
+	      )	 
+	    UNION ALL
+	      (SELECT 
+	        'Inv. Unpaid' as _label,
+	        self.company_in_tax_total_remaining as _sum
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        auth_user AS _user
+	        ON _user.id = :__user__
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.operation_type_select=3 
+	      )	 
+	    UNION ALL
+	      (SELECT
+	        'Refunds' AS _label,
+	        self.in_tax_total AS _sum		
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        auth_user AS _user
+	        ON _user.id = :__user__
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.operation_type_select=4 
+	      )
+	    UNION ALL
+	      (SELECT
+	        'Ref. Unpaid' AS _label,
+	        self.company_in_tax_total_remaining AS _sum		
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        auth_user AS _user
+	        ON _user.id = :__user__
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.operation_type_select=4 
+	      )
+	    ) situation
+	
+	    GROUP BY
+	      _label
+	    ORDER BY
+	      _label    
+	      
+	  </dataset>
+	  <category key="_situation" type="text" title="Situation"/>
+	  <series key="_amount" type="bar" title="Amount" />
+	</chart>
+
+	<chart onInit="action.account.chart.default.month.value" name="chart.invoice.sale.situation" title="Invoice Sale situation (tax incl.)">
+	
+	  <search-fields>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
+	  </search-fields>
+	  
+	  <dataset type="sql">
+	
+	    SELECT
+	      coalesce(SUM(_sum),0.00) AS _amount,
+	      _label AS _situation
+	    FROM
+	    (
+	      (SELECT 
+	        'Invoiced Amount' as _label,
+	        self.in_tax_total as _sum
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        auth_user AS _user
+	        ON _user.id = :__user__
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.operation_type_select=3 
+	      )	 
+	    UNION ALL
+	      (SELECT 
+	        'Unpaid Inv.' as _label,
+	        self.company_in_tax_total_remaining as _sum
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        auth_user AS _user
+	        ON _user.id = :__user__
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.operation_type_select=3 
+	      )	 
+	    UNION ALL
+	      (SELECT
+	        'Unpaid Inv. due' AS _label,
+	        self.company_in_tax_total_remaining AS _sum		
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        auth_user AS _user
+	        ON _user.id = :__user__
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.due_date &lt; CURRENT_DATE AND
+	        self.operation_type_select=3
+	      )
+	    ) situation
+	
+	    GROUP BY
+	      _situation
+	    ORDER BY
+	      _situation
+	      
+	  </dataset>
+	  <category key="_situation" type="text" title="Situation"/>
+	  <series key="_amount" type="bar" title="Amount" />
+	</chart>	
+	
+	<chart onInit="action.account.chart.default.month.value" name="chart.invoice.purchase.situation" title="Invoice Purchase situation (tax incl.)">
+	
+	  <search-fields>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
+	  </search-fields>
+	  
+	  <dataset type="sql">
+	
+	    SELECT
+	      coalesce(SUM(_sum),0.00) AS _amount,
+	      _label AS _situation
+	    FROM
+	    (
+	      (SELECT 
+	        'Invoiced Amount' as _label,
+	        self.company_in_tax_total as _sum
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        auth_user AS _user
+	        ON _user.id = :__user__
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND
+	        self.operation_type_select=1
+	      )	 
+	    UNION ALL
+	      (SELECT 
+	        'Unpaid Inv.' as _label,
+	        self.company_in_tax_total_remaining as _sum
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        auth_user AS _user
+	        ON _user.id = :__user__
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND
+	        self.operation_type_select=1 
+	      )	 
+	    UNION ALL
+	      (SELECT
+	        'Unpaid Inv. due' AS _label,
+	        self.company_in_tax_total_remaining AS _sum		
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        auth_user AS _user
+	        ON _user.id = :__user__
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND
+	        self.due_date &lt; DATE(:todayDate) AND
+	        self.operation_type_select=1
+	      )
+	    ) situation
+	
+	    GROUP BY
+	      _label
+	    ORDER BY
+	      _label    
+	    
+	  </dataset>
+	  <category key="_situation" type="text" title="Situation"/>
+	  <series key="_amount" type="bar" title="Amount" />
+	</chart>		     
+</object-views>

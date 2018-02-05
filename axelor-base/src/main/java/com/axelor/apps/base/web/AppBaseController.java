@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,8 +20,10 @@ package com.axelor.apps.base.web;
 import java.math.BigDecimal;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-
+import java.util.Set;
 import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,46 +105,62 @@ public class AppBaseController {
 		 AppBase appBase = request.getContext().asType(AppBase.class);
 		 LocalDate today = appBaseService.getTodayDate();
 		 
-		 Map<Long, Long> currencyMap = new HashMap<Long, Long>();
+		 Map<Long, Set<Long>> currencyMap = new HashMap<Long, Set<Long>>();
 		 
-		 for(CurrencyConversionLine ccl : appBase.getCurrencyConversionLineList()){
-			 currencyMap.put(ccl.getEndCurrency().getId(), ccl.getStartCurrency().getId());
+		 for(CurrencyConversionLine ccl : appBase.getCurrencyConversionLineList()) {
+			 if (currencyMap.containsKey(ccl.getEndCurrency().getId())) {
+				currencyMap.get(ccl.getEndCurrency().getId()).add(ccl.getStartCurrency().getId());
+				
+			 } else {
+				 Set<Long> startCurrencyIds = new HashSet<>();
+				 startCurrencyIds.add(ccl.getStartCurrency().getId());
+				 currencyMap.put(ccl.getEndCurrency().getId(), startCurrencyIds);
+			 }
 		 }
 		 
-		 for(Long key  : currencyMap.keySet()){
-			
-			CurrencyConversionLine ccl = cclRepo.all().filter("startCurrency.id = ?1 AND endCurrency.id = ?2 AND fromDate <= ?3 AND toDate is null", currencyMap.get(key), key, today).fetchOne();
-			
-			LOG.info("Currency Conversion Line without toDate : {}", ccl);
+		for (Long key : currencyMap.keySet()) {
 
-			if(ccl == null){
-				ccl = cclRepo.all().filter("startCurrency.id = ?1 AND endCurrency.id = ?2 AND fromDate <= ?3 AND toDate > ?3", currencyMap.get(key), key, today).fetchOne();
-				if(ccl != null){
-					LOG.info("Already convered Currency Conversion Line  found : {}", ccl);
-					continue;
+			List<CurrencyConversionLine> cclList = cclRepo.all()
+					.filter("startCurrency.id IN (?1) AND endCurrency.id = ?2 AND fromDate <= ?3 AND toDate is null",
+							currencyMap.get(key), key, today).fetch();
+
+			for (CurrencyConversionLine ccl : cclList) {
+				
+				LOG.info("Currency Conversion Line without toDate : {}", ccl);
+	
+				if (ccl == null) {
+					ccl = cclRepo.all()
+							.filter("startCurrency.id = ?1 AND endCurrency.id = ?2 AND fromDate <= ?3 AND toDate > ?3",
+									currencyMap.get(key), key, today).fetchOne();
+					if (ccl != null) {
+						LOG.info("Already convered Currency Conversion Line  found : {}", ccl);
+						continue;
+					}
+					ccl = cclRepo.all()
+							.filter("startCurrency.id = ?1 AND endCurrency.id = ?2 AND fromDate <= ?3 AND (toDate not null AND toDate <= ?3)",
+									currencyMap.get(key), key, today).order("-toDate").fetchOne();
+					LOG.info("Currency Conversion Line found with toDate : {}", ccl);
 				}
-				ccl = cclRepo.all().filter("startCurrency.id = ?1 AND endCurrency.id = ?2 AND fromDate <= ?3 AND (toDate not null AND toDate <= ?3)", currencyMap.get(key), key, today).order("-toDate").fetchOne();
-				LOG.info("Currency Conversion Line found with toDate : {}", ccl);
-			}
-			
-			
-			if(ccl != null){
-				BigDecimal currentRate = ccs.convert(ccl.getStartCurrency(), ccl.getEndCurrency());
-				if(currentRate.compareTo(new BigDecimal(-1)) == 0){
-					response.setFlash(I18n.get(IExceptionMessage.CURRENCY_6));
-					break;
+	
+				if (ccl != null) {
+					BigDecimal currentRate = ccs.convert(ccl.getStartCurrency(), ccl.getEndCurrency());
+					if (currentRate.compareTo(new BigDecimal(-1)) == 0) {
+						response.setFlash(I18n.get(IExceptionMessage.CURRENCY_6));
+						break;
+					}
+					ccl = cclRepo.find(ccl.getId());
+					ccl.setToDate(today.minusDays(1));
+					ccs.saveCurrencyConversionLine(ccl);
+					BigDecimal previousRate = ccl.getExchangeRate();
+					String variations = ccs.getVariations(currentRate, previousRate);
+					ccs.createCurrencyConversionLine(ccl.getStartCurrency(), ccl.getEndCurrency(), today, currentRate,
+							appBaseService.getAppBase(), variations);
 				}
-				ccl = cclRepo.find(ccl.getId());
-				ccl.setToDate(today.minusDays(1));
-				ccs.saveCurrencyConversionLine(ccl);
-				BigDecimal previousRate = ccl.getExchangeRate();
-				String variations = ccs.getVariations(currentRate, previousRate);
-				ccs.createCurrencyConversionLine(ccl.getStartCurrency(), ccl.getEndCurrency(), today, currentRate, appBaseService.getAppBase(), variations);
 			}
-			
-		 }
-		 
-		 response.setReload(true);
+
+		}
+
+		response.setReload(true);
 	}
 	
 	public void applyApplicationMode(ActionRequest request, ActionResponse response)  {

@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,8 +25,17 @@ import java.util.Map;
 
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.PrintingSettings;
+import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.PartnerPriceListService;
+import com.google.common.base.Strings;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,13 +136,7 @@ public class PurchaseOrderController {
 		}else if(purchaseOrder.getId() != null){
 			purchaseOrderIds = purchaseOrder.getId().toString();
 		}
-		String language="";
-		try{
-			language = purchaseOrder.getSupplierPartner().getLanguageSelect() != null? purchaseOrder.getSupplierPartner().getLanguageSelect() : purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-		}catch (NullPointerException e) {
-			language = "en";
-		}
-		language = language.equals("")? "en": language;
+		String language = ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner());
 
 		String title = I18n.get("Purchase order");
 		if(purchaseOrder.getPurchaseOrderSeq() != null)  {
@@ -154,14 +157,16 @@ public class PurchaseOrderController {
 			
 	}
 
-	public void requestPurchaseOrder(ActionRequest request, ActionResponse response) throws Exception {
+	public void requestPurchaseOrder(ActionRequest request, ActionResponse response) {
 
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
-		purchaseOrderService.requestPurchaseOrder(purchaseOrderRepo.find(purchaseOrder.getId()));
-
-		response.setReload(true);
-
+		try {
+			purchaseOrderService.requestPurchaseOrder(purchaseOrderRepo.find(purchaseOrder.getId()));
+			response.setReload(true);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 	
 	public void updateCostPrice(ActionRequest request, ActionResponse response) throws Exception {
@@ -350,4 +355,63 @@ public class PurchaseOrderController {
 		response.setReload(true);
 	}
 
+	/**
+	 * Called on load from purchase order form view and on trading name change.
+	 * Set the default value and the domain for {@link PurchaseOrder#printingSettings}
+	 * @param request
+	 * @param response
+	 */
+	public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		PrintingSettings printingSettings = purchaseOrder.getPrintingSettings();
+
+		List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(purchaseOrder.getTradingName(), purchaseOrder.getCompany());
+		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
+			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
+		}
+		String domain = String.format("self.id IN (%s)", !printingSettingsList.isEmpty() ? StringTool.getIdListString(printingSettingsList) : "0");
+
+		response.setValue("printingSettings", printingSettings);
+		response.setAttr("printingSettings", "domain", domain);
+	}
+
+	/**
+	 * Called from purchase order form view on partner change.
+	 * Get the default price list for the purchase order.
+	 * Call {@link PartnerPriceListService#getDefaultPriceList(Partner, int)}.
+	 * @param request
+	 * @param response
+	 */
+	public void fillPriceList(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		response.setValue("priceList",
+				Beans.get(PartnerPriceListService.class)
+						.getDefaultPriceList(purchaseOrder.getSupplierPartner(), PriceListRepository.TYPE_PURCHASE)
+		);
+	}
+
+	public void changePriceListDomain(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		String domain = Beans.get(PartnerPriceListService.class).getPriceListDomain(purchaseOrder.getSupplierPartner(), PriceListRepository.TYPE_PURCHASE);
+		response.setAttr("priceList", "domain", domain);
+	}
+
+	/**
+	 * Called on supplier partner select.
+	 * Set the domain for the field supplierPartner
+	 * @param request
+	 * @param response
+	 */
+	public void supplierPartnerDomain(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		Company company = purchaseOrder.getCompany();
+		String domain = "self.id != " + company.getPartner().getId() + " AND self.isContact = false AND self.isSupplier = true";
+		String blockedPartnerQuery = Beans.get(BlockingService.class)
+				.listOfBlockedPartner(company, BlockingRepository.PURCHASE_BLOCKING);
+
+		if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
+			domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
+		}
+		response.setAttr("supplierPartner", "domain", domain);
+	}
 }

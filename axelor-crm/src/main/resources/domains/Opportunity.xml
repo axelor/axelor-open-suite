@@ -7,7 +7,6 @@
 
   <entity name="Opportunity" lang="java">
     
-    <integer name="importId"/>
     <string name="name" title="Name" required="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
@@ -30,7 +29,8 @@
   	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
   	
   	<many-to-one name="lostReason" ref="LostReason" title="Lost reason" />
- 	
+
+	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
 
 	<extra-code>
 		<![CDATA[

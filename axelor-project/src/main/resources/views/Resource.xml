@@ -5,25 +5,34 @@
 	
 	<grid name="resource-grid" title="Resources" model="com.axelor.apps.project.db.Resource">
 		<field name="name"/>
-		<field name="resourceCategory"/>
+		<field name="resourceType"/>
 		<field name="cost"/>
 		<field name="batchNo"/>
 	</grid>
 	
-	<form name="resource-form" title="Resource"  model="com.axelor.apps.project.db.Resource" width="large">
+	<form name="resource-form" title="Resource"  model="com.axelor.apps.project.db.Resource" width="large"
+		onNew="action-resource-form-attrs-default">
 		<toolbar>
 			<button name="bookResource" title="Book resource" onClick="save,action-resource-book-resource" />
 		</toolbar>
 		<panel>
-			<field name="name"/>
-			<field name="resourceCategory"/>
-			<field name="cost" />
-			<field name="batchNo" />
-		</panel>
-		<panel>
-			<field name="attrs" colSpan="12" />
+			<panel colSpan="4">
+				<field name="resourceImage" widget="Image"/>
+			</panel>
+			<panel colSpan="8" itemSpan="12">
+				<field name="name"/>
+				<field name="resourceType"/>
+				<field name="cost" />
+				<field name="batchNo" />
+				<field name="resourceModel" hideIf="isModel" domain="self.isModel = true"/>
+				<field name="isModel" hidden="true" />
+			</panel>
 		</panel>
 	</form>
+	
+	<action-attrs name="action-resource-form-attrs-default">
+		<attribute name="value" for="isModel" expr="eval:_isModel != null ? true : false"/>
+	</action-attrs>
 	
 	<action-view name="action-resource-book-resource" title="Book resource" model="com.axelor.apps.project.db.ResourceBooking">
 		<view type="form" name="resource-booking-form" />

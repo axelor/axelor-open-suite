@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,16 +19,17 @@ package com.axelor.apps.base.service.message;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
-
-import javax.mail.MessagingException;
-
+import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+
+import javax.mail.MessagingException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,10 +39,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
@@ -59,16 +60,11 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
-	@Inject
 	protected UserService userService;
 
 	@Inject
-	protected AppBaseService appBaseService;
-	
-
-	@Inject
-	public MessageServiceBaseImpl( MetaAttachmentRepository metaAttachmentRepository, MailAccountService mailAccountService, UserService userService ) {
-		super(metaAttachmentRepository, mailAccountService);
+	public MessageServiceBaseImpl( MetaAttachmentRepository metaAttachmentRepository, MessageRepository messageRepository, UserService userService) {
+		super(metaAttachmentRepository, messageRepository);
 		this.userService = userService;
 	}
 
@@ -76,14 +72,14 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList,
-			List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect) {
+			List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect, EmailAccount emailAccount) {
 
-		Message message = super.createMessage( model, id, subject, content, fromEmailAddress, replyToEmailAddressList, toEmailAddressList, ccEmailAddressList, bccEmailAddressList, metaFiles, addressBlock, mediaTypeSelect) ;
+		Message message = super.createMessage( model, id, subject, content, fromEmailAddress, replyToEmailAddressList, toEmailAddressList, ccEmailAddressList, bccEmailAddressList, metaFiles, addressBlock, mediaTypeSelect, emailAccount) ;
 
 		message.setSenderUser(AuthUtils.getUser());
 		message.setCompany(userService.getUserActiveCompany());
 
-		return messageRepo.save(message);
+		return messageRepository.save(message);
 
 	}
 
@@ -103,13 +99,21 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 		String language = AuthUtils.getUser().getLanguage();
 
 		TemplateMaker maker = new TemplateMaker( new Locale(language), '$', '$');
-		maker.setContext( messageRepo.find(message.getId()), "Message" );
+		maker.setContext( messageRepository.find(message.getId()), "Message" );
 
 		String fileName = "Message " + message.getSubject() + "-" + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
 		File file = Beans.get(TemplateMessageServiceBaseImpl.class).generateBirtTemplate(maker, fileName,
 				birtTemplate.getTemplateLink(), birtTemplate.getFormat(), birtTemplate.getBirtTemplateParameterList());
 
-		return "ws/files/report/" + file.getName() + "?name=" + fileName;
+        String fileLink = "ws/files/report/" + file.getName();
+
+        try {
+            fileLink += "?name=" + URLEncoder.encode(fileName, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getLocalizedMessage());
+        }
+
+        return fileLink;
 	}
 
 	
@@ -117,14 +121,14 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	@Transactional(rollbackOn = { MessagingException.class, IOException.class, Exception.class })
 	public Message sendByEmail(Message message) throws MessagingException, IOException, AxelorException  {
 				
-		if(appBaseService.getAppBase().getActivateSendingEmail())  {  return super.sendByEmail(message);  }
+		if(Beans.get(AppBaseService.class).getAppBase().getActivateSendingEmail())  {  return super.sendByEmail(message);  }
 		
 		message.setSentByEmail(true);
 		message.setStatusSelect(MessageRepository.STATUS_SENT);
 		message.setSentDateT(LocalDateTime.now());
 		message.setSenderUser(AuthUtils.getUser());
 		
-		return messageRepo.save(message);
+		return messageRepository.save(message);
 		
 	}
 	

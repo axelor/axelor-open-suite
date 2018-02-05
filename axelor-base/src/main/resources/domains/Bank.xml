@@ -6,8 +6,7 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Bank" lang="java">
-  	<integer name="importId"/>
-  
+
     <string name="fullName" title="Name" search="code,bankName"/>
   
     <integer name="bankDetailsTypeSelect" title="Type of Bank Details Id" required="true" selection="base.bank.bank.details.type.select" default="1"/>

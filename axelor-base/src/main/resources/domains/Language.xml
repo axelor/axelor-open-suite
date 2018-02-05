@@ -7,7 +7,6 @@
 
   <entity name="Language" lang="java" cachable="true">
 
-    <integer name="importId"/>
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" required="true"/>
     

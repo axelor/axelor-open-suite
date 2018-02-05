@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,12 +21,11 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-import java.time.ZonedDateTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.CfonbConfig;
@@ -39,6 +38,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.CfonbConfigService;
 import com.axelor.apps.base.db.BankDetails;
@@ -50,6 +50,7 @@ import com.axelor.apps.tool.file.FileTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class CfonbExportService {
@@ -481,15 +482,9 @@ public class CfonbExportService {
 	 * @throws AxelorException
 	 */
 	private String createRecipientCFONB(PaymentScheduleLine paymentScheduleLine, boolean mensu) throws AxelorException  {
-		Partner partner = paymentScheduleLine.getPaymentSchedule().getPartner();
-		BankDetails bankDetails = paymentScheduleLine.getPaymentSchedule().getBankDetails();
-		if (bankDetails == null) {
-			bankDetails = partnerService.getDefaultBankDetails(partner);
-		}
-
-		if (bankDetails == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2), AppAccountServiceImpl.EXCEPTION, partner.getName());
-		}
+	    PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
+		Partner partner = paymentSchedule.getPartner();
+		BankDetails bankDetails = Beans.get(PaymentScheduleService.class).getBankDetails(paymentSchedule);
 
 		BigDecimal amount = paymentScheduleLine.getDirectDebitAmount();
 
@@ -528,13 +523,7 @@ public class CfonbExportService {
 			Partner partner = paymentSchedule.getPartner();
 			partnerName = this.getPayeurPartnerName(partner);						// Nom/Raison sociale du débiteur
 
-			bankDetails = paymentSchedule.getBankDetails();
-			if (bankDetails == null) {
-				bankDetails = partnerService.getDefaultBankDetails(partner);
-				if (bankDetails == null) {
-					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2), AppAccountServiceImpl.EXCEPTION, partner.getName());
-				}
-			}
+			bankDetails = Beans.get(PaymentScheduleService.class).getBankDetails(paymentSchedule);
 		}
 
 		BigDecimal amount = this.getAmount(directDebitManagement, isForInvoice);
@@ -700,9 +689,8 @@ public class CfonbExportService {
 	 * @param operationCode
 	 * 		Le type d'opération :
 	 * 		<ul>
-     *      <li>0 = Virement</li>
-     *      <li>1 = Prélèvement</li>
-     *      <li>2 = TIP</li>
+     *          <li>0 = Virement</li>
+     *          <li>1 = Prélèvement</li>
      *  	</ul>
 	 * @return
 	 * 				L'enregistrement 'total'

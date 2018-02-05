@@ -14,7 +14,7 @@
 	<form onLoad="action-crm-batch-attrs-action-select" onNew="action-group-crm-crmbatch-onnew" name="crm-batch-form" title="CRM Batch" model="com.axelor.apps.crm.db.CrmBatch" width="large">
 		<panel name="main" >
 		  <field name="actionSelect" onChange="action-crm-batch-attrs-action-select"/>
-		  <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+		  <field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
 		  <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 		</panel>
 		<panel-tabs>

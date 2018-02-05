@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
@@ -40,7 +41,7 @@ import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
 import com.axelor.apps.sale.service.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.SaleOrderLineServiceImpl;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
-import com.axelor.apps.stock.service.LocationLineServiceImpl;
+import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
@@ -52,6 +53,8 @@ import com.axelor.apps.supplychain.db.repo.AdvancePaymentSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.AnalyticMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
+import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
+import com.axelor.apps.supplychain.db.repo.SupplychainBatchSupplychainRepository;
 import com.axelor.apps.supplychain.service.AccountCustomerServiceSupplyChain;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainServiceImpl;
@@ -61,7 +64,7 @@ import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.IntercoServiceImpl;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.apps.supplychain.service.InvoicePaymentToolServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.LocationLineServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.StockLocationLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.LogisticalFormSupplychainService;
 import com.axelor.apps.supplychain.service.LogisticalFormSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.MrpLineService;
@@ -86,8 +89,6 @@ import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.SubscriptionService;
-import com.axelor.apps.supplychain.service.SubscriptionServiceImpl;
 import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
 import com.axelor.apps.supplychain.service.SupplychainSaleConfigServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -117,7 +118,6 @@ public class SupplychainModule extends AxelorModule {
         bind(StockMoveInvoiceService.class).to(StockMoveInvoiceServiceImpl.class);
         bind(SaleOrderManagementRepository.class).to(SaleOrderSupplychainRepository.class);
         bind(StockMoveServiceImpl.class).to(StockMoveServiceSupplychainImpl.class);
-        bind(SubscriptionService.class).to(SubscriptionServiceImpl.class);
         bind(OpportunitySaleOrderServiceImpl.class).to(OpportunitySaleOrderServiceSupplychainImpl.class);
         bind(SaleOrderLineServiceImpl.class).to(SaleOrderLineServiceSupplyChainImpl.class);
         bind(AdvancePaymentSaleRepository.class).to(AdvancePaymentSupplychainRepository.class);
@@ -127,7 +127,7 @@ public class SupplychainModule extends AxelorModule {
         bind(AnalyticMoveLineMngtRepository.class).to(AnalyticMoveLineSupplychainRepository.class);
         bind(StockMoveLineServiceImpl.class).to(StockMoveLineSupplychainServiceImpl.class);
         bind(BudgetService.class).to(BudgetSupplychainService.class);
-        bind(InvoiceLineService.class).to(InvoiceLineSupplychainService.class);
+        bind(InvoiceLineServiceImpl.class).to(InvoiceLineSupplychainService.class);
         bind(SaleOrderStockService.class).to(SaleOrderStockServiceImpl.class);
         bind(PurchaseOrderManagementRepository.class).to(PurchaseOrderSupplychainRepository.class);
         bind(AppSupplychainService.class).to(AppSupplychainServiceImpl.class);
@@ -135,7 +135,7 @@ public class SupplychainModule extends AxelorModule {
         bind(AccountCustomerService.class).to(AccountCustomerServiceSupplyChain.class);
         bind(AccountingSituationServiceImpl.class).to(AccountingSituationSupplychainServiceImpl.class);
         bind(AccountingSituationSupplychainService.class).to(AccountingSituationSupplychainServiceImpl.class);
-        bind(LocationLineServiceImpl.class).to(LocationLineServiceSupplychainImpl.class);
+        bind(StockLocationLineServiceImpl.class).to(StockLocationLineServiceSupplychainImpl.class);
         bind(InvoiceServiceImpl.class).to(InvoiceServiceSupplychainImpl.class);
         bind(InvoicePaymentToolServiceImpl.class).to(InvoicePaymentToolServiceSupplychainImpl.class);
         bind(WorkflowVentilationServiceImpl.class).to(WorkflowVentilationServiceSupplychainImpl.class);
@@ -145,9 +145,10 @@ public class SupplychainModule extends AxelorModule {
         bind(LogisticalFormServiceImpl.class).to(LogisticalFormSupplychainServiceImpl.class);
         bind(LogisticalFormSupplychainService.class).to(LogisticalFormSupplychainServiceImpl.class);
         bind(PurchaseProductService.class).to(PurchaseProductServiceImpl.class);
-        bind(LocationLineServiceImpl.class).to(LocationLineServiceSupplychainImpl.class);
+        bind(StockLocationLineServiceImpl.class).to(StockLocationLineServiceSupplychainImpl.class);
         bind(StockConfigService.class).to(StockConfigSupplychainService.class);
         bind(SaleOrderLineServiceSupplyChain.class).to(SaleOrderLineServiceSupplyChainImpl.class);
         bind(SupplyChainConfigService.class).to(SupplyChainConfigServiceImpl.class);
+        bind(SupplychainBatchRepository.class).to(SupplychainBatchSupplychainRepository.class);
     }
 }

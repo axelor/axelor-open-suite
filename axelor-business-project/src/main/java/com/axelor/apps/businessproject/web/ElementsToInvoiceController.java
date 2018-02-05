@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,9 +23,12 @@ import java.util.Map;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.businessproject.db.ElementsToInvoice;
 import com.axelor.apps.project.db.Project;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -48,7 +51,7 @@ public class ElementsToInvoiceController {
 			elementToInvoice.setUnit(product.getUnit());
 			BigDecimal price = product.getSalePrice();
 			if(project.getClientPartner()!= null){
-				PriceList priceList = project.getClientPartner().getSalePriceList();
+				PriceList priceList = Beans.get(PartnerPriceListService.class).getDefaultPriceList(project.getClientPartner(), PriceListRepository.TYPE_SALE);
 				if(priceList != null)  {
 					PriceListLine priceListLine = priceListService.getPriceListLine(product, elementToInvoice.getQty(), priceList);
 

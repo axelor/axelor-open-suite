@@ -11,9 +11,17 @@
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
 
+	<form name="sale-order-form-partner" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form-partner"
+	onNew="action-group-supplychain-saleorder-onnew,action-group-partner-saleorder-onnew"
+	onLoad="action-group-supplychain-saleorder-onload"
+    onSave="action-supplychain-saleorder-onsave">
+
+		<panel-include view="sale-order-form" from="axelor-sale"/>
+	</form>
+
 	<form name="sale-order-generate-po-select-supplierpartner-form" model="com.axelor.apps.sale.db.SaleOrder" title="Confirm Purchase order generation" onNew="action-record-load-dummy-supplier-partner">
 		<panel name="main" >
-			<field name="supplierPartnerSelect" title="Select supplier partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact = false AND self.isSupplier = true" required="true"/>
+			<field name="supplierPartnerSelect" title="Select supplier partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" onSelect="action-supplychain-so-generate-supplier-partner-domain" required="true"/>
 			<button name="generatePOConfirm" title="Confirm Purchase order generation" onClick="action-supplychain-so-generate-po-check-supplier-partner,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
 		</panel>
     </form>
@@ -30,11 +38,36 @@
 		<panel-include view="sale-order-template-form" from="axelor-sale"/>
 	</form>
 	
+	<form model="com.axelor.apps.sale.db.SaleOrder" title="Sales order" name="incl-sale-order-subscrption-form">
+		<panel name="subscriptionPanel" title="Contract/Subscription" showIf="saleOrderTypeSelect == 2" >
+			<field name="numberOfPeriods" showIf="$readonly()" colSpan="4">
+		      <viewer><![CDATA[
+		                  <span>{{record.numberOfPeriods}}</span>
+		                  <span> </span>
+		                  <span ng-show="record.periodicityTypeSelect == 1" x-translate>day(s)</span>
+		                  <span ng-show="record.periodicityTypeSelect == 2" x-translate>month(s)</span>
+				]]></viewer>
+		    </field>
+		    <field name="numberOfPeriods" showIf="!$readonly()" colSpan="4" />
+		    <field name="periodicityTypeSelect" showIf="!$readonly()" colSpan="4" />
+		    <field name="contractPeriodInMonths" />
+			<field name="currentContractPeriodEndDate" />
+			<field name="contractEndDate" />
+			<field name="isTacitAgreement" />
+			<field name="noticePeriodInDays" />
+			<field name="nextInvoicingDate" />
+			<field name="nextInvoicingStartPeriodDate" />
+			<field name="subscriptionComment" colSpan="12"/>
+			<field name="subscriptionText" colSpan="12"/>
+			<panel-dashlet action="action-sale-order-view-subscription-invoices" colSpan="12"/>
+		</panel>
+	</form>
+	
 	<action-group name="action-group-supplychain-saleorder-onnew">
 		<action name="action-sale-order-record-default"/>
 		<action name="action-sale-order-record-payment-mode"/>
 		<action name="action-sale-order-record-company-configuration"/>
-		<action name="action-supplychain-sale-order-method-get-location"/>
+		<action name="action-supplychain-sale-order-method-get-stock-location"/>
 		<action name="action-sale-order-record-currency"/>
 		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
 		<action name="action-sale-order-record-in-ati"/>
@@ -59,32 +92,40 @@
         <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="onSave" />
     </action-method>
 
-	<action-method name="action-supplychain-sale-order-method-get-location">
-    	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
+	<action-method name="action-supplychain-sale-order-method-get-stock-location">
+    	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getStockLocation"/>
     </action-method>
-    
+
     <action-group name="action-supplychain-sale-order-group-generate-invoice">
     	<action name="action-supplychain-sale-order-view-invoicing-wizard"
 				if="eval: !__config__.app.isApp('business-project') ||  !__config__.app.getApp('business-project').getEnableToInvoiceExpense() &amp;&amp; !__config__.app.getApp('business-project').getEnableToInvoiceTimesheet()" />
     	<action name="action-business-project-sale-order-view-invoicing-wizard" if="eval: __config__.app.isApp('business-project') &amp;&amp; (__config__.app.getApp('business-project').getEnableToInvoiceExpense() || __config__.app.getApp('business-project').getEnableToInvoiceTimesheet())" />
     </action-group>
-    
+
+    <action-method name="action-supplychain-sale-order-method-generate-invoice">
+ 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generateInvoice"/>
+	</action-method>
+
 	<action-method name="action-supplychain-sale-order-create-stock-move" >
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createStockMove"/>
 	</action-method>
-	
-	<action-method name="action-sale-order-method-get-location" >
-    	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getLocation"/>
-    </action-method>
-	
+
 	<action-method name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" >
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generatePurchaseOrdersFromSelectedSOLines"/>
 	</action-method>
 
-	<action-validate name="action-supplychain-sale-order-validate-check-location">
-		<error message="The location must be filled." if="location == null"/>
-	</action-validate>
+	<action-method name="action-supplychain-so-generate-supplier-partner-domain">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="supplierPartnerSelectDomain"/>
+	</action-method>
 	
+	<action-validate name="action-supplychain-sale-order-validate-check-stock-location">
+		<error message="The stock location must be filled." if="stockLocation == null"/>
+	</action-validate>
+
+	<action-validate name="action-supplychain-sale-order-validate-check-amount-timetable">
+		<alert message="The amount to be spread over the timetable is negative." if="amountToBeSpreadOverTheTimetable &lt; 0"/>
+	</action-validate>
+
 	<action-record name="action-record-load-dummy-supplier-partner" model="com.axelor.apps.sale.db.SaleOrder">
 		<field name="supplierPartnerSelect" expr="eval:__repo__(Partner).find(Long.valueOf(supplierPartnerId))"/>
 	</action-record>
@@ -104,6 +145,8 @@
 				   expr="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
 		<attribute for="interco" name="value" expr="eval: false"
 				   if="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
+		<attribute for="interco" name="readonly" expr="eval: true"
+				   if="eval: statusSelect &gt; 3"/>
 	</action-attrs>
 
 	<action-view name="action-view-show-invoices-from-sale-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">
@@ -124,7 +167,16 @@
 		<view-param name="forceEdit" value="true" />
 		<context name="_showRecord" expr="eval: id"/>
 	</action-view>
-    
+	
+	<action-view name="action-sale-order-view-subscription-invoices" title="Invoiced periods"
+		model="com.axelor.apps.account.db.Invoice">
+		<view name="subscription-so-invoice-grid" type="grid"/>
+		<view name="invoice-form" type="form"/>
+		<domain>self.operationSubTypeSelect = 6 and (self.saleOrder.id = :saleOrderId OR (self.saleOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.saleOrderLine.id IN (:saleOrderLineIdList))))</domain>
+		<context name="saleOrderId" expr="eval: id"/>
+		<context name="saleOrderLineIdList" expr="eval: (id != null &amp;&amp; saleOrderLineList != null &amp;&amp; !saleOrderLineList.isEmpty()) ? saleOrderLineList.collect{it.id} : null"/>
+	</action-view>
+
     <action-condition name="action-supplychain-so-generate-po-check-supplier-partner">
 		<check error="A supplier partner must be selected" field="supplierPartnerSelect" if="supplierPartnerSelect == null"/>
 	</action-condition>

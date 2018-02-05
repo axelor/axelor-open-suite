@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	
+	<grid name="sla-grid" title="All SLA" model="com.axelor.apps.helpdesk.db.Sla">
+		<field name="name"/>
+		<field name="team"/>
+		<field name="ticketType"/>
+		<field name="reachStageSelect" />
+		<field name="prioritySelect"/>
+	</grid>
+	
+	<form model="com.axelor.apps.helpdesk.db.Sla" title="SLA" name="sla-form">
+	
+		<panel>
+			<field name="name" colSpan="12"/>
+			
+			<panel name="applyOn" title="Apply on" colSpan="12">
+				<field name="team" form-view="team-form" grid-view="team-grid"/>
+				<field name="prioritySelect"/>
+				<field name="ticketType"/>
+			</panel>
+			
+			<panel name="target" title="Target" colSpan="12">
+				<field name="reachStageSelect"/>
+				<field name="reachIn" title="Reach in">
+					<viewer>
+					<![CDATA[
+						<span>{{record.days}} <b>days</b></span><br />
+						<span>{{record.hours}} <b>hours</b></span>
+					]]>	
+					</viewer>
+					<editor>
+						<field name="days" colSpan="3"/>
+						<field name="hours" colSpan="3"/>
+					</editor>
+				</field>
+				<field name="isWorkingDays"/>
+			</panel>
+		</panel>
+		
+		<panel name="description" title="Description">
+			<field name="description" showTitle="false" widget="html" colSpan="12"/>
+		</panel>
+		
+	</form>
+</object-views>

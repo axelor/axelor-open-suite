@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -86,9 +86,10 @@ public class PayrollPreparationController {
 		
 		if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_STANDARD){
 			response.setExportFile( payrollPreparationService.exportSinglePayrollPreparation(payrollPreparation) );
-		}else if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_MEILLEURE_GESTION){
-			response.setExportFile( payrollPreparationService.exportMeilleureGestionPayrollPreparation(payrollPreparation) );
+		}else if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_NIBELIS){
+			response.setExportFile( payrollPreparationService.exportNibelisPayrollPreparation(payrollPreparation) );
 		}
+		payrollPreparationService.closePayPeriodIfExported(payrollPreparation);
 		
 		response.setReload(true);
 		

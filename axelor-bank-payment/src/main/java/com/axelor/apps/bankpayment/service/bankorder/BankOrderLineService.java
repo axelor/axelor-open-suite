@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -217,8 +217,10 @@ public class BankOrderLineService {
 		}
 		//filter on the currency if it is set in bank order and in the bankdetails
 		//and if the bankOrder is not multicurrency
+		//and if the partner type select is a company
 		Currency currency = bankOrder.getBankOrderCurrency();
-		if (!bankOrder.getIsMultiCurrency() && currency != null) {
+		if (!bankOrder.getIsMultiCurrency() && currency != null
+				&& bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
 			String fileFormatCurrencyId = currency.getId().toString();
 			domain += " AND (self.currency IS NULL OR self.currency.id = " + fileFormatCurrencyId + ")";
 		}
@@ -298,7 +300,10 @@ public class BankOrderLineService {
 		}
 
 		//filter on the currency if the bank order is not multicurrency
-		if(!bankOrder.getIsMultiCurrency() && bankOrder.getBankOrderCurrency() != null) {
+		//and if the partner type select is a company
+		if(!bankOrder.getIsMultiCurrency()
+				&& bankOrder.getBankOrderCurrency() != null
+				&& bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
 			if (!Beans.get(BankOrderService.class).checkBankDetailsCurrencyCompatible(bankDetails, bankOrder)) {
 				throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE));
 			}

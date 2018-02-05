@@ -9,7 +9,7 @@
   
   	<many-to-one name="tax" ref="com.axelor.apps.account.db.Tax" title="Tax"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
-    <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Account" required="true"/>
+    <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Accounting.Account" required="true"/>
   
   </entity>
 
