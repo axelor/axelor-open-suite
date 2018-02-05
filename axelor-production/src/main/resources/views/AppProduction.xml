@@ -5,9 +5,13 @@
 	
 	<form name="app-production-config-form" title="App production" model="com.axelor.apps.base.db.AppProduction" canDelete="false" canNew="false" width="large">
 		<panel name="productionConfiguration" colSpan="12">
-			<field name="prodOrderMgtOnSO" readonlyIf="productionOrderGenerationAuto" colSpan="4" widget="boolean-switch"/>
-			<field name="productionOrderGenerationAuto" showIf="prodOrderMgtOnSO" colSpan="4" widget="boolean-switch"/>
-			<field name="enableConfigurator" widget="boolean-switch"/>
+			<panel title="Sale order">
+				<field name="prodOrderMgtOnSO" readonlyIf="productionOrderGenerationAuto" colSpan="4" widget="boolean-switch"/>
+				<field name="productionOrderGenerationAuto" showIf="prodOrderMgtOnSO" colSpan="4" widget="boolean-switch"/>
+			</panel>
+			<panel title="Configurator">
+				<field name="enableConfigurator" widget="boolean-switch"/>
+			</panel>
 			<panel name="billOfMaterial" title="Bill of material">
 				<field name="manageBillOfMaterialVersion" colSpan="4" widget="boolean-switch"/>
 			    <field name="manageResidualProductOnBom" widget="boolean-switch"/>
@@ -17,25 +21,20 @@
 			</panel>
 			<panel name="prodProcess" title="Production process">
  				<field name="manageProdProcessVersion" widget="boolean-switch"/>
- 			</panel>
+				<field name="manageBusinessProduction" title="Manage business production" if-module="axelor-business-production" widget="boolean-switch" />
+				<field name="showProductionOrderRelatedToProject" if-module="axelor-business-production" showIf="manageBusinessProduction" />
+			</panel>
 			<panel name="costSheet" title="Cost sheet">
 			    <field name="productCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
   				<field name="workCenterCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
   				<field name="cycleUnit" form-view="unit-form" grid-view="unit-grid"/>
 				<field name="subtractProdResidualOnCostSheet" showIf="manageResidualProductOnBom" widget="boolean-switch"/>
 			</panel>
-			<panel name="businessProductionConfiguration" if-module="axelor-business-production"  colSpan="12" >
-				<field name="manageBusinessProduction" widget="boolean-switch"/>
-				<panel showIf="manageBusinessProduction" colSpan="12">
-					<field name="showProductionOrderRelatedToProject" showIf="manageBusinessProduction" />
-				</panel>
-			</panel>
 		</panel>
 		<panel>
 			<button name="generateProductionConfigurations" colSpan="4" title="Generate production configurations" onClick="save,com.axelor.apps.production.web.AppProductionController:generateProductionConfigurations"/>
-			<panel-dashlet action="admin.root.conf.production.config"  colSpan="12"/>
+			<panel-dashlet action="admin.root.conf.production.config" colSpan="12"/>
 		</panel>
-		
 	</form>
 	
 	<action-view name="admin.root.conf.production.config" title="Production configurations"
