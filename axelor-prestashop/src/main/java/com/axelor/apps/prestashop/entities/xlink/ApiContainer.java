@@ -1,4 +1,4 @@
-package com.axelor.apps.prestashop.entities;
+package com.axelor.apps.prestashop.entities.xlink;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.w3c.dom.Element;
 
-import com.axelor.apps.prestashop.entities.xlink.XlinkEntry;
+import com.axelor.apps.prestashop.entities.PrestashopContainerEntity;
 
 @XmlRootElement(name="api")
 public class ApiContainer extends PrestashopContainerEntity {
