@@ -5,7 +5,7 @@
 	
 	<form name="app-production-config-form" title="App production" model="com.axelor.apps.base.db.AppProduction" canDelete="false" canNew="false" width="large">
 		<panel name="productionConfiguration" colSpan="12">
-			<panel title="Sale Customer">
+			<panel title="Sale order">
 				<field name="prodOrderMgtOnSO" readonlyIf="productionOrderGenerationAuto" colSpan="4" widget="boolean-switch"/>
 				<field name="productionOrderGenerationAuto" showIf="prodOrderMgtOnSO" colSpan="4" widget="boolean-switch"/>
 			</panel>
