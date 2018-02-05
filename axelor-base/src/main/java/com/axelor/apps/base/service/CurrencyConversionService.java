@@ -21,22 +21,12 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
-
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import wslite.http.HTTPClient;
-import wslite.http.HTTPMethod;
-import wslite.http.HTTPRequest;
-import wslite.http.HTTPResponse;
-import wslite.json.JSONArray;
-import wslite.json.JSONException;
-import wslite.json.JSONObject;
 
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Currency;
@@ -48,13 +38,21 @@ import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
+import wslite.http.HTTPClient;
+import wslite.http.HTTPMethod;
+import wslite.http.HTTPRequest;
+import wslite.http.HTTPResponse;
+import wslite.json.JSONArray;
+import wslite.json.JSONException;
+import wslite.json.JSONObject;
+
 public class CurrencyConversionService {
 
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	protected AppBaseService appBaseService;
-	
+
 	@Inject
 	private CurrencyConversionLineRepository cclRepo;
 
@@ -76,7 +74,7 @@ public class CurrencyConversionService {
 		        Map<String, Object> headers = new HashMap<>();
 				headers.put("Accept", "application/json");
 				request.setHeaders(headers);
-		        URL url = new URL(String.format(wsUrl,currencyFrom.getCode(),currencyTo.getCode(), LocalDate.now().minus(Period.ofDays(1))));
+		        URL url = new URL(String.format(wsUrl,currencyFrom.getCode(),currencyTo.getCode(), LocalDate.now().minusWeeks(1)));
 //		        URL url = new URL(String.format(wsUrl,currencyFrom.getCode()));
 		        LOG.debug("Currency conversion webservice URL: {}" ,new Object[]{url.toString()});
 		        request.setUrl(url);
@@ -196,5 +194,5 @@ public class CurrencyConversionService {
 //
 //		return rate;
 //	}
-	
+
 }
