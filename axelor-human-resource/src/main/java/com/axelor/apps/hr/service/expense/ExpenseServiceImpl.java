@@ -199,6 +199,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 		expense.setExTaxTotal(exTaxTotal);
 		expense.setTaxTotal(taxTotal);
 		expense.setInTaxTotal(inTaxTotal);
+		completeExpenseLines(expense);
 		return expense;
 	}
 
@@ -692,5 +693,33 @@ public class ExpenseServiceImpl implements ExpenseService {
 		}
 		return expenseLineList;
 	}
-	
+
+	public void completeExpenseLines(Expense expense) {
+		List<ExpenseLine> expenseLineList = expenseLineRepository.all().filter("self.expense.id = :_expenseId")
+				.bind("_expenseId", expense.getId())
+				.fetch();
+		List<ExpenseLine> kilometricExpenseLineList = expense.getKilometricExpenseLineList();
+		List<ExpenseLine> generalExpenseLineList = expense.getGeneralExpenseLineList();
+
+		//removing expense from one O2M also remove the link
+		for (ExpenseLine expenseLine : expenseLineList) {
+			if (!kilometricExpenseLineList.contains(expenseLine)
+					&& !generalExpenseLineList.contains(expenseLine)) {
+				expenseLine.setExpense(null);
+				expenseLineRepository.remove(expenseLine);
+			}
+		}
+
+		//adding expense in one O2M also add the link
+		for (ExpenseLine kilometricLine : expense.getKilometricExpenseLineList()) {
+			if (!expenseLineList.contains(kilometricLine)) {
+				kilometricLine.setExpense(expense);
+			}
+		}
+		for (ExpenseLine generalExpenseLine : expense.getGeneralExpenseLineList()) {
+			if (!expenseLineList.contains(generalExpenseLine)) {
+				generalExpenseLine.setExpense(expense);
+			}
+		}
+	}
 }

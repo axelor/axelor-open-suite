@@ -236,6 +236,12 @@ public class ExpenseController {
 		}
 	}
 	
+	/**
+	 * Called from expense form, on expense lines change.
+	 * Call {@link ExpenseService#compute(Expense)}
+	 * @param request
+	 * @param response
+	 */
 	public void compute(ActionRequest request, ActionResponse response){
 		Expense expense = request.getContext().asType(Expense.class);
 		expense = expenseServiceProvider.get().compute(expense);
@@ -500,9 +506,6 @@ public class ExpenseController {
 		response.setValue("advanceAmount", expenseService.computeAdvanceAmount(expense) );
 
 		if (expense.getKilometricExpenseLineList() != null && !expense.getKilometricExpenseLineList().isEmpty()) {
-			for (ExpenseLine kilometricLine : expense.getKilometricExpenseLineList()) {
-				kilometricLine.setExpense(expense);
-			}
 			response.setValue("kilometricExpenseLineList", expense.getKilometricExpenseLineList() );
 		}
 	}
