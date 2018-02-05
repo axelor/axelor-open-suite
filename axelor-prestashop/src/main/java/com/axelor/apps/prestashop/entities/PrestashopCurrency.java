@@ -14,22 +14,13 @@ import org.w3c.dom.Element;
 import com.axelor.apps.prestashop.adapters.PrestashopBooleanAdapter;
 
 @XmlRootElement(name="currency")
-public class PrestashopCurrency extends PrestashopContainerEntity {
-	private Integer id;
+public class PrestashopCurrency extends PrestashopIdentifiableEntity {
 	private String name;
 	private String code;
-	private BigDecimal conversionRate;
+	private BigDecimal conversionRate = BigDecimal.ONE;
 	private boolean deleted = false;
 	private boolean active = true;
 	private List<Element> additionalProperties;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
 
 	public String getName() {
 		return name;
