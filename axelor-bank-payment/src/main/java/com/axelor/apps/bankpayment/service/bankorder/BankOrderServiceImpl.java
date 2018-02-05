@@ -295,6 +295,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		if (bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTransportEbicsUser() == null) {
 			throw new AxelorException(I18n.get(IExceptionMessage.EBICS_MISSING_USER_TRANSPORT), IException.MISSING_FIELD);
 		}
+
 		sendBankOrderFile(bankOrder);
 		realizeBankOrder(bankOrder);
 
@@ -322,8 +323,10 @@ public class BankOrderServiceImpl implements BankOrderService {
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	protected void realizeBankOrder(BankOrder bankOrder)  throws AxelorException {
 		
+		GeneralService generalService = Beans.get(GeneralService.class);
 		Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
 		
+		bankOrder.setSendingDateTime(generalService.getTodayDateTime().toLocalDateTime());
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
 		bankOrder.setTestMode(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTestMode());
 		bankOrderRepo.save(bankOrder);
