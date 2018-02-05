@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.base.service;
 
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Map;
 

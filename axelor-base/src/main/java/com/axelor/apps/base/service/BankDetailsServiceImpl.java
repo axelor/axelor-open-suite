@@ -17,24 +17,21 @@
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.base.db.Bank;
-import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.BankRepository;
-import com.axelor.apps.tool.StringTool;
-import com.google.inject.Inject;
 import org.iban4j.CountryCode;
 import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;
 import org.iban4j.InvalidCheckDigitException;
 import org.iban4j.UnsupportedCountryException;
 
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.base.db.Bank;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.tool.StringTool;
+
 public class BankDetailsServiceImpl implements BankDetailsService {
 	
-	@Inject
-	private BankRepository bankRepo;
 	
 	/**
 	 * This method allows to extract information from iban

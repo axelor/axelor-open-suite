@@ -23,15 +23,8 @@ import java.math.RoundingMode;
 import java.net.URL;
 
 import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import wslite.http.HTTPClient;
-import wslite.http.HTTPMethod;
-import wslite.http.HTTPRequest;
-import wslite.http.HTTPResponse;
-import wslite.json.JSONObject;
 
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
@@ -43,6 +36,12 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import wslite.http.HTTPClient;
+import wslite.http.HTTPMethod;
+import wslite.http.HTTPRequest;
+import wslite.http.HTTPResponse;
+import wslite.json.JSONObject;
 
 public class CurrencyConversionService {
 
