@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased 4.x]
+
+### Improvements
+
+### Bug Fixes
+
+
 ## [4.1.2] - 2018-02-05
 ### Improvements
 - Close pay period automatically when all payroll preparation are exported
@@ -292,6 +299,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
+[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...dev
 [4.1.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...v4.1.2
 [4.1.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/axelor/axelor-business-suite/compare/v4.0.2...v4.1.0
