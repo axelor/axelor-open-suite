@@ -113,7 +113,7 @@
 			</panel>
 		</panel>
 		<panel name="description" title="Description" colSpan="12">
-				<field name="description" colSpan="12" showTitle="false" widget="TEXT" height="3"/>
+				<field name="description" colSpan="12" showTitle="false" widget="html" height="200"/>
 		</panel> 
       
 		<panel sidebar="true">
@@ -121,7 +121,7 @@
 		</panel>
 	
 		<panel sidebar="true" name="followUp" title="Follow-up" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
-			<field name="user" canEdit="false" colSpan="6" form-view="user-form" grid-view="user-grid"/>
+			<field name="user" canNew="false" canEdit="false" canView="false" colSpan="6" form-view="user-form" grid-view="user-grid"/>
 			<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 			<button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
 			<field name="createdBy" colSpan="6"/>

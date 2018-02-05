@@ -10,6 +10,7 @@
   	<boolean name="deductLunchVoucher" title="Deduct lunch voucher"/>
   	<boolean name="blockExpenseTax" title="Block expense tax modification" default="false"/>
   	<boolean name="personalExpense" title="Personal expense" />
+	<boolean name="unavailableToUsers" title="Unavailable to users" default="false"/>
   </entity>
 
 </domain-models>

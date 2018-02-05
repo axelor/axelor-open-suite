@@ -39,7 +39,7 @@
 		    <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 			<field name="sentDate" colSpan="4"/>
 			<field name="company" canEdit="false" colSpan="4" form-view="company-form" grid-view="company-grid"/>
-			<field name="user" canEdit="false" colSpan="4" form-view="user-form" grid-view="user-grid"/>
+			<field name="user" colSpan="4" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 		</panel>
 		<panel-related field="extraHoursLineList"/>
 		<panel>
@@ -89,7 +89,7 @@
 	
 	<action-record name="action-extra-hours-record-default" model="com.axelor.apps.hr.db.ExtraHours">
 	    <field name="user" expr="eval:__user__"/>
-	    <field name="company" expr="eval: __user__.activeCompany"/>
+	    <field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-record>
 	
 	<action-record name="action-extra-hours-record-draft" model="com.axelor.apps.hr.db.ExtraHours">

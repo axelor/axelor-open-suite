@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,17 +41,15 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 
 public class TimetableService {
 
 	@Transactional
 	public Invoice generateInvoice(Timetable timetable) throws AxelorException{
-		if(timetable.getProduct() == null){
-			throw new AxelorException(I18n.get("Select a product"), IException.CONFIGURATION_ERROR);
-		}
-		if(timetable.getUnit() == null){
-			throw new AxelorException(I18n.get("Select an unit"), IException.CONFIGURATION_ERROR);
+		if(Strings.isNullOrEmpty(timetable.getProductName())){
+			throw new AxelorException(I18n.get(IExceptionMessage.TIMETABLE_MISSING_PRODUCT_NAME), IException.CONFIGURATION_ERROR);
 		}
 		Invoice invoice = this.createInvoice(timetable);
 		Beans.get(InvoiceRepository.class).save(invoice);

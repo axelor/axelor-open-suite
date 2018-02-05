@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,8 +28,6 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
-import com.axelor.apps.account.service.InterbankPaymentOrderImportService;
-import com.axelor.apps.account.service.InterbankPaymentOrderRejectImportService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.ReimbursementExportService;
 import com.axelor.apps.account.service.ReimbursementImportService;
@@ -62,8 +60,6 @@ public abstract class BatchStrategy extends AbstractBatch {
 	protected CfonbExportService cfonbExportService;
 	protected CfonbImportService cfonbImportService;
 	protected PaymentModeService paymentModeService;
-	protected InterbankPaymentOrderImportService interbankPaymentOrderImportService;
-	protected InterbankPaymentOrderRejectImportService interbankPaymentOrderRejectImportService;
 	protected AccountCustomerService accountCustomerService;
 	protected MoveLineExportService moveLineExportService;
 	protected BatchAccountCustomer batchAccountCustomer;
@@ -113,23 +109,6 @@ public abstract class BatchStrategy extends AbstractBatch {
 	protected BatchStrategy(ReimbursementImportService reimbursementImportService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
 		super();
 		this.reimbursementImportService = reimbursementImportService;
-		this.rejectImportService = rejectImportService;
-		this.batchAccountCustomer = batchAccountCustomer;
-	}
-
-
-
-	protected BatchStrategy(InterbankPaymentOrderImportService interbankPaymentOrderImportService, CfonbImportService cfonbImportService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
-		super();
-		this.interbankPaymentOrderImportService = interbankPaymentOrderImportService;
-		this.cfonbImportService = cfonbImportService;
-		this.rejectImportService = rejectImportService;
-		this.batchAccountCustomer = batchAccountCustomer;
-	}
-
-	protected BatchStrategy(InterbankPaymentOrderRejectImportService interbankPaymentOrderRejectImportService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
-		super();
-		this.interbankPaymentOrderRejectImportService = interbankPaymentOrderRejectImportService;
 		this.rejectImportService = rejectImportService;
 		this.batchAccountCustomer = batchAccountCustomer;
 	}

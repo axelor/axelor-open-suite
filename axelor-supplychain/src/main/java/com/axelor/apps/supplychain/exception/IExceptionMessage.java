@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -88,4 +88,7 @@ public interface IExceptionMessage {
 	 * Timetable Controller
 	 */
 	static final String TIMETABLE_INVOICE_ALREADY_GENERATED = /*$$(*/ "The invoice has already been generated." /*)*/;
+	static final String TIMETABLE_MISSING_PRODUCT_NAME = /*$$(*/ "Please fill the product name." /*)*/;
+	static final String TIMETABLE_SALE_ORDER_NOT_CONFIRMED = /*$$(*/ "Please confirm the sale order before invoicing." /*)*/;
+
 }

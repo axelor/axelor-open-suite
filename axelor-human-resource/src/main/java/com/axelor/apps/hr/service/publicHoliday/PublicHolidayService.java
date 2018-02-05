@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,37 +17,36 @@
  */
 package com.axelor.apps.hr.service.publicHoliday;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.PublicHolidayDay;
-import com.axelor.apps.hr.db.PublicHolidayPlanning;
-import com.axelor.apps.hr.db.repo.PublicHolidayDayRepository;
+import com.axelor.apps.hr.db.EventsPlanning;
+import com.axelor.apps.hr.db.EventsPlanningLine;
+import com.axelor.apps.hr.db.repo.EventsPlanningLineRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import org.joda.time.LocalDate;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public class PublicHolidayService {
 
 	protected WeeklyPlanningService weeklyPlanningService;
-	protected PublicHolidayDayRepository publicHolidayDayRepo;
+	protected EventsPlanningLineRepository eventsPlanningLineRepo;
 
 	@Inject
-	public PublicHolidayService(WeeklyPlanningService weeklyPlanningService, PublicHolidayDayRepository publicHolidayDayRepo){
+	public PublicHolidayService(WeeklyPlanningService weeklyPlanningService, EventsPlanningLineRepository eventsPlanningLineRepo){
 		
 		this.weeklyPlanningService = weeklyPlanningService;
-		this.publicHolidayDayRepo = publicHolidayDayRepo;
+		this.eventsPlanningLineRepo = eventsPlanningLineRepo;
 	}
 	
-	public BigDecimal computePublicHolidayDays(LocalDate fromDate, LocalDate toDate, WeeklyPlanning weeklyPlanning, PublicHolidayPlanning publicHolidayPlanning) throws AxelorException{
+	public BigDecimal computePublicHolidayDays(LocalDate fromDate, LocalDate toDate, WeeklyPlanning weeklyPlanning, EventsPlanning publicHolidayPlanning) throws AxelorException{
 		BigDecimal publicHolidayDays = BigDecimal.ZERO;
 
-		List<PublicHolidayDay> publicHolidayDayList= publicHolidayDayRepo.all().filter("self.publicHolidayPlann = ?1 AND self.date BETWEEN ?2 AND ?3", publicHolidayPlanning, fromDate, toDate).fetch();
-		for (PublicHolidayDay publicHolidayDay : publicHolidayDayList) {
+		List<EventsPlanningLine> publicHolidayDayList = eventsPlanningLineRepo.all().filter("self.eventsPlanning = ?1 AND self.date BETWEEN ?2 AND ?3", publicHolidayPlanning, fromDate, toDate).fetch();
+		for (EventsPlanningLine publicHolidayDay : publicHolidayDayList) {
 			publicHolidayDays = publicHolidayDays.add(new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, publicHolidayDay.getDate())));
 		}
 		return publicHolidayDays;
@@ -55,7 +54,7 @@ public class PublicHolidayService {
 	
 	public boolean checkPublicHolidayDay(LocalDate date, Employee employee) throws AxelorException{
 
-		List<PublicHolidayDay> publicHolidayDayList = publicHolidayDayRepo.all().filter("self.publicHolidayPlann = ?1 AND self.date = ?2", employee.getPublicHolidayPlanning(), date).fetch();
+		List<EventsPlanningLine> publicHolidayDayList = eventsPlanningLineRepo.all().filter("self.eventsPlanning = ?1 AND self.date = ?2", employee.getPublicHolidayEventsPlanning(), date).fetch();
 		if(publicHolidayDayList == null || publicHolidayDayList.isEmpty()){
 			return false;
 		}
@@ -66,11 +65,11 @@ public class PublicHolidayService {
 	
 	public int getImposedDayNumber(Employee employee, LocalDate startDate, LocalDate endDate){
 		
-		PublicHolidayPlanning imposedDays =  employee.getImposedDayPlanning();
+		EventsPlanning imposedDays = employee.getImposedDayEventsPlanning();
 		
-		if (imposedDays == null || imposedDays.getPublicHolidayDayList() == null || imposedDays.getPublicHolidayDayList().isEmpty()) { return 0; }
+		if (imposedDays == null || imposedDays.getEventsPlanningLineList() == null || imposedDays.getEventsPlanningLineList().isEmpty()) { return 0; }
 		
-		List<PublicHolidayDay> imposedDayList= publicHolidayDayRepo.all().filter("self.publicHolidayPlann = ?1 AND self.date BETWEEN ?2 AND ?3", imposedDays, startDate, endDate).fetch();
+		List<EventsPlanningLine> imposedDayList = eventsPlanningLineRepo.all().filter("self.eventsPlanning = ?1 AND self.date BETWEEN ?2 AND ?3", imposedDays, startDate, endDate).fetch();
 		
 		return imposedDayList.size();
 	}

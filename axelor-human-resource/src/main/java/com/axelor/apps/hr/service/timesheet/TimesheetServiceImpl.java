@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,25 +17,10 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.mail.MessagingException;
-
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
-import org.joda.time.Minutes;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
@@ -48,14 +33,13 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EventsPlanningLine;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
-import com.axelor.apps.hr.db.PublicHolidayDay;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
-import com.axelor.apps.hr.db.repo.PublicHolidayDayRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -77,7 +61,25 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
+import org.joda.time.Minutes;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author axelor
+ *
+ */
 public class TimesheetServiceImpl implements TimesheetService{
 
 	@Inject
@@ -90,11 +92,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 	protected GeneralService generalService;
 	
 	@Inject
-	protected ProjectTaskService projectTaskService; 
-	
-	@Inject
-	protected PublicHolidayDayRepository publicHolidayDayRepo;
-	
+	protected ProjectTaskService projectTaskService;
+
 	@Inject
 	protected EmployeeRepository employeeRepo;
 	
@@ -115,7 +114,6 @@ public class TimesheetServiceImpl implements TimesheetService{
 		for (TimesheetLine timesheetLine : timesheetLineList) {
 			timesheet.addTimesheetLineListItem(timesheetLine);
 		}
-		Beans.get(TimesheetRepository.class).save(timesheet);
 	}
 
 	
@@ -127,7 +125,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_CONFIRMED);
 		timesheet.setSentDate(generalService.getTodayDate());
 		
-		if(timesheet.getToDate() == null)  {
+		if (timesheet.getToDate() == null) {
 			List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
 			LocalDate timesheetLineLastDate = timesheetLineList.get(0).getDate();
 			for (TimesheetLine timesheetLine : timesheetLineList.subList(1, timesheetLineList.size())) {
@@ -138,9 +136,6 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 			timesheet.setToDate(timesheetLineLastDate);
 		}
-		
-		timesheetRepository.save(timesheet);
-		
 	}
 	
 	
@@ -164,9 +159,6 @@ public class TimesheetServiceImpl implements TimesheetService{
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
 		timesheet.setValidatedBy(AuthUtils.getUser());
 		timesheet.setValidationDate(generalService.getTodayDate());
-		
-		timesheetRepository.save(timesheet);
-		
 	}
 	
 	
@@ -174,10 +166,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 		
-		if(hrConfig.getTimesheetMailNotification())  {
-				
+		if (hrConfig.getTimesheetMailNotification()) {
 			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getValidatedTimesheetTemplate(hrConfig));
-				
 		}
 		
 		return null;
@@ -190,19 +180,14 @@ public class TimesheetServiceImpl implements TimesheetService{
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_REFUSED);
 		timesheet.setRefusedBy(AuthUtils.getUser());
 		timesheet.setRefusalDate(generalService.getTodayDate());
-		
-		timesheetRepository.save(timesheet);
-		
 	}
 	
 	public Message sendRefusalEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 		
-		if(hrConfig.getTimesheetMailNotification())  {
-				
+		if (hrConfig.getTimesheetMailNotification()) {
 			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getRefusedTimesheetTemplate(hrConfig));
-				
 		}
 		
 		return null;
@@ -212,17 +197,14 @@ public class TimesheetServiceImpl implements TimesheetService{
 	@Transactional(rollbackOn={Exception.class})
 	public void cancel(Timesheet timesheet){
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_CANCELED);
-		Beans.get(TimesheetRepository.class).save(timesheet);
 	}
 	
 	public Message sendCancellationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
 
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 
-		if(hrConfig.getTimesheetMailNotification())  {
-
+		if (hrConfig.getTimesheetMailNotification()) {
 			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getCanceledTimesheetTemplate(hrConfig));
-
 		}
 
 		return null;
@@ -247,7 +229,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		if(employee == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),user.getName()), IException.CONFIGURATION_ERROR);
 		}
-		WeeklyPlanning planning = user.getEmployee().getPlanning();
+		WeeklyPlanning planning = user.getEmployee().getWeeklyPlanning();
 		if(planning == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING), user.getName()), IException.CONFIGURATION_ERROR);
 		}
@@ -255,7 +237,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		LocalDate fromDate = fromGenerationDate;
 		LocalDate toDate = toGenerationDate;
-		Map<Integer,String> correspMap = new HashMap<Integer,String>();
+		Map<Integer,String> correspMap = new HashMap<>();
 		correspMap.put(1, "monday");
 		correspMap.put(2, "tuesday");
 		correspMap.put(3, "wednesday");
@@ -268,7 +250,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		List<LeaveRequest> leaveList = LeaveRequestRepository.of(LeaveRequest.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", user).fetch();
 		
 		//Public holidays list
-		List<PublicHolidayDay> publicHolidayList = employee.getPublicHolidayPlanning().getPublicHolidayDayList();
+		List<EventsPlanningLine> publicHolidayList = employee.getPublicHolidayEventsPlanning().getEventsPlanningLineList();
 		 
 		while(!fromDate.isAfter(toDate)){
 			DayPlanning dayPlanningCurr = new DayPlanning();
@@ -296,7 +278,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 				/*Check if the day is not a public holiday */
 				boolean noPublicHoliday = true;
 				if(publicHolidayList != null){
-					for (PublicHolidayDay publicHoliday : publicHolidayList) {
+					for (EventsPlanningLine publicHoliday : publicHolidayList) {
 						if(publicHoliday.getDate().isEqual(fromDate))
 						{
 							noPublicHoliday = false;
@@ -348,7 +330,12 @@ public class TimesheetServiceImpl implements TimesheetService{
 		Timesheet timesheet = new Timesheet();
 		
 		timesheet.setUser(user);
-		timesheet.setCompany(user.getActiveCompany());
+		Company company = null;
+		if (user.getEmployee() != null
+				&& user.getEmployee().getMainEmploymentContract() != null) {
+			company = user.getEmployee().getMainEmploymentContract().getPayCompany();
+		}
+		timesheet.setCompany(company);
 		timesheet.setFromDate(fromDate);
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
 		timesheet.setFullName(computeFullName(timesheet));
@@ -372,10 +359,10 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException  {
 
-		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+		List<InvoiceLine> invoiceLineList = new ArrayList<>();
 		int count = 0;
 		DateFormat ddmmFormat = new SimpleDateFormat("dd/MM");
-		HashMap<String, Object[]> timeSheetInformationsMap = new HashMap<String, Object[]>();
+		HashMap<String, Object[]> timeSheetInformationsMap = new HashMap<>();
 		//Check if a consolidation by product and user must be done
 		boolean consolidate = generalService.getGeneral().getConsolidateTSLine();
 
@@ -489,7 +476,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 				InvoiceLine invoiceLine = this.createInvoiceLine();
 
-				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+				List<InvoiceLine> invoiceLines = new ArrayList<>();
 				invoiceLines.add(invoiceLine);
 
 				return invoiceLines;
@@ -544,11 +531,11 @@ public class TimesheetServiceImpl implements TimesheetService{
 	}
 	
 	public void getActivities(ActionRequest request, ActionResponse response){
-		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
+		List<Map<String,String>> dataList = new ArrayList<>();
 		try{
 			List<Product> productList = Beans.get(ProductRepository.class).all().filter("self.isActivity = true").fetch();
 			for (Product product : productList) {
-				Map<String, String> map = new HashMap<String,String>();
+				Map<String, String> map = new HashMap<>();
 				map.put("name", product.getName());
 				map.put("id", product.getId().toString());
 				dataList.add(map);
@@ -561,6 +548,9 @@ public class TimesheetServiceImpl implements TimesheetService{
 		}
 	}
 	
+	
+	
+	// Method used for mobile application
 	@Transactional
 	public void insertTSLine(ActionRequest request, ActionResponse response){
 		
@@ -616,7 +606,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	public void validToDate(Timesheet timesheet) throws AxelorException  {
 		
 		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
-		List<Integer> listId = new ArrayList<Integer>();
+		List<Integer> listId = new ArrayList<>();
 		int count = 0;
 		
 		if(timesheet.getFromDate() == null){
@@ -657,8 +647,10 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
 
-		for (TimesheetLine timesheetLine : timesheetLines) {
-			periodTotal = periodTotal.add(timesheetLine.getDurationStored());
+		if (timesheetLines != null) {
+			for (TimesheetLine timesheetLine : timesheetLines) {
+				periodTotal = periodTotal.add(timesheetLine.getDurationStored());
+			}
 		}
 
 		return periodTotal;

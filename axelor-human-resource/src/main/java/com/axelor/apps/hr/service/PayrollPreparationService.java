@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,9 @@
 package com.axelor.apps.hr.service;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.*;
@@ -104,15 +107,15 @@ public class PayrollPreparationService {
 	
 	public List<PayrollLeave> fillInLeaves(PayrollPreparation payrollPreparation) throws AxelorException{
 		
-		List<PayrollLeave> payrollLeaveList = new ArrayList<PayrollLeave>();
+		List<PayrollLeave> payrollLeaveList = new ArrayList<>();
 		LocalDate fromDate = payrollPreparation.getPeriod().getFromDate();
 		LocalDate toDate = payrollPreparation.getPeriod().getToDate();
 		Employee employee = payrollPreparation.getEmployee();
 		
-		if(employee.getPublicHolidayPlanning() == null){
+		if(employee.getPublicHolidayEventsPlanning() == null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY),employee.getName()), IException.CONFIGURATION_ERROR);
 		}
-		if(employee.getPlanning()== null){
+		if(employee.getWeeklyPlanning()== null){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),employee.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
@@ -150,7 +153,7 @@ public class PayrollPreparationService {
 		BigDecimal workingDays = BigDecimal.ZERO;
 		BigDecimal leaveDays = BigDecimal.ZERO;
 		while(!itDate.isAfter(toDate)){
-			workingDays = workingDays.add(new BigDecimal(weeklyPlanningService.workingDayValue(payrollPreparation.getEmployee().getPlanning(), itDate)));
+			workingDays = workingDays.add(new BigDecimal(weeklyPlanningService.workingDayValue(payrollPreparation.getEmployee().getWeeklyPlanning(), itDate)));
 			itDate = itDate.plusDays(1);
 		}
 		if(payrollLeaveList != null){
@@ -177,7 +180,19 @@ public class PayrollPreparationService {
 	
 	public BigDecimal computeExpenseAmount(PayrollPreparation payrollPreparation){
 		BigDecimal expenseAmount = BigDecimal.ZERO;
-		List<Expense> expenseList = Beans.get(ExpenseRepository.class).all().filter("self.user.employee = ?1 AND self.statusSelect = 3 AND (self.payrollPreparation = null OR self.payrollPreparation.id = ?2) AND self.companyCbSelect = 1 AND self.period = ?3", payrollPreparation.getEmployee(), payrollPreparation.getId(), payrollPreparation.getPeriod()).fetch();
+        List<Expense> expenseList = Beans.get(ExpenseRepository.class).all()
+                .filter("self.user.employee = ?1 "
+                        + "AND self.statusSelect = ?2 "
+                        + "AND (self.payrollPreparation IS NULL OR self.payrollPreparation.id = ?3) "
+                        + "AND self.companyCbSelect = ?4 "
+                        + "AND self.validationDate BETWEEN ?5 AND ?6",
+                        payrollPreparation.getEmployee(),
+                        ExpenseRepository.STATUS_VALIDATED,
+                        payrollPreparation.getId(),
+                        ExpenseRepository.COMPANY_CB_PAYMENT_NO,
+                        payrollPreparation.getPeriod().getFromDate(),
+                        payrollPreparation.getPeriod().getToDate())
+                .fetch();
 		for (Expense expense : expenseList) {
 			expenseAmount = expenseAmount.add(expense.getInTaxTotal());
 			payrollPreparation.addExpenseListItem(expense);
@@ -190,6 +205,7 @@ public class PayrollPreparationService {
 		List<LunchVoucherMgtLine> lunchVoucherList = Beans.get(LunchVoucherMgtLineRepository.class).all().filter("self.employee = ?1 AND self.lunchVoucherMgt.statusSelect = 3 AND (self.payrollPreparation = null OR self.payrollPreparation.id = ?2) AND self.lunchVoucherMgt.payPeriod = ?3", payrollPreparation.getEmployee(), payrollPreparation.getId(), payrollPreparation.getPeriod()).fetch();
 		for (LunchVoucherMgtLine lunchVoucherMgtLine : lunchVoucherList) {
 			lunchVoucherNumber = lunchVoucherNumber.add(new BigDecimal(lunchVoucherMgtLine.getLunchVoucherNumber()) );
+			lunchVoucherNumber = lunchVoucherNumber.add(new BigDecimal(lunchVoucherMgtLine.getInAdvanceNbr()));
 			payrollPreparation.addLunchVoucherMgtLineListItem(lunchVoucherMgtLine);
 		}
 		return lunchVoucherNumber;
@@ -216,12 +232,12 @@ public class PayrollPreparationService {
 		return employeeBonusAmount;
 	}
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public String exportSinglePayrollPreparation(PayrollPreparation payrollPreparation) throws IOException, AxelorException{
 		
-		List<String[]> list = new ArrayList<String[]>();
+		List<String[]> list = new ArrayList<>();
 		
-		String item[] = new String[5];
+		String[] item = new String[5];
 		item[0] = payrollPreparation.getEmployee().getName();
 		item[1] = payrollPreparation.getDuration().toString();
 		item[2] = payrollPreparation.getLunchVoucherNumber().toString();
@@ -253,18 +269,18 @@ public class PayrollPreparationService {
 	
 	public String[] createExportFileLine(PayrollPreparation payrollPreparation){
 		
-		String item[] = new String[7];
+		String[] item = new String[7];
 		item[0] = payrollPreparation.getEmployee().getExportCode();
 		item[1] = payrollPreparation.getEmployee().getContactPartner().getName();
 		item[2] = payrollPreparation.getEmployee().getContactPartner().getFirstName();
 		return item;
 	}
 	
-	public String exportMeilleureGestionPayrollPreparation(PayrollPreparation payrollPreparation) throws AxelorException, IOException{
+	public String exportNibelisPayrollPreparation(PayrollPreparation payrollPreparation) throws AxelorException, IOException{
 		
-		List<String[]> list = new ArrayList<String[]>();
+		List<String[]> list = new ArrayList<>();
 		
-		exportMeilleureGestion(payrollPreparation, list);
+		exportNibelis(payrollPreparation, list);
 		
 		
 		String fileName = this.getPayrollPreparationExportName();
@@ -282,8 +298,8 @@ public class PayrollPreparationService {
 		return filePath + System.getProperty("file.separator") +fileName;
 	}
 	
-	@Transactional
-	public void exportMeilleureGestion(PayrollPreparation payrollPreparation, List<String[]> list ) throws AxelorException{
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void exportNibelis(PayrollPreparation payrollPreparation, List<String[]> list ) throws AxelorException{
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(payrollPreparation.getCompany());
 		
@@ -293,7 +309,7 @@ public class PayrollPreparationService {
 			List<PayrollLeave> payrollLeaveList = fillInLeaves(payrollPreparation);
 			for (PayrollLeave payrollLeave : payrollLeaveList) {
 				if (payrollLeave.getLeaveReason().getPayrollPreprationExport()){
-					String leaveLine[] = createExportFileLine(payrollPreparation);
+					String[] leaveLine = createExportFileLine(payrollPreparation);
 					leaveLine[3] = payrollLeave.getLeaveReason().getExportCode();
 					leaveLine[4] = payrollLeave.getFromDate().toString("dd/MM/YYYY");
 					leaveLine[5] = payrollLeave.getToDate().toString("dd/MM/YYYY");
@@ -305,7 +321,7 @@ public class PayrollPreparationService {
 		
 		// LUNCH VOUCHER MANAGEMENT
 		if (payrollPreparation.getLunchVoucherNumber().compareTo(BigDecimal.ZERO) > 0){
-			String lunchVoucherLine[] = createExportFileLine(payrollPreparation);
+			String[] lunchVoucherLine = createExportFileLine(payrollPreparation);
 			lunchVoucherLine[3] = hrConfig.getExportCodeForLunchVoucherManagement();
 			lunchVoucherLine[6] = payrollPreparation.getLunchVoucherNumber().toString();
 			list.add(lunchVoucherLine);
@@ -314,7 +330,7 @@ public class PayrollPreparationService {
 		
 		// EMPLOYEE BONUS MANAGEMENT
 		if (payrollPreparation.getEmployeeBonusAmount().compareTo(BigDecimal.ZERO) > 0){
-			Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
+			Map<String, BigDecimal> map = new HashMap<>();
 			for (EmployeeBonusMgtLine bonus : payrollPreparation.getEmployeeBonusMgtLineList() ) {
 				if (bonus.getEmployeeBonusMgt().getEmployeeBonusType().getPayrollPreparationExport()){
 						if ( map.containsKey(bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode()) ){
@@ -325,7 +341,7 @@ public class PayrollPreparationService {
 				}
 			}
 			for ( Map.Entry<String, BigDecimal> entry : map.entrySet() ) {
-				String employeeBonusLine[] = createExportFileLine(payrollPreparation);
+				String[] employeeBonusLine = createExportFileLine(payrollPreparation);
 				employeeBonusLine[3] = entry.getKey();
 				employeeBonusLine[6] = entry.getValue().toString();
 				list.add(employeeBonusLine);
@@ -335,7 +351,7 @@ public class PayrollPreparationService {
 		
 		//EXTRA HOURS 
 		if ( payrollPreparation.getExtraHoursNumber().compareTo( BigDecimal.ZERO ) > 0 ){
-			String extraHourLine[] = createExportFileLine(payrollPreparation);
+			String[] extraHourLine = createExportFileLine(payrollPreparation);
 			extraHourLine[3] = hrConfig.getExportCodeForLunchVoucherManagement();
 			extraHourLine[6] = payrollPreparation.getExtraHoursNumber().toString();
 			list.add(extraHourLine);
@@ -343,7 +359,7 @@ public class PayrollPreparationService {
 		
 		payrollPreparation.setExported(true);
 		payrollPreparation.setExportDate(generalService.getTodayDate());
-		payrollPreparation.setExportTypeSelect(HrBatchRepository.EXPORT_TYPE_MEILLEURE_GESTION);
+		payrollPreparation.setExportTypeSelect(HrBatchRepository.EXPORT_TYPE_NIBELIS);
 		payrollPreparationRepo.save(payrollPreparation);
 	}
 	
@@ -354,7 +370,7 @@ public class PayrollPreparationService {
 	
 	public String[] getPayrollPreparationExportHeader(){
 		
-		String headers[] = new String[5];
+		String[] headers = new String[5];
 		headers[0] = I18n.get("Employee");
 		headers[1] = I18n.get("Working days' number");
 		headers[2] = I18n.get("Lunch vouchers' number");
@@ -365,7 +381,7 @@ public class PayrollPreparationService {
 	
 	
 	public String[] getPayrollPreparationMeilleurGestionExportHeader(){
-		String headers[] = new String[7];
+		String[] headers = new String[7];
 		headers[0] = I18n.get("Registration number");
 		headers[1] = I18n.get("Employee lastname");
 		headers[2] = I18n.get("Employee firstname");
@@ -375,5 +391,30 @@ public class PayrollPreparationService {
 		headers[6] = I18n.get("Value");
 		return headers;
 	}
-	
+
+	/**
+	 * If each employee's payroll preparation has been exported,
+	 * close the pay period.
+	 * @param payrollPreparation
+	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void closePayPeriodIfExported(PayrollPreparation payrollPreparation) {
+	    Company company = payrollPreparation.getCompany();
+	    Period payPeriod = payrollPreparation.getPeriod();
+
+		long nbNotExportedPayroll = Beans.get(PayrollPreparationRepository.class)
+				.all()
+				.filter("self.company = :_company AND self.exported = false " +
+						"AND self.period = :_period")
+				.bind("_company", company)
+				.bind("_period", payPeriod)
+				.count();
+
+		if (nbNotExportedPayroll == 0) {
+			payPeriod.setStatusSelect(PeriodRepository.STATUS_CLOSED);
+			payPeriod.setClosureDateTime(Beans.get(GeneralService.class).getTodayDateTime().toLocalDateTime());
+		}
+		Beans.get(PeriodRepository.class).save(payPeriod);
+	}
+
 }

@@ -146,7 +146,6 @@
 	<selection name="iaccounting.batch.action.select">
 		<option value="11">Reimbursement</option>
 		<option value="14">Reminder</option>
-		<option value="15">Payments by IPO et IPO cheque</option>
 		<option value="16">Doubtful Customers</option>
 		<option value="17">Update customer account</option>
 		<option value="18">Move export</option>
@@ -181,11 +180,6 @@
 	
 	<selection name="ireminder.batch.type.select">
 		<option value="1">Classic reminder</option>
-	</selection>
-	
-	<selection name="iinterbank.account.order.batch.type.select">
-		<option value="1">Import payments by IPO and IPO cheque</option>
-		<option value="2">Import payment rejects by IPO and IPO cheque</option>
 	</selection>
 	
 	<selection name="iinvoice.batch.to.status.select">
@@ -283,6 +277,12 @@
 	<selection name="account.interbankcode.type.select">
 		<option value="1">Operation code</option>
 		<option value="2">Reject/Return code</option>
+	</selection>
+
+	<selection name="assistant.report.invoice.turnover.type.select">
+		<option value="1">Ordered</option>
+		<option value="2">Invoiced</option>
+		<option value="3">Ordered and invoiced</option>
 	</selection>
 
 	<selection name="meta.schedule.batch.service.select" id="account.meta.schedule.batch.service.select">

@@ -120,9 +120,6 @@
 						<field name="endingRecordCodeImportCFONB"/>
 						<field name="transferOperationCodeImportCFONB"/>
 						<field name="directDebitOperationCodeImportCFONB"/>
-						<field name="ipoRejectOperationCodeImportCFONB"/>
-						<field name="ipoOperationCodeImportCFONB"/>
-						<field name="ipoAndChequeOperationCodeImportCFONB"/>
 					</editor>
 				</field>
 				</panel>
@@ -214,16 +211,7 @@
 				    </editor>
 				</field>
 			</panel>
-			<panel name="ipoPaymentsAndIpoCheque" title="IPO Payments and IPO Cheque">
-				<panel name="paymentsByIpoAndIpoCheque" title="Payments by IPO and IPO Cheque" colSpan="12">
-					<field name="interbankPaymentOrderImportPathCFONB" />
-					<field name="tempInterbankPaymentOrderImportPathCFONB" />
-				</panel>
-				<panel name="paymentsRejectsByIpoAndIpoCheque" title="Payments rejects by IPO and IPO Cheque" colSpan="12">
-					<field name="interbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
-					<field name="tempInterbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
-				</panel>
-			</panel>
+
 			<panel name="printingSettings" title="Printing settings">
 	  			<field name="displayDelAddrOnPrinting"/>
 	  			<field name="displayProductCodeOnPrinting"/>

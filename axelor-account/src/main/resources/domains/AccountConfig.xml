@@ -100,14 +100,7 @@
 	<!--  Onglet Paybox -->
 	<many-to-one name="payboxConfig" ref="com.axelor.apps.account.db.PayboxConfig" title="Paybox configuration"/>
 	  
-	<!-- Onglet Import des paiements par TIP et TIP chèque-->
-   	<string name="interbankPaymentOrderImportPathCFONB" title="Filepath to import IPO, and IPO &amp; Cheque payments"  help="true"/>
-    <string name="tempInterbankPaymentOrderImportPathCFONB" title="Temporary filepath to import IPO, and IPO &amp; Cheque payments" help="true"/>
-  	
-  	<string name="interbankPaymentOrderRejectImportPathCFONB" title="Filepath to import IPO, and IPO &amp; Cheque payments rejects"  help="true"/>
-    <string name="tempInterbankPaymentOrderRejectImportPathCFONB" title="Temporary filepath to import IPO, and IPO &amp; Cheque payments rejects" help="true"/>
-  
-    <!-- Invoice page -->
+	<!-- Invoice page -->
     <boolean name="allowCancelVentilatedInvoice" title="Allow cancelation of ventilated invoice"/>
     <boolean name="allowRemovalValidatedMove" title="Allow removal of validated move"/>
     <boolean name="generateMoveForInvoicePayment" title="Generate move for payment on invoice" default="true"/>

@@ -7,8 +7,8 @@
 
   <entity name="LeaveManagement" cachable="true">
 	<many-to-one name="leaveLine" ref="com.axelor.apps.hr.db.LeaveLine"/>
-    <decimal name="value" title="Value" scale="1" precision="5"/>
-    <decimal name="oldValue" scale="1" precision="5"/>
+    <decimal name="value" title="Value" scale="4" precision="8"/>
+    <decimal name="oldValue" scale="4" precision="8"/>
     <date name="date" column="date_val" title="Date" required="true"/>
     <date name="fromDate" title="Date from" />
     <date name="toDate" title="Date to (Included)" />

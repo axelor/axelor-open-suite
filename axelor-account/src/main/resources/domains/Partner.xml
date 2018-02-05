@@ -13,7 +13,7 @@
     <string name="invoiceSendingFormatSelect" title="Invoice sending media" selection="invoice.account.condition.invoice.sending.format.select"/>
     <many-to-one name="inPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="In Payment Mode" index="false"/>
     <many-to-one name="outPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Out Payment Mode" index="false"/>
-    <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition" index="false"/>
+    <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition" index="false" massUpdate="true"/>
    
     <integer name="rejectCounter" title="Reject counter"/>
     <integer name="invoicesCopySelect" title="Invoices copy" selection="grade.0.up.to.10.select"/>

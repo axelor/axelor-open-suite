@@ -38,7 +38,7 @@
 			<field name="creditTransferTypeSelect"/>
 			<field name="customerReimbursementTypeSelect" showIf="$contains([3], creditTransferTypeSelect)" />
 			<field name="paymentMode" domain="self.typeSelect in (2,9)" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-			<field name="period" showIf="$contains([1], creditTransferTypeSelect)" form-view="period-form" grid-view="period-grid"/>
+			<field name="period" showIf="$contains([1], creditTransferTypeSelect)" form-view="period-form" grid-view="period-grid" canEdit="false"/>
 			<field name="dueDate" showIf="$contains([2, 3], creditTransferTypeSelect)" />
 			<field name="currency" showIf="$contains([2, 3], creditTransferTypeSelect)" />
 			<field name="includeOtherBankAccounts" showIf="$contains([1, 2, 3], creditTransferTypeSelect)" if="__config__.general.getManageMultiBanks()" />
@@ -47,10 +47,7 @@
 		<panel name="reminderPage" title="Reminder configuration" hideIf="actionSelect != 14"  >
 			<field name="reminderTypeSelect"/>
 		</panel>
-		<panel name="interbankPaymentOrderPage" title="Payments by IPO and IPO Cheque configuration" hideIf="actionSelect != 15">
-			<field name="interbankPaymentOrderTypeSelect"/>
-			<field name="currency" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
-		</panel>
+
 		<!--<page name="doubtfulCustormerPage" title="Doubtful customers configuration" hideIf="actionSelect != 16"  />-->
 		<panel name="accountCustomerPage" title="Account calculation configuration" hideIf="actionSelect != 17">
 			<!--<group title="Update"    >-->
@@ -79,7 +76,6 @@
 	    <button name="reimbursementBatch" title="Reimbursement Batch" showIf="actionSelect == 11"  onClick="save,action-accounting-batch-method-action-reimbursement" colSpan="12"/>
 	    <button name="directDebitBatch" title="Direct Debit Batch" showIf="actionSelect == 12"  onClick="save,action-accounting-batch-method-action-direct-debit" colSpan="12"/>
 	    <button name="reminderBatch" title="Reminder Batch" showIf="actionSelect == 14" onClick="save,action-accounting-batch-method-action-reminder" colSpan="12"/>
-	    <button name="interbankPaymentOrderBatch" title="Interbank Payment Order Batch" showIf="actionSelect == 15" onClick="save,action-accounting-batch-method-action-interbank-payment-order" colSpan="12"/>
 	    <button name="doubtfulCustomerBatch" title="Doubtful Customer Batch" showIf="actionSelect == 16" onClick="save,action-accounting-batch-method-action-doubtful-customer" colSpan="12"/>
 	    <button name="accountCustomerBatch" title="Start" showIf="actionSelect == 17"  onClick="save,action-accounting-batch-method-action-account-customer" colSpan="12"/>
 	    <button name="moveLineExportBatch" title="Start" showIf="actionSelect == 18"  onClick="save,action-accounting-batch-method-action-move-line-export" colSpan="12"/>
@@ -112,10 +108,6 @@
 	
 	<action-method name="action-accounting-batch-method-action-reminder">
 		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionReminder"/>
-	</action-method>
-	
-	<action-method name="action-accounting-batch-method-action-interbank-payment-order">
-		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionInterbankPaymentOrder"/>
 	</action-method>
 	
 	<action-method name="action-accounting-batch-method-action-doubtful-customer">

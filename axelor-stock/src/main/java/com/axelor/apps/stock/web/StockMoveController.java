@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -224,8 +224,7 @@ public class StockMoveController {
 		response.setCanClose(true);
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void  splitStockMoveLinesSpecial(ActionRequest request, ActionResponse response) {
+	@SuppressWarnings({ "unchecked", "rawtypes" })public void  splitStockMoveLinesSpecial(ActionRequest request, ActionResponse response) {
 		List<HashMap> stockMoveLines = (List<HashMap>) request.getContext().get("stockMoveLineList");
 		if(stockMoveLines == null){
 			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_14));
@@ -234,12 +233,12 @@ public class StockMoveController {
 		Integer splitQty = (Integer)request.getContext().get("splitQty");
 		if(splitQty < 1){
 			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_16));
-			return ;
-		}
+			return ;}
+
 		Boolean selected = stockMoveService.splitStockMoveLinesSpecial(stockMoveLines, new BigDecimal(splitQty));
-		if(!selected)
+		if(!selected){
 			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_15));
-		response.setReload(true);
+		}
 		response.setCanClose(true);
 	}
 
@@ -290,19 +289,19 @@ public class StockMoveController {
 	@Transactional
 	public void changeConformityStockMove(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		
+
 		if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 			for(StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()){
 				stockMoveLine.setConformitySelect(stockMove.getConformitySelect());
 			}
 			response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
-		} 
+		}
 	}
-	
+
 	@Transactional
 	public void changeConformityStockMoveLine(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		
+
 		if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 			for(StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()){
 				Integer i = 0;
@@ -314,7 +313,7 @@ public class StockMoveController {
 							response.setValue("conformitySelect", conformityLineSelect);
 							return;
 						}
-						
+
 						if (conformityLineSelect == conformitySelectBase){
 							response.setValue("conformitySelect", conformitySelectBase);
 						} else if (conformityLineSelect != conformitySelectBase){
@@ -323,12 +322,12 @@ public class StockMoveController {
 						i++;
 					}
 				}
-				
+
 			}
 		}
 	}
-	
-	
+
+
 	public void  compute(ActionRequest request, ActionResponse response) {
 		
 		StockMove stockMove = request.getContext().asType(StockMove.class);

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.axelor.apps.base.db.Bank;
+import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.CountryCode;
@@ -283,8 +285,10 @@ public class PartnerController {
 		
 		if (bankDetailsList !=null && !bankDetailsList.isEmpty()){
 			for (BankDetails bankDetails : bankDetailsList) {
-				
-				if(bankDetails.getIban() != null) {
+				Bank bank = bankDetails.getBank();
+				if(bankDetails.getIban() != null && bank != null
+						&& bank.getBankDetailsTypeSelect()
+						== BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
 					LOG.debug("checking iban code : {}", bankDetails.getIban());
 					try {
 						Beans.get(BankDetailsService.class).validateIban(bankDetails.getIban());

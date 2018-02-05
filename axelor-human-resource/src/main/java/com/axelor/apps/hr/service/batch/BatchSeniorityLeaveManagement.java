@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -130,7 +130,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 			
 			List<Employee> employeeList = Lists.newArrayList();
 			if (hrBatch.getCompany() != null){
-				employeeList = JPA.all(Employee.class).filter("EXISTS(SELECT u FROM User u WHERE :company MEMBER OF u.companySet AND self = u.employee) OR NOT EXISTS(SELECT u FROM User u WHERE self = u.employee)").bind("company", hrBatch.getCompany()).fetch();
+				employeeList = JPA.all(Employee.class).filter("self.mainEmploymentContract.payCompany = :company").bind("company", hrBatch.getCompany()).fetch();
 				}
 			else{
 				employeeList = JPA.all(Employee.class).fetch();
@@ -207,9 +207,9 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 					incrementDone();
 					return;
 				}
-				LeaveManagement leaveManagement = leaveManagementService.createLeaveManagement(leaveLine, AuthUtils.getUser(), batch.getHrBatch().getComments(), null, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate(), quantity.setScale(1) );
-				leaveLine.setQuantity(leaveLine.getQuantity().add(quantity.setScale(1)));
-				leaveLine.setTotalQuantity(leaveLine.getTotalQuantity().add(quantity.setScale(1)));
+				LeaveManagement leaveManagement = leaveManagementService.createLeaveManagement(leaveLine, AuthUtils.getUser(), batch.getHrBatch().getComments(), null, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate(), quantity);
+				leaveLine.setQuantity(leaveLine.getQuantity().add(quantity));
+				leaveLine.setTotalQuantity(leaveLine.getTotalQuantity().add(quantity));
 				leaveManagementRepository.save(leaveManagement);
 				leaveLineRepository.save(leaveLine);
 				updateEmployee(employee);

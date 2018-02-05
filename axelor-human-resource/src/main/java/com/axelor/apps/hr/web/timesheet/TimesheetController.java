@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import java.text.Bidi;
 import java.util.List;
 import java.util.Map;
 
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
@@ -104,7 +105,10 @@ public class TimesheetController {
 			logTime = new BigDecimal(context.get("logTime").toString());
 		
 		Map<String, Object> projectTaskContext = (Map<String, Object>) context.get("projectTask");
-		ProjectTask projectTask = projectTaskRepoProvider.get().find(((Integer) projectTaskContext.get("id")).longValue());
+		ProjectTask  projectTask = null;
+		if (projectTaskContext != null) {
+			projectTask = projectTaskRepoProvider.get().find(((Integer) projectTaskContext.get("id")).longValue());
+		}
 		
 		Map<String, Object> productContext = (Map<String, Object>) context.get("product");
 		Product product = null;
@@ -282,7 +286,13 @@ public class TimesheetController {
     }
 	
 	
-	//action called when validating a timesheet. Changing status + Sending mail to Applicant
+	/**
+	 * Action called when validating a timesheet.
+	 * Changing status + Sending mail to Applicant
+	 * @param request
+	 * @param response
+	 * @throws AxelorException
+	 */
 	public void valid(ActionRequest request, ActionResponse response) throws AxelorException{
 		
 		try{
@@ -296,8 +306,8 @@ public class TimesheetController {
 			Message message = timesheetService.sendValidationEmail(timesheet);
 			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
-			} 
-			
+			}
+			Beans.get(PeriodService.class).checkPeriod(timesheet.getCompany(), timesheet.getToDate(), timesheet.getFromDate());
 		}  catch(Exception e)  {
 			TraceBackService.trace(response, e);
 		}

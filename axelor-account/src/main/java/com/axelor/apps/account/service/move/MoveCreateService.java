@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,8 +36,10 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class MoveCreateService {
@@ -150,7 +152,7 @@ public class MoveCreateService {
 		move.setPaymentMode(paymentMode);
 		move.setTechnicalOriginSelect(technicalOriginSelect);
 		moveRepository.save(move);
-		move.setReference("*"+move.getId());
+        move.setReference(Beans.get(SequenceService.class).getDraftSequenceNumber(move));
 
 		return move;
 

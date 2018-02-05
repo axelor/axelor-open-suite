@@ -261,6 +261,7 @@
 "StockMove.deliveryAddress",,,
 "StockMove.deliveryDetails",,,
 "StockMove.deliveryOrder",,,
+"StockMove.description",,,
 "StockMove.grossWeight",,,
 "StockMove.internalMove",,,
 "StockMove.lotNoRef",,,

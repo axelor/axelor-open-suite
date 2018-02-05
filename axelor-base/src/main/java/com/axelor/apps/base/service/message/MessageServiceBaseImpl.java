@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -46,7 +46,9 @@ import org.slf4j.LoggerFactory;
 import javax.mail.MessagingException;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -105,7 +107,15 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 		File file = Beans.get(TemplateMessageServiceBaseImpl.class).generateBirtTemplate(maker, fileName,
 				birtTemplate.getTemplateLink(), birtTemplate.getFormat(), birtTemplate.getBirtTemplateParameterList());
 
-		return "ws/files/report/" + file.getName() + "?name=" + fileName;
+        String fileLink = "ws/files/report/" + file.getName();
+
+        try {
+            fileLink += "?name=" + URLEncoder.encode(fileName, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getLocalizedMessage());
+        }
+
+        return fileLink;
 	}
 
 	

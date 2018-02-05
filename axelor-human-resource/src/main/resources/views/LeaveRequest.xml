@@ -45,13 +45,15 @@
 	    	<button name="draftButton" onClick="action-leave-request-record-draft,save,action-leave-request-attrs-buttons,action-leave-request-attrs-draft-cancel" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    </panel>
 	    <panel hidden="true" showIf="leaveLine != null &amp;&amp; leaveLine.leaveReason != null &amp;&amp; leaveLine.leaveReason.instruction != null">
-	    	<field name="leaveLine.leaveReason.instruction" css="bold red" colSpan="12" showTitle="false"  />
+	    	<field name="leaveLine.leaveReason.instruction" widget="html" colSpan="12" showTitle="false"  />
 	    </panel>
 		<panel name="information">
 			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 			<spacer/>
 			<field name="company" canEdit="false" onChange="action-leave-request-method-leave-reason-to-justify" form-view="company-form" grid-view="company-grid"/>
-			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration, action-leave-request-method-leave-reason-to-justify"/>
+			<field name="user" form-view="user-form" grid-view="user-grid"
+				onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration, action-leave-request-method-leave-reason-to-justify"
+				canNew="false" canEdit="false" canView="false"/>
 			<field name="requestDate" colSpan="12" width="50%"/>
 			<field name="leaveLine" onSelect="action-leave-request-attrs-line-domain" title="Reason" canEdit="false" canNew="false" widget="SuggestBox" required="true" onChange="action-leave-request-attrs-select,action-leave-request-attrs-inject-change" form-view="leave-line-form" grid-view="leave-line-grid"/>
 			<field name="leaveLine.quantity" title="Available quantity (acquired)" />
@@ -124,14 +126,13 @@
 		<action name="action-leave-request-attrs-draft-cancel"/>
 		<action name="action-leave-request-attrs-select"/>
 		<action name="action-leave-request-attrs-inject-change"/>
-		<action name="action-leave-request-method-leave-reason-to-justify"/>
 		<action name="action-leave-request-attrs-send"/>
 		<action name="action-leave-request-attrs-valid-refuse"/>
 	</action-group>
 	
 	<action-record name="action-leave-request-record-default" model="com.axelor.apps.hr.db.LeaveRequest">
 	    <field name="user" expr="eval:__user__"/>
-	    <field name="company" expr="eval: __user__.activeCompany"/>
+	    <field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-record>
 
 	<action-record name="action-leave-request-record-to-justify" model="com.axelor.apps.hr.db.LeaveRequest">

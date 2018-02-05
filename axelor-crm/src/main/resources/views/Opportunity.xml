@@ -118,7 +118,7 @@
 		</panel>
 		
 		<panel name="assignedTo" title="Assigned to" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" sidebar="true">
-		  <field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+		  <field name="user" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 		  <button name="grabOpportunity" title="Assign to me" hideIf="user.id == _internalUserId"   icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
 		  <field name="team" canEdit="false" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 		  <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
@@ -228,7 +228,7 @@
     
     <search-filters name="opportunity-filters" model="com.axelor.apps.crm.db.Opportunity" title="Opportunities filters">
 		<filter title="My Opportunities">
-			<domain>self.user.internalUser.id = :_internalUserId</domain>
+			<domain>self.user.id = :_internalUserId</domain>
 		</filter>
 		<filter title="Unassigned Opportunities">
 			<domain>self.user IS NULL</domain>

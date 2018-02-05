@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExtraHours;
@@ -187,7 +188,12 @@ public class ExtraHoursController {
 		}
 	}
 	
-	//validating request and sending mail to applicant
+	/**
+	 * validating request and sending mail to applicant
+	 * @param request
+	 * @param response
+	 * @throws AxelorException
+	 */
 	public void valid(ActionRequest request, ActionResponse response) throws AxelorException{
 		
 		try{
@@ -200,8 +206,9 @@ public class ExtraHoursController {
 			Message message = extraHoursService.sendValidationEmail(extraHours);
 			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
-			} 
-			
+			}
+			Beans.get(PeriodService.class).checkPeriod(extraHours.getCompany(), extraHours.getValidationDate());
+
 		}  catch(Exception e)  {
 			TraceBackService.trace(response, e);
 		}

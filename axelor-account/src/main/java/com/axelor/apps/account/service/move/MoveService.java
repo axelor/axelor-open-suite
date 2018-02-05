@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -186,8 +186,6 @@ public class MoveService {
 	 * 		- le compte des dûs est le même que celui de l'avoir : alors on lettre directement
 	 *  	- le compte n'est pas le même : on créée une O.D. de passage sur le bon compte
 	 * @param invoice
-	 * @param company
-	 * @param useExcessPayment
 	 * @return
 	 * @throws AxelorException
 	 */
@@ -199,16 +197,13 @@ public class MoveService {
 
 		Move move = null;
 
-		List<MoveLine> debitMoveLines = Lists.newArrayList();
-		
-		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-		
-		if(accountConfig.getAutoReconcileOnInvoice())  {		
-			// Récupération des dûs
-			debitMoveLines.addAll(moveDueService.getInvoiceDue(invoice, true));
-		}
 
-		if(debitMoveLines != null && debitMoveLines.size() != 0)  {
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+
+		// Récupération des dûs
+		List<MoveLine> debitMoveLines = moveDueService.getInvoiceDue(invoice, accountConfig.getAutoReconcileOnInvoice());
+
+		if(!debitMoveLines.isEmpty())  {
 			MoveLine invoiceCustomerMoveLine = moveToolService.getCustomerMoveLineByLoop(invoice);
 			
 			// Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement

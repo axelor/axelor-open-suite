@@ -239,20 +239,20 @@
 	<menuitem name="referential-report-partner-prospects" parent="referential-report-maps" 
 		title="Prospects" action="action-show-prospects-on-map-page"/>
 		
-	<action-view name="action-show-customers-on-map-page" title="Customers">  		
- 		<view type="html" name="map/gmap-objs.html?object=customer" /> 
-	</action-view>
+	<action-method name="action-show-customers-on-map-page">
+	  <call method="showCustomersOnMap" class="com.axelor.apps.base.web.GeneralController"/>
+	</action-method>
 	
-	<action-view name="action-show-prospects-on-map-page" title="Prospects">  		
- 		<view type="html" name="map/gmap-objs.html?object=prospect" /> 
-	</action-view>
+	<action-method name="action-show-prospects-on-map-page">
+	  <call method="showProspectsOnMap" class="com.axelor.apps.base.web.GeneralController"/>
+	</action-method>
 	
 	<menuitem name="referential-report-partner-suppliers" parent="referential-report-maps" 
 		title="Suppliers" action="action-show-suppliers-on-map-page"/>	
 	
-	<action-view name="action-show-suppliers-on-map-page" title="Suppliers">  		
- 		<view type="html" name="map/gmap-objs.html?object=supplier" /> 
-	</action-view>
+	<action-method name="action-show-suppliers-on-map-page">
+	  <call method="showSuppliersOnMap" class="com.axelor.apps.base.web.GeneralController"/>
+	</action-method>
 
 	<menuitem name="admin-root" title="Application Config" order="-60"
 		icon="fa-gear" groups="admins,ERP,CRM" icon-background="#31b4a9"/>
@@ -422,7 +422,7 @@
 		title="Unit conversions" model="com.axelor.apps.base.db.UnitConversion" >
 		<view type="grid" name="unit-conversion-grid"/>
 		<view type="form" name="unit-conversion-form"/>
-		<context name="searchFields" expr="fromUnit;toUnit"/>
+		<context name="searchFields" expr="startUnit;endUnit"/>
 	</action-view>
 	
 	<menuitem name="admin-conf-general-year" parent="admin-conf-general"

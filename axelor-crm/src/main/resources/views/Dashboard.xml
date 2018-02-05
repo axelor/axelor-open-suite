@@ -97,7 +97,6 @@
 		<view type="form" name="opportunity-form" />
 		<domain>self.salesStageSelect in (9, 10) and self.user =:__user__</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
-		<context name="user" expr="eval:__user__"/>
 	</action-view>
 
 	<action-view name="dashlet.opportunities.my.team.key.account" title="My Team Key accounts"

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -16,6 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service.bankorder;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.List;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -44,6 +60,7 @@ import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentServic
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.db.User;
@@ -55,20 +72,6 @@ import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.List;
 
 public class BankOrderServiceImpl implements BankOrderService {
 
@@ -79,23 +82,22 @@ public class BankOrderServiceImpl implements BankOrderService {
 	protected BankOrderLineService bankOrderLineService;
 	protected EbicsService ebicsService;
 	protected InvoicePaymentToolService invoicePaymentToolService;
-
-	@Inject
-	private AccountConfigBankPaymentService accountConfigBankPaymentService;
-
-	@Inject
-	private SequenceService sequenceService;
+	protected AccountConfigBankPaymentService accountConfigBankPaymentService;
+	protected SequenceService sequenceService;
 
 	@Inject
 	public BankOrderServiceImpl(BankOrderRepository bankOrderRepo, InvoicePaymentRepository invoicePaymentRepo,
 			BankOrderLineService bankOrderLineService, EbicsService ebicsService,
-			InvoicePaymentToolService invoicePaymentToolService) {
+			InvoicePaymentToolService invoicePaymentToolService, AccountConfigBankPaymentService accountConfigBankPaymentService,
+			SequenceService sequenceService) {
 
 		this.bankOrderRepo = bankOrderRepo;
 		this.invoicePaymentRepo = invoicePaymentRepo;
 		this.bankOrderLineService = bankOrderLineService;
 		this.ebicsService = ebicsService;
 		this.invoicePaymentToolService = invoicePaymentToolService;
+		this.accountConfigBankPaymentService = accountConfigBankPaymentService;
+		this.sequenceService = sequenceService;
 
 	}
 
@@ -248,10 +250,10 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	@Override
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void confirm(BankOrder bankOrder)  throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
-
+	public void confirm(BankOrder bankOrder) throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+		GeneralService generalService = Beans.get(GeneralService.class);
 		checkBankDetails(bankOrder.getSenderBankDetails(), bankOrder);
-		
+
 		if(bankOrder.getGeneratedMetaFile() == null)  {
 			checkLines(bankOrder);
 		}
@@ -262,6 +264,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 		generateFile(bankOrder);
 
+		bankOrder.setConfirmationDateTime(generalService.getTodayDateTime().toLocalDateTime());
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
 		makeEbicsUserFollow(bankOrder);
 
@@ -303,6 +306,11 @@ public class BankOrderServiceImpl implements BankOrderService {
 		File signatureFileToSend = null;
 
 		if(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+            if (bankOrder.getSignedMetaFile() == null) {
+                throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_NOT_PROPERLY_SIGNED),
+                        IException.NO_VALUE);
+            }
+
 			signatureFileToSend = MetaFiles.getPath(bankOrder.getSignedMetaFile()).toFile();
 		}
 		dataFileToSend = MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
@@ -317,7 +325,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
 		
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
-
+		bankOrder.setTestMode(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTestMode());
 		bankOrderRepo.save(bankOrder);
 	}
 	
@@ -418,7 +426,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 		// filter on the currency if it is set in file format and in the bankdetails
 		Currency currency = bankOrder.getBankOrderCurrency();
-		if (currency != null) {
+		if (currency != null && !bankOrder.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails()) {
 			String fileFormatCurrencyId = currency.getId().toString();
 			domain += " AND (self.currency IS NULL OR self.currency.id = " + fileFormatCurrencyId + ")";
 		}
@@ -459,10 +467,18 @@ public class BankOrderServiceImpl implements BankOrderService {
 				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE),
 						IException.INCONSISTENCY);
 			}
-			if (!this.checkBankDetailsCurrencyCompatible(bankDetails, bankOrder)) {
+			if (!bankOrder.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails()
+					&& !this.checkBankDetailsCurrencyCompatible(bankDetails, bankOrder)) {
 				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE),
 						IException.INCONSISTENCY);
 			}
+		}
+
+		if (bankOrder.getBankOrderFileFormat() != null
+				&& bankOrder.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails()
+				&& bankDetails.getCurrency() == null) {
+			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING_CURRENCY),
+					IException.MISSING_FIELD);
 		}
 	}
 

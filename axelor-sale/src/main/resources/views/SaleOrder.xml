@@ -20,11 +20,12 @@
 		<field name="endOfValidityDate" hidden="true" />
 		<field name="saleOrderSeq" />
 		<field name="company" form-view="company-form" grid-view="company-grid" />
-		<field name="currency" form-view="currency-form" grid-view="currency-grid" />
 		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="externalReference" />
 		<field name="creationDate" />
+		<field name="exTaxTotal" aggregate="sum" />
 		<field name="inTaxTotal" aggregate="sum" />
+		<field name="currency" form-view="currency-form" grid-view="currency-grid" />
 		<field name="statusSelect" />
 		<button name="print" title="Print" icon="fa-print"
 			onClick="action-sale-order-method-show-sale-order" />
@@ -40,11 +41,12 @@
 		</toolbar>
 		<field name="saleOrderSeq" />
 		<field name="company" form-view="company-form" grid-view="company-grid" />
-		<field name="currency" form-view="currency-form" grid-view="currency-grid" />
 		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="externalReference" />
 		<field name="creationDate" />
+		<field name="exTaxTotal" aggregate="sum" />
 		<field name="inTaxTotal" aggregate="sum" />
+		<field name="currency" form-view="currency-form" grid-view="currency-grid" />
 		<field name="statusSelect" />
 		<button name="print" title="Print" icon="fa-print"
 			onClick="action-sale-order-method-show-sale-order" />
@@ -64,10 +66,11 @@
 		</menubar>
 		<field name="saleOrderSeq" />
 		<field name="company" form-view="company-form" grid-view="company-grid" />
-		<field name="currency" form-view="currency-form" grid-view="currency-grid" />
 		<field name="externalReference" />
 		<field name="creationDate" />
+		<field name="exTaxTotal" aggregate="sum" />
 		<field name="inTaxTotal" aggregate="sum" />
+		<field name="currency" form-view="currency-form" grid-view="currency-grid" />
 		<field name="statusSelect" />
 		<button name="print" title="Print" icon="fa-print"
 			onClick="action-sale-order-method-show-sale-order" />
@@ -235,7 +238,7 @@
 				<field name="amountToBeSpreadOverTheTimetable" colSpan="12" />
 				<panel-related field="timetableList" colSpan="12"
 					grid-view="timetable-grid" form-view="timetable-form"
-					onChange="action-sale-order-method-update-amount-to-be-spread-over-the-timetable"
+					onChange="action-sale-order-method-update-amount-to-be-spread-over-the-timetable,action-supplychain-sale-order-validate-check-amount-timetable"
 					if-module="axelor-supplychain" />
 			</panel>
 
@@ -289,7 +292,7 @@
 		<panel sidebar="true" name="info" title="Info." hideIf="clientPartner == null">
 			<field name="creationDate" readonlyIf="statusSelect != 1"
 				colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date" />
-			<field name="confirmedByUser" canEdit="false" readonly="true" colSpan="6"
+			<field name="confirmedByUser" canNew="false" canEdit="false" canView="false" readonly="true" colSpan="6"
 				showIf="statusSelect == 3" form-view="user-form" grid-view="user-grid" />
 			<field name="confirmationDate" readonly="true" colSpan="6"
 				showIf="statusSelect == 3" />
@@ -329,7 +332,7 @@
 
 		<panel sidebar="true" hideIf="clientPartner == null">
 			<panel name="salesFollowUp" title="Sales follow-up" colSpan="12">
-				<field name="salemanUser" canEdit="false" grid-view="user-grid" form-view="user-form" />
+				<field name="salemanUser" canNew="false" canEdit="false" canView="false" grid-view="user-grid" form-view="user-form" />
 				<field name="team" canEdit="false" onSelect="action-sale-order-domain-on-team"
 					form-view="team-form" grid-view="team-grid"
 					if="__config__.general.getTeamManagement()" />
@@ -356,11 +359,12 @@
 		model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
 		<field name="saleOrderSeq" />
 		<field name="company" form-view="company-form" grid-view="company-grid" />
-		<field name="currency" form-view="currency-form" grid-view="currency-grid" />
 		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="externalReference" />
 		<field name="creationDate" />
+		<field name="exTaxTotal" aggregate="sum" />
 		<field name="inTaxTotal" aggregate="sum" />
+		<field name="currency" form-view="currency-form" grid-view="currency-grid" />
 	</grid>
 
 	<form name="sale-order-template-form-wizard" title="Template"
@@ -386,7 +390,7 @@
 				grid-view="company-grid" readonlyIf="statusSelect == 3" />
 			<field name="currency" canEdit="false" form-view="currency-form"
 				grid-view="currency-grid" readonlyIf="statusSelect == 3" />
-			<field name="templateUser" canEdit="false" form-view="user-form" grid-view="user-grid" />
+			<field name="templateUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" />
 		</panel>
 
 		<panel name="customerInformation" title="Customer information">
@@ -420,7 +424,7 @@
 			<panel name="otherInformations" title="Other informations"
 				showTitle="false">
 				<panel name="salesFollowUp" title="Sales follow-up" colSpan="12">
-					<field name="salemanUser" canEdit="false" form-view="user-form" grid-view="user-grid" />
+					<field name="salemanUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" />
 					<field name="team" canEdit="false" onSelect="action-sale-order-domain-on-team"
 						form-view="team-form" grid-view="team-grid"
 						if="__config__.general.getTeamManagement()" />
@@ -465,7 +469,7 @@
 		<panel sidebar="true" name="info" title="Info.">
 			<field name="creationDate" readonlyIf="statusSelect != 1"
 				colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date" />
-			<field name="confirmedByUser" canEdit="false" readonly="true" colSpan="6"
+			<field name="confirmedByUser" canNew="false" canEdit="false" canView="false" readonly="true" colSpan="6"
 				showIf="statusSelect == 3" form-view="user-form" grid-view="user-grid" />
 			<field name="confirmationDate" readonly="true" colSpan="6"
 				showIf="statusSelect == 3" />
@@ -509,11 +513,12 @@
 		model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
 		<field name="saleOrderSeq" />
 		<field name="company" form-view="company-form" grid-view="company-grid" />
-		<field name="currency" form-view="currency-form" grid-view="currency-grid" />
 		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="externalReference" />
 		<field name="creationDate" />
+		<field name="exTaxTotal" aggregate="sum" />
 		<field name="inTaxTotal" aggregate="sum" />
+		<field name="currency" form-view="currency-form" grid-view="currency-grid" />
 		<field name="statusSelect" />
 		<button name="print" title="Print" icon="fa-print"
 			onClick="action-sale-order-method-show-sale-order" />
@@ -556,7 +561,7 @@
 							if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3"
 							color="danger" />
 					</field>
-					<field name="salemanUser" canEdit="false" colSpan="10" form-view="user-form"
+					<field name="salemanUser" canNew="false" canEdit="false" canView="false" colSpan="10" form-view="user-form"
 						grid-view="user-grid" />
 					<field name="statusSelect" widget="NavSelect" colSpan="12" />
 				</panel>
@@ -648,7 +653,8 @@
 	</action-group>
 
 	<action-group name="action-sale-group-confirmed">
-		<action name="action-supplychain-sale-order-validate-check-location" />
+		<action name="action-sale-order-validate-check-on-confirm"/>
+		<action name="action-supplychain-sale-order-validate-check-on-confirm"/>
 		<action name="action-sale-order-method-confirm" />
 		<action name="action-sale-order-method-generate-project" if="eval: __config__.general.getAutomaticProject()" />
 	</action-group>
@@ -861,10 +867,10 @@
 		title="Sales Order filters">
 		<field name="saleOrderLineList.product.name" title="Product Name" />
 		<filter title="My Proposals">
-			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.salemanUser.internalUser.id = :_internalUser</domain>
+			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.salemanUser.id = :_internalUser</domain>
 		</filter>
 		<filter title="My Sales">
-			<domain>self.statusSelect = 3 and self.salemanUser.internalUser.id = :_internalUser</domain>
+			<domain>self.statusSelect = 3 and self.salemanUser.id = :_internalUser</domain>
 		</filter>
 		<filter title="My Team Proposals">
 			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.team = :_myActiveTeam</domain>
@@ -946,5 +952,9 @@
 	<action-method name="action-sale-order-method-fill-company-bank-details">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="fillCompanyBankDetails"/>
 	</action-method>
-    
+
+	<action-validate name="action-sale-order-validate-check-on-confirm">
+		<alert message="The total amount is zero." if="inTaxTotal &lt;= 0"/>
+	</action-validate>
+
 </object-views>

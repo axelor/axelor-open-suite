@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.hr.db.repo;
 
+import javax.persistence.PersistenceException;
+
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.inject.Beans;
@@ -24,9 +26,16 @@ import com.axelor.inject.Beans;
 public class ExpenseHRRepository extends ExpenseRepository {
     @Override
     public Expense save(Expense expense) {
-        expense = super.save(expense);
-        Beans.get(ExpenseService.class).setDraftSequence(expense);
+        try {
+            expense = super.save(expense);
+            Beans.get(ExpenseService.class).setDraftSequence(expense);
+            if (expense.getStatusSelect() == ExpenseRepository.STATUS_DRAFT) {
+                Beans.get(ExpenseService.class).completeExpenseLines(expense);
+            }
 
-        return expense;
+            return expense;
+        } catch (Exception e) {
+            throw new PersistenceException(e.getLocalizedMessage());
+        }
     }
 }

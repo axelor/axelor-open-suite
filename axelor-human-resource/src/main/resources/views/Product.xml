@@ -30,6 +30,8 @@
 				<field name="deductLunchVoucher" hideIf="!expense" />
 				<field name="blockExpenseTax" />
 				<field name="personalExpense" />
+				<field name="unavailableToUsers"/>
+				<field name="saleSupplySelect" readonly="true" hidden="true"/>
                 <field name="expense" hidden="true"/>
 			</panel>
 			<panel name="categorization" title="Categorization" colSpan="12">
@@ -44,11 +46,11 @@
 					<field name="saleCurrency" canEdit="false" colSpan="12" hideIf="!sellable"/>
 					<field name="unit" colSpan="12" hideIf="!sellable" form-view="unit-form" grid-view="unit-grid"/>
 				</panel>
-				<panel colSpan="6" name="description" title="Description">
-					<field name="description" showTitle="false" colSpan="12" widget="html" hideIf="!sellable"/>
-				</panel>
-				<panel colSpan="6" name="internalDescription" title="Internal description" >
+				<panel colSpan="12" name="internalDescription" title="Internal description" >
 					<field name="internalDescription" showTitle="false" colSpan="12"/>
+				</panel>
+				<panel colSpan="12" name="description" title="Description" hidden="true" showIf="sellable">
+					<field name="description" showTitle="false" colSpan="12" widget="html"/>
 				</panel>
 			</panel>
 	        <panel-related title="Accounting" field="accountManagementList" colSpan="12" domain="self.typeSelect = 1" showTitle="false" form-view="account-management-product-form" grid-view="account-management-product-grid"/>
@@ -87,26 +89,26 @@
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
     	</toolbar>
-	    <panel name="main">
-	    	<panel colSpan="4">
-	        	<field name="picture" showTitle="false" widget="Image" colSpan="12"/>
-	        	<field name="versionSelect" colSpan="12"/>
-	        </panel>
-            <panel colSpan="8">
-				<field name="name" showTitle="false" css="label-bold bold" placeholder="Name"	colSpan="8"/>
-				<field name="code" x-bind="{{code|uppercase}}" showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4"/>
-				<panel title="Product typology" colSpan="6" colWidths="30%,70%">
-					<field name="inAti"/>
-					<field name="isAnalyticCapture" if-module="axelor-account"/>
-					<field name="deductLunchVoucher" hideIf="!expense" colSpan="12"/>
-					<field name="expense" hidden="true"/>
-				</panel>
-				<panel name="categorization" title="Categorization" colSpan="6" colWidths="30%,70%">
-					<field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
-					<field name="productCategory" domain="self.productFamily = :productFamily" colSpan="12" form-view="product-category-form" grid-view="product-category-grid"/>
-				</panel>
-			</panel>
-	    </panel>
+       <panel name="main">
+           <panel colSpan="2">
+               <field name="picture" showTitle="false" widget="Image" colSpan="12"/>
+               <field name="versionSelect" colSpan="12"/>
+           </panel>
+           <panel colSpan="10">
+               <field name="code" x-bind="{{code|uppercase}}" showTitle="false" css="label-bold bold" placeholder="Code" colSpan="3"/>
+               <field name="name" showTitle="false" css="label-bold bold" placeholder="Name" colSpan="9"/>
+               <panel title="Product typology" colSpan="6" colWidths="30%,70%">
+                   <field name="inAti"/>
+                   <field name="isAnalyticCapture" if-module="axelor-account"/>
+                   <field name="deductLunchVoucher" hideIf="!expense" colSpan="12"/>
+                   <field name="expense" hidden="true"/>
+               </panel>
+               <panel name="categorization" title="Categorization" colSpan="6" colWidths="30%,70%">
+                   <field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
+                   <field name="productCategory" domain="self.productFamily = :productFamily" colSpan="12" form-view="product-category-form" grid-view="product-category-grid"/>
+               </panel>
+           </panel>
+       </panel>
 	    <panel-tabs title="Product specific attributes">
 			<panel name="sale" title="Sale" showTitle="false">
 				<panel colSpan="6" title="Sales">

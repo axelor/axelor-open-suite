@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,12 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
+
+import javax.mail.MessagingException;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
@@ -25,17 +31,11 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.message.db.Message;
-import com.axelor.db.Model;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.persist.Transactional;
-
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.List;
 
 public interface ExpenseService  {
 
@@ -87,13 +87,33 @@ public interface ExpenseService  {
 
 	public void getExpensesTypes(ActionRequest request, ActionResponse response);
 	
+	/**
+	 * This method is used in mobile application.
+	 * @param request
+	 * @param response
+	 */
 	@Transactional
 	public void insertExpenseLine(ActionRequest request, ActionResponse response);
 	
+	/**
+	 * Get the expense from user, if no expense is found create one.
+	 * @param user
+	 * @return
+	 */
+	public Expense getOrCreateExpense(User user);
 	public BigDecimal computePersonalExpenseAmount(Expense expense);
 	public BigDecimal computeAdvanceAmount(Expense expense);
 
-	public void setDraftSequence(Expense expense);
+	public void setDraftSequence(Expense expense) throws AxelorException;
 
-	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine);
+	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine) throws AxelorException;
+
+	public List<ExpenseLine> getExpenseLineList(Expense expense);
+
+	/**
+	 * fill {@link ExpenseLine#expense} in {@link Expense#generalExpenseLineList}
+	 * and {@link Expense#kilometricExpenseLineList}
+	 * @param expense
+	 */
+	void completeExpenseLines(Expense expense);
 }

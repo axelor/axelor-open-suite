@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -57,17 +57,13 @@ public class ReconcileSequenceService {
 		return seq;
 	}
 
-	public void setDraftSequence(Reconcile reconcile)  {		
+	public void setDraftSequence(Reconcile reconcile) throws AxelorException {
 			
 		if (reconcile.getId() != null && Strings.isNullOrEmpty(reconcile.getReconcileSeq())
-			&& reconcile.getStatusSelect() == ReconcileRepository.STATUS_DRAFT)  {		
-			reconcile.setReconcileSeq(this.getDraftSequence(reconcile));		
+			&& reconcile.getStatusSelect() == ReconcileRepository.STATUS_DRAFT) {
+			reconcile.setReconcileSeq(sequenceService.getDraftSequenceNumber(reconcile));
 		}		
 		
 	}	
-	
-	protected String getDraftSequence(Reconcile reconcile)  {		
-		return "*" + reconcile.getId();		
-	}		
 	
 }
