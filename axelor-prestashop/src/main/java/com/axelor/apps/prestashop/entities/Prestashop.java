@@ -1,8 +1,9 @@
 package com.axelor.apps.prestashop.entities;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -12,13 +13,13 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * on the kind of request.
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Prestashop {
 	@XmlElementRef
 	private PrestashopContainerEntity content;
 
 	@SuppressWarnings("unchecked")
-	@XmlTransient
-	public <T> T getContent() {
+	public <T extends PrestashopContainerEntity> T getContent() {
 		return (T)content;
 	}
 
