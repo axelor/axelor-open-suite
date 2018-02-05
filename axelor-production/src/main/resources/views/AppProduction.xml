@@ -9,7 +9,7 @@
 				<field name="prodOrderMgtOnSO" readonlyIf="productionOrderGenerationAuto" colSpan="4" widget="boolean-switch"/>
 				<field name="productionOrderGenerationAuto" showIf="prodOrderMgtOnSO" colSpan="4" widget="boolean-switch"/>
 			</panel>
-			<panel title="Conf. Production">
+			<panel title="Configurator">
 				<field name="enableConfigurator" widget="boolean-switch"/>
 			</panel>
 			<panel name="billOfMaterial" title="Bill of material">
