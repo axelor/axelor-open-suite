@@ -96,7 +96,6 @@
 	    		<field name="bankOrderFileFormat" form-view="bank-order-file-format-form" grid-view="bank-order-file-format-grid" canView="false" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" colSpan="6" onChange="action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"/>
 	    		<field name="partnerTypeSelect" css="label-bold bold" colSpan="6" onChange="action-bank-order-attrs-show-partner-or-receiver-company" hideIf="orderTypeSelect == 5 || orderTypeSelect == 6" required="true"/>
 		        <field name="generatedMetaFile" widget="binary-link" showIf="statusSelect &gt;= 2"/>
-		        <field name="sendingDateTime" showIf="statusSelect == 4"/>
 	        </panel>
 	        <panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 3">  
 		        <field name="signatoryUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
@@ -211,11 +210,11 @@
     		<button name="cancel" title="Cancel" showIf="statusSelect == 1" onClick="save,action-bank-order-record-cancel,save"/>
 			<button name="correct" title="Correct" showIf="statusSelect == 2 || statusSelect == 3 || statusSelect == 6" onClick="save,action-bank-order-record-correct,save"/>
   		</panel>
-  		<panel sidebar="true" showIf="confirmationDateTime" itemSpan="12" readonly="true">
+  		<panel sidebar="true" showIf="statusSelect &gt;= 2" itemSpan="12" readonly="true">
   			<field name="confirmationDateTime"/>
   			<field name="fileGenerationDateTime" showIf="fileGenerationDateTime"/>
-  			<field name="validationDateTime" showIf="validationDateTime"/>
-  			<field name="sendingDateTime" showIf="sendingDateTime"/>
+  			<field name="validationDateTime" showIf="statusSelect &gt;= 3"/>
+  			<field name="sendingDateTime" showIf="statusSelect == 4"/>
   		</panel>
 		<panel-mail>
 			<mail-messages limit="4"/>
@@ -272,10 +271,10 @@
     		<button name="cancel" title="Cancel" showIf="statusSelect == 1" onClick="save,action-bank-order-record-cancel,save"/>
 			<button name="correct" title="Correct" showIf="statusSelect == 2 || statusSelect == 3 || statusSelect == 6" onClick="save,action-bank-order-record-correct,save"/>
   		</panel>
-  		<panel sidebar="true" showIf="confirmationDateTime" itemSpan="12" readonly="true">
+  		<panel sidebar="true" showIf="statusSelect &gt;= 2" itemSpan="12" readonly="true">
   			<field name="confirmationDateTime"/>
-  			<field name="validationDateTime" showIf="validationDateTime"/>
-  			<field name="sendingDateTime" showIf="sendingDateTime"/>
+  			<field name="validationDateTime" showIf="statusSelect &gt;= 3"/>
+  			<field name="sendingDateTime" showIf="statusSelect == 4"/>
   		</panel>
     </form>
 	
