@@ -114,7 +114,7 @@
  				stock_stock_move AS self
 			JOIN
 				auth_user AS _user
-				ON _user.id = :userId
+				ON _user.id = :__user__
 				AND self.company = _user.active_company      
 			JOIN
 				stock_location AS _location
@@ -144,7 +144,7 @@
 				stock_stock_move AS self
 			JOIN
 				auth_user AS _user
-				ON _user.id = :userId 
+				ON _user.id = :__user__ 
 				AND self.company = _user.active_company
 			JOIN
 				stock_location AS _location

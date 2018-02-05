@@ -15,17 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.service.user;
+package com.axelor.apps.crm.db.repo;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.auth.db.User;
-import com.google.inject.persist.Transactional;
+import com.axelor.apps.crm.db.Calendar;
 
-public interface UserHrService {
+public class CalendarCrmRepository extends CalendarRepository {
 	
-	@Transactional
-	public void createEmployee(User user);
-	
-	@Transactional
-	public Company getPayCompany(User user);
+	@Override
+	public Calendar copy(Calendar calendar, boolean deep) {
+		
+		calendar.setIsValid(false);
+		calendar.setEventsCrm(null);
+		
+		return super.copy(calendar, deep);
+	}
 }

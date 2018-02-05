@@ -11,7 +11,7 @@
 	<form name="calendar-form" model="com.axelor.apps.base.db.ICalendar" title="Calendar" >
 	  <panel name="main" >
 		  <field name="name" />
-		  <field name="user" canEdit="false"/>
+		  <field name="user" canNew="false" canEdit="false" canView="false"/>
 		  <field name="keepRemote" />
 	  </panel>
 	  <panel-dashlet action="action-icalendar-view-ievent-dashlet"/>

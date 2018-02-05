@@ -262,7 +262,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 		setSequenceOnBankOrderLines(bankOrder);
 
 		generateFile(bankOrder);
-
+		
+		bankOrder.setConfirmationDateTime(new LocalDateTime());
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
 		makeEbicsUserFollow(bankOrder);
 

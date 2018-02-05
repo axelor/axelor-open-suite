@@ -20,6 +20,7 @@ package com.axelor.apps.hr.web.lunch.voucher;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
@@ -80,13 +81,22 @@ public class LunchVoucherMgtController {
 	}
 	
 	public void validate(ActionRequest request, ActionResponse response) {
-		try {
 			LunchVoucherMgt lunchVoucherMgt = Beans.get(LunchVoucherMgtRepository.class).find(request.getContext().asType(LunchVoucherMgt.class).getId());
+		try {
 			lunchVoucherMgtProvider.get().validate(lunchVoucherMgt);
-			
+
 			response.setReload(true);
+
 		}  catch(Exception e)  {
 			TraceBackService.trace(response, e);
+			return;
+		}
+
+		try {
+			Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getPayPeriod());
+			Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getLeavePeriod());
+		} catch (AxelorException e) {
+			response.setFlash(e.getMessage());
 		}
 	}
 	

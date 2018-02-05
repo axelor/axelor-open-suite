@@ -99,7 +99,7 @@ public class KilometricService {
 	
 	public BigDecimal computeKilometricExpense(ExpenseLine expenseLine, Employee employee) throws AxelorException{
 
-		BigDecimal distance =  getDistanceTravelled(expenseLine);
+		BigDecimal distance =  expenseLine.getDistance();
 
 		BigDecimal previousDistance;
 		KilometricLog log = Beans.get(KilometricService.class).getKilometricLog(employee, expenseLine.getExpenseDate());
@@ -110,6 +110,10 @@ public class KilometricService {
 		}
 		
 		KilometricAllowanceRate allowance = Beans.get(KilometricAllowanceRateRepository.class).all().filter("self.kilometricAllowParam = ?1", expenseLine.getKilometricAllowParam() ).fetchOne();
+		if (allowance == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_RATE_MISSING), expenseLine.getKilometricAllowParam().getName())
+					, IException.CONFIGURATION_ERROR, expenseLine);
+		}
 		
 		List<KilometricAllowanceRule> ruleList = new ArrayList<>();
 
@@ -150,22 +154,9 @@ public class KilometricService {
 	public void updateKilometricLog(ExpenseLine expenseLine, Employee employee) throws AxelorException{
 		
 		KilometricLog log = getOrCreateKilometricLog(employee, expenseLine.getExpenseDate());
-		log.setDistanceTravelled(log.getDistanceTravelled().add(getDistanceTravelled(expenseLine)));
+		log.setDistanceTravelled(log.getDistanceTravelled().add(expenseLine.getDistance()));
 		log.addExpenseLineListItem(expenseLine);
 		kilometricLogRepo.save(log);
-	}
-
-	/**
-	 * Get distance traveled according to kilometric type.
-	 * 
-	 * @param expenseLine
-	 * @return
-	 */
-	private BigDecimal getDistanceTravelled(ExpenseLine expenseLine) {
-		if (expenseLine.getKilometricTypeSelect().equals(ExpenseLineRepository.KILOMETRIC_TYPE_ROUND_TRIP)) {
-			return expenseLine.getDistance().multiply(new BigDecimal(2));
-		}
-		return expenseLine.getDistance();
 	}
 
 }

@@ -20,9 +20,8 @@
 		title="My Timesheets">
 		<view name="my-timesheets-grid" type="grid" />
 		<view name="timesheet-form" type="form" />
-		<domain>self.user = :user_id AND self.company = :company_id</domain>
+		<domain>self.user = :user_id</domain>
 		<context name="user_id" expr="eval:__user__" />
-		<context name="company_id" expr="eval:__user__.activeCompany" />
 	</action-view>	
 	
 	<menuitem name="validate-timesheet" groups="MNGT,admins" parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate" icon="fa-flag"
@@ -59,9 +58,8 @@
 		title="My Extra Hours">
 		<view name="extra-hours-grid" type="grid" />
 		<view name="extra-hours-form" type="form" />
-		<domain>self.user = :user_id AND self.company = :company_id</domain>
+		<domain>self.user = :user_id</domain>
 		<context name="user_id" expr="eval:__user__" />
-		<context name="company_id" expr="eval:__user__.activeCompany" />
 	</action-view>
 	
 	<menuitem name="validate-extra-hours" groups="MNGT,admins" parent="extra-hours-root" title="Extra hours to Validate" action="extra.hours.validate" icon="fa-flag"
@@ -93,9 +91,9 @@
 		title="My Expenses">
 		<view name="expense-grid" type="grid" />
 		<view name="expense-form" type="form" />
-		<domain>self.user = :user_id AND self.company = :company_id</domain>
+		<domain>self.user = :user_id</domain>
 		<context name="user_id" expr="eval:__user__" />
-		<context name="company_id" expr="eval:__user__.activeCompany" />
+		<context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-view>
 	
 	<menuitem name="validate-expense" groups="MNGT,admins" parent="expense-root" title="Expenses to Validate" action="expense.validate" icon="fa-flag"
@@ -112,6 +110,7 @@
 		<view type="grid" name="expense-grid"/>
 		<view type="form" name="expense-form"/>
 		<domain>self.statusSelect = 3 AND self.ventilated = false</domain>
+		<context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-view>
 	
 	<menuitem name="multiple-users-expense" parent="expense-root" title="Multiple users expenses" action="multiple.users.expense"  order="-3000"/>
@@ -121,6 +120,7 @@
 		<view type="form" name="expense-form"/>
 		<domain>self.multipleUsers IS TRUE</domain>
 		<context name="setMultipleUsers" expr="eval: true"/>
+		<context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-view>
 	
 	<menuitem name="historic-expense" groups="MNGT,admins" parent="expense-root" title="Historic colleague Expenses" action="expense.historic"/>
@@ -144,9 +144,8 @@
 		title="My Leave Requests">
 		<view name="leave-request-grid" type="grid" />
 		<view name="leave-request-form" type="form" />
-		<domain>self.user = :user_id AND self.company = :company_id AND self.toJustifyLeaveReason = :to_justify_leave_reason</domain>
+		<domain>self.user = :user_id AND self.toJustifyLeaveReason = :to_justify_leave_reason</domain>
 		<context name="user_id" expr="eval:__user__" />
-		<context name="company_id" expr="eval:__user__.activeCompany" />
 		<context name="to_justify_leave_reason" expr="eval: false"/>
 	</action-view>
 	
@@ -179,9 +178,8 @@
 	<action-view name="leave.request.to.justify" title="Leave to justify" model="com.axelor.apps.hr.db.LeaveRequest">
 		<view name="leave-request-form" type="form" />
 		<view name="leave-request-validate-grid" type="grid" />
-		<domain>self.user = :user_id AND self.company = :company_id AND self.toJustifyLeaveReason = :to_justify_leave_reason</domain>
+		<domain>self.user = :user_id AND self.toJustifyLeaveReason = :to_justify_leave_reason</domain>
 		<context name="user_id" expr="eval:__user__" />
-		<context name="company_id" expr="eval:__user__.activeCompany" />
 		<context name="to_justify_leave_reason" expr="eval: true"/>
 	</action-view>
 		
@@ -255,6 +253,7 @@
 		<domain>self.isModel = false AND self.expense = true</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="false"/>
+		<context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-view>
 	
 	<menuitem name="admin-root-conf-hr-config" parent="admin-root-conf"
@@ -361,6 +360,16 @@
 		<view type="grid" name="period-hr-grid"/>
 		<view type="form" name="period-hr-form"/>
 		<domain>self.year.typeSelect = 2</domain>
+	</action-view>
+
+	<menuitem name="hr-conf-fiscal-period" parent="hr-conf"
+			  title="Fiscal periods" action="hr.conf.fiscal.period"/>
+
+	<action-view name="hr.conf.fiscal.period" title="Fiscal periods"
+				 model="com.axelor.apps.base.db.Period" >
+		<view type="grid" name="period-grid"/>
+		<view type="form" name="period-hr-fiscal-form"/>
+		<domain>self.year.typeSelect = 1</domain>
 	</action-view>
 
 	<menuitem name="plannings-all" parent="hr-conf" title="Plannings" />

@@ -30,6 +30,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -44,7 +45,7 @@ public class SaleOrderLineController {
     @Inject
     private AccountManagementService accountManagementService;
 
-	public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void compute(ActionRequest request, ActionResponse response) {
 
 		Context context = request.getContext();
 		
@@ -53,15 +54,15 @@ public class SaleOrderLineController {
 		SaleOrder saleOrder = this.getSaleOrder(context);
 		
 		try{
-			if(saleOrder == null || saleOrderLine.getProduct() == null || saleOrderLine.getPrice() == null || saleOrderLine.getQty() == null)  {  
+			if(saleOrder == null)  {
 				this.resetProductInformation(response);
-				return;  
+				return;
 			}
 
-			BigDecimal exTaxTotal = BigDecimal.ZERO;
-			BigDecimal companyExTaxTotal = BigDecimal.ZERO;
-			BigDecimal inTaxTotal = BigDecimal.ZERO;
-			BigDecimal companyInTaxTotal = BigDecimal.ZERO;
+			BigDecimal exTaxTotal;
+			BigDecimal companyExTaxTotal;
+			BigDecimal inTaxTotal;
+			BigDecimal companyInTaxTotal;
 			BigDecimal priceDiscounted = saleOrderLineService.computeDiscount(saleOrderLine);
 			response.setValue("priceDiscounted", priceDiscounted);
 			response.setAttr("priceDiscounted", "hidden", priceDiscounted.compareTo(saleOrderLine.getPrice()) == 0);
@@ -89,7 +90,7 @@ public class SaleOrderLineController {
 			
 		}
 		catch(Exception e) {
-			response.setFlash(e.getMessage());
+			TraceBackService.trace(response, e);
 		}
 	}
 	

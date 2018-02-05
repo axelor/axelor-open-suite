@@ -73,7 +73,7 @@
     </action-method>
     
     <action-record name="action-currency-conversion-line-set-exchange-rate" model="com.axelor.apps.base.db.Wizard">
-    	<field name="exchangeRate" if="startCurrency != null &amp;&amp; endCurrency != null &amp;&amp; date != null" expr="call:com.axelor.apps.base.service.CurrencyConversionService:getRate(__repo__.of(Currency).find(startCurrency.id),__repo__.of(Currency).find(endCurrency.id), new LocalDate(date))" />
+    	<field name="exchangeRate" if="startCurrency != null &amp;&amp; endCurrency != null &amp;&amp; date != null" expr="call:com.axelor.apps.base.service.CurrencyConversionService:getRate(startCurrency, endCurrency, LocalDate(date))" />
     </action-record>
     
      <action-record name="action-currency-conversion-line-wizard-set-date" model="com.axelor.apps.base.db.Wizard">

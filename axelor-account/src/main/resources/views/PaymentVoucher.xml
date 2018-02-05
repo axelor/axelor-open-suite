@@ -24,7 +24,7 @@
 		<panel name="main" readonlyIf="statusSelect == 2" itemSpan="12">
 			 <field name="ref" readonly="true" colSpan="4"/>
 			 <field name="operationTypeSelect" colSpan="4" onChange="action-payment-voucher-hidden-fields-if-purchase"/>
-			 <field name="user" canEdit="false" colSpan="4" form-view="user-form" grid-view="user-grid"/>
+			 <field name="user" colSpan="4" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 			 <field name="paymentDate" colSpan="4" required="true"/>
 			 <field name="company" canEdit="false" widget="SuggestBox" colSpan="4" form-view="company-form" grid-view="company-grid" onChange="action-payment-voucher-method-fill-bank-details"/>
 			 <field name="hasAutoInput" colSpan="4" hidden="true"/>
@@ -52,8 +52,8 @@
 		</panel>
 		
 		<panel sidebar="true" name="actions" title="Actions" stacked="true">
-			<button name="confirmPaymentVoucher" title="Confirm payment" onClick="action-group-account-payment-voucher-confirm-click" showIf="statusSelect == 1"/>
-			<button name="printPaymentVoucher" title="Print receipt" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher" showIf="statusSelect == 2"/>
+			<button name="confirmPaymentVoucher" title="Confirm payment" hidden="true" onClick="action-group-account-payment-voucher-confirm-click"/>
+			<button name="printPaymentVoucher" title="Print receipt" hidden="true" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher"/>
 		</panel>
 		
 		<panel name="payer" title="Payer" itemSpan="12" readonlyIf="statusSelect == 2">

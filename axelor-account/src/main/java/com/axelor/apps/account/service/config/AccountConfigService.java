@@ -77,42 +77,6 @@ public class AccountConfigService {
 	/******************************** IMPORT CFONB ********************************************/
 
 
-	public void getInterbankPaymentOrderImportPathCFONB(AccountConfig accountConfig) throws AxelorException  {
-
-		if(accountConfig.getInterbankPaymentOrderImportPathCFONB() == null || accountConfig.getInterbankPaymentOrderImportPathCFONB().isEmpty())  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_4),
-					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
-
-	}
-
-	public void getTempInterbankPaymentOrderImportPathCFONB(AccountConfig accountConfig) throws AxelorException  {
-
-		if(accountConfig.getTempInterbankPaymentOrderImportPathCFONB() == null || accountConfig.getTempInterbankPaymentOrderImportPathCFONB().isEmpty())  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_5),
-					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
-
-	}
-
-	public void getInterbankPaymentOrderRejectImportPathCFONB(AccountConfig accountConfig) throws AxelorException  {
-
-		if(accountConfig.getInterbankPaymentOrderRejectImportPathCFONB() == null || accountConfig.getInterbankPaymentOrderRejectImportPathCFONB().isEmpty())  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_6),
-					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
-
-	}
-
-	public void getTempInterbankPaymentOrderRejectImportPathCFONB(AccountConfig accountConfig) throws AxelorException  {
-
-		if(accountConfig.getTempInterbankPaymentOrderRejectImportPathCFONB() == null || accountConfig.getTempInterbankPaymentOrderRejectImportPathCFONB().isEmpty())  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.ACCOUNT_CONFIG_7),
-					GeneralServiceImpl.EXCEPTION,accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
-
-	}
-
 	public void getRejectImportPathAndFileName(AccountConfig accountConfig) throws AxelorException  {
 
 		if(accountConfig.getRejectImportPathAndFileName() == null || accountConfig.getRejectImportPathAndFileName().isEmpty())  {

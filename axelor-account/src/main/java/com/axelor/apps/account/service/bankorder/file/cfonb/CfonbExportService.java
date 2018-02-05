@@ -705,9 +705,8 @@ public class CfonbExportService {
 	 * @param operationCode
 	 * 		Le type d'opération :
 	 * 		<ul>
-     *      <li>0 = Virement</li>
-     *      <li>1 = Prélèvement</li>
-     *      <li>2 = TIP</li>
+     *          <li>0 = Virement</li>
+     *          <li>1 = Prélèvement</li>
      *  	</ul>
 	 * @return
 	 * 				L'enregistrement 'total'

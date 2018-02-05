@@ -51,8 +51,9 @@ public interface IExceptionMessage {
 
 	static final String ACCOUNT_CONFIG_EXTERNAL_BANK_TO_BANK_ACCOUNT = /*$$(*/ "%s : Please, configure an account for the bank order for the external bank to bank transfer for the company %s" /*)*/;
 	static final String ACCOUNT_CONFIG_INTERNAL_BANK_TO_BANK_ACCOUNT = /*$$(*/ "%s : Please, configure an account for the bank order for the internal bank to bank transfer for the company %s" /*)*/;
-	
-	
+
+    static final String ACCOUNT_CONFIG_MISSING_ICS_NUMBER = /*$$(*/ "%s : Please configure an ICS number for the company %s." /*)*/;
+
 	/**
 	 *  BankOrder service
 	 */

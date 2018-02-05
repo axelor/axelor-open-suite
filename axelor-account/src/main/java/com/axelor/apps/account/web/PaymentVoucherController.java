@@ -147,8 +147,11 @@ public class PaymentVoucherController {
 		
 		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
 		
-		String name = I18n.get("Payment voucher")+" "+paymentVoucher.getReceiptNo();
-		
+		String name = I18n.get("Payment voucher");
+		if (!Strings.isNullOrEmpty(paymentVoucher.getReceiptNo())) {
+			name += " " + paymentVoucher.getReceiptNo();
+		}
+
 		String fileLink = ReportFactory.createReport(IReport.PAYMENT_VOUCHER, name+"-${date}")
 				.addParam("PaymentVoucherId", paymentVoucher.getId())
 				.generate()

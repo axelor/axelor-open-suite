@@ -21,6 +21,7 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
+import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.AccountIdentification3Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.BranchAndFinancialInstitutionIdentification3;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.CashAccount7;
@@ -51,6 +52,7 @@ import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.ServiceLevel3Choice;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 import javax.xml.bind.JAXBException;
@@ -398,8 +400,9 @@ public class BankOrderFile00800101Service extends BankOrderFileService {
      * @param directDebitTransactionInformation1List the list to add the {@link DirectDebitTransactionInformation1} objects into
      * @param creditor the creditor of the SEPA Direct Debit file
      * @throws DatatypeConfigurationException
+     * @throws AxelorException 
      */
-    private void createDrctDbtTxInf(List<DirectDebitTransactionInformation1> directDebitTransactionInformation1List, PartyIdentification8 creditor) throws DatatypeConfigurationException {
+    private void createDrctDbtTxInf(List<DirectDebitTransactionInformation1> directDebitTransactionInformation1List, PartyIdentification8 creditor) throws DatatypeConfigurationException, AxelorException {
         DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
 
         for (BankOrderLine bankOrderLine : bankOrderLineList) {
@@ -510,7 +513,7 @@ public class BankOrderFile00800101Service extends BankOrderFileService {
             party2Choice.getPrvtId().add(personIdentification3);
             GenericIdentification4 genericIdentification4 = factory.createGenericIdentification4();
             personIdentification3.setOthrId(genericIdentification4);
-            genericIdentification4.setId(senderCompany.getAccountConfig().getIcsNumber());
+            genericIdentification4.setId(Beans.get(AccountConfigBankPaymentService.class).getIcsNumber(senderCompany.getAccountConfig()));
             genericIdentification4.setIdTp("SEPA");
 
             /*

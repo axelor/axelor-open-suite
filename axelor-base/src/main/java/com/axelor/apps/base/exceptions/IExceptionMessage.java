@@ -70,7 +70,8 @@ public interface IExceptionMessage {
 	
 	static final public String PERIOD_1 = /*$$(*/ "No period found or it has been closed for the company %s" /*)*/ ;
 	static final public String PERIOD_2 = /*$$(*/ "Period closed" /*)*/ ;
-	
+	static final String PAY_PERIOD_CLOSED = /*$$(*/ "Warning : the pay period %s is closed." /*)*/;
+
 	/**
 	 * Abstract batch
 	 */
