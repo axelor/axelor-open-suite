@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,14 +23,8 @@ import java.math.RoundingMode;
 import java.net.URL;
 
 import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import wslite.http.HTTPClient;
-import wslite.http.HTTPMethod;
-import wslite.http.HTTPRequest;
-import wslite.http.HTTPResponse;
 
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
@@ -42,6 +36,12 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import wslite.http.HTTPClient;
+import wslite.http.HTTPMethod;
+import wslite.http.HTTPRequest;
+import wslite.http.HTTPResponse;
+import wslite.json.JSONObject;
 
 public class CurrencyConversionService {
 
@@ -71,15 +71,16 @@ public class CurrencyConversionService {
 			try{
 		        HTTPClient httpclient = new HTTPClient();
 		        HTTPRequest request = new HTTPRequest();
-		        URL url = new URL(String.format(wsUrl,currencyFrom.getCode(),currencyTo.getCode()));
+		        URL url = new URL(String.format(wsUrl,currencyFrom.getCode()));
 		        LOG.debug("Currency conversion webservice URL: {}" ,new Object[]{url.toString()});
 		        request.setUrl(url);
 		        request.setMethod(HTTPMethod.GET);
 		        HTTPResponse response = httpclient.execute(request);
+		        JSONObject json = new JSONObject(response.getContentAsString());
 		        LOG.debug("Webservice response code: {}, reponse mesasage: {}",response.getStatusCode(),response.getStatusMessage());
 		        if(response.getStatusCode() != 200)
 		        	return rate;
-		        Float rt = Float.parseFloat(response.getContentAsString());
+		        Float rt = Float.parseFloat(json.getJSONObject("rates").get(currencyTo.getCode()).toString());
 		        rate = BigDecimal.valueOf(rt).setScale(4,RoundingMode.HALF_EVEN);
 			} catch (Exception e) {
 				TraceBackService.trace(e);
@@ -129,7 +130,7 @@ public class CurrencyConversionService {
 	}
 
 
-	public BigDecimal getRate(Currency currencyFrom, Currency currencyTo, LocalDateTime rateDate){
+	public BigDecimal getRate(Currency currencyFrom, Currency currencyTo, LocalDate rateDate){
 
 		LOG.debug("Get Last rate for CurrencyFrom: {} CurrencyTo: {} RateDate: {}",new Object[]{currencyFrom,currencyTo,rateDate});
 

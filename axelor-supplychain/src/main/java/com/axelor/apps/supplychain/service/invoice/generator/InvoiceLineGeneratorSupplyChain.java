@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -51,12 +51,6 @@ import com.google.inject.Inject;
  */
 public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerator {
 
-	@Inject
-	protected InvoiceLineService invoiceLineService;
-	
-	@Inject
-	protected UnitConversionService unitConversionService;
-	
 	protected SaleOrderLine saleOrderLine;
 	protected PurchaseOrderLine purchaseOrderLine;
 	protected StockMoveLine stockMoveLine;
@@ -159,7 +153,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 		
 		else if(stockMoveLine != null)  {
 			
-			this.price = invoiceLineService.getUnitPrice(invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
+			this.price = Beans.get(InvoiceLineService.class).getUnitPrice(invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
 			this.price = Beans.get(UnitConversionService.class).convertWithProduct(stockMoveLine.getUnit(), this.unit, this.price, product);
 
 		}

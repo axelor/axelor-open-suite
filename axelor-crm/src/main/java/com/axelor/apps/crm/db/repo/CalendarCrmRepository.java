@@ -15,18 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.crm.db.repo;
 
-import com.axelor.apps.supplychain.db.Mrp;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.crm.db.Calendar;
 
-
-public interface MrpService {
+public class CalendarCrmRepository extends CalendarRepository {
 	
-	public void runCalculation(Mrp mrp) throws AxelorException;
-	
-	public void generateProposals(Mrp mrp) throws AxelorException;
-	
-	public void reset(Mrp mrp);
-
+	@Override
+	public Calendar copy(Calendar calendar, boolean deep) {
+		
+		calendar.setIsValid(false);
+		calendar.setEventsCrm(null);
+		
+		return super.copy(calendar, deep);
+	}
 }

@@ -18,7 +18,7 @@
 		<panel name="main" >
 		  <field name="name"/>
 		  <field name="keepRemote" />
-		  <field name="user"/>
+		  <field name="user" canNew="false" canEdit="false" canView="false"/>
 		</panel>
 		<panel name="connectionSettings" title="Connection settings">
 		  <field name="url"/>

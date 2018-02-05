@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -128,16 +128,6 @@ public class ProjectPlanningService {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PROJECT_PLANNING_NO_TASK_TEAM)), IException.CONFIGURATION_ERROR);
 		}
 		return planningLineList;
-	}
-
-	public LocalDate getFromDate(){
-		LocalDate todayDate = generalService.getTodayDate();
-		return new LocalDate(todayDate.getYear(), todayDate.getMonthOfYear(), todayDate.dayOfMonth().getMinimumValue());
-	}
-
-	public LocalDate getToDate(){
-		LocalDate todayDate = generalService.getTodayDate();
-		return new LocalDate(todayDate.getYear(), todayDate.getMonthOfYear(), todayDate.dayOfMonth().getMaximumValue());
 	}
 	
 	public void getTasksForUser(ActionRequest request, ActionResponse response){

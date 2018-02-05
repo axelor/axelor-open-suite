@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import java.util.Map;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExtraHours;
@@ -193,11 +194,11 @@ public class LeaveController {
 			LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
 			leaveRequest = leaveRequestRepositoryProvider.get().find(leaveRequest.getId());
 
-			if(leaveRequest.getUser().getEmployee().getPlanning() == null) {
+			if(leaveRequest.getUser().getEmployee().getWeeklyPlanning() == null) {
 				response.setAlert(String.format(IExceptionMessage.EMPLOYEE_PLANNING, leaveRequest.getUser().getEmployee().getName()));
 				return;
 			}
-			if(leaveRequest.getLeaveLine().getQuantity().subtract(leaveRequest.getDuration()).compareTo(BigDecimal.ZERO ) == -1 ){
+			if(leaveRequest.getLeaveLine().getQuantity().subtract(leaveRequest.getDuration()).compareTo(BigDecimal.ZERO ) < 0 ){
 				if(!leaveRequest.getLeaveLine().getLeaveReason().getAllowNegativeValue() && !leaveService.willHaveEnoughDays(leaveRequest)){
 					String instruction = leaveRequest.getLeaveLine().getLeaveReason().getInstruction();
 					if (instruction == null) { instruction = ""; }
@@ -226,7 +227,12 @@ public class LeaveController {
 		}
 	}
 
-	//validating leave request and sending an email to the applicant
+	/**
+	 * validating leave request and sending an email to the applicant
+	 * @param request
+	 * @param response
+	 * @throws AxelorException
+	 */
 	public void validate(ActionRequest request, ActionResponse response) throws AxelorException{
 
 		try{
@@ -240,6 +246,7 @@ public class LeaveController {
 			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
 			}
+			Beans.get(PeriodService.class).checkPeriod(leaveRequest.getCompany(), leaveRequest.getToDate(), leaveRequest.getFromDate());
 
 		}  catch(Exception e)  {
 			TraceBackService.trace(response, e);

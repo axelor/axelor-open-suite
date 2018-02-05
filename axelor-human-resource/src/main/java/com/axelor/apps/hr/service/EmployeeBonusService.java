@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -61,7 +61,7 @@ public class EmployeeBonusService {
 	
 	@Transactional
 	public void compute(EmployeeBonusMgt bonus) throws AxelorException{
-		Map<Employee, EmployeeBonusMgtLine> employeeStatus = new HashMap<Employee, EmployeeBonusMgtLine>();
+		Map<Employee, EmployeeBonusMgtLine> employeeStatus = new HashMap<>();
 		for (EmployeeBonusMgtLine line : bonus.getEmployeeBonusMgtLineList()) {
 			employeeStatus.put(line.getEmployee(), line);
 		}
@@ -122,7 +122,7 @@ public class EmployeeBonusService {
 
 				line.setSeniorityDate( employee.getSeniorityDate() );
 				line.setCoef( employee.getBonusCoef() );
-				line.setWeeklyPlanning(employee.getPlanning());
+				line.setWeeklyPlanning(employee.getWeeklyPlanning());
 
 				maker.setTemplate( formula );
 				eval = maker.make();

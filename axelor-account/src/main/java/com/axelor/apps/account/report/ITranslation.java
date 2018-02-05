@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -117,19 +117,34 @@ public interface ITranslation {
 	public static final String MOVE_LINE_REPORT_2000_TOTAL_PER_ANALYTIC_JOURNAL = /*$$(*/ "MoveLineReportType2000.totalPerAnalyticJournal"; /*)*/
 	public static final String MOVE_LINE_REPORT_2000_TOTAL_PER_ANALYTIC_AXIS = /*$$(*/ "MoveLineReportType2000.totalPerAnalyticAxis"; /*)*/
 	public static final String MOVE_LINE_REPORT_2000_TOTAL_PER_ANALYTIC_ACCOUNT = /*$$(*/ "MoveLineReportType2000.totalPerAnalyticAccount"; /*)*/
-	
+
+	public static final String SALE_INVOICE_DETAILS_REPORT_TITLE = /*$$(*/ "SaleInvoicesDetails.title"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_COMPANY = /*$$(*/ "SaleInvoicesDetails.company"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_PUBLICATION_DATE = /*$$(*/ "SaleInvoicesDetails.publicationDate"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_PRODUCT_CATEGORIES = /*$$(*/ "SaleInvoicesDetails.productCategories"; /*)*/
 	public static final String SALE_INVOICE_DETAILS_REPORT_INVOICED = /*$$(*/ "SaleInvoicesDetails.invoiced"; /*)*/
 	public static final String SALE_INVOICE_DETAILS_REPORT_ORDERED = /*$$(*/ "SaleInvoicesDetails.ordered"; /*)*/
 	public static final String SALE_INVOICE_DETAILS_REPORT_SUBTOTAL = /*$$(*/ "SaleInvoicesDetails.subtotal"; /*)*/
 	public static final String SALE_INVOICE_DETAILS_REPORT_SUM_BY_PARTNER = /*$$(*/ "SaleInvoicesDetails.sumByPartner"; /*)*/
 	public static final String SALE_INVOICE_DETAILS_REPORT_SUM_BY_PRODUCT = /*$$(*/ "SaleInvoicesDetails.sumByProduct"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_TOTAL_ORDER = /*$$(*/ "SaleInvoicesDetails.totalOrder"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_TOTAL_INVOICE = /*$$(*/ "SaleInvoicesDetails.totalInvoice"; /*)*/
+	public static final String SALE_INVOICE_DETAILS_REPORT_TOTAL_TURNOVER = /*$$(*/ "SaleInvoicesDetails.totalTurnover"; /*)*/
 
+
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_TITLE = /*$$(*/ "PurchaseInvoicesDetails.title"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_COMPANY = /*$$(*/ "PurchaseInvoicesDetails.company"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_PUBLICATION_DATE = /*$$(*/ "PurchaseInvoicesDetails.publicationDate"; /*)*/
+	public static final String PURCHASE_INVOICE_ETAILS_REPORT_PRODUCT_CATEGORIES = /*$$(*/ "PurchaseInvoicesDetails.productCategories"; /*)*/
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_INVOICED = /*$$(*/ "PurchaseInvoicesDetails.invoiced"; /*)*/
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_ORDERED = /*$$(*/ "PurchaseInvoicesDetails.ordered"; /*)*/
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUBTOTAL = /*$$(*/ "PurchaseInvoicesDetails.subtotal"; /*)*/
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUM_BY_PARTNER = /*$$(*/ "PurchaseInvoicesDetails.sumByPartner"; /*)*/
 	public static final String PURCHASE_INVOICE_DETAILS_REPORT_SUM_BY_PRODUCT = /*$$(*/ "PurchaseInvoicesDetails.sumByProduct"; /*)*/
-	
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_TOTAL_ORDER = /*$$(*/ "PurchaseInvoicesDetails.totalOrder"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_TOTAL_INVOICE = /*$$(*/ "PurchaseInvoicesDetails.totalInvoice"; /*)*/
+	public static final String PURCHASE_INVOICE_DETAILS_REPORT_TOTAL_TURNOVER = /*$$(*/ "PurchaseInvoicesDetails.totalTurnover"; /*)*/
+
 	public static final String ACCOUNT_MOVE_REFERENCE = /*$$(*/ "move.reference"; /*)*/
 	public static final String ACCOUNT_MOVE_JOURNAL = /*$$(*/ "move.journal"; /*)*/
 	public static final String ACCOUNT_MOVE_PARTNER = /*$$(*/ "move.partner"; /*)*/

@@ -9,7 +9,7 @@
 
 	
 	<form name="project-my-planning-form" title="Project Planning" model="com.axelor.apps.project.db.ProjectPlanning" 
-		onLoad="action-project-planning-record-default,action-project-planning-attrs-title-columns,action-project-planning-method-populate"
+		onLoad="action-project-planning-attrs-title-columns,action-project-planning-method-populate"
 		canNew="false" canCopy="false" width="large">
 		<panel name="main" >
 			<field name="year"/>
@@ -24,15 +24,10 @@
 		<panel>
 			<field name="$projectPlanningLineList" onChange="action-project-planning-method-save" grid-view="project-my-planning-line-grid" form-view="project-my-planning-line-form" title="Planning Lines" type="many-to-many" target="com.axelor.apps.project.db.ProjectPlanningLine" showTitle="false" canNew="false" canRemove="false" canSelect="false" colSpan="12"/>
 		</panel>
-	    <panel>
-	    	<button name="seeMonth" title="See Month" colSpan="4"/>
-	    	<field name="$fromDate" colSpan="4" type="date" title="From Date"/>
-	      	<field name="$toDate" colSpan="4" type="date" title="To Date"/>
-	    </panel>
 	</form>
 	
 	<form name="project-my-team-planning-form" title="Project Planning" model="com.axelor.apps.project.db.ProjectPlanning"
-		onLoad="action-project-planning-record-default,action-project-planning-attrs-title-columns,action-project-planning-method-populate" 
+		onLoad="action-project-planning-attrs-title-columns,action-project-planning-method-populate" 
 		canNew="false" canCopy="false" width="large">
 		<panel name="main" >
 			<field name="year"/>
@@ -47,17 +42,7 @@
 		<panel>
 			<field name="$projectPlanningLineList" onChange="action-project-planning-method-save" grid-view="project-my-team-planning-line-grid"  form-view="project-my-team-planning-line-form" title="Planning Lines" type="many-to-many" target="com.axelor.apps.project.db.ProjectPlanningLine" showTitle="false" canNew="false" canRemove="false" canSelect="false" colSpan="12"/>
 		</panel>
-	    <panel>
-	    	<button name="seeMonth" title="See Month" colSpan="4"/>
-	    	<field name="$fromDate" colSpan="4" type="date" title="From Date"/>
-	      	<field name="$toDate" colSpan="4" type="date" title="To Date"/>
-	    </panel>
 	</form>
-
-	<action-record name="action-project-planning-record-default" model="com.axelor.apps.project.db.ProjectPlanning">
-		<field name="$fromDate" expr="call: com.axelor.apps.project.service.ProjectPlanningService:getFromDate()"/>
-		<field name="$toDate" expr="call: com.axelor.apps.project.service.ProjectPlanningService:getToDate()"/>
-	</action-record>
 	
 	<action-method name="action-project-planning-method-previous-week">
 		<call class="com.axelor.apps.project.web.ProjectPlanningController" method="planningPreviousWeek"/>

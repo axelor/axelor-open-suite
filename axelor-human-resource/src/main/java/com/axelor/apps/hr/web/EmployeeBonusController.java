@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.hr.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.hr.db.EmployeeBonusMgt;
 import com.axelor.apps.hr.db.repo.EmployeeBonusMgtRepository;
 import com.axelor.apps.hr.report.IReport;
@@ -26,6 +27,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -42,9 +44,16 @@ public class EmployeeBonusController {
 	
 
 	public void compute(ActionRequest request, ActionResponse response) throws AxelorException{
-		
-		employeeBonusService.compute(employeeBonusMgtRepo.find( request.getContext().asType( EmployeeBonusMgt.class ).getId() ));
+		EmployeeBonusMgt employeeBonusMgt = request.getContext().asType(EmployeeBonusMgt.class);
+		employeeBonusMgt = employeeBonusMgtRepo.find(employeeBonusMgt.getId());
+		employeeBonusService.compute(employeeBonusMgt);
 		response.setReload(true);
+		try {
+			Beans.get(PeriodService.class).checkPeriod(employeeBonusMgt.getPayPeriod());
+			Beans.get(PeriodService.class).checkPeriod(employeeBonusMgt.getLeavePeriod());
+		} catch (AxelorException e) {
+			response.setFlash(e.getMessage());
+		}
 	}
 	
 	public void print(ActionRequest request, ActionResponse response) throws AxelorException{

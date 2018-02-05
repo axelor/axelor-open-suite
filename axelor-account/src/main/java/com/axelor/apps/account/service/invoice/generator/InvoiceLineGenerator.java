@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -174,10 +174,12 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 		boolean isPurchase = Beans.get(InvoiceLineService.class).isPurchase(invoice);
 
-		Tax tax = Beans.get(AccountManagementService.class).getProductTax(Beans.get(AccountManagementService.class).getAccountManagement(product, invoice.getCompany()), isPurchase);
-		TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
+		if (product != null) {
+			Tax tax = Beans.get(AccountManagementService.class).getProductTax(Beans.get(AccountManagementService.class).getAccountManagement(product, invoice.getCompany()), isPurchase);
+			TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
 
-		invoiceLine.setTaxEquiv(taxEquiv);
+			invoiceLine.setTaxEquiv(taxEquiv);
+		}
 
 		invoiceLine.setTaxLine(taxLine);
 		

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,6 +29,9 @@ public class ExpenseHRRepository extends ExpenseRepository {
         try {
             expense = super.save(expense);
             Beans.get(ExpenseService.class).setDraftSequence(expense);
+            if (expense.getStatusSelect() == ExpenseRepository.STATUS_DRAFT) {
+                Beans.get(ExpenseService.class).completeExpenseLines(expense);
+            }
 
             return expense;
         } catch (Exception e) {

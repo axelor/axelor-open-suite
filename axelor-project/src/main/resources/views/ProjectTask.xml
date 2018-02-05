@@ -31,7 +31,7 @@
 			<field name="project" onChange="action-project-task-record-inv-type-select,action-project-task-record-bind-customer-project" colSpan="6" title="Parent Project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 			<field name="company" canEdit="false" requiredIf="project == null" hideIf="project != null" form-view="company-form" grid-view="company-grid"/>
 			<field name="clientPartner" readonlyIf="project != null" domain="self.isCustomer = true" form-view="partner-form" grid-view="partner-grid" />
-			<field name="assignedTo" canEdit="false" title="Person In Charge" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
+			<field name="assignedTo" canNew="false" canEdit="false" canView="false" title="Person In Charge" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
 			<field name="saleOrder" domain="self.clientPartner = :clientPartner" if-module="axelor-business-project" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="fromDate" />
 			<field name="toDate" />
@@ -54,7 +54,7 @@
 			</panel>
 			<panel title="Related elements" if="eval: __config__.general.getShowPurchaseOrderLineRelatedToProject() || __config__.general.getShowSaleOrderLineRelatedToProject() || __config__.general.getShowExpenseLineRelatedToProject() || __config__.general.getShowProductionOrderRelatedToProject()" >
 				<panel-related field="purchaseOrderLineList" form-view="purchase-order-line-form" grid-view="purchase-order-line-invoicing-project-grid" if-module="axelor-business-project" canSelect="true" canNew="false"  canEdit="false" colSpan="12" if="eval: __config__.general.getShowPurchaseOrderLineRelatedToProject()"/>
-				<panel-related field="saleOrderLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getShowSaleOrderLineRelatedToProject()" />
+				<panel-related field="saleOrderLineList" form-view="sale-order-line-form" grid-view="sale-order-line-project-grid" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getShowSaleOrderLineRelatedToProject()" />
 				<panel-related field="expensesLineList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-project" if="eval: __config__.general.getShowExpenseLineRelatedToProject()" />
 				<panel-related field="productionOrderList" canSelect="true" canNew="false" canEdit="false" colSpan="12" if-module="axelor-business-production" if="eval: __config__.general.getShowProductionOrderRelatedToProject()" />
 			</panel>
@@ -84,7 +84,7 @@
 	    	<button name="computeDurationFromChildren" title="Compute duration" showIf="childProjectTaskList.length > 0" colSpan="12" onClick="save,action-method-project-task-compute-duration-fromchildren,save"/>
 	  	</panel>
 		<panel name="settings" title="Settings" sidebar="true">
-			<field name="membersUserSet" canEdit="false" widget="TagSelect" form-view="user-form" grid-view="user-grid"/>
+			<field name="membersUserSet" canNew="false" canEdit="false" canView="false" widget="TagSelect" form-view="user-form" grid-view="user-grid"/>
 			<field name="typeSelect"/>
 			<field name="sequence" hidden="true"/>
 		</panel>
@@ -117,7 +117,7 @@
 	    	<field name="statusSelect" widget="NavSelect" colSpan="6"/>
 	        <field name="project" onChange="action-project-task-attrs-hide-invoicing-panel,action-project-task-record-inv-type-select,action-project-task-record-bind-customer-project" colSpan="6" requiredIf="!$popup()" title="Project" hideIf="$popup()" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid"/>
 		    <field name="name" colSpan="12" />
-			<field name="assignedTo" canEdit="false" colSpan="12" title="Assigned To" onSelect="action-task-attrs-assigned-to-domain" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
+			<field name="assignedTo" canNew="false" canEdit="false" canView="false" colSpan="12" title="Assigned To" onSelect="action-task-attrs-assigned-to-domain" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
 			<field name="clientPartner" readonly="true"/>
 			<field name="fromDate" />
 			<field name="toDate" />
@@ -195,7 +195,7 @@
 				   colSpan="6" width="50%" hide="true"/>
 			<field name="company" canEdit="false" requiredIf="project == null &amp;&amp; typeSelect == 'project'" hideIf="typeSelect == 'task' || project != null"/>
 			<field name="clientPartner" domain="self.isCustomer = true" readonly="true"/>
-			<field name="assignedTo" canEdit="false" title="Person In Charge" onSelect="action-task-attrs-assigned-to-domain" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
+			<field name="assignedTo" canNew="false" canEdit="false" canView="false" title="Person In Charge" onSelect="action-task-attrs-assigned-to-domain" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid"/>
 			<field name="saleOrder" domain="self.clientPartner.id = :clientPartner.id" if-module="axelor-business-project" readonlyIf="typeSelect == 'task'" form-view="sale-order-form" grid-view="sale-order-grid"/>
 			<field name="fromDate" />
 			<field name="toDate" />
@@ -249,7 +249,7 @@
 	    	<button name="computeDurationFromChildren" title="Compute duration" showIf="childProjectTaskList.length > 0" colSpan="12" onClick="save,action-method-project-task-compute-duration-fromchildren,save"/>
 	  	</panel>
 		<panel name="settings" title="Settings" sidebar="true" hideIf="typeSelect == 'task'">
-			<field name="membersUserSet" canEdit="false" widget="TagSelect" form-view="user-form" grid-view="user-grid"/>
+			<field name="membersUserSet" canNew="false" canEdit="false" canView="false" widget="TagSelect" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 	</form>
 	

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,7 +37,6 @@ package com.axelor.apps.hr.service.batch;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.Locale;
 
@@ -208,9 +207,9 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 					incrementDone();
 					return;
 				}
-				LeaveManagement leaveManagement = leaveManagementService.createLeaveManagement(leaveLine, AuthUtils.getUser(), batch.getHrBatch().getComments(), null, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate(), quantity.setScale(1, RoundingMode.HALF_UP) );
-				leaveLine.setQuantity(leaveLine.getQuantity().add(quantity.setScale(1, RoundingMode.HALF_UP)));
-				leaveLine.setTotalQuantity(leaveLine.getTotalQuantity().add(quantity.setScale(1, RoundingMode.HALF_UP)));
+				LeaveManagement leaveManagement = leaveManagementService.createLeaveManagement(leaveLine, AuthUtils.getUser(), batch.getHrBatch().getComments(), null, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate(), quantity);
+				leaveLine.setQuantity(leaveLine.getQuantity().add(quantity));
+				leaveLine.setTotalQuantity(leaveLine.getTotalQuantity().add(quantity));
 				leaveManagementRepository.save(leaveManagement);
 				leaveLineRepository.save(leaveLine);
 				updateEmployee(employee);

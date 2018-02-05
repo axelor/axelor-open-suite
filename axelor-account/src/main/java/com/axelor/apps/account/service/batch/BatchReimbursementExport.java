@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -305,7 +305,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 		case AccountingBatchRepository.REIMBURSEMENT_EXPORT_TYPE_GENERATE:
 			comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_2) + "\n";
 			comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_3)+"\n", batch.getDone());
-			comment += String.format("\t* "+I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_5)+" : %s \n", this.totalAmount);
+			comment += String.format("\t* "+I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_10)+" : %s \n", this.totalAmount);
 
 			break;
 			
@@ -313,7 +313,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 			
 			comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_4) + "\n";
 			comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_5)+"\n", batch.getDone());
-			comment += String.format("\t* "+I18n.get(IExceptionMessage.BATCH_INTERBANK_PO_IMPORT_5)+" : %s \n", this.totalAmount);
+			comment += String.format("\t* "+I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_10)+" : %s \n", this.totalAmount);
 
 			comment += String.format("\t* ------------------------------- \n");
 			comment += String.format("\t* %s ", updateCustomerAccountLog);

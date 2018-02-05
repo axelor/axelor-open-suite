@@ -78,7 +78,7 @@
 		      ON _line.invoice=_invoice.id
 		    JOIN
 			auth_user as _user
-			ON _user.id = :_user_id
+			ON _user.id = :__user__
 			AND _invoice.company = _user.active_company	
 		    WHERE
 		      _invoice.status_select != 1
@@ -135,7 +135,7 @@
 	      ON _line.invoice=_invoice.id
 	    JOIN
 			auth_user AS _user
-			ON _user.id = :_user_id
+			ON _user.id = :__user__
 			AND _invoice.company = _user.active_company	  
 	     WHERE
 	      _invoice.status_select != 1
@@ -186,7 +186,7 @@
 			AND _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:toDate) 
 		JOIN
 			auth_user AS _user
-			ON _user.id = :_user_id
+			ON _user.id = :__user__
 			AND _invoice.company = _user.active_company	
 		JOIN
 			base_product AS _product ON _line.product = _product.id
@@ -473,7 +473,7 @@
 	      AND self.move.statusSelect = 3
 	      AND self.move.period.year = :year
 	      AND (self.move.period = :period OR :period IS NULL)
-	      AND self.move.company = :activeCompany
+	      AND self.move.company = :active_company
 	      AND item.value IN ('income','charge')
 	    GROUP BY
 	      item.title  
@@ -495,7 +495,7 @@
 	      account_invoice self
 	    JOIN
 	          auth_user AS _user
-	          ON _user.id = :id
+	          ON _user.id = :__user__
 	    JOIN
 	          base_company AS _company
 	          ON  _company.id = _user.active_company
@@ -527,7 +527,7 @@
 				    FROM account_invoice _invoice
 				    JOIN 
 				 	    auth_user AS _user
-		        		ON _user.id = :id
+		        		ON _user.id = :__user__
 		      		JOIN 
 		      		    base_company AS _company
 		        		ON  _company.id = _user.active_company
@@ -559,7 +559,7 @@
 	                FROM account_invoice _invoice
 			        JOIN 
 			            auth_user AS _user
-	                    ON _user.id = :id
+	                    ON _user.id = :__user__
 	                JOIN
 	                    base_company AS _company
 	                    ON  _company.id = _user.active_company
@@ -590,7 +590,7 @@
 	      account_invoice self
 	  JOIN   
 	       auth_user AS _user
-	       ON _user.id = :id
+	       ON _user.id = :__user__
 	  JOIN   
 	      base_company AS _company
 	      ON  _company.id = _user.active_company
@@ -625,7 +625,7 @@
 		     FROM account_invoice _invoice
 			 JOIN
 			        auth_user AS _user
-			        ON _user.id = :id
+			        ON _user.id = :__user__
 	      	JOIN
 		        base_company AS _company
 		        ON  _company.id = _user.active_company
@@ -656,7 +656,7 @@
 	                FROM account_invoice _invoice
 			        JOIN  
 			             auth_user AS _user
-	                     ON _user.id = :id
+	                     ON _user.id = :__user__
 	                JOIN 
 	                     base_company AS _company
 	                     ON  _company.id = _user.active_company
@@ -691,7 +691,7 @@
 	        account_invoice AS self
 	      JOIN
 	        auth_user AS _user
-	        ON _user.id = :id
+	        ON _user.id = :__user__
 	      JOIN
 	        base_company AS _company
 	        ON  _company.id = _user.active_company
@@ -708,7 +708,7 @@
 	        account_invoice AS self
 	      JOIN
 	        auth_user AS _user
-	        ON _user.id = :id
+	        ON _user.id = :__user__
 	      JOIN
 	        base_company AS _company
 	        ON  _company.id = _user.active_company
@@ -725,7 +725,7 @@
 	        account_invoice AS self
 	      JOIN
 	        auth_user AS _user
-	        ON _user.id = :id
+	        ON _user.id = :__user__
 	      JOIN
 	        base_company AS _company
 	        ON  _company.id = _user.active_company
@@ -742,7 +742,7 @@
 	        account_invoice AS self
 	      JOIN
 	        auth_user AS _user
-	        ON _user.id = :id
+	        ON _user.id = :__user__
 	      JOIN
 	        base_company AS _company
 	        ON  _company.id = _user.active_company
@@ -783,7 +783,7 @@
 	        account_invoice AS self
 	      JOIN
 	        auth_user AS _user
-	        ON _user.id = :id
+	        ON _user.id = :__user__
 	      JOIN
 	        base_company AS _company
 	        ON  _company.id = _user.active_company
@@ -800,7 +800,7 @@
 	        account_invoice AS self
 	      JOIN
 	        auth_user AS _user
-	        ON _user.id = :id
+	        ON _user.id = :__user__
 	      JOIN
 	        base_company AS _company
 	        ON  _company.id = _user.active_company
@@ -817,7 +817,7 @@
 	        account_invoice AS self
 	      JOIN
 	        auth_user AS _user
-	        ON _user.id = :id
+	        ON _user.id = :__user__
 	      JOIN
 	        base_company AS _company
 	        ON  _company.id = _user.active_company
@@ -859,7 +859,7 @@
 	        account_invoice AS self
 	      JOIN
 	        auth_user AS _user
-	        ON _user.id = :id
+	        ON _user.id = :__user__
 	      JOIN
 	        base_company AS _company
 	        ON  _company.id = _user.active_company
@@ -876,7 +876,7 @@
 	        account_invoice AS self
 	      JOIN
 	        auth_user AS _user
-	        ON _user.id = :id
+	        ON _user.id = :__user__
 	      JOIN
 	        base_company AS _company
 	        ON  _company.id = _user.active_company
@@ -893,7 +893,7 @@
 	        account_invoice AS self
 	      JOIN
 	        auth_user AS _user
-	        ON _user.id = :id
+	        ON _user.id = :__user__
 	      JOIN
 	        base_company AS _company
 	        ON  _company.id = _user.active_company

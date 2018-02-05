@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -87,9 +87,14 @@ public interface ExpenseService  {
 
 	public void getExpensesTypes(ActionRequest request, ActionResponse response);
 	
+	/**
+	 * This method is used in mobile application.
+	 * @param request
+	 * @param response
+	 */
 	@Transactional
 	public void insertExpenseLine(ActionRequest request, ActionResponse response);
-
+	
 	/**
 	 * Get the expense from user, if no expense is found create one.
 	 * @param user
@@ -101,5 +106,14 @@ public interface ExpenseService  {
 
 	public void setDraftSequence(Expense expense) throws AxelorException;
 
-	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine);
+	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine) throws AxelorException;
+
+	public List<ExpenseLine> getExpenseLineList(Expense expense);
+
+	/**
+	 * fill {@link ExpenseLine#expense} in {@link Expense#generalExpenseLineList}
+	 * and {@link Expense#kilometricExpenseLineList}
+	 * @param expense
+	 */
+	void completeExpenseLines(Expense expense);
 }

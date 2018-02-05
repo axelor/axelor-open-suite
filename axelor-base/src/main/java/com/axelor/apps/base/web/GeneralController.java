@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,6 +40,7 @@ import com.axelor.apps.base.service.administration.ExportDbObjectService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -181,7 +182,7 @@ public class GeneralController {
 		List<List<Object>> resultList = JPA.em().createQuery(query + ") FROM " + object + " m").getResultList();
 		
 		List<List<String>> records = new ArrayList<List<String>>();
-		
+
 		for(List<Object> result : resultList){
 			
 			List<String> record = new ArrayList<String>();
@@ -250,12 +251,30 @@ public class GeneralController {
 			response.setFlash(IExceptionMessage.GENERAL_7);
 		}
 	}
-	
+
 	public void applyApplicationMode(ActionRequest request, ActionResponse response)  {
 		 String applicationMode = AppSettings.get().get("application.mode", "prod");
 		 if ("dev".equals(applicationMode)) {
 			 response.setAttr("main", "hidden", false);
 		 }
 	}
+
+	public void showCustomersOnMap(ActionRequest request, ActionResponse response) throws AxelorException {
+
+		mapService.showMap("customer", I18n.get("Customers"), response);
+
+	}
+
+	public void showProspectsOnMap(ActionRequest request, ActionResponse response) throws AxelorException {
+
+		mapService.showMap("prospect", I18n.get("Prospect"), response);
+
+	}
+
+	public void showSuppliersOnMap(ActionRequest request, ActionResponse response) throws AxelorException {
+
+ 		mapService.showMap("supplier", I18n.get("Supplier"), response);
+
+ 	}
 
 }
