@@ -60,6 +60,7 @@ import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentServic
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.db.User;
@@ -249,8 +250,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	@Override
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void confirm(BankOrder bankOrder)  throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
-
+	public void confirm(BankOrder bankOrder) throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+		GeneralService generalService = Beans.get(GeneralService.class);
 		checkBankDetails(bankOrder.getSenderBankDetails(), bankOrder);
 
 		if(bankOrder.getGeneratedMetaFile() == null)  {
@@ -262,8 +263,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 		setSequenceOnBankOrderLines(bankOrder);
 
 		generateFile(bankOrder);
-		
-		bankOrder.setConfirmationDateTime(new LocalDateTime());
+
+		bankOrder.setConfirmationDateTime(generalService.getTodayDateTime().toLocalDateTime());
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
 		makeEbicsUserFollow(bankOrder);
 
