@@ -80,19 +80,6 @@ public interface IExceptionMessage {
 	static final String CHECK_REJECTION_1 = /*$$(*/ "%s : You must configure a cheque rejection sequence for the company %s" /*)*/ ;
 
 	/**
-	 * Interbank payment order import service
-	 */
-	static final String INTER_BANK_PO_IMPORT_1 = /*$$(*/ "%s : The invoice n°%s has not been found for the company %s" /*)*/ ;
-
-	/**
-	 * Interbank payment order reject import service
-	 */
-	static final String INTER_BANK_PO_REJECT_IMPORT_1 = /*$$(*/ "%s  There is no invoice corresponding to the number %s and the company %s" /*)*/ ;
-	static final String INTER_BANK_PO_REJECT_IMPORT_2 = /*$$(*/ "%s - There is no payment mode configured for the invoice %s" /*)*/ ;
-	static final String INTER_BANK_PO_REJECT_IMPORT_3 = /*$$(*/ "%s : The payment mode with 'TIC' code has not been found" /*)*/ ;
-	static final String INTER_BANK_PO_REJECT_IMPORT_4 = /*$$(*/ "%s : The payment mode with 'TIP' code has not been found" /*)*/ ;
-
-	/**
 	 * Irrecoverable service and controller
 	 */
 	static final String IRRECOVERABLE_1 = /*$$(*/ "Timetable ligne %s" /*)*/ ;
@@ -197,22 +184,6 @@ public interface IExceptionMessage {
 	static final String BATCH_DOUBTFUL_2 = /*$$(*/ "* %s Invoice(s) treated" /*)*/ ;
 
 	/**
-	 * Batch interbank payment order import
-	 */
-	static final String BATCH_INTERBANK_PO_IMPORT_1 = /*$$(*/ "Import's batch to TIP and cheque TIP payments %s" /*)*/ ;
-	static final String BATCH_INTERBANK_PO_IMPORT_2 = /*$$(*/ "Payment to invoice %s" /*)*/ ;
-	static final String BATCH_INTERBANK_PO_IMPORT_3 = /*$$(*/ "Reporting to TIP and cheque TIP payment's import :" /*)*/ ;
-	static final String BATCH_INTERBANK_PO_IMPORT_4 = /*$$(*/ "%s payment(s) traited" /*)*/ ;
-	static final String BATCH_INTERBANK_PO_IMPORT_5 = /*$$(*/ "Total Amount" /*)*/ ;
-
-	/**
-	 * Batch interbank payment order reject import
-	 */
-	static final String BATCH_INTERBANK_PO_REJECT_IMPORT_1 = /*$$(*/ "Import's batch to TIP and cheque TIP payment rejects %s" /*)*/ ;
-	static final String BATCH_INTERBANK_PO_REJECT_IMPORT_2 = /*$$(*/ "Payment reject to invoice %s" /*)*/ ;
-	static final String BATCH_INTERBANK_PO_REJECT_IMPORT_3 = /*$$(*/ "Reporting to TIP and cheque TIP payment rejects import" /*)*/ ;
-
-	/**
 	 * Batch move line export
 	 */
 	static final String BATCH_MOVELINE_EXPORT_1 = /*$$(*/ "%s : Error : You must configure a company for the batch configurator %s" /*)*/ ;
@@ -251,6 +222,7 @@ public interface IExceptionMessage {
 	static final String BATCH_REIMBURSEMENT_7 = /*$$(*/ "Reimbursement reject %s" /*)*/;
 	static final String BATCH_REIMBURSEMENT_8 = /*$$(*/ "Reporting to reimbursement reject's import :" /*)*/;
 	static final String BATCH_REIMBURSEMENT_9 = /*$$(*/ "Reimbursement(s) rejected" /*)*/;
+	static final String BATCH_REIMBURSEMENT_10 = /*$$(*/ "Total Amount" /*)*/;
 
 	/**
 	 * Batch reminder

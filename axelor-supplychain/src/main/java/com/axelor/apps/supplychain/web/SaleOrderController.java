@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -257,32 +258,29 @@ public class SaleOrderController{
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 
-	public void getSubscriptionSaleOrdersToInvoice(ActionRequest request, ActionResponse response) throws AxelorException  {
+	public void getSubscriptionSaleOrdersToInvoice(ActionRequest request, ActionResponse response) {
 
 		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.invoiced = false AND self.invoicingDate <= ?1",generalService.getTodayDate()).fetch();
 		List<Long> listId = new ArrayList<Long>();
 		for (Subscription subscription : subscriptionList) {
 			listId.add(subscription.getSaleOrderLine().getSaleOrder().getId());
 		}
-		if(listId.isEmpty()){
-			throw new AxelorException(I18n.get("No Subscription to Invoice"), IException.CONFIGURATION_ERROR);
+		if (listId.isEmpty()) {
+			TraceBackService.trace(response, new AxelorException(I18n.get("No Subscription to Invoice"), IException.CONFIGURATION_ERROR));
 		}
-		if(listId.size() == 1){
+		else {
+			String domain = "self.id in ("+Joiner.on(",").join(listId)+")";
+			if (listId.size() == 1) {
+				domain = "self.id = "+listId.get(0);
+			}
 			response.setView(ActionView
-		            .define(I18n.get("Subscription Sale Orders"))
-		            .model(SaleOrder.class.getName())
-		            .add("grid", "sale-order-subscription-grid")
-		            .add("form", "sale-order-form")
-		            .domain("self.id = "+listId.get(0))
-		            .map());
+					.define(I18n.get("Subscription Sale Orders"))
+					.model(SaleOrder.class.getName())
+					.add("grid", "sale-order-subscription-grid")
+					.add("form", "sale-order-form")
+					.domain(domain)
+					.map());
 		}
-		response.setView(ActionView
-	            .define(I18n.get("Subscription Sale Orders"))
-	            .model(SaleOrder.class.getName())
-	            .add("grid", "sale-order-subscription-grid")
-	            .add("form", "sale-order-form")
-	            .domain("self.id in ("+Joiner.on(",").join(listId)+")")
-	            .map());
 	}
 
 	@SuppressWarnings("unchecked")

@@ -2,6 +2,7 @@
 "%s : Bank statement line %s amount can't be null",,,
 "%s : Computed balance and Ending Balance must be equal",,,
 "%s : MoveLine amount is not equals with bank statement line %s",,,
+"%s : Please configure an ICS number for the company %s.",,,
 "%s : Please, configure a default signer for the company %s",,,
 "%s : Please, configure a sequence for the International Credit Transfers and the company %s",,,
 "%s : Please, configure a sequence for the International Direct Debits and the company %s",,,

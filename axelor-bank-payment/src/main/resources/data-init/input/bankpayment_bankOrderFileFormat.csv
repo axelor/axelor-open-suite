@@ -22,10 +22,15 @@
 21;"pain.xxx.cfonb240.tch";;"EUR";"pain.xxx.cfonb240.tch - Télécollecte de chèque";"Remise de télécollecte de chèque";"false";;
 22;"pain.xxx.cfonb320.dct";;"EUR";"pain.xxx.cfonb320.dct - Virement domestique France";"Remise de virement domestique France";"false";;
 23;"pain.xxx.cfonb320.rft";;"EUR";"pain.xxx.cfonb320.rft - Virement  request for transfer";"Remise de virement  request for transfer";"false";;
-24;"pain.xxx.cfonb320.xct";"3";"EUR";"pain.xxx.cfonb320.xct- Virement international";"Remise de virement international";"true";"0, 1, 2";2
+24;"pain.xxx.cfonb320.xct";"3";"EUR";"pain.xxx.cfonb320.xct - Virement international";"Remise de virement international";"true";"0, 1, 2";2
 25;"pain.xxx.fff.lch";;"EUR";"pain.xxx.fff.lch - Remise de lettre chèque";"Remise de lettre chèque où <FFF> est égale à la longueur des enregistrements";"false";;
 26;"pain.xxx.fff.ech";;"EUR";"pain.xxx.fff.ech - Remise de chèques émis";"Remise de chèques émis où <FFF> est égale à la longueur des enregistrements";"false";;
 27;"pain.xxx.payext912.vct";;"EUR";"pain.xxx.payext912.vct - Remise de VCOM";"Remise de VCOM";"false";;
 28;"pain.xxx.payext96a.vct";;"EUR";"pain.xxx.payext96a.vct - Remise de VCOM";"Remise de VCOM";"false";;
 29;"pain.xxx.payord912.ict";;"EUR";"pain.xxx.payord912.ict - Virement de trésorerie France (Intra groupe)";"Remise de virement de trésorerie France (Intra groupe)";"false";;
 30;"pain.xxx.vcom400.vct";;"EUR";"pain.xxx.vcom400.vct - Remise de VCOM";"Remise de VCOM";"false";;
+31;"pain.001.001.03.ict";;;"pain.001.001.03.ict - Virement de trésorerie (intra groupe)";"Remise de virement de trésorerie (intra groupe)";"false";;
+32;"pain.xxx.cfonb320.sct";;;"pain.xxx.cfonb320.sct";"Remise de virement";"false";;
+33;"pain.xxx.payord912.xct";;;"pain.xxx.payord912.xct";"Remise de virement international edifact";"false";;
+34;"pain.001.001.03.xct";;;"pain.001.001.03.xct - Virement international";"Remise de virement international";"false";;
+35;"pain.fin.mt101.xct";;;"pain.fin.mt101.xct - Virement international";"Remise de virement";"false";;

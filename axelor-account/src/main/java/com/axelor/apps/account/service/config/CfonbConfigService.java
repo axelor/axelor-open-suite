@@ -168,34 +168,4 @@ public class CfonbConfigService extends AccountConfigService  {
 		}
 
 	}
-
-	public void getIpoRejectOperationCodeImportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
-
-		if(cfonbConfig.getIpoRejectOperationCodeImportCFONB() == null || cfonbConfig.getIpoRejectOperationCodeImportCFONB().isEmpty())  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_14),
-					GeneralServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
-		}
-
-	}
-
-	public void getIpoAndChequeOperationCodeImportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
-
-		if(cfonbConfig.getIpoAndChequeOperationCodeImportCFONB() == null || cfonbConfig.getIpoAndChequeOperationCodeImportCFONB().isEmpty())  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_15),
-					GeneralServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
-		}
-
-	}
-
-	public void getIpoOperationCodeImportCFONB(CfonbConfig cfonbConfig) throws AxelorException  {
-
-		if(cfonbConfig.getIpoOperationCodeImportCFONB() == null || cfonbConfig.getIpoOperationCodeImportCFONB().isEmpty())  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CFONB_CONFIG_16),
-					GeneralServiceImpl.EXCEPTION,cfonbConfig.getName()), IException.CONFIGURATION_ERROR);
-		}
-
-	}
-
-
-
 }

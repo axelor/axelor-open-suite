@@ -114,30 +114,6 @@ public class AccountingBatchController {
 		response.setReload(true);
 	}
 
-	/**
-	 * Lancer le batch de prélèvement
-	 *
-	 * @param request
-	 * @param response
-	 */
-	public void actionInterbankPaymentOrder(ActionRequest request, ActionResponse response){
-
-		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
-
-		Batch batch = null;
-
-		if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatchRepository.INTERBANK_PAYMENT_ORDER_TYPE_IMPORT)  {
-			batch = accountingBatchService.interbankPaymentOrderImport(accountingBatchRepo.find(accountingBatch.getId()));
-		}
-		else if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatchRepository.INTERBANK_PAYMENT_ORDER_TYPE_REJECT_IMPORT)  {
-			batch = accountingBatchService.interbankPaymentOrderRejectImport(accountingBatchRepo.find(accountingBatch.getId()));
-		}
-
-		if(batch != null)
-			response.setFlash(batch.getComments());
-		response.setReload(true);
-	}
-
 
 	/**
 	 * Lancer le batch de calcul du compte client

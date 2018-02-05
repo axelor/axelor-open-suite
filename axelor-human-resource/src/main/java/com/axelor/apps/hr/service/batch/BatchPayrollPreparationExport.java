@@ -18,7 +18,6 @@
 package com.axelor.apps.hr.service.batch;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -57,7 +56,6 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
 	
 	protected int total;
 	protected HrBatch hrBatch;
-	private Company company;
 	
 	protected PayrollPreparationService payrollPreparationService;
 	
@@ -108,9 +106,9 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
 					TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
 				}
 				break;
-			case HrBatchRepository.EXPORT_TYPE_MEILLEURE_GESTION:
+			case HrBatchRepository.EXPORT_TYPE_NIBELIS:
 				try {
-					batch.setMetaFile( meilleureGestionExport(payrollPreparationList) );
+					batch.setMetaFile( nibelisExport(payrollPreparationList) );
 				} catch (Exception e) {
 					incrementAnomaly();
 					TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
@@ -164,14 +162,14 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
 	
 	
 	@Transactional
-	public MetaFile meilleureGestionExport(List<PayrollPreparation> payrollPreparationList)  throws IOException, AxelorException {
+	public MetaFile nibelisExport(List<PayrollPreparation> payrollPreparationList)  throws IOException, AxelorException {
 		
 		List<String[]> list = new ArrayList<String[]>();
 		
 		for (PayrollPreparation payrollPreparation : payrollPreparationList) {
 			
 			payrollPreparation.addBatchListItem(batch);
-			payrollPreparationService.exportMeilleureGestion(payrollPreparation, list);
+			payrollPreparationService.exportNibelis(payrollPreparation, list);
 			total ++;
 		}
 		

@@ -22,7 +22,7 @@
 		<panel name="reminderSettings" title="Reminder settings">
         	<field name="reminder" form-view="reminder-form" grid-view="reminder-grid"/>
         	<field name="reminderMethod" widget="SuggestBox" grid-view="reminder-method-grid" form-view="reminder-method-form"/>
-        	<field name="userReminder" canEdit="false" grid-view="user-grid" form-view="user-form"/>
+        	<field name="userReminder" canNew="false" canEdit="false" canView="false" grid-view="user-grid" form-view="user-form"/>
         	<field name="unknownAddressOK"/>
         	<field name="setToIrrecoverableOK"/>
     	</panel>
@@ -51,6 +51,7 @@
     	<field name="reminderDate"/>
         <field name="reminderMethodLine" grid-view="reminder-method-line-grid" form-view="reminder-method-line-form"/>
     </grid>
+    
     <form name="reminder-history-contract-line-form" title="Reminders history" model="com.axelor.apps.account.db.ReminderHistory"  >
 	    <panel name="main" >
 	    	<field name="reminderMethod" widget="SuggestBox" grid-view="reminder-method-grid" form-view="reminder-method-form"/>
@@ -59,12 +60,11 @@
 	        <field name="setToIrrecoverableOK"/>
 	        <field name="balanceDueReminder"/>
 	        <field name="unknownAddressOK"/>
-	        <field name="userReminder" canEdit="false" grid-view="user-grid" form-view="user-form"/>
+	        <field name="userReminder" canNew="false" canEdit="false" canView="false" grid-view="user-grid" form-view="user-form"/>
 	        <field name="reminderDate"/>
 	        <field name="reminderMethodLine" grid-view="reminder-method-line-grid" form-view="reminder-method-line-form"/>
 	        <field name="reminderMessage" grid-view="message-grid" form-view="message-form"/>
 	    </panel>
-	    
     </form>
     
 </object-views>

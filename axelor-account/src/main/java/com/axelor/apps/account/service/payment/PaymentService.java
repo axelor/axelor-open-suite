@@ -82,8 +82,8 @@ public class PaymentService {
 			log.debug("Emploie du trop perçu (nombre de lignes en débit : {}, nombre de ligne en crédit : {})",
 				new Object[]{debitMoveLines.size(), creditMoveLines.size()});
 
-			BigDecimal amount = null;
-			Reconcile reconcile = null;
+			BigDecimal amount;
+			Reconcile reconcile;
 
 			BigDecimal debitTotalRemaining = BigDecimal.ZERO;
 			BigDecimal creditTotalRemaining = BigDecimal.ZERO;

@@ -60,6 +60,7 @@ import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentServic
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.db.User;
@@ -81,23 +82,22 @@ public class BankOrderServiceImpl implements BankOrderService {
 	protected BankOrderLineService bankOrderLineService;
 	protected EbicsService ebicsService;
 	protected InvoicePaymentToolService invoicePaymentToolService;
-
-	@Inject
-	private AccountConfigBankPaymentService accountConfigBankPaymentService;
-
-	@Inject
-	private SequenceService sequenceService;
+	protected AccountConfigBankPaymentService accountConfigBankPaymentService;
+	protected SequenceService sequenceService;
 
 	@Inject
 	public BankOrderServiceImpl(BankOrderRepository bankOrderRepo, InvoicePaymentRepository invoicePaymentRepo,
 			BankOrderLineService bankOrderLineService, EbicsService ebicsService,
-			InvoicePaymentToolService invoicePaymentToolService) {
+			InvoicePaymentToolService invoicePaymentToolService, AccountConfigBankPaymentService accountConfigBankPaymentService,
+			SequenceService sequenceService) {
 
 		this.bankOrderRepo = bankOrderRepo;
 		this.invoicePaymentRepo = invoicePaymentRepo;
 		this.bankOrderLineService = bankOrderLineService;
 		this.ebicsService = ebicsService;
 		this.invoicePaymentToolService = invoicePaymentToolService;
+		this.accountConfigBankPaymentService = accountConfigBankPaymentService;
+		this.sequenceService = sequenceService;
 
 	}
 
@@ -250,8 +250,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	@Override
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void confirm(BankOrder bankOrder)  throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
-
+	public void confirm(BankOrder bankOrder) throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+		GeneralService generalService = Beans.get(GeneralService.class);
 		checkBankDetails(bankOrder.getSenderBankDetails(), bankOrder);
 
 		if(bankOrder.getGeneratedMetaFile() == null)  {
@@ -264,6 +264,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 		generateFile(bankOrder);
 
+		bankOrder.setConfirmationDateTime(generalService.getTodayDateTime().toLocalDateTime());
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
 		makeEbicsUserFollow(bankOrder);
 

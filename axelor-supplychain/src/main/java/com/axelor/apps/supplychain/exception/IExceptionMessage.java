@@ -88,4 +88,7 @@ public interface IExceptionMessage {
 	 * Timetable Controller
 	 */
 	static final String TIMETABLE_INVOICE_ALREADY_GENERATED = /*$$(*/ "The invoice has already been generated." /*)*/;
+	static final String TIMETABLE_MISSING_PRODUCT_NAME = /*$$(*/ "Please fill the product name." /*)*/;
+	static final String TIMETABLE_SALE_ORDER_NOT_CONFIRMED = /*$$(*/ "Please confirm the sale order before invoicing." /*)*/;
+
 }

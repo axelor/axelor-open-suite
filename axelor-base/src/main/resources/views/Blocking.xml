@@ -23,25 +23,25 @@
 		<panel name="invoicingBlocking" title="Invoicing blocking" showIf="invoicingBlockingOk" colSpan="12">
 			<field name="invoicingBlockingToDate" colSpan="4"/>
 			<field name="invoicingBlockingReason" colSpan="4"/>
-			<field name="invoicingBlockingByUser" canEdit="false" colSpan="4" readonly="true"/>
+			<field name="invoicingBlockingByUser" canNew="false" canEdit="false" canView="false" colSpan="4" readonly="true"/>
 		</panel>
 		
 		<panel name="directDebitBlocking" title="Direct debit blocking" if-module="axelor-account" if="__config__.general.getManageDirectDebitPayment()"  showIf="debitBlockingOk" colSpan="12">
 		  <field name="debitBlockingToDate" colSpan="4"/>
 		  <field name="debitBlockingReason" colSpan="4" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
-		  <field name="debitBlockingByUser" canEdit="false" colSpan="4" form-view="user-form" grid-view="user-grid" readonly="true"/>
+		  <field name="debitBlockingByUser" canNew="false" canEdit="false" canView="false" colSpan="4" form-view="user-form" grid-view="user-grid" readonly="true"/>
 		</panel>
 		
 		<panel name="reimbursementBlocking" title="Reimbursement blocking" showIf="reimbursementBlockingOk" colSpan="12">
 		  <field name="reimbursementBlockingToDate" colSpan="4"/>
 		  <field name="reimbursementBlockingReason" colSpan="4" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
-		  <field name="reimbursementBlockingByUser" canEdit="false" colSpan="4" form-view="user-form" grid-view="user-grid" readonly="true"/>
+		  <field name="reimbursementBlockingByUser" canNew="false" canEdit="false" canView="false" colSpan="4" form-view="user-form" grid-view="user-grid" readonly="true"/>
 		</panel>
 		
 		<panel name="reminderBlocking" title="Reminder blocking" showIf="reminderBlockingOk" colSpan="12">
 		  <field name="reminderBlockingToDate" colSpan="4"/>
 		  <field name="reminderBlockingReason" colSpan="4" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
-		  <field name="reminderBlockingByUser" canEdit="false" colSpan="4" form-view="user-form" grid-view="user-grid" readonly="true"/>
+		  <field name="reminderBlockingByUser" canNew="false" canEdit="false" canView="false" colSpan="4" form-view="user-form" grid-view="user-grid" readonly="true"/>
 		</panel>
 		
     </form>

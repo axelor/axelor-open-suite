@@ -46,7 +46,7 @@
 			<field name="duration" widget="duration" colSpan="2" onChange="action-event-method-compute-from-duration" x-big="true"/>
 			<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
 			<field name="limitDateT" colSpan="4" showIf="typeSelect == 3"/>
-			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="user" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="team" canEdit="false" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 			<field name="disponibilitySelect" widget="RadioSelect" readonlyIf="calendarCrm != null"/>
 			<field name="visibilitySelect" widget="RadioSelect" readonlyIf="calendarCrm != null"/>
@@ -144,7 +144,7 @@
 
 		<panel colSpan="12" name="main" >
 			<field name="subject" colSpan="12"/>
-			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="user" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="team" canEdit="false" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 			<panel colSpan="12">
 				<field name="description" widget="html" colSpan="12"/>
@@ -211,7 +211,7 @@
 		<panel name="meetingGeneral" colSpan="12">
 			<field name="subject" colSpan="6"/>
 			<field name="location" colSpan="6"/>
-			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="user" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="team" canEdit="false" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 			<panel colSpan="12">
 				<field name="description" widget="html" colSpan="12"/>
@@ -298,7 +298,7 @@
 		<panel name="main" readonlyIf="statusSelect == 14">
 			<field name="subject" colSpan="12"/>
 			<field name="limitDateT" colSpan="3"/>
-			<field name="user" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="user" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="team" canEdit="false" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.general.getTeamManagement()"/>
 			<panel colSpan="12">
 				<field name="description" widget="html" colSpan="12"/>
@@ -361,46 +361,46 @@
 	</grid>
     
     <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event" onLoad="action-event-ticket-attrs-default,action-partner-attrs-hide-contact-partner" onSave="action-event-record-subjectTeam,action-event-set-sequence" onNew="action-group-crm-ticket-onnew">
-	<toolbar>
-		<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome,action-event-set-sequence,save" readonlyIf="statusSelect == 25  || user.id == _internalUserId" />
-		<button name="start" help="Start" readonlyIf="statusSelect &gt; 21 &amp;&amp; statusSelect &lt; 29" icon="fa-play" onClick="action-set-ticket-status-select-2,save"/>
-		<button name="accept" help="Validate" readonlyIf="statusSelect &gt; 22 &amp;&amp; statusSelect &lt; 29" icon="fa-check" onClick="action-set-ticket-status-select-3,save"/>
-		<button name="stop" help="Finish" readonlyIf="statusSelect &gt; 24 &amp;&amp; statusSelect &lt; 29" icon="fa-power-off" onClick="action-set-ticket-status-select-5,save"/>
-	</toolbar>
-	<panel name="main" colSpan="12" readonlyIf="statusSelect == 25">
-			<field name="ticketNumberSeq" title="Ticket N°" colSpan="3" readonly="true"/>
-			<field name="subject" title="Subject" colSpan="9" placeholder="Subject"/>
-			<field name="subjectTeam" hidden="true"/>
-	</panel>
-	<panel readonlyIf="statusSelect == 25">
-		<panel name="context" title="Context" colSpan="12" readonlyIf="statusSelect == 25">
-			<field name="clientPartner" onChange="action-partner-attrs-hide-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="contactPartner" onChange="action-event-record-client-partner" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-			<field name="lead"/>
-			<field name="user" canEdit="false" onChange="action-event-record-ticket-responsible-user" form-view="user-form" grid-view="user-grid"/>
-			<field name="responsibleUser" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+		<toolbar>
+			<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome,action-event-set-sequence,save" readonlyIf="statusSelect == 25  || user.id == _internalUserId" />
+			<button name="start" help="Start" readonlyIf="statusSelect &gt; 21 &amp;&amp; statusSelect &lt; 29" icon="fa-play" onClick="action-set-ticket-status-select-2,save"/>
+			<button name="accept" help="Validate" readonlyIf="statusSelect &gt; 22 &amp;&amp; statusSelect &lt; 29" icon="fa-check" onClick="action-set-ticket-status-select-3,save"/>
+			<button name="stop" help="Finish" readonlyIf="statusSelect &gt; 24 &amp;&amp; statusSelect &lt; 29" icon="fa-power-off" onClick="action-set-ticket-status-select-5,save"/>
+		</toolbar>
+		<panel name="main" colSpan="12" readonlyIf="statusSelect == 25">
+				<field name="ticketNumberSeq" title="Ticket N°" colSpan="3" readonly="true"/>
+				<field name="subject" title="Subject" colSpan="9" placeholder="Subject"/>
+				<field name="subjectTeam" hidden="true"/>
 		</panel>
-		<panel title=" " colSpan="12">
-			<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
-			<field name="duration" colSpan="3" widget="duration" onChange="action-event-method-compute-from-duration" x-big="true"/>
-			<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
-			<field name="limitDateT" colSpan="3"/>
+		<panel readonlyIf="statusSelect == 25">
+			<panel name="context" title="Context" colSpan="12" readonlyIf="statusSelect == 25">
+				<field name="clientPartner" onChange="action-partner-attrs-hide-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
+				<field name="contactPartner" onChange="action-event-record-client-partner" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+				<field name="lead"/>
+				<field name="user" canNew="false" canEdit="false" canView="false" onChange="action-event-record-ticket-responsible-user" form-view="user-form" grid-view="user-grid"/>
+				<field name="responsibleUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
+			</panel>
+			<panel title=" " colSpan="12">
+				<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
+				<field name="duration" colSpan="3" widget="duration" onChange="action-event-method-compute-from-duration" x-big="true"/>
+				<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
+				<field name="limitDateT" colSpan="3"/>
+			</panel>
+			<panel title=" " colSpan="12">
+				<field name="description" showTitle="false" colSpan="12" widget="html"/>
+			</panel>
 		</panel>
-		<panel title=" " colSpan="12">
-			<field name="description" showTitle="false" colSpan="12" widget="html"/>
-		</panel>
-	</panel>
-	<panel sidebar="true" name="attributes" title="Attributes">
-		<field name="statusSelect" colSpan="3" selection-in="[21, 22, 23, 24, 25]" onChange="action-record-set-tickets-resolved-progress-select"/>
-		<field name="prioritySelect" colSpan="3" readonlyIf="statusSelect == 25" />
-		<field name="eventCategory" colSpan="6" widget="SuggestBox" domain="self.typeSelect = :typeSelect" form-view="event-category-form" grid-view="event-category-grid" readonlyIf="statusSelect == 25"/>
-		<field name="progressSelect" colSpan="12" readonlyIf="statusSelect == 21 || statusSelect == 25" widget="SelectProgress" />
-    </panel>
-    <panel-mail>
-		<mail-messages limit="4" />
-		<mail-followers />
-	</panel-mail>
-</form>
+		<panel sidebar="true" name="attributes" title="Attributes">
+			<field name="statusSelect" colSpan="3" selection-in="[21, 22, 23, 24, 25]" onChange="action-record-set-tickets-resolved-progress-select"/>
+			<field name="prioritySelect" colSpan="3" readonlyIf="statusSelect == 25" />
+			<field name="eventCategory" colSpan="6" widget="SuggestBox" domain="self.typeSelect = :typeSelect" form-view="event-category-form" grid-view="event-category-grid" readonlyIf="statusSelect == 25"/>
+			<field name="progressSelect" colSpan="12" readonlyIf="statusSelect == 21 || statusSelect == 25" widget="SelectProgress" />
+	    </panel>
+	    <panel-mail>
+			<mail-messages limit="4" />
+			<mail-followers />
+		</panel-mail>
+	</form>
 
 	<grid name="leave-grid" title="Leaves" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime" canNew="false" canEdit="false">
     	<field name="subject"/>
@@ -412,7 +412,7 @@
     
     <form name="leave-form" title="Leave" model="com.axelor.apps.crm.db.Event" onNew="action-event-new-leave" canNew="false" canEdit="false">
 		<panel colSpan="12">
-			<field name="user" canEdit="false" title="Leave for" form-view="user-form" grid-view="user-grid"/>
+			<field name="user" canNew="false" canEdit="false" canView="false" title="Leave for" form-view="user-form" grid-view="user-grid"/>
 			<panel title="Dates" colSpan="12">
 				<field name="startDateTime" colSpan="3"/>
 				<field name="endDateTime" colSpan="3"/>

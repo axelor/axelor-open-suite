@@ -67,7 +67,6 @@
 	
 	<action-view title="Prospects by Industry Sector" model="com.axelor.apps.base.db.Partner" name="dashlet.prospects.by.industrySector">
   		<view type="chart" name="chart.partner.prospects.by.industrySector"/>
-  		<context name="_user_id" expr="eval:__user__.id"/> 
 	</action-view>
   	  	
 	<action-view title="My Prospects" model="com.axelor.apps.base.db.Partner" name="dashlet.my.prospects">

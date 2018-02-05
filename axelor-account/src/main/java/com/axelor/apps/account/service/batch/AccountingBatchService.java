@@ -63,15 +63,6 @@ public class AccountingBatchService extends AbstractBatchService {
 		case AccountingBatchRepository.ACTION_REMINDER:
 			batch = reminder(accountingBatch);
 			break;
-		case AccountingBatchRepository.ACTION_INTERBANK_PAYMENT_ORDER:
-			if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatchRepository.INTERBANK_PAYMENT_ORDER_TYPE_IMPORT)  {
-				batch = interbankPaymentOrderImport(accountingBatch);
-			}
-			else if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatchRepository.INTERBANK_PAYMENT_ORDER_TYPE_REJECT_IMPORT)  {
-				batch = interbankPaymentOrderRejectImport(accountingBatch);
-			}
-			batch = null;
-			break;
 		case AccountingBatchRepository.ACTION_DOUBTFUL_CUSTOMER:
 			batch = doubtfulCustomer(accountingBatch);
 			break;
@@ -112,18 +103,6 @@ public class AccountingBatchService extends AbstractBatchService {
 	public Batch reimbursementImport(AccountingBatch accountingBatch) {
 		
 		return Beans.get(BatchReimbursementImport.class).run(accountingBatch);
-		
-	}
-	
-	public Batch interbankPaymentOrderImport(AccountingBatch accountingBatch) {
-		
-		return Beans.get(BatchInterbankPaymentOrderImport.class).run(accountingBatch);
-		
-	}
-	
-	public Batch interbankPaymentOrderRejectImport(AccountingBatch accountingBatch) {
-		
-		return Beans.get(BatchInterbankPaymentOrderRejectImport.class).run(accountingBatch);
 		
 	}
 	

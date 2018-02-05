@@ -28,7 +28,7 @@
         </toolbar>
         <panel-stack>
 			<panel>
-			  <field name="employee" canSuggest="false" hideIf="$popup()" requiredIf="!$popup()"/>
+			  <field name="employee" canSuggest="false" canNew="false" canEdit="false" canView="false" hideIf="$popup()" requiredIf="!$popup()"/>
 			  <field name="payCompany" canEdit="false" canSuggest="false"/>
 			  <field name="employmentContractVersion" canSuggest="false"/>
 			  <field name="employmentContractTemplate" readonlyIf="!payCompany" widget="SuggestBox" domain=":payCompany MEMBER OF self.companySet" />

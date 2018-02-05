@@ -277,16 +277,16 @@
 				<field name="reminderBlockingOk" />
 				<panel name="debitBlockingGroup" title="Direct debit blocking"
 					showIf="debitBlockingOk" colSpan="12">
-					<field name="debitBlockingByUser" canEdit="false" form-view="user-form"
-						grid-view="user-grid" />
+					<field name="debitBlockingByUser" canNew="false" canEdit="false" canView="false"
+						form-view="user-form" grid-view="user-grid" />
 					<field name="debitBlockingToDate" />
 					<field name="debitBlockingReason" form-view="stop-reason-form"
 						grid-view="stop-reason-grid" />
 				</panel>
 				<panel showIf="reminderBlockingOk" name="reminderBlocking"
 					title="Reminder blocking" colSpan="12">
-					<field name="reminderBlockingByUser" canEdit="true" form-view="user-form"
-						grid-view="user-grid" />
+					<field name="reminderBlockingByUser" canNew="false" canEdit="false" canView="false"
+						form-view="user-form" grid-view="user-grid" />
 					<field name="reminderBlockingToDate" />
 					<field name="reminderBlockingReason" form-view="stop-reason-form"
 						grid-view="stop-reason-grid" />
@@ -348,7 +348,7 @@
 			<button name="addPayment" title="Register payment"
 				showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12"
 				onClick="save,action-invoice-view-register-payment" />
-			<field name="validatedByUser" canEdit="false" grid-view="user-grid" form-view="user-form" />
+			<field name="validatedByUser" canNew="false" canEdit="false" canView="false" grid-view="user-grid" form-view="user-form" />
 		</panel>
 
 		<panel sidebar="true" name="totals" title="Totals" itemSpan="6" hideIf="partner == null">

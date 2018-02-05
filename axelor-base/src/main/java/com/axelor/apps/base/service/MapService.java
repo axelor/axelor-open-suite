@@ -41,10 +41,13 @@ import wslite.rest.RESTClient;
 import wslite.rest.Response;
 
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.rpc.ActionResponse;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
@@ -318,9 +321,14 @@ public class MapService {
 		
 		RESTClient restClient = new RESTClient("https://maps.googleapis.com");
 		
+		Map<String,Object> responseQuery = new HashMap<String,Object>();
+		responseQuery.put("address", "google");
+		responseQuery.put("sensor", "false");
+		
 		Map<String,Object> responseMap = new HashMap<String,Object>();
 		responseMap.put("path", "/maps/api/geocode/json");
 		responseMap.put("accept", ContentType.JSON);
+		responseMap.put("query", responseQuery);
 
 		responseMap.put("connectTimeout", 5000);
 		responseMap.put("readTimeout", 10000);
@@ -337,6 +345,17 @@ public class MapService {
 		}
 		
 		return false;
+	}
+	
+	public void showMap(String name, String title, ActionResponse response) {
+ 		
+		General general = generalService.getGeneral();
+		String googleMapApiKey = general.getGoogleMapApiKey();
+		String mapUrl = new String("map/gmap-objs.html?key="+ googleMapApiKey  +"&object=" + name);
+		response.setView(ActionView.define(title)
+				.add("html", mapUrl)
+				.map());
+		
 	}
 	
 }

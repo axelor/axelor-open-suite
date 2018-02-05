@@ -53,7 +53,7 @@
 		
 		//PAYROLL PREPARATION EXPORT TYPE SELECT
 		public static final int EXPORT_TYPE_STANDARD = 1;
-		public static final int EXPORT_TYPE_MEILLEURE_GESTION = 2;
+		public static final int EXPORT_TYPE_NIBELIS = 2;
 	]]></extra-code>
   	
   </entity>
