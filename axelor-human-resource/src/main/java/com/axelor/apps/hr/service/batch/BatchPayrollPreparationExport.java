@@ -18,7 +18,6 @@
 package com.axelor.apps.hr.service.batch;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -57,7 +56,6 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
 	
 	protected int total;
 	protected HrBatch hrBatch;
-	private Company company;
 	
 	protected PayrollPreparationService payrollPreparationService;
 	

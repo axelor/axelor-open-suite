@@ -92,8 +92,6 @@ public class ExpenseController {
 	private Provider<GeneralService> generalServiceProvider;
 	@Inject
 	private Provider<ExpenseRepository> expenseRepositoryProvider;
-	@Inject
-	private Provider<ExpenseLineRepository> expenseLineRepositoryProvider;
 	
 	@Inject
 	UserHrService userHrService;
