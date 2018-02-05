@@ -51,18 +51,18 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
 	protected User user;
 	
-	@Inject
 	protected UnitConversionService unitConversionService;
-	
-	@Inject
 	protected ProductionOrderService productionOrderService;
-	
-	@Inject
 	protected ProductionOrderRepository productionOrderRepo;
 
 	@Inject
-	public ProductionOrderSaleOrderServiceImpl(UserService userInfoService) {
-
+	public ProductionOrderSaleOrderServiceImpl(UserService userInfoService, UnitConversionService unitConversionService, 
+			ProductionOrderService productionOrderService, ProductionOrderRepository productionOrderRepo) {
+		
+		this.unitConversionService = unitConversionService;
+		this.productionOrderService = productionOrderService;
+		this.productionOrderRepo = productionOrderRepo;
+		
 		this.today = Beans.get(AppBaseService.class).getTodayDate();
 		this.user = userInfoService.getUser();
 	}

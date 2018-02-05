@@ -28,13 +28,11 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
@@ -44,19 +42,16 @@ import com.google.inject.Inject;
 
 public class ManufOrderStockMoveService {
 
-	@Inject
-	private StockMoveService stockMoveService;
-
-	@Inject
-	private StockMoveLineService stockMoveLineService;
-
-	@Inject
-	private ProductionConfigService productionConfigService;
-
-	@Inject
-	private StockLocationRepository stockLocationRepo;
-
 	private static final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+	
+	protected StockMoveService stockMoveService;
+	protected StockMoveLineService stockMoveLineService;
+
+	@Inject
+	public ManufOrderStockMoveService (StockMoveService stockMoveService, StockMoveLineService stockMoveLineService)  {
+		this.stockMoveService = stockMoveService;
+		this.stockMoveLineService = stockMoveLineService;
+	}
 
 	public void createToConsumeStockMove(ManufOrder manufOrder) throws AxelorException {
 
@@ -90,7 +85,7 @@ public class ManufOrderStockMoveService {
 	}
 
 
-	private StockMove _createToConsumeStockMove(ManufOrder manufOrder, Company company) throws AxelorException  {
+	protected StockMove _createToConsumeStockMove(ManufOrder manufOrder, Company company) throws AxelorException  {
 
 	    StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
 	    StockConfig stockConfig = stockConfigService.getStockConfig(company);
@@ -140,7 +135,7 @@ public class ManufOrderStockMoveService {
 	}
 
 
-	private StockMove _createToProduceStockMove(ManufOrder manufOrder, Company company) throws AxelorException  {
+	protected StockMove _createToProduceStockMove(ManufOrder manufOrder, Company company) throws AxelorException  {
 
 		StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
 		StockConfig stockConfig = stockConfigService.getStockConfig(company);
@@ -162,7 +157,7 @@ public class ManufOrderStockMoveService {
 	}
 
 
-	private StockMoveLine _createStockMoveLine(ProdProduct prodProduct, StockMove stockMove, int inOrOutType) throws AxelorException  {
+	protected StockMoveLine _createStockMoveLine(ProdProduct prodProduct, StockMove stockMove, int inOrOutType) throws AxelorException  {
 
 		return stockMoveLineService.createStockMoveLine(
 				prodProduct.getProduct(),
