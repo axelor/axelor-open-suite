@@ -62,7 +62,7 @@ public class ExportPrestaShop extends AbstractBatch {
 				incrementDone();
 			} catch (Exception e) {
 				incrementAnomaly();
-				LOG.error("An error occured while running prestashop export batch #{}", batch.getId());
+				LOG.error(String.format("An error occured while running prestashop export batch #%d", batch.getId()), e);
 			}
 	}
 
