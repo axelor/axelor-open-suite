@@ -143,13 +143,19 @@ public class ManufOrderStockMoveService {
 	private StockMove _createToProduceStockMove(ManufOrder manufOrder, Company company) throws AxelorException  {
 
 		StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
-		StockLocation virtualStockLocation = stockConfigService.getProductionVirtualStockLocation(stockConfigService.getStockConfig(company));
+		StockConfig stockConfig = stockConfigService.getStockConfig(company);
+		StockLocation virtualStockLocation = stockConfigService.getProductionVirtualStockLocation(stockConfig);
 
 		LocalDateTime plannedEndDateT = manufOrder.getPlannedEndDateT();
 		LocalDate plannedEndDate = plannedEndDateT != null ? plannedEndDateT.toLocalDate() : null;
 
+		StockLocation producedProductStockLocation = manufOrder.getProdProcess().getProducedProductStockLocation();
+		if (producedProductStockLocation == null) {
+			producedProductStockLocation = stockConfigService.getFinishedProductsDefaultStockLocation(stockConfig);
+		}
+
 		StockMove stockMove = stockMoveService.createStockMove(null, null, company, null, virtualStockLocation,
-				manufOrder.getProdProcess().getProducedProductStockLocation(), null, plannedEndDate, null, null, null);
+				producedProductStockLocation, null, plannedEndDate, null, null, null);
 		stockMove.setTypeSelect(StockMoveRepository.TYPE_INCOMING);
 
 		return stockMove;

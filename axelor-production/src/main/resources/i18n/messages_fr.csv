@@ -404,6 +404,7 @@
 "WorkCenter","Poste de charge",,
 "You can't manage the consumed products on phases because this production process is related to several bills of material","Vous ne pouvez pas gérer les produits consommés par phases car cette gamme est reliée à plusieurs nomenclatures",,
 "You must add a positive quantity","Veuillez entrer une quantité positive",,
+"You must configure a finished products default stock location for company %s.","Veuillez configurer un emplacement par défaut des produits finis pour la société %s",,
 "You must configure a production for company %s","Veuillez configurer la production pour la société %s",,
 "You must configure a production virtual stock location for company %s","Veuillez configurer un Emplacement Virtuel Production pour la société %s",,
 "You must configure a waste stock location for company %s.","Veuillez configurer un emplacement de rebuts pour la société %s.",,
