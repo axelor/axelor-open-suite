@@ -37,6 +37,7 @@
 			<field name="manageStockReservation" widget="boolean-switch"/>
 		</panel>
 		<panel>
+			<button name="generateSupplychainConfigurations" colSpan="4" title="Generate supply chain configurations" onClick="save,com.axelor.apps.supplychain.web.AppSupplychainController:generateSupplychainConfigurations"/>
 			<panel-dashlet action="admin.root.conf.supply.chain.config" colSpan="12"/>
 		</panel>
 	</form>

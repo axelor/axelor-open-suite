@@ -11,7 +11,7 @@
     
     <form name="campaign-form" title="Campaign" model="com.axelor.apps.marketing.db.Campaign" width="large">
     	<toolbar>
-    		<button name="sendEmail" title="Launch emailing" colSpan="3" onClick="action-campaign-validate-send-email,save,action-campaign-method-send-email" showIf="emailing"/>
+    		<button name="sendEmail" title="Launch emailing" colSpan="3" onClick="save,action-campaign-validate-send-email,action-campaign-method-send-email" showIf="emailing"/>
     	</toolbar>
     	<panel title="Stage">
     		<field name="stageSelect" widget="NavSelect" colSpan="12" showTitle="false"/>
@@ -23,6 +23,7 @@
 			<panel showIf="emailing" colSpan="12">
 		    	<field name="partnerTemplate" domain="self.metaModel.name = 'Partner' AND self.mediaTypeSelect IN (4)" showIf="emailing"/>
 				<field name="leadTemplate" domain="self.metaModel.name = 'Lead' AND self.mediaTypeSelect IN (4)" showIf="emailing"/>
+				<field name="emailAccount" showIf="emailing"/>
 				<field name="emailLog" widget="binary-link" showIf="emailing"/>
 			</panel>
 			<field name="generateEventPerTarget" title="Generate event per target" widget="inline-checkbox"/>
@@ -30,7 +31,7 @@
 				<field name="team" onChange="action-campaign-attrs-team-value-fill"/>
 				<field name="eventUser" showIf="generateEventPerTarget" onChange="action-campaign-record-set-team" onSelect="action-campaign-attrs-eventuser-domain" />
 		  		<field name="subject" requiredIf="generateEventPerTarget" showIf="generateEventPerTarget" />
-		  		<field name="eventType" domain="self.value IN ('0','1','2','3')"  placeholder="Event Type" required="true" showIf="generateEventPerTarget" />
+		  		<field name="eventTypeSelect" domain="self.value IN ('0','1','2','3')"  placeholder="Event Type" required="true" showIf="generateEventPerTarget" />
 		  		<field name="eventStartDateTime" requiredIf="generateEventPerTarget" showIf="generateEventPerTarget" />
 		  		<field name="duration" widget="duration" x-big="true" showIf="generateEventPerTarget" />
 		  		<button name="generateEvents" title="Generate Events" colSpan="3" onClick="action-campaign-alert-event-user,save,action-campaign-method-generate-events" showIf="generateEventPerTarget" />

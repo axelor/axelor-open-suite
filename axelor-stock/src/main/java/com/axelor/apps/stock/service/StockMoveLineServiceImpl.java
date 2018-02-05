@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,14 +17,30 @@
  */
 package com.axelor.apps.stock.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.stock.db.*;
-import com.axelor.apps.stock.db.repo.LocationLineRepository;
-import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.CustomsCodeNomenclature;
+import com.axelor.apps.stock.db.LogisticalForm;
+import com.axelor.apps.stock.db.LogisticalFormLine;
+import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
+import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
@@ -34,13 +50,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
@@ -94,7 +103,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 							}
 							else  {
 								// Rechercher le numéro de suivi d'apèrs FIFO/LIFO
-								this.assignTrackingNumber(stockMoveLine, product, stockMove.getFromLocation());
+								this.assignTrackingNumber(stockMoveLine, product, stockMove.getFromStockLocation());
 							}
 						}
 						break;
@@ -115,7 +124,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 					case StockMoveLineService.TYPE_IN_PRODUCTIONS:
 						if (trackingNumberConfiguration.getHasProductAutoSelectTrackingNbr()) {
 						    //searching for the tracking number using FIFO or LIFO
-							this.assignTrackingNumber(stockMoveLine, product, stockMove.getFromLocation());
+							this.assignTrackingNumber(stockMoveLine, product, stockMove.getFromStockLocation());
 						}
 						break;
 					case StockMoveLineService.TYPE_WASTE_PRODUCTIONS:
@@ -141,7 +150,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		if (qtyByTracking.compareTo(BigDecimal.ZERO) <= 0) {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("The tracking number configuration sale quantity is equal to zero, it must be at least one"));
 		}
-		while (stockMoveLine.getQty().compareTo(trackingNumberConfiguration.getSaleQtyByTracking()) == 1) {
+		while (stockMoveLine.getQty().compareTo(trackingNumberConfiguration.getSaleQtyByTracking()) > 0) {
 
 			BigDecimal minQty = stockMoveLine.getQty().min(qtyByTracking);
 
@@ -198,19 +207,18 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 
 	@Override
-	public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product, Location location) throws AxelorException  {
+	public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product, StockLocation stockLocation) throws AxelorException  {
 
-		List<? extends LocationLine> locationLineList = this.getLocationLines(product, location);
+		List<? extends StockLocationLine> stockLocationLineList = this.getStockLocationLines(product, stockLocation);
 
-		if(locationLineList != null)  {
-			for(LocationLine locationLine : locationLineList)  {
+		if(stockLocationLineList != null)  {
+			for(StockLocationLine stockLocationLine : stockLocationLineList)  {
 
-				BigDecimal qty = locationLine.getFutureQty();
-				if(stockMoveLine.getQty().compareTo(qty) == 1)  {
-					this.splitStockMoveLine(stockMoveLine, qty, locationLine.getTrackingNumber());
-				}
-				else  {
-					stockMoveLine.setTrackingNumber(locationLine.getTrackingNumber());
+				BigDecimal qty = stockLocationLine.getFutureQty();
+				if (stockMoveLine.getQty().compareTo(qty) > 0) {
+					this.splitStockMoveLine(stockMoveLine, qty, stockLocationLine.getTrackingNumber());
+				} else {
+					stockMoveLine.setTrackingNumber(stockLocationLine.getTrackingNumber());
 					break;
 				}
 
@@ -221,13 +229,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 
 	@Override
-	public List<? extends LocationLine> getLocationLines(Product product, Location location) throws AxelorException  {
+	public List<? extends StockLocationLine> getStockLocationLines(Product product, StockLocation stockLocation) throws AxelorException  {
 
-		List<? extends LocationLine> locationLineList = Beans.get(LocationLineRepository.class).all().
-				filter("self.product = ?1 AND self.futureQty > 0 AND self.trackingNumber IS NOT NULL AND self.detailsLocation = ?2"
-						+trackingNumberService.getOrderMethod(product.getTrackingNumberConfiguration()), product, location).fetch();
+		List<? extends StockLocationLine> stockLocationLineList = Beans.get(StockLocationLineRepository.class).all().
+				filter("self.product = ?1 AND self.futureQty > 0 AND self.trackingNumber IS NOT NULL AND self.detailsStockLocation = ?2"
+						+trackingNumberService.getOrderMethod(product.getTrackingNumberConfiguration()), product, stockLocation).fetch();
 
-		return locationLineList;
+		return stockLocationLineList;
 
 	}
 
@@ -258,7 +266,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 
 	@Override
-	public void updateLocations(Location fromLocation, Location toLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList,
+	public void updateLocations(StockLocation fromStockLocation, StockLocation toStockLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList,
 			LocalDate lastFutureStockMoveDate, boolean realQty) throws AxelorException  {
 
 		for(StockMoveLine stockMoveLine : stockMoveLineList)  {
@@ -281,33 +289,33 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 					qty = Beans.get(UnitConversionService.class).convertWithProduct(stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
 				}
 
-				if (toLocation.getTypeSelect() != LocationRepository.TYPE_VIRTUAL)  {
-					this.updateAveragePriceLocationLine(toLocation, stockMoveLine, toStatus);
+				if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL)  {
+					this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, toStatus);
 				}
-				this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
+				this.updateLocations(fromStockLocation, toStockLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
 						lastFutureStockMoveDate, stockMoveLine.getTrackingNumber(), BigDecimal.ZERO);
-				Beans.get(LocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct());
+				Beans.get(StockLocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct());
 			}
 		}
 
 	}
 
 	@Override
-	public void updateAveragePriceLocationLine(Location location, StockMoveLine stockMoveLine, int toStatus) {
-		LocationLine locationLine = Beans.get(LocationLineService.class)
-				.getLocationLine(location, stockMoveLine.getProduct());
+	public void updateAveragePriceLocationLine(StockLocation stockLocation, StockMoveLine stockMoveLine, int toStatus) {
+		StockLocationLine stockLocationLine = Beans.get(StockLocationLineService.class)
+				.getStockLocationLine(stockLocation, stockMoveLine.getProduct());
 		if (toStatus == StockMoveRepository.STATUS_REALIZED) {
-			this.computeNewAveragePriceLocationLine(locationLine, stockMoveLine);
+			this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
 		}
 		else if (toStatus == StockMoveRepository.STATUS_CANCELED) {
-			this.cancelAveragePriceLocationLine(locationLine, stockMoveLine);
+			this.cancelAveragePriceLocationLine(stockLocationLine, stockMoveLine);
 		}
 	}
 
-	protected void computeNewAveragePriceLocationLine(LocationLine locationLine, StockMoveLine stockMoveLine) {
+	protected void computeNewAveragePriceLocationLine(StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) {
 	    int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
-		BigDecimal oldAvgPrice = locationLine.getAvgPrice();
-		BigDecimal oldQty = locationLine.getCurrentQty();
+		BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
+		BigDecimal oldQty = stockLocationLine.getCurrentQty();
 		BigDecimal newPrice = stockMoveLine.getUnitPriceUntaxed();
 		BigDecimal newQty = stockMoveLine.getRealQty();
 		BigDecimal newAvgPrice;
@@ -324,13 +332,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		else {
 			newAvgPrice = oldAvgPrice;
 		}
-        locationLine.setAvgPrice(newAvgPrice);
+        stockLocationLine.setAvgPrice(newAvgPrice);
 	}
 
-	protected void cancelAveragePriceLocationLine(LocationLine locationLine, StockMoveLine stockMoveLine) {
+	protected void cancelAveragePriceLocationLine(StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) {
 		int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
-		BigDecimal currentAvgPrice = locationLine.getAvgPrice();
-		BigDecimal currentTotalQty = locationLine.getCurrentQty();
+		BigDecimal currentAvgPrice = stockLocationLine.getAvgPrice();
+		BigDecimal currentTotalQty = stockLocationLine.getCurrentQty();
 
 		BigDecimal currentLinePrice = stockMoveLine.getUnitPriceUntaxed();
 		BigDecimal currentLineQty = stockMoveLine.getRealQty();
@@ -345,7 +353,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		} else {
 			updatedAvgPrice = BigDecimal.ZERO;
 		}
-		locationLine.setAvgPrice(updatedAvgPrice);
+		stockLocationLine.setAvgPrice(updatedAvgPrice);
 	}
 
 	@Override
@@ -421,20 +429,20 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	}
 
 	@Override
-	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
+	public void updateLocations(StockLocation fromStockLocation, StockLocation toStockLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
 			lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException  {
 
-		LocationLineService locationLineService = Beans.get(LocationLineService.class);
+		StockLocationLineService stockLocationLineService = Beans.get(StockLocationLineService.class);
 
 		switch(fromStatus)  {
 			case StockMoveRepository.STATUS_PLANNED:
-				locationLineService.updateLocation(fromLocation, product, qty, false, true, true, null, trackingNumber, reservedQty);
-				locationLineService.updateLocation(toLocation, product, qty, false, true, false, null, trackingNumber, reservedQty);
+				stockLocationLineService.updateLocation(fromStockLocation, product, qty, false, true, true, null, trackingNumber, reservedQty);
+				stockLocationLineService.updateLocation(toStockLocation, product, qty, false, true, false, null, trackingNumber, reservedQty);
 				break;
 
 			case StockMoveRepository.STATUS_REALIZED:
-				locationLineService.updateLocation(fromLocation, product, qty, true, true, true, null, trackingNumber, reservedQty);
-				locationLineService.updateLocation(toLocation, product, qty, true, true, false, null, trackingNumber, reservedQty);
+				stockLocationLineService.updateLocation(fromStockLocation, product, qty, true, true, true, null, trackingNumber, reservedQty);
+				stockLocationLineService.updateLocation(toStockLocation, product, qty, true, true, false, null, trackingNumber, reservedQty);
 				break;
 
 			default:
@@ -443,13 +451,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 		switch(toStatus)  {
 			case StockMoveRepository.STATUS_PLANNED:
-				locationLineService.updateLocation(fromLocation, product, qty, false, true, false, lastFutureStockMoveDate, trackingNumber, reservedQty);
-				locationLineService.updateLocation(toLocation, product, qty, false, true, true, lastFutureStockMoveDate, trackingNumber, reservedQty);
+				stockLocationLineService.updateLocation(fromStockLocation, product, qty, false, true, false, lastFutureStockMoveDate, trackingNumber, reservedQty);
+				stockLocationLineService.updateLocation(toStockLocation, product, qty, false, true, true, lastFutureStockMoveDate, trackingNumber, reservedQty);
 				break;
 
 			case StockMoveRepository.STATUS_REALIZED:
-				locationLineService.updateLocation(fromLocation, product, qty, true, true, false, null, trackingNumber, reservedQty);
-				locationLineService.updateLocation(toLocation, product, qty, true, true, true, null, trackingNumber, reservedQty);
+				stockLocationLineService.updateLocation(fromStockLocation, product, qty, true, true, false, null, trackingNumber, reservedQty);
+				stockLocationLineService.updateLocation(toStockLocation, product, qty, true, true, true, null, trackingNumber, reservedQty);
 				break;
 
 			default:
@@ -582,6 +590,44 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return stockMoveLine.getRealQty().subtract(qtySpreadOverLogisticalMoveLines);
+    }
+
+    @Override
+    public void setProductInfo(StockMoveLine stockMoveLine) throws AxelorException {
+        setProductInfo(stockMoveLine, stockMoveLine.getStockMove());
+    }
+
+    @Override
+    public void setProductInfo(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException {
+        Preconditions.checkNotNull(stockMoveLine);
+        Preconditions.checkNotNull(stockMove);
+        Product product = stockMoveLine.getProduct();
+
+        if (product == null) {
+            return;
+        }
+
+        stockMoveLine.setUnit(product.getUnit());
+        stockMoveLine.setProductName(product.getName());
+
+        if (Beans.get(AppBaseService.class).getAppBase().getManageProductVariants()) {
+            stockMoveLine.setProductModel(product.getParentProduct());
+        }
+
+        Company company = stockMove.getCompany();
+        BigDecimal netWeight;
+
+        if (company != null && company.getStockConfig() != null
+                && company.getStockConfig().getCustomsWeightUnit() != null) {
+            Unit startUnit = product.getWeightUnit();
+            Unit endUnit = company.getStockConfig().getCustomsWeightUnit();
+            netWeight = Beans.get(UnitConversionService.class).convertWithProduct(startUnit, endUnit,
+                    product.getNetWeight(), product);
+        } else {
+            netWeight = BigDecimal.ZERO;
+        }
+
+        stockMoveLine.setNetWeight(netWeight);
     }
 
 }

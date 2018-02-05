@@ -7,8 +7,6 @@
 
   <entity name="Blocking" lang="java">
   
-  	<integer name="importId"/>
-  
     <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Companies"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     
@@ -27,6 +25,8 @@
               public static final Integer REMINDER_BLOCKING = 1;
               public static final Integer INVOICING_BLOCKING = 2;
               public static final Integer REIMBURSEMENT_BLOCKING = 3;
+
+              public static final int PURCHASE_BLOCKING = 6;
           ]]>
       </extra-code>
     

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,11 +41,11 @@ import javax.mail.search.FlagTerm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
-import com.axelor.apps.message.db.repo.MailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.tool.date.DateTool;
@@ -70,7 +70,7 @@ public class MailAccountServiceImpl implements MailAccountService {
 	static final int CHECK_CONF_TIMEOUT = 5000;
 	
 	@Inject
-	protected MailAccountRepository mailAccountRepo;
+	protected EmailAccountRepository mailAccountRepo;
 	
 	@Inject
 	protected EmailAddressRepository emailAddressRepo;
@@ -82,7 +82,7 @@ public class MailAccountServiceImpl implements MailAccountService {
 	private MetaFiles metaFiles;
 	
 	@Override
-	public boolean checkDefaultMailAccount(MailAccount mailAccount) {
+	public boolean checkDefaultMailAccount(EmailAccount mailAccount) {
 		if(mailAccount.getIsDefault()){
 			String request = "self.isDefault = true";
 			List<Object> params = Lists.newArrayList();
@@ -96,21 +96,21 @@ public class MailAccountServiceImpl implements MailAccountService {
 	}
 
 	@Override
-	public MailAccount getDefaultMailAccount(int serverType)  {
+	public EmailAccount getDefaultMailAccount(int serverType)  {
 		return mailAccountRepo.all().filter("self.isDefault = true and self.serverTypeSelect = ?1", serverType).fetchOne();
 	}
    
 	@Override
-	public void checkMailAccountConfiguration ( MailAccount mailAccount ) throws AxelorException, Exception {
+	public void checkMailAccountConfiguration ( EmailAccount mailAccount ) throws AxelorException, Exception {
 		
 		String port = mailAccount.getPort() <= 0 ? null : mailAccount.getPort().toString();
 		
 		com.axelor.mail.MailAccount account;
 		Integer serverType = mailAccount.getServerTypeSelect();
-		if (serverType.equals(MailAccountRepository.SERVER_TYPE_SMTP)) {
+		if (serverType.equals(EmailAccountRepository.SERVER_TYPE_SMTP)) {
 			account = new SmtpAccount( mailAccount.getHost(), port, mailAccount.getLogin(), mailAccount.getPassword(), getSecurity( mailAccount ) );
 		}
-		else if (serverType.equals(MailAccountRepository.SERVER_TYPE_IMAP)) {
+		else if (serverType.equals(EmailAccountRepository.SERVER_TYPE_IMAP)) {
 			account = new ImapAccount( mailAccount.getHost(), mailAccount.getPort().toString(), mailAccount.getLogin(), mailAccount.getPassword(), getSecurity(mailAccount) );
 		}
 		else {
@@ -123,7 +123,7 @@ public class MailAccountServiceImpl implements MailAccountService {
 		
 		try {
 			
-			if (serverType.equals(MailAccountRepository.SERVER_TYPE_SMTP)) {
+			if (serverType.equals(EmailAccountRepository.SERVER_TYPE_SMTP)) {
 				Transport transport = session.getTransport( getProtocol( mailAccount ) );
 				transport.connect( mailAccount.getHost(),mailAccount.getPort(),mailAccount.getLogin(),mailAccount.getPassword() );
 				transport.close();
@@ -141,25 +141,25 @@ public class MailAccountServiceImpl implements MailAccountService {
 	}
 	
 	
-	public String getSecurity(MailAccount mailAccount)  {
+	public String getSecurity(EmailAccount mailAccount)  {
 		
-		if ( mailAccount.getSecuritySelect() == MailAccountRepository.SECURITY_SSL ) { return MailConstants.CHANNEL_SSL; }
-		else if (mailAccount.getSecuritySelect() == MailAccountRepository.SECURITY_STARTTLS ) { return MailConstants.CHANNEL_STARTTLS; }
+		if ( mailAccount.getSecuritySelect() == EmailAccountRepository.SECURITY_SSL ) { return MailConstants.CHANNEL_SSL; }
+		else if (mailAccount.getSecuritySelect() == EmailAccountRepository.SECURITY_STARTTLS ) { return MailConstants.CHANNEL_STARTTLS; }
 		else { return null; }
 		
 	}
 	
-	public String getProtocol(MailAccount mailAccount) {
+	public String getProtocol(EmailAccount mailAccount) {
 		
 		switch ( mailAccount.getServerTypeSelect() ) {
-		case MailAccountRepository.SERVER_TYPE_SMTP:
+		case EmailAccountRepository.SERVER_TYPE_SMTP:
 			return "smtp";
-		case MailAccountRepository.SERVER_TYPE_IMAP:
-			if (mailAccount.getSecuritySelect() == MailAccountRepository.SECURITY_SSL ){
+		case EmailAccountRepository.SERVER_TYPE_IMAP:
+			if (mailAccount.getSecuritySelect() == EmailAccountRepository.SECURITY_SSL ){
 				return MailConstants.PROTOCOL_IMAPS;
 			}
 			return MailConstants.PROTOCOL_IMAP;
-		case MailAccountRepository.SERVER_TYPE_POP:
+		case EmailAccountRepository.SERVER_TYPE_POP:
 			return MailConstants.PROTOCOL_POP3;
 		default:
 			return "";
@@ -167,7 +167,7 @@ public class MailAccountServiceImpl implements MailAccountService {
 		
 	}
 	
-	public String getSignature(MailAccount mailAccount)  {
+	public String getSignature(EmailAccount mailAccount)  {
 		
 		if ( mailAccount != null && mailAccount.getSignature() != null ) { return "\n "+mailAccount.getSignature();	}		
 		return "";
@@ -175,14 +175,14 @@ public class MailAccountServiceImpl implements MailAccountService {
 	}
 	
 	@Override
-	public int fetchEmails(MailAccount mailAccount, boolean unseenOnly) throws MessagingException, IOException {
+	public int fetchEmails(EmailAccount mailAccount, boolean unseenOnly) throws MessagingException, IOException {
 		
 		if (mailAccount == null) { return 0; }
 		
 		log.debug("Fetching emails from host: {}, port: {}, login: {} ", mailAccount.getHost(), mailAccount.getPort(), mailAccount.getLogin());
 		
 		com.axelor.mail.MailAccount account = null;
-		if (mailAccount.getServerTypeSelect().equals(MailAccountRepository.SERVER_TYPE_IMAP)) {
+		if (mailAccount.getServerTypeSelect().equals(EmailAccountRepository.SERVER_TYPE_IMAP)) {
 			account = new ImapAccount( mailAccount.getHost(), mailAccount.getPort().toString(), mailAccount.getLogin(), mailAccount.getPassword(), getSecurity(mailAccount) );
 		}
 		else {
@@ -229,7 +229,7 @@ public class MailAccountServiceImpl implements MailAccountService {
 	}
 	
 	@Transactional
-	public Message createMessage(MailAccount mailAccount, MailParser parser, Date date) throws MessagingException, IOException {
+	public Message createMessage(EmailAccount mailAccount, MailParser parser, Date date) throws MessagingException, IOException {
 		
 		Message message = new Message();
 		

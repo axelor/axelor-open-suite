@@ -6,19 +6,22 @@
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="StockConfig" lang="java" cachable="true">
-  	<integer name="importId"/>
-    
+
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
-    <many-to-one name="defaultLocation" ref="com.axelor.apps.stock.db.Location" title="Default location"/>
+    <many-to-one name="defaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Default stock location"/>
 
-   	<many-to-one name="customerVirtualLocation" ref="com.axelor.apps.stock.db.Location" title="Customer virtual location"/>
-    <many-to-one name="supplierVirtualLocation" ref="com.axelor.apps.stock.db.Location" title="Supplier virtual location"/>
-    <many-to-one name="inventoryVirtualLocation" ref="com.axelor.apps.stock.db.Location" title="Inventory virtual location"/>
+   	<many-to-one name="customerVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Customer virtual stock location"/>
+    <many-to-one name="supplierVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Supplier virtual stock location"/>
+    <many-to-one name="inventoryVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Inventory virtual stock location"/>
     
 	<many-to-one name="customsWeightUnit" ref="com.axelor.apps.base.db.Unit" title="Unit of weight"/>
 
     <boolean name="realizeStockMovesUponParcelPalletCollection" title="Realize stock moves upon parcel/pallet collection" />
+
+    <boolean name="stockMoveAutomaticMail" title="Send email on stock move realization" default="false"/>
+    <many-to-one name="stockMoveMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+    <one-to-many name="freightCarrierCustomerAccountNumberList" ref="com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber" title="Customer account numbers to carriers" mappedBy="stockConfig"/>
 
   </entity>
   

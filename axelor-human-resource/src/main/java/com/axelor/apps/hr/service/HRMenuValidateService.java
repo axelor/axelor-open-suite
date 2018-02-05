@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.hr.service;
 
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.auth.db.User;
 import com.axelor.meta.schema.actions.ActionView;
 
@@ -25,11 +26,11 @@ public class HRMenuValidateService {
 
 	public void createValidateDomain(User user, Employee employee, ActionView.ActionViewBuilder actionView) {
 
-		actionView.domain("self.company = :_activeCompany AND  self.statusSelect = 2")
-				.context("_activeCompany", user.getActiveCompany());
+		actionView.domain("self.statusSelect = :_statusSelect")
+				.context("_statusSelect", ExpenseRepository.STATUS_CONFIRMED);
 
 		if(employee == null || !employee.getHrManager())  {
-			if (employee == null || employee.getManager() == null) {
+			if (employee == null || employee.getManagerUser() == null) {
 				actionView.domain(actionView.get().getDomain() + " AND (self.user = :_user OR self.user.employee.manager = :_user)")
 						.context("_user", user);
 			}

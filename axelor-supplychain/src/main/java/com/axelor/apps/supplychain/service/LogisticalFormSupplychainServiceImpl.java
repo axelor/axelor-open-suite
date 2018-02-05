@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,16 +21,14 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
-import com.google.common.base.Preconditions;
 
 public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceImpl
-		implements LogisticalFormSupplychainService {
+        implements LogisticalFormSupplychainService {
 
-	@Override
-	protected boolean testForDetailLine(StockMoveLine stockMoveLine) {
-		SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
-		Preconditions.checkNotNull(saleOrderLine);
-		return saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL;
-	}
+    @Override
+    protected boolean testForDetailLine(StockMoveLine stockMoveLine) {
+        SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
+        return saleOrderLine == null || saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL;
+    }
 
 }

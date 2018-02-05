@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.stock.service.config;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockConfig;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -42,45 +42,45 @@ public class StockConfigService
 	
 	
 	
-	/******************************** LOCATION ********************************************/
+	/******************************** STOCK LOCATION ********************************************/
 	
-	public Location getInventoryVirtualLocation(StockConfig stockConfig) throws AxelorException  {
+	public StockLocation getInventoryVirtualStockLocation(StockConfig stockConfig) throws AxelorException  {
 		
-		if (stockConfig.getInventoryVirtualLocation() == null) {
+		if (stockConfig.getInventoryVirtualStockLocation() == null) {
 			throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_2), stockConfig.getCompany().getName());
 		}
 		
-		return stockConfig.getInventoryVirtualLocation();
+		return stockConfig.getInventoryVirtualStockLocation();
 		
 	}
 	
-	public Location getSupplierVirtualLocation(StockConfig stockConfig) throws AxelorException  {
+	public StockLocation getSupplierVirtualStockLocation(StockConfig stockConfig) throws AxelorException  {
 		
-		if (stockConfig.getSupplierVirtualLocation() == null) {
+		if (stockConfig.getSupplierVirtualStockLocation() == null) {
 			throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_3), stockConfig.getCompany().getName());
 		}
 		
-		return stockConfig.getSupplierVirtualLocation();
+		return stockConfig.getSupplierVirtualStockLocation();
 		
 	}
 	
-	public Location getCustomerVirtualLocation(StockConfig stockConfig) throws AxelorException  {
+	public StockLocation getCustomerVirtualStockLocation(StockConfig stockConfig) throws AxelorException  {
 		
-		if (stockConfig.getCustomerVirtualLocation() == null) {
+		if (stockConfig.getCustomerVirtualStockLocation() == null) {
 			throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_4), stockConfig.getCompany().getName());
 		}
 		
-		return stockConfig.getCustomerVirtualLocation();
+		return stockConfig.getCustomerVirtualStockLocation();
 		
 	}
 
-	public Location getDefaultLocation(StockConfig stockConfig) throws AxelorException  {
+	public StockLocation getDefaultStockLocation(StockConfig stockConfig) throws AxelorException  {
 
-		if (stockConfig.getDefaultLocation() == null) {
+		if (stockConfig.getDefaultStockLocation() == null) {
 			throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_5), stockConfig.getCompany().getName());
 		}
 
-		return stockConfig.getDefaultLocation();
+		return stockConfig.getDefaultStockLocation();
 
 	}
 }

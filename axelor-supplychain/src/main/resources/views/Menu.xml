@@ -44,36 +44,6 @@
 			if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" />
 	</action-view>
 	
-	<menuitem name="subscription-root"  if="__config__.app.isApp('subscription')" parent="sc-root-sale"
-		title="Subscriptions" order="50"  icon="fa-clone" icon-background="#e0a83c" />
-	
-	<menuitem name="subscription-root-subscription-to-invoice" parent="subscription-root" 
-    	title="Subscriptions to invoice" action="subscription.root.subscription.to.invoice" /> 
-
-	<action-view name="subscription.root.subscription.to.invoice" title="Subscriptions to invoice" model="com.axelor.apps.supplychain.db.Subscription">
-    	<view type="grid" name="subscription-from-menu-grid"/>
-	    <view type="form" name="subscription-from-menu-form"/>
-	    <domain>self.invoicingDate &lt;= :todayDate AND self.invoiced = false</domain>
-	    <context name="todayDate" expr="eval: eval:__config__.app.getTodayDate()"/>
-	</action-view>
-	
-	<menuitem name="subscription-root-subscription-products" parent="subscription-root"
-		title="Subscription products" action="subscription.root.subscription.products" />
-
-	<action-view name="subscription.root.subscription.products" title="Subscription products"
-		model="com.axelor.apps.base.db.Product" >
-		<view type="cards" name="product-cards" />
-		<view type="grid" name="product-grid" />
-		<view type="form" name="product-form" />
-	  	<view-param name="limit" value="39"/>
-		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect </domain>
-		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
-		<context name="_isModel" expr="false"/>
-		<context name="_productTypeSelect" expr="subscriptable"/>
-	</action-view>
-	
-	
 <!-- 	MRP -->
 	
 	<menuitem name="stock-mrp" parent="stock-root" title="MRP" if="__config__.app.isApp('supplychain')"  order="40"/> 
@@ -103,6 +73,18 @@
 	    <view type="form" name="mrp-line-type-form"/>
 	</action-view>
 	
+	<menuitem name="invoice-root-subscription-invoice" parent="invoice-root" title="Subscription invoices to validate" 
+		action="invoice.root.subscription.invoice" order="22"  />
+	
+	<action-view name="invoice.root.subscription.invoice" title="Subscription invoices to validate"
+		model="com.axelor.apps.account.db.Invoice">
+		<view type="grid" name="invoice-light-grid"/>
+		<view type="form" name="invoice-form"/>
+		<domain>self.operationSubTypeSelect = 6 and self.statusSelect = 1</domain>
+		<context name="_operationSubTypeSelect" expr="eval:6"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+	</action-view>
+	
 	<menuitem name="top-menu-purchase-suparrivals" parent="top-menu-purchase" if="__config__.app.isApp('stock')"
 		title="Supplier Arrivals" action="top.menu.purchase.suparrivals" top="true"/>
 
@@ -111,7 +93,7 @@
 		<view type="grid" name="stock-move-in-grid"/>
 		<view type="form" name="stock-move-form"/>
 		<view-param name="search-filters" value="supplier-arrivals-filters"/>
-		<domain>self.fromLocation.typeSelect = 2</domain>
+		<domain>self.fromStockLocation.typeSelect = 2</domain>
 		<context name="_typeSelect" expr="3"/>
 		<context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
 	</action-view>
@@ -124,7 +106,7 @@
 		<view type="grid" name="stock-move-out-grid"/>
 		<view type="form" name="stock-move-form"/>
 		<view-param name="search-filters" value="customer-deliveries-filters"/>
-		<domain>self.toLocation.typeSelect = 2</domain>
+		<domain>self.toStockLocation.typeSelect = 2</domain>
 		<context name="_typeSelect" expr="2"/>
 	</action-view>
 	

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -53,8 +53,8 @@ import com.axelor.apps.crm.service.config.CrmConfigService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
-import com.axelor.apps.message.db.repo.MailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageService;
@@ -354,7 +354,7 @@ public class EventServiceImpl implements EventService {
 				}
 				message.addToEmailAddressSetItem(emailAddress);
 				message.setSubject(event.getSubject());
-				message.setMailAccount(Beans.get(MailAccountService.class).getDefaultMailAccount(MailAccountRepository.SERVER_TYPE_SMTP));
+				message.setMailAccount(Beans.get(MailAccountService.class).getDefaultMailAccount(EmailAccountRepository.SERVER_TYPE_SMTP));
 			}
 			else{
 				message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate);

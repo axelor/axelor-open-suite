@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,9 +18,10 @@
 package com.axelor.apps.tool;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import org.apache.commons.lang3.tuple.Pair;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -29,12 +30,12 @@ import com.google.common.collect.Lists;
 
 public class QueryBuilder<T extends Model> {
     private final List<String> filterList;
-    private final List<Pair<String, Object>> bindingList;
+    private final Map<String, Object> bindingMap;
     private final Class<T> modelClass;
 
     private QueryBuilder(Class<T> modelClass) {
         filterList = new ArrayList<>();
-        bindingList = new ArrayList<>();
+        bindingMap = new HashMap<>();
         this.modelClass = modelClass;
     }
 
@@ -67,7 +68,7 @@ public class QueryBuilder<T extends Model> {
      * @return
      */
     public QueryBuilder<T> bind(String name, Object value) {
-        bindingList.add(Pair.of(name, value));
+        bindingMap.put(name, value);
         return this;
     }
 
@@ -80,8 +81,8 @@ public class QueryBuilder<T extends Model> {
         String filter = Joiner.on(" AND ").join(Lists.transform(filterList, input -> String.format("(%s)", input)));
         Query<T> query = Query.of(modelClass).filter(filter);
 
-        for (Pair<String, Object> binding : bindingList) {
-            query.bind(binding.getLeft(), binding.getRight());
+        for (Entry<String, Object> entry : bindingMap.entrySet()) {
+            query.bind(entry.getKey(), entry.getValue());
         }
 
         return query;

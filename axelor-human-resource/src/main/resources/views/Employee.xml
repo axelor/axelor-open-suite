@@ -6,7 +6,7 @@
 		 <field name="contactPartner.fullName"/>
 		 <field name="contactPartner.fixedPhone" />
 		 <field name="contactPartner.mobilePhone" />
-		 <field name="manager" form-view="user-form" grid-view="user-grid" />
+		 <field name="managerUser" form-view="user-form" grid-view="user-grid" />
 		 <field name="mainEmploymentContract.companyDepartment" form-view="company-department-form" grid-view="company-department-grid"/>
 		 <field name="mainEmploymentContract.payCompany"/>
 		 <field name="archived" hidden="true" />
@@ -14,7 +14,7 @@
 	
 	<grid name="employee-lite-grid" title="Employee" model="com.axelor.apps.hr.db.Employee">
 		 <field name="contactPartner" grid-view="partner-contact-grid" form-view="partner-contact-form"/>
-		 <field name="manager" form-view="user-form" grid-view="user-grid" />
+		 <field name="managerUser" form-view="user-form" grid-view="user-grid" />
 		 <field name="mainEmploymentContract.companyDepartment" form-view="company-department-form" grid-view="company-department-grid"/>
 	</grid>
 
@@ -82,13 +82,13 @@
       			</panel>
       			<panel name="rhInfo" title="HR Info." colSpan="12">
         			<field if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" name="bankDetails" colSpan="4" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-        			<field name="manager" canEdit="false" colSpan="4" form-view="user-form" grid-view="user-grid"/>
+        			<field name="managerUser" colSpan="4" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
         			<field name="mainEmploymentContract.companyDepartment" colSpan="4" form-view="company-department-form" grid-view="company-department-grid"/>
         			<field name="timesheetReminder" colSpan="4"/>
         			<field name="external" colSpan="4"/>
-        			<field name="planning" colSpan="4" title="Weekly planning" canNew="true" form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
-        			<field name="publicHolidayPlanning" colSpan="4" form-view="public-holiday-planning-form" grid-view="public-holiday-planning-grid"/>
-        			<field name="imposedDayPlanning" colSpan="4" form-view="public-holiday-planning-form" grid-view="public-holiday-planning-grid"/>
+        			<field name="weeklyPlanning" colSpan="4" title="Weekly planning" canNew="true" form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
+                    <field name="publicHolidayEventsPlanning" colSpan="4" form-view="events-planning-form" grid-view="events-planning-grid" canEdit="false"/>
+                    <field name="imposedDayEventsPlanning" colSpan="4" form-view="events-planning-form" grid-view="events-planning-grid" canEdit="false"/>
         			<field name="hrManager" colSpan="4"/>
         			<field name="exportCode" colSpan="4"/>
       			</panel>
@@ -118,7 +118,13 @@
 							   action="action-employee-view-show-lunch-voucher"/>
 	       		<panel-related field="lunchVoucherAdvanceList" colSpan="12" grid-view="lunch-voucher-advance-grid" form-view="lunch-voucher-advance-form" canNew="false" canEdit="false" canRemove="true"/>
 	       	</panel>
-	       	<panel-related field="employeeAdvanceList" title="Employee advances" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getAdvanceManagement()" />
+
+            <panel title="Expenses">
+                <field name="companyCbSelect" onChange="action-hr-record-reset-company-cb-details"/>
+                <field name="companyCbDetails" hidden="true" showIf="companyCbSelect > 1"/>
+                <panel-related field="employeeAdvanceList" title="Employee advances" colSpan="12" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getAdvanceManagement()" />
+            </panel>
+
 	       	<panel name="Vehicle" title="Vehicle" if="__config__.app.isApp('expense')">
 		       	<panel-related field="kilometricLogList" title="Kilometric log"
 							   grid-view="kilometric-log-grid"
@@ -177,16 +183,20 @@
 			</div>
 		]]>
 		</template>
-	</cards> 
+	</cards>
 
-	
+
 	<action-record name="action-employee-record-default" model="com.axelor.apps.hr.db.Employee">
 		<field name="timeLoggingPreferenceSelect" expr="eval:__config__.app.getApp('base').getTimeLoggingPreferenceSelect()"/>
 		<field name="dailyWorkHours" expr="eval:__config__.app.getApp('base').getDailyWorkHours()"/>
 		<field name="negativeValueLeave" expr="eval:__config__.app.getApp('leave').getAllowNegativeLeaveEmployees()" if="__config__.app.isApp('leave')"/>
-		<field name="publicHolidayPlanning" expr="eval: __user__.activeCompany?.hrConfig?.publicHolidayPlanning"/>
+		<field name="publicHolidayEventsPlanning" expr="eval: __user__.activeCompany?.hrConfig?.publicHolidayEventsPlanning"/>
 	</action-record>
-	
+
+	<action-record name="action-hr-record-reset-company-cb-details" model="com.axelor.apps.hr.db.Employee">
+		<field name="companyCbDetails" expr="eval: ''"/>
+	</action-record>
+
 	<action-view name="action-employee-user-show-employee" title="Employee"
 				 model="com.axelor.apps.hr.db.Employee">
 	    <view type="grid" name="employee-grid"/>
@@ -223,12 +233,16 @@
 				 model="com.axelor.apps.hr.db.Timesheet">
 		<view type="grid" name="my-timesheets-grid"/>
 		<view type="form" name="timesheet-form"/>
-        <domain>self.user = :_user</domain>
-		<context name="_user" expr="eval:__user__"/>
+        <domain>self.user = :__user__</domain>
 	</action-view>
-	
+
 	<action-method name="action-employee-method-show-annual-report">
 		<call class="com.axelor.apps.hr.web.EmployeeController" method="showAnnualReport"/>
 	</action-method>
 	
+	<search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee" title="Employee filters">
+		<field name="mainEmploymentContract.payCompany" title="Société de paie du contrat de travail principal"/>
+		<field name="mainEmploymentContract.executiveStatusSelect" title="Statut du contrat de travail principal"/>
+	</search-filters>
+
 </object-views>

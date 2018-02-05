@@ -6,7 +6,6 @@
     <module name="sale" package="com.axelor.apps.base.db"/>
 
     <entity name="CancelReason">
-        <string name="importId" />
         <string name="name" namecolumn="true"/>
         <boolean name="freeText" title="Free Text"/>
         <string name="applicationType" selection="base.cancel.reason.application.type.select"/>

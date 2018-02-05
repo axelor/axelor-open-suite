@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -16,18 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.administration;
-
-import java.lang.invoke.MethodHandles;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoField;
-import java.time.temporal.IsoFields;
-
-import javax.annotation.concurrent.ThreadSafe;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
@@ -48,6 +36,16 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.concurrent.ThreadSafe;
+import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.IsoFields;
 
 @ThreadSafe
 @Singleton
@@ -67,7 +65,7 @@ public class SequenceService {
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private SequenceVersionRepository sequenceVersionRepository;
-	
+
 	private AppBaseService appBaseService;
 
 	@Inject
@@ -177,7 +175,7 @@ public class SequenceService {
 
 		return (seqPrefixe.length() + seqSuffixe.length() + sequence.getPadding()) <= 14;
 	}
-	
+
 	public String getSequenceNumber( Sequence sequence ) {
 		return getSequenceNumber( sequence, appBaseService.getTodayDate() );
 	}
@@ -264,7 +262,7 @@ public class SequenceService {
 
     /**
      * Get draft sequence number.
-     * 
+     *
      * @param model
      * @return
      * @throws AxelorException
@@ -278,7 +276,7 @@ public class SequenceService {
 
     /**
      * Get draft sequence number with leading zeros.
-     * 
+     *
      * @param model
      * @param padding
      * @return
@@ -293,9 +291,9 @@ public class SequenceService {
 
     /**
      * Check whether a sequence number is empty or draft.
-     * 
+     *
      * Also consider '*' as draft character for backward compatibility.
-     * 
+     *
      * @param sequenceNumber
      * @return
      */
@@ -304,4 +302,29 @@ public class SequenceService {
                 || sequenceNumber.matches(String.format("[\\%s\\*]\\d+", DRAFT_PREFIX));
     }
 
+    /**
+     * Computes sequence full name
+     *
+     * @param sequence Sequence to compute full name
+     */
+    public String computeFullName(Sequence sequence) {
+        StringBuilder fn = new StringBuilder();
+
+        if (sequence.getPrefixe() != null) {
+            fn.append(sequence.getPrefixe());
+        }
+
+        for (int i = 0; i < sequence.getPadding(); i++) {
+            fn.append("X");
+        }
+
+        if (sequence.getSuffixe() != null) {
+            fn.append(sequence.getSuffixe());
+        }
+
+        fn.append(" - ");
+        fn.append(sequence.getName());
+
+        return fn.toString();
+    }
 }

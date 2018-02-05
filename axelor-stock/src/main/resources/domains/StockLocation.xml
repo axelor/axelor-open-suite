@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="stock" package="com.axelor.apps.stock.db"/>
+
+  <entity name="StockLocation" lang="java">
+
+    <string name="name" title="Name" required="true"/>
+    <many-to-one name="parentStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Parent stock location"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+    <integer name="typeSelect" title="Type" required="true" selection="stock.stock.location.type.select"/>
+    <one-to-many name="stockLocationLineList" ref="com.axelor.apps.stock.db.StockLocationLine" mappedBy="stockLocation" title="Stock location lines"/>
+    <one-to-many name="detailsStockLocationLineList" ref="com.axelor.apps.stock.db.StockLocationLine" mappedBy="detailsStockLocation" title="Details stock location lines"/>
+    <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
+    
+    <finder-method name="findByCompany" using="company"/>
+    <finder-method name="findByPartner" using="partner"/>
+    
+     <extra-code><![CDATA[
+	
+	   	// TYPE SELECT
+		public static final int TYPE_INTERNAL = 1;
+		public static final int TYPE_EXTERNAL = 2;
+		public static final int TYPE_VIRTUAL = 3;
+
+	
+	]]></extra-code>
+	
+  </entity>
+</domain-models>

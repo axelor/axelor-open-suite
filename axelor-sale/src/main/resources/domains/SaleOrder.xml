@@ -8,7 +8,6 @@
   <entity name="SaleOrder" lang="java">
   	
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company"/>
-  	<integer name="importId" />
 	<string name="fullName" namecolumn="true"/>
   	<string name="saleOrderSeq"  title="Internal Number" readonly="true"/>
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true" title="Currency" massUpdate="true"/>
@@ -70,10 +69,8 @@
     <string name="orderNumber" title="Order Number"/>
     
 <!--     Onglet scheduler -->
-	<date name="subscriptionStartDate" title="Subscription start date"/>
 	<date name="invoicedFirstDate" title="Invoiced first date"/>
 	<date name="nextInvPeriodStartDate" title="Next invoiced period start date" readonly="true"/>
-	<date name="subscriptionEndDate" title="Subscription end date"/>
     
     <many-to-one name="confirmedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Confirmed by"/>
     
@@ -100,6 +97,23 @@
 	<boolean name="orderBeingEdited" />
 
     <many-to-one name="opportunity" ref="com.axelor.apps.crm.db.Opportunity" />
+
+	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
+	<many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"/>
+	
+	<!-- Subscription fields -->
+	<integer name="periodicityTypeSelect" selection="sale.subscription.periodicity.type.select" title="Periodicity type" default="2"/>
+	<integer name="numberOfPeriods" title="Number of periods" />
+	<date name="contractStartDate" title="Contract start date" />
+	<integer name="contractPeriodInMonths" title="Contract period in months" />
+	<date name="currentContractPeriodEndDate" title="End of current contract period" />
+	<date name="contractEndDate" title="Contract end date" />
+	<boolean name="isTacitAgreement" title="Tacit agreement" />
+	<integer name="noticePeriodInDays" title="Notice period in days" />
+	<date name="nextInvoicingDate" title="Next invoicing date" />
+	<date name="nextInvoicingStartPeriodDate" title="Next invoicing start period date" />
+	<string name="subscriptionComment" title="Comment" large="true" />
+	<string name="subscriptionText" title="Subscription text to display" large="true" />
 
  	<unique-constraint columns="saleOrderSeq,company"/>
 

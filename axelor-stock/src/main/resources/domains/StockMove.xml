@@ -6,13 +6,11 @@
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="StockMove" lang="java">
-  
-	<integer name="importId" />
 
 	<string name="stockMoveSeq" namecolumn="true" title="Ref." readonly="true"/>
     <string name="name" title="Name"/>
-    <many-to-one name="fromLocation" ref="com.axelor.apps.stock.db.Location" required="true" title="From location"/>
-    <many-to-one name="toLocation" ref="com.axelor.apps.stock.db.Location" required="true" title="To location"/>
+    <many-to-one name="fromStockLocation" ref="com.axelor.apps.stock.db.StockLocation" required="true" title="From stock location"/>
+    <many-to-one name="toStockLocation" ref="com.axelor.apps.stock.db.StockLocation" required="true" title="To stock location"/>
     
     <date name="estimatedDate" title="Estimated date"/>
     <date name="realDate" title="Move date" readonly="true"/>
@@ -51,6 +49,13 @@
     <boolean name="fullySpreadOverLogisticalFormsFlag" default="false" title="Fully spread over logistical forms" />
 
     <many-to-one name="cancelReason" title="Cancel reason" ref="com.axelor.apps.base.db.CancelReason"/>
+    <boolean name="stockMoveAutomaticMail" title="Send email on stock move realization" default="false"/>
+    <many-to-one name="stockMoveMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+
+    <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
+    <many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"/>
+
+    <boolean name="isIspmRequired" title="Is ISPM15 required ?"/>
 
     <unique-constraint columns="stockMoveSeq,company"/>
     

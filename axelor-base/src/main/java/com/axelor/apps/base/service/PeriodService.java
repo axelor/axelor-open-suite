@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -29,10 +30,10 @@ import com.google.inject.persist.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import java.lang.invoke.MethodHandles;
+import java.util.List;
 
 public class PeriodService {
 	
@@ -106,5 +107,58 @@ public class PeriodService {
 
 		period.setStatusSelect(PeriodRepository.STATUS_ADJUSTING);
 		periodRepo.save(period);
+	}
+
+	/**
+	 * Check if the period corresponding to the date and the company is closed
+	 * @param company
+	 * @param date
+	 * @throws AxelorException
+	 */
+	public void checkPeriod(Company company, LocalDate date) throws AxelorException {
+		this.checkPeriod(company, date, date);
+	}
+
+	/**
+     * Check if the periods corresponding to the dates and the company are closed.
+	 * @param company
+	 * @param fromDate
+	 * @param toDate
+	 */
+	public void checkPeriod(Company company, LocalDate fromDate, LocalDate toDate) throws AxelorException {
+		List<Period> periodList = periodRepo.all()
+				.filter("self.year.typeSelect = :_typeSelect " +
+						"AND self.year.company = :_company " +
+						"AND ((self.fromDate <= :_fromDate " +
+						"AND self.toDate >= :_fromDate) " +
+						"OR (self.fromDate <= :_toDate " +
+						"AND self.toDate >= :_toDate))")
+				.bind("_typeSelect", YearRepository.TYPE_PAYROLL)
+				.bind("_company", company)
+				.bind("_fromDate", fromDate)
+				.bind("_toDate", toDate)
+				.fetch();
+		if (periodList == null) {
+			return;
+		}
+		for (Period period : periodList) {
+			checkPeriod(period);
+		}
+	}
+
+	/**
+	 * @param period
+	 * @throws AxelorException if the period is closed
+	 */
+	public void checkPeriod(Period period) throws AxelorException {
+		if (period != null && period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+			throw new AxelorException(
+					String.format(
+							I18n.get(IExceptionMessage.PAY_PERIOD_CLOSED), period.getName()
+					),
+					IException.FUNCTIONNAL,
+					period
+			);
+		}
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,7 +31,7 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.MailAccountRepository;
+import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
@@ -117,7 +117,7 @@ public class BatchReminderTimesheet extends AbstractBatch{
 				message.setSenderUser(AuthUtils.getUser());
 				message.setSubject(batch.getMailBatch().getSubject());
 				message.setContent(batch.getMailBatch().getContent());
-				message.setMailAccount(Beans.get(MailAccountRepository.class).all().filter("self.isDefault = true").fetchOne());
+				message.setMailAccount(Beans.get(EmailAccountRepository.class).all().filter("self.isDefault = true").fetchOne());
 				
 				message = messageService.sendByEmail(message);
 				
@@ -174,7 +174,7 @@ public class BatchReminderTimesheet extends AbstractBatch{
 				message.setSenderUser(AuthUtils.getUser());
 				message.setSubject(batch.getMailBatch().getSubject());
 				message.setContent(batch.getMailBatch().getContent());
-				message.setMailAccount(Beans.get(MailAccountRepository.class).all().filter("self.isDefault = true").fetchOne());
+				message.setMailAccount(Beans.get(EmailAccountRepository.class).all().filter("self.isDefault = true").fetchOne());
 				
 				message = messageService.sendByEmail(message);
 				

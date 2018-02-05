@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,18 +17,21 @@
  */
 package com.axelor.apps.base.service;
 
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
-
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Locale;
 
+import javax.validation.constraints.Digits;
+
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -40,11 +43,17 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.tool.template.TemplateMaker;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
+
 public class UnitConversionService {
-	
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
 	private static final char TEMPLATE_DELIMITER = '$';
+	private static final int DEFAULT_COEFFICIENT_SCALE = 12;
 	protected TemplateMaker maker;
 	
 	@Inject
@@ -160,7 +169,7 @@ public class UnitConversionService {
 
 			if (unitConversion.getStartUnit().equals(endUnit) && unitConversion.getEndUnit().equals(startUnit)) { 
 				if(unitConversion.getTypeSelect() == UnitConversionRepository.TYPE_COEFF && unitConversion.getCoef().compareTo(BigDecimal.ZERO) != 0){
-					return BigDecimal.ONE.divide(unitConversion.getCoef(), appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);  
+					return BigDecimal.ONE.divide(unitConversion.getCoef(), getInverseCoefficientScale(unitConversion), RoundingMode.HALF_EVEN);
 				} else if (product != null) {
 					maker.setTemplate(unitConversion.getFormula());
 					eval = maker.make();
@@ -172,7 +181,7 @@ public class UnitConversionService {
 					GroovyShell shell = new GroovyShell(binding,conf);
 					BigDecimal result = new BigDecimal(shell.evaluate(eval).toString()); 
 					if(result.compareTo(BigDecimal.ZERO) != 0){
-						return BigDecimal.ONE.divide(result, appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
+						return BigDecimal.ONE.divide(result, getInverseCoefficientScale(unitConversion), RoundingMode.HALF_EVEN);
 					}
 				}
 			}
@@ -182,5 +191,26 @@ public class UnitConversionService {
 		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.UNIT_CONVERSION_1), startUnit.getName(), endUnit.getName());
 
 	}
-	
+
+    private int getInverseCoefficientScale(UnitConversion unitConversion) {
+        Preconditions.checkNotNull(unitConversion.getCoef());
+
+        if (unitConversion.getCoef().doubleValue() % 10 == 0) {
+            return (int) Math.log10(unitConversion.getCoef().intValue());
+        }
+
+        return getCoefficientScale();
+    }
+
+    private int getCoefficientScale() {
+        try {
+            Field field = UnitConversion.class.getDeclaredField("coef");
+            Digits digits = field.getAnnotation(Digits.class);
+            return digits.fraction();
+        } catch (NoSuchFieldException e) {
+            logger.error(e.getMessage());
+            return DEFAULT_COEFFICIENT_SCALE;
+        }
+    }
+
 }

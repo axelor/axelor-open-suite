@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,6 +28,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -124,7 +125,7 @@ public class PurchaseOrderLineController {
 				price = BigDecimal.ZERO;
 				productName = "";
 				productCode = "";
-				response.setFlash(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG);
+				response.setFlash(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
 			}
 
 			response.setValue("unit", purchaseOrderLineService.getPurchaseUnit(purchaseOrderLine));
@@ -246,7 +247,7 @@ public class PurchaseOrderLineController {
 		Context parentContext = context.getParent();
 		PurchaseOrder purchaseOrder = null;
 		
-		if(parentContext != null) {
+		if(parentContext != null && parentContext.getContextClass() == PurchaseOrder.class) {
 
 			purchaseOrder = parentContext.asType(PurchaseOrder.class);
 			if(!parentContext.getContextClass().toString().equals(PurchaseOrder.class.toString())){
@@ -272,7 +273,7 @@ public class PurchaseOrderLineController {
 			newPurchaseOrderLine.setQty(BigDecimal.ZERO);
 			newPurchaseOrderLine.setId(purchaseOrderLine.getId());
 			newPurchaseOrderLine.setVersion(purchaseOrderLine.getVersion());
-			response.setValues(purchaseOrderLine);
+			response.setValues(Mapper.toMap(purchaseOrderLine));
 		}
 	}
 

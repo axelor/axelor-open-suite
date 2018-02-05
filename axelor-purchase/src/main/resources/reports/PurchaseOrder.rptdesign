@@ -758,7 +758,7 @@ left outer join base_currency as Currency on (PurchaseOrder.currency = Currency.
 left outer join base_bank_details as DefBankDetail on (PurchaseOrder.company_bank_details = DefBankDetail.id)
 left outer join base_bank as Bank on (DefBankDetail.bank = Bank.id)
 left outer join account_payment_mode as PaymentMode on (PurchaseOrder.payment_mode = PaymentMode.id)
-left outer join base_printing_settings as PrintingSettings on (PrintingSettings.id = Company.printing_settings)
+left outer join base_printing_settings as PrintingSettings on (PrintingSettings.id = PurchaseOrder.printing_settings)
 left outer join auth_user as BuyerUser on PurchaseOrder.buyer_user = BuyerUser.id
 left outer join meta_file as SignatureFile on BuyerUser.electronic_signature = SignatureFile.id
 where PurchaseOrder.id in (@INJECTID)]]></xml-property>

@@ -6,7 +6,7 @@
 	<grid name="machine-grid" title="Machines" model="com.axelor.apps.production.db.Machine">
 		<field name="name"/>
 		<field name="serialNumber"/>
-		<field name="location" grid-view="location-grid" form-view="location-form"/>
+		<field name="stockLocation" grid-view="stock-location-grid" form-view="stock-location-form"/>
 	</grid>
 
 	<form name="machine-form" title="Machine" model="com.axelor.apps.production.db.Machine" width="large"
@@ -24,7 +24,7 @@
 				<button name="$operatingDuration" title="Operating duration" colSpan="12" icon="fa-clock-o" widget="info-button"/>
 			</panel>
 			<field name="brand"/>
-			<field name="location" required="true" grid-view="location-grid" form-view="location-form"/>
+			<field name="stockLocation" required="true" grid-view="stock-location-grid" form-view="stock-location-form"/>
 			<field name="startingDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
 			<field name="setupDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
 			<field name="endingDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>

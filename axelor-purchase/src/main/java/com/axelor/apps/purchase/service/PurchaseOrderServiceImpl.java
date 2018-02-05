@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,8 +24,13 @@ import java.util.List;
 
 import java.time.LocalDate;
 
+import com.axelor.apps.base.db.Blocking;
+import com.axelor.apps.base.db.StopReason;
+import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ShippingCoefService;
+import com.axelor.apps.report.engine.ReportSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -213,11 +218,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	}
 
 	@Override
-	public String getDraftSequence(Long purchaseOrderId){
-		return "*"+purchaseOrderId.toString();
-	}
-
-	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Partner validateSupplier(PurchaseOrder purchaseOrder)  {
 
@@ -227,30 +227,11 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		return partnerRepo.save(supplierPartner);
 	}
 
-//	@Override
-//	@Transactional(rollbackOn = {Exception.class})
-//	public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception{
-//		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_REQUESTED);
-//		if (purchaseOrder.getVersionNumber() == 1){
-//			purchaseOrder.setPurchaseOrderSeq(this.getSequence(purchaseOrder.getCompany()));
-//		}
-//		this.save(purchaseOrder);
-//		if (GeneralService.getGeneral().getManagePurchaseOrderVersion()){
-//			this.savePurchaseOrderPDFAsAttachment(purchaseOrder);
-//		}
-//	}
-
 	@Override
 	public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws AxelorException  {
 
-		String language="";
-		try{
-			language = purchaseOrder.getSupplierPartner().getLanguageSelect() != null? purchaseOrder.getSupplierPartner().getLanguageSelect() : purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-		}catch (NullPointerException e) {
-			language = "en";
-		}
-		language = language.equals("")? "en": language;
-		
+		String language= ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner());
+
 		String title = I18n.get("Purchase order") + purchaseOrder.getPurchaseOrderSeq() + ((purchaseOrder.getVersionNumber() > 1) ? "-V" + purchaseOrder.getVersionNumber() : "");
 
 		ReportFactory.createReport(IReport.PURCHASE_ORDER, title+"-${date}")
@@ -267,6 +248,14 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	@Transactional(rollbackOn = {Exception.class})
 	public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception{
 		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_REQUESTED);
+		Partner partner = purchaseOrder.getSupplierPartner();
+		Company company = purchaseOrder.getCompany();
+		Blocking blocking = Beans.get(BlockingService.class).getBlocking(partner, company, BlockingRepository.PURCHASE_BLOCKING);
+
+        if (blocking != null) {
+            String reason = blocking.getBlockingReason() != null ? blocking.getBlockingReason().getName() : "";
+			throw new AxelorException(IException.FUNCTIONNAL, I18n.get(IExceptionMessage.SUPPLIER_BLOCKED) + " " + reason, partner);
+        }
 		if (purchaseOrder.getVersionNumber() == 1){
 			purchaseOrder.setPurchaseOrderSeq(this.getSequence(purchaseOrder.getCompany()));
 		}
@@ -339,10 +328,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	}
 
 	@Override
-	public void setDraftSequence(PurchaseOrder purchaseOrder) {
+	public void setDraftSequence(PurchaseOrder purchaseOrder) throws AxelorException {
 		
 		if(purchaseOrder.getId() != null && Strings.isNullOrEmpty(purchaseOrder.getPurchaseOrderSeq())){
-			purchaseOrder.setPurchaseOrderSeq(this.getDraftSequence(purchaseOrder.getId()));
+            purchaseOrder.setPurchaseOrderSeq(sequenceService.getDraftSequenceNumber(purchaseOrder));
 		}
 	}
 	

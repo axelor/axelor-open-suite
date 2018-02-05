@@ -1,4 +1,4 @@
-"importId";"name";"freightCarrier.importId";"shipmentMode.importId"
+"importId";"name";"carrierPartner.importId";"shipmentMode.importId"
 1;"Colissimo";8002;1
 2;"Chronopost";8004;2
 3;"TNT Express";8001;2

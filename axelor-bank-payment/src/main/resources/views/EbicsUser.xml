@@ -11,25 +11,26 @@
 		<hilite if="statusSelect &lt; 3" color="primary"/>
 	    <hilite if="statusSelect == 3" color="success"/>
 	    <hilite if="statusSelect == 4" color="danger"/>
+		<field name="fullName"/>
 		<field name="name" />
 		<field name="userId" />
 		<field name="ebicsPartner"/>
 		<field name="ebicsPartner.ebicsTypeSelect"/>
 		<field name="ebicsPartner.ebicsBank"/>
 		<field name="userTypeSelect"/>
-		<field name="associatedUser"/>
 		<field name="statusSelect"/>
 	</grid>
 	
 	<form name="ebics-user-form" title="Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" onSave="save,action-ebics-user-method-generate-dn">
 		<panel title="General information" colSpan="12">
 			<field name="statusSelect" colSpan="12"/>
-			<field name="name" />
+			<field name="fullName" colSpan="12" hidden="true"/>
+			<field name="name" onChange="action-ebics-user-record-set-fullname"/>
 			<field name="password" requiredIf="ebicsPartner.ebicsTypeSelect == 0"/>
 			<field name="userId" help="Name of the user or service" x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$' readonlyIf="statusSelect &gt; 2"/>
 			<field name="securityMedium" readonlyIf="statusSelect == 3"/>
-			<field name="userTypeSelect" widget="RadioSelect" readonlyIf="statusSelect == 3"/>
-			<field name="associatedUser" canEdit="false"/>
+			<field name="userTypeSelect" widget="RadioSelect" readonlyIf="statusSelect == 3" onChange="action-ebics-user-record-set-fullname"/>
+			<field name="associatedUser" canNew="false" canEdit="false" canView="false" onChange="action-ebics-user-record-set-fullname" showIf="userTypeSelect == 1"/>
 			<field name="nextOrderId"/>
 			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" readonlyIf="statusSelect &gt; 2"/>
 			<field name="ebicsPartner.ebicsTypeSelect" widget="RadioSelect"/>
@@ -88,6 +89,11 @@
 		</panel>	
 	</form>
 	
+	<action-record name="action-ebics-user-record-set-fullname" model="com.axelor.apps.bankpayment.db.EbicsUser">
+		<field name="fullName" expr="eval: (name ? name : '')" if="eval: userTypeSelect == 0"/>
+		<field name="fullName" expr="eval: (name ? name : '') + (associatedUser?.fullName ? ' - ' + associatedUser?.fullName : '')" if="eval: userTypeSelect == 1"/>
+	</action-record>
+
 	<action-method name="action-ebics-user-method-generate-certificates">
 		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsController" method="generateCertificate"/>
 	</action-method>

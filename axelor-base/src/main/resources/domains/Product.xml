@@ -7,7 +7,6 @@
 
 	<entity name="Product" lang="java">
 
-		<integer name="importId" />
 		<string name="name" title="Name" required="true" initParam="true"
 			translatable="true" />
 
@@ -24,15 +23,15 @@
 		<many-to-one name="productCategory" ref="ProductCategory"
 			title="Product category" initParam="true" massUpdate="true" />
 		<many-to-one name="productFamily" ref="ProductFamily"
-			title="Family" initParam="true" />
+			title="Family" initParam="true" massUpdate="true"/>
 		<many-to-one name="unit" ref="Unit" title="Unit"
 			initParam="true" massUpdate="true" />
 
 		<integer name="saleSupplySelect" title="Sale supply default method"
-			selection="product.sale.supply.select" initParam="true" />
+			selection="product.sale.supply.select" initParam="true" massUpdate="true"/>
 
 		<string name="productTypeSelect" title="Type" required="true"
-			selection="product.product.type.select" initParam="true" />
+			selection="product.product.type.select" initParam="true" massUpdate="true"/>
 		<string name="procurementMethodSelect" title="Procurement method"
 			selection="product.procurement.method.select" initParam="true" />
 		<boolean name="isPrototype" title="Prototype" />
@@ -115,7 +114,7 @@
 		<decimal name="height" title="Height" default="0" />
 		<decimal name="diameter" title="Diameter" />
 		<decimal name="articleVolume" title="Article volume" />
-		
+
 		<boolean name="isShippingCostsProduct" title="Is shipping costs product"/>
 
 		<extra-code>
@@ -123,7 +122,6 @@
 				// PRODUCT TYPE SELECT
 				public static final String PRODUCT_TYPE_SERVICE = "service";
 				public static final String PRODUCT_TYPE_STORABLE = "storable";
-				public static final String PRODUCT_TYPE_SUBSCRIPTABLE = "subscriptable";
 				
 				// SALE TRACKING ORDER SELECT
 				public static final int SALE_TRACKING_ORDER_FIFO = 1;

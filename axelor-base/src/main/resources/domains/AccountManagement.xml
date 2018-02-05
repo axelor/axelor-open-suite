@@ -5,7 +5,6 @@
   
   <entity name="AccountManagement" lang="java">
 	
-	<integer name="importId"/>
 	<integer name="typeSelect" title="Type" required="true" selection="account.management.type.select" />
 	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
 	<many-to-one name="purchaseTax" ref="com.axelor.apps.account.db.Tax" title="Purchase Tax"/>

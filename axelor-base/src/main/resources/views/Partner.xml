@@ -57,6 +57,7 @@
 		<field name="fixedPhone"/>
 		<field name="mobilePhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"/>
+		<field name="jobTitle"/>
 		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
 	</grid>
@@ -96,7 +97,7 @@
 		<menubar>
 			<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
 				<item title="Print Informations" action="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
-				<item title="Client Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isContact == false" if-module="axelor-account"/>
+				<item title="Client Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isCustomer == true"  if-module="axelor-account"/>
 			</menu>
 		</menubar>
 		<panel-include view="incl-event-actions-partner-form" />
@@ -232,7 +233,7 @@
 					<field name="partnerSeq" colSpan="6"/>
 					<field name="languageSelect" colSpan="6"/>
 					<panel title="Assigned to" colSpan="12">
-						<field name="user" canEdit="false" colSpan="6" form-view="user-form" grid-view="user-grid" hideIf="isEmployee"/>
+						<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" hideIf="isEmployee" canNew="false" canEdit="false" canView="false"/>
 						<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" hideIf="isEmployee"/>
 						<field name="companySet" colSpan="12" widget="TagSelect" onChange="action-partner-method-generate-customer-credit-line" canNew="false" form-view="company-form" grid-view="company-grid"/>
 					</panel>
@@ -257,7 +258,7 @@
 			<panel name="customer" title="Customer" if-module="axelor-sale" showIf="isCustomer" if="__config__.app.isApp('sale')">
 				<field name="saleOrderInformation"/>
 				<field name="payerQuality" if-module="axelor-account"  if="__config__.app.isApp('account')" hideIf="isEmployee"/>
-				<field name="salePriceList" canNew="true" domain="self.typeSelect = 1" if-module="axelor-account" if="__config__.app.isApp('account') ||  __config__.app.isApp('sale')" form-view="sale-price-list-form" grid-view="price-list-grid"/>
+				<field name="salePartnerPriceList" canEdit="false" domain="self.typeSelect = 1" form-view="sale-partner-price-list-form" grid-view="partner-price-list-grid"/>
 				<field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 				<field name="chargeBackPurchase" colSpan="3" showIf="chargeBackPurchaseSelect == 3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 				<panel name="clientPortalAccess" title="Client portal access" if-module="axelor-client-portal" if="__config__.app.isApp('portal')">
@@ -267,7 +268,7 @@
 			</panel>
 			<panel name="supplier" title="Supplier" if-module="axelor-purchase" showIf="isSupplier" if="__config__.app.isApp('purchase')">
 				<field name="purchaseOrderInformation"/>
-				<field name="purchasePriceList" canNew="true" domain="self.typeSelect = 2" if-module="axelor-account"  if="__config__.app.isApp('account') ||  __config__.app.isApp('purchase')" form-view="purchase-price-list-form" grid-view="price-list-grid"/>
+				<field name="purchasePartnerPriceList" canEdit="false" domain="self.typeSelect = 2" form-view="purchase-partner-price-list-form" grid-view="partner-price-list-grid"/>
 				<field name="supplierCatalogList" colSpan="12" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
 				<field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false" colSpan="3"/>
 				<field name="supplierArrivalProductQty" colSpan="3"/>
@@ -282,10 +283,13 @@
                 <spacer/>
                 <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-partner-record-empty-freight-carrier-mode" title="Shipment Mode" if="__config__.app.isApp('stock')" />
                 <field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode" if="__config__.app.isApp('stock')" />
-                <field name="freightCarrier" if-module="axelor-stock" form-view="partner-form" grid-view="partner-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
-            <field name="partnerDefaultLocationList" if-module="axelor-stock"  colSpan="12"
-					   form-view="partner-default-location-form" grid-view="partner-default-location-grid"
-					   if="__config__.app.isApp('stock')"/>
+                <field name="carrierPartner" if-module="axelor-stock" form-view="partner-form" grid-view="partner-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
+				<field name="isIspmRequired" if-module="axelor-stock" if="__config__.app.isApp('stock')" hidden="true" showIf="isCustomer || isProspect"/>
+				<field name="partnerStockSettingsList" if-module="axelor-stock"
+					   if="__config__.app.isApp('stock')"
+					   colSpan="12"
+					   form-view="partner-stock-settings-form" grid-view="partner-stock-settings-grid"/>
+                <panel-include view="incl-freight-carrer-customer-account-number-list-partner-form" if="__config__.app.isApp('stock')" />
             </panel>
         </panel-tabs>
         <panel>
@@ -433,7 +437,7 @@
 			<field name="partnerSeq"/>
 			<field name="languageSelect"/>
 			<panel title="Assigned to" canCollapse="true" colSpan="12">
-				<field name="user" canEdit="false" colSpan="6" form-view="user-form" grid-view="user-grid"/>
+				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 				<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
 				<field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 			</panel>
@@ -599,7 +603,7 @@
 			<field name="partnerSeq"/>
 			<field name="languageSelect"/>
 			<panel title="Assigned to" canCollapse="true" colSpan="12">
-				<field name="user" canEdit="false" colSpan="6" form-view="user-form" grid-view="user-grid"/>
+				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 				<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
 				<field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 			</panel>
@@ -759,11 +763,11 @@
 
 	<action-record name="action-partner-record-empty-freight-carrier-mode" model="com.axelor.apps.base.db.Partner">
 		<field name="freightCarrierMode" expr="eval:null"/>
-		<field name="freightCarrier" expr="eval:null"/>
+		<field name="carrierPartner" expr="eval:null"/>
 	</action-record>
 
 	<action-record name="action-partner-record-freight-carrier" model="com.axelor.apps.base.db.Partner">
-		<field name="freightCarrier" expr="eval:freightCarrierMode.freightCarrier"/>
+		<field name="carrierPartner" expr="eval:freightCarrierMode.carrierPartner"/>
 	</action-record>
 
 	<action-record name="action-partner-record-set-payment-modes" model="com.axelor.apps.base.db.Partner" if-module="axelor-account">

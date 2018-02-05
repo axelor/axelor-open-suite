@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,7 +24,7 @@ import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.service.config.CrmConfigService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.MailAccountService;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -35,8 +35,8 @@ import com.google.inject.persist.Transactional;
 public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
 
 	@Inject
-	public MessageServiceCrmImpl( MetaAttachmentRepository metaAttachmentRepository, MailAccountService mailAccountService, UserService userService ) {
-		super(metaAttachmentRepository, mailAccountService, userService);
+	public MessageServiceCrmImpl( MetaAttachmentRepository metaAttachmentRepository, MessageRepository messageRepository, UserService userService ) {
+		super(metaAttachmentRepository, messageRepository, userService);
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -64,11 +64,8 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
 
 		Message message = Beans.get(TemplateMessageService.class).generateMessage(event, template);
 
-		return messageRepo.save(message);
+		return messageRepository.save(message);
 	}
-
-
-
 
 
 }

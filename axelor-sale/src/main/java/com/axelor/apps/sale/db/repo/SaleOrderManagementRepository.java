@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,12 +18,14 @@
 package com.axelor.apps.sale.db.repo;
 
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
@@ -34,10 +36,10 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
 	@Inject
 	protected AppBaseService appBaseService;
-	
+
 	@Inject
 	private SaleOrderService saleOrderService;
-	
+
 	@Inject
 	private SaleOrderLineService saleOrderLineService;
 
@@ -91,7 +93,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 			
 			if((saleOrder.getSaleOrderSeq() == null || Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq())) && !saleOrder.getTemplate()){
 				if ( saleOrder.getStatusSelect() == ISaleOrder.STATUS_DRAFT ){
-					saleOrder.setSaleOrderSeq("*" + saleOrder.getId().toString());
+				    saleOrder.setSaleOrderSeq(Beans.get(SequenceService.class).getDraftSequenceNumber(saleOrder));
 				}
 			}
 				
@@ -112,14 +114,14 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 			throw new PersistenceException(e.getLocalizedMessage());
 		}
 	}
-	
+
 	public void computeSubMargin(SaleOrder saleOrder) throws AxelorException {
-		
+
 		if (saleOrder.getSaleOrderLineList() != null) {
 			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 				saleOrderLineService.computeSubMargin(saleOrderLine);
 			}
 		}
 	}
-	
+
 }

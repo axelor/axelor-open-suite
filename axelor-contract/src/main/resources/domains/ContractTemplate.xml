@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="contract" package="com.axelor.apps.contract.db" />
+
+	<entity name="ContractTemplate">
+
+		<string name="name" title="Template name" required="true" namecolumn="true" />
+		<integer name="targetType" title="Type" selection="contract.target.type.select" default="1" required="true"/>
+
+		<many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company" required="true"/>
+
+		<date name="firstPeriodEndDate" title="First period end date"/>
+		<integer name="periodNumber" title="Number of finished periods" default="0"/>
+
+		<boolean name="isInvoicingManagement" title="Manage invoices" />
+		
+		<boolean name="isConsumptionManagement" title="Consumption management" />
+		<boolean name="isAdditionaBenefitManagement" title="Additional benefit management" />
+		<one-to-many name="additionalBenefitList" ref="com.axelor.apps.contract.db.ContractLine" title="Next Invoice Additional Benefit"/>
+		<string name="description" title="Description" multiline="true" large="true" />
+		<string name="note" multiline="true" large="true" title="Notes"/>
+		
+		
+		<!-- Version  -->
+		<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
+		<many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
+		<integer name="invoicingMoment" selection="contract.version.invoicing.moment.select" title="Invoicing moment" default="1"/>
+		<boolean name="automaticInvoicing" title="Automatic invoicing" default="false"/>
+		<boolean name="isPeriodicInvoicing" title="Periodic Invoicing" default="false"/>
+
+		<boolean name="isProratedInvoice" title="Prorated Invoice" default="false"/>
+		<boolean name="isProratedFirstInvoice" title="Prorated Starting periods" default="false"/>
+		<boolean name="isProratedLastInvoice" title="Prorated finished periods" default="false"/>
+		<many-to-one name="invoicingFrequency" ref="com.axelor.apps.base.db.Duration" title="Invoicing Frequency"/>
+		<boolean name="isTimeProratedInvoice" title="Protrate temporally" />
+		<boolean name="isVersionProratedInvoice" title="Prorate from versions" />
+
+		<one-to-many name="contractLineList" ref="com.axelor.apps.contract.db.ContractLine" title="Invoicing content"/>
+
+		<many-to-one name="renewalDuration" title="Renewal duration" ref="com.axelor.apps.base.db.Duration" />
+		<boolean name="isTacitRenewal" title="Tacit renewal"/>
+		
+		<boolean name="isWithEngagement" title="With engagement"/>
+		<many-to-one name="engagementDuration" title="Engagement duration" ref="com.axelor.apps.base.db.Duration" />
+		
+		<boolean name="engagementStartFromVersion" title="Engagement start from version"/>
+		<boolean name="isWithPriorNotice" title="With prior notice"/>
+		<many-to-one name="priorNoticeDuration" title="Prior notice duration" ref="com.axelor.apps.base.db.Duration" />
+		<boolean name="isConsumptionBeforeEndDate" title="Only invoice consumption before Invoice period end Date" />
+		
+	</entity>
+
+</domain-models>

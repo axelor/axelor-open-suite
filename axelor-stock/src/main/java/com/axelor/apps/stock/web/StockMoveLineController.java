@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,8 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
+import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -36,7 +37,7 @@ public class StockMoveLineController {
 		StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
 		StockMove stockMove = stockMoveLine.getStockMove();
 		if(stockMove == null){
-			Context parentContext = request.getContext().getParentContext();
+			Context parentContext = request.getContext().getParent();
 			if (parentContext.getContextClass().equals(StockMove.class)) {
 				stockMove = parentContext.asType(StockMove.class);
 			} else {
@@ -47,4 +48,21 @@ public class StockMoveLineController {
 		response.setValue("unitPriceUntaxed", stockMoveLine.getUnitPriceUntaxed());
 		response.setValue("unitPriceTaxed", stockMoveLine.getUnitPriceTaxed());
 	}
+
+    public void setProductInfo(ActionRequest request, ActionResponse response) {
+        try {
+            StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+            StockMove stockMove = stockMoveLine.getStockMove();
+
+            if (stockMove == null) {
+                stockMove = request.getContext().getParent().asType(StockMove.class);
+            }
+
+            stockMoveLineService.setProductInfo(stockMoveLine, stockMove);
+            response.setValues(stockMoveLine);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+        }
+    }
+
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -67,37 +67,6 @@ public class AccountConfigService {
 		}
 	}
 
-
-	/******************************** IMPORT CFONB ********************************************/
-
-
-	public void getInterbankPaymentOrderImportPathCFONB(AccountConfig accountConfig) throws AxelorException {
-
-		if (accountConfig.getInterbankPaymentOrderImportPathCFONB() == null || accountConfig.getInterbankPaymentOrderImportPathCFONB().isEmpty()) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CONFIG_4), AppAccountServiceImpl.EXCEPTION,accountConfig.getCompany().getName());
-		}
-	}
-
-	public void getTempInterbankPaymentOrderImportPathCFONB(AccountConfig accountConfig) throws AxelorException {
-
-		if (accountConfig.getTempInterbankPaymentOrderImportPathCFONB() == null || accountConfig.getTempInterbankPaymentOrderImportPathCFONB().isEmpty()) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CONFIG_5), AppAccountServiceImpl.EXCEPTION,accountConfig.getCompany().getName());
-		}
-	}
-
-	public void getInterbankPaymentOrderRejectImportPathCFONB(AccountConfig accountConfig) throws AxelorException {
-
-		if (accountConfig.getInterbankPaymentOrderRejectImportPathCFONB() == null || accountConfig.getInterbankPaymentOrderRejectImportPathCFONB().isEmpty()) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CONFIG_6), AppAccountServiceImpl.EXCEPTION,accountConfig.getCompany().getName());
-		}
-	}
-
-	public void getTempInterbankPaymentOrderRejectImportPathCFONB(AccountConfig accountConfig) throws AxelorException {
-
-		if (accountConfig.getTempInterbankPaymentOrderRejectImportPathCFONB() == null || accountConfig.getTempInterbankPaymentOrderRejectImportPathCFONB().isEmpty()) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CONFIG_7), AppAccountServiceImpl.EXCEPTION,accountConfig.getCompany().getName());
-		}
-	}
 
 	public void getRejectImportPathAndFileName(AccountConfig accountConfig) throws AxelorException {
 

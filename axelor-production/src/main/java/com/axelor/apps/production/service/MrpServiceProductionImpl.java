@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,9 +19,9 @@ package com.axelor.apps.production.service;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,10 +37,10 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockRules;
-import com.axelor.apps.stock.db.repo.LocationLineRepository;
-import com.axelor.apps.stock.db.repo.LocationRepository;
+import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.supplychain.db.Mrp;
@@ -67,14 +67,14 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 
 	
 	@Inject
-	public MrpServiceProductionImpl(AppProductionService appProductionService, MrpRepository mrpRepository, LocationRepository locationRepository, 
-			ProductRepository productRepository, LocationLineRepository locationLineRepository, MrpLineTypeRepository mrpLineTypeRepository,
+	public MrpServiceProductionImpl(AppProductionService appProductionService, MrpRepository mrpRepository, StockLocationRepository stockLocationRepository, 
+			ProductRepository productRepository, StockLocationLineRepository stockLocationLineRepository, MrpLineTypeRepository mrpLineTypeRepository,
 			PurchaseOrderLineRepository purchaseOrderLineRepository, SaleOrderLineRepository saleOrderLineRepository, MrpLineRepository mrpLineRepository,
 			StockRulesService stockRulesService, MrpLineService mrpLineService, MrpForecastRepository mrpForecastRepository,
 			BillOfMaterialRepository billOfMaterialRepository, ManufOrderRepository manufOrderRepository)  {
 		
 		
-		super(appProductionService, mrpRepository, locationRepository, productRepository, locationLineRepository, mrpLineTypeRepository, 
+		super(appProductionService, mrpRepository, stockLocationRepository, productRepository, stockLocationLineRepository, mrpLineTypeRepository, 
 				purchaseOrderLineRepository, saleOrderLineRepository, mrpLineRepository, stockRulesService, mrpLineService, mrpForecastRepository);
 		
 		this.billOfMaterialRepository = billOfMaterialRepository;
@@ -108,13 +108,13 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 		}
 
 		List<ManufOrder> manufOrderList = manufOrderRepository.all()
-				.filter("self.product in (?1) AND self.prodProcess.location in (?2) "
+				.filter("self.product in (?1) AND self.prodProcess.stockLocation in (?2) "
 						+ "AND self.statusSelect NOT IN (?3) AND self.plannedStartDateT > ?4",
-						this.productMap.keySet(), this.locationList, statusList, today.atStartOfDay()).fetch();
+						this.productMap.keySet(), this.stockLocationList, statusList, today.atStartOfDay()).fetch();
 		
 		for(ManufOrder manufOrder : manufOrderList)  {
 		
-			Location location = manufOrder.getProdProcess().getLocation();
+			StockLocation stockLocation = manufOrder.getProdProcess().getStockLocation();
 			
 			for(ProdProduct prodProduct : manufOrder.getToProduceProdProductList())  {
 				
@@ -128,7 +128,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 				if(this.isBeforeEndDate(maturityDate) && this.isMrpProduct(product))  {
 
 					mrp.addMrpLineListItem(this.createMrpLine(product, manufOrderMrpLineType, prodProduct.getQty(), 
-						maturityDate, BigDecimal.ZERO, location, manufOrder));
+						maturityDate, BigDecimal.ZERO, stockLocation, manufOrder));
 				}
 				
 			}
@@ -142,7 +142,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 	 					if(this.isMrpProduct(product))  {
 	 						
 	 						mrp.addMrpLineListItem(this.createMrpLine(prodProduct.getProduct(), manufOrderNeedMrpLineType, prodProduct.getQty(), 
-									operationOrder.getPlannedStartDateT().toLocalDate(), BigDecimal.ZERO, location, operationOrder));
+									operationOrder.getPlannedStartDateT().toLocalDate(), BigDecimal.ZERO, stockLocation, operationOrder));
 	 					}
 					}
 				}
@@ -154,7 +154,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 					
 					if(this.isMrpProduct(product))  {
 						mrp.addMrpLineListItem(this.createMrpLine(product, manufOrderNeedMrpLineType, prodProduct.getQty(), 
-								manufOrder.getPlannedStartDateT().toLocalDate(), BigDecimal.ZERO, location, manufOrder));
+								manufOrder.getPlannedStartDateT().toLocalDate(), BigDecimal.ZERO, stockLocation, manufOrder));
 					}
 				}
 			}
@@ -163,9 +163,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 	}
 	
 	@Override
-	protected void createProposalMrpLine(Product product, MrpLineType mrpLineType, BigDecimal reorderQty, Location location, LocalDate maturityDate, List<MrpLineOrigin> mrpLineOriginList, String relatedToSelectName) throws AxelorException  {
+	protected void createProposalMrpLine(Product product, MrpLineType mrpLineType, BigDecimal reorderQty, StockLocation stockLocation, LocalDate maturityDate, List<MrpLineOrigin> mrpLineOriginList, String relatedToSelectName) throws AxelorException  {
 		
-		super.createProposalMrpLine(product, mrpLineType, reorderQty, location, maturityDate, mrpLineOriginList, relatedToSelectName);
+		super.createProposalMrpLine(product, mrpLineType, reorderQty, stockLocation, maturityDate, mrpLineOriginList, relatedToSelectName);
 		
 		BillOfMaterial defaultBillOfMaterial = product.getDefaultBillOfMaterial();
 		
@@ -179,7 +179,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 				
 				if(this.isMrpProduct(subProduct))  {
 					//TODO take the time to do the Manuf order (use machine planning)
-					super.createProposalMrpLine(subProduct, manufProposalNeedMrpLineType, reorderQty.multiply(billOfMaterial.getQty()), location, maturityDate, mrpLineOriginList, relatedToSelectName);
+					super.createProposalMrpLine(subProduct, manufProposalNeedMrpLineType, reorderQty.multiply(billOfMaterial.getQty()), stockLocation, maturityDate, mrpLineOriginList, relatedToSelectName);
 				}
 			}
 			

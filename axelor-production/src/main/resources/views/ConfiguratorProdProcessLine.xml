@@ -9,7 +9,7 @@
             <field name="priority"/>
             <field name="workCenter"/>
             <field name="outsourcing"/>
-            <field name="location"/>
+            <field name="stockLocation"/>
             <field name="description"/>
         </panel>
         <panel title="Capacity settings" colSpan="12">
@@ -44,7 +44,7 @@
         <field name="priority"/>
         <field name="workCenter"/>
         <field name="outsourcing"/>
-        <field name="location"/>
+        <field name="stockLocation"/>
         <field name="description"/>
     </grid>
 </object-views>

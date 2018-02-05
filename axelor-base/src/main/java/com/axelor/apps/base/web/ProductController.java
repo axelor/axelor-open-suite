@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import com.axelor.apps.base.db.ShippingCoef;
+import com.axelor.apps.report.engine.ReportSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,15 +100,13 @@ public class ProductController {
 			productIds = productIds.substring(0, productIds.length()-1);
 		}
 
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
-
 		String name = I18n.get("Product Catalog");
 		
 		String fileLink = ReportFactory.createReport(IReport.PRODUCT_CATALOG, name+"-${date}")
 				.addParam("UserId", user.getId())
 				.addParam("CurrYear", Integer.toString(currentYear))
 				.addParam("ProductIds", productIds)
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.generate()
 				.getFileLink();
 

@@ -1,7 +1,7 @@
 /**
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,8 @@ package com.axelor.apps.crm.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
+import com.axelor.apps.crm.db.repo.CrmBatchCrmRepository;
+import com.axelor.apps.crm.db.repo.CrmBatchRepository;
 import com.axelor.apps.crm.db.repo.EventManagementRepository;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
@@ -38,12 +40,12 @@ public class CrmModule extends AxelorModule {
 
     @Override
     protected void configure() {
-        bind(MessageServiceBaseImpl.class).to(MessageServiceCrmImpl.class);
         bind(EventRepository.class).to(EventManagementRepository.class);
         bind(OpportunityRepository.class).to(OpportunityManagementRepository.class);
         bind(OpportunityService.class).to(OpportunityServiceImpl.class);
         bind(ICalendarService.class).to(CalendarService.class);
         bind(AppCrmService.class).to(AppCrmServiceImpl.class);
         bind(EventService.class).to(EventServiceImpl.class);
+        bind(CrmBatchRepository.class).to(CrmBatchCrmRepository.class);
     }
 }

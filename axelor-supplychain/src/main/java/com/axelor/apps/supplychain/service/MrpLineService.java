@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,7 +26,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.stock.db.Location;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.MrpLineOrigin;
 import com.axelor.apps.supplychain.db.MrpLineType;
@@ -40,7 +40,7 @@ public interface MrpLineService {
 	void generateProposal(MrpLine mrpLine, Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders) throws AxelorException;
 
 	MrpLine createMrpLine(Product product, int maxLevel, MrpLineType mrpLineType, BigDecimal qty,
-			LocalDate maturityDate, BigDecimal cumulativeQty, Location location, Model... models);
+			LocalDate maturityDate, BigDecimal cumulativeQty, StockLocation stockLocation, Model... models);
 
 	MrpLineOrigin createMrpLineOrigin(Model model);
 

@@ -20,7 +20,6 @@
   	 <many-to-one name="parent" ref="ActionBuilderLine" />
   	 <string name="name" title="Target Field" />
   	 <boolean name="dummy" title="Dummy" />
-  	 <string name="importId" />
   </entity>
 
 </domain-models>

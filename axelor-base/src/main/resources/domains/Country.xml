@@ -7,7 +7,6 @@
 
   <entity name="Country" lang="java" cachable="true">
   
-    <integer name="importId"/>
     <string name="alpha3Code" title="Alpha-3 code (ISO)" min="3" max="3"/>
     <string name="alpha2Code" title="Alpha-2 code (ISO)" min="2" max="2"/>
     <string name="numericCode" title="Numeric code (ISO)" min="3" max="3"/>

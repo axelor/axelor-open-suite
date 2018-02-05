@@ -7,13 +7,12 @@
 
 	
 	<entity name="TeamTask">
-  		<integer name="importId"/>
 		<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 
         <string name="fullName" namecolumn="true" title="Name" search="id,name"/>
 	  	
 	  	<many-to-one name="parentTask" ref="com.axelor.team.db.TeamTask" title="Parent task"/>
-	 	<many-to-one name="category" ref="com.axelor.apps.project.db.ProjectCategory" title="Category"/>
+	 	<many-to-one name="projectCategory" ref="com.axelor.apps.project.db.ProjectCategory" title="Category"/>
     	<integer name="progressSelect" title="Progress" selection="project.task.progress.select"/>
     	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
     	<one-to-many name="teamTaskList" ref="com.axelor.team.db.TeamTask" mappedBy="parentTask"/>
@@ -37,11 +36,10 @@
 		<date name="taskEndDate" title="Task end" />
 	  
 	 <track>
-	 	<field name="description"/>
 	 	<field name="sequence"/>
 	 	<field name="project"/>
 	 	<field name="parentTask"/>
-	 	<field name="category"/>
+	 	<field name="projectCategory"/>
 	 	<field name="progressSelect"/>
 	 	<field name="membersUserSet"/>
 	 	<field name="description"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,27 +17,32 @@
  */
 package com.axelor.apps.report.engine;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.util.Map;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.beust.jcommander.internal.Maps;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.invoke.MethodHandles;
+import java.net.URLEncoder;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.Objects;
 
 public class ReportSettings {
 	
@@ -51,6 +56,7 @@ public class ReportSettings {
 	public static String FORMAT_ODS = "ods";
 	public static String FORMAT_ODT = "odt";
 	public static String FORMAT_HTML = "html";
+	public static String DEFAULT_LOCALE = "en";
 
 	protected Map<String, Object> params = Maps.newHashMap();
 	
@@ -100,8 +106,14 @@ public class ReportSettings {
 		
 		if(output == null)  {  return null;  }
 		
-		String fileLink = String.format("ws/files/report/%s?name=%s", output.getName(), fileName);
-		
+		String fileLink = "ws/files/report/" + output.getName();
+
+        try {
+            fileLink += "?name=" + URLEncoder.encode(fileName, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getLocalizedMessage());
+        }
+
 		logger.debug("URL : {}", fileLink);
 		
 		return fileLink;
@@ -239,6 +251,30 @@ public class ReportSettings {
 		if(useIntegratedEngine.equals("true"))  {  return true;  }
 		return false;
 		
+	}
+
+	/**
+	 * Get the language select for a partner or current connected user.
+	 * @param partner The partner affected. You can pass a new partner to get the default partner language.
+	 *                If null, the user language is used.
+	 * @return Partner language selected or User language if no partner is given. Otherwise, english.
+	 */
+	public static String getPrintingLocale(Partner partner) {
+	    String locale = null;
+
+	    if (partner != null) {
+	    	locale = partner.getLanguageSelect();
+	    	if (locale == null) {
+	    		locale = Beans.get(AppBaseService.class).getAppBase().getDefaultPartnerLanguage();
+			}
+		}
+		else {
+			User user = AuthUtils.getUser();
+			if (user != null) {
+				locale = user.getLanguage();
+			}
+		}
+		return (locale == null ? DEFAULT_LOCALE : locale);
 	}
 
 }

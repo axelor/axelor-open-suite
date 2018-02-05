@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,11 +27,13 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,44 +95,58 @@ public class BatchDebtRecovery extends BatchStrategy {
 	
 	
 	public void debtRecoveryPartner()  {
-		
-		int i = 0;
+
+		List<Long> anomalyList = Lists.newArrayList(0L);
+		List<Long> notRemindedList = Lists.newArrayList(0L);
 		Company company = batch.getAccountingBatch().getCompany();
-		List<Partner> partnerList = partnerRepository.all().filter("self.isContact = false AND ?1 MEMBER OF self.companySet AND self.accountingSituationList IS NOT EMPTY AND self.isCustomer = true", company).fetch();
-		
-		for (Partner partner : partnerList) {
+		Query<Partner> query = partnerRepository
+				.all()
+				.filter("self.isContact = false " +
+						"AND :_company MEMBER OF self.companySet " +
+						"AND self.accountingSituationList IS NOT EMPTY " +
+						"AND self.isCustomer = true " +
+						"AND :_batch NOT MEMBER OF self.batchSet " +
+						"AND self.id NOT IN (:anomalyList) " +
+						"AND self.id NOT IN (:notRemindedList)")
+				.bind("_company", company)
+				.bind("anomalyList", anomalyList)
+				.bind("notRemindedList", notRemindedList)
+				.bind("_batch", batch);
 
-			try {
-				partner = partnerRepository.find(partner.getId());
-				boolean remindedOk = debtRecoveryService.debtRecoveryGenerate(partner, company);
-				
-				if(remindedOk)  {
-					updatePartner(partner);
-					changedDebtRecoveries.add(
-							debtRecoveryService.getDebtRecovery(partner, company)
-					);
-					i++;
+
+		for (List<Partner> partnerList; !(partnerList = query.fetch(FETCH_LIMIT)).isEmpty(); JPA.clear()) {
+			for (Partner partner : partnerList) {
+
+				try {
+					partner = partnerRepository.find(partner.getId());
+					boolean remindedOk = debtRecoveryService.debtRecoveryGenerate(partner, company);
+
+					if (remindedOk) {
+						updatePartner(partner);
+						changedDebtRecoveries.add(
+								debtRecoveryService.getDebtRecovery(partner, company)
+						);
+					}
+					else {
+					    notRemindedList.add(partner.getId());
+					}
+
+					log.debug("Tiers traité : {}", partner.getName());
+
+				} catch (AxelorException e) {
+
+					TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get("Partner") + " %s", partner.getName()), IException.DEBT_RECOVERY, batch.getId());
+					incrementAnomaly();
+
+				} catch (Exception e) {
+
+					TraceBackService.trace(new Exception(String.format(I18n.get("Partner") + " %s", partner.getName()), e), IException.DEBT_RECOVERY, batch.getId());
+					anomalyList.add(partner.getId());
+					incrementAnomaly();
+
+					log.error("Bug(Anomalie) généré(e) pour le tiers {}", partner.getName());
+
 				}
-
-				log.debug("Tiers traité : {}", partner.getName());	
-
-			} catch (AxelorException e) {
-				
-				TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get("Partner")+" %s", partner.getName()), IException.DEBT_RECOVERY, batch.getId());
-				incrementAnomaly();
-				
-			} catch (Exception e) {
-				
-				TraceBackService.trace(new Exception(String.format(I18n.get("Partner")+" %s", partner.getName()), e), IException.DEBT_RECOVERY, batch.getId());
-				
-				incrementAnomaly();
-				
-				log.error("Bug(Anomalie) généré(e) pour le tiers {}", partner.getName());
-				
-			} finally {
-				
-				if (i % 10 == 0) { JPA.clear(); }
-	
 			}
 		}
 	}

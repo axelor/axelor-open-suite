@@ -14,81 +14,96 @@
         <hilite color="danger" if="statusSelect == 4"/>
         <field name="reference" width="200"/>
         <field name="journal" form-view="journal-form" grid-view="journal-grid" width="200"/>
-        <field name="period" form-view="period-form" grid-view="period-grid" width="120"/>
+        <field name="period" form-view="period-form" grid-view="period-grid" width="120" canEdit="false"/>
         <field name="date" width="90"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="company" form-view="company-form" grid-view="company-grid" width="140"/>
         <field name="invoice" form-view="invoice-form" grid-view="invoice-grid" width="140"/>
         <field name="statusSelect" width="90"/>
     </grid>
-    
-	<form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move" canDelete="false" 
-	onNew="action-account-move-onnew-group" onLoad="action-move-attrs-adjusting-move,action-move-attrs-hide-move-line-name-in-draft-status">
-	
-		<toolbar>
-			<button name="print" title="Print Move" icon="fa-print" onClick="save,action-account-move-method-print-move"/>
-			<button name="reverse" title="Reverse" icon="fa-exchange" onClick="action-move-method-generate-reverse-move"/>
-			<button name="deleteMove" title="delete" icon="fa-trash" onClick="action-move-method-delete-move"/>
-		</toolbar>
-		
-		<panel name="main" readonlyIf="statusSelect == 3" colSpan="12">
-			<field name="reference" colSpan="12"/>
-			<panel readonlyIf="moveLineList.length &gt; 0" colSpan="12" itemSpan="6">
-				<field name="journal" domain="self.statusSelect = 1 AND self.company = :company" canNew="false" form-view="journal-form" grid-view="journal-grid"/>
-				<field name="company" canEdit="false" widget="SuggestBox" onSelect="action-move-attrs-set-domain-company" onChange="action-move-method-get-period" form-view="company-form" grid-view="company-grid"/>
-				<field name="date" onChange="action-move-method-get-period" hideIf="statusSelect == 3"/>
-				<field name="period" form-view="period-form" grid-view="period-grid"/>
-			</panel>
-			<field colSpan="6" name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false AND :company MEMBER OF self.companySet" canNew="false"/>
+
+    <form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
+          onNew="action-account-move-onnew-group"
+          onLoad="action-move-attrs-adjusting-move,action-move-attrs-hide-move-line-name-in-draft-status">
+
+        <toolbar>
+            <button name="print" title="Print Move" icon="fa-print" onClick="save,action-account-move-method-print-move"/>
+            <button name="reverse" title="Reverse" icon="fa-exchange" onClick="action-move-method-generate-reverse-move"/>
+            <button name="deleteMove" title="delete" icon="fa-trash" onClick="action-move-method-delete-move"/>
+        </toolbar>
+
+        <panel name="main" readonlyIf="statusSelect == 3" colSpan="12">
+			<panel colSpan="9">
+                <field name="reference" colSpan="12"/>
+                <panel readonlyIf="moveLineList.length &gt; 0" colSpan="12">
+                    <field name="journal" domain="self.statusSelect = 1 AND self.company = :company" canNew="false" form-view="journal-form" grid-view="journal-grid"/>
+                    <field name="company" canEdit="false" widget="SuggestBox" onSelect="action-move-attrs-set-domain-company" onChange="action-move-method-get-period" form-view="company-form" grid-view="company-grid"/>
+                    <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"/>
+                    <field name="date" onChange="action-move-method-get-period" hideIf="statusSelect == 3"/>
+                </panel>
+                <field name="partner" domain="self.isContact = false AND :company MEMBER OF self.companySet" colSpan="12" canNew="false" form-view="partner-form" grid-view="partner-grid"/>
+            </panel>
+
+            <panel colSpan="3">
+                <field name="$viewerTags" colSpan="12" showTitle="false">
+                    <viewer>
+                        <![CDATA[
+                            <h4 class="text-right">
+                                <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 1" x-translate>New</span>
+                                <span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 2" x-translate>Daybook</span>
+                                <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 3" x-translate>Validated</span>
+                                <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 4" x-translate>Canceled</span>
+
+                                <span class="label label-default" style="background-color: #337AB7; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.adjustingMove" x-translate>Adjusting Move</span>
+                            </h4>
+                        ]]>
+                    </viewer>
+                    <editor>
+                        <field name="statusSelect"/>
+                        <field name="adjustingMove" showIf="adjustingMove" readonly="true"/>
+                    </editor>
+                </field>
+                <field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect >= 3"/>
+                <field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
+
+                <button name="validate" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3" if="!__user__.activeCompany?.accountConfig?.accountingDaybook"/>
+                <button name="account" title="Accounting.Account" onClick="action-group-account-move-account-click" colSpan="12" hideIf="statusSelect >= 2" if="__user__.activeCompany?.accountConfig?.accountingDaybook"/>
+            </panel>
 		</panel>
 		
 		<panel-related field="moveLineList" showIf="journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" readonlyIf="statusSelect == 3" grid-view="move-line-move-grid" form-view="move-line-move-form"/>
-		  
-		<panel sidebar="true" name="action" title="Action" itemSpan="6">
-			<field name="statusSelect" readonly="true"> 
-    			<hilite if="statusSelect == 4" color="danger"/>
-			</field>
-			<field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
-			<field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect >= 3"/>
-  			<field name="adjustingMove" showTitle="false" showIf="adjustingMove" colSpan="12">
-				<viewer>
-					<![CDATA[
-						<h4 style="text-align: right;">
-							<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.adjustingMove" x-translate>Adjusting Move</span>
-						</h4>
-					]]>
-				</viewer>
-			</field>
-			<button name="validate" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3" if="!__user__.activeCompany?.accountConfig?.accountingDaybook"/>
-			<button name="account" title="Account" onClick="action-group-account-move-account-click" colSpan="12" hideIf="statusSelect >= 2" if="__user__.activeCompany?.accountConfig?.accountingDaybook"/>
-		</panel>
 
-		<panel-tabs title="Configuration" sidebar="true">
-			<panel name="relatedTo" title="Related to" readonly="true">
-				<field name="invoice" domain="self.company = :company AND self.statusSelect = 3" form-view="invoice-form" grid-view="invoice-grid" canNew="false"/>
-				<field name="paymentVoucher" domain="self.company = :company" canNew="false" form-view="payment-voucher-form" grid-view="payment-voucher-grid"/>
-				<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" onSelect="action-move-attrs-set-domain-payment-mode" canNew="false" canView="false"/>
-			</panel>
-			
-			<panel name="accountingExport" title="Accounting export" hideIf="statusSelect == 1" hidden="true" readonly="true">
-				<field name="accountingOk"/>
-				<field name="exportNumber" showIf="accountingOk"/>
-				<field name="exportDate" showIf="accountingOk"/>
-				<field name="accountingReport" form-view="accounting-report-export-form" showIf="accountingOk" grid-view="accounting-report-grid"/>
-			</panel>
-			
-			<panel name="others" title="Others">
-				<field name="ignoreInAccountingOk"/>
-				<field name="ignoreInDebtRecoveryOk"/>
-				<field name="rejectOk"/>
-			</panel>
-		</panel-tabs>
-	
-	</form>
+        <panel-tabs>
+            <panel name="relatedTo" title="Related to" readonly="true">
+                <field name="invoice" domain="self.company = :company AND self.statusSelect = 3" form-view="invoice-form" grid-view="invoice-grid" canNew="false"/>
+                <field name="paymentVoucher" domain="self.company = :company" canNew="false" form-view="payment-voucher-form" grid-view="payment-voucher-grid"/>
+                <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" onSelect="action-move-attrs-set-domain-payment-mode" canNew="false" canView="false"/>
+            </panel>
+
+            <panel name="accountingExport" title="Accounting export" hideIf="statusSelect == 1" hidden="true" readonly="true">
+                <field name="accountingOk"/>
+                <field name="exportNumber" showIf="accountingOk"/>
+                <field name="exportDate" showIf="accountingOk"/>
+                <field name="accountingReport" form-view="accounting-report-export-form" showIf="accountingOk" grid-view="accounting-report-grid"/>
+            </panel>
+
+            <panel name="Currency" title="Currencies">
+                <field name="currency" readonly="true"/>
+                <field name="companyCurrency" readonly="true"/>
+            </panel>
+
+            <panel name="others" title="Others">
+                <field name="ignoreInAccountingOk"/>
+                <field name="ignoreInDebtRecoveryOk"/>
+                <field name="rejectOk"/>
+            </panel>
+        </panel-tabs>
+    </form>
 	
 	<!-- ACTION GROUPs -->
 	<action-group name="action-account-move-onnew-group">
 		<action name="default-move-record"/>
+		<action name="default-move-record-currency"/>
 		<action name="action-move-record-journal"/>
 		<action name="action-move-method-get-period"/>
 		<action name="action-move-attrs-adjusting-move"/>
@@ -116,6 +131,11 @@
 		<field name="technicalOriginSelect" expr="1"/>
     </action-record>
     
+    <action-record name="default-move-record-currency" model="com.axelor.apps.account.db.Move">
+		<field name="companyCurrency" expr="eval: company?.currency" />
+		<field name="currency" expr="eval: company?.currency" />
+    </action-record>
+
     <action-record name="action-move-record-journal" model="com.axelor.apps.account.db.Move">
     	<field name="journal" expr="eval: company?.accountConfig?.manualMiscOpeJournal"/>
     </action-record>

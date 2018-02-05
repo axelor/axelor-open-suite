@@ -65,15 +65,18 @@
 	
 	<selection name="bankpayment.order.file.format.select">
 		<option value="pain.001.001.02.ict">pain.001.001.02.ict</option>
+		<option value="pain.001.001.03.ict">pain.001.001.03.ict</option>
 		<option value="pain.001.001.02.mct">pain.001.001.02.mct</option>
 		<option value="pain.001.001.02.rft">pain.001.001.02.rft</option>
 		<option value="pain.001.001.02.sct">pain.001.001.02.sct</option>
 		<option value="pain.001.001.02.xct">pain.001.001.02.xct</option>
 		<option value="pain.001.001.03.sct">pain.001.001.03.sct</option>
+		<option value="pain.001.001.03.xct">pain.001.001.03.xct</option>
 		<option value="pain.008.001.01.sbb">pain.008.001.01.sbb</option>
 		<option value="pain.008.001.01.sdd">pain.008.001.01.sdd</option>
 		<option value="pain.fin.mt101.dct">pain.fin.mt101.dct</option>
 		<option value="pain.fin.mt101.mct">pain.fin.mt101.mct</option>
+		<option value="pain.fin.mt101.xct">pain.fin.mt101.xct</option>
 		<option value="pain.xxx.cfonb160.dco">pain.xxx.cfonb160.dco</option>
 		<option value="pain.xxx.cfonb160.dct">pain.xxx.cfonb160.dct</option>
 		<option value="pain.xxx.cfonb160.dda">pain.xxx.cfonb160.dda</option>
@@ -86,11 +89,13 @@
 		<option value="pain.xxx.cfonb320.dct">pain.xxx.cfonb320.dct</option>
 		<option value="pain.xxx.cfonb320.rft">pain.xxx.cfonb320.rft</option>
 		<option value="pain.xxx.cfonb320.xct">pain.xxx.cfonb320.xct</option>
+		<option value="pain.xxx.cfonb320.sct">pain.xxx.cfonb320.sct</option>
 		<option value="pain.xxx.fff.lch">pain.xxx.fff.lch</option>
 		<option value="pain.xxx.fff.ech">pain.xxx.fff.ech</option>
 		<option value="pain.xxx.payext912.vct">pain.xxx.payext912.vct</option>
 		<option value="pain.xxx.payext96a.vct">pain.xxx.payext96a.vct</option>
 		<option value="pain.xxx.payord912.ict">pain.xxx.payord912.ict</option>
+		<option value="pain.xxx.payord912.xct">pain.xxx.payord912.xct</option>
 		<option value="pain.xxx.vcom400.vct">pain.xxx.vcom400.vct</option>
 	</selection>
 	
@@ -200,6 +205,11 @@
         <option value="1">Order overall debit</option>
         <option value="2">Unit debit by operation</option>
         <option value="3">Overall debit by transfer currency</option>
+    </selection>
+
+    <selection name="bankpayment.bank.order.ff.qualifying.amount.select">
+        <option value="T">Amount in transfer's currency</option>
+        <option value="D">Equivalent amount in sender bank details' currency</option>
     </selection>
 
 </object-views>

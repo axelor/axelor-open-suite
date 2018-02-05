@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,12 +19,12 @@ package com.axelor.apps.account.service;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +47,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -309,6 +310,16 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
 		return moveLines;
 	}
 
+	@Override
+	public void checkTotalLineAmount(PaymentSchedule paymentSchedule) throws AxelorException {
+        BigDecimal total = getInvoiceTermTotal(paymentSchedule);
+
+        if (total.compareTo(paymentSchedule.getInTaxAmount()) != 0) {
+            throw new AxelorException(paymentSchedule, IException.INCONSISTENCY,
+                    I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_LINE_AMOUNT_MISMATCH), total,
+                    paymentSchedule.getInTaxAmount());
+        }
+	}
 
 	/**
 	 * Permet de valider un échéancier.
@@ -318,21 +329,27 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
 	 */
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validatePaymentSchedule(PaymentSchedule paymentSchedule) throws AxelorException {
+    public void validatePaymentSchedule(PaymentSchedule paymentSchedule) throws AxelorException {
 
-		log.debug("Validation de l'échéancier {}", paymentSchedule.getPaymentScheduleSeq());
+        log.debug("Validation de l'échéancier {}", paymentSchedule.getPaymentScheduleSeq());
 
-		if(paymentSchedule.getPaymentScheduleLineList() == null || paymentSchedule.getPaymentScheduleLineList().size() == 0)  {
-			throw new AxelorException(paymentSchedule, IException.INCONSISTENCY, I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_6), AppAccountServiceImpl.EXCEPTION, paymentSchedule.getPaymentScheduleSeq());
-		}
+        if (paymentSchedule.getPaymentScheduleLineList() == null
+                || paymentSchedule.getPaymentScheduleLineList().isEmpty()) {
+            throw new AxelorException(paymentSchedule, IException.INCONSISTENCY,
+                    I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_6), AppAccountServiceImpl.EXCEPTION,
+                    paymentSchedule.getPaymentScheduleSeq());
+        }
 
-//		this.updateInvoices(paymentSchedule); //TODO
+        checkTotalLineAmount(paymentSchedule);
 
-		paymentSchedule.setStatusSelect(PaymentScheduleRepository.STATUS_CONFIRMED);
+        for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
+            paymentScheduleLine.setStatusSelect(PaymentScheduleLineRepository.STATUS_IN_PROGRESS);
+        }
 
-		paymentScheduleRepo.save(paymentSchedule);
-	}
+        // this.updateInvoices(paymentSchedule); //TODO
 
+        paymentSchedule.setStatusSelect(PaymentScheduleRepository.STATUS_CONFIRMED);
+    }
 
 	@Override
 	public void updateInvoices(PaymentSchedule paymentSchedule)  {
@@ -526,5 +543,25 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
 		this.cancelPaymentSchedule(paymentSchedule);
 		paymentScheduleRepo.save(paymentSchedule);
 	}
+
+    @Override
+    public BankDetails getBankDetails(PaymentSchedule paymentSchedule) throws AxelorException {
+        BankDetails bankDetails = paymentSchedule.getBankDetails();
+
+        if (bankDetails != null) {
+            return bankDetails;
+        }
+
+        Partner partner = paymentSchedule.getPartner();
+        Preconditions.checkNotNull(partner);
+        bankDetails = partnerService.getDefaultBankDetails(partner);
+
+        if (bankDetails != null) {
+            return bankDetails;
+        }
+
+        throw new AxelorException(partner, IException.MISSING_FIELD,
+                I18n.get(IExceptionMessage.PARTNER_BANK_DETAILS_MISSING), partner.getName());
+    }
 
 }

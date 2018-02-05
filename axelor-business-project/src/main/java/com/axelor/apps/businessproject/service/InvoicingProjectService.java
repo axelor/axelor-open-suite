@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2017 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,6 +39,9 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PartnerPriceListRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.db.ElementsToInvoice;
 import com.axelor.apps.businessproject.db.InvoicingProject;
@@ -110,7 +113,8 @@ public class InvoicingProjectService {
 		project.getAssignedTo();
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, company, customer.getPaymentCondition(),
 				customer.getInPaymentMode(), partnerService.getInvoicingAddress(customer), customer, null,
-				customer.getCurrency(), customer.getSalePriceList(), null, null, null, null){
+				customer.getCurrency(), Beans.get(PartnerPriceListService.class).getDefaultPriceList(customer, PriceListRepository.TYPE_SALE),
+				null, null, null, null){
 
 			@Override
 			public Invoice generate() throws AxelorException {
