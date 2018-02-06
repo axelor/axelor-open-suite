@@ -6,12 +6,9 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.w3c.dom.Element;
-
-import com.axelor.apps.prestashop.adapters.PrestashopBooleanAdapter;
 
 @XmlRootElement(name="currency")
 public class PrestashopCurrency extends PrestashopIdentifiableEntity {
@@ -48,7 +45,6 @@ public class PrestashopCurrency extends PrestashopIdentifiableEntity {
 		this.conversionRate = conversionRate;
 	}
 
-	@XmlJavaTypeAdapter(type=boolean.class, value=PrestashopBooleanAdapter.class)
 	public boolean isDeleted() {
 		return deleted;
 	}
@@ -57,7 +53,6 @@ public class PrestashopCurrency extends PrestashopIdentifiableEntity {
 		this.deleted = deleted;
 	}
 
-	@XmlJavaTypeAdapter(type=boolean.class, value=PrestashopBooleanAdapter.class)
 	public boolean isActive() {
 		return active;
 	}
