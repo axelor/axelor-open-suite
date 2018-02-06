@@ -71,7 +71,7 @@ public class ImportCategoryServiceImpl implements ImportCategoryService  {
 	public String[] getParentCategoryName(Integer id) throws PrestaShopWebserviceException, JSONException {
 		PSWebServiceClient ws = new PSWebServiceClient(shopUrl,key);
 		Options options = new Options();
-		options.setResourceType(PrestashopResourceType.CATEGORIES);
+		options.setResourceType(PrestashopResourceType.PRODUCT_CATEGORIES);
 		options.setRequestedId(id);
 		JSONObject schema = ws.getJson(options);
 		String[] category = new String[2];
@@ -102,11 +102,11 @@ public class ImportCategoryServiceImpl implements ImportCategoryService  {
 		bwImport.write("Category");
 
 		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
-		List<Integer> categoryIds = ws.fetchApiIds(PrestashopResourceType.CATEGORIES);
+		List<Integer> categoryIds = ws.fetchApiIds(PrestashopResourceType.PRODUCT_CATEGORIES);
 
 		for (Integer id : categoryIds) {
 			Options options = new Options();
-			options.setResourceType(PrestashopResourceType.CATEGORIES);
+			options.setResourceType(PrestashopResourceType.PRODUCT_CATEGORIES);
 			options.setRequestedId(id);
 			JSONObject schema = ws.getJson(options);
 

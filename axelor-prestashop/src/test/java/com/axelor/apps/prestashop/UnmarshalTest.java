@@ -35,7 +35,7 @@ public class UnmarshalTest {
 		final Set<PrestashopResourceType> expectedEntries = Sets.newHashSet(
 				PrestashopResourceType.ADDRESSES,
 				PrestashopResourceType.CARTS,
-				PrestashopResourceType.CATEGORIES,
+				PrestashopResourceType.PRODUCT_CATEGORIES,
 				PrestashopResourceType.COUNTRIES,
 				PrestashopResourceType.CUSTOMERS,
 				PrestashopResourceType.IMAGES,

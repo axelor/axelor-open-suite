@@ -8,7 +8,6 @@ package com.axelor.apps.prestashop.entities;
 public enum PrestashopResourceType {
 	ADDRESSES("addresses"),
 	CARTS("carts"),
-	CATEGORIES("categories"),
 	COUNTRIES("countries"),
 	CURRENCIES("currencies"),
 	CUSTOMERS("customers"),
@@ -17,6 +16,7 @@ public enum PrestashopResourceType {
 	ORDER_DETAILS("order_details"),
 	ORDER_HISTORIES("order_histories"),
 	ORDERS("orders"),
+	PRODUCT_CATEGORIES("categories"),
 	PRODUCTS("products"),
 	// No typo� really
 	STOCK_AVAILABLES("stock_availables");

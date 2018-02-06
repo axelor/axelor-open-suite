@@ -84,7 +84,7 @@ public abstract class XlinkEntry {
 	public static class CategoriesXlink extends XlinkEntry {
 		@Override
 		public PrestashopResourceType getEntryType() {
-			return PrestashopResourceType.CATEGORIES;
+			return PrestashopResourceType.PRODUCT_CATEGORIES;
 		}
 	}
 

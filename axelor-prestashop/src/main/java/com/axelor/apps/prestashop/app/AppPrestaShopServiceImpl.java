@@ -47,7 +47,7 @@ public class AppPrestaShopServiceImpl implements AppPrestaShopService {
 	private static final HashSet<PrestashopResourceType> REQUIRED_XLINKS = Sets.newHashSet(
 			PrestashopResourceType.ADDRESSES,
 			PrestashopResourceType.CARTS,
-			PrestashopResourceType.CATEGORIES,
+			PrestashopResourceType.PRODUCT_CATEGORIES,
 			PrestashopResourceType.COUNTRIES,
 			PrestashopResourceType.CURRENCIES,
 			PrestashopResourceType.CUSTOMERS,
