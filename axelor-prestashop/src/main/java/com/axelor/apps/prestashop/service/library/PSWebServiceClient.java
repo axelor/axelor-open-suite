@@ -359,6 +359,19 @@ public class PSWebServiceClient {
 	}
 
 	/**
+	 * Returns the first entity of thos matching filter
+	 * @param resourceType Resource type to fetch
+	 * @param filter Filter to apply
+	 * @return The first entry of filtered resultset, or null if resultset is empty
+	 * @throws PrestaShopWebserviceException
+	 */
+	public <T extends PrestashopContainerEntity> T fetchOne(final PrestashopResourceType resourceType, final Map<String, String> filter) throws PrestaShopWebserviceException {
+		List<T> entities = fetch(resourceType, filter);
+		if(entities.size() == 0) return null;
+		return entities.get(0);
+	}
+
+	/**
 	 * Fetches a list of entities based on the given filter. Entities will have all their
 	 * attributes set.
 	 * @param resourceType Type of resource to fetch.
