@@ -118,7 +118,7 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 				try {
 					remoteCurrency.setConversionRate(currencyService.getCurrencyConversionRate(localCurrency, appConfig.getPrestaShopCurrency(), today));
 				} catch (AxelorException e) {
-					log.debug("Unable to fetch conversion rate for currency {}, let it unchanged", localCurrency.getCode());
+					log.debug("Unable to fetch conversion rate for currency {}, leave it unchanged", localCurrency.getCode());
 				}
 				logBuffer.write(" – setting conversion rate to " + remoteCurrency.getConversionRate());
 				// Do not change any of the other attributes, defaults are suitable for

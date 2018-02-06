@@ -140,7 +140,7 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 			}
 		}
 
-		logBuffer.write(String.format("%n=== END OF COUNTRIES IMPORT, done: %d, errors: %d ===%n", done, errors));
+		logBuffer.write(String.format("%n=== END OF COUNTRIES EXPORT, done: %d, errors: %d ===%n", done, errors));
 	}
 
 }
