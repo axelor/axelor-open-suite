@@ -21,7 +21,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +73,7 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 
 		// First, fetch all remote currencies and put them into maps suitable for quick fetching
 		// this will avoid round-trips with remote end and considerably speed up performances
-		final List<PrestashopCurrency> remoteCurrencies = ws.fetch(PrestashopResourceType.CURRENCIES, Collections.emptyMap());
+		final List<PrestashopCurrency> remoteCurrencies = ws.fetchAll(PrestashopResourceType.CURRENCIES);
 		final Map<Integer, PrestashopCurrency> currenciesById = new HashMap<>();
 		final Map<String, PrestashopCurrency> currenciesByCode = new HashMap<>();
 		for(PrestashopCurrency c : remoteCurrencies) {
@@ -97,7 +96,7 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 						++errors;
 						continue;
 					} else if(localCurrency.getCode().equals(remoteCurrency.getCode()) == false) {
-						log.error("Remote currency #{} as not the same ISO code as the local one ({} vs {}), skipping",
+						log.error("Remote currency #{} has not the same ISO code as the local one ({} vs {}), skipping",
 								localCurrency.getPrestaShopId(), remoteCurrency.getCode(), localCurrency.getCode());
 						logBuffer.write(String.format(" [ERROR] ISO code mismatch: %s vs %s%n", remoteCurrency.getCode(), localCurrency.getCode()));
 						++errors;

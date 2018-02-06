@@ -319,6 +319,16 @@ public class PSWebServiceClient {
 	}
 
 	/**
+	 * Fetches all entities of a given type, along with their attributes.
+	 * @param resourceType Type of entity to fetch.
+	 * @return A possibly empty list containing all entities.
+	 * @throws PrestaShopWebserviceException
+	 */
+	public <T extends PrestashopContainerEntity> List<T> fetchAll(final PrestashopResourceType resourceType) throws PrestaShopWebserviceException {
+		return fetch(resourceType, Collections.emptyMap());
+	}
+
+	/**
 	 * Fetches a list of entities based on the given filter. Entities will have all their
 	 * attributes set.
 	 * @param resourceType Type of resource to fetch.
