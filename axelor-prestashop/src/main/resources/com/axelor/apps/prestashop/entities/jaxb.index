@@ -1,6 +1,8 @@
 ListContainer$CurrenciesContainer
 ListContainer$CountriesContainer
+ListContainer$ProductCategoriesContainer
 Prestashop
 PrestashopContainerEntity
 PrestashopCurrency
 PrestashopCountry
+PrestashopProductCategory

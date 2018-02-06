@@ -1,19 +1,24 @@
 package com.axelor.apps.prestashop;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.helpers.DefaultValidationEventHandler;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.axelor.apps.prestashop.entities.ListContainer.CountriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CurrenciesContainer;
+import com.axelor.apps.prestashop.entities.ListContainer.ProductCategoriesContainer;
 import com.axelor.apps.prestashop.entities.Prestashop;
 import com.axelor.apps.prestashop.entities.PrestashopCountry;
 import com.axelor.apps.prestashop.entities.PrestashopCurrency;
+import com.axelor.apps.prestashop.entities.PrestashopProductCategory;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.entities.xlink.ApiContainer;
 import com.axelor.apps.prestashop.entities.xlink.XlinkEntry;
@@ -108,6 +113,43 @@ public class UnmarshalTest {
 		Assert.assertEquals(CountriesContainer.class, envelop.getContent().getClass());
 		CountriesContainer countries = envelop.getContent();
 		Assert.assertEquals(251	, countries.getEntities().size());
+	}
+
+	@Test
+	public void testProductCategory() throws JAXBException {
+		Unmarshaller um = JAXBContext.newInstance("com.axelor.apps.prestashop.entities").createUnmarshaller();
+		um.setEventHandler(new DefaultValidationEventHandler());
+		Prestashop envelop = (Prestashop)um.unmarshal(getClass().getResourceAsStream("product-category.xml"));
+
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(PrestashopProductCategory.class, envelop.getContent().getClass());
+		PrestashopProductCategory category = envelop.getContent();
+		Assert.assertEquals(Integer.valueOf(1), category.getId());
+		Assert.assertEquals(Integer.valueOf(0), category.getParentId());
+		Assert.assertEquals(true, category.isActive());
+		Assert.assertEquals(Integer.valueOf(1), category.getDefaultShopId());
+		Assert.assertEquals(false, category.isRootCategory());
+		Assert.assertEquals(Integer.valueOf(0), category.getPosition());
+		Assert.assertEquals(LocalDateTime.of(2018, 1, 29, 14, 8, 27), category.getAddDate());
+		Assert.assertEquals(LocalDateTime.of(2018, 1, 29, 14, 8, 27), category.getUpdateDate());
+		Assert.assertEquals(2, category.getName().getTranslations().size());
+		Assert.assertEquals("Racine", category.getName().getTranslation(1));
+		Assert.assertEquals("Root", category.getName().getTranslation(2));
+		Assert.assertEquals(1, category.getAdditionalProperties().size());
+		Assert.assertEquals("associations", category.getAdditionalProperties().get(0).getTagName());
+	}
+
+	@Test
+	public void testProductCategories() throws JAXBException {
+		Prestashop envelop = (Prestashop) JAXBContext.newInstance("com.axelor.apps.prestashop.entities")
+				.createUnmarshaller()
+				.unmarshal(getClass().getResourceAsStream("product-categories.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(ProductCategoriesContainer.class, envelop.getContent().getClass());
+		ProductCategoriesContainer categories = envelop.getContent();
+		Assert.assertEquals(20, categories.getEntities().size());
 	}
 
 }

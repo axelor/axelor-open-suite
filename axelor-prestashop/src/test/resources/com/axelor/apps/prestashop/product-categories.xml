@@ -1,0 +1,1028 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+	<categories>
+		<category>
+			<id><![CDATA[1]]></id>
+			<id_parent><![CDATA[0]]></id_parent>
+			<level_depth><![CDATA[0]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[0]]></is_root_category>
+			<position><![CDATA[0]]></position>
+			<date_add><![CDATA[2018-01-29 14:08:27]]></date_add>
+			<date_upd><![CDATA[2018-01-29 14:08:27]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Racine]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Racine]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[racine]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[racine]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories">
+					<category xlink:href="http://192.168.1.23/api/categories/2">
+						<id><![CDATA[2]]></id>
+					</category>
+				</categories>
+				<products nodeType="product" api="products"/>
+			</associations>
+		</category>
+		<category>
+			<id><![CDATA[2]]></id>
+			<id_parent xlink:href="http://192.168.1.23/api/categories/1"><![CDATA[1]]></id_parent>
+			<level_depth><![CDATA[1]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[1]]></is_root_category>
+			<position><![CDATA[0]]></position>
+			<date_add><![CDATA[2018-01-29 14:08:27]]></date_add>
+			<date_upd><![CDATA[2018-01-29 14:08:27]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Accueil]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Accueil]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[accueil]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[accueil]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories">
+					<category xlink:href="http://192.168.1.23/api/categories/33">
+						<id><![CDATA[33]]></id>
+					</category>
+					<category xlink:href="http://192.168.1.23/api/categories/34">
+						<id><![CDATA[34]]></id>
+					</category>
+					<category xlink:href="http://192.168.1.23/api/categories/35">
+						<id><![CDATA[35]]></id>
+					</category>
+					<category xlink:href="http://192.168.1.23/api/categories/36">
+						<id><![CDATA[36]]></id>
+					</category>
+					<category xlink:href="http://192.168.1.23/api/categories/37">
+						<id><![CDATA[37]]></id>
+					</category>
+					<category xlink:href="http://192.168.1.23/api/categories/38">
+						<id><![CDATA[38]]></id>
+					</category>
+					<category xlink:href="http://192.168.1.23/api/categories/21">
+						<id><![CDATA[21]]></id>
+					</category>
+					<category xlink:href="http://192.168.1.23/api/categories/22">
+						<id><![CDATA[22]]></id>
+					</category>
+					<category xlink:href="http://192.168.1.23/api/categories/23">
+						<id><![CDATA[23]]></id>
+					</category>
+					<category xlink:href="http://192.168.1.23/api/categories/24">
+						<id><![CDATA[24]]></id>
+					</category>
+					<category xlink:href="http://192.168.1.23/api/categories/25">
+						<id><![CDATA[25]]></id>
+					</category>
+					<category xlink:href="http://192.168.1.23/api/categories/26">
+						<id><![CDATA[26]]></id>
+					</category>
+					<category xlink:href="http://192.168.1.23/api/categories/27">
+						<id><![CDATA[27]]></id>
+					</category>
+					<category xlink:href="http://192.168.1.23/api/categories/28">
+						<id><![CDATA[28]]></id>
+					</category>
+					<category xlink:href="http://192.168.1.23/api/categories/29">
+						<id><![CDATA[29]]></id>
+					</category>
+					<category xlink:href="http://192.168.1.23/api/categories/30">
+						<id><![CDATA[30]]></id>
+					</category>
+					<category xlink:href="http://192.168.1.23/api/categories/31">
+						<id><![CDATA[31]]></id>
+					</category>
+					<category xlink:href="http://192.168.1.23/api/categories/32">
+						<id><![CDATA[32]]></id>
+					</category>
+				</categories>
+				<products nodeType="product" api="products"/>
+			</associations>
+		</category>
+		<category>
+			<id><![CDATA[21]]></id>
+			<id_parent xlink:href="http://192.168.1.23/api/categories/2"><![CDATA[2]]></id_parent>
+			<level_depth><![CDATA[2]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[-1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[0]]></is_root_category>
+			<position><![CDATA[6]]></position>
+			<date_add><![CDATA[2018-02-06 10:13:55]]></date_add>
+			<date_upd><![CDATA[2018-02-06 10:14:02]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Hébergement2]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Hébergement2]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[HEB2]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[HEB2]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories"/>
+				<products nodeType="product" api="products"/>
+			</associations>
+		</category>
+		<category>
+			<id><![CDATA[22]]></id>
+			<id_parent xlink:href="http://192.168.1.23/api/categories/2"><![CDATA[2]]></id_parent>
+			<level_depth><![CDATA[2]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[-1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[0]]></is_root_category>
+			<position><![CDATA[7]]></position>
+			<date_add><![CDATA[2018-02-06 10:13:56]]></date_add>
+			<date_upd><![CDATA[2018-02-06 10:14:02]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Ecran]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Ecran]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[ECR]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[ECR]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories"/>
+				<products nodeType="product" api="products"/>
+			</associations>
+		</category>
+		<category>
+			<id><![CDATA[23]]></id>
+			<id_parent xlink:href="http://192.168.1.23/api/categories/2"><![CDATA[2]]></id_parent>
+			<level_depth><![CDATA[2]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[-1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[0]]></is_root_category>
+			<position><![CDATA[8]]></position>
+			<date_add><![CDATA[2018-02-06 10:13:57]]></date_add>
+			<date_upd><![CDATA[2018-02-06 10:14:02]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Package]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Package]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[PACK]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[PACK]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories"/>
+				<products nodeType="product" api="products"/>
+			</associations>
+		</category>
+		<category>
+			<id><![CDATA[24]]></id>
+			<id_parent xlink:href="http://192.168.1.23/api/categories/2"><![CDATA[2]]></id_parent>
+			<level_depth><![CDATA[2]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[-1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[0]]></is_root_category>
+			<position><![CDATA[9]]></position>
+			<date_add><![CDATA[2018-02-06 10:13:57]]></date_add>
+			<date_upd><![CDATA[2018-02-06 10:14:02]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Hébergement]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Hébergement]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[HEB]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[HEB]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories"/>
+				<products nodeType="product" api="products"/>
+			</associations>
+		</category>
+		<category>
+			<id><![CDATA[25]]></id>
+			<id_parent xlink:href="http://192.168.1.23/api/categories/2"><![CDATA[2]]></id_parent>
+			<level_depth><![CDATA[2]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[-1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[0]]></is_root_category>
+			<position><![CDATA[10]]></position>
+			<date_add><![CDATA[2018-02-06 10:13:58]]></date_add>
+			<date_upd><![CDATA[2018-02-06 10:14:02]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Maintenance]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Maintenance]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[MAIN]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[MAIN]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories"/>
+				<products nodeType="product" api="products"/>
+			</associations>
+		</category>
+		<category>
+			<id><![CDATA[26]]></id>
+			<id_parent xlink:href="http://192.168.1.23/api/categories/2"><![CDATA[2]]></id_parent>
+			<level_depth><![CDATA[2]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[-1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[0]]></is_root_category>
+			<position><![CDATA[11]]></position>
+			<date_add><![CDATA[2018-02-06 10:13:58]]></date_add>
+			<date_upd><![CDATA[2018-02-06 10:14:02]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Serveur]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Serveur]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[SER]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[SER]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories"/>
+				<products nodeType="product" api="products"/>
+			</associations>
+		</category>
+		<category>
+			<id><![CDATA[27]]></id>
+			<id_parent xlink:href="http://192.168.1.23/api/categories/2"><![CDATA[2]]></id_parent>
+			<level_depth><![CDATA[2]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[-1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[0]]></is_root_category>
+			<position><![CDATA[12]]></position>
+			<date_add><![CDATA[2018-02-06 10:13:59]]></date_add>
+			<date_upd><![CDATA[2018-02-06 10:14:02]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Imprimante]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Imprimante]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[IMP]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[IMP]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories"/>
+				<products nodeType="product" api="products"/>
+			</associations>
+		</category>
+		<category>
+			<id><![CDATA[28]]></id>
+			<id_parent xlink:href="http://192.168.1.23/api/categories/2"><![CDATA[2]]></id_parent>
+			<level_depth><![CDATA[2]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[-1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[0]]></is_root_category>
+			<position><![CDATA[13]]></position>
+			<date_add><![CDATA[2018-02-06 10:13:59]]></date_add>
+			<date_upd><![CDATA[2018-02-06 10:14:02]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Disque dur]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Disque dur]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[DD]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[DD]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories"/>
+				<products nodeType="product" api="products"/>
+			</associations>
+		</category>
+		<category>
+			<id><![CDATA[29]]></id>
+			<id_parent xlink:href="http://192.168.1.23/api/categories/2"><![CDATA[2]]></id_parent>
+			<level_depth><![CDATA[2]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[0]]></is_root_category>
+			<position><![CDATA[14]]></position>
+			<date_add><![CDATA[2018-02-06 10:14:00]]></date_add>
+			<date_upd><![CDATA[2018-02-06 10:14:02]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Processeur]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Processeur]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[PROC]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[PROC]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories"/>
+				<products nodeType="product" api="products">
+					<product xlink:href="http://192.168.1.23/api/products/25">
+						<id><![CDATA[25]]></id>
+					</product>
+				</products>
+			</associations>
+		</category>
+		<category>
+			<id><![CDATA[30]]></id>
+			<id_parent xlink:href="http://192.168.1.23/api/categories/2"><![CDATA[2]]></id_parent>
+			<level_depth><![CDATA[2]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[-1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[0]]></is_root_category>
+			<position><![CDATA[15]]></position>
+			<date_add><![CDATA[2018-02-06 10:14:01]]></date_add>
+			<date_upd><![CDATA[2018-02-06 10:14:02]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Boitier]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Boitier]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[BOIT]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[BOIT]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories"/>
+				<products nodeType="product" api="products"/>
+			</associations>
+		</category>
+		<category>
+			<id><![CDATA[31]]></id>
+			<id_parent xlink:href="http://192.168.1.23/api/categories/2"><![CDATA[2]]></id_parent>
+			<level_depth><![CDATA[2]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[-1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[0]]></is_root_category>
+			<position><![CDATA[16]]></position>
+			<date_add><![CDATA[2018-02-06 10:14:01]]></date_add>
+			<date_upd><![CDATA[2018-02-06 10:14:02]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Mémoire]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Mémoire]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[MEM]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[MEM]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories"/>
+				<products nodeType="product" api="products"/>
+			</associations>
+		</category>
+		<category>
+			<id><![CDATA[32]]></id>
+			<id_parent xlink:href="http://192.168.1.23/api/categories/2"><![CDATA[2]]></id_parent>
+			<level_depth><![CDATA[2]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[-1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[0]]></is_root_category>
+			<position><![CDATA[17]]></position>
+			<date_add><![CDATA[2018-02-06 10:14:02]]></date_add>
+			<date_upd><![CDATA[2018-02-06 10:14:02]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Carte mère]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Carte mère]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[CARTM]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[CARTM]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories"/>
+				<products nodeType="product" api="products"/>
+			</associations>
+		</category>
+		<category>
+			<id><![CDATA[33]]></id>
+			<id_parent xlink:href="http://192.168.1.23/api/categories/2"><![CDATA[2]]></id_parent>
+			<level_depth><![CDATA[2]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[-1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[0]]></is_root_category>
+			<position><![CDATA[0]]></position>
+			<date_add><![CDATA[2018-02-06 10:13:52]]></date_add>
+			<date_upd><![CDATA[2018-02-06 10:14:02]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Non-Périssable]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Non-Périssable]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[NPER]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[NPER]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories"/>
+				<products nodeType="product" api="products"/>
+			</associations>
+		</category>
+		<category>
+			<id><![CDATA[34]]></id>
+			<id_parent xlink:href="http://192.168.1.23/api/categories/2"><![CDATA[2]]></id_parent>
+			<level_depth><![CDATA[2]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[-1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[0]]></is_root_category>
+			<position><![CDATA[1]]></position>
+			<date_add><![CDATA[2018-02-06 10:13:53]]></date_add>
+			<date_upd><![CDATA[2018-02-06 10:14:02]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Périssable]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Périssable]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[PER]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[PER]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories"/>
+				<products nodeType="product" api="products"/>
+			</associations>
+		</category>
+		<category>
+			<id><![CDATA[35]]></id>
+			<id_parent xlink:href="http://192.168.1.23/api/categories/2"><![CDATA[2]]></id_parent>
+			<level_depth><![CDATA[2]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[-1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[0]]></is_root_category>
+			<position><![CDATA[2]]></position>
+			<date_add><![CDATA[2018-02-06 10:13:53]]></date_add>
+			<date_upd><![CDATA[2018-02-06 10:14:02]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Régie]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Régie]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[REG]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[REG]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories"/>
+				<products nodeType="product" api="products"/>
+			</associations>
+		</category>
+		<category>
+			<id><![CDATA[36]]></id>
+			<id_parent xlink:href="http://192.168.1.23/api/categories/2"><![CDATA[2]]></id_parent>
+			<level_depth><![CDATA[2]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[-1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[0]]></is_root_category>
+			<position><![CDATA[3]]></position>
+			<date_add><![CDATA[2018-02-06 10:13:54]]></date_add>
+			<date_upd><![CDATA[2018-02-06 10:14:02]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Forfait]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Forfait]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[FORF]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[FORF]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories"/>
+				<products nodeType="product" api="products"/>
+			</associations>
+		</category>
+		<category>
+			<id><![CDATA[37]]></id>
+			<id_parent xlink:href="http://192.168.1.23/api/categories/2"><![CDATA[2]]></id_parent>
+			<level_depth><![CDATA[2]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[-1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[0]]></is_root_category>
+			<position><![CDATA[4]]></position>
+			<date_add><![CDATA[2018-02-06 10:13:54]]></date_add>
+			<date_upd><![CDATA[2018-02-06 10:14:02]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Transport]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Transport]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[TRAN]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[TRAN]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories"/>
+				<products nodeType="product" api="products"/>
+			</associations>
+		</category>
+		<category>
+			<id><![CDATA[38]]></id>
+			<id_parent xlink:href="http://192.168.1.23/api/categories/2"><![CDATA[2]]></id_parent>
+			<level_depth><![CDATA[2]]></level_depth>
+			<nb_products_recursive notFilterable="true"><![CDATA[-1]]></nb_products_recursive>
+			<active><![CDATA[1]]></active>
+			<id_shop_default><![CDATA[1]]></id_shop_default>
+			<is_root_category><![CDATA[0]]></is_root_category>
+			<position><![CDATA[5]]></position>
+			<date_add><![CDATA[2018-02-06 10:13:55]]></date_add>
+			<date_upd><![CDATA[2018-02-06 10:14:02]]></date_upd>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Repas]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Repas]]></language>
+			</name>
+			<link_rewrite>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[REP]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[REP]]></language>
+			</link_rewrite>
+			<description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</description>
+			<meta_title>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_title>
+			<meta_description>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_description>
+			<meta_keywords>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</meta_keywords>
+			<associations>
+				<categories nodeType="category" api="categories"/>
+				<products nodeType="product" api="products"/>
+			</associations>
+		</category>
+	</categories>
+</prestashop>
