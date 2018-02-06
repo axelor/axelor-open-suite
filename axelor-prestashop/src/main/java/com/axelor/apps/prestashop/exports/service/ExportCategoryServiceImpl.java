@@ -19,40 +19,33 @@ package com.axelor.apps.prestashop.exports.service;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
-import com.axelor.apps.prestashop.db.Categories;
-import com.axelor.apps.prestashop.db.Language;
-import com.axelor.apps.prestashop.db.LanguageDetails;
-import com.axelor.apps.prestashop.db.Prestashop;
+import com.axelor.apps.prestashop.entities.PrestashopProductCategory;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
-import com.axelor.apps.prestashop.exception.IExceptionMessage;
+import com.axelor.apps.prestashop.entities.PrestashopTranslatableString;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
-import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
+import com.axelor.db.Query;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
 @Singleton
 public class ExportCategoryServiceImpl implements ExportCategoryService {
+	private Logger log = LoggerFactory.getLogger(getClass());
+
 	private ProductCategoryRepository categoryRepo;
 
 	@Inject
@@ -62,112 +55,80 @@ public class ExportCategoryServiceImpl implements ExportCategoryService {
 
 	@Override
 	@Transactional
-	public void exportCategory(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport) throws IOException,
-			PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException {
+	public void exportCategory(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter logBuffer) throws IOException, PrestaShopWebserviceException {
 		int done = 0;
-		int anomaly = 0;
+		int errors = 0;
 
-		bwExport.newLine();
-		bwExport.write("-----------------------------------------------");
-		bwExport.newLine();
-		bwExport.write("Category");
-		List<ProductCategory> categories = null;
-		String schema = null;
-		Document document = null;
+		logBuffer.write(String.format("%n====== PRODUCT CATEGORIES ======%n"));
 
-		if(endDate == null) {
-			categories = categoryRepo.all().fetch();
-		} else {
-			categories = categoryRepo.all().filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId IS NULL", endDate, endDate).fetch();
+		Query<ProductCategory> q = categoryRepo.all();
+		if(endDate != null) {
+			q.filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId IS NULL", endDate, endDate);
+		}
+		q.order("-self.parentProductCategory.id");
+
+		final PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
+
+		final List<PrestashopProductCategory> remoteCategories = ws.fetchAll(PrestashopResourceType.PRODUCT_CATEGORIES);
+		final Map<Integer, PrestashopProductCategory> countriesById = new HashMap<>();
+		for(PrestashopProductCategory country : remoteCategories) {
+			countriesById.put(country.getId(), country);
 		}
 
-		for (ProductCategory productCategory : categories) {
+		final PrestashopProductCategory defaultCategory = ws.fetchDefault(PrestashopResourceType.PRODUCT_CATEGORIES);
+		final PrestashopProductCategory remoteRootCategory = ws.fetchOne(PrestashopResourceType.PRODUCT_CATEGORIES, Collections.singletonMap("is_root_category", "1"));
+
+		if(remoteRootCategory == null) {
+			logBuffer.write(String.format("[ERROR] Unable to fetch root category from remote end, giving up%n"));
+			return;
+		}
+
+		for(ProductCategory localCategory : q.fetch()) {
+			logBuffer.write(String.format("Exporting product category #%d (%s) – ", localCategory.getId(), localCategory.getName()));
 
 			try {
-
-				Categories category = new Categories();
-				category.setId(Objects.toString(productCategory.getPrestaShopId(), null));
-				category.setActive("1");
-
-				if (productCategory.getPrestaShopId() != null) {
-					if(productCategory.getPrestaShopId() == 1 || productCategory.getPrestaShopId() == 2) {
+				PrestashopProductCategory remoteCategory;
+				if(localCategory.getPrestaShopId() != null) {
+					logBuffer.write("prestashop id=" + localCategory.getPrestaShopId());
+					remoteCategory = countriesById.get(localCategory.getPrestaShopId());
+					if(remoteCategory == null) {
+						logBuffer.write(String.format(" [ERROR] Not found remotely%n"));
+						log.error("Unable to fetch remote product category #{} ({}), something's probably very wrong, skipping",
+								localCategory.getPrestaShopId(), localCategory.getName());
+						++errors;
 						continue;
 					}
-				}
-
-				if (!productCategory.getName().equals("") && !productCategory.getCode().equals("")) {
-
-					if (productCategory.getParentProductCategory() == null || productCategory.getParentProductCategory().getPrestaShopId() == 1) {
-						category.setId_parent("2");
-					} else {
-						category.setId_parent(Objects.toString(productCategory.getParentProductCategory().getPrestaShopId(), null));
-					}
-
-					LanguageDetails nameDetails = new LanguageDetails();
-					nameDetails.setId("1");
-					nameDetails.setValue(productCategory.getName());
-					Language nameLanguage = new Language();
-					nameLanguage .setLanguage(nameDetails);
-					category.setName(nameLanguage);
-
-					LanguageDetails linkRewriteDetails = new LanguageDetails();
-					linkRewriteDetails.setId("1");
-					linkRewriteDetails.setValue(productCategory.getCode());
-					Language linkRewriteLanguage = new Language();
-					linkRewriteLanguage.setLanguage(linkRewriteDetails);
-					category.setLink_rewrite(linkRewriteLanguage);
-
-					Prestashop prestaShop = new Prestashop();
-					prestaShop.setPrestashop(category);
-
-					StringWriter sw = new StringWriter();
-					JAXBContext contextObj = JAXBContext.newInstance(Prestashop.class);
-					Marshaller marshallerObj = contextObj.createMarshaller();
-					marshallerObj.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-					marshallerObj.marshal(prestaShop, sw);
-					schema = sw.toString();
-
-					PSWebServiceClient ws;
-
-					Options options = new Options();
-					options.setResourceType(PrestashopResourceType.CATEGORIES);
-					options.setXmlPayload(schema);
-
-					if (productCategory.getPrestaShopId() == null) {
-						ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/categories?schema=synopsis", appConfig.getPrestaShopKey());
-						document = ws.add(options);
-					} else {
-						ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
-						options.setRequestedId(productCategory.getPrestaShopId());
-						document = ws.edit(options);
-					}
-
-					productCategory.setPrestaShopId(Integer.valueOf(document.getElementsByTagName("id").item(0).getTextContent()));
-					categoryRepo.save(productCategory);
-					done++;
-
 				} else {
-					throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_PRODUCT_CATEGORY));
+					remoteCategory = new PrestashopProductCategory();
+
+					PrestashopTranslatableString str = defaultCategory.getName().clone();
+					str.clearTranslations(localCategory.getName());
+					remoteCategory.setName(str);
+
+					str = defaultCategory.getLinkRewrite().clone();
+					str.clearTranslations(localCategory.getCode());
+					remoteCategory.setLinkRewrite(str);
 				}
 
-			} catch (AxelorException e) {
-				bwExport.newLine();
-				bwExport.newLine();
-				bwExport.write("Id - " + productCategory.getId().toString() + " " + e.getMessage());
-				anomaly++;
-				continue;
-
-			} catch (Exception e) {
-				bwExport.newLine();
-				bwExport.newLine();
-				bwExport.write("Id - " + productCategory.getId().toString() + " " + e.getMessage());
-				anomaly++;
-				continue;
+				// FIXME handle language correctly, only override value for appConfig.textsLanguage
+				remoteCategory.setUpdateDate(LocalDateTime.now());
+				remoteCategory.getName().getTranslations().get(0).setTranslation(localCategory.getName());
+				if(localCategory.getParentProductCategory() == null || localCategory.getParentProductCategory().getPrestaShopId() == null) {
+					remoteCategory.setParentId(remoteRootCategory.getId());
+				} else {
+					remoteCategory.setParentId(localCategory.getParentProductCategory().getPrestaShopId());
+				}
+				remoteCategory = ws.save(PrestashopResourceType.PRODUCT_CATEGORIES, remoteCategory);
+				localCategory.setPrestaShopId(remoteCategory.getId());
+				logBuffer.write(String.format(" [SUCCESS]%n"));
+				++done;
+			} catch (PrestaShopWebserviceException e) {
+				logBuffer.write(String.format(" [ERROR] %s (full trace is in application logs)%n", e.getLocalizedMessage()));
+				log.error(String.format("Exception while synchronizing product category #%d (%s)", localCategory.getId(), localCategory.getName()), e);
+				++errors;
 			}
 		}
 
-		bwExport.newLine();
-		bwExport.newLine();
-		bwExport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);
+		logBuffer.write(String.format("%n=== END OF PRODUCT CATEGORIES EXPORT, done: %d, errors: %d ===%n", done, errors));
 	}
 }
