@@ -29,6 +29,14 @@ public class PrestashopTranslatableString implements Cloneable {
 		return new PrestashopTranslatableString(this);
 	}
 
+	public String getTranslation(final int language) {
+		// If ever heavily used, consider using a Map
+		for(PrestashopTranslationEntry e : translations) {
+			if(e.getLanguageId() == language) return e.getTranslation();
+		}
+		return null;
+	}
+
 	public static class PrestashopTranslationEntry {
 		private int languageId;
 		private String translation;
