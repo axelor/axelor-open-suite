@@ -1,0 +1,2 @@
+"name";"object";"canRead";"canWrite";"canCreate";"canRemove";"canExport"
+"perm.teamsapp.all";"com.axelor.apps.teamsapp.db.*";"true";"true";"true";"true";"true"
