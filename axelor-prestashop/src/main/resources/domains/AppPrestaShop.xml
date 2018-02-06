@@ -7,6 +7,7 @@
 		<string name="prestaShopUrl" title="PrestaShop URL"/>
 		<string name="prestaShopKey" title="PrestaShop Key"/>
 		<many-to-one name="prestaShopCurrency" ref="com.axelor.apps.base.db.Currency" required="true" title="PrestaShop's default currency"/>
+		<many-to-one name="textsLanguage" ref="com.axelor.apps.base.db.Language" required="true" title="Axelor texts languages (for descriptions of products, name of countries, aso.)"/>
 		<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Default payment mode"/>
 		<one-to-many name="saleOrderStatusList" ref="com.axelor.apps.prestashop.db.SaleOrderStatus" title="Sale Order Status"/>
 

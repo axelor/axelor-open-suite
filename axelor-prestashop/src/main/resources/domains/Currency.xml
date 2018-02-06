@@ -5,6 +5,7 @@
 
 	<entity name="Currency" lang="java" cachable="true">
 		<integer name="prestaShopId" nullable="true"/>
+		<datetime name="prestaShopSyncTime" nullable="true"/>
 	</entity>
 
 </domain-models>

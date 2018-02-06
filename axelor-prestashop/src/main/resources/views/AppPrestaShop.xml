@@ -8,6 +8,7 @@
 			<button name="btnTest" title="Test" onClick="save,com.axelor.apps.prestashop.web.AppPrestaShopController:testConnection"/>
 			<spacer/>
 			<field name="prestaShopCurrency"/>
+			<field name="textsLanguage"/>
 		</panel>
 		<panel title="General">
 			<field name="isOrderStatus" widget="boolean-switch"/>

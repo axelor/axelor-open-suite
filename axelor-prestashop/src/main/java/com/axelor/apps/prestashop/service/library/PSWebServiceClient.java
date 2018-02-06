@@ -319,6 +319,36 @@ public class PSWebServiceClient {
 	}
 
 	/**
+	 * Fetches default values for the given entity types
+	 * @param resourceType Type of entity to fetch
+	 * @return An instance of the requested entity with all its attributes set
+	 * to default from PrestaShop side. Most of the time this means null, but this
+	 * can be very useful to initialize translatable strings.
+	 * @throws PrestaShopWebserviceException
+	 */
+	public <T extends PrestashopContainerEntity> T fetchDefault(final PrestashopResourceType resourceType) throws PrestaShopWebserviceException {
+		Options options = new Options();
+		options.setResourceType(resourceType);
+		options.setSchemaType("blank");
+
+		HttpGet httpget = new HttpGet(buildUri(options));
+		RequestResult result = null;
+
+		try {
+			result = executeRequest(httpget);
+			return ((Prestashop)jaxbContext
+					.createUnmarshaller()
+					.unmarshal(result.content))
+					.getContent();
+		} catch (JAXBException e) {
+			throw new PrestaShopWebserviceException("Error while unmarshalling respoinse from fetchDefault", e);
+		} finally {
+			log.debug("Closing connection");
+			if(result != null) IOUtils.closeQuietly(result.response);
+		}
+	}
+
+	/**
 	 * Fetches all entities of a given type, along with their attributes.
 	 * @param resourceType Type of entity to fetch.
 	 * @return A possibly empty list containing all entities.
@@ -556,6 +586,9 @@ public class PSWebServiceClient {
 		} catch (URISyntaxException e) {
 			throw new PrestaShopWebserviceException(String.format("Invalid URI %s provided to webservices", url), e);
 		}
+		if(StringUtils.isNotEmpty(options.schemaType)) {
+			uriBuilder.addParameter("schema", options.schemaType);
+		}
 		if(MapUtils.isNotEmpty(options.filter)) {
 			for(Map.Entry<String, String> e : options.filter.entrySet()) {
 				uriBuilder.addParameter(String.format("filter[%s]", e.getKey()), e.getValue());
@@ -614,8 +647,10 @@ public class PSWebServiceClient {
 
 	public static class Options {
 		private PrestashopResourceType resourceType;
-		private String xmlPayload; // TODO Check if we could marshal in WS
+		@Deprecated
+		private String xmlPayload;
 		private Integer entityId;
+		private String schemaType;
 		private String fullUrl;
 		private Integer shopId;
 		private Integer shopGroupId;
@@ -635,6 +670,10 @@ public class PSWebServiceClient {
 
 		public void setRequestedId(Integer requestedId) {
 			this.entityId = requestedId;
+		}
+
+		public void setSchemaType(String schemaType) {
+			this.schemaType = schemaType;
 		}
 
 		public void setFullUrl(String fullUrl) {
