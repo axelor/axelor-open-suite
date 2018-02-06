@@ -350,10 +350,14 @@ public class TimesheetController {
 	}
 	
 	public void setVisibleDuration(ActionRequest request, ActionResponse response){
+	    try {
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
 		
 		response.setValue("timesheetLineList", timesheetServiceProvider.get().computeVisibleDuration(timesheet));
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 	
 	/* Count Tags displayed on the menu items */
@@ -388,14 +392,18 @@ public class TimesheetController {
 	}
 
 	public void timesheetPeriodTotalController(ActionRequest request, ActionResponse response) {
-		Timesheet timesheet = request.getContext().asType(Timesheet.class);
-		User user = timesheet.getUser();
+		try {
+			Timesheet timesheet = request.getContext().asType(Timesheet.class);
+			User user = timesheet.getUser();
 
-		BigDecimal periodTotal = timesheetServiceProvider.get().computePeriodTotal(timesheet);
+			BigDecimal periodTotal = timesheetServiceProvider.get().computePeriodTotal(timesheet);
 
-		response.setAttr("periodTotal","value",periodTotal);
-		response.setAttr("$periodTotalConvert","hidden",false);
-		response.setAttr("$periodTotalConvert","value",Beans.get(EmployeeService.class).getUserDuration(periodTotal,user,false));
-		response.setAttr("$periodTotalConvert","title",timesheetServiceProvider.get().getPeriodTotalConvertTitleByUserPref(user));
+			response.setAttr("periodTotal", "value", periodTotal);
+			response.setAttr("$periodTotalConvert", "hidden", false);
+			response.setAttr("$periodTotalConvert", "value", Beans.get(EmployeeService.class).getUserDuration(periodTotal, user, false));
+			response.setAttr("$periodTotalConvert", "title", timesheetServiceProvider.get().getPeriodTotalConvertTitleByUserPref(user));
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 }

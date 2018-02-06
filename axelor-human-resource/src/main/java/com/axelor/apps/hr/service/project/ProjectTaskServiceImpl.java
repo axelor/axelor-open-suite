@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -41,7 +42,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 	}
 	
 	@Transactional(rollbackOn={Exception.class})
-	public List<TimesheetLine> computeVisibleDuration(ProjectTask project)  {
+	public List<TimesheetLine> computeVisibleDuration(ProjectTask project) throws AxelorException {
 		
 		List<TimesheetLine> timesheetLineList = project.getTimesheetLineList();
 		

@@ -28,7 +28,7 @@ import com.axelor.exception.AxelorException;
 
 public interface EmployeeService extends UserService{
 
-	public BigDecimal getUserDuration(BigDecimal hourDuration, User user, boolean toHours);
+	public BigDecimal getUserDuration(BigDecimal hourDuration, User user, boolean toHours) throws AxelorException;
 	
 	public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException;
 	public int getAge(Employee employee, LocalDate refDate) throws AxelorException;
