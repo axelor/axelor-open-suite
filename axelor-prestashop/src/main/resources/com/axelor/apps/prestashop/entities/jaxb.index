@@ -1,4 +1,6 @@
+ListContainer$CurrenciesContainer
+ListContainer$CountriesContainer
 Prestashop
 PrestashopContainerEntity
 PrestashopCurrency
-ListContainer$CurrenciesContainer
+PrestashopCountry

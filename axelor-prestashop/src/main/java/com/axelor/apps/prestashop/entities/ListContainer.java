@@ -25,6 +25,9 @@ public abstract class ListContainer<T extends PrestashopContainerEntity> extends
 
 	@XmlRootElement(name="currencies")
 	public static class CurrenciesContainer extends ListContainer<PrestashopCurrency> {
+	}
 
+	@XmlRootElement(name="countries")
+	public static class CountriesContainer extends ListContainer<PrestashopCountry> {
 	}
 }

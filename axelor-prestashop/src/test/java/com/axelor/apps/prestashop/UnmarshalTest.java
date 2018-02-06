@@ -9,8 +9,10 @@ import javax.xml.bind.JAXBException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.axelor.apps.prestashop.entities.ListContainer.CountriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CurrenciesContainer;
 import com.axelor.apps.prestashop.entities.Prestashop;
+import com.axelor.apps.prestashop.entities.PrestashopCountry;
 import com.axelor.apps.prestashop.entities.PrestashopCurrency;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.entities.xlink.ApiContainer;
@@ -76,6 +78,36 @@ public class UnmarshalTest {
 		Assert.assertEquals(CurrenciesContainer.class, envelop.getContent().getClass());
 		CurrenciesContainer currencies = envelop.getContent();
 		Assert.assertEquals(166, currencies.getEntities().size());
+	}
+
+	@Test
+	public void testCountry() throws JAXBException {
+		Prestashop envelop = (Prestashop) JAXBContext.newInstance("com.axelor.apps.prestashop.entities")
+				.createUnmarshaller()
+				.unmarshal(getClass().getResourceAsStream("country.xml"));
+
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(PrestashopCountry.class, envelop.getContent().getClass());
+		PrestashopCountry country = envelop.getContent();
+		Assert.assertNotNull(country.getName());
+		Assert.assertEquals(1, country.getName().getTranslations().size());
+		Assert.assertEquals("ALLEMAGNE", country.getName().getTranslations().get(0).getTranslation());
+		Assert.assertEquals(Integer.valueOf(1), country.getId());
+		Assert.assertEquals(1, country.getZoneId());
+		Assert.assertEquals(Integer.valueOf(0), country.getCurrencyId());
+	}
+
+	@Test
+	public void testCountries() throws JAXBException {
+		Prestashop envelop = (Prestashop) JAXBContext.newInstance("com.axelor.apps.prestashop.entities")
+				.createUnmarshaller()
+				.unmarshal(getClass().getResourceAsStream("countries.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(CountriesContainer.class, envelop.getContent().getClass());
+		CountriesContainer countries = envelop.getContent();
+		Assert.assertEquals(251	, countries.getEntities().size());
 	}
 
 }
