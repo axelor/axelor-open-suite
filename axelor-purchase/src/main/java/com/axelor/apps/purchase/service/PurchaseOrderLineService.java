@@ -48,7 +48,7 @@ public interface PurchaseOrderLineService{
 
 	public PriceListLine getPriceListLine(PurchaseOrderLine purchaseOrderLine, PriceList priceList);
 
-	public Map<String, Object> compute(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException;
+	public Map<String, BigDecimal> compute(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException;
 
 	public BigDecimal computeDiscount(PurchaseOrderLine purchaseOrderLine);
 

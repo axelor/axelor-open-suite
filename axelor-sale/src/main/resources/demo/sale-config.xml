@@ -29,7 +29,7 @@
 		<bind to="shipmentDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)" column="shipmentDate"/>
 	</input>
 	
-	<input file="sale_saleOrderLine.csv" separator=";"  type="com.axelor.apps.sale.db.SaleOrderLine" search="self.importId = :importId">
+	<input file="sale_saleOrderLine.csv" separator=";"  type="com.axelor.apps.sale.db.SaleOrderLine" search="self.importId = :importId" call="com.axelor.csv.script.ImportSaleOrderLine:importSaleOrderLine">
 		<bind to="priceDiscounted" eval="price" />
 	</input>
 	

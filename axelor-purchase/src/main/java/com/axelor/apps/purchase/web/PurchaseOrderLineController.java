@@ -52,9 +52,9 @@ public class PurchaseOrderLineController {
 		PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
 
 		try{
-			Map<String, Object> map = purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrder);
+			Map<String, BigDecimal> map = purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrder);
 			response.setValues(map);
-			response.setAttr("priceDiscounted", "hidden", ((BigDecimal) map.getOrDefault("priceDiscounted", BigDecimal.ZERO)).compareTo(purchaseOrderLine.getPrice()) == 0);
+			response.setAttr("priceDiscounted", "hidden", map.getOrDefault("priceDiscounted", BigDecimal.ZERO).compareTo(purchaseOrderLine.getPrice()) == 0);
 
 		}
 		catch(Exception e)  {

@@ -70,9 +70,9 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 	private int sequence = 0;
 
 
-	public Map<String, Object> compute(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException{
+	public Map<String, BigDecimal> compute(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException{
 
-		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, BigDecimal> map = new HashMap<>();
 		if(purchaseOrder == null || purchaseOrderLine.getPrice() == null || purchaseOrderLine.getQty() == null)  {  return map;  }
 
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
@@ -106,6 +106,13 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		map.put("companyExTaxTotal", companyExTaxTotal);
 		map.put("companyInTaxTotal", companyInTaxTotal);
 		map.put("priceDiscounted", priceDiscounted);
+		purchaseOrderLine.setExTaxTotal(exTaxTotal);
+		purchaseOrderLine.setInTaxTotal(inTaxTotal);
+		purchaseOrderLine.setPriceDiscounted(priceDiscounted);
+		purchaseOrderLine.setCompanyExTaxTotal(companyExTaxTotal);
+		purchaseOrderLine.setCompanyInTaxTotal(companyInTaxTotal);
+		purchaseOrderLine.setSaleMinPrice(getMinSalePrice(purchaseOrder, purchaseOrderLine));
+		purchaseOrderLine.setSalePrice(getSalePrice(purchaseOrder, purchaseOrderLine.getProduct(), purchaseOrderLine.getPrice()));
 		return map;
 	}
 

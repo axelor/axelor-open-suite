@@ -26,7 +26,7 @@
 - Generate sale order from Opportunity in edit mode directly
 - Improved architecture of Message generation from a template, send email, and manage specific email account in a module without change the original behavior in the others
 - A freight carrier is now a carrier partner
-- Add purchase order line import process to compute tax related fields.
+- Add purchase order line and sale order line import processes to compute tax related fields.
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)

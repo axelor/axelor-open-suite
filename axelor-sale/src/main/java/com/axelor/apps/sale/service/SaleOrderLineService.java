@@ -47,7 +47,7 @@ public interface SaleOrderLineService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	BigDecimal[] computeValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException;
+	public Map<String, BigDecimal> computeValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException;
 
 	/**
 	 * Compute the excluded tax total amount of a sale order line.

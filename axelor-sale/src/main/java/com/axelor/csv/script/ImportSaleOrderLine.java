@@ -15,24 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.purchase.script;
+package com.axelor.csv.script;
 
 import java.util.Map;
 
-import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 
-public class ImportPurchaseOrderLine {
+public class ImportSaleOrderLine {
 
-	public Object importPurchaseOrderLine(Object bean, Map<String,Object> values) throws AxelorException {
-		assert bean instanceof PurchaseOrderLine;
+	public Object importSaleOrderLine(Object bean, Map<String, Object> values) throws AxelorException {
+		assert bean instanceof SaleOrderLine;
 
-		PurchaseOrderLine purchaseOrderLine = (PurchaseOrderLine) bean;
-		PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
+		SaleOrderLine saleOrderLine = (SaleOrderLine) bean;
+		SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+		saleOrderLineService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
 
-		purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrderLine.getPurchaseOrder());
-		return purchaseOrderLine;
+		return saleOrderLine;
 	}
 }

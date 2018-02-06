@@ -17,6 +17,11 @@
  */
 package com.axelor.apps.sale.web;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -29,16 +34,10 @@ import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class SaleOrderLineController {
 
@@ -48,8 +47,6 @@ public class SaleOrderLineController {
 	@Inject
 	private ProductRepository productRepo;
 
-    @Inject
-    private AccountManagementService accountManagementService;
 
 	public void compute(ActionRequest request, ActionResponse response) {
 
@@ -60,18 +57,10 @@ public class SaleOrderLineController {
 		SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
 		
 		try{
-			BigDecimal[] values = saleOrderLineService.computeValues(saleOrder, saleOrderLine);
-			if (values == null) {
-				this.resetProductInformation(response);
-				return;
-			}
-			response.setValue("exTaxTotal", values[0]);
-			response.setValue("inTaxTotal", values[1]);
-			response.setValue("companyInTaxTotal", values[2]);
-			response.setValue("companyExTaxTotal", values[3]);
-			response.setValue("priceDiscounted", values[4]);
-			response.setAttr("priceDiscounted", "hidden", values[4].compareTo(saleOrderLine.getPrice()) == 0);
+			Map<String, BigDecimal> map = saleOrderLineService.computeValues(saleOrder, saleOrderLine);
 
+			response.setValues(map);
+			response.setAttr("priceDiscounted", "hidden", map.getOrDefault("priceDiscounted", BigDecimal.ZERO).compareTo(saleOrderLine.getPrice()) == 0);
 		}
 		catch(Exception e) {
 			TraceBackService.trace(response, e);
