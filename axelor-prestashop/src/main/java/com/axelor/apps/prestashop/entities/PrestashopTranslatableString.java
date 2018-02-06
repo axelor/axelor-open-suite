@@ -29,6 +29,16 @@ public class PrestashopTranslatableString implements Cloneable {
 		return new PrestashopTranslatableString(this);
 	}
 
+	/**
+	 * Reset all translation entries to provided value
+	 * @param newValue Value to set to all translations
+	 */
+	public void clearTranslations(final String newValue) {
+		for(PrestashopTranslationEntry e : translations) {
+			e.setTranslation(newValue);
+		}
+	}
+
 	public String getTranslation(final int language) {
 		// If ever heavily used, consider using a Map
 		for(PrestashopTranslationEntry e : translations) {
