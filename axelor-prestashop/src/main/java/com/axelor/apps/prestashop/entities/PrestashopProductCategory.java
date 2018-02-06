@@ -22,7 +22,7 @@ public class PrestashopProductCategory extends PrestashopIdentifiableEntity {
 	);
 
 	private Integer parentId;
-	private boolean active;
+	private boolean active = true;
 	private Integer defaultShopId;
 	private boolean rootCategory;
 	private Integer position;
