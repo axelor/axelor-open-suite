@@ -20,6 +20,7 @@ package com.axelor.apps.purchase.service;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +39,6 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -68,6 +68,46 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 	protected PurchaseProductService productService;
 
 	private int sequence = 0;
+
+
+	public Map<String, Object> compute(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException{
+
+		HashMap<String, Object> map = new HashMap<>();
+		if(purchaseOrder == null || purchaseOrderLine.getPrice() == null || purchaseOrderLine.getQty() == null)  {  return map;  }
+
+		BigDecimal exTaxTotal = BigDecimal.ZERO;
+		BigDecimal companyExTaxTotal = BigDecimal.ZERO;
+		BigDecimal inTaxTotal = BigDecimal.ZERO;
+		BigDecimal companyInTaxTotal = BigDecimal.ZERO;
+		BigDecimal priceDiscounted = computeDiscount(purchaseOrderLine);
+		BigDecimal taxRate = BigDecimal.ZERO;
+
+		if(purchaseOrderLine.getTaxLine() != null)  {  taxRate = purchaseOrderLine.getTaxLine().getValue();  }
+
+		if(!purchaseOrder.getInAti()){
+			exTaxTotal = computeAmount(purchaseOrderLine.getQty(), computeDiscount(purchaseOrderLine));
+			inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
+			companyExTaxTotal = getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
+			companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(taxRate));
+		}
+		else  {
+			inTaxTotal = computeAmount(purchaseOrderLine.getQty(), computeDiscount(purchaseOrderLine));
+			exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+			companyInTaxTotal = getCompanyExTaxTotal(inTaxTotal, purchaseOrder);
+			companyExTaxTotal = companyInTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+		}
+
+		if (purchaseOrderLine.getProduct() != null) {
+			map.put("saleMinPrice", getMinSalePrice(purchaseOrder, purchaseOrderLine));
+			map.put("salePrice", getSalePrice(purchaseOrder, purchaseOrderLine.getProduct(), purchaseOrderLine.getPrice()));
+		}
+		map.put("exTaxTotal", exTaxTotal);
+		map.put("inTaxTotal", inTaxTotal);
+		map.put("companyExTaxTotal", companyExTaxTotal);
+		map.put("companyInTaxTotal", companyInTaxTotal);
+		map.put("priceDiscounted", priceDiscounted);
+		return map;
+	}
 
 	/**
 	 * Calculer le montant HT d'une ligne de commande.
@@ -246,14 +286,14 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		BigDecimal exTaxTotal, inTaxTotal, companyExTaxTotal, companyInTaxTotal;
 		
 		if(!purchaseOrder.getInAti()){
-			exTaxTotal = PurchaseOrderLineServiceImpl.computeAmount(purchaseOrderLine.getQty(), this.computeDiscount(purchaseOrderLine));
+			exTaxTotal = computeAmount(purchaseOrderLine.getQty(), this.computeDiscount(purchaseOrderLine));
 			inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(purchaseOrderLine.getTaxLine().getValue()));
 			companyExTaxTotal = this.getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
 			companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(purchaseOrderLine.getTaxLine().getValue()));
 
 		}
 		else{
-			inTaxTotal = PurchaseOrderLineServiceImpl.computeAmount(purchaseOrderLine.getQty(), this.computeDiscount(purchaseOrderLine));
+			inTaxTotal = computeAmount(purchaseOrderLine.getQty(), this.computeDiscount(purchaseOrderLine));
 			exTaxTotal = inTaxTotal.divide(purchaseOrderLine.getTaxLine().getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
 			companyInTaxTotal = this.getCompanyExTaxTotal(inTaxTotal, purchaseOrder);
 			companyExTaxTotal = companyInTaxTotal.divide(purchaseOrderLine.getTaxLine().getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
