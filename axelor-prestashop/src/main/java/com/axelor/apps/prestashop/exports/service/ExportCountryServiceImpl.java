@@ -24,13 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.Country;
@@ -57,7 +53,7 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 
 	@Override
 	@Transactional
-	public void exportCountry(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter logBuffer) throws IOException, PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException {
+	public void exportCountry(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter logBuffer) throws IOException, PrestaShopWebserviceException {
 		int done = 0;
 		int errors = 0;
 
