@@ -711,14 +711,18 @@ public class ExpenseServiceImpl implements ExpenseService {
 		}
 
 		//adding expense in one O2M also add the link
-		for (ExpenseLine kilometricLine : expense.getKilometricExpenseLineList()) {
-			if (!expenseLineList.contains(kilometricLine)) {
-				kilometricLine.setExpense(expense);
+		if (kilometricExpenseLineList != null) {
+			for (ExpenseLine kilometricLine : kilometricExpenseLineList) {
+				if (!expenseLineList.contains(kilometricLine)) {
+					kilometricLine.setExpense(expense);
+				}
 			}
 		}
-		for (ExpenseLine generalExpenseLine : expense.getGeneralExpenseLineList()) {
-			if (!expenseLineList.contains(generalExpenseLine)) {
-				generalExpenseLine.setExpense(expense);
+		if (generalExpenseLineList != null) {
+			for (ExpenseLine generalExpenseLine : generalExpenseLineList) {
+				if (!expenseLineList.contains(generalExpenseLine)) {
+					generalExpenseLine.setExpense(expense);
+				}
 			}
 		}
 	}
