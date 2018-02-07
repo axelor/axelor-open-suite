@@ -31,6 +31,7 @@
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
 - Fix the default amount on new invoice payment to use the amount remaining of the invoice.
 - Fix demo data en and fr on AppSuplychain to set the correct value on the field supplStockMoveMgtOnSO
+- Fix event hide when we create new from calendar and set domain for my calendar and team calendar
 
 ## [Unreleased 4.x]
 ### Improvements
