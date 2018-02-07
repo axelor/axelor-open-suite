@@ -23,8 +23,8 @@
 		<panel name="main">
 			<field name="project" form-view="project-form" grid-view="project-grid" onChange="save,action-invoicing-project-method-fill-in" readonlyIf="invoice != null"/>
 			<field name="deadlineDate" readonlyIf="invoice != null" onChange="save,action-invoicing-project-method-fill-in"/>
-			<button name="automaticFillIn" title="Automatically Fill in" onClick="action-invoicing-project-method-fill-in" readonlyIf="invoice != null"/>
-			<button name="generateInvoice" title="Generate Invoice" onClick="save,action-invoicing-project-method-generate-invoice" readonlyIf="invoice != null"/>
+			<button name="automaticFillIn" title="Automatically Fill in" onClick="action-invoicing-project-method-fill-in" hideIf="invoice != null"/>
+			<button name="generateInvoice" title="Generate Invoice" onClick="save,action-invoicing-project-method-generate-invoice" hideIf="invoice != null"/>
 			<field name="invoice" readonly="true" form-view="invoice-form" grid-view="invoice-grid" edit-window="blank"/>
 			<button name="seeLinkedTimesheetLines" title="See Linked Timesheet Lines" onClick="action-invoicing-project-show-timesheet-lines" hidden="true" showIf="invoice != null"/>
 		</panel>

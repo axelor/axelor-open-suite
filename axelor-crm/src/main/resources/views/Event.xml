@@ -132,7 +132,6 @@
 			<field name="lead" onChange="action-meeting-set-location-lead" form-view="lead-form" grid-view="lead-grid"/>
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
 			<field name="campaign" form-view="campaign-form" grid-view="campaign-grid"/>
-			<field name="supplierPartner" domain="self.isSupplier = true" form-view="partner-supplier-form" grid-view="partner-supplier-grid" />
 			<field name="relatedToSelectId" hidden="true" />
 		</panel>
 
@@ -322,7 +321,6 @@
     	<field name="description" expr="eval: _partner.description"/>
     	<field name="user" expr="eval: __repo__(User).find(_partner.user.id)" if="_partner.user != null" />
     	<field name="team" expr="eval: _partner.team"/>
-    	<field name="supplierPartner" expr="eval: _partner" if="_partner.isContact == false &amp;&amp; _partner.isSupplier == true"/>
     </action-record>
     
     <action-record name="action-meeting-set-location-partner" model="com.axelor.apps.crm.db.Event">
