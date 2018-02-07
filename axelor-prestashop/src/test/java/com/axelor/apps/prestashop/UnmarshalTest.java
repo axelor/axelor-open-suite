@@ -18,6 +18,7 @@ import com.axelor.apps.prestashop.entities.ListContainer.ProductCategoriesContai
 import com.axelor.apps.prestashop.entities.Prestashop;
 import com.axelor.apps.prestashop.entities.PrestashopCountry;
 import com.axelor.apps.prestashop.entities.PrestashopCurrency;
+import com.axelor.apps.prestashop.entities.PrestashopImage;
 import com.axelor.apps.prestashop.entities.PrestashopProductCategory;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.entities.xlink.ApiContainer;
@@ -152,4 +153,21 @@ public class UnmarshalTest {
 		Assert.assertEquals(20, categories.getEntities().size());
 	}
 
+	@Test
+	public void testImage() throws JAXBException {
+		Unmarshaller um = JAXBContext.newInstance("com.axelor.apps.prestashop.entities").createUnmarshaller();
+		um.setEventHandler(new DefaultValidationEventHandler());
+		Prestashop envelop = (Prestashop)um.unmarshal(getClass().getResourceAsStream("image.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(PrestashopImage.class, envelop.getContent().getClass());
+		PrestashopImage image = envelop.getContent();
+		Assert.assertEquals(Integer.valueOf(29), image.getId());
+		Assert.assertEquals(Integer.valueOf(57), image.getProductId());
+		Assert.assertEquals(Integer.valueOf(1), image.getPosition());
+		Assert.assertEquals(true, image.isCover());
+		Assert.assertNotNull(image.getLegend());
+		Assert.assertEquals("Une jolie image", image.getLegend().getTranslation(1));
+		Assert.assertEquals("A nice picture", image.getLegend().getTranslation(2));
+	}
 }
