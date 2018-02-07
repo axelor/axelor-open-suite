@@ -15,10 +15,12 @@ import org.junit.Test;
 import com.axelor.apps.prestashop.entities.ListContainer.CountriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CurrenciesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.ProductCategoriesContainer;
+import com.axelor.apps.prestashop.entities.ListContainer.ProductsContainer;
 import com.axelor.apps.prestashop.entities.Prestashop;
 import com.axelor.apps.prestashop.entities.PrestashopCountry;
 import com.axelor.apps.prestashop.entities.PrestashopCurrency;
 import com.axelor.apps.prestashop.entities.PrestashopImage;
+import com.axelor.apps.prestashop.entities.PrestashopProduct;
 import com.axelor.apps.prestashop.entities.PrestashopProductCategory;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.entities.xlink.ApiContainer;
@@ -151,6 +153,31 @@ public class UnmarshalTest {
 		Assert.assertEquals(ProductCategoriesContainer.class, envelop.getContent().getClass());
 		ProductCategoriesContainer categories = envelop.getContent();
 		Assert.assertEquals(20, categories.getEntities().size());
+	}
+
+	@Test
+	public void testProduct() throws JAXBException {
+		Unmarshaller um = JAXBContext.newInstance("com.axelor.apps.prestashop.entities").createUnmarshaller();
+		um.setEventHandler(new DefaultValidationEventHandler());
+		Prestashop envelop = (Prestashop)um.unmarshal(getClass().getResourceAsStream("product.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(PrestashopProduct.class, envelop.getContent().getClass());
+		PrestashopProduct product = envelop.getContent();
+		Assert.assertEquals(Integer.valueOf(21), product.getId());
+		Assert.assertEquals(0, product.getAdditionalProperties().size());
+	}
+
+	@Test
+	public void testProducts() throws JAXBException {
+		Prestashop envelop = (Prestashop) JAXBContext.newInstance("com.axelor.apps.prestashop.entities")
+				.createUnmarshaller()
+				.unmarshal(getClass().getResourceAsStream("products.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(ProductsContainer.class, envelop.getContent().getClass());
+		ProductsContainer products = envelop.getContent();
+		Assert.assertEquals(53, products.getEntities().size());
 	}
 
 	@Test

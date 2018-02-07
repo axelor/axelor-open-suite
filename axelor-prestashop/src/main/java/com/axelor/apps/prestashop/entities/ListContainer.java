@@ -34,4 +34,8 @@ public abstract class ListContainer<T extends PrestashopContainerEntity> extends
 	@XmlRootElement(name="categories")
 	public static class ProductCategoriesContainer extends ListContainer<PrestashopCountry> {
 	}
+
+	@XmlRootElement(name="products")
+	public static class ProductsContainer extends ListContainer<PrestashopProduct> {
+	}
 }
