@@ -166,10 +166,6 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 			}
 		}
 		
-		if(publicHolidayPlanning == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY),employee.getName()), IException.CONFIGURATION_ERROR);
-		}
-		
 		LocalDate itDate = new LocalDate(fromDate);
 
 		while(!itDate.isAfter(toDate)){
@@ -177,7 +173,9 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 			itDate = itDate.plusDays(1);
 		}
 
-		duration = duration.subtract(Beans.get(PublicHolidayService.class).computePublicHolidayDays(fromDate, toDate, weeklyPlanning, publicHolidayPlanning));
+		if (publicHolidayPlanning != null) {
+			duration = duration.subtract(Beans.get(PublicHolidayService.class).computePublicHolidayDays(fromDate, toDate, weeklyPlanning, publicHolidayPlanning));
+		}
 		
 		return duration;
 	}
