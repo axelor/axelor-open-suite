@@ -143,7 +143,7 @@ public class LeaveController {
 		actionView.domain("self.statusSelect = 3 OR self.statusSelect = 4");
 
 		if(employee == null || !employee.getHrManager())  {
-			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
+			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.managerUser = :_user")
 			.context("_user", user);
 		}
 
@@ -160,7 +160,7 @@ public class LeaveController {
 				   .add("grid","leave-request-grid")
 				   .add("form","leave-request-form");
 
-		String domain = "self.user.employee.manager.employee.manager = :_user AND self.statusSelect = 2";
+		String domain = "self.user.employee.managerUser.employee.managerUser = :_user AND self.statusSelect = 2";
 
 		long nbLeaveRequests =  Query.of(ExtraHours.class).filter(domain).bind("_user", user).bind("_activeCompany", activeCompany).count();
 
