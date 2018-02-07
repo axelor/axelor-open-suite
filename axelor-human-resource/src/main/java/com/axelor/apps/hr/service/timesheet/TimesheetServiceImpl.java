@@ -722,11 +722,11 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		if(employee == null || !employee.getHrManager())  {
 			if (employee == null || employee.getManagerUser() == null) {
-				actionView.domain(actionView.get().getDomain() + " AND (self.timesheet.user = :_user OR self.timesheet.user.employee.manager = :_user)")
+				actionView.domain(actionView.get().getDomain() + " AND (self.timesheet.user = :_user OR self.timesheet.user.employee.managerUser = :_user)")
 						.context("_user", user);
 			}
 			else {
-				actionView.domain(actionView.get().getDomain() + " AND self.timesheet.user.employee.manager = :_user")
+				actionView.domain(actionView.get().getDomain() + " AND self.timesheet.user.employee.managerUser = :_user")
 						.context("_user", user);
 			}
 		}

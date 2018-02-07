@@ -128,7 +128,7 @@ public class ExtraHoursController {
 		.context("_activeCompany", user.getActiveCompany());
 		
 		if(employee == null || !employee.getHrManager())  {
-			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
+			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.managerUser = :_user")
 			.context("_user", user);
 		}
 		
@@ -145,7 +145,7 @@ public class ExtraHoursController {
 		   .add("grid","extra-hours-grid")
 		   .add("form","extra-hours-form");
 		
-		String domain = "self.user.employee.manager.employee.manager = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
+		String domain = "self.user.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
 		
 		long nbExtraHours =  Query.of(ExtraHours.class).filter(domain).bind("_user", user).bind("_activeCompany", activeCompany).count();
 		

@@ -214,7 +214,7 @@ public class TimesheetController {
 		.context("_activeCompany", user.getActiveCompany());
 	
 		if(employee == null || !employee.getHrManager())  {
-			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
+			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.managerUser = :_user")
 			.context("_user", user);
 		}
 		
@@ -236,7 +236,7 @@ public void historicTimesheetLine(ActionRequest request, ActionResponse response
 		.context("_activeCompany", user.getActiveCompany());
 
 		if(employee == null || !employee.getHrManager())  {
-			actionView.domain(actionView.get().getDomain() + " AND self.timesheet.user.employee.manager = :_user")
+			actionView.domain(actionView.get().getDomain() + " AND self.timesheet.user.employee.managerUser = :_user")
 			.context("_user", user);
 		}
 
@@ -254,7 +254,7 @@ public void historicTimesheetLine(ActionRequest request, ActionResponse response
 				   .add("grid","timesheet-grid")
 				   .add("form","timesheet-form");
 		
-		String domain = "self.user.employee.manager.employee.manager = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
+		String domain = "self.user.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
 		
 		long nbTimesheets =  Query.of(ExtraHours.class).filter(domain).bind("_user", user).bind("_activeCompany", activeCompany).count();
 		
