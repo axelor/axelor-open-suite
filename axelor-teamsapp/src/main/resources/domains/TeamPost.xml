@@ -8,7 +8,8 @@
 	<string name="name" title="Name" />
 	<string name="title" title="Title" />
 	<string name="content" title="Content" large="true"/>
-	<integer name="statusSelect" title="Status" selection="team.post.status.select"/>    
+	<integer name="statusSelect" title="Status" selection="team.post.status.select" default="1"/>   
+	<string name="typeSelect" default="discussion" selection="team.post.type.select"/>
 	<many-to-one name="parentTeamPost" ref="TeamPost" title="Parent" />
 	<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project" />
 	<many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>

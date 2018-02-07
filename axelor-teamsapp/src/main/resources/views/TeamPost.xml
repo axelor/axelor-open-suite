@@ -9,9 +9,10 @@
 
 	<form name="team-post-form" title="Team post" model="com.axelor.apps.teamsapp.db.TeamPost">
 		<panel title="Overview">
+			<field name="statusSelect" widget="NavSelect"/>
 			<field name="name" />
 			<field name="title" />
-			<field name="statusSelect" widget="NavSelect"/>
+			<field name="typeSelect"/>
 			<field name="parentTeamPost" />
 			<field name="content"  widget="html" colSpan="12"/>
 		</panel>	

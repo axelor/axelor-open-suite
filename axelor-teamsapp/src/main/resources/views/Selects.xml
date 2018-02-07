@@ -8,4 +8,9 @@
 		<option value="2">Publish</option>
 	</selection>
 	
+	<selection name="team.post.type.select">
+        <option value="page">Page</option>
+        <option value="discussion">Discussion</option>
+    </selection>
+	
 </object-views>
