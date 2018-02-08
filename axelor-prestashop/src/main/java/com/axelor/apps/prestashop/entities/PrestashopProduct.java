@@ -29,7 +29,7 @@ public class PrestashopProduct extends PrestashopIdentifiableEntity {
 	private Integer defaultCombinationId;
 	private Integer taxRulesGroupId;
 	private Integer positionInCategory;
-	private String type; // simple|type|virtual
+	private String type; // simple|pack|virtual
 	private Integer defaultShopId;
 	private String reference;
 	private String supplierReference;
