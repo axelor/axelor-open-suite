@@ -53,6 +53,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.http.Consts;
 import org.apache.http.Header;
 import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.AuthenticationException;
+import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -70,6 +72,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -97,10 +100,9 @@ public class PSWebServiceClient {
 
 	/** @var string Shop URL */
 	protected String url;
-	/** @var string Authentification key */
-	protected String key;
 
 	private final CloseableHttpClient httpclient;
+	private final Credentials credentials;
 
 	/**
 	 * PrestaShopWebservice constructor. <code>
@@ -124,12 +126,11 @@ public class PSWebServiceClient {
 	 */
 	public PSWebServiceClient(String url, String key) {
 		this.url = url;
-		this.key = key;
-
+		credentials = new UsernamePasswordCredentials(key, null);
 		CredentialsProvider credsProvider = new BasicCredentialsProvider();
 		credsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(key, ""));
+		this.httpclient = HttpClients.createDefault();
 
-		this.httpclient = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
 		try {
 			jaxbContext = JAXBContext.newInstance("com.axelor.apps.prestashop.entities:com.axelor.apps.prestashop.entities.xlink");
 		} catch(JAXBException e) {
@@ -166,13 +167,14 @@ public class PSWebServiceClient {
 	protected RequestResult executeRequest(HttpUriRequest request) throws PrestaShopWebserviceException {
 		final RequestResult result = new RequestResult();
 		try {
+			request.addHeader(new BasicScheme().authenticate(credentials, request, null));
 			result.response = httpclient.execute(request);
 			checkStatusCode(result.response);
 			result.headers = Arrays.asList(result.response.getAllHeaders());
 			result.content = result.response.getEntity().getContent();
 
 			return result;
-		} catch (UnsupportedOperationException | IOException e) {
+		} catch (UnsupportedOperationException | IOException | AuthenticationException e) {
 			IOUtils.closeQuietly(result.response);
 			throw new PrestaShopWebserviceException("Error while processing request", e);
 		} catch(PrestaShopWebserviceException e) {
