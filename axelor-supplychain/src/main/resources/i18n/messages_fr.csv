@@ -101,6 +101,7 @@
 "Generate purchase orders automatically","Générer les commandes fournisseurs auto.",,
 "Generate single invoice","Générer une unique facture",,
 "Generate supplier arrivals automatically","Générer les BR automatiquement",,
+"Generate supply chain configurations",,,
 "Generate the invoice","Générer la facture",,
 "Incorrect product in the stock move %s","Produit incorrect dans le mouvement de stock %s",,
 "Information",,,
@@ -342,3 +343,4 @@
 "com.axelor.apps.supplychain.service.batch.SupplychainBatchService",,,
 "day(s)",,,
 "month(s)",,,
+"value:Supplychain","Supplychain",,
