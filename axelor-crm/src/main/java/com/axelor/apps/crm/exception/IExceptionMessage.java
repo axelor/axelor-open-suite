@@ -53,7 +53,7 @@ public interface IExceptionMessage {
 	/**
 	 * Convert lead wizard controller
 	 */
-	static final String CONVERT_LEAD_1 = /*$$(*/ "Contact converted" /*)*/;
+	static final String CONVERT_LEAD_1 = /*$$(*/ "Lead converted" /*)*/;
 
 	/**
 	 * Event controller
