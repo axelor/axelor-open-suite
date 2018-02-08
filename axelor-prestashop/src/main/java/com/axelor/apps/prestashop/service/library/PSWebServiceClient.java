@@ -85,6 +85,7 @@ import com.axelor.apps.prestashop.entities.ListContainer;
 import com.axelor.apps.prestashop.entities.Prestashop;
 import com.axelor.apps.prestashop.entities.PrestashopContainerEntity;
 import com.axelor.apps.prestashop.entities.PrestashopIdentifiableEntity;
+import com.axelor.apps.prestashop.entities.PrestashopImage;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 
 import wslite.json.JSONArray;
@@ -449,6 +450,44 @@ public class PSWebServiceClient {
 			throw new PrestaShopWebserviceException("Error while unmarshalling response from save", e);
 		} finally {
 			log.trace("Closing connection");
+			if(result != null) IOUtils.closeQuietly(result.response);
+		}
+	}
+
+	/**
+	 * Add an image to the given entity.
+	 * @param resourceType Type of resource the image is bound to. Currently only
+	 * products is really well-tested.
+	 * @param boundEntity Entity the image is bound to.
+	 * @param imageData Stream allowing to get image data.
+	 * @return Information about the added image (eg. its Id)
+	 * @throws PrestaShopWebserviceException
+	 */
+	public PrestashopImage addImage(final PrestashopResourceType resourceType, final PrestashopIdentifiableEntity boundEntity, final InputStream imageData) throws PrestaShopWebserviceException {
+		// Using the imputstream directly fails ($_FILES is empty on remote end…)
+		byte[] imageBytes = null;
+		try {
+			imageBytes = IOUtils.toByteArray(imageData);
+		} catch(IOException e) {
+			throw new PrestaShopWebserviceException("An error occured while reading source image");
+		}
+		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+		builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+		builder.addPart("image", new ByteArrayBody(imageBytes, ContentType.DEFAULT_BINARY, "image.jpg"));
+
+		HttpPost request = new HttpPost(String.format("%s/api/images/%s/%d", this.url, resourceType.getLabel(), boundEntity.getId()));
+		request.setEntity(builder.build());
+
+		RequestResult result = null;
+
+		try {
+			result = executeRequest(request);
+			return (PrestashopImage)((Prestashop)jaxbContext
+					.createUnmarshaller()
+					.unmarshal(result.content)).getContent();
+		} catch (Exception e) {
+			throw new PrestaShopWebserviceException("An error occured while processing image add response", e);
+		} finally {
 			if(result != null) IOUtils.closeQuietly(result.response);
 		}
 	}
