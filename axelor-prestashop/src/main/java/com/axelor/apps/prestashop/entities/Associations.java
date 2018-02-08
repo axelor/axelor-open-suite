@@ -11,6 +11,7 @@ import org.w3c.dom.Element;
 
 public class Associations {
 	private ImagesAssociationsEntry images;
+	private AvailableStocksAssociationsEntry availableStocks;
 	private List<Element> additionalEntries;
 
 	public ImagesAssociationsEntry getImages() {
@@ -19,6 +20,15 @@ public class Associations {
 
 	public void setImages(ImagesAssociationsEntry images) {
 		this.images = images;
+	}
+
+	public AvailableStocksAssociationsEntry getAvailableStocks() {
+		return availableStocks;
+	}
+
+	@XmlElement(name="stock_availables")
+	public void setAvailableStocks(AvailableStocksAssociationsEntry availableStocks) {
+		this.availableStocks = availableStocks;
 	}
 
 	@XmlAnyElement
@@ -63,6 +73,23 @@ public class Associations {
 		}
 	}
 
+	public static class AvailableStocksAssociationsEntry extends AssociationsEntry {
+		private List<AvailableStocksAssociationElement> stocks = new LinkedList<>();
+
+		public AvailableStocksAssociationsEntry() {
+			super("stock_available", "stock_availables");
+		}
+
+		@XmlElement(name="stock_available")
+		public List<AvailableStocksAssociationElement> getStock() {
+			return stocks;
+		}
+
+		public void setStock(List<AvailableStocksAssociationElement> stocks) {
+			this.stocks = stocks;
+		}
+	}
+
 	public static class ImagesAssociationElement {
 		private String href;
 		private Integer id;
@@ -82,6 +109,38 @@ public class Associations {
 
 		public void setId(Integer id) {
 			this.id = id;
+		}
+	}
+
+	public static class AvailableStocksAssociationElement {
+		private String href;
+		private Integer id;
+		private Integer productAttributeId;
+
+		@XmlAttribute(name="href", namespace="http://www.w3.org/1999/xlink")
+		public String getHref() {
+			return href;
+		}
+
+		public void setHref(String href) {
+			this.href = href;
+		}
+
+		public Integer getId() {
+			return id;
+		}
+
+		public void setId(Integer id) {
+			this.id = id;
+		}
+
+		@XmlElement(name="id_product_attribute")
+		public Integer getProductAttributeId() {
+			return productAttributeId;
+		}
+
+		public void setProductAttributeId(Integer productAttributeId) {
+			this.productAttributeId = productAttributeId;
 		}
 	}
 }

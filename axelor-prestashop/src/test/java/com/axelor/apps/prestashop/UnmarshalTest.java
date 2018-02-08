@@ -17,6 +17,7 @@ import com.axelor.apps.prestashop.entities.ListContainer.CurrenciesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.ProductCategoriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.ProductsContainer;
 import com.axelor.apps.prestashop.entities.Prestashop;
+import com.axelor.apps.prestashop.entities.PrestashopAvailableStock;
 import com.axelor.apps.prestashop.entities.PrestashopCountry;
 import com.axelor.apps.prestashop.entities.PrestashopCurrency;
 import com.axelor.apps.prestashop.entities.PrestashopImage;
@@ -166,6 +167,9 @@ public class UnmarshalTest {
 		PrestashopProduct product = envelop.getContent();
 		Assert.assertEquals(Integer.valueOf(21), product.getId());
 		Assert.assertEquals(0, product.getAdditionalProperties().size());
+		Assert.assertNotNull(product.getAssociations());
+		Assert.assertNotNull(product.getAssociations().getImages());
+		Assert.assertNotNull(product.getAssociations().getAvailableStocks());
 	}
 
 	@Test
@@ -196,5 +200,18 @@ public class UnmarshalTest {
 		Assert.assertNotNull(image.getLegend());
 		Assert.assertEquals("Une jolie image", image.getLegend().getTranslation(1));
 		Assert.assertEquals("A nice picture", image.getLegend().getTranslation(2));
+	}
+
+	@Test
+	public void testAvailableStock() throws JAXBException {
+		Unmarshaller um = JAXBContext.newInstance("com.axelor.apps.prestashop.entities").createUnmarshaller();
+		um.setEventHandler(new DefaultValidationEventHandler());
+		Prestashop envelop = (Prestashop)um.unmarshal(getClass().getResourceAsStream("available-stock.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(PrestashopAvailableStock.class, envelop.getContent().getClass());
+		PrestashopAvailableStock stock = envelop.getContent();
+
+		Assert.assertEquals(Integer.valueOf(10), stock.getId());
 	}
 }

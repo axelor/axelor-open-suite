@@ -3,6 +3,7 @@ ListContainer$CountriesContainer
 ListContainer$ProductCategoriesContainer
 ListContainer$ProductsContainer
 Prestashop
+PrestashopAvailableStock
 PrestashopContainerEntity
 PrestashopCurrency
 PrestashopCountry
