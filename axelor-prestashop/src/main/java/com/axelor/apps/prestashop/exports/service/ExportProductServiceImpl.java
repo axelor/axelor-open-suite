@@ -41,6 +41,9 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.prestashop.entities.Associations.AvailableStocksAssociationElement;
+import com.axelor.apps.prestashop.entities.Associations.AvailableStocksAssociationsEntry;
+import com.axelor.apps.prestashop.entities.PrestashopAvailableStock;
 import com.axelor.apps.prestashop.entities.PrestashopImage;
 import com.axelor.apps.prestashop.entities.PrestashopProduct;
 import com.axelor.apps.prestashop.entities.PrestashopProductCategory;
@@ -48,8 +51,10 @@ import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.entities.PrestashopTranslatableString;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.MetaFiles;
+import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -224,11 +229,11 @@ public class ExportProductServiceImpl implements ExportProductService {
 				} else if(localProduct.getUnit() != null) {
 					remoteProduct.setUnity(localProduct.getUnit().getLabelToPrinting());
 				}
+				remoteProduct.setVirtual(ProductRepository.PRODUCT_TYPE_SERVICE.equals(localProduct.getProductTypeSelect()));
 				// TODO Should we handle supplier?
 
 				remoteProduct.setUpdateDate(LocalDateTime.now());
 				remoteProduct = ws.save(PrestashopResourceType.PRODUCTS, remoteProduct);
-				localProduct.setPrestaShopId(remoteProduct.getId());
 
 				if((remoteProduct.getDefaultImageId() == null || remoteProduct.getDefaultImageId() == 0) && localProduct.getPicture() != null) {
 					logBuffer.write(" – no image stored, adding a new one");
@@ -238,8 +243,35 @@ public class ExportProductServiceImpl implements ExportProductService {
 					}
 				}
 
-				// TODO Handle stocks
+				// FIXME we should have a specific batch for this
+				AvailableStocksAssociationsEntry availableStocks = remoteProduct.getAssociations().getAvailableStocks();
+				if(availableStocks == null || availableStocks.getStock().size() == 0) {
+					logBuffer.write(" [WARNING] No stock for this product, skipping stock update");
+				} else if(availableStocks.getStock().size() > 1 || Objects.equal(availableStocks.getStock().get(0).getProductAttributeId(), 0) == false) {
+					logBuffer.write(" [WARNING] Remote product appears to have variants, skipping");
+				} else {
+					AvailableStocksAssociationElement availableStockRef = availableStocks.getStock().get(0);
+					PrestashopAvailableStock availableStock = ws.fetch(PrestashopResourceType.STOCK_AVAILABLES, availableStockRef.getId());
+					if(availableStock.isDependsOnStock()) {
+						logBuffer.write(" [WARNING] Remote product uses advanced stock management features, not updating stock");
+					} else {
+						BigDecimal currentStock =  (BigDecimal)JPA.em().createQuery(
+								"SELECT SUM(line.realQty) " +
+								"FROM StockMoveLine line " +
+								"JOIN line.stockMove move " +
+								"JOIN move.fromStockLocation fromLocation " +
+								"JOIN move.toStockLocation toLocation " +
+								"WHERE move.statusSelect = 3 AND " +
+								"(fromLocation.typeSelect = 1 or toLocation.typeSelect = 1) and line.product = :product")
+						.setParameter("product", localProduct)
+						.getSingleResult();
+						if(currentStock == null) currentStock = BigDecimal.ZERO;
+						availableStock.setQuantity(currentStock.intValue());
+						ws.save(PrestashopResourceType.STOCK_AVAILABLES, availableStock);
+					}
+				}
 
+				localProduct.setPrestaShopId(remoteProduct.getId());
 				logBuffer.write(String.format(" [SUCCESS]%n"));
 				++done;
 			} catch (AxelorException | PrestaShopWebserviceException e) {
