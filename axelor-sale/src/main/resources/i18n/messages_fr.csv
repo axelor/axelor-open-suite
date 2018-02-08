@@ -147,7 +147,6 @@
 "Generate production order","Générer ordre de production",,
 "Generate purchase order","Générer cmde fournisseur",,
 "Generate sale configurations",,,
-"Generate subscription invoices",,,
 "Half-yearly","Semestriel",,
 "Hide Discount on prints?","Cacher remise sur impressions",,
 "Historical","Historique",,
@@ -458,4 +457,5 @@
 "important",,,
 "info",,,
 "success",,,
+"value:Sale","Ventes",,
 "warning",,,
