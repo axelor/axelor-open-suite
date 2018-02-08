@@ -6,12 +6,14 @@
 		<boolean name="isOrderStatus" title="Manage Sales Flow"/>
 		<string name="prestaShopUrl" title="PrestaShop URL"/>
 		<string name="prestaShopKey" title="PrestaShop Key"/>
-		<many-to-one name="prestaShopCurrency" ref="com.axelor.apps.base.db.Currency" required="true" title="PrestaShop's default currency"/>
-		<many-to-one name="textsLanguage" ref="com.axelor.apps.base.db.Language" required="true" title="Axelor texts languages (for descriptions of products, name of countries, aso.)"/>
+		<many-to-one name="prestaShopCurrency" ref="com.axelor.apps.base.db.Currency" title="PrestaShop's default currency"/>
+		<many-to-one name="prestaShopWeightUnit" ref="com.axelor.apps.base.db.Unit" title="PrestaShop's weight unit"/>
+		<many-to-one name="prestaShopLengthUnit" ref="com.axelor.apps.base.db.Unit" title="PrestaShop's length unit"/>
+		<many-to-one name="textsLanguage" ref="com.axelor.apps.base.db.Language" title="Axelor texts languages (for descriptions of products, name of countries, aso.)"/>
 		<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Default payment mode"/>
 		<one-to-many name="saleOrderStatusList" ref="com.axelor.apps.prestashop.db.SaleOrderStatus" title="Sale Order Status"/>
 
-		<integer name="exportPriceScale" title="Number of digits after decimal point for sales price" min="0" max="6" default="0"/>
+		<integer name="exportPriceScale" title="Number of digits after decimal point for sales price" min="0" max="9" default="0"/>
 		<boolean name="exportNonSoldProducts" title="Export products not flagged as sellable" default="true" help="If checked, all products, event those not marked as non-sellable, will be exported"/>
 		<boolean name="exportNonPrestashopOrders" title="Export non-Prestashop customers' orders" default="true" help="If checked, all orders will be synchronized to prestashop, not only those created on it"/>
 		<boolean name="exportNonPrestashopCustomers" title="Export non-Prestashop customers" default="true" help="If checked, all customers will be synchronized to prestashop, not only those created on it"/>

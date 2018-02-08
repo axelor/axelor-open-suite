@@ -7,8 +7,10 @@
 			<field name="prestaShopKey"/>
 			<button name="btnTest" title="Test" onClick="save,com.axelor.apps.prestashop.web.AppPrestaShopController:testConnection"/>
 			<spacer/>
-			<field name="prestaShopCurrency"/>
-			<field name="textsLanguage"/>
+			<field name="prestaShopCurrency" required="true"/>
+			<field name="prestaShopLengthUnit" required="true"/>
+			<field name="prestaShopWeightUnit" required="true"/>
+			<field name="textsLanguage" required="true"/>
 		</panel>
 		<panel title="General">
 			<field name="isOrderStatus" widget="boolean-switch"/>
