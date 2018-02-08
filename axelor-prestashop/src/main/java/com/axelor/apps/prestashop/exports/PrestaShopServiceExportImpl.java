@@ -118,27 +118,28 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	 */
 	@Override
 	public void export(AppPrestashop appConfig, ZonedDateTime endDate, Batch batch) throws PrestaShopWebserviceException, TransformerException, IOException, ParserConfigurationException, SAXException, JAXBException, TransformerFactoryConfigurationError {
-		exportAxelorBase(appConfig, endDate);
+		try {
+			exportAxelorBase(appConfig, endDate);
 
-		orderService.exportOrder(appConfig, endDate, bwExport);
-		detailService.exportOrderDetail(appConfig, endDate, bwExport);
-		File exportFile = closeLog();
-		MetaFile exporMetatFile = metaFiles.upload(exportFile);
-		batch.setPrestaShopBatchLog(exporMetatFile);
+			orderService.exportOrder(appConfig, endDate, bwExport);
+			detailService.exportOrderDetail(appConfig, endDate, bwExport);
+			closeLog();
+		} finally {
+			MetaFile exporMetatFile = metaFiles.upload(exportFile);
+			batch.setPrestaShopBatchLog(exporMetatFile);
+		}
 	}
 
 	/**
 	 * Close export log file
 	 *
-	 * @return
 	 * @throws IOException
 	 */
-	public File closeLog() throws IOException {
+	public void closeLog() throws IOException {
 		bwExport.newLine();
 		bwExport.write("-----------------------------------------------");
 		bwExport.close();
 		fwExport.close();
-		return exportFile;
 	}
 
 }
