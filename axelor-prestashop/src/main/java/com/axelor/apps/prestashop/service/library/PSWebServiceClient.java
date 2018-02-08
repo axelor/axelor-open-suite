@@ -229,7 +229,7 @@ public class PSWebServiceClient {
 		} catch (Exception e) {
 			throw new PrestaShopWebserviceException("An error occured while processing add response", e);
 		} finally {
-			log.debug("Closing connection");
+			log.trace("Closing connection");
 			if(result != null) IOUtils.closeQuietly(result.response);
 		}
 	}
@@ -283,7 +283,7 @@ public class PSWebServiceClient {
 		} catch (Exception e) {
 			throw new PrestaShopWebserviceException("An error occured while processing get response", e);
 		} finally {
-			log.debug("Closing connection");
+			log.trace("Closing connection");
 			if(result != null) IOUtils.closeQuietly(result.response);
 		}
 	}
@@ -315,7 +315,7 @@ public class PSWebServiceClient {
 		} catch (JAXBException e) {
 			throw new PrestaShopWebserviceException("Error while unmarshalling respoinse from fetch", e);
 		} finally {
-			log.debug("Closing connection");
+			log.trace("Closing connection");
 			if(result != null) IOUtils.closeQuietly(result.response);
 		}
 	}
@@ -345,7 +345,7 @@ public class PSWebServiceClient {
 		} catch (JAXBException e) {
 			throw new PrestaShopWebserviceException("Error while unmarshalling respoinse from fetchDefault", e);
 		} finally {
-			log.debug("Closing connection");
+			log.trace("Closing connection");
 			if(result != null) IOUtils.closeQuietly(result.response);
 		}
 	}
@@ -400,7 +400,7 @@ public class PSWebServiceClient {
 		} catch (JAXBException e) {
 			throw new PrestaShopWebserviceException("Error while unmarshalling response from fetch", e);
 		} finally {
-			log.debug("Closing connection");
+			log.trace("Closing connection");
 			if(result != null) IOUtils.closeQuietly(result.response);
 		}
 	}
@@ -441,7 +441,7 @@ public class PSWebServiceClient {
 		} catch (JAXBException e) {
 			throw new PrestaShopWebserviceException("Error while unmarshalling response from save", e);
 		} finally {
-			log.debug("Closing connection");
+			log.trace("Closing connection");
 			if(result != null) IOUtils.closeQuietly(result.response);
 		}
 	}
@@ -465,7 +465,7 @@ public class PSWebServiceClient {
 		} catch (IOException e) {
 			throw new PrestaShopWebserviceException("An error occured while processing get response", e);
 		} finally {
-			log.debug("Closing connection");
+			log.trace("Closing connection");
 			IOUtils.closeQuietly(result.response);
 		}
 	}
@@ -516,7 +516,7 @@ public class PSWebServiceClient {
 		} catch (Exception e) {
 			throw new PrestaShopWebserviceException("An error occured while processing add response", e);
 		} finally {
-			log.debug("Closing connection");
+			log.trace("Closing connection");
 			if(result != null) IOUtils.closeQuietly(result.response);
 		}
 	}
@@ -543,7 +543,7 @@ public class PSWebServiceClient {
 		try {
 			result = executeRequest(httpdelete);
 		} finally {
-			log.debug("Closing connection");
+			log.trace("Closing connection");
 			if(result != null) IOUtils.closeQuietly(result.response);
 		}
 
