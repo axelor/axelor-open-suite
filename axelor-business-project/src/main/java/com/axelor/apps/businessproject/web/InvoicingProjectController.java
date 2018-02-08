@@ -52,7 +52,7 @@ public class InvoicingProjectController {
 	public void generateInvoice(ActionRequest request, ActionResponse response) throws AxelorException{
 		InvoicingProject invoicingProject = request.getContext().asType(InvoicingProject.class);
 		invoicingProject = invoicingProjectRepo.find(invoicingProject.getId());
-		invoicingProject.setStatusSelect(4);
+		invoicingProject.setStatusSelect(InvoicingProjectRepository.STATUS_INVOICED);
 		if(invoicingProject.getSaleOrderLineSet().isEmpty() && invoicingProject.getPurchaseOrderLineSet().isEmpty()
 				&& invoicingProject.getLogTimesSet().isEmpty() && invoicingProject.getExpenseLineSet().isEmpty() && invoicingProject.getElementsToInvoiceSet().isEmpty()
 				&& invoicingProject.getProjectSet().isEmpty()){
