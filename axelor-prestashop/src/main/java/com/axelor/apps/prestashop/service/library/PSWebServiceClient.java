@@ -150,9 +150,16 @@ public class PSWebServiceClient {
 	protected void checkStatusCode(CloseableHttpResponse response) throws PrestaShopWebserviceException {
 		final int statusCode = response.getStatusLine().getStatusCode();
 		if(statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) return;
+		String body = null;
+		if(response.getEntity() != null) {
+			try {
+				body = IOUtils.toString(response.getEntity().getContent(), Consts.UTF_8);
+			} catch (UnsupportedOperationException | IOException e) {
+			}
+		}
 		throw new PrestashopHttpException(
 				statusCode,
-				String.format("An underlying call to the Prestashop API failed with status code %d: %s (%s)", statusCode, response.getStatusLine().getReasonPhrase(), HttpStatus.getStatusText(statusCode)));
+				String.format("An underlying call to the Prestashop API failed with status code %d: %s (%s)\n%s", statusCode, response.getStatusLine().getReasonPhrase(), HttpStatus.getStatusText(statusCode), body));
 	}
 
 	/**
