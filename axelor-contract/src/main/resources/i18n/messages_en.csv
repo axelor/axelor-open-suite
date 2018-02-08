@@ -61,7 +61,6 @@
 "Error",,,
 "First period end date",,,
 "Full name",,,
-"Import",,,
 "Informations",,,
 "Invoice",,,
 "Invoice from consumption",,,
@@ -155,3 +154,4 @@
 "Waiting",,,
 "With engagement",,,
 "With prior notice",,,
+"value:Contract",,,

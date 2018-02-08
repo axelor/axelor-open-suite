@@ -410,3 +410,4 @@
 "You must configure a waste stock location for company %s.","Veuillez configurer un emplacement de rebuts pour la société %s.",,
 "You must select a nomenclature","Veuillez sélectionner une nomenclature",,
 "name","nom",,
+"value:Manufacturing","Production",,
