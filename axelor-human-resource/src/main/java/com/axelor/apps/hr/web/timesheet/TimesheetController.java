@@ -244,7 +244,11 @@ public class TimesheetController {
 		}
 	}
 	
-	//action called when confirming a timesheet. Changing status + Sending mail to Manager
+	/**
+	 * Action called when confirming a timesheet. Changing status + Sending mail to Manager
+	 * @param request
+	 * @param response
+	 */
 	public void confirm(ActionRequest request, ActionResponse response) {
 
 		try {
@@ -257,8 +261,6 @@ public class TimesheetController {
 			Message message = timesheetService.sendConfirmationEmail(timesheet);
 			if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
-			} else {
-				response.setFlash(String.format(I18n.get("Email not sent to %s, please check mail address. Nonetheless the timesheet has been confirmed."), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
 			}
 			response.setReload(true);
 
