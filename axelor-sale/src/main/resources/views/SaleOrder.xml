@@ -183,7 +183,7 @@
 			<viewer depends="bloqued">
 			<![CDATA[
 			<h5>
-				<span class="label label-default" style="background-color: #B6473F; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.bloqued" x-translate>Bloqued</span>
+				<span class="label label-default" style="background-color: #B6473F; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.bloqued" x-translate>Blocked</span>
 			</h5>
 			]]>
 			</viewer>
