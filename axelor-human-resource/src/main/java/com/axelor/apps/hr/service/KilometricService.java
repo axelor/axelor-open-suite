@@ -154,7 +154,9 @@ public class KilometricService {
 		
 		KilometricLog log = getOrCreateKilometricLog(employee, expenseLine.getExpenseDate());
 		log.setDistanceTravelled(log.getDistanceTravelled().add(expenseLine.getDistance()));
-		log.addExpenseLineListItem(expenseLine);
+		if (log.getExpenseLineList() == null || !log.getExpenseLineList().contains(expenseLine)) {
+			log.addExpenseLineListItem(expenseLine);
+		}
 		kilometricLogRepo.save(log);
 	}
 
