@@ -188,7 +188,7 @@
 			]]>
 			</viewer>
 		</field>
-		<button name="manualUnblockButton" colSpan="4" showIf="bloqued == true &amp;&amp; manualUnblock == false" css="btn-custom" onClick="action-sale-order-manualUnblock" title="Manual Unblock"/>
+		<button name="manualUnblockButton" colSpan="4" showIf="bloqued == true &amp;&amp; manualUnblock == false" css="btn-custom" onClick="action-sale-order-manual-unblock" title="Manual Unblock"/>
 		<field name="manualUnblock" hidden="true"/>
         <field name="orderBeingEdited" hidden="true"/>
 		<field name="$viewerOrderBeingEdited" showTitle="false" readonly="true" colSpan="9" showIf="orderBeingEdited">
@@ -1166,7 +1166,7 @@
 		<field name="printingSettings" expr="eval: company?.printingSettings"/>
 	</action-record>
 
-	<action-record name="action-sale-order-manualUnblock" model="com.axelor.apps.sale.db.SaleOrder">
+	<action-record name="action-sale-order-manual-unblock" model="com.axelor.apps.sale.db.SaleOrder">
 		<field name="manualUnblock" expr="true"/>
 	</action-record>
 
