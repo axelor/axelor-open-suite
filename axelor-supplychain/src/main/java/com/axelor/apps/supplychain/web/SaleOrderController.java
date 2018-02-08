@@ -18,6 +18,9 @@
 package com.axelor.apps.supplychain.web;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -502,6 +505,24 @@ public class SaleOrderController{
 			domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
 		}
 		response.setAttr("supplierPartnerSelect", "domain", domain);
+	}
+	
+	
+	public void setNextInvoicingStartPeriodDate(ActionRequest request, ActionResponse response) {
+		
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		
+		TemporalUnit temporalUnit = ChronoUnit.MONTHS;
+		
+		if (saleOrder.getPeriodicityTypeSelect() != null && saleOrder.getNextInvoicingStartPeriodDate() != null) {
+			LocalDate invoicingPeriodStartDate = saleOrder.getNextInvoicingStartPeriodDate();
+			if (saleOrder.getPeriodicityTypeSelect() == 1) {
+				temporalUnit = ChronoUnit.DAYS;
+			}
+			LocalDate subscriptionToDate = invoicingPeriodStartDate.plus(saleOrder.getNumberOfPeriods(), temporalUnit);
+			subscriptionToDate = subscriptionToDate.minusDays(1);
+			response.setValue("nextInvoicingEndPeriodDate", subscriptionToDate);
+		}
 	}
 	
 }

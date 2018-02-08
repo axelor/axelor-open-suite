@@ -86,10 +86,12 @@ public class BatchInvoicing extends BatchStrategy {
 
 					LocalDate invoicingPeriodStartDate = saleOrder.getNextInvoicingStartPeriodDate();
 					invoice.setSubscriptionFromDate(invoicingPeriodStartDate);
+					invoice.setSubscriptionToDate(saleOrder.getNextInvoicingEndPeriodDate());
 					if (invoicingPeriodStartDate != null) {
-						LocalDate subscriptionToDate = invoicingPeriodStartDate.plus(saleOrder.getNumberOfPeriods(), temporalUnit);
-						saleOrder.setNextInvoicingStartPeriodDate(subscriptionToDate);
-						invoice.setSubscriptionToDate(subscriptionToDate.minusDays(1));
+						LocalDate nextInvoicingStartPeriodDate = invoicingPeriodStartDate.plus(saleOrder.getNumberOfPeriods(), temporalUnit);
+						saleOrder.setNextInvoicingStartPeriodDate(nextInvoicingStartPeriodDate);
+						LocalDate nextInvoicingEndPeriodDate = nextInvoicingStartPeriodDate.plus(saleOrder.getNumberOfPeriods(), temporalUnit).minusDays(1);
+						saleOrder.setNextInvoicingEndPeriodDate(nextInvoicingEndPeriodDate);
 					}
 					
 					LocalDate nextInvoicingDate = saleOrder.getNextInvoicingDate();
