@@ -32,7 +32,7 @@
   				</panel>
 	        	<panel colSpan="12">
 	        		<button name="calculateBtn" title="Calculate" colSpan="6"
-							onClick="save,action-lunch-voucher-method-calculate,action-lunch-voucher-method-check-stock" showIf="statusSelect &lt; 3" hidden="true"/>
+							onClick="save,action-lunch-voucher-method-calculate" showIf="statusSelect &lt; 3" hidden="true"/>
 		    		<button name="validateBtn" title="Validate" colSpan="6" onClick="action-lunch-voucher-group-validate" showIf="statusSelect == 2" hidden="true"/>
 					<button name="closeBtn" title="Close" colSpan="6"
 							onClick="action-lunch-voucher-group-close"
@@ -56,16 +56,15 @@
 			</panel>
   		</panel>
     	<panel title="Quantity for stock" readonlyIf="statusSelect &gt;= 3" canCollapse="true" collapseIf="true">
-   			<field name="stockLineQuantity" colSpan="6" css="label-bold bold" onChange="action-lunch-voucher-method-update-total,action-lunch-voucher-method-check-stock"/>
+   			<field name="stockLineQuantity" colSpan="6" css="label-bold bold" onChange="action-lunch-voucher-method-update-total"/>
    			<field name="stockLineComment" colSpan="6"/>
    		</panel>
-  		<panel-related field="lunchVoucherMgtLineList" form-view="lunch-voucher-mgt-line-form" grid-view="lunch-voucher-mgt-line-grid" canNew="false" canRemove="false" onChange="action-lunch-voucher-method-update-total,action-lunch-voucher-method-check-stock"/>
+  		<panel-related field="lunchVoucherMgtLineList" form-view="lunch-voucher-mgt-line-form" grid-view="lunch-voucher-mgt-line-grid" canNew="false" canRemove="false" onChange="action-lunch-voucher-method-update-total"/>
 	</form>
 
 	<!-- ACTION GROUPS -->
     <action-group name="action-lunch-voucher-group-form-onsave">
 		<action name="action-lunch-voucher-method-update-total"/>
-        <action name="action-lunch-voucher-method-check-stock"/>
         <action name="action-lunch-voucher-method-update-stock"/>
 	</action-group>
     
@@ -105,10 +104,6 @@
 	
 	<action-method name="action-lunch-voucher-method-calculate">
 		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="calculate"/>
-	</action-method>
-	
-	<action-method name="action-lunch-voucher-method-check-stock">
-		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="checkStock"/>
 	</action-method>
 	
 	<action-method name="action-lunch-voucher-method-update-total">
