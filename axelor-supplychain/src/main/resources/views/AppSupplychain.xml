@@ -26,7 +26,7 @@
 			<field name="checkSaleStocks" widget="boolean-switch" colSpan="4"/>
 			<field name="manageInvoicedAmountByLine" widget="boolean-switch" colSpan="4"/>
 		</panel>
-		<panel title="Supplier order">
+		<panel title="Purchase order">
 			<field name="generateInvoiceFromPurchaseOrder" widget="boolean-switch" colSpan="4"/>
 		</panel>
 		<panel title="Interco">
