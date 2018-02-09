@@ -78,7 +78,7 @@
 	</chart>
 
 	
-	<chart onInit="action.ticket.chart.set.date.1m" name="chart.ticket.no.of.solved.all.ticket" title="All ticktes">
+	<chart onInit="action.ticket.chart.set.date.1m" name="chart.ticket.no.of.solved.all.ticket" title="All tickets">
 		<search-fields>
 			<field type="date" name="fromDate" title="From Date" x-required="true" />
 			<field type="date" name="toDate" title="To Date" x-required="true" />

@@ -60,8 +60,8 @@
 
 				<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 				<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
-				<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" readonlyIf="ventilated"/>
-				<field name="user"  form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
+				<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" onChange="action-expense-record-company-onchange" readonlyIf="ventilated"/>
+				<field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 				<field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()" />
 				<field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" readonlyIf="ventilated"/>
 				<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb" readonlyIf="ventilated"/>
@@ -72,15 +72,15 @@
 			</panel>
 			<panel name="actions" title="Actions" colSpan="3" stacked="true">
 				<button name="sendExpenses" colSpan="4" title="Send Expenses" onClick="action-expense-group-send" readonlyIf="statusSelect &gt; 1"/>
-				<button name="ventilate" colSpan="4" title="Ventilate" onClick="action-expense-method-ventilate" readonlyIf="statusSelect != 3 || ventilated"/>
+				<button name="ventilate" colSpan="4" title="Ventilate" onClick="save,action-expense-method-ventilate" readonlyIf="statusSelect != 3 || ventilated"/>
 				<button name="validateButton" onClick="action-expense-group-validate" title="Validate"/>
 				<button name="refuseButton" onClick="action-expense-group-refuse" title="Refuse"/>
 				<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-buttons" hideIf="statusSelect == 6" readonlyIf="move != null" title="Cancel" icon="fa-close"/>
 				<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
-				<button name="addPaymentButton" title="Register payment" onClick="action-expense-method-add-payment" showIf="statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)" readonlyIf="move == null"/>
+				<button name="addPaymentButton" title="Register payment" onClick="save,action-expense-method-add-payment" showIf="statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)" readonlyIf="move == null"/>
 				<button name="cancelPaymentButton" title="Cancel payment"
 						showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3)"
-						onClick="action-expense-method-cancel-payment"/>
+						onClick="save,action-expense-method-cancel-payment"/>
 			</panel>
 	    </panel>
 		<panel-tabs>
@@ -180,11 +180,13 @@
 	</action-group>
 	
 	<action-group name="action-expense-group-validate">
+		<action name="save"/>
 		<action name="action-expense-method-valid"/>
 		<action name="action-expense-attrs-buttons"/>
 	</action-group>
 	
 	<action-group name="action-expense-group-refuse">
+		<action name="save"/>
 		<action name="action-expense-method-refuse"/>
 		<action name="action-expense-refusal-popup-form"/>
 		<action name="action-expense-attrs-buttons"/>
@@ -202,6 +204,11 @@
     	<field name="multipleUsers" expr="eval: setMultipleUsers" if="setMultipleUsers"/>
 	</action-record>
 
+	<action-record name="action-expense-record-company-onchange" model="com.axelor.apps.hr.db.Expense">
+		<field name="period" expr="eval: null"/>
+		<field name="bankDetails" expr="eval: null"/>
+	</action-record>
+
 	<action-record name="action-expense-record-draft" model="com.axelor.apps.hr.db.Expense">
 	    <field name="statusSelect" expr="1"/>
 	</action-record>
@@ -211,8 +218,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-expense-attrs-domain-period">
-		<attribute name="value" for="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
-		<attribute name="domain" for="period" expr="eval: &quot; self.fromDate &lt;= CURRENT_DATE AND self.statusSelect = 1 AND self.allowExpenseCreation = true AND self.year.company = :_payCompany AND self.year.typeSelect = 1 &quot;"/>
+		<attribute name="domain" for="period" expr="eval: &quot; self.fromDate &lt;= CURRENT_DATE AND self.statusSelect = 1 AND self.allowExpenseCreation = true AND self.year.company = :company AND self.year.typeSelect = 1 &quot;"/>
 	</action-attrs>
 	
 	<action-method name="action-expense-method-compute">
@@ -252,8 +258,8 @@
 	</action-method>
 	
 	<action-attrs name="action-expense-attrs-buttons">
-		<attribute name="hidden" for="validateButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager || __user__.employee?.hrManager))"/>
-		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager || __user__.employee?.hrManager))"/>
+		<attribute name="hidden" for="validateButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
+		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
 		<attribute name="hidden" for="cancelButton" expr="eval: period?.toDate?.isAfter(__date__) || statusSelect == 6"/>
 	</action-attrs>
 	
@@ -284,5 +290,5 @@
     </action-method>
     
 
-    
+
 </object-views>

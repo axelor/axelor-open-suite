@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -31,11 +31,11 @@ public class HRMenuValidateService {
 
 		if(employee == null || !employee.getHrManager())  {
 			if (employee == null || employee.getManagerUser() == null) {
-				actionView.domain(actionView.get().getDomain() + " AND (self.user = :_user OR self.user.employee.manager = :_user)")
+				actionView.domain(actionView.get().getDomain() + " AND (self.user = :_user OR self.user.employee.managerUser = :_user)")
 						.context("_user", user);
 			}
 			else {
-				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
+				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.managerUser = :_user")
 						.context("_user", user);
 			}
 		}

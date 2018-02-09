@@ -46,8 +46,12 @@ import com.google.inject.persist.Transactional;
 
 public class ProdProcessService {
 	
+	protected ProdProcessRepository prodProcessRepo;
+	
 	@Inject
-	ProdProcessRepository prodProcessRepo;
+	public ProdProcessService(ProdProcessRepository prodProcessRepo)  {
+		this.prodProcessRepo = prodProcessRepo;
+	}
 
 	public void validateProdProcess(ProdProcess prodProcess, BillOfMaterial bom) throws AxelorException{
 		Map<Product,BigDecimal> bomMap = new HashMap<Product,BigDecimal>();

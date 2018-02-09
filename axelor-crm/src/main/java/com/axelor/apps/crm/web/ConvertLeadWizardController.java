@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -71,6 +71,7 @@ public class ConvertLeadWizardController {
 
 		Partner partner = null;
 		Partner contactPartner = null;
+		Partner prospectPartner = null;
 		Opportunity opportunity = null;
 		Event callEvent = null;
 		Event meetingEvent = null;
@@ -81,6 +82,7 @@ public class ConvertLeadWizardController {
 			contactPartner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("contactPartner"),
 																	convertLeadWizardService.createPrimaryAddress(context),
 																	convertLeadWizardService.createOtherAddress(context));
+			contactPartner.setIsContact(true);
 			//TODO check all required fields...
 		}
 		else  if(context.get("selectContact") != null) {
@@ -99,6 +101,19 @@ public class ConvertLeadWizardController {
 			Map<String, Object> selectPartnerContext = (Map<String, Object>) context.get("selectPartner");
 			partner = partnerRepo.find(((Integer) selectPartnerContext.get("id")).longValue());
 		}
+		
+		if(context.get("hasConvertIntoProspect") != null && (Boolean) context.get("hasConvertIntoProspect")) {
+
+			prospectPartner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("prospectPartner"),
+																	convertLeadWizardService.createPrimaryAddress(context),
+																	convertLeadWizardService.createOtherAddress(context));
+			prospectPartner.setIsProspect(true);
+			//TODO check all required fields...
+		}
+		else  if(context.get("selectProspectPartner") != null) {
+			Map<String, Object> selectPartnerContext = (Map<String, Object>) context.get("selectProspectPartner");
+			prospectPartner = partnerRepo.find(((Integer) selectPartnerContext.get("id")).longValue());
+		}
 
 		if(context.get("hasConvertIntoOpportunity") != null && (Boolean) context.get("hasConvertIntoOpportunity")) {
 			opportunity = convertLeadWizardService.createOpportunity((Map<String, Object>) context.get("opportunity"));
@@ -116,10 +131,11 @@ public class ConvertLeadWizardController {
 			taskEvent = convertLeadWizardService.createEvent((Map<String, Object>)context.get("taskEvent"));
 			//TODO check all required fields...
 		}
-
-		leadService.convertLead(lead, partner, contactPartner, opportunity, callEvent, meetingEvent, taskEvent);
+		
+		leadService.convertLead(lead, partner, prospectPartner, contactPartner, opportunity, callEvent, meetingEvent, taskEvent);
 
 		response.setFlash(I18n.get(IExceptionMessage.CONVERT_LEAD_1));
+		response.setCanClose(true);
 	}
 	
 	public void setConvertLeadIntoContact(ActionRequest request, ActionResponse response) { 

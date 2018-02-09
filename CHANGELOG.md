@@ -26,17 +26,21 @@
 - Generate sale order from Opportunity in edit mode directly
 - Improved architecture of Message generation from a template, send email, and manage specific email account in a module without change the original behavior in the others
 - A freight carrier is now a carrier partner
+- EndPeriod on currency conversion api
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
 - Fix the default amount on new invoice payment to use the amount remaining of the invoice.
 - Fix demo data en and fr on AppSuplychain to set the correct value on the field supplStockMoveMgtOnSO
+- Fix event hide when we create new from calendar and set domain for my calendar and team calendar
 
 ## [Unreleased 4.x]
 ### Improvements
 - Close pay period automatically when all payroll preparation are exported
 - KilometricExpenseLineList are no more duplicated in ExpenseLineList. ExpenseLineList is renamed into GeneralExpenseLineList.
 - The distinction between round-trip and one way ticket in kilometric expenses is now only informative.
+- Reconcile invoice with related refund
+- New boolean field "available to users" in expense type
 
 ### Bug Fixes
 - Fix demo data en and fr on General config to set the correct value of the fields custStockMoveMgtOnSO and supplStockMoveMgtOnSO.
@@ -45,6 +49,7 @@
 - Check ICS number on direct debit sepa file generation
 - Fix receiver bank details filter in BankOrder
 - Years can have the same code as long as the company/type differ.
+- Fixes in expense form
 
 
 ## [4.1.1] - 2018-01-10

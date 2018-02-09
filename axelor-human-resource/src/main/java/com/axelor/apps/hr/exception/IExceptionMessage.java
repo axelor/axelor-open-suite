@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -117,4 +117,9 @@ public interface IExceptionMessage {
 	String KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR = /*$$(*/ "Google Maps error: %s" /*)*/;
 
     static final String EXPENSE_PAYMENT_CANCEL = /*$$(*/ "The bank order linked to this expense has already been carried out/rejected, and thus can't be canceled" /*)*/;
+
+	/**
+	 * Kilometric service
+	 */
+	static final String KILOMETRIC_ALLOWANCE_RATE_MISSING = /*$$(*/ "The kilometric allowance rate corresponding to the kilometric allow param %s is missing" /*)*/;
 }
