@@ -34,7 +34,7 @@
 	        		<button name="calculateBtn" title="Calculate" colSpan="6"
 							onClick="save,action-lunch-voucher-method-calculate" showIf="statusSelect &lt; 3" hidden="true"/>
 		    		<button name="validateBtn" title="Validate" colSpan="6" onClick="action-lunch-voucher-group-validate" showIf="statusSelect == 2" hidden="true"/>
-					<button name="closeBtn" title="Close" colSpan="6"
+					<button name="closeBtn" title="Finish" colSpan="6"
 							onClick="action-lunch-voucher-group-close"
 							showIf="statusSelect == 3" hidden="true"/>
 	        	</panel>
