@@ -79,7 +79,7 @@
 		</panel>
 
 		<panel-tabs showIf="defineSubBillOfMaterial">
-			<panel-related title="Components" field="billOfMaterialSet" domain="self.defineSubBillOfMaterial = false AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
+			<panel-related title="Components" field="billOfMaterialSet" domain="self.defineSubBillOfMaterial = true AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
 		</panel-tabs>
 	</form>
 	
