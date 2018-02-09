@@ -369,7 +369,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	    Blocking blocking = Beans.get(BlockingService.class).getBlocking(partner, saleOrder.getCompany(), BlockingRepository.SALE_BLOCKING);
 
         if (blocking != null) {
-            saleOrder.setBloqued(true);
+            saleOrder.setBlockedOnCustCreditExceed(true);
             if (!saleOrder.getManualUnblock()) {
                 saleOrderRepo.save(saleOrder);
 				String reason = blocking.getBlockingReason() != null ? blocking.getBlockingReason().getName() : "";
