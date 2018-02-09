@@ -1,12 +1,14 @@
-ListContainer$CurrenciesContainer
 ListContainer$CountriesContainer
+ListContainer$CurrenciesContainer
+ListContainer$CustomersContainer
 ListContainer$ProductCategoriesContainer
 ListContainer$ProductsContainer
 Prestashop
 PrestashopAvailableStock
 PrestashopContainerEntity
-PrestashopCurrency
 PrestashopCountry
+PrestashopCurrency
+PrestashopCustomer
 PrestashopImage
 PrestashopProductCategory
 PrestashopProduct

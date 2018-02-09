@@ -1,6 +1,7 @@
 package com.axelor.apps.prestashop;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -14,12 +15,14 @@ import org.junit.Test;
 
 import com.axelor.apps.prestashop.entities.ListContainer.CountriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CurrenciesContainer;
+import com.axelor.apps.prestashop.entities.ListContainer.CustomersContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.ProductCategoriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.ProductsContainer;
 import com.axelor.apps.prestashop.entities.Prestashop;
 import com.axelor.apps.prestashop.entities.PrestashopAvailableStock;
 import com.axelor.apps.prestashop.entities.PrestashopCountry;
 import com.axelor.apps.prestashop.entities.PrestashopCurrency;
+import com.axelor.apps.prestashop.entities.PrestashopCustomer;
 import com.axelor.apps.prestashop.entities.PrestashopImage;
 import com.axelor.apps.prestashop.entities.PrestashopProduct;
 import com.axelor.apps.prestashop.entities.PrestashopProductCategory;
@@ -213,5 +216,59 @@ public class UnmarshalTest {
 		PrestashopAvailableStock stock = envelop.getContent();
 
 		Assert.assertEquals(Integer.valueOf(10), stock.getId());
+	}
+
+	@Test
+	public void testCustomer() throws JAXBException {
+		Unmarshaller um = JAXBContext.newInstance("com.axelor.apps.prestashop.entities").createUnmarshaller();
+		um.setEventHandler(new DefaultValidationEventHandler());
+		Prestashop envelop = (Prestashop)um.unmarshal(getClass().getResourceAsStream("customer.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(PrestashopCustomer.class, envelop.getContent().getClass());
+		PrestashopCustomer customer = envelop.getContent();
+
+		Assert.assertEquals(Integer.valueOf(1), customer.getId());
+		Assert.assertEquals(Integer.valueOf(3), customer.getDefaultGroupId());
+		Assert.assertEquals(Integer.valueOf(1), customer.getLanguageId());
+		Assert.assertNull(customer.getNewsletterSubscriptionDate());
+		Assert.assertEquals("", customer.getNewsletterRegistrationIP());
+		Assert.assertEquals(false, customer.isDeleted());
+		Assert.assertEquals("John", customer.getFirstname());
+		Assert.assertEquals("Doe", customer.getLastname());
+		Assert.assertEquals("john.doe@nowhere.com", customer.getEmail());
+		Assert.assertEquals(Integer.valueOf(1), customer.getGenderId());
+		Assert.assertEquals(LocalDate.of(1991, 5, 18), customer.getBirthday());
+		Assert.assertEquals(false, customer.isNewsletter());
+		Assert.assertEquals(false, customer.isOptin());
+		Assert.assertEquals("http://nowhere.com", customer.getWebsite());
+		Assert.assertEquals("00000000000", customer.getSiret());
+		Assert.assertEquals("0000Z", customer.getApe());
+		Assert.assertTrue(BigDecimal.valueOf(1000).compareTo(customer.getAllowedOutstandingAmount()) == 0);
+		Assert.assertEquals(false, customer.isShowPublicPrices());
+		Assert.assertEquals(Integer.valueOf(1), customer.getRiskId());
+		Assert.assertEquals(Integer.valueOf(45), customer.getMaxPaymentDays());
+		Assert.assertEquals(true, customer.isActive());
+		Assert.assertEquals("", customer.getNote());
+		Assert.assertEquals(false, customer.isGuest());
+		Assert.assertEquals(Integer.valueOf(1), customer.getShopId());
+		Assert.assertEquals(Integer.valueOf(1), customer.getShopGroupId());
+		Assert.assertEquals(LocalDateTime.of(2018, 2, 9, 6, 40, 06), customer.getAddDate());
+		Assert.assertEquals(LocalDateTime.of(2018, 2, 9, 6, 40, 06), customer.getUpdateDate());
+		Assert.assertEquals("", customer.getResetPasswordToken());
+		Assert.assertNull(customer.getResetPasswordValidityDate());
+		Assert.assertEquals(0, customer.getAdditionalProperties().size());
+	}
+
+	@Test
+	public void testCustomers() throws JAXBException {
+		Prestashop envelop = (Prestashop) JAXBContext.newInstance("com.axelor.apps.prestashop.entities")
+				.createUnmarshaller()
+				.unmarshal(getClass().getResourceAsStream("customers.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(CustomersContainer.class, envelop.getContent().getClass());
+		CustomersContainer customers = envelop.getContent();
+		Assert.assertEquals(1, customers.getEntities().size());
 	}
 }

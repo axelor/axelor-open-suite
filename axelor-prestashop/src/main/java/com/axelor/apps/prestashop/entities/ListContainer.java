@@ -23,16 +23,20 @@ public abstract class ListContainer<T extends PrestashopContainerEntity> extends
 				.toString();
 	}
 
-	@XmlRootElement(name="currencies")
-	public static class CurrenciesContainer extends ListContainer<PrestashopCurrency> {
+	@XmlRootElement(name="categories")
+	public static class ProductCategoriesContainer extends ListContainer<PrestashopCountry> {
 	}
 
 	@XmlRootElement(name="countries")
 	public static class CountriesContainer extends ListContainer<PrestashopCountry> {
 	}
 
-	@XmlRootElement(name="categories")
-	public static class ProductCategoriesContainer extends ListContainer<PrestashopCountry> {
+	@XmlRootElement(name="currencies")
+	public static class CurrenciesContainer extends ListContainer<PrestashopCurrency> {
+	}
+
+	@XmlRootElement(name="customers")
+	public static class CustomersContainer extends ListContainer<PrestashopCustomer> {
 	}
 
 	@XmlRootElement(name="products")
