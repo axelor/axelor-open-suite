@@ -153,21 +153,28 @@
 			<panel itemSpan="12" colSpan="6">
 				<field name="operationTypeSelect" selection="iinvoice.operation.type.select"
 					readonlyIf="statusSelect &gt; 1 || partner != null" showTitle="false"
-					onChange="action-group-account-invoice-operationtype-onchange">
+					onChange="action-group-account-invoice-operationtype-onchange" selection-in="[1,2]" showIf="_operationTypeSelect == 1">
 					<viewer>
 			        <![CDATA[
-			
-			 			<h3>
-			             <span class="label label-important" ng-if="operationTypeSelect = 1" x-translate ng-show="record.operationTypeSelect == 1">Supplier purchase</span>
-			             <span class="label label-important" ng-if="operationTypeSelect = 2" x-translate ng-show="record.operationTypeSelect == 2">Supplier refund</span>
-			             <span class="label label-important" ng-if="operationTypeSelect = 3" x-translate ng-show="record.operationTypeSelect == 3">Customer sale</span>
-			             <span class="label label-important" ng-if="operationTypeSelect = 4" x-translate ng-show="record.operationTypeSelect == 4">Customer refund</span>
-			           </h3>
-			
+					<h3>
+						<span class="label label-important" ng-if="operationTypeSelect = 1" x-translate ng-show="record.operationTypeSelect == 1">Supplier purchase</span>
+						<span class="label label-important" ng-if="operationTypeSelect = 2" x-translate ng-show="record.operationTypeSelect == 2">Supplier refund</span>
+					</h3>
 					]]>
 					</viewer>
 				</field>
-
+				<field name="operationTypeSelect" selection="iinvoice.operation.type.select"
+					readonlyIf="statusSelect &gt; 1 || partner != null" showTitle="false"
+					onChange="action-group-account-invoice-operationtype-onchange" selection-in="[3,4]" showIf="_operationTypeSelect == 3">
+					<viewer>
+			        <![CDATA[
+					<h3>
+						<span class="label label-important" ng-if="operationTypeSelect = 3" x-translate ng-show="record.operationTypeSelect == 3">Customer sale</span>
+						<span class="label label-important" ng-if="operationTypeSelect = 4" x-translate ng-show="record.operationTypeSelect == 4">Customer refund</span>
+					</h3>
+					]]>
+					</viewer>
+				</field>
 			</panel>
 			<field name="company" canEdit="false" widget="SuggestBox"
 				onChange="action-group-account-invoice-company-onchange, action-invoice-attrs-hide-totals-company-currency"
