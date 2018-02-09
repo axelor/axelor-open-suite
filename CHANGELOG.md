@@ -3,6 +3,7 @@
 ## [Unreleased 4.x]
 
 ### Improvements
+- New assistant in expense form to select payment mode
 
 ### Bug Fixes
 

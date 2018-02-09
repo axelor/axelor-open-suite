@@ -77,7 +77,7 @@
 		    	<button name="refuseButton" onClick="action-expense-group-refuse" title="Refuse"/>
 		    	<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-hide-button-readonly-field" hidden="true" title="Cancel" icon="fa-close"/>
 		    	<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-hide-button-readonly-field" title="Return to draft status" showIf="statusSelect &gt; 4 "/>
-				<button name="addPaymentButton" title="Register payment" onClick="save,action-expense-method-add-payment" showIf="move &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)"/>
+				<button name="addPaymentButton" title="Register payment" onClick="save,action-expense-add-payment-form" showIf="move &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)"/>
 		    	<button name="cancelPaymentButton" title="Cancel payment"
 						showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3)"
 						onClick="save,action-expense-method-cancel-payment"/>
@@ -97,7 +97,7 @@
 				</panel>
 				<panel colSpan="12" title="Payment information">
 					<field name="paymentStatusSelect" colSpan="4"/>
-					<field name="paymentMode" domain="self.inOutSelect = 2" colSpan="4"/>
+					<field name="paymentMode" readonly="true" colSpan="4"/>
 					<field name="paymentDate" showIf="paymentDate" colSpan="4"/>
 					<field name="bankOrder" hidden="true" showIf="bankOrder" colSpan="4"/>
 				</panel>
@@ -149,6 +149,13 @@
 	<form name="popup-expense-form" title="Select the expense you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-expense-attrs-domain-expense-select">
 		<field name="$expenseSelect" title="Select Expense" type="many-to-one" target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" />
 		<button name="editExpenseSelected" title="Edit Expense Selected" onClick="com.axelor.apps.hr.web.expense.ExpenseController:editExpenseSelected,close"/>
+	</form>
+
+	<form name="popup-expense-add-payment-form" title="Choose payment mode" model="com.axelor.apps.hr.db.Expense">
+        <panel>
+			<field name="paymentMode" domain="self.inOutSelect = 2"/>
+			<button name="addPaymentButton" title="Register payment" onClick="save,action-expense-method-add-payment,close"/>
+		</panel>
 	</form>
 	
 	<action-group name="action-expense-group-send">
@@ -267,6 +274,16 @@
 	  	<view-param name="forceEdit" value="true" />
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
+
+	<action-view name="action-expense-add-payment-form" title="Choose payment mode" model="com.axelor.apps.hr.db.Expense">
+		<view type="form" name="popup-expense-add-payment-form"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="true" />
+		<view-param name="popup-save" value="true"/>
+		<view-param name="forceEdit" value="true" />
+		<context name="_showRecord" expr="eval: id"/>
+	</action-view>
     
     <action-method name="action-expense-method-compute-amounts">
     	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeAmounts"/>
