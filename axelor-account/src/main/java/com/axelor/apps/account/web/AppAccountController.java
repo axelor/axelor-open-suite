@@ -21,31 +21,28 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.debtrecovery.PayerQualityService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class AppAccountController {
-
-	@Inject
-	private PayerQualityService payerQualityService;
-	
 	@Inject
 	private AppAccountService appAccountService;
 
 	public void payerQualityProcess(ActionRequest request, ActionResponse response)  {
 
 		try  {
-			payerQualityService.payerQualityProcess();
+			Beans.get(PayerQualityService.class).payerQualityProcess();
 		}
 		catch (Exception e) { TraceBackService.trace(response, e); }
 	}
-	
+
 	public void generateAccountConfigurations(ActionRequest request, ActionResponse response)  {
-		
+
 		appAccountService.generateAccountConfigurations();
-		
+
 		response.setReload(true);
-		
+
 	}
 }
