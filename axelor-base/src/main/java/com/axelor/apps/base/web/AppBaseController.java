@@ -18,6 +18,7 @@
 package com.axelor.apps.base.web;
 
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.time.LocalDate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +46,8 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+
+import wslite.json.JSONException;
 
 public class AppBaseController {
 
@@ -101,7 +105,7 @@ public class AppBaseController {
 		}
 	}
 	
-	public void updateCurrencyConversion(ActionRequest request, ActionResponse response){
+	public void updateCurrencyConversion(ActionRequest request, ActionResponse response) throws AxelorException, MalformedURLException, JSONException {
 		 AppBase appBase = request.getContext().asType(AppBase.class);
 		 LocalDate today = appBaseService.getTodayDate();
 		 
