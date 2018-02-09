@@ -24,11 +24,11 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 
 public class AppAccountController {
 
-	private Injector injector;
+	@Inject
+	private PayerQualityService payerQualityService;
 	
 	@Inject
 	private AppAccountService appAccountService;
@@ -36,8 +36,7 @@ public class AppAccountController {
 	public void payerQualityProcess(ActionRequest request, ActionResponse response)  {
 
 		try  {
-			PayerQualityService pqs = injector.getInstance(PayerQualityService.class);
-			pqs.payerQualityProcess();
+			payerQualityService.payerQualityProcess();
 		}
 		catch (Exception e) { TraceBackService.trace(response, e); }
 	}
