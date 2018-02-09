@@ -70,9 +70,9 @@ public class ExportCategoryServiceImpl implements ExportCategoryService {
 		final PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
 
 		final List<PrestashopProductCategory> remoteCategories = ws.fetchAll(PrestashopResourceType.PRODUCT_CATEGORIES);
-		final Map<Integer, PrestashopProductCategory> countriesById = new HashMap<>();
+		final Map<Integer, PrestashopProductCategory> categoriesById = new HashMap<>();
 		for(PrestashopProductCategory country : remoteCategories) {
-			countriesById.put(country.getId(), country);
+			categoriesById.put(country.getId(), country);
 		}
 
 		final PrestashopProductCategory defaultCategory = ws.fetchDefault(PrestashopResourceType.PRODUCT_CATEGORIES);
@@ -90,7 +90,7 @@ public class ExportCategoryServiceImpl implements ExportCategoryService {
 				PrestashopProductCategory remoteCategory;
 				if(localCategory.getPrestaShopId() != null) {
 					logBuffer.write("prestashop id=" + localCategory.getPrestaShopId());
-					remoteCategory = countriesById.get(localCategory.getPrestaShopId());
+					remoteCategory = categoriesById.get(localCategory.getPrestaShopId());
 					if(remoteCategory == null) {
 						logBuffer.write(String.format(" [ERROR] Not found remotely%n"));
 						log.error("Unable to fetch remote product category #{} ({}), something's probably very wrong, skipping",
