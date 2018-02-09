@@ -26,6 +26,7 @@
 - Generate sale order from Opportunity in edit mode directly
 - Improved architecture of Message generation from a template, send email, and manage specific email account in a module without change the original behavior in the others
 - A freight carrier is now a carrier partner
+- EndPeriod on currency conversion api
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
