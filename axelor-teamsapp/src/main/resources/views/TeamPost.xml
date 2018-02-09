@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="team-post-grid" title="Team post" model="com.axelor.apps.teamsapp.db.TeamPost">
-		<field name="name" />
+		<field name="title" />
 	</grid>
 
 	<form name="team-post-form" title="Team post" model="com.axelor.apps.teamsapp.db.TeamPost">
