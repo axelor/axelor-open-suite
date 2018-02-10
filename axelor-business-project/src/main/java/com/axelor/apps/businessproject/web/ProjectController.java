@@ -141,4 +141,9 @@ public class ProjectController {
 
         response.setReload(true);
     }
+
+    public void countToInvoiceNotInvoiced(ActionRequest request, ActionResponse response) {
+        Project project = Beans.get(ProjectRepository.class).find(request.getContext().asType(Project.class).getId());
+        response.setValue("$toInvoiceNotInvoiced", projectBusinessService.countToInvoiceNotInvoiced(project));
+    }
 }

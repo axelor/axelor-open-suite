@@ -60,9 +60,11 @@
 
                     <panel colSpan="12" hidden="true" showIf="$readonly()">
                         <field name="$viewerProjectTags" showTitle="false" colSpan="12">
-                            <viewer depends="isBusinessProject,isProject,projectTypeSelect">
+                            <viewer depends="isBusinessProject,isProject,projectTypeSelect,$toInvoiceNotInvoiced">
                                 <![CDATA[
-                                    <h4 style="text-align: right;">
+                                    <h4 class="text-right">
+                                        <span class="label label-default" style="background-color: #FD6217; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" x-translate>To invoice</span><span class="label label-default" style="background-color: #FFAA00; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;">{{record.$toInvoiceNotInvoiced}}</span>
+
                                         <span class="label label-default" style="background-color: #86BC25; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProject &amp;&amp; record.projectTypeSelect == 1" x-translate>Project</span>
                                         <span class="label label-default" style="background-color: #86BC25; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProject &amp;&amp; record.projectTypeSelect == 2" x-translate>Project phase</span>
                                         <span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isBusinessProject" x-translate>Business</span>
@@ -71,6 +73,8 @@
                             </viewer>
                         </field>
                     </panel>
+
+                    <field name="$toInvoiceNotInvoiced" colSpan="6" hidden="true"/>
                 </panel>
 
                 <panel colSpan="12">
@@ -333,7 +337,12 @@
 		<action name="action-project-method-set-visible-duration-log-times" />
 		<action name="action-project-attrs-scale-and-precision" />
 		<action name="action-attrs-project-set-project-type"  if="__config__.app.isApp('business-project')" />
+        <action name="action-project-method-count-to-invoice-not-invoiced" if="__config__.app.isApp('business-project')"/>
 	</action-group>
+
+    <action-method name="action-project-method-count-to-invoice-not-invoiced">
+        <call class="com.axelor.apps.businessproject.web.ProjectController" method="countToInvoiceNotInvoiced"/>
+    </action-method>
 
 	<action-record name="action-project-record-inv-type-select" model="com.axelor.apps.project.db.Project">
 		<field name="projInvTypeSelect" expr="eval: project?.projInvTypeSelect"/>
