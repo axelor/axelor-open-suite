@@ -51,3 +51,4 @@ task xjc () {
 }
 
 compileJava.dependsOn xjc
+generateCode.finalizedBy xjc
