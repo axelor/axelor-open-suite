@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+	<addresses>
+		<address>
+			<id><![CDATA[2]]></id>
+			<id_customer xlink:href="http://192.168.1.23/api/customers/1"><![CDATA[1]]></id_customer>
+			<id_manufacturer><![CDATA[0]]></id_manufacturer>
+			<id_supplier><![CDATA[0]]></id_supplier>
+			<id_warehouse><![CDATA[0]]></id_warehouse>
+			<id_country xlink:href="http://192.168.1.23/api/countries/8"><![CDATA[8]]></id_country>
+			<id_state><![CDATA[0]]></id_state>
+			<alias><![CDATA[Main Addresses]]></alias>
+			<company><![CDATA[Axelor]]></company>
+			<lastname><![CDATA[DAVID]]></lastname>
+			<firstname><![CDATA[Alex]]></firstname>
+			<vat_number></vat_number>
+			<address1><![CDATA[12 RUE ALBERT EINSTEIN]]></address1>
+			<address2></address2>
+			<postcode><![CDATA[77420]]></postcode>
+			<city><![CDATA[CHAMPS-SUR-MARNE]]></city>
+			<other></other>
+			<phone></phone>
+			<phone_mobile></phone_mobile>
+			<dni></dni>
+			<deleted><![CDATA[0]]></deleted>
+			<date_add><![CDATA[2018-02-09 10:55:18]]></date_add>
+			<date_upd><![CDATA[2018-02-09 10:55:18]]></date_upd>
+		</address>
+		<address>
+			<id><![CDATA[3]]></id>
+			<id_customer xlink:href="http://192.168.1.23/api/customers/2"><![CDATA[2]]></id_customer>
+			<id_manufacturer><![CDATA[0]]></id_manufacturer>
+			<id_supplier><![CDATA[0]]></id_supplier>
+			<id_warehouse><![CDATA[0]]></id_warehouse>
+			<id_country xlink:href="http://192.168.1.23/api/countries/8"><![CDATA[8]]></id_country>
+			<id_state><![CDATA[0]]></id_state>
+			<alias><![CDATA[Main Addresses]]></alias>
+			<company><![CDATA[APOLLO]]></company>
+			<lastname><![CDATA[MICHEL]]></lastname>
+			<firstname><![CDATA[Loic]]></firstname>
+			<vat_number></vat_number>
+			<address1><![CDATA[70 RUE PASTORELLI]]></address1>
+			<address2></address2>
+			<postcode><![CDATA[06000]]></postcode>
+			<city><![CDATA[NICE]]></city>
+			<other></other>
+			<phone></phone>
+			<phone_mobile></phone_mobile>
+			<dni></dni>
+			<deleted><![CDATA[0]]></deleted>
+			<date_add><![CDATA[2018-02-09 10:55:18]]></date_add>
+			<date_upd><![CDATA[2018-02-09 10:55:18]]></date_upd>
+		</address>
+		<address>
+			<id><![CDATA[4]]></id>
+			<id_customer xlink:href="http://192.168.1.23/api/customers/3"><![CDATA[3]]></id_customer>
+			<id_manufacturer><![CDATA[0]]></id_manufacturer>
+			<id_supplier><![CDATA[0]]></id_supplier>
+			<id_warehouse><![CDATA[0]]></id_warehouse>
+			<id_country xlink:href="http://192.168.1.23/api/countries/8"><![CDATA[8]]></id_country>
+			<id_state><![CDATA[0]]></id_state>
+			<alias><![CDATA[Main Addresses]]></alias>
+			<company><![CDATA[BLUEBERRY TELECOM]]></company>
+			<lastname><![CDATA[ROUSSEAU]]></lastname>
+			<firstname><![CDATA[Élisabeth]]></firstname>
+			<vat_number></vat_number>
+			<address1><![CDATA[15 BD DE LA LIBERTE]]></address1>
+			<address2></address2>
+			<postcode><![CDATA[13001]]></postcode>
+			<city><![CDATA[MARSEILLE]]></city>
+			<other></other>
+			<phone></phone>
+			<phone_mobile></phone_mobile>
+			<dni></dni>
+			<deleted><![CDATA[0]]></deleted>
+			<date_add><![CDATA[2018-02-09 10:55:19]]></date_add>
+			<date_upd><![CDATA[2018-02-09 10:55:19]]></date_upd>
+		</address>
+		<address>
+			<id><![CDATA[5]]></id>
+			<id_customer xlink:href="http://192.168.1.23/api/customers/11"><![CDATA[11]]></id_customer>
+			<id_manufacturer><![CDATA[0]]></id_manufacturer>
+			<id_supplier><![CDATA[0]]></id_supplier>
+			<id_warehouse><![CDATA[0]]></id_warehouse>
+			<id_country xlink:href="http://192.168.1.23/api/countries/8"><![CDATA[8]]></id_country>
+			<id_state><![CDATA[0]]></id_state>
+			<alias><![CDATA[Main Addresses]]></alias>
+			<company><![CDATA[MASSON SA]]></company>
+			<lastname><![CDATA[SANCHEZ]]></lastname>
+			<firstname><![CDATA[Catherine]]></firstname>
+			<vat_number></vat_number>
+			<address1><![CDATA[4 BD D'ARCOLE]]></address1>
+			<address2></address2>
+			<postcode><![CDATA[31000]]></postcode>
+			<city><![CDATA[TOULOUSE]]></city>
+			<other></other>
+			<phone></phone>
+			<phone_mobile></phone_mobile>
+			<dni></dni>
+			<deleted><![CDATA[0]]></deleted>
+			<date_add><![CDATA[2018-02-09 10:55:20]]></date_add>
+			<date_upd><![CDATA[2018-02-09 10:55:20]]></date_upd>
+		</address>
+		<address>
+			<id><![CDATA[6]]></id>
+			<id_customer xlink:href="http://192.168.1.23/api/customers/12"><![CDATA[12]]></id_customer>
+			<id_manufacturer><![CDATA[0]]></id_manufacturer>
+			<id_supplier><![CDATA[0]]></id_supplier>
+			<id_warehouse><![CDATA[0]]></id_warehouse>
+			<id_country xlink:href="http://192.168.1.23/api/countries/8"><![CDATA[8]]></id_country>
+			<id_state><![CDATA[0]]></id_state>
+			<alias><![CDATA[Main Addresses]]></alias>
+			<company><![CDATA[GERARD Solutions]]></company>
+			<lastname><![CDATA[GERARD]]></lastname>
+			<firstname><![CDATA[Fabrice]]></firstname>
+			<vat_number></vat_number>
+			<address1><![CDATA[56 COURS MARECHAL JUIN]]></address1>
+			<address2></address2>
+			<postcode><![CDATA[33000]]></postcode>
+			<city><![CDATA[BORDEAUX]]></city>
+			<other></other>
+			<phone></phone>
+			<phone_mobile></phone_mobile>
+			<dni></dni>
+			<deleted><![CDATA[0]]></deleted>
+			<date_add><![CDATA[2018-02-09 10:55:21]]></date_add>
+			<date_upd><![CDATA[2018-02-09 10:55:21]]></date_upd>
+		</address>
+		<address>
+			<id><![CDATA[7]]></id>
+			<id_customer xlink:href="http://192.168.1.23/api/customers/13"><![CDATA[13]]></id_customer>
+			<id_manufacturer><![CDATA[0]]></id_manufacturer>
+			<id_supplier><![CDATA[0]]></id_supplier>
+			<id_warehouse><![CDATA[0]]></id_warehouse>
+			<id_country xlink:href="http://192.168.1.23/api/countries/8"><![CDATA[8]]></id_country>
+			<id_state><![CDATA[0]]></id_state>
+			<alias><![CDATA[Main Addresses]]></alias>
+			<company><![CDATA[123 Services]]></company>
+			<lastname><![CDATA[ROCHE]]></lastname>
+			<firstname><![CDATA[Dominique]]></firstname>
+			<vat_number></vat_number>
+			<address1><![CDATA[40 RUE ABELARD]]></address1>
+			<address2></address2>
+			<postcode><![CDATA[59000]]></postcode>
+			<city><![CDATA[LILLE]]></city>
+			<other></other>
+			<phone></phone>
+			<phone_mobile></phone_mobile>
+			<dni></dni>
+			<deleted><![CDATA[0]]></deleted>
+			<date_add><![CDATA[2018-02-09 10:55:21]]></date_add>
+			<date_upd><![CDATA[2018-02-09 10:55:21]]></date_upd>
+		</address>
+		<address>
+			<id><![CDATA[8]]></id>
+			<id_customer xlink:href="http://192.168.1.23/api/customers/14"><![CDATA[14]]></id_customer>
+			<id_manufacturer><![CDATA[0]]></id_manufacturer>
+			<id_supplier><![CDATA[0]]></id_supplier>
+			<id_warehouse><![CDATA[0]]></id_warehouse>
+			<id_country xlink:href="http://192.168.1.23/api/countries/8"><![CDATA[8]]></id_country>
+			<id_state><![CDATA[0]]></id_state>
+			<alias><![CDATA[Main Addresses]]></alias>
+			<company><![CDATA[BOURGEOIS INDUSTRIE]]></company>
+			<lastname><![CDATA[ARAFI]]></lastname>
+			<firstname><![CDATA[Zohra]]></firstname>
+			<vat_number></vat_number>
+			<address1><![CDATA[10 RUE DES ARCHIVES]]></address1>
+			<address2></address2>
+			<postcode><![CDATA[94000]]></postcode>
+			<city><![CDATA[CRETEIL]]></city>
+			<other></other>
+			<phone></phone>
+			<phone_mobile></phone_mobile>
+			<dni></dni>
+			<deleted><![CDATA[0]]></deleted>
+			<date_add><![CDATA[2018-02-09 10:55:21]]></date_add>
+			<date_upd><![CDATA[2018-02-09 10:55:21]]></date_upd>
+		</address>
+		<address>
+			<id><![CDATA[1]]></id>
+			<id_customer xlink:href="http://192.168.1.23/api/customers/15"><![CDATA[15]]></id_customer>
+			<id_manufacturer><![CDATA[0]]></id_manufacturer>
+			<id_supplier><![CDATA[0]]></id_supplier>
+			<id_warehouse><![CDATA[0]]></id_warehouse>
+			<id_country xlink:href="http://192.168.1.23/api/countries/8"><![CDATA[8]]></id_country>
+			<id_state><![CDATA[0]]></id_state>
+			<alias><![CDATA[Main Addresses]]></alias>
+			<company><![CDATA[ESL Banking]]></company>
+			<lastname><![CDATA[GUILLOT]]></lastname>
+			<firstname><![CDATA[Kévin]]></firstname>
+			<vat_number></vat_number>
+			<address1><![CDATA[49 RUE DES GENOTTES]]></address1>
+			<address2></address2>
+			<postcode><![CDATA[95000]]></postcode>
+			<city><![CDATA[CERGY]]></city>
+			<other></other>
+			<phone></phone>
+			<phone_mobile></phone_mobile>
+			<dni></dni>
+			<deleted><![CDATA[0]]></deleted>
+			<date_add><![CDATA[2018-02-09 10:55:17]]></date_add>
+			<date_upd><![CDATA[2018-02-09 10:55:17]]></date_upd>
+		</address>
+		<address>
+			<id><![CDATA[11]]></id>
+			<id_customer xlink:href="http://192.168.1.23/api/customers/20"><![CDATA[20]]></id_customer>
+			<id_manufacturer><![CDATA[0]]></id_manufacturer>
+			<id_supplier><![CDATA[0]]></id_supplier>
+			<id_warehouse><![CDATA[0]]></id_warehouse>
+			<id_country xlink:href="http://192.168.1.23/api/countries/8"><![CDATA[8]]></id_country>
+			<id_state><![CDATA[0]]></id_state>
+			<alias><![CDATA[Main Addresses]]></alias>
+			<company><![CDATA[TGM Consulting]]></company>
+			<lastname><![CDATA[THOMPSON]]></lastname>
+			<firstname><![CDATA[Kenneth]]></firstname>
+			<vat_number></vat_number>
+			<address1><![CDATA[69 RUE ETIENNE MARCEL]]></address1>
+			<address2></address2>
+			<postcode><![CDATA[75001]]></postcode>
+			<city><![CDATA[PARIS]]></city>
+			<other></other>
+			<phone></phone>
+			<phone_mobile></phone_mobile>
+			<dni></dni>
+			<deleted><![CDATA[0]]></deleted>
+			<date_add><![CDATA[2018-02-09 10:55:23]]></date_add>
+			<date_upd><![CDATA[2018-02-09 10:55:23]]></date_upd>
+		</address>
+		<address>
+			<id><![CDATA[9]]></id>
+			<id_customer xlink:href="http://192.168.1.23/api/customers/23"><![CDATA[23]]></id_customer>
+			<id_manufacturer><![CDATA[0]]></id_manufacturer>
+			<id_supplier><![CDATA[0]]></id_supplier>
+			<id_warehouse><![CDATA[0]]></id_warehouse>
+			<id_country xlink:href="http://192.168.1.23/api/countries/8"><![CDATA[8]]></id_country>
+			<id_state><![CDATA[0]]></id_state>
+			<alias><![CDATA[Main Addresses]]></alias>
+			<company></company>
+			<lastname><![CDATA[PICARD]]></lastname>
+			<firstname><![CDATA[Anna]]></firstname>
+			<vat_number></vat_number>
+			<address1><![CDATA[55 BD CLEMENCEAU]]></address1>
+			<address2></address2>
+			<postcode><![CDATA[67000]]></postcode>
+			<city><![CDATA[STRASBOURG]]></city>
+			<other></other>
+			<phone></phone>
+			<phone_mobile></phone_mobile>
+			<dni></dni>
+			<deleted><![CDATA[0]]></deleted>
+			<date_add><![CDATA[2018-02-09 10:55:22]]></date_add>
+			<date_upd><![CDATA[2018-02-09 10:55:22]]></date_upd>
+		</address>
+		<address>
+			<id><![CDATA[10]]></id>
+			<id_customer xlink:href="http://192.168.1.23/api/customers/24"><![CDATA[24]]></id_customer>
+			<id_manufacturer><![CDATA[0]]></id_manufacturer>
+			<id_supplier><![CDATA[0]]></id_supplier>
+			<id_warehouse><![CDATA[0]]></id_warehouse>
+			<id_country xlink:href="http://192.168.1.23/api/countries/8"><![CDATA[8]]></id_country>
+			<id_state><![CDATA[0]]></id_state>
+			<alias><![CDATA[Main Addresses]]></alias>
+			<company></company>
+			<lastname><![CDATA[MEYER]]></lastname>
+			<firstname><![CDATA[Philippe]]></firstname>
+			<vat_number></vat_number>
+			<address1><![CDATA[55 RUE DE GRENELLE]]></address1>
+			<address2></address2>
+			<postcode><![CDATA[75001]]></postcode>
+			<city><![CDATA[PARIS]]></city>
+			<other></other>
+			<phone></phone>
+			<phone_mobile></phone_mobile>
+			<dni></dni>
+			<deleted><![CDATA[0]]></deleted>
+			<date_add><![CDATA[2018-02-09 10:55:22]]></date_add>
+			<date_upd><![CDATA[2018-02-09 10:55:22]]></date_upd>
+		</address>
+	</addresses>
+</prestashop>

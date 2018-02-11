@@ -13,12 +13,14 @@ import javax.xml.bind.helpers.DefaultValidationEventHandler;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.axelor.apps.prestashop.entities.ListContainer.AddressesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CountriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CurrenciesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CustomersContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.ProductCategoriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.ProductsContainer;
 import com.axelor.apps.prestashop.entities.Prestashop;
+import com.axelor.apps.prestashop.entities.PrestashopAddress;
 import com.axelor.apps.prestashop.entities.PrestashopAvailableStock;
 import com.axelor.apps.prestashop.entities.PrestashopCountry;
 import com.axelor.apps.prestashop.entities.PrestashopCurrency;
@@ -271,4 +273,45 @@ public class UnmarshalTest {
 		CustomersContainer customers = envelop.getContent();
 		Assert.assertEquals(1, customers.getEntities().size());
 	}
+
+	@Test
+	public void testAddress() throws JAXBException {
+		Prestashop envelop = (Prestashop)JAXBContext.newInstance("com.axelor.apps.prestashop.entities")
+				.createUnmarshaller()
+				.unmarshal(getClass().getResourceAsStream("address.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(PrestashopAddress.class, envelop.getContent().getClass());
+		PrestashopAddress address = envelop.getContent();
+
+		Assert.assertEquals(Integer.valueOf(1), address.getId());
+		Assert.assertEquals(Integer.valueOf(15), address.getCustomerId());
+		Assert.assertEquals(Integer.valueOf(0), address.getSupplierId());
+		Assert.assertEquals(Integer.valueOf(0), address.getManufacturerId());
+		Assert.assertEquals(Integer.valueOf(0), address.getWarehouseId());
+		Assert.assertEquals(8, address.getCountryId());
+		Assert.assertEquals(Integer.valueOf(0), address.getStateId());
+		Assert.assertEquals("Main Addresses", address.getAlias());
+		Assert.assertEquals("ESL Banking", address.getCompany());
+		Assert.assertEquals("GUILLOT", address.getLastname());
+		Assert.assertEquals("Kévin", address.getFirstname());
+		Assert.assertEquals("", address.getVatNumber());
+		Assert.assertEquals("49 RUE DES GENOTTES", address.getAddress1());
+		Assert.assertEquals("", address.getAddress2());
+		Assert.assertEquals("95000", address.getZipcode());
+		Assert.assertEquals("CERGY", address.getCity());
+	}
+
+	@Test
+	public void testAddresses() throws JAXBException {
+		Prestashop envelop = (Prestashop) JAXBContext.newInstance("com.axelor.apps.prestashop.entities")
+				.createUnmarshaller()
+				.unmarshal(getClass().getResourceAsStream("addresses.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(AddressesContainer.class, envelop.getContent().getClass());
+		AddressesContainer addresses = envelop.getContent();
+		Assert.assertEquals(11, addresses.getEntities().size());
+	}
+
 }

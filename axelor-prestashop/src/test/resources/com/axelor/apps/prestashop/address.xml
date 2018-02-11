@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+	<address>
+		<id><![CDATA[1]]></id>
+		<id_customer xlink:href="http://192.168.1.23/api/customers/15"><![CDATA[15]]></id_customer>
+		<id_manufacturer><![CDATA[0]]></id_manufacturer>
+		<id_supplier><![CDATA[0]]></id_supplier>
+		<id_warehouse><![CDATA[0]]></id_warehouse>
+		<id_country xlink:href="http://192.168.1.23/api/countries/8"><![CDATA[8]]></id_country>
+		<id_state><![CDATA[0]]></id_state>
+		<alias><![CDATA[Main Addresses]]></alias>
+		<company><![CDATA[ESL Banking]]></company>
+		<lastname><![CDATA[GUILLOT]]></lastname>
+		<firstname><![CDATA[Kévin]]></firstname>
+		<vat_number></vat_number>
+		<address1><![CDATA[49 RUE DES GENOTTES]]></address1>
+		<address2></address2>
+		<postcode><![CDATA[95000]]></postcode>
+		<city><![CDATA[CERGY]]></city>
+		<other></other>
+		<phone></phone>
+		<phone_mobile></phone_mobile>
+		<dni></dni>
+		<deleted><![CDATA[0]]></deleted>
+		<date_add><![CDATA[2018-02-09 10:55:17]]></date_add>
+		<date_upd><![CDATA[2018-02-09 10:55:17]]></date_upd>
+	</address>
+</prestashop>

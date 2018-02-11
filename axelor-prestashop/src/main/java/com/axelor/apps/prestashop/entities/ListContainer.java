@@ -23,6 +23,10 @@ public abstract class ListContainer<T extends PrestashopContainerEntity> extends
 				.toString();
 	}
 
+	@XmlRootElement(name="addresses")
+	public static class AddressesContainer extends ListContainer<PrestashopAddress> {
+	}
+
 	@XmlRootElement(name="categories")
 	public static class ProductCategoriesContainer extends ListContainer<PrestashopCountry> {
 	}

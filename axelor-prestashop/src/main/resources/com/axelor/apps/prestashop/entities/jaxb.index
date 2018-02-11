@@ -1,9 +1,11 @@
+ListContainer$AddressesContainer
 ListContainer$CountriesContainer
 ListContainer$CurrenciesContainer
 ListContainer$CustomersContainer
 ListContainer$ProductCategoriesContainer
 ListContainer$ProductsContainer
 Prestashop
+PrestashopAddress
 PrestashopAvailableStock
 PrestashopContainerEntity
 PrestashopCountry
