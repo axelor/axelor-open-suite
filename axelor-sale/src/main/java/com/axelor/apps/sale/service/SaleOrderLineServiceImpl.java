@@ -128,10 +128,12 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
 		saleOrderLine.setInTaxTotal(inTaxTotal);
 		saleOrderLine.setExTaxTotal(exTaxTotal);
+		saleOrderLine.setPriceDiscounted(priceDiscounted);
 		saleOrderLine.setCompanyInTaxTotal(companyInTaxTotal);
 		saleOrderLine.setCompanyExTaxTotal(companyExTaxTotal);
 		map.put("inTaxTotal", inTaxTotal);
 		map.put("exTaxTotal", exTaxTotal);
+		map.put("priceDiscounted", priceDiscounted);
 		map.put("companyExTaxTotal", companyExTaxTotal);
 		map.put("companyInTaxTotal", companyInTaxTotal);
 		return map;
