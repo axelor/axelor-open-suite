@@ -23,6 +23,7 @@ dependencies {
 	compile files("src/main/lib/ebics-1.0.2.jar")
 	compile "org.bouncycastle:bcprov-jdk15:1.46"
 	compile "org.apache.santuario:xmlsec:1.4.3"
+	compile "commons-codec:commons-codec:1.11"
 }
 
 license {
