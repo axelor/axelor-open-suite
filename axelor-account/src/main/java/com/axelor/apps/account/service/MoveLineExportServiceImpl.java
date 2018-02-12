@@ -999,7 +999,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 		CsvTool.csvWriter(filePath, fileName, '|', this.createHeaderForPayrollJournalEntry(), allMoveLineData);
 		accountingReportRepo.save(accountingReport);
 		
-		Path path = Paths.get(filePath+fileName);
+		Path path = Paths.get(filePath, fileName);
 		
 		try (InputStream is = new FileInputStream(path.toFile())) {
 			Beans.get(MetaFiles.class).attach(is, fileName, accountingReport);
