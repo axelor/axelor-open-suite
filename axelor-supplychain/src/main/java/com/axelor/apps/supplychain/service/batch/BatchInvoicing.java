@@ -18,9 +18,6 @@
 package com.axelor.apps.supplychain.service.batch;
 
 import java.lang.invoke.MethodHandles;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -28,13 +25,10 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -46,7 +40,7 @@ public class BatchInvoicing extends BatchStrategy {
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
-	private SaleOrderRepository saleOrderRepo;
+	private SubscriptionInvoiceService subscriptionInvoiceService;
 
 	@Inject
 	public BatchInvoicing(SaleOrderInvoiceService saleOrderInvoiceService) {
@@ -57,77 +51,28 @@ public class BatchInvoicing extends BatchStrategy {
 
 	@Override
 	protected void process() {
-
-		int i = 0;
-		LocalDate todayDate = appBaseService.getTodayDate();
 		
-		List<SaleOrder> subscrptionOrders = saleOrderRepo.all()
-				.filter("self.saleOrderTypeSelect = 2 and self.statusSelect = ?1"
-						+ " and ?2 >= self.nextInvoicingDate and (self.contractEndDate is null OR self.contractEndDate >= ?2)"
-						, ISaleOrder.STATUS_ORDER_CONFIRMED, todayDate).fetch();
+		List<SaleOrder> saleOrders = subscriptionInvoiceService.getSubscriptionOrders(FETCH_LIMIT);
 		
-		TemporalUnit temporalUnit = ChronoUnit.MONTHS;
-
-		for (SaleOrder saleOrder : subscrptionOrders) {
-			
-			try {
-
-				Invoice invoice = saleOrderInvoiceService.generateInvoice(saleOrderRepo.find(saleOrder.getId()));
-
-				if(invoice != null)  {
-					
-					invoice = saleOrderInvoiceService.generateInvoice(saleOrder);
-					if (invoice == null) { continue; }
-					if (saleOrder.getPeriodicityTypeSelect() == 1) {
-						temporalUnit = ChronoUnit.DAYS;
-					}
-					invoice.setInvoiceDate(todayDate);
-					invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_SUBSCRIPTION);
-
-					LocalDate invoicingPeriodStartDate = saleOrder.getNextInvoicingStartPeriodDate();
-					invoice.setSubscriptionFromDate(invoicingPeriodStartDate);
-					invoice.setSubscriptionToDate(saleOrder.getNextInvoicingEndPeriodDate());
-					if (invoicingPeriodStartDate != null) {
-						LocalDate nextInvoicingStartPeriodDate = invoicingPeriodStartDate.plus(saleOrder.getNumberOfPeriods(), temporalUnit);
-						saleOrder.setNextInvoicingStartPeriodDate(nextInvoicingStartPeriodDate);
-						LocalDate nextInvoicingEndPeriodDate = nextInvoicingStartPeriodDate.plus(saleOrder.getNumberOfPeriods(), temporalUnit).minusDays(1);
-						saleOrder.setNextInvoicingEndPeriodDate(nextInvoicingEndPeriodDate);
-					}
-					
-					LocalDate nextInvoicingDate = saleOrder.getNextInvoicingDate();
-					if (nextInvoicingDate != null) {
-						nextInvoicingDate = nextInvoicingDate.plus(saleOrder.getNumberOfPeriods(), temporalUnit);
-					}
-					saleOrder.setNextInvoicingDate(nextInvoicingDate);
-					
+		while (!saleOrders.isEmpty()) {
+			for (SaleOrder saleOrder : saleOrders) {
+				try {
+					subscriptionInvoiceService.generateSubscriptionInvoice(saleOrder);
 					updateSaleOrder(saleOrder);
-					LOG.debug("Facture créée ({}) pour le devis {}", invoice.getInvoiceId(), saleOrder.getSaleOrderSeq());
-					i++;
+				} catch (AxelorException e) {
+					TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get("Order")+" %s", saleOrder.getSaleOrderSeq()), IException.INVOICE_ORIGIN, batch.getId());
+					incrementAnomaly();
+				} catch (Exception e) {
+					TraceBackService.trace(new Exception(String.format(I18n.get("Order")+" %s", saleOrder.getSaleOrderSeq()), e), IException.INVOICE_ORIGIN, batch.getId());
+					incrementAnomaly();
 
+					LOG.error("Bug(Anomalie) généré(e) pour le devis {}", saleOrder.getSaleOrderSeq());
 				}
-
-			} catch (AxelorException e) {
-
-				TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get("Order")+" %s", saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq()), IException.INVOICE_ORIGIN, batch.getId());
-				incrementAnomaly();
-
-			} catch (Exception e) {
-
-				TraceBackService.trace(new Exception(String.format(I18n.get("Order")+" %s", saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq()), e), IException.INVOICE_ORIGIN, batch.getId());
-
-				incrementAnomaly();
-
-				LOG.error("Bug(Anomalie) généré(e) pour le devis {}", saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq());
-
-			} finally {
-
-				if (i % 10 == 0) { JPA.clear(); }
-
 			}
-
+			JPA.clear();
+			saleOrders = subscriptionInvoiceService.getSubscriptionOrders(FETCH_LIMIT);
 		}
-
-
+		
 	}
 
 

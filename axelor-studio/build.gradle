@@ -18,6 +18,7 @@ dependencies {
 //	compile 'org.xhtmlrenderer:flying-saucer-pdf:9.1.4'
 	compile 'org.eclipse.birt.runtime.3_7_1:Tidy:1'
 	compile 'org.apache.commons:commons-exec:1.2'
+	compile "commons-codec:commons-codec:1.11"
 //	compile "org.bouncycastle:bcprov-jdk14:1.38"
 }
 

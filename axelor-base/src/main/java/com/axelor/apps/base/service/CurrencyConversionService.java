@@ -20,6 +20,7 @@ package com.axelor.apps.base.service;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.time.LocalDate;
@@ -43,8 +44,11 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -57,9 +61,8 @@ public class CurrencyConversionService {
 	
 	@Inject
 	private CurrencyConversionLineRepository cclRepo;
-
-
-	public BigDecimal convert(Currency currencyFrom, Currency currencyTo){
+	
+	public BigDecimal convert(Currency currencyFrom, Currency currencyTo) throws MalformedURLException, JSONException, AxelorException {
 		BigDecimal rate = new BigDecimal(-1);
 
 		LOG.debug("Currerncy conversion From: {} To: {}",new Object[] { currencyFrom,currencyTo});
@@ -70,36 +73,50 @@ public class CurrencyConversionService {
 		}
 
 		if(currencyFrom != null && currencyTo != null){
-			try{
-		        HTTPClient httpclient = new HTTPClient();
-		        HTTPRequest request = new HTTPRequest();
-		        Map<String, Object> headers = new HashMap<>();
-				headers.put("Accept", "application/json");
-				request.setHeaders(headers);
-		        URL url = new URL(String.format(wsUrl,currencyFrom.getCode(),currencyTo.getCode(), LocalDate.now().minus(Period.ofDays(1))));
-//		        URL url = new URL(String.format(wsUrl,currencyFrom.getCode()));
-		        LOG.debug("Currency conversion webservice URL: {}" ,new Object[]{url.toString()});
-		        request.setUrl(url);
-		        request.setMethod(HTTPMethod.GET);
-		        HTTPResponse response = httpclient.execute(request);
-//		        JSONObject json = new JSONObject(response.getContentAsString());
-		        LOG.debug("Webservice response code: {}, reponse mesasage: {}",response.getStatusCode(),response.getStatusMessage());
-		        if(response.getStatusCode() != 200)
-		        	return rate;
-
-		        Float rt = this.getRateFromJson(currencyFrom, currencyTo, response);
-		        rate = BigDecimal.valueOf(rt).setScale(8, RoundingMode.HALF_EVEN);
-
-//		        Float rt = Float.parseFloat(json.getJSONObject("rates").get(currencyTo.getCode()).toString());
-//		        rate = BigDecimal.valueOf(rt).setScale(4,RoundingMode.HALF_EVEN);
-			} catch (Exception e) {
-				TraceBackService.trace(e);
-			}
-		}
-		else
+			Float rt = this.validateAndGetRate(1, wsUrl, currencyFrom, currencyTo, appBaseService.getTodayDate());
+			rate = BigDecimal.valueOf(rt).setScale(8, RoundingMode.HALF_EVEN);
+//	        Float rt = Float.parseFloat(json.getJSONObject("rates").get(currencyTo.getCode()).toString());
+//	        rate = BigDecimal.valueOf(rt).setScale(4,RoundingMode.HALF_EVEN);
+			
+		} else
 			LOG.info("Currency from and to must be filled to get rate");
 		LOG.debug("Currerncy conversion rate: {}",new Object[] {rate});
 		return rate;
+	}
+	
+	@SuppressWarnings("deprecation")
+	private Float validateAndGetRate(int dayCount, String wsUrl, Currency currencyFrom, Currency currencyTo, LocalDate date) throws MalformedURLException, JSONException, AxelorException {
+
+		HTTPResponse response = null;
+		
+		if (dayCount < 8) {
+			HTTPClient httpclient = new HTTPClient();
+			HTTPRequest request = new HTTPRequest();
+			Map<String, Object> headers = new HashMap<>();
+			headers.put("Accept", "application/json");
+			request.setHeaders(headers);
+			URL url = new URL(String.format(wsUrl, currencyFrom.getCode(), currencyTo.getCode(), date, date));
+			// URL url = new URL(String.format(wsUrl,currencyFrom.getCode()));
+			LOG.debug("Currency conversion webservice URL: {}", new Object[] { url.toString() });
+			request.setUrl(url);
+			request.setMethod(HTTPMethod.GET);
+			response = httpclient.execute(request);
+			// JSONObject json = new JSONObject(response.getContentAsString());
+			LOG.debug("Webservice response code: {}, reponse mesasage: {}", response.getStatusCode(),
+					response.getStatusMessage());
+			if (response.getStatusCode() != 200)
+				return -1f;
+			
+		} else {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CURRENCY_7), date.plus(Period.ofDays(1)),
+					appBaseService.getTodayDate()), IException.CONFIGURATION_ERROR);
+		}
+		
+		if (response.getContentAsString().isEmpty()) {
+			return this.validateAndGetRate((dayCount + 1), wsUrl, currencyFrom, currencyTo, date.minus(Period.ofDays(1)));
+		} else {
+			return this.getRateFromJson(currencyFrom, currencyTo, response);
+		}
 	}
 
 	private Float getRateFromJson(Currency currencyFrom, Currency currencyTo, HTTPResponse response) throws JSONException {
