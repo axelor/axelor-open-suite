@@ -80,7 +80,7 @@
         </panel>
 
         <panel name="financialData" title="Financial Data" colSpan="12" sidebar="true" collapseIf="true">
-            <field name="product" form-view="product-form" grid-view="product-grid" colSpan="6"/>
+            <field name="product" form-view="product-form" grid-view="product-grid" colSpan="6" onChange="action-team-task-record-product-selected"/>
             <field name="salePrice" colSpan="6"/>
             <field name="quantity" colSpan="6"/>
             <field name="unit" form-view="unit-form" grid-view="unit-grid" colSpan="6"/>
@@ -240,6 +240,12 @@
 
 	<action-record name="action-team-task-record-status-canceled" model="com.axelor.team.db.TeamTask">
 		<field name="status" expr="canceled"/>
+	</action-record>
+
+	<action-record name="action-team-task-record-product-selected" model="com.axelor.team.db.TeamTask">
+		<field name="salePrice" expr="eval: product.salePrice"/>
+		<field name="unit" expr="eval: product.salesUnit ?: product.unit"/>
+		<field name="currency" expr="eval: product.saleCurrency"/>
 	</action-record>
 
 </object-views>
