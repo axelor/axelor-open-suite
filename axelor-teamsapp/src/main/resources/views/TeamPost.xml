@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<grid name="team-post-grid" title="Team post" model="com.axelor.apps.teamsapp.db.TeamPost">
+		<field name="title" />
+	</grid>
+
+	<form name="team-post-form" title="Team post" model="com.axelor.apps.teamsapp.db.TeamPost">
+		<panel title="Overview">
+			<field name="statusSelect" widget="NavSelect"/>
+			<field name="name" />
+			<field name="title" />
+			<field name="typeSelect"/>
+			<field name="parentTeamPost" />
+			<field name="content"  widget="html" colSpan="12"/>
+		</panel>	
+		<panel title="Project">
+			<field name="project" colSpan="12"></field>
+		</panel>
+			<panel title="Members">
+			<field name="membersUserSet" form-view="user-form" grid-view="user-grid" widget="TagSelect" colSpan="12" showTitle="false"/>
+		</panel>
+		<panel-mail>
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	  	</panel-mail>
+	</form>
+
+</object-views>

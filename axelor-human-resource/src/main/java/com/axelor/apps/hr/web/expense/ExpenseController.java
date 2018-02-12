@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -204,7 +204,7 @@ public class ExpenseController {
 				.context("_activeCompany", user.getActiveCompany());
 	
 		if (employee == null || !employee.getHrManager()) {
-			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
+			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.managerUser = :_user")
 					.context("_user", user);
 		}
 		
@@ -222,7 +222,7 @@ public class ExpenseController {
 				   	.add("grid","expense-grid")
 				   	.add("form","expense-form");
 		
-		String domain = "self.user.employee.manager.employee.manager = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
+		String domain = "self.user.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
 
 		long nbExpenses =  Query.of(ExtraHours.class).filter(domain).bind("_user", user).bind("_activeCompany", activeCompany).count();
 		

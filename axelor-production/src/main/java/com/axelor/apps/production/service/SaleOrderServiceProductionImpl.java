@@ -40,8 +40,6 @@ import com.google.inject.persist.Transactional;
 public class SaleOrderServiceProductionImpl extends SaleOrderServiceSupplychainImpl {
 	
 	protected ProductionOrderSaleOrderService productionOrderSaleOrderService;
-	
-	@Inject
 	protected AppProductionService appProductionService;
 	
 	@Inject
@@ -49,12 +47,13 @@ public class SaleOrderServiceProductionImpl extends SaleOrderServiceSupplychainI
 			SequenceService sequenceService, PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo,
 			AppSaleService appSaleService, UserService userService, SaleOrderStockService saleOrderStockService, SaleOrderPurchaseService saleOrderPurchaseService,
 			ProductionOrderSaleOrderService productionOrderSaleOrderService, AppSupplychainService appSupplychainService, AccountConfigService accountConfigService,
-			AccountingSituationSupplychainService accountingSituationSupplychainService) {
+			AccountingSituationSupplychainService accountingSituationSupplychainService, AppProductionService appProductionService) {
 		
 		super(saleOrderLineService, saleOrderLineTaxService, sequenceService,partnerService, partnerRepo, saleOrderRepo, appSaleService,
 				userService, saleOrderStockService, saleOrderPurchaseService, appSupplychainService, accountConfigService, accountingSituationSupplychainService);
 
 		this.productionOrderSaleOrderService = productionOrderSaleOrderService;
+		this.appProductionService = appProductionService;
 		
 	}
 	

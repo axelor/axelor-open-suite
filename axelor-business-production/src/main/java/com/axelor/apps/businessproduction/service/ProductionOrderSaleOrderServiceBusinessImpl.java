@@ -29,11 +29,14 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
+import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.ProductionOrderSaleOrderServiceImpl;
+import com.axelor.apps.production.service.ProductionOrderService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -47,14 +50,16 @@ public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrder
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	protected ProductionOrderServiceBusinessImpl productionOrderService;
+	protected ProductionOrderServiceBusinessImpl productionOrderServiceBusinessImpl;
 
 	@Inject
-	public ProductionOrderSaleOrderServiceBusinessImpl(
-			UserService userInfoService, ProductionOrderServiceBusinessImpl productionOrderService) {
-		super(userInfoService);
+	public ProductionOrderSaleOrderServiceBusinessImpl(UserService userInfoService, UnitConversionService unitConversionService, 
+			ProductionOrderService productionOrderService, ProductionOrderRepository productionOrderRepo,
+			ProductionOrderServiceBusinessImpl productionOrderServiceBusinessImpl) {
+		super(userInfoService, unitConversionService, productionOrderService, productionOrderRepo);
 		
-		this.productionOrderService = productionOrderService;
+		this.productionOrderServiceBusinessImpl = productionOrderServiceBusinessImpl;
+		
 	}
 
 	@Override
@@ -107,7 +112,7 @@ public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrder
 			if(!unit.equals(saleOrderLine.getUnit())){
 				qty = unitConversionService.convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
 			}
-			return productionOrderRepo.save(productionOrderService.generateProductionOrder(product, billOfMaterial, qty, saleOrderLine.getSaleOrder().getProject(), LocalDateTime.now()));
+			return productionOrderRepo.save(productionOrderServiceBusinessImpl.generateProductionOrder(product, billOfMaterial, qty, saleOrderLine.getSaleOrder().getProject(), LocalDateTime.now()));
 
 		}
 

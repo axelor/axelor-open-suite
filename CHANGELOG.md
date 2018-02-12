@@ -27,12 +27,16 @@
 - Improved architecture of Message generation from a template, send email, and manage specific email account in a module without change the original behavior in the others
 - A freight carrier is now a carrier partner
 - Add purchase order line and sale order line import processes to compute tax related fields.
+- EndPeriod on currency conversion api
+
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
 - Fix the default amount on new invoice payment to use the amount remaining of the invoice.
 - Fix demo data en and fr on AppSuplychain to set the correct value on the field supplStockMoveMgtOnSO
 - Fix purchase order status in demo data.
+- Fix event hide when we create new from calendar and set domain for my calendar and team calendar
+
 
 ## [Unreleased 4.x]
 ### Improvements

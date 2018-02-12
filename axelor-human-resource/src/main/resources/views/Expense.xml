@@ -258,8 +258,8 @@
 	</action-method>
 	
 	<action-attrs name="action-expense-attrs-buttons">
-		<attribute name="hidden" for="validateButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager || __user__.employee?.hrManager))"/>
-		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.manager || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager || __user__.employee?.hrManager))"/>
+		<attribute name="hidden" for="validateButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
+		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
 		<attribute name="hidden" for="cancelButton" expr="eval: period?.toDate?.isAfter(__date__) || statusSelect == 6"/>
 	</action-attrs>
 	

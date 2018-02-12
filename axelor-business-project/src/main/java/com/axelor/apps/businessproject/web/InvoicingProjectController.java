@@ -52,6 +52,7 @@ public class InvoicingProjectController {
 	public void generateInvoice(ActionRequest request, ActionResponse response) throws AxelorException{
 		InvoicingProject invoicingProject = request.getContext().asType(InvoicingProject.class);
 		invoicingProject = invoicingProjectRepo.find(invoicingProject.getId());
+		invoicingProject.setStatusSelect(InvoicingProjectRepository.STATUS_INVOICED);
 		if(invoicingProject.getSaleOrderLineSet().isEmpty() && invoicingProject.getPurchaseOrderLineSet().isEmpty()
 				&& invoicingProject.getLogTimesSet().isEmpty() && invoicingProject.getExpenseLineSet().isEmpty() && invoicingProject.getElementsToInvoiceSet().isEmpty()
 				&& invoicingProject.getProjectSet().isEmpty()){
@@ -68,7 +69,6 @@ public class InvoicingProjectController {
 			throw new AxelorException(invoicingProject, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICING_PROJECT_USER));
 		}
 		Invoice invoice = invoicingProjectService.generateInvoice(invoicingProject);
-
 		response.setReload(true);
 		response.setView(ActionView
 				.define("Invoice")

@@ -57,7 +57,6 @@ import com.axelor.apps.production.service.app.AppProductionServiceImpl;
 import com.axelor.apps.production.service.app.ConfiguratorServiceProductionImpl;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.sale.service.ConfiguratorServiceImpl;
-import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;

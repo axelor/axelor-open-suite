@@ -16,30 +16,34 @@
     
 	<form name="production-order-form" title="Production order" model="com.axelor.apps.production.db.ProductionOrder" onNew="action-production-order-attrs-title-project"
 		onLoad="action-production-order-attrs-title-project" width="large">
-	  <panel name="main">
-	    <field name="productionOrderSeq"/>
-	    <field name="project" if-module="axelor-business-production" form-view="project-form" grid-view="project-grid" if=" __config__.app.getApp('production').getManageBusinessProduction()" />
-	    <field name="prioritySelect"/>
-	    <button name="showManufOrderWizard" title="Add Manuf. Order" width="50%"   onClick="save,action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
-	  </panel>  
-	  <panel name="addManufOrderWizard" title="Add Manuf. Order" hidden="true">
-	    <field name="$product" title="Product" type="many-to-one" target="com.axelor.apps.base.db.Product" canEdit="false" domain="self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'" form-view="product-form" grid-view="product-grid"/>
-	    <field name="$billOfMaterial" title="BOM" type="many-to-one" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-dummy-domain" target="com.axelor.apps.production.db.BillOfMaterial" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
-	    <field name="$qty" title="Quantity" type="decimal"/>
-	    <field name="$_startDate" widget="dateTime" title="Planned start date"/>
-	    <button name="AddManufOrder" title="Add Manuf. Order"   onClick="action-production-order-method-add-manuf-order"/>
-	  </panel>
+		<toolbar>
+			<button name="showManufOrderWizard" title="Add Manuf. Order" onClick="save,action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
+		</toolbar>
+		<panel name="main">
+		    <field name="productionOrderSeq"/>
+		    <field name="project" if-module="axelor-business-production" form-view="project-form" grid-view="project-grid" if=" __config__.app.getApp('production').getManageBusinessProduction()" />
+		    <field name="prioritySelect"/>
+		</panel>
+		<panel name="addManufOrderWizard" title="Add Manuf. Order" hidden="true">
+		    <field name="$product" title="Product" type="many-to-one" target="com.axelor.apps.base.db.Product" canEdit="false" domain="self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'" form-view="product-form" grid-view="product-grid"/>
+		    <field name="$billOfMaterial" title="BOM" type="many-to-one" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-dummy-domain" target="com.axelor.apps.production.db.BillOfMaterial" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
+		    <field name="$qty" title="Quantity" type="decimal"/>
+		    <field name="$_startDate" widget="dateTime" title="Planned start date"/>
+		    <button name="AddManufOrder" title="Add Manuf. Order" onClick="action-production-order-method-add-manuf-order"/>
+		</panel>
 	<!--         <button name="generateSaleOrder" title="Generate sale order" colSpan="2" onClick="action-production-order-method-generate-sale-order" showIf="businessProject"/> -->
-	  <panel-related field="manufOrderList" colSpan="12" edit-window="blank">
-        <field name="manufOrderSeq"/>      
-        <field name="product" form-view="product-form" grid-view="product-grid"/>
-        <field name="qty"/>
-        <field name="plannedStartDateT"/>
-        <field name="plannedEndDateT"/>
-        <field name="priority"/>
-        <field name="statusSelect"/>	  	
-	  </panel-related>
-	  <panel-dashlet   action="action-production-order-view-operation-order"/>
+		<panel-tabs>
+			<panel-related field="manufOrderList" colSpan="12" edit-window="blank">
+				<field name="manufOrderSeq"/>
+				<field name="product" form-view="product-form" grid-view="product-grid"/>
+				<field name="qty"/>
+				<field name="plannedStartDateT"/>
+				<field name="plannedEndDateT"/>
+				<field name="priority"/>
+				<field name="statusSelect"/>
+			</panel-related>
+			<panel-dashlet action="action-production-order-view-operation-order" title="Operation order"/>
+		</panel-tabs>
 	</form>
     
     <action-attrs if-module="axelor-business-production" name="action-production-order-attrs-title-project">
@@ -74,11 +78,9 @@
   	</action-view>
     
     <search-filters name="production-order-filters" model="com.axelor.apps.production.db.ProductionOrder" title="Production order filters">
-
 		<filter title="Production orders closed">
 			<domain>self.isClosed = true</domain>
 		</filter>
 	</search-filters>
-	
 	
 </object-views>

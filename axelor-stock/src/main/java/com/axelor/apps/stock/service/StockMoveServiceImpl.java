@@ -175,7 +175,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 		);
 
 		stockMove.setTypeSelect(getStockMoveType(fromStockLocation, toStockLocation));
-		if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+		if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+				&& stockMove.getPartner() != null) {
 			setDefaultAutoMailSettings(stockMove);
 		}
 

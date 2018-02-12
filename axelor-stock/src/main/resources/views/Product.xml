@@ -41,9 +41,6 @@
     
     <form name="stock-product-form" title="Product" model="com.axelor.apps.base.db.Product" width="large"
     	onLoad="action-stock-product-method-set-stock-per-day">
-		<toolbar>
-			<button name="showStockMoveLines" title="Show stock move lines" onClick="action-stock-product-view-stock-move-line"/>
-		</toolbar>
     	<panel name="main">
 	   		<panel colSpan="2">
 	     		<field name="picture" showTitle="false" colSpan="12" widget="Image"/>
@@ -73,6 +70,7 @@
 		<panel name="main">
 			<field name="$date" title="Date" type="date"/>
 			<field name="$qty" title="Qty" type="decimal"/>
+			<button name="showStockMoveLines" title="Show stock move lines" onClick="action-stock-product-method-display-stock-move-line" />
 		</panel>
 	</form>
 	
@@ -80,12 +78,8 @@
 		<call class="com.axelor.apps.stock.web.ProductStockController" method="setStockPerDay"/>
 	</action-method>
 	
-	<action-view name="action-stock-product-view-stock-move-line" title="Stock Move Lines"
-		model="com.axelor.apps.stock.db.StockMoveLine">
-		<view type="grid" name="stock-move-line-all-grid"/>
-		<view type="form" name="stock-move-line-all-form"/>
-		<domain>self.product.id = :_id</domain>
-		<context name="_id" expr="eval: id"/>
-	</action-view>
+	<action-method name="action-stock-product-method-display-stock-move-line">
+		<call class="com.axelor.apps.stock.web.ProductStockController" method="displayStockMoveLine"/>
+	</action-method>
 
 </object-views>
