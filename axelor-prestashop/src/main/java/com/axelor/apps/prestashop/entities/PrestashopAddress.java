@@ -27,8 +27,8 @@ public class PrestashopAddress extends PrestashopIdentifiableEntity {
 	private String mobilePhone;
 	private String identificationDocumentNumber;
 	private boolean deleted;
-	private LocalDateTime addDate;
-	private LocalDateTime updateDate;
+	private LocalDateTime addDate = LocalDateTime.now();
+	private LocalDateTime updateDate = LocalDateTime.now();
 
 	@XmlElement(name="id_customer")
 	public Integer getCustomerId() {

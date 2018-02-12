@@ -19,32 +19,27 @@ package com.axelor.apps.prestashop.exports.service;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Locale;
+import java.util.Map;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AppPrestashop;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.prestashop.db.Addresses;
-import com.axelor.apps.prestashop.db.Prestashop;
+import com.axelor.apps.prestashop.entities.PrestashopAddress;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
-import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
-import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -52,138 +47,123 @@ import com.google.inject.persist.Transactional;
 
 @Singleton
 public class ExportAddressServiceImpl implements ExportAddressService {
+	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private PartnerRepository partnerRepo;
 	private PartnerAddressRepository partnerAddressRepo;
 
 	@Inject
-	public ExportAddressServiceImpl(PartnerRepository partnerRepo, PartnerAddressRepository partnerAddressRepo) {
-		this.partnerRepo = partnerRepo;
+	public ExportAddressServiceImpl(PartnerAddressRepository partnerAddressRepo) {
 		this.partnerAddressRepo = partnerAddressRepo;
 	}
 
 	@Override
 	@Transactional
-	public void exportAddress(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport) throws IOException,
-			PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException {
+	public void exportAddress(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter logBuffer) throws IOException, PrestaShopWebserviceException {
 		int done = 0;
-		int anomaly = 0;
+		int errors = 0;
 
-		bwExport.newLine();
-		bwExport.write("-----------------------------------------------");
-		bwExport.newLine();
-		bwExport.write("Address");
-		List<PartnerAddress> partnerAddresses = null;
-		String schema = null;
-		Document document = null;
+		logBuffer.write(String.format("%n====== ADDRESSES ======%n"));
 
+		List<PartnerAddress> addresses = null;
 		if(endDate == null) {
-			partnerAddresses = partnerAddressRepo.all().filter("self.partner.prestaShopId != null").fetch();
+			addresses = partnerAddressRepo.all().filter("self.partner.prestaShopId != null").fetch();
 		} else {
-			partnerAddresses = partnerAddressRepo.all().filter("(self.createdOn > ?1 OR self.updatedOn > ?2 OR self.address.updatedOn > ?3 OR self.address.prestaShopId = null) AND self.partner.prestaShopId != null", endDate, endDate, endDate).fetch();
+			addresses = partnerAddressRepo.all().filter("(self.createdOn > ?1 OR self.updatedOn > ?2 OR self.address.updatedOn > ?3 OR self.address.prestaShopId = null) AND self.partner.prestaShopId != null", endDate, endDate, endDate).fetch();
 		}
-		for (PartnerAddress partnerAddress : partnerAddresses) {
+
+		final PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
+
+		final List<PrestashopAddress> remoteAddresses = ws.fetchAll(PrestashopResourceType.ADDRESSES);
+		final Map<Integer, PrestashopAddress> addressesById = new HashMap<>();
+		for(PrestashopAddress a : remoteAddresses) {
+			addressesById.put(a.getId(), a);
+		}
+
+		for (PartnerAddress partnerAddress : addresses) {
+			final Address localAddress = partnerAddress.getAddress();
+
+			logBuffer.write(String.format("Exporting partner address #%d (%s) – ", partnerAddress.getId(), localAddress.getFullName()));
 
 			try {
-				Addresses address = new Addresses();
-				address.setId(Objects.toString(partnerAddress.getAddress().getPrestaShopId(), null));
-				address.setId_customer(Objects.toString(partnerAddress.getPartner().getPrestaShopId(), null));
+				PrestashopAddress remoteAddress;
+				if(localAddress.getPrestaShopId() != null) {
+					logBuffer.write("prestashop id=" + localAddress.getPrestaShopId());
+					remoteAddress = addressesById.get(localAddress.getPrestaShopId());
+					if(remoteAddress == null) {
+						logBuffer.write(String.format(" [ERROR] Not found remotely%n"));
+						log.error("Unable to fetch remote address #{} ({}), something's probably very wrong, skipping",
+								localAddress.getPrestaShopId(), localAddress.getFullName());
+						++errors;
+						continue;
+					}
+				} else {
+					if(partnerAddress.getPartner().getPrestaShopId() == null) {
+						logBuffer.write(String.format(" [WARNING] Address belongs to a not-yet synced customer, skipping%n"));
+						continue;
+					}
+					remoteAddress = new PrestashopAddress();
+					remoteAddress.setCustomerId(partnerAddress.getPartner().getPrestaShopId());
+					remoteAddress.setAlias(I18n.getBundle(new Locale(partnerAddress.getPartner().getLanguageSelect())).getString("Main address"));
 
-				if(partnerAddress.getPartner().getPartnerTypeSelect() == 1) {
-
-					if(!partnerAddress.getPartner().getContactPartnerSet().isEmpty()) {
-
-						if (partnerAddress.getPartner().getContactPartnerSet().iterator().next().getName() != null &&
-								partnerAddress.getPartner().getContactPartnerSet().iterator().next().getFirstName() != null) {
-
-							address.setCompany(partnerAddress.getPartner().getName());
-							address.setFirstname(partnerAddress.getPartner().getContactPartnerSet().iterator().next().getFirstName());
-							address.setLastname(partnerAddress.getPartner().getContactPartnerSet().iterator().next().getName());
-
+					// Do this on creation, it seems hazardous to update data since user can update them on its
+					// side too… I guess import job should trigger new address creation when too much data
+					// differs
+					if(partnerAddress.getPartner().getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_INDIVIDUAL) {
+						remoteAddress.setFirstname(partnerAddress.getPartner().getFirstName());
+						remoteAddress.setLastname(partnerAddress.getPartner().getName());
+					} else {
+						remoteAddress.setCompany(partnerAddress.getPartner().getName());
+						if(partnerAddress.getPartner().getContactPartnerSet().isEmpty() == false) {
+							Partner localContact = partnerAddress.getPartner().getContactPartnerSet().iterator().next();
+							remoteAddress.setFirstname(localContact.getFirstName());
+							remoteAddress.setLastname(localContact.getName());
 						} else {
-							throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_COMPANY));
+							logBuffer.write(String.format(" [WARNING] No contact filled, required for Pretashop, skipping%n"));
+							continue;
+						}
+					}
+
+					if(localAddress.getCity() == null) {
+						if(StringUtils.isEmpty(localAddress.getAddressL6())) {
+							logBuffer.write(String.format(" [WARNING] No city filled, it is required for Prestashop, skipping%n"));
+							continue;
+						} else {
+							// Don't try to split city/zipcode since this can cause more issues than it solves
+							remoteAddress.setCity(localAddress.getAddressL6());
 						}
 					} else {
-						throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_CONTACT));
+						remoteAddress.setCity(localAddress.getCity().getName());
+						remoteAddress.setZipcode(localAddress.getCity().getZip());
 					}
+					remoteAddress.setAddress1(localAddress.getAddressL4());
+					remoteAddress.setAddress2(localAddress.getAddressL5());
 
-				} else {
-					if (partnerAddress.getPartner().getName() != null && partnerAddress.getPartner().getFirstName() != null) {
-						address.setFirstname(partnerAddress.getPartner().getFirstName());
-						address.setLastname(partnerAddress.getPartner().getName());
-					} else {
-						throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_COMPANY));
+					if(localAddress.getAddressL7Country() == null) {
+						logBuffer.write(String.format(" [WARNING] No country filled, it is required for Prestashop, skipping%n"));
+						continue;
 					}
+					if(localAddress.getAddressL7Country().getPrestaShopId() == null) {
+						logBuffer.write(String.format(" [WARNING] Bound country has not be synced yet, skipping%n"));
+						continue;
+					}
+					remoteAddress.setCountryId(localAddress.getAddressL7Country().getPrestaShopId());
 				}
 
-				address.setId_country(Objects.toString(partnerAddress.getAddress().getAddressL7Country().getPrestaShopId(), null));
-				address.setAlias("Main Addresses");
+				// Don't know if we should actually synchronize something on update…
 
-				if (partnerAddress.getAddress().getCity() != null) {
-
-					String postCode = null;
-					String addString = partnerAddress.getAddress().getAddressL6();
-					String[] words = addString.split("\\s");
-
-					if(partnerAddress.getAddress().getCity().getHasZipOnRight()) {
-						postCode = words[1];
-					} else {
-						postCode = words[0];
-					}
-
-					address.setAddress1(partnerAddress.getAddress().getAddressL4());
-					address.setAddress2(partnerAddress.getAddress().getAddressL5());
-					address.setPostcode(postCode);
-					address.setCity(partnerAddress.getAddress().getCity().getName());
-				} else {
-					throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.INVALID_CITY));
-				}
-
-				Prestashop prestaShop = new Prestashop();
-				prestaShop.setPrestashop(address);
-
-				StringWriter sw = new StringWriter();
-				JAXBContext contextObj = JAXBContext.newInstance(Prestashop.class);
-				Marshaller marshallerObj = contextObj.createMarshaller();
-				marshallerObj.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-				marshallerObj.marshal(prestaShop, sw);
-				schema = sw.toString();
-
-				PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api/addresses?schema=synopsis", appConfig.getPrestaShopKey());
-				Options options = new Options();
-				options.setResourceType(PrestashopResourceType.ADDRESSES);
-				options.setXmlPayload(schema);
-
-				if (partnerAddress.getAddress().getPrestaShopId() == null) {
-					document = ws.add(options);
-				} else {
-					options.setRequestedId(partnerAddress.getAddress().getPrestaShopId());
-					ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
-					document = ws.edit(options);
-				}
-
-				partnerAddress.getAddress().setPrestaShopId(Integer.valueOf(document.getElementsByTagName("id").item(0).getTextContent()));
-				partnerRepo.save(partnerAddress.getPartner());
-				done++;
-
-			} catch (AxelorException e) {
-				bwExport.newLine();
-				bwExport.newLine();
-				bwExport.write("Id - " + partnerAddress.getAddress().getId().toString() + " " + e.getMessage());
-				anomaly++;
-				continue;
-
-			} catch (Exception e) {
-				bwExport.newLine();
-				bwExport.newLine();
-				bwExport.write("Id - " + partnerAddress.getAddress().getId().toString() + " " + e.getMessage());
-				anomaly++;
-				continue;
+				remoteAddress.setUpdateDate(LocalDateTime.now());
+				remoteAddress = ws.save(PrestashopResourceType.ADDRESSES, remoteAddress);
+				logBuffer.write(String.format(" [SUCCESS]%n"));
+				localAddress.setPrestaShopId(remoteAddress.getId());
+				++done;
+			} catch (PrestaShopWebserviceException e) {
+				logBuffer.write(String.format(" [ERROR] %s (full trace is in application logs)%n", e.getLocalizedMessage()));
+				log.error(String.format("Exception while synchronizing address #%d (%s)", localAddress.getId(), localAddress.getFullName()), e);
+				++errors;
 			}
 		}
 
-		bwExport.newLine();
-		bwExport.newLine();
-		bwExport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);
+		logBuffer.write(String.format("%n=== END OF ADDRESSES EXPORT, done: %d, errors: %d ===%n", done, errors));
+
 	}
 }
