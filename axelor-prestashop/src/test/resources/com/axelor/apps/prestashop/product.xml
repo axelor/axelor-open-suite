@@ -108,7 +108,11 @@
 			</language>
 		</available_later>
 		<associations>
-			<categories nodeType="category" api="categories"/>
+			<categories nodeType="category" api="categories">
+				<category xlink:href="http://192.168.1.23/api/categories/50">
+					<id><![CDATA[ 50 ]]></id>
+				</category>
+			</categories>
 			<images nodeType="image" api="images">
 				<image xlink:href="http://192.168.1.23/api/images/products/21/21">
 					<id><![CDATA[21]]></id>

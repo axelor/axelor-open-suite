@@ -43,6 +43,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.prestashop.entities.Associations.AvailableStocksAssociationElement;
 import com.axelor.apps.prestashop.entities.Associations.AvailableStocksAssociationsEntry;
+import com.axelor.apps.prestashop.entities.Associations.CategoriesAssociationElement;
 import com.axelor.apps.prestashop.entities.PrestashopAvailableStock;
 import com.axelor.apps.prestashop.entities.PrestashopImage;
 import com.axelor.apps.prestashop.entities.PrestashopProduct;
@@ -173,6 +174,7 @@ public class ExportProductServiceImpl implements ExportProductService {
 								.replaceAll(" ", "-"));
 						// TODO Should we update when product name changes?
 						remoteProduct.setLinkRewrite(str);
+						remoteProduct.setPositionInCategory(0);
 					} else {
 						logBuffer.write(String.format("found remotely using its reference %s", cleanedReference));
 					}
@@ -183,6 +185,13 @@ public class ExportProductServiceImpl implements ExportProductService {
 					remoteProduct.setDefaultCategoryId(localProduct.getProductCategory().getPrestaShopId());
 				} else {
 					remoteProduct.setDefaultCategoryId(remoteRootCategory.getId());
+				}
+
+				final int defaultCategoryId = remoteProduct.getDefaultCategoryId();
+				if(remoteProduct.getAssociations().getCategories().getAssociations().stream().anyMatch(c -> c.getId() == defaultCategoryId) == false) {
+					CategoriesAssociationElement e = new CategoriesAssociationElement();
+					e.setId(defaultCategoryId);
+					remoteProduct.getAssociations().getCategories().getAssociations().add(e);
 				}
 
 				if(localProduct.getSalePrice() != null) {

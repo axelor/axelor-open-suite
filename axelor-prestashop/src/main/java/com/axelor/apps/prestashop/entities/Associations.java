@@ -12,6 +12,7 @@ import org.w3c.dom.Element;
 public class Associations {
 	private ImagesAssociationsEntry images;
 	private AvailableStocksAssociationsEntry availableStocks;
+	private CategoriesAssociationsEntry categories;
 	private List<Element> additionalEntries;
 
 	public ImagesAssociationsEntry getImages() {
@@ -22,13 +23,21 @@ public class Associations {
 		this.images = images;
 	}
 
+	@XmlElement(name="stock_availables")
 	public AvailableStocksAssociationsEntry getAvailableStocks() {
 		return availableStocks;
 	}
 
-	@XmlElement(name="stock_availables")
 	public void setAvailableStocks(AvailableStocksAssociationsEntry availableStocks) {
 		this.availableStocks = availableStocks;
+	}
+
+	public CategoriesAssociationsEntry getCategories() {
+		return categories;
+	}
+
+	public void setCategories(CategoriesAssociationsEntry categories) {
+		this.categories = categories;
 	}
 
 	@XmlAnyElement
@@ -90,6 +99,23 @@ public class Associations {
 		}
 	}
 
+	public static class CategoriesAssociationsEntry extends AssociationsEntry {
+		private List<CategoriesAssociationElement> associations = new LinkedList<>();
+
+		public CategoriesAssociationsEntry() {
+			super("category", "categories");
+		}
+
+		@XmlElement(name="category")
+		public List<CategoriesAssociationElement> getAssociations() {
+			return associations;
+		}
+
+		public void setAssociations(List<CategoriesAssociationElement> associations) {
+			this.associations = associations;
+		}
+	}
+
 	public static class ImagesAssociationElement {
 		private String href;
 		private Integer id;
@@ -141,6 +167,28 @@ public class Associations {
 
 		public void setProductAttributeId(Integer productAttributeId) {
 			this.productAttributeId = productAttributeId;
+		}
+	}
+
+	public static class CategoriesAssociationElement {
+		private String href;
+		private Integer id;
+
+		@XmlAttribute(name="href", namespace="http://www.w3.org/1999/xlink")
+		public String getHref() {
+			return href;
+		}
+
+		public void setHref(String href) {
+			this.href = href;
+		}
+
+		public Integer getId() {
+			return id;
+		}
+
+		public void setId(Integer id) {
+			this.id = id;
 		}
 	}
 }

@@ -175,6 +175,7 @@ public class UnmarshalTest {
 		Assert.assertNotNull(product.getAssociations());
 		Assert.assertNotNull(product.getAssociations().getImages());
 		Assert.assertNotNull(product.getAssociations().getAvailableStocks());
+		Assert.assertNotNull(product.getAssociations().getCategories());
 	}
 
 	@Test
