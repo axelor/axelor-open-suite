@@ -25,7 +25,10 @@ import com.axelor.apps.account.service.debtrecovery.DebtRecoveryActionService;
 import com.axelor.apps.account.service.debtrecovery.DebtRecoveryService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -99,6 +102,11 @@ public class BatchDebtRecovery extends BatchStrategy {
 		List<Long> anomalyList = Lists.newArrayList(0L);
 		List<Long> notRemindedList = Lists.newArrayList(0L);
 		Company company = batch.getAccountingBatch().getCompany();
+
+		List<Partner> blockedPartners = Beans.get(BlockingService.class)
+				.getListOfBlockedPartner(company, BlockingRepository.REMINDER_BLOCKING);
+		String blockedPartnerIds = StringTool.getIdListString(blockedPartners);
+
 		Query<Partner> query = partnerRepository
 				.all()
 				.filter("self.isContact = false " +
@@ -107,12 +115,13 @@ public class BatchDebtRecovery extends BatchStrategy {
 						"AND self.isCustomer = true " +
 						"AND :_batch NOT MEMBER OF self.batchSet " +
 						"AND self.id NOT IN (:anomalyList) " +
-						"AND self.id NOT IN (:notRemindedList)")
+						"AND self.id NOT IN (:notRemindedList)" +
+						"AND self.id NOT IN (:blockedPartner)")
 				.bind("_company", company)
 				.bind("anomalyList", anomalyList)
 				.bind("notRemindedList", notRemindedList)
-				.bind("_batch", batch);
-
+				.bind("_batch", batch)
+				.bind("blockedPartner", blockedPartnerIds);
 
 		for (List<Partner> partnerList; !(partnerList = query.fetch(FETCH_LIMIT)).isEmpty(); JPA.clear()) {
 			for (Partner partner : partnerList) {
