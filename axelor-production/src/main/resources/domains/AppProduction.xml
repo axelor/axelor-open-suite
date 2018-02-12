@@ -5,7 +5,7 @@
 	<module name="base" package="com.axelor.apps.base.db"/>
 
 	<entity name="AppProduction" lang="java" cachable="true" extends="App">
-		<boolean name="prodOrderMgtOnSO" title="Production order management" default="false"/>
+		<boolean name="prodOrderMgtOnSO" title="Production order management from sale order" default="false"/>
 		<boolean name="productionOrderGenerationAuto" title="Generate production orders automatically" default="false"/>
     	
     	<many-to-one name="workCenterProduct" ref="com.axelor.apps.base.db.Product" title="Default work center product"/>
