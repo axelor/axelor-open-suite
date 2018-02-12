@@ -195,7 +195,7 @@ public class LeaveController {
 			leaveRequest = leaveRequestRepositoryProvider.get().find(leaveRequest.getId());
 
 			if(leaveRequest.getUser().getEmployee().getWeeklyPlanning() == null) {
-				response.setAlert(String.format(IExceptionMessage.EMPLOYEE_PLANNING, leaveRequest.getUser().getEmployee().getName()));
+				response.setAlert(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PLANNING), leaveRequest.getUser().getEmployee().getName()));
 				return;
 			}
 			if(leaveRequest.getLeaveLine().getQuantity().subtract(leaveRequest.getDuration()).compareTo(BigDecimal.ZERO ) < 0 ){
