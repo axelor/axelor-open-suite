@@ -439,6 +439,8 @@ public class DebtRecoveryService {
 					// TODO Alarm ?
 					TraceBackService.trace(new AxelorException(debtRecovery, IException.INCONSISTENCY, "%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_4), AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()));
 				}
+			} else {
+				debtRecoverySessionService.debtRecoveryInitialization(debtRecovery);
 			}
 		} else {
 			debtRecoverySessionService.debtRecoveryInitialization(debtRecovery);
