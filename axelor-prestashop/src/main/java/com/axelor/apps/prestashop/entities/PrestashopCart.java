@@ -26,7 +26,7 @@ public class PrestashopCart extends PrestashopIdentifiableEntity {
 	private boolean mobileTheme;
 	private String deliveryOption;
 	private String secureKey;
-	private boolean allowSeparatedPackage;
+	private boolean separatedPackageAllowed;
 	private LocalDateTime addDate = LocalDateTime.now();
 	private LocalDateTime updateDate = LocalDateTime.now();
 	private Associations associations;
@@ -128,6 +128,7 @@ public class PrestashopCart extends PrestashopIdentifiableEntity {
 		this.gift = gift;
 	}
 
+	@XmlElement(name="gift_message")
 	public String getGiftMessage() {
 		return giftMessage;
 	}
@@ -136,6 +137,7 @@ public class PrestashopCart extends PrestashopIdentifiableEntity {
 		this.giftMessage = giftMessage;
 	}
 
+	@XmlElement(name="mobile_theme")
 	public boolean isMobileTheme() {
 		return mobileTheme;
 	}
@@ -144,6 +146,7 @@ public class PrestashopCart extends PrestashopIdentifiableEntity {
 		this.mobileTheme = mobileTheme;
 	}
 
+	@XmlElement(name="delivery_option")
 	public String getDeliveryOption() {
 		return deliveryOption;
 	}
@@ -152,6 +155,7 @@ public class PrestashopCart extends PrestashopIdentifiableEntity {
 		this.deliveryOption = deliveryOption;
 	}
 
+	@XmlElement(name="secure_key")
 	public String getSecureKey() {
 		return secureKey;
 	}
@@ -160,12 +164,13 @@ public class PrestashopCart extends PrestashopIdentifiableEntity {
 		this.secureKey = secureKey;
 	}
 
-	public boolean isAllowSeparatedPackage() {
-		return allowSeparatedPackage;
+	@XmlElement(name="allow_seperated_package")
+	public boolean isSeparatedPackageAllowed() {
+		return separatedPackageAllowed;
 	}
 
-	public void setAllowSeparatedPackage(boolean allowSeparatedPackage) {
-		this.allowSeparatedPackage = allowSeparatedPackage;
+	public void setSeparatedPackageAllowed(boolean separatedPackageAllowed) {
+		this.separatedPackageAllowed = separatedPackageAllowed;
 	}
 
 	@XmlElement(name="date_add")

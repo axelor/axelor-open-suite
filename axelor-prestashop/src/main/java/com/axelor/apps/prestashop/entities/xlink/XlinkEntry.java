@@ -1,9 +1,14 @@
 package com.axelor.apps.prestashop.entities.xlink;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.w3c.dom.Element;
 
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 
@@ -25,6 +30,8 @@ public abstract class XlinkEntry {
 
 	@XmlAttribute
 	private boolean head;
+
+	private List<Element> additionalProperties = new LinkedList<>();
 
 	public String getHref() {
 		return href;
@@ -48,6 +55,15 @@ public abstract class XlinkEntry {
 
 	public boolean isHead() {
 		return head;
+	}
+
+	@XmlAnyElement
+	public List<Element> getAdditionalProperties() {
+		return additionalProperties;
+	}
+
+	public void setAdditionalProperties(List<Element> additionalProperties) {
+		this.additionalProperties = additionalProperties;
 	}
 
 	public abstract PrestashopResourceType getEntryType();
