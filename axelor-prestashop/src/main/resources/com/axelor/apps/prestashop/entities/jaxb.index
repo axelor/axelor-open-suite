@@ -3,6 +3,7 @@ ListContainer$CartsContainer
 ListContainer$CountriesContainer
 ListContainer$CurrenciesContainer
 ListContainer$CustomersContainer
+ListContainer$OrderHistoriesContainer
 ListContainer$OrdersContainer
 ListContainer$ProductCategoriesContainer
 ListContainer$ProductsContainer
@@ -16,5 +17,6 @@ PrestashopCurrency
 PrestashopCustomer
 PrestashopImage
 PrestashopOrder
+PrestashopOrderHistory
 PrestashopProductCategory
 PrestashopProduct

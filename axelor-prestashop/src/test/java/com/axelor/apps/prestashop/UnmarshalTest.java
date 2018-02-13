@@ -20,6 +20,7 @@ import com.axelor.apps.prestashop.entities.ListContainer.CartsContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CountriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CurrenciesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CustomersContainer;
+import com.axelor.apps.prestashop.entities.ListContainer.OrderHistoriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.OrdersContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.ProductCategoriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.ProductsContainer;
@@ -32,6 +33,7 @@ import com.axelor.apps.prestashop.entities.PrestashopCurrency;
 import com.axelor.apps.prestashop.entities.PrestashopCustomer;
 import com.axelor.apps.prestashop.entities.PrestashopImage;
 import com.axelor.apps.prestashop.entities.PrestashopOrder;
+import com.axelor.apps.prestashop.entities.PrestashopOrderHistory;
 import com.axelor.apps.prestashop.entities.PrestashopProduct;
 import com.axelor.apps.prestashop.entities.PrestashopProductCategory;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
@@ -418,5 +420,30 @@ public class UnmarshalTest {
 		Assert.assertEquals(OrdersContainer.class, envelop.getContent().getClass());
 		OrdersContainer orders = envelop.getContent();
 		Assert.assertEquals(1, orders.getEntities().size());
+	}
+
+	@Test
+	public void testOrderHistory() throws JAXBException {
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("order-history.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(PrestashopOrderHistory.class, envelop.getContent().getClass());
+		PrestashopOrderHistory history = envelop.getContent();
+
+		Assert.assertEquals(Integer.valueOf(1), history.getId());
+		Assert.assertEquals(Integer.valueOf(1), history.getEmployeeId());
+		Assert.assertEquals(2, history.getOrderStateId());
+		Assert.assertEquals(1, history.getOrderId());
+		Assert.assertEquals(LocalDateTime.of(2018, 2, 13, 9, 36, 22), history.getAddDate());
+	}
+
+	@Test
+	public void testOrderHistories() throws JAXBException {
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("order-histories.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(OrderHistoriesContainer.class, envelop.getContent().getClass());
+		OrderHistoriesContainer histories = envelop.getContent();
+		Assert.assertEquals(1, histories.getEntities().size());
 	}
 }

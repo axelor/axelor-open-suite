@@ -47,6 +47,10 @@ public abstract class ListContainer<T extends PrestashopContainerEntity> extends
 	public static class CustomersContainer extends ListContainer<PrestashopCustomer> {
 	}
 
+	@XmlRootElement(name="order_histories")
+	public static class OrderHistoriesContainer extends ListContainer<PrestashopOrder> {
+	}
+
 	@XmlRootElement(name="orders")
 	public static class OrdersContainer extends ListContainer<PrestashopOrder> {
 	}
