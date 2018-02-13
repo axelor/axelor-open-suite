@@ -40,11 +40,21 @@ import com.axelor.apps.prestashop.entities.xlink.XlinkEntry;
 import com.google.common.collect.Sets;
 
 public class UnmarshalTest {
+	private Unmarshaller getUnmarshaller() throws JAXBException {
+		return getUnmarshaller("com.axelor.apps.prestashop.entities");
+	}
+
+	private Unmarshaller getUnmarshaller(final String contextPath) throws JAXBException {
+		Unmarshaller um = JAXBContext
+				.newInstance("com.axelor.apps.prestashop.entities:com.axelor.apps.prestashop.entities.xlink")
+				.createUnmarshaller();
+		um.setEventHandler(new DefaultValidationEventHandler());
+		return um;
+	}
 
 	@Test
 	public void testApi() throws JAXBException {
-		Prestashop envelop = (Prestashop)JAXBContext.newInstance("com.axelor.apps.prestashop.entities:com.axelor.apps.prestashop.entities.xlink")
-				.createUnmarshaller()
+		Prestashop envelop = (Prestashop) getUnmarshaller("com.axelor.apps.prestashop.entities:com.axelor.apps.prestashop.entities.xlink")
 				.unmarshal(getClass().getResourceAsStream("api.xml"));
 
 		final Set<PrestashopResourceType> expectedEntries = Sets.newHashSet(
@@ -73,9 +83,7 @@ public class UnmarshalTest {
 
 	@Test
 	public void testCurrency() throws JAXBException {
-		Prestashop envelop = (Prestashop) JAXBContext.newInstance("com.axelor.apps.prestashop.entities")
-				.createUnmarshaller()
-				.unmarshal(getClass().getResourceAsStream("currency.xml"));
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("currency.xml"));
 
 		Assert.assertNotNull(envelop.getContent());
 		Assert.assertEquals(PrestashopCurrency.class, envelop.getContent().getClass());
@@ -90,9 +98,7 @@ public class UnmarshalTest {
 
 	@Test
 	public void testCurrencies() throws JAXBException {
-		Prestashop envelop = (Prestashop) JAXBContext.newInstance("com.axelor.apps.prestashop.entities")
-				.createUnmarshaller()
-				.unmarshal(getClass().getResourceAsStream("currencies.xml"));
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("currencies.xml"));
 
 		Assert.assertNotNull(envelop.getContent());
 		Assert.assertEquals(CurrenciesContainer.class, envelop.getContent().getClass());
@@ -102,9 +108,7 @@ public class UnmarshalTest {
 
 	@Test
 	public void testCountry() throws JAXBException {
-		Prestashop envelop = (Prestashop) JAXBContext.newInstance("com.axelor.apps.prestashop.entities")
-				.createUnmarshaller()
-				.unmarshal(getClass().getResourceAsStream("country.xml"));
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("country.xml"));
 
 
 		Assert.assertNotNull(envelop.getContent());
@@ -120,9 +124,7 @@ public class UnmarshalTest {
 
 	@Test
 	public void testCountries() throws JAXBException {
-		Prestashop envelop = (Prestashop) JAXBContext.newInstance("com.axelor.apps.prestashop.entities")
-				.createUnmarshaller()
-				.unmarshal(getClass().getResourceAsStream("countries.xml"));
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("countries.xml"));
 
 		Assert.assertNotNull(envelop.getContent());
 		Assert.assertEquals(CountriesContainer.class, envelop.getContent().getClass());
@@ -132,9 +134,7 @@ public class UnmarshalTest {
 
 	@Test
 	public void testProductCategory() throws JAXBException {
-		Unmarshaller um = JAXBContext.newInstance("com.axelor.apps.prestashop.entities").createUnmarshaller();
-		um.setEventHandler(new DefaultValidationEventHandler());
-		Prestashop envelop = (Prestashop)um.unmarshal(getClass().getResourceAsStream("product-category.xml"));
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("product-category.xml"));
 
 
 		Assert.assertNotNull(envelop.getContent());
@@ -157,9 +157,7 @@ public class UnmarshalTest {
 
 	@Test
 	public void testProductCategories() throws JAXBException {
-		Prestashop envelop = (Prestashop) JAXBContext.newInstance("com.axelor.apps.prestashop.entities")
-				.createUnmarshaller()
-				.unmarshal(getClass().getResourceAsStream("product-categories.xml"));
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("product-categories.xml"));
 
 		Assert.assertNotNull(envelop.getContent());
 		Assert.assertEquals(ProductCategoriesContainer.class, envelop.getContent().getClass());
@@ -169,9 +167,7 @@ public class UnmarshalTest {
 
 	@Test
 	public void testProduct() throws JAXBException {
-		Unmarshaller um = JAXBContext.newInstance("com.axelor.apps.prestashop.entities").createUnmarshaller();
-		um.setEventHandler(new DefaultValidationEventHandler());
-		Prestashop envelop = (Prestashop)um.unmarshal(getClass().getResourceAsStream("product.xml"));
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("product.xml"));
 
 		Assert.assertNotNull(envelop.getContent());
 		Assert.assertEquals(PrestashopProduct.class, envelop.getContent().getClass());
@@ -186,9 +182,7 @@ public class UnmarshalTest {
 
 	@Test
 	public void testProducts() throws JAXBException {
-		Prestashop envelop = (Prestashop) JAXBContext.newInstance("com.axelor.apps.prestashop.entities")
-				.createUnmarshaller()
-				.unmarshal(getClass().getResourceAsStream("products.xml"));
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("products.xml"));
 
 		Assert.assertNotNull(envelop.getContent());
 		Assert.assertEquals(ProductsContainer.class, envelop.getContent().getClass());
@@ -198,9 +192,7 @@ public class UnmarshalTest {
 
 	@Test
 	public void testImage() throws JAXBException {
-		Unmarshaller um = JAXBContext.newInstance("com.axelor.apps.prestashop.entities").createUnmarshaller();
-		um.setEventHandler(new DefaultValidationEventHandler());
-		Prestashop envelop = (Prestashop)um.unmarshal(getClass().getResourceAsStream("image.xml"));
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("image.xml"));
 
 		Assert.assertNotNull(envelop.getContent());
 		Assert.assertEquals(PrestashopImage.class, envelop.getContent().getClass());
@@ -216,9 +208,7 @@ public class UnmarshalTest {
 
 	@Test
 	public void testAvailableStock() throws JAXBException {
-		Unmarshaller um = JAXBContext.newInstance("com.axelor.apps.prestashop.entities").createUnmarshaller();
-		um.setEventHandler(new DefaultValidationEventHandler());
-		Prestashop envelop = (Prestashop)um.unmarshal(getClass().getResourceAsStream("available-stock.xml"));
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("available-stock.xml"));
 
 		Assert.assertNotNull(envelop.getContent());
 		Assert.assertEquals(PrestashopAvailableStock.class, envelop.getContent().getClass());
@@ -229,9 +219,7 @@ public class UnmarshalTest {
 
 	@Test
 	public void testCustomer() throws JAXBException {
-		Unmarshaller um = JAXBContext.newInstance("com.axelor.apps.prestashop.entities").createUnmarshaller();
-		um.setEventHandler(new DefaultValidationEventHandler());
-		Prestashop envelop = (Prestashop)um.unmarshal(getClass().getResourceAsStream("customer.xml"));
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("customer.xml"));
 
 		Assert.assertNotNull(envelop.getContent());
 		Assert.assertEquals(PrestashopCustomer.class, envelop.getContent().getClass());
@@ -271,9 +259,7 @@ public class UnmarshalTest {
 
 	@Test
 	public void testCustomers() throws JAXBException {
-		Prestashop envelop = (Prestashop) JAXBContext.newInstance("com.axelor.apps.prestashop.entities")
-				.createUnmarshaller()
-				.unmarshal(getClass().getResourceAsStream("customers.xml"));
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("customers.xml"));
 
 		Assert.assertNotNull(envelop.getContent());
 		Assert.assertEquals(CustomersContainer.class, envelop.getContent().getClass());
@@ -283,9 +269,7 @@ public class UnmarshalTest {
 
 	@Test
 	public void testAddress() throws JAXBException {
-		Prestashop envelop = (Prestashop)JAXBContext.newInstance("com.axelor.apps.prestashop.entities")
-				.createUnmarshaller()
-				.unmarshal(getClass().getResourceAsStream("address.xml"));
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("address.xml"));
 
 		Assert.assertNotNull(envelop.getContent());
 		Assert.assertEquals(PrestashopAddress.class, envelop.getContent().getClass());
@@ -311,9 +295,7 @@ public class UnmarshalTest {
 
 	@Test
 	public void testAddresses() throws JAXBException {
-		Prestashop envelop = (Prestashop) JAXBContext.newInstance("com.axelor.apps.prestashop.entities")
-				.createUnmarshaller()
-				.unmarshal(getClass().getResourceAsStream("addresses.xml"));
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("addresses.xml"));
 
 		Assert.assertNotNull(envelop.getContent());
 		Assert.assertEquals(AddressesContainer.class, envelop.getContent().getClass());
@@ -323,9 +305,7 @@ public class UnmarshalTest {
 
 	@Test
 	public void testCart() throws JAXBException {
-		Prestashop envelop = (Prestashop)JAXBContext.newInstance("com.axelor.apps.prestashop.entities")
-				.createUnmarshaller()
-				.unmarshal(getClass().getResourceAsStream("cart.xml"));
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("cart.xml"));
 
 		Assert.assertNotNull(envelop.getContent());
 		Assert.assertEquals(PrestashopCart.class, envelop.getContent().getClass());
@@ -343,7 +323,7 @@ public class UnmarshalTest {
 		Assert.assertEquals(Integer.valueOf(1), cart.getCarrierId());
 		Assert.assertEquals(false, cart.isRecyclable());
 		Assert.assertEquals(false, cart.isGift());
-		Assert.assertNull(cart.getGiftMessage());
+		Assert.assertEquals("", cart.getGiftMessage());
 		Assert.assertEquals(false, cart.isMobileTheme());
 		Assert.assertNotNull(cart.getAssociations());
 		Assert.assertEquals(1, cart.getAssociations().getCartRows().getCartRows().size());
@@ -356,9 +336,7 @@ public class UnmarshalTest {
 
 	@Test
 	public void testCarts() throws JAXBException {
-		Prestashop envelop = (Prestashop) JAXBContext.newInstance("com.axelor.apps.prestashop.entities")
-				.createUnmarshaller()
-				.unmarshal(getClass().getResourceAsStream("carts.xml"));
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("carts.xml"));
 
 		Assert.assertNotNull(envelop.getContent());
 		Assert.assertEquals(CartsContainer.class, envelop.getContent().getClass());
@@ -368,9 +346,7 @@ public class UnmarshalTest {
 
 	@Test
 	public void testOrder() throws JAXBException {
-		Unmarshaller um = JAXBContext.newInstance("com.axelor.apps.prestashop.entities").createUnmarshaller();
-		um.setEventHandler(new DefaultValidationEventHandler());
-		Prestashop envelop = (Prestashop)um.unmarshal(getClass().getResourceAsStream("order.xml"));
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("order.xml"));
 
 		Assert.assertNotNull(envelop.getContent());
 		Assert.assertEquals(PrestashopOrder.class, envelop.getContent().getClass());
@@ -436,9 +412,7 @@ public class UnmarshalTest {
 
 	@Test
 	public void testOrders() throws JAXBException {
-		Prestashop envelop = (Prestashop) JAXBContext.newInstance("com.axelor.apps.prestashop.entities")
-				.createUnmarshaller()
-				.unmarshal(getClass().getResourceAsStream("orders.xml"));
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("orders.xml"));
 
 		Assert.assertNotNull(envelop.getContent());
 		Assert.assertEquals(OrdersContainer.class, envelop.getContent().getClass());
