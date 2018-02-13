@@ -100,7 +100,7 @@ public class AccountingReportController {
 
 			JournalType journalType = Beans.get(AccountingReportService.class).getJournalType(accountingReport);
 			if(journalType != null)  {
-				String domainQuery = "self.type.id = "+journalType.getId();
+				String domainQuery = "self.journalType.id = "+journalType.getId();
 				response.setAttr("journal", "domain", domainQuery);
 			}
 		}

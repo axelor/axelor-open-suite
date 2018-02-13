@@ -9,7 +9,7 @@
   
     <string name="code" title="Code"/>
     <string name="name" title="Name" required="true"/>
-    <many-to-one name="type" ref="JournalType" title="Type"/>
+    <many-to-one name="journalType" ref="JournalType" title="Journal Type"/>
     <string name="exportCode" title="Export code" />
     <boolean name="excessPaymentOk" title="Allow payments greater than due amount ?"/>
     <boolean name="editReceiptOk" title="Edit receipt ?"/>
