@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.axelor.apps.prestashop.entities.Associations.OrderRowsAssociationsEntry;
+
 @XmlRootElement(name="order")
 public class PrestashopOrder extends PrestashopIdentifiableEntity {
 	private int deliveryAddressId;
@@ -53,7 +55,11 @@ public class PrestashopOrder extends PrestashopIdentifiableEntity {
 	private Integer roundType;
 	private BigDecimal conversionRate = BigDecimal.ONE;
 	private String reference;
-	private Associations associations;
+	private Associations associations = new Associations();
+
+	public PrestashopOrder() {
+		associations.setOrderRows(new OrderRowsAssociationsEntry());
+	}
 
 	@XmlElement(name="id_address_delivery")
 	public int getDeliveryAddressId() {

@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.axelor.apps.prestashop.entities.Associations.CartRowsAssociationsEntry;
+
 /**
  * Represents a cart in prestashop. We need it as every order is
  * bound to a cart in the application…
@@ -29,7 +31,11 @@ public class PrestashopCart extends PrestashopIdentifiableEntity {
 	private boolean separatedPackageAllowed;
 	private LocalDateTime addDate = LocalDateTime.now();
 	private LocalDateTime updateDate = LocalDateTime.now();
-	private Associations associations;
+	private Associations associations = new Associations();
+
+	public PrestashopCart() {
+		associations.setCartRows(new CartRowsAssociationsEntry());
+	}
 
 	@XmlElement(name="id_address_delivery")
 	public Integer getDeliveryAddressId() {
