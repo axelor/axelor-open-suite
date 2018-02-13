@@ -21,6 +21,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -59,12 +60,21 @@ public class ExportCategoryServiceImpl implements ExportCategoryService {
 		int done = 0;
 		int errors = 0;
 
+		log.debug("Starting product categories export to prestashop");
 		logBuffer.write(String.format("%n====== PRODUCT CATEGORIES ======%n"));
 
-		Query<ProductCategory> q = categoryRepo.all();
+		final Query<ProductCategory> q = categoryRepo.all();
+		final StringBuilder filter = new StringBuilder("1 = 1");
+		final List<Object> params = new ArrayList<>(2);
 		if(endDate != null) {
-			q.filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId IS NULL", endDate, endDate);
+			filter.append(" AND (self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId IS NULL)");
+			params.add(endDate);
+			params.add(endDate);
 		}
+		if(appConfig.getExportNonSoldProducts() == Boolean.FALSE) {
+			filter.append(" AND EXISTS(Select 1 From Product where productCategory = self and sellable = true)");
+		}
+		q.filter(filter.toString(), params.toArray());
 		q.order("-self.parentProductCategory.id");
 
 		final PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
