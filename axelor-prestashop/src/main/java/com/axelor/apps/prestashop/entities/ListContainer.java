@@ -27,6 +27,10 @@ public abstract class ListContainer<T extends PrestashopContainerEntity> extends
 	public static class AddressesContainer extends ListContainer<PrestashopAddress> {
 	}
 
+	@XmlRootElement(name="carts")
+	public static class CartsContainer extends ListContainer<PrestashopCart> {
+	}
+
 	@XmlRootElement(name="categories")
 	public static class ProductCategoriesContainer extends ListContainer<PrestashopCountry> {
 	}
@@ -41,6 +45,10 @@ public abstract class ListContainer<T extends PrestashopContainerEntity> extends
 
 	@XmlRootElement(name="customers")
 	public static class CustomersContainer extends ListContainer<PrestashopCustomer> {
+	}
+
+	@XmlRootElement(name="orders")
+	public static class OrdersContainer extends ListContainer<PrestashopOrder> {
 	}
 
 	@XmlRootElement(name="products")

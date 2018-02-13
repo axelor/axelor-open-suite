@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+	<cart>
+		<id><![CDATA[2]]></id>
+		<id_address_delivery xlink:href="http://192.168.1.23/api/addresses/12"><![CDATA[12]]></id_address_delivery>
+		<id_address_invoice xlink:href="http://192.168.1.23/api/addresses/12"><![CDATA[12]]></id_address_invoice>
+		<id_currency xlink:href="http://192.168.1.23/api/currencies/1"><![CDATA[1]]></id_currency>
+		<id_customer xlink:href="http://192.168.1.23/api/customers/25"><![CDATA[25]]></id_customer>
+		<id_guest xlink:href="http://192.168.1.23/api/guests/5"><![CDATA[5]]></id_guest>
+		<id_lang xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[1]]></id_lang>
+		<id_shop_group><![CDATA[1]]></id_shop_group>
+		<id_shop><![CDATA[1]]></id_shop>
+		<id_carrier><![CDATA[1]]></id_carrier>
+		<recyclable><![CDATA[0]]></recyclable>
+		<gift><![CDATA[0]]></gift>
+		<gift_message></gift_message>
+		<mobile_theme><![CDATA[0]]></mobile_theme>
+		<delivery_option><![CDATA[a:1:{i:12;s:2:"1,";}]]></delivery_option>
+		<secure_key><![CDATA[d6a88fcded01214cf27fd0c316494d56]]></secure_key>
+		<allow_seperated_package><![CDATA[0]]></allow_seperated_package>
+		<date_add><![CDATA[2018-02-12 10:36:03]]></date_add>
+		<date_upd><![CDATA[2018-02-13 09:35:59]]></date_upd>
+		<associations>
+			<cart_rows nodeType="cart_row" virtualEntity="true">
+				<cart_row>
+					<id_product xlink:href="http://192.168.1.23/api/products/24"><![CDATA[24]]></id_product>
+					<id_product_attribute xlink:href="http://192.168.1.23/api/combinations/0"><![CDATA[0]]></id_product_attribute>
+					<id_address_delivery xlink:href="http://192.168.1.23/api/addresses/12"><![CDATA[12]]></id_address_delivery>
+					<quantity><![CDATA[1]]></quantity>
+				</cart_row>
+			</cart_rows>
+		</associations>
+	</cart>
+</prestashop>

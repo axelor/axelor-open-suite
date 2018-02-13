@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+	<orders>
+		<order>
+			<id><![CDATA[1]]></id>
+			<id_address_delivery xlink:href="http://192.168.1.23/api/addresses/12"><![CDATA[12]]></id_address_delivery>
+			<id_address_invoice xlink:href="http://192.168.1.23/api/addresses/12"><![CDATA[12]]></id_address_invoice>
+			<id_cart xlink:href="http://192.168.1.23/api/carts/2"><![CDATA[2]]></id_cart>
+			<id_currency xlink:href="http://192.168.1.23/api/currencies/1"><![CDATA[1]]></id_currency>
+			<id_lang xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[1]]></id_lang>
+			<id_customer xlink:href="http://192.168.1.23/api/customers/25"><![CDATA[25]]></id_customer>
+			<id_carrier xlink:href="http://192.168.1.23/api/carriers/1"><![CDATA[1]]></id_carrier>
+			<current_state xlink:href="http://192.168.1.23/api/order_states/2"><![CDATA[2]]></current_state>
+			<module><![CDATA[ps_checkpayment]]></module>
+			<invoice_number><![CDATA[1]]></invoice_number>
+			<invoice_date><![CDATA[2018-02-13 09:36:22]]></invoice_date>
+			<delivery_number><![CDATA[0]]></delivery_number>
+			<delivery_date><![CDATA[0000-00-00 00:00:00]]></delivery_date>
+			<valid><![CDATA[1]]></valid>
+			<date_add><![CDATA[2018-02-13 09:36:21]]></date_add>
+			<date_upd><![CDATA[2018-02-13 09:36:22]]></date_upd>
+			<shipping_number notFilterable="true"></shipping_number>
+			<id_shop_group><![CDATA[1]]></id_shop_group>
+			<id_shop><![CDATA[1]]></id_shop>
+			<secure_key><![CDATA[d6a88fcded01214cf27fd0c316494d56]]></secure_key>
+			<payment><![CDATA[Chèque]]></payment>
+			<recyclable><![CDATA[0]]></recyclable>
+			<gift><![CDATA[0]]></gift>
+			<gift_message></gift_message>
+			<mobile_theme><![CDATA[0]]></mobile_theme>
+			<total_discounts><![CDATA[0.000000]]></total_discounts>
+			<total_discounts_tax_incl><![CDATA[0.000000]]></total_discounts_tax_incl>
+			<total_discounts_tax_excl><![CDATA[0.000000]]></total_discounts_tax_excl>
+			<total_paid><![CDATA[180.000000]]></total_paid>
+			<total_paid_tax_incl><![CDATA[180.000000]]></total_paid_tax_incl>
+			<total_paid_tax_excl><![CDATA[180.000000]]></total_paid_tax_excl>
+			<total_paid_real><![CDATA[180.000000]]></total_paid_real>
+			<total_products><![CDATA[180.000000]]></total_products>
+			<total_products_wt><![CDATA[180.000000]]></total_products_wt>
+			<total_shipping><![CDATA[0.000000]]></total_shipping>
+			<total_shipping_tax_incl><![CDATA[0.000000]]></total_shipping_tax_incl>
+			<total_shipping_tax_excl><![CDATA[0.000000]]></total_shipping_tax_excl>
+			<carrier_tax_rate><![CDATA[20.000]]></carrier_tax_rate>
+			<total_wrapping><![CDATA[0.000000]]></total_wrapping>
+			<total_wrapping_tax_incl><![CDATA[0.000000]]></total_wrapping_tax_incl>
+			<total_wrapping_tax_excl><![CDATA[0.000000]]></total_wrapping_tax_excl>
+			<round_mode><![CDATA[2]]></round_mode>
+			<round_type><![CDATA[2]]></round_type>
+			<conversion_rate><![CDATA[1.000000]]></conversion_rate>
+			<reference><![CDATA[IMCVKMUCP]]></reference>
+			<associations>
+				<order_rows nodeType="order_row" virtualEntity="true">
+					<order_row>
+						<id><![CDATA[1]]></id>
+						<product_id><![CDATA[24]]></product_id>
+						<product_attribute_id><![CDATA[0]]></product_attribute_id>
+						<product_quantity><![CDATA[1]]></product_quantity>
+						<product_name><![CDATA[Processeur 4x3,4 GHz]]></product_name>
+						<product_reference><![CDATA[COMP-0003]]></product_reference>
+						<product_ean13></product_ean13>
+						<product_isbn></product_isbn>
+						<product_upc></product_upc>
+						<product_price><![CDATA[180.000000]]></product_price>
+						<unit_price_tax_incl><![CDATA[180.000000]]></unit_price_tax_incl>
+						<unit_price_tax_excl><![CDATA[180.000000]]></unit_price_tax_excl>
+					</order_row>
+				</order_rows>
+			</associations>
+		</order>
+	</orders>
+</prestashop>

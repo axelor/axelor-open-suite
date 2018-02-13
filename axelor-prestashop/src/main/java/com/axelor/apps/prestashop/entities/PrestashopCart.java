@@ -1,0 +1,196 @@
+package com.axelor.apps.prestashop.entities;
+
+import java.time.LocalDateTime;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ * Represents a cart in prestashop. We need it as every order is
+ * bound to a cart in the application…
+ */
+@XmlRootElement(name="cart")
+public class PrestashopCart extends PrestashopIdentifiableEntity {
+	private Integer deliveryAddressId;
+	private Integer invoiceAddressId;
+	private int currencyId;
+	private Integer customerId;
+	private Integer guestId;
+	private int languageId;
+	private Integer shopGroupId;
+	private Integer shopId;
+	private Integer carrierId;
+	private boolean recyclable;
+	private boolean gift;
+	private String giftMessage;
+	private boolean mobileTheme;
+	private String deliveryOption;
+	private String secureKey;
+	private boolean allowSeparatedPackage;
+	private LocalDateTime addDate = LocalDateTime.now();
+	private LocalDateTime updateDate = LocalDateTime.now();
+	private Associations associations;
+
+	@XmlElement(name="id_address_delivery")
+	public Integer getDeliveryAddressId() {
+		return deliveryAddressId;
+	}
+
+	public void setDeliveryAddressId(Integer deliveryAddressId) {
+		this.deliveryAddressId = deliveryAddressId;
+	}
+
+	@XmlElement(name="id_address_invoice")
+	public Integer getInvoiceAddressId() {
+		return invoiceAddressId;
+	}
+
+	public void setInvoiceAddressId(Integer invoiceAddressId) {
+		this.invoiceAddressId = invoiceAddressId;
+	}
+
+	@XmlElement(name="id_currency")
+	public int getCurrencyId() {
+		return currencyId;
+	}
+
+	public void setCurrencyId(int currencyId) {
+		this.currencyId = currencyId;
+	}
+
+	@XmlElement(name="id_customer")
+	public Integer getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(Integer customerId) {
+		this.customerId = customerId;
+	}
+
+	@XmlElement(name="id_guest")
+	public Integer getGuestId() {
+		return guestId;
+	}
+
+	public void setGuestId(Integer guestId) {
+		this.guestId = guestId;
+	}
+
+	@XmlElement(name="id_lang")
+	public int getLanguageId() {
+		return languageId;
+	}
+
+	public void setLanguageId(int languageId) {
+		this.languageId = languageId;
+	}
+
+	@XmlElement(name="id_shop_group")
+	public Integer getShopGroupId() {
+		return shopGroupId;
+	}
+
+	public void setShopGroupId(Integer shopGroupId) {
+		this.shopGroupId = shopGroupId;
+	}
+
+	@XmlElement(name="id_shop")
+	public Integer getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(Integer shopId) {
+		this.shopId = shopId;
+	}
+
+	@XmlElement(name="id_carrier")
+	public Integer getCarrierId() {
+		return carrierId;
+	}
+
+	public void setCarrierId(Integer carrierId) {
+		this.carrierId = carrierId;
+	}
+
+	public boolean isRecyclable() {
+		return recyclable;
+	}
+
+	public void setRecyclable(boolean recyclable) {
+		this.recyclable = recyclable;
+	}
+
+	public boolean isGift() {
+		return gift;
+	}
+
+	public void setGift(boolean gift) {
+		this.gift = gift;
+	}
+
+	public String getGiftMessage() {
+		return giftMessage;
+	}
+
+	public void setGiftMessage(String giftMessage) {
+		this.giftMessage = giftMessage;
+	}
+
+	public boolean isMobileTheme() {
+		return mobileTheme;
+	}
+
+	public void setMobileTheme(boolean mobileTheme) {
+		this.mobileTheme = mobileTheme;
+	}
+
+	public String getDeliveryOption() {
+		return deliveryOption;
+	}
+
+	public void setDeliveryOption(String deliveryOption) {
+		this.deliveryOption = deliveryOption;
+	}
+
+	public String getSecureKey() {
+		return secureKey;
+	}
+
+	public void setSecureKey(String secureKey) {
+		this.secureKey = secureKey;
+	}
+
+	public boolean isAllowSeparatedPackage() {
+		return allowSeparatedPackage;
+	}
+
+	public void setAllowSeparatedPackage(boolean allowSeparatedPackage) {
+		this.allowSeparatedPackage = allowSeparatedPackage;
+	}
+
+	@XmlElement(name="date_add")
+	public LocalDateTime getAddDate() {
+		return addDate;
+	}
+
+	public void setAddDate(LocalDateTime addDate) {
+		this.addDate = addDate;
+	}
+
+	@XmlElement(name="date_upd")
+	public LocalDateTime getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(LocalDateTime updateDate) {
+		this.updateDate = updateDate;
+	}
+
+	public Associations getAssociations() {
+		return associations;
+	}
+
+	public void setAssociations(Associations associations) {
+		this.associations = associations;
+	}
+}
