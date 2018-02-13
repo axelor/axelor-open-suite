@@ -199,7 +199,6 @@ public class ExpenseServiceImpl implements ExpenseService {
 		expense.setExTaxTotal(exTaxTotal);
 		expense.setTaxTotal(taxTotal);
 		expense.setInTaxTotal(inTaxTotal);
-		completeExpenseLines(expense);
 		return expense;
 	}
 

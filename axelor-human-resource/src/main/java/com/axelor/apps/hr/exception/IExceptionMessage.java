@@ -109,5 +109,5 @@ public interface IExceptionMessage {
 	/**
 	 * Kilometric service
 	 */
-	static final String KILOMETRIC_ALLOWANCE_RATE_MISSING = /*$$(*/ "The kilometric allowance rate corresponding to the kilometric allow param %s is missing" /*)*/;
+	static final String KILOMETRIC_ALLOWANCE_RATE_MISSING = /*$$(*/ "The kilometric allowance rate corresponding to the kilometric allow param %s and the company %s is missing" /*)*/;
 }
