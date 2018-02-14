@@ -3,13 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
   
-  <grid name="wkf-grid" title="Workflows" model="com.axelor.studio.db.Wkf">
+  <grid name="wkf-grid" title="Process studio" model="com.axelor.studio.db.Wkf">
       <field name="name"/>
       <field name="model"/>
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
   </grid>
     
-  <form name="wkf-form" title="Workflow" model="com.axelor.studio.db.Wkf" width="large" 
+  <form name="wkf-form" title="Process studio" model="com.axelor.studio.db.Wkf" width="large" 
   	onSave="action-wkf-validate-bpmn-xml,save,action-wfk-method-process-xml,action-wfk-method-process-wkf"
   	onNew="action-wkf-set-default">
      <panel>
