@@ -26,6 +26,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.hr.db.HRConfig;
+import com.axelor.apps.hr.service.config.HRConfigService;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Year;
@@ -105,6 +107,8 @@ public class KilometricService {
 		}
 		Company company = employee.getMainEmploymentContract().getPayCompany();
 
+		HRConfig hrConfig = Beans.get(HRConfigService.class).getHRConfig(company);
+
 		BigDecimal previousDistance;
 		KilometricLog log = Beans.get(KilometricService.class).getKilometricLog(employee, expenseLine.getExpenseDate());
 		if (log == null){
@@ -116,9 +120,9 @@ public class KilometricService {
 		KilometricAllowanceRate allowance = Beans.get(KilometricAllowanceRateRepository.class)
 				.all()
 				.filter("self.kilometricAllowParam.id = :_kilometricAllowParamId " +
-						"and self.company.id = :_company", expenseLine.getKilometricAllowParam() )
-				.bind("_kilometricAllowParam", expenseLine.getKilometricAllowParam().getId())
-				.bind("_companyId", company.getId())
+						"and self.hrConfig.id = :_hrConfigId")
+				.bind("_kilometricAllowParamId", expenseLine.getKilometricAllowParam().getId())
+				.bind("_hrConfigId", hrConfig.getId())
 				.fetchOne();
 		if (allowance == null) {
 			throw new AxelorException(String.format(
