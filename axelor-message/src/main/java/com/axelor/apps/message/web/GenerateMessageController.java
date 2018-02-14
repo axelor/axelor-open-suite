@@ -27,8 +27,10 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
+import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -53,6 +55,9 @@ public class GenerateMessageController {
 	@Inject
 	private TemplateRepository templateRepo;
 	
+	@Inject
+	private MessageService messageService;
+
 	public void callMessageWizard(ActionRequest request, ActionResponse response)   {
 		
 		Model context = request.getContext().asType( Model.class );
@@ -98,7 +103,10 @@ public class GenerateMessageController {
 		
 		Context context = request.getContext();
 		Map<?,?> templateContext = (Map<?,?>) context.get("_xTemplate");
-		Template template = templateRepo.find( Long.parseLong( templateContext.get("id").toString() ) );
+		Template template = null;
+		if (templateContext != null) {
+			template = templateRepo.find( Long.parseLong( templateContext.get("id").toString() ) );
+		}
 		
 		Long objectId =  Long.parseLong( context.get("_objectId").toString() );
 		String model = (String) context.get("_templateContextModel");
@@ -109,14 +117,20 @@ public class GenerateMessageController {
 	}
 	
 	
-	public Map<String,Object> generateMessage(long objectId, String model, String tag, Template template) throws SecurityException, NoSuchFieldException, ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
+	public Map<String, Object> generateMessage(long objectId, String model, String tag, Template template)
+			throws SecurityException, NoSuchFieldException, ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException {
 		
 		LOG.debug("template : {} ", template);
 		LOG.debug("object id : {} ", objectId);
 		LOG.debug("model : {} ", model);
 		LOG.debug("tag : {} ", tag);
-		
-		Message message = templateMessageService.generateMessage(objectId, model, tag, template);
+		Message message = null;
+		if (template != null) {
+			message = templateMessageService.generateMessage(objectId, model, tag, template);
+		} else {
+			message = messageService.createMessage(model, Long.valueOf(objectId).intValue(), null, null, null, null,
+					null, null, null, null, null, MessageRepository.MEDIA_TYPE_EMAIL, null);
+		}
 
 		return ActionView.define( I18n.get(IExceptionMessage.MESSAGE_3) )
 				.model( Message.class.getName() )

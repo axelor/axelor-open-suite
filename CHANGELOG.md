@@ -20,6 +20,7 @@
 - Logistical forms
 - New subscription feature.
 - Add support to dynamically set the number of decimal digit of BOM quantities
+- If there is no template defined for the object, generate an empty draft message for MESSAGE : wizard
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
