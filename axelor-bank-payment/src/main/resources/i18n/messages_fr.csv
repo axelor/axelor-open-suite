@@ -573,6 +573,7 @@
 "Unknown format for file generation",,,
 "Unknown format for file import process",,,
 "Use X509 extentions for auto signed certificates","Utiliser l’extension X509 pour les certificats auto signés",,
+"Use iban only","Utiliser l'iban uniquement",,
 "User","Utilisateur",,
 "User id","User ID",,
 "User type",,,

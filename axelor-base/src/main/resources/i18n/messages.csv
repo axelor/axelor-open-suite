@@ -720,6 +720,7 @@
 "No",,,
 "No Discount",,,
 "No currency conversion found from '%s' to '%s' for date %s",,,
+"No currency conversion rate found for the date %s to %s. Please change the conversion date",,,
 "No duplicate records found",,,
 "No help",,,
 "No period found or it has been closed for the company %s",,,

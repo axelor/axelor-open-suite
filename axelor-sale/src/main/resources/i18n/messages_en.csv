@@ -206,6 +206,7 @@
 "New version",,,
 "Next invoiced period start date",,,
 "Next invoicing date",,,
+"Next invoicing end period date",,,
 "Next invoicing start period date",,,
 "No Of Units",,,
 "No client selected, a new one will be created from the lead, do you agree?",,,
