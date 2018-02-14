@@ -80,10 +80,10 @@
         </panel>
 
         <panel name="financialData" title="Financial Data" colSpan="12" sidebar="true" collapseIf="true">
-            <field name="product" form-view="product-form" grid-view="product-grid" colSpan="6" onChange="action-team-task-record-product-selected"/>
+            <field name="product" form-view="product-form" grid-view="product-grid" colSpan="6" onChange="action-team-task-record-product-selected" domain="self.unit.unitTypeSelect=3"/>
             <field name="salePrice" colSpan="6"/>
             <field name="quantity" colSpan="6"/>
-            <field name="unit" form-view="unit-form" grid-view="unit-grid" colSpan="6"/>
+            <field name="unit" form-view="unit-form" grid-view="unit-grid" colSpan="6" domain="self.unitTypeSelect=3"/>
 			<field name="currency" colSpan="6"/>
         </panel>
 
