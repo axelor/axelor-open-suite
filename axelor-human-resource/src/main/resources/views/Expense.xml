@@ -97,7 +97,7 @@
 				</panel>
 				<panel colSpan="12" title="Payment information">
 					<field name="paymentStatusSelect" colSpan="4"/>
-					<field name="paymentMode" readonly="true" colSpan="4"/>
+					<field name="paymentMode" showIf="paymentMode" readonly="true" colSpan="4"/>
 					<field name="paymentDate" showIf="paymentDate" colSpan="4"/>
 					<field name="bankOrder" hidden="true" showIf="bankOrder" colSpan="4"/>
 				</panel>
