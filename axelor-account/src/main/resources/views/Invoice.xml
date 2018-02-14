@@ -167,7 +167,7 @@
                 <field name="operationTypeSelect" hideIf="statusSelect &gt; 1 || partner != null || $readonly() || _operationTypeSelect != 3"
                     onChange="action-group-account-invoice-operationtype-onchange" selection-in="[3,4]"/>
             </panel>
-            <field name="operationSubTypeSelect" hideIf="statusSelect &gt; 1 || $readonly()" showTitle="true"/>
+            <field name="operationSubTypeSelect" hideIf="statusSelect &gt; 1 || (operationTypeSelect != 1 &amp;&amp; operationTypeSelect != 3) || $readonly()" showTitle="true"/>
             <field name="company" canEdit="false" readonlyIf="statusSelect != 1 || partner != null" onChange="action-group-account-invoice-company-onchange" form-view="company-form" grid-view="company-grid"/>
             <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement" readonlyIf="statusSelect != 1 || partner != null" domain=":company MEMBER OF self.companySet" onChange="action-invoice-method-filter-printing-settings"/>
             <field name="companyBankDetails" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
@@ -725,7 +725,6 @@
     <action-group name="action-group-account-invoice-operationtype-onchange">
 		<action name="action-invoice-method-payment-mode-condition"/>
     	<action name="action-invoice-record-partner-change"/>
-        <action name="action-invoice-record-reset-suboperationtype"/>
     </action-group>
 
     <action-group name="action-group-account-invoice-company-onchange">
