@@ -17,7 +17,7 @@
     <integer name="typeSelect" title="Printing output"  required="true"/>
     <many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Partners"/>
     <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Fiscal year"/>
-    <date name="date" column="date_val" title="Creation Date" required="true"/>
+    <date name="date" column="date_val" title="Closing Date" required="true"/>
     <datetime name="publicationDateTime" title="Last print date" tz="true" readonly="true"/>
     <boolean name="global" title="Global" default="false"/>
     <boolean name="globalByPartner" title="Subtotal by partner" default="false"/>
