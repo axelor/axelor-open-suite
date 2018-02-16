@@ -50,8 +50,10 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class CurrencyConversionService {
 
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
@@ -60,7 +62,7 @@ public class CurrencyConversionService {
 	protected AppBaseService appBaseService;
 	
 	@Inject
-	private CurrencyConversionLineRepository cclRepo;
+	protected CurrencyConversionLineRepository cclRepo;
 	
 	public BigDecimal convert(Currency currencyFrom, Currency currencyTo) throws MalformedURLException, JSONException, AxelorException {
 		BigDecimal rate = new BigDecimal(-1);

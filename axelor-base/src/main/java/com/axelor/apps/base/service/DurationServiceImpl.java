@@ -25,8 +25,9 @@ import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.repo.DurationRepository;
+import com.google.inject.Singleton;
 
-
+@Singleton
 public class DurationServiceImpl implements DurationService  {
 	
 	

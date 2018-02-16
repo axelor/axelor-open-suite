@@ -34,10 +34,11 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import com.opencsv.CSVWriter;
 
-
+@Singleton
 public class AddressServiceImpl implements AddressService  {
 	
 	@Inject
