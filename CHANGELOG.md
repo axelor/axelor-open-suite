@@ -6,7 +6,10 @@
 - New assistant in expense form to select payment mode
 
 ### Bug Fixes
-
+- Permission change in most HR form
+- Find kilometric allowance rate per company
+- Remove filter on company for historic timesheet
+- More fixes in expense form
 
 ## [4.1.2] - 2018-02-05
 ### Improvements
