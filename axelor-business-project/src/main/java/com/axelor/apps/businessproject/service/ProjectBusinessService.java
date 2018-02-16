@@ -21,11 +21,14 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.businessproject.db.ElementsToInvoice;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectPlanningRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.AuthUtils;
@@ -143,5 +146,41 @@ public class ProjectBusinessService extends ProjectServiceImpl {
  			response.setStatus(-1);
  			response.setError(e.getMessage());
  		}
-    }			
+    }
+
+    /**
+     * Counts how many lines of {@code project} are marked as 'to invoice' but are not invoiced
+     *
+     * @param project Project to count lines marked as 'to invoice' but not invoiced
+     * @return Number of lines marked as 'to invoice' but not invoiced for given project
+     */
+    public int countToInvoiceNotInvoiced(Project project) {
+        int count = 0;
+
+        for (PurchaseOrderLine purchaseOrderLine : project.getPurchaseOrderLineList()) {
+            if (purchaseOrderLine.getToInvoice() && !purchaseOrderLine.getInvoiced()) {
+                count++;
+            }
+        }
+
+        for (SaleOrderLine saleOrderLine : project.getSaleOrderLineList()) {
+            if (saleOrderLine.getToInvoice() && !saleOrderLine.getInvoiced()) {
+                count++;
+            }
+        }
+
+        for (ExpenseLine expenseLine : project.getExpensesLineList()) {
+            if (expenseLine.getToInvoice() && !expenseLine.getInvoiced()) {
+                count++;
+            }
+        }
+
+        for (ElementsToInvoice elementsToInvoice : project.getElementsToInvoiceList()) {
+            if (elementsToInvoice.getToInvoice() && !elementsToInvoice.getInvoiced()) {
+                count++;
+            }
+        }
+
+        return count;
+    }
 }
