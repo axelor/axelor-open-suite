@@ -18,8 +18,7 @@
 package com.axelor.apps.prestashop.exports;
 
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 
@@ -28,6 +27,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
+import org.apache.commons.io.output.StringBuilderWriter;
+import org.apache.tika.io.IOUtils;
 import org.xml.sax.SAXException;
 
 import com.axelor.apps.base.db.AppPrestashop;
@@ -44,7 +45,9 @@ import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 
 	@Inject
@@ -75,23 +78,6 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	private ExportOrderDetailService detailService;
 
 
-	File exportFile = File.createTempFile("Export Log", ".txt");
-	FileWriter fwExport = null;
-	BufferedWriter bwExport = null;
-	Integer totalDone = 0;
-    Integer totalAnomaly = 0;
-
-	/**
-	 * Initialize constructor.
-	 *
-	 * @throws IOException
-	 */
-	public PrestaShopServiceExportImpl() throws IOException {
-
-		fwExport = new FileWriter(exportFile);
-		bwExport = new BufferedWriter(fwExport);
-	}
-
 	/**
 	 * Export axelor base module
 	 *
@@ -104,13 +90,13 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	 * @throws JAXBException
 	 * @throws TransformerFactoryConfigurationError
 	 */
-	public void exportAxelorBase(AppPrestashop appConfig, ZonedDateTime endDate) throws PrestaShopWebserviceException, TransformerException, IOException, ParserConfigurationException, SAXException, JAXBException, TransformerFactoryConfigurationError {
-		currencyService.exportCurrency(appConfig, endDate, bwExport);
-		countryService.exportCountry(appConfig, endDate, bwExport);
-		customerService.exportCustomer(appConfig, endDate, bwExport);
-		addressService.exportAddress(appConfig, endDate, bwExport);
-		categoryService.exportCategory(appConfig, endDate, bwExport);
-		productService.exportProduct(appConfig, endDate, bwExport);
+	public void exportAxelorBase(AppPrestashop appConfig, ZonedDateTime endDate, final BufferedWriter logWriter) throws PrestaShopWebserviceException, TransformerException, IOException, ParserConfigurationException, SAXException, JAXBException, TransformerFactoryConfigurationError {
+		currencyService.exportCurrency(appConfig, endDate, logWriter);
+		countryService.exportCountry(appConfig, endDate, logWriter);
+		customerService.exportCustomer(appConfig, endDate, logWriter);
+		addressService.exportAddress(appConfig, endDate, logWriter);
+		categoryService.exportCategory(appConfig, endDate, logWriter);
+		productService.exportProduct(appConfig, endDate, logWriter);
 	}
 
 	/**
@@ -118,28 +104,20 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	 */
 	@Override
 	public void export(AppPrestashop appConfig, ZonedDateTime endDate, Batch batch) throws PrestaShopWebserviceException, TransformerException, IOException, ParserConfigurationException, SAXException, JAXBException, TransformerFactoryConfigurationError {
+		StringBuilderWriter logWriter = new StringBuilderWriter(1024);
+		// FIXME can be dropped at the end of refactoring (only here to keep newLine())
+		BufferedWriter bufferedLogWriter = new BufferedWriter(logWriter);
 		try {
-			exportAxelorBase(appConfig, endDate);
 
-			orderService.exportOrder(appConfig, endDate, bwExport);
-			detailService.exportOrderDetail(appConfig, endDate, bwExport);
-			closeLog();
+			exportAxelorBase(appConfig, endDate, bufferedLogWriter);
+
+			orderService.exportOrder(appConfig, endDate, bufferedLogWriter);
+			//detailService.exportOrderDetail(appConfig, endDate, bufferedLogWriter);
+			bufferedLogWriter.write(String.format("%n==== END OF LOG ====%n"));
 		} finally {
-			MetaFile exporMetatFile = metaFiles.upload(exportFile);
-			batch.setPrestaShopBatchLog(exporMetatFile);
+			IOUtils.closeQuietly(bufferedLogWriter);
+			MetaFile exporMetaFile = metaFiles.upload(new ByteArrayInputStream(logWriter.toString().getBytes()), "export-log.txt");
+			batch.setPrestaShopBatchLog(exporMetaFile);
 		}
 	}
-
-	/**
-	 * Close export log file
-	 *
-	 * @throws IOException
-	 */
-	public void closeLog() throws IOException {
-		bwExport.newLine();
-		bwExport.write("-----------------------------------------------");
-		bwExport.close();
-		fwExport.close();
-	}
-
 }
