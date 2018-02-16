@@ -14,6 +14,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.w3c.dom.Element;
 
+import com.axelor.apps.prestashop.entities.Associations.CategoriesAssociationsEntry;
+
 @XmlRootElement(name="product")
 public class PrestashopProduct extends PrestashopIdentifiableEntity {
 	private static List<String> READONLY_ATTRIBUTES = Arrays.asList(
@@ -81,8 +83,12 @@ public class PrestashopProduct extends PrestashopIdentifiableEntity {
 	private PrestashopTranslatableString shortDescription;
 	private PrestashopTranslatableString availableNow;
 	private PrestashopTranslatableString availableLater;
-	private Associations associations;
+	private Associations associations = new Associations();
 	private List<Element> additionalProperties = new LinkedList<>();
+
+	public PrestashopProduct() {
+		associations.setCategories(new CategoriesAssociationsEntry());
+	}
 
 	@XmlElement(name="id_manufacturer")
 	public Integer getManufacturerId() {
