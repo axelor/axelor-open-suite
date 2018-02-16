@@ -186,6 +186,7 @@ public class InvoiceController {
 	public void fillPaymentModeAndCondition(ActionRequest request, ActionResponse response) {
 		Invoice invoice = request.getContext().asType(Invoice.class);
 		try {
+			if (invoice.getOperationTypeSelect() == null) { return ; }
 			PaymentMode paymentMode = InvoiceToolService.getPaymentMode(invoice);
 			PaymentCondition paymentCondition = InvoiceToolService.getPaymentCondition(invoice);
 			response.setValue("paymentMode", paymentMode);
@@ -194,7 +195,6 @@ public class InvoiceController {
 			TraceBackService.trace(response, e);
 		}
 	}
-	
 
 	/**
 	 * Fonction appeler par le bouton générer un avoir.
