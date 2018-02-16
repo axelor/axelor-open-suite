@@ -21,10 +21,10 @@ import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class BlockingService {
@@ -70,16 +70,9 @@ public class BlockingService {
 				"AND company.id = " + company.getId();
     }
 
-    public List<Partner> getListOfBlockedPartner(Company company, int blockingType) {
-        return JPA.em().createQuery("SELECT partner FROM Partner partner " +
-                        "LEFT JOIN partner.blockingList blocking " +
-                        "LEFT JOIN blocking.companySet company " +
-                        "WHERE blocking.blockingSelect = :blockingType " +
-                        " AND blocking.blockingToDate >= :dateNow " +
-                        "AND company.id = :companyId")
-                .setParameter("blockingType", blockingType)
-                .setParameter("dateNow", Beans.get(AppBaseService.class).getTodayDate())
-                .setParameter("companyId", company.getId())
-                .getResultList();
+    public String listOfBlockedPartnerWhereNow(Company company, int blockingType) {
+        return listOfBlockedPartner(company, blockingType)
+                .replaceAll(":__date__",
+                "'" + Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.ofPattern("YYYY-MM-dd")) + "'");
     }
 }
