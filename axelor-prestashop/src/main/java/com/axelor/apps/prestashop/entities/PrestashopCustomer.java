@@ -17,14 +17,14 @@ import org.w3c.dom.Element;
 @XmlRootElement(name="customer")
 public class PrestashopCustomer extends PrestashopIdentifiableEntity {
 	private static final List<String> READONLY_ELEMENTS = Arrays.asList(
-			"last_passwd_gen",
-			"secure_key"
+			"last_passwd_gen"
 	);
 
 	private Integer defaultGroupId = 3; // FIXME shouldn't be hardcoded, 3 is
 	private Integer languageId;
 	private LocalDateTime newsletterSubscriptionDate;
 	private String newsletterRegistrationIP;
+	private String secureKey; // Prestashop innovation: this is readonly field that'll be set to null if missing… yes… really… no… nothing more to say
 	private boolean deleted;
 	private String password; // clear text on add, hashed on update
 	private String lastname;
@@ -88,6 +88,15 @@ public class PrestashopCustomer extends PrestashopIdentifiableEntity {
 
 	public void setNewsletterRegistrationIP(String newsletterRegistrationIP) {
 		this.newsletterRegistrationIP = newsletterRegistrationIP;
+	}
+
+	@XmlElement(name="secure_key")
+	public String getSecureKey() {
+		return secureKey;
+	}
+
+	public void setSecureKey(String secureKey) {
+		this.secureKey = secureKey;
 	}
 
 	public boolean isDeleted() {

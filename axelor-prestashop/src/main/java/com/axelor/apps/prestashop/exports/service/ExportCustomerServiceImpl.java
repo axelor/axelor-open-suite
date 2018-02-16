@@ -130,6 +130,7 @@ public class ExportCustomerServiceImpl implements ExportCustomerService {
 						remoteCustomer = new PrestashopCustomer();
 						remoteCustomer.setNote(I18n.get("Imported from Axelor"));
 						remoteCustomer.setPassword(RandomStringUtils.randomGraph(16));
+						remoteCustomer.setSecureKey(RandomStringUtils.random(32, "0123456789abcdef"));
 						if(localCustomer.getEmailAddress() != null) {
 							remoteCustomer.setEmail(localCustomer.getEmailAddress().getAddress());
 						}

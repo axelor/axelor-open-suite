@@ -256,6 +256,7 @@ public class UnmarshalTest {
 		Assert.assertEquals(LocalDateTime.of(2018, 2, 9, 6, 40, 06), customer.getUpdateDate());
 		Assert.assertEquals("", customer.getResetPasswordToken());
 		Assert.assertNull(customer.getResetPasswordValidityDate());
+		Assert.assertEquals("a84879d9c1fbcd4055a1c1336e37b940", customer.getSecureKey());
 		Assert.assertEquals(0, customer.getAdditionalProperties().size());
 	}
 
