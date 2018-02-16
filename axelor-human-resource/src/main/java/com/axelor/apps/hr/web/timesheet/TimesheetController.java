@@ -190,9 +190,8 @@ public class TimesheetController {
 				   .add("grid","timesheet-grid")
 				   .add("form","timesheet-form");
 
-		actionView.domain("self.company = :_activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
-		.context("_activeCompany", user.getActiveCompany());
-	
+		actionView.domain("(self.statusSelect = 3 OR self.statusSelect = 4)");
+
 		if(employee == null || !employee.getHrManager())  {
 			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
 			.context("_user", user);

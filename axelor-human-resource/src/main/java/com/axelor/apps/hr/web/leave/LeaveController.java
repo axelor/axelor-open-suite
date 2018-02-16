@@ -140,7 +140,7 @@ public class LeaveController {
 				.add("grid","leave-request-grid")
 				.add("form","leave-request-form");
 
-		actionView.domain("self.statusSelect = 3 OR self.statusSelect = 4");
+		actionView.domain("(self.statusSelect = 3 OR self.statusSelect = 4)");
 
 		if(employee == null || !employee.getHrManager())  {
 			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
@@ -162,13 +162,13 @@ public class LeaveController {
 
 		String domain = "self.user.employee.manager.employee.manager = :_user AND self.statusSelect = 2";
 
-		long nbLeaveRequests =  Query.of(ExtraHours.class).filter(domain).bind("_user", user).bind("_activeCompany", activeCompany).count();
+		long nbLeaveRequests =  Query.of(ExtraHours.class).filter(domain).bind("_user", user).count();
 
 		if(nbLeaveRequests == 0)  {
 			response.setNotify(I18n.get("No Leave Request to be validated by your subordinates"));
 		}
 		else  {
-			response.setView(actionView.domain(domain).context("_user", user).context("_activeCompany", activeCompany).map());
+			response.setView(actionView.domain(domain).context("_user", user).map());
 		}
 
 	}
