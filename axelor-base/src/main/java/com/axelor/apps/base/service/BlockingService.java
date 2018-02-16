@@ -61,13 +61,12 @@ public class BlockingService {
      * @return the query to get blocked partners ids for the given company and blocking type
      */
     public String listOfBlockedPartner(Company company, int blockingType) {
-        return "SELECT DISTINCT partner.id " +
-				"FROM Partner partner " +
-				"LEFT JOIN partner.blockingList blocking " +
-				"LEFT JOIN blocking.companySet company " +
-				"WHERE blocking.blockingSelect = " + blockingType +
-                " AND blocking.blockingToDate >= '" +
-                Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.ofPattern("YYYY-MM-dd")) +
-                "' AND company.id = " + company.getId();
+        return String.format("SELECT DISTINCT partner.id FROM Partner partner " +
+                        "LEFT JOIN partner.blockingList blocking " +
+                        "LEFT JOIN blocking.companySet company " +
+                        "WHERE blocking.blockingSelect = %d " +
+                        "AND blocking.blockingToDate >= '%s' " +
+                        "AND company.id = %d",
+                blockingType, Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.ofPattern("YYYY-MM-dd")), company.getId());
     }
 }
