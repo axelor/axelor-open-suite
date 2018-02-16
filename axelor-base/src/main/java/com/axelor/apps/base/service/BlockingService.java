@@ -66,13 +66,8 @@ public class BlockingService {
 				"LEFT JOIN partner.blockingList blocking " +
 				"LEFT JOIN blocking.companySet company " +
 				"WHERE blocking.blockingSelect = " + blockingType +
-				" AND blocking.blockingToDate >= :__date__ " +
-				"AND company.id = " + company.getId();
-    }
-
-    public String listOfBlockedPartnerWhereNow(Company company, int blockingType) {
-        return listOfBlockedPartner(company, blockingType)
-                .replaceAll(":__date__",
-                "'" + Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.ofPattern("YYYY-MM-dd")) + "'");
+                " AND blocking.blockingToDate >= '" +
+                Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.ofPattern("YYYY-MM-dd")) +
+                "' AND company.id = " + company.getId();
     }
 }

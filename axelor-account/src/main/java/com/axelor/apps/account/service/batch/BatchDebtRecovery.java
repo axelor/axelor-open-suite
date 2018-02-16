@@ -112,7 +112,7 @@ public class BatchDebtRecovery extends BatchStrategy {
 						"AND self.id NOT IN (:anomalyList) " +
 						"AND self.id NOT IN (:notRemindedList)" +
 						"AND self.id NOT IN (" +
-						Beans.get(BlockingService.class).listOfBlockedPartnerWhereNow(company, BlockingRepository.REMINDER_BLOCKING) +
+						Beans.get(BlockingService.class).listOfBlockedPartner(company, BlockingRepository.REMINDER_BLOCKING) +
 						")")
 				.bind("_company", company)
 				.bind("anomalyList", anomalyList)
