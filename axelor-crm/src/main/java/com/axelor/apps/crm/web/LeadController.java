@@ -22,7 +22,6 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.apps.report.engine.ReportSettings;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,15 +35,13 @@ import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.report.IReport;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.LeadService;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 

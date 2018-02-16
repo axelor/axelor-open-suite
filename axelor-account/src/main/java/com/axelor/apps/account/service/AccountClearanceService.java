@@ -20,12 +20,12 @@ package com.axelor.apps.account.service;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import java.time.ZonedDateTime;
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -159,7 +159,7 @@ public class AccountClearanceService{
 
 		// Credit MoveLine 77. (profit account)
 		BigDecimal divid = taxRate.add(BigDecimal.ONE);
-		BigDecimal profitAmount = amount.divide(divid, IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+		BigDecimal profitAmount = amount.divide(divid, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN).setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 		MoveLine creditMoveLine1 = moveLineService.createMoveLine(move, partner, profitAccount, profitAmount, false, todayTime.toLocalDate(), 2, null);
 		move.getMoveLineList().add(creditMoveLine1);
 

@@ -21,11 +21,11 @@ import java.util.List;
 
 import com.axelor.apps.base.db.AppProduction;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.AppProductionRepository;
-import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
+import com.axelor.db.Query;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -33,31 +33,54 @@ import com.google.inject.persist.Transactional;
 @Singleton
 public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppProductionService {
 	
-	@Inject
-	private AppProductionRepository appProductionRepo;
+	public static final int DEFAULT_NB_DECIMAL_DIGITS = 2;
+	
+	private long appProductionId;
+	
+	private static AppProductionServiceImpl INSTANCE;
 	
 	@Inject
-	private CompanyRepository companyRepo;
+	public AppProductionServiceImpl() {
+		try { appProductionId = Query.of(AppProduction.class).fetchOne().getId(); }
+		catch(Exception e) { throw new RuntimeException("Production app is not initialized", e); }
+	}
 	
-	@Inject
-	private ProductionConfigRepository productionConfigRepo;
-	
+	private static AppProductionServiceImpl get() {
+
+		if (INSTANCE == null) { INSTANCE = new AppProductionServiceImpl(); }
+		return INSTANCE;
+	}
+
 	@Override
 	public AppProduction getAppProduction() {
-		return appProductionRepo.all().fetchOne();
+		return Query.of(AppProduction.class).filter("self.id = :id").bind("id", get().appProductionId).cacheable().fetchOne(); 
 	}
+	
 
 	@Override
 	@Transactional
 	public void generateProductionConfigurations() {
 		
-		List<Company> companies = companyRepo.all().filter("self.productionConfig is null").fetch();
+		List<Company> companies = Query.of(Company.class).filter("self.productionConfig is null").fetch();
 		
 		for (Company company : companies) {
 			ProductionConfig productionConfig = new ProductionConfig();
 			productionConfig.setCompany(company);
-			productionConfigRepo.save(productionConfig);
+			Beans.get(ProductionConfigRepository.class).save(productionConfig);
 		}
 	}
+	
+	@Override
+	public int getNbDecimalDigitForBomQty(){
+		
+		AppProduction appProduction = getAppProduction();
+		
+		if (appProduction != null){
+			return appProduction.getNbDecimalDigitForBomQty();
+		}
+
+		return DEFAULT_NB_DECIMAL_DIGITS;
+	}
+
 
 }

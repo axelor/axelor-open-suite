@@ -191,7 +191,7 @@ public class EventController {
 
 		if(lead != null)  {
 
-			Event event = request.getContext().getParentContext().asType(Event.class);
+			Event event = request.getContext().getParent().asType(Event.class);
 
 			if(event != null)  {
 

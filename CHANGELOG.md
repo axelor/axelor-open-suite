@@ -17,6 +17,7 @@
 - Direct debit batches
 - Logistical forms
 - New subscription feature.
+- Add support to dynamically set the number of decimal digit of BOM quantities
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.

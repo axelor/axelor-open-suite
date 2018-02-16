@@ -35,6 +35,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 @Singleton
@@ -45,6 +46,7 @@ public class PeriodService {
 	protected PeriodRepository periodRepo;
 	protected AdjustHistoryService adjustHistoryService;
 	
+	@Inject
 	public PeriodService(PeriodRepository periodRepo, AdjustHistoryService adjustHistoryService)  {
 		this.periodRepo = periodRepo;
 		this.adjustHistoryService = adjustHistoryService;
