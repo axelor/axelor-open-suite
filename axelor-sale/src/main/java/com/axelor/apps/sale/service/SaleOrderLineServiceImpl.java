@@ -58,6 +58,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
 	@Inject
 	protected AppBaseService appBaseService;
+	
 
 	@Override
 	public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {

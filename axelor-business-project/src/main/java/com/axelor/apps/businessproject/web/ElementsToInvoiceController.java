@@ -32,18 +32,16 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class ElementsToInvoiceController {
-
-
-	@Inject
-	private PriceListService priceListService;
 
 	public void getProductInformation(ActionRequest request, ActionResponse response){
 		ElementsToInvoice elementToInvoice = request.getContext().asType(ElementsToInvoice.class);
 		Project project = elementToInvoice.getProject();
 		if(project == null){
-			project = request.getContext().getParentContext().asType(Project.class);
+			project = request.getContext().getParent().asType(Project.class);
 		}
 		Product product = elementToInvoice.getProduct();
 		if(project != null && product != null){
@@ -53,6 +51,9 @@ public class ElementsToInvoiceController {
 			if(project.getClientPartner()!= null){
 				PriceList priceList = Beans.get(PartnerPriceListService.class).getDefaultPriceList(project.getClientPartner(), PriceListRepository.TYPE_SALE);
 				if(priceList != null)  {
+					
+					PriceListService priceListService = Beans.get(PriceListService.class);
+					
 					PriceListLine priceListLine = priceListService.getPriceListLine(product, elementToInvoice.getQty(), priceList);
 
 					Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);

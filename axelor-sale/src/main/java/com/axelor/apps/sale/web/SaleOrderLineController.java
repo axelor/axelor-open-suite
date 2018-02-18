@@ -33,18 +33,18 @@ import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class SaleOrderLineController {
 
 	@Inject
 	private SaleOrderLineService saleOrderLineService;
-
-	@Inject
-	private ProductRepository productRepo;
 
 
 	public void compute(ActionRequest request, ActionResponse response) {
@@ -239,7 +239,7 @@ public class SaleOrderLineController {
 		
 		if (product != null) {
 			
-			product = productRepo.find(product.getId());
+			product = Beans.get(ProductRepository.class).find(product.getId());
 			
 			if (product.getIsPack()) {
 				SaleOrder saleOrder = saleOrderLineService.getSaleOrder(request.getContext());

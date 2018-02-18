@@ -18,12 +18,11 @@
 package com.axelor.apps.production.web;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 import javax.inject.Inject;
-
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -33,21 +32,19 @@ import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.production.service.ProductionOrderSaleOrderService;
 import com.axelor.apps.production.service.ProductionOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.inject.Singleton;
 
+@Singleton
 public class ProductionOrderController {
 
 	@Inject
 	ProductionOrderService productionOrderService;
-	
-	@Inject
-	ProductionOrderSaleOrderService productionOrderSaleOrderService;
 	
 	@Inject
 	private BillOfMaterialRepository billOfMaterialRepo;

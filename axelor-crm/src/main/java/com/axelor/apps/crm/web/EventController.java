@@ -61,10 +61,12 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
 import net.fortuna.ical4j.model.ValidationException;
 
+@Singleton
 public class EventController {
 
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
@@ -75,14 +77,6 @@ public class EventController {
 	@Inject
 	private EventService eventService;
 	
-	@Inject
-	private LeadRepository leadRepo;
-	
-	@Inject
-	private LeadService leadService;
-	
-	@Inject
-	protected CalendarService calendarService;
 
 	public void computeFromStartDateTime(ActionRequest request, ActionResponse response) {
 
@@ -148,7 +142,6 @@ public class EventController {
 	}
 
 
-	//TODO : replace by XML action
 	public void saveEventTaskStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Event event = request.getContext().asType(Event.class);
@@ -158,7 +151,6 @@ public class EventController {
 
 	}
 
-	//TODO : replace by XML action
 	public void saveEventTicketStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Event event = request.getContext().asType(Event.class);
@@ -207,6 +199,9 @@ public class EventController {
 	@SuppressWarnings("rawtypes")
 	public void assignToMeLead(ActionRequest request, ActionResponse response)  {
 
+		LeadService leadService = Beans.get(LeadService.class);
+		LeadRepository leadRepo = Beans.get(LeadRepository.class);
+		
 		if(request.getContext().get("id") != null){
 			Lead lead = leadRepo.find((Long)request.getContext().get("id"));
 			lead.setUser(AuthUtils.getUser());
@@ -579,7 +574,7 @@ public class EventController {
 	
 	public void setCalendarDomain(ActionRequest request, ActionResponse response){
 		User user = AuthUtils.getUser();
-		List<Long> calendarIdlist = calendarService.showSharedCalendars(user);
+		List<Long> calendarIdlist = Beans.get(CalendarService.class).showSharedCalendars(user);
 		if(calendarIdlist.isEmpty()){
 			response.setAttr("calendar", "domain", "self.id is null");
 		}
@@ -591,7 +586,7 @@ public class EventController {
 	public void checkRights(ActionRequest request, ActionResponse response){
 		Event event = request.getContext().asType(Event.class);
 		User user = AuthUtils.getUser();
-		List<Long> calendarIdlist = calendarService.showSharedCalendars(user);
+		List<Long> calendarIdlist = Beans.get(CalendarService.class).showSharedCalendars(user);
 		if(calendarIdlist.isEmpty() || !calendarIdlist.contains(event.getCalendar().getId())){
 			response.setAttr("calendarConfig", "readonly", "true");
 			response.setAttr("meetingGeneral", "readonly", "true");
@@ -603,6 +598,6 @@ public class EventController {
 	
 	public void changeCreator(ActionRequest request, ActionResponse response){
 		User user = AuthUtils.getUser();
-		response.setValue("organizer", calendarService.findOrCreateUser(user));
+		response.setValue("organizer", Beans.get(CalendarService.class).findOrCreateUser(user));
 	}
 }

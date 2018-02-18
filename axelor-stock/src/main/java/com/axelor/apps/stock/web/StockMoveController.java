@@ -28,7 +28,6 @@ import java.util.Map;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.TradingNameService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -43,7 +42,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class StockMoveController {
 
 	@Inject
@@ -51,10 +52,6 @@ public class StockMoveController {
 	
 	@Inject
 	private StockMoveRepository stockMoveRepo;
-
-	@Inject
-	protected AppBaseService appBaseService;
-
 
 	public void plan(ActionRequest request, ActionResponse response) {
 

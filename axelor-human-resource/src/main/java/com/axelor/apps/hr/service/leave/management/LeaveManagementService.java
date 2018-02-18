@@ -18,10 +18,8 @@
 package com.axelor.apps.hr.service.leave.management;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
-
 import java.time.LocalDate;
+import java.util.List;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.LeaveLine;
@@ -34,7 +32,7 @@ import com.google.inject.persist.Transactional;
 public class LeaveManagementService {
 	
 	@Inject
-	private AppBaseService appBaseService;
+	protected AppBaseService appBaseService;
 	
 	public LeaveLine computeQuantityAvailable (LeaveLine leaveLine){
 		List<LeaveManagement> leaveManagementList = leaveLine.getLeaveManagementList();

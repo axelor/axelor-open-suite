@@ -17,17 +17,8 @@
  */
 package com.axelor.apps.contract.db.repo;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.db.JpaRepository;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
-
-import javax.persistence.PersistenceException;
 
 public class ContractVersionRepository extends JpaRepository<ContractVersion> {
 

@@ -27,12 +27,15 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.talent.db.Appraisal;
 import com.axelor.apps.talent.db.repo.AppraisalRepository;
 import com.axelor.apps.talent.service.AppraisalService;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class AppraisalController {
 	
 	@Inject
@@ -40,9 +43,6 @@ public class AppraisalController {
 	
 	@Inject
 	private AppraisalService appraisalService;
-	
-	@Inject
-	private EmployeeRepository employeeRepo;
 	
 	public void send(ActionRequest request, ActionResponse response) {
 		
@@ -101,6 +101,8 @@ public class AppraisalController {
 		employeeSet.addAll((Collection<? extends Map<String, Object>>) context.get("employeeSet"));
 		
 		Set<Employee> employees = new HashSet<Employee>();
+		
+		EmployeeRepository employeeRepo = Beans.get(EmployeeRepository.class);
 		
 		for (Map<String, Object> emp : employeeSet) {
 			Long empId = Long.parseLong(emp.get("id").toString());

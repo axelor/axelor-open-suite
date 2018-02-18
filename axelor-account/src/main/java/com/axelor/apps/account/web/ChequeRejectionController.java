@@ -24,11 +24,13 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class ChequeRejectionController {
 
 	@Inject
-	private ChequeRejectionService crs;
+	private ChequeRejectionService chequeRejectionService;
 	
 	@Inject
 	private ChequeRejectionRepository chequeRejectionRepo;
@@ -39,7 +41,7 @@ public class ChequeRejectionController {
 		chequeRejection = chequeRejectionRepo.find(chequeRejection.getId());
 		
 		try {
-			crs.validateChequeRejection(chequeRejection);
+			chequeRejectionService.validateChequeRejection(chequeRejection);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }		

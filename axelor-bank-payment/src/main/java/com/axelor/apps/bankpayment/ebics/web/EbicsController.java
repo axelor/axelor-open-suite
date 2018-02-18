@@ -56,6 +56,7 @@ import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
@@ -65,8 +66,10 @@ import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class EbicsController {
 	
 	@Inject
@@ -76,16 +79,7 @@ public class EbicsController {
 	private EbicsService ebicsService;
 	
 	@Inject
-	private EbicsBankRepository bankRepo;
-	
-	@Inject
 	private EbicsCertificateService certificateService;
-	
-	@Inject
-	private EbicsCertificateRepository certificateRepo;
-	
-	@Inject
-	private EbicsRequestLogRepository logRepo;
 	
 	@Transactional
 	public void generateCertificate(ActionRequest request, ActionResponse response){
@@ -306,17 +300,16 @@ public class EbicsController {
 		
 		Context context = request.getContext();
 		
-		EbicsBank bank = (EbicsBank)context.get("ebicsBank");
+		EbicsBank ebicsBank = (EbicsBank)context.get("ebicsBank");
 		
-		bank = bankRepo.find(bank.getId());
+		ebicsBank = Beans.get(EbicsBankRepository.class).find(ebicsBank.getId());
 		
 		try {
 			X509Certificate certificate =  certificateService.convertToCertificate((String)context.get("certificateE002"));
-			certificateService.createCertificate(certificate, bank, EbicsCertificateRepository.TYPE_ENCRYPTION);
+			certificateService.createCertificate(certificate, ebicsBank, EbicsCertificateRepository.TYPE_ENCRYPTION);
 			
 			certificate =  certificateService.convertToCertificate((String)context.get("certificateX002"));
-			certificateService.createCertificate(certificate, bank, EbicsCertificateRepository.TYPE_AUTHENTICATION);
-			
+			certificateService.createCertificate(certificate, ebicsBank, EbicsCertificateRepository.TYPE_AUTHENTICATION);
 			
 		} catch (CertificateException | IOException e) {
 			e.printStackTrace();
@@ -328,24 +321,24 @@ public class EbicsController {
 	
 	public void loadCertificate(ActionRequest request, ActionResponse response) throws AxelorException, CertificateEncodingException, IOException {
 		
-		EbicsCertificate cert = request.getContext().asType(EbicsCertificate.class);
+		EbicsCertificate ebicsCertificate = request.getContext().asType(EbicsCertificate.class);
 		
-		cert = certificateRepo.find(cert.getId());
+		ebicsCertificate = Beans.get(EbicsCertificateRepository.class).find(ebicsCertificate.getId());
 		
-		byte[] certs = cert.getCertificate();
+		byte[] certs = ebicsCertificate.getCertificate();
 		
 		if (certs != null && certs.length > 0) {
-			X509Certificate certificate = EbicsCertificateService.getCertificate(certs, cert.getTypeSelect());
-			cert = certificateService.updateCertificate(certificate, cert, true);
-			response.setValue("validFrom", cert.getValidFrom());
-			response.setValue("validTo", cert.getValidTo());
-			response.setValue("issuer", cert.getIssuer());
-			response.setValue("subject", cert.getSubject());
-			response.setValue("publicKeyModulus", cert.getPublicKeyModulus());
-			response.setValue("publicKeyExponent", cert.getPublicKeyExponent());
-			response.setValue("fullName", cert.getFullName());
-			response.setValue("pemString", cert.getPemString());
-			response.setValue("sha2has", cert.getSha2has());
+			X509Certificate certificate = EbicsCertificateService.getCertificate(certs, ebicsCertificate.getTypeSelect());
+			ebicsCertificate = certificateService.updateCertificate(certificate, ebicsCertificate, true);
+			response.setValue("validFrom", ebicsCertificate.getValidFrom());
+			response.setValue("validTo", ebicsCertificate.getValidTo());
+			response.setValue("issuer", ebicsCertificate.getIssuer());
+			response.setValue("subject", ebicsCertificate.getSubject());
+			response.setValue("publicKeyModulus", ebicsCertificate.getPublicKeyModulus());
+			response.setValue("publicKeyExponent", ebicsCertificate.getPublicKeyExponent());
+			response.setValue("fullName", ebicsCertificate.getFullName());
+			response.setValue("pemString", ebicsCertificate.getPemString());
+			response.setValue("sha2has", ebicsCertificate.getSha2has());
 		}
 		
 	}
@@ -447,7 +440,7 @@ public class EbicsController {
 	
 	private void downloadFile(ActionResponse response, EbicsUser user) {
 		
-		EbicsRequestLog requestLog = logRepo.all().filter("self.ebicsUser = ?1", user).order("-id").fetchOne();
+		EbicsRequestLog requestLog = Beans.get(EbicsRequestLogRepository.class).all().filter("self.ebicsUser = ?1", user).order("-id").fetchOne();
 		
 		if (requestLog != null && requestLog.getResponseFile() != null) {
 			response.setView(ActionView.define(requestLog.getRequestType())

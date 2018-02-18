@@ -42,21 +42,14 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-
+@Singleton
 public class LeadController {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
-	@Inject
-	private LeadService leadService;
 	
-	@Inject
-	private LeadRepository leadRepo;
-	
-	@Inject
-	private MapService mapService;
 
 	/**
 	 * Method to generate Lead as a Pdf
@@ -83,7 +76,7 @@ public class LeadController {
 			
 		if(!leadIds.equals("")){
 			leadIds = leadIds.substring(0, leadIds.length()-1);	
-			lead = leadRepo.find(new Long(lstSelectedleads.get(0)));
+			lead = Beans.get(LeadRepository.class).find(new Long(lstSelectedleads.get(0)));
 		}else if(lead.getId() != null){
 			leadIds = lead.getId().toString();			
 		}
@@ -113,14 +106,14 @@ public class LeadController {
 	
 	public void showLeadsOnMap(ActionRequest request, ActionResponse response) throws IOException {
 		
-		mapService.showMap("lead", I18n.get("Leads"), response);
+		Beans.get(MapService.class).showMap("lead", I18n.get("Leads"), response);
 	}	
 	
 	
 	public void setSocialNetworkUrl(ActionRequest request, ActionResponse response) throws IOException {
 		
 		Lead lead = request.getContext().asType(Lead.class );
-		Map<String,String> urlMap = leadService.getSocialNetworkUrl(lead.getName(), lead.getFirstName(), lead.getEnterpriseName());
+		Map<String,String> urlMap = Beans.get(LeadService.class).getSocialNetworkUrl(lead.getName(), lead.getFirstName(), lead.getEnterpriseName());
 		response.setAttr("google", "title", urlMap.get("google"));
 		response.setAttr("facebook", "title", urlMap.get("facebook"));
 		response.setAttr("twitter", "title", urlMap.get("twitter"));
@@ -159,7 +152,7 @@ public class LeadController {
 		Lead lead = request.getContext().asType(Lead.class);
 		response.setAttr("duplicateLeadText",
 				"hidden",
-				!leadService.isThereDuplicateLead(lead));
+				!Beans.get(LeadService.class).isThereDuplicateLead(lead));
 	}
 	
 }
