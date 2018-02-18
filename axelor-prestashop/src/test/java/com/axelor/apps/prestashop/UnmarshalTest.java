@@ -21,6 +21,7 @@ import com.axelor.apps.prestashop.entities.ListContainer.CountriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CurrenciesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CustomersContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.OrderHistoriesContainer;
+import com.axelor.apps.prestashop.entities.ListContainer.OrderRowsDetailsContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.OrdersContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.ProductCategoriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.ProductsContainer;
@@ -34,6 +35,7 @@ import com.axelor.apps.prestashop.entities.PrestashopCustomer;
 import com.axelor.apps.prestashop.entities.PrestashopImage;
 import com.axelor.apps.prestashop.entities.PrestashopOrder;
 import com.axelor.apps.prestashop.entities.PrestashopOrderHistory;
+import com.axelor.apps.prestashop.entities.PrestashopOrderRowDetails;
 import com.axelor.apps.prestashop.entities.PrestashopProduct;
 import com.axelor.apps.prestashop.entities.PrestashopProductCategory;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
@@ -446,5 +448,58 @@ public class UnmarshalTest {
 		Assert.assertEquals(OrderHistoriesContainer.class, envelop.getContent().getClass());
 		OrderHistoriesContainer histories = envelop.getContent();
 		Assert.assertEquals(1, histories.getEntities().size());
+	}
+
+	@Test
+	public void testOrderRowDetails() throws JAXBException {
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("order-row-details.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(PrestashopOrderRowDetails.class, envelop.getContent().getClass());
+		PrestashopOrderRowDetails row = envelop.getContent();
+		Assert.assertEquals(Integer.valueOf(3), row.getId());
+		Assert.assertEquals(2, row.getOrderId());
+		Assert.assertEquals(Integer.valueOf(21), row.getProductId());
+		Assert.assertEquals(Integer.valueOf(0), row.getProductAttributeId());
+		Assert.assertEquals(Integer.valueOf(0), row.getReinjectedProductQuantity());
+		Assert.assertTrue(BigDecimal.ZERO.compareTo(row.getGroupReduction()) == 0);
+		Assert.assertEquals(Integer.valueOf(0), row.getAppliedQuantityDiscount());
+		Assert.assertEquals("", row.getDownloadHash());
+		Assert.assertNull(row.getDownloadDeadline());
+		Assert.assertEquals(Integer.valueOf(2), row.getOrderInvoiceId());
+		Assert.assertEquals(0, row.getWarehouseId());
+		Assert.assertEquals(1, row.getShopId());
+		Assert.assertEquals(Integer.valueOf(0), row.getCustomizationId());
+		Assert.assertEquals("Imprimante Laser", row.getProductName());
+		Assert.assertEquals(8, row.getProductQuantity());
+		Assert.assertEquals(8, row.getProductQuantityInStock());
+		Assert.assertEquals(0, row.getProductQuantityReturn());
+		Assert.assertEquals(0, row.getProductQuantityRefunded());
+		Assert.assertTrue(BigDecimal.valueOf(429).compareTo(row.getProductPrice()) == 0);
+		Assert.assertTrue(BigDecimal.ZERO.compareTo(row.getDiscountPercent()) == 0);
+		Assert.assertTrue(BigDecimal.ZERO.compareTo(row.getDiscountAmount()) == 0);
+		Assert.assertTrue(BigDecimal.ZERO.compareTo(row.getDiscountAmountTaxIncluded()) == 0);
+		Assert.assertTrue(BigDecimal.ZERO.compareTo(row.getDiscountAmountTaxExcluded()) == 0);
+		Assert.assertTrue(BigDecimal.ZERO.compareTo(row.getProductQuantityDiscount()) == 0);
+		Assert.assertEquals("", row.getEan13());
+		Assert.assertEquals("", row.getIsbn());
+		Assert.assertEquals("", row.getUpc());
+		Assert.assertEquals("EQPT-0006", row.getProductReference());
+		Assert.assertEquals("", row.getProductSupplierReference());
+		Assert.assertTrue(BigDecimal.ZERO.compareTo(row.getProductWeight()) == 0);
+		Assert.assertEquals(Integer.valueOf(0), row.getTaxComputationMethod());
+		Assert.assertTrue(BigDecimal.ZERO.compareTo(row.getEcotax()) == 0);
+		Assert.assertTrue(BigDecimal.ZERO.compareTo(row.getEcotaxRate()) == 0);
+		Assert.assertEquals(Integer.valueOf(0), row.getDownloadsCount());
+	}
+
+	@Test
+	public void testOrderRowsDetails() throws JAXBException {
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("order-rows-details.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(OrderRowsDetailsContainer.class, envelop.getContent().getClass());
+		OrderRowsDetailsContainer rows = envelop.getContent();
+		Assert.assertEquals(3, rows.getEntities().size());
 	}
 }
