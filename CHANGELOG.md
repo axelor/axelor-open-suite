@@ -4,12 +4,17 @@
 
 ### Improvements
 - New assistant in expense form to select payment mode
+- Leave management reset batch now creates a new line with negative quantity
+  instead of clearing old lines
 
 ### Bug Fixes
 - Permission change in most HR form
 - Find kilometric allowance rate per company
 - Remove filter on company for historic timesheet
 - More fixes in expense form
+- Show time unit for the right user in timesheet lines
+- Hide button in leave request instead of making it readonly
+- Fix count tags in hr menus
 - Remove the wrong process to create an useless move for excess payment on refund invoice ventilation
 
 

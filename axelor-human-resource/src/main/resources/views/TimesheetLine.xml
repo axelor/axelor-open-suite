@@ -119,11 +119,11 @@
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-line-attrs-set-duration-label">
-	    <attribute name="title" for="durationLabel" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
+	    <attribute name="title" for="durationLabel" expr="eval: user.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : user.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-line-attrs-set-visible-duration-title">
-	    <attribute name="title" for="durationLabel" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')" />
+	    <attribute name="title" for="durationLabel" expr="eval: user.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : user.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')" />
 	</action-attrs>
 	
 	<action-record name="action-hr-default-timesheet-line-project" model="com.axelor.apps.hr.db.TimesheetLine">
