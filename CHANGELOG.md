@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.x]
 ## Features
+- New Inventory view
 - New StockMove view
 - New currency conversion API (ECB)
 - Split accounting report VAT statement in two, VAT on amount received and VAT on invoicing
