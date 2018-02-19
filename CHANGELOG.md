@@ -4,6 +4,8 @@
 
 ### Improvements
 - New assistant in expense form to select payment mode
+- Leave management reset batch now creates a new line with negative quantity
+  instead of clearing old lines
 
 ### Bug Fixes
 - Permission change in most HR form
