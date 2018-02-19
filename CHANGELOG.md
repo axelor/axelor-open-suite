@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased 5.x]
+### Bug Fixes
+- Removed old themes
+
 ## 3.0.2 (2015-09-09)
 ### Bug Fixes
 - Domain on Partner account in Invoice
