@@ -14,6 +14,7 @@
 - More fixes in expense form
 - Show time unit for the right user in timesheet lines
 - Hide button in leave request instead of making it readonly
+- Fix count tags in hr menus
 
 ## [4.1.2] - 2018-02-05
 ### Improvements
