@@ -38,7 +38,7 @@
 	    onSave="action-leave-request-validate-dates-on-save" canCopy="false">
 
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
-	    	<button name="sendLeave" onClick="action-leave-request-group-send" colSpan="4" title="Send" readonlyIf="statusSelect &gt; 1"/>
+			<button name="sendLeave" onClick="action-leave-request-group-send" colSpan="4" title="Send" hideIf="statusSelect &gt; 1"/>
 	    	<button name="validateButton" onClick="action-leave-request-group-validate" title="Validate"/>
 	    	<button name="refuseButton" onClick="action-leave-request-group-refuse" title="Refuse"/>
 	    	<button name="cancelButton" onClick="action-leave-request-group-cancel" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
