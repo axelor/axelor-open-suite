@@ -99,7 +99,17 @@ public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateSe
 		
 		LocalDate paymentDate = paymentMove.getDate();
 		BigDecimal amountConverted = currencyService.getAmountCurrencyConvertedAtDate(paymentMove.getCompanyCurrency(), paymentMove.getCurrency(), amount, paymentDate);
-		InvoicePayment invoicePayment = this.createInvoicePayment(invoice, amountConverted, paymentDate, paymentMove.getCurrency(), paymentMove.getPaymentMode(), this.determineType(paymentMove));
+		int typePaymentMove = this.determineType(paymentMove);
+		Currency currency = paymentMove.getCurrency();
+		PaymentMode paymentMode;
+		InvoicePayment invoicePayment;
+		if(typePaymentMove == InvoicePaymentRepository.TYPE_REFUND_INVOICE || typePaymentMove == InvoicePaymentRepository.TYPE_INVOICE){
+			paymentMode = null;
+		}
+		else{
+			paymentMode = paymentMove.getPaymentMode();
+		}
+		invoicePayment = this.createInvoicePayment(invoice, amountConverted, paymentDate, currency, paymentMode, typePaymentMove);
 		invoicePayment.setMove(paymentMove);
 		invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
 		PaymentVoucher paymentVoucher = paymentMove.getPaymentVoucher();
