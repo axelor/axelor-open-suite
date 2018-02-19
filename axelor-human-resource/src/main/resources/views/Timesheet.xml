@@ -234,12 +234,12 @@
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-attrs-set-visible-duration-title">
-	    	<attribute name="title" for="timesheetLineList.visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')" />
-	     	<attribute name="title" for="panelDashboard" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Total Days in the period') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Total Minutes per Day') : com.axelor.i18n.I18n.get('Total Hours per Day')"/>
+        <attribute name="title" for="timesheetLineList.visibleDuration" expr="eval:user.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : user.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')" />
+        <attribute name="title" for="panelDashboard" expr="eval:user.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Total Days in the period') : user.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Total Minutes per Day') : com.axelor.i18n.I18n.get('Total Hours per Day')"/>
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-attrs-set-log-time-title">
-	    <attribute name="title" for="$logTime" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Duration(in day per day)') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Duration(minutes by day)') : com.axelor.i18n.I18n.get('Duration(hours by day)')" />
+	    <attribute name="title" for="$logTime" expr="eval:user.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Duration(in day per day)') : user.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Duration(minutes by day)') : com.axelor.i18n.I18n.get('Duration(hours by day)')" />
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-attrs-generale-lines-panel-hidden-true">

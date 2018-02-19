@@ -10,6 +10,7 @@
 - Find kilometric allowance rate per company
 - Remove filter on company for historic timesheet
 - More fixes in expense form
+- Show time unit for the right user in timesheet lines
 
 ## [4.1.2] - 2018-02-05
 ### Improvements
