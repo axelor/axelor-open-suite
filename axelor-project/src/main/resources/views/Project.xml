@@ -137,10 +137,11 @@
 		</panel>
 
 		<panel title="Members">
-			<field name="membersUserSet" readonlyIf="synchronisable == true" showTitle="false" colSpan="12" widget="TagSelect" canNew="false" form-view="user-form" grid-view="user-grid"/>
-			<field name="team" title="Team" colSpan="6" canNew="false" canEdit="false"/>
+			<field name="membersUserSet" showTitle="false" colSpan="10" widget="TagSelect" canNew="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="extendsMembersFromParent" colSpan="2" widget="boolean-switch" showIf="projectTypeSelect == 2" hidden="true"/>
+			<field name="team" readonlyIf="synchronisable == true" title="Team" colSpan="6" canNew="false" canEdit="false"/>
 			<field name="synchronisable" colSpan="3" widget="boolean-switch"/>
-			<button name="selectTeam" title="Select a team" showIf="team != null" colSpan="3" onClick="save,action-project-method-select-team"/>
+			<button name="importMembers" title="Import all members" showIf="team != null" colSpan="3" onClick="action-project-method-import-members"/>
 		</panel>
 
 		<panel-tabs>
@@ -548,8 +549,8 @@
 		<call class="com.axelor.apps.project.web.ProjectController" method="generateQuotation"/>
 	</action-method>
 
-	<action-method name="action-project-method-select-team">
-		<call class="com.axelor.apps.project.web.ProjectController" method="selectTeam"/>
+	<action-method name="action-project-method-import-members">
+		<call class="com.axelor.apps.project.web.ProjectController" method="importMembers"/>
 	</action-method>
 	
 	<action-record name="action-project-record-status-in-progress" model="com.axelor.apps.project.db.Project">

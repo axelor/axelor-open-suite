@@ -18,14 +18,18 @@
 package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.project.db.Project;
+import com.axelor.team.db.Team;
 import com.google.common.base.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
 
 public class ProjectManagementRepository extends ProjectRepository {
-	
-	
-	@Override
-	public Project save(Project project){
-		
+
+	private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+	private void setAllProjectFullName(Project project) {
 		String projectCode = ( Strings.isNullOrEmpty(project.getCode()) ) ? "" : project.getCode() + " - ";
 		project.setFullName(projectCode + project.getName());
 		if (project.getChildProjectList() != null && !project.getChildProjectList().isEmpty()){
@@ -34,7 +38,28 @@ public class ProjectManagementRepository extends ProjectRepository {
 				child.setFullName(code + child.getName());
 			}
 		}
-		
+	}
+
+	private void setAllProjectMembersUserSet(Project project) {
+		if (project.getParentProject() == null) {
+			project.getChildProjectList().stream()
+					.filter(Project::getExtendsMembersFromParent)
+					.peek(Project::clearMembersUserSet)
+                    .peek(p -> project.getMembersUserSet().forEach(p::addMembersUserSetItem))
+                    .forEach(p -> p.setTeam(project.getTeam()));
+		}
+	}
+	
+	@Override
+	public Project save(Project project){
+	    setAllProjectFullName(project);
+	    setAllProjectMembersUserSet(project);
+
+	    if (project.getSynchronisable()) {
+	    	Team team = project.getTeam();
+	    	team.clearMembers();
+	    	project.getMembersUserSet().forEach(team::addMember);
+		}
 		return super.save(project);
 	}
 
