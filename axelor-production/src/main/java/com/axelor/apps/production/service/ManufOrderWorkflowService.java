@@ -46,7 +46,6 @@ public class ManufOrderWorkflowService {
 	protected ManufOrderStockMoveService manufOrderStockMoveService;
 	protected ManufOrderRepository manufOrderRepo;
 
-	protected LocalDateTime now;
 
 	@Inject
 	public ManufOrderWorkflowService(OperationOrderWorkflowService operationOrderWorkflowService, OperationOrderRepository operationOrderRepo,
@@ -57,7 +56,6 @@ public class ManufOrderWorkflowService {
 		this.manufOrderStockMoveService = manufOrderStockMoveService;
 		this.manufOrderRepo = manufOrderRepo;
 
-		now = appProductionService.getTodayDateTime().toLocalDateTime();
 	}
 
 

@@ -60,14 +60,12 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 	@Inject
 	protected AppBaseService appBaseService;
 
-	protected LocalDate today;
 
 	protected User user;
 
 	@Inject
 	public SaleOrderPurchaseServiceImpl() {
 
-		this.today = Beans.get(AppBaseService.class).getTodayDate();
 		this.user = AuthUtils.getUser();
 	}
 
@@ -130,7 +128,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 				saleOrder.getSaleOrderSeq(),
 				saleOrder.getExternalReference(),
 				Beans.get(StockLocationService.class).getDefaultStockLocation(saleOrder.getCompany()),
-				today,
+				Beans.get(AppBaseService.class).getTodayDate(),
 				Beans.get(PartnerPriceListService.class).getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
 				supplierPartner);
 

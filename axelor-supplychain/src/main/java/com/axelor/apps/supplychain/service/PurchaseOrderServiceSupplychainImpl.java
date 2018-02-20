@@ -84,8 +84,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	protected AppSupplychainService appSupplychainService;
 	protected AccountConfigService accountConfigService;
 	protected AppAccountService appAccountService;
-	protected LocalDate today;
-	
+
 	@Inject
 	private BudgetDistributionRepository budgetDistributionRepo;
   
@@ -98,7 +97,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		this.appSupplychainService = appSupplychainService;
 		this.accountConfigService = accountConfigService;
 		this.appAccountService = appAccountService;
-		this.today = Beans.get(AppBaseService.class).getTodayDate();
 	}
 
 	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
@@ -403,7 +401,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		// getting BudgetLine of the period
 		BudgetLine bl = null;
 		for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-			if (DateTool.isBetween(budgetLine.getFromDate(), budgetLine.getToDate(), today)) {
+			if (DateTool.isBetween(budgetLine.getFromDate(), budgetLine.getToDate(), appAccountService.getTodayDate())) {
 				bl = budgetLine;
 				break;
 			}

@@ -68,7 +68,6 @@ public class MrpLineServiceImpl implements MrpLineService  {
 	protected PurchaseOrderRepository purchaseOrderRepo;
 	protected StockRulesService stockRulesService;
 
-	protected LocalDate today;
 	protected User user;
 
 	@Inject
@@ -81,7 +80,6 @@ public class MrpLineServiceImpl implements MrpLineService  {
 		this.purchaseOrderRepo = purchaseOrderRepo;
 		this.stockRulesService = stockRulesService;
 		
-		this.today = appBaseService.getTodayDate();
 		this.user = userService.getUser();
 	}
 
@@ -131,10 +129,10 @@ public class MrpLineServiceImpl implements MrpLineService  {
 					null,
 					supplierPartner.getCurrency(),
 					maturityDate,
-					"MRP-"+this.today.toString(), //TODO sequence on mrp
+					"MRP-"+appBaseService.getTodayDate().toString(), //TODO sequence on mrp
 					null,
 					stockLocation,
-					this.today,
+					appBaseService.getTodayDate(),
 					Beans.get(PartnerPriceListService.class).getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
 					supplierPartner));
 			if (purchaseOrders != null) {

@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
@@ -46,6 +47,7 @@ import com.google.inject.persist.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
@@ -115,17 +117,18 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 				if(supplierPartner != null)  {
 
 					Company company = stockLocation.getCompany();
+					LocalDate today = Beans.get(AppBaseService.class).getTodayDate();
 
 					PurchaseOrder purchaseOrder = purchaseOrderRepo.save(purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
 							this.user,
 							company,
 							null,
 							supplierPartner.getCurrency(),
-							this.today.plusDays(supplierPartner.getDeliveryDelay()),
+							today.plusDays(supplierPartner.getDeliveryDelay()),
 							stockRules.getName(),
 							null,
 							stockLocation,
-							this.today,
+							today,
 							Beans.get(PartnerPriceListService.class).getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
 							supplierPartner));
 

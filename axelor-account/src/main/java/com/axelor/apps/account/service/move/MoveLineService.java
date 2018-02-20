@@ -74,7 +74,6 @@ public class MoveLineService {
 	protected AccountManagementAccountService accountManagementService;
 	protected TaxAccountService taxAccountService;
 	protected FiscalPositionServiceAccountImpl fiscalPositionService;
-	protected LocalDate today;
 	protected AnalyticMoveLineService analyticMoveLineService;
 	protected AppAccountService appAccountService;
 	protected CurrencyService currencyService;
@@ -94,8 +93,6 @@ public class MoveLineService {
 		this.appAccountService = appAccountService;
 		this.currencyService = currencyService;
 		this.companyConfigService = companyConfigService;
-		
-		today = appAccountService.getTodayDate();
 	}
 	
 	

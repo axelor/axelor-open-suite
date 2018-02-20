@@ -67,7 +67,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	private LocalDate today;
 
 	protected AppSupplychainService appSupplychainService;
 
@@ -84,7 +83,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 									   InvoiceService invoiceService) {
 
 		this.appSupplychainService = appSupplychainService;
-		this.today = this.appSupplychainService.getTodayDate();
 
 		this.saleOrderRepo = saleOrderRepo;
 		this.invoiceRepo = invoiceRepo;
@@ -382,7 +380,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	@Override
 	public SaleOrder fillSaleOrder(SaleOrder saleOrder, Invoice invoice)  {
 
-		saleOrder.setOrderDate(this.today);
+		saleOrder.setOrderDate(appSupplychainService.getTodayDate());
 
 		// TODO Créer une séquence pour les commandes (Porter sur la facture ?)
 //		saleOrder.setOrderNumber();

@@ -17,22 +17,13 @@
  */
 package com.axelor.apps.account.service.debtrecovery;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
-
-import java.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.db.DebtRecoveryConfigLine;
 import com.axelor.apps.account.db.DebtRecoveryMethod;
 import com.axelor.apps.account.db.DebtRecoveryMethodLine;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -44,19 +35,27 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
 
 public class DebtRecoverySessionService {
 
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected DebtRecoveryRepository debtRecoveryRepo;
-	
-	protected LocalDate today;
+
+	protected AppAccountService appAccountService;
 
 	@Inject
 	public DebtRecoverySessionService(DebtRecoveryRepository debtRecoveryRepo, AppAccountService appAccountService) {
 
-		this.today = appAccountService.getTodayDate();
+		this.appAccountService = appAccountService;
 		this.debtRecoveryRepo = debtRecoveryRepo;
 
 	}
@@ -115,7 +114,7 @@ public class DebtRecoverySessionService {
 		int levelMax = this.getMaxLevel(debtRecovery);
 
 		// Test inutile... à verifier
-		if((today.isAfter(referenceDate)  ||  today.isEqual(referenceDate))  &&  balanceDueDebtRecovery.compareTo(BigDecimal.ZERO) > 0  )  {
+		if((appAccountService.getTodayDate().isAfter(referenceDate)  ||  appAccountService.getTodayDate().isEqual(referenceDate))  &&  balanceDueDebtRecovery.compareTo(BigDecimal.ZERO) > 0  )  {
 			log.debug("Si la date actuelle est égale ou ultérieur à la date de référence et le solde due relançable positif");
 			//Pour les client à haut risque vital, on passe directement du niveau de relance 2 au niveau de relance 4
 			if(debtRecoveryLevel < levelMax)  {
@@ -130,7 +129,7 @@ public class DebtRecoverySessionService {
 			DebtRecoveryMethodLine debtRecoveryMethodLine = this.getDebtRecoveryMethodLine(debtRecovery, theoricalDebtRecoveryLevel);
 
 
-			if((!(referenceDate.plusDays(debtRecoveryMethodLine.getStandardDeadline())).isAfter(today))
+			if((!(referenceDate.plusDays(debtRecoveryMethodLine.getStandardDeadline())).isAfter(appAccountService.getTodayDate()))
 					&&  balanceDueDebtRecovery.compareTo(debtRecoveryMethodLine.getMinThreshold()) > 0 )  {
 				log.debug("Si le seuil du solde exigible relançable est respecté et le délai est respecté");
 

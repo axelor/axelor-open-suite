@@ -17,18 +17,6 @@
  */
 package com.axelor.apps.account.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountClearance;
 import com.axelor.apps.account.db.AccountConfig;
@@ -57,6 +45,16 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class AccountClearanceService{
 
@@ -70,7 +68,7 @@ public class AccountClearanceService{
 	protected TaxService taxService;
 	protected TaxAccountService taxAccountService;
 	protected AccountClearanceRepository accountClearanceRepo;
-	protected ZonedDateTime todayTime;
+	protected AppBaseService appBaseService;
 	protected User user;
 
 	@Inject
@@ -78,7 +76,7 @@ public class AccountClearanceService{
 			MoveLineRepository moveLineRepo, SequenceService sequenceService, ReconcileService reconcileService, TaxService taxService,
 			TaxAccountService taxAccountService, AccountClearanceRepository accountClearanceRepo) {
 		
-		this.todayTime = appBaseService.getTodayDateTime();
+		this.appBaseService = appBaseService;
 		this.user = userService.getUser();
 		this.moveService = moveService;
 		this.moveLineService = moveLineService;
@@ -127,7 +125,7 @@ public class AccountClearanceService{
 
 		Tax tax = accountConfig.getStandardRateTax();
 
-		BigDecimal taxRate = taxService.getTaxRate(tax, todayTime.toLocalDate());
+		BigDecimal taxRate = taxService.getTaxRate(tax, appBaseService.getTodayDateTime().toLocalDate());
 		Account taxAccount = taxAccountService.getAccount(tax, company);
 		Account profitAccount = accountConfig.getProfitAccount();
 		Journal journal = accountConfig.getAccountClearanceJournal();
@@ -140,7 +138,7 @@ public class AccountClearanceService{
 		}
 
 		accountClearance.setStatusSelect(AccountClearanceRepository.STATUS_VALIDATED);
-		accountClearance.setDateTime(this.todayTime);
+		accountClearance.setDateTime(appBaseService.getTodayDateTime());
 		accountClearance.setName(sequenceService.getSequenceNumber(IAdministration.ACCOUNT_CLEARANCE, company));
 		accountClearanceRepo.save(accountClearance);
 	}
@@ -154,18 +152,18 @@ public class AccountClearanceService{
 
 		// Debit MoveLine 411
 		BigDecimal amount = moveLine.getAmountRemaining();
-		MoveLine debitMoveLine = moveLineService.createMoveLine(move, partner, moveLine.getAccount(), amount, true, todayTime.toLocalDate(), 1, null);
+		MoveLine debitMoveLine = moveLineService.createMoveLine(move, partner, moveLine.getAccount(), amount, true, appBaseService.getTodayDateTime().toLocalDate(), 1, null);
 		move.getMoveLineList().add(debitMoveLine);
 
 		// Credit MoveLine 77. (profit account)
 		BigDecimal divid = taxRate.add(BigDecimal.ONE);
 		BigDecimal profitAmount = amount.divide(divid, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN).setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
-		MoveLine creditMoveLine1 = moveLineService.createMoveLine(move, partner, profitAccount, profitAmount, false, todayTime.toLocalDate(), 2, null);
+		MoveLine creditMoveLine1 = moveLineService.createMoveLine(move, partner, profitAccount, profitAmount, false, appBaseService.getTodayDateTime().toLocalDate(), 2, null);
 		move.getMoveLineList().add(creditMoveLine1);
 
 		// Credit MoveLine 445 (Tax account)
 		BigDecimal taxAmount = amount.subtract(profitAmount);
-		MoveLine creditMoveLine2 = moveLineService.createMoveLine(move, partner, taxAccount, taxAmount, false, todayTime.toLocalDate(), 3, null);
+		MoveLine creditMoveLine2 = moveLineService.createMoveLine(move, partner, taxAccount, taxAmount, false, appBaseService.getTodayDateTime().toLocalDate(), 3, null);
 		move.getMoveLineList().add(creditMoveLine2);
 
 		Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, moveLine, amount, false);
@@ -185,7 +183,7 @@ public class AccountClearanceService{
 		accountClearance.setDateThreshold(dateThreshold);
 		accountClearance.getMoveLineSet().addAll(moveLineSet);
 		accountClearance.setName(name);
-		accountClearance.setDateTime(this.todayTime);
+		accountClearance.setDateTime(appBaseService.getTodayDateTime());
 		accountClearance.setUser(this.user);
 		accountClearance.setStatusSelect(AccountClearanceRepository.STATUS_VALIDATED);
 		return accountClearance;

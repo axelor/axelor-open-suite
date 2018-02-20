@@ -35,8 +35,6 @@ import com.google.inject.persist.Transactional;
 
 public class StockRulesServiceImpl implements StockRulesService  {
 
-	protected LocalDate today;
-
 	protected User user;
 	
 	@Inject
@@ -45,7 +43,6 @@ public class StockRulesServiceImpl implements StockRulesService  {
 	@Inject
 	public StockRulesServiceImpl() {
 
-		this.today = Beans.get(AppBaseService.class).getTodayDate();
 		this.user = AuthUtils.getUser();
 	}
 

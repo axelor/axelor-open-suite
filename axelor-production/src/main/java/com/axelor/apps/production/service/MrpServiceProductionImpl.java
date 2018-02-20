@@ -110,7 +110,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 		List<ManufOrder> manufOrderList = manufOrderRepository.all()
 				.filter("self.product in (?1) AND self.prodProcess.stockLocation in (?2) "
 						+ "AND self.statusSelect NOT IN (?3) AND self.plannedStartDateT > ?4",
-						this.productMap.keySet(), this.stockLocationList, statusList, today.atStartOfDay()).fetch();
+						this.productMap.keySet(), this.stockLocationList, statusList, appBaseService.getTodayDate().atStartOfDay()).fetch();
 		
 		for(ManufOrder manufOrder : manufOrderList)  {
 		

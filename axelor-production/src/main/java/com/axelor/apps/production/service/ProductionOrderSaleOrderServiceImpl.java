@@ -47,8 +47,6 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	protected LocalDate today;
-
 	protected User user;
 	
 	protected UnitConversionService unitConversionService;
@@ -63,7 +61,6 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 		this.productionOrderService = productionOrderService;
 		this.productionOrderRepo = productionOrderRepo;
 		
-		this.today = Beans.get(AppBaseService.class).getTodayDate();
 		this.user = userInfoService.getUser();
 	}
 

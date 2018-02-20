@@ -34,6 +34,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import com.axelor.apps.base.db.AppAccount;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +76,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	protected ZonedDateTime todayTime;
+	protected AppAccountService appAccountService;
 
 	protected AccountingReportService accountingReportService;
 	protected SequenceService sequenceService;
@@ -102,7 +103,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 		this.accountRepo = accountRepo;
 		this.moveLineService = moveLineService;
 		this.partnerService = partnerService;
-		todayTime = appAccountService.getTodayDateTime();
+		this.appAccountService = appAccountService;
 	}
 
 
@@ -256,7 +257,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 		log.info("In Export type service : ");
 
-		String fileName = "detail"+todayTime.format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))+"ventes.dat";
+		String fileName = "detail"+appAccountService.getTodayDateTime().format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))+"ventes.dat";
 		this.exportMoveLineTypeSelect1006FILE1(mlr, replay);
 		this.exportMoveLineAllTypeSelectFILE2(mlr,fileName);
 	}
@@ -380,7 +381,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 			}
 		}
 
-		String fileName = "entete"+todayTime.format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))+"ventes.dat";
+		String fileName = "entete"+appAccountService.getTodayDateTime().format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))+"ventes.dat";
 		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
 		new File(filePath).mkdirs();
 
@@ -403,7 +404,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 		log.info("In Export type 1007 service : ");
 
-		String fileName = "detail"+todayTime.format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))+"avoirs.dat";
+		String fileName = "detail"+appAccountService.getTodayDateTime().format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))+"avoirs.dat";
 		this.exportMoveLineTypeSelect1007FILE1(accountingReport, replay);
 		this.exportMoveLineAllTypeSelectFILE2(accountingReport, fileName);
 	}
@@ -528,7 +529,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 			}
 		}
 
-		String fileName = "entete"+todayTime.format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))+"avoirs.dat";
+		String fileName = "entete"+appAccountService.getTodayDateTime().format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))+"avoirs.dat";
 		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
 		new File(filePath).mkdirs();
 
@@ -550,7 +551,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 		log.info("In Export type 1008 service : ");
 
-		String fileName = "detail"+todayTime.format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))+"tresorerie.dat";
+		String fileName = "detail"+appAccountService.getTodayDateTime().format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))+"tresorerie.dat";
 		this.exportMoveLineTypeSelect1008FILE1(accountingReport, replay);
 		this.exportMoveLineAllTypeSelectFILE2(accountingReport, fileName);
 	}
@@ -675,7 +676,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 			}
 		}
 
-		String fileName = "entete"+todayTime.format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))+"tresorerie.dat";
+		String fileName = "entete"+appAccountService.getTodayDateTime().format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))+"tresorerie.dat";
 		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
 		new File(filePath).mkdirs();
 
@@ -696,7 +697,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 	public void exportMoveLineTypeSelect1009(AccountingReport accountingReport, boolean replay) throws AxelorException, IOException {
 
 		log.info("In Export type 1009 service : ");
-		String fileName = "detail"+todayTime.format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))+"achats.dat";
+		String fileName = "detail"+appAccountService.getTodayDateTime().format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))+"achats.dat";
 		this.exportMoveLineTypeSelect1009FILE1(accountingReport, replay);
 		this.exportMoveLineAllTypeSelectFILE2(accountingReport, fileName);
 	}
@@ -841,7 +842,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 			}
 		}
 
-		String fileName = "entete"+todayTime.format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))+"achats.dat";
+		String fileName = "entete"+appAccountService.getTodayDateTime().format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))+"achats.dat";
 		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
 		new File(filePath).mkdirs();
 
@@ -1370,7 +1371,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 		accountingReport.setDateFrom(startDate);
 		accountingReport.setDateTo(endDate);
 		accountingReport.setStatusSelect(AccountingReportRepository.STATUS_DRAFT);
-		accountingReport.setDate(todayTime.toLocalDate());
+		accountingReport.setDate(appAccountService.getTodayDateTime().toLocalDate());
 		accountingReport.setRef(accountingReportService.getSequence(accountingReport));
 		
 		accountingReportService.buildQuery(accountingReport);
