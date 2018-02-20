@@ -14,7 +14,7 @@
 	<many-to-one name="costSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
 	<decimal name="consumptionQty" title="Consumption" precision="20" scale="10"/>
 	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-  	<decimal name="costPrice" title="Cost price"/>
+  	<decimal name="costPrice" title="Cost price" precision="20" scale="10"/>
 	<many-to-one name="parentCostSheetLine" ref="com.axelor.apps.production.db.CostSheetLine" title="Parent"/>
 	<one-to-many name="costSheetLineList" ref="com.axelor.apps.production.db.CostSheetLine" mappedBy="parentCostSheetLine" title="Parent"/>
   	<integer name="typeSelect" title="Type" selection="production.cost.sheet.line.type.select"/>
