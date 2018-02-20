@@ -575,39 +575,6 @@ public class ExpenseServiceImpl implements ExpenseService {
 	}
 
 	@Override
-	@Transactional
-	public void insertExpenseLine(ActionRequest request, ActionResponse response) {
-		User user = AuthUtils.getUser();
-		Map<String, Object> requestData = request.getData();
-		Project project = Beans.get(ProjectRepository.class).find(new Long(requestData.get("project").toString()));
-		Product product = Beans.get(ProductRepository.class).find(new Long(requestData.get("expenseType").toString()));
-		if (user != null) {
-			Expense expense = getOrCreateExpense(user);
-			ExpenseLine expenseLine = new ExpenseLine();
-			expenseLine.setExpenseDate(LocalDate.parse(requestData.get("date").toString(), DateTimeFormatter.ISO_DATE));
-			expenseLine.setComments(requestData.get("comments").toString());
-			expenseLine.setExpenseProduct(product);
-			expenseLine.setProject(project);
-			expenseLine.setUser(user);
-			expenseLine.setTotalAmount(new BigDecimal(requestData.get("unTaxTotal").toString()));
-			expenseLine.setTotalTax(new BigDecimal(requestData.get("taxTotal").toString()));
-			expenseLine.setUntaxedAmount(expenseLine.getTotalAmount().subtract(expenseLine.getTotalTax()));
-			expenseLine.setToInvoice(new Boolean(requestData.get("toInvoice").toString()));
-			String justification  = (String) requestData.get("justification");
-			if (!Strings.isNullOrEmpty(justification)) {
-				expenseLine.setJustification(Base64.decodeBase64(justification));
-			}
-			expense.addGeneralExpenseLineListItem(expenseLine);
-
-			Beans.get(ExpenseRepository.class).save(expense);
-			HashMap<String, Object> data = new HashMap<>();
-			data.put("id", expenseLine.getId());
-			response.setData(data);
-			response.setTotal(1);
-		}
-	}
-
-	@Override
 	public Expense getOrCreateExpense(User user) {
 		Expense expense = Beans.get(ExpenseRepository.class).all()
 				.filter("self.statusSelect = ?1 AND self.user.id = ?2",

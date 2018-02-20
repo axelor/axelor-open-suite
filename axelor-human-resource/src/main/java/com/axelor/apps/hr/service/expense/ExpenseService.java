@@ -88,14 +88,6 @@ public interface ExpenseService  {
 	public void getExpensesTypes(ActionRequest request, ActionResponse response);
 	
 	/**
-	 * This method is used in mobile application.
-	 * @param request
-	 * @param response
-	 */
-	@Transactional
-	public void insertExpenseLine(ActionRequest request, ActionResponse response);
-	
-	/**
 	 * Get the expense from user, if no expense is found create one.
 	 * @param user
 	 * @return
