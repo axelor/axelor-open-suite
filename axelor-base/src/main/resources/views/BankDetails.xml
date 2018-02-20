@@ -26,7 +26,7 @@
 		<panel sidebar="true">
 			<field name="active" widget="Boolean-switch"/>
 		</panel>
-		<panel name="iban" title="IBAN">
+		<panel name="iban" title="IBAN / BBAN">
 			<field name="bank.bankDetailsTypeSelect" readonly="true"/>
 			<panel>
 				<field name="iban" readonlyIf="bank==null" onChange="action-group-account-bankdetails-iban-onchange" colSpan="12" />
