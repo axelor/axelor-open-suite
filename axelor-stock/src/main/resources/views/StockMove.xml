@@ -65,104 +65,145 @@
         <field name="name" />
     </calendar>
 
-	<form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove"
-		 onLoad="action-stock-move-attrs-typeselect-change,action-stock-move-hide-reserved-qty,action-stock-move-method-filter-printing-settings" onNew="action-group-stock-stockmove-onnew">
-		 
-		 <menubar>
-		 		<menu title="Reports">
-		 			<item title="Print" action="save,action-print-stock-move" showIf="statusSelect != 1"/>
-					<item title="Print picking order" action="save,action-print-picking-stock-move" showIf="statusSelect != 1 &amp;&amp; typeSelect == 2"/>
-		 		</menu>
-		 		<menu title="Tools">
-		 			<item title="View Direction" showIf="typeSelect == 2 &amp;&amp; statusSelect!=4" action="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
-		 			<item title="Split into 2" action="save,action-stock-move-split-into-2"/>
-				    <item title="Split by unit" action="save,action-stock-move-method-split-stock-move-lines-unit"/>
-				    <item title="Special split"  action="save,action-stock-move-wizard-special-split"/>
-				    <item title="Ship/Receive all products" action="save,action-stock-move-ship-recieve-all-products"/>
-		 		</menu>
-		 </menubar>
-		 
-	  <panel title="Status">
-		  <field name="statusSelect" widget="NavSelect" colSpan="8"/>
-		  <field name="cancelReason" canView="false" showIf="cancelReason != null" readonly="true" colSpan="4"/>
-	  </panel>
-	  <panel name="main">
-		  <field name="typeSelect" title="Type" colSpan="4" onChange="action-stock-move-set-default-stock-locations, action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1"/>
-		  <field name="conformitySelect" onChange="action-stock-move-method-change-conformity" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
-	  </panel>
-	  <panel>
-	    <panel title="Stock move reference" name="stockMoveRef">
-	      <field name="stockMoveSeq" colSpan="12"/>
-	      <field name="name" colSpan="12" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
-	      <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" colSpan="12" readonlyIf="statusSelect != 1" grid-view="company-grid"
-				 onChange="action-stock-move-record-update-info-company"/>
-		  <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" colSpan="12" if="__config__.app.getApp('base').enableTradingNamesManagement"
-				 readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-stock-move-method-filter-printing-settings"/>
-	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange"/>
-	    </panel>
-	    <panel title="Stock move informations" name="stockMoveInformation">
-	      <field name="fromStockLocation" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
-	      <field name="toStockLocation" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
-	      <field name="estimatedDate" colSpan="6" readonlyIf="statusSelect != 1"/>
-	      <field name="realDate" colSpan="6"/>
-	      <field name="isWithReturnSurplus" colSpan="6" showIf="typeSelect == 3"/>
-	      <field name="isWithBackorder" colSpan="6"/>
-	      <field name="fromAddress" showIf="!$readonly() &amp;&amp; statusSelect == 1 &amp;&amp; typeSelect == 3" colSpan="12" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str"  readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
-            <field name="fromAddressStr" showIf="typeSelect == 3" readonlyIf="statusSelect &gt; 1" height="5" colSpan="12">
-				<viewer>{{record.fromAddressStr}}</viewer>
-			</field>
-	      <field name="toAddress" showIf="!$readonly() &amp;&amp; statusSelect == 1 &amp;&amp; typeSelect == 2" colSpan="12" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
-			<field name="toAddressStr" showIf="typeSelect == 2" readonlyIf="statusSelect &gt; 1" height="5" colSpan="12">
-				<viewer>{{record.toAddressStr}}</viewer>
-			</field>
-	    </panel>
-	  </panel>
-	  <panel-tabs>
-	    <panel-related name="stockMoveLineListPanel" title="Stock move line" field="stockMoveLineList" onChange="action-stock-move-method-compute, action-stock-move-line-method-change-conformity" readonlyIf="statusSelect == 3" form-view="stock-move-line-form" grid-view="stock-move-line-grid"/>
-	    <panel-dashlet action="action-stock-move-view-logistical-forms" showIf="id &amp;&amp; typeSelect == 2" title="Logistical forms" />
-        <panel name="configuration" title="Configuration"  if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" >
-	      <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="sale-order-form" grid-view="sale-order-grid"/>
-	      <field name="purchaseOrder" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
-	      <field name="invoice" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="invoice-form" grid-view="invoice-grid"/>
-          <field name="printingSettings" required="true" canEdit="false"/>
-	    </panel>
-		  <panel title="Automatic mail" showIf="typeSelect == 2">
-			  <field name="stockMoveAutomaticMail"/>
-			  <field name="stockMoveMessageTemplate" requiredIf="stockMoveAutomaticMail" showIf="stockMoveAutomaticMail" form-view="template-form" grid-view="template-grid"/>
-		  </panel>
-	  </panel-tabs>
+    <form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" width="large" onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+        <menubar>
+            <menu title="Reports" icon="fa-files-o">
+                <item title="Print" action="save,action-print-stock-move" readonlyIf="statusSelect == 1"/>
+                <item title="Print picking order" action="save,action-print-picking-stock-move" showIf="statusSelect != 1 &amp;&amp; typeSelect == 2"/>
+            </menu>
 
-	  <panel sidebar="true" name="actions" title="Actions">
-			<button name="plan" title="Plan" icon="fa-calendar" showIf="statusSelect == 1" onClick="action-group-stock-stockmove-plan-click"/>
-			<button name="realize" title="Realize" icon="fa-check" showIf="statusSelect == 2" prompt="Are you sure you want to realize this stock move?" onClick="action-group-stock-stockmove-realize-click"/>
-			<button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3"/>
-			<button name="generateReversion" title="Generate reversion" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3"/>
-		  	<button name="cancel" title="Cancel" icon="fa-times-circle" showIf="id != null &amp;&amp; statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 4" onClick="action.stock.move.view.cancel"/>
-		  	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
-    </panel>
-	<panel sidebar="true" title="Freight Carrier">
-		<field name="shipmentMode" colSpan="12" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
-      	<field name="freightCarrierMode" colSpan="12" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
-		<field name="trackingNumber" readonlyIf="statusSelect == 3 || statusSelect == 4" />
-		<field name="numOfPackages" readonlyIf="statusSelect == 3 || statusSelect == 4" />
-		<field name="numOfPalettes" readonlyIf="statusSelect == 3 || statusSelect == 4" />
-		<field name="grossWeight" readonlyIf="statusSelect == 3 || statusSelect == 4" />
-		<field name="saleOrder.specificPackage" readonly="true"/>
-	</panel>
-	   
-	   <panel sidebar="true" readonly="true"  colSpan="4">  
-	 		<field name="exTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
-	              <viewer>
-	                  <![CDATA[
-	                <dl class="dl-horizontal">
-	                    <dt class="order-subtotal-total" x-translate>Total W.T.</dt>
-	                    <dd class="order-subtotal-total">{{record.exTaxTotal}}</dd>
-	                </dl>
-	                ]]>
-	            </viewer>
-	        </field>
-	  </panel>
-	</form>
+            <menu title="Tools" icon="fa-wrench">
+                <item title="View Direction" showIf="typeSelect == 2 &amp;&amp; statusSelect!=4" action="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
+                <item title="Split into 2" action="save,action-stock-move-split-into-2" showIf="statusSelect &lt;= 2"/>
+                <item title="Split by unit" action="save,action-stock-move-method-split-stock-move-lines-unit" showIf="statusSelect &lt;= 2"/>
+                <item title="Special split" action="save,action-stock-move-wizard-special-split" showIf="statusSelect &lt;= 2"/>
+                <item title="Ship/Receive all products" action="save,action-stock-move-ship-recieve-all-products"/>
+            </menu>
+        </menubar>
+
+        <panel>
+            <panel colSpan="10">
+                <panel itemSpan="12">
+                    <field name="statusSelect" widget="NavSelect" showTitle="false"/>
+                    <field name="stockMoveSeq" css="label-bold bold large" showTitle="false"/>
+                </panel>
+
+                <panel>
+                    <field name="$tags" showTitle="false" colSpan="12" readonly="true" showIf="$readonly()">
+                        <viewer depends="typeSelect,conformitySelect">
+                            <![CDATA[
+                                <h4 class="text-right">
+                                    <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 1" x-translate>Internal move</span>
+                                    <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 2" x-translate>Outgoing move</span>
+                                    <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 3" x-translate>Incoming move</span>
+
+                                    <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 2" x-translate>Compliant</span>
+                                    <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 3" x-translate>Non-compliant</span>
+                                </h4>
+                            ]]>
+                        </viewer>
+                    </field>
+
+                    <field name="typeSelect" title="Type" showIf="!$readonly()" onChange="action-stock-move-set-default-stock-locations,action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1"/>
+                    <field name="conformitySelect" showIf="!$readonly()" onChange="action-stock-move-method-change-conformity" readonlyIf="statusSelect &gt; 2"/>
+
+                    <field name="cancelReason" colOffset="6" canView="false" showIf="cancelReason != null" readonly="true"/>
+                </panel>
+            </panel>
+
+            <panel colSpan="2" itemSpan="12">
+                <button name="plan" title="Plan" icon="fa-calendar" showIf="statusSelect == 1" onClick="action-group-stock-stockmove-plan-click"/>
+                <button name="realize" title="Realize" icon="fa-check" showIf="statusSelect == 2" prompt="Are you sure you want to realize this stock move?" onClick="action-group-stock-stockmove-realize-click"/>
+                <button name="generateInvoice" title="Generate invoice" icon="fa-file-o" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+                <button name="generateReversion" title="Generate reversion" icon="fa-undo" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3"/>
+                <button name="cancel" title="Cancel" icon="fa-times-circle" css="btn-danger" showIf="id != null &amp;&amp; statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 4" onClick="action.stock.move.view.cancel"/>
+                <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
+            </panel>
+        </panel>
+
+        <panel name="stockMoveInformation" title="Stock move information">
+            <field name="partner" domain="self.isContact = false" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form"/>
+            <field name="company" readonlyIf="statusSelect != 1" onChange="action-stock-move-record-update-info-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
+            <field name="name" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
+            <field name="tradingName" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-stock-move-method-filter-printing-settings" canEdit="false" if="__config__.app.getApp('base').enableTradingNamesManagement" grid-view="trading-name-grid" form-view="trading-name-form"/>
+            <spacer if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+
+            <field name="fromStockLocation" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
+            <field name="toStockLocation" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
+
+            <field name="estimatedDate" readonlyIf="statusSelect != 1" colSpan="3"/>
+            <field name="realDate" colSpan="3"/>
+
+            <field name="isWithReturnSurplus" showIf="typeSelect == 3" colSpan="3"/>
+            <field name="isWithBackorder" colSpan="3"/>
+
+            <panel stacked="true">
+                <field name="fromAddress" showIf="!$readonly() &amp;&amp; statusSelect == 1 &amp;&amp; typeSelect == 3" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
+                <field name="fromAddressStr" showIf="typeSelect == 3" readonlyIf="statusSelect &gt; 1" height="3">
+                    <viewer>{{record.fromAddressStr}}</viewer>
+                </field>
+
+                <field name="toAddress" showIf="!$readonly() &amp;&amp; statusSelect == 1 &amp;&amp; typeSelect == 2" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
+                <field name="toAddressStr" showIf="typeSelect == 2" readonlyIf="statusSelect &gt; 1" height="3">
+                    <viewer>{{record.toAddressStr}}</viewer>
+                </field>
+            </panel>
+
+            <field name="exTaxTotal" css="order-subtotal" showIf="id" readonly="true" showTitle="false">
+                <viewer>
+                    <![CDATA[
+                        <dl class="dl-horizontal" style="float: none;">
+                            <br>
+                            <dt class="order-subtotal-total" style="border-top: none; text-align: left;" x-translate>Total W.T.</dt>
+                            <dd class="order-subtotal-total" style="border-top: none; text-align: left;">{{record.exTaxTotal}}</dd>
+                        </dl>
+                    ]]>
+                </viewer>
+            </field>
+        </panel>
+
+        <panel-related field="stockMoveLineList" onChange="action-stock-move-method-compute,action-stock-move-line-method-change-conformity" readonlyIf="statusSelect == 3" grid-view="stock-move-line-grid" form-view="stock-move-line-form"/>
+
+        <panel-tabs>
+            <panel title="Freight Carrier">
+                <field name="shipmentMode" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
+                <field name="freightCarrierMode" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
+                <field name="trackingNumber" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
+
+                <field name="numOfPackages" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
+                <field name="numOfPalettes" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
+                <field name="grossWeight" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
+
+                <field name="saleOrder.specificPackage" readonly="true" colSpan="4"/>
+                <panel stacked="true" colSpan="8">
+                    <field name="isIspmRequired" showIf="!$readonly()"/>
+                    <field name="$IspmTag" showTitle="false" showIf="$readonly()">
+                        <viewer>
+                            <![CDATA[
+                                <h4 class="text-left">
+                                    <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isIspmRequired" x-translate>ISPM standard required</span>
+                                </h4>
+                            ]]>
+                        </viewer>
+                    </field>
+                </panel>
+            </panel>
+
+            <panel-dashlet action="action-stock-move-view-logistical-forms" showIf="id &amp;&amp; typeSelect == 2" title="Logistical forms"/>
+
+            <panel title="Automatic mail" showIf="typeSelect == 2">
+                <field name="stockMoveAutomaticMail"/>
+                <field name="stockMoveMessageTemplate" requiredIf="stockMoveAutomaticMail" showIf="stockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
+            </panel>
+
+            <panel title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+                <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect == 3 || statusSelect == 4" grid-view="sale-order-grid" form-view="sale-order-form"/>
+                <field name="purchaseOrder" readonlyIf="statusSelect == 3 || statusSelect == 4" grid-view="purchase-order-grid" form-view="purchase-order-form"/>
+                <field name="invoice" readonlyIf="statusSelect == 3 || statusSelect == 4" grid-view="invoice-grid" form-view="invoice-form"/>
+                <field name="printingSettings" required="true" canEdit="false"/>
+            </panel>
+        </panel-tabs>
+    </form>
     
     <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard">
     	<panel name="main">
@@ -228,6 +269,12 @@
     	<action name="action-stock-move-attrs-typeselect-change"/>
 		<action name="action-stock-move-hide-reserved-qty"/>
     </action-group>
+
+    <action-group name="action-group-stock-stockmove-onload">
+        <action name="action-stock-move-attrs-typeselect-change"/>
+        <action name="action-stock-move-hide-reserved-qty"/>
+		<action name="action-stock-move-method-filter-printing-settings"/>
+    </action-group>
     
 	<action-group name="action-group-stock-stockmove-plan-click">
 	 	<action name="save"/>
@@ -261,18 +308,13 @@
 	<action-group name="action-stock-move-group-partner-onchange">
 		<action name="action-stock-move-record-partner-delivery-informations"/>
         <action name="action-stock-move-record-auto-mail"/>
+		<action name="action-stock-move-record-ispm-field"/>
 	</action-group>
 
      <action-attrs name="action-stock-move-attrs-typeselect-change">
-    	<attribute name="title" for="stockMoveRef" expr="eval: com.axelor.i18n.I18n.get('Internal move reference')" if="typeSelect == 1"/>
-    	<attribute name="title" for="stockMoveRef" expr="eval: com.axelor.i18n.I18n.get('Outgoing move reference')" if="typeSelect == 2"/>
-    	<attribute name="title" for="stockMoveRef" expr="eval: com.axelor.i18n.I18n.get('Incoming move reference')" if="typeSelect == 3"/>
     	<attribute name="title" for="stockMoveInformation" expr="eval: com.axelor.i18n.I18n.get('Internal move information')" if="typeSelect == 1"/>
     	<attribute name="title" for="stockMoveInformation" expr="eval: com.axelor.i18n.I18n.get('Outgoing move information')" if="typeSelect == 2"/>
     	<attribute name="title" for="stockMoveInformation" expr="eval: com.axelor.i18n.I18n.get('Incoming move information')" if="typeSelect == 3"/>
-    	<attribute name="title" for="stockMoveLineListPanel" expr="eval: com.axelor.i18n.I18n.get('Internal move line')" if="typeSelect == 1"/>
-    	<attribute name="title" for="stockMoveLineListPanel" expr="eval: com.axelor.i18n.I18n.get('Outgoing move line')" if="typeSelect == 2"/>
-    	<attribute name="title" for="stockMoveLineListPanel" expr="eval: com.axelor.i18n.I18n.get('Incoming move line')" if="typeSelect == 3"/>
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Internal move line')" if="typeSelect == 1"/>
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Outgoing move line')" if="typeSelect == 2"/>
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Incoming move line')" if="typeSelect == 3"/>
@@ -317,6 +359,10 @@
 			   expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.stockMoveAutomaticMail"/>
 		<field name="stockMoveMessageTemplate" if="_typeSelect == '2'"
 			   expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.stockMoveMessageTemplate"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-record-ispm-field" model="com.axelor.apps.stock.db.StockMove">
+		<field name="isIspmRequired" expr="eval: println(toAddress?.addressL7Country); partner?.isIspmRequired || toAddress?.addressL7Country?.isIspmRequired"/>
 	</action-record>
 
 	<action-record name="action-stock-move-set-from-address" model="com.axelor.apps.stock.db.StockMove">

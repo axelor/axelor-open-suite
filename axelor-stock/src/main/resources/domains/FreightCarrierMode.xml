@@ -7,7 +7,7 @@
 
   <entity name="FreightCarrierMode" sequential="true" lang="java">
   	<string name="name" title="Freight Carrier Mode"/>
-  	<many-to-one name="freightCarrier" ref="com.axelor.apps.base.db.Partner" title="Freight Carrier"/>
+  	<many-to-one name="carrierPartner" ref="com.axelor.apps.base.db.Partner" title="Freight Carrier"/>
   	<many-to-one name="shipmentMode" ref="com.axelor.apps.stock.db.ShipmentMode" title="Shipment Mode"/>
   </entity>
 

@@ -83,11 +83,11 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService{
 	@Override
 	public BigDecimal chooseComputeWay(Context context, AnalyticMoveLine analyticMoveLine){
 		if(analyticMoveLine.getInvoiceLine() == null && analyticMoveLine.getMoveLine() == null){
-			if(context.getParentContext().getContextClass() == InvoiceLine.class){
-				analyticMoveLine.setInvoiceLine(context.getParentContext().asType(InvoiceLine.class));
+			if(context.getParent().getContextClass() == InvoiceLine.class){
+				analyticMoveLine.setInvoiceLine(context.getParent().asType(InvoiceLine.class));
 			}
 			else{
-				analyticMoveLine.setMoveLine(context.getParentContext().asType(MoveLine.class));
+				analyticMoveLine.setMoveLine(context.getParent().asType(MoveLine.class));
 			}
 		}
 		return this.computeAmount(analyticMoveLine);

@@ -15,6 +15,7 @@
 	  
 	<string name="bankDetailsTypeSelect" title="Accepted Bank Details Identifiers" selection="base.bank.bank.details.type.select"/>
 	
+	<boolean name="ibanOnly" title="Use iban only"/>
 	
 	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Default Currency"/>
 

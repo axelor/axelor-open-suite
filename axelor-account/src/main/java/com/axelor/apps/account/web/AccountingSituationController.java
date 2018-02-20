@@ -29,24 +29,19 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class AccountingSituationController {
 
-	@Inject
-	private AccountCustomerService acs;
-	
-	@Inject
-	private AccountingSituationRepository accountingSituationRepo;
-	
 	public void updateCustomerAccount(ActionRequest request, ActionResponse response)  {
 		
 		AccountingSituation accountingSituation = request.getContext().asType(AccountingSituation.class);
-		accountingSituation = accountingSituationRepo.find(accountingSituation.getId());
+		accountingSituation = Beans.get(AccountingSituationRepository.class).find(accountingSituation.getId());
 		
 		try {
 			if(accountingSituation != null)  {
-				acs.updateCustomerAccount(accountingSituation);
+				Beans.get(AccountCustomerService.class).updateCustomerAccount(accountingSituation);
 			}
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }

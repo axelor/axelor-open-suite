@@ -8,7 +8,7 @@
 		<string name="name" title="Name" required="true" />
 		<many-to-one name="category" ref="com.axelor.apps.talent.db.TrainingCategory" title="Category" />
 		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
-		<many-to-many name="tagSkillSet" ref="com.axelor.apps.talent.db.TagSkill" title="Tag" />
+		<many-to-many name="skillSet" ref="com.axelor.apps.talent.db.Skill" title="Skill" />
 		<many-to-many name="requiredTrainingSet" ref="com.axelor.apps.talent.db.Training" title="Required training"/>
 		<string name="description" title="Description" large="true" />
 		<string name="program" title="Program" large="true" />

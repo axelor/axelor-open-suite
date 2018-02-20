@@ -44,4 +44,11 @@ public class StockConfigProductionService extends StockConfigSupplychainService 
         return stockConfig.getWasteStockLocation();
     }
 
+    public StockLocation getFinishedProductsDefaultStockLocation(StockConfig stockConfig) throws AxelorException {
+        if (stockConfig.getFinishedProductsDefaultStockLocation() == null) {
+            throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_CONFIG_4), stockConfig.getCompany().getName());
+        }
+        return stockConfig.getFinishedProductsDefaultStockLocation();
+    }
+
 }

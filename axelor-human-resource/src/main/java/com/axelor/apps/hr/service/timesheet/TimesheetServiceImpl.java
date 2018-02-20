@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -721,12 +721,12 @@ public class TimesheetServiceImpl implements TimesheetService{
 				.context("_activeCompany", user.getActiveCompany());
 
 		if(employee == null || !employee.getHrManager())  {
-			if (employee == null || employee.getManager() == null) {
-				actionView.domain(actionView.get().getDomain() + " AND (self.timesheet.user = :_user OR self.timesheet.user.employee.manager = :_user)")
+			if (employee == null || employee.getManagerUser() == null) {
+				actionView.domain(actionView.get().getDomain() + " AND (self.timesheet.user = :_user OR self.timesheet.user.employee.managerUser = :_user)")
 						.context("_user", user);
 			}
 			else {
-				actionView.domain(actionView.get().getDomain() + " AND self.timesheet.user.employee.manager = :_user")
+				actionView.domain(actionView.get().getDomain() + " AND self.timesheet.user.employee.managerUser = :_user")
 						.context("_user", user);
 			}
 		}

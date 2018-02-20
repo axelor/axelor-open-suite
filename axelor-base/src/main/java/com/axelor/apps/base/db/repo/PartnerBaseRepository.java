@@ -34,7 +34,6 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.beust.jcommander.internal.Lists;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class PartnerBaseRepository extends PartnerRepository {

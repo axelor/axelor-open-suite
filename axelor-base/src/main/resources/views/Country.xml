@@ -21,6 +21,9 @@
 			<field name="cog" />
 		    <field name="phonePrefix" />			
 		</panel>
+		<panel title="Standards" if-module="axelor-stock" if="__config__.app.isApp('stock')">
+			<field name="isIspmRequired"/>
+		</panel>
     </form>
     
 </object-views>

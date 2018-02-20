@@ -22,15 +22,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.exception.db.IException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
-import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.TempBomTree;
@@ -41,23 +39,16 @@ import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-
-	@Inject
-	protected UnitConversionService unitConversionService;
-
-	@Inject
-	private ProductService productService;
-
-	@Inject
-	protected AppBaseService appBaseService;
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
 	protected BillOfMaterialRepository billOfMaterialRepo;
@@ -67,13 +58,11 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 	
 	private List<Long> processedBom;
 	
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Override
 	public List<BillOfMaterial> getBillOfMaterialSet(Product product)  {
 
 		return billOfMaterialRepo.all().filter("self.product = ?1", product).fetch();
-
 
 	}
 
@@ -87,9 +76,9 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 		    throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.COST_TYPE_CANNOT_BE_CHANGED));
 		}
 
-		product.setCostPrice(billOfMaterial.getCostPrice().divide(billOfMaterial.getQty()).setScale(appBaseService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
+		product.setCostPrice(billOfMaterial.getCostPrice().divide(billOfMaterial.getQty()).setScale(Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
 
-		productService.updateSalePrice(product);
+		Beans.get(ProductService.class).updateSalePrice(product);
 
 		billOfMaterialRepo.save(billOfMaterial);
 	}

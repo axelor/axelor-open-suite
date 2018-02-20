@@ -33,9 +33,11 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import java.lang.invoke.MethodHandles;
 
+@Singleton
 public class IrrecoverableController {
 	
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );

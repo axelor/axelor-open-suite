@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.talent.service;
 
 import java.io.IOException;
@@ -9,7 +26,7 @@ import com.axelor.apps.base.db.AppRecruitment;
 import com.axelor.apps.base.db.repo.AppRecruitmentRepository;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.message.db.MailAccount;
+import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.mail.MailParser;
 import com.google.inject.Inject;
@@ -30,7 +47,7 @@ public class MailAccountServiceTalentImpl extends MailAccountServiceBaseImpl{
 	
 	@Transactional
 	@Override
-	public Message createMessage(MailAccount mailAccount, MailParser parser, Date date) throws MessagingException, IOException {
+	public Message createMessage(EmailAccount mailAccount, MailParser parser, Date date) throws MessagingException, IOException {
 		
 		Message message = super.createMessage(mailAccount, parser, date);
 		

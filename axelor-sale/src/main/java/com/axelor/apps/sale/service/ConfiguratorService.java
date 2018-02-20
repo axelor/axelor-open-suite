@@ -17,15 +17,14 @@
  */
 package com.axelor.apps.sale.service;
 
-import com.axelor.apps.base.db.Product;
+import java.lang.reflect.InvocationTargetException;
+
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.JsonContext;
-import com.axelor.script.ScriptBindings;
-import wslite.json.JSONException;
 
-import java.lang.reflect.InvocationTargetException;
+import wslite.json.JSONException;
 
 public interface ConfiguratorService {
 

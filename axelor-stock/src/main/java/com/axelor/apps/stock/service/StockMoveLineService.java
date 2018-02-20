@@ -167,4 +167,21 @@ public interface StockMoveLineService {
 	 */
 	BigDecimal computeSpreadableQtyOverLogisticalFormLines(StockMoveLine stockMoveLine, LogisticalForm logisticalForm);
 
+	/**
+     * Set product information.
+     * 
+     * @param stockMoveLine
+     * @throws AxelorException
+     */
+    public void setProductInfo(StockMoveLine stockMoveLine) throws AxelorException;
+
+    /**
+     * Set product information.
+     * 
+     * @param stockMoveLine
+     * @param stockMove
+     * @throws AxelorException
+     */
+    public void setProductInfo(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException;
+
 }

@@ -72,11 +72,17 @@
     </grid>
 
     <grid name="invoice-light-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
-    	<toolbar>
-			<button name="printInvoices" title="Print invoices" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
-			<button name="massInvoiceValidation" title="Validate selected invoices" prompt="Are you sure you want to validate all selected invoices ?" onClick="action-invoice-method-mass-validation"/>
-			<button name="massInvoiceVentilation" title="Ventilate selected invoices" prompt="Are you sure you want to ventilate all selected invoices ?" onClick="action-invoice-method-mass-ventilation"/>
-    	</toolbar>
+    	<menubar>
+    		<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
+	            <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+	     	</menu>
+			<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
+	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
+	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" />
+	            <item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
+	            <item title="Generate subscriptions invoices" action="action-supplychain-method-generate-subscription-invoice" if="__config__.app.isApp('supplychain')"/>
+	     	</menu>
+		</menubar>
     	<hilite color="primary" if="statusSelect == 1"/>
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
@@ -136,13 +142,14 @@
                             <span class="label label-default" style="background-color: #E0A83C; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.operationTypeSelect == 3" x-translate>Customer sale</span>
                             <span class="label label-default" style="background-color: #E0A83C; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.operationTypeSelect == 4" x-translate>Customer refund</span>
 
-                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 1">Standard invoice</span>
-                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 2">Advance payment invoice</span>
-                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 3">Balance invoice</span>
-                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 4">Contract invoice</span>
-                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 5">Contract closing invoice</span>
+                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 1 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Standard invoice</span>
+                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 2 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Advance payment invoice</span>
+                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 3 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Balance invoice</span>
+                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 4 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Contract invoice</span>
+                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 5 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Contract closing invoice</span>
+                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 6 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Subscription</span>
                         </h4>
-					]]>
+                    ]]>
                 </viewer>
             </field>
 
@@ -154,7 +161,12 @@
                 </viewer>
             </field>
 
-            <field name="operationTypeSelect" hideIf="statusSelect &gt; 1 || partner != null || $readonly()" onChange="action-group-account-invoice-operationtype-onchange"/>
+            <panel colSpan="6" itemSpan="12">
+                <field name="operationTypeSelect" hideIf="statusSelect &gt; 1 || partner != null || $readonly() || _operationTypeSelect != 1"
+                    onChange="action-group-account-invoice-operationtype-onchange" selection-in="[1,2]"/>
+                <field name="operationTypeSelect" hideIf="statusSelect &gt; 1 || partner != null || $readonly() || _operationTypeSelect != 3"
+                    onChange="action-group-account-invoice-operationtype-onchange" selection-in="[3,4]"/>
+            </panel>
             <field name="operationSubTypeSelect" hideIf="statusSelect &gt; 1 || (operationTypeSelect != 1 &amp;&amp; operationTypeSelect != 3) || $readonly()" showTitle="true"/>
             <field name="company" canEdit="false" readonlyIf="statusSelect != 1 || partner != null" onChange="action-group-account-invoice-company-onchange" form-view="company-form" grid-view="company-grid"/>
             <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement" readonlyIf="statusSelect != 1 || partner != null" domain=":company MEMBER OF self.companySet" onChange="action-invoice-method-filter-printing-settings"/>
@@ -163,7 +175,6 @@
             <field name="project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if-module="axelor-business-project" if="__config__.app.isApp('project')"/>
             <field name="interco"/>
             <field name="inAti" onChange="action-invoice-attrs-in-ati"/>
-            <field name="isSubscription" hidden="true"/>
         </panel>
 
         <panel title="Invoicing informations" hideIf="company == null">
@@ -180,10 +191,15 @@
             <field name="bankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
             <field name="priceList" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-method-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
             <field name="saleOrder" onChange="action-invoice-group-saleorder-onchange" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid"/>
-            <field name="purchaseOrder" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
+            <field name="purchaseOrder" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
             <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
         </panel>
-
+		
+		<panel name="subscriptionPanel" title="Subscription period" showIf="operationSubTypeSelect == 6">
+        	<field name="subscriptionFromDate" />
+        	<field name="subscriptionToDate" />
+        </panel>
+        
 		<panel-tabs hideIf="partner == null">
 			<panel name="invoiceContent" title="Invoice content" showTitle="false">
 				<panel-related field="invoiceLineList" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-onchange" canMove="true" orderBy="sequence"/>
@@ -445,7 +461,6 @@
 			<field name="currency" canEdit="false" onChange="action-invoice-attrs-change-total-title" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="project" if-module="axelor-business-project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')"/>
 			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
-			<field name="isSubscription" hidden="true"/>
 		</panel>
 
 		<panel name="invoicingInformations" title="Invoicing informations">
@@ -462,7 +477,7 @@
 			<field name="paymentCondition" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 			<field name="bankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-group-saleorder-onchange" form-view="sale-order-form" grid-view="sale-order-grid"/>
-			<field name="purchaseOrder" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
+			<field name="purchaseOrder" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
 			<field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
 		</panel>
 
@@ -710,7 +725,6 @@
     <action-group name="action-group-account-invoice-operationtype-onchange">
 		<action name="action-invoice-method-payment-mode-condition"/>
     	<action name="action-invoice-record-partner-change"/>
-        <action name="action-invoice-record-reset-suboperationtype"/>
     </action-group>
 
     <action-group name="action-group-account-invoice-company-onchange">
@@ -801,6 +815,10 @@
     	<field name="contactPartner" expr="eval:null" />
     	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect"/>
     	<field name="project" expr="eval: null"/>
+    </action-record>
+
+    <action-record name="action-invoice-record-reset-suboperationtype" model="com.axelor.apps.account.db.Invoice">
+        <field name="operationSubTypeSelect" expr="eval: 1"/>
     </action-record>
 
     <action-record name="action-invoice-record-due-date" model="com.axelor.apps.account.db.Invoice">

@@ -41,7 +41,7 @@ public interface IExceptionMessage {
 	static final String CURRENCY_4 = /*$$(*/ "The end date has to be greater than or equal to the start date." /*)*/ ;
 	static final String CURRENCY_5 = /*$$(*/ "Both currencies must be saved before currency rate apply" /*)*/ ;
 	static final String CURRENCY_6 = /*$$(*/ "Currency conversion webservice not working" /*)*/ ;
-	
+	static final String CURRENCY_7 = /*$$(*/ "No currency conversion rate found for the date %s to %s. Please change the conversion date" /*)*/ ;
 	static final String COMPANY_CURRENCY = /*$$(*/ "%s : Please, configure a currency for the company %s" /*)*/;
 
 

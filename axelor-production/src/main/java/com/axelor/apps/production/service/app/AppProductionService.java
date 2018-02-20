@@ -26,4 +26,6 @@ public interface AppProductionService extends AppBaseService {
 	
 	public void generateProductionConfigurations();
 
+	public int getNbDecimalDigitForBomQty();
+	
 }

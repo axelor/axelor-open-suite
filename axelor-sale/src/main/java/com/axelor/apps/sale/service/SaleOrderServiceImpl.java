@@ -17,6 +17,19 @@
  */
 package com.axelor.apps.sale.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import javax.persistence.Query;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.AppSale;
 import com.axelor.apps.base.db.Blocking;
@@ -26,7 +39,6 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.StopReason;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
@@ -59,17 +71,6 @@ import com.axelor.team.db.Team;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.persistence.Query;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
 
@@ -369,7 +370,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	    Blocking blocking = Beans.get(BlockingService.class).getBlocking(partner, saleOrder.getCompany(), BlockingRepository.SALE_BLOCKING);
 
         if (blocking != null) {
-            saleOrder.setBloqued(true);
+            saleOrder.setBlockedOnCustCreditExceed(true);
             if (!saleOrder.getManualUnblock()) {
                 saleOrderRepo.save(saleOrder);
 				String reason = blocking.getBlockingReason() != null ? blocking.getBlockingReason().getName() : "";

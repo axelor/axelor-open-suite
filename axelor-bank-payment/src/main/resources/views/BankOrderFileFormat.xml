@@ -22,6 +22,7 @@
 			<field name="fileGenerationSupported"/>
 			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="bankDetailsTypeSelect" widget="MultiSelect"/>
+			<field name="ibanOnly" showIf="bankDetailsTypeSelect == '1' &amp;&amp; (orderTypeSelect == '1' || orderTypeSelect == '2')"/>
             <field name="allowOrderCurrDiffFromBankDetails" showIf="orderTypeSelect != 1 &amp;&amp; orderTypeSelect != 2" colSpan="12"/>
             <panel showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'">
                 <field name="qualifyingOfAmountSelect" hidden="true" showIf="!allowOrderCurrDiffFromBankDetails" selection-in="['T']" colSpan="12"/>

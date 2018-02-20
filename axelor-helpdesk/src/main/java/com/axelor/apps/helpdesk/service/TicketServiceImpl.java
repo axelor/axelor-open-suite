@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -27,9 +27,9 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.repo.AppHelpdeskRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
-import com.axelor.apps.helpdesk.db.SLA;
+import com.axelor.apps.helpdesk.db.Sla;
 import com.axelor.apps.helpdesk.db.Ticket;
-import com.axelor.apps.helpdesk.db.repo.SLARepository;
+import com.axelor.apps.helpdesk.db.repo.SlaRepository;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayService;
@@ -50,7 +50,7 @@ public class TicketServiceImpl implements TicketService {
 	private TicketRepository ticketRepo;
 
 	@Inject
-	private SLARepository slaRepo;
+	private SlaRepository slaRepo;
 
 	@Inject
 	private PublicHolidayService publicHolidayService;
@@ -83,32 +83,32 @@ public class TicketServiceImpl implements TicketService {
 
 		if (helpdesk.getIsSla()) {
 
-			SLA sla = slaRepo.all()
-					.filter("self.team = ?1 AND self.priority = ?2 AND self.ticketType = ?3",
+			Sla sla = slaRepo.all()
+					.filter("self.team = ?1 AND self.prioritySelect = ?2 AND self.ticketType = ?3",
 							ticket.getAssignedTo() == null ? null : ticket.getAssignedTo().getActiveTeam(),
-							ticket.getPriority(), ticket.getTicketType())
+							ticket.getPrioritySelect(), ticket.getTicketType())
 					.fetchOne();
 
 			if (sla == null) {
 				sla = slaRepo.all()
-						.filter("self.team = ?1 AND self.priority = ?2 AND self.ticketType = null OR "
-								+ "(self.team = null AND self.priority = ?2 AND self.ticketType = ?3) OR "
-								+ "(self.team = ?1 AND self.priority = null AND self.ticketType = ?3)",
+						.filter("self.team = ?1 AND self.prioritySelect = ?2 AND self.ticketType = null OR "
+								+ "(self.team = null AND self.prioritySelect = ?2 AND self.ticketType = ?3) OR "
+								+ "(self.team = ?1 AND self.prioritySelect = null AND self.ticketType = ?3)",
 								ticket.getAssignedTo() == null ? null : ticket.getAssignedTo().getActiveTeam(),
-								ticket.getPriority(), ticket.getTicketType())
+								ticket.getPrioritySelect(), ticket.getTicketType())
 						.fetchOne();
 			}
 			if (sla == null) {
 				sla = slaRepo.all()
-						.filter("self.team = ?1 AND self.priority = null AND self.ticketType = null OR "
-								+ "(self.team = null AND self.priority = ?2 AND self.ticketType = null) OR "
-								+ "(self.team = null AND self.priority = null AND self.ticketType = ?3)",
+						.filter("self.team = ?1 AND self.prioritySelect = null AND self.ticketType = null OR "
+								+ "(self.team = null AND self.prioritySelect = ?2 AND self.ticketType = null) OR "
+								+ "(self.team = null AND self.prioritySelect = null AND self.ticketType = ?3)",
 								ticket.getAssignedTo() == null ? null : ticket.getAssignedTo().getActiveTeam(),
-								ticket.getPriority(), ticket.getTicketType())
+								ticket.getPrioritySelect(), ticket.getTicketType())
 						.fetchOne();
 			}
 			if (sla == null) {
-				sla = slaRepo.all().filter("self.team = null AND self.priority = null AND self.ticketType = null")
+				sla = slaRepo.all().filter("self.team = null AND self.prioritySelect = null AND self.ticketType = null")
 						.fetchOne();
 			}
 			if (sla != null) {
@@ -132,7 +132,7 @@ public class TicketServiceImpl implements TicketService {
 	 * @param sla
 	 * @throws AxelorException
 	 */
-	private void computeDuration(Ticket ticket, SLA sla) throws AxelorException {
+	private void computeDuration(Ticket ticket, Sla sla) throws AxelorException {
 
 		if (sla.getIsWorkingDays() && ticket.getAssignedTo() != null && ticket.getAssignedTo().getEmployee() != null) {
 
@@ -155,7 +155,7 @@ public class TicketServiceImpl implements TicketService {
 	 * @param ticket
 	 * @param sla
 	 */
-	private void calculateAllDays(Ticket ticket, SLA sla) {
+	private void calculateAllDays(Ticket ticket, Sla sla) {
 		LocalDateTime localDateTime = ticket.getStartDateT().plusDays(sla.getDays());
 		localDateTime = localDateTime.plusHours(sla.getHours());
 		ticket.setDeadlineDateT(localDateTime);
@@ -197,7 +197,7 @@ public class TicketServiceImpl implements TicketService {
 
 			LocalDateTime currentDate = LocalDateTime.now();
 
-			if (ticket.getStatusSelect() >= ticket.getSlaPolicy().getReachStage()
+			if (ticket.getStatusSelect() >= ticket.getSlaPolicy().getReachStageSelect()
 					&& (currentDate.isBefore(ticket.getDeadlineDateT()) || currentDate.isEqual(ticket.getDeadlineDateT()))) {
 
 				ticket.setIsSlaCompleted(true);

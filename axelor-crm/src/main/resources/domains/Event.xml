@@ -29,7 +29,6 @@
 	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
 	<many-to-one name="lead" ref="com.axelor.apps.crm.db.Lead" title="Lead"/>
-	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" title="Supplier"/>
 	
 <!-- Call -->
     <integer name="callTypeSelect" title="Call type" selection="crm.event.call.type.select"/>  

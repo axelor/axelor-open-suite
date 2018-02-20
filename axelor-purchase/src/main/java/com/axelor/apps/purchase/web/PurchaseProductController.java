@@ -30,13 +30,15 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class PurchaseProductController {
 
 	@Inject
 	private ProductRepository productRepo;
 
-public void fillShippingCoeff(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void fillShippingCoeff(ActionRequest request, ActionResponse response) throws AxelorException {
 	    Product product = request.getContext().asType(Product.class);
 	    if (!product.getDefShipCoefByPartner()) {
 	    	return;

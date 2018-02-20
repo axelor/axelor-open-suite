@@ -17,17 +17,17 @@
  */
 package com.axelor.apps.cash.management.service;
 
-import java.io.IOException;
-
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
@@ -55,24 +55,17 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
-import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
-import com.axelor.i18n.I18n;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-
-
+@Singleton
 public class ForecastRecapService {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Inject
-	protected TimetableService timetableService;
 	
 	@Inject
 	protected AppBaseService appBaseService;
@@ -85,9 +78,6 @@ public class ForecastRecapService {
 	
 	@Inject
 	protected CurrencyService currencyService;
-
-	@Inject
-	protected ReportFactory reportFactory;
 	
 	public void populate(ForecastRecap forecastRecap) throws AxelorException{
 		List<ForecastRecapLine> forecastRecapLineList = forecastRecap.getForecastRecapLineList();
@@ -544,7 +534,7 @@ public class ForecastRecapService {
 		String title = I18n.get("ForecastRecap");
 			title += forecastRecap.getId();
 
-		return reportFactory.createReport(IReport.FORECAST_RECAP, title+"-${date}")
+		return ReportFactory.createReport(IReport.FORECAST_RECAP, title+"-${date}")
 				.addParam("ForecastRecapId", forecastRecap.getId().toString())
 				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.generate()

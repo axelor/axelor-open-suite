@@ -21,23 +21,23 @@ import java.io.IOException;
 
 import javax.mail.MessagingException;
 
-import com.axelor.apps.message.db.MailAccount;
+import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.exception.AxelorException;
 
 public interface MailAccountService {
 
-	public boolean checkDefaultMailAccount(MailAccount mailAccount);
+	public boolean checkDefaultMailAccount(EmailAccount mailAccount);
 	
-	public MailAccount getDefaultMailAccount(int serverType);
+	public EmailAccount getDefaultMailAccount(int serverType);
 	
-	public void checkMailAccountConfiguration(MailAccount mailAccount) throws AxelorException, Exception;
+	public void checkMailAccountConfiguration(EmailAccount mailAccount) throws AxelorException, Exception;
 	
-	public String getSecurity(MailAccount mailAccount);
+	public String getSecurity(EmailAccount mailAccount);
 	
-	public String getProtocol(MailAccount mailAccount);
+	public String getProtocol(EmailAccount mailAccount);
 	
-	public String getSignature(MailAccount mailAccount);
+	public String getSignature(EmailAccount mailAccount);
 	
-	public int fetchEmails(MailAccount mailAccount, boolean unseenOnly) throws MessagingException, IOException;
+	public int fetchEmails(EmailAccount mailAccount, boolean unseenOnly) throws MessagingException, IOException;
 	
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -152,7 +152,7 @@ public class CampaignServiceImpl implements CampaignService {
 			event.setPartner(partner);
 			event.setUser(campaign.getEventUser());
 			event.setSubject(campaign.getSubject());
-			event.setTypeSelect(campaign.getEventType());
+			event.setTypeSelect(campaign.getEventTypeSelect());
 			event.setStartDateTime(campaign.getEventStartDateTime());
 			event.setDuration(campaign.getDuration());
 			event.setTeam(campaign.getTeam());
@@ -166,7 +166,7 @@ public class CampaignServiceImpl implements CampaignService {
 			event.setLead(lead);
 			event.setUser(campaign.getEventUser());
 			event.setSubject(campaign.getSubject());
-			event.setTypeSelect(campaign.getEventType());
+			event.setTypeSelect(campaign.getEventTypeSelect());
 			event.setStartDateTime(campaign.getEventStartDateTime());
 			event.setDuration(campaign.getDuration());
 			event.setTeam(campaign.getTeam());

@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,14 +31,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.axelor.app.production.db.IManufOrder;
-import com.axelor.apps.production.service.OperationOrderService;
-import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.service.TraceBackService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.production.db.IManufOrder;
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.DayPlanning;
@@ -44,28 +44,26 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
-import com.axelor.apps.production.service.ManufOrderService;
 import com.axelor.apps.production.service.ManufOrderWorkflowService;
+import com.axelor.apps.production.service.OperationOrderService;
 import com.axelor.apps.production.service.OperationOrderWorkflowService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
+@Singleton
 public class OperationOrderController {
 	protected OperationOrderRepository operationOrderRepo;
 	protected OperationOrderWorkflowService operationOrderWorkflowService;
-	protected ManufOrderService manufOrderService;
 	protected ManufOrderWorkflowService manufOrderWorkflowService;
-	protected WeeklyPlanningService weeklyPlanningService;
 	
 	private static final DateTimeFormatter DATE_TIME_FORMAT =  DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 	private static final DateTimeFormatter DATE_FORMAT =  DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -73,15 +71,11 @@ public class OperationOrderController {
 
 	@Inject
 	public OperationOrderController(OperationOrderRepository operationOrderRepo, OperationOrderWorkflowService operationOrderWorkflowService,
-									ManufOrderService manufOrderService, ManufOrderWorkflowService manufOrderWorkflowService,
-									WeeklyPlanningService weeklyPlanningService) {
+									ManufOrderWorkflowService manufOrderWorkflowService) {
 		this.operationOrderRepo = operationOrderRepo;
 		this.operationOrderWorkflowService = operationOrderWorkflowService;
-		this.manufOrderService = manufOrderService;
 		this.manufOrderWorkflowService = manufOrderWorkflowService;
-		this.weeklyPlanningService = weeklyPlanningService;
 	}
-
 	
 	
 //	public void copyToConsume (ActionRequest request, ActionResponse response) {
@@ -343,6 +337,7 @@ public class OperationOrderController {
 		while(!itDateTime.isAfter(toDateTime)){
 			List<OperationOrder> operationOrderList = operationOrderRepo.all().filter("self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1", itDateTime, itDateTime.plusHours(1)).fetch();
 			Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
+			WeeklyPlanningService weeklyPlanningService = Beans.get(WeeklyPlanningService.class);
 			for (OperationOrder operationOrder : operationOrderList) {
 				if(operationOrder.getWorkCenter() != null && operationOrder.getWorkCenter().getMachine() != null){
 					String machine = operationOrder.getWorkCenter().getMachine().getName();

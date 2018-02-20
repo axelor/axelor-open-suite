@@ -32,7 +32,7 @@
 		FROM
 			LeaveLine self
 		WHERE
-			self.employee.manager = :__user__
+			self.employee.managerUser = :__user__
 		GROUP BY
 			self.employee.name,
 			self.name,
@@ -59,7 +59,7 @@
 		FROM
 			Expense self
 		WHERE
-			self.user.employee.manager = :__user__
+			self.user.employee.managerUser = :__user__
 		AND
 			self.period = :period
 		GROUP BY

@@ -37,12 +37,15 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class MoveTemplateController {
+	
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
-	MoveTemplateService mts;
+	MoveTemplateService moveTemplateService;
 	
 	@Inject
 	MoveTemplateRepository  moveTemplateRepo;
@@ -77,7 +80,7 @@ public class MoveTemplateController {
 				moveTemplate.setPartnerInputSelect(2);
 			else if(partnerDebit)
 				moveTemplate.setPartnerInputSelect(1);
-			mts.validateMoveTemplateLine(moveTemplate);
+			moveTemplateService.validateMoveTemplateLine(moveTemplate);
 			response.setReload(true);
 		}
 		else
@@ -93,7 +96,7 @@ public class MoveTemplateController {
 		LOG.debug("MoveTemplate : {}",moveTemplate);
 		LOG.debug("Data inputlist : {}",dataList);
 		if(dataList != null && !dataList.isEmpty()){
-			List<Long> moveList = mts.generateMove(moveTemplate, dataList);
+			List<Long> moveList = moveTemplateService.generateMove(moveTemplate, dataList);
 			if(moveList == null)
 				response.setFlash(I18n.get(IExceptionMessage.MOVE_TEMPLATE_2));
 			else

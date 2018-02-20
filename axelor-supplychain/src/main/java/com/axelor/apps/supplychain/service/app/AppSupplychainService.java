@@ -23,4 +23,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 public interface AppSupplychainService extends AppBaseService {
 	
 	public AppSupplychain getAppSupplychain();
+	
+	public void generateSupplychainConfigurations();
 }

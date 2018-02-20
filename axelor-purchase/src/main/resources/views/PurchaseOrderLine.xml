@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     
     <grid name="purchase-order-line-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -57,23 +57,24 @@
         <field name="invoiced"/>
     </grid>
 
-	<grid name="purchase-order-line-project-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-		<hilite background="danger" if="salePrice &lt; saleMinPrice"/>
-		<field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid" readonly="true"/>
-		<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid" readonly="true"/>
-		<field name="productName" readonly="true"/>
-		<field name="qty" aggregate="sum" readonly="true"/>
-		<field name="unit" form-view="unit-form" grid-view="unit-grid" readonly="true"/>
-		<field name="price" readonly="true"/>
-		<field name="exTaxTotal" aggregate="sum" readonly="true"/>
-		<field name="inTaxTotal" aggregate="sum" readonly="true"/>
-		<field name="toInvoice"/>
+    <grid name="purchase-order-line-project-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+        <hilite if="$get('purchaseOrder.statusSelect') &lt; 3 &amp;&amp; toInvoice &amp;&amp; !invoiced" color="info"/>
+        <hilite if="invoiced" color="success"/>
+        <field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid" readonly="true"/>
+        <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid" readonly="true"/>
+        <field name="productName" readonly="true"/>
+        <field name="qty" aggregate="sum" readonly="true"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid" readonly="true"/>
+        <field name="price" readonly="true"/>
+        <field name="exTaxTotal" aggregate="sum" readonly="true"/>
+        <field name="toInvoice"/>
         <field name="invoiced"/>
-	</grid>
+        <field name="purchaseOrder.statusSelect" hidden="true"/>
+    </grid>
 
-	<form name="purchase-order-line-project-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine" canEdit="false">
-		<panel-include view="purchase-order-line-form"/>
-	</form>
+    <form name="purchase-order-line-project-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine" readonlyIf="true" canEdit="false">
+        <panel-include view="purchase-order-line-form"/>
+    </form>
 
 	<form name="purchase-order-line-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine"
 		  onNew="action-group-purchase-purchase-orderline-onnew"

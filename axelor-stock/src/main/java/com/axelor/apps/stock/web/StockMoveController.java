@@ -28,7 +28,6 @@ import java.util.Map;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.TradingNameService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -43,7 +42,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class StockMoveController {
 
 	@Inject
@@ -51,10 +52,6 @@ public class StockMoveController {
 	
 	@Inject
 	private StockMoveRepository stockMoveRepo;
-
-	@Inject
-	protected AppBaseService appBaseService;
-
 
 	public void plan(ActionRequest request, ActionResponse response) {
 
@@ -221,23 +218,25 @@ public class StockMoveController {
 
 	public void  splitInto2(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		Long newStockMoveId = stockMoveService.splitInto2(stockMove.getId(), stockMove.getStockMoveLineList());
+		List<StockMoveLine> modifiedStockMoveLineList = stockMove.getStockMoveLineList();
+		stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+		try {
+			StockMove newStockMove = stockMoveService.splitInto2(stockMove, modifiedStockMoveLineList);
 
-		if (newStockMoveId == null){
-			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_SPLIT_NOT_GENERATED));
-		}else{
-			response.setCanClose(true);
+			if (newStockMove == null){
+				response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_SPLIT_NOT_GENERATED));
+			}else{
+				response.setCanClose(true);
 
-			response.setView(ActionView
-					.define("Stock move")
-					.model(StockMove.class.getName())
-					.add("grid", "stock-move-grid")
-					.add("form", "stock-move-form")
-					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(newStockMoveId)).map());
-
-		}
-
+				response.setView(ActionView
+						.define("Stock move")
+						.model(StockMove.class.getName())
+						.add("grid", "stock-move-grid")
+						.add("form", "stock-move-form")
+						.param("forceEdit", "true")
+						.context("_showRecord", String.valueOf(newStockMove.getId())).map());
+			}
+		} catch(Exception e) { TraceBackService.trace(response, e); }
 	}
 
 	public void changeConformityStockMove(ActionRequest request, ActionResponse response) {

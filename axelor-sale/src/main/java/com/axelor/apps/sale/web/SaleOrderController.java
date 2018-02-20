@@ -59,13 +59,12 @@ import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class SaleOrderController {
 	
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-
-	@Inject
-	private SaleOrderService saleOrderService;
 	
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
@@ -75,7 +74,7 @@ public class SaleOrderController {
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		
 		try {
-			saleOrder = saleOrderService.computeSaleOrder(saleOrder);
+			saleOrder = Beans.get(SaleOrderService.class).computeSaleOrder(saleOrder);
 			response.setValues(saleOrder);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -86,7 +85,7 @@ public class SaleOrderController {
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		
 		try {
-			saleOrderService.computeMarginSaleOrder(saleOrder);
+			Beans.get(SaleOrderService.class).computeMarginSaleOrder(saleOrder);
 			
 			response.setValue("totalCostPrice", saleOrder.getTotalCostPrice());
 			response.setValue("totalGrossMargin", saleOrder.getTotalGrossMargin());
@@ -108,19 +107,8 @@ public class SaleOrderController {
 	 */
 	public void showSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException {
 
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_PDF);
 
-		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
-		
-		String name = saleOrderService.getFileName(saleOrder);
-		
-		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, false, ReportSettings.FORMAT_PDF);
-
-		logger.debug("Printing "+name);
-	
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());
 	}
 
 	/**
@@ -128,64 +116,48 @@ public class SaleOrderController {
      *
 	 */
 	public void printProformaInvoice(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		this.exportSaleOrder(request, response, true, ReportSettings.FORMAT_PDF);
 
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
-		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
-
-		String name = saleOrderService.getFileName(saleOrder);
-
-		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, true, ReportSettings.FORMAT_PDF);
-
-		logger.debug("Printing "+name);
-
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());
 	}
 
 	public void exportSaleOrderExcel(ActionRequest request, ActionResponse response) throws AxelorException {
 
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
-		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
-
-		String name = saleOrderService.getFileName(saleOrder);
+		this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_XLS);
 		
-		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, false, ReportSettings.FORMAT_XLS);
-
-		logger.debug("Printing "+name);
-
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());
 	}
-
-
 
 	public void exportSaleOrderWord(ActionRequest request, ActionResponse response) throws AxelorException {
 
+		this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_DOC);
+		
+	}
+	
+	public void exportSaleOrder(ActionRequest request, ActionResponse response, boolean proforma, String format) throws AxelorException {
+
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
 		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 
+		SaleOrderService saleOrderService = Beans.get(SaleOrderService.class);
+		
 		String name = saleOrderService.getFileName(saleOrder);
 		
-		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, false, ReportSettings.FORMAT_DOC);
+		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, proforma, format);
 		
-
 		logger.debug("Printing "+name);
 
 		response.setView(ActionView
 				.define(name)
 				.add("html", fileLink).map());
+		
 	}
 
 	public void cancelSaleOrder(ActionRequest request, ActionResponse response) {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		saleOrderService.cancelSaleOrder(saleOrderRepo.find(saleOrder.getId()), saleOrder.getCancelReason(), saleOrder.getCancelReasonStr());
+		Beans.get(SaleOrderService.class).cancelSaleOrder(saleOrderRepo.find(saleOrder.getId()), saleOrder.getCancelReason(), saleOrder.getCancelReasonStr());
 
 		response.setFlash(I18n.get("The sale order was canceled"));
 		response.setCanClose(true);
@@ -197,7 +169,7 @@ public class SaleOrderController {
 		saleOrder = saleOrderRepo.find(saleOrder.getId());
 
 		try {
-			saleOrderService.finalizeSaleOrder(saleOrder);
+			Beans.get(SaleOrderService.class).finalizeSaleOrder(saleOrder);
 		} catch (Exception e) {
 		    TraceBackService.trace(response, e);
 		}
@@ -209,7 +181,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		saleOrderService.confirmSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+		Beans.get(SaleOrderService.class).confirmSaleOrder(saleOrderRepo.find(saleOrder.getId()));
 
 		response.setReload(true);
 
@@ -240,7 +212,7 @@ public class SaleOrderController {
 	public void createSaleOrder(ActionRequest request, ActionResponse response)  {
 		SaleOrder origin = saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
 		if (origin != null) {
-			SaleOrder copy = saleOrderService.createSaleOrder(origin);
+			SaleOrder copy = Beans.get(SaleOrderService.class).createSaleOrder(origin);
 			response.setValues(copy);
 		}
 	}
@@ -250,7 +222,7 @@ public class SaleOrderController {
 	    if (context.get("_idCopy") != null) {
 	    	String idCopy = context.get("_idCopy").toString();
 			SaleOrder origin = saleOrderRepo.find(Long.parseLong(idCopy));
-			SaleOrder copy = saleOrderService.createSaleOrder(origin);
+			SaleOrder copy = Beans.get(SaleOrderService.class).createSaleOrder(origin);
 			response.setValues(copy);
 		}
 	}
@@ -260,7 +232,7 @@ public class SaleOrderController {
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
 		try {
-			saleOrder = saleOrderService.computeEndOfValidityDate(saleOrder);
+			saleOrder = Beans.get(SaleOrderService.class).computeEndOfValidityDate(saleOrder);
 			response.setValue("endOfValidityDate", saleOrder.getEndOfValidityDate());
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -418,7 +390,7 @@ public class SaleOrderController {
 		}
 		
 		try{
-			SaleOrder saleOrder = saleOrderService.mergeSaleOrders(saleOrderList, commonCurrency, commonClientPartner, commonCompany, commonContactPartner, commonPriceList, commonTeam);
+			SaleOrder saleOrder = Beans.get(SaleOrderService.class).mergeSaleOrders(saleOrderList, commonCurrency, commonClientPartner, commonCompany, commonContactPartner, commonPriceList, commonTeam);
 			if (saleOrder != null){
 				//Open the generated sale order in a new tab
 				response.setView(ActionView
@@ -442,7 +414,7 @@ public class SaleOrderController {
 	 */
 	public void computeAddressStr(ActionRequest request, ActionResponse response) {
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		saleOrderService.computeAddressStr(saleOrder);
+		Beans.get(SaleOrderService.class).computeAddressStr(saleOrder);
 
 		response.setValues(saleOrder);
 	}
@@ -484,7 +456,7 @@ public class SaleOrderController {
         try {
             SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);
             SaleOrder saleOrder = saleOrderRepo.find(saleOrderView.getId());
-            saleOrderService.validateChanges(saleOrder, saleOrderView);
+            Beans.get(SaleOrderService.class).validateChanges(saleOrder, saleOrderView);
             response.setValue("orderBeingEdited", false);
         } catch (Exception e) {
             TraceBackService.trace(response, e);

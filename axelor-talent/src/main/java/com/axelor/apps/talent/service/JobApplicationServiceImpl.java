@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,7 +25,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.talent.db.JobApplication;
-import com.axelor.apps.talent.db.TagSkill;
+import com.axelor.apps.talent.db.Skill;
 import com.axelor.apps.talent.db.repo.JobApplicationRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -65,9 +65,9 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 		Employee employee = new Employee();
 		employee.setDateOfHire(appBaseService.getTodayDate());
 		employee.setContactPartner(createContact(jobApplication));
-		Set<TagSkill> tagSkillSet = new HashSet<TagSkill>();
-		tagSkillSet.addAll(jobApplication.getTagSkillSet());
-		employee.setTagSkillSet(tagSkillSet);
+		Set<Skill> tagSkillSet = new HashSet<Skill>();
+		tagSkillSet.addAll(jobApplication.getSkillSet());
+		employee.setSkillSet(tagSkillSet);
 		if (employee.getMainEmploymentContract() != null)
 			employee.getMainEmploymentContract().setCompanyDepartment(jobApplication.getJobPosition().getCompanyDepartment());
 		employee.setName(employee.getContactPartner().getName());

@@ -37,11 +37,14 @@ public class ProductVariantService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	@Inject
-	private ProductRepository productRepo;
+	protected ProductRepository productRepo;
+	protected ProductVariantRepository productVariantRepo;
 	
 	@Inject
-	private ProductVariantRepository productVariantRepo;
+	public ProductVariantService(ProductRepository productRepo, ProductVariantRepository productVariantRepo)  {
+		this.productRepo = productRepo;
+		this.productVariantRepo = productVariantRepo;
+	}
 	
 	public ProductVariant createProductVariant(ProductVariantAttr productVariantAttr1, ProductVariantAttr productVariantAttr2, 
 			ProductVariantAttr productVariantAttr3, ProductVariantAttr productVariantAttr4, ProductVariantValue productVariantValue1, 
@@ -465,13 +468,6 @@ public class ProductVariantService {
 		return false;
 		
 	}
-	
-	
-	
-	
-	
-	
-	
 	
 	
 }

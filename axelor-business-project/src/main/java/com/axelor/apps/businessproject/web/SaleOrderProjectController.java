@@ -33,11 +33,13 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+@Singleton
 public class SaleOrderProjectController {
 
 	private static final String CONTEXT_SHOW_RECORD = "_showRecord";

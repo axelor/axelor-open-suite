@@ -34,11 +34,14 @@ import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.collect.Lists;
+import com.google.inject.Singleton;
 
+@Singleton
 public class BillOfMaterialController {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(BillOfMaterialController.class);
@@ -51,9 +54,6 @@ public class BillOfMaterialController {
 	
 	@Inject
 	BillOfMaterialRepository billOfMaterialRepo;
-	
-	@Inject
-	protected ProdProcessService prodProcessService;
 	
 	public void computeCostPrice (ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -130,7 +130,7 @@ public class BillOfMaterialController {
 		BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
 		if (billOfMaterial != null && billOfMaterial.getProdProcess() != null){
 			if(billOfMaterial.getProdProcess().getIsConsProOnOperation()){
-				prodProcessService.validateProdProcess(billOfMaterial.getProdProcess(),billOfMaterial);
+				Beans.get(ProdProcessService.class).validateProdProcess(billOfMaterial.getProdProcess(),billOfMaterial);
 			}
 		}
 	}

@@ -12,7 +12,7 @@
 	<many-to-one name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="WorkCenter"/>
 	<integer name="bomLevel" title="Level"/>
 	<many-to-one name="costSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
-	<decimal name="consumptionQty" title="Consumption"/>
+	<decimal name="consumptionQty" title="Consumption" precision="20" scale="10"/>
 	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
   	<decimal name="costPrice" title="Cost price"/>
 	<many-to-one name="parentCostSheetLine" ref="com.axelor.apps.production.db.CostSheetLine" title="Parent"/>

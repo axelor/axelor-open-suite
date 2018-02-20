@@ -55,6 +55,8 @@
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
     <many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"/>
 
+    <boolean name="isIspmRequired" title="Is ISPM15 required ?"/>
+
     <unique-constraint columns="stockMoveSeq,company"/>
     
     <extra-code><![CDATA[

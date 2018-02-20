@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.Lines.x</property>
@@ -3308,7 +3308,36 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                         <property name="content">
                                                             <data name="product" id="4608">
                                                                 <property name="textAlign">center</property>
-                                                                <property name="resultSetColumn">product</property>
+                                                                <property name="dataSet">TranslateDS</property>
+                                                                <list-property name="paramBindings">
+                                                                    <structure>
+                                                                        <property name="paramName">param_1</property>
+                                                                        <simple-property-list name="expression">
+                                                                            <value type="javascript">'value:'+data["product"]</value>
+                                                                        </simple-property-list>
+                                                                    </structure>
+                                                                </list-property>
+                                                                <list-property name="boundDataColumns">
+                                                                    <structure>
+                                                                        <property name="name">message_key</property>
+                                                                        <text-property name="displayName">message_key</text-property>
+                                                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                        <property name="dataType">string</property>
+                                                                    </structure>
+                                                                    <structure>
+                                                                        <property name="name">translation</property>
+                                                                        <text-property name="displayName">translation</text-property>
+                                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                        <property name="dataType">string</property>
+                                                                    </structure>
+                                                                    <structure>
+                                                                        <property name="name">Column Binding</property>
+                                                                        <expression name="expression" type="javascript">if(row["translation"] != null) { row["translation"] } else { data["product"] }</expression>
+                                                                        <property name="dataType">string</property>
+                                                                        <property name="allowExport">true</property>
+                                                                    </structure>
+                                                                </list-property>
+                                                                <property name="resultSetColumn">Column Binding</property>
                                                             </data>
                                                         </property>
                                                     </extended-item>

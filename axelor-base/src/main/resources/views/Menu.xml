@@ -128,22 +128,6 @@
 	</action-view>
 
 
-	<menuitem name="product-root-subscription" parent="referential-root-product-root"
-		title="Subscriptions" action="product.root.subscription" if="__config__.app.isApp('subscription')" />
-
-	<action-view name="product.root.subscription" title="Subscriptions"
-		model="com.axelor.apps.base.db.Product" >
-		<view type="cards" name="product-cards" />
-		<view type="grid" name="product-grid" />
-		<view type="form" name="product-form" />
-	  	<view-param name="limit" value="39"/>
-		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect </domain>
-		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
-		<context name="_isModel" expr="false"/>
-		<context name="_productTypeSelect" expr="subscriptable"/>
-	</action-view>
-
 	<menuitem name="product-root-service" parent="referential-root-product-root"
 		title="Services" action="product.root.service" />
 

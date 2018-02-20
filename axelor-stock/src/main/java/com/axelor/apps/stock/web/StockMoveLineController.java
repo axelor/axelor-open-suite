@@ -21,11 +21,15 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class StockMoveLineController {
 	
 	@Inject
@@ -35,7 +39,7 @@ public class StockMoveLineController {
 		StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
 		StockMove stockMove = stockMoveLine.getStockMove();
 		if(stockMove == null){
-			Context parentContext = request.getContext().getParentContext();
+			Context parentContext = request.getContext().getParent();
 			if (parentContext.getContextClass().equals(StockMove.class)) {
 				stockMove = parentContext.asType(StockMove.class);
 			} else {
@@ -46,4 +50,21 @@ public class StockMoveLineController {
 		response.setValue("unitPriceUntaxed", stockMoveLine.getUnitPriceUntaxed());
 		response.setValue("unitPriceTaxed", stockMoveLine.getUnitPriceTaxed());
 	}
+
+    public void setProductInfo(ActionRequest request, ActionResponse response) {
+        try {
+            StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+            StockMove stockMove = stockMoveLine.getStockMove();
+
+            if (stockMove == null) {
+                stockMove = request.getContext().getParent().asType(StockMove.class);
+            }
+
+            stockMoveLineService.setProductInfo(stockMoveLine, stockMove);
+            response.setValues(stockMoveLine);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+        }
+    }
+
 }

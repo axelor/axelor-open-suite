@@ -24,7 +24,6 @@ import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.ConfiguratorCreatorService;
 import com.axelor.apps.sale.service.ConfiguratorService;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -33,9 +32,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-import wslite.json.JSONObject;
-
+@Singleton
 public class ConfiguratorController {
 
     private ConfiguratorRepository configuratorRepository;

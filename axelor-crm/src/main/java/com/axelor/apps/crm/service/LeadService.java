@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -72,8 +72,8 @@ public class LeadService {
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Lead convertLead(Lead lead, Partner partner, Partner contactPartner, Opportunity opportunity, Event callEvent, Event meetingEvent, Event taskEvent) throws AxelorException  {
-
+	public Lead convertLead(Lead lead, Partner partner, Partner prospectPartner, Partner contactPartner, Opportunity opportunity, Event callEvent, Event meetingEvent, Event taskEvent) throws AxelorException  {
+		
 //		lead.setEvent(meeting);
 //		lead.setCall(call);
 //		lead.setOpportunity(opportunity);
@@ -94,6 +94,9 @@ public class LeadService {
 		if(partner != null)  {
 			lead.setPartner(partner);
 			partnerRepo.save(partner);
+		}
+		if(prospectPartner != null)  {
+			partnerRepo.save(prospectPartner);
 		}
 		if(contactPartner!=null)  {
 			partnerRepo.save(contactPartner);

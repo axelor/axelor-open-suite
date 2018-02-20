@@ -57,17 +57,17 @@ public class AnalyticMoveLineServiceSupplychainImpl extends AnalyticMoveLineServ
 	@Override
 	public BigDecimal chooseComputeWay(Context context, AnalyticMoveLine analyticMoveLine){
 		if(analyticMoveLine.getPurchaseOrderLine() == null && analyticMoveLine.getSaleOrderLine() == null){
-			if(context.getParentContext().getContextClass() == PurchaseOrderLine.class){
-				analyticMoveLine.setPurchaseOrderLine(context.getParentContext().asType(PurchaseOrderLine.class));
+			if(context.getParent().getContextClass() == PurchaseOrderLine.class){
+				analyticMoveLine.setPurchaseOrderLine(context.getParent().asType(PurchaseOrderLine.class));
 			}
-			else if(context.getParentContext().getContextClass() == InvoiceLine.class){
-				analyticMoveLine.setInvoiceLine(context.getParentContext().asType(InvoiceLine.class));
+			else if(context.getParent().getContextClass() == InvoiceLine.class){
+				analyticMoveLine.setInvoiceLine(context.getParent().asType(InvoiceLine.class));
 			}
-			else if(context.getParentContext().getContextClass() == MoveLine.class){
-				analyticMoveLine.setMoveLine(context.getParentContext().asType(MoveLine.class));
+			else if(context.getParent().getContextClass() == MoveLine.class){
+				analyticMoveLine.setMoveLine(context.getParent().asType(MoveLine.class));
 			}
 			else{
-				analyticMoveLine.setSaleOrderLine(context.getParentContext().asType(SaleOrderLine.class));
+				analyticMoveLine.setSaleOrderLine(context.getParent().asType(SaleOrderLine.class));
 			}
 		}
 		return this.computeAmount(analyticMoveLine);

@@ -31,7 +31,6 @@ import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConf
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.QueryBuilder;
-import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;

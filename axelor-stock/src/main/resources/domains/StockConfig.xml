@@ -21,6 +21,8 @@
 
     <boolean name="stockMoveAutomaticMail" title="Send email on stock move realization" default="false"/>
     <many-to-one name="stockMoveMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+    <one-to-many name="freightCarrierCustomerAccountNumberList" ref="com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber" title="Customer account numbers to carriers" mappedBy="stockConfig"/>
+
   </entity>
   
 </domain-models>

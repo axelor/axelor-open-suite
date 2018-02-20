@@ -1,0 +1,2 @@
+"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+"Teams app";"teamsapp";40;"Teams app";"app-teams.png";"axelor-teamsapp";"project";40
