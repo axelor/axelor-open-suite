@@ -100,7 +100,6 @@
 			<button name="resume" icon="fa-step-forward" title="Resume" colSpan="12" showIf="statusSelect == 5" onClick="save,action-manuf-order-method-resume"/>
 			<button name="finish" icon="fa-power-off" title="Finish" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-finish"/>
 			<button name="cancel" icon="fa-times-circle" title="Cancel" colSpan="12" showIf="statusSelect != 2" onClick="save,action-manuf-order-method-cancel"/>
-			<button name="updateQty" title="Update quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-qty-popup-form-view"/>
 		</panel>
 		</panel>
 		<panel-tabs colSpan="4" >
@@ -115,27 +114,30 @@
 					<field name="realEndDateT" title="End date"/>
 				</panel>
 			</panel>
-			<panel name="stockMoves" title="Stock moves">
+			<panel name="stockMoves" title="Stock moves" showIf="statusSelect &gt;= 3" readonly="true">
 				<panel title="Moves In/Out" readonlyIf="statusSelect == 6" colSpan="12">
 					<field name="inStockMove" form-view="stock-move-form" grid-view="stock-move-grid" hideIf="isConsProOnOperation"/>
 					<field name="outStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 				</panel>
-				<panel name="productionWaste" title="Production waste" colSpan="12">
+				<panel name="productionWaste" title="Production waste" colSpan="12" showIf="statusSelect &gt;= 4">
 					<button name="generateWasteStockMove" title="Generate waste stock move" readonlyIf="wasteStockMove != null" onClick="save,action-manuf-order-method-generate-waste-stock-move"/>
 					<field name="wasteStockMove" form-view="stock-move-form" grid-view="stock-move-grid" readonly="true"/>
 				</panel>
 			</panel>
 			<panel name="consumedProducts" title="Consumed products" hideIf="isConsProOnOperation">
+				<button name="updateQty" title="Update quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-qty-popup-form-view" css="btn-custom"/>
 				<panel-related field="toConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 				<panel-related field="consumedStockMoveLineList" onChange="action-manuf-order-method-compute-diff-prod-product-list" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-consumed-production-grid"/>
 				<panel-related field="diffConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 			</panel>
    			<panel readonly="true" name="consumedProducts" title="Consumed products" showIf="isConsProOnOperation">
+				<button name="updateQty" title="Update quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-qty-popup-form-view" css="btn-custom"/>
 				<panel-dashlet colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
 				<panel-dashlet colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>
 				<panel-dashlet colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
 			</panel>
 			<panel name="finishedProducts" title="Finished products">
+				<button name="updateQty" title="Update quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-qty-popup-form-view" css="btn-custom"/>
 				<panel-related field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 3" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 				<panel-related field="producedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-produced-production-grid"/>
 				<panel-related field="wasteProdProductList" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
