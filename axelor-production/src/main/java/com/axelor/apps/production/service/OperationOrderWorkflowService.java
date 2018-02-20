@@ -56,6 +56,7 @@ public class OperationOrderWorkflowService {
 		this.operationOrderStockMoveService = operationOrderStockMoveService;
 		this.operationOrderRepo = operationOrderRepo;
 		this.operationOrderDurationRepo = operationOrderDurationRepo;
+		this.appProductionService = appProductionService;
 
 	}
 

@@ -39,7 +39,6 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -58,14 +57,13 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 	protected MoveLineService moveLineService;
 	protected AccountConfigService accountConfigService;
 	protected InvoicePaymentRepository invoicePaymentRepository;
-	protected MoveCancelService moveCancelService;
 	protected ReconcileService reconcileService;
 	protected InvoicePaymentToolService invoicePaymentToolService;
 
 	
 	@Inject
 	public InvoicePaymentValidateServiceImpl(PaymentModeService paymentModeService, MoveService moveService, MoveLineService moveLineService, 
-			AccountConfigService accountConfigService, InvoicePaymentRepository invoicePaymentRepository, MoveCancelService moveCancelService, 
+			AccountConfigService accountConfigService, InvoicePaymentRepository invoicePaymentRepository,  
 			ReconcileService reconcileService, InvoicePaymentToolService invoicePaymentToolService)  {
 		
 		this.paymentModeService = paymentModeService;
@@ -73,7 +71,6 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		this.moveLineService = moveLineService;
 		this.accountConfigService = accountConfigService;
 		this.invoicePaymentRepository = invoicePaymentRepository;
-		this.moveCancelService = moveCancelService;
 		this.reconcileService = reconcileService;
 		this.invoicePaymentToolService = invoicePaymentToolService;
 		

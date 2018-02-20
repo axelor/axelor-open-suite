@@ -18,32 +18,23 @@
 package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class StockRulesServiceImpl implements StockRulesService  {
 
-	protected User user;
-	
-	@Inject
 	protected StockRulesRepository stockRuleRepo;
 
 	@Inject
-	public StockRulesServiceImpl() {
-
-		this.user = AuthUtils.getUser();
+	public StockRulesServiceImpl(StockRulesRepository stockRuleRepo) {
+		this.stockRuleRepo = stockRuleRepo;
 	}
 
 

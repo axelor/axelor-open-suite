@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.util.InvoiceLineComparator;
@@ -60,8 +59,6 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -73,12 +70,6 @@ import com.google.inject.persist.Transactional;
 public class InvoicingProjectService {
 
 	@Inject
-	protected SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
-
-	@Inject
-	protected PurchaseOrderInvoiceServiceImpl purchaseOrderInvoiceServiceImpl;
-
-	@Inject
 	protected TimesheetServiceImpl timesheetServiceImpl;
 
 	@Inject
@@ -86,8 +77,6 @@ public class InvoicingProjectService {
 
 	@Inject
 	protected ElementsToInvoiceService elementsToInvoiceService;
-
-	protected AnalyticMoveLineService analyticMoveLineService;
 
 	@Inject
 	protected PartnerService partnerService;

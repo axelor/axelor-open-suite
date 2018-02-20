@@ -32,7 +32,6 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
@@ -62,7 +61,6 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 	
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
-	protected BillOfMaterialRepository billOfMaterialRepository;
 	protected ManufOrderRepository manufOrderRepository;
 
 	
@@ -71,13 +69,12 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 			ProductRepository productRepository, StockLocationLineRepository stockLocationLineRepository, MrpLineTypeRepository mrpLineTypeRepository,
 			PurchaseOrderLineRepository purchaseOrderLineRepository, SaleOrderLineRepository saleOrderLineRepository, MrpLineRepository mrpLineRepository,
 			StockRulesService stockRulesService, MrpLineService mrpLineService, MrpForecastRepository mrpForecastRepository,
-			BillOfMaterialRepository billOfMaterialRepository, ManufOrderRepository manufOrderRepository)  {
+			ManufOrderRepository manufOrderRepository)  {
 		
 		
 		super(appProductionService, mrpRepository, stockLocationRepository, productRepository, stockLocationLineRepository, mrpLineTypeRepository, 
 				purchaseOrderLineRepository, saleOrderLineRepository, mrpLineRepository, stockRulesService, mrpLineService, mrpForecastRepository);
 		
-		this.billOfMaterialRepository = billOfMaterialRepository;
 		this.manufOrderRepository = manufOrderRepository;
 		
 	}

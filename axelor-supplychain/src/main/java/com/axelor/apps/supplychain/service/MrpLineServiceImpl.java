@@ -22,17 +22,16 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Map;
 
-import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.axelor.apps.base.service.PartnerPriceListService;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -48,8 +47,8 @@ import com.axelor.apps.supplychain.db.MrpLineOrigin;
 import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.AuditableModel;
-import com.axelor.auth.db.User;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -68,10 +67,8 @@ public class MrpLineServiceImpl implements MrpLineService  {
 	protected PurchaseOrderRepository purchaseOrderRepo;
 	protected StockRulesService stockRulesService;
 
-	protected User user;
-
 	@Inject
-	public MrpLineServiceImpl(AppBaseService appBaseService, UserService userService, PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl, 
+	public MrpLineServiceImpl(AppBaseService appBaseService, PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl, 
 			PurchaseOrderLineService purchaseOrderLineService, PurchaseOrderRepository purchaseOrderRepo, StockRulesService stockRulesService)  {
 
 		this.appBaseService = appBaseService;
@@ -80,7 +77,6 @@ public class MrpLineServiceImpl implements MrpLineService  {
 		this.purchaseOrderRepo = purchaseOrderRepo;
 		this.stockRulesService = stockRulesService;
 		
-		this.user = userService.getUser();
 	}
 
 	@Override
@@ -124,7 +120,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 		
 		if (purchaseOrder == null) {
 			purchaseOrder = purchaseOrderRepo.save(purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
-					this.user,
+					AuthUtils.getUser(),
 					company,
 					null,
 					supplierPartner.getCurrency(),

@@ -43,20 +43,20 @@ public class CostSheetLineServiceImpl implements CostSheetLineService  {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
-	@Inject
 	protected AppProductionService appProductionService;
-	
-	@Inject
-	protected CostSheetLineRepository costSheetLineRepository;
-	
-	@Inject
 	protected CostSheetGroupRepository costSheetGroupRepository;
-	
-	@Inject
 	protected UnitConversionService unitConversionService;
+	protected UnitRepository unitRepo;
 	
 	@Inject
-	protected UnitRepository unitRepo;
+	public CostSheetLineServiceImpl(AppProductionService appProductionService, CostSheetGroupRepository costSheetGroupRepository,
+			UnitConversionService unitConversionService, UnitRepository unitRepo)  {
+		this.appProductionService = appProductionService;
+		this.costSheetGroupRepository = costSheetGroupRepository;
+		this.unitConversionService = unitConversionService;
+		this.unitRepo = unitRepo;
+		
+	}
 
 	public CostSheetLine createCostSheetLine(String name, String code, int bomLevel, BigDecimal consumptionQty, BigDecimal costPrice, 
 			CostSheetGroup costSheetGroup, Product product, int typeSelect, Unit unit, WorkCenter workCenter, CostSheetLine parentCostSheetLine)  {

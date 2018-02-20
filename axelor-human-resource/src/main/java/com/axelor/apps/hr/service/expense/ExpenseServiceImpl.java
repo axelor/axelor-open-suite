@@ -17,6 +17,22 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.mail.MessagingException;
+
+import org.apache.commons.codec.binary.Base64;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
@@ -56,7 +72,6 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.KilometricAllowParam;
-import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.EmployeeAdvanceService;
@@ -79,26 +94,11 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.apache.commons.codec.binary.Base64;
-
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class ExpenseServiceImpl implements ExpenseService {
 
 	protected MoveService moveService;
 	protected ExpenseRepository expenseRepository;
-	protected ExpenseLineRepository expenseLineRepository;
 	protected MoveLineService moveLineService;
 	protected AccountManagementAccountService accountManagementService;
 	protected AppAccountService appAccountService;
@@ -109,14 +109,13 @@ public class ExpenseServiceImpl implements ExpenseService {
 	protected TemplateMessageService templateMessageService;
 
 	@Inject
-	public ExpenseServiceImpl(MoveService moveService, ExpenseRepository expenseRepository, ExpenseLineRepository expenseLineRepository, MoveLineService moveLineService,
+	public ExpenseServiceImpl(MoveService moveService, ExpenseRepository expenseRepository, MoveLineService moveLineService,
 			AccountManagementAccountService accountManagementService, AppAccountService appAccountService,
 			AccountConfigHRService accountConfigService, AccountingSituationService accountingSituationService, AnalyticMoveLineService analyticMoveLineService,
-			HRConfigService  hrConfigService, TemplateMessageService  templateMessageService)  {
+			HRConfigService hrConfigService, TemplateMessageService templateMessageService)  {
 
 		this.moveService = moveService;
 		this.expenseRepository = expenseRepository;
-		this.expenseLineRepository = expenseLineRepository;
 		this.moveLineService = moveLineService;
 		this.accountManagementService = accountManagementService;
 		this.appAccountService = appAccountService;

@@ -49,8 +49,7 @@ public class ManufOrderWorkflowService {
 
 	@Inject
 	public ManufOrderWorkflowService(OperationOrderWorkflowService operationOrderWorkflowService, OperationOrderRepository operationOrderRepo,
-									 ManufOrderStockMoveService manufOrderStockMoveService, ManufOrderRepository manufOrderRepo,
-									 AppProductionService appProductionService) {
+									 ManufOrderStockMoveService manufOrderStockMoveService, ManufOrderRepository manufOrderRepo) {
 		this.operationOrderWorkflowService = operationOrderWorkflowService;
 		this.operationOrderRepo = operationOrderRepo;
 		this.manufOrderStockMoveService = manufOrderStockMoveService;

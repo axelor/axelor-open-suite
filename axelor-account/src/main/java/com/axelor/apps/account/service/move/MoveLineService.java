@@ -79,8 +79,6 @@ public class MoveLineService {
 	protected CurrencyService currencyService;
 	protected CompanyConfigService companyConfigService;
 
-
-	
 	@Inject
 	public MoveLineService(AccountManagementAccountService accountManagementService, TaxAccountService taxAccountService,
 			FiscalPositionServiceAccountImpl fiscalPositionService, AppAccountService appAccountService,
