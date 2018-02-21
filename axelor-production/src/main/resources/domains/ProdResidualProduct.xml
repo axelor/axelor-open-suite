@@ -9,7 +9,7 @@
 
   	<many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BoM"/>
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-    <decimal name="qty" title="Qty"/>
+    <decimal name="qty" title="Qty" precision="20" scale="10"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     
   </entity>

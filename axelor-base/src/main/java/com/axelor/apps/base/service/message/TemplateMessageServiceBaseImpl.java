@@ -39,11 +39,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.message.db.MailAccount;
-import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.EmailAddressRepository;
-import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -54,24 +50,22 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.tool.template.TemplateMaker;
-import com.google.common.base.Strings;
-import com.google.inject.persist.Transactional;
 
 public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
-	public TemplateMessageServiceBaseImpl(MessageService messageService, EmailAddressRepository emailAddressRepo) {
-		super(messageService, emailAddressRepo);
+	public TemplateMessageServiceBaseImpl(MessageService messageService) {
+		super(messageService);
 	}
 
-	public Set<MetaFile> getMetaFiles(Template template, Message message) throws AxelorException, IOException {
+	public Set<MetaFile> getMetaFiles(Template template) throws AxelorException, IOException {
 
 		Set<MetaFile> metaFiles = super.getMetaFiles(template);
 		if ( template.getBirtTemplate() == null ) { return metaFiles; }
 
-		attachBirtTemplate( maker, template.getBirtTemplate() , message);
+		metaFiles.add(createMetaFileUsingBirtTemplate( maker, template.getBirtTemplate()));
 		
 		logger.debug("Metafile to attach: {}", metaFiles);
 
@@ -79,7 +73,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
 	}
 
-	public void attachBirtTemplate(TemplateMaker maker, BirtTemplate birtTemplate , Message message) throws AxelorException, IOException {
+	public MetaFile createMetaFileUsingBirtTemplate(TemplateMaker maker, BirtTemplate birtTemplate) throws AxelorException, IOException {
 
 		logger.debug("Generate birt metafile: {}", birtTemplate.getName());
 
@@ -91,7 +85,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 				birtTemplate.getBirtTemplateParameterList());
 
 		try (InputStream is = new FileInputStream(file)) {
-			Beans.get(MetaFiles.class).attach(is, fileName + "." + birtTemplate.getFormat(), message);
+			return Beans.get(MetaFiles.class).upload(is, fileName + "." + birtTemplate.getFormat());
 		}
 
 	}
@@ -158,82 +152,5 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
 	}
 	
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Message generateMessage( long objectId, String model, String tag, Template template, MailAccount emailAccount ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
-		if (!model.equals(template.getMetaModel().getFullName())) {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(com.axelor.apps.message.exception.IExceptionMessage.TEMPLATE_SERVICE_3), template.getMetaModel().getFullName());
-		}
-		
-		logger.debug("model : {}", model);
-		logger.debug("tag : {}", tag);
-		logger.debug("object id : {}", objectId);
-		logger.debug("template : {}", template);
-		
-		initMaker(objectId, model, tag);
-		
-		String content = "", subject = "", from= "", replyToRecipients = "", toRecipients = "", ccRecipients = "", bccRecipients = "", addressBlock= "";
-		int mediaTypeSelect;
-		
-		if ( !Strings.isNullOrEmpty( template.getContent() ) )  {
-			maker.setTemplate(template.getContent());
-			content = maker.make();
-		}
-		
-		if( !Strings.isNullOrEmpty( template.getAddressBlock() ) )  {
-			maker.setTemplate(template.getAddressBlock());
-			addressBlock = maker.make();
-		}
-		
-		if ( !Strings.isNullOrEmpty( template.getSubject() ) )  {
-			maker.setTemplate(template.getSubject());
-			subject = maker.make();
-			logger.debug( "Subject ::: {}", subject );
-		}
-		
-		if( !Strings.isNullOrEmpty( template.getFromAdress() ) )  {
-			maker.setTemplate(template.getFromAdress());
-			from = maker.make();
-			logger.debug( "From ::: {}", from );
-		}
-		
-		if( !Strings.isNullOrEmpty( template.getReplyToRecipients() ) )  {
-			maker.setTemplate(template.getReplyToRecipients());
-			replyToRecipients = maker.make();
-			logger.debug( "Reply to ::: {}", replyToRecipients );
-		}
-		
-		if(template.getToRecipients() != null)  {
-			maker.setTemplate(template.getToRecipients());
-			toRecipients = maker.make();
-			logger.debug( "To ::: {}", toRecipients );
-		}
-		
-		if(template.getCcRecipients() != null)  {
-			maker.setTemplate(template.getCcRecipients());
-			ccRecipients = maker.make();
-			logger.debug( "CC ::: {}", ccRecipients );
-		}
-		
-		if(template.getBccRecipients() != null)  {
-			maker.setTemplate(template.getBccRecipients());
-			bccRecipients = maker.make();
-			logger.debug( "BCC ::: {}", bccRecipients );
-		}
-		
-		mediaTypeSelect = this.getMediaTypeSelect(template);
-		logger.debug( "Media ::: {}", mediaTypeSelect );
-		logger.debug( "Content ::: {}", content );
-		
-		Message message = messageService.createMessage( model, Long.valueOf(objectId).intValue(), subject,  content, getEmailAddress(from), getEmailAddresses(replyToRecipients),
-				getEmailAddresses(toRecipients), getEmailAddresses(ccRecipients), getEmailAddresses(bccRecipients),
-				null, addressBlock, mediaTypeSelect, emailAccount );	
-		
-		message = Beans.get(MessageRepository.class).save(message);
-		
-		messageService.attachMetaFiles(message, getMetaFiles(template, message));
-		
-		return message;
-	}
 }

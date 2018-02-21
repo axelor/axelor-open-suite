@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
@@ -39,18 +38,17 @@ import com.google.inject.Inject;
 
 public class OperationOrderStockMoveService {
 
+	protected StockMoveService stockMoveService;
+	protected StockMoveLineService stockMoveLineService;
+	protected StockLocationRepository stockLocationRepo;
+	
 	@Inject
-	private StockMoveService stockMoveService;
-
-	@Inject
-	private StockMoveLineService stockMoveLineService;
-
-	@Inject
-	private ProductionConfigService productionConfigService;
-
-	@Inject
-	private StockLocationRepository stockLocationRepo;
-
+	public OperationOrderStockMoveService(StockMoveService stockMoveService, StockMoveLineService stockMoveLineService,
+			StockLocationRepository stockLocationRepo)  {
+		this.stockMoveService = stockMoveService;
+		this.stockMoveLineService = stockMoveLineService;
+		this.stockLocationRepo = stockLocationRepo;
+	}
 
 	public void createToConsumeStockMove(OperationOrder operationOrder) throws AxelorException {
 
@@ -84,7 +82,7 @@ public class OperationOrderStockMoveService {
 	}
 
 
-	private StockMove _createToConsumeStockMove(OperationOrder operationOrder, Company company) throws AxelorException  {
+	protected StockMove _createToConsumeStockMove(OperationOrder operationOrder, Company company) throws AxelorException  {
 
 		StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
 		StockConfig stockConfig = stockConfigService.getStockConfig(company);
@@ -109,7 +107,7 @@ public class OperationOrderStockMoveService {
 
 
 
-	private StockMoveLine _createStockMoveLine(ProdProduct prodProduct, StockMove stockMove) throws AxelorException  {
+	protected StockMoveLine _createStockMoveLine(ProdProduct prodProduct, StockMove stockMove) throws AxelorException  {
 
 		return stockMoveLineService.createStockMoveLine(
 				prodProduct.getProduct(),

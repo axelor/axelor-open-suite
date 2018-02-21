@@ -36,10 +36,12 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import java.math.BigDecimal;
 import java.util.Map;
 
+@Singleton
 public class PurchaseOrderLineController {
 
 	@Inject
@@ -247,7 +249,7 @@ public class PurchaseOrderLineController {
 		Context parentContext = context.getParent();
 		PurchaseOrder purchaseOrder = null;
 		
-		if(parentContext != null) {
+		if(parentContext != null && parentContext.getContextClass() == PurchaseOrder.class) {
 
 			purchaseOrder = parentContext.asType(PurchaseOrder.class);
 			if(!parentContext.getContextClass().toString().equals(PurchaseOrder.class.toString())){

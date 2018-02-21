@@ -19,20 +19,19 @@ package com.axelor.apps.message.service;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 
 import javax.mail.MessagingException;
 
-import java.time.ZonedDateTime;
-import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.MailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
@@ -60,37 +59,26 @@ public class MessageServiceImpl implements MessageService {
 	
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	private ZonedDateTime todayTime;
-	
 	private MetaAttachmentRepository metaAttachmentRepository;
-
-	protected MailAccountService mailAccountService;
 	
 	@Inject
-	protected MailAccountRepository mailAccountRepo;
+	protected MessageRepository messageRepository;
 	
 	@Inject
-	protected MessageRepository messageRepo;
-	
-	@Inject
-	public MessageServiceImpl( MetaAttachmentRepository metaAttachmentRepository, MailAccountService mailAccountService ) {
-		this.todayTime = ZonedDateTime.now();
+	public MessageServiceImpl(MetaAttachmentRepository metaAttachmentRepository, MessageRepository messageRepository) {
 		this.metaAttachmentRepository = metaAttachmentRepository;
-		this.mailAccountService = mailAccountService;
+		this.messageRepository = messageRepository;
 	}
-	
-	public ZonedDateTime getTodayTime(){ return this.todayTime; }
-	public LocalDateTime getTodayLocalTime(){ return this.todayTime.toLocalDateTime(); }
-	
+
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
-			List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect, MailAccount emailAccount)  {
+			List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect, EmailAccount emailAccount)  {
 		
-		Message message = createMessage( content, fromEmailAddress,	model, id, null, 0, getTodayLocalTime(), false,	MessageRepository.STATUS_DRAFT, subject, MessageRepository.TYPE_SENT,
+		Message message = createMessage( content, fromEmailAddress,	model, id, null, 0, ZonedDateTime.now().toLocalDateTime(), false,	MessageRepository.STATUS_DRAFT, subject, MessageRepository.TYPE_SENT,
 				replyToEmailAddressList, toEmailAddressList, ccEmailAddressList, bccEmailAddressList, addressBlock, mediaTypeSelect, emailAccount) ;
 		
-		messageRepo.save( message );
+		messageRepository.save( message );
 		
 		attachMetaFiles(message, metaFiles);
 		
@@ -115,7 +103,7 @@ public class MessageServiceImpl implements MessageService {
 	
 	protected Message createMessage(String content, EmailAddress fromEmailAddress, String relatedTo1Select, int relatedTo1SelectId, String relatedTo2Select, int relatedTo2SelectId, 
 			LocalDateTime sentDate, boolean sentByEmail, int statusSelect, String subject, int typeSelect,List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList, 
-			List<EmailAddress> ccEmailAddressList, List<EmailAddress> bccEmailAddressList, String addressBlock, int mediaTypeSelect, MailAccount emailAccount)  {
+			List<EmailAddress> ccEmailAddressList, List<EmailAddress> bccEmailAddressList, String addressBlock, int mediaTypeSelect, EmailAccount emailAccount)  {
 
 		Set<EmailAddress> 
 			replyToEmailAddressSet = Sets.newHashSet(),
@@ -131,15 +119,13 @@ public class MessageServiceImpl implements MessageService {
 			if ( ccEmailAddressList != null ) { ccEmailAddressSet.addAll(ccEmailAddressList); }
 		}
 		
-		MailAccount mailAccount = emailAccount == null ? mailAccountService.getDefaultMailAccount(MailAccountRepository.SERVER_TYPE_SMTP) : emailAccount;
-		
-		if ( mailAccount != null ) {
-			mailAccount = mailAccountRepo.find( mailAccount.getId() );
-			content += "<p></p><p></p>" + mailAccountService.getSignature(mailAccount);
-			log.debug( "Mail account ::: {}", mailAccount );
+		if(emailAccount != null)  {
+			
+			content += "<p></p><p></p>" + Beans.get(MailAccountService.class).getSignature(emailAccount);
+
 		}
 		
-		Message message = new Message(typeSelect, subject, content, statusSelect, mediaTypeSelect, addressBlock, fromEmailAddress, replyToEmailAddressSet, toEmailAddressSet, ccEmailAddressSet, bccEmailAddressSet, sentByEmail, mailAccount);
+		Message message = new Message(typeSelect, subject, content, statusSelect, mediaTypeSelect, addressBlock, fromEmailAddress, replyToEmailAddressSet, toEmailAddressSet, ccEmailAddressSet, bccEmailAddressSet, sentByEmail, emailAccount);
 
 		message.setRelatedTo1Select(relatedTo1Select);
 		message.setRelatedTo1SelectId(relatedTo1SelectId);
@@ -174,7 +160,7 @@ public class MessageServiceImpl implements MessageService {
 		message.setStatusSelect(MessageRepository.STATUS_SENT);
 		message.setSentByEmail(false);
 		message.setSentDateT(LocalDateTime.now());
-		return messageRepo.save(message);
+		return messageRepository.save(message);
 		
 	}
 
@@ -185,19 +171,19 @@ public class MessageServiceImpl implements MessageService {
 		message.setStatusSelect(MessageRepository.STATUS_SENT);
 		message.setSentByEmail(false);
 		message.setSentDateT(LocalDateTime.now());
-		return messageRepo.save(message);
+		return messageRepository.save(message);
 			
 	}
 
 	@Transactional(rollbackOn = { MessagingException.class, IOException.class, Exception.class })
 	public Message sendByEmail(Message message) throws MessagingException, IOException, AxelorException  {
 		
-		MailAccount mailAccount = message.getMailAccount();
+		EmailAccount mailAccount = message.getMailAccount();
 		
 		if ( mailAccount == null ){ return message; }
 
 		log.debug("Sent email");
-		com.axelor.mail.MailAccount account = new SmtpAccount( mailAccount.getHost(), mailAccount.getPort().toString(), mailAccount.getLogin(), mailAccount.getPassword(), mailAccountService.getSecurity(mailAccount) );
+		com.axelor.mail.MailAccount account = new SmtpAccount( mailAccount.getHost(), mailAccount.getPort().toString(), mailAccount.getLogin(), mailAccount.getPassword(), Beans.get(MailAccountService.class).getSecurity(mailAccount) );
 
 		List<String> 
 			replytoRecipients = this.getEmailAddresses(message.getReplyToEmailAddressSet()),
@@ -236,7 +222,7 @@ public class MessageServiceImpl implements MessageService {
 		message.setSentDateT(LocalDateTime.now());
 		message.setSenderUser(AuthUtils.getUser());
 		
-		return messageRepo.save(message);
+		return messageRepository.save(message);
 	
 	}
 	

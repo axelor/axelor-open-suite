@@ -53,14 +53,14 @@ public class PaymentService {
 	protected ReconcileService reconcileService;
 	protected MoveLineService moveLineService;
 
-	protected LocalDate today;
+	protected AppAccountService appAccountService;
 
 	@Inject
 	public PaymentService(AppAccountService appAccountService, ReconcileService reconcileService, MoveLineService moveLineService)  {
 		
 		this.reconcileService = reconcileService;
 		this.moveLineService = moveLineService;
-		today = appAccountService.getTodayDate();
+		this.appAccountService = appAccountService;
 	}
 
 	/**
@@ -110,9 +110,6 @@ public class PaymentService {
 			log.debug("Emploie du trop perçu (nombre de lignes en débit : {}, nombre de ligne en crédit : {})",
 				new Object[]{debitMoveLines.size(), creditMoveLines.size()});
 
-			BigDecimal amount = null;
-			Reconcile reconcile = null;
-
 			BigDecimal debitTotalRemaining = BigDecimal.ZERO;
 			BigDecimal creditTotalRemaining = BigDecimal.ZERO;
 			for(MoveLine creditMoveLine : creditMoveLines)  {
@@ -137,7 +134,7 @@ public class PaymentService {
 					for(MoveLine debitMoveLine : debitMoveLines){
 						if ((debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1) && (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)) {
 							try {
-								createReconcile(debitMoveLine, creditMoveLine, amount, debitTotalRemaining, creditTotalRemaining, reconcile);
+								createReconcile(debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
 							} catch(AxelorException e) {
 								if(dontThrow) {
 									TraceBackService.trace(e);
@@ -158,13 +155,13 @@ public class PaymentService {
 	 * 
 	 * @param debitMoveLine
 	 * @param creditMoveLine
-	 * @param amount
 	 * @param debitTotalRemaining
 	 * @param creditTotalRemaining
-	 * @param reconcile
 	 * @throws AxelorException
 	 */
-	private void createReconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount, BigDecimal debitTotalRemaining, BigDecimal creditTotalRemaining, Reconcile reconcile) throws AxelorException {
+	private void createReconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal debitTotalRemaining, BigDecimal creditTotalRemaining) throws AxelorException {
+	    BigDecimal amount;
+	    Reconcile reconcile;
 		if(debitMoveLine.getMaxAmountToReconcile() != null && debitMoveLine.getMaxAmountToReconcile().compareTo(BigDecimal.ZERO) > 0)  {
 			amount = debitMoveLine.getMaxAmountToReconcile().min(creditMoveLine.getAmountRemaining());
 			debitMoveLine.setMaxAmountToReconcile(null);
@@ -242,7 +239,7 @@ public class PaymentService {
 					debitMoveLine.getAccount(),
 					amountToPay,
 					false,
-					this.today,
+					appAccountService.getTodayDate(),
 					moveLineNo2,
 					invoiceName);
 			move.getMoveLineList().add(creditMoveLine);
@@ -285,7 +282,7 @@ public class PaymentService {
 					account,
 					remainingPaidAmount2,
 					false,
-					this.today,
+					appAccountService.getTodayDate(),
 					moveLineNo2,
 					null);
 

@@ -59,7 +59,6 @@ public class DoubtfulCustomerService {
 	protected MoveLineRepository moveLineRepo;
 	protected ReconcileService reconcileService;
 	protected AccountConfigService accountConfigService;
-	protected LocalDate today;
 
 	@Inject
 	public DoubtfulCustomerService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService, MoveLineRepository moveLineRepo,
@@ -71,7 +70,6 @@ public class DoubtfulCustomerService {
 		this.moveLineRepo = moveLineRepo;
 		this.reconcileService = reconcileService;
 		this.accountConfigService = accountConfigService;
-		this.today = Beans.get(AppBaseService.class).getTodayDate();
 	}
 
 
@@ -148,7 +146,7 @@ public class DoubtfulCustomerService {
 
 					BigDecimal amountRemaining = moveLine.getAmountRemaining();
 					// Ecriture au crédit sur le 411
-					MoveLine creditMoveLine = moveLineService.createMoveLine(newMove , moveLine.getPartner(), moveLine.getAccount(), amountRemaining, false, today, ref, null);
+					MoveLine creditMoveLine = moveLineService.createMoveLine(newMove , moveLine.getPartner(), moveLine.getAccount(), amountRemaining, false, Beans.get(AppBaseService.class).getTodayDate(), ref, null);
 					newMove.getMoveLineList().add(creditMoveLine);
 
 					Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amountRemaining, false);
@@ -161,7 +159,7 @@ public class DoubtfulCustomerService {
 		}
 
 		// Ecriture au débit sur le 416 (client douteux)
-		MoveLine debitMoveLine = moveLineService.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, totalAmountRemaining, true, today, ref, null);
+		MoveLine debitMoveLine = moveLineService.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, totalAmountRemaining, true, Beans.get(AppBaseService.class).getTodayDate(), ref, null);
 		newMove.getMoveLineList().add(debitMoveLine);
 
 		debitMoveLine.setPassageReason(debtPassReason);
@@ -213,7 +211,7 @@ public class DoubtfulCustomerService {
 		BigDecimal amountRemaining = moveLine.getAmountRemaining();
 
 		// Ecriture au crédit sur le 411
-		MoveLine creditMoveLine = moveLineService.createMoveLine(newMove , partner, moveLine.getAccount(), amountRemaining, false, today, 1, null);
+		MoveLine creditMoveLine = moveLineService.createMoveLine(newMove , partner, moveLine.getAccount(), amountRemaining, false, Beans.get(AppBaseService.class).getTodayDate(), 1, null);
 		newMove.addMoveLineListItem(creditMoveLine);
 
 		Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amountRemaining, false);
@@ -221,7 +219,7 @@ public class DoubtfulCustomerService {
 		reconcileService.confirmReconcile(reconcile, true);
 
 		// Ecriture au débit sur le 416 (client douteux)
-		MoveLine debitMoveLine = moveLineService.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, amountRemaining, true, today, 2, null);
+		MoveLine debitMoveLine = moveLineService.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, amountRemaining, true, Beans.get(AppBaseService.class).getTodayDate(), 2, null);
 		newMove.getMoveLineList().add(debitMoveLine);
 
 		debitMoveLine.setInvoiceReject(moveLine.getInvoiceReject());
@@ -334,12 +332,12 @@ public class DoubtfulCustomerService {
 
 			//Créance de + 6 mois
 			case 0 :
-				date = this.today.minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
+				date = Beans.get(AppBaseService.class).getTodayDate().minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
 				break;
 
 			//Créance de + 3 mois
 			case 1 :
-				date = this.today.minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
+				date = Beans.get(AppBaseService.class).getTodayDate().minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
 				break;
 
 			default:
@@ -386,7 +384,7 @@ public class DoubtfulCustomerService {
 
 			//Créance de + 6 mois
 			case 0 :
-				date = this.today.minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
+				date = Beans.get(AppBaseService.class).getTodayDate().minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
 				moveLineList = moveLineRepo.all().filter("self.company = ?1 AND self.account.useForPartnerBalance = 'true' " +
 						"AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 " +
 						"AND self.account != ?3",company, date, doubtfulCustomerAccount).fetch();
@@ -394,7 +392,7 @@ public class DoubtfulCustomerService {
 
 			//Créance de + 3 mois
 			case 1 :
-				date = this.today.minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
+				date = Beans.get(AppBaseService.class).getTodayDate().minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
 				moveLineList = moveLineRepo.all().filter("self.company = ?1 AND self.account.useForPartnerBalance = 'true' " +
 						"AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 " +
 						"AND self.account != ?3",company, date, doubtfulCustomerAccount).fetch();

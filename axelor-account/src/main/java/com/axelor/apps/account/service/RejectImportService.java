@@ -44,7 +44,6 @@ public class RejectImportService{
 	protected CfonbImportService cfonbImportService;
 	protected InterbankCodeLineRepository interbankCodeLineRepo;
 	
-	protected ZonedDateTime todayTime;
 
 	@Inject
 	public RejectImportService(AppAccountService appAccountService, CfonbImportService cfonbImportService, InterbankCodeLineRepository interbankCodeLineRepo) {
@@ -52,7 +51,6 @@ public class RejectImportService{
 		this.appAccountService = appAccountService;
 		this.cfonbImportService = cfonbImportService;
 		this.interbankCodeLineRepo = interbankCodeLineRepo;
-		this.todayTime = this.appAccountService.getTodayDateTime();
 
 	}
 
@@ -61,7 +59,7 @@ public class RejectImportService{
 		// chemin du fichier de destination :
 		log.debug("Chemin de destination : {}", dest);
 		String newDest = ((dest).split("\\."))[0];
-		String timeString = this.todayTime.toString();
+		String timeString = appAccountService.getTodayDateTime().toString();
 		timeString = timeString.replace("-", "");
 		timeString = timeString.replace(":", "");
 		timeString = timeString.replace(".", "");
@@ -100,11 +98,8 @@ public class RejectImportService{
 	 * @param operation
 	 * 	 	Le type d'opération :
 	 * 		<ul>
-     *      <li>0 = Virement</li>
-     *      <li>1 = Prélèvement</li>
-     *      <li>2 = TIP impayé</li>
-     *      <li>3 = TIP</li>
-     *      <li>4 = TIP + chèque</li>
+     *          <li>0 = Virement</li>
+     *          <li>1 = Prélèvement</li>
      *  	</ul>
 	 * @return
 	 * @throws AxelorException
@@ -127,11 +122,8 @@ public class RejectImportService{
 	 * @param operation
 	 * 	 	Le type d'opération :
 	 * 		<ul>
-     *      <li>0 = Virement</li>
-     *      <li>1 = Prélèvement</li>
-     *      <li>2 = TIP impayé</li>
-     *      <li>3 = TIP</li>
-     *      <li>4 = TIP + chèque</li>
+     *          <li>0 = Virement</li>
+     *          <li>1 = Prélèvement</li>
      *  	</ul>
 	 * @return
 	 * @throws AxelorException

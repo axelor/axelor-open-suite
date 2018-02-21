@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -31,7 +31,6 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
-import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -47,9 +46,8 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
 
 	@Inject
 	public BankOrderCreateServiceHr(BankOrderRepository bankOrderRepo, BankOrderService bankOrderService,
-			AccountConfigBankPaymentService accountConfigBankPaymentService, BankOrderLineService bankOrderLineService,
-			InvoiceService invoiceService) {
-		super(bankOrderRepo, bankOrderService, accountConfigBankPaymentService, bankOrderLineService, invoiceService);
+			BankOrderLineService bankOrderLineService, InvoiceService invoiceService) {
+		super(bankOrderRepo, bankOrderService, bankOrderLineService, invoiceService);
 	}
 
 	/**

@@ -22,6 +22,8 @@
             readonly="true" />
         <string name="internalDeliveryComment" large="true" />
         <string name="externalDeliveryComment" large="true" />
+        <integer name="accountSelectionToCarrierSelect" selection="logistical.form.account.to.carrier.select" title="Account selection to carrier" default="1" />
+        <string name="customerAccountNumberToCarrier" />
 
         <one-to-many name="logisticalFormLineList" ref="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging lines"
             mappedBy="logisticalForm" />
@@ -31,6 +33,9 @@
 			public static final int STATUS_PROVISION = 1;
 			public static final int STATUS_CARRIER_VALIDATED = 2;
 			public static final int STATUS_COLLECTED = 3;
+
+			public static final int ACCOUNT_COMPANY = 1;
+			public static final int ACCOUNT_CUSTOMER = 2;
 		]]>
 		</extra-code>
 

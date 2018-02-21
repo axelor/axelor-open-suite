@@ -17,6 +17,15 @@
  */
 package com.axelor.apps.account.service.invoice.generator;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
@@ -33,13 +42,13 @@ import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagem
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.tool.date.Period;
@@ -48,14 +57,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.List;
 
 /**
  * Classe de création de ligne de facture abstraite.
@@ -153,7 +154,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	 * @return
 	 * @throws AxelorException
 	 */
-	protected InvoiceLine createInvoiceLine() throws AxelorException  {
+	protected InvoiceLine createInvoiceLine() throws AxelorException {
 
 		InvoiceLine invoiceLine = new InvoiceLine();
 
@@ -162,7 +163,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		invoiceLine.setProduct(product);
 
 		invoiceLine.setProductName(productName);
-		if(product != null)  {
+		if (product != null) {
 			boolean isPurchase = invoiceLineService.isPurchase(invoice);
 			invoiceLine.setProductCode(product.getCode());
 			AccountManagement accountManagement = accountManagementService.getAccountManagement(product, invoice.getCompany());
@@ -176,17 +177,19 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		invoiceLine.setPriceDiscounted(priceDiscounted);
 		invoiceLine.setQty(qty);
 		invoiceLine.setUnit(unit);
-		
-		if(taxLine == null) {
+
+		if (taxLine == null) {
 			this.determineTaxLine();
 		}
 
 		boolean isPurchase = Beans.get(InvoiceLineService.class).isPurchase(invoice);
 
-		Tax tax = Beans.get(AccountManagementService.class).getProductTax(Beans.get(AccountManagementService.class).getAccountManagement(product, invoice.getCompany()), isPurchase);
-		TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
+		if (product != null) {
+			Tax tax = Beans.get(AccountManagementService.class).getProductTax(Beans.get(AccountManagementService.class).getAccountManagement(product, invoice.getCompany()), isPurchase);
+			TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
 
-		invoiceLine.setTaxEquiv(taxEquiv);
+			invoiceLine.setTaxEquiv(taxEquiv);
+		}
 
 		invoiceLine.setTaxLine(taxLine);
 		
@@ -258,11 +261,11 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		
 		invoiceLine.setCompanyExTaxTotal(
 				currencyService.getAmountCurrencyConvertedAtDate(
-						invoice.getCurrency(), companyCurrency, exTaxTotal, today).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+						invoice.getCurrency(), companyCurrency, exTaxTotal, today).setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
 
 		invoiceLine.setCompanyInTaxTotal(
 				currencyService.getAmountCurrencyConvertedAtDate(
-						invoice.getCurrency(), companyCurrency, inTaxTotal, today).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+						invoice.getCurrency(), companyCurrency, inTaxTotal, today).setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
 	}
 	
 	

@@ -3,33 +3,33 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="control-point-grid" title="Control points" model="com.axelor.apps.quality.db.ControlPoint" onNew="action-control-point-attrs-hide-quality-control">
-		<field name="status"/>
+		<field name="statusSelect"/>
 		<field name="qualityControl" readonly="true"/>
 		<field name="name"/>
 		<field name="priority"/>
 		<field name="product"/>
 		<field name="team"/>
 		<field name="responsible"/>
-		<field name="controlType"/>
-		<field name="testType"/>
+		<field name="controlTypeSelect"/>
+		<field name="testTypeSelect"/>
 		<field name="controlPointDate"/>
 	</grid>
 	
 	<form name="control-point-form" title="Control points" model="com.axelor.apps.quality.db.ControlPoint" onNew="action-quality-control-point-record-default">
 		<panel name="main">
-			<field name="status" widget="NavSelect" showTitle="false" readonly="true"/>
+			<field name="statusSelect" widget="NavSelect" showTitle="false" readonly="true"/>
 			<field name="qualityControl" readonly="true" hideIf="$popup() || qualityControl == null"/>
 			<field name="name"/>
 			<field name="priority"/>
 			<field name="product"  readonly="true"/>
 			<field name="team" domain="self.typeSelect = 'quality'"/>
 			<field name="responsible"/>
-			<field name="controlType" readonly="true"/>
-			<field name="testType" readonly="true"/>
+			<field name="controlTypeSelect" readonly="true"/>
+			<field name="testTypeSelect" readonly="true"/>
 			<field name="controlPointDate"/>
 		</panel>
-		<panel name="ControlFrequency" showIf="controlType == 2 || controlType == 3" title="Control Frequency" readonly="true">
-			<field name="cf" title="Control Frequency" type="string" colSpan="12" showIf="controlType == 2" showTitle="false">
+		<panel name="ControlFrequency" showIf="controlTypeSelect == 2 || controlTypeSelect == 3" title="Control Frequency" readonly="true">
+			<field name="cf" title="Control Frequency" type="string" colSpan="12" showIf="controlTypeSelect == 2" showTitle="false">
 				<viewer>
 				<![CDATA[
 		             <span>Every  <b>{{record.controlFrequency}}%</b> of the operation</span>
@@ -41,7 +41,7 @@
 					<label type="string" readonly="true" title="% of the operation" />
 				</editor>
 			</field>
-            <field name="cf" title="Control Frequency" type="string" colSpan="12" showIf="controlType == 3" showTitle="false">
+            <field name="cf" title="Control Frequency" type="string" colSpan="12" showIf="controlTypeSelect == 3" showTitle="false">
             	<viewer>
                 <![CDATA[
                 	<span>Every  <b>{{record.controlFrequency}}</b></span>
@@ -63,9 +63,9 @@
 		<panel name="messageIfFailure">
 			<field name="messageIfFailure" colSpan="12" height="6" widget="html" showTitle="false"/>
 		</panel>
-		<panel sidebar="true" showIf="status == 1">
-			<button name="pass" title="Pass" showIf="status == 1" onClick="action-quality-control-point-record-status-pass,save"/>
-			<button name="fail" title="Fail" showIf="status == 1" onClick="action-quality-control-point-record-status-fail,save"/>
+		<panel sidebar="true" showIf="statusSelect == 1">
+			<button name="pass" title="Pass" showIf="statusSelect == 1" onClick="action-quality-control-point-record-status-pass,save"/>
+			<button name="fail" title="Fail" showIf="statusSelect == 1" onClick="action-quality-control-point-record-status-fail,save"/>
 		</panel>
 		<panel sidebar="true">
 			<button name="createAQualityAlert" title="Create a quality alert" onClick="action-quality-control-point-create-quality-alert"/>
@@ -76,15 +76,15 @@
 	</form>
 	
 	<action-record name="action-quality-control-point-record-default" model="com.axelor.apps.quality.db.ControlPoint">
-		<field name="status" expr="eval: 1"/>
+		<field name="statusSelect" expr="eval: 1"/>
 	</action-record>
 	
 	<action-record name="action-quality-control-point-record-status-pass" model="com.axelor.apps.quality.db.ControlPoint">
-		<field name="status" expr="eval: 2"/>
+		<field name="statusSelect" expr="eval: 2"/>
 	</action-record>
 	
 	<action-record name="action-quality-control-point-record-status-fail" model="com.axelor.apps.quality.db.ControlPoint">
-		<field name="status" expr="eval: 3"/>
+		<field name="statusSelect" expr="eval: 3"/>
 	</action-record>
 	
 	<action-view name="action-quality-control-point-create-quality-alert" title="Quality alert" model="com.axelor.apps.quality.db.QualityAlert">

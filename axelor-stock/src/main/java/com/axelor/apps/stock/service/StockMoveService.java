@@ -19,7 +19,6 @@ package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +28,8 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.FreightCarrierMode;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.ShipmentMode;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
@@ -105,7 +104,7 @@ public interface StockMoveService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public StockMove generateReversion(StockMove stockMove) throws AxelorException;
 
-	public Long splitInto2(Long originalStockMoveId, List<StockMoveLine> stockMoveLines);
+	public StockMove splitInto2(StockMove originalStockMove, List<StockMoveLine> modifiedStockMoveLines) throws AxelorException;
 	
 	public BigDecimal compute(StockMove stockMove);
 	
@@ -179,5 +178,23 @@ public interface StockMoveService {
      * @return
      */
     String computeName(StockMove stockMove, String name);
+
+
+    /**
+     * Get from address from stock move or stock location.
+     * 
+     * @param stockMove
+     * @return
+     */
+    Address getFromAddress(StockMove stockMove);
+
+
+    /**
+     * Get to address from stock move or stock location.
+     * 
+     * @param stockMove
+     * @return
+     */
+    Address getToAddress(StockMove stockMove);
 
 }

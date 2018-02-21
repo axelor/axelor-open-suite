@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<grid name="expense-line-grid" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
+	<grid name="general-expense-line-grid"
+		  title="Expense lines"
+		  model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
 		  onNew="action-expense-line-default, action-kilometric-allowance-record-default">
-		<field name="project" requiredIf="toInvoice" canView="false"  onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" width="150"/>
+		<field name="project" requiredIf="toInvoice" canView="false" onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" width="150"/>
 		<field name="expenseProduct" canView="false" onChange="action-expense-line-attrs-expense-product-onchange" onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid" width="200"/>
 		<field name="expenseDate" onChange="action-expense-line-validate-expenseDate" width="120"/>
 		<field name="user" hidden="true" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company"/>
 		<field name="totalAmount" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount" width="170"/>
-		<field name="totalTax" readonlyIf="(!$hasBeenChanged &amp;&amp; $get('expenseProduct.blockExpenseTax')) || ($expenseProductBlockExpenseTax &amp;&amp; $hasBeenChanged)" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution" width="80"/>
+		<field name="totalTax" aggregate="sum"
+			readonlyIf="(!$hasBeenChanged &amp;&amp; $get('expenseProduct.blockExpenseTax')) || ($expenseProductBlockExpenseTax &amp;&amp; $hasBeenChanged)"
+			onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution" width="80"/>
         <field name="toInvoice"/>
 		<field name="comments" width="400"/>
 		<field name="untaxedAmount" hidden="true"/>
@@ -21,15 +26,15 @@
 	
 	<grid name="expense-line-kilometric-grid" title="Kilometric Allowances" model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
 		  onNew="action-expense-line-default, action-expense-line-method-fill-kilometric-expense-product">
-  		<field name="project" title="Project" requiredIf="toInvoice" canView="false" onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" grid-view="project-grid" width="100" hidden="true"/>
+  		<field name="project" requiredIf="toInvoice" canView="false" onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" grid-view="project-grid" width="120"/>
         <field name="expenseDate" title="Date" width="95"
         	onChange="action-kilometric-allowance-method-compute, action-kilometric-allowance-method-update-kap"/>
-		<field name="kilometricAllowParam" canEdit="false" required="true" width="130"
+		<field name="kilometricAllowParam" canEdit="false" required="true" width="60"
 			onChange="action-kilometric-allowance-method-compute" onSelect="action-kilometric-allowance-method-domain-on-select-on-kap"/>
         <field name="kilometricTypeSelect" required="true" onChange="action-kilometric-allowance-method-compute" width="100"/>
-        <field name="distance" required="true" onChange="action-kilometric-allowance-method-compute" width="240"/>
-        <field name="fromCity" required="true" onChange="action-kilometric-allowance-method-compute-distance" width="230"/>
-        <field name="toCity" required="true" onChange="action-kilometric-allowance-method-compute-distance" width="230"/>
+        <field name="distance" required="true" onChange="action-kilometric-allowance-method-compute" width="150"/>
+        <field name="fromCity" required="true" onChange="action-kilometric-allowance-method-compute-distance" width="150"/>
+        <field name="toCity" required="true" onChange="action-kilometric-allowance-method-compute-distance" width="150"/>
 	    <field name="totalAmount" title="Total A.T.I" width="85" readonly="true"
 	    	onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" />
    	    <field name="comments" width="250"/>
@@ -37,27 +42,35 @@
   		<field name="untaxedAmount" hidden="true" />
    		<field name="expenseProduct" readonly="true" form-view="product-expense-form" grid-view="product-expense-grid" hidden="true"/>
 	</grid>
-<grid name="expense-line-project-grid" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine">
-		<field name="expenseProduct" canView="false" readonly="true"/>
-		<field name="expenseDate" readonly="true"/>
-		<field name="totalAmount" aggregate="sum" readonly="true"/>
-		<field name="totalTax" aggregate="sum" readonly="true"/>
-		<field name="comments" readonly="true"/>
-		<field name="toInvoice"/>
-        <field name="invoiced"/>
-	</grid>
 
-	<form name="expense-line-project-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine" canEdit="false">
-		<panel-include view="expense-line-form"/>
-	</form>
-	<form name="expense-line-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine"
+    <grid name="expense-line-project-grid" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine">
+        <hilite if="$get('expense.statusSelect') &lt; 3 &amp;&amp; toInvoice &amp;&amp; !invoiced" color="info"/>
+        <hilite if="invoiced" color="success"/>
+        <field name="expense.expenseSeq" title="Expense"/>
+        <field name="user"/>
+        <field name="expenseProduct" canView="false" readonly="true"/>
+        <field name="expenseDate" readonly="true"/>
+        <field name="totalAmount" aggregate="sum" readonly="true"/>
+        <field name="totalTax" aggregate="sum" readonly="true"/>
+        <field name="comments" readonly="true"/>
+        <field name="toInvoice"/>
+        <field name="invoiced"/>
+        <field name="expense" hidden="true"/>
+        <field name="expense.statusSelect" hidden="true"/>
+    </grid>
+
+    <form name="expense-line-project-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine" readonlyIf="true" canEdit="false">
+        <panel-include view="general-expense-line-form"/>
+    </form>
+
+	<form name="general-expense-line-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine"
 		onNew="action-expense-line-default"
 		onSave="action-expense-line-validate-expenseDate" width="large">
 		
 		<panel name="main" title="Main">
 			<field name="user" hidden="true" showIf="expense.multipleUsers" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company" canNew="false" canEdit="false" canView="false"/>
 			<field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false" onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" form-view="project-form" grid-view="project-grid"/>
-			<field name="expenseProduct" edit-icon="false" canEdit="false" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
+			<field name="expenseProduct" edit-icon="false" canEdit="false" onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
 			<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
 			<field name="totalAmount" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
 			<field name="totalTax" onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution" readonlyIf="expenseProduct.blockExpenseTax == true"/>
@@ -179,15 +192,16 @@
 		<attribute name="domain" for="user" expr="eval: &quot; ${expense.company.id} MEMBER OF self.companySet &quot;" />
 	</action-attrs>
 
-	<action-attrs name="action-expense-line-attrs-set-product-domain">
-		<attribute name="domain" for="expenseProduct" expr="eval: &quot;self.expense = true&quot;" if="!_parent.setMultipleUsers"/>
-		<attribute name="domain" for="expenseProduct" expr="eval: &quot;self.expense = true and self.personalExpense = false&quot;" if="_parent.setMultipleUsers"/>
-	</action-attrs>
-
 	<action-attrs name="action-expense-line-attrs-expense-product-onchange">
 		<attribute name="value" expr="eval: expenseProduct?.blockExpenseTax" for="$expenseProductBlockExpenseTax"/>
 		<attribute if="expenseProduct?.blockExpenseTax" name="value" expr="eval: null" for="totalTax"/>
 		<attribute for="$hasBeenChanged" name="value" expr="eval: true"/>
 	</action-attrs>
 
+	<action-attrs name="action-expense-line-attrs-set-product-domain">
+		<attribute name="domain" for="expenseProduct" expr="eval: &quot;self.expense = true&quot;"  if="__user__.employee.hrManager &amp;&amp; !__parent__.multipleUsers &amp;&amp; __parent__.companyCbSelect &gt; 1"/>
+		<attribute name="domain" for="expenseProduct" expr="eval: &quot;self.expense = true AND self.unavailableToUsers = false&quot;"  if="!__user__.employee.hrManager &amp;&amp; !__parent__.multipleUsers &amp;&amp; __parent__.companyCbSelect &gt; 1"/>
+		<attribute name="domain" for="expenseProduct" expr="eval: &quot;self.expense = true AND self.personalExpense = false&quot;" if="__user__.employee.hrManager &amp;&amp; (__parent__.companyCbSelect == 1 || __parent__.multipleUsers)"/>
+		<attribute name="domain" for="expenseProduct" expr="eval: &quot;self.expense = true AND self.unavailableToUsers = false AND self.personalExpense = false&quot;"  if="!__user__.employee.hrManager &amp;&amp; (__parent__.companyCbSelect == 1 || __parent__.multipleUsers)"/>
+	</action-attrs>
 </object-views>

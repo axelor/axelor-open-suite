@@ -67,6 +67,7 @@ public interface IExceptionMessage {
 	static final String PRODUCTION_CONFIG_1 = /*$$(*/ "You must configure a production for company %s" /*)*/;
 	static final String PRODUCTION_CONFIG_2 = /*$$(*/ "You must configure a production virtual stock location for company %s" /*)*/;
 	static final String PRODUCTION_CONFIG_3 = /*$$(*/ "You must configure a waste stock location for company %s." /*)*/;
+	static final String PRODUCTION_CONFIG_4 = /*$$(*/ "You must configure a finished products default stock location for company %s." /*)*/;
 
 	/**
 	 * Manuf Order Controller

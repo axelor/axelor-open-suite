@@ -17,6 +17,15 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -30,45 +39,24 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	@Inject
-	private PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
-
-	@Inject
+	protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
 	protected PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl;
 
 	@Inject
-	protected AppBaseService appBaseService;
-
-	protected LocalDate today;
-
-	protected User user;
-
-	@Inject
-	public SaleOrderPurchaseServiceImpl() {
-
-		this.today = Beans.get(AppBaseService.class).getTodayDate();
-		this.user = AuthUtils.getUser();
+	public SaleOrderPurchaseServiceImpl(PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl, PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl) {
+		this.purchaseOrderServiceSupplychainImpl = purchaseOrderServiceSupplychainImpl;
+		this.purchaseOrderLineServiceSupplychainImpl = purchaseOrderLineServiceSupplychainImpl;
 	}
 
 
@@ -122,7 +110,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 				new Object[] { saleOrder.getSaleOrderSeq() });
 
 		PurchaseOrder purchaseOrder = purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
-				user,
+				AuthUtils.getUser(),
 				saleOrder.getCompany(),
 				null,
 				supplierPartner.getCurrency(),
@@ -130,7 +118,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 				saleOrder.getSaleOrderSeq(),
 				saleOrder.getExternalReference(),
 				Beans.get(StockLocationService.class).getDefaultStockLocation(saleOrder.getCompany()),
-				today,
+				Beans.get(AppBaseService.class).getTodayDate(),
 				Beans.get(PartnerPriceListService.class).getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
 				supplierPartner);
 

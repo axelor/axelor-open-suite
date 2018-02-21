@@ -1,2 +1,2 @@
 "name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
-"Helpdesk";"helpdesk";29;"Helpdesk Management";;"axelor-helpdesk";"crm,project,employee";52
+"Helpdesk";"helpdesk";29;"Helpdesk Management";"app-helpdesk.png";"axelor-helpdesk";"crm,project,employee";52

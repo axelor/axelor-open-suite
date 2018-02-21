@@ -24,7 +24,9 @@ import com.axelor.apps.supplychain.service.batch.SupplychainBatchService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class SupplychainBatchController {
 	
 	@Inject 
@@ -33,18 +35,6 @@ public class SupplychainBatchController {
 	@Inject
 	protected SupplychainBatchRepository supplychainBatchRepo;
 	
-	public void billSubscriptions(ActionRequest request, ActionResponse response){
-		
-		SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
-		
-		Batch batch = null;
-		
-		batch = supplychainBatchService.billSubscriptions(supplychainBatchRepo.find(supplychainBatch.getId()));
-		
-		if(batch != null)
-			response.setFlash(batch.getComments());
-		response.setReload(true);
-	}
 
 	public void invoiceOutgoingStockMoves(ActionRequest request, ActionResponse response) {
 		SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);

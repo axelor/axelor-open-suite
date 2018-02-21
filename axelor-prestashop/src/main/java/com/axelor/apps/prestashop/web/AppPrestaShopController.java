@@ -25,7 +25,9 @@ import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class AppPrestaShopController {
 	
 	@Inject

@@ -31,7 +31,7 @@
 				<field name="team" onChange="action-campaign-attrs-team-value-fill"/>
 				<field name="eventUser" showIf="generateEventPerTarget" onChange="action-campaign-record-set-team" onSelect="action-campaign-attrs-eventuser-domain" />
 		  		<field name="subject" requiredIf="generateEventPerTarget" showIf="generateEventPerTarget" />
-		  		<field name="eventType" domain="self.value IN ('0','1','2','3')"  placeholder="Event Type" required="true" showIf="generateEventPerTarget" />
+		  		<field name="eventTypeSelect" domain="self.value IN ('0','1','2','3')"  placeholder="Event Type" required="true" showIf="generateEventPerTarget" />
 		  		<field name="eventStartDateTime" requiredIf="generateEventPerTarget" showIf="generateEventPerTarget" />
 		  		<field name="duration" widget="duration" x-big="true" showIf="generateEventPerTarget" />
 		  		<button name="generateEvents" title="Generate Events" colSpan="3" onClick="action-campaign-alert-event-user,save,action-campaign-method-generate-events" showIf="generateEventPerTarget" />

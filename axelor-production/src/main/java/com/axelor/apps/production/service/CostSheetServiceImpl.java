@@ -39,7 +39,6 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-import java.time.temporal.ChronoField;
 import java.util.List;
 
 public class CostSheetServiceImpl implements CostSheetService  {
@@ -49,27 +48,20 @@ public class CostSheetServiceImpl implements CostSheetService  {
 	protected UnitConversionService unitConversionService;
 	protected CostSheetLineService costSheetLineService;
 	protected BillOfMaterialRepository billOfMaterialRepo;
+	protected AppProductionService appProductionService;
 	
 	protected Unit hourUnit;
 	protected Unit cycleUnit;
 	protected boolean manageResidualProductOnBom;
-	protected boolean subtractProdResidualOnCostSheet;
-	
 	protected CostSheet costSheet;
 	
 	@Inject
 	public CostSheetServiceImpl(AppProductionService appProductionService, UnitConversionService unitConversionService, CostSheetLineService costSheetLineService, BillOfMaterialRepository billOfMaterialRepo)  {
 		
+		this.appProductionService = appProductionService;
 		this.unitConversionService = unitConversionService;
 		this.costSheetLineService = costSheetLineService;
 		this.billOfMaterialRepo = billOfMaterialRepo;
-		
-		AppProduction appProduction = appProductionService.getAppProduction();
-		this.hourUnit = appProductionService.getAppBase().getUnitHours();
-		this.cycleUnit = appProduction.getCycleUnit();
-		this.manageResidualProductOnBom = appProduction.getManageResidualProductOnBom();
-		this.subtractProdResidualOnCostSheet = appProduction.getSubtractProdResidualOnCostSheet();
-		
 	}
 
 
@@ -77,7 +69,7 @@ public class CostSheetServiceImpl implements CostSheetService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public CostSheet computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException  {
 
-		costSheet = new CostSheet();
+		this.init();
 		
 		CostSheetLine producedCostSheetLine = costSheetLineService.createProducedProductCostSheetLine(billOfMaterial.getProduct(), billOfMaterial.getUnit(), billOfMaterial.getQty());
 		
@@ -96,11 +88,24 @@ public class CostSheetServiceImpl implements CostSheetService  {
 		return costSheet;
 		
 	}
+	
+	protected void init()  {
+		
+		AppProduction appProduction = appProductionService.getAppProduction();
+		this.hourUnit = appProductionService.getAppBase().getUnitHours();
+		this.cycleUnit = appProduction.getCycleUnit();
+		this.manageResidualProductOnBom = appProduction.getManageResidualProductOnBom();
+		
+		costSheet = new CostSheet();
+		
+	}
+	
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public CostSheet computeCostPrice(ManufOrder manufOrder) throws AxelorException {
-		costSheet = new CostSheet();
+		this.init();
+
 		BigDecimal producedQuantity = Beans.get(ManufOrderService.class).getProducedQuantity(manufOrder);
 		CostSheetLine producedCostSheetLine = costSheetLineService.createProducedProductCostSheetLine(
 				manufOrder.getProduct(), manufOrder.getBillOfMaterial().getUnit(), producedQuantity

@@ -19,11 +19,10 @@ package com.axelor.apps.production.service;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,15 +30,12 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -47,24 +43,19 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	protected LocalDate today;
-
-	protected User user;
 	
-	@Inject
 	protected UnitConversionService unitConversionService;
-	
-	@Inject
 	protected ProductionOrderService productionOrderService;
-	
-	@Inject
 	protected ProductionOrderRepository productionOrderRepo;
 
 	@Inject
-	public ProductionOrderSaleOrderServiceImpl(UserService userInfoService) {
-
-		this.today = Beans.get(AppBaseService.class).getTodayDate();
-		this.user = userInfoService.getUser();
+	public ProductionOrderSaleOrderServiceImpl(UserService userInfoService, UnitConversionService unitConversionService, 
+			ProductionOrderService productionOrderService, ProductionOrderRepository productionOrderRepo) {
+		
+		this.unitConversionService = unitConversionService;
+		this.productionOrderService = productionOrderService;
+		this.productionOrderRepo = productionOrderRepo;
+		
 	}
 
 

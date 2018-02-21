@@ -19,7 +19,6 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
-import com.axelor.apps.sale.db.repo.ConfiguratorFormulaRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.ConfiguratorFormulaService;
 import com.axelor.exception.AxelorException;
@@ -27,8 +26,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class ConfiguratorFormulaController {
 
     /**

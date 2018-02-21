@@ -110,6 +110,16 @@
 		<domain>self.year.typeSelect = 2</domain>
 	</action-view>
 
+    <menuitem name="hr-conf-fiscal-period" parent="hr-root-emp-mgt-conf"
+              title="Fiscal periods" action="hr.conf.fiscal.period"/>
+
+    <action-view name="hr.conf.fiscal.period" title="Fiscal periods"
+                 model="com.axelor.apps.base.db.Period" >
+        <view type="grid" name="period-grid"/>
+        <view type="form" name="period-hr-fiscal-form"/>
+        <domain>self.year.typeSelect = 1</domain>
+    </action-view>
+
 	<menuitem name="plannings-all" parent="hr-root-emp-mgt-conf" title="Plannings" />
 
 	<menuitem name="event-planning-all" parent="plannings-all" title="Event planning" action="hr.public.holiday.planning.all"/>
@@ -208,6 +218,7 @@
 		<view name="expense-form" type="form" />
 		<domain>self.user = :user_id</domain>
 		<context name="user_id" expr="eval:__user__" />
+        <context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-view>
 
 	<menuitem name="validate-expense"  parent="expense-root" title="Expenses to Validate" action="expense.validate" />
@@ -222,6 +233,7 @@
 		<view type="grid" name="expense-grid"/>
 		<view type="form" name="expense-form"/>
 		<domain>self.statusSelect = 3 AND self.ventilated = false</domain>
+        <context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-view>
 
 	<menuitem name="multiple-users-expense" parent="expense-root" title="Multiple users expenses" action="multiple.users.expense"  />
@@ -231,6 +243,7 @@
 		<view type="form" name="expense-form"/>
 		<domain>self.multipleUsers IS TRUE</domain>
 		<context name="setMultipleUsers" expr="eval: true"/>
+        <context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-view>
 
 	<menuitem name="historic-expense"  parent="expense-root" title="Historic team Expenses" action="expense.historic"/>
@@ -251,6 +264,7 @@
 		<domain>self.isModel = false AND self.expense = true</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="false"/>
+		<context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-view>
 	
 	<menuitem name="kilometric-allow-param-all" parent="expense-root-conf"
@@ -368,7 +382,7 @@
     	
 	<action-view name="hr.user.dashboard.view" title="Human Resources User">
 		<view type="dashboard" name="hr.user.dashboard.sample" />
-	</action-view>	
+	</action-view>
 
 	<!-- Top Menus -->
 

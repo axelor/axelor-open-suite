@@ -20,13 +20,14 @@ package com.axelor.apps.stock.service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.apps.stock.exception.LogisticalFormWarning;
 import com.axelor.exception.AxelorException;
-import com.axelor.apps.stock.exception.LogisticalFormError;
 
 /**
  * @author axelor
@@ -98,8 +99,9 @@ public interface LogisticalFormService {
      * 
      * @param logisticalForm
      * @return
+     * @throws AxelorException 
      */
-    String getStockMoveDomain(LogisticalForm logisticalForm);
+    String getStockMoveDomain(LogisticalForm logisticalForm) throws AxelorException;
 
     /**
      * Get next parcel/pallet number.
@@ -141,5 +143,14 @@ public interface LogisticalFormService {
      * @throws AxelorException
      */
     void processCollected(LogisticalForm logisticalForm) throws AxelorException;
+
+    /**
+     * Get customer account number to carrier.
+     * 
+     * @param logisticalForm
+     * @return
+     * @throws AxelorException
+     */
+    Optional<String> getCustomerAccountNumberToCarrier(LogisticalForm logisticalForm) throws AxelorException;
 
 }

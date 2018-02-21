@@ -48,7 +48,6 @@
 			</panel>
 		</panel-tabs>
 		<panel sidebar="true" name="actions" title="Actions">
-		    <button name="billSubBatch" title="Bill Late Subscriptions Batch" showIf="actionSelect == 1"  onClick="save,action-supplychain-batch-method-bill-sub" colSpan="12"/>
 		    <button name="invoiceOutgoingStockMoveBatch" title="Invoice outgoing stock moves" showIf="actionSelect == 2"  onClick="save,action-supplychain-batch-method-invoice-outgoing-stock-moves" colSpan="12" if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
 		    <button name="invoiceOrdersBatch" title="Invoice orders" showIf="actionSelect == 3" onClick="save,action-supplychain-batch-method-invoice-orders" colSpan="12"/>
 		</panel>
@@ -64,9 +63,6 @@
 	</action-record>
 
     <!-- ACTION METHOD -->
-	<action-method name="action-supplychain-batch-method-bill-sub">
-		<call class="com.axelor.apps.supplychain.web.SupplychainBatchController" method="billSubscriptions"/>
-	</action-method>
 
 	<action-method name="action-supplychain-batch-method-invoice-outgoing-stock-moves">
 		<call class="com.axelor.apps.supplychain.web.SupplychainBatchController" method="invoiceOutgoingStockMoves"/>

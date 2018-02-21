@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -23,6 +23,7 @@ import java.util.Map;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExtraHours;
@@ -52,8 +53,10 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class LeaveController {
 
 	@Inject
@@ -142,7 +145,7 @@ public class LeaveController {
 		actionView.domain("self.statusSelect = 3 OR self.statusSelect = 4");
 
 		if(employee == null || !employee.getHrManager())  {
-			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
+			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.managerUser = :_user")
 			.context("_user", user);
 		}
 
@@ -159,7 +162,7 @@ public class LeaveController {
 				   .add("grid","leave-request-grid")
 				   .add("form","leave-request-form");
 
-		String domain = "self.user.employee.manager.employee.manager = :_user AND self.statusSelect = 2";
+		String domain = "self.user.employee.managerUser.employee.managerUser = :_user AND self.statusSelect = 2";
 
 		long nbLeaveRequests =  Query.of(ExtraHours.class).filter(domain).bind("_user", user).bind("_activeCompany", activeCompany).count();
 
@@ -222,7 +225,12 @@ public class LeaveController {
 		}
 	}
 
-	//validating leave request and sending an email to the applicant
+	/**
+	 * validating leave request and sending an email to the applicant
+	 * @param request
+	 * @param response
+	 * @throws AxelorException
+	 */
 	public void validate(ActionRequest request, ActionResponse response) throws AxelorException{
 
 		try{
@@ -236,6 +244,7 @@ public class LeaveController {
 			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
 			}
+			Beans.get(PeriodService.class).checkPeriod(leaveRequest.getCompany(), leaveRequest.getToDate(), leaveRequest.getFromDate());
 
 		}  catch(Exception e)  {
 			TraceBackService.trace(response, e);

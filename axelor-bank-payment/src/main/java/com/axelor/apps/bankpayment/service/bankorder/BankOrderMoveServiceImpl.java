@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -53,7 +53,6 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 	
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
-	protected BankOrderRepository bankOrderRepo;
 	protected MoveService moveService;
 	protected PaymentModeService paymentModeService;
 	protected AccountingSituationService accountingSituationService;
@@ -73,18 +72,15 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 	protected boolean isDebit;
 	
 	@Inject
-	public BankOrderMoveServiceImpl(BankOrderRepository bankOrderRepo, MoveService moveService, 
-			PaymentModeService paymentModeService, 
+	public BankOrderMoveServiceImpl(MoveService moveService, PaymentModeService paymentModeService, 
 			AccountingSituationService accountingSituationService, AccountConfigBankPaymentService accountConfigBankPaymentService)  {
 		
-		this.bankOrderRepo = bankOrderRepo;
 		this.moveService = moveService;
 		this.paymentModeService = paymentModeService;
 		this.accountingSituationService = accountingSituationService;
 		this.accountConfigBankPaymentService = accountConfigBankPaymentService;
 		
 	}
-	
 	
 	
 	public void generateMoves(BankOrder bankOrder) throws AxelorException  {

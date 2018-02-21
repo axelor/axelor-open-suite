@@ -28,10 +28,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
+import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.service.ProductionOrderService;
 import com.axelor.apps.production.service.ProductionOrderWizardServiceImpl;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.exception.AxelorException;
@@ -44,9 +48,17 @@ import com.google.inject.Inject;
 public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWizardServiceImpl {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+	
+	protected ProductionOrderServiceBusinessImpl productionOrderServiceBusinessImpl;
 
 	@Inject
-	private ProductionOrderServiceBusinessImpl productionOrderServiceBusinessImpl;
+	public ProductionOrderWizardServiceBusinessImpl(ProductionOrderService productionOrderService,
+			BillOfMaterialRepository billOfMaterialRepo, ProductRepository productRepo,
+			AppProductionService appProductionService, ProductionOrderServiceBusinessImpl productionOrderServiceBusinessImpl) {
+		super(productionOrderService, billOfMaterialRepo, productRepo, appProductionService);
+		this.productionOrderServiceBusinessImpl = productionOrderServiceBusinessImpl;
+	}
+
 
 	@Override
 	@SuppressWarnings("unchecked")

@@ -57,7 +57,8 @@
 		<field name="fixedPhone"/>
 		<field name="mobilePhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"/>
-		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
+		<field name="jobTitle"/>
+		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-contact-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
 	</grid>
 
@@ -128,7 +129,7 @@
 					<field name="fullName" colSpan="9" showTitle="false">
 						<hilite strong="true" if="true" color="primary"/>
 						<editor x-show-titles="false">
-							<field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="4"/>
+							<field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="4" placeholder="Partner Type"/>
 							<spacer colSpan="8"/>
 							<field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
 							<field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="3"/>
@@ -172,7 +173,7 @@
                 -->
 			</panel>
 		</panel>
-		<panel-related field="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
+		<panel-related field="contactPartnerSet" hideIf="!id || isContact || partnerTypeSelect == 2" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
 		<panel-tabs>
 			<panel name="information" title="Information">
 				<panel name="employeeAddress" title="Contact address" colSpan="12" showIf="isEmployee">
@@ -282,10 +283,13 @@
                 <spacer/>
                 <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-partner-record-empty-freight-carrier-mode" title="Shipment Mode" if="__config__.app.isApp('stock')" />
                 <field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode" if="__config__.app.isApp('stock')" />
-                <field name="freightCarrier" if-module="axelor-stock" form-view="partner-form" grid-view="partner-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
-            	<field name="partnerDefaultStockLocationList" if-module="axelor-stock" colSpan="12"
-					   form-view="partner-default-stock-location-form" grid-view="partner-default-stock-location-grid"
-					   if="__config__.app.isApp('stock')"/>
+                <field name="carrierPartner" if-module="axelor-stock" form-view="partner-form" grid-view="partner-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
+				<field name="isIspmRequired" if-module="axelor-stock" if="__config__.app.isApp('stock')" hidden="true" showIf="isCustomer || isProspect"/>
+				<field name="partnerStockSettingsList" if-module="axelor-stock"
+					   if="__config__.app.isApp('stock')"
+					   colSpan="12"
+					   form-view="partner-stock-settings-form" grid-view="partner-stock-settings-grid"/>
+                <panel-include view="incl-freight-carrer-customer-account-number-list-partner-form" if="__config__.app.isApp('stock')" />
             </panel>
         </panel-tabs>
         <panel>
@@ -415,7 +419,7 @@
 				<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-mobile-phone-number"/>
 				<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
 					<editor x-show-titles="false">
-						<field name="address" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
+						<field name="address" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$" colSpan="12"/>
 					</editor>
 				</field>
 				<field name="fax" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" placeholder="+33000000000" onChange="action-partner-record-normalize-fax-phone-number"/>
@@ -759,11 +763,11 @@
 
 	<action-record name="action-partner-record-empty-freight-carrier-mode" model="com.axelor.apps.base.db.Partner">
 		<field name="freightCarrierMode" expr="eval:null"/>
-		<field name="freightCarrier" expr="eval:null"/>
+		<field name="carrierPartner" expr="eval:null"/>
 	</action-record>
 
 	<action-record name="action-partner-record-freight-carrier" model="com.axelor.apps.base.db.Partner">
-		<field name="freightCarrier" expr="eval:freightCarrierMode.freightCarrier"/>
+		<field name="carrierPartner" expr="eval:freightCarrierMode.carrierPartner"/>
 	</action-record>
 
 	<action-record name="action-partner-record-set-payment-modes" model="com.axelor.apps.base.db.Partner" if-module="axelor-account">

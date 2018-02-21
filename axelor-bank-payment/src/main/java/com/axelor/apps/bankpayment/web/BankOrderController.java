@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,6 +17,12 @@
  */
 package com.axelor.apps.bankpayment.web;
 
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.EbicsUser;
@@ -28,7 +34,6 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -40,12 +45,9 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.google.inject.Singleton;
 
-import java.lang.invoke.MethodHandles;
-import java.util.List;
-
+@Singleton
 public class BankOrderController {
 	
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
@@ -124,6 +126,7 @@ public class BankOrderController {
 							bankOrderService.validate(bankOrder);
 						}
 					}
+					response.setReload(true);
 				}
 			}
 		} catch (Exception e) {

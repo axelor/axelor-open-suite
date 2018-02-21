@@ -31,10 +31,10 @@
 		</panel>
 		
 		<panel sidebar="true" name="actions" title="Actions" stacked="true" >
-			<button name="confirmPaymentVoucher" title="Confirm payment" onClick="action-group-account-payment-voucher-confirm-click" showIf="statusSelect == 1"/>
-			<button name="printPaymentVoucher" title="Print receipt" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher" showIf="statusSelect == 3"/>
+			<button name="confirmPaymentVoucher" title="Confirm payment" hidden="true" onClick="action-group-account-payment-voucher-confirm-click" showIf="statusSelect == 1"/>
+			<button name="printPaymentVoucher" title="Print receipt" hidden="true" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher" showIf="statusSelect == 3"/>
 		</panel>
-		
+
 		<panel sidebar="true" hidden="true" name="payboxGroup" title="Paybox" readonlyIf="statusSelect == 3">
 			<panel name="payboxEmail" title="Add an email for payment through Paybox" hidden="true">
 				<label title="The payer doesn't have email attached. Please input/provide the email to use."/>

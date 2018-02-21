@@ -28,12 +28,6 @@ import java.util.List;
 
 public class BlockingService {
 
-    protected LocalDate today;
-
-    public BlockingService() {
-        this.today = Beans.get(AppBaseService.class).getTodayDate();
-    }
-
     /**
      * Checks if {@code partner} is blocked for the {@code blockingType}
      *
@@ -46,7 +40,7 @@ public class BlockingService {
         List<Blocking> blockings = partner.getBlockingList();
 
         for (Blocking blocking : blockings) {
-            if (blocking.getCompanySet().contains(company) && blocking.getBlockingSelect().equals(blockingType) && blocking.getBlockingToDate().compareTo(today) >= 0) {
+            if (blocking.getCompanySet().contains(company) && blocking.getBlockingSelect().equals(blockingType) && blocking.getBlockingToDate().compareTo(Beans.get(AppBaseService.class).getTodayDate()) >= 0) {
                 return blocking;
             }
         }

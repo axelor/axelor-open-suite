@@ -17,17 +17,6 @@
  */
 package com.axelor.apps.account.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -50,6 +39,16 @@ import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class PaymentScheduleServiceImpl implements PaymentScheduleService {
 
@@ -61,7 +60,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
 	protected PaymentScheduleRepository paymentScheduleRepo;
 	protected PartnerService partnerService;
 
-	protected LocalDate date;
+	protected AppAccountService appAccountService;
 
 	@Inject
 	public PaymentScheduleServiceImpl(AppAccountService appAccountService, PaymentScheduleLineService paymentScheduleLineService, PaymentScheduleLineRepository paymentScheduleLineRepo,
@@ -72,7 +71,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
 		this.paymentScheduleRepo = paymentScheduleRepo;
 		this.partnerService = partnerService;
 		
-		date = appAccountService.getTodayDate();
+		this.appAccountService = appAccountService;
 	}
 
 	/**
@@ -98,7 +97,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
 
 		Invoice invoice = null;
 		
-		PaymentSchedule paymentSchedule = this.createPaymentSchedule(partner, invoice, company, date, startDate,
+		PaymentSchedule paymentSchedule = this.createPaymentSchedule(partner, invoice, company, appAccountService.getTodayDate(), startDate,
 				nbrTerm, partnerService.getDefaultBankDetails(partner), partner.getInPaymentMode());
 
 		paymentSchedule.getInvoiceSet().addAll(invoices);

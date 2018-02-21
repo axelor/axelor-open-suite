@@ -5,7 +5,7 @@
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
-	
+
 	<selection name='iaccount.payment.voucher.status.select'>
 		<option value='1'>Draft</option>
         <option value='2'>Waiting for deposit slip</option>
@@ -144,7 +144,6 @@
 	<selection name="iaccounting.batch.action.select">
 		<option value="11">Reimbursement</option>
 		<option value="14">Debt recovery</option>
-		<option value="15">Payments by IPO et IPO cheque</option>
 		<option value="16">Doubtful Customers</option>
 		<option value="17">Update customer account</option>
 		<option value="18">Move export</option>
@@ -180,12 +179,7 @@
 	<selection name="idebt.recovery.batch.type.select">
 		<option value="1">Classic debt recovery</option>
 	</selection>
-	
-	<selection name="iinterbank.account.order.batch.type.select">
-		<option value="1">Import payments by IPO and IPO cheque</option>
-		<option value="2">Import payment rejects by IPO and IPO cheque</option>
-	</selection>
-	
+
 	<selection name="account.payment.condition.type.select">
 		<option value="1">Net</option>
 		<option value="2">End of month + n days</option>
@@ -277,7 +271,7 @@
     <selection name="base.blocking.select" id="account.blocking.select">
         <option value="4">Debit blocking</option>
     </selection>
-    
+
 	<selection name="account.interbankcode.type.select">
 		<option value="1">Operation code</option>
 		<option value="2">Reject/Return code</option>

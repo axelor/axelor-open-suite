@@ -126,7 +126,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 				}
 				boolean usedCreditExceeded = isUsedCreditExceeded(accountingSituation);
 				if (usedCreditExceeded) {
-				    saleOrder.setBloqued(true);
+				    saleOrder.setBlockedOnCustCreditExceed(true);
 				    if (!saleOrder.getManualUnblock()) {
 	                    String message = accountingSituation.getCompany().getOrderBloquedMessage();
 	                    if (Strings.isNullOrEmpty(message)) {

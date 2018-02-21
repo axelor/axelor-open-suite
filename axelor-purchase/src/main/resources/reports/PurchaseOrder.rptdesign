@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706142203</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -2038,7 +2038,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">'PurchaseOrder.paymentCondition'</value>
+                                                                <value type="javascript">'value:'+row["PaymentCond"]</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>
@@ -2057,7 +2057,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row._outer["PaymentCond"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["PaymentCond"]}</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
@@ -2100,7 +2100,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">row["PaymentMode"]</value>
+                                                                <value type="javascript">'value:'+row["PaymentMode"]</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>
@@ -2119,12 +2119,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
-	row["translation"]
-} else {
-	row._outer["PaymentMode"]
-}
-</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["PaymentMode"]}</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
@@ -3002,29 +2997,34 @@ row["first_name"]
                                         <property name="showIfBlank">false</property>
                                         <property name="canShrink">false</property>
                                         <property name="overflow">hidden</property>
-                                        <text id="3457">
-                                            <property name="fontSize">8pt</property>
-                                            <property name="fontWeight">bold</property>
-                                            <list-property name="visibility">
+                                        <text id="3886">
+                                            <property name="marginLeft">2pt</property>
+                                            <property name="display">inline</property>
+                                            <property name="dataSet">TranslateDS</property>
+                                            <list-property name="paramBindings">
                                                 <structure>
-                                                    <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">row["isTitleLine"] == 0</expression>
+                                                    <property name="paramName">param_1</property>
+                                                    <simple-property-list name="expression">
+                                                        <value type="javascript">'value:'+row["product_name"]</value>
+                                                    </simple-property-list>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">key</property>
+                                                    <text-property name="displayName">key</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">translation</property>
+                                                    <text-property name="displayName">translation</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                    <property name="dataType">string</property>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF>]]></text-property>
-                                        </text>
-                                        <text id="3850">
-                                            <property name="fontSize">8pt</property>
-                                            <list-property name="visibility">
-                                                <structure>
-                                                    <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">row["isTitleLine"] == 1</expression>
-                                                </structure>
-                                            </list-property>
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF><br>
-<VALUE-OF>if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["product_name"]}</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="3436">

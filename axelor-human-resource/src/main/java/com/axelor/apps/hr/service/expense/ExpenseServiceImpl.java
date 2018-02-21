@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -16,6 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.service.expense;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.mail.MessagingException;
+
+import org.apache.commons.codec.binary.Base64;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
@@ -56,7 +72,6 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.KilometricAllowParam;
-import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.EmployeeAdvanceService;
@@ -79,26 +94,11 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.apache.commons.codec.binary.Base64;
-
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class ExpenseServiceImpl implements ExpenseService {
 
 	protected MoveService moveService;
 	protected ExpenseRepository expenseRepository;
-	protected ExpenseLineRepository expenseLineRepository;
 	protected MoveLineService moveLineService;
 	protected AccountManagementAccountService accountManagementService;
 	protected AppAccountService appAccountService;
@@ -109,14 +109,13 @@ public class ExpenseServiceImpl implements ExpenseService {
 	protected TemplateMessageService templateMessageService;
 
 	@Inject
-	public ExpenseServiceImpl(MoveService moveService, ExpenseRepository expenseRepository, ExpenseLineRepository expenseLineRepository, MoveLineService moveLineService,
+	public ExpenseServiceImpl(MoveService moveService, ExpenseRepository expenseRepository, MoveLineService moveLineService,
 			AccountManagementAccountService accountManagementService, AppAccountService appAccountService,
 			AccountConfigHRService accountConfigService, AccountingSituationService accountingSituationService, AnalyticMoveLineService analyticMoveLineService,
-			HRConfigService  hrConfigService, TemplateMessageService  templateMessageService)  {
+			HRConfigService hrConfigService, TemplateMessageService templateMessageService)  {
 
 		this.moveService = moveService;
 		this.expenseRepository = expenseRepository;
-		this.expenseLineRepository = expenseLineRepository;
 		this.moveLineService = moveLineService;
 		this.accountManagementService = accountManagementService;
 		this.appAccountService = appAccountService;
@@ -177,18 +176,14 @@ public class ExpenseServiceImpl implements ExpenseService {
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
 		BigDecimal taxTotal = BigDecimal.ZERO;
 		BigDecimal inTaxTotal = BigDecimal.ZERO;
-		List<ExpenseLine> expenseLineList = expense.getExpenseLineList();
+		List<ExpenseLine> generalExpenseLineList = expense.getGeneralExpenseLineList();
 		List<ExpenseLine> kilometricExpenseLineList = expense.getKilometricExpenseLineList();
 
-		if (expenseLineList != null) {
-			for (ExpenseLine expenseLine : expenseLineList) {
-				//if the distance in expense line is not null or zero, the expenseline is a kilometricExpenseLine
-				//so we ignore it, it will be taken into account in the next loop.
-				if (expenseLine.getDistance() == null || expenseLine.getDistance().compareTo(BigDecimal.ZERO) == 0) {
-					exTaxTotal = exTaxTotal.add(expenseLine.getUntaxedAmount());
-					taxTotal = taxTotal.add(expenseLine.getTotalTax());
-					inTaxTotal = inTaxTotal.add(expenseLine.getTotalAmount());
-				}
+		if (generalExpenseLineList != null) {
+			for (ExpenseLine expenseLine : generalExpenseLineList) {
+				exTaxTotal = exTaxTotal.add(expenseLine.getUntaxedAmount());
+				taxTotal = taxTotal.add(expenseLine.getTotalTax());
+				inTaxTotal = inTaxTotal.add(expenseLine.getTotalAmount());
 			}
 		}
 		if (kilometricExpenseLineList != null) {
@@ -226,7 +221,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 		if (hrConfig.getExpenseMailNotification()) {
 
-			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getSentExpenseTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getSentExpenseTemplate(hrConfig));
 
 		}
 
@@ -275,7 +270,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 		if (hrConfig.getExpenseMailNotification()) {
 
-			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getValidatedExpenseTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getValidatedExpenseTemplate(hrConfig));
 
 		}
 
@@ -299,7 +294,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 		if (hrConfig.getExpenseMailNotification()) {
 
-			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getRefusedExpenseTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getRefusedExpenseTemplate(hrConfig));
 
 		}
 
@@ -357,7 +352,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 		}
 		moveLines.add(moveLineService.createMoveLine(move, expense.getUser().getPartner(), employeeAccount, expense.getInTaxTotal(), false, moveDate, moveDate, moveLineId++, ""));
 
-		for (ExpenseLine expenseLine : expense.getExpenseLineList()) {
+		for (ExpenseLine expenseLine : getExpenseLineList(expense)) {
 			analyticAccounts.clear();
 			Product product = expenseLine.getExpenseProduct();
 			accountManagement = accountManagementService.getAccountManagement(product, expense.getCompany());
@@ -383,7 +378,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 		moveLineService.consolidateMoveLines(moveLines);
 		account = accountConfigService.getExpenseTaxAccount(accountConfig);
 		BigDecimal taxTotal = BigDecimal.ZERO;
-		for (ExpenseLine expenseLine : expense.getExpenseLineList()) {
+		for (ExpenseLine expenseLine : getExpenseLineList(expense)) {
 			exTaxTotal = expenseLine.getTotalTax();
 			taxTotal = taxTotal.add(exTaxTotal);
 		}
@@ -428,7 +423,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 		if (hrConfig.getTimesheetMailNotification()) {
 
-			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getCanceledExpenseTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(expense, hrConfigService.getCanceledExpenseTemplate(hrConfig));
 
 		}
 
@@ -575,7 +570,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 		Project project = Beans.get(ProjectRepository.class).find(new Long(requestData.get("project").toString()));
 		Product product = Beans.get(ProductRepository.class).find(new Long(requestData.get("expenseType").toString()));
 		if (user != null) {
-		    Expense expense = getOrCreateExpense(user);
+			Expense expense = getOrCreateExpense(user);
 			ExpenseLine expenseLine = new ExpenseLine();
 			expenseLine.setExpenseDate(LocalDate.parse(requestData.get("date").toString(), DateTimeFormatter.ISO_DATE));
 			expenseLine.setComments(requestData.get("comments").toString());
@@ -590,7 +585,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 			if (!Strings.isNullOrEmpty(justification)) {
 				expenseLine.setJustification(Base64.decodeBase64(justification));
 			}
-			expense.addExpenseLineListItem(expenseLine);
+			expense.addGeneralExpenseLineListItem(expenseLine);
 
 			Beans.get(ExpenseRepository.class).save(expense);
 			HashMap<String, Object> data = new HashMap<String, Object>();
@@ -626,11 +621,9 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 		BigDecimal personalExpenseAmount = new BigDecimal("0.00");
 
-		if (expense.getExpenseLineList() != null && !expense.getExpenseLineList().isEmpty()) {
-			for (ExpenseLine expenseLine : expense.getExpenseLineList()) {
-				if (expenseLine.getExpenseProduct() != null && expenseLine.getExpenseProduct().getPersonalExpense()) {
-					personalExpenseAmount = personalExpenseAmount.add(expenseLine.getTotalAmount());
-				}
+		for (ExpenseLine expenseLine : getExpenseLineList(expense)) {
+			if (expenseLine.getExpenseProduct() != null && expenseLine.getExpenseProduct().getPersonalExpense()) {
+				personalExpenseAmount = personalExpenseAmount.add(expenseLine.getTotalAmount());
 			}
 		}
 		return personalExpenseAmount;
@@ -670,13 +663,10 @@ public class ExpenseServiceImpl implements ExpenseService {
             return;
         }
 
-		 HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
-		 Sequence sequence = hrConfigService.getExpenseSequence(hrConfig);
-
-		if (sequence != null) {
-			expense.setExpenseSeq(Beans.get(SequenceService.class).getSequenceNumber(sequence, expense.getSentDate()));
-
-			if (expense.getExpenseSeq() != null) {
+    HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
+		Sequence sequence = hrConfigService.getExpenseSequence(hrConfig);
+  
+		if (sequence != null) {expense.setExpenseSeq(Beans.get(SequenceService.class).getSequenceNumber(sequence, expense.getSentDate()));if (expense.getExpenseSeq() != null) {
 				return;
 			}
 		}
@@ -685,7 +675,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 	}
 
 	@Override
-	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine) {
+	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine) throws AxelorException {
 		
 		List<KilometricAllowParam> kilometricAllowParamList = new ArrayList<>();
 		
@@ -727,4 +717,16 @@ public class ExpenseServiceImpl implements ExpenseService {
 		
 		return kilometricAllowParamList;
 	}
+
+	public List<ExpenseLine> getExpenseLineList(Expense expense) {
+		List<ExpenseLine> expenseLineList = new ArrayList<>();
+		if (expense.getGeneralExpenseLineList() != null) {
+			expenseLineList.addAll(expense.getGeneralExpenseLineList());
+		}
+		if (expense.getKilometricExpenseLineList() != null) {
+			expenseLineList.addAll(expense.getKilometricExpenseLineList());
+		}
+		return expenseLineList;
+	}
+
 }

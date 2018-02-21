@@ -21,11 +21,11 @@
     					return product.getCode();
     		]]>
     	</string>
-    	<integer name="priority" selection="quality.alert.priority.select" title="Priority" />
+    	<integer name="prioritySelect" selection="quality.alert.priority.select" title="Priority" />
     	<integer name="statusSelect" title="Status" selection="quality.alert.status.select" readonly="true"/>
     	<date name="startDate" title="Start date" />
     	<date name="endDate" title="End date" />
-    	<date name="deadLine" title="Deadline"/>
+    	<date name="deadLineDate" title="Deadline"/>
    		<string name="description" title="Description" />
     	<string name="correctiveActions" title="Corrective actions" />
     	<string name="preventiveActions" title="Preventive actions"/>

@@ -26,12 +26,14 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import com.google.inject.Singleton;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.FormatException;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.oned.EAN13Writer;
 
+@Singleton
 public class BarcodeGeneratorService {
 	
 	public static InputStream createBarCode(long inputId) {

@@ -27,22 +27,40 @@ import org.slf4j.LoggerFactory;
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.ProductVariantService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.ManufOrderServiceImpl;
+import com.axelor.apps.production.service.ManufOrderWorkflowService;
+import com.axelor.apps.production.service.OperationOrderService;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl  {
-
+	
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
-	@Inject
 	protected OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl;
+
+	@Inject
+	public ManufOrderServiceBusinessImpl(SequenceService sequenceService, OperationOrderService operationOrderService,
+			ManufOrderWorkflowService manufOrderWorkflowService, ProductVariantService productVariantService,
+			AppProductionService appProductionService, ManufOrderRepository manufOrderRepo,
+			OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl) {
+		super(sequenceService, operationOrderService, manufOrderWorkflowService, productVariantService, appProductionService,
+				manufOrderRepo);
+		this.operationOrderServiceBusinessImpl = operationOrderServiceBusinessImpl;
+		
+	}
+
+
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void propagateIsToInvoice(ManufOrder manufOrder) {

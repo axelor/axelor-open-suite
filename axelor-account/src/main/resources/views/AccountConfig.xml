@@ -27,7 +27,7 @@
 		
 		<panel-tabs>
 			<panel name="accounting" title="Accounting">
-				<panel name="accounts" title="Accounts" colSpan="12">
+				<panel name="accounts" title="Accounting.Accounts" colSpan="12">
 					<field name="customerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="supplierAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					<field name="doubtfulCustomerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
@@ -147,9 +147,6 @@
 						<field name="endingRecordCodeImportCFONB"/>
 						<field name="transferOperationCodeImportCFONB"/>
 						<field name="directDebitOperationCodeImportCFONB"/>
-						<field name="ipoRejectOperationCodeImportCFONB"/>
-						<field name="ipoOperationCodeImportCFONB"/>
-						<field name="ipoAndChequeOperationCodeImportCFONB"/>
 					</editor>
 				</field>
 				</panel>
@@ -239,21 +236,11 @@
 				    </editor>
 				</field>
 			</panel>
-			<panel name="ipoPaymentsAndIpoCheque" title="IPO Payments and IPO Cheque">
-				<panel name="paymentsByIpoAndIpoCheque" title="Payments by IPO and IPO Cheque" colSpan="12">
-					<field name="interbankPaymentOrderImportPathCFONB" />
-					<field name="tempInterbankPaymentOrderImportPathCFONB" />
-				</panel>
-				<panel name="paymentsRejectsByIpoAndIpoCheque" title="Payments rejects by IPO and IPO Cheque" colSpan="12">
-					<field name="interbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
-					<field name="tempInterbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
-				</panel>
-			</panel>
+
 
             <panel name="paybox" title="Paybox">
                 <field name="payboxConfig" showTitle="false" grid-view="paybox-config-grid" form-view="paybox-config-form"/>
             </panel>
-
 		</panel-tabs>
 	 
 	</form>
@@ -279,11 +266,11 @@
 		<domain>self.company.id = :id</domain>
 		<context name="id" expr="eval: company.id"/>
 	</action-view>
-	
+
 	<action-view name="action-company-view-account-config" title="Account config (${ name })" model="com.axelor.apps.account.db.AccountConfig">
     	<view type="form" name="account-config-form"/>
     	<context name="_showRecord" expr="eval: __self__.accountConfig?.id"/>
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
-	
+
 </object-views>

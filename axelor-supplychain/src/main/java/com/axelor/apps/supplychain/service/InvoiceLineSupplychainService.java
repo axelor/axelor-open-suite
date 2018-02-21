@@ -18,15 +18,15 @@
 package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
@@ -35,13 +35,11 @@ import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.apps.purchase.service.PurchaseProductService;
-import com.axelor.apps.base.service.ProductService;
-import com.google.inject.Inject;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 
 public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
@@ -50,9 +48,9 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
 	@Inject
 	public InvoiceLineSupplychainService(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService,
-										 AppAccountService appAccountService, AnalyticMoveLineService analyticMoveLineService, ProductService productService, AccountManagementAccountService accountManagementAccountService)  {
+										 AppAccountService appAccountService, AnalyticMoveLineService analyticMoveLineService, AccountManagementAccountService accountManagementAccountService)  {
 		
-		super(accountManagementService, currencyService, priceListService, appAccountService, analyticMoveLineService, productService, accountManagementAccountService);
+		super(accountManagementService, currencyService, priceListService, appAccountService, analyticMoveLineService, accountManagementAccountService);
 		
 	}
 	

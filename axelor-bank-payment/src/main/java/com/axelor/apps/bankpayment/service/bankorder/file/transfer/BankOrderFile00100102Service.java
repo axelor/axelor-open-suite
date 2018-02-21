@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -36,6 +36,7 @@ import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.CreditTransferTransa
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.CurrencyAndAmount;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.Document;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.FinancialInstitutionIdentification5Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.GenericIdentification3;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.GroupHeader1;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.Grouping1Code;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.ObjectFactory;
@@ -48,12 +49,15 @@ import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.PaymentTypeInformati
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.RemittanceInformation1;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.ServiceLevel1Code;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.ServiceLevel2Choice;
+import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class BankOrderFile00100102Service extends BankOrderFileService  {
+	
+	protected static final String BIC_NOT_PROVIDED = "NOTPROVIDED"; 
 
 	@Inject
 	public BankOrderFile00100102Service(BankOrder bankOrder)  {
@@ -99,8 +103,9 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 
 		// BIC
 		FinancialInstitutionIdentification5Choice finInstnId = factory.createFinancialInstitutionIdentification5Choice();
-		finInstnId.setBIC(senderBankDetails.getBank().getCode());
 
+		fillBic(finInstnId, senderBankDetails.getBank());
+		
 		BranchAndFinancialInstitutionIdentification3 dbtrAgt = factory.createBranchAndFinancialInstitutionIdentification3();
 		dbtrAgt.setFinInstnId(finInstnId);
 
@@ -159,7 +164,8 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 
 			// BIC
 			finInstnId = factory.createFinancialInstitutionIdentification5Choice();
-			finInstnId.setBIC(receiverBankDetails.getBank().getCode());
+			
+			fillBic(finInstnId, receiverBankDetails.getBank());
 
 			cbtrAgt = factory.createBranchAndFinancialInstitutionIdentification3();
 			cbtrAgt.setFinInstnId(finInstnId);
@@ -232,6 +238,28 @@ public class BankOrderFile00100102Service extends BankOrderFileService  {
 		
 		return super.generateFile();
 	}
+	
+	  /**
+  	 * Method to fill the BIC information.
+  	 * If the BIC is not provided or in Iban only mode, we put NOTPROVIDED value. In this case, the bank ignore the BIC and use the Iban only.
+  	 * 
+  	 * @param finInstnId
+  	 * 			The financial instituation identification tag of the generated file.
+  	 * @param bank
+  	 * 			The bank from which the BIC is get. 
+  	 */
+  	protected void fillBic( FinancialInstitutionIdentification5Choice finInstnId, Bank bank)  {
+  		
+  		if(bankOrderFileFormat.getIbanOnly() || bank == null || Strings.isNullOrEmpty(bank.getCode()))  {
+  			GenericIdentification3 genId = new GenericIdentification3();
+  			genId.setId(BIC_NOT_PROVIDED);
+  			finInstnId.setPrtryId(genId);
+  		}
+  		else  {
+  			finInstnId.setBIC(bank.getCode());
+  		}
+  		
+  	}
 	
 	
 }

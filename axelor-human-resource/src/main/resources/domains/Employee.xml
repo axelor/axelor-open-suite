@@ -13,10 +13,10 @@
       <string name="timeLoggingPreferenceSelect" title="Time logging preference" selection="hr.time.logging.preference.select" massUpdate="true"/>
       <decimal name="weeklyWorkHours" title="Weekly work hours" scale="2" precision="20" />
       <decimal name="dailyWorkHours" title="Daily work hours" scale="2" precision="20" />
-      <many-to-one name="manager" ref="com.axelor.auth.db.User" title="Manager" massUpdate="true"/>
+      <many-to-one name="managerUser" ref="com.axelor.auth.db.User" title="Manager" massUpdate="true"/>
       <boolean name="timesheetReminder" title="Timesheet reminder" />
       <boolean name="external" title="External" />
-      <many-to-one name="planning" ref="com.axelor.apps.base.db.WeeklyPlanning" massUpdate="true"/>
+      <many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning" massUpdate="true"/>
       <one-to-many name="leaveLineList" title="Leave List" ref="com.axelor.apps.hr.db.LeaveLine" mappedBy="employee"/>
       <boolean name="negativeValueLeave" title="Allow Negative Value for Leaves"/>
       <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Default Activity Product"/>

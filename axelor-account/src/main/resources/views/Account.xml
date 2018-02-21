@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="account-grid" title="Accounts" model="com.axelor.apps.account.db.Account">
+    <grid name="account-grid" title="Accounting.Accounts" model="com.axelor.apps.account.db.Account">
         <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="name"/>
 		<field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/> 
@@ -12,7 +12,7 @@
         <field name="company" form-view="company-form" grid-view="company-grid"/>
     </grid>
 	
-	<grid name="account-simple-grid" title="Accounts" model="com.axelor.apps.account.db.Account">
+	<grid name="account-simple-grid" title="Accounting.Accounts" model="com.axelor.apps.account.db.Account">
         <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="name"/>
     </grid>
@@ -32,7 +32,7 @@
         </node>
     </tree>
 
-	<form name="account-form" title="Account" model="com.axelor.apps.account.db.Account" width="large" onNew="action-account-record-new">
+	<form name="account-form" title="Accounting.Account" model="com.axelor.apps.account.db.Account" width="large" onNew="action-account-record-new">
 		<panel name="main">
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
 			<field name="name" colSpan="9" css="bold"/>
@@ -48,7 +48,7 @@
 		</panel>
 	</form>
 
-	<form name="account-info-form" title="Account" model="com.axelor.apps.account.db.Account" width="large">
+	<form name="account-info-form" title="Accounting.Account" model="com.axelor.apps.account.db.Account" width="large">
 		<panel title="Account details" readonly="true">
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
 			<field name="name" colSpan="9" css="bold"/>

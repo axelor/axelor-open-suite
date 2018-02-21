@@ -45,17 +45,19 @@ public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardSe
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	@Inject
 	protected ProductionOrderService productionOrderService;
-	
-	@Inject
 	protected BillOfMaterialRepository billOfMaterialRepo;
-	
-	@Inject
 	protected ProductRepository productRepo;
+	protected AppProductionService appProductionService;
 	
 	@Inject
-	protected AppProductionService appProductionService;
+	public ProductionOrderWizardServiceImpl(ProductionOrderService productionOrderService, BillOfMaterialRepository billOfMaterialRepo, 
+			ProductRepository productRepo, AppProductionService appProductionService) {
+		this.productionOrderService = productionOrderService;
+		this.billOfMaterialRepo = billOfMaterialRepo;
+		this.productRepo = productRepo;
+		this.appProductionService = appProductionService;
+	}
 	
 	@SuppressWarnings("unchecked")
 	public Long validate(Context context) throws AxelorException  {

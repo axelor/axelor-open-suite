@@ -34,7 +34,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
-import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -236,20 +235,8 @@ public interface SaleOrderInvoiceService {
 
 	BigDecimal getInvoicedAmount(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice);
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	Invoice generateSubscriptionInvoice(List<Subscription> subscriptionList, SaleOrder saleOrder) throws AxelorException;
-
 	void fillInLines(Invoice invoice);
 
-	@Transactional
-	Invoice generateSubcriptionInvoiceForSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException;
-
-	@Transactional
-	Invoice generateSubcriptionInvoiceForSaleOrder(SaleOrder saleOrder) throws AxelorException;
-
-	@Transactional
-	Invoice generateSubcriptionInvoiceForSaleOrderAndListSubscrip(Long saleOrderId, List<Long> subscriptionIdList) throws AxelorException;
-	
 	@Transactional
 	Invoice mergeInvoice(List<Invoice> invoiceList, Company cmpany, Currency currency,
 			Partner partner, Partner contactPartner, PriceList priceList,

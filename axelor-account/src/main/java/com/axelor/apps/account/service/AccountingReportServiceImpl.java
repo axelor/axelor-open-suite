@@ -17,23 +17,10 @@
  */
 package com.axelor.apps.account.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.Query;
-
-import java.time.ZonedDateTime;
-import java.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -42,6 +29,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -51,6 +39,16 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.Query;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class AccountingReportServiceImpl implements AccountingReportService  {
 
@@ -58,7 +56,7 @@ public class AccountingReportServiceImpl implements AccountingReportService  {
 
 	protected AccountingReportRepository accountingReportRepo;
 
-	protected ZonedDateTime datetime;
+	protected AppBaseService appBaseService;
 
 	protected String query = "";
 
@@ -72,7 +70,7 @@ public class AccountingReportServiceImpl implements AccountingReportService  {
 	public AccountingReportServiceImpl(AppAccountService appBaseService, AccountingReportRepository accountingReportRepo, AccountRepository accountRepo) {
 		this.accountingReportRepo = accountingReportRepo;
 		this.accountRepo = accountRepo;
-		datetime = appBaseService.getTodayDateTime();
+		this.appBaseService = appBaseService;
 
 	}
 
@@ -185,7 +183,7 @@ public class AccountingReportServiceImpl implements AccountingReportService  {
 		if(accountingReport.getTypeSelect() > AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY)  {
 			JournalType journalType = this.getJournalType(accountingReport);
 			if (journalType != null) {
-				this.addParams("self.move.journal.type = ?%d", journalType);
+				this.addParams("self.move.journal.journalType = ?%d", journalType);
 			}
 		}
 
@@ -295,7 +293,7 @@ public class AccountingReportServiceImpl implements AccountingReportService  {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void setPublicationDateTime(AccountingReport accountingReport)  {
-		accountingReport.setPublicationDateTime(this.datetime);
+		accountingReport.setPublicationDateTime(appBaseService.getTodayDateTime());
 		accountingReportRepo.save(accountingReport);
 	}
 

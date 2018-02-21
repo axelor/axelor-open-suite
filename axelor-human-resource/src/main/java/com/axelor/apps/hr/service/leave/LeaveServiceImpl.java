@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,13 +17,24 @@
  */
 package com.axelor.apps.hr.service.leave;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.mail.MessagingException;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.ical.ICalendarService;
-import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
@@ -51,20 +62,8 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class LeaveServiceImpl  implements  LeaveService  {
 	
-	protected DurationService durationService;
 	protected LeaveLineRepository leaveLineRepo;
 	protected WeeklyPlanningService weeklyPlanningService;
 	protected PublicHolidayService publicHolidayService;
@@ -76,11 +75,10 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	protected ICalendarService icalendarService;
 
 	@Inject
-	public LeaveServiceImpl(DurationService durationService, LeaveLineRepository leaveLineRepo, WeeklyPlanningService weeklyPlanningService,
+	public LeaveServiceImpl(LeaveLineRepository leaveLineRepo, WeeklyPlanningService weeklyPlanningService,
 			PublicHolidayService publicHolidayService, LeaveRequestRepository leaveRequestRepo, AppBaseService appBaseService,
 			HRConfigService hrConfigService, TemplateMessageService templateMessageService, ICalendarEventRepository icalEventRepo, ICalendarService icalendarService){
 		
-		this.durationService = durationService;
 		this.leaveLineRepo = leaveLineRepo;
 		this.weeklyPlanningService = weeklyPlanningService;
 		this.publicHolidayService = publicHolidayService;
@@ -158,7 +156,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),leave.getUser().getName());
 			}
 
-			WeeklyPlanning weeklyPlanning = employee.getPlanning();
+			WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
 			if(weeklyPlanning == null){
 				HRConfig conf = leave.getCompany().getHrConfig();
 				if(conf != null){
@@ -346,7 +344,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			throw new AxelorException(leave, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), leave.getUser().getName());
 		}
 
-		WeeklyPlanning weeklyPlanning = employee.getPlanning();
+		WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
 
 		if (weeklyPlanning == null) {
 			throw new AxelorException(leave, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PLANNING), employee.getName());
@@ -424,7 +422,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	
 	public BigDecimal computeLeaveDaysByLeaveRequest(LocalDate fromDate, LocalDate toDate, LeaveRequest leaveRequest, Employee employee) throws AxelorException{
 		BigDecimal leaveDays = BigDecimal.ZERO;
-		WeeklyPlanning weeklyPlanning = employee.getPlanning();
+		WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
 		if(leaveRequest.getFromDate().equals(fromDate)){
 			leaveDays = leaveDays.add(new BigDecimal(this.computeStartDateWithSelect(fromDate, leaveRequest.getStartOnSelect(), weeklyPlanning)));
 		}
@@ -449,11 +447,11 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	}
 	
 	public void getLeaveReason(ActionRequest request, ActionResponse response){
-		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
+		List<Map<String,String>> dataList = new ArrayList<>();
 		try{
 			List<LeaveReason> leaveReasonList = Beans.get(LeaveReasonRepository.class).all().fetch();
 			for (LeaveReason leaveReason : leaveReasonList) {
-				Map<String, String> map = new HashMap<String,String>();
+				Map<String, String> map = new HashMap<>();
 				map.put("name", leaveReason.getLeaveReason());
 				map.put("id", leaveReason.getId().toString());
 				dataList.add(map);
@@ -533,7 +531,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 
 		if(hrConfig.getLeaveMailNotification())  {
 
-			return templateMessageService.generateAndSendMessage(leaveRequest, hrConfigService.getCanceledLeaveTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(leaveRequest, hrConfigService.getCanceledLeaveTemplate(hrConfig));
 
 		}
 
@@ -562,7 +560,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		
 		if(hrConfig.getLeaveMailNotification())  {
 				
-			return templateMessageService.generateAndSendMessage(leaveRequest, hrConfigService.getSentLeaveTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(leaveRequest, hrConfigService.getSentLeaveTemplate(hrConfig));
 				
 		}
 		
@@ -594,7 +592,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		
 		if(hrConfig.getLeaveMailNotification())  {
 				
-			return templateMessageService.generateAndSendMessage(leaveRequest, hrConfigService.getValidatedLeaveTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(leaveRequest, hrConfigService.getValidatedLeaveTemplate(hrConfig));
 				
 		}
 		
@@ -623,7 +621,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		
 		if(hrConfig.getLeaveMailNotification())  {
 				
-			return templateMessageService.generateAndSendMessage(leaveRequest, hrConfigService.getRefusedLeaveTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(leaveRequest, hrConfigService.getRefusedLeaveTemplate(hrConfig));
 				
 		}
 		
@@ -637,9 +635,9 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		LocalDate beginDate = leaveRequest.getFromDate() ;
 
 		int interval = ( beginDate.getYear() - todayDate.getYear() ) *12 + beginDate.getMonthValue() - todayDate.getMonthValue();
-		BigDecimal num = leaveRequest.getLeaveLine().getQuantity().add( leaveRequest.getUser().getEmployee().getPlanning().getLeaveCoef().multiply( leaveRequest.getLeaveLine().getLeaveReason().getDefaultDayNumberGain()).multiply(new BigDecimal( interval )) );
+		BigDecimal num = leaveRequest.getLeaveLine().getQuantity().add( leaveRequest.getUser().getEmployee().getWeeklyPlanning().getLeaveCoef().multiply( leaveRequest.getLeaveLine().getLeaveReason().getDefaultDayNumberGain()).multiply(new BigDecimal( interval )) );
 
-		if (leaveRequest.getDuration().compareTo( num ) == 1){
+		if (leaveRequest.getDuration().compareTo( num ) > 0){
 			return false;
 		}else{
 			return true;

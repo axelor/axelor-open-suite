@@ -14,7 +14,7 @@
 		<string name="salary" title="Salary" />
 		<string name="location" title="Location" />
 		<string name="jobDescription" title="Job description" large="true"/>
-		<many-to-one name="mailAccount" ref="com.axelor.apps.message.db.MailAccount" title="Job email" />
+		<many-to-one name="mailAccount" ref="com.axelor.apps.message.db.EmailAccount" title="Job email" />
 		<integer name="statusSelect" title="Status" selection="job.position.status.select" />
 		<integer name="nbOpenJob" title="Nb of open jobs" />
 		<integer name="nbPeopleHired" title="Nb of people hired" readonly="true" />

@@ -35,8 +35,16 @@
     
     <action-view name="action-partner-view-schedule-event" title="Schedule Event (${ fullName })" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="event-form"/>
+    	<context name="_parentPartner" expr="eval: parentPartner"/>
     	<context name="_partner" expr="eval: __this__"/>
     </action-view>
+    
+    <action-view name="action-contact-partner-view-schedule-event" title="Schedule Event (${ fullName })" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="event-form"/>
+    	<context name="_contactPartner" expr="eval: __this__"/>
+    	<context name="_contactMainPartner" expr="eval: __this__.mainPartner" />
+    </action-view> 
+    
     
     <action-view name="action-partner-view-create-opportunity" title="Create opportunity (${ fullName })" model="com.axelor.apps.crm.db.Opportunity">
     	<view type="form" name="opportunity-form"/>

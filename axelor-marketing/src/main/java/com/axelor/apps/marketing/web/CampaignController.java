@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,12 +21,15 @@ import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.apps.marketing.db.repo.CampaignRepository;
 import com.axelor.apps.marketing.exception.IExceptionMessage;
 import com.axelor.apps.marketing.service.CampaignService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class CampaignController {
 	
 	@Inject
@@ -38,38 +41,52 @@ public class CampaignController {
 	public void sendEmail(ActionRequest request, ActionResponse response) {
 		
 		Campaign campaign = request.getContext().asType(Campaign.class);
-		campaign = campaignRepo.find(campaign.getId());
 		
-		if (campaign.getLeadSet().isEmpty() && campaign.getPartnerSet().isEmpty()) {
-			response.setFlash(I18n.get(IExceptionMessage.EMPTY_TARGET));
-			return;
+		try  {
+			campaign = campaignRepo.find(campaign.getId());
+			
+			if (campaign.getLeadSet().isEmpty() && campaign.getPartnerSet().isEmpty()) {
+				response.setFlash(I18n.get(IExceptionMessage.EMPTY_TARGET));
+				return;
+			}
+			
+			MetaFile logFile = campaignService.sendEmail(campaign);
+			
+			if (logFile == null) {
+				response.setFlash(I18n.get(IExceptionMessage.EMAIL_SUCCESS));
+			}
+			else {
+				response.setFlash(I18n.get(IExceptionMessage.EMAIL_ERROR2));
+			}
+			
+			response.setValue("emailLog", logFile);
 		}
-		
-		MetaFile logFile = campaignService.sendEmail(campaign);
-		
-		if (logFile == null) {
-			response.setFlash(I18n.get(IExceptionMessage.EMAIL_SUCCESS));
-		}
-		else {
-			response.setFlash(I18n.get(IExceptionMessage.EMAIL_ERROR2));
-		}
-		
-		response.setValue("emailLog", logFile);
+		catch (Exception e) { TraceBackService.trace(response, e); }
+
 	}
 	
 	public void generateEvents(ActionRequest request, ActionResponse response) {
 		
 		Campaign campaign = request.getContext().asType(Campaign.class);
-		campaign = campaignRepo.find(campaign.getId());
-		campaignService.generateEvents(campaign);
-		response.setAttr("plannedEvents", "refresh", true);
+		
+		try  {
+			campaign = campaignRepo.find(campaign.getId());
+			campaignService.generateEvents(campaign);
+			response.setAttr("plannedEvents", "refresh", true);
+		}
+		catch (Exception e) { TraceBackService.trace(response, e); }
 	}
 	
 	public void generateTargets(ActionRequest request, ActionResponse response) {
 		
 		Campaign campaign = request.getContext().asType(Campaign.class);
-		campaign = campaignRepo.find(campaign.getId());
-		campaignService.generateTargets(campaign);
+		
+		try  {
+			campaign = campaignRepo.find(campaign.getId());
+			campaignService.generateTargets(campaign);
+		}
+		catch (Exception e) { TraceBackService.trace(response, e); }
+		
 		response.setReload(true);
 	}
 }

@@ -29,8 +29,10 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -38,6 +40,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
+
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.Product;
@@ -56,6 +59,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
 import wslite.json.JSONArray;
 import wslite.json.JSONException;
 import wslite.json.JSONObject;

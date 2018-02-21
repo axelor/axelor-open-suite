@@ -112,7 +112,7 @@
 			</panel>
 		</panel>
 		<panel name="description" title="Description" colSpan="12">
-				<field name="description" colSpan="12" showTitle="false" widget="TEXT" height="3"/>
+				<field name="description" colSpan="12" showTitle="false" widget="html" height="200"/>
 		</panel> 
       
 		<panel sidebar="true">

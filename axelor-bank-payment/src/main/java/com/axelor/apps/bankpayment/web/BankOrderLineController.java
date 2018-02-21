@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -25,7 +25,9 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class BankOrderLineController {
 
     protected BankOrderLineService bankOrderLineService;
@@ -38,7 +40,7 @@ public class BankOrderLineController {
     //settings the domain for the bank details view.
     public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
         BankOrderLine bankOrderLine = request.getContext().asType(BankOrderLine.class);
-        BankOrder bankOrder = request.getContext().getParentContext().asType(BankOrder.class);
+        BankOrder bankOrder = request.getContext().getParent().asType(BankOrder.class);
         String domain = bankOrderLineService.createDomainForBankDetails(bankOrderLine, bankOrder);
         //if nothing was found for the domain, we set it at a default value.
         if (domain.equals("")) {
@@ -51,7 +53,7 @@ public class BankOrderLineController {
 
     public void fillBankDetail(ActionRequest request, ActionResponse response) {
         BankOrderLine bankOrderLine = request.getContext().asType(BankOrderLine.class);
-        BankOrder bankOrder = request.getContext().getParentContext().asType(BankOrder.class);
+        BankOrder bankOrder = request.getContext().getParent().asType(BankOrder.class);
 
         BankDetails bankDetails = bankOrderLineService.getDefaultBankDetails(bankOrderLine,bankOrder);
         response.setValue("receiverBankDetails", bankDetails);
@@ -61,7 +63,7 @@ public class BankOrderLineController {
     public void computeCompanyCurrencyAmount(ActionRequest request, ActionResponse response) {
     	
         BankOrderLine bankOrderLine = request.getContext().asType(BankOrderLine.class);
-        BankOrder bankOrder = request.getContext().getParentContext().asType(BankOrder.class);
+        BankOrder bankOrder = request.getContext().getParent().asType(BankOrder.class);
 
         try {
         	

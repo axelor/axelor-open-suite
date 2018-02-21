@@ -28,7 +28,7 @@
 		<integer name="statusSelect" title="Status" selection="job.application.status.select" />
 		<many-to-one name="hiringStage" ref="com.axelor.apps.talent.db.HiringStage" title="Hiring stage"/>
 		<string name="reasonNotHired" title="Reason not hired" large="true"/>
-		<many-to-many name="tagSkillSet" title="Skills tag" ref="TagSkill"/>
+		<many-to-many name="skillSet" title="Skills tag" ref="Skill"/>
 		<extra-code>
 	   		<![CDATA[
 	   			public static final Integer STATUS_OPEN = 0;

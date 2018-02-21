@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExtraHours;
@@ -44,7 +45,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
+@Singleton
 public class ExtraHoursController {
 
 	@Inject
@@ -127,7 +130,7 @@ public class ExtraHoursController {
 		.context("_activeCompany", user.getActiveCompany());
 		
 		if(employee == null || !employee.getHrManager())  {
-			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
+			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.managerUser = :_user")
 			.context("_user", user);
 		}
 		
@@ -144,7 +147,7 @@ public class ExtraHoursController {
 		   .add("grid","extra-hours-grid")
 		   .add("form","extra-hours-form");
 		
-		String domain = "self.user.employee.manager.employee.manager = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
+		String domain = "self.user.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
 		
 		long nbExtraHours =  Query.of(ExtraHours.class).filter(domain).bind("_user", user).bind("_activeCompany", activeCompany).count();
 		
@@ -187,7 +190,12 @@ public class ExtraHoursController {
 		}
 	}
 	
-	//validating request and sending mail to applicant
+	/**
+	 * validating request and sending mail to applicant
+	 * @param request
+	 * @param response
+	 * @throws AxelorException
+	 */
 	public void valid(ActionRequest request, ActionResponse response) throws AxelorException{
 		
 		try{
@@ -200,8 +208,9 @@ public class ExtraHoursController {
 			Message message = extraHoursService.sendValidationEmail(extraHours);
 			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
-			} 
-			
+			}
+			Beans.get(PeriodService.class).checkPeriod(extraHours.getCompany(), extraHours.getValidationDate());
+
 		}  catch(Exception e)  {
 			TraceBackService.trace(response, e);
 		}

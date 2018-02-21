@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -31,7 +31,7 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.MailAccountRepository;
+import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
@@ -86,7 +86,7 @@ public class BatchReminderTimesheet extends AbstractBatch{
 		for (Timesheet timesheet : timesheetList) {
 			Message message = new Message();
 			try{
-				message = templateMessageService.generateMessage(timesheet.getUser().getEmployee().getId(), model, tag, template, null);
+				message = templateMessageService.generateMessage(timesheet.getUser().getEmployee().getId(), model, tag, template);
 				message = messageService.sendByEmail(message);
 				incrementDone();
 			}
@@ -117,7 +117,7 @@ public class BatchReminderTimesheet extends AbstractBatch{
 				message.setSenderUser(AuthUtils.getUser());
 				message.setSubject(batch.getMailBatch().getSubject());
 				message.setContent(batch.getMailBatch().getContent());
-				message.setMailAccount(Beans.get(MailAccountRepository.class).all().filter("self.isDefault = true").fetchOne());
+				message.setMailAccount(Beans.get(EmailAccountRepository.class).all().filter("self.isDefault = true").fetchOne());
 				
 				message = messageService.sendByEmail(message);
 				
@@ -143,7 +143,7 @@ public class BatchReminderTimesheet extends AbstractBatch{
 		String tag = template.getMetaModel().getName();
 		for (Employee employee : employeeList) {
 			try{
-				Message message = templateMessageService.generateMessage(employee.getId(), model, tag, template, null);
+				Message message = templateMessageService.generateMessage(employee.getId(), model, tag, template);
 				message = messageService.sendByEmail(message);
 				incrementDone();
 			}
@@ -174,7 +174,7 @@ public class BatchReminderTimesheet extends AbstractBatch{
 				message.setSenderUser(AuthUtils.getUser());
 				message.setSubject(batch.getMailBatch().getSubject());
 				message.setContent(batch.getMailBatch().getContent());
-				message.setMailAccount(Beans.get(MailAccountRepository.class).all().filter("self.isDefault = true").fetchOne());
+				message.setMailAccount(Beans.get(EmailAccountRepository.class).all().filter("self.isDefault = true").fetchOne());
 				
 				message = messageService.sendByEmail(message);
 				

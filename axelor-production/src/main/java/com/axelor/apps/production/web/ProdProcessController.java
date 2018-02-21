@@ -34,7 +34,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class ProdProcessController {
 	
 	@Inject
@@ -47,8 +49,8 @@ public class ProdProcessController {
 		ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
 		if(prodProcess.getIsConsProOnOperation()){
 			BillOfMaterial bom = null;
-			if(request.getContext().getParentContext() != null && request.getContext().getParentContext().getContextClass().getName().equals(BillOfMaterial.class.getName())){
-				bom = request.getContext().getParentContext().asType(BillOfMaterial.class);
+			if(request.getContext().getParent() != null && request.getContext().getParent().getContextClass().getName().equals(BillOfMaterial.class.getName())){
+				bom = request.getContext().getParent().asType(BillOfMaterial.class);
 			}
 			else{
 				bom = Beans.get(BillOfMaterialRepository.class).all().filter("self.prodProcess.id = ?1", prodProcess.getId()).fetchOne();

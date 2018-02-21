@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -16,6 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.service.timesheet;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.mail.MessagingException;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -39,7 +53,6 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
-import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
@@ -68,19 +81,10 @@ import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+/**
+ * @author axelor
+ *
+ */
 public class TimesheetServiceImpl implements TimesheetService{
 
 	@Inject
@@ -94,12 +98,6 @@ public class TimesheetServiceImpl implements TimesheetService{
 	
 	@Inject
 	protected ProjectService projectService;
-
-	@Inject
-	protected EmployeeRepository employeeRepo;
-	
-	@Inject
-	protected TimesheetRepository timesheetRepository;
 	
 	@Inject
 	protected HRConfigService  hrConfigService;
@@ -108,13 +106,13 @@ public class TimesheetServiceImpl implements TimesheetService{
 	protected TemplateMessageService  templateMessageService;
 
 	@Inject
-	private ProjectRepository projectRepo;
+	protected ProjectRepository projectRepo;
 
 	@Inject
-	private UserRepository userRepo;
+	protected UserRepository userRepo;
 
 	@Inject
-	private UserHrService userHrService;
+	protected UserHrService userHrService;
 
 
 	@Override
@@ -155,7 +153,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 		
 		if (hrConfig.getTimesheetMailNotification()) {
-			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getSentTimesheetTemplate(hrConfig), null);
+			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getSentTimesheetTemplate(hrConfig));
 		}
 		
 		return null;
@@ -175,8 +173,10 @@ public class TimesheetServiceImpl implements TimesheetService{
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 		
-		if (hrConfig.getTimesheetMailNotification()) {
-			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getValidatedTimesheetTemplate(hrConfig), null);
+		if(hrConfig.getTimesheetMailNotification())  {
+				
+			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getValidatedTimesheetTemplate(hrConfig));
+				
 		}
 		
 		return null;
@@ -195,8 +195,10 @@ public class TimesheetServiceImpl implements TimesheetService{
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 		
-		if (hrConfig.getTimesheetMailNotification()) {
-			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getRefusedTimesheetTemplate(hrConfig), null);
+		if(hrConfig.getTimesheetMailNotification())  {
+				
+			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getRefusedTimesheetTemplate(hrConfig));
+				
 		}
 		
 		return null;
@@ -212,8 +214,9 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 
-		if (hrConfig.getTimesheetMailNotification()) {
-			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getCanceledTimesheetTemplate(hrConfig), null);
+		if(hrConfig.getTimesheetMailNotification())  {
+
+			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getCanceledTimesheetTemplate(hrConfig));
 		}
 
 		return null;
@@ -238,7 +241,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		if (employee == null) {
 			throw new AxelorException(timesheet, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),user.getName());
 		}
-		WeeklyPlanning planning = user.getEmployee().getPlanning();
+		WeeklyPlanning planning = user.getEmployee().getWeeklyPlanning();
 		if (planning == null) {
 			throw new AxelorException(timesheet, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING),user.getName());
 		}
@@ -685,8 +688,10 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
 
-		for (TimesheetLine timesheetLine : timesheetLines) {
-			periodTotal = periodTotal.add(timesheetLine.getDurationStored());
+		if (timesheetLines != null) {
+			for (TimesheetLine timesheetLine : timesheetLines) {
+				periodTotal = periodTotal.add(timesheetLine.getDurationStored());
+			}
 		}
 
 		return periodTotal;
@@ -711,12 +716,12 @@ public class TimesheetServiceImpl implements TimesheetService{
 				.context("_activeCompany", user.getActiveCompany());
 
 		if(employee == null || !employee.getHrManager())  {
-			if (employee == null || employee.getManager() == null) {
-				actionView.domain(actionView.get().getDomain() + " AND (self.timesheet.user = :_user OR self.timesheet.user.employee.manager = :_user)")
+			if (employee == null || employee.getManagerUser() == null) {
+				actionView.domain(actionView.get().getDomain() + " AND (self.timesheet.user = :_user OR self.timesheet.user.employee.managerUser = :_user)")
 						.context("_user", user);
 			}
 			else {
-				actionView.domain(actionView.get().getDomain() + " AND self.timesheet.user.employee.manager = :_user")
+				actionView.domain(actionView.get().getDomain() + " AND self.timesheet.user.employee.managerUser = :_user")
 						.context("_user", user);
 			}
 		}

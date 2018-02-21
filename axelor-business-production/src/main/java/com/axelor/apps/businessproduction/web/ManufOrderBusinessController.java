@@ -17,20 +17,21 @@
  */
 package com.axelor.apps.businessproduction.web;
 
+import java.lang.invoke.MethodHandles;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.businessproduction.service.ManufOrderServiceBusinessImpl;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.production.web.ManufOrderController;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-import java.lang.invoke.MethodHandles;
-
+@Singleton
 public class ManufOrderBusinessController {
 	
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -90,6 +90,7 @@ public interface IExceptionMessage {
 	static final String KILOMETRIC_LOG_NO_YEAR = /*$$(*/ "There is no year for society %s which includes date %s"/*)*/ ;
 	
 	static final String KILOMETRIC_ALLOWANCE_NO_RULE = /*$$(*/ "There is no matching condition for the allowance %s"/*)*/ ;
+	static final String KILOMETRIC_ALLOWANCE_NO_DATE_SELECTED = /*$$(*/ "There is no year selected for the allowance."/*)*/ ;
 	
 	static final String PAYROLL_PREPARATION_DUPLICATE = /*$$(*/ "There is already a payroll preparation for the employee %s, the company %s and the period %s"/*)*/ ;
 
@@ -116,4 +117,9 @@ public interface IExceptionMessage {
 	String KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR = /*$$(*/ "Google Maps error: %s" /*)*/;
 
     static final String EXPENSE_PAYMENT_CANCEL = /*$$(*/ "The bank order linked to this expense has already been carried out/rejected, and thus can't be canceled" /*)*/;
+
+	/**
+	 * Kilometric service
+	 */
+	static final String KILOMETRIC_ALLOWANCE_RATE_MISSING = /*$$(*/ "The kilometric allowance rate corresponding to the kilometric allow param %s is missing" /*)*/;
 }

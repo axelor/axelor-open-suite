@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <grid name="partner-stock-settings-grid"
+          title="Partner stock settings" editable="true"
+          model="com.axelor.apps.stock.db.PartnerStockSettings">
+
+        <field name="company" form-view="company-form"
+               grid-view="company-grid"/>
+        <field name="defaultStockLocation" form-view="stock-location-form"
+               grid-view="stock-location-grid"/>
+        <field name="stockMoveAutomaticMail"/>
+        <field name="stockMoveMessageTemplate"
+               requiredIf="stockMoveAutomaticMail"
+               showIf="stockMoveAutomaticMail"
+               form-view="template-form" grid-view="template-grid"/>
+    </grid>
+
+    <form name="partner-stock-settings-form"
+          title="Partner stock settings"
+          model="com.axelor.apps.stock.db.PartnerStockSettings">
+        <panel>
+            <field name="company" form-view="company-form"
+                   grid-view="company-grid"/>
+            <field name="defaultStockLocation" form-view="stock-location-form"
+                   grid-view="stock-location-grid"
+                   onSelect="action-partner-default-stock-location-form-domain"/>
+            <field name="stockMoveAutomaticMail"/>
+            <field name="stockMoveMessageTemplate"
+                   requiredIf="stockMoveAutomaticMail"
+                   showIf="stockMoveAutomaticMail"
+                   form-view="template-form" grid-view="template-grid"/>
+        </panel>
+    </form>
+
+    <action-attrs name="action-partner-default-stock-location-form-domain"
+                  model="com.axelor.apps.stock.db.PartnerStockSettings">
+        <attribute for="defaultStockLocation" name="domain"
+                   expr="eval: 'self.id IN (0)'"/>
+        <attribute for="defaultStockLocation" name="domain" if="__parent__"
+                   expr="eval: 'self.partner = :__parent__ AND self.company = :company AND (self.typeSelect = 2 OR self.typeSelect = 3)'"/>
+        <attribute for="defaultStockLocation" name="domain" if="partner"
+                   expr="eval: 'self.partner = :partner AND self.company = :company AND (self.typeSelect = 2 OR self.typeSelect = 3)'"/>
+    </action-attrs>
+
+</object-views>

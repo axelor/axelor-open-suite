@@ -48,14 +48,14 @@ public class QualityControlServiceImpl  implements QualityControlService {
 				qualityControl.getControlPointList().clear();
 				for(ControlPointModel model : process.getControlPointModelList() ) {
 					ControlPoint point = new ControlPoint();
-					point.setStatus(1);
+					point.setStatusSelect(1);
 					point.setName(model.getName());
 					point.setPriority(model.getPriority());
 					point.setProduct(model.getProduct());
 					point.setTeam(model.getTeam());
 					point.setResponsible(model.getResponsible());
-					point.setControlType(model.getControlType());
-					point.setTestType(model.getTestType());
+					point.setControlTypeSelect(model.getControlTypeSelect());
+					point.setTestTypeSelect(model.getTestTypeSelect());
 					point.setInstructions(model.getInstructions());
 					point.setNotes(model.getNotes());
 					point.setMessageIfFailure(model.getMessageIfFailure());

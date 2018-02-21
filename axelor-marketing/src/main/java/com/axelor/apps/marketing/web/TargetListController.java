@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -27,6 +27,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * This controller class use to get filtered Partners and Leads.
@@ -34,6 +35,7 @@ import com.google.inject.Inject;
  * @author axelor
  *
  */
+@Singleton
 public class TargetListController {
 
 	@Inject

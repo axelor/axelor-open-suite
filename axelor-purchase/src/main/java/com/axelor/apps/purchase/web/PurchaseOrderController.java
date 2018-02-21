@@ -62,7 +62,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class PurchaseOrderController {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
@@ -104,7 +106,6 @@ public class PurchaseOrderController {
 		response.setValue("supplierPartner", purchaseOrderService.validateSupplier(purchaseOrder));
 
 	}
-
 
 
 	/**

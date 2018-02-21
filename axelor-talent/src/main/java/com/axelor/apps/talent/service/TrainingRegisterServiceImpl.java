@@ -1,7 +1,7 @@
-/**
+/*
  * Axelor Business Solutions
  *
- * Copyright (C) 2016 Axelor (<http://axelor.com>).
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.repo.EventRepository;
-import com.axelor.apps.crm.db.repo.MeetingTypeRepository;
 import com.axelor.apps.talent.db.Training;
 import com.axelor.apps.talent.db.TrainingRegister;
 import com.axelor.apps.talent.db.TrainingSession;
@@ -41,19 +40,16 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
 	private final Logger log = LoggerFactory.getLogger(TrainingRegisterService.class);
 	
 	@Inject
-	private TrainingRegisterRepository trainingRegisterRepo;
+	protected TrainingRegisterRepository trainingRegisterRepo;
 	
 	@Inject
-	private MeetingTypeRepository meetingTypeRepo;
+	protected EventRepository eventRepo;
 	
 	@Inject
-	private EventRepository eventRepo;
+	protected TrainingRepository trainingRepo;
 	
 	@Inject
-	private TrainingRepository trainingRepo;
-	
-	@Inject
-	private TrainingSessionRepository trainingSessionRepo;
+	protected TrainingSessionRepository trainingSessionRepo;
 	
 	@Transactional
 	@Override
@@ -68,7 +64,7 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
 		return eventRepo.save(event);
 	}
 
-	private Event generateMeeting(TrainingRegister trainingRegister) {
+	protected Event generateMeeting(TrainingRegister trainingRegister) {
 		
 		Event event = new Event();
 		event.setTypeSelect(EventRepository.TYPE_MEETING);
@@ -88,7 +84,7 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
 		
 		trainingRegister.setStatusSelect(2);
 		
-		trainingRegister.getEmployee().getTagSkillSet().addAll(trainingRegister.getTraining().getTagSkillSet());
+		trainingRegister.getEmployee().getSkillSet().addAll(trainingRegister.getTraining().getSkillSet());
 		
 		trainingRegisterRepo.save(trainingRegister);
 		

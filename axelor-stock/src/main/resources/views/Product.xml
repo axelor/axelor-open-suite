@@ -70,6 +70,7 @@
 		<panel name="main">
 			<field name="$date" title="Date" type="date"/>
 			<field name="$qty" title="Qty" type="decimal"/>
+			<button name="showStockMoveLines" title="Show stock move lines" onClick="action-stock-product-method-display-stock-move-line" />
 		</panel>
 	</form>
 	
@@ -77,4 +78,8 @@
 		<call class="com.axelor.apps.stock.web.ProductStockController" method="setStockPerDay"/>
 	</action-method>
 	
+	<action-method name="action-stock-product-method-display-stock-move-line">
+		<call class="com.axelor.apps.stock.web.ProductStockController" method="displayStockMoveLine"/>
+	</action-method>
+
 </object-views>

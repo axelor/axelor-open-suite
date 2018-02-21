@@ -25,16 +25,18 @@ import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class QuerieController {
 	
 	@Inject
-	private QuerieService qs;
+	private QuerieService querieService;
 	
 	public void checkQuerie(ActionRequest request, ActionResponse response){
 		
 		try {
-			qs.checkQuerie(request.getContext().asType(Querie.class));
+			querieService.checkQuerie(request.getContext().asType(Querie.class));
 			response.setFlash(I18n.get(IExceptionMessage.QUERIE_3));
 		}
 		catch (Exception e) { TraceBackService.trace(response, e); }

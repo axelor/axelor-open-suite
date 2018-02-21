@@ -28,7 +28,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class AccountingBatchController {
 
 	@Inject
@@ -111,30 +113,6 @@ public class AccountingBatchController {
 		accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
 		Batch batch = accountingBatchService.directDebit(accountingBatch);
 		response.setFlash(batch.getComments());
-		response.setReload(true);
-	}
-
-	/**
-	 * Lancer le batch de prélèvement
-	 *
-	 * @param request
-	 * @param response
-	 */
-	public void actionInterbankPaymentOrder(ActionRequest request, ActionResponse response){
-
-		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
-
-		Batch batch = null;
-
-		if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatchRepository.INTERBANK_PAYMENT_ORDER_TYPE_IMPORT)  {
-			batch = accountingBatchService.interbankPaymentOrderImport(accountingBatchRepo.find(accountingBatch.getId()));
-		}
-		else if(accountingBatch.getInterbankPaymentOrderTypeSelect() == AccountingBatchRepository.INTERBANK_PAYMENT_ORDER_TYPE_REJECT_IMPORT)  {
-			batch = accountingBatchService.interbankPaymentOrderRejectImport(accountingBatchRepo.find(accountingBatch.getId()));
-		}
-
-		if(batch != null)
-			response.setFlash(batch.getComments());
 		response.setReload(true);
 	}
 

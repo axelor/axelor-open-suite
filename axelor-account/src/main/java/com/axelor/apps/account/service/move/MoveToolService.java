@@ -35,7 +35,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
-import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -54,13 +53,11 @@ public class MoveToolService {
 	protected MoveLineRepository moveLineRepository;
 	protected AccountCustomerService accountCustomerService;
 	protected AccountConfigService accountConfigService;
-	protected AppAccountService appAccountService;
 
 	@Inject
-	public MoveToolService(AppAccountService appAccountService, MoveLineService moveLineService, MoveLineRepository moveLineRepository, 
+	public MoveToolService(MoveLineService moveLineService, MoveLineRepository moveLineRepository, 
 			AccountCustomerService accountCustomerService, AccountConfigService accountConfigService) {
 
-		this.appAccountService = appAccountService;
 		this.moveLineService = moveLineService;
 		this.moveLineRepository = moveLineRepository;
 		this.accountCustomerService = accountCustomerService;

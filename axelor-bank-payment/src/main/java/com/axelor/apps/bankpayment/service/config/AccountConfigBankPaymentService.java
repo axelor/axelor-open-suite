@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -110,7 +110,7 @@ public class AccountConfigBankPaymentService extends AccountConfigService  {
 
     /**
      * Get ICS number.
-     * 
+     *
      * @param accountConfig
      * @return
      * @throws AxelorException

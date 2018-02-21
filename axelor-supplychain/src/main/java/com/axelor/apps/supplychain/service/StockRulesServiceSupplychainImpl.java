@@ -17,11 +17,17 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
@@ -31,47 +37,39 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
-import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
-import com.axelor.auth.db.User;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.List;
-
 public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 
-	@Inject
 	protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
-
-	@Inject
 	protected PurchaseOrderLineService purchaseOrderLineService;
-
-	@Inject
-	protected PurchaseConfigService purchaseConfigService;
-
-	protected User user;
-
-	@Inject
-	private PurchaseOrderRepository purchaseOrderRepo;
+	protected PurchaseOrderRepository purchaseOrderRepo;
+	protected TemplateRepository templateRepo;
+	protected TemplateMessageService templateMessageService;
+	protected MessageRepository messageRepo;
 	
 	@Inject
-	private TemplateRepository templateRepo;
-	
-	@Inject
-	private TemplateMessageService templateMessageService;
-	
-	@Inject
-	private MessageRepository messageRepo;
+	public StockRulesServiceSupplychainImpl(StockRulesRepository stockRuleRepo, PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl, PurchaseOrderLineService purchaseOrderLineService, 
+			PurchaseOrderRepository purchaseOrderRepo, TemplateRepository templateRepo, TemplateMessageService templateMessageService, MessageRepository messageRepo) {
+		super(stockRuleRepo);
+		this.purchaseOrderServiceSupplychainImpl = purchaseOrderServiceSupplychainImpl;
+		this.purchaseOrderLineService = purchaseOrderLineService;
+		this.purchaseOrderRepo = purchaseOrderRepo;
+		this.templateRepo = templateRepo;
+		this.templateMessageService = templateMessageService;
+		this.messageRepo = messageRepo;
+		
+	}
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -96,12 +94,8 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 
 				Template template = templateRepo.all().filter("self.metaModel.fullName = ?1 AND self.isSystem != true",  StockRules.class.getName()).fetchOne();
 				try {
-					Message message = templateMessageService.generateMessage(stockRules, template, null);
+					Message message = templateMessageService.generateMessage(stockRules, template);
 					messageRepo.save(message);
-//					if (JPA.em().getTransaction().isActive()) {
-//						JPA.em().getTransaction().commit();
-//						JPA.em().getTransaction().begin();
-//					}
 				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException e) {
 					throw new AxelorException(e, IException.TECHNICAL);
 				}
@@ -119,17 +113,18 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 				if(supplierPartner != null)  {
 
 					Company company = stockLocation.getCompany();
+					LocalDate today = Beans.get(AppBaseService.class).getTodayDate();
 
 					PurchaseOrder purchaseOrder = purchaseOrderRepo.save(purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
-							this.user,
+							AuthUtils.getUser(),
 							company,
 							null,
 							supplierPartner.getCurrency(),
-							this.today.plusDays(supplierPartner.getDeliveryDelay()),
+							today.plusDays(supplierPartner.getDeliveryDelay()),
 							stockRules.getName(),
 							null,
 							stockLocation,
-							this.today,
+							today,
 							Beans.get(PartnerPriceListService.class).getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
 							supplierPartner));
 
@@ -147,13 +142,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 					purchaseOrderRepo.save(purchaseOrder);
 
 				}
-
-
 			}
-
-
-
-
 		}
 
 	}

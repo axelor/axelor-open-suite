@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -53,8 +53,8 @@ import com.axelor.apps.crm.service.config.CrmConfigService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
-import com.axelor.apps.message.db.repo.MailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageService;
@@ -218,7 +218,7 @@ public class EventServiceImpl implements EventService {
 			contactSet.forEach(p -> emailAddresses.add(p.getEmailAddress()));
 			userSet.forEach(u -> emailAddresses.add(u.getPartner().getEmailAddress()));
 
-			Message message = templateMessageService.generateMessage(event, changedDateTemplate, null);
+			Message message = templateMessageService.generateMessage(event, changedDateTemplate);
 			if(message.getFromEmailAddress() == null){
 				message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
 			}
@@ -232,7 +232,7 @@ public class EventServiceImpl implements EventService {
 		deletedUsers.forEach(u -> emailAddresses.add(u.getPartner().getEmailAddress()));
 
 		for (EmailAddress emailAddress: emailAddresses) {
-			Message message = templateMessageService.generateMessage(event, addedGuestsTemplate, null);
+			Message message = templateMessageService.generateMessage(event, addedGuestsTemplate);
 			if(message.getFromEmailAddress() == null){
 				message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
 			}
@@ -277,7 +277,7 @@ public class EventServiceImpl implements EventService {
 		}
 		if(event.getExternalGuestSet() != null){
 			for (Partner partner : event.getExternalGuestSet()) {
-				Message message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate, null);
+				Message message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate);
 				if(message.getFromEmailAddress() == null){
 					message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
 				}
@@ -287,7 +287,7 @@ public class EventServiceImpl implements EventService {
 		}
 		if(event.getInternalGuestSet() != null){
 			for (User user : event.getInternalGuestSet()) {
-				Message message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate, null);
+				Message message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate);
 				if(message.getFromEmailAddress() == null){
 					message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
 				}
@@ -296,7 +296,7 @@ public class EventServiceImpl implements EventService {
 			}
 		}
 
-		Message message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate, null);
+		Message message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate);
 		if(message.getFromEmailAddress() == null){
 			message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
 		}
@@ -354,10 +354,10 @@ public class EventServiceImpl implements EventService {
 				}
 				message.addToEmailAddressSetItem(emailAddress);
 				message.setSubject(event.getSubject());
-				message.setMailAccount(Beans.get(MailAccountService.class).getDefaultMailAccount(MailAccountRepository.SERVER_TYPE_SMTP));
+				message.setMailAccount(Beans.get(MailAccountService.class).getDefaultMailAccount(EmailAccountRepository.SERVER_TYPE_SMTP));
 			}
 			else{
-				message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate, null);
+				message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate);
 				if(message.getFromEmailAddress() == null){
 					message.setFromEmailAddress(user.getPartner().getEmailAddress());
 				}

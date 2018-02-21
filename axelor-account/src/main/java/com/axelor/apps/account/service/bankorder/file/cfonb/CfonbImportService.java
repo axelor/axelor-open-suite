@@ -28,8 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.CfonbConfig;
-import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
@@ -46,17 +44,15 @@ public class CfonbImportService {
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected CfonbConfigService cfonbConfigService;
-	protected PaymentModeRepository paymentModeRepo;
 	protected AppAccountService appAccountService;
 	
 	protected CfonbConfig cfonbConfig;
 	protected List<String> importFile;
 
 	@Inject
-	public CfonbImportService(CfonbConfigService cfonbConfigService, PaymentModeRepository paymentModeRepo, AppAccountService appAccountService)  {
+	public CfonbImportService(CfonbConfigService cfonbConfigService, AppAccountService appAccountService)  {
 		
 		this.cfonbConfigService = cfonbConfigService;
-		this.paymentModeRepo = paymentModeRepo;
 		this.appAccountService = appAccountService;
 		
 	}
@@ -81,11 +77,8 @@ public class CfonbImportService {
 	 * @param operation
 	 * 	 	Le type d'opération :
 	 * 		<ul>
-     *      <li>0 = Virement</li>
-     *      <li>1 = Prélèvement</li>
-     *      <li>2 = TIP impayé</li>
-     *      <li>3 = TIP</li>
-     *      <li>4 = TIP + chèque</li>
+     *          <li>0 = Virement</li>
+     *          <li>1 = Prélèvement</li>
      *  	</ul>
 	 * @return
 	 * @throws AxelorException
@@ -103,11 +96,8 @@ public class CfonbImportService {
 	 * @param operation
 	 * 	 	Le type d'opération :
 	 * 		<ul>
-     *      <li>0 = Virement</li>
-     *      <li>1 = Prélèvement</li>
-     *      <li>2 = TIP impayé</li>
-     *      <li>3 = TIP</li>
-     *      <li>4 = TIP + chèque</li>
+     *          <li>0 = Virement</li>
+     *          <li>1 = Prélèvement</li>
      *  	</ul>
 	 * @return
 	 * @throws AxelorException
@@ -126,11 +116,8 @@ public class CfonbImportService {
 	 * @param operation
 	 * 	 	Le type d'opération :
 	 * 		<ul>
-     *      <li>0 = Virement</li>
-     *      <li>1 = Prélèvement</li>
-     *      <li>2 = TIP impayé</li>
-     *      <li>3 = TIP</li>
-     *      <li>4 = TIP + chèque</li>
+     *          <li>0 = Virement</li>
+     *          <li>1 = Prélèvement</li>
      *  	</ul>
 	 * @return
 	 * @throws AxelorException
@@ -196,11 +183,8 @@ public class CfonbImportService {
 	 * @param operation
 	 * 	 	Le type d'opération :
 	 * 		<ul>
-     *      <li>0 = Virement</li>
-     *      <li>1 = Prélèvement</li>
-     *      <li>2 = TIP impayé</li>
-     *      <li>3 = TIP</li>
-     *      <li>4 = TIP + chèque</li>
+     *          <li>0 = Virement</li>
+     *          <li>1 = Prélèvement</li>
      *  	</ul>
 	 * @return
 	 * @throws AxelorException
@@ -264,33 +248,15 @@ public class CfonbImportService {
 		switch(operation)  {
 			case 0:
 				for(String detailCFONB : multiDetailsCFONB)  {
-					importDataList.add(this.getDetailData(detailCFONB, false));
+					importDataList.add(this.getDetailData(detailCFONB));
 				}
 				this.checkTotalAmount(multiDetailsCFONB, endingCFONB, fileName, 228, 240);
 				break;
 			case 1:
 				for(String detailCFONB : multiDetailsCFONB)  {
-					importDataList.add(this.getDetailData(detailCFONB, false));
+					importDataList.add(this.getDetailData(detailCFONB));
 				}
 				this.checkTotalAmount(multiDetailsCFONB, endingCFONB, fileName, 228, 240);
-				break;
-			case 2:
-				for(String detailCFONB : multiDetailsCFONB)  {
-					importDataList.add(this.getDetailData(detailCFONB, true));
-				}
-				this.checkTotalAmount(multiDetailsCFONB, endingCFONB, fileName, 228, 240);
-				break;
-			case 3:
-				for(String detailCFONB : multiDetailsCFONB)  {
-					importDataList.add(this.getDetailDataTIP(detailCFONB));
-				}
-				this.checkTotalAmount(multiDetailsCFONB, endingCFONB, fileName, 102, 118);
-				break;
-			case 4:
-				for(String detailCFONB : multiDetailsCFONB)  {
-					importDataList.add(this.getDetailDataTIP(detailCFONB));
-				}
-				this.checkTotalAmount(multiDetailsCFONB, endingCFONB, fileName, 102, 118);
 				break;
 			default:
 				break;
@@ -329,22 +295,15 @@ public class CfonbImportService {
 	 * Fonction permettant de récupérer les infos de rejet d'un prélèvement ou virement
 	 * @param detailCFONB
 	 * 			Un enregistrement 'détail' d'un rejet de prélèvement au format CFONB
-	 * @param isRejectTIP
-	 * 			Est ce que cela concerne les rejets de TIP ?
 	 * @return
 	 * 			Les infos de rejet d'un prélèvement ou virement
 	 */
-	private String[] getDetailData(String detailCFONB, boolean isRejectTIP)  {
+	private String[] getDetailData(String detailCFONB)  {
 		String[] detailData = new String[4];
 		log.debug("detailCFONB : {}",detailCFONB);
 
 		detailData[0] = detailCFONB.substring(214, 220);  																	// Date de rejet
-		if(isRejectTIP)  {
-			detailData[1] = detailCFONB.substring(159, 183).split("/")[0].trim();											// Ref facture pour TIP
-		}
-		else  {
-			detailData[1] = detailCFONB.substring(152, 183).split("/")[0].trim();											// Ref prélèvement ou remboursement
-		}
+        detailData[1] = detailCFONB.substring(152, 183).split("/")[0].trim();											// Ref prélèvement ou remboursement
 		detailData[2] = detailCFONB.substring(228, 240).substring(0, 10)+"."+detailCFONB.substring(228, 240).substring(10);	// Montant rejeté
 		detailData[3] = detailCFONB.substring(226, 228);																	// Motif du rejet
 
@@ -354,61 +313,16 @@ public class CfonbImportService {
 		return detailData;
 	}
 
-	/**
-	 * Fonction permettant de récupérer les infos de paiement par TIP ou TIP+chèque
-	 * @param detailCFONB
-	 * 			Un enregistrement 'détail' d'un paiement par TIP au format CFONB
-	 * @return
-	 */
-	private String[] getDetailDataTIP(String detailCFONB)  {
-		String[] detailData = new String[6];
-
-		detailData[0] = detailCFONB.substring(2, 4);  																		// Mode de paiement
-		detailData[1] = detailCFONB.substring(125, 149).split("/")[0].trim();												// Ref facture
-		detailData[2] = detailCFONB.substring(81, 102);																		// RIB
-		detailData[3] = detailCFONB.substring(155, 157);																	// clé RIB
-		detailData[4] = detailCFONB.substring(154, 155);																	// action RIB
-		detailData[5] = detailCFONB.substring(102, 116)+"."+detailCFONB.substring(116, 118);								// Montant rejeté
-
-		log.debug("Obtention des données d'un enregistrement détail CFONB d'un TIP : Mode de paiement = {}, Ref facture = {}, RIB = {}, clé RIB = {}, action RIB = {}, Montant rejeté = {}",
-				new Object[]{detailData[0],detailData[1],detailData[2],detailData[3],detailData[4],detailData[5]});
-
-		return detailData;
-	}
-
 
 	/**
 	 * Fonction permettant de récupérer la date de rejet de l'en-tête d'un lot de rejet de prélèvement ou virement
 	 * @param detailCFONB
 	 * 			Un enregistrement 'détail' d'un rejet de prélèvement au format CFONB
-	 * @param isRejectTIP
-	 * 			Est ce que cela concerne les rejets de TIP ?
 	 * @return
 	 * 			Les infos de rejet d'un prélèvement ou virement
 	 */
 	private String getHeaderDate(String headerCFONB)  {
 		return headerCFONB.substring(10, 16);
-	}
-
-
-
-	/**
-	 * Méthode permettant de récupérer le mode de paiement en fonction du code de début de lot de l'enregistrement
-	 * @param company
-	 * @param code
-	 * @return
-	 * @throws AxelorException
-	 */
-	//TODO à passer en configuration
-	public PaymentMode getPaymentMode(Company company, String code) throws AxelorException  {
-		log.debug("Récupération du mode de paiement depuis l'enregistrement CFONB : Société = {} , code CFONB = {}", new Object[]{company.getName(),code});
-
-		if (code.equals(this.cfonbConfig.getIpoOperationCodeImportCFONB())) {
-			return paymentModeRepo.findByCode("TIP");
-		} else if (code.equals(this.cfonbConfig.getIpoAndChequeOperationCodeImportCFONB())) {
-			return paymentModeRepo.findByCode("TIC");
-		}
-		throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.CFONB_IMPORT_6), AppAccountServiceImpl.EXCEPTION, code, company.getName());
 	}
 
 
@@ -427,9 +341,6 @@ public class CfonbImportService {
 		cfonbConfigService.getEndingRecordCodeImportCFONB(this.cfonbConfig);
 		cfonbConfigService.getTransferOperationCodeImportCFONB(this.cfonbConfig);
 		cfonbConfigService.getDirectDebitOperationCodeImportCFONB(this.cfonbConfig);
-		cfonbConfigService.getIpoRejectOperationCodeImportCFONB(this.cfonbConfig);
-		cfonbConfigService.getIpoAndChequeOperationCodeImportCFONB(this.cfonbConfig);
-		cfonbConfigService.getIpoOperationCodeImportCFONB(this.cfonbConfig);
 
 	}
 
@@ -442,11 +353,8 @@ public class CfonbImportService {
 	 * @param operation
 	 * 		Le type d'opération :
 	 * 		<ul>
-     *      <li>0 = Virement</li>
-     *      <li>1 = Prélèvement</li>
-     *      <li>2 = TIP impayé</li>
-     *      <li>3 = TIP</li>
-     *      <li>4 = TIP + chèque</li>
+     *          <li>0 = Virement</li>
+     *          <li>1 = Prélèvement</li>
      *  	</ul>
 	 * @return
 	 */
@@ -484,11 +392,8 @@ public class CfonbImportService {
 	 * @param operation
 	 * 		Le type d'opération :
 	 * 		<ul>
-     *      <li>0 = Virement</li>
-     *      <li>1 = Prélèvement</li>
-     *      <li>2 = TIP impayé</li>
-     *      <li>3 = TIP</li>
-     *      <li>4 = TIP + chèque</li>
+     *          <li>0 = Virement</li>
+     *          <li>1 = Prélèvement</li>
      *  	</ul>
 	 * @return
 	 * 		999 si operation non correct
@@ -511,11 +416,8 @@ public class CfonbImportService {
 	 * @param operation
 	 * 		Le type d'opération :
 	 * 		<ul>
-     *      <li>0 = Virement</li>
-     *      <li>1 = Prélèvement</li>
-     *      <li>2 = TIP impayé</li>
-     *      <li>3 = TIP</li>
-     *      <li>4 = TIP + chèque</li>
+     *          <li>0 = Virement</li>
+     *          <li>1 = Prélèvement</li>
      *  	</ul>
 	 * @return
 	 */
@@ -553,11 +455,8 @@ public class CfonbImportService {
 	 * @param operation
 	 * 		Le type d'opération :
 	 * 		<ul>
-     *      <li>0 = Virement</li>
-     *      <li>1 = Prélèvement</li>
-     *      <li>2 = TIP impayé</li>
-     *      <li>3 = TIP</li>
-     *      <li>4 = TIP + chèque</li>
+     *          <li>0 = Virement</li>
+     *          <li>1 = Prélèvement</li>
      *  	</ul>
 	 * @return
 	 * 		999 si operation non correct
@@ -580,11 +479,8 @@ public class CfonbImportService {
 	 * @param operation
 	 * 		Le type d'opération :
 	 * 		<ul>
-     *      <li>0 = Virement</li>
-     *      <li>1 = Prélèvement</li>
-     *      <li>2 = TIP impayé</li>
-     *      <li>3 = TIP</li>
-     *      <li>4 = TIP + chèque</li>
+     *          <li>0 = Virement</li>
+     *          <li>1 = Prélèvement</li>
      *  	</ul>
 	 * @return
 	 */
@@ -617,11 +513,8 @@ public class CfonbImportService {
 	 * @param operation
 	 * 		Le type d'opération :
 	 * 		<ul>
-     *      <li>0 = Virement</li>
-     *      <li>1 = Prélèvement</li>
-     *      <li>2 = TIP impayé</li>
-     *      <li>3 = TIP</li>
-     *      <li>4 = TIP + chèque</li>
+     *          <li>0 = Virement</li>
+     *          <li>1 = Prélèvement</li>
      *  	</ul>
 	 * @return
 	 * 		999 si operation non correct
@@ -646,11 +539,8 @@ public class CfonbImportService {
 	 * @param operation
 	 * 		Le type d'opération :
 	 * 		<ul>
-     *      <li>0 = Virement</li>
-     *      <li>1 = Prélèvement</li>
-     *      <li>2 = TIP impayé</li>
-     *      <li>3 = TIP</li>
-     *      <li>4 = TIP + chèque</li>
+     *          <li>0 = Virement</li>
+     *          <li>1 = Prélèvement</li>
      *  	</ul>
 	 * @return
 	 * 		Le code opération
@@ -663,15 +553,6 @@ public class CfonbImportService {
 				break;
 			case 1:
 				operationCode = this.cfonbConfig.getDirectDebitOperationCodeImportCFONB();
-				break;
-			case 2:
-				operationCode = this.cfonbConfig.getIpoRejectOperationCodeImportCFONB();
-				break;
-			case 3:
-				operationCode = this.cfonbConfig.getIpoOperationCodeImportCFONB();
-				break;
-			case 4:
-				operationCode = this.cfonbConfig.getIpoAndChequeOperationCodeImportCFONB();
 				break;
 			default:
 				break;
