@@ -55,7 +55,6 @@
 	<selection name='account.journal.status.select'>
 		<option value="0">Inactive</option>
 		<option value="1">Active</option>
-		<option value="2">Archived</option>
 	</selection>
 
 	<selection name='iaccount.payment.schedule.status.select'>
