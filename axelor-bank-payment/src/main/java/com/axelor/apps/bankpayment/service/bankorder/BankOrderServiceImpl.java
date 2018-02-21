@@ -47,7 +47,6 @@ import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
-import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
@@ -306,7 +305,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		File dataFileToSend = null;
 		File signatureFileToSend = null;
 
-		if(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+		if(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getEbicsTypeSelect() == EbicsPartnerRepository.EBICS_TYPE_TS)  {
             if (bankOrder.getSignedMetaFile() == null) {
                 throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_NOT_PROPERLY_SIGNED),
                         IException.NO_VALUE);
