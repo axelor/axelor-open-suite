@@ -206,9 +206,9 @@
     </form>
     
     <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard">
-    	<panel name="main">
-	        <field name="splitQty" widget="INTEGER" title="Split in Qty of"/>
-	        <button name="split" title="Split" onClick="action-stock-move-method-split-stock-move-lines-special"/>
+    	<panel name="main" colSpan="12">
+	        <field name="splitQty" type="decimal" widget="Decimal" title="Split in Qty of" x-scale="2" x-precision="18" colSpan="6"/>
+	        <button name="split" title="Split" onClick="action-stock-move-method-split-stock-move-lines-special" colSpan="6"/>
         </panel>
     </form>
     
@@ -233,8 +233,9 @@
         <view-param name="show-toolbar" value="false"/>
 	    <view-param name="show-confirm" value="false" />
    	  	<view-param name="popup-save" value="false"/>
-	    <view-param name="width" value="200" />
-	    <context name="stockMoveLineList" expr="eval:stockMoveLineList" if="stockMoveLineList != null" />
+	    <view-param name="width" value="800" />
+	    <context name="stockMoveLineList" expr="eval:stockMoveLineList.findAll{ it.selected }" if="stockMoveLineList != null" />
+	    <context name="stockMove" expr="eval: __this__"/>
 	</action-view>
 	
 	<form name="stock-move-split-into-2-form" title="Split into 2" model="com.axelor.apps.stock.db.StockMove" width="large">
