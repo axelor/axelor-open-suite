@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -45,8 +44,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 
 public class HumanResourceMobileController {
@@ -62,7 +59,8 @@ public class HumanResourceMobileController {
 	public void insertKMExpenses(ActionRequest request, ActionResponse response) throws AxelorException {
 		User user = AuthUtils.getUser();
 		if (user != null) {
-			Expense expense = Beans.get(ExpenseService.class).getOrCreateExpense(user);
+			ExpenseService expenseService = Beans.get(ExpenseService.class);
+			Expense expense = expenseService.getOrCreateExpense(user);
 			ExpenseLine expenseLine = new ExpenseLine();
 			expenseLine.setDistance(new BigDecimal(request.getData().get("kmNumber").toString()));
 			expenseLine.setFromCity(request.getData().get("locationFrom").toString());
@@ -74,7 +72,7 @@ public class HumanResourceMobileController {
 			Employee employee = user.getEmployee();
 			if (employee != null) {
 				expenseLine.setKilometricAllowParam(
-						Beans.get(ExpenseService.class).getListOfKilometricAllowParamVehicleFilter(expenseLine).get(0));
+						expenseService.getListOfKilometricAllowParamVehicleFilter(expenseLine).get(0));
 				expenseLine.setTotalAmount(
 						Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
 				expenseLine.setUntaxedAmount(expenseLine.getTotalAmount());
@@ -200,12 +198,12 @@ public class HumanResourceMobileController {
 		if(user != null){
 			Timesheet timesheet = timesheetRepository.all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
 			if(timesheet == null){
-				timesheet = Beans.get(TimesheetService.class).createTimesheet(user, date, date);
+				timesheet = timesheetService.createTimesheet(user, date, date);
 			}
 			BigDecimal hours = new BigDecimal(request.getData().get("duration").toString());
-			TimesheetLine line = Beans.get(TimesheetService.class).createTimesheetLine(project, product, user, date, timesheet, hours, request.getData().get("comments").toString());
+			TimesheetLine line = timesheetService.createTimesheetLine(project, product, user, date, timesheet, hours, request.getData().get("comments").toString());
 
-			Beans.get(TimesheetRepository.class).save(timesheet);
+			timesheetRepository.save(timesheet);
 			response.setTotal(1);
 			HashMap<String, Object> data = new HashMap<>();
 			data.put("id", line.getId());
@@ -222,7 +220,6 @@ public class HumanResourceMobileController {
 	@Transactional
 	public void insertLeave(ActionRequest request, ActionResponse response) throws AxelorException{
 		AppBaseService appBaseService = Beans.get(AppBaseService.class);
-		LeaveLineRepository leaveLineRepo = Beans.get(LeaveLineRepository.class);
 		User user = AuthUtils.getUser();
 		Map<String, Object> requestData = request.getData();
 		LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(new Long(requestData.get("leaveReason").toString()));
