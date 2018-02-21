@@ -32,7 +32,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class PaymentScheduleController {
 	
 	@Inject

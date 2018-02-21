@@ -22,12 +22,9 @@ import javax.persistence.PersistenceException;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.service.ReconcileSequenceService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 
 public class ReconcileManagementRepository extends ReconcileRepository{
 	
-	@Inject
-	protected ReconcileSequenceService reconcileSequenceService;
 
 	@Override
 	public Reconcile save(Reconcile reconcile) {

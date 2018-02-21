@@ -45,7 +45,7 @@
     
     
     <grid name="operation-order-grid" title="Operations" model="com.axelor.apps.production.db.OperationOrder" orderBy="priority" canNew="false">
-        <field name="priority"/>
+        <field name="priority" width="80"/>
         <field name="operationName" readonlyIf="statusSelect == 6"/>
         <field name="machineWorkCenter" grid-view="prod-process-grid" form-view="prod-process-form"/>
         <field name="plannedStartDateT"/>

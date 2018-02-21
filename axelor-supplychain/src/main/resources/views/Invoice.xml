@@ -11,4 +11,8 @@
     	<field name="inTaxTotal" aggregate="sum"/>
     </grid>
     
+    <action-method name="action-supplychain-method-generate-subscription-invoice">
+    	<call class="com.axelor.apps.supplychain.web.InvoiceController" method="generateSubscriptionInvoices"/>
+    </action-method>
+    
 </object-views>

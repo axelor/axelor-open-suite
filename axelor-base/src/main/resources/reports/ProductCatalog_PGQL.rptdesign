@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1680,10 +1680,34 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                         </column>
                                         <row id="259">
                                             <cell id="260">
-                                                <text id="268">
+                                                <text id="4497">
                                                     <property name="fontSize">14pt</property>
+                                                    <property name="display">inline</property>
+                                                    <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="paramBindings">
+                                                        <structure>
+                                                            <property name="paramName">param_1</property>
+                                                            <simple-property-list name="expression">
+                                                                <value type="javascript">'value:'+row["ProductName"]</value>
+                                                            </simple-property-list>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">message_key</property>
+                                                            <text-property name="displayName">message_key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">translation</property>
+                                                            <text-property name="displayName">translation</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                    </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["ProductName"]</VALUE-OF></B> ]]></text-property>
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["ProductName"]}</VALUE-OF></B>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
@@ -1723,6 +1747,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                             <cell id="266">
                                                 <text id="270">
                                                     <property name="fontSize">10.5pt</property>
+                                                    <property name="display">inline</property>
                                                     <property name="dataSet">TranslateDS</property>
                                                     <list-property name="paramBindings">
                                                         <structure>
@@ -1747,7 +1772,36 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<B><VALUE-OF format="HTML"> row["translation"]</VALUE-OF> : </B><VALUE-OF format="HTML">if(row._outer["description"] != null ) row._outer["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF format="HTML"> row["translation"]</VALUE-OF> : </B>]]></text-property>
+                                                </text>
+                                                <text id="4503">
+                                                    <property name="fontSize">10.5pt</property>
+                                                    <property name="display">inline</property>
+                                                    <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="paramBindings">
+                                                        <structure>
+                                                            <property name="paramName">param_1</property>
+                                                            <simple-property-list name="expression">
+                                                                <value type="javascript">'value:'+row["description"]</value>
+                                                            </simple-property-list>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">message_key</property>
+                                                            <text-property name="displayName">message_key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">translation</property>
+                                                            <text-property name="displayName">translation</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{ if(row._outer["description"] != null) { row._outer["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"") }}</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
@@ -1922,6 +1976,34 @@ Email : <VALUE-OF>row["email"]</VALUE-OF>]]></text-property>
                 </cell>
             </row>
         </grid>
+        <text id="4496">
+            <property name="display">inline</property>
+            <property name="dataSet">TranslateDS</property>
+            <list-property name="paramBindings">
+                <structure>
+                    <property name="paramName">param_1</property>
+                    <simple-property-list name="expression">
+                        <value type="javascript">'value:'+row["paymentConditionName"]</value>
+                    </simple-property-list>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">message_key</property>
+                    <text-property name="displayName">message_key</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">translation</property>
+                    <text-property name="displayName">translation</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <property name="contentType">html</property>
+            <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["paymentConditionName"]}</VALUE-OF>]]></text-property>
+        </text>
     </body>
     <list-property name="images">
         <structure>

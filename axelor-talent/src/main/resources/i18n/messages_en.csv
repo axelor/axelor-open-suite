@@ -181,3 +181,6 @@
 "Upcoming appraisals of all employees of a team",,,
 "Upcoming trainings of all employees of a team",,,
 "Work experience",,,
+"value:Appraisal",,,
+"value:Recruitment",,,
+"value:Training",,,

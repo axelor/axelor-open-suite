@@ -65,5 +65,7 @@ public interface ITranslation {
 	public static final String WKF_EDIT_NODE = /*$$(*/ "Edit Node"; /*)*/
 	public static final String WKF_EDIT_TRANSITION = /*$$(*/ "Edit Transition"; /*)*/
 	
+	public static final String BPM_APP_NAME = /*$$(*/ "value:BPM"; /*)*/
+	public static final String PRODUCT_APP_NAME = /*$$(*/ "value:Product App"; /*)*/
 
 }

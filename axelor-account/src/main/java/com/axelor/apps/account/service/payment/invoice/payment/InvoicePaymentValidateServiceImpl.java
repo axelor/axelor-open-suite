@@ -36,11 +36,9 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -48,8 +46,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -61,14 +57,13 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 	protected MoveLineService moveLineService;
 	protected AccountConfigService accountConfigService;
 	protected InvoicePaymentRepository invoicePaymentRepository;
-	protected MoveCancelService moveCancelService;
 	protected ReconcileService reconcileService;
 	protected InvoicePaymentToolService invoicePaymentToolService;
 
 	
 	@Inject
 	public InvoicePaymentValidateServiceImpl(PaymentModeService paymentModeService, MoveService moveService, MoveLineService moveLineService, 
-			AccountConfigService accountConfigService, InvoicePaymentRepository invoicePaymentRepository, MoveCancelService moveCancelService, 
+			AccountConfigService accountConfigService, InvoicePaymentRepository invoicePaymentRepository,  
 			ReconcileService reconcileService, InvoicePaymentToolService invoicePaymentToolService)  {
 		
 		this.paymentModeService = paymentModeService;
@@ -76,7 +71,6 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		this.moveLineService = moveLineService;
 		this.accountConfigService = accountConfigService;
 		this.invoicePaymentRepository = invoicePaymentRepository;
-		this.moveCancelService = moveCancelService;
 		this.reconcileService = reconcileService;
 		this.invoicePaymentToolService = invoicePaymentToolService;
 		

@@ -17,20 +17,6 @@
  */
 package com.axelor.apps.account.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.EntityTransaction;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
@@ -66,6 +52,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -74,6 +61,17 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.EntityTransaction;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class IrrecoverableService{
 
@@ -95,7 +93,7 @@ public class IrrecoverableService{
 	protected ManagementObjectRepository managementObjectRepo;
 	protected IrrecoverableRepository irrecoverableRepo;
 
-	protected LocalDate date;
+	protected AppAccountService appAccountService;
 
 	@Inject
 	public IrrecoverableService(AppAccountService appAccountService, SequenceService sequenceService, MoveService moveService, MoveLineService moveLineService, MoveLineRepository moveLineRepo,
@@ -119,7 +117,7 @@ public class IrrecoverableService{
 		this.managementObjectRepo = managementObjectRepo;
 		this.irrecoverableRepo = irrecoverableRepo;
 		
-		this.date = appAccountService.getTodayDate();
+		this.appAccountService = appAccountService;
 
 	}
 
@@ -615,11 +613,11 @@ public class IrrecoverableService{
 
 		for(InvoiceLine invoiceLine : invoice.getInvoiceLineList())  {
 
-			irlList.add(this.createIrrecoverableReportLine(iil, invoiceLine.getName(), invoiceLine.getExTaxTotal().multiply(prorataRate).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN), seq));
+			irlList.add(this.createIrrecoverableReportLine(iil, invoiceLine.getName(), invoiceLine.getExTaxTotal().multiply(prorataRate).setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN), seq));
 			seq++;
 		}
 		for(InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList())  {
-			irlList.add(this.createIrrecoverableReportLine(iil, invoiceLineTax.getTaxLine().getTax().getName(), invoiceLineTax.getTaxTotal().multiply(prorataRate).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN), seq));
+			irlList.add(this.createIrrecoverableReportLine(iil, invoiceLineTax.getTaxLine().getTax().getName(), invoiceLineTax.getTaxTotal().multiply(prorataRate).setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN), seq));
 			seq++;
 		}
 		// Afin de ne pas modifier les valeurs des lignes de factures, on les recharges depuis la base
@@ -642,14 +640,14 @@ public class IrrecoverableService{
 	public List<IrrecoverableReportLine> createIrrecoverableReportLineList(IrrecoverablePaymentScheduleLineLine ipsll, PaymentScheduleLine paymentScheduleLine, Tax tax) throws AxelorException  {
 		List<IrrecoverableReportLine> irlList = new ArrayList<IrrecoverableReportLine>();
 
-		BigDecimal taxRate = taxService.getTaxRate(tax, date);
+		BigDecimal taxRate = taxService.getTaxRate(tax, appAccountService.getTodayDate());
 
 		BigDecimal amount = paymentScheduleLine.getInTaxAmount();
 
 		BigDecimal divid = taxRate.add(BigDecimal.ONE);
 
 		// Montant hors-Taxe
-		BigDecimal irrecoverableAmount = amount.divide(divid, 6, RoundingMode.HALF_EVEN).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+		BigDecimal irrecoverableAmount = amount.divide(divid, 6, RoundingMode.HALF_EVEN).setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 
 		// Montant Tax
 		BigDecimal taxAmount = amount.subtract(irrecoverableAmount);
@@ -774,14 +772,14 @@ public class IrrecoverableService{
 		for(InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList())  {
 			amount = (invoiceLineTax.getTaxTotal().multiply(prorataRate)).setScale(2, RoundingMode.HALF_EVEN);
 			debitMoveLine = moveLineService.createMoveLine(
-					move, payerPartner, taxAccountService.getAccount(invoiceLineTax.getTaxLine().getTax(), company), amount, true, date, seq, null);
+					move, payerPartner, taxAccountService.getAccount(invoiceLineTax.getTaxLine().getTax(), company), amount, true, appAccountService.getTodayDate(), seq, null);
 			move.getMoveLineList().add(debitMoveLine);
 			seq++;
 			debitAmount = debitAmount.subtract(amount);
 		}
 
 		// Debit MoveLine 654 (irrecoverable account)
-		debitMoveLine = moveLineService.createMoveLine(move, payerPartner, accountConfig.getIrrecoverableAccount(), debitAmount, true, date, seq, null);
+		debitMoveLine = moveLineService.createMoveLine(move, payerPartner, accountConfig.getIrrecoverableAccount(), debitAmount, true, appAccountService.getTodayDate(), seq, null);
 		move.getMoveLineList().add(debitMoveLine);
 
 		seq++;
@@ -794,7 +792,7 @@ public class IrrecoverableService{
 		customerMoveLine.setIrrecoverableStatusSelect(MoveLineRepository.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
 
 		// Credit MoveLine Customer account (411, 416, ...)
-		MoveLine creditMoveLine = moveLineService.createMoveLine(move, payerPartner, customerMoveLine.getAccount(), creditAmount, false, date, seq, null);
+		MoveLine creditMoveLine = moveLineService.createMoveLine(move, payerPartner, customerMoveLine.getAccount(), creditAmount, false, appAccountService.getTodayDate(), seq, null);
 		move.getMoveLineList().add(creditMoveLine);
 
 		Reconcile reconcile = reconcileService.createReconcile(customerMoveLine, creditMoveLine, creditAmount, false);
@@ -825,7 +823,7 @@ public class IrrecoverableService{
 		int seq = 1;
 
 		// Credit MoveLine Customer account (411, 416, ...)
-		MoveLine creditMoveLine = moveLineService.createMoveLine(move, payerPartner, moveLine.getAccount(), amount, false, date, seq, null);
+		MoveLine creditMoveLine = moveLineService.createMoveLine(move, payerPartner, moveLine.getAccount(), amount, false, appAccountService.getTodayDate(), seq, null);
 		move.getMoveLineList().add(creditMoveLine);
 
 		Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amount, false);
@@ -833,18 +831,18 @@ public class IrrecoverableService{
 
 		Tax tax = accountConfig.getIrrecoverableStandardRateTax();
 
-		BigDecimal taxRate = taxService.getTaxRate(tax, date);
+		BigDecimal taxRate = taxService.getTaxRate(tax, appAccountService.getTodayDate());
 
 		// Debit MoveLine 654. (irrecoverable account)
 		BigDecimal divid = taxRate.add(BigDecimal.ONE);
-		BigDecimal irrecoverableAmount = amount.divide(divid, 6, RoundingMode.HALF_EVEN).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
-		MoveLine creditMoveLine1 = moveLineService.createMoveLine(move, payerPartner, accountConfig.getIrrecoverableAccount(), irrecoverableAmount, true, date, 2, null);
+		BigDecimal irrecoverableAmount = amount.divide(divid, 6, RoundingMode.HALF_EVEN).setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+		MoveLine creditMoveLine1 = moveLineService.createMoveLine(move, payerPartner, accountConfig.getIrrecoverableAccount(), irrecoverableAmount, true, appAccountService.getTodayDate(), 2, null);
 		move.getMoveLineList().add(creditMoveLine1);
 
 		// Debit MoveLine 445 (Tax account)
 		Account taxAccount = taxAccountService.getAccount(tax, company);
 		BigDecimal taxAmount = amount.subtract(irrecoverableAmount);
-		MoveLine creditMoveLine2 = moveLineService.createMoveLine(move, payerPartner, taxAccount, taxAmount, true, date, 3, null);
+		MoveLine creditMoveLine2 = moveLineService.createMoveLine(move, payerPartner, taxAccount, taxAmount, true, appAccountService.getTodayDate(), 3, null);
 		move.getMoveLineList().add(creditMoveLine2);
 
 		return move;

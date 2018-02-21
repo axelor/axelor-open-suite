@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.axelor.apps.report.engine.ReportSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,8 +36,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.MoveLineExportService;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -47,7 +45,9 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class AccountingReportController {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
@@ -100,7 +100,7 @@ public class AccountingReportController {
 
 			JournalType journalType = Beans.get(AccountingReportService.class).getJournalType(accountingReport);
 			if(journalType != null)  {
-				String domainQuery = "self.type.id = "+journalType.getId();
+				String domainQuery = "self.journalType.id = "+journalType.getId();
 				response.setAttr("journal", "domain", domainQuery);
 			}
 		}

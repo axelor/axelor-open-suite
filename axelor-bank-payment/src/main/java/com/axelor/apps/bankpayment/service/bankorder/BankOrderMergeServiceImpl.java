@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -47,19 +47,15 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService  {
 	
 	protected BankOrderRepository bankOrderRepo;
 	protected InvoicePaymentRepository invoicePaymentRepo;
-	protected BankOrderLineService bankOrderLineService;
-	protected BankOrderCreateService bankOrderCreateService;
 	protected BankOrderService bankOrderService;
 
 	
 	@Inject
 	public BankOrderMergeServiceImpl(BankOrderRepository bankOrderRepo, InvoicePaymentRepository invoicePaymentRepo, 
-			BankOrderLineService bankOrderLineService, BankOrderCreateService bankOrderCreateService, BankOrderService bankOrderService)  {
+			BankOrderService bankOrderService)  {
 		
 		this.bankOrderRepo = bankOrderRepo;
 		this.invoicePaymentRepo = invoicePaymentRepo;
-		this.bankOrderLineService = bankOrderLineService;
-		this.bankOrderCreateService = bankOrderCreateService;
 		this.bankOrderService = bankOrderService;
 		
 	}

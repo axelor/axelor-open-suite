@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -52,7 +52,7 @@ public class HRMenuTagService {
 		}
 		else  {
 			
-			return Long.toString(JPA.all(modelConcerned).filter("self.user.employee.manager = ?1 AND self.company = ?2 AND  self.statusSelect = ?3", user, activeCompany, status).count());
+			return Long.toString(JPA.all(modelConcerned).filter("self.user.employee.managerUser = ?1 AND self.company = ?2 AND  self.statusSelect = ?3", user, activeCompany, status).count());
 
 		}
 	}

@@ -179,8 +179,17 @@
       </panel>
 	  <panel>
 	  	<field name="clientPartner.saleOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="clientPartner == null || clientPartner.saleOrderInformation == null"/>
-	    <field name="bloqued" colSpan="4" readonly="true" showIf="bloqued"/>
-		<field name="manualUnblock" colSpan="4" showIf="bloqued == true"/>
+		<field name="blockedOnCustCreditExceed" colSpan="4" readonly="true" showIf="blockedOnCustCreditExceed &amp;&amp; !manualUnblock" showTitle="false">
+			<viewer depends="blockedOnCustCreditExceed">
+			<![CDATA[
+			<h5>
+				<span class="label label-default" style="background-color: #B6473F; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.blockedOnCustCreditExceed" x-translate>Blocked</span>
+			</h5>
+			]]>
+			</viewer>
+		</field>
+		<button name="manualUnblockButton" colSpan="4" showIf="blockedOnCustCreditExceed == true &amp;&amp; manualUnblock == false" css="btn-custom" onClick="action-sale-order-manual-unblock" title="Manual Unblock"/>
+		<field name="manualUnblock" hidden="true"/>
         <field name="orderBeingEdited" hidden="true"/>
 		<field name="$viewerOrderBeingEdited" showTitle="false" readonly="true" colSpan="9" showIf="orderBeingEdited">
 		  <viewer depends="orderBeingEdited"><![CDATA[
@@ -195,7 +204,7 @@
 	    		<div>
 				  <div class="span7">
 				  	<h5>
-						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
+						<span class="label label-important" ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
 						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
 						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
 					</h5>
@@ -1155,6 +1164,10 @@
 	<action-record name="action-sale-record-update-info-company" model="com.axelor.apps.sale.db.SaleOrder">
 		<field name="tradingName" expr="eval: null" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 		<field name="printingSettings" expr="eval: company?.printingSettings"/>
+	</action-record>
+
+	<action-record name="action-sale-order-manual-unblock" model="com.axelor.apps.sale.db.SaleOrder">
+		<field name="manualUnblock" expr="true"/>
 	</action-record>
 
 </object-views>

@@ -17,6 +17,20 @@
  */
 package com.axelor.apps.stock.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.CancelReason;
@@ -32,7 +46,6 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -48,7 +61,6 @@ import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
-import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
@@ -60,19 +72,6 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class StockMoveServiceImpl implements StockMoveService {
 
@@ -175,7 +174,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 		);
 
 		stockMove.setTypeSelect(getStockMoveType(fromStockLocation, toStockLocation));
-		if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+		if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+				&& stockMove.getPartner() != null) {
 			setDefaultAutoMailSettings(stockMove);
 		}
 
@@ -657,41 +657,32 @@ public class StockMoveServiceImpl implements StockMoveService {
 		return selected;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Boolean splitStockMoveLinesSpecial(List<HashMap> stockMoveLines, BigDecimal splitQty){
+	public void splitStockMoveLinesSpecial(StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty){
 
-		Boolean selected = false;
 		LOG.debug("SplitQty: {}",new Object[] {splitQty});
 
-		for(HashMap moveLine : stockMoveLines){
+		for(StockMoveLine moveLine : stockMoveLines){
 			LOG.debug("Move line: {}",new Object[]{moveLine});
-			if((Boolean)(moveLine.get("selected"))){
-				selected = true;
-				StockMoveLine line = stockMoveLineRepo.find(Long.parseLong(moveLine.get("id").toString()));
-				BigDecimal totalQty = line.getQty();
-				LOG.debug("Move Line selected: {}, Qty: {}",new Object[]{line,totalQty});
-				while(splitQty.compareTo(totalQty) < 0){
-					totalQty = totalQty.subtract(splitQty);
-					StockMoveLine newLine = JPA.copy(line, false);
-					newLine.setQty(splitQty);
-					newLine.setRealQty(splitQty);
-					stockMoveLineRepo.save(newLine);
-				}
-				LOG.debug("Qty remains: {}",totalQty);
-				if(totalQty.compareTo(BigDecimal.ZERO) > 0){
-					StockMoveLine newLine = JPA.copy(line, false);
-					newLine.setQty(totalQty);
-					newLine.setRealQty(totalQty);
-					stockMoveLineRepo.save(newLine);
-					LOG.debug("New line created: {}",newLine);
-				}
-				stockMoveLineRepo.remove(line);
+			BigDecimal totalQty = moveLine.getQty();
+			while(splitQty.compareTo(totalQty) < 0){
+				totalQty = totalQty.subtract(splitQty);
+				StockMoveLine newLine = stockMoveLineRepo.copy(moveLine, false);
+				newLine.setQty(splitQty);
+				newLine.setRealQty(splitQty);
+				stockMove.addStockMoveLineListItem(newLine);
 			}
+			LOG.debug("Qty remains: {}",totalQty);
+			if(totalQty.compareTo(BigDecimal.ZERO) > 0){
+				StockMoveLine newLine = stockMoveLineRepo.copy(moveLine, false);
+				newLine.setQty(totalQty);
+				newLine.setRealQty(totalQty);
+				stockMove.addStockMoveLineListItem(newLine);
+				LOG.debug("New line created: {}",newLine);
+			}
+			stockMove.removeStockMoveLineListItem(moveLine);
 		}
-
-		return selected;
 	}
 
 	@Override

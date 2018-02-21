@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -29,11 +29,10 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class ProjectController {
-
-	@Inject
-	private ProjectService projectService;
 	
 	@Inject
 	private EmployeeService employeeService;
@@ -61,7 +60,7 @@ public class ProjectController {
 		Project project = request.getContext().asType(Project.class);
 		project = Beans.get(ProjectRepository.class).find(project.getId());
 
-		response.setValue("timesheetLineList", projectService.computeVisibleDuration(project));
+		response.setValue("timesheetLineList", Beans.get(ProjectService.class).computeVisibleDuration(project));
 	}
 	
 	public void setProjectVisibleDuration(ActionRequest request, ActionResponse response){

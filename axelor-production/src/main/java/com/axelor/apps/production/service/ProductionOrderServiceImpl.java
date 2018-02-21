@@ -42,23 +42,22 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
-	@Inject
-	private ManufOrderService manufOrderService;
-	
-	@Inject
-	private SequenceService sequenceService;
-	
-	@Inject
+	protected ManufOrderService manufOrderService;
+	protected SequenceService sequenceService;
 	protected ProductionOrderRepository productionOrderRepo;
 	
+	@Inject
+	public ProductionOrderServiceImpl(ManufOrderService manufOrderService, SequenceService sequenceService, ProductionOrderRepository productionOrderRepo)  {
+		this.manufOrderService = manufOrderService;
+		this.sequenceService = sequenceService;
+		this.productionOrderRepo = productionOrderRepo;
+	}
 	
 	public ProductionOrder createProductionOrder() throws AxelorException  {
 		
 		return new ProductionOrder(this.getProductionOrderSeq());
 		
-		
 	}
-	
 	
 	
 	public String getProductionOrderSeq() throws AxelorException  {

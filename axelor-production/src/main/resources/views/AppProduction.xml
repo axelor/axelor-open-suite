@@ -5,16 +5,17 @@
 	
 	<form name="app-production-config-form" title="App production" model="com.axelor.apps.base.db.AppProduction" canDelete="false" canNew="false" width="large">
 		<panel name="productionConfiguration" colSpan="12">
-			<panel title="Sale Customer">
+			<panel title="Sale order">
 				<field name="prodOrderMgtOnSO" readonlyIf="productionOrderGenerationAuto" colSpan="4" widget="boolean-switch"/>
 				<field name="productionOrderGenerationAuto" showIf="prodOrderMgtOnSO" colSpan="4" widget="boolean-switch"/>
 			</panel>
-			<panel title="Conf. Production">
+			<panel title="Configurator">
 				<field name="enableConfigurator" widget="boolean-switch"/>
 			</panel>
 			<panel name="billOfMaterial" title="Bill of material">
 				<field name="manageBillOfMaterialVersion" colSpan="4" widget="boolean-switch"/>
 			    <field name="manageResidualProductOnBom" widget="boolean-switch"/>
+			    <field name="nbDecimalDigitForBomQty"/>
 			</panel>
 			<panel name="manufacturingProcess" title="Manufacturing process">
    				<field name="workCenterProduct" form-view="product-form" grid-view="product-grid" canEdit="false"/>

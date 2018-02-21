@@ -46,18 +46,15 @@ public class ManufOrderWorkflowService {
 	protected ManufOrderStockMoveService manufOrderStockMoveService;
 	protected ManufOrderRepository manufOrderRepo;
 
-	protected LocalDateTime now;
 
 	@Inject
 	public ManufOrderWorkflowService(OperationOrderWorkflowService operationOrderWorkflowService, OperationOrderRepository operationOrderRepo,
-									 ManufOrderStockMoveService manufOrderStockMoveService, ManufOrderRepository manufOrderRepo,
-									 AppProductionService appProductionService) {
+									 ManufOrderStockMoveService manufOrderStockMoveService, ManufOrderRepository manufOrderRepo) {
 		this.operationOrderWorkflowService = operationOrderWorkflowService;
 		this.operationOrderRepo = operationOrderRepo;
 		this.manufOrderStockMoveService = manufOrderStockMoveService;
 		this.manufOrderRepo = manufOrderRepo;
 
-		now = appProductionService.getTodayDateTime().toLocalDateTime();
 	}
 
 

@@ -48,15 +48,16 @@
 		                  <span ng-show="record.periodicityTypeSelect == 2" x-translate>month(s)</span>
 				]]></viewer>
 		    </field>
-		    <field name="numberOfPeriods" showIf="!$readonly()" colSpan="4" />
-		    <field name="periodicityTypeSelect" showIf="!$readonly()" colSpan="4" />
+		    <field name="numberOfPeriods" showIf="!$readonly()" colSpan="4"  onChange="action-supplychain-so-method-set-next-invoicing-end-period-date" />
+		    <field name="periodicityTypeSelect" showIf="!$readonly()" colSpan="4"  onChange="action-supplychain-so-method-set-next-invoicing-end-period-date" />
 		    <field name="contractPeriodInMonths" />
 			<field name="currentContractPeriodEndDate" />
 			<field name="contractEndDate" />
 			<field name="isTacitAgreement" />
 			<field name="noticePeriodInDays" />
 			<field name="nextInvoicingDate" />
-			<field name="nextInvoicingStartPeriodDate" />
+			<field name="nextInvoicingStartPeriodDate" onChange="action-supplychain-so-method-set-next-invoicing-end-period-date" />
+			<field name="nextInvoicingEndPeriodDate" />
 			<field name="subscriptionComment" colSpan="12"/>
 			<field name="subscriptionText" colSpan="12"/>
 			<panel-dashlet action="action-sale-order-view-subscription-invoices" colSpan="12"/>
@@ -118,6 +119,10 @@
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="supplierPartnerSelectDomain"/>
 	</action-method>
 	
+	<action-method name="action-supplychain-so-method-set-next-invoicing-end-period-date">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="setNextInvoicingStartPeriodDate" />
+	</action-method>
+	
 	<action-validate name="action-supplychain-sale-order-validate-check-stock-location">
 		<error message="The stock location must be filled." if="stockLocation == null"/>
 	</action-validate>
@@ -148,7 +153,7 @@
 		<attribute for="interco" name="readonly" expr="eval: true"
 				   if="eval: statusSelect &gt; 3"/>
 	</action-attrs>
-
+	
 	<action-view name="action-view-show-invoices-from-sale-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-light-grid" />
 		<view type="form" name="invoice-form" />

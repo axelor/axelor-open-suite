@@ -59,8 +59,6 @@ public class MessageServiceImpl implements MessageService {
 	
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	private ZonedDateTime todayTime;
-	
 	private MetaAttachmentRepository metaAttachmentRepository;
 	
 	@Inject
@@ -68,20 +66,16 @@ public class MessageServiceImpl implements MessageService {
 	
 	@Inject
 	public MessageServiceImpl(MetaAttachmentRepository metaAttachmentRepository, MessageRepository messageRepository) {
-		this.todayTime = ZonedDateTime.now();
 		this.metaAttachmentRepository = metaAttachmentRepository;
 		this.messageRepository = messageRepository;
 	}
-	
-	public ZonedDateTime getTodayTime(){ return this.todayTime; }
-	public LocalDateTime getTodayLocalTime(){ return this.todayTime.toLocalDateTime(); }
-	
+
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
 			List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect, EmailAccount emailAccount)  {
 		
-		Message message = createMessage( content, fromEmailAddress,	model, id, null, 0, getTodayLocalTime(), false,	MessageRepository.STATUS_DRAFT, subject, MessageRepository.TYPE_SENT,
+		Message message = createMessage( content, fromEmailAddress,	model, id, null, 0, ZonedDateTime.now().toLocalDateTime(), false,	MessageRepository.STATUS_DRAFT, subject, MessageRepository.TYPE_SENT,
 				replyToEmailAddressList, toEmailAddressList, ccEmailAddressList, bccEmailAddressList, addressBlock, mediaTypeSelect, emailAccount) ;
 		
 		messageRepository.save( message );

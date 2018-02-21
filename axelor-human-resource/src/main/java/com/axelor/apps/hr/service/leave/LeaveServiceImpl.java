@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,13 +17,24 @@
  */
 package com.axelor.apps.hr.service.leave;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.mail.MessagingException;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.ical.ICalendarService;
-import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
@@ -51,20 +62,8 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class LeaveServiceImpl  implements  LeaveService  {
 	
-	protected DurationService durationService;
 	protected LeaveLineRepository leaveLineRepo;
 	protected WeeklyPlanningService weeklyPlanningService;
 	protected PublicHolidayService publicHolidayService;
@@ -76,11 +75,10 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	protected ICalendarService icalendarService;
 
 	@Inject
-	public LeaveServiceImpl(DurationService durationService, LeaveLineRepository leaveLineRepo, WeeklyPlanningService weeklyPlanningService,
+	public LeaveServiceImpl(LeaveLineRepository leaveLineRepo, WeeklyPlanningService weeklyPlanningService,
 			PublicHolidayService publicHolidayService, LeaveRequestRepository leaveRequestRepo, AppBaseService appBaseService,
 			HRConfigService hrConfigService, TemplateMessageService templateMessageService, ICalendarEventRepository icalEventRepo, ICalendarService icalendarService){
 		
-		this.durationService = durationService;
 		this.leaveLineRepo = leaveLineRepo;
 		this.weeklyPlanningService = weeklyPlanningService;
 		this.publicHolidayService = publicHolidayService;

@@ -22,15 +22,25 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
+import com.axelor.apps.production.db.repo.ProductionOrderRepository;
+import com.axelor.apps.production.service.ManufOrderService;
 import com.axelor.apps.production.service.ProductionOrderServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceImpl  {
 	
+	@Inject
+	public ProductionOrderServiceBusinessImpl(ManufOrderService manufOrderService, SequenceService sequenceService,
+			ProductionOrderRepository productionOrderRepo) {
+		super(manufOrderService, sequenceService, productionOrderRepo);
+	}
+
 
 	public ProductionOrder createProductionOrder(Project project, boolean isToInvoice) throws AxelorException  {
 

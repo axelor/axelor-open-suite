@@ -94,9 +94,8 @@ public interface StockMoveService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty);
 
-	@SuppressWarnings("rawtypes")
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Boolean splitStockMoveLinesSpecial(List<HashMap> stockMoveLines, BigDecimal splitQty);
+	public void splitStockMoveLinesSpecial(StockMove stockMove, List<StockMoveLine> list, BigDecimal splitQty);
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void copyQtyToRealQty(StockMove stockMove);

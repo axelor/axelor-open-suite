@@ -17,13 +17,12 @@
  */
 package com.axelor.apps.account.db.repo;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.db.JPA;
-import com.axelor.inject.Beans;
-import com.google.inject.persist.Transactional;
+import java.util.Set;
 
 import javax.persistence.PersistenceException;
-import java.util.Set;
+
+import com.axelor.apps.account.db.Account;
+import com.axelor.db.JPA;
 
 public class AccountAccountRepository extends AccountRepository {
 

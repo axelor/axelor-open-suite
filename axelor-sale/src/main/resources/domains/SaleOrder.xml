@@ -15,7 +15,7 @@
   	<date name="creationDate" title="Creation date" required="true" readonly="true"/>
   	<date name="confirmationDate" title="Confirmation date" readonly="true"/>
 	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
-	<boolean name="bloqued" title="Bloqued"/>
+	<boolean name="blockedOnCustCreditExceed" title="Blocked"/>
 	<boolean name="manualUnblock" title="Manual Unblock"/>
 	
 <!--   	Onglet Coordonnées client -->
@@ -103,7 +103,7 @@
 	
 	<!-- Subscription fields -->
 	<integer name="periodicityTypeSelect" selection="sale.subscription.periodicity.type.select" title="Periodicity type" default="2"/>
-	<integer name="numberOfPeriods" title="Number of periods" />
+	<integer name="numberOfPeriods" title="Number of periods" min="1" default="1" />
 	<date name="contractStartDate" title="Contract start date" />
 	<integer name="contractPeriodInMonths" title="Contract period in months" />
 	<date name="currentContractPeriodEndDate" title="End of current contract period" />
@@ -112,6 +112,7 @@
 	<integer name="noticePeriodInDays" title="Notice period in days" />
 	<date name="nextInvoicingDate" title="Next invoicing date" />
 	<date name="nextInvoicingStartPeriodDate" title="Next invoicing start period date" />
+	<date name="nextInvoicingEndPeriodDate" title="Next invoicing end period date" />
 	<string name="subscriptionComment" title="Comment" large="true" />
 	<string name="subscriptionText" title="Subscription text to display" large="true" />
 

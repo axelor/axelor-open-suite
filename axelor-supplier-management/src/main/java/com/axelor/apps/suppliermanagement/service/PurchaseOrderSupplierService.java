@@ -71,14 +71,12 @@ public class PurchaseOrderSupplierService {
 	@Inject
 	protected PurchaseOrderRepository poRepo;
 
-	private LocalDate today;
 
 	protected User user;
 
 	@Inject
 	public PurchaseOrderSupplierService() {
 
-		this.today = Beans.get(AppBaseService.class).getTodayDate();
 		this.user =  AuthUtils.getUser();
 	}
 
@@ -173,7 +171,7 @@ public class PurchaseOrderSupplierService {
 				parentPurchaseOrder.getPurchaseOrderSeq(),
 				parentPurchaseOrder.getExternalReference(),
 				Beans.get(StockLocationService.class).getDefaultStockLocation(parentPurchaseOrder.getCompany()),
-				today,
+				Beans.get(AppBaseService.class).getTodayDate(),
 				Beans.get(PartnerPriceListService.class).getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
 				supplierPartner);
 

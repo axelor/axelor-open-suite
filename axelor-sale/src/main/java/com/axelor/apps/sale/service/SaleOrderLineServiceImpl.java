@@ -17,10 +17,17 @@
  */
 package com.axelor.apps.sale.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
@@ -38,13 +45,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Map;
 
 public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
@@ -58,6 +58,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
 	@Inject
 	protected AppBaseService appBaseService;
+	
 
 	@Override
 	public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
@@ -153,7 +154,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 	
 	public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
 
-		BigDecimal amount = quantity.multiply(price).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+		BigDecimal amount = quantity.multiply(price).setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 		
 		logger.debug("Calcul du montant HT avec une quantité de {} pour {} : {}", new Object[] { quantity, price, amount });
 
@@ -186,7 +187,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
 		return currencyService.getAmountCurrencyConvertedAtDate(
 				saleOrder.getCurrency(), saleOrder.getCompany().getCurrency(), exTaxTotal, saleOrder.getCreationDate())
-				.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+				.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 	}
 
 
@@ -196,7 +197,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 		
 		return currencyService.getAmountCurrencyConvertedAtDate(
 				product.getPurchaseCurrency(), saleOrder.getCompany().getCurrency(), product.getCostPrice(), saleOrder.getCreationDate())
-				.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+				.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 	}
 
 
@@ -296,10 +297,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 	@Override
 	public SaleOrder getSaleOrder(Context context) {
 		
-		Context parentContext = context.getParentContext();
+		Context parentContext = context.getParent();
 		
 		if (!parentContext.get("_model").equals(SaleOrder.class.getName())) {
-			parentContext = parentContext.getParentContext();
+			parentContext = parentContext.getParent();
 		}
 		
 		if (parentContext == null) {

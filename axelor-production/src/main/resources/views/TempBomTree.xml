@@ -5,7 +5,7 @@
     
 	<tree name="bill-of-material-tree" title="Bills of material">
 	   	<column name="product" type="reference"/>
-	   	<column name="qty" type="decimal"/>
+	   	<column name="qty" type="decimal" x-scale="2"/>
 	   	<column name="unit" type="reference"/>
 	   	<column name="prodProcess" type="reference"/>
 		<node model="com.axelor.apps.production.db.TempBomTree" domain="self.id = :_tempBomTreeId" onClick="action-bill-of-material-line-view">

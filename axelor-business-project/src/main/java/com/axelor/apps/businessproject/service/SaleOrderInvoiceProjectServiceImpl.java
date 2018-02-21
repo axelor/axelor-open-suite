@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.axelor.apps.account.db.Invoice;

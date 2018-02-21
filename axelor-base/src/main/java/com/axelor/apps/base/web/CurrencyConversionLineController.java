@@ -19,6 +19,7 @@ package com.axelor.apps.base.web;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -31,12 +32,17 @@ import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+import wslite.json.JSONException;
+
+@Singleton
 public class CurrencyConversionLineController {
 	
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
@@ -76,7 +82,7 @@ public class CurrencyConversionLineController {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void convert(ActionRequest request, ActionResponse response) {
+	public void convert(ActionRequest request, ActionResponse response) throws MalformedURLException, JSONException, AxelorException {
 		Context context = request.getContext();
 		Currency fromCurrency = null;
 		Currency toCurrency = null;

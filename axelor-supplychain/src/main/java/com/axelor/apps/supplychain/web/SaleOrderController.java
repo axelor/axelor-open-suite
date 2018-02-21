@@ -18,6 +18,9 @@
 package com.axelor.apps.supplychain.web;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +62,9 @@ import com.axelor.team.db.Team;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class SaleOrderController{
 	
 	@Inject
@@ -68,12 +73,6 @@ public class SaleOrderController{
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
 
-	@Inject
-	protected AppSupplychainService appSupplychainService;
-
-	@Inject
-	private SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
-	
 	public void createStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
@@ -218,6 +217,8 @@ public class SaleOrderController{
 			}
 
 			saleOrder = saleOrderRepo.find(saleOrder.getId());
+			
+			SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl = Beans.get(SaleOrderInvoiceServiceImpl.class);
 
 			Invoice invoice = saleOrderInvoiceServiceImpl.generateInvoice(
 							saleOrder, operationSelect, amountToInvoice, isPercent,
@@ -257,6 +258,8 @@ public class SaleOrderController{
 			}
 			 	
 			Invoice invoice = null;
+			
+			SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl = Beans.get(SaleOrderInvoiceServiceImpl.class);
 
 			if (!saleOrderLineIdSelected.isEmpty()){
 				List<SaleOrderLine> saleOrderLinesSelected = JPA.all(SaleOrderLine.class).filter("self.id IN (:saleOderLineIdList)").bind("saleOderLineIdList", saleOrderLineIdSelected).fetch();
@@ -502,6 +505,24 @@ public class SaleOrderController{
 			domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
 		}
 		response.setAttr("supplierPartnerSelect", "domain", domain);
+	}
+	
+	
+	public void setNextInvoicingStartPeriodDate(ActionRequest request, ActionResponse response) {
+		
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		
+		TemporalUnit temporalUnit = ChronoUnit.MONTHS;
+		
+		if (saleOrder.getPeriodicityTypeSelect() != null && saleOrder.getNextInvoicingStartPeriodDate() != null) {
+			LocalDate invoicingPeriodStartDate = saleOrder.getNextInvoicingStartPeriodDate();
+			if (saleOrder.getPeriodicityTypeSelect() == 1) {
+				temporalUnit = ChronoUnit.DAYS;
+			}
+			LocalDate subscriptionToDate = invoicingPeriodStartDate.plus(saleOrder.getNumberOfPeriods(), temporalUnit);
+			subscriptionToDate = subscriptionToDate.minusDays(1);
+			response.setValue("nextInvoicingEndPeriodDate", subscriptionToDate);
+		}
 	}
 	
 }

@@ -20,13 +20,7 @@ package com.axelor.apps.purchase.service;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductVariant;
-import com.axelor.apps.base.db.ProductVariantConfig;
-import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.purchase.db.SupplierCatalog;
-import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 
 public interface PurchaseProductService {
 	

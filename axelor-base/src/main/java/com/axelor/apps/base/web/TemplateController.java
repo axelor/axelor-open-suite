@@ -23,16 +23,18 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class TemplateController {
 	
 	@Inject
-	private TemplateService ts;
+	private TemplateService templateService;
 	
 	public void checkTargetReceptor(ActionRequest request, ActionResponse response){
 		
 		try {
-			ts.checkTargetReceptor(request.getContext().asType(Template.class));
+			templateService.checkTargetReceptor(request.getContext().asType(Template.class));
 		}
 		catch (Exception e) { TraceBackService.trace(response, e); }
 	}
