@@ -82,8 +82,8 @@
 			<field name="priority" readonlyIf="statusSelect == 6" colSpan="3"/>
 			<field name="company" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="3" form-view="company-form" grid-view="company-grid"/>
 			<field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
-			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" domain="self.defineSubBillOfMaterial = true AND self.prodProcess > 0" onChange="action-manuf-order-on-change-bill-of-material, action-manuf-order-attrs-isConsProOnOperation, action-manuf-order-record-isConsProOnOperation,action-manuf-order-reset" onSelect="action-manuf-order-filter-prodProcess, action-manuf-order-filter-product" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" canEdit="false"/>
-			<field name="prodProcess" onChange="action-manuf-order-attrs-isConsProOnOperation, action-manuf-order-record-isConsProOnOperation" onSelect="action-manuf-order-filter-prodProcess, action-manuf-order-filter-product" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"/>
+			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" domain="self.defineSubBillOfMaterial = true AND self.prodProcess IS NOT null" onChange="action-manuf-order-on-change-bill-of-material, action-manuf-order-attrs-isConsProOnOperation, action-manuf-order-record-isConsProOnOperation,action-manuf-order-reset" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" canEdit="false"/>
+			<field name="prodProcess" onChange="action-manuf-order-attrs-isConsProOnOperation, action-manuf-order-record-isConsProOnOperation" onSelect="action-manuf-order-filter-prodProcess" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"/>
     			<field name="prodProcess.outsourcing" colSpan="3"/>
 			<field name="product" canEdit="false" required="true" readonlyIf="statusSelect &gt; 1 || !product.isModel" form-view="product-form" grid-view="product-grid" onSelect="action-manuf-order-filter-product"/>
 			<field name="qty" readonlyIf="statusSelect &gt; 1"/>
@@ -292,15 +292,15 @@
 	</action-method>
 
 	<action-attrs name="action-manuf-order-filter-prodProcess">
-		<attribute if="prodProcess?.id != null &amp;&amp; billOfMaterial != null" name="domain" expr="eval: &quot; self.id = ${prodProcess?.id} &quot;" for="prodProcess"/>
-		<attribute if="billOfMaterial == null" name="domain" expr="eval: null" for="prodProcess"/>
+		<attribute name="domain" for="prodProcess" expr="eval: &quot; self.id = ${prodProcess?.id} &quot;" if="prodProcess?.id != null &amp;&amp; billOfMaterial != null"/>
+		<attribute name="domain" for="prodProcess" expr="eval: null" if="billOfMaterial == null"/>
 	</action-attrs>
 
 	<action-attrs name="action-manuf-order-filter-product">
-		<attribute name="domain" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.fullName = '${billOfMaterial?.product?.fullName}' AND self.defaultBillOfMaterial.prodProcess.code = '${prodProcess?.code}' &quot;" for="product" if="billOfMaterial?.product?.fullName != null &amp;&amp; prodProcess?.code != null"/>
-		<attribute name="domain" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.fullName = '${billOfMaterial?.product?.fullName}' &quot;" for="product" if="billOfMaterial?.product?.fullName != null &amp;&amp; prodProcess?.code == null"/>
-		<attribute name="domain" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.prodProcess.code = '${prodProcess?.code}' &quot;" for="product" if="billOfMaterial?.product?.fullName == null &amp;&amp; prodProcess?.code != null"/>
-		<attribute name="domain" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) &quot;" for="product" if="billOfMaterial?.product?.fullName == null &amp;&amp; prodProcess?.code == null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' &quot;" if="billOfMaterial?.product?.id != null &amp;&amp; prodProcess?.id != null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' &quot;" if="billOfMaterial?.product?.id != null &amp;&amp; prodProcess?.id == null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' &quot;" if="billOfMaterial?.product?.id == null &amp;&amp; prodProcess?.id != null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) &quot;" if="billOfMaterial?.product?.id == null &amp;&amp; prodProcess?.id == null"/>
 	</action-attrs>
 
   	<search-filters name="manuf-order-filters" model="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order filters">
