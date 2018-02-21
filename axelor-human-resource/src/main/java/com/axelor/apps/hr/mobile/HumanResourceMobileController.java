@@ -58,7 +58,8 @@ public class HumanResourceMobileController {
 	public void insertKMExpenses(ActionRequest request, ActionResponse response) throws AxelorException {
 		User user = AuthUtils.getUser();
 		if (user != null) {
-			Expense expense = Beans.get(ExpenseService.class).getOrCreateExpense(user);
+			ExpenseService expenseService = Beans.get(ExpenseService.class);
+			Expense expense = expenseService.getOrCreateExpense(user);
 			ExpenseLine expenseLine = new ExpenseLine();
 			expenseLine.setDistance(new BigDecimal(request.getData().get("kmNumber").toString()));
 			expenseLine.setFromCity(request.getData().get("locationFrom").toString());
@@ -70,7 +71,7 @@ public class HumanResourceMobileController {
 			Employee employee = user.getEmployee();
 			if (employee != null) {
 				expenseLine.setKilometricAllowParam(
-						Beans.get(ExpenseService.class).getListOfKilometricAllowParamVehicleFilter(expenseLine).get(0));
+						expenseService.getListOfKilometricAllowParamVehicleFilter(expenseLine).get(0));
 				expenseLine.setTotalAmount(
 						Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
 				expenseLine.setUntaxedAmount(expenseLine.getTotalAmount());
@@ -182,14 +183,16 @@ public class HumanResourceMobileController {
 		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
 		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("activity").toString()));
 		LocalDate date = new LocalDate(request.getData().get("date").toString());
+		TimesheetRepository timesheetRepository = Beans.get(TimesheetRepository.class);
+		TimesheetService timesheetService = Beans.get(TimesheetService.class);
 		if(user != null){
-			Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
+			Timesheet timesheet = timesheetRepository.all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
 			if(timesheet == null){
-				timesheet = Beans.get(TimesheetService.class).createTimesheet(user, date, date);
+				timesheet = timesheetService.createTimesheet(user, date, date);
 			}
 			BigDecimal minutes = new BigDecimal(Minutes.minutesBetween(new LocalTime(0,0), new LocalTime(request.getData().get("duration").toString())).getMinutes());
-			Beans.get(TimesheetService.class).createTimesheetLine(projectTask, product, user, date, timesheet, minutes, request.getData().get("comments").toString());
-			Beans.get(TimesheetRepository.class).save(timesheet);
+			timesheetService.createTimesheetLine(projectTask, product, user, date, timesheet, minutes, request.getData().get("comments").toString());
+			timesheetRepository.save(timesheet);
 		}
 	}
 
