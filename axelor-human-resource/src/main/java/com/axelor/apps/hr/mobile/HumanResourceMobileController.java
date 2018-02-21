@@ -23,15 +23,15 @@ import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
-import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
-import com.axelor.apps.hr.service.leave.LeaveServiceImpl;
-import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveService;
+import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.AuthUtils;
@@ -43,20 +43,10 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 
 public class HumanResourceMobileController {
 	
-	@Inject
-	private Provider<ExpenseService> expenseServiceProvider;
-
-	private ExpenseServiceImpl expenseServiceImpl;
-    private TimesheetServiceImpl timesheetServiceImpl;
-    private LeaveServiceImpl leaveServiceImpl;
-
-
 	/**
 	 * This method is used in mobile application.
 	 * It was in ExpenseController
@@ -68,8 +58,7 @@ public class HumanResourceMobileController {
 	public void insertKMExpenses(ActionRequest request, ActionResponse response) throws AxelorException {
 		User user = AuthUtils.getUser();
 		if (user != null) {
-			Expense expense = expenseServiceProvider.get().getOrCreateExpense(user);
-			// Expense expense = getOrCreateExpense(user);
+			Expense expense = Beans.get(ExpenseService.class).getOrCreateExpense(user);
 			ExpenseLine expenseLine = new ExpenseLine();
 			expenseLine.setDistance(new BigDecimal(request.getData().get("kmNumber").toString()));
 			expenseLine.setFromCity(request.getData().get("locationFrom").toString());
@@ -81,8 +70,7 @@ public class HumanResourceMobileController {
 			Employee employee = user.getEmployee();
 			if (employee != null) {
 				expenseLine.setKilometricAllowParam(
-						expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine).get(0));
-						//getListOfKilometricAllowParamVehicleFilter(expenseLine).get(0));
+						Beans.get(ExpenseService.class).getListOfKilometricAllowParamVehicleFilter(expenseLine).get(0));
 				expenseLine.setTotalAmount(
 						Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
 				expenseLine.setUntaxedAmount(expenseLine.getTotalAmount());
@@ -105,8 +93,7 @@ public class HumanResourceMobileController {
 
 		Expense expense = request.getContext().asType(Expense.class);
 
-		//List<ExpenseLine> expenseLineList = expense.getExpenseLineList();
-		List<ExpenseLine> expenseLineList = expenseServiceProvider.get().getExpenseLineList(expense);
+		List<ExpenseLine> expenseLineList = Beans.get(ExpenseService.class).getExpenseLineList(expense);
 		try {
 			if (expenseLineList != null && !expenseLineList.isEmpty()) {
 				Iterator<ExpenseLine> expenseLineIter = expenseLineList.iterator();
@@ -140,7 +127,7 @@ public class HumanResourceMobileController {
 		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
 		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("expenseProduct").toString()));
 		if (user != null) {
-			Expense expense = expenseServiceImpl.getOrCreateExpense(user); // Expense expense = getOrCreateExpense(user);
+			Expense expense = Beans.get(ExpenseService.class).getOrCreateExpense(user);
 			ExpenseLine expenseLine = new ExpenseLine();
 			expenseLine.setExpenseDate(new LocalDate(request.getData().get("date").toString()));
 			expenseLine.setComments(request.getData().get("comments").toString());
@@ -198,11 +185,10 @@ public class HumanResourceMobileController {
 		if(user != null){
 			Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
 			if(timesheet == null){
-				timesheet = timesheetServiceImpl.createTimesheet(user, date, date); // timesheet = createTimesheet(user, date, date);
+				timesheet = Beans.get(TimesheetService.class).createTimesheet(user, date, date);
 			}
 			BigDecimal minutes = new BigDecimal(Minutes.minutesBetween(new LocalTime(0,0), new LocalTime(request.getData().get("duration").toString())).getMinutes());
-			timesheetServiceImpl.createTimesheetLine(projectTask, product, user, date, timesheet, minutes, request.getData().get("comments").toString());
-			// createTimesheetLine(projectTask, product, user, date, timesheet, minutes, request.getData().get("comments").toString());
+			Beans.get(TimesheetService.class).createTimesheetLine(projectTask, product, user, date, timesheet, minutes, request.getData().get("comments").toString());
 			Beans.get(TimesheetRepository.class).save(timesheet);
 		}
 	}
@@ -227,8 +213,7 @@ public class HumanResourceMobileController {
 				company = user.getEmployee().getMainEmploymentContract().getPayCompany();
 			}
 			leave.setCompany(company);
-			LeaveLine leaveLine = leaveServiceImpl.getLeaveLineRepo().all().filter("self.employee = ?1 AND self.leaveReason = ?2", user.getEmployee(), leaveReason).fetchOne();
-			//LeaveLine leaveLine = leaveLineRepo.all().filter("self.employee = ?1 AND self.leaveReason = ?2", user.getEmployee(), leaveReason).fetchOne();
+			LeaveLine leaveLine = Beans.get(LeaveLineRepository.class).all().filter("self.employee = ?1 AND self.leaveReason = ?2", user.getEmployee(), leaveReason).fetchOne();
 			if(leaveLine == null){
 				throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_LINE),user.getEmployee().getName(), leaveReason.getLeaveReason()), IException.CONFIGURATION_ERROR);
 			}
@@ -238,8 +223,7 @@ public class HumanResourceMobileController {
 			leave.setStartOnSelect(new Integer(request.getData().get("startOn").toString()));
 			leave.setToDate(new LocalDate(request.getData().get("toDate").toString()));
 			leave.setEndOnSelect(new Integer(request.getData().get("endOn").toString()));
-			leave.setDuration(this.leaveServiceImpl.computeDuration(leave));
-			//leave.setDuration(this.computeDuration(leave));
+			leave.setDuration(Beans.get(LeaveService.class).computeDuration(leave));
 			leave.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
 			if(request.getData().get("comment") != null){
 				leave.setComments(request.getData().get("comment").toString());
