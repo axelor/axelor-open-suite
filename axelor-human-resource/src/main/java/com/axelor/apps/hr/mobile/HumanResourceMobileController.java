@@ -50,9 +50,6 @@ import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 
 public class HumanResourceMobileController {
-	
-	@Inject
-	private Provider<ExpenseService> expenseServiceProvider;
 
 	/**
 	 * This method is used in mobile application.
@@ -65,8 +62,7 @@ public class HumanResourceMobileController {
 	public void insertKMExpenses(ActionRequest request, ActionResponse response) throws AxelorException {
 		User user = AuthUtils.getUser();
 		if (user != null) {
-			Expense expense = expenseServiceProvider.get().getOrCreateExpense(user);
-			// Expense expense = getOrCreateExpense(user);
+			Expense expense = Beans.get(ExpenseService.class).getOrCreateExpense(user);
 			ExpenseLine expenseLine = new ExpenseLine();
 			expenseLine.setDistance(new BigDecimal(request.getData().get("kmNumber").toString()));
 			expenseLine.setFromCity(request.getData().get("locationFrom").toString());
@@ -78,8 +74,7 @@ public class HumanResourceMobileController {
 			Employee employee = user.getEmployee();
 			if (employee != null) {
 				expenseLine.setKilometricAllowParam(
-						expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine).get(0));
-						//getListOfKilometricAllowParamVehicleFilter(expenseLine).get(0));
+						Beans.get(ExpenseService.class).getListOfKilometricAllowParamVehicleFilter(expenseLine).get(0));
 				expenseLine.setTotalAmount(
 						Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
 				expenseLine.setUntaxedAmount(expenseLine.getTotalAmount());
@@ -102,8 +97,7 @@ public class HumanResourceMobileController {
 
 		Expense expense = request.getContext().asType(Expense.class);
 
-		//List<ExpenseLine> expenseLineList = expense.getExpenseLineList();
-		List<ExpenseLine> expenseLineList = expenseServiceProvider.get().getExpenseLineList(expense);
+		List<ExpenseLine> expenseLineList = Beans.get(ExpenseService.class).getExpenseLineList(expense);
 		try {
 			if (expenseLineList != null && !expenseLineList.isEmpty()) {
 				Iterator<ExpenseLine> expenseLineIter = expenseLineList.iterator();
@@ -138,7 +132,7 @@ public class HumanResourceMobileController {
 		Project project = Beans.get(ProjectRepository.class).find(new Long(requestData.get("project").toString()));
 		Product product = Beans.get(ProductRepository.class).find(new Long(requestData.get("expenseType").toString()));
 		if (user != null) {
-			Expense expense = expenseServiceProvider.get().getOrCreateExpense(user);
+			Expense expense = Beans.get(ExpenseService.class).getOrCreateExpense(user);
 			ExpenseLine expenseLine = new ExpenseLine();
 			expenseLine.setExpenseDate(LocalDate.parse(requestData.get("date").toString(), DateTimeFormatter.ISO_DATE));
 			expenseLine.setComments(requestData.get("comments").toString());
@@ -206,12 +200,12 @@ public class HumanResourceMobileController {
 		if(user != null){
 			Timesheet timesheet = timesheetRepository.all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
 			if(timesheet == null){
-				timesheet = timesheetService.createTimesheet(user, date, date);
+				timesheet = Beans.get(TimesheetService.class).createTimesheet(user, date, date);
 			}
 			BigDecimal hours = new BigDecimal(request.getData().get("duration").toString());
-			TimesheetLine line = timesheetService.createTimesheetLine(project, product, user, date, timesheet, hours, request.getData().get("comments").toString());
+			TimesheetLine line = Beans.get(TimesheetService.class).createTimesheetLine(project, product, user, date, timesheet, hours, request.getData().get("comments").toString());
 
-			timesheetRepository.save(timesheet);
+			Beans.get(TimesheetRepository.class).save(timesheet);
 			response.setTotal(1);
 			HashMap<String, Object> data = new HashMap<>();
 			data.put("id", line.getId());
@@ -244,7 +238,7 @@ public class HumanResourceMobileController {
 				company = user.getEmployee().getMainEmploymentContract().getPayCompany();
 			}
 			leave.setCompany(company);
-			LeaveLine leaveLine = leaveLineRepo.all().filter("self.employee = ?1 AND self.leaveReason = ?2", user.getEmployee(), leaveReason).fetchOne();
+			LeaveLine leaveLine = Beans.get(LeaveLineRepository.class).all().filter("self.employee = ?1 AND self.leaveReason = ?2", user.getEmployee(), leaveReason).fetchOne();
 			if (leaveLine == null) {
 				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_LINE), user.getEmployee().getName(), leaveReason.getLeaveReason());
 			}
