@@ -284,7 +284,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 			dateQueryStr += String.format(" AND self.journal = %s", accountingReport.getJournal().getId());
 		}
 		else  {
-			dateQueryStr += String.format(" AND self.journal.type = %s", journalType.getId());
+			dateQueryStr += String.format(" AND self.journal.journalType = %s", journalType.getId());
 		}
 		if(accountingReport.getPeriod() != null)	{
 			dateQueryStr += String.format(" AND self.period = %s", accountingReport.getPeriod().getId());
@@ -340,7 +340,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 		for(LocalDate dt : allDates) {
 
-			List<Journal> journalList = journalRepo.all().filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
+			List<Journal> journalList = journalRepo.all().filter("self.journalType = ?1 AND self.notExportOk = false", journalType).fetch();
 
 			if(accountingReport.getJournal() != null)  {
 				journalList = new ArrayList<Journal>();
@@ -431,7 +431,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 			dateQueryStr += String.format(" AND self.journal = %s", accountingReport.getJournal().getId());
 		}
 		else  {
-			dateQueryStr += String.format(" AND self.journal.type = %s", journalType.getId());
+			dateQueryStr += String.format(" AND self.journal.journalType = %s", journalType.getId());
 		}
 		if(accountingReport.getPeriod() != null)	{
 			dateQueryStr += String.format(" AND self.period = %s", accountingReport.getPeriod().getId());
@@ -488,7 +488,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 		for(LocalDate dt : allDates) {
 
-			List<Journal> journalList = journalRepo.all().filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
+			List<Journal> journalList = journalRepo.all().filter("self.journalType = ?1 AND self.notExportOk = false", journalType).fetch();
 
 			if(accountingReport.getJournal()!=null)  {
 				journalList = new ArrayList<Journal>();
@@ -578,7 +578,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 			dateQueryStr += String.format(" AND self.journal = %s", accountingReport.getJournal().getId());
 		}
 		else  {
-			dateQueryStr += String.format(" AND self.journal.type = %s", journalType.getId());
+			dateQueryStr += String.format(" AND self.journal.journalType = %s", journalType.getId());
 		}
 		if(accountingReport.getPeriod() != null)	{
 			dateQueryStr += String.format(" AND self.period = %s", accountingReport.getPeriod().getId());
@@ -635,7 +635,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 		for(LocalDate dt : allDates) {
 
-			List<Journal> journalList = journalRepo.all().filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
+			List<Journal> journalList = journalRepo.all().filter("self.journalType = ?1 AND self.notExportOk = false", journalType).fetch();
 
 			if(accountingReport.getJournal()!=null)  {
 				journalList = new ArrayList<Journal>();
@@ -723,7 +723,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 			dateQueryStr += String.format(" AND self.journal = %s", accountingReport.getJournal().getId());
 		}
 		else  {
-			dateQueryStr += String.format(" AND self.journal.type = %s", journalType.getId());
+			dateQueryStr += String.format(" AND self.journal.journalType = %s", journalType.getId());
 		}
 		if(accountingReport.getPeriod() != null)	{
 			dateQueryStr += String.format(" AND self.period = %s", accountingReport.getPeriod().getId());
@@ -780,7 +780,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 		for(LocalDate dt : allDates) {
 
-			List<Journal> journalList = journalRepo.all().filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
+			List<Journal> journalList = journalRepo.all().filter("self.journalType = ?1 AND self.notExportOk = false", journalType).fetch();
 
 			if(accountingReport.getJournal()!=null)  {
 				journalList = new ArrayList<Journal>();
@@ -1036,7 +1036,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 			moveLineQueryStr += String.format(" AND self.move.journal = %s", accountingReport.getJournal().getId());
 		}
 		else  {
-			moveLineQueryStr += String.format(" AND self.move.journal.type = %s", accountingReportService.getJournalType(accountingReport).getId());
+			moveLineQueryStr += String.format(" AND self.move.journal.journalType = %s", accountingReportService.getJournalType(accountingReport).getId());
 		}
 
 		if(accountingReport.getPeriod() != null)	{
