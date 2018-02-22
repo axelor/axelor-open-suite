@@ -54,6 +54,24 @@ public class HumanResourceMobileController {
 	 * @param request
 	 * @param response
 	 * @throws AxelorException
+	 *
+	 * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertKMExpenses
+	 * Content-Type: application/json
+	 *
+	 * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertKMExpenses
+	 * fields: kmNumber, locationFrom, locationTo, allowanceTypeSelect, comments, date, expenseProduct
+	 *
+	 * payload:
+	 * { "data": {
+	 * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:insertKMExpenses",
+	 *	 	"kmNumber": 350.00,
+	 * 		"locationFrom": "Paris",
+	 * 		"locationTo": "Marseille",
+	 * 		"allowanceTypeSelect": 1,
+	 * 		"comments": "no",
+	 * 		"date": "2018-02-22",
+	 * 		"expenseProduct": 43
+	 * } }
 	 */
 	@Transactional
 	public void insertKMExpenses(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -68,6 +86,7 @@ public class HumanResourceMobileController {
 			expenseLine.setKilometricTypeSelect(new Integer(request.getData().get("allowanceTypeSelect").toString()));
 			expenseLine.setComments(request.getData().get("comments").toString());
 			expenseLine.setExpenseDate(LocalDate.parse(request.getData().get("date").toString()));
+			expenseLine.setExpenseProduct(Beans.get(ProductRepository.class).find(new Long(request.getData().get("expenseProduct").toString())));
 
 			Employee employee = user.getEmployee();
 			if (employee != null) {
@@ -79,7 +98,6 @@ public class HumanResourceMobileController {
 			}
 
 			expense.addGeneralExpenseLineListItem(expenseLine);
-
 			Beans.get(ExpenseRepository.class).save(expense);
 		}
 	}
@@ -90,31 +108,47 @@ public class HumanResourceMobileController {
 	 * @param request
 	 * @param response
 	 * @throws AxelorException
+	 *
+	 * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:removeLines
+	 * Content-Type: application/json
+	 *
+	 * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:removeLines
+	 * no field
+	 *
+	 * payload:
+	 * { "data": {
+	 * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:removeLines"
+	 * } }
 	 */
 	public void removeLines(ActionRequest request, ActionResponse response) {
 
-		Expense expense = request.getContext().asType(Expense.class);
+		User user = AuthUtils.getUser();
 
-		List<ExpenseLine> expenseLineList = Beans.get(ExpenseService.class).getExpenseLineList(expense);
 		try {
-			if (expenseLineList != null && !expenseLineList.isEmpty()) {
-				Iterator<ExpenseLine> expenseLineIter = expenseLineList.iterator();
-				while (expenseLineIter.hasNext()) {
-					ExpenseLine generalExpenseLine = expenseLineIter.next();
+			if (user != null) {
+				ExpenseService expenseService = Beans.get(ExpenseService.class);
+				Expense expense = expenseService.getOrCreateExpense(user);
 
-					if (generalExpenseLine.getKilometricExpense() != null
-							&& (expense.getKilometricExpenseLineList() != null
-									&& !expense.getKilometricExpenseLineList().contains(generalExpenseLine)
-									|| expense.getKilometricExpenseLineList() == null)) {
+				List<ExpenseLine> expenseLineList = Beans.get(ExpenseService.class).getExpenseLineList(expense);
+				if (expenseLineList != null && !expenseLineList.isEmpty()) {
+					Iterator<ExpenseLine> expenseLineIter = expenseLineList.iterator();
+					while (expenseLineIter.hasNext()) {
+						ExpenseLine generalExpenseLine = expenseLineIter.next();
 
-						expenseLineIter.remove();
+						if (generalExpenseLine.getKilometricExpense() != null
+								&& (expense.getKilometricExpenseLineList() != null
+										&& !expense.getKilometricExpenseLineList().contains(generalExpenseLine)
+										|| expense.getKilometricExpenseLineList() == null)) {
+
+							expenseLineIter.remove();
+						}
 					}
 				}
+				response.setValue("expenseLineList", expenseLineList);
 			}
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
-		response.setValue("expenseLineList", expenseLineList);
 	}
 
 	/*
@@ -122,6 +156,25 @@ public class HumanResourceMobileController {
 	 * It was in ExpenseServiceImpl
 	 * @param request
 	 * @param response
+	 *
+	 * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertExpenseLine
+	 * Content-Type: application/json
+	 *
+	 * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertExpenseLine
+	 * fields: project, expenseProduct, date, comments, toInvoice, amountWithoutVat, vatAmount, justification
+	 *
+	 * payload:
+	 * { "data": {
+	 * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:insertExpenseLine",
+	 * 		"project": 2,
+	 * 		"expenseProduct": 10,
+	 * 		"date": "2018-02-22",
+	 * 		"comments": "No",
+	 * 		"toInvoice": "no",
+	 * 		"amountWithoutVat": 1,
+	 *	 	"vatAmount": 2,
+	 *		"justification": 0
+	 * } }
 	 */
 	@Transactional
 	public void insertExpenseLine(ActionRequest request, ActionResponse response) {
@@ -160,6 +213,17 @@ public class HumanResourceMobileController {
 	 * It was in TimesheetServiceImpl
 	 * @param request
 	 * @param response
+	 *
+	 * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getActivities
+	 * Content-Type: application/json
+	 *
+	 * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:getActivities
+	 * no field
+	 *
+	 * payload:
+	 * { "data": {
+	 * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:getActivities"
+	 * } }
 	 */
 	public void getActivities(ActionRequest request, ActionResponse response){
 		List<Map<String,String>> dataList = new ArrayList<>();
@@ -184,6 +248,22 @@ public class HumanResourceMobileController {
 	 * It was in TimesheetServiceImpl
 	 * @param request
 	 * @param response
+	 *
+	 * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertTSLine
+	 * Content-Type: application/json
+	 *
+	 * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertTSLine
+	 * fields: project, activity, date, duration, comments
+	 *
+	 * payload:
+	 * { "data": {
+	 * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:insertTSLine",
+	 * 		"project": 1,
+	 * 		"activity": 2,
+	 * 		"date": "2018-02-22",
+	 * 		"duration": 10,
+	 * 		"comments": "no"
+	 * } }
 	 */
 	@Transactional
 	public void insertTSLine(ActionRequest request, ActionResponse response){
@@ -216,6 +296,23 @@ public class HumanResourceMobileController {
 	 * It was in LeaveServiceImpl
 	 * @param request
 	 * @param response
+	 *
+	 * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertLeave
+	 * Content-Type: application/json
+	 *
+	 * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertLeave
+	 * fields: leaveReason, fromDate, startOn, toDate, endOn, comment
+	 *
+	 * payload:
+	 * { "data": {
+	 * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:insertLeave",
+	 * 		"leaveReason": 10,
+	 * 		"fromDate": "2018-02-22",
+	 * 		"startOn": 1,
+	 * 		"toDate": "2018-02-24",
+	 *	 	"endOn": 1,
+	 * 		"comment": "no"
+	 * } }
 	 */
 	@Transactional
 	public void insertLeave(ActionRequest request, ActionResponse response) throws AxelorException{

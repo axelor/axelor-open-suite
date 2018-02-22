@@ -168,9 +168,8 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			}
 			EventsPlanning publicHolidayPlanning = employee.getPublicHolidayEventsPlanning();
 			if(publicHolidayPlanning == null){
-				HRConfig conf = leave.getCompany().getHrConfig();
-				if(conf != null){
-					publicHolidayPlanning = conf.getPublicHolidayEventsPlanning();
+				if(leave.getCompany() != null && leave.getCompany().getHrConfig() != null){
+					publicHolidayPlanning = leave.getCompany().getHrConfig().getPublicHolidayEventsPlanning();
 				}
 			}
 
