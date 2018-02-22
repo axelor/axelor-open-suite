@@ -601,7 +601,7 @@ public class TimesheetServiceImpl implements TimesheetService{
   		}
 	}
 	
-	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet)  {
+	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet) throws AxelorException {
 		
 		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
 		

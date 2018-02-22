@@ -17,17 +17,11 @@
  */
 package com.axelor.apps.bankpayment.web;
 
-import java.lang.invoke.MethodHandles;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
+import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
@@ -46,6 +40,11 @@ import com.axelor.rpc.Context;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.util.List;
 
 @Singleton
 public class BankOrderController {
@@ -110,7 +109,7 @@ public class BankOrderController {
 				response.setError(I18n.get(IExceptionMessage.EBICS_MISSING_NAME));
 			}  
 			else  {
-			    if(ebicsUser.getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS) {
+			    if(ebicsUser.getEbicsPartner().getEbicsTypeSelect() == EbicsPartnerRepository.EBICS_TYPE_TS) {
 			    	bankOrderService.validate(bankOrder);
 				}
 				else {

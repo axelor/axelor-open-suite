@@ -29,6 +29,9 @@ public class ExpenseHRRepository extends ExpenseRepository {
         try {
             expense = super.save(expense);
             Beans.get(ExpenseService.class).setDraftSequence(expense);
+            if (expense.getStatusSelect() == ExpenseRepository.STATUS_DRAFT) {
+                Beans.get(ExpenseService.class).completeExpenseLines(expense);
+            }
 
             return expense;
         } catch (Exception e) {

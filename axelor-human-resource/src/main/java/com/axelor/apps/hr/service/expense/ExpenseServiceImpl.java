@@ -31,6 +31,7 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import org.apache.commons.codec.binary.Base64;
 
 import com.axelor.apps.account.db.Account;
@@ -728,5 +729,37 @@ public class ExpenseServiceImpl implements ExpenseService {
 		}
 		return expenseLineList;
 	}
+	public void completeExpenseLines(Expense expense) {
+		ExpenseLineRepository expenseLineRepository = Beans.get(ExpenseLineRepository.class);
+		List<ExpenseLine> expenseLineList = expenseLineRepository.all().filter("self.expense.id = :_expenseId")
+				.bind("_expenseId", expense.getId())
+				.fetch();
+		List<ExpenseLine> kilometricExpenseLineList = expense.getKilometricExpenseLineList();
+		List<ExpenseLine> generalExpenseLineList = expense.getGeneralExpenseLineList();
 
+		//removing expense from one O2M also remove the link
+		for (ExpenseLine expenseLine : expenseLineList) {
+			if (!kilometricExpenseLineList.contains(expenseLine)
+					&& !generalExpenseLineList.contains(expenseLine)) {
+				expenseLine.setExpense(null);
+				expenseLineRepository.remove(expenseLine);
+			}
+		}
+
+		//adding expense in one O2M also add the link
+		if (kilometricExpenseLineList != null) {
+			for (ExpenseLine kilometricLine : kilometricExpenseLineList) {
+				if (!expenseLineList.contains(kilometricLine)) {
+					kilometricLine.setExpense(expense);
+				}
+			}
+		}
+		if (generalExpenseLineList != null) {
+			for (ExpenseLine generalExpenseLine : generalExpenseLineList) {
+				if (!expenseLineList.contains(generalExpenseLine)) {
+					generalExpenseLine.setExpense(expense);
+				}
+			}
+		}
+	}
 }

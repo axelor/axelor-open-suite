@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.ebics.schema.s001.OrderSignatureDataType;
 import com.axelor.apps.account.ebics.schema.s001.UserSignatureDataSigBookType;
 import com.axelor.apps.bankpayment.db.EbicsUser;
-import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
+import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -76,7 +76,7 @@ public class UserSignature extends DefaultEbicsRootElement {
 
 	    try {
 
-			if (user.getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS) {
+			if (user.getEbicsPartner().getEbicsTypeSelect() == EbicsPartnerRepository.EBICS_TYPE_TS) {
 		
 				log.debug("Signature (base64) : {}", new String(signature));
 				log.debug("Signature (base64) length : {}", signature.length);

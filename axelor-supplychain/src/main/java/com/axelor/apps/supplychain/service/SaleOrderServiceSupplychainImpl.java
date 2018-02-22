@@ -82,8 +82,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 	@Inject
 	public SaleOrderServiceSupplychainImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService, 	
 			SequenceService sequenceService, PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo,
-			AppSaleService appSaleService, UserService userService, SaleOrderStockService saleOrderStockService, 
-			SaleOrderPurchaseService saleOrderPurchaseService, AppSupplychainService appSupplychainService , 
+			AppSaleService appSaleService, UserService userService, SaleOrderStockService saleOrderStockService,
+			SaleOrderPurchaseService saleOrderPurchaseService, AppSupplychainService appSupplychainService ,
 			AccountConfigService accountConfigService, AccountingSituationSupplychainService accountingSituationSupplychainService) {
 		
 		super(saleOrderLineService, saleOrderLineTaxService, sequenceService,
@@ -94,7 +94,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		this.appSupplychain = appSupplychainService.getAppSupplychain();
 		this.accountConfigService = accountConfigService;
 		this.accountingSituationSupplychainService = accountingSituationSupplychainService;
-		
+
 	}
 	
 	
@@ -119,7 +119,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 					.generateIntercoPurchaseFromSale(saleOrder);
 		}
 	}
-	
+
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr){
@@ -184,7 +184,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		}
 		return saleOrder;
 	}
-	
+
 	@Transactional
 	public SaleOrder mergeSaleOrders(List<SaleOrder> saleOrderList, Currency currency,
 			Partner clientPartner, Company company, StockLocation stockLocation, Partner contactPartner,
@@ -204,7 +204,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 				externalRef += saleOrderLocal.getExternalReference();
 			}
 		}
-		
+
 		SaleOrder saleOrderMerged = this.createSaleOrder(
 				AuthUtils.getUser(),
 				company,
@@ -218,18 +218,18 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 				priceList,
 				clientPartner,
 				team);
-		
+
 		super.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
 
 		this.computeSaleOrder(saleOrderMerged);
 
 		saleOrderRepo.save(saleOrderMerged);
-		
+
 		super.removeOldSaleOrders(saleOrderList);
 
 		return saleOrderMerged;
 	}
-	
+
 	public void updateAmountToBeSpreadOverTheTimetable(SaleOrder saleOrder) {
 		List<Timetable> timetableList = saleOrder.getTimetableList();
 		BigDecimal totalHT = saleOrder.getExTaxTotal();
@@ -241,7 +241,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 		}
 		saleOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
 	}
-	
+
 	@Override
     @Transactional(rollbackOn = { AxelorException.class, Exception.class }, ignore = {
             BlockedSaleOrderException.class })
@@ -257,21 +257,21 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 					.generateIntercoPurchaseFromSale(saleOrder);
 		}
 	}
-	
+
 	@Override
 	public void _computeSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
 		super._computeSaleOrder(saleOrder);
-		
+
 		int maxDelay = 0;
-		
+
 		if (saleOrder.getSaleOrderLineList() != null && !saleOrder.getSaleOrderLineList().isEmpty()){
 			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-				
+
 				if ((saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE || saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PURCHASE)){
 					maxDelay = Integer.max(maxDelay, saleOrderLine.getStandardDelay() == null ? 0 :saleOrderLine.getStandardDelay());
 				}
-				
+
 			}
 		}
 		saleOrder.setStandardDelay(maxDelay);
@@ -283,11 +283,11 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 
     protected BigDecimal computeTotalInvoiceAdvancePayment(SaleOrder saleOrder) {
 		BigDecimal total = BigDecimal.ZERO;
-		
+
 		if (saleOrder.getId() == null) {
 			return total;
 		}
-		
+
 		List<Invoice> advancePaymentInvoiceList =
 				Beans.get(InvoiceRepository.class).all()
 						.filter("self.saleOrder.id = :saleOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect")

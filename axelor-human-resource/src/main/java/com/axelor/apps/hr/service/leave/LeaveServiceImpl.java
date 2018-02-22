@@ -63,7 +63,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class LeaveServiceImpl  implements  LeaveService  {
-	
+
 	protected LeaveLineRepository leaveLineRepo;
 	protected WeeklyPlanningService weeklyPlanningService;
 	protected PublicHolidayService publicHolidayService;
@@ -78,7 +78,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	public LeaveServiceImpl(LeaveLineRepository leaveLineRepo, WeeklyPlanningService weeklyPlanningService,
 			PublicHolidayService publicHolidayService, LeaveRequestRepository leaveRequestRepo, AppBaseService appBaseService,
 			HRConfigService hrConfigService, TemplateMessageService templateMessageService, ICalendarEventRepository icalEventRepo, ICalendarService icalendarService){
-		
+
 		this.leaveLineRepo = leaveLineRepo;
 		this.weeklyPlanningService = weeklyPlanningService;
 		this.publicHolidayService = publicHolidayService;
@@ -407,36 +407,24 @@ public class LeaveServiceImpl  implements  LeaveService  {
 
 		return leave;
 	}
-	
-	public BigDecimal computeLeaveDays(LocalDate fromDate, LocalDate toDate, User user) throws AxelorException{
-		BigDecimal leaveDays = BigDecimal.ZERO;
-		Employee employee = user.getEmployee();
-		List<LeaveRequest> leaveRequestList = leaveRequestRepo.all()
-				.filter("self.user = ?1 AND (self.statusSelect = ?2 OR self.statusSelect = ?5) AND ((?3 <= self.fromDate AND ?4 >= self.fromDate) OR (?3 <= self.toDate AND ?4 >= self.toDate) OR (?3 >= self.fromDate AND ?4 <= self.toDate))", 
-				user, LeaveRequestRepository.STATUS_VALIDATED, fromDate, toDate, LeaveRequestRepository.STATUS_AWAITING_VALIDATION).fetch();
-		for (LeaveRequest leaveRequest : leaveRequestList) {
-			leaveDays.add(this.computeLeaveDaysByLeaveRequest(fromDate, toDate, leaveRequest, employee));
-		}
-		return leaveDays;
-	}
-	
+
 	public BigDecimal computeLeaveDaysByLeaveRequest(LocalDate fromDate, LocalDate toDate, LeaveRequest leaveRequest, Employee employee) throws AxelorException{
 		BigDecimal leaveDays = BigDecimal.ZERO;
 		WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
 		if(leaveRequest.getFromDate().equals(fromDate)){
-			leaveDays = leaveDays.add(new BigDecimal(this.computeStartDateWithSelect(fromDate, leaveRequest.getStartOnSelect(), weeklyPlanning)));
+			leaveDays = leaveDays.add(BigDecimal.valueOf(this.computeStartDateWithSelect(fromDate, leaveRequest.getStartOnSelect(), weeklyPlanning)));
 		}
 		if(leaveRequest.getToDate().equals(toDate)){
-			leaveDays = leaveDays.add(new BigDecimal(this.computeEndDateWithSelect(toDate, leaveRequest.getEndOnSelect(), weeklyPlanning)));
+			leaveDays = leaveDays.add(BigDecimal.valueOf(this.computeEndDateWithSelect(toDate, leaveRequest.getEndOnSelect(), weeklyPlanning)));
 		}
 		
 		LocalDate itDate = LocalDate.parse(fromDate.toString(), DateTimeFormatter.ISO_DATE);
 		if(fromDate.isBefore(leaveRequest.getFromDate()) || fromDate.equals(leaveRequest.getFromDate())){
-			itDate = leaveRequest.getFromDate().plusDays(1);
+			itDate = leaveRequest.getFromDate();
 		}
 
-		while(!itDate.isEqual(leaveRequest.getToDate()) && !itDate.isAfter(toDate)){
-			leaveDays = leaveDays.add(new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
+		while(!itDate.isEqual(leaveRequest.getToDate().plusDays(1)) && !itDate.isAfter(toDate)){
+			leaveDays = leaveDays.add(BigDecimal.valueOf(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
 			if(publicHolidayService.checkPublicHolidayDay(itDate, employee)){
 				leaveDays = leaveDays.subtract(BigDecimal.ONE);
 			}

@@ -17,19 +17,6 @@
  */
 package com.axelor.apps.base.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
@@ -42,7 +29,8 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wslite.http.HTTPClient;
 import wslite.http.HTTPMethod;
 import wslite.http.HTTPRequest;
@@ -51,6 +39,16 @@ import wslite.json.JSONArray;
 import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.HashMap;
+import java.util.Map;
+
 @Singleton
 public class CurrencyConversionService {
 
@@ -58,7 +56,7 @@ public class CurrencyConversionService {
 
 	@Inject
 	protected AppBaseService appBaseService;
-	
+
 	@Inject
 	protected CurrencyConversionLineRepository cclRepo;
 	
@@ -77,18 +75,18 @@ public class CurrencyConversionService {
 			rate = BigDecimal.valueOf(rt).setScale(8, RoundingMode.HALF_EVEN);
 //	        Float rt = Float.parseFloat(json.getJSONObject("rates").get(currencyTo.getCode()).toString());
 //	        rate = BigDecimal.valueOf(rt).setScale(4,RoundingMode.HALF_EVEN);
-			
+
 		} else
 			LOG.info("Currency from and to must be filled to get rate");
 		LOG.debug("Currerncy conversion rate: {}",new Object[] {rate});
 		return rate;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	private Float validateAndGetRate(int dayCount, String wsUrl, Currency currencyFrom, Currency currencyTo, LocalDate date) throws MalformedURLException, JSONException, AxelorException {
 
 		HTTPResponse response = null;
-		
+
 		if (dayCount < 8) {
 			HTTPClient httpclient = new HTTPClient();
 			HTTPRequest request = new HTTPRequest();
@@ -106,12 +104,12 @@ public class CurrencyConversionService {
 					response.getStatusMessage());
 			if (response.getStatusCode() != 200)
 				return -1f;
-			
+
 		} else {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CURRENCY_7), date.plus(Period.ofDays(1)),
 					appBaseService.getTodayDate()), IException.CONFIGURATION_ERROR);
 		}
-		
+
 		if (response.getContentAsString().isEmpty()) {
 			return this.validateAndGetRate((dayCount + 1), wsUrl, currencyFrom, currencyTo, date.minus(Period.ofDays(1)));
 		} else {

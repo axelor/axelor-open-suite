@@ -17,15 +17,6 @@
  */
 package com.axelor.apps.account.service.move;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
@@ -44,6 +35,13 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MoveService {
 
@@ -192,11 +190,7 @@ public class MoveService {
 	public Move createMoveUseInvoiceDue(Invoice invoice) throws AxelorException{
 
 		Company company = invoice.getCompany();
-		Account account = invoice.getPartnerAccount();
-		Partner partner = invoice.getPartner();
-
 		Move move = null;
-
 
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
@@ -207,7 +201,7 @@ public class MoveService {
 			MoveLine invoiceCustomerMoveLine = moveToolService.getCustomerMoveLineByLoop(invoice);
 			
 			// Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement
-			if(moveToolService.isSameAccount(debitMoveLines, invoice.getPartnerAccount()))  {
+			if(moveToolService.isSameAccount(debitMoveLines, invoiceCustomerMoveLine.getAccount()))  {
 				List<MoveLine> creditMoveLineList = new ArrayList<MoveLine>();
 				creditMoveLineList.add(invoiceCustomerMoveLine);
 				paymentService.useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLineList);
@@ -219,12 +213,6 @@ public class MoveService {
 
 			// Gestion du passage en 580
 			reconcileService.balanceCredit(invoiceCustomerMoveLine);
-
-			BigDecimal remainingPaidAmount = invoiceCustomerMoveLine.getAmountRemaining();
-			// Si il y a un restant à payer, alors on crée un trop-perçu.
-			if(remainingPaidAmount.compareTo(BigDecimal.ZERO) > 0 )  {
-				this.createExcessMove(invoice, company, partner, account, remainingPaidAmount, invoiceCustomerMoveLine);
-			}
 
 			invoice.setCompanyInTaxTotalRemaining(moveToolService.getInTaxTotalRemaining(invoice));
 		}
@@ -323,55 +311,6 @@ public class MoveService {
 			reconcileService.confirmReconcile(reconcile, true);
 		}
 		return oDmove;
-	}
-
-
-	/**
-	 * Procédure permettant de créer une écriture de trop-perçu
-	 * @param company
-	 * 			Une société
-	 * @param partner
-	 * 			Un tiers payeur
-	 * @param account
-	 * 			Le compte client (411 toujours)
-	 * @param amount
-	 * 			Le montant du trop-perçu
-	 * @param invoiceCustomerMoveLine
-	 * 			La ligne d'écriture client de la facture
-	 * @throws AxelorException
-	 */
-	public void createExcessMove(Invoice refund, Company company, Partner partner, Account account, BigDecimal amount, MoveLine invoiceCustomerMoveLine) throws AxelorException  {
-
-		Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfigService.getAccountConfig(company));
-
-		Move excessMove = moveCreateService.createMove(journal, company, refund.getCurrency(), partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
-		excessMove.setInvoice(refund);
-		
-		MoveLine debitMoveLine = moveLineService.createMoveLine(excessMove,
-				partner,
-				account,
-				amount,
-				true,
-				appAccountService.getTodayDate(),
-				1,
-				null);
-		excessMove.getMoveLineList().add(debitMoveLine);
-
-		MoveLine creditMoveLine = moveLineService.createMoveLine(excessMove,
-				partner,
-				account,
-				amount,
-				false,
-				appAccountService.getTodayDate(),
-				2,
-				null);
-		excessMove.getMoveLineList().add(creditMoveLine);
-
-		moveValidateService.validateMove(excessMove);
-
-		//Création de la réconciliation
-		Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, invoiceCustomerMoveLine, amount, false);
-		reconcileService.confirmReconcile(reconcile, true);
 	}
 
 

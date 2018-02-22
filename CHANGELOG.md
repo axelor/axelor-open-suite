@@ -41,6 +41,24 @@
 - Fix event hide when we create new from calendar and set domain for my calendar and team calendar
 
 ## [Unreleased 4.x]
+
+### Improvements
+- New assistant in expense form to select payment mode
+- Leave management reset batch now creates a new line with negative quantity
+  instead of clearing old lines
+
+### Bug Fixes
+- Permission change in most HR form
+- Find kilometric allowance rate per company
+- Remove filter on company for historic timesheet
+- More fixes in expense form
+- Show time unit for the right user in timesheet lines
+- Hide button in leave request instead of making it readonly
+- Fix count tags in hr menus
+- Remove the wrong process to create an useless move for excess payment on refund invoice ventilation
+
+
+## [4.1.2] - 2018-02-05
 ### Improvements
 - Close pay period automatically when all payroll preparation are exported
 - KilometricExpenseLineList are no more duplicated in ExpenseLineList. ExpenseLineList is renamed into GeneralExpenseLineList.
@@ -332,9 +350,9 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
-
 [Unreleased 5.x]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
-[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...dev
+[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...dev
+[4.1.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...v4.1.2
 [4.1.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/axelor/axelor-business-suite/compare/v4.0.2...v4.1.0
 [4.0.2]: https://github.com/axelor/axelor-business-suite/compare/v4.0.1...v4.0.2
