@@ -273,7 +273,7 @@ public class CostSheetServiceImpl implements CostSheetService  {
 
 		}
 		
-		BigDecimal durationHours = BigDecimal.valueOf(prodHumanResource.getDuration()).divide(BigDecimal.valueOf(3600), 5, RoundingMode.HALF_EVEN);
+		BigDecimal durationHours = BigDecimal.valueOf(prodHumanResource.getDuration()).divide(BigDecimal.valueOf(3600), appProductionService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
 			
 		costSheetLineService.createWorkCenterCostSheetLine(prodHumanResource.getWorkCenter(), priority, bomLevel, parentCostSheetLine, 
 				durationHours, costPerHour.multiply(durationHours), hourUnit);
@@ -295,7 +295,7 @@ public class CostSheetServiceImpl implements CostSheetService  {
 		}
 		else if(costType == IWorkCenter.COST_PER_HOUR)  {
 
-			BigDecimal qty = new BigDecimal(prodProcessLine.getDurationPerCycle()).divide(new BigDecimal(3600), BigDecimal.ROUND_HALF_EVEN).multiply(this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()));
+			BigDecimal qty = new BigDecimal(prodProcessLine.getDurationPerCycle()).divide(new BigDecimal(3600), appProductionService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_EVEN).multiply(this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()));
 			BigDecimal costPrice = workCenter.getCostAmount().multiply(qty);
 			
 			costSheetLineService.createWorkCenterCostSheetLine(workCenter, prodProcessLine.getPriority(), bomLevel, parentCostSheetLine, qty, costPrice, hourUnit);
@@ -413,7 +413,7 @@ public class CostSheetServiceImpl implements CostSheetService  {
 			Product product = prodHumanResource.getProduct();
 			costPerHour = unitConversionService.convert(hourUnit, product.getUnit(), product.getCostPrice());
 		}
-		BigDecimal durationHours = new BigDecimal(realDuration).divide(new BigDecimal(3600), 5, BigDecimal.ROUND_HALF_EVEN);
+		BigDecimal durationHours = new BigDecimal(realDuration).divide(new BigDecimal(3600), appProductionService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_EVEN);
 
 		costSheetLineService.createWorkCenterCostSheetLine(workCenter,
 				priority, bomLevel, parentCostSheetLine, durationHours,
@@ -437,7 +437,7 @@ public class CostSheetServiceImpl implements CostSheetService  {
 		}
 		else if (costType == IWorkCenter.COST_PER_HOUR) {
 			BigDecimal qty = new BigDecimal(operationOrder.getRealDuration())
-					.divide(new BigDecimal(3600), BigDecimal.ROUND_HALF_EVEN);
+					.divide(new BigDecimal(3600), appProductionService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_EVEN);
 			BigDecimal costPrice = workCenter.getCostAmount().multiply(qty);
 			costSheetLineService.createWorkCenterCostSheetLine(
 					workCenter,
