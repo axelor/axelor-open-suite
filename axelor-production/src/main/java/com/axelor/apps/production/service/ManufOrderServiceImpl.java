@@ -19,6 +19,7 @@ package com.axelor.apps.production.service;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,23 +66,25 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	@Inject
+	
 	protected SequenceService sequenceService;
-
-	@Inject
 	protected OperationOrderService operationOrderService;
-
-	@Inject
 	protected ManufOrderWorkflowService manufOrderWorkflowService;
-
-	@Inject
 	protected ProductVariantService productVariantService;
-
-	@Inject
 	protected AppProductionService appProductionService;
+	protected ManufOrderRepository manufOrderRepo;
 	
 	@Inject
-	protected ManufOrderRepository manufOrderRepo;
+	public ManufOrderServiceImpl(SequenceService sequenceService, OperationOrderService operationOrderService, 
+			ManufOrderWorkflowService manufOrderWorkflowService, ProductVariantService productVariantService, 
+			AppProductionService appProductionService, ManufOrderRepository manufOrderRepo) {
+		this.sequenceService = sequenceService;
+		this.operationOrderService = operationOrderService;
+		this.manufOrderWorkflowService = manufOrderWorkflowService;
+		this.productVariantService = productVariantService;
+		this.appProductionService = appProductionService;
+		this.manufOrderRepo = manufOrderRepo;
+	}
 
 
 	@Override
@@ -119,8 +122,10 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 
 					Product product = productVariantService.getProductVariant(manufOrder.getProduct(), billOfMaterialLine.getProduct());
 
+					BigDecimal qty = billOfMaterialLine.getQty().multiply(manufOrderQty).setScale(appProductionService.getNbDecimalDigitForBomQty(), RoundingMode.HALF_EVEN);
+					
 					manufOrder.addToConsumeProdProductListItem(
-							new ProdProduct(product, billOfMaterialLine.getQty().multiply(manufOrderQty), billOfMaterialLine.getUnit()));
+							new ProdProduct(product, qty, billOfMaterialLine.getUnit()));
 				}
 			}
 
@@ -135,6 +140,8 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		BigDecimal manufOrderQty = manufOrder.getQty();
 
 		BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
+		
+		BigDecimal qty = billOfMaterial.getQty().multiply(manufOrderQty).setScale(appProductionService.getNbDecimalDigitForBomQty(), RoundingMode.HALF_EVEN);
 
 		// add the produced product
 		manufOrder.addToProduceProdProductListItem(
@@ -146,9 +153,11 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 			for(ProdResidualProduct prodResidualProduct : billOfMaterial.getProdResidualProductList())  {
 
 				Product product = productVariantService.getProductVariant(manufOrder.getProduct(), prodResidualProduct.getProduct());
+				
+				qty = prodResidualProduct.getQty().multiply(manufOrderQty).setScale(appProductionService.getNbDecimalDigitForBomQty(), RoundingMode.HALF_EVEN);
 
 				manufOrder.addToProduceProdProductListItem(
-						new ProdProduct(product, prodResidualProduct.getQty().multiply(manufOrderQty), prodResidualProduct.getUnit()));
+						new ProdProduct(product, qty, prodResidualProduct.getUnit()));
 
 			}
 

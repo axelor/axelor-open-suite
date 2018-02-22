@@ -24,20 +24,16 @@ import java.util.List;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.google.inject.Inject;
 
 public class YearServiceImpl implements YearService {
 	
 	protected YearRepository yearRepo;
-	protected PartnerRepository partnerRepository;
 	
 	@Inject
-	public YearServiceImpl(  PartnerRepository partnerRepository, YearRepository yearRepo)  {
-		this.partnerRepository = partnerRepository;
+	public YearServiceImpl(YearRepository yearRepo)  {
 		this.yearRepo = yearRepo;
-		
 	}
 	
 	public List<Period> generatePeriods(Year year){

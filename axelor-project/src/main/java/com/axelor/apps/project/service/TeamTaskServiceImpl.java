@@ -17,13 +17,12 @@
  */
 package com.axelor.apps.project.service;
 
+import java.time.LocalDate;
+
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
 import com.axelor.team.db.TeamTask;
-import com.axelor.team.db.repo.TeamTaskRepository;
-
-import java.time.LocalDate;
 
 public class TeamTaskServiceImpl implements TeamTaskService {
 

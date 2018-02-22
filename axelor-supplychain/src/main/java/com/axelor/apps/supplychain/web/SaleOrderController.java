@@ -62,7 +62,9 @@ import com.axelor.team.db.Team;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class SaleOrderController{
 	
 	@Inject
@@ -71,12 +73,6 @@ public class SaleOrderController{
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
 
-	@Inject
-	protected AppSupplychainService appSupplychainService;
-
-	@Inject
-	private SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
-	
 	public void createStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
@@ -221,6 +217,8 @@ public class SaleOrderController{
 			}
 
 			saleOrder = saleOrderRepo.find(saleOrder.getId());
+			
+			SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl = Beans.get(SaleOrderInvoiceServiceImpl.class);
 
 			Invoice invoice = saleOrderInvoiceServiceImpl.generateInvoice(
 							saleOrder, operationSelect, amountToInvoice, isPercent,
@@ -260,6 +258,8 @@ public class SaleOrderController{
 			}
 			 	
 			Invoice invoice = null;
+			
+			SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl = Beans.get(SaleOrderInvoiceServiceImpl.class);
 
 			if (!saleOrderLineIdSelected.isEmpty()){
 				List<SaleOrderLine> saleOrderLinesSelected = JPA.all(SaleOrderLine.class).filter("self.id IN (:saleOderLineIdList)").bind("saleOderLineIdList", saleOrderLineIdSelected).fetch();

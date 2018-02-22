@@ -33,8 +33,6 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
 
-//import com.axelor.apps.production.db.ProdHumanResource;
-
 public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl  {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );

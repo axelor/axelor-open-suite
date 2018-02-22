@@ -15,6 +15,7 @@
 			<panel name="billOfMaterial" title="Bill of material">
 				<field name="manageBillOfMaterialVersion" colSpan="4" widget="boolean-switch"/>
 			    <field name="manageResidualProductOnBom" widget="boolean-switch"/>
+			    <field name="nbDecimalDigitForBomQty"/>
 			</panel>
 			<panel name="manufacturingProcess" title="Manufacturing process">
    				<field name="workCenterProduct" form-view="product-form" grid-view="product-grid" canEdit="false"/>

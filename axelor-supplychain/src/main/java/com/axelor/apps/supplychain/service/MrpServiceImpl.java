@@ -94,8 +94,8 @@ public class MrpServiceImpl implements MrpService  {
 	protected MrpLineService mrpLineService;
 	protected MrpForecastRepository mrpForecastRepository;
 	
-	protected LocalDate today;
-	
+	protected AppBaseService appBaseService;
+
 	protected List<StockLocation> stockLocationList = Lists.newArrayList();
 	protected Map<Product,Integer> productMap = Maps.newHashMap();
 	protected Mrp mrp;
@@ -119,7 +119,7 @@ public class MrpServiceImpl implements MrpService  {
 		this.mrpLineService = mrpLineService;
 		this.mrpForecastRepository = mrpForecastRepository;
 		
-		this.today = appBaseService.getTodayDate();
+		this.appBaseService = appBaseService;
 	}
 	
 	public void runCalculation(Mrp mrp) throws AxelorException  {
@@ -550,7 +550,8 @@ public class MrpServiceImpl implements MrpService  {
 		List<MrpForecast> mrpForecastList = new ArrayList<>();
 		
 		if(mrp.getMrpForecastSet().isEmpty())  {
-			
+
+			LocalDate today = appBaseService.getTodayDate();
 			mrpForecastList.addAll(mrpForecastRepository.all()
 					.filter("self.product in (?1) AND self.stockLocation in (?2) AND self.forecastDate >= ?3", 
 							this.productMap.keySet(), this.stockLocationList, today, today).fetch());
@@ -579,7 +580,7 @@ public class MrpServiceImpl implements MrpService  {
 	
 	public boolean isBeforeEndDate(LocalDate maturityDate)  {
 		
-		if(maturityDate != null && !maturityDate.isBefore(today) && (mrp.getEndDate() == null || !maturityDate.isAfter(mrp.getEndDate())))  {
+		if(maturityDate != null && !maturityDate.isBefore(appBaseService.getTodayDate()) && (mrp.getEndDate() == null || !maturityDate.isAfter(mrp.getEndDate())))  {
 			
 			return true;
 		}
@@ -613,7 +614,7 @@ public class MrpServiceImpl implements MrpService  {
 			qty = stockLocationLine.getCurrentQty();
 		}
 		
-		return this.createMrpLine(product, availableStockMrpLineType, qty, today, qty, stockLocation);
+		return this.createMrpLine(product, availableStockMrpLineType, qty, appBaseService.getTodayDate(), qty, stockLocation);
 	}
 	
 	

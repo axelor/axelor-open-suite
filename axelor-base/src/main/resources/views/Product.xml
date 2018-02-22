@@ -96,8 +96,8 @@
 						<field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale').getManageSalesUnits()"/>
 						<field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('purchase').getManagePurchasesUnits()"/>
 					</panel>
-					<panel title="Configurator" colSpan="12">
-						<field name="configurator" showTitle="false" form-view="configurator-form" grid-view="configurator-grid" readonly="true" if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
+					<panel title="Configurator" colSpan="12" showIf="configurator" if-module="axelor-sale" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableConfigurator()">
+						<field name="configurator" showTitle="false" form-view="configurator-form" grid-view="configurator-grid" readonly="true"/>
 					</panel>
 				</panel>
 	      		<panel colSpan="6">

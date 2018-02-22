@@ -28,7 +28,9 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class PurchaseOrderLineController {
 	
 	@Inject
@@ -38,7 +40,7 @@ public class PurchaseOrderLineController {
 		PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
 		PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
 		if(purchaseOrder == null){
-			purchaseOrder = request.getContext().getParentContext().asType(PurchaseOrder.class);
+			purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
 			purchaseOrderLine.setPurchaseOrder(purchaseOrder);
 		}
 		if(Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()){
@@ -51,7 +53,7 @@ public class PurchaseOrderLineController {
 		PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
 		PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
 		if(purchaseOrder == null){
-			purchaseOrder = request.getContext().getParentContext().asType(PurchaseOrder.class);
+			purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
 			purchaseOrderLine.setPurchaseOrder(purchaseOrder);
 		}
 		if(purchaseOrderLine.getAnalyticDistributionTemplate() != null){

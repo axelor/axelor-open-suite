@@ -2,6 +2,8 @@
 
 ## [Unreleased 5.x]
 ## Features
+- New Inventory view
+- New StockMove view
 - New currency conversion API (ECB)
 - Split accounting report VAT statement in two, VAT on amount received and VAT on invoicing
 - Create sale order from partner and contact
@@ -17,6 +19,8 @@
 - Direct debit batches
 - Logistical forms
 - New subscription feature.
+- Add support to dynamically set the number of decimal digit of BOM quantities
+- If there is no template defined for the object, generate an empty draft message for MESSAGE : wizard
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
@@ -33,6 +37,7 @@
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
 - Fix the default amount on new invoice payment to use the amount remaining of the invoice.
 - Fix demo data en and fr on AppSuplychain to set the correct value on the field supplStockMoveMgtOnSO
+- Fix different split methods in StockMove
 - Fix event hide when we create new from calendar and set domain for my calendar and team calendar
 
 ## [Unreleased 4.x]

@@ -50,7 +50,6 @@ public class BatchEventReminder extends BatchStrategy {
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private boolean stop = false;
-	private LocalDateTime today;
 
 	@Inject
 	private EventRepository eventRepo;
@@ -59,7 +58,6 @@ public class BatchEventReminder extends BatchStrategy {
 	public BatchEventReminder(EventReminderService eventReminderService, MessageServiceCrmImpl messageServiceCrmImpl, MailAccountService mailAccountService) {
 
 		super(eventReminderService, messageServiceCrmImpl, mailAccountService);
-		this.today = Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
 	}
 
 
@@ -129,28 +127,28 @@ public class BatchEventReminder extends BatchStrategy {
 		switch (durationTypeSelect) {
 		case IEventReminder.DURATION_MINUTES:
 
-			if((startDateTime.minusMinutes(eventReminder.getDuration())).isBefore(today))  {
+			if((startDateTime.minusMinutes(eventReminder.getDuration())).isBefore(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime()))  {
 				return true;
 			}
 			break;
 
 		case IEventReminder.DURATION_HOURS:
 
-			if((startDateTime.minusHours(eventReminder.getDuration())).isBefore(today))  {
+			if((startDateTime.minusHours(eventReminder.getDuration())).isBefore(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime()))  {
 				return true;
 			}
 			break;
 
 		case IEventReminder.DURATION_DAYS:
 
-			if((startDateTime.minusDays(eventReminder.getDuration())).isBefore(today))  {
+			if((startDateTime.minusDays(eventReminder.getDuration())).isBefore(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime()))  {
 				return true;
 			}
 			break;
 
 		case IEventReminder.DURATION_WEEKS:
 
-			if((startDateTime.minusWeeks(eventReminder.getDuration())).isBefore(today))  {
+			if((startDateTime.minusWeeks(eventReminder.getDuration())).isBefore(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime()))  {
 				return true;
 			}
 			break;

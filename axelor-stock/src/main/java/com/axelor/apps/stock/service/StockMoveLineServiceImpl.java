@@ -184,7 +184,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	 */
 	@Override
 	public StockMoveLine createStockMoveLine(Product product, String  productName, String description, BigDecimal quantity, BigDecimal unitPriceUntaxed, BigDecimal unitPriceTaxed, Unit unit, StockMove stockMove, TrackingNumber trackingNumber) {
-        Preconditions.checkArgument(quantity != null && quantity.signum() >= 0);
 
 		StockMoveLine stockMoveLine = new StockMoveLine();
 		stockMoveLine.setStockMove(stockMove);

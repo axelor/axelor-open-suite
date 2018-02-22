@@ -60,22 +60,17 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 	protected StockMoveService stockMoveService;
 	protected StockMoveLineService stockMoveLineService;
 	protected StockConfigService stockConfigService;
-	protected StockLocationRepository stockLocationRepo;
-	protected StockMoveRepository stockMoveRepo;
 	protected UnitConversionService unitConversionService;
 	protected SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain;
 
     @Inject
     public SaleOrderStockServiceImpl(StockMoveService stockMoveService, StockMoveLineService stockMoveLineService,
-            StockConfigService stockConfigService, StockLocationRepository stockLocationRepo, StockMoveRepository stockMoveRepo,
-            UnitConversionService unitConversionService,
+            StockConfigService stockConfigService, UnitConversionService unitConversionService,
             SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain) {
 
         this.stockMoveService = stockMoveService;
         this.stockMoveLineService = stockMoveLineService;
         this.stockConfigService = stockConfigService;
-        this.stockLocationRepo = stockLocationRepo;
-        this.stockMoveRepo = stockMoveRepo;
         this.unitConversionService = unitConversionService;
         this.saleOrderLineServiceSupplyChain = saleOrderLineServiceSupplyChain;
     }

@@ -35,16 +35,16 @@ import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class ConvertLeadWizardController {
 
-	@Inject
-	private LeadService leadService;
-	
 	@Inject
 	private LeadRepository leadRepo;
 
@@ -132,7 +132,7 @@ public class ConvertLeadWizardController {
 			//TODO check all required fields...
 		}
 		
-		leadService.convertLead(lead, partner, prospectPartner, contactPartner, opportunity, callEvent, meetingEvent, taskEvent);
+		Beans.get(LeadService.class).convertLead(lead, partner, prospectPartner, contactPartner, opportunity, callEvent, meetingEvent, taskEvent);
 
 		response.setFlash(I18n.get(IExceptionMessage.CONVERT_LEAD_1));
 		response.setCanClose(true);

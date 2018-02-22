@@ -32,19 +32,21 @@ import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Singleton;
 
+@Singleton
 public class ContractLineController {
 	
 	public void changeProduct(ActionRequest request, ActionResponse response) {
 		ContractLine contractLine = request.getContext().asType(ContractLine.class);
 		Partner partner = null;
 		Company company = null;
-		if(request.getContext().getParentContext().getContextClass() == Contract.class){
-			Contract contract = request.getContext().getParentContext().asType(Contract.class);
+		if(request.getContext().getParent().getContextClass() == Contract.class){
+			Contract contract = request.getContext().getParent().asType(Contract.class);
 			partner = contract.getPartner();
 			company = contract.getCompany();
-		}else if (request.getContext().getParentContext().getContextClass() == ContractVersion.class){
-			ContractVersion contractVersion = request.getContext().getParentContext().asType(ContractVersion.class);
+		}else if (request.getContext().getParent().getContextClass() == ContractVersion.class){
+			ContractVersion contractVersion = request.getContext().getParent().asType(ContractVersion.class);
 			Contract contract = contractVersion.getContract();
 			partner = contract.getPartner();
 			company = contract.getCompany();
@@ -53,10 +55,10 @@ public class ContractLineController {
 		}
 		
 		Contract contract = null;
-		if(request.getContext().getParentContext().getContextClass() == Contract.class){
-			contract = request.getContext().getParentContext().asType(Contract.class);
-		}else if (request.getContext().getParentContext().getContextClass() == ContractVersion.class){
-			ContractVersion contractVersion = request.getContext().getParentContext().asType(ContractVersion.class);
+		if(request.getContext().getParent().getContextClass() == Contract.class){
+			contract = request.getContext().getParent().asType(Contract.class);
+		}else if (request.getContext().getParent().getContextClass() == ContractVersion.class){
+			ContractVersion contractVersion = request.getContext().getParent().asType(ContractVersion.class);
 			contract = contractVersion.getContractNext() == null ? contractVersion.getContract() : contractVersion.getContractNext() ;
 		}
 		Product product = contractLine.getProduct();

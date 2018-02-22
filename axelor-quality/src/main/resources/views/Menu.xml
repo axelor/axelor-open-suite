@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<menuitem name="menu-quality-root" order="-105" if="__config__.app.isApp('quality')"
-	title="Quality" icon="fa-tasks" icon-background="#3f6bb9"/>
+	title="Quality" icon="fa fa-check" icon-background="#3f6bb9"/>
 	     
 	<menuitem name="quality-controls-root" parent="menu-quality-root" title="Quality controls" />
 	     

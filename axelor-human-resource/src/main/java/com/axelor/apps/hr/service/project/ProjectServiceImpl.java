@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.project.db.Project;
@@ -30,13 +29,11 @@ import com.google.inject.persist.Transactional;
 
 public class ProjectServiceImpl implements ProjectService {
 	
-	protected AppBaseService appBaseService;
 	protected EmployeeService employeeService;	
 	
 	@Inject
-	public ProjectServiceImpl(AppBaseService appBaseService, EmployeeService employeeService){
+	public ProjectServiceImpl(EmployeeService employeeService){
 		
-		this.appBaseService = appBaseService;
 		this.employeeService = employeeService;
 	}
 	

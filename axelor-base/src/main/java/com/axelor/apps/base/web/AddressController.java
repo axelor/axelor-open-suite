@@ -52,12 +52,14 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.qas.web_2005_02.AddressLineType;
 import com.qas.web_2005_02.PicklistEntryType;
 import com.qas.web_2005_02.QAAddressType;
 import com.qas.web_2005_02.QAPicklistType;
 import com.qas.web_2005_02.VerifyLevelType;
 
+@Singleton
 public class AddressController {
 
 	@Inject

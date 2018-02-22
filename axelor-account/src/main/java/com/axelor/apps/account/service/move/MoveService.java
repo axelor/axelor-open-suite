@@ -19,10 +19,10 @@ package com.axelor.apps.account.service.move;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,11 +41,7 @@ import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -65,7 +61,8 @@ public class MoveService {
 	protected MoveExcessPaymentService moveExcessPaymentService;
 	protected AccountConfigService accountConfigService;
 	protected MoveRepository moveRepository;
-	protected LocalDate today;
+
+	protected AppAccountService appAccountService;
 
 	@Inject
 	public MoveService(AppAccountService appAccountService, MoveLineService moveLineService, MoveCreateService moveCreateService, MoveValidateService moveValidateService, MoveAccountService moveAccountService, MoveToolService moveToolService,
@@ -84,7 +81,7 @@ public class MoveService {
 		this.moveRepository = moveRepository;
 		this.accountConfigService = accountConfigService;
 		
-		today = appAccountService.getTodayDate();
+		this.appAccountService = appAccountService;
 
 	}
 
@@ -273,7 +270,7 @@ public class MoveService {
 					BigDecimal amount = totalCreditAmount.min(invoiceCustomerMoveLine.getDebit());
 
 					// Création de la ligne au crédit
-					MoveLine creditMoveLine =  moveLineService.createMoveLine(move , partner, account , amount, false, today, 1, null);
+					MoveLine creditMoveLine =  moveLineService.createMoveLine(move , partner, account , amount, false, appAccountService.getTodayDate(), 1, null);
 					move.getMoveLineList().add(creditMoveLine);
 
 					// Emploie des trop-perçus sur les lignes de debit qui seront créées au fil de l'eau
@@ -313,11 +310,11 @@ public class MoveService {
 			BigDecimal amount = totalDebitAmount.min(invoiceCustomerMoveLine.getCredit());
 
 			// Création de la ligne au débit
-			MoveLine debitMoveLine =  moveLineService.createMoveLine(oDmove , partner, account , amount, true, today, 1, null);
+			MoveLine debitMoveLine =  moveLineService.createMoveLine(oDmove , partner, account , amount, true, appAccountService.getTodayDate(), 1, null);
 			oDmove.getMoveLineList().add(debitMoveLine);
 
 			// Emploie des dûs sur les lignes de credit qui seront créées au fil de l'eau
-			paymentService.createExcessPaymentWithAmount(debitMoveLines, amount, oDmove, 2, partner, company, null, account, today);
+			paymentService.createExcessPaymentWithAmount(debitMoveLines, amount, oDmove, 2, partner, company, null, account, appAccountService.getTodayDate());
 
 			moveValidateService.validateMove(oDmove);
 
@@ -355,7 +352,7 @@ public class MoveService {
 				account,
 				amount,
 				true,
-				this.today,
+				appAccountService.getTodayDate(),
 				1,
 				null);
 		excessMove.getMoveLineList().add(debitMoveLine);
@@ -365,7 +362,7 @@ public class MoveService {
 				account,
 				amount,
 				false,
-				this.today,
+				appAccountService.getTodayDate(),
 				2,
 				null);
 		excessMove.getMoveLineList().add(creditMoveLine);
@@ -384,7 +381,7 @@ public class MoveService {
 								  move.getCompany(),
 								  move.getCurrency(),
 								  move.getPartner(),
-								  today,
+								  appAccountService.getTodayDate(),
 								  move.getPaymentMode(),
 								  MoveRepository.TECHNICAL_ORIGIN_ENTRY,	
 								  move.getIgnoreInDebtRecoveryOk(),

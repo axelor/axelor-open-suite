@@ -39,19 +39,18 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class ContractController {
 
 	@Inject
-	protected ContractService service;
+	protected ContractService contractService;
 	
-	@Inject
-	protected DurationService durationService;
-
 	public void waiting(ActionRequest request, ActionResponse response) {
 		try  {
-			service.waitingCurrentVersion(JPA.find(Contract.class, request.getContext().asType(Contract.class).getId()), getToDay());
+			contractService.waitingCurrentVersion(JPA.find(Contract.class, request.getContext().asType(Contract.class).getId()), getToDay());
 			response.setReload(true);
 		} catch(Exception e) {
 			TraceBackService.trace(response, e);
@@ -60,7 +59,7 @@ public class ContractController {
 
 	public void waitingNextVersion(ActionRequest request, ActionResponse response) {
 		try  {
-			service.waitingNextVersion(JPA.find(ContractVersion.class, request.getContext().asType(ContractVersion.class).getId()).getContractNext(), getToDay());
+			contractService.waitingNextVersion(JPA.find(ContractVersion.class, request.getContext().asType(ContractVersion.class).getId()).getContractNext(), getToDay());
 			response.setReload(true);
 		} catch(Exception e) {
 			String flash = e.toString();
@@ -71,7 +70,7 @@ public class ContractController {
 
 	public void ongoing(ActionRequest request, ActionResponse response) {
 		try  {
-			Invoice invoice = service.ongoingCurrentVersion(JPA.find(Contract.class, request.getContext().asType(Contract.class).getId()), getToDay());
+			Invoice invoice = contractService.ongoingCurrentVersion(JPA.find(Contract.class, request.getContext().asType(Contract.class).getId()), getToDay());
 			if ( invoice == null){
 				response.setReload(true);
 			}else{
@@ -91,7 +90,7 @@ public class ContractController {
 
 	public void invoicing(ActionRequest request, ActionResponse response) throws AxelorException {
 		try  {
-			Invoice invoice = service.invoicingContract(JPA.find(Contract.class, request.getContext().asType(Contract.class).getId()));
+			Invoice invoice = contractService.invoicingContract(JPA.find(Contract.class, request.getContext().asType(Contract.class).getId()));
 			
 			if (invoice == null){
 				response.setError("ERROR");
@@ -121,6 +120,8 @@ public class ContractController {
 				return;
 			}
 			
+			DurationService durationService = Beans.get(DurationService.class);
+			
 			if ( contract.getCurrentVersion().getIsWithEngagement() ){
 				
 				if (contract.getEngagementStartDate() == null){
@@ -146,7 +147,7 @@ public class ContractController {
 				}
 			}
 			
-			service.terminateContract( contract, true, getToDay());
+			contractService.terminateContract( contract, true, getToDay());
 			response.setReload(true);
 		} catch(Exception e) {
 			TraceBackService.trace(response, e);
@@ -157,7 +158,7 @@ public class ContractController {
 	public void renew(ActionRequest request, ActionResponse response) throws AxelorException {
 		try  {
 			Contract contract = JPA.find(Contract.class, request.getContext().asType(Contract.class).getId());
-			service.renewContract(contract, getToDay());
+			contractService.renewContract(contract, getToDay());
 			response.setReload(true);
 		} catch(Exception e) {
 			TraceBackService.trace(response, e);
@@ -167,7 +168,7 @@ public class ContractController {
 
 	public void activeNextVersion(ActionRequest request, ActionResponse response) {
 		try  {
-			service.activeNextVersion(JPA.find(ContractVersion.class, request.getContext().asType(ContractVersion.class).getId()).getContractNext(), getToDay());
+			contractService.activeNextVersion(JPA.find(ContractVersion.class, request.getContext().asType(ContractVersion.class).getId()).getContractNext(), getToDay());
 			response.setReload(true);
 		} catch(Exception e) {
 			String flash = e.toString();
@@ -233,7 +234,7 @@ public class ContractController {
 		
 		ContractTemplate template = JPA.find(ContractTemplate.class, new Long((Integer) ((Map) request.getContext().get("contractTemplate")).get("id"))) ;
 		
-		Contract copy = service.createContractFromTemplate(template);
+		Contract copy = contractService.createContractFromTemplate(template);
 		
 		if (request.getContext().asType(Contract.class).getPartner() != null ){
 			copy.setPartner(Beans.get(PartnerRepository.class).find( request.getContext().asType(Contract.class).getPartner().getId() ) );

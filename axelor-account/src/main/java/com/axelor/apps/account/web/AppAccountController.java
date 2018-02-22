@@ -24,11 +24,10 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class AppAccountController {
-	@Inject
-	private AppAccountService appAccountService;
 
 	public void payerQualityProcess(ActionRequest request, ActionResponse response)  {
 
@@ -40,7 +39,7 @@ public class AppAccountController {
 
 	public void generateAccountConfigurations(ActionRequest request, ActionResponse response)  {
 
-		appAccountService.generateAccountConfigurations();
+		Beans.get(AppAccountService.class).generateAccountConfigurations();
 
 		response.setReload(true);
 

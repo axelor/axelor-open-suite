@@ -24,7 +24,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Singleton;
 
+@Singleton
 public class NotificationController {
 
 	public void populateNotificationItemList(ActionRequest request, ActionResponse response) {

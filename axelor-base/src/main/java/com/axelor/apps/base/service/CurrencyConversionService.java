@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashMap;
@@ -30,6 +29,19 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.CurrencyConversionLine;
+import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 
 import wslite.http.HTTPClient;
 import wslite.http.HTTPMethod;
@@ -39,19 +51,7 @@ import wslite.json.JSONArray;
 import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
-import com.axelor.apps.base.db.AppBase;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.CurrencyConversionLine;
-import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
-
+@Singleton
 public class CurrencyConversionService {
 
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
@@ -60,7 +60,7 @@ public class CurrencyConversionService {
 	protected AppBaseService appBaseService;
 	
 	@Inject
-	private CurrencyConversionLineRepository cclRepo;
+	protected CurrencyConversionLineRepository cclRepo;
 	
 	public BigDecimal convert(Currency currencyFrom, Currency currencyTo) throws MalformedURLException, JSONException, AxelorException {
 		BigDecimal rate = new BigDecimal(-1);
@@ -165,7 +165,7 @@ public class CurrencyConversionService {
 		if(currentRate != null && previousRate != null && previousRate.compareTo(BigDecimal.ZERO) != 0){
 			BigDecimal diffRate = currentRate.subtract(previousRate);
 			BigDecimal variation = diffRate.multiply(new BigDecimal(100)).divide(previousRate,RoundingMode.HALF_EVEN);
-			variation = variation.setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+			variation = variation.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 			variations = variation.toString()+"%";
 		}
 

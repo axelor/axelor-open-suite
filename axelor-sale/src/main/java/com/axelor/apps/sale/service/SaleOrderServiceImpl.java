@@ -17,6 +17,19 @@
  */
 package com.axelor.apps.sale.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import javax.persistence.Query;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.AppSale;
 import com.axelor.apps.base.db.Blocking;
@@ -26,7 +39,6 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.StopReason;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
@@ -59,17 +71,6 @@ import com.axelor.team.db.Team;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.persistence.Query;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
 
@@ -84,8 +85,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	protected AppSaleService appSaleService;
 	protected User currentUser;
 	
-	protected LocalDate today;
-	
+
 	@Inject
 	public SaleOrderServiceImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService, SequenceService sequenceService,
 			PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo, AppSaleService appSaleService, UserService userService)  {
@@ -98,7 +98,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		this.saleOrderRepo = saleOrderRepo;
 		this.appSaleService = appSaleService;
 
-		this.today = appSaleService.getTodayDate();
 		this.currentUser = userService.getUser();
 	}
 	
@@ -391,7 +390,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception  {
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_ORDER_CONFIRMED);
-		saleOrder.setConfirmationDate(this.today);
+		saleOrder.setConfirmationDate(appSaleService.getTodayDate());
 		saleOrder.setConfirmedByUser(this.currentUser);
 		
 		this.validateCustomer(saleOrder);

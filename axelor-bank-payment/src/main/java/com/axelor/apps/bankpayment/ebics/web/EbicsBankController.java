@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.bankpayment.ebics.web;
 
+import com.google.inject.Singleton;
+
+@Singleton
 public class EbicsBankController {
 	
 	public String normalizeFaxNumber(String faxNumber){

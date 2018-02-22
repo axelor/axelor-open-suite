@@ -22,24 +22,22 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PayerQualityConfigLine;
 import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.db.DebtRecoveryHistory;
 import com.axelor.apps.account.db.DebtRecoveryLevel;
 import com.axelor.apps.account.db.DebtRecoveryMethodLine;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PayerQualityConfigLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -51,19 +49,15 @@ public class PayerQualityService {
 
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	protected PartnerService partnerService;
 	protected AppAccountService appAccountService;
 	protected PartnerRepository partnerRepository;
-	
-	protected LocalDate today;
-	
-	@Inject
-	public PayerQualityService(PartnerService partnerService, AppAccountService appAccountService, PartnerRepository partnerRepository) {
 
-		this.partnerService = partnerService;
+
+	@Inject
+	public PayerQualityService(AppAccountService appAccountService, PartnerRepository partnerRepository) {
+
 		this.appAccountService = appAccountService;
 		this.partnerRepository = partnerRepository;
-		this.today = appAccountService.getTodayDate();
 
 	}
 
@@ -75,7 +69,7 @@ public class PayerQualityService {
 				DebtRecovery debtRecovery = accountingSituation.getDebtRecovery();
 				if(debtRecovery != null && debtRecovery.getDebtRecoveryHistoryList()!= null && !debtRecovery.getDebtRecoveryHistoryList().isEmpty())  {
 					for(DebtRecoveryHistory debtRecoveryHistory : debtRecovery.getDebtRecoveryHistoryList())  {
-						if((debtRecoveryHistory.getDebtRecoveryDate() != null && debtRecoveryHistory.getDebtRecoveryDate().isAfter(today.minusYears(1))))  {
+						if((debtRecoveryHistory.getDebtRecoveryDate() != null && debtRecoveryHistory.getDebtRecoveryDate().isAfter(appAccountService.getTodayDate().minusYears(1))))  {
 							debtRecoveryHistoryList.add(debtRecoveryHistory);
 						}
 					}
@@ -90,7 +84,7 @@ public class PayerQualityService {
 		
 		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
 		
-		return moveLineRepo.all().filter("self.partner = ?1 AND self.date > ?2 AND self.interbankCodeLine IS NOT NULL", partner, today.minusYears(1)).fetch();
+		return moveLineRepo.all().filter("self.partner = ?1 AND self.date > ?2 AND self.interbankCodeLine IS NOT NULL", partner, appAccountService.getTodayDate().minusYears(1)).fetch();
 	}
 
 

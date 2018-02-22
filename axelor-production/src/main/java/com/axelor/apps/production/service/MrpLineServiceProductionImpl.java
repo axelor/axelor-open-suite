@@ -24,7 +24,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
@@ -49,11 +48,11 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl  {
 
 	
 	@Inject
-	public MrpLineServiceProductionImpl(AppProductionService appProductionService, UserService userService, PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl, 
+	public MrpLineServiceProductionImpl(AppProductionService appProductionService, PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl, 
 			PurchaseOrderLineService purchaseOrderLineService, PurchaseOrderRepository purchaseOrderRepo, ManufOrderService manufOrderService, 
 			ProductionOrderRepository productionOrderRepo, StockRulesService stockRulesService)  {
 		
-		super(appProductionService, userService, purchaseOrderServiceSupplychainImpl, purchaseOrderLineService, purchaseOrderRepo, stockRulesService);
+		super(appProductionService, purchaseOrderServiceSupplychainImpl, purchaseOrderLineService, purchaseOrderRepo, stockRulesService);
 		this.manufOrderService = manufOrderService;
 		
 	}

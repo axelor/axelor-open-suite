@@ -17,6 +17,20 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.mail.MessagingException;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
@@ -39,7 +53,6 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
-import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
@@ -68,19 +81,6 @@ import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author axelor
  *
@@ -98,11 +98,6 @@ public class TimesheetServiceImpl implements TimesheetService{
 	
 	@Inject
 	protected ProjectService projectService;
-	@Inject
-	protected EmployeeRepository employeeRepo;
-	
-	@Inject
-	protected TimesheetRepository timesheetRepository;
 	
 	@Inject
 	protected HRConfigService  hrConfigService;
@@ -111,13 +106,13 @@ public class TimesheetServiceImpl implements TimesheetService{
 	protected TemplateMessageService  templateMessageService;
 
 	@Inject
-	private ProjectRepository projectRepo;
+	protected ProjectRepository projectRepo;
 
 	@Inject
-	private UserRepository userRepo;
+	protected UserRepository userRepo;
 
 	@Inject
-	private UserHrService userHrService;
+	protected UserHrService userHrService;
 
 
 	@Override
