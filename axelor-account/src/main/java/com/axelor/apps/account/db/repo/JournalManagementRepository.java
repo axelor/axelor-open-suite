@@ -28,7 +28,6 @@ public class JournalManagementRepository extends JournalRepository {
 		Journal copy = super.copy(entity, deep);
 
 		copy.setStatusSelect(JournalRepository.STATUS_INACTIVE);
-		copy.setIsObsolete(false);
 		copy.setSequence(null);
 
 		return copy;

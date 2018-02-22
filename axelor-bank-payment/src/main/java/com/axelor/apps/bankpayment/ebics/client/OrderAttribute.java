@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.bankpayment.ebics.client;
 
-import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
+import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 
 /**
  * 12.3 Order attributes
@@ -90,10 +90,10 @@ public class OrderAttribute {
 	    } else if (orderType.equals(OrderType.HPB)) {
 	    	return TRANSMITTED_DATA_TYPE_D;
 	    } else if (orderType.equals(OrderType.FUL)) {
-	    	if(ebicsTypeSelect == EbicsUserRepository.EBICS_TYPE_T)  {
+	    	if(ebicsTypeSelect == EbicsPartnerRepository.EBICS_TYPE_T)  {
 	    		return TRANSMITTED_DATA_TYPE_D;
 	    	}
-	    	else if(ebicsTypeSelect == EbicsUserRepository.EBICS_TYPE_TS)  {
+	    	else if(ebicsTypeSelect == EbicsPartnerRepository.EBICS_TYPE_TS)  {
 		    	return TRANSMITTED_DATA_TYPE_O;
 	    	}
 	    } else if (orderType.equals(OrderType.FDL)
