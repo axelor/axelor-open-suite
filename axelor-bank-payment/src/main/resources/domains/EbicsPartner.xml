@@ -40,7 +40,9 @@
 		public static final int GET_MODE_AUTOMATIC = 1;
 		public static final int GET_MODE_PERIOD = 2;
 		
-		
+		// EBICS TYPE SELECT
+		public static final int EBICS_TYPE_T = 0;
+		public static final int EBICS_TYPE_TS = 1;
 	]]></extra-code>
     
   </entity>
