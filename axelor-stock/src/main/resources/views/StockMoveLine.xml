@@ -195,7 +195,6 @@
     <action-group name="action-group-stock-stockmoveline-production-onnew">
     	<action name="action-stock-move-line-attrs-scale-and-precision"/>
     	<action name="action-stock-move-line-record-new"/>
-    	<action name="stock-move-line-production-record-default"/>
     </action-group>
 
 	<action-attrs name="action-stock-move-line-tracking-number-attrs">
@@ -205,10 +204,6 @@
 	<action-attrs name="action-stock-move-line-qty-attrs">
 		<attribute name="readonly" for="qty" expr="eval: _parent?.statusSelect == 2" />
 	</action-attrs>
-    
-    <action-record name="stock-move-line-production-record-default" model="com.axelor.apps.stock.db.StockMoveLine">
-    	<field name="stockMove" expr="eval: _parent.inStockMove" if="_parent._model == 'com.axelor.apps.production.db.OperationOrder'"/>
-    </action-record>
     
     <action-record name="action-stock-move-line-record-new" model="com.axelor.apps.stock.db.StockMoveLine">
 	    <field name="qty" expr="1"/>

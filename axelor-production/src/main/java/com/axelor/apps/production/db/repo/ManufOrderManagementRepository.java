@@ -31,8 +31,8 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
 		entity.setPlannedEndDateT(null);
 		entity.setRealStartDateT(null);
 		entity.setRealEndDateT(null);
-		entity.setInStockMove(null);
-		entity.setOutStockMove(null);
+		entity.setInStockMoveList(null);
+		entity.setOutStockMoveList(null);
 		entity.setWasteStockMove(null);
 		entity.setToConsumeProdProductList(null);
 		entity.setConsumedStockMoveLineList(null);
@@ -50,7 +50,7 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
 				operationOrder.setRealEndDateT(null);
 				operationOrder.setRealDuration(0L);
 				operationOrder.setOperationOrderDurationList(null);
-				operationOrder.setInStockMove(null);
+				operationOrder.setInStockMoveList(null);
 				operationOrder.setToConsumeProdProductList(null);
 				operationOrder.setConsumedStockMoveLineList(null);
 				operationOrder.setDiffConsumeProdProductList(null);

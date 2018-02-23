@@ -46,27 +46,27 @@
 			</where>
 		</select>
 		<select model="com.axelor.apps.production.db.ManufOrder" title="Manufacturing Order (StockMove In)">
-			<field name="inStockMove.stockMoveLineList[].trackingNumber" as="trackingNumber"/>
-			<field name="inStockMove.stockMoveLineList[].product.fullName" as="product"/>
-			<field name="inStockMove.stockMoveLineList[].productName" as="moveLine"/>
-			<field name="inStockMove.stockMoveLineList[].realQty" as="currentQty"/>
-			<field name="inStockMove.stockMoveLineList[].qty" as="futureQty"/>
-			<field name="inStockMove.stockMoveLineList[].stockMove.realDate" as="date"/>
-			<field name="inStockMove.stockMoveLineList[].stockMove.saleOrder.saleOrderSeq" as="saleOrder"/>
-			<field name="inStockMove.stockMoveLineList[].stockMove.purchaseOrder.purchaseOrderSeq" as="purchaseOrder"/>
+			<field name="inStockMoveList[].stockMoveLineList[].trackingNumber" as="trackingNumber"/>
+			<field name="inStockMoveList[].stockMoveLineList[].product.fullName" as="product"/>
+			<field name="inStockMoveList[].stockMoveLineList[].productName" as="moveLine"/>
+			<field name="inStockMoveList[].stockMoveLineList[].realQty" as="currentQty"/>
+			<field name="inStockMoveList[].stockMoveLineList[].qty" as="futureQty"/>
+			<field name="inStockMoveList[].stockMoveLineList[].stockMove.realDate" as="date"/>
+			<field name="inStockMoveList[].stockMoveLineList[].stockMove.saleOrder.saleOrderSeq" as="saleOrder"/>
+			<field name="inStockMoveList[].stockMoveLineList[].stockMove.purchaseOrder.purchaseOrderSeq" as="purchaseOrder"/>
 			<where>
 				<input name="trackingNumber" field="inStockMove.stockMoveLineList[].trackingNumber"/>
 			</where>
 		</select>
 		<select model="com.axelor.apps.production.db.ManufOrder" title="Manufacturing Order (StockMove Out)">
-			<field name="outStockMove.stockMoveLineList[].trackingNumber" as="trackingNumber"/>
-			<field name="outStockMove.stockMoveLineList[].product.fullName" as="product"/>
-			<field name="outStockMove.stockMoveLineList[].productName" as="moveLine"/>
-			<field name="outStockMove.stockMoveLineList[].realQty" as="currentQty"/>
-			<field name="outStockMove.stockMoveLineList[].qty" as="futureQty"/>
-			<field name="outStockMove.stockMoveLineList[].stockMove.realDate" as="date"/>
-			<field name="outStockMove.stockMoveLineList[].stockMove.saleOrder.saleOrderSeq" as="saleOrder"/>
-			<field name="outStockMove.stockMoveLineList[].stockMove.purchaseOrder.purchaseOrderSeq" as="purchaseOrder"/>
+			<field name="outStockMoveList[].stockMoveLineList[].trackingNumber" as="trackingNumber"/>
+			<field name="outStockMoveList[].stockMoveLineList[].product.fullName" as="product"/>
+			<field name="outStockMoveList[].stockMoveLineList[].productName" as="moveLine"/>
+			<field name="outStockMoveList[].stockMoveLineList[].realQty" as="currentQty"/>
+			<field name="outStockMoveList[].stockMoveLineList[].qty" as="futureQty"/>
+			<field name="outStockMoveList[].stockMoveLineList[].stockMove.realDate" as="date"/>
+			<field name="outStockMoveList[].stockMoveLineList[].stockMove.saleOrder.saleOrderSeq" as="saleOrder"/>
+			<field name="outStockMoveList[].stockMoveLineList[].stockMove.purchaseOrder.purchaseOrderSeq" as="purchaseOrder"/>
 			<where>
 				<input name="trackingNumber" field="outStockMove.stockMoveLineList[].trackingNumber"/>
 			</where>

@@ -21,6 +21,9 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +73,7 @@ public class ManufOrderStockMoveService {
 
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 				stockMoveService.plan(stockMove);
-				manufOrder.setInStockMove(stockMove);
+				manufOrder.addInStockMoveListItem(stockMove);
 			}
 
 			//fill here the consumed stock move line list item to manage the
@@ -122,7 +125,7 @@ public class ManufOrderStockMoveService {
 
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 				stockMoveService.plan(stockMove);
-				manufOrder.setOutStockMove(stockMove);
+				manufOrder.addOutStockMoveListItem(stockMove);
 			}
 
             if (stockMove.getStockMoveLineList() != null) {
@@ -173,9 +176,12 @@ public class ManufOrderStockMoveService {
 
 
 	public void finish(ManufOrder manufOrder) throws AxelorException  {
-
-		this.finishStockMove(manufOrder.getInStockMove());
-		this.finishStockMove(manufOrder.getOutStockMove());
+	    for (StockMove stockMove : manufOrder.getInStockMoveList()) {
+			this.finishStockMove(stockMove);
+		}
+		for (StockMove stockMove : manufOrder.getOutStockMoveList()) {
+			this.finishStockMove(stockMove);
+		}
 	}
 
 
@@ -192,8 +198,12 @@ public class ManufOrderStockMoveService {
 
 	public void cancel(ManufOrder manufOrder) throws AxelorException  {
 
-		this.cancel(manufOrder.getInStockMove());
-		this.cancel(manufOrder.getOutStockMove());
+		for (StockMove stockMove : manufOrder.getInStockMoveList()) {
+			this.cancel(stockMove);
+		}
+		for (StockMove stockMove : manufOrder.getOutStockMoveList()) {
+			this.cancel(stockMove);
+		}
 
 	}
 

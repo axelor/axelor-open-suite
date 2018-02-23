@@ -18,6 +18,8 @@
 package com.axelor.apps.production.service;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.OperationOrder;
@@ -33,6 +35,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
@@ -67,7 +70,7 @@ public class OperationOrderStockMoveService {
 
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 				stockMoveService.plan(stockMove);
-				operationOrder.setInStockMove(stockMove);
+				operationOrder.addInStockMoveListItem(stockMove);
 			}
 
 			//fill here the consumed stock move line list item to manage the
@@ -124,33 +127,37 @@ public class OperationOrderStockMoveService {
 
 	public void finish(OperationOrder operationOrder) throws AxelorException  {
 
-		StockMove stockMove = operationOrder.getInStockMove();
+		List<StockMove> stockMoveList = operationOrder.getInStockMoveList();
 
-		if(stockMove != null && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED && stockMove.getStockMoveLineList() != null)  {
-
-			stockMoveService.realize(stockMove);
-
+		if(stockMoveList != null) {
+			List<StockMove> stockMoveToRealizeList = stockMoveList
+					.stream()
+					.filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
+							&& stockMove.getStockMoveLineList() != null)
+					.collect(Collectors.toList());
+            for (StockMove stockMove : stockMoveToRealizeList) {
+				stockMoveService.realize(stockMove);
+			}
 		}
 
 	}
 
 
-	public void cancel(OperationOrder operationOrder) throws AxelorException  {
+	public void cancel(OperationOrder operationOrder) throws AxelorException {
 
-		StockMove stockMove = operationOrder.getInStockMove();
+			List<StockMove> stockMoveList = operationOrder.getInStockMoveList();
 
-		if(stockMove != null && stockMove.getStockMoveLineList() != null)  {
+			if (stockMoveList != null) {
 
-			stockMoveService.cancel(stockMove);
+				for (StockMove stockMove : stockMoveList) {
+					stockMoveService.cancel(stockMove);
+				}
 
-			for(StockMoveLine stockMoveLine : stockMove.getStockMoveLineList())  {
-
-				stockMoveLine.setConsumedOperationOrder(null);
-
+				stockMoveList.stream()
+						.filter(stockMove -> stockMove.getStockMoveLineList() != null)
+						.flatMap(stockMove -> stockMove.getStockMoveLineList().stream())
+						.forEach(stockMoveLine -> stockMoveLine.setConsumedOperationOrder(null));
 			}
-
-		}
-
 	}
 }
 

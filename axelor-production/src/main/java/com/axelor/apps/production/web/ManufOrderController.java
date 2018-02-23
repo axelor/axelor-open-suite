@@ -103,7 +103,7 @@ public class ManufOrderController {
 		
 	}
 	
-	public void finish (ActionRequest request, ActionResponse response) throws AxelorException {
+	public void finish (ActionRequest request, ActionResponse response) {
 		
 		try  {
 			Long manufOrderId = (Long)request.getContext().get("id");
@@ -117,8 +117,8 @@ public class ManufOrderController {
 		}	
 		
 	}
-	
-	public void cancel (ActionRequest request, ActionResponse response) throws AxelorException {
+
+	public void cancel (ActionRequest request, ActionResponse response) {
 		
 		try  {
 			Long manufOrderId = (Long)request.getContext().get("id");
@@ -132,7 +132,7 @@ public class ManufOrderController {
 		}	
 	}
 	
-	public void plan (ActionRequest request, ActionResponse response) throws AxelorException {
+	public void plan (ActionRequest request, ActionResponse response) {
 		
 		try  {
 			Long manufOrderId = (Long)request.getContext().get("id");
@@ -157,7 +157,7 @@ public class ManufOrderController {
 	 * @throws BirtException 
 	 * @throws IOException 
 	 */
-	public void print(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void print(ActionRequest request, ActionResponse response) {
 		
 		try  {
 			ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
@@ -221,11 +221,11 @@ public class ManufOrderController {
 		
 	}
 
-	public void generateWasteStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void generateWasteStockMove(ActionRequest request, ActionResponse response) {
 		try  {
 			ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
 			manufOrder = manufOrderRepo.find(manufOrder.getId());
-			StockMove wasteStockMove = manufOrderService.generateWasteStockMove(manufOrder);
+			manufOrderService.generateWasteStockMove(manufOrder);
 			response.setReload(true);
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
@@ -244,7 +244,7 @@ public class ManufOrderController {
 		}
 	}
 	
-	public void printProdProcess(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void printProdProcess(ActionRequest request, ActionResponse response) {
 		
 		try  {
 			ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
@@ -266,7 +266,7 @@ public class ManufOrderController {
 		
 	}
 
-	public void updatePlannedDates(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void updatePlannedDates(ActionRequest request, ActionResponse response) {
 		
 		try  {
 			ManufOrder manufOrderView = request.getContext().asType(ManufOrder.class);

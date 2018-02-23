@@ -116,8 +116,8 @@
 			</panel>
 			<panel name="stockMoves" title="Stock moves" showIf="statusSelect &gt;= 3" readonly="true">
 				<panel title="Moves In/Out" readonlyIf="statusSelect == 6" colSpan="12">
-					<field name="inStockMove" form-view="stock-move-form" grid-view="stock-move-grid" hideIf="isConsProOnOperation"/>
-					<field name="outStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
+					<field name="inStockMoveList" form-view="stock-move-form" grid-view="stock-move-grid" hideIf="isConsProOnOperation"/>
+					<field name="outStockMoveList" form-view="stock-move-form" grid-view="stock-move-grid"/>
 				</panel>
 				<panel name="productionWaste" title="Production waste" colSpan="12" showIf="statusSelect &gt;= 4">
 					<button name="generateWasteStockMove" title="Generate waste stock move" readonlyIf="wasteStockMove != null" onClick="save,action-manuf-order-method-generate-waste-stock-move"/>
