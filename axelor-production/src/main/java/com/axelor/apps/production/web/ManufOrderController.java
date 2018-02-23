@@ -59,29 +59,7 @@ public class ManufOrderController {
 	@Inject
 	private ManufOrderRepository manufOrderRepo;
 	
-	
-//	public void copyToConsume (ActionRequest request, ActionResponse response) {
-//
-//		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
-//
-//		manufOrderService.copyToConsume(ManufOrder.find(manufOrder.getId()));
-//		
-//		response.setReload(true);
-//		
-//	}
-	
-	
-//	public void copyToProduce (ActionRequest request, ActionResponse response) {
-//	
-//		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
-//
-//		manufOrderService.copyToProduce(ManufOrder.find(manufOrder.getId()));
-//		
-//		response.setReload(true);
-//		
-//	}
-	
-	
+
 	public void start (ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		try  {

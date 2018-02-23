@@ -39,6 +39,7 @@
 - Fix demo data en and fr on AppSuplychain to set the correct value on the field supplStockMoveMgtOnSO
 - Fix different split methods in StockMove
 - Fix event hide when we create new from calendar and set domain for my calendar and team calendar
+- Fix copy of manufacturing order
 
 ## [Unreleased 4.x]
 
