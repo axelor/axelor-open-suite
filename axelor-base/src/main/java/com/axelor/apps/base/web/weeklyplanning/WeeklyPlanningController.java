@@ -18,11 +18,9 @@
 package com.axelor.apps.base.web.weeklyplanning;
 
 import com.axelor.apps.base.db.WeeklyPlanning;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -41,6 +39,6 @@ public class WeeklyPlanningController {
 	public void checkPlanning(ActionRequest request, ActionResponse response){
 		WeeklyPlanning planning = request.getContext().asType(WeeklyPlanning.class);
 		try{planning = weeklyPlanningService.checkPlanning(planning);}
-		catch(AxelorException e){TraceBackService.trace(e); response.setFlash(e.getMessage());}
+		catch(AxelorException e){TraceBackService.trace(response, e);}
 	}
 }
