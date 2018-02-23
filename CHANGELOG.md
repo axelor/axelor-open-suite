@@ -21,6 +21,7 @@
 - New subscription feature.
 - Add support to dynamically set the number of decimal digit of BOM quantities
 - If there is no template defined for the object, generate an empty draft message for MESSAGE : wizard
+- Put buttons in hidden mode instead of readOnly in invoicing-project-form and put status to invoiced on generating invoice
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
@@ -32,6 +33,7 @@
 - A freight carrier is now a carrier partner
 - EndPeriod on currency conversion api
 - Allow to generate bank order file without using bic code in SEPA context.
+- Remove the field supplierPartner from Event Object
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
@@ -39,6 +41,8 @@
 - Fix demo data en and fr on AppSuplychain to set the correct value on the field supplStockMoveMgtOnSO
 - Fix different split methods in StockMove
 - Fix event hide when we create new from calendar and set domain for my calendar and team calendar
+- Fix default logo position
+- Fix create event from contact m2m of partner
 - Fix copy of manufacturing order
 
 ## [Unreleased 4.x]
