@@ -43,6 +43,7 @@
 - Fix event hide when we create new from calendar and set domain for my calendar and team calendar
 - Fix default logo position
 - Fix create event from contact m2m of partner
+- Fix copy of manufacturing order
 
 ## [Unreleased 4.x]
 
