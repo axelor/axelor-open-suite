@@ -45,6 +45,8 @@ import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.AddressServiceImpl;
+import com.axelor.apps.base.service.AdvancedExportService;
+import com.axelor.apps.base.service.AdvancedExportServiceImpl;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.BankService;
@@ -90,6 +92,7 @@ public class BaseModule extends AxelorModule {
     @Override
     protected void configure() {
         bind(AddressService.class).to(AddressServiceImpl.class);
+        bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
         bind(UserService.class).to(UserServiceImpl.class);
         bind(MessageServiceImpl.class).to(MessageServiceBaseImpl.class);
         bind(MailAccountServiceImpl.class).to(MailAccountServiceBaseImpl.class);

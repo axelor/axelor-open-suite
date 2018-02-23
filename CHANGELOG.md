@@ -34,6 +34,7 @@
 - EndPeriod on currency conversion api
 - Allow to generate bank order file without using bic code in SEPA context.
 - Remove the field supplierPartner from Event Object
+- Upgrade functionality of advanced export feature
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)

@@ -9,6 +9,7 @@
 			<button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-compnay-phonebook"/>
 			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 			<button name="replaceDuplicate" title="Replace Duplicate" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+			<button name="advancedExport" title="Advanced export" onClick="action-method-advanced-export-wizard-view"/>
 		</toolbar>
 		<field name="fullName"/>
 		<field name="fixedPhone"/>
