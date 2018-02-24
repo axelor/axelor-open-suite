@@ -344,7 +344,7 @@ public class PrestashopOrder extends PrestashopIdentifiableEntity {
 		this.totalPaidReal = totalPaidReal;
 	}
 
-	@XmlElement(name="total_products")
+	@XmlElement(name="total_products_wt")
 	public BigDecimal getTotalProductsTaxIncluded() {
 		return totalProductsTaxIncluded;
 	}
@@ -353,7 +353,7 @@ public class PrestashopOrder extends PrestashopIdentifiableEntity {
 		this.totalProductsTaxIncluded = totalProductsTaxIncluded;
 	}
 
-	@XmlElement(name="total_products_wt")
+	@XmlElement(name="total_products")
 	public BigDecimal getTotalProductsTaxExcluded() {
 		return totalProductsTaxExcluded;
 	}
