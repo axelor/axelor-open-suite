@@ -38,7 +38,6 @@ import com.axelor.apps.prestashop.exports.service.ExportCategoryService;
 import com.axelor.apps.prestashop.exports.service.ExportCountryService;
 import com.axelor.apps.prestashop.exports.service.ExportCurrencyService;
 import com.axelor.apps.prestashop.exports.service.ExportCustomerService;
-import com.axelor.apps.prestashop.exports.service.ExportOrderDetailService;
 import com.axelor.apps.prestashop.exports.service.ExportOrderService;
 import com.axelor.apps.prestashop.exports.service.ExportProductService;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
@@ -74,10 +73,6 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	@Inject
 	private ExportOrderService orderService;
 
-	@Inject
-	private ExportOrderDetailService detailService;
-
-
 	/**
 	 * Export axelor base module
 	 *
@@ -112,7 +107,6 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 			exportAxelorBase(appConfig, endDate, bufferedLogWriter);
 
 			orderService.exportOrder(appConfig, endDate, bufferedLogWriter);
-			//detailService.exportOrderDetail(appConfig, endDate, bufferedLogWriter);
 			bufferedLogWriter.write(String.format("%n==== END OF LOG ====%n"));
 		} finally {
 			IOUtils.closeQuietly(bufferedLogWriter);

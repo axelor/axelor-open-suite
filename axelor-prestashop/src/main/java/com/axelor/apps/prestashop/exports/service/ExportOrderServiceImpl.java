@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,13 +36,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.AppPrestashop;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.prestashop.db.SaleOrderStatus;
 import com.axelor.apps.prestashop.entities.Associations.CartRowsAssociationElement;
 import com.axelor.apps.prestashop.entities.Associations.OrderRowsAssociationElement;
 import com.axelor.apps.prestashop.entities.PrestashopCart;
 import com.axelor.apps.prestashop.entities.PrestashopOrder;
 import com.axelor.apps.prestashop.entities.PrestashopOrderHistory;
+import com.axelor.apps.prestashop.entities.PrestashopOrderRowDetails;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
@@ -60,11 +64,13 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 
 	private SaleOrderRepository saleOrderRepo;
 	private CurrencyService currencyService;
+	private UnitConversionService unitConversionService;
 
 	@Inject
-	public ExportOrderServiceImpl(SaleOrderRepository saleOrderRepo, CurrencyService currencyService) {
+	public ExportOrderServiceImpl(SaleOrderRepository saleOrderRepo, CurrencyService currencyService, UnitConversionService unitConversionService) {
 		this.saleOrderRepo = saleOrderRepo;
 		this.currencyService = currencyService;
+		this.unitConversionService = unitConversionService;
 	}
 
 
@@ -226,11 +232,10 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 
 			// Recreate order
 			remoteOrder.setCartId(remoteCart.getId());
-			// All amounts are in company
 			remoteOrder.setTotalPaidTaxIncluded(localOrder.getInTaxTotal().setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
 			remoteOrder.setTotalPaidTaxExcluded(localOrder.getExTaxTotal().setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
-			remoteOrder.setTotalPaid(localOrder.getInTaxTotal().setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
-			remoteOrder.setTotalWrappingTaxIncluded(localOrder.getTaxTotal().setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
+			remoteOrder.setTotalPaid(remoteOrder.getTotalPaidTaxIncluded());
+			remoteOrder.setTotalPaidReal(remoteOrder.getTotalPaidTaxIncluded());
 			remoteOrder.setTotalProductsTaxExcluded(taxExcludedProducts.setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
 			remoteOrder.setTotalProductsTaxIncluded(taxIncludedProducts.setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
 			remoteOrder.setTotalShipping(taxIncludedShippingCosts.setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
@@ -270,13 +275,19 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 
 			remoteOrder = ws.save(PrestashopResourceType.ORDERS, remoteOrder);
 			if(localOrder.getPrestaShopId() == null) {
-				// If we just created order, lines have been created from
+				List<SaleOrderLine> rows = new LinkedList<>(localRows);
+				// If we just created order, lines have been created from cart
 				for(OrderRowsAssociationElement remoteRow : remoteOrder.getAssociations().getOrderRows().getOrderRows()) {
-					SaleOrderLine localRow = localRows.remove(0);
+					SaleOrderLine localRow = rows.remove(0);
 					localRow.setPrestaShopId(remoteRow.getId());
 				}
 			}
 			localOrder.setPrestaShopId(remoteOrder.getId());
+
+			logBuffer.write(String.format(" [SUCCESS]%n\tExporting lines:%n"));
+
+			exportLines(appConfig, ws, localOrder, localRows, logBuffer);
+
 
 			if(orderStatus != null) {
 				Map<String, String> historyFilter = new HashMap<>();
@@ -294,11 +305,76 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 
 			// OK, so we've an order with its lines, but those lines currently have no informations, eg. price was
 			// taken from product configuration, so we've to improve them
-
-			logBuffer.write(String.format(" [SUCCESS]%n"));
 			++done;
 		}
 
 		logBuffer.write(String.format("%n=== END OF ORDERS EXPORT, done: %d, errors: %d ===%n", done, errors));
+	}
+
+	private void exportLines(final AppPrestashop appConfig, final PSWebServiceClient ws, final SaleOrder order, final List<SaleOrderLine> lines, final BufferedWriter logBuffer) throws PrestaShopWebserviceException, IOException {
+		List<PrestashopOrderRowDetails> remoteRows = ws.fetch(PrestashopResourceType.ORDER_DETAILS, Collections.singletonMap("id_order", order.getPrestaShopId().toString()));
+
+		final Map<Integer, PrestashopOrderRowDetails> remoteRowsById = new HashMap<>();
+		for(PrestashopOrderRowDetails row : remoteRows) {
+			remoteRowsById.put(row.getId(), row);
+		}
+
+		// Now, we've to create missing rows (OrderDetail in Prestashop terminology)
+		for(SaleOrderLine localRow : lines) {
+			logBuffer.write(String.format("\tExporting line #%d (%s) ‑ ", localRow.getId(), localRow.getProductName()));
+			PrestashopOrderRowDetails remoteRow;
+			if(localRow.getPrestaShopId() == null || remoteRowsById.containsKey(localRow.getPrestaShopId()) == false) {
+				if(localRow.getPrestaShopId() != null) {
+					logBuffer.write(String.format("[WARNING] no row with id %d found remotely for this order, creating a new one", localRow.getId()));
+				}
+
+				// Line was added after first sync, we've to build it from scratch
+				remoteRow = new PrestashopOrderRowDetails();
+				remoteRow.setOrderId(order.getPrestaShopId());
+			} else {
+				logBuffer.write(String.format("prestashop id: %d", localRow.getPrestaShopId()));
+				// Existing line, just update needed fields
+				remoteRow = remoteRowsById.get(localRow.getPrestaShopId());
+			}
+			remoteRow.setProductId(localRow.getProduct().getPrestaShopId()); // Ensured to be not null by preliminary filtering
+			remoteRow.setProductName(localRow.getProductName());
+			remoteRow.setProductQuantity(localRow.getQty().intValue());
+			remoteRow.setUnitPriceTaxExcluded(localRow.getExTaxTotal().divide(localRow.getQty()).setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
+			remoteRow.setUnitPriceTaxIncluded(localRow.getInTaxTotal().divide(localRow.getQty()).setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
+			remoteRow.setProductPrice(localRow.getPrice().setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
+			if(localRow.getDiscountTypeSelect() != null) {
+				switch(localRow.getDiscountTypeSelect()) {
+				case PriceListLineRepository.TYPE_PERCENT:
+					remoteRow.setDiscountPercent(localRow.getDiscountAmount().setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
+					break;
+				case PriceListLineRepository.TYPE_FIXED:
+					remoteRow.setDiscountAmount(localRow.getDiscountAmount().setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
+					break;
+				}
+			}
+			remoteRow.setEan13(localRow.getProduct().getEan13());
+			remoteRow.setProductReference(localRow.getProduct().getCode());
+			if(localRow.getProduct().getGrossWeight() != null) {
+				try {
+					remoteRow.setProductWeight(unitConversionService.convert(localRow.getProduct().getWeightUnit(), appConfig.getPrestaShopWeightUnit(), localRow.getProduct().getGrossWeight()));
+				} catch(AxelorException e) {
+					log.error("Exception while converting product weight");
+				}
+			}
+			if(localRow.getProduct().getIsShippingCostsProduct() == Boolean.TRUE) {
+				remoteRow.setTotalShippingPriceTaxExcluded(localRow.getExTaxTotal().setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
+				remoteRow.setTotalShippingPriceTaxExcluded(localRow.getInTaxTotal().setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
+			} else {
+				remoteRow.setTotalPriceTaxExcluded(localRow.getExTaxTotal().setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
+				remoteRow.setTotalPriceTaxIncluded(localRow.getInTaxTotal().setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
+			}
+			remoteRow.setShopId(1); // FIXME Handle this through configuration
+			// TODO Handle warehouse
+
+			remoteRow = ws.save(PrestashopResourceType.ORDER_DETAILS, remoteRow);
+			localRow.setPrestaShopId(remoteRow.getId());
+
+			logBuffer.write(String.format(" [SUCCESS]%n"));
+		}
 	}
 }
