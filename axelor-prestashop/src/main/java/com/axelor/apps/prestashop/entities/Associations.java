@@ -20,6 +20,8 @@ public class Associations {
 	private CategoriesAssociationsEntry categories;
 	private CartRowsAssociationsEntry cartRows;
 	private OrderRowsAssociationsEntry orderRows;
+	// Warning, if you ever add ProductBundle handling, adjust PrestashopProduct filtering
+	// too remove it on virtual products…
 	private List<Element> additionalEntries;
 
 	public ImagesAssociationsEntry getImages() {

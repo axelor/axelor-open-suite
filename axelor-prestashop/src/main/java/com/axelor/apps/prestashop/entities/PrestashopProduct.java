@@ -22,6 +22,8 @@ public class PrestashopProduct extends PrestashopIdentifiableEntity {
 			"manufacturer_name",
 			"quantity"
 	);
+	private static String PRODUCT_BUNDLE_TAG = "product_bundle";
+
 	private Integer manufacturerId;
 	private Integer supplierId;
 	private Integer defaultCategoryId;
@@ -620,6 +622,17 @@ public class PrestashopProduct extends PrestashopIdentifiableEntity {
 	}
 
 	public Associations getAssociations() {
+		if(isVirtual() && associations.getAdditionalEntries() != null) {
+			// Workaround prestashop stupidity as it returns a product_bundle entry for
+			// virtual products… while not allowing to set it, even if empty
+			for(ListIterator<Element> it = associations.getAdditionalEntries().listIterator() ; it.hasNext() ; ) {
+				if(PRODUCT_BUNDLE_TAG.equals(it.next().getTagName())) {
+					it.remove();
+					break; // found it, no need to continue
+				}
+			}
+
+		}
 		return associations;
 	}
 
