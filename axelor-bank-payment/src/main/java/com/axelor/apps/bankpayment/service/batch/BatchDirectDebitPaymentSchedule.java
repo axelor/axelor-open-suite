@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.bankpayment.service.batch;
 
+import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -91,11 +92,14 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
             Preconditions.checkArgument(
                     !StringUtils.isBlank(accountingBatch.getCompany().getAccountConfig().getIcsNumber()));
             Preconditions.checkNotNull(accountingBatch.getPaymentMode());
+            BankDetails companyBankDetails = getCompanyBankDetails(accountingBatch);
             AccountManagement accountManagement = Beans.get(PaymentModeService.class).getAccountManagement(
-                    accountingBatch.getPaymentMode(), accountingBatch.getCompany(),
-                    getCompanyBankDetails(accountingBatch));
+                    accountingBatch.getPaymentMode(), accountingBatch.getCompany(), companyBankDetails);
             Preconditions.checkNotNull(accountManagement);
             Preconditions.checkNotNull(accountManagement.getBankDetails());
+            Preconditions.checkNotNull(companyBankDetails.getCurrency());
+            Preconditions
+                    .checkArgument(new File(accountingBatch.getPaymentMode().getBankOrderExportFolderPath()).exists());
         }
 
         QueryBuilder<PaymentScheduleLine> queryBuilder = QueryBuilder.of(PaymentScheduleLine.class);
