@@ -23,6 +23,7 @@
 - If there is no template defined for the object, generate an empty draft message for MESSAGE : wizard
 - Put buttons in hidden mode instead of readOnly in invoicing-project-form and put status to invoiced on generating invoice
 - Manage waste rate in bill of material and take it into account on cost sheet
+- Partial manuf order realization
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.

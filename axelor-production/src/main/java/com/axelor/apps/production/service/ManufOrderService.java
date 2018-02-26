@@ -19,12 +19,15 @@ package com.axelor.apps.production.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -77,4 +80,14 @@ public interface ManufOrderService {
 	 * @throws AxelorException
 	 */
     ManufOrder updateDiffProdProductList(ManufOrder manufOrder) throws AxelorException;
+
+	/**
+	 * Compute the difference between the two lists
+	 * @param manufOrder
+	 * @param prodProductList
+	 * @param stockMoveLineList
+	 * @return a list of ProdProduct
+	 * @throws AxelorException
+	 */
+	List<ProdProduct> createDiffProdProductList(ManufOrder manufOrder, List<ProdProduct> prodProductList, List<StockMoveLine> stockMoveLineList) throws AxelorException;
 }

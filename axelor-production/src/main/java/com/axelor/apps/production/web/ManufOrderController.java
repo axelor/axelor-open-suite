@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
+import com.axelor.apps.production.service.ManufOrderStockMoveService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,6 +117,18 @@ public class ManufOrderController {
 			TraceBackService.trace(response, e);
 		}	
 		
+	}
+
+	public void partialFinish(ActionRequest request, ActionResponse response) {
+		try {
+			ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+			manufOrder = manufOrderRepo.find(manufOrder.getId());
+
+			Beans.get(ManufOrderStockMoveService.class).partialFinish(manufOrder);
+			response.setReload(true);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 
 	public void cancel (ActionRequest request, ActionResponse response) {

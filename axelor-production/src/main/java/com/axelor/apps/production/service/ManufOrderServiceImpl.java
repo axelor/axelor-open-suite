@@ -381,40 +381,51 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 	public ManufOrder updateDiffProdProductList(ManufOrder manufOrder) throws AxelorException {
 	    List<ProdProduct> toConsumeList = manufOrder.getToConsumeProdProductList();
 	    List<StockMoveLine> consumedList = manufOrder.getConsumedStockMoveLineList();
-		List<ProdProduct> diffConsumeList = new ArrayList<>();
-	    BigDecimal consumedQty;
 	    if (toConsumeList == null || consumedList == null) {
 	    	return manufOrder;
 		}
-	    for (ProdProduct prodProduct : toConsumeList) {
-	    	Product product = prodProduct.getProduct();
-	    	Unit newUnit = prodProduct.getUnit();
-	    	Optional<StockMoveLine> stockMoveLineOpt = consumedList.stream()
+		List<ProdProduct> diffConsumeList = createDiffProdProductList(manufOrder, toConsumeList, consumedList);
+
+		manufOrder.setDiffConsumeProdProductList(diffConsumeList);
+		return manufOrder;
+	}
+
+	public List<ProdProduct> createDiffProdProductList(ManufOrder manufOrder, List<ProdProduct> prodProductList, List<StockMoveLine> stockMoveLineList) throws AxelorException {
+		List<ProdProduct> diffConsumeList = new ArrayList<>();
+		for (ProdProduct prodProduct : prodProductList) {
+			Product product = prodProduct.getProduct();
+	        Unit newUnit = prodProduct.getUnit();
+			Optional<StockMoveLine> stockMoveLineOpt = stockMoveLineList.stream()
 					.filter(stockMoveLine1 -> stockMoveLine1.getProduct() != null)
 					.filter(stockMoveLine1 -> stockMoveLine1.getProduct().equals(product))
 					.findAny();
-	    	if (!stockMoveLineOpt.isPresent()) {
-	    		continue;
+			if (!stockMoveLineOpt.isPresent()) {
+				continue;
 			}
 			StockMoveLine stockMoveLine = stockMoveLineOpt.get();
-	    	if (stockMoveLine.getUnit() != null && prodProduct.getUnit() != null) {
-				consumedQty = Beans.get(UnitConversionService.class)
-						.convertWithProduct(stockMoveLine.getUnit(), prodProduct.getUnit(), stockMoveLine.getQty(), product);
-			} else {
-	    		consumedQty = stockMoveLine.getQty();
-			}
-	    	BigDecimal diffQty = consumedQty.subtract(prodProduct.getQty());
-	    	if (diffQty.compareTo(BigDecimal.ZERO) != 0) {
-	    		ProdProduct diffProdProduct = new ProdProduct();
-	    		diffProdProduct.setQty(diffQty);
-	    		diffProdProduct.setProduct(product);
-	    		diffProdProduct.setUnit(newUnit);
-	    		diffProdProduct.setDiffConsumeManufOrder(manufOrder);
-	    		diffConsumeList.add(diffProdProduct);
+			BigDecimal diffQty = computeDiffQty(prodProduct, stockMoveLine, product);
+			if (diffQty.compareTo(BigDecimal.ZERO) != 0) {
+				ProdProduct diffProdProduct = new ProdProduct();
+				diffProdProduct.setQty(diffQty);
+				diffProdProduct.setProduct(product);
+				diffProdProduct.setUnit(newUnit);
+				diffProdProduct.setDiffConsumeManufOrder(manufOrder);
+				diffConsumeList.add(diffProdProduct);
 			}
 		}
-		manufOrder.setDiffConsumeProdProductList(diffConsumeList);
-		return manufOrder;
+		return diffConsumeList;
+	}
+
+	protected BigDecimal computeDiffQty(ProdProduct prodProduct, StockMoveLine stockMoveLine, Product product) throws AxelorException {
+		BigDecimal consumedQty;
+
+		if (stockMoveLine.getUnit() != null && prodProduct.getUnit() != null) {
+			consumedQty = Beans.get(UnitConversionService.class)
+					.convertWithProduct(stockMoveLine.getUnit(), prodProduct.getUnit(), stockMoveLine.getQty(), product);
+		} else {
+			consumedQty = stockMoveLine.getQty();
+		}
+		return consumedQty.subtract(prodProduct.getQty());
 	}
 
 }
