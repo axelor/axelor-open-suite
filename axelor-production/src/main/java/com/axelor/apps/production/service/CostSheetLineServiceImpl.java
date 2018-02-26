@@ -113,6 +113,19 @@ public class CostSheetLineServiceImpl implements CostSheetLineService  {
 	
 	}
 	
+	public CostSheetLine createConsumedProductWasteCostSheetLine(Product product, Unit unit, int bomLevel, CostSheetLine parentCostSheetLine, BigDecimal consumptionQty, BigDecimal wasteRate) throws AxelorException  {
+		
+		BigDecimal qty = consumptionQty.multiply(wasteRate).divide(new BigDecimal("100"));
+		
+		BigDecimal costPrice = unitConversionService.convert(product.getUnit(), unit, product.getCostPrice().multiply(qty));
+		
+		return this.createCostSheetLine(product.getName(), product.getCode(), bomLevel, 
+				qty.setScale(appProductionService.getNbDecimalDigitForBomQty(), RoundingMode.HALF_EVEN), 
+				costPrice.setScale(appProductionService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN), 
+				product.getCostSheetGroup(), product, CostSheetLineRepository.TYPE_CONSUMED_PRODUCT_WASTE, unit, null, parentCostSheetLine);
+	
+	}
+	
 	public CostSheetLine createWorkCenterCostSheetLine(WorkCenter workCenter, int priority, int bomLevel, CostSheetLine parentCostSheetLine, BigDecimal consumptionQty, BigDecimal costPrice, Unit unit)  {
 		
 		return this.createCostSheetLine(workCenter.getName(), priority + " - " + workCenter.getCode(), bomLevel, consumptionQty, costPrice, workCenter.getCostSheetGroup(), 
