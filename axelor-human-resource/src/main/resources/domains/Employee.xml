@@ -20,7 +20,7 @@
       <one-to-many name="leaveLineList" title="Leave List" ref="com.axelor.apps.hr.db.LeaveLine" mappedBy="employee"/>
       <boolean name="negativeValueLeave" title="Allow Negative Value for Leaves"/>
       <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Default Activity Product"/>
-      <many-to-one name="publicHolidayEventsPlanning" ref="com.axelor.apps.hr.db.EventsPlanning" title="Public Holiday Planning" massUpdate="true"/>
+      <many-to-one name="publicHolidayEventsPlanning" ref="com.axelor.apps.base.db.EventsPlanning" title="Public Holiday Planning" massUpdate="true"/>
       <one-to-many name="employmentContractList" ref="com.axelor.apps.hr.db.EmploymentContract" title="Employment contracts" mappedBy="employee"/>
       <boolean name="hrManager" title="HR manager" />
       <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
@@ -35,7 +35,7 @@
       <date name="seniorityDate" title="Seniority date" />
       <many-to-one name="mainEmploymentContract" ref="com.axelor.apps.hr.db.EmploymentContract" title="Main employment contract" />
       <boolean name="profitSharingBeneficiary" title="Profit-sharing beneficiary" default="false" massUpdate="true"/>
-      <many-to-one name="imposedDayEventsPlanning" ref="com.axelor.apps.hr.db.EventsPlanning" title="Imposed day Planning" massUpdate="true"/>
+      <many-to-one name="imposedDayEventsPlanning" ref="com.axelor.apps.base.db.EventsPlanning" title="Imposed day Planning" massUpdate="true"/>
       <string name="socialSecurityNumber"  title="Social security number" min="12" max="15"/>
       <one-to-many name="employeeAdvanceList" ref="com.axelor.apps.hr.db.EmployeeAdvance" title="Employee advances" readonly="true" mappedBy="employee" />
       <integer name="lunchVoucherFormatSelect" title="Lunch Voucher Format" selection="hr.lunch.voucher.mgt.line.lunch.voucher.format.select" massUpdate="true"/>

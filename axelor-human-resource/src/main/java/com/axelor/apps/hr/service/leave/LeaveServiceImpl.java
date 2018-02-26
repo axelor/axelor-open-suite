@@ -38,7 +38,7 @@ import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.EventsPlanning;
+import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
@@ -48,7 +48,7 @@ import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.hr.service.publicHoliday.PublicHolidayService;
+import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
@@ -66,7 +66,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 
 	protected LeaveLineRepository leaveLineRepo;
 	protected WeeklyPlanningService weeklyPlanningService;
-	protected PublicHolidayService publicHolidayService;
+	protected PublicHolidayHrService publicHolidayHrService;
 	protected LeaveRequestRepository leaveRequestRepo;
 	protected AppBaseService appBaseService;
 	protected HRConfigService hrConfigService;
@@ -76,12 +76,12 @@ public class LeaveServiceImpl  implements  LeaveService  {
 
 	@Inject
 	public LeaveServiceImpl(LeaveLineRepository leaveLineRepo, WeeklyPlanningService weeklyPlanningService,
-			PublicHolidayService publicHolidayService, LeaveRequestRepository leaveRequestRepo, AppBaseService appBaseService,
+			PublicHolidayHrService publicHolidayHrService, LeaveRequestRepository leaveRequestRepo, AppBaseService appBaseService,
 			HRConfigService hrConfigService, TemplateMessageService templateMessageService, ICalendarEventRepository icalEventRepo, ICalendarService icalendarService){
 
 		this.leaveLineRepo = leaveLineRepo;
 		this.weeklyPlanningService = weeklyPlanningService;
-		this.publicHolidayService = publicHolidayService;
+		this.publicHolidayHrService = publicHolidayHrService;
 		this.leaveRequestRepo = leaveRequestRepo;
 		this.appBaseService = appBaseService;
 		this.hrConfigService = hrConfigService;
@@ -205,7 +205,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			}
 			
 			if(publicHolidayPlanning != null){
-				duration = duration.subtract(Beans.get(PublicHolidayService.class).computePublicHolidayDays(from,to, weeklyPlanning, publicHolidayPlanning));
+				duration = duration.subtract(Beans.get(PublicHolidayHrService.class).computePublicHolidayDays(from,to, weeklyPlanning, publicHolidayPlanning));
 			}
 
 			if(duration.compareTo(BigDecimal.ZERO) < 0){
@@ -425,7 +425,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 
 		while(!itDate.isEqual(leaveRequest.getToDate().plusDays(1)) && !itDate.isAfter(toDate)){
 			leaveDays = leaveDays.add(BigDecimal.valueOf(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
-			if(publicHolidayService.checkPublicHolidayDay(itDate, employee)){
+			if(publicHolidayHrService.checkPublicHolidayDay(itDate, employee)){
 				leaveDays = leaveDays.subtract(BigDecimal.ONE);
 			}
 			itDate = itDate.plusDays(1);
