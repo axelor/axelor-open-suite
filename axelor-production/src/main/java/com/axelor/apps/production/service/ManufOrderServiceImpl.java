@@ -17,19 +17,6 @@
  */
 package com.axelor.apps.production.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -61,6 +48,18 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ManufOrderServiceImpl implements  ManufOrderService  {
 
@@ -395,15 +394,14 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		for (ProdProduct prodProduct : prodProductList) {
 			Product product = prodProduct.getProduct();
 	        Unit newUnit = prodProduct.getUnit();
-			Optional<StockMoveLine> stockMoveLineOpt = stockMoveLineList.stream()
+			List<StockMoveLine> stockMoveLineProductList = stockMoveLineList.stream()
 					.filter(stockMoveLine1 -> stockMoveLine1.getProduct() != null)
 					.filter(stockMoveLine1 -> stockMoveLine1.getProduct().equals(product))
-					.findAny();
-			if (!stockMoveLineOpt.isPresent()) {
+					.collect(Collectors.toList());
+			if (stockMoveLineProductList.isEmpty()) {
 				continue;
 			}
-			StockMoveLine stockMoveLine = stockMoveLineOpt.get();
-			BigDecimal diffQty = computeDiffQty(prodProduct, stockMoveLine, product);
+			BigDecimal diffQty = computeDiffQty(prodProduct, stockMoveLineProductList, product);
 			if (diffQty.compareTo(BigDecimal.ZERO) != 0) {
 				ProdProduct diffProdProduct = new ProdProduct();
 				diffProdProduct.setQty(diffQty);
@@ -416,14 +414,25 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		return diffConsumeList;
 	}
 
-	protected BigDecimal computeDiffQty(ProdProduct prodProduct, StockMoveLine stockMoveLine, Product product) throws AxelorException {
-		BigDecimal consumedQty;
-
-		if (stockMoveLine.getUnit() != null && prodProduct.getUnit() != null) {
-			consumedQty = Beans.get(UnitConversionService.class)
-					.convertWithProduct(stockMoveLine.getUnit(), prodProduct.getUnit(), stockMoveLine.getQty(), product);
-		} else {
-			consumedQty = stockMoveLine.getQty();
+	/**
+	 * Compute the difference in qty between a prodProduct and the qty in a list
+	 * of stock move lines.
+	 * @param prodProduct
+	 * @param stockMoveLineList
+	 * @param product
+	 * @return
+	 * @throws AxelorException
+	 */
+	protected BigDecimal computeDiffQty(ProdProduct prodProduct, List<StockMoveLine> stockMoveLineList, Product product) throws AxelorException {
+		BigDecimal consumedQty = BigDecimal.ZERO;
+		for (StockMoveLine stockMoveLine : stockMoveLineList) {
+			if (stockMoveLine.getUnit() != null && prodProduct.getUnit() != null) {
+				consumedQty = consumedQty.add(Beans.get(UnitConversionService.class)
+						.convertWithProduct(stockMoveLine.getUnit(), prodProduct.getUnit(), stockMoveLine.getQty(), product)
+				);
+			} else {
+				consumedQty = consumedQty.add(stockMoveLine.getQty());
+			}
 		}
 		return consumedQty.subtract(prodProduct.getQty());
 	}
