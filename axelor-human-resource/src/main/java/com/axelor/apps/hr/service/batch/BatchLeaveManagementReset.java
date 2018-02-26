@@ -25,6 +25,7 @@ import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -71,7 +72,8 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
 		LeaveReason leaveReason = batch.getHrBatch().getLeaveReason();
 		for (LeaveLine leaveLine : employee.getLeaveLineList()) {
 			if (leaveReason.equals(leaveLine.getLeaveReason())) {
-				leaveManagementService.reset(leaveLine);
+				leaveManagementService.reset(leaveLine, AuthUtils.getUser(), batch.getHrBatch().getComments(),
+						null, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate());
 			}
 		}
 	}

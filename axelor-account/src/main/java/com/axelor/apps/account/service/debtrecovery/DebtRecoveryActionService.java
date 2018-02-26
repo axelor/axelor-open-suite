@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Set;
@@ -57,7 +56,7 @@ public class DebtRecoveryActionService {
 	protected DebtRecoveryHistoryRepository debtRecoveryHistoryRepository;
 	protected TemplateMessageService templateMessageService;
 
-	protected LocalDate today;
+	protected AppAccountService appAccountService;
 
 	@Inject
 	public DebtRecoveryActionService(UserService userService, DebtRecoveryRepository debtRecoveryRepo, DebtRecoveryHistoryRepository debtRecoveryHistoryRepository, 
@@ -68,7 +67,7 @@ public class DebtRecoveryActionService {
 		this.debtRecoveryHistoryRepository = debtRecoveryHistoryRepository;
 		this.templateMessageService = templateMessageService;
 		
-		this.today = appAccountService.getTodayDate();
+		this.appAccountService = appAccountService;
 
 	}
 
@@ -97,7 +96,7 @@ public class DebtRecoveryActionService {
 		else  {
 
 			//On enregistre la date de la relance
-			debtRecovery.setDebtRecoveryDate(today);
+			debtRecovery.setDebtRecoveryDate(appAccountService.getTodayDate());
 
 			this.saveDebtRecovery(debtRecovery);
 
@@ -177,7 +176,7 @@ public class DebtRecoveryActionService {
 		else  {
 
 			//On enregistre la date de la relance
-			debtRecovery.setDebtRecoveryDate(today);
+			debtRecovery.setDebtRecoveryDate(appAccountService.getTodayDate());
 			this.debtRecoveryLevelValidate(debtRecovery);
 
 			this.saveDebtRecovery(debtRecovery);

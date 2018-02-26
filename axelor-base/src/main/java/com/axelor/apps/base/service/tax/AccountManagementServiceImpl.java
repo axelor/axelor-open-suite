@@ -126,6 +126,7 @@ public class AccountManagementServiceImpl implements  AccountManagementService{
 	 * @return
 	 * @throws AxelorException 
 	 */
+	@Override
 	public Tax getProductTax(Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase) throws AxelorException{
 		
 		LOG.debug("Obtention du compte comptable pour le produit {} (société : {}, achat ? {})",

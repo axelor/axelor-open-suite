@@ -61,7 +61,7 @@
 			    <img ng-src="{{$image('image', 'content')}}" />
 			  </div>
 			  <div class="span8">
-				 <strong x-translate>{{name}}</strong>
+				 <strong x-translate>{{$fmt('name')}}</strong>
 			  </div>
 			  <div class="span12">
 				<a class="btn btn-small btn-info pull-right" href="" ng-show="!active" ui-action-click="action-app-alert-install,action-app-method-install-app" x-translate>Install</a>

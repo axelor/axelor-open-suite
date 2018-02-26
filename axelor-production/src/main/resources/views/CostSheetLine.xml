@@ -74,6 +74,7 @@
 	
     <action-attrs name="action-cost-sheet-line-attrs-price-and-qty-digits">
     	<attribute name="scale" for="consumptionQty" expr="eval: __config__.app.getNbDecimalDigitForBomQty()"/>
+        <attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     </action-attrs>
 	
 </object-views>

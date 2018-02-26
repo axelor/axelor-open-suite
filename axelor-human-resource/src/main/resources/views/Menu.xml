@@ -31,7 +31,7 @@
     	<view type="grid" name="payroll-preparation-grid"/>
 	    <view type="form" name="payroll-preparation-form"/>
 	</action-view>
-	
+
 	<menuitem name="all-lunch-voucher-mgt" parent="hr-root-emp-mgt" title="Lunch Voucher Management" action="lunch.voucher.mgt.all"
 			  if="__config__.app.getApp('employee').getLunchVoucher()"/>
 
@@ -169,10 +169,10 @@
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="historicLeave"/>
 	</action-method>
 	
-	<menuitem name="leave-request-root-leave-calender" parent="leave-request-root"
-		title="Leaves calendar" action="leave.request.root.leave.calender" />
+	<menuitem name="leave-request-root-leave-calendar" parent="leave-request-root"
+		title="Leaves calendar" action="leave.request.root.leave.calendar" />
 
-	<action-view name="leave.request.root.leave.calender" title="Leaves calendar"
+	<action-view name="leave.request.root.leave.calendar" title="Leaves calendar"
 		model="com.axelor.apps.base.db.ICalendarEvent" >
 		<view type="calendar" name="calendar-all"/>
 		<view type="grid" name="calendar-event-grid"/>

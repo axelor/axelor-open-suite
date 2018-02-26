@@ -67,7 +67,7 @@ public class DebtRecoveryService {
 	protected AccountConfigService accountConfigService;
 	protected DebtRecoveryRepository debtRecoveryRepo;
 
-	protected LocalDate today;
+	protected AppAccountService appAccountService;
 
 	@Inject
 	public DebtRecoveryService(DebtRecoverySessionService debtRecoverySessionService, DebtRecoveryActionService debtRecoveryActionService, AccountCustomerService accountCustomerService,
@@ -81,7 +81,7 @@ public class DebtRecoveryService {
 		this.paymentScheduleLineRepo = paymentScheduleLineRepo;
 		this.accountConfigService = accountConfigService;
 		this.debtRecoveryRepo = debtRecoveryRepo;
-		this.today = appAccountService.getTodayDate();
+		this.appAccountService = appAccountService;
 
 	}
 
@@ -234,10 +234,10 @@ public class DebtRecoveryService {
 				//facture exigibles non bloquée en relance et dont la date de facture + délai d'acheminement < date du jour
 				if(move.getInvoice()!=null && !move.getInvoice().getDebtRecoveryBlockingOk()
 						&& !move.getInvoice().getSchedulePaymentOk()
-						&& ((move.getInvoice().getInvoiceDate()).plusDays(mailTransitTime)).isBefore(today))  {
+						&& ((move.getInvoice().getInvoiceDate()).plusDays(mailTransitTime)).isBefore(appAccountService.getTodayDate()))  {
 					if((moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)
 							&& moveLine.getDueDate() != null
-							&&	(today.isAfter(moveLine.getDueDate())  || today.isEqual(moveLine.getDueDate())))  {
+							&&	(appAccountService.getTodayDate().isAfter(moveLine.getDueDate())  || appAccountService.getTodayDate().isEqual(moveLine.getDueDate())))  {
 						if(moveLine.getAccount()!=null && moveLine.getAccount().getUseForPartnerBalance())  {
 							if(moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
 								moveLineList.add(moveLine);
@@ -250,7 +250,7 @@ public class DebtRecoveryService {
 					if(moveLine.getPaymentScheduleLine() != null
 							&& (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)
 							&& moveLine.getDueDate() != null
-							&&	(today.isAfter(moveLine.getDueDate())  || today.isEqual(moveLine.getDueDate())))  {
+							&&	(appAccountService.getTodayDate().isAfter(moveLine.getDueDate())  || appAccountService.getTodayDate().isEqual(moveLine.getDueDate())))  {
 						if(moveLine.getAccount()!=null && moveLine.getAccount().getUseForPartnerBalance())  {
 							if(moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
 								moveLineList.add(moveLine);
@@ -334,7 +334,7 @@ public class DebtRecoveryService {
 	 */
 	public boolean periodOk(int dayBegin, int dayEnd, int monthBegin, int monthEnd)  {
 
-		return DateTool.dateInPeriod(today, dayBegin, monthBegin, dayEnd, monthEnd);
+		return DateTool.dateInPeriod(appAccountService.getTodayDate(), dayBegin, monthBegin, dayEnd, monthEnd);
 
 	}
 

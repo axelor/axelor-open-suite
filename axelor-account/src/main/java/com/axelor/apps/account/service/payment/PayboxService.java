@@ -30,6 +30,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.spec.X509EncodedKeySpec;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.crypto.Mac;
@@ -38,8 +40,6 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.codec.Base64;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import org.bouncycastle.openssl.PEMReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +54,6 @@ import com.axelor.apps.account.service.config.PayboxConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -67,17 +66,15 @@ public class PayboxService {
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected PayboxConfigService payboxConfigService;
-	protected PartnerService partnerService;
 	protected PartnerRepository partnerRepository;
 	
 	protected final String CHARSET = "UTF-8";
 	protected final String HASH_ENCRYPTION_ALGORITHM = "SHA1withRSA";
 	protected final String ENCRYPTION_ALGORITHM = "RSA";
 
-	public PayboxService(PayboxConfigService payboxConfigService, PartnerService partnerService, PartnerRepository partnerRepository)  {
+	public PayboxService(PayboxConfigService payboxConfigService, PartnerRepository partnerRepository)  {
 		
 		this.payboxConfigService = payboxConfigService;
-		this.partnerService = partnerService;
 		this.partnerRepository = partnerRepository;
 	}
 	

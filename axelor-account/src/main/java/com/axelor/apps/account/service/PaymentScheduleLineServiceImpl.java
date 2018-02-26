@@ -71,7 +71,6 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 	protected MoveService moveService;
 	protected PaymentModeService paymentModeService;
 	protected SequenceService sequenceService;
-	protected ReconcileService reconcileService;
 	protected AccountingSituationService accountingSituationService;
 	protected MoveToolService moveToolService;
 	protected PaymentService paymentService;
@@ -81,15 +80,14 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 	@Inject
 	public PaymentScheduleLineServiceImpl(AppBaseService appBaseService, PaymentScheduleService paymentScheduleService,
 			MoveService moveService, PaymentModeService paymentModeService, SequenceService sequenceService,
-			ReconcileService reconcileService, AccountingSituationService accountingSituationService,
-			MoveToolService moveToolService, PaymentService paymentService, MoveLineRepository moveLineRepo,
+			AccountingSituationService accountingSituationService, MoveToolService moveToolService, 
+			PaymentService paymentService, MoveLineRepository moveLineRepo,
 			PaymentScheduleLineRepository paymentScheduleLineRepo) {
 		this.appBaseService = appBaseService;
 		this.paymentScheduleService = paymentScheduleService;
 		this.moveService = moveService;
 		this.paymentModeService = paymentModeService;
 		this.sequenceService = sequenceService;
-		this.reconcileService = reconcileService;
 		this.accountingSituationService = accountingSituationService;
 		this.moveToolService = moveToolService;
 		this.paymentService = paymentService;

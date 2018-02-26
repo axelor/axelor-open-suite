@@ -17,25 +17,12 @@
  */
 package com.axelor.apps.hr.web.timesheet;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-
-import com.axelor.apps.base.service.PeriodService;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import com.axelor.apps.hr.service.HRMenuValidateService;
-import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.apps.report.engine.ReportSettings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
@@ -45,12 +32,15 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
+import com.axelor.apps.hr.service.HRMenuValidateService;
+import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
@@ -66,6 +56,15 @@ import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
 
 @Singleton
 public class TimesheetController {
@@ -212,9 +211,8 @@ public class TimesheetController {
 				   .add("grid","timesheet-grid")
 				   .add("form","timesheet-form");
 
-		actionView.domain("self.company = :_activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
-		.context("_activeCompany", user.getActiveCompany());
-	
+		actionView.domain("(self.statusSelect = 3 OR self.statusSelect = 4)");
+
 		if(employee == null || !employee.getHrManager())  {
 			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.managerUser = :_user")
 			.context("_user", user);
@@ -288,14 +286,18 @@ public void historicTimesheetLine(ActionRequest request, ActionResponse response
 		}
 	}
 	
-	//action called when confirming a timesheet. Changing status + Sending mail to Manager
-	public void confirm(ActionRequest request, ActionResponse response) throws AxelorException{
+	/**
+	 * Action called when confirming a timesheet. Changing status + Sending mail to Manager
+	 * @param request
+	 * @param response
+	 */
+	public void confirm(ActionRequest request, ActionResponse response) {
 
-		try{
+		try {
 			Timesheet timesheet = request.getContext().asType(Timesheet.class);
 			timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
 			TimesheetService timesheetService = timesheetServiceProvider.get();
-			
+
 			timesheetService.confirm(timesheet);
 
 			Message message = timesheetService.sendConfirmationEmail(timesheet);
@@ -303,10 +305,12 @@ public void historicTimesheetLine(ActionRequest request, ActionResponse response
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
 			} 
 			
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		} finally {
+
 			response.setReload(true);
+
+		} catch (Exception e) {
+			TraceBackService.trace(e);
+			response.setError(e.getMessage());
 		}
 	}
 
@@ -323,7 +327,7 @@ public void historicTimesheetLine(ActionRequest request, ActionResponse response
     }
 
     // Confirm and continue button
-    public void confirmContinue(ActionRequest request, ActionResponse response) throws AxelorException {
+    public void confirmContinue(ActionRequest request, ActionResponse response) {
         this.confirm(request, response);
         this.continueBtn(request, response);
     }
@@ -349,7 +353,7 @@ public void historicTimesheetLine(ActionRequest request, ActionResponse response
 			Message message = timesheetService.sendValidationEmail(timesheet);
 			if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
-			} 
+			}
 			Beans.get(PeriodService.class).checkPeriod(timesheet.getCompany(), timesheet.getToDate(), timesheet.getFromDate());
 		}  catch(Exception e)  {
 			TraceBackService.trace(response, e);
@@ -391,10 +395,14 @@ public void historicTimesheetLine(ActionRequest request, ActionResponse response
 	}
 	
 	public void setVisibleDuration(ActionRequest request, ActionResponse response){
+	    try {
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
 		
 		response.setValue("timesheetLineList", timesheetServiceProvider.get().computeVisibleDuration(timesheet));
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 	
 	/* Count Tags displayed on the menu items */
@@ -455,14 +463,18 @@ public void historicTimesheetLine(ActionRequest request, ActionResponse response
 
 
 	public void timesheetPeriodTotalController(ActionRequest request, ActionResponse response) {
-		Timesheet timesheet = request.getContext().asType(Timesheet.class);
-		User user = timesheet.getUser();
+		try {
+			Timesheet timesheet = request.getContext().asType(Timesheet.class);
+			User user = timesheet.getUser();
 
-		BigDecimal periodTotal = timesheetServiceProvider.get().computePeriodTotal(timesheet);
+			BigDecimal periodTotal = timesheetServiceProvider.get().computePeriodTotal(timesheet);
 
-		response.setAttr("periodTotal","value",periodTotal);
-		response.setAttr("$periodTotalConvert","hidden",false);
-		response.setAttr("$periodTotalConvert","value",Beans.get(EmployeeService.class).getUserDuration(periodTotal,user,false));
-		response.setAttr("$periodTotalConvert","title",timesheetServiceProvider.get().getPeriodTotalConvertTitleByUserPref(user));
+			response.setAttr("periodTotal", "value", periodTotal);
+			response.setAttr("$periodTotalConvert", "hidden", false);
+			response.setAttr("$periodTotalConvert", "value", Beans.get(EmployeeService.class).getUserDuration(periodTotal, user, false));
+			response.setAttr("$periodTotalConvert", "title", timesheetServiceProvider.get().getPeriodTotalConvertTitleByUserPref(user));
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 }

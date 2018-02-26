@@ -37,6 +37,8 @@ public interface CostSheetLineService {
  	
 	public CostSheetLine createConsumedProductCostSheetLine(Product product, Unit unit, int bomLevel, CostSheetLine parentCostSheetLine, BigDecimal consumptionQty) throws AxelorException;
 	
+	public CostSheetLine createConsumedProductWasteCostSheetLine(Product product, Unit unit, int bomLevel, CostSheetLine parentCostSheetLine, BigDecimal consumptionQty, BigDecimal wasteRate) throws AxelorException;
+	
 	public CostSheetLine createWorkCenterCostSheetLine(WorkCenter workCenter, int priority, int bomLevel, CostSheetLine parentCostSheetLine, BigDecimal consumptionQty, BigDecimal costPrice, Unit unit);
 
 }

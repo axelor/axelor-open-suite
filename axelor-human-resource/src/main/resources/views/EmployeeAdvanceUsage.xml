@@ -37,8 +37,10 @@
 	</form>
 	
 	<form name="employee-advance-usage-advance-form" title="Employee advance" model="com.axelor.apps.hr.db.EmployeeAdvanceUsage">
-		<field name="usedAmount" />
-		<field name="expense" readonly="true" />
+		<panel>
+			<field name="usedAmount" />
+			<field name="expense" readonly="true" />
+		</panel>
 	</form>
 	
 	

@@ -38,22 +38,23 @@
 	    onSave="action-leave-request-validate-dates-on-save" canCopy="false">
 
 	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
-	    	<button name="sendLeave" onClick="action-leave-request-group-send" colSpan="4" title="Send" readonlyIf="statusSelect &gt; 1"/>
+			<button name="sendLeave" onClick="action-leave-request-group-send" colSpan="4" title="Send" hideIf="statusSelect &gt; 1"/>
 	    	<button name="validateButton" onClick="action-leave-request-group-validate" title="Validate"/>
 	    	<button name="refuseButton" onClick="action-leave-request-group-refuse" title="Refuse"/>
 	    	<button name="cancelButton" onClick="action-leave-request-group-cancel" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
 	    	<button name="draftButton" onClick="action-leave-request-record-draft,save,action-leave-request-attrs-buttons,action-leave-request-attrs-draft-cancel" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    </panel>
 	    <panel title="Status">
-			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>	    	
+			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 	    </panel>
 	    <panel hidden="true" showIf="leaveLine != null &amp;&amp; leaveLine.leaveReason != null &amp;&amp; leaveLine.leaveReason.instruction != null">
 	    	<field name="leaveLine.leaveReason.instruction" widget="html" colSpan="12" showTitle="false"  />
 	    </panel>
 		<panel name="information">
 			<spacer/>
-			<field name="company" canEdit="false" onChange="action-leave-request-method-leave-reason-to-justify" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" onChange="action-hr-record-empty-user,action-leave-request-method-leave-reason-to-justify" form-view="company-form" grid-view="company-grid"/>
 			<field name="user" form-view="user-form" grid-view="user-grid"
+				   onSelect="action-hr-attrs-set-user-domain"
 				onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration, action-leave-request-method-leave-reason-to-justify"
 				canNew="false" canEdit="false" canView="false"/>
 			<field name="requestDate" colSpan="12" width="50%"/>
@@ -160,6 +161,10 @@
 	<action-attrs name="action-leave-request-attrs-buttons">
 		<attribute name="hidden" for="validateButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager  || __user__.employee?.hrManager))"/>
 		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.manager == null) || __user__ == user?.employee?.manager?.employee?.manager || __user__.employee?.hrManager))"/>
+		<attribute name="readonly" for="company" expr="eval: true" if="!__user__.employee?.hrManager"/>
+		<attribute name="readonly" for="company" expr="eval: statusSelect &gt; 2" if="__user__.employee?.hrManager"/>
+		<attribute name="readonly" for="user" expr="eval: true" if="!__user__.employee?.hrManager &amp;&amp; !to_justify_leave_reason"/>
+		<attribute name="readonly" for="user" expr="eval: statusSelect &gt; 2" if="__user__.employee?.hrManager || to_justify_leave_reason"/>
 	</action-attrs>
 	
 	<action-attrs name="action-leave-request-attrs-select">

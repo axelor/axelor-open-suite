@@ -46,11 +46,11 @@
 			<field name="date" />
 			<field name="reason" />
 			<field name="typeSelect" readonlyIf="statusSelect == 2"  />
-			<field name="paymentMode" />
+			<field name="paymentMode" domain="self.inOutSelect = 2"/>
 			<field name="requestedAmount" readonlyIf="statusSelect == 2"  />
 			<field name="remainingAmount" hidden="true" showIf="statusSelect == 2" readonly="true" />
 		</panel>
-		<panel-related field="employeeAdvanceUsageList" form-view="employee-advance-usage-advance-form" grid-view="employee-advance-usage-advance-grid" hidden="true" showIf="statusSelect == 2" />
+		<panel-related field="employeeAdvanceUsageList" readonly="true" form-view="employee-advance-usage-advance-form" grid-view="employee-advance-usage-advance-grid" hidden="true" showIf="statusSelect == 2" />
 		<panel sidebar="true" >
 			<field name="statusSelect" />
 			<button name="validate" title="Validate" onClick="action-hr-employee-advance-group-validate" hidden="true" showIf="statusSelect == 1" />		

@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.CfonbConfig;
-import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
@@ -45,17 +44,15 @@ public class CfonbImportService {
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected CfonbConfigService cfonbConfigService;
-	protected PaymentModeRepository paymentModeRepo;
 	protected AppAccountService appAccountService;
 	
 	protected CfonbConfig cfonbConfig;
 	protected List<String> importFile;
 
 	@Inject
-	public CfonbImportService(CfonbConfigService cfonbConfigService, PaymentModeRepository paymentModeRepo, AppAccountService appAccountService)  {
+	public CfonbImportService(CfonbConfigService cfonbConfigService, AppAccountService appAccountService)  {
 		
 		this.cfonbConfigService = cfonbConfigService;
-		this.paymentModeRepo = paymentModeRepo;
 		this.appAccountService = appAccountService;
 		
 	}

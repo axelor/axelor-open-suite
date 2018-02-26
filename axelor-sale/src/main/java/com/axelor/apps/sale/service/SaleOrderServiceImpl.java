@@ -85,8 +85,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	protected AppSaleService appSaleService;
 	protected User currentUser;
 	
-	protected LocalDate today;
-	
+
 	@Inject
 	public SaleOrderServiceImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService, SequenceService sequenceService,
 			PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo, AppSaleService appSaleService, UserService userService)  {
@@ -99,7 +98,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 		this.saleOrderRepo = saleOrderRepo;
 		this.appSaleService = appSaleService;
 
-		this.today = appSaleService.getTodayDate();
 		this.currentUser = userService.getUser();
 	}
 	
@@ -392,7 +390,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception  {
 		saleOrder.setStatusSelect(ISaleOrder.STATUS_ORDER_CONFIRMED);
-		saleOrder.setConfirmationDate(this.today);
+		saleOrder.setConfirmationDate(appSaleService.getTodayDate());
 		saleOrder.setConfirmedByUser(this.currentUser);
 		
 		this.validateCustomer(saleOrder);

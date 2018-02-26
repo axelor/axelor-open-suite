@@ -62,11 +62,11 @@
 		<attribute for="currency" name="readonly"
 				   expr="eval: _invoice?.operationSubTypeSelect == 2"/>
 	</action-attrs>
-    
+
 	<action-method name="action-invoice-payment-method-new">
         <call class="com.axelor.apps.account.web.InvoicePaymentController" method="filterPaymentMode"/>
 	</action-method>
-	
+
     <action-method name="action-invoice-payment-method-cancel">
         <call class="com.axelor.apps.account.web.InvoicePaymentController" method="cancelInvoicePayment"/>
     </action-method>

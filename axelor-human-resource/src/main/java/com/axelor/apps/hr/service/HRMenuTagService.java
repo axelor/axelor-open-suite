@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.hr.service;
 
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -43,16 +42,22 @@ public class HRMenuTagService {
 		
 		User user = AuthUtils.getUser();
 		Employee employee = user.getEmployee();
-		Company activeCompany = user.getActiveCompany();
-		
+
 		if(employee != null && employee.getHrManager())  {
 			
-			return Long.toString(JPA.all(modelConcerned).filter("self.company = ?1 AND  self.statusSelect = ?2", activeCompany, status).count());
+			return Long.toString(JPA.all(modelConcerned)
+					.filter("self.statusSelect = :_statusSelect")
+					.bind("_statusSelect", status)
+					.count());
 
 		}
 		else  {
 			
-			return Long.toString(JPA.all(modelConcerned).filter("self.user.employee.managerUser = ?1 AND self.company = ?2 AND  self.statusSelect = ?3", user, activeCompany, status).count());
+			return Long.toString(JPA.all(modelConcerned)
+					.filter("self.user.employee.managerUser.id = :_userId AND self.statusSelect = :_statusSelect")
+					.bind("_userId", user.getId())
+					.bind("_statusSelect", status)
+					.count());
 
 		}
 	}

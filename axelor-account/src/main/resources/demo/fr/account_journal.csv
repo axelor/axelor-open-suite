@@ -1,4 +1,4 @@
-"importId";"code";"name";"type.importId";"excessPaymentOk";"editReceiptOk";"descriptionModel";"descriptionIdentificationOk";"notExportOk";"exportCode";"statusSelect";"company.importId";"sequence.importId"
+"importId";"code";"name";"journalType.importId";"excessPaymentOk";"editReceiptOk";"descriptionModel";"descriptionIdentificationOk";"notExportOk";"exportCode";"statusSelect";"company.importId";"sequence.importId"
 1;"VTE";"Ventes";1;"false";"false";"Facture client";"true";"false";;"1";1;110
 2;"AVR";"Avoirs";2;"false";"false";"Avoir client";"true";"false";;"1";1;111
 3;"ACH";"Achats";4;"false";"false";"Facture fournisseur";"true";"false";;"1";1;112

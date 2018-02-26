@@ -31,7 +31,6 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -44,19 +43,14 @@ import com.google.inject.Inject;
 
 public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService{
 	
-	@Inject
 	protected AppAccountService appAccountService;
-	
-	@Inject
 	protected AccountManagementService accountManagementService;
 	
-	protected AnalyticMoveLineRepository analyticMoveLineRepository;
-	
 	@Inject
-	public AnalyticMoveLineServiceImpl(AppAccountService appAccountService, AnalyticMoveLineRepository analyticMoveLineRepository){
+	public AnalyticMoveLineServiceImpl(AppAccountService appAccountService, AccountManagementService accountManagementService){
 		
 		this.appAccountService = appAccountService;
-		this.analyticMoveLineRepository = analyticMoveLineRepository;
+		this.accountManagementService = accountManagementService;
 	}
 	
 	

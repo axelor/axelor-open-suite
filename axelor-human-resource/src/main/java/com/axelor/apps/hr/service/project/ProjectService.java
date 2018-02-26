@@ -21,11 +21,12 @@ import java.util.List;
 
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.Project;
+import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
 public interface ProjectService {
 
 	@Transactional
-	public List<TimesheetLine> computeVisibleDuration(Project project);
+	public List<TimesheetLine> computeVisibleDuration(Project project) throws AxelorException;
 	public List<TimesheetLine> _sortTimesheetLineByDate(List<TimesheetLine> timesheetLineList);
 }

@@ -68,22 +68,6 @@ public class LunchVoucherMgtController {
 		}
 	}
 	
-	public void checkStock(ActionRequest request, ActionResponse response)  {
-		try {
-			LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
-			Company company = lunchVoucherMgt.getCompany();
-			HRConfig hrConfig = hrConfigService.get().getHRConfig(company);
-			int stock = lunchVoucherMgtProvider.get().checkStock(company, lunchVoucherMgt.getStockLineQuantity() + lunchVoucherMgt.getTotalLunchVouchers());
-			
-			if (stock <= 0){ 
-				response.setAlert(String.format(I18n.get(IExceptionMessage.LUNCH_VOUCHER_MIN_STOCK),company.getName(),
-						hrConfig.getMinStockLunchVoucher(), hrConfig.getAvailableStockLunchVoucher(), IException.INCONSISTENCY));
-			}
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
-	
 	public void validate(ActionRequest request, ActionResponse response) {
 			LunchVoucherMgt lunchVoucherMgt = Beans.get(LunchVoucherMgtRepository.class).find(request.getContext().asType(LunchVoucherMgt.class).getId());
 		try {

@@ -45,7 +45,6 @@ import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
@@ -61,11 +60,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 	protected PriceListService priceListService;
 	protected AppAccountService appAccountService;
 	protected AnalyticMoveLineService analyticMoveLineService;
-	protected ProductService productService;
 
 	@Inject
 	public InvoiceLineServiceImpl(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService,
-			AppAccountService appAccountService, AnalyticMoveLineService analyticMoveLineService, ProductService productService, AccountManagementAccountService accountManagementAccountService) {
+			AppAccountService appAccountService, AnalyticMoveLineService analyticMoveLineService, AccountManagementAccountService accountManagementAccountService) {
 		
 		this.accountManagementService = accountManagementService;
 		this.accountManagementAccountService = accountManagementAccountService;
@@ -73,7 +71,6 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 		this.priceListService = priceListService;
 		this.appAccountService = appAccountService;
 		this.analyticMoveLineService = analyticMoveLineService;
-		this.productService = productService;
 	}
 	
 	

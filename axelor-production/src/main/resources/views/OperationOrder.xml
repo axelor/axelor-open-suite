@@ -161,14 +161,9 @@
 
     <action-group name="action-operation-order-group-start">
     	<action name="action-operation-order-method-start"/>
-    	<action name="action-operation-order-method-start-manuf-order" if="_parent?.statusSelect == 3"/>
         <action name="action-operation-order-method-compute-duration"/>
     </action-group>
     
-    <action-method name="action-operation-order-method-start-manuf-order">
-    	<call class="com.axelor.apps.production.web.OperationOrderController" method="startManufOrder"/>
-    </action-method>
-
     <action-method name="action-operation-order-method-pause">
     	<call class="com.axelor.apps.production.web.OperationOrderController" method="pause"/>
     </action-method>

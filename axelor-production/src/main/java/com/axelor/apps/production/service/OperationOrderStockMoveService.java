@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
@@ -41,15 +40,13 @@ public class OperationOrderStockMoveService {
 
 	protected StockMoveService stockMoveService;
 	protected StockMoveLineService stockMoveLineService;
-	protected ProductionConfigService productionConfigService;
 	protected StockLocationRepository stockLocationRepo;
 	
 	@Inject
 	public OperationOrderStockMoveService(StockMoveService stockMoveService, StockMoveLineService stockMoveLineService,
-			ProductionConfigService productionConfigService, StockLocationRepository stockLocationRepo)  {
+			StockLocationRepository stockLocationRepo)  {
 		this.stockMoveService = stockMoveService;
 		this.stockMoveLineService = stockMoveLineService;
-		this.productionConfigService = productionConfigService;
 		this.stockLocationRepo = stockLocationRepo;
 	}
 

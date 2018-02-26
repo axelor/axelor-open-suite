@@ -82,18 +82,18 @@
 			<field name="priority" readonlyIf="statusSelect == 6" colSpan="3"/>
 			<field name="company" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="3" form-view="company-form" grid-view="company-grid"/>
 			<field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
-			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" domain="self.defineSubBillOfMaterial = true" onChange="action-manuf-order-on-change-bill-of-material, action-manuf-order-attrs-isConsProOnOperation, action-manuf-order-record-isConsProOnOperation,action-manuf-order-reset" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" canEdit="false"/>
-			<field name="prodProcess" onChange="action-manuf-order-attrs-isConsProOnOperation, action-manuf-order-record-isConsProOnOperation" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"/>
+			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" domain="self.defineSubBillOfMaterial = true AND self.prodProcess IS NOT null" onChange="action-manuf-order-on-change-bill-of-material, action-manuf-order-attrs-isConsProOnOperation, action-manuf-order-record-isConsProOnOperation,action-manuf-order-reset" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" canEdit="false"/>
+			<field name="prodProcess" onChange="action-manuf-order-attrs-isConsProOnOperation, action-manuf-order-record-isConsProOnOperation" onSelect="action-manuf-order-attrs-filter-prodProcess" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"/>
     			<field name="prodProcess.outsourcing" colSpan="3"/>
-			<field name="product" canEdit="false" required="true" readonlyIf="statusSelect &gt; 1" form-view="product-form" grid-view="product-grid"/>
+			<field name="product" canEdit="false" required="true" readonlyIf="statusSelect &gt; 1 || !product.isModel" form-view="product-form" grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"/>
 			<field name="qty" readonlyIf="statusSelect &gt; 1"/>
 			<field name="isConsProOnOperation" />
 			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice" if-module="axelor-business-production" if="__config__.app.getApp('production').getManageBusinessProduction()" />
 			<field name="invoiced" showIf="isToInvoice" if-module="axelor-business-production" if="__config__.app.getApp('production').getManageBusinessProduction()" />
 			<button name="preFillOperations" colSpan="4" title="Pre-fill operations" hideIf="statusSelect &gt; 1  &#124;&#124; operationOrderList.length &gt; 0" onClick="save,action-manuf-order-method-pre-fill-operations" />
-			
+			<field name="product.isModel" hidden="true"/>
 		</panel>
-		<panel name="actions" title="Actions" colSpan="4" showIf="id">
+		<panel name="actions" title="Actions" colSpan="4">
 			<button name="plan" icon="fa-calendar" title="Plan" colSpan="12" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-manuf-order-set-draft-seq,action-manuf-order-method-plan" />
 			<button name="start" icon="fa-play" title="Start" colSpan="12" showIf="statusSelect == 3" onClick="save,action-manuf-order-method-start"/>
 			<button name="pause" icon="fa-pause" title="Pause" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-pause"/>
@@ -155,8 +155,6 @@
 				<panel-dashlet action="action-manuf-order-cost-sheet-line-view-tree" colSpan="12"  height="600"/>
 			</panel>
 		</panel-tabs>
-		
-	  
 	</form>
 	
 	<form title="Update quantities (Components and FP)" name="popup-manuf-order-form-update-qty" model="com.axelor.apps.production.db.CostSheetLine">
@@ -168,7 +166,7 @@
 
 	<action-view name="action-manuf-order-cost-sheet-line-view-tree" title="Cost sheet line detail" model="com.axelor.apps.production.db.CostSheetLine">
 		<view type="tree" name="cost-sheet-line-tree"/>
-		<context name="_costSheetId" expr="eval: costSheet.id"/>
+		<context name="_costSheetId" expr="eval: costSheet?.id ?: 0"/>
 	</action-view>
 	
 	<action-view name="action-manuf-order-update-qty-popup-form-view" title="Update quantities (Components and FP)" model="com.axelor.apps.production.db.ManufOrder">
@@ -199,7 +197,6 @@
     
     <action-record name="action-manuf-order-default-record" model="com.axelor.apps.production.db.ManufOrder">
     	<field name="statusSelect" expr="eval: 1"/>
-    	<field name="plannedStartDateT" expr="eval:__config__.app.getTodayDateTime()" if="startDate == null"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     </action-record>
@@ -294,7 +291,19 @@
 	<action-method name="action-manuf-order-method-compute-diff-prod-product-list">
         <call class="com.axelor.apps.production.web.ManufOrderController" method="updateDiffProdProductList"/>
 	</action-method>
-  	
+
+	<action-attrs name="action-manuf-order-attrs-filter-prodProcess">
+		<attribute name="domain" for="prodProcess" expr="eval: &quot; self.id = ${prodProcess?.id} &quot;" if="prodProcess?.id != null &amp;&amp; billOfMaterial != null"/>
+		<attribute name="domain" for="prodProcess" expr="eval: null" if="billOfMaterial == null"/>
+	</action-attrs>
+
+	<action-attrs name="action-manuf-order-attrs-filter-product">
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' &quot;" if="billOfMaterial?.product?.id != null &amp;&amp; prodProcess?.id != null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' &quot;" if="billOfMaterial?.product?.id != null &amp;&amp; prodProcess?.id == null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' &quot;" if="billOfMaterial?.product?.id == null &amp;&amp; prodProcess?.id != null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) &quot;" if="billOfMaterial?.product?.id == null &amp;&amp; prodProcess?.id == null"/>
+	</action-attrs>
+
   	<search-filters name="manuf-order-filters" model="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order filters">
 		<filter title="Draft MOs">
 			<domain>self.statusSelect = 1</domain>

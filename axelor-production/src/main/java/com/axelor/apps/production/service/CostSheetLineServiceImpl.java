@@ -43,20 +43,20 @@ public class CostSheetLineServiceImpl implements CostSheetLineService  {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
-	@Inject
 	protected AppProductionService appProductionService;
-	
-	@Inject
-	protected CostSheetLineRepository costSheetLineRepository;
-	
-	@Inject
 	protected CostSheetGroupRepository costSheetGroupRepository;
-	
-	@Inject
 	protected UnitConversionService unitConversionService;
+	protected UnitRepository unitRepo;
 	
 	@Inject
-	protected UnitRepository unitRepo;
+	public CostSheetLineServiceImpl(AppProductionService appProductionService, CostSheetGroupRepository costSheetGroupRepository,
+			UnitConversionService unitConversionService, UnitRepository unitRepo)  {
+		this.appProductionService = appProductionService;
+		this.costSheetGroupRepository = costSheetGroupRepository;
+		this.unitConversionService = unitConversionService;
+		this.unitRepo = unitRepo;
+		
+	}
 
 	public CostSheetLine createCostSheetLine(String name, String code, int bomLevel, BigDecimal consumptionQty, BigDecimal costPrice, 
 			CostSheetGroup costSheetGroup, Product product, int typeSelect, Unit unit, WorkCenter workCenter, CostSheetLine parentCostSheetLine)  {
@@ -110,6 +110,19 @@ public class CostSheetLineServiceImpl implements CostSheetLineService  {
 		
 		return this.createCostSheetLine(product.getName(), product.getCode(), bomLevel, consumptionQty, costPrice, product.getCostSheetGroup(), 
 				product, CostSheetLineRepository.TYPE_CONSUMED_PRODUCT, unit, null, parentCostSheetLine);
+	
+	}
+	
+	public CostSheetLine createConsumedProductWasteCostSheetLine(Product product, Unit unit, int bomLevel, CostSheetLine parentCostSheetLine, BigDecimal consumptionQty, BigDecimal wasteRate) throws AxelorException  {
+		
+		BigDecimal qty = consumptionQty.multiply(wasteRate).divide(new BigDecimal("100"));
+		
+		BigDecimal costPrice = unitConversionService.convert(product.getUnit(), unit, product.getCostPrice().multiply(qty));
+		
+		return this.createCostSheetLine(product.getName(), product.getCode(), bomLevel, 
+				qty.setScale(appProductionService.getNbDecimalDigitForBomQty(), RoundingMode.HALF_EVEN), 
+				costPrice.setScale(appProductionService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN), 
+				product.getCostSheetGroup(), product, CostSheetLineRepository.TYPE_CONSUMED_PRODUCT_WASTE, unit, null, parentCostSheetLine);
 	
 	}
 	

@@ -46,23 +46,23 @@ public class ManufOrderWorkflowService {
 	protected ManufOrderStockMoveService manufOrderStockMoveService;
 	protected ManufOrderRepository manufOrderRepo;
 
-	protected LocalDateTime now;
 
 	@Inject
 	public ManufOrderWorkflowService(OperationOrderWorkflowService operationOrderWorkflowService, OperationOrderRepository operationOrderRepo,
-									 ManufOrderStockMoveService manufOrderStockMoveService, ManufOrderRepository manufOrderRepo,
-									 AppProductionService appProductionService) {
+									 ManufOrderStockMoveService manufOrderStockMoveService, ManufOrderRepository manufOrderRepo) {
 		this.operationOrderWorkflowService = operationOrderWorkflowService;
 		this.operationOrderRepo = operationOrderRepo;
 		this.manufOrderStockMoveService = manufOrderStockMoveService;
 		this.manufOrderRepo = manufOrderRepo;
 
-		now = appProductionService.getTodayDateTime().toLocalDateTime();
 	}
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
+		if (manufOrder.getPlannedStartDateT() == null) {
+			manufOrder.setPlannedStartDateT(Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
+		}
 		if (manufOrder.getOperationOrderList() != null) {
 			for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
 				operationOrderWorkflowService.plan(operationOrder);

@@ -26,8 +26,8 @@
 						<label title="Personal" colSpan="12"/>
 						<field name="picture" colSpan="2" widget="Image" showTitle="false"/>
 						<field name="titleSelect"  showTitle="false" placeholder="Civility" colSpan="2"/>
-						<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="5" onChange="action-group-base-partner-contact-name-onchange"/>
-						<field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="5" onChange="action-group-base-partner-contact-name-onchange"/>
+						<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="4" onChange="action-group-base-partner-contact-name-onchange"/>
+						<field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="4" onChange="action-group-base-partner-contact-name-onchange"/>
 						<label title="Contact"/>
 						<field name="jobTitle"/>
 						<field name="reportsTo"/>
@@ -74,10 +74,10 @@
 				        <field name="partnerCategory" widget="SuggestBox" hideIf="partnerTypeSelect == 2" form-view="partner-category-form" grid-view="partner-category-grid"/>
 				        <field name="industrySector" widget="SuggestBox" hideIf="partnerTypeSelect == 2"/>
 				        <field name="department" hideIf="partnerTypeSelect == 2" form-view="department-form" grid-view="department-grid"/>
-				        <field name="saleTurnover" hideIf="partnerTypeSelect == 2"/>
+				        <field name="saleTurnover" showTitle="true" hideIf="partnerTypeSelect == 2"/>
 				        <field name="nbrEmployees" hideIf="partnerTypeSelect == 2"/>
 				        <field name="registrationCode" hideIf="partnerTypeSelect == 2"/>
-				        <field name="taxNbr" hideIf="partnerTypeSelect == 2"/>
+				        <field name="taxNbr" showTitle="true" hideIf="partnerTypeSelect == 2"/>
 				        <field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.iscontact = false AND self.partnerTypeSelect = 1" form-view="partner-form" grid-view="partner-grid"/>
 					</editor>
 				</field>
@@ -170,11 +170,11 @@
 				        <field name="source" colSpan="4"/>
 				        <field name="expectedCloseDate" colSpan="4"/>
 				        <field name="nextStep" colSpan="4"/>
-				        <field name="probability" colSpan="4"/>
-				        <field name="campaign" colSpan="4"/>
+				        <field name="probability" showTitle="true" colSpan="4"/>
+				        <field name="campaign" colSpan="4" type="many-to-one" target="com.axelor.apps.marketing.db.Campaign"/>
 				        <label title="Financial terms" css="label-bold"/>
 					  	<spacer/>
-				        <field name="amount" colSpan="3"/>
+				        <field name="amount" showTitle="true" colSpan="3"/>
 				        <field name="currency" canEdit="false" colSpan="3"/>
 				        <field name="bestCase" colSpan="3"/>
 				        <field name="worstCase" colSpan="3"/>
@@ -247,7 +247,7 @@
 					  	<spacer/>
 					    <field name="subject" colSpan="12" css="bold"/>
 					    <field name="statusSelect"/>
-					    <field name="prioritySelect"/>
+					    <field name="prioritySelect" showTitle="true"/>
 					    <spacer/>
 					    <label title="Description" css="label-bold"/>
 						<field name="description" showTitle="false" colSpan="12" widget="TEXT" />
@@ -504,7 +504,7 @@
 	      <field name="expectedCloseDate"/>
 	      <field name="nextStep"/>
 	      <field name="probability"/>
-	      <field name="campaign" type="string"/>
+	      <field name="campaign" type="many-to-one" target="com.axelor.apps.marketing.db.Campaign"/>
 	    </panel>
 	    <panel>
 	      <panel name="financialTerms" title="Financial terms" colSpan="12">

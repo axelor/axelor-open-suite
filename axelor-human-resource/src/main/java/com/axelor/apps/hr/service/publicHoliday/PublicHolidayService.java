@@ -52,15 +52,13 @@ public class PublicHolidayService {
 		return publicHolidayDays;
 	}
 	
-	public boolean checkPublicHolidayDay(LocalDate date, Employee employee) throws AxelorException{
+	public boolean checkPublicHolidayDay(LocalDate date, Employee employee) {
 
-		List<EventsPlanningLine> publicHolidayDayList = eventsPlanningLineRepo.all().filter("self.eventsPlanning = ?1 AND self.date = ?2", employee.getPublicHolidayEventsPlanning(), date).fetch();
-		if(publicHolidayDayList == null || publicHolidayDayList.isEmpty()){
+		if (employee.getPublicHolidayEventsPlanning() == null) {
 			return false;
 		}
-		else{
-			return true;
-		}
+		List<EventsPlanningLine> publicHolidayDayList = eventsPlanningLineRepo.all().filter("self.eventsPlanning = ?1 AND self.date = ?2", employee.getPublicHolidayEventsPlanning(), date).fetch();
+		return publicHolidayDayList != null && !publicHolidayDayList.isEmpty();
 	}
 	
 	public int getImposedDayNumber(Employee employee, LocalDate startDate, LocalDate endDate){

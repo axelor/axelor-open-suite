@@ -50,7 +50,6 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -70,14 +69,13 @@ public class PaymentVoucherConfirmService  {
 	protected PaymentVoucherSequenceService paymentVoucherSequenceService;
 	protected PaymentVoucherControlService paymentVoucherControlService;
 	protected PaymentVoucherToolService paymentVoucherToolService;
-	protected CurrencyService currencyService;
 	protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
 	protected PaymentVoucherRepository paymentVoucherRepository;
 	
 	@Inject
 	public PaymentVoucherConfirmService(ReconcileService reconcileService, MoveLineService moveLineService, MoveService moveService, PaymentService paymentService,
 			PaymentModeService paymentModeService, PaymentVoucherSequenceService paymentVoucherSequenceService, PaymentVoucherControlService paymentVoucherControlService,
-			PaymentVoucherToolService paymentVoucherToolService, CurrencyService currencyService, PayVoucherElementToPayRepository payVoucherElementToPayRepo, PaymentVoucherRepository paymentVoucherRepository)  {
+			PaymentVoucherToolService paymentVoucherToolService, PayVoucherElementToPayRepository payVoucherElementToPayRepo, PaymentVoucherRepository paymentVoucherRepository)  {
 		
 		this.reconcileService = reconcileService;
 		this.moveLineService = moveLineService;
@@ -87,7 +85,6 @@ public class PaymentVoucherConfirmService  {
 		this.paymentVoucherSequenceService = paymentVoucherSequenceService;
 		this.paymentVoucherControlService = paymentVoucherControlService;
 		this.paymentVoucherToolService = paymentVoucherToolService;
-		this.currencyService = currencyService;
 		this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
 		this.paymentVoucherRepository = paymentVoucherRepository;
 		

@@ -62,12 +62,6 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 	@Inject
 	protected ConsumptionLineRepository consumptionLineRepo;
 	
-	@Inject
-	protected InvoiceServiceImpl invoiceService;
-	
-	//@Inject
-	//protected Invoi invoiceGenerator;
-	
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void activeContract(Contract contract, LocalDate date) {

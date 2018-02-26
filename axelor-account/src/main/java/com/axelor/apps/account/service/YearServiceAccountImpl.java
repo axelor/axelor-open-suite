@@ -19,6 +19,8 @@ package com.axelor.apps.account.service;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -54,9 +56,6 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 public class YearServiceAccountImpl extends YearServiceImpl {
 	
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
@@ -64,12 +63,14 @@ public class YearServiceAccountImpl extends YearServiceImpl {
 	protected AccountConfigService accountConfigService;
 	protected ReportedBalanceLineRepository reportedBalanceLineRepo;
 	protected AdjustHistoryService adjustHistoryService;
+	protected PartnerRepository partnerRepository;
 
 	@Inject
 	public YearServiceAccountImpl(AccountConfigService accountConfigService, PartnerRepository partnerRepository,
 			ReportedBalanceLineRepository reportedBalanceLineRepo, YearRepository yearRepo, AdjustHistoryService adjustHistoryService) {
-		super(partnerRepository, yearRepo);
+		super(yearRepo);
 		this.accountConfigService = accountConfigService;
+		this.partnerRepository = partnerRepository;
 		this.reportedBalanceLineRepo = reportedBalanceLineRepo;
 		this.adjustHistoryService = adjustHistoryService;
 	}
