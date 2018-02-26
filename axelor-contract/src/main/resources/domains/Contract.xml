@@ -51,9 +51,7 @@
 		<one-to-many name="consumptionLineList" ref="com.axelor.apps.contract.db.ConsumptionLine" title="Consumption for next invoice"/>
 		
 		<one-to-many name="additionalBenefitList" ref="com.axelor.apps.contract.db.ContractLine" title="Next Invoice Additional Benefit"/>
-		
-		<string name="description" title="Description" multiline="true" large="true" />
-		
+
 		<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" />
 		
 	</entity>

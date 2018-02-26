@@ -14,14 +14,14 @@
 		
 		<panel title="Advanced management">
 			
-			<field name="isUnchangableContract" colSpan="4" />
-			<field name="isAmendmentManagement" colSpan="4" />
-			<field name="isRenewalManagement" colSpan="4" />
+			<field name="isUnchangableContract" colSpan="4" widget="boolean-switch"/>
+			<field name="isAmendmentManagement" colSpan="4" widget="boolean-switch"/>
+			<field name="isRenewalManagement" colSpan="4" widget="boolean-switch"/>
 			
-			<field name="isInvoicingManagement" colSpan="4" />
-			<field name="isConsumptionManagement" colSpan="4" />
-			<field name="isAdditionalBenefitManagement" colSpan="4" />
-			<field name="isConfigContract" colSpan="4" />
+			<field name="isInvoicingManagement" colSpan="4" widget="boolean-switch"/>
+			<field name="isConsumptionManagement" colSpan="4" widget="boolean-switch"/>
+			<field name="isAdditionalBenefitManagement" colSpan="4" widget="boolean-switch"/>
+			<field name="isConfigContract" colSpan="4" widget="boolean-switch"/>
 			
 		</panel>
 	</form>

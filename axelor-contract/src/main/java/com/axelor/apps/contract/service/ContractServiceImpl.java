@@ -398,7 +398,6 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 		}
 		
 		contract.setCompany( template.getCompany() );
-		contract.setDescription( template.getDescription() );
 		contract.setIsAdditionaBenefitManagement(template.getIsAdditionaBenefitManagement());
 		contract.setIsConsumptionManagement(template.getIsConsumptionManagement());
 		contract.setIsInvoicingManagement(template.getIsInvoicingManagement());
@@ -438,6 +437,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 		version.setPaymentMode(template.getPaymentMode());
 		version.setPriorNoticeDuration(template.getPriorNoticeDuration());
 		version.setRenewalDuration(template.getRenewalDuration());
+		version.setDescription(template.getDescription());
 		
 		contract.setCurrentVersion(version);
 		

@@ -45,7 +45,9 @@
 		<boolean name="isWithPriorNotice" title="With prior notice"/>
 		<many-to-one name="priorNoticeDuration" title="Prior notice duration" ref="com.axelor.apps.base.db.Duration" />
 		<boolean name="isConsumptionBeforeEndDate" title="Only invoice consumption before Invoice period end Date" />
-		
+
+		<string name="description" title="Description" multiline="true" large="true" />
+
 		<string name="fullName" namecolumn="true">
 			<![CDATA[
 	  		String fullName = "";
