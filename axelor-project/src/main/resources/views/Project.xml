@@ -137,11 +137,11 @@
 		</panel>
 
 		<panel title="Members">
-			<field name="membersUserSet" showTitle="false" colSpan="10" widget="TagSelect" canNew="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="membersUserSet" showTitle="false" colSpan="12" widget="TagSelect" canNew="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="team" readonlyIf="synchronize || extendsMembersFromParent" title="Team" colSpan="4" canNew="false" canEdit="false"/>
+			<button name="importMembers" colSpan="3" title="Import all members" showIf="team != null" onClick="action-project-method-import-members" readonlyIf="extendsMembersFromParent"/>
+			<field name="synchronize" colSpan="2" widget="boolean-switch" readonlyIf="extendsMembersFromParent"/>
 			<field name="extendsMembersFromParent" colSpan="2" widget="boolean-switch" showIf="projectTypeSelect == 2" hidden="true"/>
-			<field name="team" readonlyIf="synchronisable == true" title="Team" colSpan="6" canNew="false" canEdit="false"/>
-			<field name="synchronisable" colSpan="3" widget="boolean-switch"/>
-			<button name="importMembers" title="Import all members" showIf="team != null" colSpan="3" onClick="action-project-method-import-members"/>
 		</panel>
 
 		<panel-tabs>

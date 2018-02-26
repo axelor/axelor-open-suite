@@ -10,11 +10,11 @@ import java.util.List;
 public class TeamProjectRepository extends TeamRepository {
     @Override
     public Team save(Team team) {
-        List<Project> projects = JPA.all(Project.class).filter("self.team = :team AND self.synchronisable = true")
+        List<Project> projects = JPA.all(Project.class).filter("self.team = :team AND self.synchronize = true")
                 .bind("team", team).fetch();
-        projects.forEach(Project::clearMembersUserSet);
-        projects.forEach(p -> team.getMembers().forEach(p::addMembersUserSetItem));
-
+        projects.stream().peek(Project::clearMembersUserSet)
+                .peek(p -> team.getMembers().forEach(p::addMembersUserSetItem))
+                .forEach(ProjectManagementRepository::setAllProjectMembersUserSet);
         return super.save(team);
     }
 }

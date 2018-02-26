@@ -18,6 +18,7 @@
 package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.project.db.Project;
+import com.axelor.auth.db.User;
 import com.axelor.team.db.Team;
 import com.google.common.base.Strings;
 import org.slf4j.Logger;
@@ -40,22 +41,25 @@ public class ProjectManagementRepository extends ProjectRepository {
 		}
 	}
 
-	private void setAllProjectMembersUserSet(Project project) {
+	public static void setAllProjectMembersUserSet(Project project) {
 		if (project.getParentProject() == null) {
 			project.getChildProjectList().stream()
 					.filter(Project::getExtendsMembersFromParent)
-					.peek(Project::clearMembersUserSet)
                     .peek(p -> project.getMembersUserSet().forEach(p::addMembersUserSetItem))
                     .forEach(p -> p.setTeam(project.getTeam()));
+		} else if (project.getParentProject() != null && project.getExtendsMembersFromParent() &&
+				!project.getSynchronize()) {
+			project.getParentProject().getMembersUserSet()
+					.forEach(project.getMembersUserSet()::add);
 		}
 	}
 	
 	@Override
 	public Project save(Project project){
 	    setAllProjectFullName(project);
-	    setAllProjectMembersUserSet(project);
+	    ProjectManagementRepository.setAllProjectMembersUserSet(project);
 
-	    if (project.getSynchronisable()) {
+	    if (project.getSynchronize()) {
 	    	Team team = project.getTeam();
 	    	team.clearMembers();
 	    	project.getMembersUserSet().forEach(team::addMember);
