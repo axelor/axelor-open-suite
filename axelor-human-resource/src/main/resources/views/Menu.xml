@@ -124,9 +124,9 @@
 
 	<menuitem name="event-planning-all" parent="plannings-all" title="Event planning" action="hr.public.holiday.planning.all"/>
 
-	<action-view name="hr.public.holiday.planning.all" title="Public Holiday Plannings" model="com.axelor.apps.hr.db.PublicHolidayPlanning">
-    	<view type="grid" name="public-holiday-planning-grid"/>
-	    <view type="form" name="public-holiday-planning-form"/>
+	<action-view name="hr.public.holiday.planning.all" title="Public Holiday Plannings" model="com.axelor.apps.base.db.EventsPlanning">
+    	<view type="grid" name="events-planning-grid"/>
+	    <view type="form" name="events-planning-form"/>
 	</action-view>
 
 	<menuitem name="weekly-planning-all" parent="plannings-all" title="Weekly planning" action="hr.weekly.planning.all"/>

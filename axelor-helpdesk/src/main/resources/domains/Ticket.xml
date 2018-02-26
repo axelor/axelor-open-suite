@@ -13,9 +13,8 @@
 		<many-to-one name="customer" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
 		<many-to-one name="contact" ref="com.axelor.apps.base.db.Partner" title="Customer contact"/>
 		<many-to-one name="slaPolicy" ref="com.axelor.apps.helpdesk.db.Sla" title="SLA Policy"/>
-		<many-to-one name="lead" ref="com.axelor.apps.crm.db.Lead" title="Lead"/>
-		<many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
-		<many-to-one name="responsible" ref="com.axelor.auth.db.User" title="User in charge of the issue"/>
+		<many-to-one name="assignedToUser" ref="com.axelor.auth.db.User" title="Assigned to"/>
+		<many-to-one name="responsibleUser" ref="com.axelor.auth.db.User" title="User in charge of the issue"/>
 		<integer name="statusSelect" selection="helpdesk.status.select" title="Status"/>
 		<many-to-one name="ticketType" ref="com.axelor.apps.helpdesk.db.TicketType" title="Ticket type"/>
 		<datetime name="startDateT" title="Start date"/>

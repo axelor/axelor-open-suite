@@ -76,9 +76,20 @@ public class GenerateMessageController {
 			
 			LOG.debug("Template number : {} ", templateNumber);
 			
-			if ( templateNumber == 0 )  { response.setFlash(I18n.get(IExceptionMessage.MESSAGE_1)); }
+			if ( templateNumber == 0 )  { 
+				
+				response.setView(
+						ActionView.define( I18n.get(IExceptionMessage.MESSAGE_3) )
+						.model( Message.class.getName() )
+						.add("form", "message-form")
+						.param("forceEdit", "true")
+						.context("_mediaTypeSelect", MessageRepository.MEDIA_TYPE_EMAIL)
+						.context("_templateContextModel", model)
+						.context( "_objectId", context.getId().toString())
+						.map()
+					);
 			
-			else if ( templateNumber > 1 || templateNumber == 0 )  {
+			} else if ( templateNumber > 1 )  {
 	
 				response.setView( 
 						ActionView.define( I18n.get( IExceptionMessage.MESSAGE_2 ) )
