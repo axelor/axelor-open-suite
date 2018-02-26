@@ -71,4 +71,4 @@
 "Uninstall",,,
 "User field",,,
 "Write",,,
-"{{name}}",,,
+"{{$fmt('name')}}",,,
