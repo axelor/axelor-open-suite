@@ -53,6 +53,7 @@ public class ContractVersionController {
 		response.setValue("isProratedFirstInvoice", contract.getCurrentVersion().getIsProratedFirstInvoice());
 		response.setValue("isProratedLastInvoice", contract.getCurrentVersion().getIsProratedLastInvoice());
 		response.setValue("contractLineList", copyContractLineList(contract.getCurrentVersion().getContractLineList()));
+		response.setValue("description", contract.getCurrentVersion().getDescription());
 
 	}
 

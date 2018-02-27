@@ -303,20 +303,6 @@
         onSave="save,com.axelor.apps.contract.web.ContractController:saveNextVersion"
         onLoad="action-record-contract-version-load"
         onNew="com.axelor.apps.contract.web.ContractVersionController:newVersion,action-record-contract-version-load">
-        <panel sidebar="true">
-            <field name="contractNext.statusSelect" readonly="true" showTitle="false">
-                <viewer depends="contractNext.contractId,contractNext.versionNumber">
-                    <![CDATA[
-			 			<h3>
-			             <span>{{ record.contractNext.contractId }} <span ng-show="record.contractNext.versionNumber &gt; 0"> - {{ record.contractNext.versionNumber }}</span></span>
-			             <span class="label label-default" x-translate ng-show="record.contractNext.statusSelect == 1">Draft</span>
-			             <span class="label label-info" x-translate ng-show="record.contractNext.statusSelect == 2">Active</span>
-			             <span class="label label-important" x-translate ng-show="record.contractNext.statusSelect == 3">Closed</span>
-			           </h3>
-					]]>
-                </viewer>
-            </field>
-        </panel>
         <panel readonly="true">
             <field name="contractNext.targetType"/>
             <field name="contractNext.company"/>
@@ -324,10 +310,11 @@
             <field name="contractNext.partner" showIf="contractNext.targetType"/>
             <field name="contractNext.currency" if="__config__.app.getApp('contract').isInvoicingManagement"/>
             <panel title="Dates" colSpan="12">
-                <panel colSpan="12" hidden="true" showIf="id">
+                <panel colSpan="12">
                     <field name="contractNext.createdOn"/>
                     <field name="contractNext.createdBy"/>
                 </panel>
+                <field name="contractNext.statusSelect" hidden="true"/>
                 <field name="contractNext.startDate" hidden="true" showIf="contractNext.statusSelect == 2"/>
                 <field name="contractNext.endDate" hidden="true" showIf="contractNext.statusSelect == 3"/>
             </panel>
@@ -392,20 +379,13 @@
             <field name="note" showTitle="false"/>
         </panel>
         <panel hidden="true">
-            <field name="contractNext">
-                <editor>
-                    <field name="name"/>
-                    <field name="contractId"/>
-                    <field name="partner"/>
-                    <field name="isTacitRenewal"/>
-                </editor>
-            </field>
+            <field name="contractNext"/>
             <field name="$_xIsNext" type="Boolean"/>
         </panel>
     </form>
     
     <action-attrs name="action-record-contract-version-load">
-        <attribute for="$_xIsNext" name="value" expr="eval: contractNext != null ? true : false"/>
+        <attribute for="$_xIsNext" name="value" expr="eval: contractNext"/>
         <attribute for="$_xIsNext" name="value" expr="eval: _xIsNextVersion" if="_xIsNextVersion"/>
     </action-attrs>
     
