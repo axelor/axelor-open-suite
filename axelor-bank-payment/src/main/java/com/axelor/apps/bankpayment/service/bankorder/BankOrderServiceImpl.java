@@ -47,7 +47,6 @@ import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
-import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
@@ -295,6 +294,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		if (bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTransportEbicsUser() == null) {
 			throw new AxelorException(I18n.get(IExceptionMessage.EBICS_MISSING_USER_TRANSPORT), IException.MISSING_FIELD);
 		}
+
 		sendBankOrderFile(bankOrder);
 		realizeBankOrder(bankOrder);
 
@@ -305,7 +305,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		File dataFileToSend = null;
 		File signatureFileToSend = null;
 
-		if(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+		if(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getEbicsTypeSelect() == EbicsPartnerRepository.EBICS_TYPE_TS)  {
             if (bankOrder.getSignedMetaFile() == null) {
                 throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_NOT_PROPERLY_SIGNED),
                         IException.NO_VALUE);
@@ -322,8 +322,10 @@ public class BankOrderServiceImpl implements BankOrderService {
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	protected void realizeBankOrder(BankOrder bankOrder)  throws AxelorException {
 		
+		GeneralService generalService = Beans.get(GeneralService.class);
 		Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
 		
+		bankOrder.setSendingDateTime(generalService.getTodayDateTime().toLocalDateTime());
 		bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
 		bankOrder.setTestMode(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTestMode());
 		bankOrderRepo.save(bankOrder);

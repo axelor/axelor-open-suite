@@ -31,16 +31,13 @@ import java.util.Date;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-
-
-
-
-
 //import org.kopi.ebics.interfaces.EbicsUser;
 //import org.kopi.ebics.interfaces.PasswordCallback;
 import com.axelor.apps.bankpayment.db.EbicsCertificate;
+import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
+import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
 import com.axelor.inject.Beans;
@@ -73,7 +70,10 @@ public class CertificateManager {
     org.apache.xml.security.Init.init();
     java.security.Security.addProvider(new BouncyCastleProvider());
     
-    if(user.getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_T)  {
+    EbicsPartner ebicsPartner = user.getEbicsPartner();
+    
+    if((user.getUserTypeSelect() == EbicsUserRepository.USER_TYPE_TRANSPORT && ebicsPartner.getEbicsTypeSelect() == EbicsPartnerRepository.EBICS_TYPE_TS)
+    		|| ebicsPartner.getEbicsTypeSelect() == EbicsPartnerRepository.EBICS_TYPE_T)  {
     	createA005Certificate(new Date(calendar.getTimeInMillis()));
     }
     createX002Certificate(new Date(calendar.getTimeInMillis()));
@@ -88,7 +88,10 @@ public class CertificateManager {
    */
   private void setUserCertificates() throws IOException, CertificateEncodingException {
 	
-    if(user.getEbicsPartner().getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_T)  {
+    EbicsPartner ebicsPartner = user.getEbicsPartner();
+	  
+    if((user.getUserTypeSelect() == EbicsUserRepository.USER_TYPE_TRANSPORT && ebicsPartner.getEbicsTypeSelect() == EbicsPartnerRepository.EBICS_TYPE_TS)
+    		|| ebicsPartner.getEbicsTypeSelect() == EbicsPartnerRepository.EBICS_TYPE_T)  {
     	user.setA005Certificate(updateCertificate(a005Certificate, user.getA005Certificate(), a005PrivateKey.getEncoded(), EbicsCertificateRepository.TYPE_SIGNATURE));
     }   
     

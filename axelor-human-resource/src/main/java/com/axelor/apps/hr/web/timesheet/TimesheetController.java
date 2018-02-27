@@ -190,9 +190,8 @@ public class TimesheetController {
 				   .add("grid","timesheet-grid")
 				   .add("form","timesheet-form");
 
-		actionView.domain("self.company = :_activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
-		.context("_activeCompany", user.getActiveCompany());
-	
+		actionView.domain("(self.statusSelect = 3 OR self.statusSelect = 4)");
+
 		if(employee == null || !employee.getHrManager())  {
 			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.manager = :_user")
 			.context("_user", user);
@@ -244,31 +243,34 @@ public class TimesheetController {
 		}
 	}
 	
-	//action called when confirming a timesheet. Changing status + Sending mail to Manager
-	public void confirm(ActionRequest request, ActionResponse response) throws AxelorException{
+	/**
+	 * Action called when confirming a timesheet. Changing status + Sending mail to Manager
+	 * @param request
+	 * @param response
+	 */
+	public void confirm(ActionRequest request, ActionResponse response) {
 
-		try{
+		try {
 			Timesheet timesheet = request.getContext().asType(Timesheet.class);
 			timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
 			TimesheetService timesheetService = timesheetServiceProvider.get();
-			
+
 			timesheetService.confirm(timesheet);
 
 			Message message = timesheetService.sendConfirmationEmail(timesheet);
-			if(message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT)  {
+			if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
 				response.setFlash(String.format(I18n.get("Email sent to %s"), Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
-			} 
-			
-		}  catch(Exception e)  {
-			TraceBackService.trace(response, e);
-		}
-		finally {
+			}
 			response.setReload(true);
+
+		} catch (Exception e) {
+			TraceBackService.trace(e);
+			response.setError(e.getMessage());
 		}
 	}
 
     // Continue button
-    public void continueBtn(ActionRequest request, ActionResponse response) throws AxelorException {
+    public void continueBtn(ActionRequest request, ActionResponse response) {
         response.setView(ActionView
                 .define(I18n.get("Timesheet"))
                 .model(Timesheet.class.getName())
@@ -280,7 +282,7 @@ public class TimesheetController {
     }
 
     // Confirm and continue button
-    public void confirmContinue(ActionRequest request, ActionResponse response) throws AxelorException {
+    public void confirmContinue(ActionRequest request, ActionResponse response) {
         this.confirm(request, response);
         this.continueBtn(request, response);
     }
@@ -350,10 +352,14 @@ public class TimesheetController {
 	}
 	
 	public void setVisibleDuration(ActionRequest request, ActionResponse response){
+	    try {
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
 		
 		response.setValue("timesheetLineList", timesheetServiceProvider.get().computeVisibleDuration(timesheet));
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 	
 	/* Count Tags displayed on the menu items */
@@ -388,14 +394,18 @@ public class TimesheetController {
 	}
 
 	public void timesheetPeriodTotalController(ActionRequest request, ActionResponse response) {
-		Timesheet timesheet = request.getContext().asType(Timesheet.class);
-		User user = timesheet.getUser();
+		try {
+			Timesheet timesheet = request.getContext().asType(Timesheet.class);
+			User user = timesheet.getUser();
 
-		BigDecimal periodTotal = timesheetServiceProvider.get().computePeriodTotal(timesheet);
+			BigDecimal periodTotal = timesheetServiceProvider.get().computePeriodTotal(timesheet);
 
-		response.setAttr("periodTotal","value",periodTotal);
-		response.setAttr("$periodTotalConvert","hidden",false);
-		response.setAttr("$periodTotalConvert","value",Beans.get(EmployeeService.class).getUserDuration(periodTotal,user,false));
-		response.setAttr("$periodTotalConvert","title",timesheetServiceProvider.get().getPeriodTotalConvertTitleByUserPref(user));
+			response.setAttr("periodTotal", "value", periodTotal);
+			response.setAttr("$periodTotalConvert", "hidden", false);
+			response.setAttr("$periodTotalConvert", "value", Beans.get(EmployeeService.class).getUserDuration(periodTotal, user, false));
+			response.setAttr("$periodTotalConvert", "title", timesheetServiceProvider.get().getPeriodTotalConvertTitleByUserPref(user));
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 }

@@ -70,14 +70,20 @@ public class LeaveManagementService {
 	}
 
 	/**
-	 * Reset leave management list.
+	 * Reset leave management list by adding a new leave management line
+	 * with negative quantity.
 	 * 
 	 * @param leaveLine
-	 * @throws AxelorException
+	 * @param user
+	 * @param comments
+	 * @param date
+	 * @param fromDate
+	 * @param toDate
 	 */
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void reset(LeaveLine leaveLine) throws AxelorException {
-		leaveLine.clearLeaveManagementList();
+	public void reset(LeaveLine leaveLine, User user, String comments, LocalDate date, LocalDate fromDate, LocalDate toDate) {
+	    LeaveManagement leaveManagement = createLeaveManagement(leaveLine, user, comments, date, fromDate, toDate, leaveLine.getQuantity().negate());
+	    leaveLine.addLeaveManagementListItem(leaveManagement);
 		leaveLine.setQuantity(BigDecimal.ZERO);
 		leaveLine.setTotalQuantity(BigDecimal.ZERO);
 	}

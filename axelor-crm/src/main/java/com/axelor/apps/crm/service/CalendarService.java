@@ -62,6 +62,7 @@ import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
+import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -104,8 +105,8 @@ public class CalendarService extends ICalendarService{
 	@Inject
 	protected CalendarRepository calendarRepo;
 	
-	
-	
+	@Inject
+	private MailAccountService mailAccountService;
 	
 	public static class GenericPathResolver extends PathResolver {
 		 
@@ -401,7 +402,7 @@ public class CalendarService extends ICalendarService{
 		
 		try 
 		{
-			connected = store.connect(cal.getLogin(), cal.getPassword());
+			connected = store.connect(cal.getLogin(), getCalendarDecryptPassword(cal.getPassword()));
 		}
 		finally {
 			store.disconnect();
@@ -459,8 +460,11 @@ public class CalendarService extends ICalendarService{
 		Protocol protocol = getProtocol(calendar.getIsSslConnection());
 		URL url = new URL(protocol.getScheme(), calendar.getUrl(), calendar.getPort(), "");
 		ICalendarStore store = new ICalendarStore(url, RESOLVER);
+		
 		try {
-			if(calendar.getLogin() != null && calendar.getPassword() != null && store.connect(calendar.getLogin(), calendar.getPassword())){
+			String password = getCalendarDecryptPassword(calendar.getPassword());
+			
+			if(calendar.getLogin() != null && password != null && store.connect(calendar.getLogin(), password)){
 				List<CalDavCalendarCollection> colList = store.getCollections();
 				if(!colList.isEmpty()){
 					calendar = doSync(calendar, colList.get(0));
@@ -611,15 +615,17 @@ public class CalendarService extends ICalendarService{
 		return calendar;
 	}
 	
-	public void removeEventFromIcal(Event event) throws MalformedURLException, ICalendarException{
+	public void removeEventFromIcal(Event event) throws MalformedURLException, ICalendarException {
 		if(event.getCalendarCrm() != null && !Strings.isNullOrEmpty(event.getUid())){
 			Calendar calendar  = event.getCalendarCrm();
 			PathResolver RESOLVER = getPathResolver(calendar.getTypeSelect());
 			Protocol protocol = getProtocol(calendar.getIsSslConnection());
 			URL url = new URL(protocol.getScheme(), calendar.getUrl(), calendar.getPort(), "");
 			ICalendarStore store = new ICalendarStore(url, RESOLVER);
+			
 			try {
-				if(store.connect(calendar.getLogin(), calendar.getPassword())){
+				
+				if(store.connect(calendar.getLogin(), getCalendarDecryptPassword(calendar.getPassword()))){
 					List<CalDavCalendarCollection> colList = store.getCollections();
 					if(!colList.isEmpty()){
 						CalDavCalendarCollection collection = colList.get(0);
@@ -661,14 +667,16 @@ public class CalendarService extends ICalendarService{
         return calendar;
     }
 	
-	public net.fortuna.ical4j.model.Calendar getCalendar(String uid, Calendar calendar) throws ICalendarException, MalformedURLException{
+	public net.fortuna.ical4j.model.Calendar getCalendar(String uid, Calendar calendar) throws ICalendarException, MalformedURLException {
 		net.fortuna.ical4j.model.Calendar cal = null;
 		PathResolver RESOLVER = getPathResolver(calendar.getTypeSelect());
 		Protocol protocol = getProtocol(calendar.getIsSslConnection());
 		URL url = new URL(protocol.getScheme(), calendar.getUrl(), calendar.getPort(), "");
 		ICalendarStore store = new ICalendarStore(url, RESOLVER);
+		
 		try {
-			if(store.connect(calendar.getLogin(), calendar.getPassword())){
+			
+			if(store.connect(calendar.getLogin(), getCalendarDecryptPassword(calendar.getPassword()))){
 				List<CalDavCalendarCollection> colList = store.getCollections();
 				if(!colList.isEmpty()){
 					CalDavCalendarCollection collection = colList.get(0);
@@ -797,5 +805,15 @@ public class CalendarService extends ICalendarService{
 			calendarIdlist.add(calendar.getId());
 		}
 		return calendarIdlist;
+	}
+	
+	public String getCalendarEncryptPassword(String password) {
+		
+		return mailAccountService.getEncryptPassword(password);
+	}
+	
+	public String getCalendarDecryptPassword(String password) {
+		
+		return mailAccountService.getDecryptPassword(password);
 	}
 }

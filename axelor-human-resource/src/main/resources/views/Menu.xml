@@ -162,10 +162,10 @@
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="historicLeave"/>
 	</action-method>
 	
-	<menuitem name="leave-request-root-leave-calender" parent="leave-request-root"
-		title="Leaves calendar" action="leave.request.root.leave.calender" />
+	<menuitem name="leave-request-root-leave-calendar" parent="leave-request-root"
+		title="Leaves calendar" action="leave.request.root.leave.calendar" />
 
-	<action-view name="leave.request.root.leave.calender" title="Leaves calendar"
+	<action-view name="leave.request.root.leave.calendar" title="Leaves calendar"
 		model="com.axelor.apps.crm.db.Event" >
 		<view type="calendar" name="event-calendar-color-by-user"/>
 		<view type="grid" name="leave-grid"/>

@@ -1,5 +1,28 @@
 # Changelog
 
+## [4.1.3] - 2018-02-28
+### Improvements
+- New assistant in expense form to select payment mode
+- Leave management reset batch now creates a new line with negative quantity
+  instead of clearing old lines
+- Password encryption for ICALENDAR and SMTP account.
+- Title "IBAN" became "IBAN / BBAN" in bankdetails
+
+### Bug Fixes
+- Permission change in most HR form
+- Find kilometric allowance rate per company
+- Remove filter on company for historic timesheet
+- More fixes in expense form
+- Show time unit for the right user in timesheet lines
+- Hide button in leave request instead of making it readonly
+- Fix count tags in hr menus
+- Remove the wrong process to create an useless move for excess payment on refund invoice ventilation
+- Generate a signature user certificate in EBICS TS mode for Transport User
+- LEAD : convert wizard
+- On Invoice payment, if it's due to an invoice or a refund, payment mode become null and hidden
+- On Invoice payment, fix NPE by requiring paymentMode
+- Change menu leave.request.root.leave.calender to leave.request.root.leave.calendar
+
 ## [4.1.2] - 2018-02-05
 ### Improvements
 - Close pay period automatically when all payroll preparation are exported
@@ -292,6 +315,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
+[4.1.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...v4.1.3
 [4.1.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...v4.1.2
 [4.1.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/axelor/axelor-business-suite/compare/v4.0.2...v4.1.0

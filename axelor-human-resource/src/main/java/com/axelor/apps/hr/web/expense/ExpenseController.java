@@ -277,7 +277,7 @@ public class ExpenseController {
 		}
 		if (!expenseLineId.isEmpty()) {
 			String ids =  Joiner.on(",").join(expenseLineId);
-			throw new AxelorException(String.format(I18n.get("Date problem for line(s) : "+ids)), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get("Date problem for line(s) : %s"),ids), IException.CONFIGURATION_ERROR);
 		}
 	}
 	
@@ -517,8 +517,8 @@ public class ExpenseController {
 			return;
 		}
 		
-		String userId = null;
-		String userName = null;
+		String userId;
+		String userName;
 		if (expenseLine.getExpense() != null) {
 			setExpense(request, expenseLine);
 		}

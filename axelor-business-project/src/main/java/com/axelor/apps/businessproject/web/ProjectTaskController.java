@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.web;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
+import com.axelor.exception.service.TraceBackService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,16 +86,19 @@ public class ProjectTaskController {
 
 	}
 
-	public void computeDurationFromChildren(ActionRequest request, ActionResponse response)  {
-		ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+	public void computeDurationFromChildren(ActionRequest request, ActionResponse response) {
+		try {
+			ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
-		BigDecimal duration = projectTaskService.computeDurationFromChildren(projectTask.getId());
+			BigDecimal duration = projectTaskService.computeDurationFromChildren(projectTask.getId());
 
-		BigDecimal visibleDuration = Beans.get(EmployeeService.class).getUserDuration(duration, AuthUtils.getUser(), false);
+			BigDecimal visibleDuration = Beans.get(EmployeeService.class).getUserDuration(duration, AuthUtils.getUser(), false);
 
-		response.setValue("duration", duration);
-		response.setValue("$visibleDuration", visibleDuration);
+			response.setValue("duration", duration);
+			response.setValue("$visibleDuration", visibleDuration);
 
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
-
 }

@@ -61,7 +61,6 @@ public interface IExceptionMessage {
 	static final String LEAVE_ALLOW_NEGATIVE_ALERT = /*$$(*/ "You now have a negative amount of leave available for the reason %s"/*)*/ ;
 
 	static final String EMPLOYEE_PLANNING = /*$$(*/ "Please, add a planning for employee : %s"/*)*/ ;
-	static final String EMPLOYEE_PUBLIC_HOLIDAY = /*$$(*/ "Please, add a public holiday planning for employee : %s"/*)*/ ;
 	static final String EMPLOYEE_CONTRACT_OF_EMPLOYMENT = /*$$(*/ "Please, add a contract of employment for employee : %s"/*)*/ ;
 	
 	static final String BATCH_MISSING_FIELD = /*$$(*/ "Leave reason and day number have to be defined"/*)*/ ;
@@ -110,5 +109,5 @@ public interface IExceptionMessage {
 	/**
 	 * Kilometric service
 	 */
-	static final String KILOMETRIC_ALLOWANCE_RATE_MISSING = /*$$(*/ "The kilometric allowance rate corresponding to the kilometric allow param %s is missing" /*)*/;
+	static final String KILOMETRIC_ALLOWANCE_RATE_MISSING = /*$$(*/ "The kilometric allowance rate corresponding to the kilometric allow param %s and the company %s is missing" /*)*/;
 }
