@@ -1,6 +1,7 @@
 # Changelog
 
 ## [Unreleased 4.x]
+- Password encryption for ICALENDAR and SMTP account.
 
 ### Improvements
 - New assistant in expense form to select payment mode

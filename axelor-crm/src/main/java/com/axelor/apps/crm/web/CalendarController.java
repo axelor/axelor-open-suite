@@ -19,13 +19,19 @@ package com.axelor.apps.crm.web;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.SocketException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.crypto.NoSuchPaddingException;
 
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.ImportConfiguration;
@@ -108,6 +114,7 @@ public class CalendarController {
 	public void testConnect(ActionRequest request, ActionResponse response) throws Exception
 	{
 		Calendar cal = request.getContext().asType(Calendar.class);
+		
 		if (calendarService.testConnect(cal))
 			response.setValue("isValid", true);
 		else
@@ -213,11 +220,22 @@ public class CalendarController {
 	            .map());
 	}
 	
-	public void synchronizeCalendar(ActionRequest request, ActionResponse response) throws MalformedURLException, SocketException, ObjectStoreException, ObjectNotFoundException, ConstraintViolationException, ICalendarException {
+	public void synchronizeCalendar(ActionRequest request, ActionResponse response)
+			throws MalformedURLException, SocketException, ObjectStoreException, ObjectNotFoundException,
+			ConstraintViolationException, ICalendarException, InvalidKeyException, UnsupportedEncodingException,
+			NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeySpecException {
+
 		Calendar cal = request.getContext().asType(Calendar.class);
 		cal = Beans.get(CalendarRepository.class).find(cal.getId());
+
 		calendarService.sync(cal);
 		response.setReload(true);
+	}
+	
+	public void validate(ActionRequest request, ActionResponse response) {
+
+		if (request.getContext().get("newPassword") != null)
+			response.setValue("password", calendarService.getCalendarEncryptPassword(request.getContext().get("newPassword").toString()));
 	}
 
 }
