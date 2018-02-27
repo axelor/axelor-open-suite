@@ -17,8 +17,22 @@
         <toolbar>
             <button name="printContractBtn" title="Print" hidden="true" onClick="notImplementedYet" icon="fa-print"/>
         </toolbar>
+        <panel showTitle="false">
+            <field name="statusSelect" readonly="true" showTitle="false">
+                <viewer depends="contractId,versionNumber">
+                    <![CDATA[
+			 			<h3>
+			             <span x-translate>Contract</span>-<span>{{ record.contractId }} <span ng-show="record.versionNumber &gt; 0"> - {{ record.versionNumber }}</span></span>
+			             <span class="label label-default" x-translate ng-show="record.statusSelect == 1">Draft</span>
+			             <span class="label label-info" x-translate ng-show="record.statusSelect == 2">Active</span>
+			             <span class="label label-important" x-translate ng-show="record.statusSelect == 3">Closed</span>
+			           </h3>
+					]]>
+                </viewer>
+            </field>
+        </panel>
         <panel>
-            <field name="targetType" readonlyIf="id"/>
+            <field name="targetType" readonlyIf="id" onChange="action-contract-attrs-domains-template"/>
             <field name="company" canEdit="false"/>
             <field name="name" css="highlight" colSpan="6"/>
             <field name="partner" showIf="targetType" onChange="action-attrs-contract-update-partner" required="true" canEdit="false"/>
@@ -30,30 +44,12 @@
                 </panel>
                 <field name="startDate" showIf="statusSelect == 2" readonly="true"/>
                 <field name="endDate" hidden="true" showIf="statusSelect == 3"/>
-                <panel colSpan="12" hidden="true" showIf="terminatedManually == true">
-                    <field name="terminatedManually"/>
-                </panel>
             </panel>
         </panel>
         
         <panel sidebar="true" hidden="true" showIf="statusSelect == 1 || currentVersion.statusSelect == 1 || currentVersion.statusSelect == 2" >
         	<field name="$contractTemplate" title="Contract template to use" type="MANY-TO-ONE" target="com.axelor.apps.contract.db.ContractTemplate" canNew="false" canEdit="false" />
-        	<button name="copyFromTemplate" title="Use this template" onClick="com.axelor.apps.contract.web.ContractController:copyFromTemplate"  prompt="Do you really wish to fill your contract based on this template ?"  />
-        </panel>
-                
-        <panel sidebar="true">
-            <field name="statusSelect" readonly="true" showTitle="false">
-                <viewer depends="contractId,versionNumber">
-                    <![CDATA[
-			 			<h3>
-			             <span>{{ record.contractId }} <span ng-show="record.versionNumber &gt; 0"> - {{ record.versionNumber }}</span></span>
-			             <span class="label label-default" x-translate ng-show="record.statusSelect == 1">Draft</span>
-			             <span class="label label-info" x-translate ng-show="record.statusSelect == 2">Active</span>
-			             <span class="label label-important" x-translate ng-show="record.statusSelect == 3">Closed</span>
-			           </h3>
-					]]>
-                </viewer>
-            </field>
+        	<button name="copyFromTemplate" title="Use this template" onClick="save,com.axelor.apps.contract.web.ContractController:copyFromTemplate"  prompt="Do you really wish to fill your contract based on this template ?"  />
         </panel>
         <panel sidebar="true">
         	<field name="nextVersion" hidden="true"/>
@@ -77,12 +73,12 @@
                             <field name="createdBy"/>
                         </panel>
                         <field name="supposedActivationDate" hideIf="statusSelect &gt; 2"/>
-                        <panel showIf="statusSelect == 3" colSpan="12" readonly="true">
+                        <panel showIf="statusSelect >= 3" colSpan="12" readonly="true">
                             <field name="activationDate"/>
                             <field name="activatedBy"/>
                         </panel>
                         <field name="supposedEndDate"/>
-                        <field name="endDate" hidden="true" showIf="statusSelect == 4" readonly="true"/>
+                        <field name="endDate" hidden="true" showIf="endDate" readonly="true"/>
                         <field name="doNotRenew" hidden="true" showIf="isTacitRenewal" />
                     </editor>
                 </field>
@@ -140,8 +136,9 @@
 	            <field name="engagementStartDate" readonly="true" showIf="currentVersion.isWithEngagement" />
 	            <field name="terminationDemandDate" hideIf="!currentVersion.isWithEngagement" requiredIf="currentVersion.isWithEngagement" />
 	            <field name="terminatedDate" />
-	            <field name="terminatedBy" hideIf="!terminatedManually" readonly="true" />
-	            	<button name="terminatedBtn" title="Terminate" onClick="save,com.axelor.apps.contract.web.ContractController:terminated" showIf="id &amp;&amp; statusSelect == 2"/>
+                <field name="terminatedBy" hideIf="!terminatedManually" readonly="true" />
+                <button name="terminatedBtn" title="Terminate" onClick="save,com.axelor.apps.contract.web.ContractController:terminated" showIf="id &amp;&amp; statusSelect == 2"/>
+                <field name="terminatedManually" showIf="terminatedManually"/>
             </panel>
            
             <panel title="Config." if="__config__.app.getApp('contract').isConfigContract">
@@ -258,20 +255,13 @@
                 <field name="createdOn"/>
                 <field name="createdBy"/>
             </panel>
-            <panel showIf="statusSelect == 3" colSpan="12" readonly="true">
+            <panel showIf="statusSelect >= 3" colSpan="12" readonly="true">
                 <field name="activationDate"/>
                 <field name="activatedBy"/>
             </panel>
             <field name="supposedEndDate"/>
-            <field name="endDate" hidden="true" showIf="statusSelect == 4" readonly="true"/>
-        </panel>
-        <panel title="Notes">
-            <field name="note" showTitle="false" colSpan="12"/>
-        </panel>
-        <panel sidebar="true" title="Contract" itemSpan="12" readonly="true">
-            <field name="contract.name" css="highlight"/>
-            <field name="contract.contractId"/>
-            <field name="contract.partner"/>
+            <field name="endDate" hidden="true" showIf="endDate" readonly="true"/>
+            <field name="description" colSpan="12" widget="html"/>
         </panel>
     </form>
 
@@ -319,22 +309,22 @@
                 <field name="contractNext.endDate" hidden="true" showIf="contractNext.statusSelect == 3"/>
             </panel>
         </panel>
-        <panel>
-            <field name="statusSelect" colSpan="12" readonly="true" widget="NavSelect" showTitle="false"/>
-            <panel showIf="id" colSpan="12">
-                <field name="createdOn"/>
-                <field name="createdBy"/>
-            </panel>
-            <field name="supposedActivationDate" hideIf="statusSelect &gt; 2"/>
-            <panel showIf="statusSelect == 3" colSpan="12" readonly="true">
-                <field name="activationDate"/>
-                <field name="activatedBy"/>
-            </panel>
-            <field name="supposedEndDate"/>
-            <field name="endDate" hidden="true" showIf="statusSelect == 4" readonly="true"/>
-            <field name="doNotRenew" hidden="true" showIf="$get('contractNext.isTacitRenewal') == true"/>
-        </panel>
         <panel-tabs>
+            <panel title="Current version">
+                <field name="statusSelect" colSpan="12" readonly="true" widget="NavSelect" showTitle="false"/>
+                <panel showIf="id" colSpan="12">
+                    <field name="createdOn"/>
+                    <field name="createdBy"/>
+                </panel>
+                <field name="supposedActivationDate" hideIf="statusSelect &gt; 2"/>
+                <panel showIf="statusSelect == 3" colSpan="12" readonly="true">
+                    <field name="activationDate"/>
+                    <field name="activatedBy"/>
+                </panel>
+                <field name="supposedEndDate"/>
+                <field name="endDate" hidden="true" showIf="statusSelect == 4" readonly="true"/>
+                <field name="doNotRenew" hidden="true" showIf="$get('contractNext.isTacitRenewal') == true"/>
+            </panel>
             <panel title="Content">
                 <field name="description" colSpan="12" widget="html"/>
                 <field name="contractLineList" colSpan="12" if="__config__.app.getApp('contract').isInvoicingManagement"/>
@@ -376,7 +366,7 @@
             <button name="ongoingBtn" title="Ongoing" onClick="save,com.axelor.apps.contract.web.ContractController:activeNextVersion,close" showIf="id &amp;&amp; statusSelect == 2"/>
         </panel>
         <panel sidebar="true" title="Notes">
-            <field name="note" showTitle="false"/>
+            <field name="contractNext.note" showTitle="false"/>
         </panel>
         <panel hidden="true">
             <field name="contractNext"/>
@@ -395,5 +385,11 @@
     	<domain>self.contract.id = :contractId</domain>
     	<context name="contractId" expr="eval: id"/>
     </action-view>
+
+    <action-attrs name="action-contract-attrs-domains-template">
+        <attribute for="$contractTemplate" name="domain" expr="eval: &quot;self.targetType = ${targetType}&quot;"/>
+        <attribute for="partner" name="domain" expr="eval: &quot;self.isCustomer = true&quot;" if="targetType == 1"/>
+        <attribute for="partner" name="domain" expr="eval: &quot;self.isSupplier = true&quot;" if="targetType == 2"/>
+    </action-attrs>
 
 </object-views>
