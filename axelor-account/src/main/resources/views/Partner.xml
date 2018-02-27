@@ -12,7 +12,6 @@
 	        <field name="paymentCondition" grid-view="payment-condition-grid" form-view="payment-condition-form" hideIf="isEmployee"/>
 	        <field name="currency" canEdit="false" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2" form-view="currency-form" grid-view="currency-grid"/>
 	        <field name="fiscalPosition" form-view="fiscal-position-form" grid-view="fiscal-position-grid" onChange="action-partner-attrs-show-specific-tax-note"/>
-	        <field name="invoicesCopySelect" hideIf="!isCustomer"/>
             <field name="specificTaxNote" colSpan="12" hidden="true"/>
 	        <field name="analyticDistributionTemplate" canNew="true"/>
 	        <panel colSpan="6" hideIf="isEmployee">
