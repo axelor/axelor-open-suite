@@ -124,7 +124,7 @@ public class ManufOrderController {
 			ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
 			manufOrder = manufOrderRepo.find(manufOrder.getId());
 
-			Beans.get(ManufOrderStockMoveService.class).partialFinish(manufOrder);
+			Beans.get(ManufOrderWorkflowService.class).partialFinish(manufOrder);
 			response.setReload(true);
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);

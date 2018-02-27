@@ -17,9 +17,10 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
@@ -34,6 +35,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +45,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ManufOrderStockMoveService {
 
@@ -209,7 +212,15 @@ public class ManufOrderStockMoveService {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void partialFinish(ManufOrder manufOrder) throws AxelorException {
-	    partialFinish(manufOrder, PART_FINISH_IN);
+		if (manufOrder.getIsConsProOnOperation()) {
+			for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+				if (operationOrder.getStatusSelect() == IOperationOrder.STATUS_IN_PROGRESS) {
+					Beans.get(OperationOrderStockMoveService.class).partialFinish(operationOrder);
+				}
+			}
+		} else {
+			partialFinish(manufOrder, PART_FINISH_IN);
+		}
 		partialFinish(manufOrder, PART_FINISH_OUT);
 		Beans.get(ManufOrderRepository.class).save(manufOrder);
 	}
@@ -248,13 +259,12 @@ public class ManufOrderStockMoveService {
 		}
 
 		//realize current stock move
-		StockMove stockMoveToRealize = stockMoveList.stream()
-				.filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)
-				.findFirst().orElse(null);
-		if (stockMoveToRealize != null
-				&& stockMoveToRealize.getStockMoveLineList() != null
-				&& !stockMoveToRealize.getStockMoveLineList().isEmpty()) {
-			finishStockMove(stockMoveToRealize);
+		Optional<StockMove> stockMoveToRealize = stockMoveList.stream()
+				.filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
+				&& !CollectionUtils.isEmpty(stockMove.getStockMoveLineList()))
+				.findFirst();
+		if (stockMoveToRealize.isPresent()) {
+			finishStockMove(stockMoveToRealize.get());
 		}
 
 		//generate new stock move
@@ -283,13 +293,13 @@ public class ManufOrderStockMoveService {
 	}
 
 	/**
-	 * Generate stock move lines after doing a partial finish
+	 * Generate stock move lines after a partial finish
 	 * @param manufOrder
 	 * @param stockMove
 	 * @param inOrOut  can be {@link ManufOrderStockMoveService#PART_FINISH_IN}
 	 *                    or {@link ManufOrderStockMoveService#PART_FINISH_OUT}
 	 */
-	protected void createNewStockMoveLines(ManufOrder manufOrder, StockMove stockMove, int inOrOut) throws AxelorException {
+	public void createNewStockMoveLines(ManufOrder manufOrder, StockMove stockMove, int inOrOut) throws AxelorException {
 		int stockMoveLineType;
 		List<ProdProduct> diffProdProductList;
 		if (inOrOut == PART_FINISH_IN) {
@@ -309,10 +319,21 @@ public class ManufOrderStockMoveService {
 			diffProdProductList = Beans.get(ManufOrderService.class)
 					.createDiffProdProductList(manufOrder, outProdProductList, stockMoveLineList);
 		}
+		createNewStockMoveLines(diffProdProductList, stockMove, stockMoveLineType);
+	}
+
+	/**
+	 * Generate stock move lines after a partial finish
+	 * @param diffProdProductList
+	 * @param stockMove
+	 * @param stockMoveLineType
+	 * @throws AxelorException
+	 */
+	public void createNewStockMoveLines(List<ProdProduct> diffProdProductList, StockMove stockMove, int stockMoveLineType) throws AxelorException {
 		diffProdProductList.forEach(prodProduct -> prodProduct.setQty(prodProduct.getQty().negate()));
 		for (ProdProduct prodProduct : diffProdProductList) {
-		    StockMoveLine stockMoveLine = _createStockMoveLine(prodProduct, stockMove, stockMoveLineType);
-		    stockMove.addStockMoveLineListItem(stockMoveLine);
+			StockMoveLine stockMoveLine = _createStockMoveLine(prodProduct, stockMove, stockMoveLineType);
+			stockMove.addStockMoveLineListItem(stockMoveLine);
 		}
 	}
 

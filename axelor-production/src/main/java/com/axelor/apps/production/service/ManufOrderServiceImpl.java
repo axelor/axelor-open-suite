@@ -28,6 +28,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
@@ -377,19 +378,29 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		return manufOrder;
 	}
 
+	@Override
 	public ManufOrder updateDiffProdProductList(ManufOrder manufOrder) throws AxelorException {
-	    List<ProdProduct> toConsumeList = manufOrder.getToConsumeProdProductList();
-	    List<StockMoveLine> consumedList = manufOrder.getConsumedStockMoveLineList();
-	    if (toConsumeList == null || consumedList == null) {
-	    	return manufOrder;
+		List<ProdProduct> toConsumeList = manufOrder.getToConsumeProdProductList();
+		List<StockMoveLine> consumedList = manufOrder.getConsumedStockMoveLineList();
+		if (toConsumeList == null || consumedList == null) {
+			return manufOrder;
 		}
 		List<ProdProduct> diffConsumeList = createDiffProdProductList(manufOrder, toConsumeList, consumedList);
 
-		manufOrder.setDiffConsumeProdProductList(diffConsumeList);
+		manufOrder.clearDiffConsumeProdProductList();
+		diffConsumeList.forEach(manufOrder::addDiffConsumeProdProductListItem);
 		return manufOrder;
 	}
 
+	@Override
 	public List<ProdProduct> createDiffProdProductList(ManufOrder manufOrder, List<ProdProduct> prodProductList, List<StockMoveLine> stockMoveLineList) throws AxelorException {
+		List<ProdProduct> diffConsumeList = createDiffProdProductList(prodProductList, stockMoveLineList);
+		diffConsumeList.forEach(prodProduct -> prodProduct.setDiffConsumeManufOrder(manufOrder));
+		return diffConsumeList;
+	}
+
+	@Override
+	public List<ProdProduct> createDiffProdProductList(List<ProdProduct> prodProductList, List<StockMoveLine> stockMoveLineList) throws AxelorException {
 		List<ProdProduct> diffConsumeList = new ArrayList<>();
 		for (ProdProduct prodProduct : prodProductList) {
 			Product product = prodProduct.getProduct();
@@ -407,7 +418,6 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 				diffProdProduct.setQty(diffQty);
 				diffProdProduct.setProduct(product);
 				diffProdProduct.setUnit(newUnit);
-				diffProdProduct.setDiffConsumeManufOrder(manufOrder);
 				diffConsumeList.add(diffProdProduct);
 			}
 		}

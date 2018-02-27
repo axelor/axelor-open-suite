@@ -17,14 +17,12 @@
  */
 package com.axelor.apps.production.service;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
+import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
@@ -35,9 +33,16 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import org.apache.commons.collections.CollectionUtils;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class OperationOrderStockMoveService {
 
@@ -142,6 +147,69 @@ public class OperationOrderStockMoveService {
 
 	}
 
+	/**
+	 * Allows to create and realize in stock moves for
+	 * the given operation order. This method is used during a partial finish.
+	 * @param operationOrder
+	 * @throws AxelorException
+	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void partialFinish(OperationOrder operationOrder) throws AxelorException {
+		ManufOrderStockMoveService manufOrderStockMoveService = Beans.get(ManufOrderStockMoveService.class);
+		ManufOrder manufOrder = operationOrder.getManufOrder();
+		Company company = manufOrder.getCompany();
+		StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
+		StockConfig stockConfig = stockConfigService.getStockConfig(company);
+
+		StockLocation fromStockLocation;
+		StockLocation toStockLocation;
+		List<StockMove> stockMoveList;
+
+		stockMoveList = operationOrder.getInStockMoveList();
+		fromStockLocation = manufOrderStockMoveService.getDefaultStockLocation(manufOrder, company);
+		toStockLocation = stockConfigService.getProductionVirtualStockLocation(stockConfig);
+
+		//realize current stock move
+		Optional<StockMove> stockMoveToRealize = stockMoveList.stream()
+				.filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
+						&& !CollectionUtils.isEmpty(stockMove.getStockMoveLineList()))
+				.findFirst();
+		if (stockMoveToRealize.isPresent()) {
+				manufOrderStockMoveService.finishStockMove(stockMoveToRealize.get());
+		}
+
+		//generate new stock move
+
+		StockMove newStockMove = stockMoveService.createStockMove(
+				null, null, company, null,
+				fromStockLocation, toStockLocation, null,
+				operationOrder.getPlannedStartDateT().toLocalDate(),
+				null, null, null
+		);
+
+		newStockMove.setStockMoveLineList(new ArrayList<>());
+		createNewStockMoveLines(operationOrder, newStockMove);
+
+		//plan the stockmove
+		stockMoveService.plan(newStockMove);
+
+		operationOrder.addInStockMoveListItem(newStockMove);
+		newStockMove.getStockMoveLineList().forEach(operationOrder::addConsumedStockMoveLineListItem);
+		operationOrder.clearDiffConsumeProdProductList();
+
+	}
+
+	/**
+	 * Generate stock move lines after a partial finish
+	 * @param operationOrder
+	 * @param stockMove
+	 */
+	public void createNewStockMoveLines(OperationOrder operationOrder, StockMove stockMove) throws AxelorException {
+		List<ProdProduct> diffProdProductList;
+		Beans.get(OperationOrderService.class).updateDiffProdProductList(operationOrder);
+		diffProdProductList = new ArrayList<>(operationOrder.getDiffConsumeProdProductList());
+		Beans.get(ManufOrderStockMoveService.class).createNewStockMoveLines(diffProdProductList, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS);
+	}
 
 	public void cancel(OperationOrder operationOrder) throws AxelorException {
 

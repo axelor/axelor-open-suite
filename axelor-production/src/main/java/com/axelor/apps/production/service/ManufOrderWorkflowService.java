@@ -164,6 +164,24 @@ public class ManufOrderWorkflowService {
 		manufOrderRepo.save(manufOrder);
 	}
 
+	/**
+	 * Allows to finish partially a manufacturing order, by realizing current
+	 * stock move and planning the difference with the planned prodproducts.
+	 * @param manufOrder
+	 * @throws AxelorException
+	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void partialFinish(ManufOrder manufOrder) throws AxelorException {
+		if (manufOrder.getIsConsProOnOperation()) {
+			for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+				if (operationOrder.getStatusSelect() == IOperationOrder.STATUS_PLANNED) {
+					operationOrderWorkflowService.start(operationOrder);
+				}
+			}
+		}
+        Beans.get(ManufOrderStockMoveService.class).partialFinish(manufOrder);
+    }
+
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel(ManufOrder manufOrder) throws AxelorException {
 		if (manufOrder.getOperationOrderList() != null) {

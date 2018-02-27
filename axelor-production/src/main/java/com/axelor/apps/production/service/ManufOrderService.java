@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -82,7 +83,8 @@ public interface ManufOrderService {
     ManufOrder updateDiffProdProductList(ManufOrder manufOrder) throws AxelorException;
 
 	/**
-	 * Compute the difference between the two lists
+	 * Compute the difference between the two lists for the given manuf
+	 * order.
 	 * @param manufOrder
 	 * @param prodProductList
 	 * @param stockMoveLineList
@@ -90,4 +92,13 @@ public interface ManufOrderService {
 	 * @throws AxelorException
 	 */
 	List<ProdProduct> createDiffProdProductList(ManufOrder manufOrder, List<ProdProduct> prodProductList, List<StockMoveLine> stockMoveLineList) throws AxelorException;
+
+	/**
+	 * Compute the difference between the two lists.
+	 * @param prodProductList
+	 * @param stockMoveLineList
+	 * @return a list of ProdProduct
+	 * @throws AxelorException
+	 */
+	List<ProdProduct> createDiffProdProductList(List<ProdProduct> prodProductList, List<StockMoveLine> stockMoveLineList) throws AxelorException;
 }
