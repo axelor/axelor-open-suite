@@ -15,14 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.service.publicHoliday;
+package com.axelor.apps.base.service.publicHoliday;
 
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
-import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.EventsPlanning;
-import com.axelor.apps.hr.db.EventsPlanningLine;
-import com.axelor.apps.hr.db.repo.EventsPlanningLineRepository;
+import com.axelor.apps.base.db.EventsPlanning;
+import com.axelor.apps.base.db.EventsPlanningLine;
+import com.axelor.apps.base.db.repo.EventsPlanningLineRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
@@ -52,23 +51,13 @@ public class PublicHolidayService {
 		return publicHolidayDays;
 	}
 	
-	public boolean checkPublicHolidayDay(LocalDate date, Employee employee) {
-
-		if (employee.getPublicHolidayEventsPlanning() == null) {
+	public boolean checkPublicHolidayDay(LocalDate date, EventsPlanning publicHolidayEventsPlanning) throws AxelorException {
+		
+		if (publicHolidayEventsPlanning == null) {
 			return false;
 		}
-		List<EventsPlanningLine> publicHolidayDayList = eventsPlanningLineRepo.all().filter("self.eventsPlanning = ?1 AND self.date = ?2", employee.getPublicHolidayEventsPlanning(), date).fetch();
+		List<EventsPlanningLine> publicHolidayDayList = eventsPlanningLineRepo.all().filter("self.eventsPlanning = ?1 AND self.date = ?2", publicHolidayEventsPlanning, date).fetch();
 		return publicHolidayDayList != null && !publicHolidayDayList.isEmpty();
 	}
 	
-	public int getImposedDayNumber(Employee employee, LocalDate startDate, LocalDate endDate){
-		
-		EventsPlanning imposedDays = employee.getImposedDayEventsPlanning();
-		
-		if (imposedDays == null || imposedDays.getEventsPlanningLineList() == null || imposedDays.getEventsPlanningLineList().isEmpty()) { return 0; }
-		
-		List<EventsPlanningLine> imposedDayList = eventsPlanningLineRepo.all().filter("self.eventsPlanning = ?1 AND self.date BETWEEN ?2 AND ?3", imposedDays, startDate, endDate).fetch();
-		
-		return imposedDayList.size();
-	}
 }

@@ -36,6 +36,7 @@
 - Allow to generate bank order file without using bic code in SEPA context.
 - Remove the field supplierPartner from Event Object
 - Upgrade functionality of advanced export feature
+- Change dependency to base instead of CRM,HR and Project of helpdesk module.
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)

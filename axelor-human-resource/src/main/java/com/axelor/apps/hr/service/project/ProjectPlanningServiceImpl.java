@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.service.publicHoliday.PublicHolidayService;
+import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanning;
 import com.axelor.apps.project.db.ProjectPlanningTime;
@@ -45,7 +45,7 @@ public class ProjectPlanningServiceImpl implements ProjectPlanningService {
 	private static final Logger log = LoggerFactory.getLogger(ProjectPlanningService.class);
 	
 	@Inject
-	private PublicHolidayService holidayService;
+	private PublicHolidayHrService holidayService;
 	
 	@Inject
 	private WeeklyPlanningService weeklyPlanningService;
