@@ -1,3 +1,6 @@
+# 4.2.1 (2018-02-28)
+24.1.1 with axelor-process-studio modules
+3
 # 4.1.1 (2018-01-10)
 - Ebics TS improvements
 - Bank order improvements

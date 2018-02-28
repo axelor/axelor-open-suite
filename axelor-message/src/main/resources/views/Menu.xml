@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+
+<!-- 	<menuitem name="mail-root" title="Emails/Mails" order="-70" -->
+<!-- 		 groups="admins,ERP"/> -->
+
+<!-- 	title-f="Messagerie" -->
+	<menuitem name="mail-root" title="Messaging" order="-70"
+	icon="fa-envelope-o" groups="admins,ERP" icon-background="#3f6bb9"/>
+
+	<menuitem name="mail-conf" parent="mail-root"
+		title="Configuration"  order="-80" />
+
+	<menuitem name="mail-message" parent="mail-root"
+		title="Messages"  order="-90" action="mail.root.messages" />
+	<action-view name="mail.root.messages" title="Messages" 
+		model="com.axelor.apps.message.db.Message" >
+		<view type="grid" name="message-grid"/>
+		<view type="form" name="message-form"/>
+	</action-view>	
+
+	<menuitem name="mail-root-email-box" parent="mail-root" title="Message Box" order="-100"/>
+	
+	<menuitem name="mail-root-email-new-message" parent="mail-root-email-box" title="New Message" order="-100"  action="mail.root.message.new"/>
+	
+	<action-view name="mail.root.message.new" title="New Message" model="com.axelor.apps.message.db.Message" >
+		<view type="form" name="message-form" />
+		<domain>self.statusSelect = 1</domain>
+		<context name="defaultMediaType" expr="3"></context>
+	</action-view>
+		
+<!-- 	title-f="Nouveau message" -->
+	<menuitem name="mail-root-email-new" parent="mail-root-email-box" title="New email"  action="mail.root.email.new" order="-90" />	
+		
+<!-- 	title-f="Nouveau message -->
+	<action-view name="mail.root.email.new" title="New Email" model="com.axelor.apps.message.db.Message" >
+		<view type="form" name="message-form"/>
+		<domain>self.statusSelect = 1</domain>
+		<context name="defaultMediaType" expr="2"></context>
+	</action-view>
+		
+<!-- 	title-f="Nouveau message" -->
+	<menuitem name="mail-root-mail-new" parent="mail-root-email-box" title="New Mail"  action="mail.root.mail.new" order="-90" />	
+		
+<!-- 	title-f="Nouveau message -->
+	<action-view name="mail.root.mail.new" title="New Mail" model="com.axelor.apps.message.db.Message" >
+		<view type="form" name="message-form"/>
+		<domain>self.statusSelect = 1</domain>
+		<context name="defaultMediaType" expr="1"></context>
+	</action-view>
+		
+<!-- 	title-f="Boite de réception" -->
+	<menuitem name="mail-root-email-inbox" parent="mail-root-email-box" title="Inbox" order="-80" action="mail.root.email.inbox" />
+		
+<!-- 	title-f="Boite de réception" -->
+	<action-view name="mail.root.email.inbox" title="Inbox" 
+		model="com.axelor.apps.message.db.Message" >
+		<view type="grid" name="message-grid"/>
+		<view type="form" name="message-form"/>
+		<domain>self.recipientUser = :__user__ AND self.statusSelect = 2</domain>
+	</action-view>	
+		
+<!-- 	title-f="Brouillons" -->
+	<menuitem name="mail-root-email-draft" parent="mail-root-email-box" title="Drafts" order="-60" action="mail.root.email.draft" />
+		
+<!-- 	title-f="Brouillons" -->
+	<action-view name="mail.root.email.draft" title="Draft emails" 
+		model="com.axelor.apps.message.db.Message" >
+		<view type="grid" name="message-grid"/>
+		<view type="form" name="message-form"/>
+		<domain>self.statusSelect = 1 AND self.senderUser = :__user__</domain>
+	</action-view>	
+	<menuitem name="mail-root-email-trash" parent="mail-root-email-box" title="Trash" action="mail.root.email.trash" />	
+		
+<!-- 	title-f="Messages supprimés" -->
+	<action-view name="mail.root.email.trash" title="Trash" 
+		model="com.axelor.apps.message.db.Message" >
+		<view type="grid" name="message-grid"/>
+		<view type="form" name="message-form"/>
+		<domain>self.statusSelect = 3 AND (self.senderUser = :__user__ OR self.recipientUser = :__user__)</domain>
+	</action-view>
+		
+<!-- 	title-f="Messages envoyés" -->
+	<menuitem name="mail-root-email-sent" parent="mail-root-email-box" title="Sentbox" order="-70" action="mail.root.email.sent" />	
+		
+<!-- 	title-f="Messages envoyés" -->
+	<action-view name="mail.root.email.sent" title="Sentbox" 
+		model="com.axelor.apps.message.db.Message" >
+		<view type="grid" name="message-grid"/>
+		<view type="form" name="message-form"/>
+		<domain>self.senderUser = :__user__ AND self.statusSelect = 2</domain>
+	</action-view>
+
+	<menuitem name="mail-root-email-conf-mail-account" order="-80" parent="mail-conf" title="Email Accounts" action="mail.root.email.conf.mail.account" />	
+		
+	<action-view name="mail.root.email.conf.mail.account" title="Email Accounts" 
+		model="com.axelor.apps.message.db.MailAccount" >
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	<menuitem name="mail-root-email-conf-routing" parent="mail-conf" order="-60" title="Routings" action="mail.root.email.conf.routing" />	
+		
+	<action-view name="mail.root.email.conf.routing" title="Routings" 
+		model="com.axelor.apps.base.db.Routing" >
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	<menuitem name="mail-root-email-conf-email-address" parent="mail-conf" order="-70" title="Email addresses" action="mail.root.email.conf.email.address" />	
+		
+	<action-view name="mail.root.email.conf.email.address" title="Email addresses" 
+		model="com.axelor.apps.message.db.EmailAddress" >
+		<view type="grid" />
+		<view type="form" />
+		<context name="searchFields" expr="address"/>
+	</action-view>
+	
+	<menuitem name="mail-conf-template"
+		parent="mail-conf" title="Template"
+		action="admin.root.templating.template" order="-100" />
+		
+	<action-view name="admin.root.templating.template"
+		title="Template" model="com.axelor.apps.message.db.Template">
+		<view type="grid" name="template-grid"/>
+		<view type="form" name="template-form"/>
+	</action-view>
+		
+	<menuitem name="mail-conf-template-rules"
+		parent="mail-conf" title="Template Rules"
+		action="admin.root.templating.template.rules" order="-90" />
+		
+	<action-view name="admin.root.templating.template.rules"
+		title="Template Rules" model="com.axelor.apps.base.db.TemplateRule">
+		<view type="grid" name="template-rule-grid" />
+		<view type="form" name="template-rule-form" />
+	</action-view>
+
+</object-views>

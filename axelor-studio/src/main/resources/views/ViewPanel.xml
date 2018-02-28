@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+  
+  <grid name="view-panel-grid" title="Panels" model="com.axelor.studio.db.ViewPanel" orderBy="panelLevel">
+      <field name="panelLevel"/>
+      <field name="title"/>
+      <field name="name"/>
+  </grid>
+  
+  <form name="view-panel-form" title="Panels" model="com.axelor.studio.db.ViewPanel">
+      <panel>
+        <field name="panelLevel" readonlyIf="id != null" requiredIf="id == null"/>
+        <spacer/>
+        <field name="title" />
+        <field name="name" />
+        <field name="place"/>
+      </panel>
+      <panel-related field="viewItemList" title="Fields" />
+  </form>
+  
+</object-views>

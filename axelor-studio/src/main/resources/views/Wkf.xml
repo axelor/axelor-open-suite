@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+  
+  <grid name="wkf-grid" title="Workflows" model="com.axelor.studio.db.Wkf">
+      <field name="name"/>
+      <field name="metaModel"/>
+      <field name="viewBuilder"/>
+      <field name="displayTypeSelect" />
+  </grid>
+    
+  <form name="wkf-form" title="Workflow" model="com.axelor.studio.db.Wkf" width="large" onSave="action-get-wkf-set-view-builder,action-wkf-validate-bpmn-xml,save,action-wfk-method-process-wkf,save">
+     <panel title="Overview">
+        <field name="name"/>
+        <field name="metaModel"/>
+        <field name="viewBuilder" onSelect="action-wkf-attrs-for-view-domain" readonlyIf="metaModel == null" required="true"/>
+        <field name="metaModule" domain="self.customised = true" />
+        <field name="displayTypeSelect" />
+        <field name="wkfField" domain="self.metaModel = :metaModel and (self.typeName = 'Integer' OR self.typeName = 'String')" onChange="action-wkf-method-set-default-nodes"/>
+      	<field name="bpmnXml" showTitle="false" colSpan="12" widget="BpmnEditor" />
+      	<field name="$bpmnDefault" hidden="true" type="string" />
+      </panel>
+  </form>
+  
+  <action-attrs name="action-wkf-attrs-for-view-domain" model="com.axelor.studio.db.Wkf">
+      <attribute name="domain" for="viewBuilder" expr="eval:&quot;self.viewType = 'form' AND self.model = '${metaModel.fullName}' &quot;" />
+  </action-attrs>
+  
+  <action-method name="action-wfk-method-process-wkf">
+  	<call class="com.axelor.studio.web.WkfController" method="processWorkFlow"/>
+  </action-method>
+  
+  <action-validate name="action-wkf-validate-bpmn-xml">
+    <error message="Please correct the workflow diagram. All nodes and transitions must have names." if="bpmnXml == null"/>
+  </action-validate>
+  
+  <action-method name="action-get-wkf-set-view-builder">
+  	<call class="com.axelor.studio.web.WkfController" method="setViewBuilder"/>
+  </action-method>
+  
+  <action-method name="action-wkf-method-set-default-nodes">
+  	<call class="com.axelor.studio.web.WkfController" method="setDefaultNodes"/>
+  </action-method>
+
+</object-views>
+
+

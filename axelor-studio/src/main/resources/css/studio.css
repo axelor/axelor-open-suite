@@ -1,0 +1,117 @@
+.no-border tr td, .no-border tr th {
+  border-top: none;
+}
+
+.table-header th{
+    background-color:#C0C0C0;
+}
+
+table {
+  max-width: 100%;
+  background-color: transparent;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.table {
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.table th,
+.table td {
+  padding: 8px;
+  line-height: 18px;
+  text-align: left;
+  vertical-align: top;
+  border-top: 1px solid #dddddd;
+}
+
+.table th {
+  font-weight: bold;
+}
+
+.table thead th {
+  vertical-align: bottom;
+}
+
+.table caption + thead tr:first-child th,
+.table caption + thead tr:first-child td,
+.table colgroup + thead tr:first-child th,
+.table colgroup + thead tr:first-child td,
+.table thead:first-child tr:first-child th,
+.table thead:first-child tr:first-child td {
+  border-top: 0;
+}
+
+.table tbody + tbody {
+  border-top: 2px solid #dddddd;
+}
+
+.table .table {
+  background-color: #ffffff;
+}
+
+.table-condensed th,
+.table-condensed td {
+  padding: 4px 5px;
+}
+
+.table-bordered {
+  border: 1px solid #dddddd;
+  border-collapse: separate;
+  *border-collapse: collapse;
+  border-left: 0;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+}
+
+.table-bordered th,
+.table-bordered td {
+  border-left: 1px solid #dddddd;
+}
+.header {
+    display: block;                     
+    position: running(header);
+    border-bottom: 1px solid black;
+}
+
+.content {
+    display: block;
+    text-align: justify;
+}
+
+.footer {
+    position: running(footer);
+    font-size: 11px;
+    text-align: center;
+}
+
+.pageno {
+	position: running(pageno);
+    font-size: 11px;
+    text-align: center;
+}
+
+@page {
+    @bottom-center {
+        content: element(footer);
+    }
+    @bottom-right {
+    	content: element(pageno);
+    }
+    @top-center {
+    	content: element(header);
+    }
+}
+
+#pagenumber:before {
+    content: counter(page);
+}
+
+#pagecount:before {
+    content: counter(pages);
+}
+
+

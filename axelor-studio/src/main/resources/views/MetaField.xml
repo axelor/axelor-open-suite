@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+  
+  <grid name="meta-field-studio-grid" title="Field" model="com.axelor.meta.db.MetaField">
+       <field name="name"/>
+       <field name="label"/>
+       <field name="fieldType"/>
+       <field name="required"/>
+       <field name="readonly"/>
+       <field name="hidden" />
+  </grid>
+  
+  <form name="meta-field-studio-form" title="Field" model="com.axelor.meta.db.MetaField" onNew="action-meta-field-studio-default">
+      <panel>
+          <field name="fieldType" colSpan="4" onChange="action-meta-field-set-type-name"/>
+          <field name="name" colSpan="4"/>
+          <field name="label" colSpan="4"/>
+          <field name="required" colSpan="4"/>
+          <field name="readonly" colSpan="4"/>
+          <field name="hidden" colSpan="4"/>
+          <field name="metaSelect" showIf="fieldType == 'string' || fieldType == 'integer' || fieldType == 'decimal'" canNew="true"/>
+          <field name="helpText" colSpan="4"/>
+          <field name="track" />
+          <field name="typeName" hidden="true"/>
+          <field name="customised" hidden="true"/>
+      </panel>
+      <panel showIf="fieldType == 'boolean'">
+          <field name="defaultBoolean"/>
+      </panel>
+      <panel showIf="fieldType == 'decimal'">
+          <field name="defaultDecimal" colSpan="4"/>
+          <field name="decimalMin" colSpan="4"/>
+          <field name="decimalMax" colSpan="4"/>
+          <field name="isDuration" colSpan="4"/>
+      </panel>
+      <panel showIf="fieldType == 'integer'">
+          <field name="defaultInteger" colSpan="4"/>
+          <field name="integerMin" colSpan="4"/>
+          <field name="integerMax" colSpan="4"/>
+      </panel>
+      <panel showIf="fieldType == 'string'">
+          <field name="defaultString" colSpan="4"/>
+          <field name="large" colSpan="4"/>
+          <field name="isUrl" colSpan="4"/>
+      </panel>
+      <panel-related field="rightManagementList" grid-view="right-management-field-grid" form-view="right-management-field-form"/>
+  </form>
+  
+  <action-record name="action-meta-field-set-type-name" model="com.axelor.meta.db.MetaField">
+      <field name="typeName" expr="call:com.axelor.studio.service.ModelBuilderService:getFieldTypeName(__this__.fieldType)" if="fieldType != null" />
+  </action-record> 
+  
+  <action-record name="action-meta-field-studio-default" model="com.axelor.meta.db.MetaField">
+      <field name="customised" expr="eval:true" />
+  </action-record>
+  
+</object-views>

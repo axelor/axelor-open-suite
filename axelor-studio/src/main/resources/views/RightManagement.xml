@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+  
+  <grid name="right-management-model-grid" title="Right management" model="com.axelor.studio.db.RightManagement">
+      <field name="authGroup"/>
+      <field name="authRole"/>
+      <field name="canRead"/>
+      <field name="canWrite"/>
+      <field name="canCreate"/>
+      <field name="canRemove"/>
+      <field name="canExport"/>
+  </grid>
+  
+  <grid name="right-management-field-grid" title="Right management" model="com.axelor.studio.db.RightManagement">
+      <field name="authGroup"/>
+      <field name="authRole"/>
+      <field name="canRead"/>
+      <field name="canWrite"/>
+      <field name="canExport"/>
+      <field name="readonlyIf"/>
+      <field name="hideIf"/>
+  </grid>
+  
+  <form name="right-management-model-form" title="Right management" model="com.axelor.studio.db.RightManagement">
+    <panel>
+      <field name="authGroup" requiredIf="authRole == null" hideIf="authRole != null" onChange="action-right-mgmt-set-edited"/>
+      <field name="authRole" requiredIf="authGroup == null" hideIf="authGroup != null" onChange="action-right-mgmt-set-edited"/>
+      <field name="canRead" widget="inline-checkbox" colSpan="2" onChange="action-right-mgmt-set-edited"/>
+      <field name="canWrite" widget="inline-checkbox" colSpan="2" onChange="action-right-mgmt-set-edited"/>
+      <field name="canCreate" widget="inline-checkbox" colSpan="2" onChange="action-right-mgmt-set-edited"/>
+      <field name="canRemove" widget="inline-checkbox" colSpan="2" onChange="action-right-mgmt-set-edited"/>
+      <field name="canExport" widget="inline-checkbox" colSpan="2" onChange="action-right-mgmt-set-edited"/>
+      <field name="condition" title="Condition" colSpan="12" onChange="action-right-mgmt-set-edited"/>
+      <field name="conditionParams" title="Params" colSpan="12" onChange="action-right-mgmt-set-edited"/>
+      <field name="edited" hidden="true" />
+    </panel>
+  </form>
+  
+  <form name="right-management-field-form" title="Right management" model="com.axelor.studio.db.RightManagement">
+    <panel>
+      <field name="authGroup" requiredIf="authRole == null" hideIf="authRole != null" onChange="action-right-mgmt-set-edited"/>
+      <field name="authRole" requiredIf="authGroup == null" hideIf="authGroup != null" onChange="action-right-mgmt-set-edited"/>
+	  <field name="canRead" widget="inline-checkbox" colSpan="4" onChange="action-right-mgmt-set-edited"/>
+	  <field name="canWrite" widget="inline-checkbox" colSpan="4" onChange="action-right-mgmt-set-edited"/>
+	  <field name="canExport" widget="inline-checkbox" colSpan="4" onChange="action-right-mgmt-set-edited"/>
+	  <field name="readonlyIf" onChange="action-right-mgmt-set-edited"/>
+	  <field name="hideIf" onChange="action-right-mgmt-set-edited"/>
+	  <field name="field" hidden="true" />
+	  <field name="edited" hidden="true" />
+    </panel>
+  </form>
+  
+  <action-record name="action-right-mgmt-set-edited" model="com.axelor.studio.db.RightManagement">
+  	<field name="edited" expr="eval:true" />
+  </action-record>
+  
+</object-views>
