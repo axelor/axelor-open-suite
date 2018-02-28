@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.DirectDebitManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;

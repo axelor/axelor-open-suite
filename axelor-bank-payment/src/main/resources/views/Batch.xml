@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <action-method name="action-batch-create-bank-order">
+        <call class="com.axelor.apps.bankpayment.web.BatchController" method="createBankOrder" />
+    </action-method>
+
+    <action-view name="action-batch-show-bank-order" title="Bank order" model="com.axelor.apps.bankpayment.db.BankOrder">
+        <view type="form" name="bank-order-form" />
+        <view type="grid" name="bank-order-grid" />
+        <context name="_showRecord" expr="eval: bankOrder.id" />
+    </action-view>
+
+</object-views>

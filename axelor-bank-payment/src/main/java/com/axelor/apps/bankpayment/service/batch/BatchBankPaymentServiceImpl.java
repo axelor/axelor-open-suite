@@ -18,59 +18,39 @@
 package com.axelor.apps.bankpayment.service.batch;
 
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 
-public class BatchDirectDebitMonthlyPaymentSchedule extends BatchDirectDebitPaymentSchedule {
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
 
     @Override
-    protected void process() {
-        processPaymentScheduleLines(PaymentScheduleRepository.TYPE_MONTHLY);
-
-        if (!batch.getPaymentScheduleLineDoneSet().isEmpty() && generateBankOrderFlag) {
-            try {
-                createBankOrder();
-            } catch (Exception e) {
-                TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
-                logger.error(e.getLocalizedMessage());
-            }
-        }
-    }
-
     @Transactional(rollbackOn = { AxelorException.class, Exception.class })
-    protected void createBankOrder()
+    public void createBankOrder(Batch batch)
             throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
-        findBatch();
         AccountingBatch accountingBatch = batch.getAccountingBatch();
         LocalDate bankOrderDate = accountingBatch.getDueDate();
         Company senderCompany = accountingBatch.getCompany();
-        BankDetails senderBankDetails = getCompanyBankDetails(accountingBatch);
+        BankDetails senderBankDetails = accountingBatch.getBankDetails();
         PaymentMode paymentMode = accountingBatch.getPaymentMode();
 
-        BankOrder bankOrder = Beans.get(PaymentScheduleLineBankPaymentService.class).createBankOrder(getDoneList(),
-                paymentMode, bankOrderDate, senderCompany, senderBankDetails);
-
+        BankOrder bankOrder = Beans.get(PaymentScheduleLineBankPaymentService.class).createBankOrder(
+                batch.getPaymentScheduleLineDoneSet(), paymentMode, bankOrderDate, senderCompany, senderBankDetails);
+        batch = Beans.get(BatchRepository.class).find(batch.getId());
         batch.setBankOrder(bankOrder);
     }
 
