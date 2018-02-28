@@ -19,9 +19,9 @@ package com.axelor.apps.production.web;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.util.List;
 
-import com.axelor.apps.production.service.ManufOrderStockMoveService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,6 @@ import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.ManufOrderService;
 import com.axelor.apps.production.service.ManufOrderWorkflowService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.stock.db.StockMove;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -244,12 +243,37 @@ public class ManufOrderController {
 			TraceBackService.trace(response, e);
 		}
 	}
-  
-	public void updateQty(ActionRequest request, ActionResponse response) {
+
+	/**
+	 * Called from manuf order wizard view.
+	 * Call {@link ManufOrderService#updatePlannedQty(ManufOrder)}
+	 * @param request
+	 * @param response
+	 */
+	public void updatePlannedQty(ActionRequest request, ActionResponse response) {
 		try  {
 			ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
 			manufOrder = manufOrderRepo.find(manufOrder.getId());
-			manufOrderService.updateQty(manufOrder);
+			manufOrderService.updatePlannedQty(manufOrder);
+			response.setReload(true);
+			response.setCanClose(true);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+
+	/**
+	 * Called from manuf order wizard view.
+	 * Call {@link ManufOrderService#updateRealQty(ManufOrder, BigDecimal)}
+	 * @param request
+	 * @param response
+	 */
+	public void updateRealQty(ActionRequest request, ActionResponse response) {
+		try  {
+			ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+			manufOrder = manufOrderRepo.find(manufOrder.getId());
+			BigDecimal qtyToUpdate = new BigDecimal(request.getContext().get("qtyToUpdate").toString());
+			manufOrderService.updateRealQty(manufOrder, qtyToUpdate);
 			response.setReload(true);
 			response.setCanClose(true);
 		} catch (Exception e) {

@@ -126,20 +126,23 @@
 				</panel>
 			</panel>
 			<panel name="consumedProducts" title="Consumed products" hideIf="isConsProOnOperation">
-				<button name="updateQty" title="Update quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-qty-popup-form-view" css="btn-custom"/>
+				<button name="updatePlannedQty" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
 				<panel-related field="toConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
+				<button name="updateRealQty" title="Update real quantities (Components and FP)" colSpan="12" showIf="[4,5].includes(statusSelect)" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
 				<panel-related field="consumedStockMoveLineList" onChange="action-manuf-order-method-compute-diff-prod-product-list" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-consumed-production-grid"/>
 				<panel-related field="diffConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 			</panel>
    			<panel readonly="true" name="consumedProducts" title="Consumed products" showIf="isConsProOnOperation">
-				<button name="updateQty" title="Update quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-qty-popup-form-view" css="btn-custom"/>
+				<button name="updatePlannedQty" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
 				<panel-dashlet colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
+				<button name="updateRealQty" title="Update real quantities (Components and FP)" colSpan="12" showIf="[4,5].includes(statusSelect)" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
 				<panel-dashlet colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>
 				<panel-dashlet colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
 			</panel>
 			<panel name="finishedProducts" title="Finished products">
-				<button name="updateQty" title="Update quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-qty-popup-form-view" css="btn-custom"/>
+				<button name="updatePlannedQty" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
 				<panel-related field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 3" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
+				<button name="updateRealQty" title="Update real quantities (Components and FP)" colSpan="12" showIf="[4,5].includes(statusSelect)" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
 				<panel-related field="producedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-produced-production-grid"/>
 				<panel-related field="wasteProdProductList" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 				<panel name="description" title="Waste description" colSpan="12">
@@ -158,10 +161,17 @@
 		</panel-tabs>
 	</form>
 	
-	<form title="Update quantities (Components and FP)" name="popup-manuf-order-form-update-qty" model="com.axelor.apps.production.db.CostSheetLine">
+	<form title="Update planned quantities (Components and FP)" name="popup-manuf-order-form-update-planned-qty" model="com.axelor.apps.production.db.ManufOrder">
 		<panel>
 			<field name="qty" colSpan="8"/>
-			<button name="ok" colSpan="4" title="OK" onClick="save,action-manuf-order-method-update-qty,close"/>
+			<button name="ok" colSpan="4" title="OK" onClick="save,action-manuf-order-method-update-planned-qty,close"/>
+		</panel>
+	</form>
+
+	<form title="Update real quantities (Components and FP)" name="popup-manuf-order-form-update-real-qty" model="com.axelor.apps.production.db.ManufOrder">
+		<panel>
+			<field name="$qtyToUpdate" title="Qty" min="0" type="decimal" colSpan="8"/>
+			<button name="ok" colSpan="4" title="OK" onClick="save,action-manuf-order-method-update-real-qty,close"/>
 		</panel>
 	</form>
 
@@ -170,8 +180,8 @@
 		<context name="_costSheetId" expr="eval: costSheet?.id ?: 0"/>
 	</action-view>
 	
-	<action-view name="action-manuf-order-update-qty-popup-form-view" title="Update quantities (Components and FP)" model="com.axelor.apps.production.db.ManufOrder">
-		<view type="form" name="popup-manuf-order-form-update-qty"/>
+	<action-view name="action-manuf-order-update-planned-qty-popup-form-view" title="Update planned quantities (Components and FP)" model="com.axelor.apps.production.db.ManufOrder">
+		<view type="form" name="popup-manuf-order-form-update-planned-qty"/>
 		<view-param name="popup" value="reload"/>
 		<view-param name="forceEdit" value="true"/>
 		<view-param name="show-toolbar" value="false"/>
@@ -180,10 +190,24 @@
 		<context name="_showRecord" expr="eval: id"/>
 	</action-view>
 
-	<action-method name="action-manuf-order-method-update-qty">
-		<call class="com.axelor.apps.production.web.ManufOrderController" method="updateQty"/>
+	<action-view name="action-manuf-order-update-real-qty-popup-form-view" title="Update real quantities (Components and FP)" model="com.axelor.apps.production.db.ManufOrder">
+		<view type="form" name="popup-manuf-order-form-update-real-qty"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="forceEdit" value="true"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="false"/>
+		<context name="_showRecord" expr="eval: id"/>
+	</action-view>
+
+	<action-method name="action-manuf-order-method-update-planned-qty">
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="updatePlannedQty"/>
 	</action-method>
-	
+
+	<action-method name="action-manuf-order-method-update-real-qty">
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="updateRealQty"/>
+	</action-method>
+
 	<action-method name="action-manuf-order-method-is-to-invoice">
 		<call class="com.axelor.apps.businessproduction.web.ManufOrderBusinessController" method="propagateIsToInvoice"/>
 	</action-method>

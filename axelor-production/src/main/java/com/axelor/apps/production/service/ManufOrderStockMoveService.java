@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -169,14 +170,19 @@ public class ManufOrderStockMoveService {
 		return stockMove;
 	}
 
-
 	protected StockMoveLine _createStockMoveLine(ProdProduct prodProduct, StockMove stockMove, int inOrOutType) throws AxelorException  {
+
+		return _createStockMoveLine(prodProduct, stockMove, inOrOutType, prodProduct.getQty());
+
+	}
+
+	protected StockMoveLine _createStockMoveLine(ProdProduct prodProduct, StockMove stockMove, int inOrOutType, BigDecimal qty) throws AxelorException  {
 
 		return stockMoveLineService.createStockMoveLine(
 				prodProduct.getProduct(),
 				prodProduct.getProduct().getName(),
 				prodProduct.getProduct().getDescription(),
-				prodProduct.getQty(),
+				qty,
 				prodProduct.getProduct().getCostPrice(),
 				prodProduct.getUnit(),
 				stockMove,
@@ -259,10 +265,7 @@ public class ManufOrderStockMoveService {
 		}
 
 		//realize current stock move
-		Optional<StockMove> stockMoveToRealize = stockMoveList.stream()
-				.filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
-				&& !CollectionUtils.isEmpty(stockMove.getStockMoveLineList()))
-				.findFirst();
+		Optional<StockMove> stockMoveToRealize = getPlannedStockMove(stockMoveList);
 		if (stockMoveToRealize.isPresent()) {
 			finishStockMove(stockMoveToRealize.get());
 		}
@@ -290,6 +293,19 @@ public class ManufOrderStockMoveService {
 			manufOrder.addOutStockMoveListItem(newStockMove);
 			newStockMove.getStockMoveLineList().forEach(manufOrder::addProducedStockMoveLineListItem);
 		}
+	}
+
+	/**
+	 * Get the planned stock move in a stock move list
+	 * @param stockMoveList can be {@link ManufOrder#inStockMoveList} or
+	 *                      {@link ManufOrder#outStockMoveList}
+	 * @return an optional stock move
+	 */
+	public Optional<StockMove> getPlannedStockMove(List<StockMove> stockMoveList) {
+		return stockMoveList.stream()
+				.filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
+						&& !CollectionUtils.isEmpty(stockMove.getStockMoveLineList()))
+				.findFirst();
 	}
 
 	/**
@@ -366,4 +382,65 @@ public class ManufOrderStockMoveService {
 
 	}
 
+	/**
+	 * Clear the consumed list and create a new one with the right quantity.
+	 * @param manufOrder
+	 * @param qtyToUpdate
+	 */
+	public void createNewConsumedStockMoveLineList(ManufOrder manufOrder, BigDecimal qtyToUpdate) throws AxelorException {
+		//clear all lists from planned lines
+		manufOrder.getConsumedStockMoveLineList().removeIf(stockMoveLine ->
+				stockMoveLine.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_PLANNED);
+		Optional<StockMove> stockMoveOpt = getPlannedStockMove(manufOrder.getInStockMoveList());
+		if (!stockMoveOpt.isPresent()) {
+			return;
+		}
+		StockMove stockMove = stockMoveOpt.get();
+		stockMove.clearStockMoveLineList();
+
+		//create a new list
+		for (ProdProduct prodProduct : manufOrder.getToConsumeProdProductList()) {
+			BigDecimal qty = getFractionQty(manufOrder, prodProduct, qtyToUpdate);
+		    StockMoveLine stockMoveLine = _createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty);
+		    manufOrder.addConsumedStockMoveLineListItem(stockMoveLine);
+		}
+	}
+
+	/**
+	 * Clear the produced list and create a new one with the right quantity.
+	 * @param manufOrder
+	 * @param qtyToUpdate
+	 */
+	public void createNewProducedStockMoveLineList(ManufOrder manufOrder, BigDecimal qtyToUpdate) throws AxelorException {
+		//clear all lists
+		manufOrder.getProducedStockMoveLineList().removeIf(stockMoveLine ->
+				stockMoveLine.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_PLANNED);
+		Optional<StockMove> stockMoveOpt = getPlannedStockMove(manufOrder.getOutStockMoveList());
+		if (!stockMoveOpt.isPresent()) {
+			return;
+		}
+		StockMove stockMove = stockMoveOpt.get();
+		stockMove.clearStockMoveLineList();
+
+		//create a new list
+		for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
+			BigDecimal qty = getFractionQty(manufOrder, prodProduct, qtyToUpdate);
+		    StockMoveLine stockMoveLine = _createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_OUT_PRODUCTIONS, qty);
+		    manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
+		}
+	}
+
+	/**
+	 * Compute the right qty when modifying real quantity in a manuf order
+	 * @param manufOrder
+	 * @param prodProduct
+	 * @param qtyToUpdate
+	 * @return
+	 */
+	public BigDecimal getFractionQty(ManufOrder manufOrder, ProdProduct prodProduct, BigDecimal qtyToUpdate) {
+	    BigDecimal manufOrderQty = manufOrder.getQty();
+	    BigDecimal prodProductQty = prodProduct.getQty();
+
+	    return qtyToUpdate.multiply(prodProductQty).divide(manufOrderQty, 2, RoundingMode.HALF_EVEN);
+	}
 }

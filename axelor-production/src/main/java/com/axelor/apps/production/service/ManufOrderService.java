@@ -25,7 +25,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -72,7 +71,22 @@ public interface ManufOrderService {
 	 */
 	public StockMove generateWasteStockMove(ManufOrder manufOrder) throws AxelorException;
 
-	public ManufOrder updateQty(ManufOrder manufOrder);
+	/**
+	 * Update planned qty in {@link ManufOrder#toConsumeProdProductList}
+	 * and {@link ManufOrder#toProduceProdProductList}
+	 * @param manufOrder
+	 * @return
+	 */
+	void updatePlannedQty(ManufOrder manufOrder);
+
+	/**
+	 * Update real qty in {@link ManufOrder#consumedStockMoveLineList}
+	 * and {@link ManufOrder#producedStockMoveLineList}
+	 * @param manufOrder
+	 * @param qtyToUpdate
+	 * @return
+	 */
+	void updateRealQty(ManufOrder manufOrder, BigDecimal qtyToUpdate) throws AxelorException;
 
 	/**
 	 * Updates the diff prod product list.

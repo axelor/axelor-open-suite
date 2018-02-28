@@ -22,7 +22,6 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
@@ -226,6 +225,31 @@ public class OperationOrderStockMoveService {
 						.flatMap(stockMove -> stockMove.getStockMoveLineList().stream())
 						.forEach(stockMoveLine -> stockMoveLine.setConsumedOperationOrder(null));
 			}
+	}
+
+	/**
+	 * Clear the consumed list and create a new one with the right quantity.
+	 * @param operationOrder
+	 * @param qtyToUpdate
+	 */
+	public void createNewConsumedStockMoveLineList(OperationOrder operationOrder, BigDecimal qtyToUpdate) throws AxelorException {
+		ManufOrderStockMoveService manufOrderStockMoveService = Beans.get(ManufOrderStockMoveService.class);
+		//clear all lists from planned lines
+		operationOrder.getConsumedStockMoveLineList().removeIf(stockMoveLine ->
+				stockMoveLine.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_PLANNED);
+		Optional<StockMove> stockMoveOpt = manufOrderStockMoveService.getPlannedStockMove(operationOrder.getInStockMoveList());
+		if (!stockMoveOpt.isPresent()) {
+			return;
+		}
+		StockMove stockMove = stockMoveOpt.get();
+		stockMove.clearStockMoveLineList();
+
+		//create a new list
+		for (ProdProduct prodProduct : operationOrder.getToConsumeProdProductList()) {
+			BigDecimal qty = manufOrderStockMoveService.getFractionQty(operationOrder.getManufOrder(), prodProduct, qtyToUpdate);
+			StockMoveLine stockMoveLine = manufOrderStockMoveService._createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty);
+			operationOrder.addConsumedStockMoveLineListItem(stockMoveLine);
+		}
 	}
 }
 

@@ -366,16 +366,32 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		return wasteStockMove;
 	}
 
-	@Transactional
-	public ManufOrder updateQty(ManufOrder manufOrder) {
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void updatePlannedQty(ManufOrder manufOrder) {
 		manufOrder.clearToConsumeProdProductList();
 		manufOrder.clearToProduceProdProductList();
 		this.createToConsumeProdProductList(manufOrder);
 		this.createToProduceProdProductList(manufOrder);
 
 		manufOrderRepo.save(manufOrder);
+	}
 
-		return manufOrder;
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+    public void updateRealQty(ManufOrder manufOrder, BigDecimal qtyToUpdate) throws AxelorException {
+		ManufOrderStockMoveService manufOrderStockMoveService = Beans.get(ManufOrderStockMoveService.class);
+	    if (!manufOrder.getIsConsProOnOperation()) {
+			manufOrderStockMoveService.createNewConsumedStockMoveLineList(manufOrder, qtyToUpdate);
+			updateDiffProdProductList(manufOrder);
+		} else {
+	    	for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+	    		Beans.get(OperationOrderStockMoveService.class).createNewConsumedStockMoveLineList(operationOrder, qtyToUpdate);
+	    		Beans.get(OperationOrderService.class).updateDiffProdProductList(operationOrder);
+			}
+		}
+
+		manufOrderStockMoveService.createNewProducedStockMoveLineList(manufOrder, qtyToUpdate);
 	}
 
 	@Override
