@@ -1,0 +1,54 @@
+<!doctype html>
+<!-- 
+
+    Axelor Business Solutions
+
+    Copyright (C) 2012-2014 Axelor (<http://axelor.com>).
+
+    This program is free software: you can redistribute it and/or  modify
+    it under the terms of the GNU Affero General Public License, version 3,
+    as published by the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Model editor</title>
+    <link type="text/css" rel="stylesheet" href="lib/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="lib/angular-form-builder.css"/>
+    <link type="text/css" rel="stylesheet" href="../lib/jquery.ui/css/smoothness/jquery-ui.css"/>
+    <link type="text/css" rel="stylesheet" href="../lib/font-awesome/css/font-awesome.css"/>
+    <link type="text/css" rel="stylesheet" href="../css/view.form.panels.css"/>
+    
+    <link type="text/css" rel="stylesheet" href="css/style.css" >
+    <link type="text/css" rel="stylesheet" href="css/open-sans.css" >
+    <link type="text/css" rel="stylesheet" href="css/play-display.css" >
+	
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../lib/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="../lib/angular/angular.js"></script>
+    <script type="text/javascript" src="../lib/angular/angular-route.js"></script>
+    <script type="text/javascript" src="../lib/underscore/underscore.js"></script>
+    <script type="text/javascript" src="../lib/moment/moment.js"></script>
+    <script type="text/javascript" src="angular-underscore.js"></script>
+    <script type="text/javascript" src="lib/angular-form-builder.js"></script>
+    <script type="text/javascript" src="component.js"></script>
+    <script type="text/javascript" src="axelor.studio.js"></script>
+    <script type="text/javascript" src="model.editor.js"></script>
+    <script type="text/javascript" src="view.editor.js"></script>
+</head>
+<body ng-app="axelor.studio" class="studio-container">
+	<div ng-controller="StudioController">
+		<div ng-view></div>
+	</div>
+</body>
+</html>

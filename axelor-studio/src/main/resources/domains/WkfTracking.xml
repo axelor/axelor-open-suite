@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+
+  <module name="studio" package="com.axelor.studio.db" />
+  
+  <entity name="WkfTracking" cachable="true">
+      <![CDATA[
+	    WkfTracking stores the information related to the workflow instance for an object. 
+	    The information like number of time some status changed, the user who changed the state, date and time when state is changed. 
+	  ]]>
+      <many-to-one name="wkf" ref="Wkf" required="true"/>
+      <string name="recordModel" title="Record model" required="true"/>
+      <integer name="recordId" required="true" title="Record Id"/>
+      <string name="recordName" title="Record name"/>
+      <one-to-many name="wkfTrackingLines" title="Tracking lines" ref="WkfTrackingLine" mappedBy="wkfTracking"/>
+      <one-to-many name="totalLines" title="Tracking total" ref="WkfTrackingTotal" mappedBy="wkfTracking" />
+      <one-to-many name="totalTimeLines" title="Tracking time" ref="WkfTrackingTime" mappedBy="wkfTracking" />
+  </entity>
+    
+ </domain-models>

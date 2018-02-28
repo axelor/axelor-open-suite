@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+  
+  <grid name="filter-operator-grid" title="Operator" model="com.axelor.studio.db.FilterOperator">
+      <field name="name" />
+      <field name="value" />
+  </grid>
+  
+  <form name="filter-operator-form" title="Operator" model="com.axelor.studio.db.FilterOperator">
+      <panel>
+	      <field name="name" />
+	      <field name="value" />
+	      <field name="fieldTypeSet" widget="TagSelect" />
+	  </panel>
+  </form>
+  
+</object-views>
+
+

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+
+  <form model="com.axelor.studio.db.ModuleRecorder" title="Apply updates" name="module-recorder-form"
+       canNew="false" canCopy="false" canAttach="false" canDelete="false" canSave="false" >
+		<panel>
+	   		<button name="update" title="Update" onClick="action-set-module-recorder-default,save,action-module-recorder-confirm-restart,action-meta-module-method-clear-cache,action-module-recorder-method-update,save" colSpan="4" />
+	   		<button name="reset" title="Reset" onClick="action-set-module-recorder-default,save,action-studio-validate-reset,action-studio-method-reset" colSpan="4" />
+	   		<field name="updateServer" colSpan="4" />
+	   		<field name="autoCreate" colSpan="4" />
+	   		<field name="allViewUpdate" colSpan="4" />
+	   	</panel>
+	   	<panel title="Log">
+	   	   <field name="logText" colSpan="12" showTitle="false" />
+	   	</panel>
+  </form>
+  
+  <action-validate name="action-module-recorder-confirm-restart">
+  	<alert message="Server will be restarted are you sure wants to continue ?" if="updateServer"/>
+  </action-validate>
+  
+  <action-method name="action-module-recorder-method-update" model="com.axelor.studio.db.ModuleRecorder">
+      <call class="com.axelor.studio.web.ModuleRecorderController" method="update"/>
+  </action-method>
+  
+  <action-method name="action-meta-module-method-clear-cache" >
+  	  <call class="com.axelor.meta.web.MetaController" method="clearCache" />
+  </action-method>
+  
+  <action-validate name="action-studio-validate-reset">
+  	<alert  message="Database will be erased with all custom modules. Are you sure wants to continue ?" />
+  </action-validate>
+  
+  <action-method name="action-studio-method-reset">
+  	<call class="com.axelor.studio.web.ModuleRecorderController" method="reset"/>
+  </action-method>
+  
+  <action-record name="action-set-module-recorder-default"  model="com.axelor.studio.db.ModuleRecorder">
+  	<field name="logText" expr="eval:''" />
+  </action-record>
+  
+</object-views>

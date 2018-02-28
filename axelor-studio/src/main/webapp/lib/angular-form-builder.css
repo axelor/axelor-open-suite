@@ -1,0 +1,156 @@
+.fb-component {
+	cursor: move
+}
+
+.fb-component input {
+	cursor: move
+}
+
+.fb-component label {
+	cursor: move
+}
+
+.fb-component select {
+	cursor: move
+}
+
+.fb-component textarea {
+	cursor: move
+}
+
+/* .fb-form-object-editable { */
+/* 	padding: 10px */
+/* } */
+
+.fb-form-object-editable.fb-draggable {
+	cursor: move
+}
+
+.fb-form-object-editable.fb-draggable input {
+	cursor: move
+}
+
+.fb-form-object-editable.fb-draggable label {
+	cursor: pointer
+}
+
+.fb-form-object-editable.fb-draggable select {
+	cursor: move
+}
+
+.fb-form-object-editable.fb-draggable textarea {
+	cursor: move
+}
+
+.fb-form-object-editable.empty {
+	cursor: default;
+	margin: 6px;
+	height: 80px;
+	border: dashed 1px #aaa;
+	background-color: #1e2c39;
+}
+
+.fb-draggable.dragging {
+	background-color: #1e2c39;
+	position: absolute;
+	z-index: 800;
+	-webkit-box-shadow: #666 0 0 20px;
+	-moz-box-shadow: #666 0 0 20px;
+	box-shadow: #666 0 0 20px
+}
+
+.fb-required:after {
+	color: #b94a48;
+	content: ' *'
+}
+
+.fb-builder {
+	min-height: 250px
+}
+
+.fb-toolbar {
+	min-height: 100px
+}
+
+.popover .control-label {
+	text-align: left
+}
+
+.popover form {
+	width: 240px
+}
+
+.navbar-fixed-top{
+	min-height: 30px;
+}
+
+.save-btn{
+	margin-right: 20px;
+}
+
+.studio-panel{
+	margin-top: 30px;
+}
+
+body{padding:10px}.footer{height:50px}
+.hr-normal {
+     color: #000;
+     background: #000; 
+     width: 90%; 
+     height: 1px;
+}
+
+.hr-side {
+     color: #000;
+     background: #000; 
+     width: 30%; 
+     height: 1px;
+     
+}
+.hr-dotted {
+    border: 1px dashed #000;
+    color: #000; 
+    width: 90%; 
+}
+
+.nav-tabs {
+	border-color: #000;
+}
+.nav-tabs>li.active>a {
+	border: 1px solid;
+	border-bottom-color: transparent;
+}
+
+.nav-tabs.nav-justified>.active>a  {
+	border: 1px solid;
+	width: 80%;
+	border-bottom-color: transparent;
+}
+
+.nav-tabs.nav-justified>li>a {
+	border-bottom-color: transparent;
+}
+
+.studio-container {
+	background-color: #f3f3f4;
+}
+
+.fixed-panel{
+	position: fixed;
+	left: 0px;
+	width: 300px;
+	z-index: 1;
+	float:left;
+}
+
+.panel-right {
+	position: fixed;
+	left: 350px;
+	width: 400px;
+	float:left;
+}
+
+.pre-scrollable {
+    max-height: 500px;
+    overflow-x: hidden;
+}

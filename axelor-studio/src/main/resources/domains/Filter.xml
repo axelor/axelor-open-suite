@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  
+  <module name="studio" package="com.axelor.studio.db" />
+  
+  <entity name="Filter" cachable="true">
+  	<![CDATA[
+     Filter represents a condition to evaluate.  It stores condition components like operand, operator and value. 
+     A sql or groovy condition will be created by using this. 
+    ]]>
+    <integer name="importId" />
+  	<string name="moduleName" title="Module" />
+    <many-to-one name="viewBuilder" ref="com.axelor.studio.db.ViewBuilder" />
+  	<many-to-one name="metaField" title="Field" ref="com.axelor.meta.db.MetaField" required="true"/>
+  	<many-to-one name="wkfTransition" ref="com.axelor.studio.db.WkfTransition" />
+  	<many-to-one name="filterOperator" title="Operator" ref="com.axelor.studio.db.FilterOperator" required="true"/>
+  	<many-to-one name="actionBuilder" ref="com.axelor.studio.db.ActionBuilder" />
+  	<string name="targetField" title="Target field"/>
+  	<string name="targetType" title="Target type"/>
+  	<string name="value" title="Value" />
+  	<string name="defaultValue" title="Default Value" />
+  	<boolean name="isParameter" title="Is parameter ?" />
+  	<integer name="logicOp" title="Logic operator" selection="studio.chart.filter.logic.operator" default="0"/>
+  </entity>
+    
+ </domain-models>

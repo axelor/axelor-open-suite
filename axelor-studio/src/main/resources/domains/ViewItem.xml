@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+
+  <module name="studio" package="com.axelor.studio.db" />
+
+  <entity name="ViewItem" cachable="true">
+     <![CDATA[
+    	This class represents a child tag of the view xml. A tag like field, button, label..etc.  
+    	It is used to generate a complete child tag along with the tag attributes. 
+     ]]>
+     <integer name="typeSelect" title="Type" selection="studio.view.item.type.select" />
+     <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField" title="Field"/>
+     <many-to-one name="viewPanel" ref="ViewPanel" />
+     <many-to-one name="viewBuilder" ref="ViewBuilder" />
+     <string name="name" title="Name"/>
+     <string name="title" title="Title" />
+     <integer name="sequence" title="Sequence" />
+     <string name="defaultValue" title="Default" />
+     <string name="onChange" title="On Change" />
+     <boolean name="progressBar" title="Progress Bar ?"/>
+     <boolean name="htmlWidget" title="Html ?"/>
+     <string name="widget" title="Widget" selection="view.item.widget.selection" default="normal" />
+     <string name="domainCondition" title="Doman"  />
+     <boolean name="readonly" title="Readonly ?"/>
+     <string name="readonlyIf" title="Readonly If" />
+     <boolean name="required" title="Required ?"/>
+     <string name="requiredIf" title="Required If" />
+     <boolean name="hidden" title="Hidden ?"/>
+     <string name="hideIf" title="Hide If" />
+     <string name="showIf" title="ShowIf" />
+     <boolean name="hideTitle" title="Hide title" />
+	 <many-to-one name="metaSelect" ref="com.axelor.meta.db.MetaSelect" title="Selection" />
+     <string name="fieldType" title="Type"/>
+     <integer name="colSpan" title="Colspan" />
+     <string name="ifModule" title="If module" />
+     <string name="ifConfig" title="If config" />
+     <string name="target" title="Target" />
+     
+     <!-- Button fields -->
+     <string name="icon" title="Icon" />
+     <string name="promptMsg" title="Prompt" /> 
+     <string name="onClick" title="On click" />
+     <boolean name="wkfButton" title="Is workflow button?" />
+     <many-to-one name="viewBuilderToolbar" ref="ViewBuilder" />
+     <boolean name="panelTop" title="Panel top" />
+     
+     <!-- Menubar builder o2m -->
+     <many-to-one name="menubarMenu" ref="ViewItem" />
+     <one-to-many name="menubarItems" ref="ViewItem" mappedBy="menubarMenu" title="Items"/>
+     <many-to-one name="menubarBuilder" ref="ViewBuilder" />
+     
+     <!-- Nested view -->
+     <many-to-one name="nestedField" ref="ViewItem" />
+     <one-to-many name="nestedViewItems" ref="ViewItem" title="Nested items" mappedBy="nestedField" orderBy="sequence" />
+     
+     <!-- Panel related level -->
+     <string name="panelLevel" />
+     
+     <!-- Fields for relational field -->
+     <string name="formView" title="Form view" />
+     <string name="gridView" title="Grid view" />
+     
+  </entity>
+
+</domain-models>

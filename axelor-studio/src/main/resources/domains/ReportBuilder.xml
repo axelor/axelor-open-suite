@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+
+  <module name="studio" package="com.axelor.studio.db" />
+  
+  <entity name="ReportBuilder" cachable="true">
+    <![CDATA[
+   	ReportBuilder is used to generate a report in pdf format from the html template. 
+   	It contains all the important fields related with report. 
+   	It is also used for generating a html template from form view.   
+    ]]>
+    <string name="name" title="Name" required="true" unique="true" />
+    <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model" required="true"/>
+    <many-to-one name="viewBuilder" ref="com.axelor.studio.db.ViewBuilder" title="View Builder"/>
+    <many-to-one name="buttonView" ref="com.axelor.studio.db.ViewBuilder" title="Add button to" help="true" />
+    <string name="header" title="Header" large="true" />
+    <string name="footer" title="Footer" large="true" />
+    <string name="language" title="Language"  selection="select.language"/>
+    <string name="htmlTemplate" title="Html Template" large="true" />
+    <boolean name="edited" /> 
+    <boolean name="printPageNo" title="Print page number ?" />
+    <boolean name="editHtml" title="Edit HTML?" />
+    <string name="fileName" title="File name" />
+    <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Module" required="true"/>
+  </entity>
+    
+ </domain-models>

@@ -1,5 +1,8 @@
 # Changelog
 
+## [4.2.3] - 2018-02-28
+4.1.3 with axelor-process-studio modules
+
 ## [4.1.3] - 2018-02-28
 ### Improvements
 - New assistant in expense form to select payment mode
@@ -315,6 +318,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
+[4.2.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.3...v4.2.3
 [4.1.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...v4.1.3
 [4.1.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...v4.1.2
 [4.1.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.0...v4.1.1

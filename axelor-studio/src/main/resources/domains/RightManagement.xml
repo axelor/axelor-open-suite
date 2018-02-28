@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+
+  <module name="studio" package="com.axelor.studio.db" />
+  
+  <entity name="RightManagement" cachable="true">
+    <![CDATA[
+    RightManagement is used to generate a permission and apply it to the selected group or role.
+    Permission applied on model related to this class.   
+    ]]>
+    <many-to-one name="authGroup" ref="com.axelor.auth.db.Group" title="Group"/>
+    <many-to-one name="authRole" ref="com.axelor.auth.db.Role" title="Role"/>
+    <boolean name="canRead" title="Read" help="Whether to grant read access." />
+    <boolean name="canWrite" title="Write" help="Whether to grant write access." />
+    <boolean name="canCreate" title="Create" help="Whether to grant create access." />
+    <boolean name="canRemove" title="Remove" help="Whether to grant remove access." />
+    <boolean name="canExport" title="Export" help="Whether to grant export access." />
+    <string name="condition" column="condition_value" help="Domain filter as condition." />
+    <string name="conditionParams" help="Comma separated list of params for the condition." />
+    <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel"/>
+    <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField"/>
+    <string name="readonlyIf" />
+    <string name="hideIf" />
+    <boolean name="edited" default="true"/>
+    <string name="name" title="Name"/>
+  </entity>
+    
+    
+ </domain-models>

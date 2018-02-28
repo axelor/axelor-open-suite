@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+  
+  <module name="meta" package="com.axelor.meta.db" />
+  
+  <entity name="MetaSequence" cachable="true">
+  	<many-to-one name="metaModel" ref="MetaModel" />
+  	<many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Module"/>
+  </entity>
+    
+ </domain-models>
