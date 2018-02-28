@@ -1,0 +1,11 @@
+com.axelor.meta.db
+com.axelor.meta.db.repo
+com.axelor.meta.web
+com.axelor.studio.db
+com.axelor.studio.db.repo
+com.axelor.studio.module
+com.axelor.studio.service
+com.axelor.studio.service.data
+com.axelor.studio.service.wkf
+com.axelor.studio.web
+com.axelor.web.service

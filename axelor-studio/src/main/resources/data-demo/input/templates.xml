@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
+  <template>
+  	<name>Note De Frais</name>
+  	<subject>Note De Frais $DemoExpense.expenseRef$</subject>
+  	<content><![CDATA[
+			<p>Expense updated</p>
+  	]]></content>
+  	<mediaTypeSelect>2</mediaTypeSelect>
+  	<metaModel>DemoExpense</metaModel>
+  </template>
+
+</templates>  

@@ -1,0 +1,15 @@
+name;value;fieldTypes
+equals;=;String|Integer|LocalDate|LocalDateTime|BigDecimal|Long|ManyToOne|DateTime
+not equals;!=;String|Integer|LocalDate|LocalDateTime|BigDecimal|Long|ManyToOne|DateTime
+greater or equal;>=;Integer|LocalDate|LocalDateTime|BigDecimal|DateTime
+less or equal;<=;Integer|LocalDate|LocalDateTime|BigDecimal|DateTime
+greater than;>;Integer|LocalDate|LocalDateTime|BigDecimal|DateTime
+less than;<;Integer|LocalDate|LocalDateTime|BigDecimal|DateTime
+is null;isNull;String|Integer|LocalDate|LocalDateTime|BigDecimal|Long|ManyToOne|DateTime
+is not null;notNull;String|Integer|LocalDate|LocalDateTime|BigDecimal|Long|ManyToOne|DateTime
+is true;TRUE;Boolean
+is false;FALSE;Boolean
+is empty;empty;ManyToMany
+include;include;ManyToMany
+is not empty;notEmpty;ManyToMany
+not include;notInclude;ManyToMany

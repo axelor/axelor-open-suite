@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+  
+  <grid name="wkf-transition-grid" title="Transition" model="com.axelor.studio.db.WkfTransition">
+       <field name="name"/>
+       <field name="source" />
+       <field name="target" />
+  </grid>
+    
+  <form name="wkf-transition-form" title="Transition" model="com.axelor.studio.db.WkfTransition" width="large">
+      <panel title="Overview">
+        <field name="name" readonly="true"/>
+        <spacer />
+        <field name="source" domain="self.wkf = :wkf OR self.wkf = :_parent" readonly="true" required="true"/>
+        <field name="target" domain="self.wkf = :wkf OR self.wkf = :_parent" readonly="true" required="true"/>
+        <field name="isButton"/>
+        <field name="buttonTitle" showIf="isButton" requiredIf="isButton"/>
+        <field name="alertTypeSelect" showIf="isButton"/>
+        <field name="alertMsg" showIf="isButton"/>
+        <field name="successMsg" showIf="isButton"/>
+        <field name="wkf" hidden="true"/>
+      </panel>
+      <panel title="Conditions" colSpan="9">
+        <field name="conditions" colSpan="12" showTitle="false" layout="table">
+          <editor x-show-titles="false">
+            <field name="metaField" onSelect="action-wkf-condition-meta-field-domain" colSpan="3" widget="SuggestBox" required="true" onChange="action-filter-method-update-target-field"/>
+            <field name="targetField" colSpan="3" showIf="metaField.relationship != null" requiredIf="metaField.relationship != null" onChange="action-filter-method-update-target-details"/>
+            <field name="filterOperator"  colSpan="3" onSelect="action-filter-operator-domain" widget="SuggestBox" required="true"/>
+            <field name="value" type="string" hideIf="metaField == null || 'TRUE,FALSE,isNull,notNull,empty,notEmpty'.indexOf(filterOperator.value) &gt; -1"  requiredIf="'TRUE,FALSE,isNull,notNull,empty,notEmpty'.indexOf(filterOperator.value) &lt; 0" colSpan="3"/>
+            <field name="logicOp" />
+            <field name="filterOperator.value" hidden="true" />
+            <field name="isParameter" hidden="true" />
+            <field name="metaField.relationship" hidden="true" />
+	        <field name="targetType" hidden="true" />
+          </editor>
+        </field>
+      </panel>
+      <panel-related field="roleSet" colSpan="12" showIf="isButton"/>
+  </form>
+  
+  <action-attrs name="action-wkf-condition-meta-field-domain">
+  	<attribute for="metaField" name="domain" expr="eval:&quot;self.metaModel.id = ${_parent.wkf.metaModel.id} AND (self.relationship IS NULL OR self.relationship != 'OneToMany')&quot;" />
+  </action-attrs>
+  
+</object-views>

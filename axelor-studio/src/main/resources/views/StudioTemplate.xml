@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+  
+  <grid name="studio-template-grid" title="Studio Template" model="com.axelor.studio.db.StudioTemplate">
+      <field name="name" />
+  </grid>
+  
+  <form name="studio-template-form" title="Studio Template" model="com.axelor.studio.db.StudioTemplate">
+      <panel>
+      	  <field name="name" />
+      	  <field name="imported" />
+	      <field name="metaFile" colSpan="4" widget="binary-link" required="true" onChange="action-studio-template-update-name"/>
+	      <button name="exportTemplate" title="Export" colSpan="4" onClick="action-studio-template-method-export-template,save" showIf="name != null"/>
+	      <button name="importTemplate" title="Import" colSpan="4" onClick="save,action-studio-template-method-import-template" readonlyIf="imported"/>
+	  	  <field name="dependsOn" colSpan="12" />
+	  </panel>
+  </form>
+  
+  <action-method name="action-studio-template-method-import-template">
+  	<call class="com.axelor.studio.web.StudioTemplateController" method="importTemplate"/>
+  </action-method>
+  
+  <action-method name="action-studio-template-method-export-template">
+  	<call class="com.axelor.studio.web.StudioTemplateController" method="exportTemplate"/>
+  </action-method>
+  
+  <action-record name="action-studio-template-update-name" model="com.axelor.studio.db.StudioTemplate">
+  	<field name="name" expr="eval:metaFile?.fileName?.replace('.zip','')"/>
+  </action-record>
+  
+</object-views>
+
+

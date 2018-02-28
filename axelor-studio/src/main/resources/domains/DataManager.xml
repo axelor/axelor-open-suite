@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+
+  <module name="studio" package="com.axelor.studio.db" />
+  
+  <entity name="DataManager">
+	<![CDATA[
+	This class is use to import/export models and view. 
+	Also to generate asciidoc file from input file.
+	  ]]>
+	<many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="File"	 />
+	<many-to-one name="logFile" ref="com.axelor.meta.db.MetaFile" title="Log"/>
+	<boolean name="exportOnlyPanel" title="Export only panel?" />
+	<many-to-one name="asciidocFile" ref="com.axelor.meta.db.MetaFile" title="Asciidoc File" />
+	<string name="languageSelect" title="Language" selection="select.language" default="'en'" />
+  </entity>
+    
+ </domain-models>

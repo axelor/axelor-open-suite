@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+
+    <selection name="field.type.selection">
+        <option value="integer">Integer</option>
+        <option value="decimal">Decimal</option>
+        <option value="string">String</option>
+        <option value="boolean">Boolean</option>
+        <option value="many-to-one">ManyToOne</option>
+        <option value="one-to-many">OneToMany</option>
+        <option value="many-to-many">ManyToMany</option>
+        <option value="date">Date</option>
+        <option value="datetime">DateTime</option>
+    </selection>
+    
+    <selection name="view.item.widget.selection">
+        <option value="normal">Normal</option>
+        <option value="RadioSelect">Radio</option>
+        <option value="NavSelect">Navigation Select</option>
+        <option value="multi-select">Multi Select</option>
+        <option value="binary-link">Link</option>
+        <option value="Image">Image</option>
+    </selection>
+    
+    <selection name="form.view.builder.place.select">
+        <option value="0">Begining</option>
+        <option value="1">End</option>
+    </selection>
+    
+    <selection name="studio.chart.builder.date.type">
+        <option value="day">Day</option>
+        <option value="month">Month</option>
+        <option value="year">Year</option>
+    </selection>
+    
+    <selection name="studio.chart.builder.display.type">
+        <option value="0">Value</option>
+        <option value="1">Percentage(%)</option>
+    </selection>
+	
+    <selection name="studio.chart.builder.chart.type">
+        <option value="bar">Bar</option>
+        <option value="hbar">Horizontal bar</option>
+        <option value="line">Line</option>
+        <option value="donut">Donut</option>
+        <option value="pie">Pie Chart</option>
+        <option value="area">Area</option>
+        <option value="text">Text</option>
+        <option value="radar">Radar</option>
+        <option value="gauge">Gauge</option>
+        <option value="scatter">Scatter</option>
+        <option value="funnel">Funnel</option>
+    </selection>
+    
+    <selection name="studio.filter.operator">
+        <option value="=">equals</option>
+        <option value="!=">not equal</option>
+        <option value="&gt;=">greater or equal</option>
+        <option value="&lt;=">less or equal</option>
+        <option value="&gt;">greater than</option>
+        <option value="&lt;">less than</option>
+        <option value="like">contains</option>
+        <option value="notLike">doesn't contains</option>
+        <option value="isNull">is null</option>
+        <option value="notNull">is not null</option>
+		<option value="isTrue">is true</option>
+		<option value="isFalse">is false</option>       
+		<option value="include">include</option>
+		<option value="notInclude">not include</option> 
+    </selection>
+    
+    <selection name="studio.business.wkf.display.type.select">
+        <option value="0">Simple Select</option>
+        <option value="1">Nav Select</option>
+    </selection>
+    
+    <selection name="studio.chart.filter.logic.operator">
+    	<option value="0">AND</option>
+    	<option value="1">OR</option>
+    </selection>
+    
+    <selection name="studio.condition.alert.type.select">
+    	<option value="1">Blocking</option>
+    	<option value="2">Alert</option>
+    </selection>
+    
+    <selection name="studio.view.calculation.line.type.select">
+    	<option value="0">Arithmetic</option>
+    	<option value="1">Groovy</option>
+    </selection>
+    
+    <selection name="studio.action.builder.type.select">
+    	<option value="0">Create object</option>
+    	<option value="1">Update object</option>
+    	<option value="2">Open view</option>
+    	<option value="3">Open report</option>
+    	<option value="4">Send email</option>
+    	<option value="5">Validation</option>
+    </selection>
+    
+    <selection name="studio.action.builder.line.type.select">
+    	<option value="0">Formula</option>
+    	<option value="1">Groovy</option>
+    </selection>
+    
+    <selection name="studio.view.item.type.select">
+    	<option value="0">Field</option>
+    	<option value="1">Button</option>
+    	<option value="2">Label</option>
+    	<option value="3">Spacer</option>
+    	<option value="4">Dashlet</option>
+    </selection>
+    
+    <selection name="studio.action.builder.line.validation.type.select">
+    	<option value="error">Error</option>
+    	<option value="alert">Alert</option>
+    	<option value="info">Information</option>
+    	<option value="notify">Notification</option>
+    </selection>
+    
+    <selection name="record.import.rule.select">
+    	<option value="0">Create</option>
+    	<option value="1">Search</option>
+    	<option value="2">Search or Create</option>
+    </selection>
+    
+    <selection name="record.import.preference.select">
+    	<option value="0">Create</option>
+    	<option value="1">Full update</option>
+    	<option value="2">Partial update</option>
+    </selection>
+    
+</object-views>

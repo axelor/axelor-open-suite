@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+  
+  <grid name="meta-model-studio-grid" title="Model" model="com.axelor.meta.db.MetaModel">
+      <field name="name" />
+  </grid>
+  
+  <form name="meta-model-studio-form" title="Model" model="com.axelor.meta.db.MetaModel" 
+      onNew="action-meta-model-method-set-default">
+    <panel>
+      <field name="name" onChange="action-meta-model-update-full-name"/>
+      <field name="packageName" onChange="action-meta-model-update-full-name"/>
+      <field name="metaModule" domain="self.customised = true"/> 
+    </panel>
+    <panel>
+        <button name="openFieldEditor" title="Open editor" onClick="save,action-meta-model-method-open-field-editor" />
+    	<panel-related field="metaFields" canMove="true" orderBy="sequence" colSpan="12" grid-view="meta-field-studio-grid" form-view="meta-field-studio-form" readonly="true"/>    
+    </panel>
+    <panel-related field="rightManagementList" form-view="right-management-model-form" grid-view="right-management-model-grid"/>
+    <panel-related field="metaSequenceList" form-view="meta-sequence-form" grid-view="meta-sequence-grid"/>
+    <panel sidebar="true" showIf="metaModule != null">
+      <button name="openForm" title="Open form" onClick="save,action-meta-model-method-open-form" colSpan="12" />
+      <button name="openGrid" title="Open grid" onClick="save,action-meta-model-method-open-grid" colSpan="12"/>
+      <field name="fullName" hidden="true" />
+      <field name="customised" hidden="true" />
+      <field name="edited" hidden="true" />
+    </panel>
+  </form>
+  
+  <action-record name="action-meta-model-update-full-name" model="com.axelor.meta.db.MetaModel">
+      <field name="fullName" expr="eval:packageName+'.'+name" if="name != null &amp;&amp; packageName != null"/>
+  </action-record>
+  
+  <action-method name="action-meta-model-method-set-default" model="com.axelor.meta.db.MetaModel">
+  	<call class="com.axelor.meta.web.MetaModelController" method="setDefault"/>
+  </action-method>
+  
+  <action-method name="action-meta-model-method-open-form" model="com.axelor.meta.db.MetaModel">
+      <call class="com.axelor.meta.web.MetaModelController" method="openForm"/>
+  </action-method>
+  
+  <action-method name="action-meta-model-method-open-grid" model="com.axelor.meta.db.MetaModel">
+      <call class="com.axelor.meta.web.MetaModelController" method="openGrid"/>
+  </action-method>
+  
+  <action-method name="action-meta-model-method-open-field-editor" model="com.axelor.meta.db.MetaModel">
+      <call class="com.axelor.meta.web.MetaModelController" method="openFieldEditor"/>
+  </action-method>
+  
+</object-views>
