@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+  
+  <grid name="data-manager-grid" title="Import/Export" model="com.axelor.studio.db.DataManager">
+      <field name="metaFile"/>
+  </grid>
+  
+  <form name="data-manager-form" title="Import/Export" model="com.axelor.studio.db.DataManager"> 
+	<panel>
+		<field name="metaFile" canNew="true" onChange="action-data-manager-check-file-type" widget="binary-link"/>
+	</panel>
+	<panel colSpan="12" title="Import/Export">
+	    <button name="export" title="Export" icon="fa-reply" onClick="save,action-data-manager-export-data,save" colSpan="3" />
+		<field name="exportOnlyPanel" />
+		<spacer colSpan="3" />
+		<button name="importModels" title="Import" onClick="save,action-data-manager-import-data,save" colSpan="3" showIf="metaFile != null"/>
+		<field name="logFile" readonly="true" widget="binary-link" />
+		<spacer colSpan="3" />
+	</panel>
+	<panel colSpan="12" title="Asciidoc">
+		<field name="languageSelect" colSpan="4" />
+		<button name="generateAsciidoc" title="Generate Asciidoc"  colSpan="3"  showIf="metaFile != null &amp;&amp; languageSelect != null" onClick="action-data-manager-generate-asciidoc,save"/>
+		<field name="asciidocFile" widget="binary-link"  readonly="true"/>
+	</panel>
+  </form>
+  
+  <action-method name="action-data-manager-import-data" model="com.axelor.studio.db.DataManager">
+     <call class="com.axelor.studio.web.DataManagerController" method="importData"/>
+  </action-method>
+  
+  <action-validate name="action-data-manager-check-file-type" model="com.axelor.studio.db.DataManager">
+     <error message="Please select file with 'xlsx' format only" if="metaFile != null &amp;&amp; !metaFile.getFileName().endsWith('xlsx')" action="action-data-manager-reset-meta-file"/>
+  </action-validate>
+  
+  <action-record name="action-data-manager-reset-meta-file" model="com.axelor.studio.db.DataManager">
+     <field name="metaFile" expr="eval:null"/>
+  </action-record>
+  
+  <action-method name="action-data-manager-export-data">
+     <call class="com.axelor.studio.web.DataManagerController" method="exportData"/>
+  </action-method>
+   
+  <action-method name="action-data-manager-generate-asciidoc">
+   	 <call class="com.axelor.studio.web.DataManagerController" method="generateAsciidoc"/>
+  </action-method>
+  
+</object-views>

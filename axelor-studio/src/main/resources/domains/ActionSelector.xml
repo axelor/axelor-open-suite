@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+
+  <module name="studio" package="com.axelor.studio.db" />
+
+  <entity name="ActionSelector" cachable="true">
+  	<![CDATA[
+    	A special class to select the actions for {@WorkflowNode}. 
+    	Either MetAction or ActionBuilder can be selected as an action by using this.  
+     ]]>
+  	<integer name="sequence" />
+  	<many-to-one name="metaAction" ref="com.axelor.meta.db.MetaAction" title="Meta Action" />
+  	<many-to-one name="actionBuilder" ref="com.axelor.studio.db.ActionBuilder" title="Action Builder" />
+  	<string name="name" title="Name" />
+  </entity>
+  
+ </domain-models>
+  	

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+  
+  <grid name="view-item-grid" title="Items" model="com.axelor.studio.db.ViewItem" orderBy="sequence" canMove="true">
+      <field name="name"/>
+      <field name="title"/>
+      <field name="fieldType"/>
+  </grid>
+  
+  <form name="view-item-form" title="Item" model="com.axelor.studio.db.ViewItem">
+      <panel>
+        <field name="metaField" onSelect="action-view-field-set-meta-field-domain" required="true" onChange="action-view-field-meta-field-change" />
+        <field name="title" />
+        <field name="fieldType" hidden="true"/>
+        <field name="name" hidden="true" />
+        <panel title="Attributes" colSpan="12" sidebar="true">
+          <field name="defaultValue" hideIf="fieldType == 'one-to-many' || fieldType == 'many-to-many'" colSpan="12"/>
+          <field name="htmlWidget" showIf="fieldType == 'string'"  colSpan="12"/>
+          <field name="widget"  colSpan="12"/>
+          <field name="progressBar" showIf="(fieldType  == 'decimal' || fieldType  == 'integer') &amp;&amp; !selection" colSpan="12"/>
+          <field name="domainCondition" showIf="fieldType == 'many-to-one' || fieldType == 'many-to-many'" colSpan="12"/>
+          <field name="readonly" colSpan="2" />
+          <label title="or" colSpan="2"/>
+          <field name="readonlyIf" colSpan="8" />
+          <field name="required" colSpan="2" />
+          <label title="or" colSpan="2"/>
+          <field name="requiredIf" colSpan="8" />
+          <field name="hidden" colSpan="2" />
+          <label title="or" colSpan="2"/>
+          <field name="hideIf" colSpan="8" /> 
+    	</panel>
+      </panel>
+  </form>
+  
+  <action-attrs name="action-view-field-set-meta-field-domain">
+      <attribute name="domain" for="metaField" expr="eval:&quot;self.metaModel.id = ${_parent?._parent?.metaModel?.id} &quot;" if="_parent?._parent != null"/>
+      <attribute name="domain" for="metaField" expr="eval:&quot;self.metaModel.id = ${_parent?.metaModel?.id} &quot;" if="_parent?._parent == null"/>
+  </action-attrs>
+  
+  <action-record name="action-view-field-meta-field-change" model="com.axelor.studio.db.ViewItem">
+      <field name="fieldType" expr="eval:metaField?.fieldType"/>
+      <field name="name" expr="eval:metaField?.name"/>
+  </action-record>
+  
+</object-views>

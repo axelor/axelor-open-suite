@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+  
+  <grid name="report-builder-grid" title="Report builders" model="com.axelor.studio.db.ReportBuilder">
+      <field name="name" />
+      <field name="metaModel" />
+      <field name="viewBuilder" />
+  </grid>
+  
+  <form name="report-builder-form" title="Report builder" model="com.axelor.studio.db.ReportBuilder"
+       width="large">
+      <panel>
+      	<field name="name" />
+      	<spacer/>
+        <field name="metaModel" onChange="action-studio-report-builder-meta-model-on-change"/>
+        <field name="metaModule" domain="self.customised = true"/> 
+        <field name="viewBuilder" onSelect="action-studio-report-builder-view-builder-select"/>
+        <field name="buttonView" onSelect="action-studio-report-builder-view-builder-select" onChange="action-studio-report-builder-button-view-change"/>
+        <button name="generateTemplate" title="Generate template" colSpan="4" onClick="action-studio-report-builder-method-generate-template,save"/>
+        <field name="printPageNo" colSpan="3" />
+        <field name="editHtml" colSpan="3" />
+        <field name="fileName" required="true" />
+        <label title="&lt;b&gt;Filename placeholders:&lt;/b&gt;&lt;br/&gt; &lt;b&gt;$TODAY$&lt;/b&gt;: DDMMYYY, &lt;b&gt;$NOW$&lt;/b&gt;:DDMMYYYHHmm" colSpan="6"/>
+        <field name="edited" hidden="true"/>
+      </panel>
+      <panel-tabs>
+        <panel title="Html Template">
+          <field name="htmlTemplate" colSpan="12" showTitle="false" widget="html"/>
+        </panel>
+        <panel title="Header/Footer">
+          <field name="header" colSpan="12" widget="html"/>
+          <field name="footer" colSpan="12" widget="html"/>
+        </panel>
+      </panel-tabs>
+  </form>
+  
+  <form name="report-edit-form" title="Report" model="com.axelor.studio.db.ReportBuilder"
+      onNew="action-studio-report-builder-set-edit-form">
+      <panel>
+        <button name="downloadPdf" colSpan="1" icon="fa-download" onClick="action-studio-report-builder-method-download" readonlyIf="html == null || fileName == null" />
+      	<field name="html" title="Html" colSpan="12" type="string" widget="html" />
+      	<field name="printPageNo" title="Print page number" type="boolean" hidden="true"/>
+      	<field name="fileName" title="File name" type="string" hidden="true"/>
+      </panel>
+  </form>
+  
+  <form name="report-selector-form" title="Report" model="com.axelor.studio.db.ReportBuilder">
+      <panel>
+      	<field name="builder" title="Select builder" type="many-to-one" 
+      			target="com.axelor.studio.db.ReportBuilder" 
+      			onSelect="action-report-builder-selector-domain"/>
+      	<button name="print" hideIf="builder == null" title="Print"
+      			onClick="action-studio-report-builder-method-print"/>
+      </panel>
+  </form>
+  
+  <action-attrs name="action-studio-report-builder-view-builder-select">
+    <attribute name="domain" for="viewBuilder" expr="eval:&quot;self.viewType = 'form' AND self.model = '${metaModel.fullName}'&quot;"/>
+    <attribute name="domain" for="buttonView" expr="eval:&quot;self.viewType = 'form' AND self.model = '${metaModel.fullName}'&quot;"/>
+  </action-attrs>
+  
+  <action-attrs name="action-studio-report-builder-meta-model-on-change">
+    <attribute name="value" for="viewBuilder" expr="eval:null" if="metaModel == null"/>
+    <attribute name="value" for="buttonView" expr="eval:null" if="metaModel == null"/>
+  </action-attrs>
+  
+  <action-attrs name="action-report-builder-selector-domain">
+  	<attribute name="domain" for="builder" expr="eval:&quot;self.id in (${builderIds})&quot;" />
+  </action-attrs>
+  
+  <action-method name="action-studio-report-builder-method-generate-template">
+    <call class="com.axelor.studio.web.ReportBuilderController" method="generateTemplate"/>
+  </action-method>
+  
+  <action-method name="action-studio-report-builder-method-print">
+  	<call class="com.axelor.studio.web.ReportBuilderController" method="print(builder.id.toString(), _recordId, true)"/>
+  </action-method>
+  
+  <action-method name="action-studio-report-builder-method-download">
+  	<call class="com.axelor.studio.web.ReportBuilderController" method="download"/>
+  </action-method>
+  
+  <action-record name="action-studio-report-builder-button-view-change" model="com.axelor.studio.db.ReportBuilder">
+    <field name="edited" expr="eval:true" if="buttonView != null"/>
+  </action-record>  
+  
+  <action-record name="action-studio-report-builder-set-edit-form"  model="com.axelor.studio.db.ReportBuilder">
+  	<field name="html" expr="eval:html"/>
+  	<field name="fileName" expr="eval:fileName" />
+  	<field name="printPageNo" expr="eval:printPageNo" />
+  </action-record>
+  
+</object-views>

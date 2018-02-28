@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<reports xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
+  <report>
+    <name>Note De Frais</name>
+  	<metaModel>DemoExpense</metaModel>
+  	<viewBuilder>demo-expense-form</viewBuilder>
+  	<header>Note De Frais</header>
+  	<footer>Axelor Technologies Pvt Ltd.</footer>
+  	<printPageNo>T</printPageNo>
+  	<editHtml>T</editHtml>
+  	<fileName>Expense$TODAY$.pdf</fileName>
+  </report>
+  
+</reports>

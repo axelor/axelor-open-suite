@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+
+  <module name="studio" package="com.axelor.studio.db" />
+
+  <entity name="ActionBuilderLine" cachable="true">
+     <![CDATA[
+   		It represents a sub detail of the {@link ActionBuilder}. Child tags of an action xml will be created by using this class.   
+     ]]>
+     <many-to-one name="actionBuilder" ref="ActionBuilder" title="Action Builder" />
+     <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField" title="Field" />
+     <string name="targetField" title="Target field" />     
+     <string name="value" title="Value"/>
+     <string name="conditionText" title="Condition" />
+     <string name="filter" title="Filter" />
+     <string name="validationTypeSelect" title="Validation type" selection="studio.action.builder.line.validation.type.select" />
+  	 <string name="validationMsg" title="Message" />
+  </entity>
+
+</domain-models>

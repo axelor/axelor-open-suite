@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+
+  <module name="studio" package="com.axelor.studio.db" />
+  
+  <entity name="FilterOperator" cachable="true">
+    <![CDATA[
+    	It represent an operator used by the {@link Filter}.  
+    ]]>
+  	<string name="name" title="Name" />
+  	<string name="value" title="Value" />
+  	<many-to-many name="fieldTypeSet" ref="com.axelor.studio.db.FieldType" title="Field types"/>
+  </entity>
+    
+ </domain-models>
