@@ -157,6 +157,7 @@
 			<panel name="rejectReason" title="Reject reason" colSpan="12" showIf="interbankCodeLine">
 				<field name="interbankCodeLine" showTitle="false" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form"/>
 			</panel>
+			<field name="move.statusSelect" hidden="true"/>
 		</panel>
 			
 		<panel-tabs>	
