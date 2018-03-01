@@ -149,6 +149,47 @@
 
 
 	</tree>
+	
+	<kanban name="team-task-kanban" columnBy="status" title="Tasks" limit="30" sequenceBy="sequence" onNew="action-task-defaults" model="com.axelor.team.db.TeamTask">
+		<field name="name"/>
+		<field name="status"/>
+		<field name="assignedTo"/>
+		<field name="taskDate"/>
+		<field name="taskDeadline"/>
+		<field name="priority"/>
+		<field name="progressSelect"/>
+		<hilite color="success" if="$moment(taskDeadline).diff(todayDate,'days') &gt; 7"/>
+		<hilite color="warning" if="$moment(taskDeadline).diff(todayDate,'days') &lt;= 7 &amp;&amp; $moment(taskDeadline).diff(todayDate,'days') &gt;= 0"/>
+		<hilite color="danger" if="$moment(taskDeadline).diff(todayDate,'days') &lt; 0"/>
+		<template>
+		<![CDATA[
+			<h4>{{name}}</h4>
+			<img ng-if="assignedTo" ng-src="{{$image('assignedTo', 'image')}}">
+			<div class="card-body">
+				<div>				
+					<span ng-if="$moment(taskDeadline).isSame($moment().subtract(1, 'days'), 'day')"> <span x-translate>Deadline Yesterday</span> </span>
+					<span ng-if="$moment(taskDeadline).isSame($moment(), 'day')"> <span x-translate>Deadline Today</span> </span>
+					<span ng-if="$moment(taskDeadline).isSame($moment().add(1, 'days'), 'day')"> <span x-translate>Deadline Tomorrow</span> </span>
+					<span ng-if="$moment(taskDeadline).isAfter($moment().add(1, 'days'), 'days')"> <span x-translate>Deadline</span> {{ $moment().to($moment(taskDeadline), false) }}</span>
+					<span ng-if="$moment(taskDeadline).isBefore($moment().subtract(1, 'days'), 'days')" > <span x-translate>Deadline</span> {{ $moment(taskDeadline).from($moment(), false)  }}</span>
+					
+					<span class="label label-info pull-right" ng-if="priority == 'low'" x-translate>Low</span>
+					<span class="label pull-right" ng-if="priority == 'normal'" x-translate>Normal</span>
+					<span class="label label-important pull-right" ng-if="priority == 'high'" x-translate>High</span>
+					<span class="label label-important pull-right" ng-if="priority == 'urgent'" x-translate>Urgent</span>
+					
+				</div>
+				<div class="progress kanban-progress">
+					<span ng-if="progressSelect == 0">{{ progressSelect }}%</span>
+				  <div class="bar" style="width: {{ progressSelect }}%;">{{ progressSelect }}%</div>
+				</div>
+			</div>
+			<div class="card-footer">
+				<i class='fa fa-clock-o'></i> <span ng-if="taskDate">{{taskDate | date:'dd/MM/yyyy'}}</span><span ng-if="!taskDate" x-translate>Not specified</span>
+			</div>
+		]]>
+		</template>
+	</kanban>
 
 	<action-view name="action-team-task-view-task" title="Tasks" model="com.axelor.team.db.TeamTask">
     	<view type="form" name="team-task-form"/>
@@ -172,7 +213,6 @@
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
 	
-	
 	<action-record name="action-task-record-project-configurations" model="com.axelor.team.db.TeamTask">
 		<field name="projectCategory" expr="eval: null"/>
 		<field name="assignedTo" expr="eval: project?.membersUserSet?.collect{it.id}.contains(assignedTo.id) ? assignedTo : null" if="project != null &amp;&amp; assignedTo != null"/>
@@ -183,6 +223,7 @@
 	</action-record>
 	
 	<action-record name="action-task-defaults"  model="com.axelor.team.db.TeamTask">
+		<field name="name" expr="eval: _value" if="_value"/>
 		<field name="assignedTo" expr="eval:__user__" />
 		<field name="priority" expr="normal" />
     	<field name="status" expr="new" />
