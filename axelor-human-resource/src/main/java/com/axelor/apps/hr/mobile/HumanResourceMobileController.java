@@ -126,7 +126,14 @@ public class HumanResourceMobileController {
 		try {
 			if (user != null) {
 				ExpenseService expenseService = Beans.get(ExpenseService.class);
-				Expense expense = expenseService.getOrCreateExpense(user);
+
+				Expense expense = Beans.get(ExpenseRepository.class).all()
+						.filter("self.statusSelect = ?1 AND self.user.id = ?2",
+								ExpenseRepository.STATUS_DRAFT,
+								user.getId())
+						.order("-id")
+						.fetchOne();
+				if(expense == null){ return ;}
 
 				List<ExpenseLine> expenseLineList = Beans.get(ExpenseService.class).getExpenseLineList(expense);
 				if (expenseLineList != null && !expenseLineList.isEmpty()) {
