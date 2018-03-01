@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+  
+  <grid name="studio-configuration-grid" title="Configuration" model="com.axelor.studio.db.StudioConfiguration">
+     <field name="buildCmd" colSpan="12" />
+  </grid>
+  
+  <form name="studio-configuration-form" title="Configuration" model="com.axelor.studio.db.StudioConfiguration">
+      <panel>
+	      <field name="buildCmd" colSpan="12" />
+	  </panel>
+  </form>
+  
+</object-views>

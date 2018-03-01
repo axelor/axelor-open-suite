@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+  
+  <grid name="action-selector-grid" title="Action" model="com.axelor.studio.db.ActionSelector" orderBy="sequence" canMove="true">
+      <field name="name" />
+  </grid>
+  
+  <form name="action-selector-form" title="Action" model="com.axelor.studio.db.ActionSelector">
+      <panel>
+	  	<field name="metaAction" onChange="action-selector-meta-action-change" readonlyIf="actionBuilder != null"/>
+	  	<spacer/>
+	  	<label title="OR"/>
+	  	<spacer/>
+	  	<field name="actionBuilder" onChange="action-selector-action-builder-change" readonlyIf="metaAction != null"/>
+	  	<field name="name" hidden="true" />
+	  </panel>
+  </form>
+  
+  <action-attrs name="action-selector-meta-action-change">
+	<attribute name="value" for="name" expr="eval:metaAction.name" if="metaAction != null"/>
+	<attribute name="value" for="actionBuilder" expr="eval:null"/>
+  </action-attrs>
+  
+  <action-attrs name="action-selector-action-builder-change">
+	<attribute name="value" for="name" expr="eval:actionBuilder.name" if="actionBuilder != null"/>
+	<attribute name="value" for="metaAction" expr="eval:null"/>
+  </action-attrs>
+  
+</object-views>
+
+

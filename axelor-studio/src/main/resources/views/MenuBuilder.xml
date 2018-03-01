@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+  
+  <grid name="menu-builder-grid" title="Menu builder" model="com.axelor.studio.db.MenuBuilder">
+       <field name="name"/>
+       <field name="title"/>
+       <field name="order" />
+  </grid>
+  
+  <form name="menu-builder-form" title="Menu builder" model="com.axelor.studio.db.MenuBuilder" onSave="action-menu-builder-on-on-save">
+  	<panel>
+       <field name="name"/>
+       <field name="title"/>
+       <field name="top" />
+       <field name="icon" />
+       <field name="iconBackground" />
+       <field name="order" />
+       <field name="groups" widget="TagSelect" />
+       <field name="metaModule" domain="self.customised = true"/> 
+       <field name="metaMenu" readonlyIf="menuBuilder != null" onChange="action-menu-builder-meta-menu-change" domain="self.action is null"/>
+       <field name="menuBuilder" readonlyIf="metaMenu != null" onChange="action-menu-builder-menu-builder-change" domain="self.actionBuilder is null" />
+	   <field name="metaAction" domain="self.type = 'action-view'" />
+	   <field name="actionBuilder" domain="self.typeSelect = 2" />
+       <field name="edited" hidden="true" />
+       <field name="recorded" hidden="true" />
+    </panel>
+  </form>
+  
+  <action-record name="action-menu-builder-meta-menu-change" model="com.axelor.studio.db.MenuBuilder">
+      <field name="menuBuilder" expr="eval:null" if="metaMenu != null"/>
+  </action-record>
+  
+  <action-record name="action-menu-builder-menu-builder-change" model="com.axelor.studio.db.MenuBuilder">
+      <field name="metaMenu" expr="eval:null" if="menuBuilder != null"/>
+  </action-record>
+  
+  <action-record name="action-menu-builder-on-on-save" model="com.axelor.studio.db.MenuBuilder">
+      <field name="edited" expr="eval:true"/>
+      <field name="recorded" expr="eval:false"/>
+  </action-record>
+  
+</object-views>

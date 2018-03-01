@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+
+  <module name="studio" package="com.axelor.studio.db" />
+  
+  <entity name="StudioTemplate" cachable="true">
+    <![CDATA[
+    Thi class isss used to export and import studio template in zip format. 
+    Studio template contains all custom work done.  
+    ]]>
+    <string name="name" title="Name" required="true" unique="true"/>
+    <many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="Template file" required="true"/>
+    <boolean name="imported" title="Imported" readonly="true" />
+    <string name="dependsOn" title="Depends on" large="true"/>
+  </entity>
+    
+    
+ </domain-models>

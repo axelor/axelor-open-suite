@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+
+  <module name="meta" package="com.axelor.meta.db" />
+  
+  <entity name="MetaField" cachable="true">
+    <one-to-many name="rightManagementList" title="Right management" ref="com.axelor.studio.db.RightManagement" mappedBy="metaField"/>
+    <string name="fieldType" title="Type" selection="field.type.selection"/>
+    <boolean name="defaultBoolean" title="Default" nullable="true"/>
+    <decimal name="defaultDecimal" title="Default" nullable="true"/>
+    <decimal name="decimalMin" title="Min" nullable="true"/>
+    <decimal name="decimalMax" title="Max" nullable="true"/>
+    <integer name="defaultInteger" title="Default" nullable="true"/>
+    <integer name="integerMin" title="Min" nullable="true"/>
+    <integer name="integerMax" title="Max" nullable="true"/>
+    <string name="defaultString" title="Default" />
+    <boolean name="large" title="Large" />
+    <many-to-one name="metaSelect" title="Selection" ref="com.axelor.meta.db.MetaSelect"/>
+    <many-to-one name="metaModelRef" title="Reference Model" ref="com.axelor.meta.db.MetaModel"/>
+    <boolean name="readonly"/>
+    <boolean name="hidden"/>
+    <boolean name="required"/>
+    <boolean name="multiselect"/>
+    <integer name="sequence" title="Sequence"/>
+    <boolean name="customised" />
+    <boolean name="existing" />
+    <boolean name="isDuration" title="Duration ?" />
+    <boolean name="isUrl" title="URL ?" />
+    <string name="helpText" title="Help" large="true"/>
+    <boolean name="track" title="Track" />
+    <boolean name="nameColumn" title="Name column" />
+    <string name="metaSequence" title="Meta sequence" />
+    <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Module"/>
+    <unique-constraint columns="name,meta_model"/>
+  </entity>
+    
+    
+ </domain-models>

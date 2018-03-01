@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+  
+  <grid name="view-builder-grid" title="View builders" model="com.axelor.studio.db.ViewBuilder">
+      <field name="name" />
+      <field name="title" />
+      <field name="model" />
+  </grid>
+  
+  <form name="view-builder-form" title="View builder" model="com.axelor.studio.db.ViewBuilder"
+      onNew="action-view-builder-record-default"
+      onSave="action-view-builder-record-set-edited">
+      <panel title="Overview">
+        <field name="metaView" onChange="action-view-builder-meta-view-change" onSelect="action-view-builder-set-meta-view-domain"/>
+        <field name="parent" onChange="action-view-builder-parent-change" onSelect="action-view-builder-set-parent-domain" hideIf="metaView != null"/>
+        <field name="metaModel" onChange="action-view-builder-model-change"/>
+        <field name="metaModule" domain="self.customised = true"/> 
+        <field name="name" showIf="metaView == null" requiredIf="metaView == null"/>
+        <field name="title" showIf="metaView == null" requiredIf="metaView == null"/>
+        <field name="model" hidden="true" />
+        <field name="viewType" hidden="true" />
+        <field name="edited" hidden="true" />
+        <field name="onSave" colSpan="12" showIf="viewType == 'form'"/>
+        <field name="onNew" colSpan="12" showIf="viewType == 'form'"/>
+        <field name="onLoad" colSpan="12" showIf="viewType == 'form'"/>
+        <field name="addStream" hideIf="viewType == 'grid'"/>
+      </panel>
+      <panel hideIf="viewType == 'grid'">
+		<panel-related field="toolbar" colSpan="12" canMove="true"/>
+        <button name="openViewEditor" title="Open editor" onClick="action-view-builder-method-load-panels,save,action-view-builder-method-open-view-editor" readonlyIf="metaModel == null" />
+        <panel-related field="viewPanelList" title="Panels" colSpan="12"/>
+      </panel>
+      <panel-related field="viewSidePanelList" title="Side Panels" colSpan="12" sidebar="true" hideIf="viewType == 'grid'"/>
+      <panel hideIf="viewType == 'form'">
+      	<button name="loadFields" title="Load fields" onClick="action-view-builder-method-load-fields,save" readonlyIf="metaView == null" />
+      	<panel-related field="viewItemList" title="Fields" colSpan="12"/>
+      </panel> 
+  </form>
+  
+  <action-record name="action-view-builder-meta-view-change" model="com.axelor.studio.db.ViewBuilder">
+      <field name="name" expr="eval:metaView?.name" />
+      <field name="title" expr="eval:metaView?.title" />
+      <field name="metaModel" expr="eval:__repo__.of(MetaModel).all().filter(&quot;self.fullName = '${metaView?.model}'&quot;).fetchOne()" />
+      <field name="model" expr="eval:metaView?.model" />
+  </action-record>
+  
+  <action-record name="action-view-builder-parent-change" model="com.axelor.studio.db.ViewBuilder">
+      <field name="name" expr="eval:parent?.name" />
+      <field name="title" expr="eval:parent?.title" />
+      <field name="metaModel" expr="eval:parent?.metaModel" />
+      <field name="model" expr="eval:parent?.model" />
+  </action-record>
+  
+  <action-record name="action-view-builder-model-change" model="com.axelor.studio.db.ViewBuilder">
+      <field name="model" expr="eval:metaModel?.fullName" />
+  </action-record>
+  
+  <action-record name="action-view-builder-record-default" model="com.axelor.studio.db.ViewBuilder">
+ 	  <field name="viewType" expr="eval:_viewType" />
+  </action-record>
+  
+  <action-record name="action-view-builder-record-set-edited" model="com.axelor.studio.db.ViewBuilder">
+     <field name="edited" expr="eval:true" />
+     <field name="recorded" expr="eval:false" />
+  </action-record>
+  
+  <action-method name="action-view-builder-method-load-panels" model="com.axelor.studio.db.ViewBuilder">
+      <call class="com.axelor.studio.web.ViewBuilderController" method="loadPanels" if="(viewPanelList == null || viewPanelList.empty) &amp;&amp; metaView != null"/>
+  </action-method>
+  
+  <action-method name="action-view-builder-method-load-fields" model="com.axelor.studio.db.ViewBuilder">
+      <call class="com.axelor.studio.web.ViewBuilderController" method="loadFields"/>
+  </action-method>
+  
+  <action-method name="action-view-builder-method-open-view-editor" model="com.axelor.studio.db.ViewBuilder">
+      <call class="com.axelor.studio.web.ViewBuilderController" method="openViewEditor"/>
+  </action-method>
+  
+  <action-attrs name="action-view-builder-set-meta-view-domain" model="com.axelor.studio.db.ViewBuilder">
+      <attribute name="domain" for="metaView" expr="eval:&quot;self.type = 'form'&quot;" if="viewType == 'form'"/>
+      <attribute name="domain" for="metaView" expr="eval:&quot;self.type = 'grid'&quot;" if="viewType == 'grid'"/>
+  </action-attrs>
+  
+  <action-attrs name="action-view-builder-set-parent-domain" model="com.axelor.studio.db.ViewBuilder">
+      <attribute name="domain" for="parent" expr="eval:&quot;self.viewType = 'form' and self.parent.id != :id &quot;" if="viewType == 'form' &amp;&amp; metaModel == null"/>
+      <attribute name="domain" for="parent" expr="eval:&quot;self.viewType = 'grid' and self.parent.id != :id &quot;" if="viewType == 'grid'  &amp;&amp; metaModel == null"/>
+      <attribute name="domain" for="parent" expr="eval:&quot;self.viewType = 'form' and self.parent.id != :id and self.metaModel = :metaModel &quot;" if="viewType == 'form' &amp;&amp; metaModel != null"/>
+      <attribute name="domain" for="parent" expr="eval:&quot;self.viewType = 'grid' and self.parent.id != :id and self.metaModel = :metaModel &quot;" if="viewType == 'grid'  &amp;&amp; metaModel != null"/>
+  </action-attrs>
+  
+</object-views>

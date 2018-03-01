@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_4.1.xsd">
+
+  <module name="meta" package="com.axelor.meta.db" />
+  
+  <entity name="MetaModel" cachable="true">
+    <one-to-many name="rightManagementList" title="Right management" ref="com.axelor.studio.db.RightManagement" mappedBy="metaModel"/>
+    <boolean name="customised" />
+    <boolean name="edited"/>
+    <string name="title" title="Title" />
+    <one-to-many name="metaSequenceList" title="Sequences" ref="com.axelor.meta.db.MetaSequence" mappedBy="metaModel" />
+  	<many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" title="Module"/>
+  </entity>
+    
+ </domain-models>
