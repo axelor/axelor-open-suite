@@ -22,7 +22,7 @@
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
-		<domain>self.assignedTo = :_user</domain>
+		<domain>self.assignedToUser = :_user</domain>
 		<context name="_user" expr="eval: __user__"/>
 	</action-view>
 	
@@ -32,7 +32,7 @@
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
-		<domain>self.assignedTo.activeTeam = :_myActiveTeam</domain>
+		<domain>self.assignedToUser.activeTeam = :_myActiveTeam</domain>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_user" expr="eval: __user__"/>
 	</action-view>
@@ -43,7 +43,7 @@
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
-		<domain>self.assignedTo = null</domain>
+		<domain>self.assignedToUser = null</domain>
 		<context name="_user" expr="eval: __user__"/>
 	</action-view>
 	

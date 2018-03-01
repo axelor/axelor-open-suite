@@ -7,7 +7,7 @@
         <field name="productName" required="true" />
         <field name="product" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
         <field name="productModel" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
-        <field name="qty"  aggregate="sum" onChange="action-stock-move-line-group-qty-onchange"/>
+        <field name="qty" aggregate="sum" onChange="action-stock-move-line-group-qty-onchange" readonlyIf="$get('stockMove.statusSelect') == 2"/>
         <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange" />
 		<field name="reservedQty" if-module="axelor-supplychain" onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
@@ -16,6 +16,7 @@
         <field name="netWeight" onChange="action-stock-move-line-group-net-weight-onchange" />
         <field name="trackingNumber" form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"/>
         <field name="conformitySelect"/>
+        <field name="stockMove.statusSelect" hidden="true"/>
     </grid>
     
     <form name="stock-move-line-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
@@ -181,6 +182,7 @@
         <action name="action-inventory-line-attrs-tracking-number"/>
         <action name="action-stock-move-line-attrs-show-unit-price-taxed"/>
 		<action name="action-stock-move-line-tracking-number-attrs"/>
+		<action name="action-stock-move-line-qty-attrs"/>
 	</action-group>
 
     <action-group name="action-group-stock-stockmoveline-product-onchange">
@@ -198,6 +200,10 @@
 
 	<action-attrs name="action-stock-move-line-tracking-number-attrs">
 		<attribute for="trackingNumber" name="readonly" expr="eval: product?.trackingNumberConfiguration?.generatePurchaseAutoTrackingNbr || product?.trackingNumberConfiguration?.generateProductionAutoTrackingNbr || product?.trackingNumberConfiguration?.generateSaleAutoTrackingNbr"/>
+	</action-attrs>
+	
+	<action-attrs name="action-stock-move-line-qty-attrs">
+		<attribute name="readonly" for="qty" expr="eval: _parent?.statusSelect == 2" />
 	</action-attrs>
     
     <action-record name="stock-move-line-production-record-default" model="com.axelor.apps.stock.db.StockMoveLine">

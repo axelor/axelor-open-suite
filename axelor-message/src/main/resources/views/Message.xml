@@ -74,10 +74,13 @@
     
 	<action-record name="action-message-record-default-media-type" model="com.axelor.apps.message.db.Message">
     	<field name="mediaTypeSelect" expr="eval:defaultMediaType"/>
+    	<field name="mediaTypeSelect" expr="eval: _mediaTypeSelect" if="_mediaTypeSelect"/>
     </action-record>
 
 	<action-record name="action-message-record-default" model="com.axelor.apps.message.db.Message">
     	<field name="senderUser" expr="eval:__user__"/>
+    	<field name="relatedTo1Select" expr="eval: _templateContextModel" if="_templateContextModel"/>
+    	<field name="relatedTo1SelectId" expr="eval: Long.parseLong(_objectId)" if="_objectId"/>
     </action-record>
     
     <action-record name="action-message-record-mail-account" model="com.axelor.apps.message.db.Message">

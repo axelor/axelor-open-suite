@@ -522,7 +522,7 @@
 		<view-param name="popup-save" value="false"/>
 		<view-param name="forceEdit" value="true" />
 		<context name="_showRecord" expr="eval: __this__.id" />
-		<context name="_xApplicationType" expr="eval: __this__.getClass().getCanonicalName()"/>
+		<context name="_xApplicationType" expr="eval: _model"/>
 	</action-view>
 
 	<form name="stock-move-cancel-wizard-form" model="com.axelor.apps.stock.db.StockMove" title="Cancellation confirmation" >
