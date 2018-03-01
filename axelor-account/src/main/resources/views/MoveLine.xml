@@ -138,6 +138,17 @@
     
     <form name="move-line-move-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" 
 	onNew="action-account-move-line-onnew-group" onLoad="action-account-move-moveline-onload-group" width="large">
+		<panel name="movePanel" title="Move" hidden="true">
+			<field name="move" form-view="move-form" grid-view="move-grid"/>
+			<field name="move.statusSelect">
+				<hilite if="move.statusSelect == 1" color="info"/>
+				<hilite if="move.statusSelect == 4" color="danger"/>
+			</field>
+			<field name="move.company"/>
+			<field name="move.journal"/>
+			<field name="move.period" canView="false"/>
+		</panel>
+
 		<panel name="main" >
 			<field name="name" css="bold"/>
 			<field name="date" colOffset="3" colSpan="3" onChange="action-move-line-record-update-due-date"/>
