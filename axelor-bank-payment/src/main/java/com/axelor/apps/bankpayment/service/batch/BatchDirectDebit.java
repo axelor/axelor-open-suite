@@ -17,12 +17,10 @@
  */
 package com.axelor.apps.bankpayment.service.batch;
 
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -38,7 +36,7 @@ public abstract class BatchDirectDebit extends com.axelor.apps.account.service.b
     @Override
     protected void start() throws IllegalAccessException, AxelorException {
         super.start();
-        directDebitPaymentMode = getDirectDebitPaymentMode();
+        directDebitPaymentMode = batch.getAccountingBatch().getPaymentMode();
         generateBankOrderFlag = directDebitPaymentMode != null && directDebitPaymentMode.getGenerateBankOrder();
     }
 
@@ -55,18 +53,6 @@ public abstract class BatchDirectDebit extends com.axelor.apps.account.service.b
                         batch.getAnomaly()), batch.getAnomaly()));
         addComment(sb.toString());
         super.stop();
-    }
-
-    private PaymentMode getDirectDebitPaymentMode() {
-        AccountingBatch accountingBatch = batch.getAccountingBatch();
-        Company company = accountingBatch.getCompany();
-
-        if (company == null) {
-            return null;
-        }
-
-        AccountConfig accountConfig = company.getAccountConfig();
-        return accountConfig.getDirectDebitPaymentMode();
     }
 
     protected BankDetails getCompanyBankDetails(AccountingBatch accountingBatch) {
