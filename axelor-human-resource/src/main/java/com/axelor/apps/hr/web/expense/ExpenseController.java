@@ -234,6 +234,12 @@ public class ExpenseController {
 		}
 	}
 	
+	/**
+	 * Called from expense form, on expense lines change.
+	 * Call {@link ExpenseService#compute(Expense)}
+	 * @param request
+	 * @param response
+	 */
 	public void compute(ActionRequest request, ActionResponse response){
 		Expense expense = request.getContext().asType(Expense.class);
 		expense = expenseServiceProvider.get().compute(expense);
@@ -273,7 +279,7 @@ public class ExpenseController {
 		}
 		if (!expenseLineId.isEmpty()) {
 			String ids =  Joiner.on(",").join(expenseLineId);
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("Date problem for line(s) :")+" "+ids);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, String.format(I18n.get("Date problem for line(s) : %s"),ids));
 		}
 	}
 	
@@ -495,9 +501,6 @@ public class ExpenseController {
 		response.setValue("advanceAmount", expenseService.computeAdvanceAmount(expense) );
 
 		if (expense.getKilometricExpenseLineList() != null && !expense.getKilometricExpenseLineList().isEmpty()) {
-			for (ExpenseLine kilometricLine : expense.getKilometricExpenseLineList()) {
-				kilometricLine.setExpense(expense);
-			}
 			response.setValue("kilometricExpenseLineList", expense.getKilometricExpenseLineList() );
 		}
 	}
@@ -510,8 +513,8 @@ public class ExpenseController {
 			return;
 		}
 
-		String userId = null;
-		String userName = null;
+		String userId;
+		String userName;
 		if (expenseLine.getExpense() != null) {
 			setExpense(request, expenseLine);
 		}

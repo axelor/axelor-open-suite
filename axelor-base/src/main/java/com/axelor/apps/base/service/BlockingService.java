@@ -24,15 +24,10 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class BlockingService {
-
-    protected LocalDate today;
-
-    public BlockingService() {
-        this.today = Beans.get(AppBaseService.class).getTodayDate();
-    }
 
     /**
      * Checks if {@code partner} is blocked for the {@code blockingType}
@@ -46,7 +41,7 @@ public class BlockingService {
         List<Blocking> blockings = partner.getBlockingList();
 
         for (Blocking blocking : blockings) {
-            if (blocking.getCompanySet().contains(company) && blocking.getBlockingSelect().equals(blockingType) && blocking.getBlockingToDate().compareTo(today) >= 0) {
+            if (blocking.getCompanySet().contains(company) && blocking.getBlockingSelect().equals(blockingType) && blocking.getBlockingToDate().compareTo(Beans.get(AppBaseService.class).getTodayDate()) >= 0) {
                 return blocking;
             }
         }
@@ -60,12 +55,12 @@ public class BlockingService {
      * @return the query to get blocked partners ids for the given company and blocking type
      */
     public String listOfBlockedPartner(Company company, int blockingType) {
-        return "SELECT DISTINCT partner.id " +
-				"FROM Partner partner " +
-				"LEFT JOIN partner.blockingList blocking " +
-				"LEFT JOIN blocking.companySet company " +
-				"WHERE blocking.blockingSelect =" + blockingType +
-				" AND blocking.blockingToDate >= :__date__ " +
-				"AND company.id = " + company.getId();
+        return String.format("SELECT DISTINCT partner.id FROM Partner partner " +
+                        "LEFT JOIN partner.blockingList blocking " +
+                        "LEFT JOIN blocking.companySet company " +
+                        "WHERE blocking.blockingSelect = %d " +
+                        "AND blocking.blockingToDate >= '%s' " +
+                        "AND company.id = %d",
+                blockingType, Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.ofPattern("YYYY-MM-dd")), company.getId());
     }
 }

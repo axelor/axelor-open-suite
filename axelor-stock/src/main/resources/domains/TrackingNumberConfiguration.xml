@@ -27,6 +27,9 @@
 	
 	<many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence" required="true"/>
 
+      <string name="name" title="Name" required="true"/>
+      <string name="fullName" title="Full name" namecolumn="true"/>
+
   </entity>
 
 </domain-models>

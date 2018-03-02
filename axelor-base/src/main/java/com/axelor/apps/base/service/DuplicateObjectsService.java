@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import com.axelor.apps.tool.StringTool;
@@ -45,9 +44,6 @@ public class DuplicateObjectsService {
 	@Inject
 	private MetaFieldRepository metaFieldRepo;
 	
-	@Inject
-	private EntityManager em;
-	
 	@Transactional
 	public void removeDuplicate(List<Long> selectedIds, String modelName) {
 		
@@ -56,14 +52,14 @@ public class DuplicateObjectsService {
 		List<MetaField> allField = metaFieldRepo.all().filter("(relationship = 'ManyToOne' AND typeName = ?1) OR (relationship = 'ManyToMany' AND (typeName = ?1 OR metaModel.name =?1))",modelName).fetch();
 		for (MetaField metaField : allField) {
 			if ("ManyToOne".equals(metaField.getRelationship())) {
-					Query update = em.createQuery("UPDATE " + metaField.getMetaModel().getFullName() + " self SET self." + metaField.getName() + " = :value WHERE self." + metaField.getName() + " in (:duplicates)");
+					Query update = JPA.em().createQuery("UPDATE " + metaField.getMetaModel().getFullName() + " self SET self." + metaField.getName() + " = :value WHERE self." + metaField.getName() + " in (:duplicates)");
 					update.setParameter("value", originalObjct);
 					update.setParameter("duplicates", duplicateObjects);
 					update.executeUpdate();
 			} else if ("ManyToMany".equals(metaField.getRelationship())) {
 				
 				if(metaField.getTypeName().equals(modelName)) {      
-					Query select = em.createQuery("select self from " + metaField.getMetaModel().getFullName() + " self LEFT JOIN self." + metaField.getName() + " as x WHERE x IN (:ids)");
+					Query select = JPA.em().createQuery("select self from " + metaField.getMetaModel().getFullName() + " self LEFT JOIN self." + metaField.getName() + " as x WHERE x IN (:ids)");
 					select.setParameter("ids", duplicateObjects);
 					List<?> list = select.getResultList();
 					for(Object obj : list) {
@@ -88,17 +84,17 @@ public class DuplicateObjectsService {
 					}				
 			} 
 		}
-		em.flush();
-		em.clear();
+		JPA.em().flush();
+		JPA.em().clear();
 		for(Object obj : getDuplicateObject(selectedIds, modelName)) {
-			em.remove(obj);
+			JPA.em().remove(obj);
 		
 		}
 	}
 	
 	@Transactional
 	public Object getOriginalObject(List<Long> selectedIds, String modelName) {
-		Query originalObj = em.createQuery("SELECT self FROM " + modelName + " self WHERE self.id = :ids");
+		Query originalObj = JPA.em().createQuery("SELECT self FROM " + modelName + " self WHERE self.id = :ids");
 		originalObj.setParameter("ids", selectedIds.get(0));
 		Object originalObjct = originalObj.getSingleResult();
 		return originalObjct;
@@ -106,7 +102,7 @@ public class DuplicateObjectsService {
 	
 	@Transactional
 	public List<Object> getDuplicateObject(List<Long> selectedIds,String modelName) {
-		Query duplicateObj = em.createQuery("SELECT self FROM " + modelName + " self WHERE self.id IN (:ids)");
+		Query duplicateObj = JPA.em().createQuery("SELECT self FROM " + modelName + " self WHERE self.id IN (:ids)");
 		duplicateObj.setParameter("ids", selectedIds.subList(1, selectedIds.size()));
 		List<Object> duplicateObjects = duplicateObj.getResultList();
 		return duplicateObjects;
@@ -114,7 +110,7 @@ public class DuplicateObjectsService {
 	
 	@Transactional
 	public List<Object> getAllSelectedObject(List<Long> selectedIds,String modelName) {
-		Query duplicateObj = em.createQuery("SELECT self FROM " + modelName + " self WHERE self.id IN (:ids)");
+		Query duplicateObj = JPA.em().createQuery("SELECT self FROM " + modelName + " self WHERE self.id IN (:ids)");
 		duplicateObj.setParameter("ids", selectedIds);
 		List<Object> duplicateObjects = duplicateObj.getResultList();
 		return duplicateObjects;
@@ -124,9 +120,9 @@ public class DuplicateObjectsService {
 	public Object getWizardValue(Long id, String modelName, String nameColumn) {
 		Query selectedObj;
 		if(nameColumn == null) {
-			selectedObj = em.createQuery("SELECT self.id FROM " + modelName + " self WHERE self.id = :id");
+			selectedObj = JPA.em().createQuery("SELECT self.id FROM " + modelName + " self WHERE self.id = :id");
 		} else {
-			selectedObj = em.createQuery("SELECT self.id ,self."+nameColumn+" FROM " + modelName + " self WHERE self.id = :id");
+			selectedObj = JPA.em().createQuery("SELECT self.id ,self."+nameColumn+" FROM " + modelName + " self WHERE self.id = :id");
 		}
 		selectedObj.setParameter("id", id);
 		Object selectedObject = selectedObj.getSingleResult();

@@ -15,27 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service;
+package com.axelor.apps.sale.service.saleorder;
 
-import com.axelor.apps.sale.db.ConfiguratorCreator;
-import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.db.MetaField;
+import com.google.inject.persist.Transactional;
 
-public interface ConfiguratorFormulaService {
-
-   /**
-    * Get the filled MetaField
-    * @param configuratorFormula
-    * @return
-    */
-   MetaField getMetaField(ConfiguratorFormula configuratorFormula);
-
-   /**
-    * Check if the written formula is valid.
-    * @param formula
-    * @param creator
-    */
-   void checkFormula(ConfiguratorFormula formula, ConfiguratorCreator creator) throws AxelorException;
-
+public interface OpportunitySaleOrderService {
+	
+	@Transactional
+	public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException;
+	
 }

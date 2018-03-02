@@ -19,14 +19,27 @@ package com.axelor.apps.production.service;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
+import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +59,10 @@ import com.google.inject.persist.Transactional;
 public class OperationOrderServiceImpl implements OperationOrderService  {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
+
+    private static final DateTimeFormatter DATE_FORMAT =  DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	private static final DateTimeFormatter DATE_TIME_FORMAT =  DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine) throws AxelorException  {
@@ -148,64 +164,185 @@ public class OperationOrderServiceImpl implements OperationOrderService  {
 		
 	}
 
+	@Override
 	public OperationOrder updateDiffProdProductList(OperationOrder operationOrder) throws AxelorException {
 		List<ProdProduct> toConsumeList = operationOrder.getToConsumeProdProductList();
-		List<StockMoveLine> consumedList = operationOrder.getConsumedStockMoveLineList();
-		List<ProdProduct> diffConsumeList = new ArrayList<>();
-		BigDecimal consumedQty;
-		if (toConsumeList == null || consumedList == null) {
-			return operationOrder;
+	    List<StockMoveLine> consumedList = operationOrder.getConsumedStockMoveLineList();
+	    if (toConsumeList == null || consumedList == null) {
+	    	return operationOrder;
 		}
-		for (ProdProduct prodProduct : toConsumeList) {
-			Product product = prodProduct.getProduct();
-			Unit newUnit = prodProduct.getUnit();
-			Optional<StockMoveLine> stockMoveLineOpt = consumedList.stream()
-					.filter(stockMoveLine1 -> stockMoveLine1.getProduct() != null)
-					.filter(stockMoveLine1 -> stockMoveLine1.getProduct().equals(product))
-					.findAny();
-			if (!stockMoveLineOpt.isPresent()) {
-				continue;
-			}
-			StockMoveLine stockMoveLine = stockMoveLineOpt.get();
-			if (stockMoveLine.getUnit() != null && prodProduct.getUnit() != null) {
-				consumedQty = Beans.get(UnitConversionService.class)
-						.convertWithProduct(stockMoveLine.getUnit(), prodProduct.getUnit(), stockMoveLine.getQty(), product);
-			} else {
-				consumedQty = stockMoveLine.getQty();
-			}
-			BigDecimal diffQty = consumedQty.subtract(prodProduct.getQty());
-			if (diffQty.compareTo(BigDecimal.ZERO) != 0) {
-				ProdProduct diffProdProduct = new ProdProduct();
-				diffProdProduct.setQty(diffQty);
-				diffProdProduct.setProduct(product);
-				diffProdProduct.setUnit(newUnit);
-				diffProdProduct.setDiffConsumeOperationOrder(operationOrder);
-				diffConsumeList.add(diffProdProduct);
-			}
-		}
-		operationOrder.setDiffConsumeProdProductList(diffConsumeList);
+		List<ProdProduct> diffConsumeList = createDiffProdProductList(operationOrder, toConsumeList, consumedList);
+
+	    operationOrder.clearDiffConsumeProdProductList();
+	    diffConsumeList.forEach(operationOrder::addDiffConsumeProdProductListItem);
 		return operationOrder;
 	}
 
-	
-	
-//	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-//	public void generateWaste(OperationOrder operationOrder)  {
-//		
-//		if(operationOrder.getToProduceProdProductList() != null)  {
-//			
-//			for(ProdProduct prodProduct : operationOrder.getToProduceProdProductList())  {
-//				
-//				BigDecimal producedQty = prodProductService.computeQuantity(ProdProduct.filter("self.producedOperationOrder = ?1 AND self.product = ?2", operationOrder, prodProduct.getProduct()).fetch());
-//			
-//				if(producedQty.compareTo(prodProduct))
-//			}
-//			
-//		}
-//		
-//	}
-	
-	
-	
+	public List<Map<String, Object>> chargeByMachineHours(LocalDateTime fromDateTime, LocalDateTime toDateTime) throws AxelorException {
+		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
+		LocalDateTime itDateTime = LocalDateTime.parse(fromDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME);
+		OperationOrderRepository operationOrderRepo = Beans.get(OperationOrderRepository.class);
+		if (Duration.between(fromDateTime, toDateTime).toDays() > 20) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS));
+		}
+
+		List<OperationOrder> operationOrderListTemp = operationOrderRepo.all().filter("self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1", fromDateTime, toDateTime).fetch();
+		Set<String> machineNameList = new HashSet<String>();
+		for (OperationOrder operationOrder : operationOrderListTemp) {
+			if (operationOrder.getWorkCenter() != null && operationOrder.getWorkCenter().getMachine() != null) {
+				if (!machineNameList.contains(operationOrder.getWorkCenter().getMachine().getName())) {
+					machineNameList.add(operationOrder.getWorkCenter().getMachine().getName());
+				}
+			}
+		}
+		while (!itDateTime.isAfter(toDateTime)) {
+			List<OperationOrder> operationOrderList = operationOrderRepo.all().filter("self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1", itDateTime, itDateTime.plusHours(1)).fetch();
+			Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
+			for (OperationOrder operationOrder : operationOrderList) {
+				if (operationOrder.getWorkCenter() != null && operationOrder.getWorkCenter().getMachine() != null) {
+					String machine = operationOrder.getWorkCenter().getMachine().getName();
+					long numberOfMinutes = 0;
+					if (operationOrder.getPlannedStartDateT().isBefore(itDateTime)) {
+						numberOfMinutes = Duration.between(itDateTime, operationOrder.getPlannedEndDateT()).toMinutes();
+					} else if (operationOrder.getPlannedEndDateT().isAfter(itDateTime.plusHours(1))) {
+						numberOfMinutes = Duration.between(operationOrder.getPlannedStartDateT(), itDateTime.plusHours(1)).toMinutes();
+					} else {
+						numberOfMinutes = Duration.between(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()).toMinutes();
+					}
+					if (numberOfMinutes > 60) {
+						numberOfMinutes = 60;
+					}
+					BigDecimal percentage = new BigDecimal(numberOfMinutes).multiply(new BigDecimal(100)).divide(new BigDecimal(60), 2, RoundingMode.HALF_UP);
+					if (map.containsKey(machine)) {
+						map.put(machine, map.get(machine).add(percentage));
+					} else {
+						map.put(machine, percentage);
+					}
+				}
+			}
+			Set<String> keyList = map.keySet();
+			for (String key : machineNameList) {
+				if (keyList.contains(key)) {
+					Map<String, Object> dataMap = new HashMap<String, Object>();
+					dataMap.put("dateTime", (Object) itDateTime.format(DATE_TIME_FORMAT));
+					dataMap.put("charge", (Object) map.get(key));
+					dataMap.put("machine", (Object) key);
+					dataList.add(dataMap);
+				} else {
+					Map<String, Object> dataMap = new HashMap<String, Object>();
+					dataMap.put("dateTime", (Object) itDateTime.format(DATE_TIME_FORMAT));
+					dataMap.put("charge", (Object) BigDecimal.ZERO);
+					dataMap.put("machine", (Object) key);
+					dataList.add(dataMap);
+				}
+			}
+
+
+			itDateTime = itDateTime.plusHours(1);
+		}
+		return dataList;
+	}
+
+	public List<Map<String, Object>> chargeByMachineDays(LocalDateTime fromDateTime, LocalDateTime toDateTime) throws AxelorException {
+
+		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
+		fromDateTime = fromDateTime.withHour(0).withMinute(0);
+		toDateTime = toDateTime.withHour(23).withMinute(59);
+		LocalDateTime itDateTime = LocalDateTime.parse(fromDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME);
+		if (Duration.between(fromDateTime,toDateTime).toDays() > 500) {
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS));
+		}
+
+
+		List<OperationOrder> operationOrderListTemp = Beans.get(OperationOrderRepository.class).all().filter("self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1", fromDateTime, toDateTime).fetch();
+		Set<String> machineNameList = new HashSet<String>();
+		for (OperationOrder operationOrder : operationOrderListTemp) {
+			if(operationOrder.getWorkCenter() != null && operationOrder.getWorkCenter().getMachine() != null){
+				if(!machineNameList.contains(operationOrder.getWorkCenter().getMachine().getName())){
+					machineNameList.add(operationOrder.getWorkCenter().getMachine().getName());
+				}
+			}
+		}
+		while(!itDateTime.isAfter(toDateTime)){
+			List<OperationOrder> operationOrderList = Beans.get(OperationOrderRepository.class).all().filter("self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1", itDateTime, itDateTime.plusHours(1)).fetch();
+			Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
+			WeeklyPlanningService weeklyPlanningService = Beans.get(WeeklyPlanningService.class);
+			for (OperationOrder operationOrder : operationOrderList) {
+				if(operationOrder.getWorkCenter() != null && operationOrder.getWorkCenter().getMachine() != null){
+					String machine = operationOrder.getWorkCenter().getMachine().getName();
+					long numberOfMinutes = 0;
+					if(operationOrder.getPlannedStartDateT().isBefore(itDateTime)){
+						numberOfMinutes = Duration.between(itDateTime, operationOrder.getPlannedEndDateT()).toMinutes();
+					}
+					else if(operationOrder.getPlannedEndDateT().isAfter(itDateTime.plusHours(1))){
+						numberOfMinutes = Duration.between(operationOrder.getPlannedStartDateT(), itDateTime.plusHours(1)).toMinutes();
+					}
+					else{
+						numberOfMinutes = Duration.between(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()).toMinutes();
+					}
+					if(numberOfMinutes > 60){
+						numberOfMinutes = 60;
+					}
+					long numberOfMinutesPerDay = 0;
+					if(operationOrder.getWorkCenter().getMachine().getWeeklyPlanning() != null){
+						DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(operationOrder.getWorkCenter().getMachine().getWeeklyPlanning(), LocalDateTime.parse(itDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME).toLocalDate());
+						if(dayPlanning != null){
+							numberOfMinutesPerDay = Duration.between(dayPlanning.getMorningFrom(), dayPlanning.getMorningTo()).toMinutes();
+							numberOfMinutesPerDay += Duration.between(dayPlanning.getAfternoonFrom(), dayPlanning.getAfternoonTo()).toMinutes();
+						}
+						else{
+							numberOfMinutesPerDay = 0;
+						}
+					}
+					else{
+						numberOfMinutesPerDay = 60*8;
+					}
+					if(numberOfMinutesPerDay != 0){
+						BigDecimal percentage = new BigDecimal(numberOfMinutes).multiply(new BigDecimal(100)).divide(new BigDecimal(numberOfMinutesPerDay), 2, RoundingMode.HALF_UP);
+						if(map.containsKey(machine)){
+							map.put(machine, map.get(machine).add(percentage));
+						}
+						else{
+							map.put(machine, percentage);
+						}
+					}
+				}
+			}
+			Set<String> keyList = map.keySet();
+			for (String key : machineNameList) {
+				if(keyList.contains(key)){
+					int found = 0;
+					for (Map<String, Object> mapIt : dataList) {
+						if(mapIt.get("dateTime").equals((Object)itDateTime.format(DATE_FORMAT)) &&
+								mapIt.get("machine").equals((Object) key)){
+							mapIt.put("charge", new BigDecimal(mapIt.get("charge").toString()).add(map.get(key)));
+							found = 1;
+							break;
+						}
+
+					}
+					if(found == 0){
+						Map<String, Object> dataMap = new HashMap<String, Object>();
+
+						dataMap.put("dateTime",(Object)itDateTime.format(DATE_FORMAT));
+						dataMap.put("charge", (Object)map.get(key));
+						dataMap.put("machine", (Object) key);
+						dataList.add(dataMap);
+					}
+				}
+			}
+
+
+			itDateTime = itDateTime.plusHours(1);
+		}
+		return dataList;
+	}
+
+	@Override
+	public List<ProdProduct> createDiffProdProductList(OperationOrder operationOrder, List<ProdProduct> prodProductList, List<StockMoveLine> stockMoveLineList) throws AxelorException {
+		List<ProdProduct> diffConsumeList = Beans.get(ManufOrderService.class).createDiffProdProductList(prodProductList, stockMoveLineList);
+		diffConsumeList.forEach(prodProduct -> prodProduct.setDiffConsumeOperationOrder(operationOrder));
+		return diffConsumeList;
+	}
 }
 

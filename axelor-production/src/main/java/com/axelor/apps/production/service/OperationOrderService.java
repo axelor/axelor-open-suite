@@ -21,9 +21,15 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 //import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 public interface OperationOrderService {
 
@@ -51,24 +57,19 @@ public interface OperationOrderService {
 	 */
 	OperationOrder updateDiffProdProductList(OperationOrder operationOrder) throws AxelorException;
 
-	
-//	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-//	public void generateWaste(OperationOrder operationOrder)  {
-//		
-//		if(operationOrder.getToProduceProdProductList() != null)  {
-//			
-//			for(ProdProduct prodProduct : operationOrder.getToProduceProdProductList())  {
-//				
-//				BigDecimal producedQty = prodProductService.computeQuantity(ProdProduct.filter("self.producedOperationOrder = ?1 AND self.product = ?2", operationOrder, prodProduct.getProduct()).fetch());
-//			
-//				if(producedQty.compareTo(prodProduct))
-//			}
-//			
-//		}
-//		
-//	}
-	
-	
-	
+
+	List<Map<String, Object>> chargeByMachineHours(LocalDateTime fromDateTime, LocalDateTime toDateTime) throws AxelorException;
+	List<Map<String, Object>> chargeByMachineDays(LocalDateTime fromDateTime, LocalDateTime toDateTime) throws AxelorException;
+
+	/**
+	 * Compute the difference between the two lists for the given operation
+	 * order.
+	 * @param operationOrder
+	 * @param prodProductList
+	 * @param stockMoveLineList
+	 * @return
+	 * @throws AxelorException
+	 */
+	List<ProdProduct> createDiffProdProductList(OperationOrder operationOrder, List<ProdProduct> prodProductList, List<StockMoveLine> stockMoveLineList) throws AxelorException;
 }
 

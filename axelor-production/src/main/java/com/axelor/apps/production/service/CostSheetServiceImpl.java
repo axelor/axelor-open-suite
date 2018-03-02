@@ -48,27 +48,20 @@ public class CostSheetServiceImpl implements CostSheetService  {
 	protected UnitConversionService unitConversionService;
 	protected CostSheetLineService costSheetLineService;
 	protected BillOfMaterialRepository billOfMaterialRepo;
+	protected AppProductionService appProductionService;
 	
 	protected Unit hourUnit;
 	protected Unit cycleUnit;
 	protected boolean manageResidualProductOnBom;
-	protected boolean subtractProdResidualOnCostSheet;
-	
 	protected CostSheet costSheet;
 	
 	@Inject
 	public CostSheetServiceImpl(AppProductionService appProductionService, UnitConversionService unitConversionService, CostSheetLineService costSheetLineService, BillOfMaterialRepository billOfMaterialRepo)  {
 		
+		this.appProductionService = appProductionService;
 		this.unitConversionService = unitConversionService;
 		this.costSheetLineService = costSheetLineService;
 		this.billOfMaterialRepo = billOfMaterialRepo;
-		
-		AppProduction appProduction = appProductionService.getAppProduction();
-		this.hourUnit = appProductionService.getAppBase().getUnitHours();
-		this.cycleUnit = appProduction.getCycleUnit();
-		this.manageResidualProductOnBom = appProduction.getManageResidualProductOnBom();
-		this.subtractProdResidualOnCostSheet = appProduction.getSubtractProdResidualOnCostSheet();
-		
 	}
 
 
@@ -76,7 +69,7 @@ public class CostSheetServiceImpl implements CostSheetService  {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public CostSheet computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException  {
 
-		costSheet = new CostSheet();
+		this.init();
 		
 		CostSheetLine producedCostSheetLine = costSheetLineService.createProducedProductCostSheetLine(billOfMaterial.getProduct(), billOfMaterial.getUnit(), billOfMaterial.getQty());
 		
@@ -95,11 +88,24 @@ public class CostSheetServiceImpl implements CostSheetService  {
 		return costSheet;
 		
 	}
+	
+	protected void init()  {
+		
+		AppProduction appProduction = appProductionService.getAppProduction();
+		this.hourUnit = appProductionService.getAppBase().getUnitHours();
+		this.cycleUnit = appProduction.getCycleUnit();
+		this.manageResidualProductOnBom = appProduction.getManageResidualProductOnBom();
+		
+		costSheet = new CostSheet();
+		
+	}
+	
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public CostSheet computeCostPrice(ManufOrder manufOrder) throws AxelorException {
-		costSheet = new CostSheet();
+		this.init();
+
 		BigDecimal producedQuantity = Beans.get(ManufOrderService.class).getProducedQuantity(manufOrder);
 		CostSheetLine producedCostSheetLine = costSheetLineService.createProducedProductCostSheetLine(
 				manufOrder.getProduct(), manufOrder.getBillOfMaterial().getUnit(), producedQuantity
@@ -202,6 +208,12 @@ public class CostSheetServiceImpl implements CostSheetService  {
 					
 					CostSheetLine costSheetLine = costSheetLineService.createConsumedProductCostSheetLine(product, billOfMaterialLine.getUnit(), bomLevel, parentCostSheetLine, billOfMaterialLine.getQty());
 					
+					BigDecimal wasteRate = billOfMaterialLine.getWasteRate();
+					
+					if(wasteRate != null && wasteRate.compareTo(BigDecimal.ZERO) > 0)  {
+						costSheetLineService.createConsumedProductWasteCostSheetLine(product, billOfMaterialLine.getUnit(), bomLevel, parentCostSheetLine, billOfMaterialLine.getQty(), wasteRate);
+					}
+					
 					if(!billOfMaterialLine.getDefineSubBillOfMaterial())  {
 						this._computeCostPrice(billOfMaterialLine, bomLevel, costSheetLine);
 					}
@@ -267,7 +279,7 @@ public class CostSheetServiceImpl implements CostSheetService  {
 
 		}
 		
-		BigDecimal durationHours = BigDecimal.valueOf(prodHumanResource.getDuration()).divide(BigDecimal.valueOf(3600), 5, RoundingMode.HALF_EVEN);
+		BigDecimal durationHours = BigDecimal.valueOf(prodHumanResource.getDuration()).divide(BigDecimal.valueOf(3600), appProductionService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
 			
 		costSheetLineService.createWorkCenterCostSheetLine(prodHumanResource.getWorkCenter(), priority, bomLevel, parentCostSheetLine, 
 				durationHours, costPerHour.multiply(durationHours), hourUnit);
@@ -289,7 +301,7 @@ public class CostSheetServiceImpl implements CostSheetService  {
 		}
 		else if(costType == IWorkCenter.COST_PER_HOUR)  {
 
-			BigDecimal qty = new BigDecimal(prodProcessLine.getDurationPerCycle()).divide(new BigDecimal(3600), BigDecimal.ROUND_HALF_EVEN).multiply(this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()));
+			BigDecimal qty = new BigDecimal(prodProcessLine.getDurationPerCycle()).divide(new BigDecimal(3600), appProductionService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_EVEN).multiply(this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()));
 			BigDecimal costPrice = workCenter.getCostAmount().multiply(qty);
 			
 			costSheetLineService.createWorkCenterCostSheetLine(workCenter, prodProcessLine.getPriority(), bomLevel, parentCostSheetLine, qty, costPrice, hourUnit);
@@ -407,7 +419,7 @@ public class CostSheetServiceImpl implements CostSheetService  {
 			Product product = prodHumanResource.getProduct();
 			costPerHour = unitConversionService.convert(hourUnit, product.getUnit(), product.getCostPrice());
 		}
-		BigDecimal durationHours = new BigDecimal(realDuration).divide(new BigDecimal(3600), 5, BigDecimal.ROUND_HALF_EVEN);
+		BigDecimal durationHours = new BigDecimal(realDuration).divide(new BigDecimal(3600), appProductionService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_EVEN);
 
 		costSheetLineService.createWorkCenterCostSheetLine(workCenter,
 				priority, bomLevel, parentCostSheetLine, durationHours,
@@ -431,7 +443,7 @@ public class CostSheetServiceImpl implements CostSheetService  {
 		}
 		else if (costType == IWorkCenter.COST_PER_HOUR) {
 			BigDecimal qty = new BigDecimal(operationOrder.getRealDuration())
-					.divide(new BigDecimal(3600), BigDecimal.ROUND_HALF_EVEN);
+					.divide(new BigDecimal(3600), appProductionService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_EVEN);
 			BigDecimal costPrice = workCenter.getCostAmount().multiply(qty);
 			costSheetLineService.createWorkCenterCostSheetLine(
 					workCenter,

@@ -71,7 +71,6 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 	protected MoveService moveService;
 	protected PaymentModeService paymentModeService;
 	protected SequenceService sequenceService;
-	protected ReconcileService reconcileService;
 	protected AccountingSituationService accountingSituationService;
 	protected MoveToolService moveToolService;
 	protected PaymentService paymentService;
@@ -81,15 +80,14 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 	@Inject
 	public PaymentScheduleLineServiceImpl(AppBaseService appBaseService, PaymentScheduleService paymentScheduleService,
 			MoveService moveService, PaymentModeService paymentModeService, SequenceService sequenceService,
-			ReconcileService reconcileService, AccountingSituationService accountingSituationService,
-			MoveToolService moveToolService, PaymentService paymentService, MoveLineRepository moveLineRepo,
+			AccountingSituationService accountingSituationService, MoveToolService moveToolService, 
+			PaymentService paymentService, MoveLineRepository moveLineRepo,
 			PaymentScheduleLineRepository paymentScheduleLineRepo) {
 		this.appBaseService = appBaseService;
 		this.paymentScheduleService = paymentScheduleService;
 		this.moveService = moveService;
 		this.paymentModeService = paymentModeService;
 		this.sequenceService = sequenceService;
-		this.reconcileService = reconcileService;
 		this.accountingSituationService = accountingSituationService;
 		this.moveToolService = moveToolService;
 		this.paymentService = paymentService;
@@ -172,7 +170,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 
 	@Override
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public Move createPaymentMove(PaymentScheduleLine paymentScheduleLine, BankDetails companyBankDetails)
+	public Move createPaymentMove(PaymentScheduleLine paymentScheduleLine, BankDetails companyBankDetails, PaymentMode paymentMode)
 			throws AxelorException {
 
 	    Preconditions.checkNotNull(paymentScheduleLine);
@@ -180,8 +178,6 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 
 		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
 		Company company = paymentSchedule.getCompany();
-		AccountConfig accountConfig = company.getAccountConfig();
-		PaymentMode paymentMode = accountConfig.getDirectDebitPaymentMode();
 		Partner partner = paymentSchedule.getPartner();
 		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
 		BigDecimal amount = paymentScheduleLine.getInTaxAmount();
@@ -229,11 +225,6 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 		paymentScheduleService.closePaymentScheduleIfAllPaid(paymentSchedule);
 
 		return move;
-	}
-
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public Move createPaymentMove(PaymentScheduleLine paymentScheduleLine) throws AxelorException {
-		return createPaymentMove(paymentScheduleLine, paymentScheduleLine.getPaymentSchedule().getCompanyBankDetails());
 	}
 
 	/**		

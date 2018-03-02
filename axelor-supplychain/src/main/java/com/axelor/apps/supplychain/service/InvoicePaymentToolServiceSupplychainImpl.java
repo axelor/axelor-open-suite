@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -42,7 +42,7 @@ public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentTool
         SaleOrder saleOrder = invoice.getSaleOrder();
         if (saleOrder != null) {
             //compute sale order totals
-            Beans.get(SaleOrderService.class)._computeSaleOrder(saleOrder);
+            Beans.get(SaleOrderComputeService.class)._computeSaleOrder(saleOrder);
         }
     }
 }

@@ -20,7 +20,7 @@ package com.axelor.apps.sale.web;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.sale.exception.IExceptionMessage;
-import com.axelor.apps.sale.service.ConfiguratorFormulaService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;

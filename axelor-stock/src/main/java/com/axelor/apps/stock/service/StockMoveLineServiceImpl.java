@@ -50,7 +50,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import com.google.inject.servlet.RequestScoped;
 
+@RequestScoped
 public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 	int generateTrakingNumberCounter = 0;
@@ -268,6 +270,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	public void updateLocations(StockLocation fromStockLocation, StockLocation toStockLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList,
 			LocalDate lastFutureStockMoveDate, boolean realQty) throws AxelorException  {
 
+		UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+		StockLocationServiceImpl stockLocationServiceImpl = Beans.get(StockLocationServiceImpl.class);
+		
 		for(StockMoveLine stockMoveLine : stockMoveLineList)  {
 
 			Product product = stockMoveLine.getProduct();
@@ -285,7 +290,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				}
 
 				if(productUnit != null && !productUnit.equals(stockMoveLineUnit))  {
-					qty = Beans.get(UnitConversionService.class).convertWithProduct(stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
+					qty = unitConversionService.convertWithProduct(stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
 				}
 
 				if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL)  {
@@ -293,7 +298,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				}
 				this.updateLocations(fromStockLocation, toStockLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
 						lastFutureStockMoveDate, stockMoveLine.getTrackingNumber(), BigDecimal.ZERO);
-				Beans.get(StockLocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct());
+				stockLocationServiceImpl.computeAvgPriceForProduct(stockMoveLine.getProduct());
 			}
 		}
 

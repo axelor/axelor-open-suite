@@ -17,19 +17,6 @@
  */
 package com.axelor.apps.production.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -41,6 +28,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
@@ -61,6 +49,18 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ManufOrderServiceImpl implements  ManufOrderService  {
 
@@ -96,7 +96,7 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		
 		Company company = billOfMaterial.getCompany();
 		
-		BigDecimal qty = qtyRequested.divide(billOfMaterial.getQty());
+		BigDecimal qty = qtyRequested.divide(billOfMaterial.getQty(), 2, RoundingMode.HALF_EVEN);
 
 		ManufOrder manufOrder = this.createManufOrder(product, qty, priority, IS_TO_INVOICE, company, billOfMaterial, plannedStartDateT);
 
@@ -122,7 +122,7 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 
 					Product product = productVariantService.getProductVariant(manufOrder.getProduct(), billOfMaterialLine.getProduct());
 
-					BigDecimal qty = billOfMaterialLine.getQty().multiply(manufOrderQty).setScale(appProductionService.getNbDecimalDigitForBomQty(), RoundingMode.HALF_EVEN);
+					BigDecimal qty = billOfMaterialLine.getQty().multiply(manufOrderQty).setScale(2, RoundingMode.HALF_EVEN);
 					
 					manufOrder.addToConsumeProdProductListItem(
 							new ProdProduct(product, qty, billOfMaterialLine.getUnit()));
@@ -141,11 +141,11 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 
 		BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
 		
-		BigDecimal qty = billOfMaterial.getQty().multiply(manufOrderQty).setScale(appProductionService.getNbDecimalDigitForBomQty(), RoundingMode.HALF_EVEN);
+		BigDecimal qty = billOfMaterial.getQty().multiply(manufOrderQty).setScale(2, RoundingMode.HALF_EVEN);
 
 		// add the produced product
 		manufOrder.addToProduceProdProductListItem(
-				new ProdProduct(manufOrder.getProduct(), billOfMaterial.getQty().multiply(manufOrderQty), billOfMaterial.getUnit()));
+				new ProdProduct(manufOrder.getProduct(), qty, billOfMaterial.getUnit()));
 
 		// Add the residual products
 		if(appProductionService.getAppProduction().getManageResidualProductOnBom() && billOfMaterial.getProdResidualProductList() != null)  {
@@ -366,55 +366,101 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		return wasteStockMove;
 	}
 
-	@Transactional
-	public ManufOrder updateQty(ManufOrder manufOrder) {
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void updatePlannedQty(ManufOrder manufOrder) {
 		manufOrder.clearToConsumeProdProductList();
 		manufOrder.clearToProduceProdProductList();
 		this.createToConsumeProdProductList(manufOrder);
 		this.createToProduceProdProductList(manufOrder);
 
 		manufOrderRepo.save(manufOrder);
+	}
 
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+    public void updateRealQty(ManufOrder manufOrder, BigDecimal qtyToUpdate) throws AxelorException {
+		ManufOrderStockMoveService manufOrderStockMoveService = Beans.get(ManufOrderStockMoveService.class);
+	    if (!manufOrder.getIsConsProOnOperation()) {
+			manufOrderStockMoveService.createNewConsumedStockMoveLineList(manufOrder, qtyToUpdate);
+			updateDiffProdProductList(manufOrder);
+		} else {
+	    	for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+	    		Beans.get(OperationOrderStockMoveService.class).createNewConsumedStockMoveLineList(operationOrder, qtyToUpdate);
+	    		Beans.get(OperationOrderService.class).updateDiffProdProductList(operationOrder);
+			}
+		}
+
+		manufOrderStockMoveService.createNewProducedStockMoveLineList(manufOrder, qtyToUpdate);
+	}
+
+	@Override
+	public ManufOrder updateDiffProdProductList(ManufOrder manufOrder) throws AxelorException {
+		List<ProdProduct> toConsumeList = manufOrder.getToConsumeProdProductList();
+		List<StockMoveLine> consumedList = manufOrder.getConsumedStockMoveLineList();
+		if (toConsumeList == null || consumedList == null) {
+			return manufOrder;
+		}
+		List<ProdProduct> diffConsumeList = createDiffProdProductList(manufOrder, toConsumeList, consumedList);
+
+		manufOrder.clearDiffConsumeProdProductList();
+		diffConsumeList.forEach(manufOrder::addDiffConsumeProdProductListItem);
 		return manufOrder;
 	}
 
-	public ManufOrder updateDiffProdProductList(ManufOrder manufOrder) throws AxelorException {
-	    List<ProdProduct> toConsumeList = manufOrder.getToConsumeProdProductList();
-	    List<StockMoveLine> consumedList = manufOrder.getConsumedStockMoveLineList();
+	@Override
+	public List<ProdProduct> createDiffProdProductList(ManufOrder manufOrder, List<ProdProduct> prodProductList, List<StockMoveLine> stockMoveLineList) throws AxelorException {
+		List<ProdProduct> diffConsumeList = createDiffProdProductList(prodProductList, stockMoveLineList);
+		diffConsumeList.forEach(prodProduct -> prodProduct.setDiffConsumeManufOrder(manufOrder));
+		return diffConsumeList;
+	}
+
+	@Override
+	public List<ProdProduct> createDiffProdProductList(List<ProdProduct> prodProductList, List<StockMoveLine> stockMoveLineList) throws AxelorException {
 		List<ProdProduct> diffConsumeList = new ArrayList<>();
-	    BigDecimal consumedQty;
-	    if (toConsumeList == null || consumedList == null) {
-	    	return manufOrder;
-		}
-	    for (ProdProduct prodProduct : toConsumeList) {
-	    	Product product = prodProduct.getProduct();
-	    	Unit newUnit = prodProduct.getUnit();
-	    	Optional<StockMoveLine> stockMoveLineOpt = consumedList.stream()
+		for (ProdProduct prodProduct : prodProductList) {
+			Product product = prodProduct.getProduct();
+	        Unit newUnit = prodProduct.getUnit();
+			List<StockMoveLine> stockMoveLineProductList = stockMoveLineList.stream()
 					.filter(stockMoveLine1 -> stockMoveLine1.getProduct() != null)
 					.filter(stockMoveLine1 -> stockMoveLine1.getProduct().equals(product))
-					.findAny();
-	    	if (!stockMoveLineOpt.isPresent()) {
-	    		continue;
+					.collect(Collectors.toList());
+			if (stockMoveLineProductList.isEmpty()) {
+				continue;
 			}
-			StockMoveLine stockMoveLine = stockMoveLineOpt.get();
-	    	if (stockMoveLine.getUnit() != null && prodProduct.getUnit() != null) {
-				consumedQty = Beans.get(UnitConversionService.class)
-						.convertWithProduct(stockMoveLine.getUnit(), prodProduct.getUnit(), stockMoveLine.getQty(), product);
-			} else {
-	    		consumedQty = stockMoveLine.getQty();
-			}
-	    	BigDecimal diffQty = consumedQty.subtract(prodProduct.getQty());
-	    	if (diffQty.compareTo(BigDecimal.ZERO) != 0) {
-	    		ProdProduct diffProdProduct = new ProdProduct();
-	    		diffProdProduct.setQty(diffQty);
-	    		diffProdProduct.setProduct(product);
-	    		diffProdProduct.setUnit(newUnit);
-	    		diffProdProduct.setDiffConsumeManufOrder(manufOrder);
-	    		diffConsumeList.add(diffProdProduct);
+			BigDecimal diffQty = computeDiffQty(prodProduct, stockMoveLineProductList, product);
+			if (diffQty.compareTo(BigDecimal.ZERO) != 0) {
+				ProdProduct diffProdProduct = new ProdProduct();
+				diffProdProduct.setQty(diffQty);
+				diffProdProduct.setProduct(product);
+				diffProdProduct.setUnit(newUnit);
+				diffConsumeList.add(diffProdProduct);
 			}
 		}
-		manufOrder.setDiffConsumeProdProductList(diffConsumeList);
-		return manufOrder;
+		return diffConsumeList;
+	}
+
+	/**
+	 * Compute the difference in qty between a prodProduct and the qty in a list
+	 * of stock move lines.
+	 * @param prodProduct
+	 * @param stockMoveLineList
+	 * @param product
+	 * @return
+	 * @throws AxelorException
+	 */
+	protected BigDecimal computeDiffQty(ProdProduct prodProduct, List<StockMoveLine> stockMoveLineList, Product product) throws AxelorException {
+		BigDecimal consumedQty = BigDecimal.ZERO;
+		for (StockMoveLine stockMoveLine : stockMoveLineList) {
+			if (stockMoveLine.getUnit() != null && prodProduct.getUnit() != null) {
+				consumedQty = consumedQty.add(Beans.get(UnitConversionService.class)
+						.convertWithProduct(stockMoveLine.getUnit(), prodProduct.getUnit(), stockMoveLine.getQty(), product)
+				);
+			} else {
+				consumedQty = consumedQty.add(stockMoveLine.getQty());
+			}
+		}
+		return consumedQty.subtract(prodProduct.getQty());
 	}
 
 }

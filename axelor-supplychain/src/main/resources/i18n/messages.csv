@@ -92,6 +92,7 @@
 "Generate customer deliveries automatically",,,
 "Generate inc. moves for non storable products ?",,,
 "Generate inc. moves for storable products ?",,,
+"Generate invoice from purchase order",,,
 "Generate invoice from sale order",,,
 "Generate invoice from stock move",,,
 "Generate one invoice per incoming stockMove",,,

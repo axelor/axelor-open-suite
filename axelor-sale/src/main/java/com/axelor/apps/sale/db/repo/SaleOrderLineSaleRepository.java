@@ -19,8 +19,8 @@ package com.axelor.apps.sale.db.repo;
 
 import com.axelor.apps.base.db.AppSale;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.SaleOrderLineService;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.google.inject.Inject;
 
 public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {

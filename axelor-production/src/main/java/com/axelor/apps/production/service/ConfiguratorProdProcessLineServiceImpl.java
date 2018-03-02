@@ -19,7 +19,7 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
 import com.axelor.apps.production.db.ProdProcessLine;
-import com.axelor.apps.sale.service.ConfiguratorService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;

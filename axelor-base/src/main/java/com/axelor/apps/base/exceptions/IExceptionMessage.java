@@ -221,4 +221,10 @@ public interface IExceptionMessage {
 	 */
 	String PRICE_LIST_DATE_WRONG_ORDER = /*$$(*/ "The end date is before the begin date." /*)*/;
 	String PARTNER_PRICE_LIST_DATE_INCONSISTENT = /*$$(*/ "The price list %s will still be active when the price list %s will become active." /*)*/;
+	
+	/**
+	 * Advanced export
+	 */
+	static final String ADVANCED_EXPORT_1 = /*$$(*/ "Please select fields for export." /*)*/;
+	static final String ADVANCED_EXPORT_2 = /*$$(*/ "There is no records to export." /*)*/;
 }
