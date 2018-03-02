@@ -132,12 +132,12 @@
 				<panel-related field="consumedStockMoveLineList" onChange="action-manuf-order-method-compute-diff-prod-product-list" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-consumed-production-grid"/>
 				<panel-related field="diffConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 			</panel>
-   			<panel readonly="true" name="consumedProducts" title="Consumed products" showIf="isConsProOnOperation">
+   			<panel name="consumedProducts" title="Consumed products" showIf="isConsProOnOperation">
 				<button name="updatePlannedQty" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
-				<panel-dashlet colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
+				<panel-dashlet readonly="true" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
 				<button name="updateRealQty" title="Update real quantities (Components and FP)" colSpan="12" showIf="[4,5].includes(statusSelect)" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
-				<panel-dashlet colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>
-				<panel-dashlet colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
+				<panel-dashlet readonly="true" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>
+				<panel-dashlet readonly="true" colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
 			</panel>
 			<panel name="finishedProducts" title="Finished products">
 				<button name="updatePlannedQty" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
