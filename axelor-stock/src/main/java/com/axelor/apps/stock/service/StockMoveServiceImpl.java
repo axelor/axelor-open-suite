@@ -446,6 +446,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 			return;
 		}
 
+        UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+		
 		for (StockMoveLine stockMoveLine : stockMoveLineList) {
 			Product product = stockMoveLine.getProduct();
 
@@ -459,7 +461,6 @@ public class StockMoveServiceImpl implements StockMoveService {
                 Unit startUnit = product.getWeightUnit();
 
                 if (startUnit != null) {
-                    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
                     netWeight = unitConversionService.convert(startUnit, endUnit, product.getNetWeight());
                     stockMoveLine.setNetWeight(netWeight);
                 }

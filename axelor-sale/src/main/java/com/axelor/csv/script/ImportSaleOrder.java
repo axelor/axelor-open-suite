@@ -17,20 +17,23 @@
  */
 package com.axelor.csv.script;
 
+import java.util.Map;
+
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-
-import java.util.Map;
 
 public class ImportSaleOrder {
 
 	protected SaleOrderService saleOrderService;
+	protected SaleOrderComputeService saleOrderComputeService;
 
 	@Inject
-	public ImportSaleOrder(SaleOrderService saleOrderService) {
+	public ImportSaleOrder(SaleOrderService saleOrderService, SaleOrderComputeService saleOrderComputeService) {
 		this.saleOrderService = saleOrderService;
+		this.saleOrderComputeService = saleOrderComputeService;
 	}
 
 	public Object importAddressStr(Object bean, Map<String, Object> values) {
@@ -47,6 +50,6 @@ public class ImportSaleOrder {
 
 		SaleOrder saleOrder = (SaleOrder) bean;
 
-		return saleOrderService.computeSaleOrder(saleOrder);
+		return saleOrderComputeService.computeSaleOrder(saleOrder);
 	}
 }

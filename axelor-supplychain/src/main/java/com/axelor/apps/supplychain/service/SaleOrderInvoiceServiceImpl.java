@@ -51,7 +51,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
@@ -134,7 +134,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	public BigDecimal computeAmountToInvoicePercent(SaleOrder saleOrder,
 													BigDecimal amount,
 													boolean isPercent) throws AxelorException {
-		BigDecimal total = Beans.get(SaleOrderService.class)
+		BigDecimal total = Beans.get(SaleOrderComputeService.class)
 				.getTotalSaleOrderPrice(saleOrder);
 	    if (!isPercent) {
 			amount = amount.multiply(new BigDecimal("100"))

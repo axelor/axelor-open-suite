@@ -51,16 +51,16 @@ import com.axelor.apps.production.service.ProductionOrderService;
 import com.axelor.apps.production.service.ProductionOrderServiceImpl;
 import com.axelor.apps.production.service.ProductionOrderWizardService;
 import com.axelor.apps.production.service.ProductionOrderWizardServiceImpl;
-import com.axelor.apps.production.service.SaleOrderServiceProductionImpl;
+import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl;
 import com.axelor.apps.production.service.StockRulesServiceProductionImpl;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.app.AppProductionServiceImpl;
 import com.axelor.apps.production.service.app.ConfiguratorServiceProductionImpl;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
-import com.axelor.apps.sale.service.ConfiguratorServiceImpl;
+import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
-import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.config.StockConfigSupplychainService;
 
@@ -81,7 +81,7 @@ public class ProductionModule extends AxelorModule {
 		bind(MrpServiceImpl.class).to(MrpServiceProductionImpl.class);
 		bind(CostSheetService.class).to(CostSheetServiceImpl.class);
 		bind(CostSheetLineService.class).to(CostSheetLineServiceImpl.class);
-		bind(SaleOrderServiceSupplychainImpl.class).to(SaleOrderServiceProductionImpl.class);
+		bind(SaleOrderWorkflowServiceSupplychainImpl.class).to(SaleOrderWorkflowServiceProductionImpl.class);
 		bind(StockRulesServiceSupplychainImpl.class).to(StockRulesServiceProductionImpl.class);
 		bind(BillOfMaterialRepository.class).to(BillOfMaterialManagementRepository.class);
 		bind(StockConfigSupplychainService.class).to(StockConfigProductionService.class);

@@ -15,20 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.sale.service.configurator;
 
-import java.math.BigDecimal;
+import com.axelor.apps.sale.db.ConfiguratorCreator;
+import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaField;
 
-import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+public interface ConfiguratorFormulaService {
 
-public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
-    /**
-     * Compute undelivered quantity.
-     * 
-     * @param saleOrderLine
-     * @return
-     */
-    BigDecimal computeUndeliveredQty(SaleOrderLine saleOrderLine);
+   /**
+    * Get the filled MetaField
+    * @param configuratorFormula
+    * @return
+    */
+   MetaField getMetaField(ConfiguratorFormula configuratorFormula);
+
+   /**
+    * Check if the written formula is valid.
+    * @param formula
+    * @param creator
+    */
+   void checkFormula(ConfiguratorFormula formula, ConfiguratorCreator creator) throws AxelorException;
 
 }

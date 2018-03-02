@@ -17,12 +17,11 @@
  */
 package com.axelor.csv.script;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Query;
-
-import java.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
@@ -36,8 +35,9 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.SaleOrderLineService;
-import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
@@ -175,7 +175,8 @@ public class ValidateSupplyChain {
 
 	@Transactional
 	void validateSaleOrder(Long soId){
-		SaleOrderService saleOrderService = Beans.get(SaleOrderService.class);
+		SaleOrderWorkflowService saleOrderWorkflowService = Beans.get(SaleOrderWorkflowService.class);
+		SaleOrderComputeService saleOrderComputeService = Beans.get(SaleOrderComputeService.class);
 		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
 
 		try{
@@ -187,13 +188,13 @@ public class ValidateSupplyChain {
 					product.setWeightUnit(stockConfigService.getStockConfig(saleOrder.getCompany()).getCustomsWeightUnit());
 				}
 			}
-			saleOrderService.computeSaleOrder(saleOrder);
+			saleOrderComputeService.computeSaleOrder(saleOrder);
 			if(saleOrder.getStatusSelect() == ISaleOrder.STATUS_ORDER_CONFIRMED){
 				//taskSaleOrderService.createTasks(saleOrder); TODO once we will have done the generation of tasks in project module
 				saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
 				Beans.get(SaleOrderPurchaseService.class).createPurchaseOrders(saleOrder);
 //				productionOrderSaleOrderService.generateProductionOrder(saleOrder);
-				saleOrder.setClientPartner(saleOrderService.validateCustomer(saleOrder));
+				saleOrder.setClientPartner(saleOrderWorkflowService.validateCustomer(saleOrder));
 				//Generate invoice from sale order
 				Invoice invoice = Beans.get(SaleOrderInvoiceService.class).generateInvoice(saleOrder);
 				if(saleOrder.getConfirmationDate()!=null){

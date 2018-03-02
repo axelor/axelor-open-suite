@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
-import com.axelor.apps.sale.service.ConfiguratorCreatorService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.data.Listener;
