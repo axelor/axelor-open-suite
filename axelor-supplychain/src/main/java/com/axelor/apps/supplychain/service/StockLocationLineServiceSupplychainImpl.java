@@ -31,7 +31,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.servlet.RequestScoped;
 
+@RequestScoped
 public class StockLocationLineServiceSupplychainImpl extends StockLocationLineServiceImpl {
 	
 	@Override

@@ -24,6 +24,8 @@
 - Put buttons in hidden mode instead of readOnly in invoicing-project-form and put status to invoiced on generating invoice
 - Manage waste rate in bill of material and take it into account on cost sheet
 - Partial manuf order realization
+- Add a wizard to select a cancel reason and cancel a Stock move.
+- Add button to open tasks and task kanban view in project module
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
@@ -38,6 +40,7 @@
 - Remove the field supplierPartner from Event Object
 - Upgrade functionality of advanced export feature
 - Change dependency to base instead of CRM,HR and Project of helpdesk module.
+- Update the SaleOrderLine form to look like InvoiceLine form.
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)

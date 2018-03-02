@@ -17,6 +17,12 @@
  */
 package com.axelor.apps.project.service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.TypedQuery;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.project.db.Project;
@@ -26,7 +32,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.exception.IExceptionMessage;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -40,11 +46,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
-import javax.persistence.TypedQuery;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ProjectServiceImpl implements ProjectService {
 
@@ -205,7 +206,7 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	@Transactional
 	public SaleOrder generateQuotation(Project project) throws AxelorException {
-		SaleOrder order = Beans.get(SaleOrderService.class).createSaleOrder(project.getCompany());
+		SaleOrder order = Beans.get(SaleOrderCreateService.class).createSaleOrder(project.getCompany());
 		order.setClientPartner(project.getClientPartner());
 		return Beans.get(SaleOrderRepository.class).save(order);
 	}

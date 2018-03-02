@@ -23,11 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.apps.base.db.PrintingSettings;
-import com.axelor.apps.base.service.TradingNameService;
-import com.axelor.apps.tool.StringTool;
-import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.axelor.apps.base.service.PartnerPriceListService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,14 +33,23 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
-import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -74,7 +78,7 @@ public class SaleOrderController {
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		
 		try {
-			saleOrder = Beans.get(SaleOrderService.class).computeSaleOrder(saleOrder);
+			saleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
 			response.setValues(saleOrder);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -85,7 +89,7 @@ public class SaleOrderController {
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		
 		try {
-			Beans.get(SaleOrderService.class).computeMarginSaleOrder(saleOrder);
+			Beans.get(SaleOrderMarginService.class).computeMarginSaleOrder(saleOrder);
 			
 			response.setValue("totalCostPrice", saleOrder.getTotalCostPrice());
 			response.setValue("totalGrossMargin", saleOrder.getTotalGrossMargin());
@@ -157,7 +161,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		Beans.get(SaleOrderService.class).cancelSaleOrder(saleOrderRepo.find(saleOrder.getId()), saleOrder.getCancelReason(), saleOrder.getCancelReasonStr());
+		Beans.get(SaleOrderWorkflowService.class).cancelSaleOrder(saleOrderRepo.find(saleOrder.getId()), saleOrder.getCancelReason(), saleOrder.getCancelReasonStr());
 
 		response.setFlash(I18n.get("The sale order was canceled"));
 		response.setCanClose(true);
@@ -169,7 +173,7 @@ public class SaleOrderController {
 		saleOrder = saleOrderRepo.find(saleOrder.getId());
 
 		try {
-			Beans.get(SaleOrderService.class).finalizeSaleOrder(saleOrder);
+			Beans.get(SaleOrderWorkflowService.class).finalizeSaleOrder(saleOrder);
 		} catch (Exception e) {
 		    TraceBackService.trace(response, e);
 		}
@@ -181,7 +185,7 @@ public class SaleOrderController {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		Beans.get(SaleOrderService.class).confirmSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+		Beans.get(SaleOrderWorkflowService.class).confirmSaleOrder(saleOrderRepo.find(saleOrder.getId()));
 
 		response.setReload(true);
 
@@ -212,7 +216,7 @@ public class SaleOrderController {
 	public void createSaleOrder(ActionRequest request, ActionResponse response)  {
 		SaleOrder origin = saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
 		if (origin != null) {
-			SaleOrder copy = Beans.get(SaleOrderService.class).createSaleOrder(origin);
+			SaleOrder copy = Beans.get(SaleOrderCreateService.class).createSaleOrder(origin);
 			response.setValues(copy);
 		}
 	}
@@ -222,7 +226,7 @@ public class SaleOrderController {
 	    if (context.get("_idCopy") != null) {
 	    	String idCopy = context.get("_idCopy").toString();
 			SaleOrder origin = saleOrderRepo.find(Long.parseLong(idCopy));
-			SaleOrder copy = Beans.get(SaleOrderService.class).createSaleOrder(origin);
+			SaleOrder copy = Beans.get(SaleOrderCreateService.class).createSaleOrder(origin);
 			response.setValues(copy);
 		}
 	}
@@ -390,7 +394,7 @@ public class SaleOrderController {
 		}
 		
 		try{
-			SaleOrder saleOrder = Beans.get(SaleOrderService.class).mergeSaleOrders(saleOrderList, commonCurrency, commonClientPartner, commonCompany, commonContactPartner, commonPriceList, commonTeam);
+			SaleOrder saleOrder = Beans.get(SaleOrderCreateService.class).mergeSaleOrders(saleOrderList, commonCurrency, commonClientPartner, commonCompany, commonContactPartner, commonPriceList, commonTeam);
 			if (saleOrder != null){
 				//Open the generated sale order in a new tab
 				response.setView(ActionView

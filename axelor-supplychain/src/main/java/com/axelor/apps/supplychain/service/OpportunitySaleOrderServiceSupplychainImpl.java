@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.OpportunitySaleOrderServiceImpl;
+import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -30,11 +30,11 @@ import com.google.inject.Inject;
 public class OpportunitySaleOrderServiceSupplychainImpl extends OpportunitySaleOrderServiceImpl {
 
 	@Inject
-	private SaleOrderServiceSupplychainImpl saleOrderServiceSupplychainImpl;
+	private SaleOrderCreateServiceSupplychainImpl saleOrderCreateServiceSupplychainImpl;
 
 	@Override
 	protected SaleOrder createSaleOrder(Opportunity opportunity, Currency currency) throws AxelorException {
-		return saleOrderServiceSupplychainImpl.createSaleOrder(opportunity.getUser(), opportunity.getCompany(), null, currency, null, opportunity.getName(), null,
+		return saleOrderCreateServiceSupplychainImpl.createSaleOrder(opportunity.getUser(), opportunity.getCompany(), null, currency, null, opportunity.getName(), null,
 				null, appBaseService.getTodayDate(), Beans.get(PartnerPriceListService.class).getDefaultPriceList(opportunity.getPartner(), PriceListRepository.TYPE_SALE), opportunity.getPartner(), opportunity.getTeam());
 	}
 

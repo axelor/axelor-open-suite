@@ -186,7 +186,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
                         }
                     }
 
-                    paymentScheduleLineService.createPaymentMove(paymentScheduleLine, companyBankDetails);
+                    paymentScheduleLineService.createPaymentMove(paymentScheduleLine, companyBankDetails, directDebitPaymentMode);
                     doneList.add(paymentScheduleLine);
                     incrementDone();
                 } catch (Exception e) {

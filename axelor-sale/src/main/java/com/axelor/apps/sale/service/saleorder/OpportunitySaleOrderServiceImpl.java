@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service;
+package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.PriceListRepository;
@@ -32,7 +32,7 @@ import com.google.inject.persist.Transactional;
 public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderService  {
 
 	@Inject
-	protected SaleOrderServiceImpl saleOrderService;
+	protected SaleOrderCreateService saleOrderCreateService;
 	
 	@Inject
 	protected SaleOrderRepository saleOrderRepo;
@@ -62,7 +62,7 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
 	}
 
 	protected SaleOrder createSaleOrder(Opportunity opportunity, Currency currency) throws AxelorException {
-		return saleOrderService.createSaleOrder(opportunity.getUser(), opportunity.getCompany(), null, currency, null, opportunity.getName(), null,
+		return saleOrderCreateService.createSaleOrder(opportunity.getUser(), opportunity.getCompany(), null, currency, null, opportunity.getName(), null,
 				appBaseService.getTodayDate(), Beans.get(PartnerPriceListService.class).getDefaultPriceList(opportunity.getPartner(), PriceListRepository.TYPE_SALE), opportunity.getPartner(), opportunity.getTeam());
 	}
 

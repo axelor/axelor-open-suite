@@ -20,7 +20,7 @@ package com.axelor.apps.sale.web;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.OpportunitySaleOrderService;
+import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
