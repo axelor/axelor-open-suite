@@ -303,8 +303,7 @@ public class ManufOrderStockMoveService {
 	 */
 	public Optional<StockMove> getPlannedStockMove(List<StockMove> stockMoveList) {
 		return stockMoveList.stream()
-				.filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
-						&& !CollectionUtils.isEmpty(stockMove.getStockMoveLineList()))
+				.filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)
 				.findFirst();
 	}
 
@@ -401,8 +400,13 @@ public class ManufOrderStockMoveService {
 		//create a new list
 		for (ProdProduct prodProduct : manufOrder.getToConsumeProdProductList()) {
 			BigDecimal qty = getFractionQty(manufOrder, prodProduct, qtyToUpdate);
-		    StockMoveLine stockMoveLine = _createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty);
-		    manufOrder.addConsumedStockMoveLineListItem(stockMoveLine);
+			_createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty);
+
+			//Update consumed StockMoveLineList with created stock move lines
+			stockMove.getStockMoveLineList()
+					.stream()
+					.filter(stockMoveLine1 -> !manufOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))
+					.forEach(manufOrder::addConsumedStockMoveLineListItem);
 		}
 	}
 
@@ -425,8 +429,13 @@ public class ManufOrderStockMoveService {
 		//create a new list
 		for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
 			BigDecimal qty = getFractionQty(manufOrder, prodProduct, qtyToUpdate);
-		    StockMoveLine stockMoveLine = _createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_OUT_PRODUCTIONS, qty);
-		    manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
+		    _createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_OUT_PRODUCTIONS, qty);
+
+		    //Update produced StockMoveLineList with created stock move lines
+            stockMove.getStockMoveLineList()
+					.stream()
+					.filter(stockMoveLine1 -> !manufOrder.getProducedStockMoveLineList().contains(stockMoveLine1))
+					.forEach(manufOrder::addProducedStockMoveLineListItem);
 		}
 	}
 
