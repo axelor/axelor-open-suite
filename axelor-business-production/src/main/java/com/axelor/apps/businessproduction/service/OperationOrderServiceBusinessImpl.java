@@ -37,14 +37,15 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
-	
+
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine, boolean isToInvoice) throws AxelorException  {
+	public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine) throws AxelorException  {
 		
 		OperationOrder operationOrder = this.createOperationOrder(
 				manufOrder,
 				prodProcessLine.getPriority(), 
-				isToInvoice, 
+				manufOrder.getIsToInvoice(),
 				prodProcessLine.getWorkCenter(), 
 				prodProcessLine.getWorkCenter(), 
 				prodProcessLine);

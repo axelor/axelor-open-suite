@@ -206,7 +206,7 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 	}
 
 	@Override
-	@Transactional
+    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void preFillOperations(ManufOrder manufOrder) throws AxelorException{
 
 		BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
