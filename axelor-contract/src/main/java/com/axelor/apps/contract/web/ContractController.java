@@ -168,8 +168,14 @@ public class ContractController {
 
 	public void activeNextVersion(ActionRequest request, ActionResponse response) {
 		try  {
-			contractService.activeNextVersion(JPA.find(ContractVersion.class, request.getContext().asType(ContractVersion.class).getId()).getContractNext(), getToDay());
-			response.setReload(true);
+			ContractVersion contractVersion = request.getContext().asType(ContractVersion.class);
+			contractService.activeNextVersion(JPA.find(ContractVersion.class, contractVersion.getId()).getContractNext(), getToDay());
+			response.setView(ActionView
+					.define("Contract")
+					.model(Contract.class.getName())
+					.add("form", "contract-form")
+					.add("grid", "contract-grid")
+					.context("_showRecord", contractVersion.getContract().getId()).map());
 		} catch(Exception e) {
 			String flash = e.toString();
 			if (e.getMessage() != null) { flash = e.getMessage(); }
@@ -231,7 +237,7 @@ public class ContractController {
 	
 	@Transactional
 	public void copyFromTemplate(ActionRequest request, ActionResponse response){
-		
+
 		ContractTemplate template = JPA.find(ContractTemplate.class, new Long((Integer) ((Map) request.getContext().get("contractTemplate")).get("id"))) ;
 		
 		Contract copy = contractService.createContractFromTemplate(template);
