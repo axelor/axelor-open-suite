@@ -127,7 +127,7 @@
         </panel>
     </form>
 
-    <grid name="stock-move-line-consumed-production-grid" title="Stock move lines" groupBy="stockMove.statusSelect" model="com.axelor.apps.stock.db.StockMoveLine">
+    <grid name="stock-move-line-consumed-production-grid" title="Stock move lines" orderBy="stockMove.statusSelect" model="com.axelor.apps.stock.db.StockMoveLine">
 		<hilite if="$get('stockMove.statusSelect') == 3" background="success"/>
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="productModel" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
@@ -139,7 +139,7 @@
 		<field name="stockMove.statusSelect"/>
     </grid>
 
-    <grid name="stock-move-line-produced-production-grid" title="Stock move lines" groupBy="stockMove.statusSelect" model="com.axelor.apps.stock.db.StockMoveLine">
+    <grid name="stock-move-line-produced-production-grid" title="Stock move lines" orderBy="stockMove.statusSelect" model="com.axelor.apps.stock.db.StockMoveLine">
 		<hilite if="$get('stockMove.statusSelect') == 3" background="success"/>
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="productModel" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
