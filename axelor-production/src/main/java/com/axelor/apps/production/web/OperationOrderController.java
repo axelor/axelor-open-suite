@@ -26,6 +26,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.OperationOrderService;
+import com.axelor.apps.production.service.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.OperationOrderWorkflowService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
@@ -163,6 +164,18 @@ public class OperationOrderController {
 			response.setReload(true);
 		} catch (Exception e) {
 	    	TraceBackService.trace(response, e);
+		}
+	}
+
+	public void partialFinish(ActionRequest request, ActionResponse response) {
+		try {
+			OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+			operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
+
+			Beans.get(OperationOrderStockMoveService.class).partialFinish(operationOrder);
+			response.setReload(true);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
 		}
 	}
 

@@ -36,7 +36,7 @@ import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.SaleOrderServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -103,7 +103,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 
                 if (saleOrder.getDeliveryState() == SaleOrderRepository.STATE_DELIVERED
                         && appSupplychain.getTerminateSaleOrderOnDelivery()) {
-                    Beans.get(SaleOrderServiceImpl.class).finishSaleOrder(saleOrder);
+                    Beans.get(SaleOrderWorkflowServiceImpl.class).finishSaleOrder(saleOrder);
                 }
             }
 

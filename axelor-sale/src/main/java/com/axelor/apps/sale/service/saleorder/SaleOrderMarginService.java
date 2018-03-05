@@ -15,16 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service;
+package com.axelor.apps.sale.service.saleorder;
 
-import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 
-public interface OpportunitySaleOrderService {
-	
-	@Transactional
-	public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException;
-	
+public interface SaleOrderMarginService {
+
+	public void computeMarginSaleOrder(SaleOrder saleOrder);
+
+
 }

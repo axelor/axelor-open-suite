@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service;
+package com.axelor.apps.sale.service.configurator;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -26,6 +26,8 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -120,7 +122,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 			saleOrderLine = generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
         }
         saleOrder.addSaleOrderLineListItem(saleOrderLine);
-        Beans.get(SaleOrderService.class).computeSaleOrder(saleOrder);
+        Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
 
         Beans.get(SaleOrderRepository.class).save(saleOrder);
     }

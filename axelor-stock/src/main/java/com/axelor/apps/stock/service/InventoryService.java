@@ -322,6 +322,7 @@ public class InventoryService {
 		StockLocation toStockLocation = inventory.getStockLocation();
 		Company company = toStockLocation.getCompany();
 		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+		StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
 
 		if (company == null) {
 			throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_6), toStockLocation.getName());
@@ -340,7 +341,7 @@ public class InventoryService {
 			if (currentQty.compareTo(realQty) != 0) {
 				BigDecimal diff = realQty.subtract(currentQty);
 
-				StockMoveLine stockMoveLine = Beans.get(StockMoveLineService.class).createStockMoveLine(
+				StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
 						product, product.getName(), 
 						product.getDescription(), diff,
 						product.getCostPrice(),

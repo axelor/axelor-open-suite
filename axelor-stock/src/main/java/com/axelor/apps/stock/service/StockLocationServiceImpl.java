@@ -41,7 +41,9 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.servlet.RequestScoped;
 
+@RequestScoped
 public class StockLocationServiceImpl implements StockLocationService {
 	
 	protected StockLocationRepository stockLocationRepo;
@@ -151,8 +153,10 @@ public class StockLocationServiceImpl implements StockLocationService {
 
 		List<Long> idList = new ArrayList<>();
 
+		StockRulesRepository stockRulesRepository = Beans.get(StockRulesRepository.class);
+		
 		for (StockLocationLine stockLocationLine : stockLocationLineList) {
-			StockRules stockRules = Beans.get(StockRulesRepository.class).all()
+			StockRules stockRules = stockRulesRepository.all()
 					.filter("self.stockLocation = ?1 AND self.product = ?2", stockLocationLine.getStockLocation(), stockLocationLine.getProduct()).fetchOne();
 			if (stockRules != null
 					&& stockLocationLine.getFutureQty().compareTo(stockRules.getMinQty()) < 0) {

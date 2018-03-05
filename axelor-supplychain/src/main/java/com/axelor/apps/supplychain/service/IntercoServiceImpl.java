@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.util.List;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -31,12 +33,11 @@ import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
-
-import java.util.List;
 
 public class IntercoServiceImpl implements IntercoService {
 
@@ -45,11 +46,11 @@ public class IntercoServiceImpl implements IntercoService {
     public SaleOrder generateIntercoSaleFromPurchase(PurchaseOrder purchaseOrder)
             throws AxelorException {
 
-        SaleOrderService saleOrderService =
-                Beans.get(SaleOrderService.class);
+    	SaleOrderCreateService saleOrderCreateService = Beans.get(SaleOrderCreateService.class);
+    	SaleOrderComputeService saleOrderComputeService = Beans.get(SaleOrderComputeService.class);
 
         //create sale order
-        SaleOrder saleOrder = saleOrderService.createSaleOrder(
+        SaleOrder saleOrder = saleOrderCreateService.createSaleOrder(
                 null,
                 findIntercoCompany(purchaseOrder.getSupplierPartner()),
                 purchaseOrder.getContactPartner(),
@@ -89,7 +90,7 @@ public class IntercoServiceImpl implements IntercoService {
         }
 
         //compute the sale order
-        saleOrderService.computeSaleOrder(saleOrder);
+        saleOrderComputeService.computeSaleOrder(saleOrder);
 
         saleOrder.setCreatedByInterco(true);
         return Beans.get(SaleOrderRepository.class).save(saleOrder);

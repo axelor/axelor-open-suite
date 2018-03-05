@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service;
+package com.axelor.apps.sale.service.saleorder;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -35,7 +35,7 @@ public class SaleOrderToolService {
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Inject
-	private CurrencyService currencyService;
+	protected CurrencyService currencyService;
 	
 	
 	/**
