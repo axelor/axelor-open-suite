@@ -87,16 +87,9 @@
 			<field name="team" canEdit="false" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
 			<field name="disponibilitySelect" widget="RadioSelect" readonlyIf="calendar != null"/>
 			<field name="visibilitySelect" widget="RadioSelect" readonlyIf="calendar != null"/>
+			<field name="computedAttendeeList" hidden="true"/>
 			<panel colSpan="12" hideIf="typeSelect == 1">
 				<field name="description" widget="html" colSpan="12"/>
-			</panel>
-			<panel name="guests" title="Guests" colSpan="12" showIf="typeSelect == 0 || typeSelect == 1 || typeSelect == 2">
-				<field name="attendees" canNew="false" canSelect="false" showTitle="true" colSpan="12">
-					<editor layout="table" x-show-titles="false">
-						<field name="name" readonly="true"/>
-						<field name="statusSelect" widget="RadioSelect"/>
-			        </editor>
-				</field>
 			</panel>
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false" form-view="event-reminder-form" grid-view="event-reminder-grid"/>
 			<field name="subjectTeam" hidden="true"/>
@@ -105,15 +98,18 @@
 			<field name="calendar" widget="SuggestBox" onSelect="action-event-method-domain-calendar" onChange="action-event-method-change-creator"/>
 		</panel>
 		<panel colSpan="12">
-			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false"/>
+			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false" onChange="save, action-event-method-generate-recurrence"/>
 		</panel>
 		<panel title="Add Guests" name="addGuests" sidebar="true">
-			<field name="$guestUser" title="Existing user" colSpan="9" type="many-to-one" target="com.axelor.auth.db.User" canEdit="false"/>
-			<button name="addNewGuestUser" title="Add" colSpan="3" onClick="save, action-event-method-add-user-guest"/>
-			<field name="$guestPartner" title="Existing customer/supplier/contact" colSpan="9" type="many-to-one" target="com.axelor.apps.base.db.Partner"/>
-			<button name="addNewGuestPartner" title="Add" colSpan="3" onClick="save, action-event-method-add-partner-guest"/>
-			<field name="$guestEmail" title="Email address" colSpan="9" type="many-to-one" target="com.axelor.apps.message.db.EmailAddress" canNew="true"/>
-			<button name="addNewGuestEmail" title="Add" colSpan="3" onClick="save, action-event-method-add-email-guest"/>
+			<field name="$guestEmail" title="Email address" colSpan="12" type="many-to-one" target="com.axelor.apps.message.db.EmailAddress" canNew="true" onChange="action-event-method-add-email-guest"/>
+		</panel>
+		<panel name="guests" title="Guests" colSpan="12" showIf="attendees.length != 0 &amp;&amp; (typeSelect == 0 || typeSelect == 1 || typeSelect == 2)" sidebar="true">
+			<field name="attendees" canNew="false" canSelect="false" colSpan="12" showTitle="false">
+				<editor layout="table" x-show-titles="false">
+					<field name="name" readonly="true" />
+					<field name="statusSelect" />
+				</editor>
+			</field>
 		</panel>
 
 		<panel sidebar="true" title="Attributes" name="meetingAttributes">
@@ -139,6 +135,10 @@
 			<field name="attrs" colSpan="12" />
 		</panel>
 		
+		<panel-mail>
+			<mail-messages/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
 	
 	<action-group name="action-group-crm-event-onnew">
@@ -173,9 +173,13 @@
     </action-method>
 
     <action-method name="action-event-method-add-email-guest">
-    	<call class="com.axelor.apps.crm.web.EventController" method="addEmailGuest"/>
+    	<call class="com.axelor.apps.base.web.ICalendarEventController" method="addEmailGuest"/>
     </action-method>
-    
+
+    <action-method name="action-event-method-manage-followers">
+    	<call class="com.axelor.apps.crm.web.EventController" method="manageFollowers"/>
+    </action-method>
+
     <action-group name="action-group-crm-meeting-contactpartner-onchange">
     	<action name="action-attrs-client-partner"/>
     	<action name="action-meeting-set-location-contact"/>
@@ -202,10 +206,12 @@
     </action-group>
 
 	<action-group name="action-event-group-on-save">
-    	<action name="action-event-record-subjectTeam"/>
-    	<action name="save"/>
-    	<action name="action-event-view-modifications-recurrence" if="recurrenceConfiguration &amp;&amp; id > 0"/>
-    </action-group>
+		<action name="action-event-record-compute-attendee-list"/>
+		<action name="action-event-record-subjectTeam"/>
+		<action name="action-event-view-modifications-recurrence" if="recurrenceConfiguration &amp;&amp; id > 0"/>
+		<action name="save"/>
+		<action name="action-event-method-manage-followers"/>
+	</action-group>
 	
 	<action-view name="action-event-view-modifications-recurrence" title="Apply modifications" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="modifications-assistant-form"/>
@@ -217,6 +223,7 @@
 	    <context name="_idEvent" expr="eval: id"/>
 	</action-view>
 	
+
 	<action-view name="action-event-view-create-opportunity" title="Create opportunity" model="com.axelor.apps.crm.db.Opportunity">
     	<view type="form" name="opportunity-form"/>
     	<context name="_customer" expr="eval: partner"/>
@@ -231,10 +238,12 @@
     </action-view>
 
 	<form model="com.axelor.apps.base.db.Wizard" title="Apply modifications" name="modifications-assistant-form">
-		<button name="applyToThis" title="Apply changes to this event only" onClick="close" colSpan="12" width="50%"/>
-		<button name="applyToAll" title="Apply changes to all recurrence's events" onClick="action-event-method-apply-changes-to-all" colSpan="12" width="50%"/>
+		<panel>
+			<button name="applyToThis" title="Apply changes to this event only" onClick="close" colSpan="12"/>
+			<button name="applyToAll" title="Apply changes to all recurrence's events" onClick="action-event-method-apply-changes-to-all" colSpan="12"/>
+		</panel>
 	</form>
-    
+
     <action-method name="action-event-method-apply-changes-to-all">
     	<call class="com.axelor.apps.crm.web.EventController" method="applyChangesToAll"/>
     </action-method>
@@ -337,6 +346,10 @@
 		<field name="location" expr="eval:(lead?.primaryAddress != null ? lead.primaryAddress+', ' : '')+(lead?.primaryPostalCode != null ? lead.primaryPostalCode+' ' : '')+(lead?.primaryCity != null ? lead.primaryCity: '')"/>
 	</action-record>
 
+	<action-record name="action-event-record-compute-attendee-list" model="com.axelor.apps.crm.db.Event">
+		<field if="attendees" name="computedAttendeeList" expr="eval:attendees.collect{it?.name}.join(', ')"/>
+	</action-record>
+
 	<!-- ACTIONS TO SET SELECTS -->
 	
 	<action-record name="action-set-task-status-select-2" model="com.axelor.apps.crm.db.Event">
@@ -379,6 +392,10 @@
     <action-method name="action-event-method-compute-from-calendar">
     	<call class="com.axelor.apps.crm.web.EventController" method="computeFromCalendar" />
     </action-method>
+
+	<action-method name="action-event-method-generate-recurrence">
+		<call class="com.axelor.apps.crm.web.EventController" method="generateRecurrentEvents"/>
+	</action-method>
 	
 <!-- 	FILTERS -->
 	
