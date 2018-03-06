@@ -478,13 +478,9 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
         List<String> domainList = new ArrayList<>();
 
-        StockConfig stockConfig = Beans.get(StockConfigService.class).getStockConfig(logisticalForm.getCompany());
-        Integer statusSelect = stockConfig.getRealizeStockMovesUponParcelPalletCollection()
-                ? StockMoveRepository.STATUS_PLANNED : StockMoveRepository.STATUS_REALIZED;
-
         domainList.add("self.partner = :deliverToCustomerPartner");
         domainList.add(String.format("self.typeSelect = %d", StockMoveRepository.TYPE_OUTGOING));
-        domainList.add(String.format("self.statusSelect = %d", statusSelect));
+        domainList.add(String.format("self.statusSelect in (%d, %d)",  StockMoveRepository.STATUS_PLANNED, StockMoveRepository.STATUS_REALIZED));
         domainList.add("COALESCE(self.fullySpreadOverLogisticalFormsFlag, FALSE) = FALSE");
 
         List<StockMove> fullySpreadStockMoveList = getFullySpreadStockMoveList(logisticalForm);
