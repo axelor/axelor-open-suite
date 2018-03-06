@@ -13,7 +13,7 @@
 
 	<form name="bill-of-material-form" title="Bill of material"
 		model="com.axelor.apps.production.db.BillOfMaterial" onSave="save,action-bill-of-material-record-name,action-bill-of-material-method-validate-prod-process"
-		onNew="action-bill-of-material-default-record,action-bill-of-material-attrs-price-and-qty-digits" onLoad="action-bill-of-material-attrs-price-and-qty-digits" width="large">
+		onNew="action-bill-of-material-default-record,action-bill-of-material-attrs-price-and-qty-digits" onLoad="action-bill-of-material-attrs-price-digits, action-bill-of-material-attrs-subversions" width="large">
 		<toolbar>
 			<button name="newVersion" title="Generate new version"  if="__config__.app.getApp('production').manageBillOfMaterialVersion" onClick="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"/>
 		</toolbar>
@@ -90,8 +90,6 @@
 		<view type="grid" name="bill-of-material-grid"/>
 		<view type="form" name="bill-of-material-form"/>
 		<domain>self.originalBillOfMaterial.versionNumber = :bom AND self.originalBillOfMaterial.id = :id</domain>
-		<context name="bom" expr="eval: versionNumber"/>
-		<context name="id" expr="eval: id"/>
 	</action-view>
 
 	<action-view name="action-bill-of-material-line-view" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
@@ -165,6 +163,10 @@
 	<action-attrs name="action-bill-of-material-attrs-product-def-sub-bom">
 		<attribute name="hidden" for="defineSubBillOfMaterial" expr="eval: true" if="product?.productSubTypeSelect == 3"/>
 		<attribute name="hidden" for="defineSubBillOfMaterial" expr="eval: false" if="product?.productSubTypeSelect != 3"/>
+	</action-attrs>
+
+	<action-attrs name="action-bill-of-material-attrs-subversions">
+		<attribute name="hidden" for="subVersions" expr="eval: __repo__(BillOfMaterial).findVersions(id, versionNumber).count() == 0"/>
 	</action-attrs>
 	
 	
