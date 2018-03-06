@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+	<order_payments>
+		<order_payment>
+			<id><![CDATA[1]]></id>
+			<order_reference><![CDATA[DUMMY]]></order_reference>
+			<id_currency><![CDATA[1]]></id_currency>
+			<amount><![CDATA[8400.00]]></amount>
+			<payment_method><![CDATA[15 jours nets]]></payment_method>
+			<conversion_rate><![CDATA[1.000000]]></conversion_rate>
+			<transaction_id></transaction_id>
+			<card_number></card_number>
+			<card_brand></card_brand>
+			<card_expiration></card_expiration>
+			<card_holder></card_holder>
+			<date_add><![CDATA[2018-02-21 11:56:46]]></date_add>
+		</order_payment>
+		<order_payment>
+			<id><![CDATA[2]]></id>
+			<order_reference><![CDATA[DUMMY]]></order_reference>
+			<id_currency><![CDATA[1]]></id_currency>
+			<amount><![CDATA[120.00]]></amount>
+			<payment_method><![CDATA[Chèque]]></payment_method>
+			<conversion_rate><![CDATA[1.000000]]></conversion_rate>
+			<transaction_id></transaction_id>
+			<card_number></card_number>
+			<card_brand></card_brand>
+			<card_expiration></card_expiration>
+			<card_holder></card_holder>
+			<date_add><![CDATA[2018-02-24 16:44:12]]></date_add>
+		</order_payment>
+		<order_payment>
+			<id><![CDATA[3]]></id>
+			<order_reference><![CDATA[TERORLMMJ]]></order_reference>
+			<id_currency><![CDATA[1]]></id_currency>
+			<amount><![CDATA[10.00]]></amount>
+			<payment_method><![CDATA[Chèque]]></payment_method>
+			<conversion_rate><![CDATA[1.000000]]></conversion_rate>
+			<transaction_id><![CDATA[12345]]></transaction_id>
+			<card_number></card_number>
+			<card_brand></card_brand>
+			<card_expiration></card_expiration>
+			<card_holder></card_holder>
+			<date_add><![CDATA[2018-02-23 11:52:03]]></date_add>
+		</order_payment>
+	</order_payments>
+</prestashop>

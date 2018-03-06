@@ -5,6 +5,7 @@ ListContainer$CurrenciesContainer
 ListContainer$CustomersContainer
 ListContainer$OrderRowsDetailsContainer
 ListContainer$OrderHistoriesContainer
+ListContainer$OrderPaymentsContainer
 ListContainer$OrdersContainer
 ListContainer$ProductCategoriesContainer
 ListContainer$ProductsContainer
@@ -19,6 +20,7 @@ PrestashopCustomer
 PrestashopImage
 PrestashopOrder
 PrestashopOrderHistory
+PrestashopOrderPayment
 PrestashopOrderRowDetails
 PrestashopProductCategory
 PrestashopProduct

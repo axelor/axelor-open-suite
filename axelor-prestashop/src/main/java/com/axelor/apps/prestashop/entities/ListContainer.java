@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public abstract class ListContainer<T extends PrestashopContainerEntity> extends PrestashopContainerEntity {
-	List<T> entities = new LinkedList<T>();
+	List<T> entities = new LinkedList<>();
 
 	@XmlElementRef
 	public List<T> getEntities() {
@@ -53,6 +53,10 @@ public abstract class ListContainer<T extends PrestashopContainerEntity> extends
 
 	@XmlRootElement(name="order_histories")
 	public static class OrderHistoriesContainer extends ListContainer<PrestashopOrder> {
+	}
+
+	@XmlRootElement(name="order_payments")
+	public static class OrderPaymentsContainer extends ListContainer<PrestashopOrderPayment> {
 	}
 
 	@XmlRootElement(name="orders")

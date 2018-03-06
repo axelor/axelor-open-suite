@@ -21,6 +21,7 @@ import com.axelor.apps.prestashop.entities.ListContainer.CountriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CurrenciesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CustomersContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.OrderHistoriesContainer;
+import com.axelor.apps.prestashop.entities.ListContainer.OrderPaymentsContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.OrderRowsDetailsContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.OrdersContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.ProductCategoriesContainer;
@@ -35,6 +36,7 @@ import com.axelor.apps.prestashop.entities.PrestashopCustomer;
 import com.axelor.apps.prestashop.entities.PrestashopImage;
 import com.axelor.apps.prestashop.entities.PrestashopOrder;
 import com.axelor.apps.prestashop.entities.PrestashopOrderHistory;
+import com.axelor.apps.prestashop.entities.PrestashopOrderPayment;
 import com.axelor.apps.prestashop.entities.PrestashopOrderRowDetails;
 import com.axelor.apps.prestashop.entities.PrestashopProduct;
 import com.axelor.apps.prestashop.entities.PrestashopProductCategory;
@@ -500,6 +502,32 @@ public class UnmarshalTest {
 		Assert.assertNotNull(envelop.getContent());
 		Assert.assertEquals(OrderRowsDetailsContainer.class, envelop.getContent().getClass());
 		OrderRowsDetailsContainer rows = envelop.getContent();
+		Assert.assertEquals(3, rows.getEntities().size());
+	}
+
+	@Test
+	public void testOrderPayment() throws JAXBException {
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("order-payment.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(PrestashopOrderPayment.class, envelop.getContent().getClass());
+		PrestashopOrderPayment p = envelop.getContent();
+		Assert.assertEquals(Integer.valueOf(1), p.getId());
+		Assert.assertEquals("DUMMY", p.getOrderReference());
+		Assert.assertEquals(1, p.getCurrencyId());
+		Assert.assertTrue(BigDecimal.valueOf(8400).compareTo(p.getAmount()) == 0);
+		Assert.assertEquals("15 jours nets", p.getPaymentMethod());
+		Assert.assertTrue(BigDecimal.ONE.compareTo(p.getConversionRate()) == 0);
+		Assert.assertEquals(LocalDateTime.of(2018,  2, 21, 11, 56, 46), p.getAddDate());
+	}
+
+	@Test
+	public void testOrderPayments() throws JAXBException {
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("order-payments.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(OrderPaymentsContainer.class, envelop.getContent().getClass());
+		OrderPaymentsContainer rows = envelop.getContent();
 		Assert.assertEquals(3, rows.getEntities().size());
 	}
 }
