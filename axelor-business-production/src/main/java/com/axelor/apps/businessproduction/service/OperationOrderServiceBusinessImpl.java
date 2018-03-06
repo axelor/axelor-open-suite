@@ -75,8 +75,6 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
 		
 		operationOrder.setIsToInvoice(isToInvoice);
 		
-		this._createToConsumeProdProductList(operationOrder, prodProcessLine);
-		
 		this._createHumanResourceList(operationOrder, machineWorkCenter);
 		
 		return Beans.get(OperationOrderRepository.class).save(operationOrder);

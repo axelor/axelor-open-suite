@@ -68,8 +68,10 @@ public class OperationOrderWorkflowService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public OperationOrder plan(OperationOrder operationOrder) throws AxelorException  {
+
+		Beans.get(OperationOrderService.class).createToConsumeProdProductList(operationOrder);
 
 		operationOrder.setPlannedStartDateT(this.getLastOperationOrder(operationOrder));
 

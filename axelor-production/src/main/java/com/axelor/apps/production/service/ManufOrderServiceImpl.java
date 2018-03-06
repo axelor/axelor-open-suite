@@ -234,12 +234,6 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 
 		manufOrder.setPlannedEndDateT(manufOrderWorkflowService.computePlannedEndDateT(manufOrder));
 
-		if(!manufOrder.getIsConsProOnOperation())  {
-			this.createToConsumeProdProductList(manufOrder);
-		}
-
-		this.createToProduceProdProductList(manufOrder);
-
 		manufOrderRepo.save(manufOrder);
 	}
 

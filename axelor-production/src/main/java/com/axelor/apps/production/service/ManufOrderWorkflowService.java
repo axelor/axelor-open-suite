@@ -61,6 +61,14 @@ public class ManufOrderWorkflowService {
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
+	    ManufOrderService manufOrderService = Beans.get(ManufOrderService.class);
+
+		if(!manufOrder.getIsConsProOnOperation())  {
+			manufOrderService.createToConsumeProdProductList(manufOrder);
+		}
+
+		manufOrderService.createToProduceProdProductList(manufOrder);
+
 		if (manufOrder.getPlannedStartDateT() == null) {
 			manufOrder.setPlannedStartDateT(Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
 		}
