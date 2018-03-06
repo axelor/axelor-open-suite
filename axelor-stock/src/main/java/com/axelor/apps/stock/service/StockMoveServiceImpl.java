@@ -50,6 +50,7 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.FreightCarrierMode;
+import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.ShipmentMode;
@@ -153,8 +154,63 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 
 	@Override
-	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, StockLocation fromStockLocation, StockLocation toStockLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException {
+	/**
+	 * Generic method to create any stock move
+	 * 
+	 * @param fromAddress
+	 * @param toAddress
+	 * @param company
+	 * @param clientPartner
+	 * @param fromStockLocation
+	 * @param toStockLocation
+	 * @param realDate
+	 * @param estimatedDate
+	 * @param description
+	 * @param shipmentMode
+	 * @param freightCarrierMode
+	 * @param carrierPartner
+	 * @param forwarderPartner
+	 * @param incoterm
+	 * @return
+	 * @throws AxelorException No Stock move sequence defined
+	 */
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, 
+			StockLocation fromStockLocation, StockLocation toStockLocation, LocalDate realDate, LocalDate estimatedDate, 
+			String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode,
+			Partner carrierPartner, Partner forwarderPartner, Incoterm incoterm) throws AxelorException {
 
+		StockMove stockMove = this.createStockMove(fromAddress, toAddress, company, fromStockLocation, toStockLocation, realDate, estimatedDate, description);
+		stockMove.setPartner(clientPartner);
+		stockMove.setShipmentMode(shipmentMode);
+		stockMove.setFreightCarrierMode(freightCarrierMode);
+		stockMove.setCarrierPartner(carrierPartner);
+		stockMove.setForwarderPartner(forwarderPartner);
+		stockMove.setIncoterm(incoterm);
+		stockMove.setIsIspmRequired(
+				this.getDefaultISPM(clientPartner, toAddress)
+		);
+
+		return stockMove;
+	}
+	
+	/**
+	 * Generic method to create any stock move for internal stock move (without partner information)
+	 * 
+	 * @param fromAddress
+	 * @param toAddress
+	 * @param company
+	 * @param fromStockLocation
+	 * @param toStockLocation
+	 * @param realDate
+	 * @param estimatedDate
+	 * @param description
+	 * @return
+	 * @throws AxelorException No Stock move sequence defined
+	 */
+	@Override
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company,  StockLocation fromStockLocation,
+			StockLocation toStockLocation, LocalDate realDate, LocalDate estimatedDate, String description) throws AxelorException  {
+		
 		StockMove stockMove = new StockMove();
 		stockMove.setFromAddress(fromAddress);
 		stockMove.setToAddress(toAddress);
@@ -163,15 +219,9 @@ public class StockMoveServiceImpl implements StockMoveService {
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
 		stockMove.setRealDate(realDate);
 		stockMove.setEstimatedDate(estimatedDate);
-		stockMove.setPartner(clientPartner);
 		stockMove.setFromStockLocation(fromStockLocation);
 		stockMove.setToStockLocation(toStockLocation);
 		stockMove.setDescription(description);
-		stockMove.setShipmentMode(shipmentMode);
-		stockMove.setFreightCarrierMode(freightCarrierMode);
-		stockMove.setIsIspmRequired(
-				this.getDefaultISPM(clientPartner, toAddress)
-		);
 
 		stockMove.setTypeSelect(getStockMoveType(fromStockLocation, toStockLocation));
 		if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
@@ -180,6 +230,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		}
 
 		return stockMove;
+		
 	}
 
 	/**

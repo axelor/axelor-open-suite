@@ -185,5 +185,15 @@
     <action-condition name="action-supplychain-so-generate-po-check-supplier-partner">
 		<check error="A supplier partner must be selected" field="supplierPartnerSelect" if="supplierPartnerSelect == null"/>
 	</action-condition>
+	
+	<action-record name="action-sale-order-record-freight-carrier" model="com.axelor.apps.base.db.Partner">
+		<field name="carrierPartner" expr="eval:freightCarrierMode?.carrierPartner"/>
+	</action-record>
+	
+	<action-record name="action-sale-order-record-partner-supplychain" model="com.axelor.apps.sale.db.SaleOrder">
+    	<field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"/>
+    	<field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
+		<field name="carrierPartner" expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>
+    </action-record>
 
 </object-views>

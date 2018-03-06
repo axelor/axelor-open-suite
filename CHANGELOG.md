@@ -26,6 +26,7 @@
 - Partial manuf order realization
 - Add a wizard to select a cancel reason and cancel a Stock move.
 - Add button to open tasks and task kanban view in project module
+- Manage shipment mode, freight carrier mode, incoterm, carrier partner, forwarder partner on Partner, Sale order, Stock move.
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.

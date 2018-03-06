@@ -382,8 +382,8 @@ public class InventoryService {
 
 	public StockMove createStockMoveHeader(Inventory inventory, Company company, StockLocation toStockLocation, LocalDate inventoryDate, String name) throws AxelorException  {
 
-		StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(null, null, company, null,
-				stockConfigService.getInventoryVirtualStockLocation(stockConfigService.getStockConfig(company)), toStockLocation, inventoryDate, inventoryDate, null, null, null);
+		StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(null, null, company,
+				stockConfigService.getInventoryVirtualStockLocation(stockConfigService.getStockConfig(company)), toStockLocation, inventoryDate, inventoryDate, null);
 
 		stockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
 		stockMove.setName(name);

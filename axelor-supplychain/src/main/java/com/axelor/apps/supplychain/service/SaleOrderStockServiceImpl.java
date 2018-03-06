@@ -124,7 +124,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
 		StockMove stockMove = stockMoveService.createStockMove(null, saleOrder.getDeliveryAddress(), company,
 				saleOrder.getClientPartner(), saleOrder.getStockLocation(), toStockLocation, null, saleOrder.getShipmentDate(),
-				saleOrder.getDescription(), saleOrder.getShipmentMode(), saleOrder.getFreightCarrierMode());
+				saleOrder.getDescription(), saleOrder.getShipmentMode(), saleOrder.getFreightCarrierMode(), 
+				saleOrder.getCarrierPartner(), saleOrder.getForwarderPartner(), saleOrder.getIncoterm());
 
 		stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
 		stockMove.setSaleOrder(saleOrder);
