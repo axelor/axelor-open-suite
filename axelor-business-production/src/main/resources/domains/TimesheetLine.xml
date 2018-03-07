@@ -8,6 +8,7 @@
     <entity name="TimesheetLine" lang="java">
 
         <many-to-one name="operationOrder" ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>
+        <many-to-one name="manufOrder" ref="com.axelor.apps.production.db.ManufOrder" title="Manuf order"/>
 
     </entity>
 

@@ -84,6 +84,7 @@
 				<field name="company" colSpan="6" form-view="company-form" grid-view="company-grid" onChange="action-hr-record-empty-user"/>
 				<field name="user" colSpan="6" form-view="user-form" onSelect="action-hr-attrs-set-user-domain" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 				<field name="user.employee" hidden="true" />
+				<field if-module="axelor-business-production" if=" __config__.app.getApp('production')?.getManageBusinessProduction()" name="user.employee.timesheetImputationSelect" hidden="true"/>
 		    </panel>
 	    </panel>
 		<panel name="generateLinesPanel" title="Generate Lines automatically" hidden="true">
@@ -100,10 +101,13 @@
 		</panel>
 		<panel name="lines">
 			<panel-dashlet name="timesheetLineEditor" colSpan="12" action="action-timesheet-show-timesheet-line-editor" showIf="showEditor" height="365"/>
-			<panel-related field="timesheetLineList"  colSpan="12" height="20" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; !$readonly()" x-can-copy="true" onChange="action-timesheet-method-timesheet-compute-period-total"/>
-			<panel-related field="timesheetLineList" colSpan="12" height="20" grid-view="timesheet-line-timesheet-readonly-grid" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; $readonly()" x-can-copy="true" />
+			<panel-related field="timesheetLineList"  colSpan="12" height="20" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; !$readonly() &amp;&amp; !($enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2)" x-can-copy="true" onChange="action-timesheet-method-timesheet-compute-period-total"/>
+			<panel-related field="timesheetLineList"  colSpan="12" height="20" grid-view="timesheet-line-timesheet-manuf-order-grid" editable="true" form-view="timesheet-line-timesheet-manuf-order-form" hidden="true" showIf="!showEditor &amp;&amp; !$readonly() &amp;&amp; $enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2" x-can-copy="true" onChange="action-timesheet-method-timesheet-compute-period-total" if-module="axelor-business-production" if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
+			<panel-related field="timesheetLineList" colSpan="12" height="20" grid-view="timesheet-line-timesheet-readonly-grid" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; $readonly() &amp;&amp; !($enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2)" x-can-copy="true" />
+			<panel-related field="timesheetLineList" colSpan="12" height="20" grid-view="timesheet-line-timesheet-readonly-manuf-order-grid" form-view="timesheet-line-timesheet-manuf-order-form" hidden="true" showIf="!showEditor &amp;&amp; $readonly() &amp;&amp; $enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2" x-can-copy="true" if-module="axelor-business-production" if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
 			<button name="fullScreenEditor" colSpan="3" title="Fullscreen Editor" showIf="id != null &amp;&amp; showEditor" if="__config__.app.getApp('timesheet').getTimesheetEditor()" onClick="action-timesheet-method-open-timesheet-editor"/>
 			<field name="$showActivity" hidden="true" type="boolean"/>
+			<field name="$enableTimesheetManufOrder" hidden="true" type="boolean"/>
 		</panel>
 		<panel-dashlet name="panelDashboard" title="Total Hours per Day" showIf="id" action="action-timesheet-view-total-hours-per-day"/>
 		<panel showIf="sentDate != null" sidebar="true" stacked="true">
@@ -141,6 +145,7 @@
 
 	<action-group name="action-timesheet-group-onload">
 		<action name="action-timesheet-method-set-show-activity"/>
+		<action name="action-timesheet-attrs-enable-timesheet-manuforder" if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="action-timesheet-attrs-set-visible-duration-title"/>
 		<action name="action-timesheet-method-set-visible-duration"/>
@@ -198,6 +203,7 @@
 	<action-group name="action-group-timesheet-onnew">
 		<action name="action-timesheet-record-default"/>
 		<action name="action-timesheet-method-set-show-activity" />
+		<action name="action-timesheet-attrs-enable-timesheet-manuforder" if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
 		<action name="action-timesheet-attrs-buttons"/>
 		<action name="action-timesheet-attrs-set-visible-duration-title"/>
 		<action name="action-timesheet-record-from-period-date"/>
@@ -323,6 +329,10 @@
 
 	<action-attrs name="action-timesheet-attrs-set-user-domain">
 		<attribute name="domain" for="user" expr="eval: &quot;self.employee.&quot;"/>
+	</action-attrs>
+
+	<action-attrs name="action-timesheet-attrs-enable-timesheet-manuforder">
+		<attribute for="$enableTimesheetManufOrder" name="value" expr="eval: __config__.app.getApp('production').getEnableTimesheetOnManufOrder()"/>
 	</action-attrs>
 
 	<action-record name="action-timesheet-record-from-period-date" model="com.axelor.apps.hr.db.Timesheet">
