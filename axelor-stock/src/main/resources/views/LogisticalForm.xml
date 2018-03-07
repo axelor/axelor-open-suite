@@ -87,7 +87,7 @@
     </action-group>
 
     <action-validate name="action-logistical-form-validate-weight">
-        <alert message="The total net weight is higher than the total gross weight." if="totalNetWeight > totalGrossWeight" />
+        <error message="The total net weight is higher than the total gross weight." if="totalNetWeight > totalGrossWeight" />
     </action-validate>
 
     <action-record name="action-logistical-form-company-change" model="com.axelor.apps.stock.db.LogisticalForm">
