@@ -31,6 +31,7 @@
             <field name="dateT" readonlyIf="statusSelect >= 2"/>
             <field name="stockLocation" onSelect="action-inventory-attrs-set-location-domain" readonlyIf="statusSelect >= 2" grid-view="stock-location-grid" form-view="stock-location-form"/>
             <field name="description" colSpan="12" height="3"/>
+            <field name="stockLocation.company"/>
         </panel>
 
         <panel title="Fill inventory with" hideIf="statusSelect >= 2 || stockLocation == null">
