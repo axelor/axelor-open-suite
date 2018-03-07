@@ -29,6 +29,7 @@
                 onClick="action-logistical-form-process-collected" icon="fa-truck" />
             <button name="packagingListBtn" title="Print packaging list" showIf="statusSelect > 1" readonlyIf="!logisticalFormLineList.length"
                 onClick="action-logistical-form-print-packaging-list" icon="fa-print" if="__config__.app.isApp('supplychain')" />
+            <button name="backToProvisionBtn" title="Back to provision" showIf="statusSelect > 1" icon="fa-cubes" onClick="action-logistical-form-back-to-provision" />
         </toolbar>
         <panel colSpan="12" readonlyIf="statusSelect > 1">
             <field name="deliveryNumber" />
@@ -108,6 +109,10 @@
 
     <action-record name="action-logistical-form-record-change-status" model="com.axelor.apps.stock.db.LogisticalForm">
         <field name="statusSelect" expr="eval: ++statusSelect" />
+    </action-record>
+
+    <action-record name="action-logistical-form-back-to-provision" model="com.axelor.apps.stock.db.LogisticalForm">
+        <field name="statusSelect" expr="eval: __repo__(LogisticalForm).STATUS_PROVISION" />
     </action-record>
 
     <action-method name="action-logistical-form-method-generate-delivery-number">
