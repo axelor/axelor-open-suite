@@ -353,7 +353,6 @@ public class InventoryService {
 					stockMoveLine.setTrackingNumber(trackingNumber);
 				}
 
-				stockMove.addStockMoveLineListItem(stockMoveLine);
 			}
 		}
 		if (stockMove.getStockMoveLineList() != null) {

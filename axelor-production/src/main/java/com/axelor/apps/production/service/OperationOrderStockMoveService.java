@@ -68,7 +68,6 @@ public class OperationOrderStockMoveService {
 			for(ProdProduct prodProduct: operationOrder.getToConsumeProdProductList()) {
 
 				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct, stockMove);
-				stockMove.addStockMoveLineListItem(stockMoveLine);
 
 			}
 
