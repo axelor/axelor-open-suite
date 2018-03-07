@@ -75,7 +75,6 @@ public class ManufOrderStockMoveService {
 			for(ProdProduct prodProduct: manufOrder.getToConsumeProdProductList()) {
 
 				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS);
-				stockMove.addStockMoveLineListItem(stockMoveLine);
 
 			}
 
@@ -130,7 +129,6 @@ public class ManufOrderStockMoveService {
 			for(ProdProduct prodProduct: manufOrder.getToProduceProdProductList()) {
 
 				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_OUT_PRODUCTIONS);
-				stockMove.addStockMoveLineListItem(stockMoveLine);
 
 			}
 
@@ -347,7 +345,6 @@ public class ManufOrderStockMoveService {
 		diffProdProductList.forEach(prodProduct -> prodProduct.setQty(prodProduct.getQty().negate()));
 		for (ProdProduct prodProduct : diffProdProductList) {
 			StockMoveLine stockMoveLine = _createStockMoveLine(prodProduct, stockMove, stockMoveLineType);
-			stockMove.addStockMoveLineListItem(stockMoveLine);
 		}
 	}
 

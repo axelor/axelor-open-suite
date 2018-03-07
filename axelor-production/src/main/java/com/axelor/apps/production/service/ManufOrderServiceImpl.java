@@ -340,7 +340,7 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 				manufOrder.getWasteProdDescription());
 
 		for (ProdProduct prodProduct : manufOrder.getWasteProdProductList()) {
-			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
+			stockMoveLineService.createStockMoveLine(
 					prodProduct.getProduct(),
 					prodProduct.getProduct().getName(),
 					prodProduct.getProduct().getDescription(),
@@ -351,7 +351,6 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 					StockMoveLineService.TYPE_WASTE_PRODUCTIONS,
 					false,
 					BigDecimal.ZERO);
-			wasteStockMove.addStockMoveLineListItem(stockMoveLine);
 		}
 
 		stockMoveService.validate(wasteStockMove);

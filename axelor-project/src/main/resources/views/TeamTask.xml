@@ -87,12 +87,9 @@
 			<field name="currency" colSpan="6"/>
         </panel>
 
-		<panel title="Dependencies" canCollapse="true" sidebar="true">
-			<field name="startToStartSet" colSpan="12" widget="TagSelect"/>
-			<field name="finishToStartSet" colSpan="12" widget="TagSelect"/>
-			<field name="startToFinishSet" colSpan="12" widget="TagSelect"/>
-			<field name="finishToFinishSet" colSpan="12" widget="TagSelect"/>
-		</panel>
+		<panel-related field="finishToStartSet" canCollapse="true" sidebar="true">
+			<field name="name"/>
+		</panel-related>
 
 		<panel-mail>
 			<mail-messages/>
