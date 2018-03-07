@@ -42,6 +42,7 @@
 - Upgrade functionality of advanced export feature
 - Change dependency to base instead of CRM,HR and Project of helpdesk module.
 - Update the SaleOrderLine form to look like InvoiceLine form.
+- Removed extra links from tasks to other tasks. Kept only 'Predecessors tasks'. 
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
