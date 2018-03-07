@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.prestashop.service.library;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -458,12 +459,14 @@ public class PSWebServiceClient {
 		request.setEntity(new ByteArrayEntity(bos.toByteArray(), XML_CONTENT_TYPE));
 		RequestResult result = null;
 
+		String content = null;
 		try {
 			result = executeRequest(request);
+			content = IOUtils.toString(result.content, Consts.UTF_8);
 			return (T)((Prestashop)jaxbContext
 					.createUnmarshaller()
-					.unmarshal(result.content)).getContent();
-		} catch (JAXBException e) {
+					.unmarshal(new ByteArrayInputStream(content.getBytes()))).getContent();
+		} catch (JAXBException | IOException e) {
 			throw new PrestaShopWebserviceException("Error while unmarshalling response from save", e);
 		} finally {
 			log.trace("Closing connection");
@@ -713,7 +716,7 @@ public class PSWebServiceClient {
 		if(schema == null) return Collections.emptyList();
 
 		JSONArray jsonMainArr = schema.getJSONArray(resourceType.getLabel());
-		List<Integer> ids = new ArrayList<Integer>(jsonMainArr.length());
+		List<Integer> ids = new ArrayList<>(jsonMainArr.length());
 
 		for (int i = 0; i < jsonMainArr.length(); i++) {
 			JSONObject childJSONObject = jsonMainArr.getJSONObject(i);
