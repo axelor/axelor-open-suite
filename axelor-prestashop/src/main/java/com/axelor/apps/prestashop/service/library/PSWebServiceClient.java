@@ -413,6 +413,23 @@ public class PSWebServiceClient {
 		}
 	}
 
+	public <T extends PrestashopIdentifiableEntity> void delete(final PrestashopResourceType resourceType, final T entity) throws PrestaShopWebserviceException {
+		Options options = new Options();
+		options.entityId = entity.getId();
+		options.resourceType = resourceType;
+
+		HttpDelete httpdelete = new HttpDelete(buildUri(options));
+		RequestResult result = null;
+
+		try {
+			result = executeRequest(httpdelete);
+			// Maybe we should decode response…
+		} finally {
+			log.trace("Closing connection");
+			if(result != null) IOUtils.closeQuietly(result.response);
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	public <T extends PrestashopIdentifiableEntity> T save(final PrestashopResourceType resourceType, final T entity) throws PrestaShopWebserviceException {
 		Options options = new Options();
