@@ -218,7 +218,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 			if (stockMoveLine != null) {
 	            stockMoveLine.setSaleOrderLine(saleOrderLine);
 	            stockMoveLine.setReservedQty(saleOrderLine.getReservedQty());
-	            stockMove.addStockMoveLineListItem(stockMoveLine);
 			}
 
 			return stockMoveLine;
@@ -237,9 +236,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 			saleOrderLine.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
 			stockMoveLine.setSaleOrderLine(saleOrderLine);
 
-			if(stockMoveLine != null) {
-				stockMove.addStockMoveLineListItem(stockMoveLine);
-			}
 			return stockMoveLine;
 		}
 		return null;
