@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1054,19 +1054,19 @@ where prod.to_consume_prod_process_line = ?;
                 <structure>
                     <property name="name">location</property>
                     <text-property name="displayName">location</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["stockLocation"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">product</property>
-                    <text-property name="displayName">product</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["product"]</expression>
+                    <expression name="expression" type="javascript">dataSetRow["location"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">producedproductlocation</property>
                     <text-property name="displayName">producedproductlocation</text-property>
                     <expression name="expression" type="javascript">dataSetRow["producedproductlocation"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">product</property>
+                    <text-property name="displayName">product</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["product"]</expression>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
