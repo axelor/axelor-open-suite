@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -35,6 +36,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
@@ -45,12 +50,15 @@ import com.axelor.apps.prestashop.entities.Associations.OrderRowsAssociationElem
 import com.axelor.apps.prestashop.entities.PrestashopCart;
 import com.axelor.apps.prestashop.entities.PrestashopOrder;
 import com.axelor.apps.prestashop.entities.PrestashopOrderHistory;
+import com.axelor.apps.prestashop.entities.PrestashopOrderPayment;
 import com.axelor.apps.prestashop.entities.PrestashopOrderRowDetails;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
+import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -65,10 +73,13 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 	private SaleOrderRepository saleOrderRepo;
 	private CurrencyService currencyService;
 	private UnitConversionService unitConversionService;
+	private InvoiceRepository invoiceRepository;
 
 	@Inject
-	public ExportOrderServiceImpl(SaleOrderRepository saleOrderRepo, CurrencyService currencyService, UnitConversionService unitConversionService) {
+	public ExportOrderServiceImpl(SaleOrderRepository saleOrderRepo, InvoiceRepository invoiceRepository,
+			CurrencyService currencyService, UnitConversionService unitConversionService) {
 		this.saleOrderRepo = saleOrderRepo;
+		this.invoiceRepository = invoiceRepository;
 		this.currencyService = currencyService;
 		this.unitConversionService = unitConversionService;
 	}
@@ -273,6 +284,43 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 				log.debug(String.format("Rows for order %s: %s", localOrder.getSaleOrderSeq(), remoteOrder.getAssociations().getOrderRows().getOrderRows()));
 			}
 
+			if(localOrder.getPrestaShopId() == null) {
+				// Let prestashop assign a reference before further processing… Of course,
+				// as it would be too simple, save does not fill reference and we have to make
+				// an additional fetch()…
+				remoteOrder = ws.save(PrestashopResourceType.ORDERS, remoteOrder);
+				remoteOrder = ws.fetch(PrestashopResourceType.ORDERS, remoteOrder.getId());
+			}
+
+			// Compute payments right now to be able to setXXXPaid
+			BigDecimal paidAmount = BigDecimal.ZERO;
+
+			final List<PrestashopOrderPayment> neededPayments = getPayments(appConfig, localOrder, remoteOrder.getReference());
+			final List<PrestashopOrderPayment> existingPayments = ws.fetch(PrestashopResourceType.ORDER_PAYMENTS, Collections.singletonMap("order_reference", remoteOrder.getReference()));
+			for(ListIterator<PrestashopOrderPayment> it = neededPayments.listIterator() ; it.hasNext() ; ) {
+				PrestashopOrderPayment localPayment = it.next();
+				paidAmount = paidAmount.add(localPayment.getAmount());
+				for(ListIterator<PrestashopOrderPayment> it2 = existingPayments.listIterator() ; it2.hasNext() ; ) {
+					PrestashopOrderPayment remotePayment = it2.next();
+					if(remotePayment.getAmount().compareTo(localPayment.getAmount()) == 0 /* We might have checked for addDate too but… PrestaShop ignores it when saving and sets it to now() */) {
+						it2.remove();
+						it.remove();
+						break;
+					}
+				}
+			}
+			// So neededPayments now contains payments without remote counterpart, existingPayments contains remote payments with no local counterPart
+			for(PrestashopOrderPayment payment : existingPayments) {
+				if(log.isDebugEnabled()) {
+					log.debug("Deleting extra payment " + payment);
+				}
+				ws.delete(PrestashopResourceType.ORDER_PAYMENTS, payment);
+			}
+			for(PrestashopOrderPayment payment : neededPayments) {
+				ws.save(PrestashopResourceType.ORDER_PAYMENTS, payment);
+			}
+
+
 			remoteOrder = ws.save(PrestashopResourceType.ORDERS, remoteOrder);
 			if(localOrder.getPrestaShopId() == null) {
 				List<SaleOrderLine> rows = new LinkedList<>(localRows);
@@ -376,5 +424,45 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 
 			logBuffer.write(String.format(" [SUCCESS]%n"));
 		}
+	}
+
+	private List<PrestashopOrderPayment> getPayments(final AppPrestashop appConfig, final SaleOrder order, final String prestashopReference) {
+		final List<PrestashopOrderPayment> payments = new LinkedList<>();
+		for(AdvancePayment p : order.getAdvancePaymentList()) {
+			if(p.getStatusSelect() == AdvancePaymentRepository.STATUS_VALIDATED) {
+				PrestashopOrderPayment payment = new PrestashopOrderPayment();
+				payment.setOrderReference(prestashopReference);
+				payment.setCurrencyId(p.getCurrency().getPrestaShopId());
+				payment.setAmount(p.getAmount());
+				try {
+					payment.setConversionRate(currencyService.getCurrencyConversionRate(order.getCurrency(), appConfig.getPrestaShopCurrency(), p.getAdvancePaymentDate()));
+				} catch (AxelorException e) {
+					log.warn("Unable to get payment conversion rate, using 1.0");
+					payment.setConversionRate(BigDecimal.ONE);
+				}
+				payment.setAddDate(p.getAdvancePaymentDate().atStartOfDay());
+				payments.add(payment);
+			}
+		}
+
+		for(Invoice invoice : invoiceRepository.all().filter("saleOrder = ?", order.getId()).fetch()) {
+			for(InvoicePayment p : invoice.getInvoicePaymentList()) {
+				if(p.getStatusSelect() == InvoicePaymentRepository.STATUS_VALIDATED) {
+					PrestashopOrderPayment payment = new PrestashopOrderPayment();
+					payment.setOrderReference(prestashopReference);
+					payment.setCurrencyId(p.getCurrency().getPrestaShopId());
+					payment.setAmount(p.getAmount());
+					try {
+						payment.setConversionRate(currencyService.getCurrencyConversionRate(order.getCurrency(), appConfig.getPrestaShopCurrency(), p.getPaymentDate()));
+					} catch (AxelorException e) {
+						log.warn("Unable to get payment conversion rate, using 1.0");
+						payment.setConversionRate(BigDecimal.ONE);
+					}
+					payment.setAddDate(p.getPaymentDate().atStartOfDay());
+					payments.add(payment);
+				}
+			}
+		}
+		return payments;
 	}
 }
