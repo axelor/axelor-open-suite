@@ -21,6 +21,7 @@ import com.axelor.apps.prestashop.entities.ListContainer.CountriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CurrenciesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CustomersContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.OrderHistoriesContainer;
+import com.axelor.apps.prestashop.entities.ListContainer.OrderInvoicesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.OrderPaymentsContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.OrderRowsDetailsContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.OrdersContainer;
@@ -36,6 +37,7 @@ import com.axelor.apps.prestashop.entities.PrestashopCustomer;
 import com.axelor.apps.prestashop.entities.PrestashopImage;
 import com.axelor.apps.prestashop.entities.PrestashopOrder;
 import com.axelor.apps.prestashop.entities.PrestashopOrderHistory;
+import com.axelor.apps.prestashop.entities.PrestashopOrderInvoice;
 import com.axelor.apps.prestashop.entities.PrestashopOrderPayment;
 import com.axelor.apps.prestashop.entities.PrestashopOrderRowDetails;
 import com.axelor.apps.prestashop.entities.PrestashopProduct;
@@ -43,6 +45,7 @@ import com.axelor.apps.prestashop.entities.PrestashopProductCategory;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.entities.xlink.ApiContainer;
 import com.axelor.apps.prestashop.entities.xlink.XlinkEntry;
+import com.axelor.common.StringUtils;
 import com.google.common.collect.Sets;
 
 public class UnmarshalTest {
@@ -529,5 +532,41 @@ public class UnmarshalTest {
 		Assert.assertEquals(OrderPaymentsContainer.class, envelop.getContent().getClass());
 		OrderPaymentsContainer rows = envelop.getContent();
 		Assert.assertEquals(3, rows.getEntities().size());
+	}
+
+	@Test
+	public void testOrderInvoice() throws JAXBException {
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("order-invoice.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(PrestashopOrderInvoice.class, envelop.getContent().getClass());
+		PrestashopOrderInvoice i = envelop.getContent();
+		Assert.assertEquals(Integer.valueOf(2), i.getId());
+		Assert.assertEquals(2, i.getOrderId());
+		Assert.assertNull(i.getDeliveryDate());
+		Assert.assertTrue(BigDecimal.ZERO.compareTo(i.getTotalDiscountsTaxExcluded()) == 0);
+		Assert.assertTrue(BigDecimal.ZERO.compareTo(i.getTotalDiscountsTaxIncluded()) == 0);
+		Assert.assertTrue(BigDecimal.valueOf(15932).compareTo(i.getTotalPaidTaxExcluded()) == 0);
+		Assert.assertTrue(BigDecimal.valueOf(15932).compareTo(i.getTotalPaidTaxIncluded()) == 0);
+		Assert.assertTrue(BigDecimal.valueOf(15932).compareTo(i.getTotalProductsTaxExcluded()) == 0);
+		Assert.assertTrue(BigDecimal.valueOf(15932).compareTo(i.getTotalProductsTaxIncluded()) == 0);
+		Assert.assertTrue(BigDecimal.ZERO.compareTo(i.getTotalShippingTaxExcluded()) == 0);
+		Assert.assertTrue(BigDecimal.ZERO.compareTo(i.getTotalShippingTaxIncluded()) == 0);
+		Assert.assertTrue(BigDecimal.ZERO.compareTo(i.getTotalWrappingTaxExcluded()) == 0);
+		Assert.assertTrue(BigDecimal.ZERO.compareTo(i.getTotalWrappingTaxIncluded()) == 0);
+		Assert.assertEquals(Integer.valueOf(0), i.getShippingTaxComputationMethod());
+		Assert.assertEquals("Sample address", i.getShopAddress());
+		Assert.assertTrue(StringUtils.isEmpty(i.getNote()));
+		Assert.assertEquals(LocalDateTime.of(2018, 02, 16, 14, 37, 57), i.getAddDate());
+	}
+
+	@Test
+	public void testOrderInvoices() throws JAXBException {
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("order-invoices.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(OrderInvoicesContainer.class, envelop.getContent().getClass());
+		OrderInvoicesContainer rows = envelop.getContent();
+		Assert.assertEquals(7, rows.getEntities().size());
 	}
 }

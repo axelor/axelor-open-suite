@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+	<order_invoices>
+		<order_invoice>
+			<id><![CDATA[1]]></id>
+			<id_order><![CDATA[1]]></id_order>
+			<number><![CDATA[1]]></number>
+			<delivery_number><![CDATA[0]]></delivery_number>
+			<delivery_date><![CDATA[0000-00-00 00:00:00]]></delivery_date>
+			<total_discount_tax_excl><![CDATA[0.000000]]></total_discount_tax_excl>
+			<total_discount_tax_incl><![CDATA[0.000000]]></total_discount_tax_incl>
+			<total_paid_tax_excl><![CDATA[6106.000000]]></total_paid_tax_excl>
+			<total_paid_tax_incl><![CDATA[6106.000000]]></total_paid_tax_incl>
+			<total_products><![CDATA[6106.000000]]></total_products>
+			<total_products_wt><![CDATA[6106.000000]]></total_products_wt>
+			<total_shipping_tax_excl><![CDATA[0.000000]]></total_shipping_tax_excl>
+			<total_shipping_tax_incl><![CDATA[0.000000]]></total_shipping_tax_incl>
+			<shipping_tax_computation_method><![CDATA[0]]></shipping_tax_computation_method>
+			<total_wrapping_tax_excl><![CDATA[0.000000]]></total_wrapping_tax_excl>
+			<total_wrapping_tax_incl><![CDATA[0.000000]]></total_wrapping_tax_incl>
+			<shop_address><![CDATA[Sample address]]></shop_address>
+			<note></note>
+			<date_add><![CDATA[2018-02-16 14:37:56]]></date_add>
+		</order_invoice>
+		<order_invoice>
+			<id><![CDATA[2]]></id>
+			<id_order><![CDATA[2]]></id_order>
+			<number><![CDATA[2]]></number>
+			<delivery_number><![CDATA[0]]></delivery_number>
+			<delivery_date><![CDATA[0000-00-00 00:00:00]]></delivery_date>
+			<total_discount_tax_excl><![CDATA[0.000000]]></total_discount_tax_excl>
+			<total_discount_tax_incl><![CDATA[0.000000]]></total_discount_tax_incl>
+			<total_paid_tax_excl><![CDATA[15932.000000]]></total_paid_tax_excl>
+			<total_paid_tax_incl><![CDATA[15932.000000]]></total_paid_tax_incl>
+			<total_products><![CDATA[15932.000000]]></total_products>
+			<total_products_wt><![CDATA[15932.000000]]></total_products_wt>
+			<total_shipping_tax_excl><![CDATA[0.000000]]></total_shipping_tax_excl>
+			<total_shipping_tax_incl><![CDATA[0.000000]]></total_shipping_tax_incl>
+			<shipping_tax_computation_method><![CDATA[0]]></shipping_tax_computation_method>
+			<total_wrapping_tax_excl><![CDATA[0.000000]]></total_wrapping_tax_excl>
+			<total_wrapping_tax_incl><![CDATA[0.000000]]></total_wrapping_tax_incl>
+			<shop_address><![CDATA[Sample address]]></shop_address>
+			<note></note>
+			<date_add><![CDATA[2018-02-16 14:37:57]]></date_add>
+		</order_invoice>
+		<order_invoice>
+			<id><![CDATA[3]]></id>
+			<id_order><![CDATA[3]]></id_order>
+			<number><![CDATA[3]]></number>
+			<delivery_number><![CDATA[0]]></delivery_number>
+			<delivery_date><![CDATA[0000-00-00 00:00:00]]></delivery_date>
+			<total_discount_tax_excl><![CDATA[0.000000]]></total_discount_tax_excl>
+			<total_discount_tax_incl><![CDATA[0.000000]]></total_discount_tax_incl>
+			<total_paid_tax_excl><![CDATA[27658.000000]]></total_paid_tax_excl>
+			<total_paid_tax_incl><![CDATA[27658.000000]]></total_paid_tax_incl>
+			<total_products><![CDATA[27658.000000]]></total_products>
+			<total_products_wt><![CDATA[27658.000000]]></total_products_wt>
+			<total_shipping_tax_excl><![CDATA[0.000000]]></total_shipping_tax_excl>
+			<total_shipping_tax_incl><![CDATA[0.000000]]></total_shipping_tax_incl>
+			<shipping_tax_computation_method><![CDATA[0]]></shipping_tax_computation_method>
+			<total_wrapping_tax_excl><![CDATA[0.000000]]></total_wrapping_tax_excl>
+			<total_wrapping_tax_incl><![CDATA[0.000000]]></total_wrapping_tax_incl>
+			<shop_address><![CDATA[Sample address]]></shop_address>
+			<note></note>
+			<date_add><![CDATA[2018-02-16 14:37:58]]></date_add>
+		</order_invoice>
+		<order_invoice>
+			<id><![CDATA[4]]></id>
+			<id_order><![CDATA[4]]></id_order>
+			<number><![CDATA[4]]></number>
+			<delivery_number><![CDATA[0]]></delivery_number>
+			<delivery_date><![CDATA[0000-00-00 00:00:00]]></delivery_date>
+			<total_discount_tax_excl><![CDATA[0.000000]]></total_discount_tax_excl>
+			<total_discount_tax_incl><![CDATA[0.000000]]></total_discount_tax_incl>
+			<total_paid_tax_excl><![CDATA[36443.800000]]></total_paid_tax_excl>
+			<total_paid_tax_incl><![CDATA[36443.800000]]></total_paid_tax_incl>
+			<total_products><![CDATA[36443.800000]]></total_products>
+			<total_products_wt><![CDATA[36443.800000]]></total_products_wt>
+			<total_shipping_tax_excl><![CDATA[0.000000]]></total_shipping_tax_excl>
+			<total_shipping_tax_incl><![CDATA[0.000000]]></total_shipping_tax_incl>
+			<shipping_tax_computation_method><![CDATA[0]]></shipping_tax_computation_method>
+			<total_wrapping_tax_excl><![CDATA[0.000000]]></total_wrapping_tax_excl>
+			<total_wrapping_tax_incl><![CDATA[0.000000]]></total_wrapping_tax_incl>
+			<shop_address><![CDATA[Sample address]]></shop_address>
+			<note></note>
+			<date_add><![CDATA[2018-02-16 14:38:00]]></date_add>
+		</order_invoice>
+		<order_invoice>
+			<id><![CDATA[5]]></id>
+			<id_order><![CDATA[6]]></id_order>
+			<number><![CDATA[5]]></number>
+			<delivery_number><![CDATA[0]]></delivery_number>
+			<delivery_date><![CDATA[0000-00-00 00:00:00]]></delivery_date>
+			<total_discount_tax_excl><![CDATA[0.000000]]></total_discount_tax_excl>
+			<total_discount_tax_incl><![CDATA[0.000000]]></total_discount_tax_incl>
+			<total_paid_tax_excl><![CDATA[20000.000000]]></total_paid_tax_excl>
+			<total_paid_tax_incl><![CDATA[20000.000000]]></total_paid_tax_incl>
+			<total_products><![CDATA[20000.000000]]></total_products>
+			<total_products_wt><![CDATA[20000.000000]]></total_products_wt>
+			<total_shipping_tax_excl><![CDATA[0.000000]]></total_shipping_tax_excl>
+			<total_shipping_tax_incl><![CDATA[0.000000]]></total_shipping_tax_incl>
+			<shipping_tax_computation_method><![CDATA[0]]></shipping_tax_computation_method>
+			<total_wrapping_tax_excl><![CDATA[0.000000]]></total_wrapping_tax_excl>
+			<total_wrapping_tax_incl><![CDATA[0.000000]]></total_wrapping_tax_incl>
+			<shop_address><![CDATA[Sample address]]></shop_address>
+			<note></note>
+			<date_add><![CDATA[2018-02-16 14:38:02]]></date_add>
+		</order_invoice>
+		<order_invoice>
+			<id><![CDATA[6]]></id>
+			<id_order><![CDATA[7]]></id_order>
+			<number><![CDATA[6]]></number>
+			<delivery_number><![CDATA[0]]></delivery_number>
+			<delivery_date><![CDATA[0000-00-00 00:00:00]]></delivery_date>
+			<total_discount_tax_excl><![CDATA[0.000000]]></total_discount_tax_excl>
+			<total_discount_tax_incl><![CDATA[0.000000]]></total_discount_tax_incl>
+			<total_paid_tax_excl><![CDATA[460.600000]]></total_paid_tax_excl>
+			<total_paid_tax_incl><![CDATA[460.600000]]></total_paid_tax_incl>
+			<total_products><![CDATA[460.600000]]></total_products>
+			<total_products_wt><![CDATA[460.600000]]></total_products_wt>
+			<total_shipping_tax_excl><![CDATA[0.000000]]></total_shipping_tax_excl>
+			<total_shipping_tax_incl><![CDATA[0.000000]]></total_shipping_tax_incl>
+			<shipping_tax_computation_method><![CDATA[0]]></shipping_tax_computation_method>
+			<total_wrapping_tax_excl><![CDATA[0.000000]]></total_wrapping_tax_excl>
+			<total_wrapping_tax_incl><![CDATA[0.000000]]></total_wrapping_tax_incl>
+			<shop_address><![CDATA[Sample address]]></shop_address>
+			<note></note>
+			<date_add><![CDATA[2018-02-16 14:38:03]]></date_add>
+		</order_invoice>
+		<order_invoice>
+			<id><![CDATA[7]]></id>
+			<id_order><![CDATA[8]]></id_order>
+			<number><![CDATA[7]]></number>
+			<delivery_number><![CDATA[0]]></delivery_number>
+			<delivery_date><![CDATA[0000-00-00 00:00:00]]></delivery_date>
+			<total_discount_tax_excl><![CDATA[0.000000]]></total_discount_tax_excl>
+			<total_discount_tax_incl><![CDATA[0.000000]]></total_discount_tax_incl>
+			<total_paid_tax_excl><![CDATA[27574.000000]]></total_paid_tax_excl>
+			<total_paid_tax_incl><![CDATA[27574.000000]]></total_paid_tax_incl>
+			<total_products><![CDATA[27574.000000]]></total_products>
+			<total_products_wt><![CDATA[27574.000000]]></total_products_wt>
+			<total_shipping_tax_excl><![CDATA[0.000000]]></total_shipping_tax_excl>
+			<total_shipping_tax_incl><![CDATA[0.000000]]></total_shipping_tax_incl>
+			<shipping_tax_computation_method><![CDATA[0]]></shipping_tax_computation_method>
+			<total_wrapping_tax_excl><![CDATA[0.000000]]></total_wrapping_tax_excl>
+			<total_wrapping_tax_incl><![CDATA[0.000000]]></total_wrapping_tax_incl>
+			<shop_address><![CDATA[Sample address]]></shop_address>
+			<note></note>
+			<date_add><![CDATA[2018-02-16 14:38:04]]></date_add>
+		</order_invoice>
+	</order_invoices>
+</prestashop>
