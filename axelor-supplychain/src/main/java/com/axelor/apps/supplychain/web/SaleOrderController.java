@@ -102,7 +102,7 @@ public class SaleOrderController{
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		if(saleOrder != null) {
+		if(saleOrder != null && saleOrder.getCompany() != null) {
 
 			StockLocation stockLocation = Beans.get(StockLocationService.class).getDefaultStockLocation(saleOrder.getCompany());
 
