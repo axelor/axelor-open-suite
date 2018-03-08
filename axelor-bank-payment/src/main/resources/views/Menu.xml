@@ -188,6 +188,15 @@
 	<menuitem name="account-conf-ebics-ebics-certificate" parent="account-conf-ebics"
 		title="Ebics certificates" action="account.conf.ebics.ebics.certificate" />
 		
+	<menuitem name="admin-root-batch-bank-payment" parent="admin-root-batch"
+		title="Bank payment batches" action="admin.root.batch.bank.payment" />
+
+	<action-view name="admin.root.batch.bank.payment" title="Bank payment batches"
+		model="com.axelor.apps.bankpayment.db.BankPaymentBatch" >
+		<view type="grid" name="bank-payment-batch-grid"/>
+		<view type="form" name="bank-payment-batch-form"/>
+	</action-view>
+		
 	<action-view name="account.conf.ebics.ebics.user" title="Ebics users"
 		model="com.axelor.apps.bankpayment.db.EbicsUser" >
 		<view type="grid" name="ebics-user-grid" />

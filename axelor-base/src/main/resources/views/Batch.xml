@@ -26,6 +26,7 @@
 		    <field name="metaFile" hidden="true" showIf="metaFile != null" widget="binary-link"  />
 		    <field name="comments" showTitle="false" colSpan="12"/>
 		    <button name="showTraceBack" title="Anomalies" colSpan="2" onClick="save,action-batch-show-trace-back"/>
+		    <button name="showEbicsCertificates" title="Ebics certificates" hidden="true" colSpan="3" onClick="save,action-batch-show-ebics-certificates"/>
 		    <button name="showInvoice" title="Invoices" hidden="true" colSpan="2" onClick="save,action-batch-show-invoice"/>
 		    <button name="showReimbursement" title="Reimbursements" hidden="true" colSpan="2" onClick="save,action-batch-show-reimbursement"/>
 		    <button name="showPaymentScheduleLine" title="Schedule lines" hidden="true" colSpan="2" onClick="save,action-batch-show-payment-schedule-line"/>
@@ -48,6 +49,9 @@
     	<attribute name="hidden" for="showAccountingSituation" expr="eval: !(_parent?.actionSelect in [17])" if="_parent?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
     	
     	<attribute name="hidden" for="showMoveLineReport" expr="eval: !(_parent?.actionSelect == 18)" if="_parent?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
+    	
+    	<attribute name="hidden" for="showEbicsCertificates" expr="eval: false" if="_parent?._model == 'com.axelor.apps.bankpayment.db.BankPaymentBatch'"/>
+    	
     </action-attrs>
 
 	<action-view name="action-batch-show-trace-back" title="Anomalies"
@@ -111,6 +115,15 @@
 		model="com.axelor.apps.account.db.MoveLineReport">
 		<view type="grid" name="move-line-report-export-grid"/>
 		<view type="form" name="move-line-report-export-form"/>
+		<domain>:batch MEMBER OF self.batchSet</domain>
+		<context name="batch" expr="eval: id"/>
+	</action-view>
+	
+	<action-view name="action-batch-show-ebics-certificates" title="Ebics certificate"
+		model="com.axelor.apps.bankpayment.db.EbicsCertificate">
+		<view type="grid" name="ebics-certificate-grid"/>
+		<view type="form" name="ebics-certificate-form"/>
+		<view-param name="show-toolbar" value="false"/>
 		<domain>:batch MEMBER OF self.batchSet</domain>
 		<context name="batch" expr="eval: id"/>
 	</action-view>
