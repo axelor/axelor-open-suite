@@ -28,6 +28,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +66,8 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public class InventoryService {
 
@@ -144,7 +147,7 @@ public class InventoryService {
 
 		for (String[] line : data) {
 			if (line.length < 6)
-				throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
+				throw new AxelorException(new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_LINE_LENGHT)), inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
 
 			String code = line[1].replace("\"", "");
 			String rack = line[2].replace("\"", "");
@@ -154,7 +157,7 @@ public class InventoryService {
 			try {
 				realQty = new BigDecimal(line[5].replace("\"", ""));
 			} catch (NumberFormatException e) {
-				throw new AxelorException(e.getCause(), inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
+				throw new AxelorException(new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_REAL_QUANTITY)), inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
 			}
 
 			String description = line[6].replace("\"", "");
@@ -167,7 +170,7 @@ public class InventoryService {
 				try {
 					currentQty = new BigDecimal(line[4].replace("\"", ""));
 				} catch (NumberFormatException e) {
-					throw new AxelorException(e.getCause(), inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
+					throw new AxelorException(new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_CURRENT_QUANTITY)), inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
 				}
 
 				InventoryLine inventoryLine = new InventoryLine();
@@ -208,7 +211,7 @@ public class InventoryService {
 		}
 
 		if (data == null || data.isEmpty()) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
+			throw new AxelorException(new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_DATA_NULL_OR_EMPTY)), IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
 		}
 		
 		data.remove(0); /* Skip headers */
@@ -482,6 +485,13 @@ public class InventoryService {
 			list.add(item);
 		}
 
+		Collections.sort(list, new Comparator<String[]>() { // sort the list by code product
+			@Override
+			public int compare(String[] strings, String[] otherStrings) {
+				return strings[1].compareTo(otherStrings[1]);
+			}
+		});
+
 		String fileName = I18n.get("Inventory")+"_"+inventory.getInventorySeq()+".csv";
 		String filePath= AppSettings.get().get("file.upload.dir");
 		Path path = Paths.get(filePath, fileName);
@@ -489,7 +499,7 @@ public class InventoryService {
 
 		log.debug("File Located at: {}" , path);
 
-		String[] headers = {"Product Name", "Product Code", "Rack", "Tracking Number", "Current Quantity", "Real Quantity", "Description"};
+		String[] headers = {I18n.get("Product Name"), I18n.get("Product Code"), I18n.get("Rack"), I18n.get("Tracking Number"), I18n.get("Current Quantity"), I18n.get("Real Quantity"), I18n.get("Description")};
 		CsvTool.csvWriter(filePath, fileName, ';', '"', headers, list);
 
 		try (InputStream is = new FileInputStream(file)) {
