@@ -49,6 +49,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.rpc.filter.Filter;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import com.itextpdf.text.DocumentException;
@@ -260,7 +261,8 @@ public class AdvancedExportController {
 				|| !StringUtils.isNullOrEmpty(request.getData().get("_domain").toString())) {
 
 			Class<? extends Model> klass = (Class<? extends Model>) request.getBeanClass();
-			List<?> listObj = request.getCriteria().createQuery(klass).fetch();
+			Filter filter = advancedExportService.getJpaSecurityFilter(metaModel);
+			List<?> listObj = request.getCriteria().createQuery(klass, filter).fetch();
 			List<Long> listIds = new ArrayList<>();
 			
 			for (Object obj : listObj) {

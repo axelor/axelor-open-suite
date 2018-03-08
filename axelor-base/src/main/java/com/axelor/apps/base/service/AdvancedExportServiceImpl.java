@@ -263,33 +263,43 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
 	private String getCriteria(MetaModel metaModel, String criteria) {
 		
-		if (StringUtils.isNullOrEmpty(criteria))
-			criteria = "";
-		else {
+		if (!StringUtils.isNullOrEmpty(criteria)){
 			log.debug("criteria : {}", criteria.substring(1, criteria.length()-1));
 			criteria = " WHERE self.id IN (" + criteria.substring(1, criteria.length()-1) + ")";
+			return criteria;
+		}	
+		
+		Filter filter = getJpaSecurityFilter(metaModel);
+		
+		if (filter != null) {
+			String permissionFilter = filter.getQuery();
+			if (StringUtils.isNullOrEmpty(criteria)) {
+				criteria = " WHERE " + permissionFilter;
+			}
+			else {
+				criteria = criteria + " AND (" + permissionFilter + ")"; 
+			}
+			params = filter.getParams();
 		}
 		
+		return criteria;
+	}
+	
+	@Override
+	public Filter getJpaSecurityFilter(MetaModel metaModel) {
+		
 		JpaSecurity jpaSecurity = Beans.get(JpaSecurity.class);
+		
 		try {
 			Filter filter = jpaSecurity.getFilter(JpaSecurity.CAN_EXPORT, 
 					(Class<? extends Model>) Class.forName(metaModel.getFullName()), null);
-			if (filter != null) {
-				String permissionFilter = filter.getQuery();
-				if (criteria.isEmpty()) {
-					criteria = " WHERE " + permissionFilter;
-				}
-				else {
-					criteria = criteria + " AND (" + permissionFilter + ")"; 
-				}
-				params = filter.getParams();
-			}
+			
+			return filter;
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		
-		
-		return criteria;
+		return null;
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
