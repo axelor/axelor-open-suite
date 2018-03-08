@@ -85,7 +85,7 @@
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
         <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"/>
-        <field name="trackingNumber"/>
+        <field name="trackingNumber" domain="self.product = :product"/>
         <field name="rack"/>
     </grid>
     
@@ -96,7 +96,7 @@
 	        <field name="futureQty"/>
             <field name="avgPrice" x-scale="2"/>
             <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
-	        <field name="trackingNumber"/>
+	        <field name="trackingNumber" domain="self.product = :product"/>
             <field name="rack"/>
         </panel>
 		<panel name="lastInventory" title="Last inventory">
