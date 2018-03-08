@@ -23,6 +23,8 @@
 	<string name="pemString" title="PEM" large="true"/>
 	<string name="sha2has" title="SHA2(256)" large="true" />
 	<datetime name="initLetterEditionDate" title="Initialization Letter edition date" />
+	
+	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 	 
 <!-- 	<unique-constraint columns="ebicsBank,typeSelect" /> -->
 	
