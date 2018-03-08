@@ -48,7 +48,7 @@ public class BatchDebtRecovery extends BatchStrategy {
 
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	private List<DebtRecovery> changedDebtRecoveries = new ArrayList<>();
+	protected List<DebtRecovery> changedDebtRecoveries = new ArrayList<>();
 
 	protected boolean stopping = false;
 	protected PartnerRepository partnerRepository;
@@ -158,7 +158,7 @@ public class BatchDebtRecovery extends BatchStrategy {
 	
 	
 
-	void generateMail() {
+	protected void generateMail() {
 		for (DebtRecovery debtRecovery : changedDebtRecoveries) {
 			try {
 				debtRecovery = Beans.get(DebtRecoveryRepository.class).find(debtRecovery.getId());
