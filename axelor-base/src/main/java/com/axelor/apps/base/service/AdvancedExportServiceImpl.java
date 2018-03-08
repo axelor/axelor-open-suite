@@ -45,7 +45,10 @@ import com.axelor.apps.base.db.AdvancedExportLine;
 import com.axelor.apps.base.db.repo.AdvancedExportLineRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.JpaSecurity;
+import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
@@ -57,6 +60,7 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.rpc.Context;
+import com.axelor.rpc.filter.Filter;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -121,6 +125,9 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 	private int msi = 0;
 	
 	private int mt = 0;
+	
+	private List<Object> params = null;
+	
 	
 	@Override
 	public String getTargetField(Context context, MetaField metaField, String targetField, MetaModel parentMetaModel) {
@@ -244,6 +251,18 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 		selectionJoinField = String.join(" ", selectionJoinFieldSet);
 		selectionRelationalJoinField = String.join(" ", selectionRelationalJoinFieldSet);
 		
+		params = null;
+		criteria = getCriteria(metaModel, criteria);
+		
+		if (orderByColumns.size() > 0)
+			orderByCol = " ORDER BY " + String.join(",", orderByColumns);
+		
+		return this.createQuery(metaModel, selectField, joinField, selectJoinField, selectionField,
+				selectionJoinField, selectionRelationalJoinField, criteria, orderByCol);
+	}
+
+	private String getCriteria(MetaModel metaModel, String criteria) {
+		
 		if (StringUtils.isNullOrEmpty(criteria))
 			criteria = "";
 		else {
@@ -251,19 +270,34 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			criteria = " WHERE self.id IN (" + criteria.substring(1, criteria.length()-1) + ")";
 		}
 		
-		if (orderByColumns.size() > 0)
-			orderByCol = " ORDER BY " + String.join(",", orderByColumns);
+		JpaSecurity jpaSecurity = Beans.get(JpaSecurity.class);
+		try {
+			Filter filter = jpaSecurity.getFilter(JpaSecurity.CAN_EXPORT, 
+					(Class<? extends Model>) Class.forName(metaModel.getFullName()), null);
+			if (filter != null) {
+				String permissionFilter = filter.getQuery();
+				if (criteria.isEmpty()) {
+					criteria = " WHERE " + permissionFilter;
+				}
+				else {
+					criteria = criteria + " AND (" + permissionFilter + ")"; 
+				}
+				params = filter.getParams();
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 		
-		Query query = null;
-
-		return this.createQuery(query, metaModel, selectField, joinField, selectJoinField, selectionField,
-				selectionJoinField, selectionRelationalJoinField, criteria, orderByCol);
+		
+		return criteria;
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private List<Map> createQuery(Query query, MetaModel metaModel, String selectField, String joinField,
+	private List<Map> createQuery(MetaModel metaModel, String selectField, String joinField,
 			String selectJoinField, String selectionField, String selectionJoinField,
 			String selectionRelationalJoinField, String criteria, String orderByCol) {
+		
+		Query query = null;
 
 		if (!selectField.equals("") && !selectJoinField.equals("") && !selectionField.equals("") && !selectionRelationalJoinField.equals("")) {
 
@@ -363,6 +397,12 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			
 			query = JPA.em().createQuery("SELECT NEW Map(" + selectField + ") from " + metaModel.getName()
 					+ " self" + criteria + orderByCol, Map.class);
+		}
+		
+		if (params != null) {
+			for (int i=0; i<params.size(); i++) {
+				query.setParameter(i, params.get(i));
+			}
 		}
 
 		return query.getResultList();

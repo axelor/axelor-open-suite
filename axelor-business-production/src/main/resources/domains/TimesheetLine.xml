@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+    <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="TimesheetLine" lang="java">
-  
-	<many-to-one name="operationOrder" ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>
-	
-  </entity>
+    <entity name="TimesheetLine" lang="java">
+
+        <many-to-one name="operationOrder" ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>
+        <many-to-one name="manufOrder" ref="com.axelor.apps.production.db.ManufOrder" title="Manuf order"/>
+
+    </entity>
 
 </domain-models>
