@@ -15,7 +15,7 @@
         <field name="typeSelect"/>
     </grid>
     
-	<form name="stock-location-form" title="Stock location" model="com.axelor.apps.stock.db.StockLocation" onNew="action-stock-location-record-new" width="large">
+	<form name="stock-location-form" title="Stock location" model="com.axelor.apps.stock.db.StockLocation" onNew="action-stock-location-record-new" width="large" onLoad="action-stock-location-method-set-stock-location-value">
 		<toolbar>
 			<button name="createInventory" title="Create inventory" onClick="action-location-view-create-inventory"/>
 			<button name="print" title="Print" icon="fa-print" onClick="action-stock-location-method-print"/>
@@ -27,6 +27,13 @@
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="address" form-view="address-form" grid-view="address-grid"/>
+			<field name="$stockLocationValue" title="Stock location value" readonly="true">
+			<viewer>
+					<![CDATA[
+						<h4> {{record.$stockLocationValue}} </h4>
+					]]>
+				</viewer>
+			</field>
 		</panel>    
 		<panel-tabs>
 			<panel name="locationContent" title="Location Content">
@@ -34,7 +41,7 @@
 			</panel> 
 			<panel-dashlet title="Stock location details" field="detailsStockLocationLineList" action="action-location-details-view-location-content" canSearch="true" height="600"/>
 		</panel-tabs>   
-		<panel-dashlet height="350" hideIf="$popup()" colSpan="12" action="dashlet.stockLocationLine.stockLocation.value"/>      
+		
 	</form>
     
     <action-method name="action-stock-location-method-print">
@@ -66,5 +73,9 @@
 		<domain>self.detailsStockLocation.id IN :contentLocationIds</domain>
   		<context name="contentLocationIds" expr="call:com.axelor.apps.stock.service.StockLocationService:getContentStockLocationIds(__self__)" />
     </action-view>
+    
+    <action-method name="action-stock-location-method-set-stock-location-value">
+    	<call class="com.axelor.apps.stock.web.StockLocationController" method="setStocklocationValue"/>
+    </action-method>
 
 </object-views>
