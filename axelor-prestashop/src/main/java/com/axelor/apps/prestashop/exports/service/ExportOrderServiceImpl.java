@@ -21,6 +21,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,6 +50,7 @@ import com.axelor.apps.prestashop.db.SaleOrderStatus;
 import com.axelor.apps.prestashop.entities.Associations.CartRowsAssociationElement;
 import com.axelor.apps.prestashop.entities.Associations.OrderRowsAssociationElement;
 import com.axelor.apps.prestashop.entities.PrestashopCart;
+import com.axelor.apps.prestashop.entities.PrestashopDelivery;
 import com.axelor.apps.prestashop.entities.PrestashopOrder;
 import com.axelor.apps.prestashop.entities.PrestashopOrderHistory;
 import com.axelor.apps.prestashop.entities.PrestashopOrderInvoice;
@@ -62,6 +64,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -465,13 +468,15 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 	 * @param ws Webservice instance used for API calls
 	 * @param localOrder Local copy of the currently being processed order (fetched
 	 * from db)
-	 * @param remoteOrder Remote copy of the order (fetched through Prestashop's WS)
+	 * @param remoteOrder Remote copy of the order (fetched through Prestashop's WS).
+	 * Some of its properties will be updated depending on created/updated entities.
 	 * @return The id of the invoice bound to the order, or <code>null</code> if no
 	 * invoice was generated
 	 */
 	private Integer generateInvoicingEntities(final AppPrestashop appConfig, final PSWebServiceClient ws, final SaleOrder localOrder, final PrestashopOrder remoteOrder,  final BufferedWriter logBuffer) throws PrestaShopWebserviceException, IOException {
 		final List<PrestashopOrderPayment> existingPayments = ws.fetch(PrestashopResourceType.ORDER_PAYMENTS, Collections.singletonMap("order_reference", remoteOrder.getReference()));
 		PrestashopOrderInvoice remoteInvoice = ws.fetchOne(PrestashopResourceType.ORDER_INVOICES, Collections.singletonMap("id_order", remoteOrder.getId().toString()));
+		PrestashopDelivery remoteDelivery = remoteOrder.getDeliveryNumber() != null ? ws.fetchOne(PrestashopResourceType.DELIVERIES, Collections.singletonMap("id", remoteOrder.getDeliveryNumber().toString())) : null;
 
 		if(localOrder.getAmountInvoiced().compareTo(localOrder.getExTaxTotal()) < 0) {
 			// Since prestashop partial invoicing/delivery/payment is kind of buggy/unusable,
@@ -482,6 +487,9 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 			}
 			if(remoteInvoice != null) {
 				ws.delete(PrestashopResourceType.ORDER_INVOICES, remoteInvoice);
+			}
+			if(remoteDelivery != null) {
+				ws.delete(PrestashopResourceType.DELIVERIES, remoteDelivery);
 			}
 			return null;
 		}
@@ -504,6 +512,7 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 			remoteInvoice.setTotalShippingTaxIncluded(remoteOrder.getTotalShippingTaxIncluded());
 			remoteInvoice.setTotalShippingTaxExcluded(remoteOrder.getTotalShippingTaxExcluded());
 			remoteInvoice = ws.save(PrestashopResourceType.ORDER_INVOICES, remoteInvoice);
+			remoteOrder.setInvoiceDate(remoteInvoice.getAddDate());
 		}
 
 		final List<PrestashopOrderPayment> neededPayments = getPayments(appConfig, localOrder, remoteOrder.getReference());
@@ -527,6 +536,41 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 		}
 		for(PrestashopOrderPayment payment : neededPayments) {
 			ws.save(PrestashopResourceType.ORDER_PAYMENTS, payment);
+		}
+
+		if(localOrder.getDeliveryState() == SaleOrderRepository.STATE_DELIVERED) {
+			if(remoteDelivery == null) {
+				remoteDelivery = new PrestashopDelivery();
+				remoteDelivery.setCarrierId(1); // FIXME Handle a mapping in freight port products?
+				remoteDelivery.setShopId(remoteOrder.getShopId());
+				remoteDelivery.setShopGroupId(remoteOrder.getShopGroupId());
+				remoteDelivery.setPriceRangeId(1);
+				remoteDelivery.setWeightRangeId(1);
+				remoteDelivery.setZoneId(1); // FIXME we could fetch country from delivery address and set its zone id here
+
+				LocalDate deliveryDate = null;
+				for(StockMove move : localOrder.getStockMoveList()) {
+					if(deliveryDate == null || (move.getRealDate() != null && deliveryDate.isBefore(move.getRealDate()))) {
+						deliveryDate = move.getRealDate();
+					}
+				}
+				if(deliveryDate != null) {
+					remoteOrder.setDeliveryDate(deliveryDate.atStartOfDay());
+				}
+				// TODO set order state to shipped
+			}
+
+			// Note that Prestashop provides *no way* to bind a delivery to a payment so
+			// delivery sheet will always say "no payment".
+			if(remoteDelivery.getId() == null || remoteDelivery.getPrice().compareTo(remoteOrder.getTotalShippingTaxIncluded()) != 0) {
+				remoteDelivery.setPrice(remoteOrder.getTotalShippingTaxIncluded());
+				remoteDelivery = ws.save(PrestashopResourceType.DELIVERIES, remoteDelivery);
+				remoteOrder.setDeliveryNumber(remoteDelivery.getId());
+			}
+		} else {
+			if(remoteDelivery != null) ws.delete(PrestashopResourceType.DELIVERIES, remoteDelivery);
+			remoteOrder.setDeliveryNumber(null);
+			remoteOrder.setDeliveryDate(null);
 		}
 
 		return remoteInvoice.getId();

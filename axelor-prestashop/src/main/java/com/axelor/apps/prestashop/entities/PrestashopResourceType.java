@@ -11,6 +11,7 @@ public enum PrestashopResourceType {
 	COUNTRIES("countries"),
 	CURRENCIES("currencies"),
 	CUSTOMERS("customers"),
+	DELIVERIES("deliveries"),
 	IMAGES("images"),
 	LANGUAGES("languages"),
 	ORDER_DETAILS("order_details"),
@@ -20,7 +21,7 @@ public enum PrestashopResourceType {
 	ORDERS("orders"),
 	PRODUCT_CATEGORIES("categories"),
 	PRODUCTS("products"),
-	// No typo� really
+	// No typo… really
 	STOCK_AVAILABLES("stock_availables");
 
 	final String label;

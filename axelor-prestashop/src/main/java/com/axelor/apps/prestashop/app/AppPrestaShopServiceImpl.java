@@ -51,6 +51,7 @@ public class AppPrestaShopServiceImpl implements AppPrestaShopService {
 			PrestashopResourceType.COUNTRIES,
 			PrestashopResourceType.CURRENCIES,
 			PrestashopResourceType.CUSTOMERS,
+			PrestashopResourceType.DELIVERIES,
 			PrestashopResourceType.IMAGES,
 			PrestashopResourceType.LANGUAGES,
 			PrestashopResourceType.ORDER_DETAILS,
