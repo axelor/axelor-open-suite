@@ -61,7 +61,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
     protected void process() {
         processPaymentScheduleLines(PaymentScheduleRepository.TYPE_TERMS);
 
-        if (batchBankPaymentService.doneExists(batch) && generateBankOrderFlag) {
+        if (batchBankPaymentService.paymentScheduleLineDoneListExists(batch) && generateBankOrderFlag) {
             try {
                 findBatch();
                 batchBankPaymentService.mergeBankOrders(batch);

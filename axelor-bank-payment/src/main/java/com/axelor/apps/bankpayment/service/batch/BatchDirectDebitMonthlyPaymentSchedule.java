@@ -33,7 +33,7 @@ public class BatchDirectDebitMonthlyPaymentSchedule extends BatchDirectDebitPaym
     protected void process() {
         processPaymentScheduleLines(PaymentScheduleRepository.TYPE_MONTHLY);
 
-        if (batchBankPaymentService.doneExists(batch) && generateBankOrderFlag) {
+        if (batchBankPaymentService.paymentScheduleLineDoneListExists(batch) && generateBankOrderFlag) {
             try {
                 findBatch();
                 batchBankPaymentService.createBankOrderFromPaymentScheduleLines(batch);
