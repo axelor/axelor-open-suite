@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
-import java.util.List;
+import java.util.Collection;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.bankpayment.db.BankOrder;
@@ -27,15 +27,15 @@ import com.google.inject.persist.Transactional;
 public interface BankOrderMergeService  {
 	
 	@Transactional
-	public BankOrder mergeBankOrderList(List<BankOrder> bankOrderList) throws AxelorException;
+	public BankOrder mergeBankOrders(Collection<BankOrder> bankOrders) throws AxelorException;
 
 	/**
 	 * Merge bank orders from invoice payments.
 	 * 
-	 * @param invoicePaymentList
+	 * @param invoicePayments
 	 * @return
 	 * @throws AxelorException
 	 */
-	BankOrder mergeFromInvoicePayments(List<InvoicePayment> invoicePaymentList) throws AxelorException;
+	BankOrder mergeFromInvoicePayments(Collection<InvoicePayment> invoicePayments) throws AxelorException;
 
 }

@@ -36,8 +36,6 @@ import com.axelor.apps.bankpayment.ebics.service.EbicsBankService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsBankServiceImpl;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerServiceImpl;
-import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
-import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveService;
@@ -87,8 +85,6 @@ public class BankPaymentModule extends AxelorModule {
 	     bind(BatchCreditTransferPartnerReimbursement.class).to(BatchCreditTransferPartnerReimbursementBankPayment.class);
 
 	     bind(AccountingBatchService.class).to(AccountingBatchBankPaymentService.class);
-
-	     bind(PaymentScheduleLineBankPaymentService.class).to(PaymentScheduleLineBankPaymentServiceImpl.class);
 
 	     bind(BatchBankPaymentService.class).to(BatchBankPaymentServiceImpl.class);
 	}

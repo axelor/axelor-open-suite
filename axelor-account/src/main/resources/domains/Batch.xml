@@ -11,9 +11,6 @@
   	<many-to-one name="invoiceBatch" ref="com.axelor.apps.account.db.InvoiceBatch" />
   	<many-to-one name="accountingBatch" ref="com.axelor.apps.account.db.AccountingBatch" />
 
-    <many-to-many name="paymentScheduleLineDoneSet" ref="com.axelor.apps.account.db.PaymentScheduleLine" />
-    <many-to-many name="paymentScheduleLineAnomalySet" ref="com.axelor.apps.account.db.PaymentScheduleLine" />
-
   </entity>
 
 </domain-models>
