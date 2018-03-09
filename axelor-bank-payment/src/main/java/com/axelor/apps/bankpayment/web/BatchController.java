@@ -17,16 +17,12 @@
  */
 package com.axelor.apps.bankpayment.web;
 
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.bankpayment.service.batch.BatchBankPaymentService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -42,13 +38,6 @@ public class BatchController {
             Beans.get(BatchBankPaymentService.class).createBankOrder(batch);
 
             response.setReload(true);
-
-            ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Bank order"));
-            actionViewBuilder.model(MoveLine.class.getName());
-            actionViewBuilder.add("form", "bank-order-form");
-            actionViewBuilder.context("_showRecord", batch.getBankOrder().getId());
-
-            response.setView(actionViewBuilder.map());
         } catch (Exception e) {
             TraceBackService.trace(response, e, ResponseMessageType.ERROR);
         }

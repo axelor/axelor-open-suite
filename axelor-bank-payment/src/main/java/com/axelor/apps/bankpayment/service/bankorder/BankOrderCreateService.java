@@ -172,5 +172,5 @@ public class BankOrderCreateService {
 		
 		return invoice.getCompany().getDefaultBankDetails();
 	}
-	
+
 }

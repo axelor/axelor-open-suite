@@ -19,6 +19,7 @@ package com.axelor.apps.bankpayment.service.batch;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -31,6 +32,12 @@ public abstract class BatchDirectDebit extends com.axelor.apps.account.service.b
 
     @Inject
     protected BankDetailsService bankDetailsService;
+
+    @Inject
+    protected BatchBankPaymentService batchBankPaymentService;
+
+    @Inject
+    PaymentScheduleLineRepository paymentScheduleLineRepo;
 
     @Override
     protected void start() throws IllegalAccessException, AxelorException {
