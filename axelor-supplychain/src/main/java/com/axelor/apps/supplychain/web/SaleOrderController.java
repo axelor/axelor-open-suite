@@ -74,27 +74,31 @@ public class SaleOrderController{
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
 
-	public void createStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void createStockMove(ActionRequest request, ActionResponse response) {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		if(saleOrder.getId() != null) {
+		try {
+			if (saleOrder.getId() != null) {
 
-			SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
-			StockMove stockMove = saleOrderStockService.createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+				SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
+				StockMove stockMove = saleOrderStockService
+						.createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
 
-			if(stockMove != null)  {
-				response.setView(ActionView
-					.define(I18n.get("Stock move"))
-					.model(StockMove.class.getName())
-					.add("grid", "stock-move-grid")
-					.add("form", "stock-move-form")
-					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(stockMove.getId())).map());
+				if (stockMove != null) {
+					response.setView(ActionView
+							.define(I18n.get("Stock move"))
+							.model(StockMove.class.getName())
+							.add("grid", "stock-move-grid")
+							.add("form", "stock-move-form")
+							.param("forceEdit", "true")
+							.context("_showRecord", String.valueOf(stockMove.getId())).map());
+				} else {
+					response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
+				}
 			}
-			else  {
-				response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
-			}
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
 		}
 	}
 
