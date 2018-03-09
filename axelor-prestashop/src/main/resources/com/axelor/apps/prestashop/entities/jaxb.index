@@ -3,6 +3,7 @@ ListContainer$CartsContainer
 ListContainer$CountriesContainer
 ListContainer$CurrenciesContainer
 ListContainer$CustomersContainer
+ListContainer$DeliveriesContainer
 ListContainer$OrderRowsDetailsContainer
 ListContainer$OrderHistoriesContainer
 ListContainer$OrderInvoicesContainer
@@ -18,6 +19,7 @@ PrestashopContainerEntity
 PrestashopCountry
 PrestashopCurrency
 PrestashopCustomer
+PrestashopDelivery
 PrestashopImage
 PrestashopOrder
 PrestashopOrderHistory

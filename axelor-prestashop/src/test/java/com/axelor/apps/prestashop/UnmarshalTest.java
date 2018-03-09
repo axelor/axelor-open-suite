@@ -20,6 +20,7 @@ import com.axelor.apps.prestashop.entities.ListContainer.CartsContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CountriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CurrenciesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CustomersContainer;
+import com.axelor.apps.prestashop.entities.ListContainer.DeliveriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.OrderHistoriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.OrderInvoicesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.OrderPaymentsContainer;
@@ -34,6 +35,7 @@ import com.axelor.apps.prestashop.entities.PrestashopCart;
 import com.axelor.apps.prestashop.entities.PrestashopCountry;
 import com.axelor.apps.prestashop.entities.PrestashopCurrency;
 import com.axelor.apps.prestashop.entities.PrestashopCustomer;
+import com.axelor.apps.prestashop.entities.PrestashopDelivery;
 import com.axelor.apps.prestashop.entities.PrestashopImage;
 import com.axelor.apps.prestashop.entities.PrestashopOrder;
 import com.axelor.apps.prestashop.entities.PrestashopOrderHistory;
@@ -568,5 +570,32 @@ public class UnmarshalTest {
 		Assert.assertEquals(OrderInvoicesContainer.class, envelop.getContent().getClass());
 		OrderInvoicesContainer rows = envelop.getContent();
 		Assert.assertEquals(7, rows.getEntities().size());
+	}
+
+	@Test
+	public void testDelivery() throws JAXBException {
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("delivery.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(PrestashopDelivery.class, envelop.getContent().getClass());
+		PrestashopDelivery d = envelop.getContent();
+		Assert.assertEquals(Integer.valueOf(5), d.getId());
+		Assert.assertEquals(2, d.getCarrierId());
+		Assert.assertEquals(7, d.getPriceRangeId());
+		Assert.assertEquals(2, d.getWeightRangeId());
+		Assert.assertEquals(1, d.getZoneId());
+		Assert.assertEquals(Integer.valueOf(1), d.getShopId());
+		Assert.assertEquals(Integer.valueOf(0), d.getShopGroupId());
+		Assert.assertTrue(BigDecimal.valueOf(15).compareTo(d.getPrice()) == 0);
+	}
+
+	@Test
+	public void testDeliveries() throws JAXBException {
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("deliveries.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(DeliveriesContainer.class, envelop.getContent().getClass());
+		DeliveriesContainer deliveries = envelop.getContent();
+		Assert.assertEquals(4, deliveries.getEntities().size());
 	}
 }
