@@ -35,7 +35,7 @@ public interface BatchBankPaymentService {
      * @param batch
      * @return
      */
-    boolean doneExists(Batch batch);
+    boolean paymentScheduleLineDoneListExists(Batch batch);
 
     /**
      * Create bank order.

@@ -54,9 +54,11 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.QueryBuilder;
+import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -67,8 +69,8 @@ import com.google.inject.persist.Transactional;
 public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
 
     @Override
-    public boolean doneExists(Batch batch) {
-        return getDoneQuery(batch).fetchOne() != null;
+    public boolean paymentScheduleLineDoneListExists(Batch batch) {
+        return getPaymentScheduleLineDoneListQuery(batch).fetchOne() != null;
     }
 
     @Override
@@ -76,7 +78,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
     public BankOrder createBankOrder(Batch batch)
             throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
-        PaymentScheduleLine paymentScheduleLine = getDoneQuery(batch).fetchOne();
+        PaymentScheduleLine paymentScheduleLine = getPaymentScheduleLineDoneListQuery(batch).fetchOne();
 
         if (paymentScheduleLine == null) {
             throw new AxelorException(batch, IException.CONFIGURATION_ERROR,
@@ -105,7 +107,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
         InvoicePaymentRepository invoicePaymentRepo = Beans.get(InvoicePaymentRepository.class);
         List<InvoicePayment> invoicePaymentList = new ArrayList<>();
 
-        for (PaymentScheduleLine paymentScheduleLine : getDoneList(batch)) {
+        for (PaymentScheduleLine paymentScheduleLine : getPaymentScheduleLineDoneList(batch)) {
             PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
             MoveLine creditMoveLine = paymentScheduleLine.getAdvanceMoveLine();
 
@@ -148,6 +150,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
         BankOrderService bankOrderService = Beans.get(BankOrderService.class);
         BankOrderLineService bankOrderLineService = Beans.get(BankOrderLineService.class);
         BankOrderManagementRepository bankOrderRepo = Beans.get(BankOrderManagementRepository.class);
+        BatchRepository batchRepo = Beans.get(BatchRepository.class);
 
         Currency currency = senderCompany.getCurrency();
         int partnerType = BankOrderRepository.PARTNER_TYPE_CUSTOMER;
@@ -161,38 +164,61 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
 
         BankOrder bankOrder = bankOrderCreateService.createBankOrder(paymentMode, partnerType, bankOrderDate,
                 senderCompany, senderBankDetails, currency, senderReference, senderLabel);
+        bankOrder = JPA.save(bankOrder);
 
-        for (PaymentScheduleLine paymentScheduleLine : getDoneList(batch)) {
-            PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
-            Partner partner = paymentSchedule.getPartner();
-            BankDetails bankDetails = paymentScheduleService.getBankDetails(paymentSchedule);
-            BigDecimal amount = paymentScheduleLine.getInTaxAmount();
-            String receiverReference = paymentScheduleLine.getName();
-            String receiverLabel = paymentScheduleLine.getDebitNumber();
-            BankOrderLine bankOrderLine = bankOrderLineService.createBankOrderLine(paymentMode.getBankOrderFileFormat(),
-                    null, partner, bankDetails, amount, currency, bankOrderDate, receiverReference, receiverLabel);
-            bankOrder.addBankOrderLineListItem(bankOrderLine);
+        List<PaymentScheduleLine> paymentScheduleLineList;
+        int offset = 0;
+
+        try {
+            while (!(paymentScheduleLineList = getPaymentScheduleLineDoneList(batch, offset)).isEmpty()) {
+                bankOrder = bankOrderRepo.find(bankOrder.getId());
+
+                for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList) {
+                    PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
+                    Partner partner = paymentSchedule.getPartner();
+                    BankDetails bankDetails = paymentScheduleService.getBankDetails(paymentSchedule);
+                    BigDecimal amount = paymentScheduleLine.getInTaxAmount();
+                    String receiverReference = paymentScheduleLine.getName();
+                    String receiverLabel = paymentScheduleLine.getDebitNumber();
+                    BankOrderLine bankOrderLine = bankOrderLineService.createBankOrderLine(
+                            paymentMode.getBankOrderFileFormat(), null, partner, bankDetails, amount, currency,
+                            bankOrderDate, receiverReference, receiverLabel);
+                    bankOrder.addBankOrderLineListItem(bankOrderLine);
+                }
+
+                bankOrder = JPA.save(bankOrder);
+                offset += AbstractBatch.FETCH_LIMIT;
+                JPA.clear();
+            }
+        } catch (Exception e) {
+            bankOrder = bankOrderRepo.find(bankOrder.getId());
+            bankOrderRepo.remove(bankOrder);
+            throw e;
         }
 
+        bankOrder = bankOrderRepo.find(bankOrder.getId());
         bankOrder = bankOrderRepo.save(bankOrder);
         bankOrderService.confirm(bankOrder);
+
+        batch = batchRepo.find(batch.getId());
         batch.setBankOrder(bankOrder);
+
         return bankOrder;
     }
 
-    protected List<PaymentScheduleLine> getDoneList(Batch batch, int limit, int offset) {
-        return getDoneQuery(batch).fetch(limit, offset);
+    protected List<PaymentScheduleLine> getPaymentScheduleLineDoneList(Batch batch, int limit, int offset) {
+        return getPaymentScheduleLineDoneListQuery(batch).fetch(limit, offset);
     }
 
-    protected List<PaymentScheduleLine> getDoneList(Batch batch, int offset) {
-        return getDoneQuery(batch).fetch(AbstractBatch.FETCH_LIMIT, offset);
+    protected List<PaymentScheduleLine> getPaymentScheduleLineDoneList(Batch batch, int offset) {
+        return getPaymentScheduleLineDoneListQuery(batch).fetch(AbstractBatch.FETCH_LIMIT, offset);
     }
 
-    protected List<PaymentScheduleLine> getDoneList(Batch batch) {
-        return getDoneQuery(batch).fetch();
+    protected List<PaymentScheduleLine> getPaymentScheduleLineDoneList(Batch batch) {
+        return getPaymentScheduleLineDoneListQuery(batch).fetch();
     }
 
-    private Query<PaymentScheduleLine> getDoneQuery(Batch batch) {
+    private Query<PaymentScheduleLine> getPaymentScheduleLineDoneListQuery(Batch batch) {
         QueryBuilder<PaymentScheduleLine> queryBuilder = QueryBuilder.of(PaymentScheduleLine.class);
 
         queryBuilder.add(":batch MEMBER OF self.batchSet");
