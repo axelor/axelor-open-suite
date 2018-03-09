@@ -42,6 +42,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.prestashop.db.SaleOrderStatus;
@@ -50,6 +51,7 @@ import com.axelor.apps.prestashop.entities.Associations.OrderRowsAssociationElem
 import com.axelor.apps.prestashop.entities.PrestashopCart;
 import com.axelor.apps.prestashop.entities.PrestashopOrder;
 import com.axelor.apps.prestashop.entities.PrestashopOrderHistory;
+import com.axelor.apps.prestashop.entities.PrestashopOrderInvoice;
 import com.axelor.apps.prestashop.entities.PrestashopOrderPayment;
 import com.axelor.apps.prestashop.entities.PrestashopOrderRowDetails;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
@@ -71,14 +73,16 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private SaleOrderRepository saleOrderRepo;
+	private AddressService addressService;
 	private CurrencyService currencyService;
 	private UnitConversionService unitConversionService;
 	private InvoiceRepository invoiceRepository;
 
 	@Inject
-	public ExportOrderServiceImpl(SaleOrderRepository saleOrderRepo, InvoiceRepository invoiceRepository,
+	public ExportOrderServiceImpl(SaleOrderRepository saleOrderRepo, AddressService addressService, InvoiceRepository invoiceRepository,
 			CurrencyService currencyService, UnitConversionService unitConversionService) {
 		this.saleOrderRepo = saleOrderRepo;
+		this.addressService = addressService;
 		this.invoiceRepository = invoiceRepository;
 		this.currencyService = currencyService;
 		this.unitConversionService = unitConversionService;
@@ -255,6 +259,14 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 
 			SaleOrderStatus orderStatus = null;
 
+			// FIXME This is too dumb to use with prestashop, we've to enforce things
+			// with following statuses (user only provides mapping) :
+			//  - awaiting payment (since there's no status for "on hold" on prestashop): no payment nor delivery
+			//  - payment accepted:  fully paid and no delivery
+			//  - preparation: partially delivered
+			//  - shipped: totally delivered
+			// Also, only export orders that are confirmed, we may create carts for earlier statuses but this
+			// won't have a big interest.
 			if(Boolean.TRUE.equals(appConfig.getIsOrderStatus())) {
 				for(SaleOrderStatus status : appConfig.getSaleOrderStatusList()) {
 					if(status.getAbsStatus() == localOrder.getStatusSelect()) {
@@ -292,36 +304,9 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 				remoteOrder = ws.fetch(PrestashopResourceType.ORDERS, remoteOrder.getId());
 			}
 
-			// Compute payments right now to be able to setXXXPaid
-			BigDecimal paidAmount = BigDecimal.ZERO;
 
-			final List<PrestashopOrderPayment> neededPayments = getPayments(appConfig, localOrder, remoteOrder.getReference());
-			final List<PrestashopOrderPayment> existingPayments = ws.fetch(PrestashopResourceType.ORDER_PAYMENTS, Collections.singletonMap("order_reference", remoteOrder.getReference()));
-			for(ListIterator<PrestashopOrderPayment> it = neededPayments.listIterator() ; it.hasNext() ; ) {
-				PrestashopOrderPayment localPayment = it.next();
-				paidAmount = paidAmount.add(localPayment.getAmount());
-				for(ListIterator<PrestashopOrderPayment> it2 = existingPayments.listIterator() ; it2.hasNext() ; ) {
-					PrestashopOrderPayment remotePayment = it2.next();
-					if(remotePayment.getAmount().compareTo(localPayment.getAmount()) == 0 /* We might have checked for addDate too but… PrestaShop ignores it when saving and sets it to now() */) {
-						it2.remove();
-						it.remove();
-						break;
-					}
-				}
-			}
-			// So neededPayments now contains payments without remote counterpart, existingPayments contains remote payments with no local counterPart
-			for(PrestashopOrderPayment payment : existingPayments) {
-				if(log.isDebugEnabled()) {
-					log.debug("Deleting extra payment " + payment);
-				}
-				ws.delete(PrestashopResourceType.ORDER_PAYMENTS, payment);
-			}
-			for(PrestashopOrderPayment payment : neededPayments) {
-				ws.save(PrestashopResourceType.ORDER_PAYMENTS, payment);
-			}
+			Integer remoteInvoiceId = generateInvoicingEntities(appConfig, ws, localOrder, remoteOrder, logBuffer);
 
-
-			remoteOrder = ws.save(PrestashopResourceType.ORDERS, remoteOrder);
 			if(localOrder.getPrestaShopId() == null) {
 				List<SaleOrderLine> rows = new LinkedList<>(localRows);
 				// If we just created order, lines have been created from cart
@@ -334,7 +319,7 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 
 			logBuffer.write(String.format(" [SUCCESS]%n\tExporting lines:%n"));
 
-			exportLines(appConfig, ws, localOrder, localRows, logBuffer);
+			exportLines(appConfig, ws, localOrder, localRows, remoteInvoiceId, logBuffer);
 
 
 			if(orderStatus != null) {
@@ -351,6 +336,10 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 				}
 			}
 
+			// We've to save *after* the lines are updated since totalPaid fields are totally ignored and forced
+			// to product base price * qty otherwhise.
+			remoteOrder = ws.save(PrestashopResourceType.ORDERS, remoteOrder);
+
 			// OK, so we've an order with its lines, but those lines currently have no informations, eg. price was
 			// taken from product configuration, so we've to improve them
 			++done;
@@ -359,7 +348,9 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 		logBuffer.write(String.format("%n=== END OF ORDERS EXPORT, done: %d, errors: %d ===%n", done, errors));
 	}
 
-	private void exportLines(final AppPrestashop appConfig, final PSWebServiceClient ws, final SaleOrder order, final List<SaleOrderLine> lines, final BufferedWriter logBuffer) throws PrestaShopWebserviceException, IOException {
+	private void exportLines(final AppPrestashop appConfig, final PSWebServiceClient ws,
+			final SaleOrder order, final List<SaleOrderLine> lines,
+			final Integer remoteInvoiceId, final BufferedWriter logBuffer) throws PrestaShopWebserviceException, IOException {
 		List<PrestashopOrderRowDetails> remoteRows = ws.fetch(PrestashopResourceType.ORDER_DETAILS, Collections.singletonMap("id_order", order.getPrestaShopId().toString()));
 
 		final Map<Integer, PrestashopOrderRowDetails> remoteRowsById = new HashMap<>();
@@ -416,6 +407,7 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 				remoteRow.setTotalPriceTaxExcluded(localRow.getExTaxTotal().setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
 				remoteRow.setTotalPriceTaxIncluded(localRow.getInTaxTotal().setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
 			}
+			remoteRow.setOrderInvoiceId(remoteInvoiceId);
 			remoteRow.setShopId(1); // FIXME Handle this through configuration
 			// TODO Handle warehouse
 
@@ -463,6 +455,80 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 				}
 			}
 		}
+
 		return payments;
+	}
+
+	/**
+	 * Create entities bound to invoicing process (invoices, payments, deliveries).
+	 * @param appConfig Prestashop module's configuration
+	 * @param ws Webservice instance used for API calls
+	 * @param localOrder Local copy of the currently being processed order (fetched
+	 * from db)
+	 * @param remoteOrder Remote copy of the order (fetched through Prestashop's WS)
+	 * @return The id of the invoice bound to the order, or <code>null</code> if no
+	 * invoice was generated
+	 */
+	private Integer generateInvoicingEntities(final AppPrestashop appConfig, final PSWebServiceClient ws, final SaleOrder localOrder, final PrestashopOrder remoteOrder,  final BufferedWriter logBuffer) throws PrestaShopWebserviceException, IOException {
+		final List<PrestashopOrderPayment> existingPayments = ws.fetch(PrestashopResourceType.ORDER_PAYMENTS, Collections.singletonMap("order_reference", remoteOrder.getReference()));
+		PrestashopOrderInvoice remoteInvoice = ws.fetchOne(PrestashopResourceType.ORDER_INVOICES, Collections.singletonMap("id_order", remoteOrder.getId().toString()));
+
+		if(localOrder.getAmountInvoiced().compareTo(localOrder.getExTaxTotal()) < 0) {
+			// Since prestashop partial invoicing/delivery/payment is kind of buggy/unusable,
+			// we just put an invoice when the whole order has been invoiced
+			for(PrestashopOrderPayment payment : existingPayments) {
+				logBuffer.write(String.format(", deleting payment %d (nothing invoiced)", payment.getId()));
+				ws.delete(PrestashopResourceType.ORDER_PAYMENTS, payment);
+			}
+			if(remoteInvoice != null) {
+				ws.delete(PrestashopResourceType.ORDER_INVOICES, remoteInvoice);
+			}
+			return null;
+		}
+
+		if(remoteInvoice == null) {
+			remoteInvoice = new PrestashopOrderInvoice();
+			remoteInvoice.setOrderId(remoteOrder.getId());
+			remoteInvoice.setNote(I18n.get("Invoice created from Axelor"));
+			remoteInvoice.setShopAddress(localOrder.getCompany().getName() + "\n" + addressService.computeAddressStr(localOrder.getCompany().getAddress()));
+			remoteInvoice.setNumber(ws.getNextInvoiceNumber());
+			remoteOrder.setInvoiceNumber(remoteInvoice.getNumber());
+		}
+
+		if(remoteInvoice.getTotalPaidTaxExcluded().compareTo(localOrder.getAmountInvoiced()) != 0) {
+			log.debug("Adjusting invoiced amount to {}", localOrder.getExTaxTotal());
+			remoteInvoice.setTotalPaidTaxIncluded(localOrder.getInTaxTotal().setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
+			remoteInvoice.setTotalPaidTaxExcluded(localOrder.getExTaxTotal().setScale(appConfig.getExportPriceScale(), RoundingMode.HALF_UP));
+			remoteInvoice.setTotalProductsTaxExcluded(remoteOrder.getTotalProductsTaxExcluded());
+			remoteInvoice.setTotalProductsTaxIncluded(remoteOrder.getTotalProductsTaxIncluded());
+			remoteInvoice.setTotalShippingTaxIncluded(remoteOrder.getTotalShippingTaxIncluded());
+			remoteInvoice.setTotalShippingTaxExcluded(remoteOrder.getTotalShippingTaxExcluded());
+			remoteInvoice = ws.save(PrestashopResourceType.ORDER_INVOICES, remoteInvoice);
+		}
+
+		final List<PrestashopOrderPayment> neededPayments = getPayments(appConfig, localOrder, remoteOrder.getReference());
+		for(ListIterator<PrestashopOrderPayment> it = neededPayments.listIterator() ; it.hasNext() ; ) {
+			PrestashopOrderPayment localPayment = it.next();
+			for(ListIterator<PrestashopOrderPayment> it2 = existingPayments.listIterator() ; it2.hasNext() ; ) {
+				PrestashopOrderPayment remotePayment = it2.next();
+				if(remotePayment.getAmount().compareTo(localPayment.getAmount()) == 0 /* We might have checked for addDate too but… PrestaShop ignores it when saving and sets it to now() */) {
+					it2.remove();
+					it.remove();
+					break;
+				}
+			}
+		}
+		// So neededPayments now contains payments without remote counterpart, existingPayments contains remote payments with no local counterPart
+		for(PrestashopOrderPayment payment : existingPayments) {
+			if(log.isDebugEnabled()) {
+				log.debug("Deleting extra payment " + payment);
+			}
+			ws.delete(PrestashopResourceType.ORDER_PAYMENTS, payment);
+		}
+		for(PrestashopOrderPayment payment : neededPayments) {
+			ws.save(PrestashopResourceType.ORDER_PAYMENTS, payment);
+		}
+
+		return remoteInvoice.getId();
 	}
 }

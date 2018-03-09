@@ -87,6 +87,7 @@ import com.axelor.apps.prestashop.entities.Prestashop;
 import com.axelor.apps.prestashop.entities.PrestashopContainerEntity;
 import com.axelor.apps.prestashop.entities.PrestashopIdentifiableEntity;
 import com.axelor.apps.prestashop.entities.PrestashopImage;
+import com.axelor.apps.prestashop.entities.PrestashopOrderInvoice;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 
 import wslite.json.JSONArray;
@@ -509,6 +510,41 @@ public class PSWebServiceClient {
 		} catch (Exception e) {
 			throw new PrestaShopWebserviceException("An error occured while processing image add response", e);
 		} finally {
+			if(result != null) IOUtils.closeQuietly(result.response);
+		}
+	}
+
+	/**
+	 * Since Prestashop is unable to assign a correct invoice number, let's "compute" it…
+	 * This is not concurrency safe, but a quick glance at prestashop's code tells me than
+	 * it isn't on prestashop side anyway…
+	 * @return The next number to be assigned
+	 * @throws PrestaShopWebserviceException
+	 */
+	public int getNextInvoiceNumber() throws PrestaShopWebserviceException {
+		Options options = new Options();
+		options.resourceType = PrestashopResourceType.ORDER_INVOICES;
+		options.display = Collections.singletonList("full");
+		options.sort = Collections.singletonList("number_DESC");
+		options.limit = 1;
+
+		HttpGet httpget = new HttpGet(buildUri(options));
+		RequestResult result = null;
+
+		try {
+			result = executeRequest(httpget);
+			@SuppressWarnings("unchecked")
+			List<PrestashopOrderInvoice> invoices =
+					((ListContainer<PrestashopOrderInvoice>)((Prestashop)jaxbContext
+					.createUnmarshaller()
+					.unmarshal(result.content)).getContent())
+					.getEntities();
+			if(invoices.size() == 0) return 1;
+			return invoices.get(0).getNumber() + 1;
+		} catch (JAXBException e) {
+			throw new PrestaShopWebserviceException("Error while unmarshalling response from fetch", e);
+		} finally {
+			log.trace("Closing connection");
 			if(result != null) IOUtils.closeQuietly(result.response);
 		}
 	}

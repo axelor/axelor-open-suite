@@ -15,6 +15,7 @@ public enum PrestashopResourceType {
 	LANGUAGES("languages"),
 	ORDER_DETAILS("order_details"),
 	ORDER_HISTORIES("order_histories"),
+	ORDER_INVOICES("order_invoices"),
 	ORDER_PAYMENTS("order_payments"),
 	ORDERS("orders"),
 	PRODUCT_CATEGORIES("categories"),
