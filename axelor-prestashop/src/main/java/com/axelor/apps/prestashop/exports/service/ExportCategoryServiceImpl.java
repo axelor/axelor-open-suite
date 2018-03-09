@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.prestashop.exports.service;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public class ExportCategoryServiceImpl implements ExportCategoryService {
 
 	@Override
 	@Transactional
-	public void exportCategory(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter logBuffer) throws IOException, PrestaShopWebserviceException {
+	public void exportCategory(AppPrestashop appConfig, ZonedDateTime endDate, Writer logBuffer) throws IOException, PrestaShopWebserviceException {
 		int done = 0;
 		int errors = 0;
 

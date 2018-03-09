@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.prestashop.exports.service;
 
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.text.Normalizer;
 import java.time.LocalDate;
@@ -77,7 +77,7 @@ public class ExportProductServiceImpl implements ExportProductService {
 
 	@Override
 	@Transactional
-	public void exportProduct(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter logBuffer)
+	public void exportProduct(AppPrestashop appConfig, ZonedDateTime endDate, Writer logBuffer)
 			throws IOException, PrestaShopWebserviceException {
 		int done = 0;
 		int errors = 0;

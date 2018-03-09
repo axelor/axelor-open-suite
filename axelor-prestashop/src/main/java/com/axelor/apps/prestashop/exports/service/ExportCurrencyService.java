@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.prestashop.exports.service;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.time.ZonedDateTime;
 
 import com.axelor.apps.base.db.AppPrestashop;
@@ -35,5 +35,5 @@ public interface ExportCurrencyService {
 	 * @throws IOException
 	 * @throws PrestaShopWebserviceException
 	 */
-	public void exportCurrency(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter logBuffer) throws IOException, PrestaShopWebserviceException;
+	public void exportCurrency(AppPrestashop appConfig, ZonedDateTime endDate, Writer logBuffer) throws IOException, PrestaShopWebserviceException;
 }

@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.prestashop.exports.service;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
@@ -58,7 +58,7 @@ public class ExportAddressServiceImpl implements ExportAddressService {
 
 	@Override
 	@Transactional
-	public void exportAddress(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter logBuffer) throws IOException, PrestaShopWebserviceException {
+	public void exportAddress(AppPrestashop appConfig, ZonedDateTime endDate, Writer logBuffer) throws IOException, PrestaShopWebserviceException {
 		int done = 0;
 		int errors = 0;
 

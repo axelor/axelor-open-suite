@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.prestashop.exports.service;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -94,7 +94,7 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 
 	@Override
 	@Transactional
-	public void exportOrder(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter logBuffer) throws IOException, PrestaShopWebserviceException {
+	public void exportOrder(AppPrestashop appConfig, ZonedDateTime endDate, Writer logBuffer) throws IOException, PrestaShopWebserviceException {
 		int done = 0;
 		int errors = 0;
 
@@ -353,7 +353,7 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 
 	private void exportLines(final AppPrestashop appConfig, final PSWebServiceClient ws,
 			final SaleOrder order, final List<SaleOrderLine> lines,
-			final Integer remoteInvoiceId, final BufferedWriter logBuffer) throws PrestaShopWebserviceException, IOException {
+			final Integer remoteInvoiceId, final Writer logBuffer) throws PrestaShopWebserviceException, IOException {
 		List<PrestashopOrderRowDetails> remoteRows = ws.fetch(PrestashopResourceType.ORDER_DETAILS, Collections.singletonMap("id_order", order.getPrestaShopId().toString()));
 
 		final Map<Integer, PrestashopOrderRowDetails> remoteRowsById = new HashMap<>();
@@ -473,7 +473,7 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 	 * @return The id of the invoice bound to the order, or <code>null</code> if no
 	 * invoice was generated
 	 */
-	private Integer generateInvoicingEntities(final AppPrestashop appConfig, final PSWebServiceClient ws, final SaleOrder localOrder, final PrestashopOrder remoteOrder,  final BufferedWriter logBuffer) throws PrestaShopWebserviceException, IOException {
+	private Integer generateInvoicingEntities(final AppPrestashop appConfig, final PSWebServiceClient ws, final SaleOrder localOrder, final PrestashopOrder remoteOrder,  final Writer logBuffer) throws PrestaShopWebserviceException, IOException {
 		final List<PrestashopOrderPayment> existingPayments = ws.fetch(PrestashopResourceType.ORDER_PAYMENTS, Collections.singletonMap("order_reference", remoteOrder.getReference()));
 		PrestashopOrderInvoice remoteInvoice = ws.fetchOne(PrestashopResourceType.ORDER_INVOICES, Collections.singletonMap("id_order", remoteOrder.getId().toString()));
 		PrestashopDelivery remoteDelivery = remoteOrder.getDeliveryNumber() != null ? ws.fetchOne(PrestashopResourceType.DELIVERIES, Collections.singletonMap("id", remoteOrder.getDeliveryNumber().toString())) : null;

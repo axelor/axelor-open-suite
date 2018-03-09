@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.prestashop.exports.service;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.time.ZonedDateTime;
 
 import javax.xml.bind.JAXBException;
@@ -49,5 +49,5 @@ public interface ExportOrderService {
 	 * @throws JAXBException
 	 * @throws TransformerFactoryConfigurationError
 	 */
-	public void exportOrder(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, TransformerConfigurationException, TransformerException, ParserConfigurationException, SAXException, PrestaShopWebserviceException, JAXBException, TransformerFactoryConfigurationError;
+	public void exportOrder(AppPrestashop appConfig, ZonedDateTime endDate, Writer bwExport) throws IOException, PrestaShopWebserviceException;
 }

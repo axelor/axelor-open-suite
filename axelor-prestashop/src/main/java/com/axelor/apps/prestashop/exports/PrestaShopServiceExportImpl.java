@@ -17,19 +17,13 @@
  */
 package com.axelor.apps.prestashop.exports;
 
-import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.Writer;
 import java.time.ZonedDateTime;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.tika.io.IOUtils;
-import org.xml.sax.SAXException;
 
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.Batch;
@@ -74,18 +68,15 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	private ExportOrderService orderService;
 
 	/**
-	 * Export axelor base module
-	 *
-	 * @param endDate
-	 * @throws PrestaShopWebserviceException
-	 * @throws TransformerException
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws JAXBException
-	 * @throws TransformerFactoryConfigurationError
+	 * Export base elements.
+	 * @param appConfig Prestashop module's configuration
+	 * @param endDate End date of previous export batch run (<code>null</code> if none).
+	 * @param logWriter Buffer used to write log messages to be displayed in Axelor.
+	 * @throws PrestaShopWebserviceException If any remote call fails or anything goes wrong
+	 * on a logic point of view
+	 * @throws IOException If any underlying I/O fails.
 	 */
-	public void exportAxelorBase(AppPrestashop appConfig, ZonedDateTime endDate, final BufferedWriter logWriter) throws PrestaShopWebserviceException, TransformerException, IOException, ParserConfigurationException, SAXException, JAXBException, TransformerFactoryConfigurationError {
+	public void exportAxelorBase(AppPrestashop appConfig, ZonedDateTime endDate, final Writer logWriter) throws PrestaShopWebserviceException, IOException {
 		currencyService.exportCurrency(appConfig, endDate, logWriter);
 		countryService.exportCountry(appConfig, endDate, logWriter);
 		customerService.exportCustomer(appConfig, endDate, logWriter);
@@ -98,18 +89,15 @@ public class PrestaShopServiceExportImpl implements PrestaShopServiceExport {
 	 * Export Axelor modules (Base, SaleOrder)
 	 */
 	@Override
-	public void export(AppPrestashop appConfig, ZonedDateTime endDate, Batch batch) throws PrestaShopWebserviceException, TransformerException, IOException, ParserConfigurationException, SAXException, JAXBException, TransformerFactoryConfigurationError {
+	public void export(AppPrestashop appConfig, ZonedDateTime endDate, Batch batch) throws PrestaShopWebserviceException, IOException {
 		StringBuilderWriter logWriter = new StringBuilderWriter(1024);
-		// FIXME can be dropped at the end of refactoring (only here to keep newLine())
-		BufferedWriter bufferedLogWriter = new BufferedWriter(logWriter);
 		try {
+			exportAxelorBase(appConfig, endDate, logWriter);
 
-			exportAxelorBase(appConfig, endDate, bufferedLogWriter);
-
-			orderService.exportOrder(appConfig, endDate, bufferedLogWriter);
-			bufferedLogWriter.write(String.format("%n==== END OF LOG ====%n"));
+			orderService.exportOrder(appConfig, endDate, logWriter);
+			logWriter.write(String.format("%n==== END OF LOG ====%n"));
 		} finally {
-			IOUtils.closeQuietly(bufferedLogWriter);
+			IOUtils.closeQuietly(logWriter);
 			MetaFile exporMetaFile = metaFiles.upload(new ByteArrayInputStream(logWriter.toString().getBytes()), "export-log.txt");
 			batch.setPrestaShopBatchLog(exporMetaFile);
 		}
