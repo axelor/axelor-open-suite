@@ -141,6 +141,7 @@ public class BatchDebtRecovery extends BatchStrategy {
 				} catch (AxelorException e) {
 
 					TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get("Partner") + " %s", partner.getName()), IException.DEBT_RECOVERY, batch.getId());
+					anomalyList.add(partner.getId());
 					incrementAnomaly();
 
 				} catch (Exception e) {
