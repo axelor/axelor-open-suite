@@ -18,12 +18,14 @@
 package com.axelor.apps.prestashop.imports;
 
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
+
+import org.apache.commons.io.output.StringBuilderWriter;
+import org.apache.tika.io.IOUtils;
 
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.prestashop.imports.service.ImportAddressService;
@@ -38,9 +40,11 @@ import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import wslite.json.JSONException;
 
+@Singleton
 public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 	private MetaFiles metaFiles;
 	private ImportCurrencyService currencyService;
@@ -52,14 +56,11 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 	private ImportOrderService orderService;
 	private ImportOrderDetailService orderDetailService;
 
-	private File importFile; // FIXME
-
 	@Inject
 	public PrestaShopServiceImportImpl(MetaFiles metaFiles, ImportCurrencyService currencyService, ImportCountryService countryService,
 			ImportCustomerService customerService, ImportAddressService addressService,
 			ImportCategoryService categoryService, ImportProductService productService, ImportOrderService orderService,
 			ImportOrderDetailService orderDetailService) throws IOException {
-		super();
 		this.metaFiles = metaFiles;
 		this.currencyService = currencyService;
 		this.countryService = countryService;
@@ -69,17 +70,8 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 		this.productService = productService;
 		this.orderService = orderService;
 		this.orderDetailService = orderDetailService;
-
-		importFile = File.createTempFile("Import Log", ".txt");
-		fwImport = new FileWriter(importFile);
-		bwImport = new BufferedWriter(fwImport);
 	}
 
-	FileWriter fwImport = null;
-	BufferedWriter bwImport = null;
-
-	Integer totalDone = 0;
-	Integer totalAnomaly = 0;
 
 	/**
 	 * Import base module from prestashop
@@ -90,13 +82,13 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 	 * @throws JAXBException
 	 * @throws JSONException
 	 */
-	public void importAxelorBase() throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
-		bwImport = currencyService.importCurrency(bwImport);
-		bwImport = countryService.importCountry(bwImport);
-		bwImport = customerService.importCustomer(bwImport);
-		bwImport = addressService.importAddress(bwImport);
-		bwImport = categoryService.importCategory(bwImport);
-		bwImport = productService.importProduct(bwImport);
+	public void importAxelorBase(final BufferedWriter logBuffer) throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
+		currencyService.importCurrency(logBuffer);
+		countryService.importCountry(logBuffer);
+		customerService.importCustomer(logBuffer);
+		addressService.importAddress(logBuffer);
+		categoryService.importCategory(logBuffer);
+		productService.importProduct(logBuffer);
 	}
 
 	/**
@@ -104,27 +96,18 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 	 */
 	@Override
 	public Batch importPrestShop(Batch batch) throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
+		StringBuilderWriter logWriter = new StringBuilderWriter(1024);
+		BufferedWriter bufferedWriter = new BufferedWriter(logWriter); // FIXME remove once refactored
 		try {
-			importAxelorBase();
-			bwImport = orderService.importOrder(bwImport);
-			bwImport = orderDetailService.importOrderDetail(bwImport);
+			importAxelorBase(bufferedWriter);
+			orderService.importOrder(bufferedWriter);
+			orderDetailService.importOrderDetail(bufferedWriter);
+			logWriter.write(String.format("%n==== END OF LOG ====%n"));
 		} finally {
-			closeLog();
-			MetaFile importMetaFile = metaFiles.upload(importFile);
+			IOUtils.closeQuietly(bufferedWriter);
+			MetaFile importMetaFile = metaFiles.upload(new ByteArrayInputStream(logWriter.toString().getBytes()), "import-log.txt");
 			batch.setPrestaShopBatchLog(importMetaFile);
 		}
 		return batch;
-	}
-
-	/**
-	 * Close import log file
-	 *
-	 * @throws IOException
-	 */
-	public void closeLog() throws IOException {
-		bwImport.newLine();
-		bwImport.write("-----------------------------------------------");
-		bwImport.close();
-		fwImport.close();
 	}
 }
