@@ -27,7 +27,6 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public abstract class BatchDirectDebit extends com.axelor.apps.account.service.batch.BatchStrategy {
-    protected PaymentMode directDebitPaymentMode;
     protected boolean generateBankOrderFlag;
 
     @Inject
@@ -36,7 +35,7 @@ public abstract class BatchDirectDebit extends com.axelor.apps.account.service.b
     @Override
     protected void start() throws IllegalAccessException, AxelorException {
         super.start();
-        directDebitPaymentMode = batch.getAccountingBatch().getPaymentMode();
+        PaymentMode directDebitPaymentMode = batch.getAccountingBatch().getPaymentMode();
         generateBankOrderFlag = directDebitPaymentMode != null && directDebitPaymentMode.getGenerateBankOrder();
     }
 
