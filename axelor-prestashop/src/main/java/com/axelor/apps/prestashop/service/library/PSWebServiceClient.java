@@ -161,7 +161,7 @@ public class PSWebServiceClient {
 		}
 		throw new PrestashopHttpException(
 				statusCode,
-				String.format("An underlying call to the Prestashop API failed with status code %d: %s (%s)\n%s", statusCode, response.getStatusLine().getReasonPhrase(), HttpStatus.getStatusText(statusCode), body));
+				String.format("An underlying call to the Prestashop API failed with status code %d: %s (%s)\n=== Response body ===\n%s\n=== End of response body ===", statusCode, response.getStatusLine().getReasonPhrase(), HttpStatus.getStatusText(statusCode), body));
 	}
 
 	/**
@@ -379,6 +379,7 @@ public class PSWebServiceClient {
 	public <T extends PrestashopContainerEntity> T fetchOne(final PrestashopResourceType resourceType, final Map<String, String> filter) throws PrestaShopWebserviceException {
 		List<T> entities = fetch(resourceType, filter);
 		if(entities.size() == 0) return null;
+		if(entities.size() > 1) throw new PrestaShopWebserviceException(String.format("fetchOne for %s with filter %s returned %d results", resourceType.getLabel(), filter.toString(), entities.size()));
 		return entities.get(0);
 	}
 
