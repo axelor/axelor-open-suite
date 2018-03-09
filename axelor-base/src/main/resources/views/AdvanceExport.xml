@@ -12,16 +12,10 @@
   		<panel>
   			<field name="name" colSpan="4" required="true"/>
       		<field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid" colSpan="4" onChange="action-attr-reset-advanced-export-line" onSelect="action-advanced-export-attr-change-domain-from-model"/>
-    		<button name="selectAll" title="Select all fields" colSpan="2" onClick="save,action-method-get-model-all-fields" hideIf="isViewData"/>
+    		<button name="selectAll" title="Select all fields" colSpan="3" onClick="save,action-method-get-model-all-fields" hideIf="isViewData"/>
     		<field name="isViewData" hidden="true" colSpan="1"/>
     	</panel>
-     	<panel-related field="advancedExportLineList" title="Fields" hideIf="metaModel == null || isViewData" editable="true" onNew="fill-default-current-domain" canMove="true" orderBy="sequence">
-     		<field name="metaField" title="Select target field" required="true" onChange="action-method-change-domain-on-relational-field" onSelect="action-attr-change-domain" colSpan="3"/>
-     		<field name="title" colSpan="3" required="true"/>
-     		<field name="targetField" colSpan="4"/>
-	        <field name="orderBy" colSpan="2"/>
-	        <field name="currentDomain" hidden="true"/>
-     	</panel-related>
+     	<panel-related field="advancedExportLineList" title="Fields" hideIf="metaModel == null || isViewData" grid-view="advanced-export-line-grid" form-view="advanced-export-line-form" canMove="true" orderBy="sequence"/>
      	<panel-dashlet name="custom-panel-view-export-data" action="custom:custom-view-export-data" colSpan="12" hideIf="!isViewData"/>
      	<panel>
      		<button name="exportPDF" title="Export PDF" icon="fa-reply" colSpan="3" onClick="save,action-export-pdf-method,save"/>
@@ -55,10 +49,6 @@
   		<call class="com.axelor.apps.base.web.AdvancedExportController" method="getModelAllFields"/>
   	</action-method>
   	
-  	<action-method name="action-method-change-domain-on-relational-field">
-  		<call class="com.axelor.apps.base.web.AdvancedExportController" method="fillTargetField"/>
-  	</action-method>
-  	
   	<action-method name="action-export-pdf-method">
   		<call class="com.axelor.apps.base.web.AdvancedExportController" method="advancedExportPDF"/>
   	</action-method>
@@ -79,14 +69,6 @@
   		<attribute name="readonly" for="isSelectAll" expr="true" if="isViewData"/>
   		<attribute name="readonly" for="isSelectAll" expr="false" if="!isViewData"/>
   	</action-attrs>
-  	
-  	<action-attrs name="action-attr-change-domain">
-  		<attribute name="domain" expr="eval: &quot; self.metaModel.name = '${currentDomain}' &quot;" for="metaField"/>
-  	</action-attrs>
-  	
-  	<action-record name="fill-default-current-domain" model="com.axelor.apps.base.db.AdvancedExportLine">
-  		<field name="currentDomain" expr="eval: _parent?.metaModel.name" if="_parent?.metaModel" />
-  	</action-record>
   	
 	<action-attrs name="action-attr-reset-advanced-export-line">
 		<attribute name="value" for="advancedExportLineList" expr="eval: null"/>

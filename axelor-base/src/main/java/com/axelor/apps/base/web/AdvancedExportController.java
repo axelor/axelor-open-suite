@@ -145,7 +145,12 @@ public class AdvancedExportController {
 	
 			if (metaField.getRelationship() != null) {
 				response.setValue("currentDomain", metaField.getTypeName());
-				response.setValue("metaField", "");
+				response.setValue("metaField", null);
+			} else {
+				response.setAttr("metaField", "readonly", true);
+				response.setAttr("validateFieldSelection", "readonly", true);
+				response.setAttr("$viewerMessage", "hidden", false);
+				response.setAttr("$isValidate", "value", true);
 			}
 			
 			if (Strings.isNullOrEmpty(metaField.getLabel())) {
