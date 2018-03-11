@@ -6,6 +6,9 @@
 	<entity name="Currency" lang="java" cachable="true">
 		<integer name="prestaShopId" nullable="true"/>
 		<datetime name="prestaShopSyncTime" nullable="true"/>
+
+		<unique-constraint columns="prestaShopId"/>
+		<finder-method name="findByPrestaShopId" using="prestaShopId"/>
 	</entity>
 
 </domain-models>
