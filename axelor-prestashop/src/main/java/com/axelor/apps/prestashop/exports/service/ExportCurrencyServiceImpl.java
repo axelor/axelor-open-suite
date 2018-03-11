@@ -134,6 +134,6 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 			}
 		}
 
-		logBuffer.write(String.format("%n=== END OF CURRENCIES IMPORT, done: %d, errors: %d ===%n", done, errors));
+		logBuffer.write(String.format("%n=== END OF CURRENCIES EXPORT, done: %d, errors: %d ===%n", done, errors));
 	}
 }
