@@ -20,6 +20,7 @@ package com.axelor.apps.prestashop.imports;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.ZonedDateTime;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
@@ -27,6 +28,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.tika.io.IOUtils;
 
+import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.prestashop.imports.service.ImportAddressService;
 import com.axelor.apps.prestashop.imports.service.ImportCategoryService;
@@ -73,41 +75,31 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 	}
 
 
-	/**
-	 * Import base module from prestashop
-	 *
-	 * @throws IOException
-	 * @throws PrestaShopWebserviceException
-	 * @throws TransformerException
-	 * @throws JAXBException
-	 * @throws JSONException
-	 */
-	public void importAxelorBase(final BufferedWriter logBuffer) throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
-		currencyService.importCurrency(logBuffer);
-		countryService.importCountry(logBuffer);
-		customerService.importCustomer(logBuffer);
-		addressService.importAddress(logBuffer);
-		categoryService.importCategory(logBuffer);
-		productService.importProduct(logBuffer);
+	public void importAxelorBase(AppPrestashop appConfig, ZonedDateTime endDate, final BufferedWriter logWriter) throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
+		currencyService.importCurrency(logWriter);
+		countryService.importCountry(logWriter);
+		customerService.importCustomer(logWriter);
+		addressService.importAddress(logWriter);
+		categoryService.importCategory(logWriter);
+		productService.importProduct(logWriter);
 	}
 
 	/**
 	 * Import Axelor modules (Base, SaleOrder)
 	 */
 	@Override
-	public Batch importPrestShop(Batch batch) throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
+	public void importFromPrestaShop(AppPrestashop appConfig, ZonedDateTime endDate, Batch batch) throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
 		StringBuilderWriter logWriter = new StringBuilderWriter(1024);
 		BufferedWriter bufferedWriter = new BufferedWriter(logWriter); // FIXME remove once refactored
 		try {
-			importAxelorBase(bufferedWriter);
+			importAxelorBase(appConfig, endDate, bufferedWriter);
 			orderService.importOrder(bufferedWriter);
 			orderDetailService.importOrderDetail(bufferedWriter);
-			logWriter.write(String.format("%n==== END OF LOG ====%n"));
+			bufferedWriter.write(String.format("%n==== END OF LOG ====%n"));
 		} finally {
 			IOUtils.closeQuietly(bufferedWriter);
 			MetaFile importMetaFile = metaFiles.upload(new ByteArrayInputStream(logWriter.toString().getBytes()), "import-log.txt");
 			batch.setPrestaShopBatchLog(importMetaFile);
 		}
-		return batch;
 	}
 }

@@ -18,67 +18,59 @@
 package com.axelor.apps.prestashop.service.imports.batch;
 
 import java.lang.invoke.MethodHandles;
+import java.time.ZonedDateTime;
 
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.repo.AppPrestashopRepository;
+import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.prestashop.batch.PrestaShopBatchService;
+import com.axelor.apps.prestashop.db.PrestaShopBatch;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.imports.PrestaShopServiceImport;
-import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 
-public class ImportPrestaShop extends BatchStrategyImport {
-
+public class ImportPrestaShop extends AbstractBatch {
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
+	private PrestaShopServiceImport prestaShopServiceImport;
+	private AppPrestashopRepository appRepository;
+	private PrestaShopBatchService batchService;
+
 	@Inject
-	public ImportPrestaShop(PrestaShopServiceImport prestaShopServiceImport) {
-
-		super(prestaShopServiceImport);
-	}
-
-	@Override
-	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
-
-		super.start();
-
+	public ImportPrestaShop(PrestaShopServiceImport prestaShopServiceImport, AppPrestashopRepository appRepository, PrestaShopBatchService batchService) {
+		this.prestaShopServiceImport = prestaShopServiceImport;
+		this.appRepository = appRepository;
+		this.batchService = batchService;
 	}
 
 	@Override
 	@Transactional
 	protected void process() {
+		try {
+			PrestaShopBatch prestaShopBatch = (PrestaShopBatch) model;
 
-			int i = 0;
+			ZonedDateTime referenceDate = batchService.getLastSuccessfullRunStartDate(prestaShopBatch);
+			if(LOG.isDebugEnabled()) {
+				LOG.debug("Starting import from PrestaShop to ABS with reference date {}", referenceDate);
+			}
+			prestaShopServiceImport.importFromPrestaShop(appRepository.all().fetchOne(), referenceDate, batch);
 
-			try {
-				Batch batchObj = prestaShopServiceImport.importPrestShop(batch);
-				batchRepo.save(batchObj);
-				i++;
-
-			} catch (Exception e) {
-				incrementAnomaly();
-				LOG.error(String.format("An exception occured while runing prestashop import batch %d", batch.getId()), e);
-			} finally {
-
-				if (i % 1 == 0) { JPA.clear(); }
+			checkPoint(); // cannot call save directly as we've no transaction
+			incrementDone();
+		} catch (Exception e) {
+			LOG.error(String.format("An error occured while running prestashop export batch #%d", batch.getId()), e);
+			incrementAnomaly();
 		}
 	}
 
-	/**
-	 * As {@code batch} entity can be detached from the session, call {@code Batch.find()} get the entity in the persistant context.
-	 * Warning : {@code batch} entity have to be saved before.
-	 */
 	@Override
 	protected void stop() {
-
-		String comment = I18n.get(IExceptionMessage.BATCH_IMPORT);
-
 		super.stop();
-		addComment(comment);
+		addComment(I18n.get(IExceptionMessage.BATCH_IMPORT));
 	}
 }
