@@ -116,21 +116,25 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 					}
 				}
 
-				Integer phonePrefix = null;
-				if(StringUtils.isNotEmpty(localCountry.getPhonePrefix())) {
-					String localPhonePrefix = localCountry.getPhonePrefix().replaceAll("[^0-9]", "");
-					if(StringUtils.isNotEmpty(localPhonePrefix)) {
-						phonePrefix = Integer.parseInt(localPhonePrefix);
+				if(remoteCountry.getId() == null || appConfig.getPrestaShopMasterForCountries() == Boolean.FALSE) {
+					Integer phonePrefix = null;
+					if(StringUtils.isNotEmpty(localCountry.getPhonePrefix())) {
+						String localPhonePrefix = localCountry.getPhonePrefix().replaceAll("[^0-9]", "");
+						if(StringUtils.isNotEmpty(localPhonePrefix)) {
+							phonePrefix = Integer.parseInt(localPhonePrefix);
+						}
 					}
-				}
-				remoteCountry.setCallPrefix(phonePrefix);
-				// FIXME handle language correctly, only override value for appConfig.textsLanguage
-				if(remoteCountry.getName().getTranslations().size() > 0) {
-					remoteCountry.getName().getTranslations().get(0).setTranslation(localCountry.getName());
-				}
+					remoteCountry.setCallPrefix(phonePrefix);
+					// FIXME handle language correctly, only override value for appConfig.textsLanguage
+					if(remoteCountry.getName().getTranslations().size() > 0) {
+						remoteCountry.getName().getTranslations().get(0).setTranslation(localCountry.getName());
+					}
 
-				remoteCountry = ws.save(PrestashopResourceType.COUNTRIES, remoteCountry);
-				localCountry.setPrestaShopId(remoteCountry.getId());
+					remoteCountry = ws.save(PrestashopResourceType.COUNTRIES, remoteCountry);
+					localCountry.setPrestaShopId(remoteCountry.getId());
+				} else {
+					logBuffer.write(" — remote country exists and countries are managed on prestashop, skipping");
+				}
 				logBuffer.write(String.format(" [SUCCESS]%n"));
 				++done;
 			} catch (PrestaShopWebserviceException e) {

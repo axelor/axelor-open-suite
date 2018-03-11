@@ -26,6 +26,7 @@
 		<panel title="Reference data">
 			<label title="This allows to tweak which &quot;side&quot; has reference data on various entities to avoid back and forth overwrites." colSpan="12"/>
 			<field name="prestaShopMasterForCurrencies" widget="boolean-switch"/>
+			<field name="prestaShopMasterForCountries" widget="boolean-switch"/>
 		</panel>
 	</form>
 </object-views>

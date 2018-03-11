@@ -19,6 +19,7 @@
 		<boolean name="exportNonPrestashopCustomers" title="Export non-Prestashop customers" default="true" help="If checked, all customers will be synchronized to prestashop, not only those created on it"/>
 
 		<boolean name="prestaShopMasterForCurrencies" title="Currencies are handled on prestashop" default="false" help="If checked, export process will not update existing remote currencies and local currencies data will be overwritten by PrestaShop data"/>
+		<boolean name="prestaShopMasterForCountries" title="Countries are handled on prestashop" default="false" help="If checked, export process will not update existing remote countries and local countries data will be overwritten by PrestaShop data"/>
 	</entity>
 
 </domain-models>
