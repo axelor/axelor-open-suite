@@ -24,4 +24,9 @@
 		<option value="13">Awaiting Cash On Delivery validation</option>
 	</selection>
 	
+	<selection name="trace.back.origin.select" id="prestashop.trace.back.origin.select">
+		<option value="prestashopImport">PrestaShop Import</option>
+		<option value="prestashopExport">PrestaShop Export</option>
+	</selection>
+
 </object-views>
