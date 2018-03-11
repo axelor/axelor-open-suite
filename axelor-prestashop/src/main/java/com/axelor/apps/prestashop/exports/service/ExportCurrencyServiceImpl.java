@@ -113,18 +113,22 @@ public class ExportCurrencyServiceImpl implements ExportCurrencyService {
 					}
 				}
 
-				remoteCurrency.setName(localCurrency.getName());
-				// TODO Add an option
-				try {
-					remoteCurrency.setConversionRate(currencyService.getCurrencyConversionRate(localCurrency, appConfig.getPrestaShopCurrency(), today));
-				} catch (AxelorException e) {
-					log.debug("Unable to fetch conversion rate for currency {}, leave it unchanged", localCurrency.getCode());
+				if(remoteCurrency.getId() == null || appConfig.getPrestaShopMasterForCurrencies() == Boolean.FALSE) {
+					remoteCurrency.setName(localCurrency.getName());
+					// TODO Add an option
+					try {
+						remoteCurrency.setConversionRate(currencyService.getCurrencyConversionRate(localCurrency, appConfig.getPrestaShopCurrency(), today));
+					} catch (AxelorException e) {
+						log.debug("Unable to fetch conversion rate for currency {}, leave it unchanged", localCurrency.getCode());
+					}
+					logBuffer.write(" – setting conversion rate to " + remoteCurrency.getConversionRate());
+					// Do not change any of the other attributes, defaults are suitable for
+					// newly created one, active & deleted should be left untouched.
+					remoteCurrency = ws.save(PrestashopResourceType.CURRENCIES, remoteCurrency);
+					localCurrency.setPrestaShopId(remoteCurrency.getId());
+				} else {
+					logBuffer.write(" — remote currency exists and currencies are managed on prestashop, skipping");
 				}
-				logBuffer.write(" – setting conversion rate to " + remoteCurrency.getConversionRate());
-				// Do not change any of the other attributes, defaults are suitable for
-				// newly created one, active & deleted should be left untouched.
-				remoteCurrency = ws.save(PrestashopResourceType.CURRENCIES, remoteCurrency);
-				localCurrency.setPrestaShopId(remoteCurrency.getId());
 				logBuffer.write(String.format(" [SUCCESS]%n"));
 				++done;
 			} catch (PrestaShopWebserviceException e) {
