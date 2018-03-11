@@ -18,6 +18,8 @@
 package com.axelor.apps.prestashop.batch;
 
 
+import java.time.ZonedDateTime;
+
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.db.IPrestaShopBatch;
@@ -34,51 +36,48 @@ import com.axelor.inject.Beans;
 /**
  * InvoiceBatchService est une classe implémentant l'ensemble des batchs de
  * comptabilité et assimilé.
- * 
+ *
  * @author Geoffrey DUBAUX
- * 
+ *
  * @version 0.1
  */
 public class PrestaShopBatchService extends AbstractBatchService {
 
-// Appel 	
-	
 	/**
 	 * Lancer un batch à partir de son code.
-	 * 
+	 *
 	 * @param batchCode
 	 * 		Le code du batch souhaité.
-	 * 
+	 *
 	 * @throws AxelorException
 	 */
-	@SuppressWarnings("deprecation")
 	@Override
 	public Batch run(Model batchCode) throws AxelorException {
-				
+
 		Batch batch;
 		PrestaShopBatch prestaShopBatch = (PrestaShopBatch) batchCode;
-		
+
 		if (prestaShopBatch != null){
 			switch (prestaShopBatch.getActionSelect()) {
-			
+
 			case IPrestaShopBatch.BATCH_IMPORT:
 				batch = importPrestaShop(prestaShopBatch);
 				break;
-				
+
 			case IPrestaShopBatch.BATCH_EXPORT:
 				batch = exportPrestaShop(prestaShopBatch);
 				break;
-				
+
 			default:
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PRESTASHOP_BATCH_1), prestaShopBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
+				throw new AxelorException(IException.INCONSISTENCY, String.format(I18n.get(IExceptionMessage.PRESTASHOP_BATCH_1), prestaShopBatch.getActionSelect(), batchCode));
 			}
 		}
 		else {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PRESTASHOP_BATCH_2), batchCode), IException.INCONSISTENCY);
+			throw new AxelorException(IException.INCONSISTENCY, String.format(I18n.get(IExceptionMessage.PRESTASHOP_BATCH_2), batchCode));
 		}
 		return batch;
 	}
-	
+
 	/**
 	 * Batch run import prestashop to ABS
 	*/
@@ -86,13 +85,29 @@ public class PrestaShopBatchService extends AbstractBatchService {
 
 		return Beans.get(ImportPrestaShop.class).run(prestaShopBatch);
 	}
-	
+
 	/**
 	 * Batch run export ABS to prestashop
 	*/
 	public Batch exportPrestaShop(PrestaShopBatch prestaShopBatch) {
-		
 		return Beans.get(ExportPrestaShop.class).run(prestaShopBatch);
+	}
+
+	/**
+	 * Computes the start date of the last successfully run batch. This relies on the
+	 * anomaly counter since there's no way to know if a batch was successful overall.
+	 * @param batchDefinition Batch definition record.
+	 * @return <code>null</code> if no successfull batch has ever been run.
+	 */
+	public ZonedDateTime getLastSuccessfullRunStartDate(PrestaShopBatch batchDefinition) {
+		ZonedDateTime date = null;
+		// FIXME very complicated because of the lack of orderBy on the association
+		for(Batch b : batchDefinition.getBatchList()) {
+			if(b.getEndDate() != null && b.getAnomaly() == 0 && (date == null || date.isBefore(b.getStartDate()))) {
+				date = b.getStartDate();
+			}
+		}
+		return date;
 	}
 
 	@Override

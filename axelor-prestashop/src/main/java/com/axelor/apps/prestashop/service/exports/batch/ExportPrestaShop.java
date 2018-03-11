@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.prestashop.batch.PrestaShopBatchService;
 import com.axelor.apps.prestashop.db.PrestaShopBatch;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.exports.PrestaShopServiceExport;
@@ -37,31 +38,32 @@ public class ExportPrestaShop extends AbstractBatch {
 
 	private PrestaShopServiceExport prestaShopServiceExport;
 	private AppPrestashopRepository appRepository;
+	private PrestaShopBatchService batchService;
 
 	@Inject
-	public ExportPrestaShop(PrestaShopServiceExport prestaShopServiceExport, AppPrestashopRepository appRepository) {
+	public ExportPrestaShop(PrestaShopServiceExport prestaShopServiceExport, AppPrestashopRepository appRepository, PrestaShopBatchService batchService) {
 		this.prestaShopServiceExport = prestaShopServiceExport;
 		this.appRepository = appRepository;
+		this.batchService = batchService;
 	}
 
 	@Override
 	protected void process() {
-			try {
-				PrestaShopBatch prestaShopBatch = (PrestaShopBatch) model;
-				Integer size = prestaShopBatch.getBatchList().size();
+		try {
+			PrestaShopBatch prestaShopBatch = (PrestaShopBatch) model;
 
-				// We use the start date of previous batch as a starting point since we are in a transactional
-				// environment, so using end date could cause elements updated during last batch run to be missed.
-				ZonedDateTime fromDate = (size <= 1 ? null : prestaShopBatch.getBatchList().get(size - 2).getStartDate());
-
-				prestaShopServiceExport.export(appRepository.all().fetchOne(), fromDate, batch);
-
-				checkPoint(); // cannot call save directly as we've no transaction
-				incrementDone();
-			} catch (Exception e) {
-				LOG.error(String.format("An error occured while running prestashop export batch #%d", batch.getId()), e);
-				incrementAnomaly();
+			ZonedDateTime referenceDate = batchService.getLastSuccessfullRunStartDate(prestaShopBatch);
+			if(LOG.isDebugEnabled()) {
+				LOG.debug("Starting export from ABS to PrestaShop with reference date {}", referenceDate);
 			}
+			prestaShopServiceExport.export(appRepository.all().fetchOne(), referenceDate, batch);
+
+			checkPoint(); // cannot call save directly as we've no transaction
+			incrementDone();
+		} catch (Exception e) {
+			LOG.error(String.format("An error occured while running prestashop export batch #%d", batch.getId()), e);
+			incrementAnomaly();
+		}
 	}
 
 	@Override
