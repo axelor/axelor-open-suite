@@ -546,7 +546,11 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 				remoteDelivery.setShopGroupId(remoteOrder.getShopGroupId());
 				remoteDelivery.setPriceRangeId(1);
 				remoteDelivery.setWeightRangeId(1);
-				remoteDelivery.setZoneId(1); // FIXME we could fetch country from delivery address and set its zone id here
+				if(localOrder.getDeliveryAddress().getAddressL7Country() != null && localOrder.getDeliveryAddress().getAddressL7Country().getPrestaShopZoneId() != null) {
+					remoteDelivery.setZoneId(localOrder.getDeliveryAddress().getAddressL7Country().getPrestaShopZoneId());
+				} else {
+					remoteDelivery.setZoneId(1);
+				}
 
 				LocalDate deliveryDate = null;
 				for(StockMove move : localOrder.getStockMoveList()) {

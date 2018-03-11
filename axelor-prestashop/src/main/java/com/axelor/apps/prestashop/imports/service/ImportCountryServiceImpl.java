@@ -81,6 +81,7 @@ public class ImportCountryServiceImpl implements ImportCountryService {
 			}
 
 			// As the field is prestashop specific, always update it
+			localCountry.setPrestaShopZoneId(remoteCountry.getZoneId());
 
 			if(localCountry.getId() == null || appConfig.getPrestaShopMasterForCountries() == Boolean.TRUE) {
 				localCountry.setName(remoteCountry.getName().getTranslation(1)); // TODO Handle language correctly

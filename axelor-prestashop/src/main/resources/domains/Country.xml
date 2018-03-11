@@ -5,6 +5,7 @@
 
 	<entity name="Country" lang="java" cachable="true">
 		<integer name="prestaShopId" nullable="true"/>
+		<integer name="prestaShopZoneId" nullable="true"/>
 
 		<unique-constraint columns="prestaShopId"/>
 
