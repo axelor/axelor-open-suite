@@ -98,7 +98,6 @@
     <action-group name="action-group-stock-inventory-validate-click">
     	<action name="save"/>
     	<action name="action-inventory-method-realize-stock-move"/>
-    	<action name="action-inventory-record-set-validation-fields"/>
     	<action name="save"/>
     </action-group>
 
@@ -137,11 +136,6 @@
 	
 	<action-record name="action-inventory-record-complete" model="com.axelor.apps.stock.db.Inventory">
 	    <field name="statusSelect" expr="4"/>
-	</action-record>
-
-	<action-record name="action-inventory-record-set-validation-fields" model="com.axelor.apps.stock.db.Inventory">
-		<field name="validatedBy" expr="eval: __user__"/>
-		<field name="validatedOn" expr="eval: __date__"/>
 	</action-record>
 
 	<action-method name="action-inventory-method-show-inventory">
