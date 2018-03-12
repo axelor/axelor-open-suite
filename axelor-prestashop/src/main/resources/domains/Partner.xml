@@ -5,7 +5,10 @@
 
 	<entity name="Partner" lang="java">
 		<integer name="prestaShopId" nullable="true"/>
-		<string name="secureKey"/>
+
+		<unique-constraint columns="prestaShopId"/>
+
+		<finder-method name="findByPrestaShopId" using="prestaShopId"/>
 	</entity>
 
 </domain-models>

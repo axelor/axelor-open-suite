@@ -76,12 +76,12 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 
 
 	public void importAxelorBase(AppPrestashop appConfig, ZonedDateTime endDate, final BufferedWriter logWriter) throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
-		currencyService.importCurrency(logWriter);
-		countryService.importCountry(logWriter);
-		customerService.importCustomer(logWriter);
-		addressService.importAddress(logWriter);
-		categoryService.importCategory(logWriter);
-		productService.importProduct(logWriter);
+		currencyService.importCurrency(appConfig, endDate, logWriter);
+		countryService.importCountry(appConfig, endDate, logWriter);
+		customerService.importCustomer(appConfig, endDate, logWriter);
+//		addressService.importAddress(logWriter);
+//		categoryService.importCategory(logWriter);
+//		productService.importProduct(logWriter);
 	}
 
 	/**
@@ -93,8 +93,8 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 		BufferedWriter bufferedWriter = new BufferedWriter(logWriter); // FIXME remove once refactored
 		try {
 			importAxelorBase(appConfig, endDate, bufferedWriter);
-			orderService.importOrder(bufferedWriter);
-			orderDetailService.importOrderDetail(bufferedWriter);
+			//orderService.importOrder(bufferedWriter);
+			//orderDetailService.importOrderDetail(bufferedWriter);
 			bufferedWriter.write(String.format("%n==== END OF LOG ====%n"));
 		} finally {
 			IOUtils.closeQuietly(bufferedWriter);

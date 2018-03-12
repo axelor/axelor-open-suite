@@ -152,20 +152,24 @@ public class ExportCustomerServiceImpl implements ExportCustomerService {
 					}
 				}
 
-				// Only push elements that cannot be edited by user
-				remoteCustomer.setSiret(localCustomer.getRegistrationCode());
-				remoteCustomer.setWebsite(localCustomer.getWebSite());
-				if(localCustomer.getPaymentCondition() != null) {
-					remoteCustomer.setMaxPaymentDays(localCustomer.getPaymentCondition().getPaymentTime());
-				}
-				if(localCustomer.getAccountingSituationList().isEmpty() == false) {
-					// FIXME We should have a per company configuration…
-					remoteCustomer.setAllowedOutstandingAmount(localCustomer.getAccountingSituationList().get(0).getAcceptedCredit().setScale(appConfig.getExportPriceScale(), BigDecimal.ROUND_HALF_UP));
-				}
+				if(remoteCustomer.getId() == null || appConfig.getPrestaShopMasterForCustomers() == Boolean.FALSE) {
+					// Only push elements that cannot be edited by user
+					remoteCustomer.setSiret(localCustomer.getRegistrationCode());
+					remoteCustomer.setWebsite(localCustomer.getWebSite());
+					if(localCustomer.getPaymentCondition() != null) {
+						remoteCustomer.setMaxPaymentDays(localCustomer.getPaymentCondition().getPaymentTime());
+					}
+					if(localCustomer.getAccountingSituationList().isEmpty() == false) {
+						// FIXME We should have a per company configuration…
+						remoteCustomer.setAllowedOutstandingAmount(localCustomer.getAccountingSituationList().get(0).getAcceptedCredit().setScale(appConfig.getExportPriceScale(), BigDecimal.ROUND_HALF_UP));
+					}
 
-				remoteCustomer.setUpdateDate(now);
-				remoteCustomer = ws.save(PrestashopResourceType.CUSTOMERS, remoteCustomer);
-				localCustomer.setPrestaShopId(remoteCustomer.getId());
+					remoteCustomer.setUpdateDate(now);
+					remoteCustomer = ws.save(PrestashopResourceType.CUSTOMERS, remoteCustomer);
+					localCustomer.setPrestaShopId(remoteCustomer.getId());
+				} else {
+					logBuffer.write(" — remote customer exists and customers are managed on prestashop, skipping");
+				}
 				logBuffer.write(String.format(" [SUCCESS]%n"));
 				++done;
 			} catch(PrestaShopWebserviceException | IOException e) {

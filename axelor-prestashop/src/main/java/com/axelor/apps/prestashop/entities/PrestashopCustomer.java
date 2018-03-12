@@ -11,16 +11,21 @@ import java.util.ListIterator;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 
 @XmlRootElement(name="customer")
 public class PrestashopCustomer extends PrestashopIdentifiableEntity {
+	public static final int GENDER_MALE = 1;
+	public static final int GENDER_FEMALE = 2;
+
 	private static final List<String> READONLY_ELEMENTS = Arrays.asList(
 			"last_passwd_gen"
 	);
 
-	private Integer defaultGroupId = 3; // FIXME shouldn't be hardcoded, 3 is
+	private Integer defaultGroupId = 3; // FIXME shouldn't be hardcoded, 3 is customers
 	private Integer languageId;
 	private LocalDateTime newsletterSubscriptionDate;
 	private String newsletterRegistrationIP;
@@ -338,5 +343,16 @@ public class PrestashopCustomer extends PrestashopIdentifiableEntity {
 
 	public void setAdditionalProperties(List<Element> additionalProperties) {
 		this.additionalProperties = additionalProperties;
+	}
+
+	/**
+	 * Helper method returning the company or firstname + lastname depending on
+	 * which is defined
+	 * @return A string to use as a readable name for the customer
+	 */
+	@XmlTransient
+	public String getFullname() {
+		if(StringUtils.isNotBlank(company)) return company;
+		return StringUtils.isBlank(firstname) ? lastname : firstname + (StringUtils.isBlank(lastname) ? "" : " " + lastname);
 	}
 }
