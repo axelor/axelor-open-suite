@@ -25,6 +25,7 @@ import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.rpc.Context;
+import com.axelor.rpc.filter.Filter;
 import com.itextpdf.text.DocumentException;
 
 public interface AdvancedExportService {
@@ -46,4 +47,5 @@ public interface AdvancedExportService {
 	public MetaFile advancedExportCSV(MetaFile exportFile, MetaModel metaModel, List<Map> allFieldDataList,
 			List<Map<String, Object>> advancedExportLines) throws IOException;
 	
+	public Filter getJpaSecurityFilter(MetaModel metaModel);
 }

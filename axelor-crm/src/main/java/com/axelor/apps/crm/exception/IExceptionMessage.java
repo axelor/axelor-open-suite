@@ -59,6 +59,7 @@ public interface IExceptionMessage {
 	 * Event controller
 	 */
 	static final String EVENT_1 = /*$$(*/ "Input location please" /*)*/;
+	static final String EVENT_SAVED = /*$$(*/ "Please save the event before setting the recurrence" /*)*/;
 	
 	
 	/**
@@ -77,6 +78,7 @@ public interface IExceptionMessage {
 	 * Configuration
 	 */
 	static final String CRM_CONFIG_1 = /*$$(*/ "Please configure informations for CRM for company %s" /*)*/;
+	static final String CRM_CONFIG_USER_COMPANY = /*$$(*/ "User %s must have an active company to use templates" /*)*/;
 	static final String CRM_CONFIG_TEMPLATES = /*$$(*/ "Please configure all templates in CRM configuration for company %s" /*)*/;
 	static final String CRM_CONFIG_TEMPLATES_NONE = /*$$(*/ "No template created in CRM configuration for company %s, emails have not been sent" /*)*/;
 	

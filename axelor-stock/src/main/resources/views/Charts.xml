@@ -161,30 +161,6 @@
 		<series key="moves" type="bar" title="Stock Moves"/>
 	</chart>
 	  
-	<!-- This chart is used in stock-location-form -->
-	<chart name="chart.stockLocationLine.stockLocation.value" title="Stock location value">
-		<dataset type="jpql">
-			SELECT
-				SUM(
-					self.currentQty *
-					CASE WHEN
-						(product.costTypeSelect = 3)
-					THEN
-						(self.avgPrice)
-					ELSE
-						(self.product.costPrice)
-					END
-				) AS value,
-				'Stock Value' AS label
-			FROM
-				StockLocationLine AS self
-			WHERE
-				self.stockLocation.id =:id
-		</dataset>
-		<category key="label" type="text" title="Stock location"/>
-		<series key="value" type="bar" title="Value"/>
-	</chart>
-	
 	<chart name="chart.stock.report.for.product" title="Stock" onInit="action-product-set-today-date">
 	    <search-fields>
 		    <field name="todayDate" type="date" title="Today" x-required="true"/>

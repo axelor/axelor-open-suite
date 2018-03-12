@@ -18,6 +18,7 @@
 package com.axelor.apps.project.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.project.db.repo.TeamProjectRepository;
 import com.axelor.apps.project.service.TeamTaskServiceImpl;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -27,6 +28,7 @@ import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.TeamTaskService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.service.app.AppProjectServiceImpl;
+import com.axelor.team.db.repo.TeamRepository;
 import com.axelor.team.db.repo.TeamTaskRepository;
 
 public class ProjectModule extends AxelorModule{
@@ -38,6 +40,7 @@ public class ProjectModule extends AxelorModule{
 		bind(TeamTaskRepository.class).to(TeamTaskProjectRepository.class);
 		bind(ProjectService.class).to(ProjectServiceImpl.class);
 		bind(TeamTaskService.class).to(TeamTaskServiceImpl.class);
+		bind(TeamRepository.class).to(TeamProjectRepository.class);
 	}
 
 }

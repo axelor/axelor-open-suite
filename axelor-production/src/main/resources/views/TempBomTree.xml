@@ -9,16 +9,16 @@
 	   	<column name="unit" type="reference"/>
 	   	<column name="prodProcess" type="reference"/>
 		<node model="com.axelor.apps.production.db.TempBomTree" domain="self.id = :_tempBomTreeId" onClick="action-bill-of-material-line-view">
-			<field name="product" as="product"/>
+			<field name="product.name" as="product"/>
 			<field name="qty" as="qty"/>
-			<field name="unit" as="unit"/>
-			<field name="prodProcess" as="prodProcess"/>
+			<field name="unit.name" as="unit"/>
+			<field name="prodProcess.name" as="prodProcess"/>
 		</node>    	
 		<node model="com.axelor.apps.production.db.TempBomTree" parent="parent" draggable="true" onClick="action-bill-of-material-line-view">
-			<field name="product" as="product"/>
+			<field name="product.name" as="product"/>
 			<field name="qty" as="qty"/>
-			<field name="unit" as="unit"/>
-			<field name="prodProcess" as="prodProcess"/>
+			<field name="unit.name" as="unit"/>
+			<field name="prodProcess.name" as="prodProcess"/>
 		</node>
 	</tree>
 	

@@ -355,12 +355,8 @@ public class OperationOrderWorkflowService {
 			operationOrder.setPlannedDuration(duration);
 		}
 
-		if(operationOrder.getRealStartDateT() != null && operationOrder.getRealEndDateT() != null) {
-			duration = this.getDuration(
-					Duration.between(operationOrder.getRealStartDateT(), operationOrder.getRealEndDateT())
-			);
-			operationOrder.setRealDuration(duration);
-		}
+		duration = getDuration(computeRealDuration(operationOrder));
+		operationOrder.setRealDuration(duration);
 
 		return operationOrder;
 	}

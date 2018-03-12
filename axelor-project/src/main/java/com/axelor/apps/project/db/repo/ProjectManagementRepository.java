@@ -18,14 +18,19 @@
 package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.project.db.Project;
+import com.axelor.auth.db.User;
+import com.axelor.team.db.Team;
 import com.google.common.base.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
 
 public class ProjectManagementRepository extends ProjectRepository {
-	
-	
-	@Override
-	public Project save(Project project){
-		
+
+	private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+	private void setAllProjectFullName(Project project) {
 		String projectCode = ( Strings.isNullOrEmpty(project.getCode()) ) ? "" : project.getCode() + " - ";
 		project.setFullName(projectCode + project.getName());
 		if (project.getChildProjectList() != null && !project.getChildProjectList().isEmpty()){
@@ -34,7 +39,31 @@ public class ProjectManagementRepository extends ProjectRepository {
 				child.setFullName(code + child.getName());
 			}
 		}
-		
+	}
+
+	public static void setAllProjectMembersUserSet(Project project) {
+		if (project.getParentProject() == null) {
+			project.getChildProjectList().stream()
+					.filter(Project::getExtendsMembersFromParent)
+                    .peek(p -> project.getMembersUserSet().forEach(p::addMembersUserSetItem))
+                    .forEach(p -> p.setTeam(project.getTeam()));
+		} else if (project.getParentProject() != null && project.getExtendsMembersFromParent() &&
+				!project.getSynchronize()) {
+			project.getParentProject().getMembersUserSet()
+					.forEach(project.getMembersUserSet()::add);
+		}
+	}
+	
+	@Override
+	public Project save(Project project){
+	    setAllProjectFullName(project);
+	    ProjectManagementRepository.setAllProjectMembersUserSet(project);
+
+	    if (project.getSynchronize()) {
+	    	Team team = project.getTeam();
+	    	team.clearMembers();
+	    	project.getMembersUserSet().forEach(team::addMember);
+		}
 		return super.save(project);
 	}
 
