@@ -45,10 +45,12 @@ import com.axelor.i18n.I18n;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import com.google.inject.servlet.RequestScoped;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
+@RequestScoped
 public class UnitConversionService {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -60,7 +62,7 @@ public class UnitConversionService {
 	protected AppBaseService appBaseService;
 	
 	@Inject
-	private UnitConversionRepository unitConversionRepo;
+	protected UnitConversionRepository unitConversionRepo;
 
 	/**
 	 * Obtenir le coefficient entre deux unités dans une liste de conversion. Si l'unité de départ et l'unité

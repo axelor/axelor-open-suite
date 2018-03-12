@@ -322,6 +322,7 @@ public class InventoryService {
 		StockLocation toStockLocation = inventory.getStockLocation();
 		Company company = toStockLocation.getCompany();
 		StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+		StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
 
 		if (company == null) {
 			throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_6), toStockLocation.getName());
@@ -340,7 +341,7 @@ public class InventoryService {
 			if (currentQty.compareTo(realQty) != 0) {
 				BigDecimal diff = realQty.subtract(currentQty);
 
-				StockMoveLine stockMoveLine = Beans.get(StockMoveLineService.class).createStockMoveLine(
+				StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
 						product, product.getName(), 
 						product.getDescription(), diff,
 						product.getCostPrice(),
@@ -352,7 +353,6 @@ public class InventoryService {
 					stockMoveLine.setTrackingNumber(trackingNumber);
 				}
 
-				stockMove.addStockMoveLineListItem(stockMoveLine);
 			}
 		}
 		if (stockMove.getStockMoveLineList() != null) {
@@ -381,8 +381,8 @@ public class InventoryService {
 
 	public StockMove createStockMoveHeader(Inventory inventory, Company company, StockLocation toStockLocation, LocalDate inventoryDate, String name) throws AxelorException  {
 
-		StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(null, null, company, null,
-				stockConfigService.getInventoryVirtualStockLocation(stockConfigService.getStockConfig(company)), toStockLocation, inventoryDate, inventoryDate, null, null, null);
+		StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(null, null, company,
+				stockConfigService.getInventoryVirtualStockLocation(stockConfigService.getStockConfig(company)), toStockLocation, inventoryDate, inventoryDate, null);
 
 		stockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
 		stockMove.setName(name);
@@ -405,6 +405,15 @@ public class InventoryService {
 		if (stockLocationLineList != null) {
 			Boolean succeed = false;
 			for (StockLocationLine stockLocationLine : stockLocationLineList) {
+				if (stockLocationLine.getTrackingNumber() == null) { // if no tracking number on stockLocationLine, check if there is a tracking number on the product
+					long numberOfTrackingNumberOnAProduct = Beans.get(StockLocationLineRepository.class).all()
+							.filter("self.product = ?1 AND self.trackingNumber IS NOT null",
+									stockLocationLine.getProduct()).count();
+
+					if (numberOfTrackingNumberOnAProduct != 0) { // there is a tracking number on the product
+						continue;
+					}
+				}
 				inventory.addInventoryLineListItem(this.createInventoryLine(inventory, stockLocationLine));
 				succeed = true;
 			}

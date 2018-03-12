@@ -75,6 +75,8 @@ public interface IExceptionMessage {
 	static final String STOCK_MOVE_INCOMING_PARTIAL_GENERATED = /*$$(*/ "An incoming partial stock move has been generated (%s)" /*)*/;
 	static final String STOCK_MOVE_OUTGOING_PARTIAL_GENERATED = /*$$(*/ "An outgoing partial stock move has been generated (%s)" /*)*/;
 	static final String STOCK_MOVE_MISSING_TEMPLATE = /*$$(*/ "The template to send message on realization is missing." /*)*/;
+	static final String STOCK_MOVE_QTY_BY_TRACKING = /*$$(*/ "The tracking number configuration quantity is equal to zero, it must be at least one." /*)*/;
+	static final String STOCK_MOVE_TOO_MANY_ITERATION = /*$$(*/ "Too many iterations while trying to generate stock move line with tracking numbers." /*)*/;
 
 	/**
 	 * Tracking Number Service

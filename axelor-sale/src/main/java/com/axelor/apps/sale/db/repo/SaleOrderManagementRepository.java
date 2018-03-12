@@ -17,31 +17,22 @@
  */
 package com.axelor.apps.sale.db.repo;
 
-import com.axelor.apps.base.service.app.AppBaseService;
+import java.util.List;
+
+import javax.persistence.PersistenceException;
+
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.SaleOrderLineService;
-import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
-
-import javax.persistence.PersistenceException;
-import java.util.List;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
-
-	@Inject
-	protected AppBaseService appBaseService;
-
-	@Inject
-	private SaleOrderService saleOrderService;
-
-	@Inject
-	private SaleOrderLineService saleOrderLineService;
 
 	@Override
 	public SaleOrder copy(SaleOrder entity, boolean deep) {
@@ -54,7 +45,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 		copy.setSaleOrderSeq(null);
 		copy.clearBatchSet();
 		copy.setImportId(null);
-		copy.setCreationDate(appBaseService.getTodayDate());
+		copy.setCreationDate(Beans.get(AppBaseService.class).getTodayDate());
 		copy.setConfirmationDate(null);
 		copy.setConfirmedByUser(null);
 		copy.setOrderDate(null);
@@ -78,11 +69,12 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 	@Override
 	public SaleOrder save(SaleOrder saleOrder) {
 		try {
+		    saleOrder = super.save(saleOrder);
 			computeSeq(saleOrder);
 			computeFullName(saleOrder);
 			computeSubMargin(saleOrder);
-			saleOrderService.computeMarginSaleOrder(saleOrder);
-			return super.save(saleOrder);
+			Beans.get(SaleOrderMarginService.class).computeMarginSaleOrder(saleOrder);
+			return saleOrder;
 		} catch (Exception e) {
 			throw new PersistenceException(e.getLocalizedMessage());
 		}
@@ -119,7 +111,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
 		if (saleOrder.getSaleOrderLineList() != null) {
 			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-				saleOrderLineService.computeSubMargin(saleOrderLine);
+				Beans.get(SaleOrderLineService.class).computeSubMargin(saleOrderLine);
 			}
 		}
 	}

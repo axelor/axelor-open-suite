@@ -259,6 +259,8 @@ public class MoveLineService {
 				isDebitCustomer, invoice.getInvoiceDate(), invoice.getDueDate(), moveLineId++, invoice.getInvoiceId(), null);
 		moveLines.add(moveLine1);
 		
+		AnalyticMoveLineRepository analyticMoveLineRepository = Beans.get(AnalyticMoveLineRepository.class);
+		
 		// Traitement des lignes de facture
 		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()){
 			
@@ -292,7 +294,7 @@ public class MoveLineService {
 					
 					if(invoiceLine.getAnalyticMoveLineList() != null)  {
 						for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
-							AnalyticMoveLine analyticMoveLine = Beans.get(AnalyticMoveLineRepository.class).copy(invoiceAnalyticMoveLine, false);
+							AnalyticMoveLine analyticMoveLine = analyticMoveLineRepository.copy(invoiceAnalyticMoveLine, false);
 							analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
 							analyticMoveLine.setInvoiceLine(null);
 							analyticMoveLine.setAccount(moveLine.getAccount());

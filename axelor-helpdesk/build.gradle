@@ -12,7 +12,5 @@ axelor {
 }
 
 dependencies {
-	compile project(":modules:axelor-crm")
-	compile project(":modules:axelor-project")
-	compile project(":modules:axelor-human-resource")
+	compile project(":modules:axelor-base")
 }

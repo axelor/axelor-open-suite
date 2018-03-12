@@ -36,7 +36,7 @@
  	<datetime name="realStartDateT" title="Start date"/>
   	<datetime name="realEndDateT" title="End date"/>
     
-    <many-to-one name="inStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Stock move in"/>
+    <one-to-many name="inStockMoveList" ref="com.axelor.apps.stock.db.StockMove" title="Stock move in"/>
     
     <long name="plannedDuration" title="Planned duration"/>
     <long name="realDuration" title="Real duration"/>

@@ -17,12 +17,12 @@
  */
 package com.axelor.apps.sale.db.repo;
 
+import javax.persistence.PersistenceException;
+
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.inject.Beans;
-
-import javax.persistence.PersistenceException;
 
 public class AdvancePaymentSaleRepository extends AdvancePaymentRepository {
 
@@ -30,7 +30,7 @@ public class AdvancePaymentSaleRepository extends AdvancePaymentRepository {
     public AdvancePayment save(AdvancePayment advancePayment) {
         try {
             SaleOrder saleOrder = advancePayment.getSaleOrder();
-            Beans.get(SaleOrderService.class)._computeSaleOrder(saleOrder);
+            Beans.get(SaleOrderComputeService.class)._computeSaleOrder(saleOrder);
             return super.save(advancePayment);
         } catch (Exception e) {
             throw new PersistenceException(e);

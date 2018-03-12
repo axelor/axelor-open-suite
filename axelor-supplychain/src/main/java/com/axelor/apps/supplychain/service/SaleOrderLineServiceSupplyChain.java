@@ -20,7 +20,7 @@ package com.axelor.apps.supplychain.service;
 import java.math.BigDecimal;
 
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 
 public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
     /**

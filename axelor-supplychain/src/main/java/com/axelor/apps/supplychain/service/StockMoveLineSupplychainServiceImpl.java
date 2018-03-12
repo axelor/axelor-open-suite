@@ -46,7 +46,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 
+@RequestScoped
 public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImpl{
 	
 	@Inject

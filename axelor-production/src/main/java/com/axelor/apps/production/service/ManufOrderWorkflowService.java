@@ -35,6 +35,7 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -60,6 +61,14 @@ public class ManufOrderWorkflowService {
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
+	    ManufOrderService manufOrderService = Beans.get(ManufOrderService.class);
+
+		if(!manufOrder.getIsConsProOnOperation())  {
+			manufOrderService.createToConsumeProdProductList(manufOrder);
+		}
+
+		manufOrderService.createToProduceProdProductList(manufOrder);
+
 		if (manufOrder.getPlannedStartDateT() == null) {
 			manufOrder.setPlannedStartDateT(Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
 		}
@@ -92,7 +101,9 @@ public class ManufOrderWorkflowService {
 				.getProductionConfig(manufOrder.getCompany())
 				.getStockMoveRealizeOrderSelect();
 		if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
-			manufOrderStockMoveService.finishStockMove(manufOrder.getInStockMove());
+			for (StockMove stockMove : manufOrder.getInStockMoveList()) {
+				manufOrderStockMoveService.finishStockMove(stockMove);
+			}
 		}
 		manufOrder.setStatusSelect(IManufOrder.STATUS_IN_PROGRESS);
 		manufOrderRepo.save(manufOrder);
@@ -160,6 +171,24 @@ public class ManufOrderWorkflowService {
 		manufOrder.setStatusSelect(IManufOrder.STATUS_FINISHED);
 		manufOrderRepo.save(manufOrder);
 	}
+
+	/**
+	 * Allows to finish partially a manufacturing order, by realizing current
+	 * stock move and planning the difference with the planned prodproducts.
+	 * @param manufOrder
+	 * @throws AxelorException
+	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void partialFinish(ManufOrder manufOrder) throws AxelorException {
+		if (manufOrder.getIsConsProOnOperation()) {
+			for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+				if (operationOrder.getStatusSelect() == IOperationOrder.STATUS_PLANNED) {
+					operationOrderWorkflowService.start(operationOrder);
+				}
+			}
+		}
+        Beans.get(ManufOrderStockMoveService.class).partialFinish(manufOrder);
+    }
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel(ManufOrder manufOrder) throws AxelorException {

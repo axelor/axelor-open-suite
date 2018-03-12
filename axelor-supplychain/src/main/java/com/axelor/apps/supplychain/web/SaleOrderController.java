@@ -43,6 +43,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.SaleOrderCreateServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
@@ -73,27 +74,31 @@ public class SaleOrderController{
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
 
-	public void createStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void createStockMove(ActionRequest request, ActionResponse response) {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		if(saleOrder.getId() != null) {
+		try {
+			if (saleOrder.getId() != null) {
 
-			SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
-			StockMove stockMove = saleOrderStockService.createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+				SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
+				StockMove stockMove = saleOrderStockService
+						.createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
 
-			if(stockMove != null)  {
-				response.setView(ActionView
-					.define(I18n.get("Stock move"))
-					.model(StockMove.class.getName())
-					.add("grid", "stock-move-grid")
-					.add("form", "stock-move-form")
-					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(stockMove.getId())).map());
+				if (stockMove != null) {
+					response.setView(ActionView
+							.define(I18n.get("Stock move"))
+							.model(StockMove.class.getName())
+							.add("grid", "stock-move-grid")
+							.add("form", "stock-move-form")
+							.param("forceEdit", "true")
+							.context("_showRecord", String.valueOf(stockMove.getId())).map());
+				} else {
+					response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
+				}
 			}
-			else  {
-				response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
-			}
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
 		}
 	}
 
@@ -101,7 +106,7 @@ public class SaleOrderController{
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		if(saleOrder != null) {
+		if(saleOrder != null && saleOrder.getCompany() != null) {
 
 			StockLocation stockLocation = Beans.get(StockLocationService.class).getDefaultStockLocation(saleOrder.getCompany());
 
@@ -452,7 +457,8 @@ public class SaleOrderController{
 		}
 
 		try{
-			SaleOrder saleOrder = saleOrderServiceSupplychain.mergeSaleOrders(saleOrderList, commonCurrency, commonClientPartner, commonCompany, commonLocation, commonContactPartner, commonPriceList, commonTeam);
+			SaleOrder saleOrder = Beans.get(SaleOrderCreateServiceSupplychainImpl.class)
+					.mergeSaleOrders(saleOrderList, commonCurrency, commonClientPartner, commonCompany, commonLocation, commonContactPartner, commonPriceList, commonTeam);
 			if (saleOrder != null){
 				//Open the generated sale order in a new tab
 				response.setView(ActionView

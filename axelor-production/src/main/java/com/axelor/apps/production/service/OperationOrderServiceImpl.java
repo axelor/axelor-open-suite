@@ -28,13 +28,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import com.axelor.apps.base.db.DayPlanning;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -98,8 +94,6 @@ public class OperationOrderServiceImpl implements OperationOrderService  {
 				IOperationOrder.STATUS_DRAFT, 
 				prodProcessLine);
 		
-		this._createToConsumeProdProductList(operationOrder, prodProcessLine);
-		
 		this._createHumanResourceList(operationOrder, machineWorkCenter);
 		
 		return Beans.get(OperationOrderRepository.class).save(operationOrder);
@@ -145,11 +139,12 @@ public class OperationOrderServiceImpl implements OperationOrderService  {
 		return name;
 	}
 	
-	
-	
-	protected void _createToConsumeProdProductList(OperationOrder operationOrder, ProdProcessLine prodProcessLine)  {
+
+	@Override
+	public void createToConsumeProdProductList(OperationOrder operationOrder)  {
 		
 		BigDecimal manufOrderQty = operationOrder.getManufOrder().getQty();
+		ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
 		
 		if(prodProcessLine.getToConsumeProdProductList() != null)  {
 			
@@ -164,42 +159,17 @@ public class OperationOrderServiceImpl implements OperationOrderService  {
 		
 	}
 
+	@Override
 	public OperationOrder updateDiffProdProductList(OperationOrder operationOrder) throws AxelorException {
 		List<ProdProduct> toConsumeList = operationOrder.getToConsumeProdProductList();
-		List<StockMoveLine> consumedList = operationOrder.getConsumedStockMoveLineList();
-		List<ProdProduct> diffConsumeList = new ArrayList<>();
-		BigDecimal consumedQty;
-		if (toConsumeList == null || consumedList == null) {
-			return operationOrder;
+	    List<StockMoveLine> consumedList = operationOrder.getConsumedStockMoveLineList();
+	    if (toConsumeList == null || consumedList == null) {
+	    	return operationOrder;
 		}
-		for (ProdProduct prodProduct : toConsumeList) {
-			Product product = prodProduct.getProduct();
-			Unit newUnit = prodProduct.getUnit();
-			Optional<StockMoveLine> stockMoveLineOpt = consumedList.stream()
-					.filter(stockMoveLine1 -> stockMoveLine1.getProduct() != null)
-					.filter(stockMoveLine1 -> stockMoveLine1.getProduct().equals(product))
-					.findAny();
-			if (!stockMoveLineOpt.isPresent()) {
-				continue;
-			}
-			StockMoveLine stockMoveLine = stockMoveLineOpt.get();
-			if (stockMoveLine.getUnit() != null && prodProduct.getUnit() != null) {
-				consumedQty = Beans.get(UnitConversionService.class)
-						.convertWithProduct(stockMoveLine.getUnit(), prodProduct.getUnit(), stockMoveLine.getQty(), product);
-			} else {
-				consumedQty = stockMoveLine.getQty();
-			}
-			BigDecimal diffQty = consumedQty.subtract(prodProduct.getQty());
-			if (diffQty.compareTo(BigDecimal.ZERO) != 0) {
-				ProdProduct diffProdProduct = new ProdProduct();
-				diffProdProduct.setQty(diffQty);
-				diffProdProduct.setProduct(product);
-				diffProdProduct.setUnit(newUnit);
-				diffProdProduct.setDiffConsumeOperationOrder(operationOrder);
-				diffConsumeList.add(diffProdProduct);
-			}
-		}
-		operationOrder.setDiffConsumeProdProductList(diffConsumeList);
+		List<ProdProduct> diffConsumeList = createDiffProdProductList(operationOrder, toConsumeList, consumedList);
+
+	    operationOrder.clearDiffConsumeProdProductList();
+	    diffConsumeList.forEach(operationOrder::addDiffConsumeProdProductListItem);
 		return operationOrder;
 	}
 
@@ -363,5 +333,11 @@ public class OperationOrderServiceImpl implements OperationOrderService  {
 		return dataList;
 	}
 
+	@Override
+	public List<ProdProduct> createDiffProdProductList(OperationOrder operationOrder, List<ProdProduct> prodProductList, List<StockMoveLine> stockMoveLineList) throws AxelorException {
+		List<ProdProduct> diffConsumeList = Beans.get(ManufOrderService.class).createDiffProdProductList(prodProductList, stockMoveLineList);
+		diffConsumeList.forEach(prodProduct -> prodProduct.setDiffConsumeOperationOrder(operationOrder));
+		return diffConsumeList;
+	}
 }
 

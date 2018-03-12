@@ -146,15 +146,16 @@
 
 		<panel-tabs>
 			<panel title="Task Tree" showIf="isProject">
-                <button name="addTask" title="New" css="btn-custom text-left" icon="fa-plus" colSpan="3" onClick="save,action-project-add-task"/>
+                <button name="addTask" title="New" css="btn-custom text-left" icon="fa-plus" colSpan="2" onClick="save,action-project-add-task"/>
+                <button name="allTask" title="All tasks" css="btn-custom text-left" icon="fa-tasks" colSpan="2" onClick="action-project-view-show-related-tasks"/>
 				<panel-dashlet title="Task Tree" colSpan="12" action="action-view-show-project-task-tree"/>
 			</panel>
 
-			<panel if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="invoicing" title="Invoicing" showIf="projInvTypeSelect == 3">
-				<field name="product" onChange="action-project-record-unit" requiredIf="projInvTypeSelect == 3"/>
-				<field name="price" onChange="action-project-record-compute-exTaxTotal" requiredIf="projInvTypeSelect == 3"/>
-				<field name="qty" onChange="action-project-record-compute-exTaxTotal" requiredIf="projInvTypeSelect == 3"/>
-				<field name="unit" requiredIf="projInvTypeSelect == 3"/>
+			<panel if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="invoicing" title="Invoicing" showIf="projInvTypeSelect == 3 &amp;&amp; isBusinessProject">
+				<field name="product" onChange="action-project-record-unit" requiredIf="projInvTypeSelect == 3 &amp;&amp; isBusinessProject"/>
+				<field name="price" onChange="action-project-record-compute-exTaxTotal" requiredIf="projInvTypeSelect == 3 &amp;&amp; isBusinessProject"/>
+				<field name="qty" onChange="action-project-record-compute-exTaxTotal" requiredIf="projInvTypeSelect == 3 &amp;&amp; isBusinessProject"/>
+				<field name="unit" requiredIf="projInvTypeSelect == 3 &amp;&amp; isBusinessProject"/>
 				<field name="exTaxTotal" readonly="true"/>
 			</panel>
 
@@ -401,6 +402,13 @@
 		<view type="grid" name="team-task-grid" />
 		<view type="form" name="team-task-form" />
 		<domain>self.typeSelect = 'task' AND self.project.id = :id</domain>
+	</action-view>
+	
+	<action-view name="action-project-view-show-related-tasks" title="Related tasks" model="com.axelor.team.db.TeamTask">
+		<view type="kanban" name="team-task-kanban"/>
+		<view type="grid" name="team-task-grid"/>
+		<view type="form" name="team-task-form"/>
+		<domain>(self.project.id = :_id OR self.project.parentProject.id = :_id)</domain>
 	</action-view>
 	
 	<action-view name="action-project-view-create-team" model="com.axelor.team.db.Team" title="Team">

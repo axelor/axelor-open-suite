@@ -45,8 +45,8 @@
  	<datetime name="realStartDateT" title="Real start date"/>
   	<datetime name="realEndDateT" title="Real end date"/>
     
-    <many-to-one name="inStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Stock move in"/>
-    <many-to-one name="outStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Stock move out"/>
+    <one-to-many name="inStockMoveList" ref="com.axelor.apps.stock.db.StockMove" title="Stock moves in" mappedBy="inManufOrder"/>
+    <one-to-many name="outStockMoveList" ref="com.axelor.apps.stock.db.StockMove" title="Stock moves out" mappedBy="outManufOrder"/>
     
     <many-to-one name="wasteStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Waste stock move"/>
     

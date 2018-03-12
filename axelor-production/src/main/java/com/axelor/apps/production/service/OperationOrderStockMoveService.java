@@ -17,9 +17,8 @@
  */
 package com.axelor.apps.production.service;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
@@ -35,6 +34,14 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import org.apache.commons.collections.CollectionUtils;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class OperationOrderStockMoveService {
 
@@ -61,13 +68,12 @@ public class OperationOrderStockMoveService {
 			for(ProdProduct prodProduct: operationOrder.getToConsumeProdProductList()) {
 
 				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct, stockMove);
-				stockMove.addStockMoveLineListItem(stockMoveLine);
 
 			}
 
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 				stockMoveService.plan(stockMove);
-				operationOrder.setInStockMove(stockMove);
+				operationOrder.addInStockMoveListItem(stockMove);
 			}
 
 			//fill here the consumed stock move line list item to manage the
@@ -99,8 +105,8 @@ public class OperationOrderStockMoveService {
 			fromStockLocation = stockConfigService.getDefaultStockLocation(stockConfig);
 		}
 
-		return stockMoveService.createStockMove(null, null, company, null, fromStockLocation, virtualStockLocation,
-				null, operationOrder.getPlannedStartDateT().toLocalDate(), null, null, null);
+		return stockMoveService.createStockMove(null, null, company, fromStockLocation, virtualStockLocation,
+				null, operationOrder.getPlannedStartDateT().toLocalDate(), null);
 
 	}
 
@@ -124,33 +130,128 @@ public class OperationOrderStockMoveService {
 
 	public void finish(OperationOrder operationOrder) throws AxelorException  {
 
-		StockMove stockMove = operationOrder.getInStockMove();
+		List<StockMove> stockMoveList = operationOrder.getInStockMoveList();
 
-		if(stockMove != null && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED && stockMove.getStockMoveLineList() != null)  {
-
-			stockMoveService.realize(stockMove);
-
+		if(stockMoveList != null) {
+			List<StockMove> stockMoveToRealizeList = stockMoveList
+					.stream()
+					.filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
+							&& stockMove.getStockMoveLineList() != null)
+					.collect(Collectors.toList());
+            for (StockMove stockMove : stockMoveToRealizeList) {
+				stockMoveService.realize(stockMove);
+			}
 		}
 
 	}
 
+	/**
+	 * Allows to create and realize in stock moves for
+	 * the given operation order. This method is used during a partial finish.
+	 * @param operationOrder
+	 * @throws AxelorException
+	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void partialFinish(OperationOrder operationOrder) throws AxelorException {
+		ManufOrderStockMoveService manufOrderStockMoveService = Beans.get(ManufOrderStockMoveService.class);
+		ManufOrder manufOrder = operationOrder.getManufOrder();
+		Company company = manufOrder.getCompany();
+		StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
+		StockConfig stockConfig = stockConfigService.getStockConfig(company);
 
-	public void cancel(OperationOrder operationOrder) throws AxelorException  {
+		StockLocation fromStockLocation;
+		StockLocation toStockLocation;
+		List<StockMove> stockMoveList;
 
-		StockMove stockMove = operationOrder.getInStockMove();
+		stockMoveList = operationOrder.getInStockMoveList();
+		fromStockLocation = manufOrderStockMoveService.getDefaultStockLocation(manufOrder, company);
+		toStockLocation = stockConfigService.getProductionVirtualStockLocation(stockConfig);
 
-		if(stockMove != null && stockMove.getStockMoveLineList() != null)  {
-
-			stockMoveService.cancel(stockMove);
-
-			for(StockMoveLine stockMoveLine : stockMove.getStockMoveLineList())  {
-
-				stockMoveLine.setConsumedOperationOrder(null);
-
-			}
-
+		//realize current stock move
+		Optional<StockMove> stockMoveToRealize = stockMoveList.stream()
+				.filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
+						&& !CollectionUtils.isEmpty(stockMove.getStockMoveLineList()))
+				.findFirst();
+		if (stockMoveToRealize.isPresent()) {
+				manufOrderStockMoveService.finishStockMove(stockMoveToRealize.get());
 		}
 
+		//generate new stock move
+
+		StockMove newStockMove = stockMoveService.createStockMove(
+				null, null, company,
+				fromStockLocation, toStockLocation, null,
+				operationOrder.getPlannedStartDateT().toLocalDate(), null
+		);
+
+		newStockMove.setStockMoveLineList(new ArrayList<>());
+		createNewStockMoveLines(operationOrder, newStockMove);
+
+		//plan the stockmove
+		stockMoveService.plan(newStockMove);
+
+		operationOrder.addInStockMoveListItem(newStockMove);
+		newStockMove.getStockMoveLineList().forEach(operationOrder::addConsumedStockMoveLineListItem);
+		operationOrder.clearDiffConsumeProdProductList();
+
+	}
+
+	/**
+	 * Generate stock move lines after a partial finish
+	 * @param operationOrder
+	 * @param stockMove
+	 */
+	public void createNewStockMoveLines(OperationOrder operationOrder, StockMove stockMove) throws AxelorException {
+		List<ProdProduct> diffProdProductList;
+		Beans.get(OperationOrderService.class).updateDiffProdProductList(operationOrder);
+		diffProdProductList = new ArrayList<>(operationOrder.getDiffConsumeProdProductList());
+		Beans.get(ManufOrderStockMoveService.class).createNewStockMoveLines(diffProdProductList, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS);
+	}
+
+	public void cancel(OperationOrder operationOrder) throws AxelorException {
+
+			List<StockMove> stockMoveList = operationOrder.getInStockMoveList();
+
+			if (stockMoveList != null) {
+
+				for (StockMove stockMove : stockMoveList) {
+					stockMoveService.cancel(stockMove);
+				}
+
+				stockMoveList.stream()
+						.filter(stockMove -> stockMove.getStockMoveLineList() != null)
+						.flatMap(stockMove -> stockMove.getStockMoveLineList().stream())
+						.forEach(stockMoveLine -> stockMoveLine.setConsumedOperationOrder(null));
+			}
+	}
+
+	/**
+	 * Clear the consumed list and create a new one with the right quantity.
+	 * @param operationOrder
+	 * @param qtyToUpdate
+	 */
+	public void createNewConsumedStockMoveLineList(OperationOrder operationOrder, BigDecimal qtyToUpdate) throws AxelorException {
+		ManufOrderStockMoveService manufOrderStockMoveService = Beans.get(ManufOrderStockMoveService.class);
+		//clear all lists from planned lines
+		operationOrder.getConsumedStockMoveLineList().removeIf(stockMoveLine ->
+				stockMoveLine.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_PLANNED);
+		Optional<StockMove> stockMoveOpt = manufOrderStockMoveService.getPlannedStockMove(operationOrder.getInStockMoveList());
+		if (!stockMoveOpt.isPresent()) {
+			return;
+		}
+		StockMove stockMove = stockMoveOpt.get();
+		stockMove.clearStockMoveLineList();
+
+		//create a new list
+		for (ProdProduct prodProduct : operationOrder.getToConsumeProdProductList()) {
+			BigDecimal qty = manufOrderStockMoveService.getFractionQty(operationOrder.getManufOrder(), prodProduct, qtyToUpdate);
+			manufOrderStockMoveService._createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty);
+			//Update consumed StockMoveLineList with created stock move lines
+			stockMove.getStockMoveLineList()
+					.stream()
+					.filter(stockMoveLine1 -> !operationOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))
+					.forEach(operationOrder::addConsumedStockMoveLineListItem);
+		}
 	}
 }
 
