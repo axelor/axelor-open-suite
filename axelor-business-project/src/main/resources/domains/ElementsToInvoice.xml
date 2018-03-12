@@ -13,7 +13,7 @@
        	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   		<decimal name="qty" title="Qty" default="1"/>
   		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-  		<decimal name="costPrice" title="Cost price" precision="20" scale="10"/>
+  		<decimal name="costPrice" title="abp-Cost price" precision="20" scale="10"/>
   		<decimal name="salePrice" title="Sale price" precision="20" scale="10"/>
         <boolean name="toInvoice" title="To invoice with project" default="true"/>
   		<boolean name="invoiced"/>
