@@ -543,30 +543,6 @@ public class ExpenseServiceImpl implements ExpenseService {
 		}
 	}
 	
-	@Transactional
-	public void insertExpenseLine(ActionRequest request, ActionResponse response) {
-		User user = AuthUtils.getUser();
-		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
-		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("expenseProduct").toString()));
-		if (user != null) {
-			Expense expense = getOrCreateExpense(user);
-			ExpenseLine expenseLine = new ExpenseLine();
-			expenseLine.setExpenseDate(new LocalDate(request.getData().get("date").toString()));
-			expenseLine.setComments(request.getData().get("comments").toString());
-			expenseLine.setExpenseProduct(product);
-			expenseLine.setToInvoice(new Boolean(request.getData().get("toInvoice").toString()));
-			expenseLine.setProjectTask(projectTask);
-			expenseLine.setUser(user);
-			expenseLine.setUntaxedAmount(new BigDecimal(request.getData().get("amountWithoutVat").toString()));
-			expenseLine.setTotalTax(new BigDecimal(request.getData().get("vatAmount").toString()));
-			expenseLine.setTotalAmount(expenseLine.getUntaxedAmount().add(expenseLine.getTotalTax()));
-			expenseLine.setJustification((byte[]) request.getData().get("justification"));
-			expense.addGeneralExpenseLineListItem(expenseLine);
-
-			Beans.get(ExpenseRepository.class).save(expense);
-		}
-	}
-
 	@Override
 	public Expense getOrCreateExpense(User user) {
 		Expense expense = Beans.get(ExpenseRepository.class).all()

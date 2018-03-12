@@ -66,9 +66,6 @@ public interface LeaveService {
     public BigDecimal computeLeaveDaysByLeaveRequest(LocalDate fromDate, LocalDate toDate, LeaveRequest leaveRequest, Employee employee) throws AxelorException;
 	
 	public void getLeaveReason(ActionRequest request, ActionResponse response);
-
-	@Transactional
-	public void insertLeave(ActionRequest request, ActionResponse response) throws AxelorException;
 	
 	@Transactional
 	public void cancel(LeaveRequest leaveRequest) throws AxelorException;

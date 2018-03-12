@@ -530,46 +530,6 @@ public class TimesheetServiceImpl implements TimesheetService{
 		return sum;
 	}
 	
-	public void getActivities(ActionRequest request, ActionResponse response){
-		List<Map<String,String>> dataList = new ArrayList<>();
-		try{
-			List<Product> productList = Beans.get(ProductRepository.class).all().filter("self.isActivity = true").fetch();
-			for (Product product : productList) {
-				Map<String, String> map = new HashMap<>();
-				map.put("name", product.getName());
-				map.put("id", product.getId().toString());
-				dataList.add(map);
-			}
-			response.setData(dataList);
-		}
-		catch(Exception e){
-			response.setStatus(-1);
-			response.setError(e.getMessage());
-		}
-	}
-	
-	
-	
-	// Method used for mobile application
-	@Transactional
-	public void insertTSLine(ActionRequest request, ActionResponse response){
-		
-		User user = AuthUtils.getUser();
-		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
-		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("activity").toString()));
-		LocalDate date = new LocalDate(request.getData().get("date").toString());
-		if(user != null){
-			Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
-			if(timesheet == null){
-				timesheet = createTimesheet(user, date, date);
-			}
-			BigDecimal minutes = new BigDecimal(Minutes.minutesBetween(new LocalTime(0,0), new LocalTime(request.getData().get("duration").toString())).getMinutes());
-			createTimesheetLine(projectTask, product, user, date, timesheet, minutes, request.getData().get("comments").toString());
-			
-			Beans.get(TimesheetRepository.class).save(timesheet);
-		}
-	}
-	
 	public String computeFullName(Timesheet timesheet){
 		
 		User timesheetUser = timesheet.getUser();
