@@ -43,8 +43,17 @@
 	<action-view name="mail.root.messages" title="All messages" model="com.axelor.apps.message.db.Message" >
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
-	</action-view>	
-	
+	</action-view>
+
+	<menuitem name="mail-message-not-send" title="Messages not send" parent="mail-conf" order="26"
+			  action="mail.root.messages.not.send"/>
+    
+	<action-view name="mail.root.messages.not.send" title="Messages not sent" model="com.axelor.apps.message.db.Message">
+		<view type="grid" name="message-not-sent-grid"/>
+		<view type="form" name="message-form"/>
+        <domain>self.statusSelect = 1 AND self.sentDateT = null</domain>
+	</action-view>
+
 	<menuitem name="mail-root-email-conf-routing" parent="mail-conf" title="Routings" action="mail.root.email.conf.routing" order="30"  />	
 		
 	<action-view name="mail.root.email.conf.routing" title="Routings" 

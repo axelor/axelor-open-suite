@@ -41,7 +41,7 @@ public interface MessageService {
 	public void attachMetaFiles( Message message, Set<MetaFile> metaFiles );
 	
 	public Set<MetaAttachment> getMetaAttachments( Message message );
-	
+
 	public Message sendMessage(Message message) throws AxelorException;
 	
 	@Transactional(rollbackOn = { MessagingException.class, IOException.class, Exception.class })

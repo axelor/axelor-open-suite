@@ -22,11 +22,14 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import java.util.List;
 
 @Singleton
 public class MessageController {
@@ -37,21 +40,48 @@ public class MessageController {
 	@Inject
 	private MessageService messageService;
 	
-	public void sendMessage(ActionRequest request, ActionResponse response) throws AxelorException {
-
+	public void sendMessage(ActionRequest request, ActionResponse response) {
 		Message message = request.getContext().asType(Message.class);
 
-		message = messageService.sendMessage( messageRepo.find( message.getId() ) );
-		
-		response.setReload(true);
-		
-		if ( message.getStatusSelect() == MessageRepository.STATUS_SENT ) {
+		try {
+			message = messageService.sendMessage(messageRepo.find(message.getId()));
+			response.setReload(true);
 
-			if ( message.getSentByEmail() ) { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_4 ) ); }
-			else { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_5 ) ); }
+			if ( message.getStatusSelect() == MessageRepository.STATUS_SENT ) {
 
-		} else  { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_6 ) );	}
+				if ( message.getSentByEmail() ) { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_4 ) ); }
+				else { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_5 ) ); }
 
+			} else  { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_6 ) );	}
+		} catch (AxelorException e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 
+	public void sendMessages(ActionRequest request, ActionResponse response) {
+		List<Integer> ids = (List<Integer>) request.getContext().get("_ids");
+
+		if (ids != null && !ids.isEmpty()) {
+			int countError = 0;
+		    for (Integer id: ids) {
+		        Message message = messageRepo.find(Long.valueOf(id));
+		        try {
+		        	messageService.sendMessage(message);
+				} catch (AxelorException e) {
+		            countError++;
+				}
+			}
+			response.setFlash(
+					String.format("%d message%s sent and %d error%s append.",
+							ids.size() - countError,
+							(ids.size() - countError > 1 ? "s" : ""),
+							countError,
+							(countError > 1 ? "s" : "")
+					)
+			);
+			response.setReload(true);
+		} else {
+			response.setFlash("Please select one or more message !");
+		}
+	}
 }

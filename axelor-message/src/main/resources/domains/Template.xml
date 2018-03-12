@@ -21,6 +21,8 @@
 	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>
 	<boolean name="isDefault" title="Default ?"/>
 	<boolean name="isSystem" title="System ?"/>
+
+	<one-to-many name="messageList" ref="com.axelor.apps.message.db.Message" mappedBy="template"/>
 	
 	<extra-code><![CDATA[
 		// MEDIA TYPE SELECT

@@ -133,8 +133,8 @@ public class MessageServiceImpl implements MessageService {
 		message.setRelatedTo2SelectId(relatedTo2SelectId);
 
 		return message;
-	}	
-	
+	}
+
 	public Message sendMessage ( Message message ) throws AxelorException  {
 		
 		try {
