@@ -186,7 +186,6 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 
 		Move move = moveService.getMoveCreateService().createMove(journal, company, null, partner, paymentMode,
 				MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
-		setDebitNumber(paymentScheduleLine, paymentMode);
 
 		MoveLine creditMoveLine = moveService.getMoveLineService().createMoveLine(move, partner, account, amount, false,
 				todayDate, 1, name);
