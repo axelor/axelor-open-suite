@@ -27,22 +27,40 @@ import org.slf4j.LoggerFactory;
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.ProductVariantService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.ManufOrderServiceImpl;
+import com.axelor.apps.production.service.ManufOrderWorkflowService;
+import com.axelor.apps.production.service.OperationOrderService;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl  {
-
+	
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
-	@Inject
 	protected OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl;
+
+	@Inject
+	public ManufOrderServiceBusinessImpl(SequenceService sequenceService, OperationOrderService operationOrderService,
+			ManufOrderWorkflowService manufOrderWorkflowService, ProductVariantService productVariantService,
+			AppProductionService appProductionService, ManufOrderRepository manufOrderRepo,
+			OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl) {
+		super(sequenceService, operationOrderService, manufOrderWorkflowService, productVariantService, appProductionService,
+				manufOrderRepo);
+		this.operationOrderServiceBusinessImpl = operationOrderServiceBusinessImpl;
+		
+	}
+
+
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void propagateIsToInvoice(ManufOrder manufOrder) {
@@ -69,79 +87,14 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl  {
 	public ManufOrder createManufOrder(Product product, BigDecimal qty, int priority, boolean isToInvoice, Company company,
 			BillOfMaterial billOfMaterial, LocalDateTime plannedStartDateT) throws AxelorException  {
 		
-		logger.debug("Création d'un OF {}", priority);
-		
-		ProdProcess prodProcess = billOfMaterial.getProdProcess();
-		
-		ManufOrder manufOrder = new ManufOrder(
-				qty,
-				company, 
-				null, 
-				priority, 
-				this.isManagedConsumedProduct(billOfMaterial), 
-				billOfMaterial, 
-				product,
-				prodProcess, 
-				plannedStartDateT, 
-				IManufOrder.STATUS_DRAFT);
+
+		ManufOrder manufOrder = super.createManufOrder(product, qty, priority, isToInvoice, company, billOfMaterial, plannedStartDateT);
 		
 		manufOrder.setIsToInvoice(isToInvoice);
 			
-		if(prodProcess != null && prodProcess.getProdProcessLineList() != null)  {
-			for(ProdProcessLine prodProcessLine : this._sortProdProcessLineByPriority(prodProcess.getProdProcessLineList()))  {
-				
-				manufOrder.addOperationOrderListItem(
-						operationOrderServiceBusinessImpl.createOperationOrder(manufOrder, prodProcessLine, isToInvoice));
-				
-			}
-		}	
-			
-		if(!manufOrder.getIsConsProOnOperation())  {
-			this.createToConsumeProdProductList(manufOrder);
-		}
-		
-		this.createToProduceProdProductList(manufOrder);
-		
+
 		return manufOrder; 
 		
-	}
-	
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void preFillOperations(ManufOrder manufOrder) throws AxelorException{
-		
-		BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
-		
-		manufOrder.setIsConsProOnOperation(this.isManagedConsumedProduct(billOfMaterial));
-		
-		if(manufOrder.getProdProcess() == null){
-			manufOrder.setProdProcess(billOfMaterial.getProdProcess());
-		}
-		ProdProcess prodProcess = manufOrder.getProdProcess();
-		
-		if(manufOrder.getPlannedStartDateT() == null){
-			manufOrder.setPlannedStartDateT(appProductionService.getTodayDateTime().toLocalDateTime());
-		}
-		
-		if(prodProcess != null && prodProcess.getProdProcessLineList() != null)  {
-			
-			for(ProdProcessLine prodProcessLine : this._sortProdProcessLineByPriority(prodProcess.getProdProcessLineList()))  {
-				manufOrder.addOperationOrderListItem(operationOrderServiceBusinessImpl.createOperationOrder(manufOrder, prodProcessLine, manufOrder.getIsToInvoice()));
-			}
-			
-		}
-		
-		manufOrderRepo.save(manufOrder);
-		
-		manufOrder.setPlannedEndDateT(manufOrderWorkflowService.computePlannedEndDateT(manufOrder));
-		
-		if(!manufOrder.getIsConsProOnOperation())  {
-			this.createToConsumeProdProductList(manufOrder);
-		}
-		
-		this.createToProduceProdProductList(manufOrder);
-		
-		manufOrderRepo.save(manufOrder);
 	}
 	
 }

@@ -49,16 +49,15 @@ public class OperationOrderWorkflowService {
 	protected OperationOrderDurationRepository operationOrderDurationRepo;
 	protected AppProductionService appProductionService;
 
-	protected LocalDateTime now;
-	
+
 	@Inject
 	public OperationOrderWorkflowService(OperationOrderStockMoveService operationOrderStockMoveService, OperationOrderRepository operationOrderRepo,
 										 OperationOrderDurationRepository operationOrderDurationRepo, AppProductionService appProductionService) {
 		this.operationOrderStockMoveService = operationOrderStockMoveService;
 		this.operationOrderRepo = operationOrderRepo;
 		this.operationOrderDurationRepo = operationOrderDurationRepo;
+		this.appProductionService = appProductionService;
 
-		now = appProductionService.getTodayDateTime().toLocalDateTime();
 	}
 
 	/**
@@ -69,8 +68,10 @@ public class OperationOrderWorkflowService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public OperationOrder plan(OperationOrder operationOrder) throws AxelorException  {
+
+		Beans.get(OperationOrderService.class).createToConsumeProdProductList(operationOrder);
 
 		operationOrder.setPlannedStartDateT(this.getLastOperationOrder(operationOrder));
 
@@ -168,7 +169,7 @@ public class OperationOrderWorkflowService {
 	public void start(OperationOrder operationOrder) throws AxelorException {
 		if (operationOrder.getStatusSelect() != IOperationOrder.STATUS_IN_PROGRESS) {
 			operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
-			operationOrder.setRealStartDateT(now);
+			operationOrder.setRealStartDateT(appProductionService.getTodayDateTime().toLocalDateTime());
 
 			startOperationOrderDuration(operationOrder);
 
@@ -228,7 +229,7 @@ public class OperationOrderWorkflowService {
 	@Transactional
 	public void finish(OperationOrder operationOrder) throws AxelorException {
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_FINISHED);
-		operationOrder.setRealEndDateT(now);
+		operationOrder.setRealEndDateT(appProductionService.getTodayDateTime().toLocalDateTime());
 
 		stopOperationOrderDuration(operationOrder);
 
@@ -264,7 +265,7 @@ public class OperationOrderWorkflowService {
 	public void startOperationOrderDuration(OperationOrder operationOrder) {
 		OperationOrderDuration duration = new OperationOrderDuration();
 		duration.setStartedBy(AuthUtils.getUser());
-		duration.setStartingDateTime(now);
+		duration.setStartingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());
 		operationOrder.addOperationOrderDurationListItem(duration);
 	}
 
@@ -277,7 +278,7 @@ public class OperationOrderWorkflowService {
 	public void stopOperationOrderDuration(OperationOrder operationOrder) {
 		OperationOrderDuration duration = operationOrderDurationRepo.all().filter("self.operationOrder.id = ? AND self.stoppedBy IS NULL AND self.stoppingDateTime IS NULL", operationOrder.getId()).fetchOne();
 		duration.setStoppedBy(AuthUtils.getUser());
-		duration.setStoppingDateTime(now);
+		duration.setStoppingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());
 
 		if (operationOrder.getStatusSelect() == IOperationOrder.STATUS_FINISHED) {
 			long durationLong = getDuration(computeRealDuration(operationOrder));
@@ -354,12 +355,8 @@ public class OperationOrderWorkflowService {
 			operationOrder.setPlannedDuration(duration);
 		}
 
-		if(operationOrder.getRealStartDateT() != null && operationOrder.getRealEndDateT() != null) {
-			duration = this.getDuration(
-					Duration.between(operationOrder.getRealStartDateT(), operationOrder.getRealEndDateT())
-			);
-			operationOrder.setRealDuration(duration);
-		}
+		duration = getDuration(computeRealDuration(operationOrder));
+		operationOrder.setRealDuration(duration);
 
 		return operationOrder;
 	}

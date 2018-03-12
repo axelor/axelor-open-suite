@@ -53,14 +53,14 @@ public class PaymentService {
 	protected ReconcileService reconcileService;
 	protected MoveLineService moveLineService;
 
-	protected LocalDate today;
+	protected AppAccountService appAccountService;
 
 	@Inject
 	public PaymentService(AppAccountService appAccountService, ReconcileService reconcileService, MoveLineService moveLineService)  {
 		
 		this.reconcileService = reconcileService;
 		this.moveLineService = moveLineService;
-		today = appAccountService.getTodayDate();
+		this.appAccountService = appAccountService;
 	}
 
 	/**
@@ -109,9 +109,6 @@ public class PaymentService {
 
 			log.debug("Emploie du trop perçu (nombre de lignes en débit : {}, nombre de ligne en crédit : {})",
 				new Object[]{debitMoveLines.size(), creditMoveLines.size()});
-
-			BigDecimal amount;
-			Reconcile reconcile;
 
 			BigDecimal debitTotalRemaining = BigDecimal.ZERO;
 			BigDecimal creditTotalRemaining = BigDecimal.ZERO;
@@ -242,7 +239,7 @@ public class PaymentService {
 					debitMoveLine.getAccount(),
 					amountToPay,
 					false,
-					this.today,
+					appAccountService.getTodayDate(),
 					moveLineNo2,
 					invoiceName);
 			move.getMoveLineList().add(creditMoveLine);
@@ -285,7 +282,7 @@ public class PaymentService {
 					account,
 					remainingPaidAmount2,
 					false,
-					this.today,
+					appAccountService.getTodayDate(),
 					moveLineNo2,
 					null);
 

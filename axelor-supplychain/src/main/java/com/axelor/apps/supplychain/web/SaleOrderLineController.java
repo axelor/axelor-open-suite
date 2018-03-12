@@ -17,10 +17,11 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import java.math.BigDecimal;
+
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.StopReason;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
@@ -43,9 +44,9 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-import java.math.BigDecimal;
-
+@Singleton
 public class SaleOrderLineController {
 	
 	@Inject

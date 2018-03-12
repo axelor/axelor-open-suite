@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -41,6 +41,7 @@ import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsPartnerService;
 import com.axelor.apps.bankpayment.db.EbicsRequestLog;
 import com.axelor.apps.bankpayment.db.EbicsUser;
+import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsRequestLogRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.client.EbicsProduct;
@@ -335,7 +336,7 @@ public class EbicsService {
 	    }
 	    EbicsPartner ebicsPartner = transportUser.getEbicsPartner();
 	    
-	    if (ebicsPartner.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+	    if (ebicsPartner.getEbicsTypeSelect() == EbicsPartnerRepository.EBICS_TYPE_TS)  {
 	    	if(signature == null)  {
 	    		throw new AxelorException(IException.CONFIGURATION_ERROR, "Signature file is required to send FUL request");
 	    	}
@@ -354,7 +355,7 @@ public class EbicsService {
 	    FileTransfer transferManager = new FileTransfer(session);
 	    
 	    try {
-			if(ebicsPartner.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+			if(ebicsPartner.getEbicsTypeSelect() == EbicsPartnerRepository.EBICS_TYPE_TS)  {
 				transferManager.sendFile(IOUtils.getFileContent(file.getAbsolutePath()), OrderType.FUL, IOUtils.getFileContent(signature.getAbsolutePath()));
 			}
 			else  {

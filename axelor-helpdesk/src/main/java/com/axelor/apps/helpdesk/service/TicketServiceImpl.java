@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -23,16 +23,16 @@ import java.util.List;
 import javax.inject.Inject;
 
 import com.axelor.apps.base.db.AppHelpdesk;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.repo.AppHelpdeskRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.helpdesk.db.Sla;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.repo.SlaRepository;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
-import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.service.publicHoliday.PublicHolidayService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
@@ -85,7 +85,7 @@ public class TicketServiceImpl implements TicketService {
 
 			Sla sla = slaRepo.all()
 					.filter("self.team = ?1 AND self.prioritySelect = ?2 AND self.ticketType = ?3",
-							ticket.getAssignedTo() == null ? null : ticket.getAssignedTo().getActiveTeam(),
+							ticket.getAssignedToUser() == null ? null : ticket.getAssignedToUser().getActiveTeam(),
 							ticket.getPrioritySelect(), ticket.getTicketType())
 					.fetchOne();
 
@@ -94,7 +94,7 @@ public class TicketServiceImpl implements TicketService {
 						.filter("self.team = ?1 AND self.prioritySelect = ?2 AND self.ticketType = null OR "
 								+ "(self.team = null AND self.prioritySelect = ?2 AND self.ticketType = ?3) OR "
 								+ "(self.team = ?1 AND self.prioritySelect = null AND self.ticketType = ?3)",
-								ticket.getAssignedTo() == null ? null : ticket.getAssignedTo().getActiveTeam(),
+								ticket.getAssignedToUser() == null ? null : ticket.getAssignedToUser().getActiveTeam(),
 								ticket.getPrioritySelect(), ticket.getTicketType())
 						.fetchOne();
 			}
@@ -103,7 +103,7 @@ public class TicketServiceImpl implements TicketService {
 						.filter("self.team = ?1 AND self.prioritySelect = null AND self.ticketType = null OR "
 								+ "(self.team = null AND self.prioritySelect = ?2 AND self.ticketType = null) OR "
 								+ "(self.team = null AND self.prioritySelect = null AND self.ticketType = ?3)",
-								ticket.getAssignedTo() == null ? null : ticket.getAssignedTo().getActiveTeam(),
+								ticket.getAssignedToUser() == null ? null : ticket.getAssignedToUser().getActiveTeam(),
 								ticket.getPrioritySelect(), ticket.getTicketType())
 						.fetchOne();
 			}
@@ -134,11 +134,14 @@ public class TicketServiceImpl implements TicketService {
 	 */
 	private void computeDuration(Ticket ticket, Sla sla) throws AxelorException {
 
-		if (sla.getIsWorkingDays() && ticket.getAssignedTo() != null && ticket.getAssignedTo().getEmployee() != null) {
+		if (sla.getIsWorkingDays() && ticket.getAssignedToUser() != null
+				&& ticket.getAssignedToUser().getActiveCompany() != null
+				&& ticket.getAssignedToUser().getActiveCompany().getWeeklyPlanning() != null
+				&& ticket.getAssignedToUser().getActiveCompany().getPublicHolidayEventsPlanning() != null) {
 
 			if (sla.getDays() > 0) {
 				LocalDateTime fromDate = ticket.getStartDateT().plusDays(1);
-				this.calculateWorkingDays(fromDate, ticket.getAssignedTo().getEmployee(), sla.getDays());
+				this.calculateWorkingDays(fromDate, ticket.getAssignedToUser().getActiveCompany(), sla.getDays());
 				ticket.setDeadlineDateT(toDate.plusHours(sla.getHours()));
 
 			} else {
@@ -169,20 +172,20 @@ public class TicketServiceImpl implements TicketService {
 	 * @param days
 	 * @throws AxelorException
 	 */
-	private void calculateWorkingDays(LocalDateTime fromDate, Employee employee, int days) throws AxelorException {
+	private void calculateWorkingDays(LocalDateTime fromDate, Company company, int days) throws AxelorException {
 
-		if (weeklyPlanningService.workingDayValue(employee.getWeeklyPlanning(), fromDate.toLocalDate()) == 0
-				|| publicHolidayService.checkPublicHolidayDay(fromDate.toLocalDate(), employee)) {
+		if (weeklyPlanningService.workingDayValue(company.getWeeklyPlanning(), fromDate.toLocalDate()) == 0
+				|| publicHolidayService.checkPublicHolidayDay(fromDate.toLocalDate(), company.getPublicHolidayEventsPlanning())) {
 
 			fromDate = fromDate.plusDays(1);
-			this.calculateWorkingDays(fromDate, employee, days);
+			this.calculateWorkingDays(fromDate, company, days);
 
 		} else {
 			toDate = fromDate;
 			days--;
 			if (days != 0) {
 				fromDate = fromDate.plusDays(1);
-				this.calculateWorkingDays(fromDate, employee, days);
+				this.calculateWorkingDays(fromDate, company, days);
 			}
 		}
 	}
@@ -216,13 +219,13 @@ public class TicketServiceImpl implements TicketService {
 
 		if (id != null) {
 			Ticket ticket = ticketRepo.find(id);
-			ticket.setAssignedTo(AuthUtils.getUser());
+			ticket.setAssignedToUser(AuthUtils.getUser());
 			ticketRepo.save(ticket);
 
 		} else if (!ids.isEmpty()) {
 
 			for (Ticket ticket : ticketRepo.all().filter("id in ?1", ids).fetch()) {
-				ticket.setAssignedTo(AuthUtils.getUser());
+				ticket.setAssignedToUser(AuthUtils.getUser());
 				ticketRepo.save(ticket);
 			}
 		}

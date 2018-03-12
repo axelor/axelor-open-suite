@@ -51,7 +51,7 @@ import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -85,7 +85,7 @@ public class ImportOrderServiceImpl implements ImportOrderService {
 	private SaleOrderRepository saleOrderRepo;
 	
 	@Inject
-	private SaleOrderService saleOrderService;
+	private SaleOrderWorkflowService saleOrderWorkflowService;
 	
 	/**
 	 * Initialization
@@ -187,19 +187,19 @@ public class ImportOrderServiceImpl implements ImportOrderService {
 						
 				} else if (saleOrderStatus.getAbsStatus() == 2) {
 					order.setManualUnblock(true);
-					saleOrderService.finalizeSaleOrder(order);
+					saleOrderWorkflowService.finalizeSaleOrder(order);
 					order.setStatusSelect(saleOrderStatus.getAbsStatus());
 					
 				} else if (saleOrderStatus.getAbsStatus() == 3) {
 					order.setManualUnblock(true);
-					saleOrderService.finalizeSaleOrder(order);
-					saleOrderService.confirmSaleOrder(order);
+					saleOrderWorkflowService.finalizeSaleOrder(order);
+					saleOrderWorkflowService.confirmSaleOrder(order);
 					order.setStatusSelect(saleOrderStatus.getAbsStatus());
 					
 				} else if (saleOrderStatus.getAbsStatus() == 4) {
 					order.setManualUnblock(true);
-					saleOrderService.finalizeSaleOrder(order);
-					saleOrderService.confirmSaleOrder(order);
+					saleOrderWorkflowService.finalizeSaleOrder(order);
+					saleOrderWorkflowService.confirmSaleOrder(order);
 					order.setStatusSelect(saleOrderStatus.getAbsStatus());
 					
 				} else if (saleOrderStatus.getAbsStatus() == 5) {
@@ -207,7 +207,7 @@ public class ImportOrderServiceImpl implements ImportOrderService {
 					cancelReason.setName("From prestashop");
 					order.setCancelReason(cancelReason);
 					order.setCancelReasonStr("From prestashop");
-					saleOrderService.cancelSaleOrder(order, order.getCancelReason(), order.getCancelReasonStr());
+					saleOrderWorkflowService.cancelSaleOrder(order, order.getCancelReason(), order.getCancelReasonStr());
 					order.setStatusSelect(saleOrderStatus.getAbsStatus());
 					
 				} else {

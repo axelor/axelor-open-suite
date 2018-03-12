@@ -10,42 +10,57 @@
         <field name="statusSelect"/>
     </grid>
 
-	<form name="inventory-form" title="Inventory" model="com.axelor.apps.stock.db.Inventory" onSave="action-set-inventory-seq" onNew="action-inventory-record-new">
-		<panel title="Status">
-			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
-		</panel>
-		<panel name="main">
-			<field name="inventorySeq" readOnly="true" colSpan="4"/>    
-			<field name="dateT" colSpan="4" readonlyIf="statusSelect >= 2"/>
-			<field name="stockLocation" onSelect="action-inventory-attrs-set-location-domain" colSpan="4" readonlyIf="statusSelect >= 2"  form-view="stock-location-form" grid-view="stock-location-grid"/>
-			<field name="description" colSpan="12" height="3"/>
-		</panel>  
-		<panel name="fillInventoryWith" title="Fill inventory with" hideIf="statusSelect >= 2 || stockLocation == null">
-			<field name="productFamily" form-view="product-family-form" grid-view="product-family-grid" onChange="action-inventory-on-change-product-family"/>
-			<field name="productCategory" form-view="product-category-form" grid-view="product-category-grid" onSelect="action-inventory-on-select-product-category" onChange="action-inventory-on-change-product-category"/>
-			<field name="excludeOutOfStock"/>
-			<field name="includeObsolete"/>
-			<button name="fillInventory" title="Fill inventory" showIf="stockLocation != null" onClick="action-group-stock-inventory-fillinventory-click"/>
-		</panel>
-		<panel-related field="inventoryLineList" readonlyIf="statusSelect >= 5 || stockLocation == null" colSpan="12"/>
-		<panel sidebar="true" name="actions" title="Actions">
-			<button name="plan" title="Plan" showIf="statusSelect == 1 &amp;&amp; stockLocation != null" onClick="action-group-stock-inventory-plan-click"/>
-			<button name="start" title="Start" showIf="statusSelect == 2" onClick="action-group-stock-inventory-start-click"/>
-			<button name="complete" title="Complete" showIf="statusSelect == 3" onClick="action-group-stock-inventory-complete-click"/>
-			<button name="validate" title="Validate" showIf="statusSelect == 4" onClick="action-group-stock-inventory-validate-click"/>
-			<button name="cancel" title="Cancel" showIf="statusSelect &lt; 6" onClick="action-group-stock-inventory-cancel-click"/>
-			<button name="draft" title="Draft" showIf="statusSelect == 6" onClick="action-group-stock-inventory-draft-click"/>
-		</panel>
-		<panel name="export" title="Export" showIf="statusSelect >= 2 &amp;&amp; statusSelect &lt;= 5" sidebar="true">
-			<field name="formatSelect" colSpan="12"/>
-			<button name="showInventory" title="Export" readonlyIf="formatSelect == null" colSpan="12" onClick="save,action-inventory-method-show-inventory" showIf="formatSelect != 'csv'"/>
-			<button name="showInventory" title="Export" readonlyIf="formatSelect == null" colSpan="12" onClick="save,action-inventory-method-export-inventory" showIf="formatSelect == 'csv'"/>
-		</panel>
-		<panel name="import" title="Import" showIf="statusSelect == 3 || statusSelect == 4" sidebar="true">
-			<field name="importFile" widget="binary-link"/>
-			<button name="importFile" title="Import" readonlyIf="importFile == null" colSpan="6" onClick="action-group-stock-inventory-importfile-click"/>
-		</panel>
-	</form>
+    <form name="inventory-form" title="Inventory" model="com.axelor.apps.stock.db.Inventory" width="large" onSave="action-set-inventory-seq" onNew="action-inventory-record-new">
+        <panel>
+            <panel colSpan="10">
+                <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
+                <field name="inventorySeq" readonly="true" css="label-bold bold large" showTitle="false"/>
+            </panel>
+
+            <panel colSpan="2" itemSpan="12">
+                <button name="plan" title="Plan" icon="fa-calendar" showIf="statusSelect == 1 &amp;&amp; stockLocation != null" onClick="action-group-stock-inventory-plan-click"/>
+                <button name="start" title="Start" icon="fa-play" showIf="statusSelect == 2" onClick="action-group-stock-inventory-start-click"/>
+                <button name="complete" title="Complete" icon="fa-check" showIf="statusSelect == 3" onClick="action-group-stock-inventory-complete-click"/>
+                <button name="validate" title="Validate" icon="fa-check" showIf="statusSelect == 4" onClick="action-group-stock-inventory-validate-click"/>
+                <button name="cancel" title="Cancel" icon="fa-times-circle" css="btn-danger" showIf="statusSelect &lt; 6" onClick="action-group-stock-inventory-cancel-click"/>
+                <button name="draft" title="Draft" showIf="statusSelect == 6" onClick="action-group-stock-inventory-draft-click"/>
+            </panel>
+        </panel>
+
+        <panel>
+            <field name="dateT" readonlyIf="statusSelect >= 2"/>
+            <field name="stockLocation" onSelect="action-inventory-attrs-set-location-domain" readonlyIf="statusSelect >= 2" grid-view="stock-location-grid" form-view="stock-location-form"/>
+            <field name="validatedBy" readonly="true" showIf="validatedBy"/>
+            <field name="validatedOn" readonly="true" showIf="validatedOn"/>
+            <field name="description" colSpan="12" height="3"/>
+        </panel>
+
+        <panel title="Fill inventory with" hideIf="statusSelect >= 2 || stockLocation == null">
+            <field name="productFamily" onChange="action-inventory-on-change-product-family" grid-view="product-family-grid" form-view="product-family-form"/>
+            <field name="productCategory" onSelect="action-inventory-on-select-product-category" onChange="action-inventory-on-change-product-category" grid-view="product-category-grid" form-view="product-category-form"/>
+            <field name="excludeOutOfStock" colSpan="3"/>
+            <field name="includeObsolete" colSpan="3"/>
+            <spacer/>
+            <button name="fillInventory" title="Fill inventory" showIf="stockLocation != null" onClick="action-group-stock-inventory-fillinventory-click" colSpan="3"/>
+        </panel>
+
+        <panel-related field="inventoryLineList" readonlyIf="statusSelect >= 5 || stockLocation == null" colSpan="12" height="20" grid-view="inventory-line-grid" form-view="inventory-line-form"/>
+
+        <panel-tabs showIf="statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 6">
+            <panel title="Export" showIf="statusSelect >= 2 &amp;&amp; statusSelect &lt;= 5">
+                <field name="formatSelect"/>
+                <panel colSpan="3" stacked="true">
+                    <button name="showInventory" title="Export" readonlyIf="formatSelect == null" onClick="save,action-inventory-method-show-inventory" showIf="formatSelect != 'csv'"/>
+                    <button name="showInventory" title="Export" readonlyIf="formatSelect == null" onClick="save,action-inventory-method-export-inventory" showIf="formatSelect == 'csv'"/>
+                </panel>
+            </panel>
+
+            <panel title="Import" showIf="statusSelect == 3 || statusSelect == 4">
+                <field name="importFile" widget="binary-link"/>
+                <button name="importFile" title="Import" readonlyIf="importFile == null" onClick="action-group-stock-inventory-importfile-click" colSpan="3"/>
+            </panel>
+        </panel-tabs>
+    </form>
     
     <action-group name="action-group-stock-inventory-importfile-click">
     	<action name="save"/>
@@ -107,6 +122,8 @@
 	
 	<action-record name="action-inventory-record-draft" model="com.axelor.apps.stock.db.Inventory">
 	    <field name="statusSelect" expr="1"/>
+	    <field name="validatedBy" expr="eval: null"/>
+	    <field name="validatedOn" expr="eval: null"/>
 	</action-record>
 	
 	<action-record name="action-inventory-record-plan" model="com.axelor.apps.stock.db.Inventory">

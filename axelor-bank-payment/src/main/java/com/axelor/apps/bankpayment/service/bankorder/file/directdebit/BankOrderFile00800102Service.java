@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -26,10 +26,10 @@ import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
+import com.axelor.apps.account.db.Umr;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
-import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
 import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.AccountIdentification4Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.ActiveOrHistoricCurrencyAndAmount;
@@ -41,6 +41,7 @@ import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.DirectDebitTransacti
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.DirectDebitTransactionInformation9;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.Document;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.FinancialInstitutionIdentification7;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.GenericFinancialIdentification1;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.GenericPersonIdentification1;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.GroupHeader39;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.LocalInstrument2Choice;
@@ -57,23 +58,25 @@ import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.PersonIdentification
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.RemittanceInformation5;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.SequenceType1Code;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.ServiceLevel8Choice;
+import com.axelor.apps.base.db.Bank;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class BankOrderFile00800102Service extends BankOrderFile008Service {
 
-    private ObjectFactory factory;
-    private String sepaType;
+	protected ObjectFactory factory;
+    protected String sepaType;
 
 	@Inject
 	public BankOrderFile00800102Service(BankOrder bankOrder, String sepaType) {
 		super(bankOrder);
 		
 		context = "com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02";
-		fileExtension = FILE_EXTENSION_XML;
 
 		factory = new ObjectFactory();
 		this.sepaType = sepaType;
@@ -162,7 +165,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
      * @param creditor the creditor of the SEPA Direct Debit file
      * @throws DatatypeConfigurationException
      */
-    private void createGrpHdr(GroupHeader39 groupHeader, PartyIdentification32 creditor) throws DatatypeConfigurationException {
+    protected void createGrpHdr(GroupHeader39 groupHeader, PartyIdentification32 creditor) throws DatatypeConfigurationException {
         DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
 
 	    /*
@@ -215,7 +218,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
      * @param creditor the creditor of the SEPA Direct Debit file
      * @throws DatatypeConfigurationException
      */
-    private void createPmtInf(List<PaymentInstructionInformation4> paymentInstructionInformationList, PartyIdentification32 creditor) throws AxelorException, DatatypeConfigurationException {
+    protected void createPmtInf(List<PaymentInstructionInformation4> paymentInstructionInformationList, PartyIdentification32 creditor) throws AxelorException, DatatypeConfigurationException {
         DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
 
 	    /*
@@ -373,7 +376,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
              * Rule : Currency of the account must be EUR. For usage of another currency, please
              *        contact your bank.
              */
-        cashAccount16.setCcy("EUR");
+        cashAccount16.setCcy(CURRENCY_CODE);
 
         paymentInstructionInformation4.setCdtrAcct(cashAccount16);
 
@@ -385,7 +388,9 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
          *        first 8 characters are significant.
          */
         FinancialInstitutionIdentification7 financialInstitutionIdentification7 = factory.createFinancialInstitutionIdentification7();
-        financialInstitutionIdentification7.setBIC(senderBankDetails.getBank().getCode()); // BIC
+        
+        fillBic(financialInstitutionIdentification7, senderBankDetails.getBank()); //BIC
+
         BranchAndFinancialInstitutionIdentification4 branchAndFinancialInstitutionIdentification4 = factory.createBranchAndFinancialInstitutionIdentification4();
         branchAndFinancialInstitutionIdentification4.setFinInstnId(financialInstitutionIdentification7);
         paymentInstructionInformation4.setCdtrAgt(branchAndFinancialInstitutionIdentification4);
@@ -435,10 +440,13 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
      * @throws DatatypeConfigurationException
      * @throws AxelorException
      */
-    private void createDrctDbtTxInf(List<DirectDebitTransactionInformation9> directDebitTransactionInformation9List, PartyIdentification32 creditor) throws DatatypeConfigurationException, AxelorException {
+    protected void createDrctDbtTxInf(List<DirectDebitTransactionInformation9> directDebitTransactionInformation9List, PartyIdentification32 creditor) throws DatatypeConfigurationException, AxelorException {
         DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
 
         for (BankOrderLine bankOrderLine : bankOrderLineList) {
+        	
+        	BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
+        	Umr receiverUmr = bankOrderLine.getPartner().getActiveUmr();
             /*
              * Direct Debit Transaction Information (mandatory)
              * Set of elements providing information specific to the individual transaction(s) included in the message.
@@ -475,7 +483,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
              * Usage  : Amount must be between 0.01 and 999999999.99
              */
             ActiveOrHistoricCurrencyAndAmount activeOrHistoricCurrencyAndAmount = factory.createActiveOrHistoricCurrencyAndAmount();
-            activeOrHistoricCurrencyAndAmount.setCcy("EUR");
+            activeOrHistoricCurrencyAndAmount.setCcy(CURRENCY_CODE);
             activeOrHistoricCurrencyAndAmount.setValue(bankOrderLine.getBankOrderAmount());
             directDebitTransactionInformation9.setInstdAmt(activeOrHistoricCurrencyAndAmount);
 
@@ -495,14 +503,14 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
                      * Mandate Identification (mandatory)
                      * Reference of the direct debit mandate that has been signed between by the debtor and the creditor.
                      */
-            mandateRelatedInformation6.setMndtId(bankOrderLine.getPartner().getActiveUmr().getUmrNumber());
+            mandateRelatedInformation6.setMndtId(receiverUmr.getUmrNumber());
                     /*
                      * Date of Signature (mandatory)
                      * Date on which the direct debit mandate has been signed by the debtor.
                      *
                      * Format : YYYY-MM-DD
                      */
-            mandateRelatedInformation6.setDtOfSgntr(datatypeFactory.newXMLGregorianCalendar(bankOrderLine.getPartner().getActiveUmr().getMandateSignatureDate().format(DateTimeFormatter.ofPattern(("yyyy-MM-dd")))));
+            mandateRelatedInformation6.setDtOfSgntr(datatypeFactory.newXMLGregorianCalendar(receiverUmr.getMandateSignatureDate().format(DateTimeFormatter.ofPattern(("yyyy-MM-dd")))));
                     /*
                      * Amendment Indicator (optional)
                      * Indicator notifying whether the underlying mandate is amended or not.
@@ -563,7 +571,9 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
              */
             BranchAndFinancialInstitutionIdentification4 branchAndFinancialInstitutionIdentification4 = factory.createBranchAndFinancialInstitutionIdentification4();
             FinancialInstitutionIdentification7 financialInstitutionIdentification7 = factory.createFinancialInstitutionIdentification7();
-            financialInstitutionIdentification7.setBIC(bankOrderLine.getReceiverBankDetails().getBank().getCode()); // BIC
+            
+            fillBic(financialInstitutionIdentification7, receiverBankDetails.getBank()); //BIC
+            
             branchAndFinancialInstitutionIdentification4.setFinInstnId(financialInstitutionIdentification7);
             directDebitTransactionInformation9.setDbtrAgt(branchAndFinancialInstitutionIdentification4);
 
@@ -572,7 +582,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
              * Party that owes an amount of money to the (ultimate) creditor.
              */
             PartyIdentification32 debtor = factory.createPartyIdentification32();
-            debtor.setNm(bankOrderLine.getReceiverBankDetails().getOwnerName());
+            debtor.setNm(receiverBankDetails.getOwnerName());
             directDebitTransactionInformation9.setDbtr(debtor);
 
             /*
@@ -580,7 +590,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
              * Identification of the account of the debtor to which a debit entry will be made to execute the transfer.
              */
             AccountIdentification4Choice accountIdentification4Choice = factory.createAccountIdentification4Choice();
-            accountIdentification4Choice.setIBAN(bankOrderLine.getReceiverBankDetails().getIban());
+            accountIdentification4Choice.setIBAN(receiverBankDetails.getIban());
             CashAccount16 cashAccount16 = factory.createCashAccount16();
             cashAccount16.setId(accountIdentification4Choice);
             directDebitTransactionInformation9.setDbtrAcct(cashAccount16);
@@ -630,4 +640,26 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
                 // remittanceInformation5.getStrd().add(structuredRemittanceInformation7);
         }
     }
+    
+    /**
+  	 * Method to fill the BIC information.
+  	 * If the BIC is not provided or in Iban only mode, we put NOTPROVIDED value. In this case, the bank ignore the BIC and use the Iban only.
+  	 * 
+  	 * @param finInstnId
+  	 * 			The financial instituation identification tag of the generated file.
+  	 * @param bank
+  	 * 			The bank from which the BIC is get. 
+  	 */
+  	protected void fillBic( FinancialInstitutionIdentification7 finInstnId, Bank bank)  {
+  		
+  		if(bankOrderFileFormat.getIbanOnly() || bank == null || Strings.isNullOrEmpty(bank.getCode()))  {
+  			GenericFinancialIdentification1 genFinId = new GenericFinancialIdentification1();
+  			genFinId.setId(BIC_NOT_PROVIDED);
+  			finInstnId.setOthr(genFinId);
+  		}
+  		else  {
+  			finInstnId.setBIC(bank.getCode());
+  		}
+  		
+  	}
 }

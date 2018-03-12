@@ -53,7 +53,7 @@
     </form>
     
     
-    <form name="user-preferences-form" id="base-user-preferences-form" title="Preferences" model="com.axelor.auth.db.User"
+    <form name="user-preferences-form" id="base-user-preferences-form" title="Preferences" model="com.axelor.auth.db.User" 
         onSave="com.axelor.auth.AuthService:validate">
 		<panel name="userPreferences" title="User preferences" itemSpan="12">
 			<field name="image" showTitle="false"/>
@@ -66,7 +66,7 @@
 				<field name="confirm" title="Confirm" placeholder="confirm password" widget="password"/>
 			</panel>
 			<field name="email"/>
-			<field name="theme"/>
+			<field name="theme" widget="theme-select"/>
 			<field name="noHelp"/>
 			<field name="iCalendar" canNew="true" canEdit="true"/>
 			<panel-related title="Internal companies" field="companySet" hidden="true"/>

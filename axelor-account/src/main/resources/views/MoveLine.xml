@@ -11,7 +11,7 @@
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
         <field name="name"/>
         <field name="date" width="90"/>
-   		<field name="move.period" width="100"/>
+   		<field name="move.period" width="100" canView="false"/>
         <field name="move.journal" width="140"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="account" form-view="account-form" grid-view="account-grid"/>
@@ -40,7 +40,7 @@
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
         <field name="name"/>
         <field name="date"/>
-   		<field name="move.period"/>
+   		<field name="move.period" canView="false"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="account" form-view="account-form" grid-view="account-grid"/>
         <field name="move.company" form-view="company-form" grid-view="company-grid"/>
@@ -55,7 +55,7 @@
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
         <field name="name"/>
         <field name="date"/>
-		<field name="move.period"/>
+		<field name="move.period" canView="false"/>
         <field name="move.journal"/>
         <field name="description"/>
         <field name="account" form-view="account-form" grid-view="account-grid"/>
@@ -83,7 +83,7 @@
     		</field>
     		<field name="move.company"/>
     		<field name="move.journal"/>
-   			<field name="move.period"/>
+   			<field name="move.period" canView="false"/>
     	</panel>
     	<panel name="informationsPanel" title="Informations" readonly="true" >
    			<field name="name"/>

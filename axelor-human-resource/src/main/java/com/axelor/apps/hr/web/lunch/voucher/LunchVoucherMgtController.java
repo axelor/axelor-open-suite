@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -42,12 +42,14 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+@Singleton
 public class LunchVoucherMgtController {
 	
 	@Inject private Provider<LunchVoucherMgtService> lunchVoucherMgtProvider;
@@ -62,22 +64,6 @@ public class LunchVoucherMgtController {
 			
 			response.setReload(true);
 		}  catch(Exception e)  {
-			TraceBackService.trace(response, e);
-		}
-	}
-	
-	public void checkStock(ActionRequest request, ActionResponse response)  {
-		try {
-			LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
-			Company company = lunchVoucherMgt.getCompany();
-			HRConfig hrConfig = hrConfigService.get().getHRConfig(company);
-			int stock = lunchVoucherMgtProvider.get().checkStock(company, lunchVoucherMgt.getStockLineQuantity() + lunchVoucherMgt.getTotalLunchVouchers());
-			
-			if (stock <= 0){ 
-				response.setAlert(String.format(I18n.get(IExceptionMessage.LUNCH_VOUCHER_MIN_STOCK),company.getName(),
-						hrConfig.getMinStockLunchVoucher(), hrConfig.getAvailableStockLunchVoucher(), IException.INCONSISTENCY));
-			}
-		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}

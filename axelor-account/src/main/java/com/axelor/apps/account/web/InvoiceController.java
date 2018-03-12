@@ -57,6 +57,8 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +69,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Singleton
 public class InvoiceController {
 
 	@SuppressWarnings("unused")
@@ -186,6 +189,7 @@ public class InvoiceController {
 	public void fillPaymentModeAndCondition(ActionRequest request, ActionResponse response) {
 		Invoice invoice = request.getContext().asType(Invoice.class);
 		try {
+			if (invoice.getOperationTypeSelect() == null) { return ; }
 			PaymentMode paymentMode = InvoiceToolService.getPaymentMode(invoice);
 			PaymentCondition paymentCondition = InvoiceToolService.getPaymentCondition(invoice);
 			response.setValue("paymentMode", paymentMode);
@@ -194,7 +198,6 @@ public class InvoiceController {
 			TraceBackService.trace(response, e);
 		}
 	}
-	
 
 	/**
 	 * Fonction appeler par le bouton générer un avoir.

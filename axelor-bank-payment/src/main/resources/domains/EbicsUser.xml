@@ -39,9 +39,9 @@
 	 
 	 <extra-code><![CDATA[
 	  
-	  	// EBICS TYPE SELECT
-		public static final int EBICS_TYPE_T = 0;
-		public static final int EBICS_TYPE_TS = 1;
+	  	// USER TYPE SELECT
+		public static final int USER_TYPE_TRANSPORT = 0;
+		public static final int USER_TYPE_SIGNATORY = 1;
 	
 	   	// STATUS SELECT
 		public static final int STATUS_WAITING_CERTIFICATE_CONFIG = 0;

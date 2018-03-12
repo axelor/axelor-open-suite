@@ -16,7 +16,7 @@
 				helpdesk_ticket
 			WHERE
 				DATE(created_on) BETWEEN DATE(:fromDate) AND DATE(:toDate)
-				AND assigned_to = :_user_id 
+				AND assigned_to_user = :_user_id 
        		UNION ALL
       		SELECT 
       			COUNT(*) AS total_row, 
@@ -25,7 +25,7 @@
       			helpdesk_ticket 
       		WHERE 
       			DATE(created_on) BETWEEN DATE(:fromDate) AND DATE(:toDate)
-      			AND assigned_to = :_user_id
+      			AND assigned_to_user = :_user_id
       			AND status_select = 2 
 		</dataset>
   	<category key="_status" type="text" title="Status"/>
@@ -78,7 +78,7 @@
 	</chart>
 
 	
-	<chart onInit="action.ticket.chart.set.date.1m" name="chart.ticket.no.of.solved.all.ticket" title="All ticktes">
+	<chart onInit="action.ticket.chart.set.date.1m" name="chart.ticket.no.of.solved.all.ticket" title="All tickets">
 		<search-fields>
 			<field type="date" name="fromDate" title="From Date" x-required="true" />
 			<field type="date" name="toDate" title="To Date" x-required="true" />
@@ -119,7 +119,7 @@
 		JOIN
 			auth_user AS _user
 		ON
-			_user.id = _ticket1.assigned_to
+			_user.id = _ticket1.assigned_to_user
 		JOIN
 			team_team AS _team
 		ON
@@ -141,7 +141,7 @@
 		JOIN
 			auth_user AS _user
 		ON
-			_user.id = _ticket1.assigned_to
+			_user.id = _ticket1.assigned_to_user
 		JOIN
 			team_team AS _team
 		ON
@@ -174,7 +174,7 @@
 		JOIN
 			auth_user AS _user
 		ON
-			_user.id = _ticket1.assigned_to
+			_user.id = _ticket1.assigned_to_user
 		JOIN
 			helpdesk_sla AS _sla
 		ON
@@ -192,7 +192,7 @@
 		JOIN
 			auth_user AS _user
 		ON
-			_user.id = _ticket1.assigned_to
+			_user.id = _ticket1.assigned_to_user
 		JOIN
 			helpdesk_sla AS _sla
 		ON
@@ -221,7 +221,7 @@
 		JOIN
 			auth_user AS _user
 		ON
-			_user.id = _ticket1.assigned_to
+			_user.id = _ticket1.assigned_to_user
 		JOIN
 			team_team AS _team
 		ON
@@ -243,7 +243,7 @@
 		JOIN
 			auth_user AS _user
 		ON
-			_user.id = _ticket1.assigned_to
+			_user.id = _ticket1.assigned_to_user
 		JOIN
 			team_team AS _team
 		ON
@@ -275,7 +275,7 @@
 		JOIN
 			auth_user AS _user
 		ON
-			_user.id = _ticket1.assigned_to
+			_user.id = _ticket1.assigned_to_user
 		JOIN
 			helpdesk_sla AS _sla
 		ON
@@ -293,7 +293,7 @@
 		JOIN
 			auth_user AS _user
 		ON
-			_user.id = _ticket1.assigned_to
+			_user.id = _ticket1.assigned_to_user
 		JOIN
 			helpdesk_sla AS _sla
 		ON

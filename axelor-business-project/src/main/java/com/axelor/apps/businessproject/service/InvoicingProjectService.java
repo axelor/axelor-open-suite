@@ -18,19 +18,17 @@
 package com.axelor.apps.businessproject.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import java.time.LocalDate;
-
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.util.InvoiceLineComparator;
@@ -39,7 +37,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.PartnerPriceListRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
@@ -56,15 +53,12 @@ import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -76,12 +70,6 @@ import com.google.inject.persist.Transactional;
 public class InvoicingProjectService {
 
 	@Inject
-	protected SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
-
-	@Inject
-	protected PurchaseOrderInvoiceServiceImpl purchaseOrderInvoiceServiceImpl;
-
-	@Inject
 	protected TimesheetServiceImpl timesheetServiceImpl;
 
 	@Inject
@@ -89,8 +77,6 @@ public class InvoicingProjectService {
 
 	@Inject
 	protected ElementsToInvoiceService elementsToInvoiceService;
-
-	protected AnalyticMoveLineService analyticMoveLineService;
 
 	@Inject
 	protected PartnerService partnerService;

@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<menuitem name="helpdesk-root" title="Helpdesk" order="-80" if="__config__.app.isApp('helpdesk')"
-		icon="fa-life-ring" icon-background="red"/>
+		icon="fa-life-ring" icon-background="#b6473f"/>
 	
 	<menuitem title="Current tickets" name="helpdesk-ticket-current" action="helpdesk.ticket.current" order="-100" parent="helpdesk-root"/>
 	
@@ -22,7 +22,7 @@
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
-		<domain>self.assignedTo = :_user</domain>
+		<domain>self.assignedToUser = :_user</domain>
 		<context name="_user" expr="eval: __user__"/>
 	</action-view>
 	
@@ -32,7 +32,7 @@
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
-		<domain>self.assignedTo.activeTeam = :_myActiveTeam</domain>
+		<domain>self.assignedToUser.activeTeam = :_myActiveTeam</domain>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_user" expr="eval: __user__"/>
 	</action-view>
@@ -43,7 +43,7 @@
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
-		<domain>self.assignedTo = null</domain>
+		<domain>self.assignedToUser = null</domain>
 		<context name="_user" expr="eval: __user__"/>
 	</action-view>
 	

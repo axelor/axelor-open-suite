@@ -137,23 +137,25 @@
 		</panel>
 
 		<panel title="Members">
-			<field name="membersUserSet" readonlyIf="synchronisable == true" showTitle="false" colSpan="12" widget="TagSelect" canNew="false" form-view="user-form" grid-view="user-grid"/>
-			<field name="team" title="Team" colSpan="6" canNew="false" canEdit="false"/>
-			<field name="synchronisable" colSpan="3" widget="boolean-switch"/>
-			<button name="selectTeam" title="Select a team" showIf="team != null" colSpan="3" onClick="save,action-project-method-select-team"/>
+			<field name="membersUserSet" showTitle="false" colSpan="12" widget="TagSelect" canNew="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="team" readonlyIf="synchronize || extendsMembersFromParent" title="Team" colSpan="4" canNew="false" canEdit="false"/>
+			<button name="importMembers" colSpan="3" title="Import all members" showIf="team != null" onClick="action-project-method-import-members" readonlyIf="extendsMembersFromParent"/>
+			<field name="synchronize" colSpan="2" widget="boolean-switch" readonlyIf="extendsMembersFromParent"/>
+			<field name="extendsMembersFromParent" colSpan="2" widget="boolean-switch" showIf="projectTypeSelect == 2" hidden="true"/>
 		</panel>
 
 		<panel-tabs>
 			<panel title="Task Tree" showIf="isProject">
-                <button name="addTask" title="New" css="btn-custom text-left" icon="fa-plus" colSpan="3" onClick="save,action-project-add-task"/>
+                <button name="addTask" title="New" css="btn-custom text-left" icon="fa-plus" colSpan="2" onClick="save,action-project-add-task"/>
+                <button name="allTask" title="All tasks" css="btn-custom text-left" icon="fa-tasks" colSpan="2" onClick="action-project-view-show-related-tasks"/>
 				<panel-dashlet title="Task Tree" colSpan="12" action="action-view-show-project-task-tree"/>
 			</panel>
 
-			<panel if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="invoicing" title="Invoicing" showIf="projInvTypeSelect == 3">
-				<field name="product" onChange="action-project-record-unit" requiredIf="projInvTypeSelect == 3"/>
-				<field name="price" onChange="action-project-record-compute-exTaxTotal" requiredIf="projInvTypeSelect == 3"/>
-				<field name="qty" onChange="action-project-record-compute-exTaxTotal" requiredIf="projInvTypeSelect == 3"/>
-				<field name="unit" requiredIf="projInvTypeSelect == 3"/>
+			<panel if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="invoicing" title="Invoicing" showIf="projInvTypeSelect == 3 &amp;&amp; isBusinessProject">
+				<field name="product" onChange="action-project-record-unit" requiredIf="projInvTypeSelect == 3 &amp;&amp; isBusinessProject"/>
+				<field name="price" onChange="action-project-record-compute-exTaxTotal" requiredIf="projInvTypeSelect == 3 &amp;&amp; isBusinessProject"/>
+				<field name="qty" onChange="action-project-record-compute-exTaxTotal" requiredIf="projInvTypeSelect == 3 &amp;&amp; isBusinessProject"/>
+				<field name="unit" requiredIf="projInvTypeSelect == 3 &amp;&amp; isBusinessProject"/>
 				<field name="exTaxTotal" readonly="true"/>
 			</panel>
 
@@ -184,8 +186,8 @@
 				<panel-related field="productionOrderList" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject()" if-module="axelor-business-production" colSpan="12" canSelect="true" canNew="false" canEdit="false"/>
 			</panel>
 
-			<panel title="Other elements to invoice" name="otherElementsToInvoice" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" showIf="isBusinessProject">
-				<panel-related colSpan="12" field="elementsToInvoiceList"/>
+			<panel title="Additional elements to be invoiced" name="additionalElementsToBeInvoiced" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" showIf="isBusinessProject">
+				<panel-related colSpan="12" field="elementsToInvoiceList" grid-view="elements-to-invoice-grid" form-view="elements-to-invoice-form"/>
 			</panel>
 
 			<panel if="__config__.app.isApp('timesheet')" if-module="axelor-human-resource" name="logTimes" title="Log Times">
@@ -402,6 +404,13 @@
 		<domain>self.typeSelect = 'task' AND self.project.id = :id</domain>
 	</action-view>
 	
+	<action-view name="action-project-view-show-related-tasks" title="Related tasks" model="com.axelor.team.db.TeamTask">
+		<view type="kanban" name="team-task-kanban"/>
+		<view type="grid" name="team-task-grid"/>
+		<view type="form" name="team-task-form"/>
+		<domain>(self.project.id = :_id OR self.project.parentProject.id = :_id)</domain>
+	</action-view>
+	
 	<action-view name="action-project-view-create-team" model="com.axelor.team.db.Team" title="Team">
 	  <view name="team-grid" type="grid"/>
 	  <view name="team-form" type="form"/>
@@ -548,8 +557,8 @@
 		<call class="com.axelor.apps.project.web.ProjectController" method="generateQuotation"/>
 	</action-method>
 
-	<action-method name="action-project-method-select-team">
-		<call class="com.axelor.apps.project.web.ProjectController" method="selectTeam"/>
+	<action-method name="action-project-method-import-members">
+		<call class="com.axelor.apps.project.web.ProjectController" method="importMembers"/>
 	</action-method>
 	
 	<action-record name="action-project-record-status-in-progress" model="com.axelor.apps.project.db.Project">

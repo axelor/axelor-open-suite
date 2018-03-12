@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -18,10 +18,8 @@
 package com.axelor.apps.hr.service.leave.management;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
-
 import java.time.LocalDate;
+import java.util.List;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.LeaveLine;
@@ -34,7 +32,7 @@ import com.google.inject.persist.Transactional;
 public class LeaveManagementService {
 	
 	@Inject
-	private AppBaseService appBaseService;
+	protected AppBaseService appBaseService;
 	
 	public LeaveLine computeQuantityAvailable (LeaveLine leaveLine){
 		List<LeaveManagement> leaveManagementList = leaveLine.getLeaveManagementList();
@@ -70,14 +68,20 @@ public class LeaveManagementService {
 	}
 
 	/**
-	 * Reset leave management list.
+	 * Reset leave management list by adding a new leave management line
+	 * with negative quantity.
 	 * 
 	 * @param leaveLine
-	 * @throws AxelorException
+	 * @param user
+	 * @param comments
+	 * @param date
+	 * @param fromDate
+	 * @param toDate
 	 */
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void reset(LeaveLine leaveLine) throws AxelorException {
-		leaveLine.clearLeaveManagementList();
+	public void reset(LeaveLine leaveLine, User user, String comments, LocalDate date, LocalDate fromDate, LocalDate toDate) {
+	    LeaveManagement leaveManagement = createLeaveManagement(leaveLine, user, comments, date, fromDate, toDate, leaveLine.getQuantity().negate());
+	    leaveLine.addLeaveManagementListItem(leaveManagement);
 		leaveLine.setQuantity(BigDecimal.ZERO);
 		leaveLine.setTotalQuantity(BigDecimal.ZERO);
 	}

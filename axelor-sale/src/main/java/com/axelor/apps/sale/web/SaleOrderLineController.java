@@ -17,15 +17,19 @@
  */
 package com.axelor.apps.sale.web;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.service.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -34,22 +38,14 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+@Singleton
 public class SaleOrderLineController {
 
 	@Inject
 	private SaleOrderLineService saleOrderLineService;
 
-	@Inject
-	private ProductRepository productRepo;
-
-    @Inject
-    private AccountManagementService accountManagementService;
 
 	public void compute(ActionRequest request, ActionResponse response) {
 
@@ -243,7 +239,7 @@ public class SaleOrderLineController {
 		
 		if (product != null) {
 			
-			product = productRepo.find(product.getId());
+			product = Beans.get(ProductRepository.class).find(product.getId());
 			
 			if (product.getIsPack()) {
 				SaleOrder saleOrder = saleOrderLineService.getSaleOrder(request.getContext());

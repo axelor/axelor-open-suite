@@ -6,7 +6,7 @@
 	<module name="base" package="com.axelor.apps.base.db"/>
 	
 	 <entity name="ICalendarUser" table="ICAL_USER" sequential="true">
-	   <string name="name" title="Name" initParam="false" />
+	   <string name="name" title="Name" initParam="false" namecolumn="true"/>
 	   <string name="email" title="Email" required="true" initParam="true" />
 	   <integer name="statusSelect" selection="i.calendar.user.status.select"/>
 	   <many-to-one name="event" ref="com.axelor.apps.base.db.ICalendarEvent"/>

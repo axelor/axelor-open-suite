@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -24,6 +24,8 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
+import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.exception.AxelorException;
@@ -34,9 +36,10 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
     @Inject
     public BankOrderServiceHRImpl(BankOrderRepository bankOrderRepo, InvoicePaymentRepository invoicePaymentRepo,
                                   BankOrderLineService bankOrderLineService, EbicsService ebicsService,
-                                  InvoicePaymentToolService invoicePaymentToolService) {
+                                  InvoicePaymentToolService invoicePaymentToolService, AccountConfigBankPaymentService accountConfigBankPaymentService,
+                      			SequenceService sequenceService) {
 
-        super(bankOrderRepo, invoicePaymentRepo, bankOrderLineService, ebicsService, invoicePaymentToolService);
+        super(bankOrderRepo, invoicePaymentRepo, bankOrderLineService, ebicsService, invoicePaymentToolService, accountConfigBankPaymentService, sequenceService);
     }
 
     @Override

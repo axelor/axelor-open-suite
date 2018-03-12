@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
@@ -50,18 +49,15 @@ public class BankOrderCreateService {
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	protected BankOrderRepository bankOrderRepo;
     protected BankOrderService bankOrderService;
-	protected AccountConfigService accountConfigService;
 	protected BankOrderLineService bankOrderLineService;
 	protected InvoiceService invoiceService;
 
 	@Inject
 	public BankOrderCreateService(BankOrderRepository bankOrderRepo, BankOrderService bankOrderService,
-			AccountConfigService accountConfigService, BankOrderLineService bankOrderLineService,
-			InvoiceService invoiceService) {
+			BankOrderLineService bankOrderLineService, InvoiceService invoiceService) {
 
 		this.bankOrderRepo = bankOrderRepo;
 		this.bankOrderService = bankOrderService;
-		this.accountConfigService = accountConfigService;
 		this.bankOrderLineService = bankOrderLineService;
 		this.invoiceService = invoiceService;
 	}
@@ -176,5 +172,5 @@ public class BankOrderCreateService {
 		
 		return invoice.getCompany().getDefaultBankDetails();
 	}
-	
+
 }

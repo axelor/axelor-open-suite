@@ -9,6 +9,7 @@
 			<button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-compnay-phonebook"/>
 			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 			<button name="replaceDuplicate" title="Replace Duplicate" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+			<button name="advancedExport" title="Advanced export" onClick="action-method-advanced-export-wizard-view"/>
 		</toolbar>
 		<field name="fullName"/>
 		<field name="fixedPhone"/>
@@ -58,7 +59,7 @@
 		<field name="mobilePhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"/>
 		<field name="jobTitle"/>
-		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
+		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-contact-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
 	</grid>
 
@@ -129,7 +130,7 @@
 					<field name="fullName" colSpan="9" showTitle="false">
 						<hilite strong="true" if="true" color="primary"/>
 						<editor x-show-titles="false">
-							<field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="4"/>
+							<field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="4" placeholder="Partner Type"/>
 							<spacer colSpan="8"/>
 							<field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
 							<field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="3"/>
@@ -173,7 +174,7 @@
                 -->
 			</panel>
 		</panel>
-		<panel-related field="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
+		<panel-related field="contactPartnerSet" hideIf="!id || isContact || partnerTypeSelect == 2" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
 		<panel-tabs>
 			<panel name="information" title="Information">
 				<panel name="employeeAddress" title="Contact address" colSpan="12" showIf="isEmployee">
@@ -419,11 +420,11 @@
 				<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-partner-record-normalize-mobile-phone-number"/>
 				<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
 					<editor x-show-titles="false">
-						<field name="address" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
+						<field name="address" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$" colSpan="12"/>
 					</editor>
 				</field>
 				<field name="fax" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" placeholder="+33000000000" onChange="action-partner-record-normalize-fax-phone-number"/>
-				<field name="contactAddress" title="Address" canNew="true" form-view="address-form" grid-view="address-grid"/>
+				<field name="contactAddress" title="Address" canNew="true" form-view="address-form" grid-view="address-grid" colSpan="12"/>
 			</panel>
 			<panel name="activities" title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails-contact" if="__config__.app.isApp('crm')" >
 				<button name="showAllEvents" title="Show all events" onClick="action-contact-view-events" readonlyIf="id == null"/>
@@ -767,7 +768,7 @@
 	</action-record>
 
 	<action-record name="action-partner-record-freight-carrier" model="com.axelor.apps.base.db.Partner">
-		<field name="carrierPartner" expr="eval:freightCarrierMode.carrierPartner"/>
+		<field name="carrierPartner" expr="eval:freightCarrierMode?.carrierPartner"/>
 	</action-record>
 
 	<action-record name="action-partner-record-set-payment-modes" model="com.axelor.apps.base.db.Partner" if-module="axelor-account">

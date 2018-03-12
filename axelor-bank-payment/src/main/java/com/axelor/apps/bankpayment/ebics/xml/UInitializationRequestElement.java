@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -51,7 +51,7 @@ import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.BankPubKeyDige
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.Product;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsUser;
-import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
+import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.ebics.certificate.KeyUtil;
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
@@ -117,7 +117,7 @@ public class UInitializationRequestElement extends InitializationRequestElement 
     EbicsUser ebicsUser = session.getUser();
 	EbicsPartner ebicsPartner = ebicsUser.getEbicsPartner();
     
-    if(ebicsPartner.getEbicsTypeSelect() == EbicsUserRepository.EBICS_TYPE_TS)  {
+    if(ebicsPartner.getEbicsTypeSelect() == EbicsPartnerRepository.EBICS_TYPE_TS)  {
     	
         EbicsUser signatoryUser = session.getSignatoryUser();
 

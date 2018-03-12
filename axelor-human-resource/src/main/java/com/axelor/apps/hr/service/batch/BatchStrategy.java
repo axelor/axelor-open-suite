@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,7 +21,7 @@ import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
-import com.axelor.apps.hr.service.publicHoliday.PublicHolidayService;
+import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.google.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
@@ -32,7 +32,7 @@ public abstract class BatchStrategy extends AbstractBatch {
 	protected EmployeeRepository employeeRepository;
 	
 	@Inject
-	protected PublicHolidayService publicHolidayService;
+	protected PublicHolidayHrService publicHolidayService;
 	
 	
 	public BatchStrategy(LeaveManagementService leaveManagementService) {

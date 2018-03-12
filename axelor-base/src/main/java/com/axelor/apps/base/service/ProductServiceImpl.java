@@ -18,9 +18,7 @@
 package com.axelor.apps.base.service;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IProductVariant;
@@ -43,20 +41,21 @@ import com.google.inject.persist.Transactional;
 
 public class ProductServiceImpl implements ProductService  {
 
-	@Inject
-	private ProductVariantService productVariantService;
-	
-	@Inject
-	private ProductVariantRepository productVariantRepo;
-
-	@Inject
-	private SequenceService sequenceService;
-
-	@Inject
+	protected ProductVariantService productVariantService;
+	protected ProductVariantRepository productVariantRepo;
+	protected SequenceService sequenceService;
 	protected AppBaseService appBaseService;
+	protected ProductRepository productRepo;
 	
 	@Inject
-	private ProductRepository productRepo;
+	public ProductServiceImpl(ProductVariantService productVariantService, ProductVariantRepository productVariantRepo,
+			SequenceService sequenceService, AppBaseService appBaseService, ProductRepository productRepo) {
+		this.productVariantService = productVariantService;
+		this.productVariantRepo = productVariantRepo;
+		this.sequenceService = sequenceService;
+		this.appBaseService = appBaseService;
+		this.productRepo = productRepo;
+	}
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

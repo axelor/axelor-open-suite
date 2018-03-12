@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -62,10 +62,8 @@ public interface LeaveService {
 
 	@Transactional
 	public LeaveRequest createEvents(LeaveRequest leave) throws AxelorException;
-	
-	public BigDecimal computeLeaveDays(LocalDate fromDate, LocalDate toDate, User user) throws AxelorException;
-	
-	public BigDecimal computeLeaveDaysByLeaveRequest(LocalDate fromDate, LocalDate toDate, LeaveRequest leaveRequest, Employee employee) throws AxelorException;
+
+    public BigDecimal computeLeaveDaysByLeaveRequest(LocalDate fromDate, LocalDate toDate, LeaveRequest leaveRequest, Employee employee) throws AxelorException;
 	
 	public void getLeaveReason(ActionRequest request, ActionResponse response);
 

@@ -47,23 +47,24 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.servlet.RequestScoped;
 
+@RequestScoped
 public class VentilateState extends WorkflowInvoice {
 	
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	private SequenceService sequenceService;
+	protected SequenceService sequenceService;
 
-	private MoveService moveService;
+	protected MoveService moveService;
 
-	private AccountConfigService accountConfigService;
+	protected AccountConfigService accountConfigService;
 
 	protected AppAccountService appAccountService;
 
-	private InvoiceRepository invoiceRepo;
+	protected InvoiceRepository invoiceRepo;
 
 	protected WorkflowVentilationService workflowService;
 

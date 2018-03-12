@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -27,10 +27,13 @@ import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class OpportunityController {
 	
 	@Inject
@@ -38,9 +41,6 @@ public class OpportunityController {
 	
 	@Inject
 	private OpportunityService opportunityService;
-	
-	@Inject
-	private MapService mapService;
 	
 	@SuppressWarnings("rawtypes")
 	public void assignToMe(ActionRequest request, ActionResponse response)  {
@@ -61,7 +61,7 @@ public class OpportunityController {
 	
 	public void showOpportunitiesOnMap(ActionRequest request, ActionResponse response) throws IOException {
 		
-		mapService.showMap("opportunity", I18n.get("Opportunities"), response);
+		Beans.get(MapService.class).showMap("opportunity", I18n.get("Opportunities"), response);
 		
 	}	
 	

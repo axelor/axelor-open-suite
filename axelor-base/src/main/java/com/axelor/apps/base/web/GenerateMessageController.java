@@ -17,26 +17,18 @@
  */
 package com.axelor.apps.base.web;
 
+import java.util.Map;
+
 import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.repo.LanguageRepository;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.TemplateRepository;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
+@Singleton
 public class GenerateMessageController {
-
-    @Inject
-    private TemplateMessageService templateMessageService;
-
-    @Inject
-    private TemplateRepository templateRepo;
 
     @Inject
     private LanguageRepository languageRepo;

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -32,6 +32,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.hr.db.HRConfig;
+import com.axelor.apps.hr.service.config.HRConfigService;
 import org.apache.http.client.utils.URIBuilder;
 
 import com.axelor.apps.base.db.Year;
@@ -42,7 +45,6 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowanceRate;
 import com.axelor.apps.hr.db.KilometricAllowanceRule;
 import com.axelor.apps.hr.db.KilometricLog;
-import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.KilometricAllowanceRateRepository;
 import com.axelor.apps.hr.db.repo.KilometricLogRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -119,6 +121,12 @@ public class KilometricService {
 	public BigDecimal computeKilometricExpense(ExpenseLine expenseLine, Employee employee) throws AxelorException{
 
 		BigDecimal distance =  expenseLine.getDistance();
+		if (employee.getMainEmploymentContract() == null || employee.getMainEmploymentContract().getPayCompany() == null) {
+		    throw new AxelorException(I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT), IException.CONFIGURATION_ERROR);
+		}
+		Company company = employee.getMainEmploymentContract().getPayCompany();
+
+		HRConfig hrConfig = Beans.get(HRConfigService.class).getHRConfig(company);
 
 		BigDecimal previousDistance;
 		KilometricLog log = Beans.get(KilometricService.class).getKilometricLog(employee, expenseLine.getExpenseDate());
@@ -128,10 +136,20 @@ public class KilometricService {
 			previousDistance= log.getDistanceTravelled();
 		}
 		
-		KilometricAllowanceRate allowance = Beans.get(KilometricAllowanceRateRepository.class).all().filter("self.kilometricAllowParam = ?1", expenseLine.getKilometricAllowParam() ).fetchOne();
+		KilometricAllowanceRate allowance = Beans.get(KilometricAllowanceRateRepository.class)
+				.all()
+				.filter("self.kilometricAllowParam.id = :_kilometricAllowParamId " +
+						"and self.hrConfig.id = :_hrConfigId")
+				.bind("_kilometricAllowParamId", expenseLine.getKilometricAllowParam().getId())
+				.bind("_hrConfigId", hrConfig.getId())
+				.fetchOne();
 		if (allowance == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_RATE_MISSING), expenseLine.getKilometricAllowParam().getName())
-					, IException.CONFIGURATION_ERROR, expenseLine);
+			throw new AxelorException(String.format(
+					I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_RATE_MISSING),
+					expenseLine.getKilometricAllowParam().getName(),
+					company.getName()
+			),
+					IException.CONFIGURATION_ERROR, expenseLine);
 		}
 		
 		List<KilometricAllowanceRule> ruleList = new ArrayList<KilometricAllowanceRule>();
@@ -146,7 +164,7 @@ public class KilometricService {
 			}
 		}
 		
-		if (ruleList.size() == 0) {
+		if (ruleList.isEmpty()) {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_NO_RULE), allowance.getKilometricAllowParam().getName());
 		}
 		
@@ -154,19 +172,19 @@ public class KilometricService {
 		
 		if (ruleList.size() == 1){
 			price = distance.multiply( ruleList.get(0).getRate()   );
-		}else if (ruleList.size() > 0) {
-			  Collections.sort(ruleList, new Comparator<KilometricAllowanceRule>() {
-			      @Override
-			      public int compare(final KilometricAllowanceRule object1, final KilometricAllowanceRule object2) {
-			          return object1.getMinimumCondition().compareTo(object2.getMinimumCondition());
-			      }
-			  });
-			  for (KilometricAllowanceRule rule : ruleList){
-				  BigDecimal min = rule.getMinimumCondition().max( previousDistance  );
-				  BigDecimal max = rule.getMaximumCondition().min(previousDistance.add(distance ) )  ;
-				  price = price.add(  max.subtract(min).multiply(rule.getRate())  );
-			  }
+		} else {
+			Collections.sort(ruleList, new Comparator<KilometricAllowanceRule>() {
+				@Override
+				public int compare(final KilometricAllowanceRule object1, final KilometricAllowanceRule object2) {
+					return object1.getMinimumCondition().compareTo(object2.getMinimumCondition());
+				}
+			});
+			for (KilometricAllowanceRule rule : ruleList) {
+				BigDecimal min = rule.getMinimumCondition().max(previousDistance);
+				BigDecimal max = rule.getMaximumCondition().min(previousDistance.add(distance));
+				price = price.add(max.subtract(min).multiply(rule.getRate()));
 			}
+		}
 		
 		return price.setScale( appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 	}
@@ -176,7 +194,9 @@ public class KilometricService {
 		
 		KilometricLog log = getOrCreateKilometricLog(employee, expenseLine.getExpenseDate());
 		log.setDistanceTravelled(log.getDistanceTravelled().add(expenseLine.getDistance()));
-		log.addExpenseLineListItem(expenseLine);
+		if (log.getExpenseLineList() == null || !log.getExpenseLineList().contains(expenseLine)) {
+			log.addExpenseLineListItem(expenseLine);
+		}
 		kilometricLogRepo.save(log);
 	}
 

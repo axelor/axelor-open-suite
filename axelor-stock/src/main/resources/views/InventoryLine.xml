@@ -4,12 +4,12 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="inventory-line-grid" title="Inventory lines" model="com.axelor.apps.stock.db.InventoryLine" editable="true">
-        <field name="product" onChange="action-inventory-line-attrs-tracking-number" form-view="product-form" grid-view="product-grid"/>
-        <field name="currentQty" readonly="true" aggregate="sum"/>
-        <field name="realQty" aggregate="sum"/>
+        <field name="product" onChange="action-inventory-line-attrs-tracking-number" grid-view="product-grid" form-view="product-form"/>
+        <field name="currentQty" readonly="true" aggregate="sum" width="120"/>
+        <field name="realQty" aggregate="sum" width="120"/>
         <field name="description"/>
-        <field name="rack"/>
-        <field name="trackingNumber" canNew="true"/>
+        <field name="rack" width="150"/>
+        <field name="trackingNumber" canNew="true" width="150" domain="self.product = :product"/>
     </grid>
     
     <form name="inventory-line-form" title="Inventory line" model="com.axelor.apps.stock.db.InventoryLine"
@@ -21,7 +21,7 @@
 	        <field name="realQty"/>
 	        <field name="description"/>
             <field name="rack"/>
-		    <field name="trackingNumber" canNew="true"/>
+		    <field name="trackingNumber" canNew="true" domain="self.product = :product"/>
 	    </panel>
     </form>
     

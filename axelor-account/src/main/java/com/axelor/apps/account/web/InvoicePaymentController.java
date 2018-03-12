@@ -39,11 +39,10 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class InvoicePaymentController  {
-
-	@Inject
-	private InvoicePaymentCancelService invoicePaymentCancelService;
 
 	@Inject
 	private InvoiceRepository invoiceRepo;
@@ -54,7 +53,7 @@ public class InvoicePaymentController  {
 
 		invoicePayment = Beans.get(InvoicePaymentRepository.class).find(invoicePayment.getId());
 		try{
-			invoicePaymentCancelService.cancel(invoicePayment);
+			Beans.get(InvoicePaymentCancelService.class).cancel(invoicePayment);
 		}
 		catch (Exception e) {
 			TraceBackService.trace(response, e);

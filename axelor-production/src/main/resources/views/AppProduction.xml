@@ -15,14 +15,15 @@
 			<panel name="billOfMaterial" title="Bill of material">
 				<field name="manageBillOfMaterialVersion" colSpan="4" widget="boolean-switch"/>
 			    <field name="manageResidualProductOnBom" widget="boolean-switch"/>
+			    <field name="nbDecimalDigitForBomQty"/>
 			</panel>
 			<panel name="manufacturingProcess" title="Manufacturing process">
    				<field name="workCenterProduct" form-view="product-form" grid-view="product-grid" canEdit="false"/>
 			</panel>
 			<panel name="prodProcess" title="Production process">
  				<field name="manageProdProcessVersion" widget="boolean-switch"/>
-				<field name="manageBusinessProduction" title="Manage business production" if-module="axelor-business-production" widget="boolean-switch" />
-				<field name="showProductionOrderRelatedToProject" if-module="axelor-business-production" showIf="manageBusinessProduction" />
+				<field name="manageBusinessProduction" onChange="action-app-production-manage-business-production-record-onchange" title="Manage business production" if-module="axelor-business-production" widget="boolean-switch" />
+				<field name="enableTimesheetOnManufOrder" widget="boolean-switch" if-module="axelor-business-production" showIf="manageBusinessProduction" />
 			</panel>
 			<panel name="costSheet" title="Cost sheet">
 			    <field name="productCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
@@ -42,5 +43,8 @@
 		<view type="grid" name="production-config-grid"/>
 		<view type="form" name="production-config-form"/>
 	</action-view>
-	
+
+	<action-record name="action-app-production-record-manage-business-production-onchange" model="com.axelor.apps.base.db.AppProduction">
+		<field name="enableTimesheetOnManufOrder" expr="eval: false"/>
+	</action-record>
 </object-views>

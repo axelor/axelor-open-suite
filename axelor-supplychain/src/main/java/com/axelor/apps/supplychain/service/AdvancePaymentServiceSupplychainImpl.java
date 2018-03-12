@@ -72,9 +72,6 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 	protected InvoicePaymentRepository invoicePaymentRepository;
 	
 	@Inject
-	protected MoveRepository moveRepo;
-	
-	@Inject
 	protected AdvancePaymentRepository advancePaymentRepository;
 	
 	@Inject

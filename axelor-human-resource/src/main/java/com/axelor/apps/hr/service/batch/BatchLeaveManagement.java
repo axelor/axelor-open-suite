@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -99,7 +99,7 @@ public class BatchLeaveManagement extends BatchStrategy {
 		
 		List<String> query = Lists.newArrayList();
 		
-		if ( !hrBatch.getEmployeeSet().isEmpty() ){
+		if (hrBatch.getEmployeeSet() != null && !hrBatch.getEmployeeSet().isEmpty() ){
 			String employeeIds = Joiner.on(',').join(  
 					Iterables.transform(hrBatch.getEmployeeSet(), new Function<Employee,String>() {
 			            public String apply(Employee obj) {
@@ -108,7 +108,7 @@ public class BatchLeaveManagement extends BatchStrategy {
 			        }) ); 
 			query.add("self.id IN (" + employeeIds + ")");
 		}
-		if ( !hrBatch.getPlanningSet().isEmpty() ){
+		if (hrBatch.getEmployeeSet() != null && !hrBatch.getPlanningSet().isEmpty() ){
 			String planningIds = Joiner.on(',').join(  
 					Iterables.transform(hrBatch.getPlanningSet(), new Function<WeeklyPlanning,String>() {
 			            public String apply(WeeklyPlanning obj) {
@@ -116,7 +116,7 @@ public class BatchLeaveManagement extends BatchStrategy {
 			            }
 			        }) ); 
 			
-			query.add("self.planning.id IN (" + planningIds + ")");
+			query.add("self.weeklyPlanning.id IN (" + planningIds + ")");
 		}
 		
 		List<Employee> employeeList;

@@ -20,20 +20,18 @@ package com.axelor.apps.businessproduction.web;
 import javax.inject.Inject;
 
 import com.axelor.apps.businessproduction.service.ProductionOrderSaleOrderServiceBusinessImpl;
-import com.axelor.apps.businessproduction.service.ProductionOrderServiceBusinessImpl;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Singleton;
 
+@Singleton
 public class ProductionOrderBusinessController {
 
 	@Inject
 	ProductionOrderRepository productionOrderRepo;
-	
-	@Inject
-	ProductionOrderServiceBusinessImpl productionOrderServiceBusinessImpl;
 	
 	@Inject
 	ProductionOrderSaleOrderServiceBusinessImpl productionOrderSaleOrderServiceBusinessImpl;

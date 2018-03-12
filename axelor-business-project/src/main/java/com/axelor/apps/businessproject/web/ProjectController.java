@@ -29,12 +29,15 @@ import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +45,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.Map;
 
+@Singleton
 public class ProjectController {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
@@ -89,15 +93,18 @@ public class ProjectController {
 	}
 
 	public void computeDurationFromChildren(ActionRequest request, ActionResponse response)  {
-		Project project = request.getContext().asType(Project.class);
+		try {
+			Project project = request.getContext().asType(Project.class);
 
-		BigDecimal duration = projectService.computeDurationFromChildren(project.getId());
+			BigDecimal duration = projectService.computeDurationFromChildren(project.getId());
 
-		BigDecimal visibleDuration = Beans.get(EmployeeService.class).getUserDuration(duration, AuthUtils.getUser(), false);
+			BigDecimal visibleDuration = Beans.get(EmployeeService.class).getUserDuration(duration, AuthUtils.getUser(), false);
 
-		response.setValue("duration", duration);
-		response.setValue("$visibleDuration", visibleDuration);
-
+			response.setValue("duration", duration);
+			response.setValue("$visibleDuration", visibleDuration);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 	
 	

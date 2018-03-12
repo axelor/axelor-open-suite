@@ -35,7 +35,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -60,22 +60,17 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 	protected StockMoveService stockMoveService;
 	protected StockMoveLineService stockMoveLineService;
 	protected StockConfigService stockConfigService;
-	protected StockLocationRepository stockLocationRepo;
-	protected StockMoveRepository stockMoveRepo;
 	protected UnitConversionService unitConversionService;
 	protected SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain;
 
     @Inject
     public SaleOrderStockServiceImpl(StockMoveService stockMoveService, StockMoveLineService stockMoveLineService,
-            StockConfigService stockConfigService, StockLocationRepository stockLocationRepo, StockMoveRepository stockMoveRepo,
-            UnitConversionService unitConversionService,
+            StockConfigService stockConfigService, UnitConversionService unitConversionService,
             SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain) {
 
         this.stockMoveService = stockMoveService;
         this.stockMoveLineService = stockMoveLineService;
         this.stockConfigService = stockConfigService;
-        this.stockLocationRepo = stockLocationRepo;
-        this.stockMoveRepo = stockMoveRepo;
         this.unitConversionService = unitConversionService;
         this.saleOrderLineServiceSupplyChain = saleOrderLineServiceSupplyChain;
     }
@@ -130,7 +125,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
 		StockMove stockMove = stockMoveService.createStockMove(null, saleOrder.getDeliveryAddress(), company,
 				saleOrder.getClientPartner(), saleOrder.getStockLocation(), toStockLocation, null, saleOrder.getShipmentDate(),
-				saleOrder.getDescription(), saleOrder.getShipmentMode(), saleOrder.getFreightCarrierMode());
+				saleOrder.getDescription(), saleOrder.getShipmentMode(), saleOrder.getFreightCarrierMode(), 
+				saleOrder.getCarrierPartner(), saleOrder.getForwarderPartner(), saleOrder.getIncoterm());
 
 		stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
 		stockMove.setSaleOrder(saleOrder);
@@ -223,7 +219,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 			if (stockMoveLine != null) {
 	            stockMoveLine.setSaleOrderLine(saleOrderLine);
 	            stockMoveLine.setReservedQty(saleOrderLine.getReservedQty());
-	            stockMove.addStockMoveLineListItem(stockMoveLine);
 			}
 
 			return stockMoveLine;
@@ -242,9 +237,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 			saleOrderLine.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
 			stockMoveLine.setSaleOrderLine(saleOrderLine);
 
-			if(stockMoveLine != null) {
-				stockMove.addStockMoveLineListItem(stockMoveLine);
-			}
 			return stockMoveLine;
 		}
 		return null;

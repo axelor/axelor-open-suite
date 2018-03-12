@@ -90,6 +90,7 @@
 "Start",,,
 "Start date",,,
 "Status",,,
+"Status select",,,
 "Tags",,,
 "Take a picture",,,
 "Team",,,
@@ -101,3 +102,4 @@
 "Work center",,,
 "counter",,,
 "quality.responsible","Responsible",,
+"value:Quality",,,

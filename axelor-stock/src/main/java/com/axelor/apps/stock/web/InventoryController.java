@@ -21,22 +21,18 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
 
-import com.axelor.apps.report.engine.ReportSettings;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.InventoryService;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -44,7 +40,9 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class InventoryController {
 	
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
@@ -54,11 +52,7 @@ public class InventoryController {
 	
 	@Inject
 	InventoryRepository inventoryRepo;
-	
-	@Inject
-	ProductRepository productRepo;
 		
-	private static final String PATH = AppSettings.get().get("file.upload.dir");
 	
 	/**
 	 * Fonction appeler par le bouton imprimer
@@ -179,8 +173,6 @@ public class InventoryController {
 			TraceBackService.trace(response, e);
 		}
 	}
-	
-	
 }
 
   

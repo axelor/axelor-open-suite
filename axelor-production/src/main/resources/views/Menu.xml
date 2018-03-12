@@ -14,7 +14,7 @@
 		model="com.axelor.apps.production.db.BillOfMaterial" >
 		<view type="grid" name="bill-of-material-grid" />
 		<view type="form" name="bill-of-material-form" />
-		<domain>self.defineSubBillOfMaterial = false AND self.personalized = false</domain>
+		<domain>self.defineSubBillOfMaterial = true AND self.personalized = false</domain>
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-prod-process" parent="manufacturing-root"
@@ -105,7 +105,7 @@
 	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configurations" order="50" />
 
 	<menuitem name="manufacturing-conf-work-center" parent="manufacturing-conf"
-		title="Resources" action="manufacturing.conf.work.center" />
+		title="Work centers" action="manufacturing.conf.work.center" />
 
 	<action-view name="manufacturing.conf.work.center" title="Work centers"
 		model="com.axelor.apps.production.db.WorkCenter" >

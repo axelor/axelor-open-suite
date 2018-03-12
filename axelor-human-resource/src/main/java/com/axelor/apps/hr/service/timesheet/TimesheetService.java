@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -83,12 +83,11 @@ public interface TimesheetService {
 	@Transactional
 	public void insertTSLine(ActionRequest request, ActionResponse response);
 	public String computeFullName(Timesheet timesheet);
-	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet);
-	
-	public List<Map<String, Object>> createDefaultLines(Timesheet timesheet);
+	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet) throws AxelorException;
 
+	public List<Map<String, Object>> createDefaultLines(Timesheet timesheet);
 	public BigDecimal computePeriodTotal(Timesheet timesheet);
 	public String getPeriodTotalConvertTitleByUserPref(User user);
-	
+
 	public void createValidateDomainTimesheetLine(User user, Employee employee, ActionView.ActionViewBuilder actionView);
 }

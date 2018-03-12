@@ -45,6 +45,8 @@ import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.AddressServiceImpl;
+import com.axelor.apps.base.service.AdvancedExportService;
+import com.axelor.apps.base.service.AdvancedExportServiceImpl;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.BankService;
@@ -84,12 +86,15 @@ import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.apps.message.service.TemplateService;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.base.service.ical.ICalendarEventService;
+import com.axelor.base.service.ical.ICalendarEventServiceImpl;
 
 public class BaseModule extends AxelorModule {
 
     @Override
     protected void configure() {
         bind(AddressService.class).to(AddressServiceImpl.class);
+        bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
         bind(UserService.class).to(UserServiceImpl.class);
         bind(MessageServiceImpl.class).to(MessageServiceBaseImpl.class);
         bind(MailAccountServiceImpl.class).to(MailAccountServiceBaseImpl.class);
@@ -122,6 +127,7 @@ public class BaseModule extends AxelorModule {
         bind(AlarmEngineBatchRepository.class).to(AlarmEngineBatchBaseRepository.class);
         bind(TradingNameService.class).to(TradingNameServiceImpl.class);
         bind(PartnerPriceListService.class).to(PartnerPriceListServiceImpl.class);
+        bind(ICalendarEventService.class).to(ICalendarEventServiceImpl.class);
         IPartner.modelPartnerFieldMap.put(PartnerAddress.class.getName(), "_parent");
     }
 }

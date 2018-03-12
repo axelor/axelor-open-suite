@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -30,7 +30,6 @@ import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -53,11 +52,11 @@ public class InvoicePaymentValidateServiceBankPayImpl  extends  InvoicePaymentVa
 	
 	@Inject
 	public InvoicePaymentValidateServiceBankPayImpl(PaymentModeService paymentModeService, MoveService moveService, MoveLineService moveLineService, 
-			AccountConfigService accountConfigService, InvoicePaymentRepository invoicePaymentRepository, MoveCancelService moveCancelService, 
+			AccountConfigService accountConfigService, InvoicePaymentRepository invoicePaymentRepository, 
 			ReconcileService reconcileService, BankOrderCreateService bankOrderCreateService,  
 			BankOrderService bankOrderService, InvoicePaymentToolService invoicePaymentToolService)  {
 		
-		super( paymentModeService,  moveService,  moveLineService, accountConfigService,  invoicePaymentRepository,  moveCancelService, reconcileService,  invoicePaymentToolService);
+		super( paymentModeService,  moveService,  moveLineService, accountConfigService,  invoicePaymentRepository, reconcileService,  invoicePaymentToolService);
 
 		this.bankOrderCreateService = bankOrderCreateService;
 		this.bankOrderService = bankOrderService;

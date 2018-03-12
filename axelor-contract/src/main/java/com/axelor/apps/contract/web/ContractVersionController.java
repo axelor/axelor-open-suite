@@ -17,9 +17,11 @@
  */
 package com.axelor.apps.contract.web;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
-import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
@@ -27,10 +29,9 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Singleton;
 
-import java.util.ArrayList;
-import java.util.List;
-
+@Singleton
 public class ContractVersionController {
 
 	public void newVersion(ActionRequest request, ActionResponse response) {

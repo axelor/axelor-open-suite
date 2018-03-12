@@ -17,6 +17,16 @@
  */
 package com.axelor.apps.base.service;
 
+import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.inject.Singleton;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
@@ -27,23 +37,20 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.lang.invoke.MethodHandles;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-
+@Singleton
 public class PeriodService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
+	protected PeriodRepository periodRepo;
+	protected AdjustHistoryService adjustHistoryService;
+	
 	@Inject
-	private PeriodRepository periodRepo;
-
-	@Inject
-	private AdjustHistoryService adjustHistoryService;
+	public PeriodService(PeriodRepository periodRepo, AdjustHistoryService adjustHistoryService)  {
+		this.periodRepo = periodRepo;
+		this.adjustHistoryService = adjustHistoryService;
+	}
 
 	/**
 	 * Recupère la bonne période pour la date passée en paramètre

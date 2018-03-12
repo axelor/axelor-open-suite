@@ -17,6 +17,20 @@
  */
 package com.axelor.apps.stock.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.CancelReason;
@@ -32,11 +46,11 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.FreightCarrierMode;
+import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.ShipmentMode;
@@ -48,7 +62,6 @@ import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
-import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
@@ -60,19 +73,6 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class StockMoveServiceImpl implements StockMoveService {
 
@@ -154,8 +154,63 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 
 	@Override
-	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, StockLocation fromStockLocation, StockLocation toStockLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException {
+	/**
+	 * Generic method to create any stock move
+	 * 
+	 * @param fromAddress
+	 * @param toAddress
+	 * @param company
+	 * @param clientPartner
+	 * @param fromStockLocation
+	 * @param toStockLocation
+	 * @param realDate
+	 * @param estimatedDate
+	 * @param description
+	 * @param shipmentMode
+	 * @param freightCarrierMode
+	 * @param carrierPartner
+	 * @param forwarderPartner
+	 * @param incoterm
+	 * @return
+	 * @throws AxelorException No Stock move sequence defined
+	 */
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, 
+			StockLocation fromStockLocation, StockLocation toStockLocation, LocalDate realDate, LocalDate estimatedDate, 
+			String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode,
+			Partner carrierPartner, Partner forwarderPartner, Incoterm incoterm) throws AxelorException {
 
+		StockMove stockMove = this.createStockMove(fromAddress, toAddress, company, fromStockLocation, toStockLocation, realDate, estimatedDate, description);
+		stockMove.setPartner(clientPartner);
+		stockMove.setShipmentMode(shipmentMode);
+		stockMove.setFreightCarrierMode(freightCarrierMode);
+		stockMove.setCarrierPartner(carrierPartner);
+		stockMove.setForwarderPartner(forwarderPartner);
+		stockMove.setIncoterm(incoterm);
+		stockMove.setIsIspmRequired(
+				this.getDefaultISPM(clientPartner, toAddress)
+		);
+
+		return stockMove;
+	}
+	
+	/**
+	 * Generic method to create any stock move for internal stock move (without partner information)
+	 * 
+	 * @param fromAddress
+	 * @param toAddress
+	 * @param company
+	 * @param fromStockLocation
+	 * @param toStockLocation
+	 * @param realDate
+	 * @param estimatedDate
+	 * @param description
+	 * @return
+	 * @throws AxelorException No Stock move sequence defined
+	 */
+	@Override
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company,  StockLocation fromStockLocation,
+			StockLocation toStockLocation, LocalDate realDate, LocalDate estimatedDate, String description) throws AxelorException  {
+		
 		StockMove stockMove = new StockMove();
 		stockMove.setFromAddress(fromAddress);
 		stockMove.setToAddress(toAddress);
@@ -164,22 +219,18 @@ public class StockMoveServiceImpl implements StockMoveService {
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
 		stockMove.setRealDate(realDate);
 		stockMove.setEstimatedDate(estimatedDate);
-		stockMove.setPartner(clientPartner);
 		stockMove.setFromStockLocation(fromStockLocation);
 		stockMove.setToStockLocation(toStockLocation);
 		stockMove.setDescription(description);
-		stockMove.setShipmentMode(shipmentMode);
-		stockMove.setFreightCarrierMode(freightCarrierMode);
-		stockMove.setIsIspmRequired(
-				this.getDefaultISPM(clientPartner, toAddress)
-		);
 
 		stockMove.setTypeSelect(getStockMoveType(fromStockLocation, toStockLocation));
-		if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+		if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+				&& stockMove.getPartner() != null) {
 			setDefaultAutoMailSettings(stockMove);
 		}
 
 		return stockMove;
+		
 	}
 
 	/**
@@ -446,6 +497,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 			return;
 		}
 
+        UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+		
 		for (StockMoveLine stockMoveLine : stockMoveLineList) {
 			Product product = stockMoveLine.getProduct();
 
@@ -459,7 +512,6 @@ public class StockMoveServiceImpl implements StockMoveService {
                 Unit startUnit = product.getWeightUnit();
 
                 if (startUnit != null) {
-                    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
                     netWeight = unitConversionService.convert(startUnit, endUnit, product.getNetWeight());
                     stockMoveLine.setNetWeight(netWeight);
                 }
@@ -657,41 +709,32 @@ public class StockMoveServiceImpl implements StockMoveService {
 		return selected;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Boolean splitStockMoveLinesSpecial(List<HashMap> stockMoveLines, BigDecimal splitQty){
+	public void splitStockMoveLinesSpecial(StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty){
 
-		Boolean selected = false;
 		LOG.debug("SplitQty: {}",new Object[] {splitQty});
 
-		for(HashMap moveLine : stockMoveLines){
+		for(StockMoveLine moveLine : stockMoveLines){
 			LOG.debug("Move line: {}",new Object[]{moveLine});
-			if((Boolean)(moveLine.get("selected"))){
-				selected = true;
-				StockMoveLine line = stockMoveLineRepo.find(Long.parseLong(moveLine.get("id").toString()));
-				BigDecimal totalQty = line.getQty();
-				LOG.debug("Move Line selected: {}, Qty: {}",new Object[]{line,totalQty});
-				while(splitQty.compareTo(totalQty) < 0){
-					totalQty = totalQty.subtract(splitQty);
-					StockMoveLine newLine = JPA.copy(line, false);
-					newLine.setQty(splitQty);
-					newLine.setRealQty(splitQty);
-					stockMoveLineRepo.save(newLine);
-				}
-				LOG.debug("Qty remains: {}",totalQty);
-				if(totalQty.compareTo(BigDecimal.ZERO) > 0){
-					StockMoveLine newLine = JPA.copy(line, false);
-					newLine.setQty(totalQty);
-					newLine.setRealQty(totalQty);
-					stockMoveLineRepo.save(newLine);
-					LOG.debug("New line created: {}",newLine);
-				}
-				stockMoveLineRepo.remove(line);
+			BigDecimal totalQty = moveLine.getQty();
+			while(splitQty.compareTo(totalQty) < 0){
+				totalQty = totalQty.subtract(splitQty);
+				StockMoveLine newLine = stockMoveLineRepo.copy(moveLine, false);
+				newLine.setQty(splitQty);
+				newLine.setRealQty(splitQty);
+				stockMove.addStockMoveLineListItem(newLine);
 			}
+			LOG.debug("Qty remains: {}",totalQty);
+			if(totalQty.compareTo(BigDecimal.ZERO) > 0){
+				StockMoveLine newLine = stockMoveLineRepo.copy(moveLine, false);
+				newLine.setQty(totalQty);
+				newLine.setRealQty(totalQty);
+				stockMove.addStockMoveLineListItem(newLine);
+				LOG.debug("New line created: {}",newLine);
+			}
+			stockMove.removeStockMoveLineListItem(moveLine);
 		}
-
-		return selected;
 	}
 
 	@Override

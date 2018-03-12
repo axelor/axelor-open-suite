@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -23,13 +23,13 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.EventsPlanning;
+import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.leave.LeaveService;
-import com.axelor.apps.hr.service.publicHoliday.PublicHolidayService;
+import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -62,7 +62,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 	 * @return
 	 */
 	@Override
-	public BigDecimal getUserDuration(BigDecimal duration, User user, boolean toHours)  {
+	public BigDecimal getUserDuration(BigDecimal duration, User user, boolean toHours) throws AxelorException {
 
 		LOG.debug("Get user duration for duration: {}, to hours : {}",  duration, toHours);
 
@@ -86,6 +86,11 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 		
 		if(dailyWorkHrs == null || dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0)  {
 			dailyWorkHrs = appBaseService.getAppBase().getDailyWorkHours();
+			if (dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0) {
+			    throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAILY_WORK_HOURS),
+						employee == null ? user.getName() : employee.getName()),
+						IException.CONFIGURATION_ERROR);
+			}
 		}
 
 		if (dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0) {
@@ -167,7 +172,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 		if (publicHolidayPlanning == null) {
 			throw new AxelorException(employee, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY), employee.getName());
 		}
-		
+
 		LocalDate itDate = fromDate;
 
 		while(!itDate.isAfter(toDate)){
@@ -175,7 +180,9 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 			itDate = itDate.plusDays(1);
 		}
 
-		duration = duration.subtract(Beans.get(PublicHolidayService.class).computePublicHolidayDays(fromDate, toDate, weeklyPlanning, publicHolidayPlanning));
+		if (publicHolidayPlanning != null) {
+			duration = duration.subtract(Beans.get(PublicHolidayHrService.class).computePublicHolidayDays(fromDate, toDate, weeklyPlanning, publicHolidayPlanning));
+		}
 		
 		return duration;
 	}

@@ -27,6 +27,8 @@ import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.Unit;
 
 public interface AppBaseService extends AppService {
+	
+	public static final int DEFAULT_NB_DECIMAL_DIGITS = 2;
 
 	public AppBase getAppBase();
 

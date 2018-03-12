@@ -94,7 +94,7 @@
 
 	<action-record name="action-payment-schedule-record-partner"
 		model="com.axelor.apps.account.db.PaymentSchedule">
-		<field name="paymentMode" expr="eval:partner?.paymentMode" />
+		<field name="paymentMode" expr="eval:partner?.inPaymentMode" />
 		<field name="currency" expr="eval:partner?.currency" />
 	</action-record>
 

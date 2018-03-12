@@ -39,7 +39,7 @@
       
       <!-- Payment -->
       <date name="paymentDate" title="Payment Date" readonly="true"/>
-  	  <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode" readonly="true"/>	
+  	  <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
   	  <many-to-one name="bankOrder" ref="com.axelor.apps.bankpayment.db.BankOrder" readonly="true" title="Bank Order"/>
   	  <decimal name="paymentAmount" title="Payment amount" readonly="true" />
   	  <integer name="paymentStatusSelect" title="Payment Status" selection="invoice.payment.status.select" readonly="true" default="0"/>

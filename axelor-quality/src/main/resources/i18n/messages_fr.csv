@@ -90,6 +90,7 @@
 "Start","Démarrer",,
 "Start date","Date de début",,
 "Status",,,
+"Status select",,,
 "Tags","Etiquettes",,
 "Take a picture","Prendre une photo",,
 "Team","Equipe",,
@@ -101,3 +102,4 @@
 "Work center","Poste de charge",,
 "counter","Compteur",,
 "quality.responsible","Responsable",,
+"value:Quality","Qualité",,

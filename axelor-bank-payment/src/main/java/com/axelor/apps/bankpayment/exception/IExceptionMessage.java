@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -153,5 +153,7 @@ public interface IExceptionMessage {
      * Batch direct debit
      */
     static final String BATCH_DIRECT_DEBIT_MISSING_COMPANY_BANK_DETAILS = /*$$(*/ "Company bank details is missing in batch." /*)*/;
+    static final String BATCH_DIRECT_DEBIT_NO_PROCESSED_PAYMENT_SCHEDULE_LINES = /*$$(*/ "No processed payment schedule lines" /*)*/;
+    static final String BATCH_DIRECT_DEBIT_UNKNOWN_DATA_TYPE = /*$$(*/ "Unknown direct debit data type" /*)*/;
 
 }

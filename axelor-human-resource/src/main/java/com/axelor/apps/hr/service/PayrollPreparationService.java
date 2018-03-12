@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -128,10 +128,7 @@ public class PayrollPreparationService {
 		LocalDate fromDate = payrollPreparation.getPeriod().getFromDate();
 		LocalDate toDate = payrollPreparation.getPeriod().getToDate();
 		Employee employee = payrollPreparation.getEmployee();
-		
-		if(employee.getPublicHolidayEventsPlanning() == null){
-			throw new AxelorException(payrollPreparation, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY),employee.getName());
-		}
+
 		if(employee.getWeeklyPlanning()== null){
 			throw new AxelorException(payrollPreparation, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),employee.getName());
 		}

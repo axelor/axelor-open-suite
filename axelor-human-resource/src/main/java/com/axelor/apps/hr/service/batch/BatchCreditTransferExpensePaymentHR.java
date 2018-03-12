@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -185,7 +185,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 		}
 
 		if (bankOrderList.size() > 1) {
-			BankOrder mergedBankOrder = bankOrderMergeService.mergeBankOrderList(bankOrderList);
+			BankOrder mergedBankOrder = bankOrderMergeService.mergeBankOrders(bankOrderList);
 			for (Expense expense : expenseList) {
 				expense.setBankOrder(mergedBankOrder);
 			}

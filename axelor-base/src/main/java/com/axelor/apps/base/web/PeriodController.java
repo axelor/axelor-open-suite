@@ -23,10 +23,13 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Singleton;
 
 import javax.inject.Inject;
 
+@Singleton
 public class PeriodController {
+	
     private PeriodService periodService;
     private PeriodRepository periodRepository;
 
