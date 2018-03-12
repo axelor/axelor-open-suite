@@ -42,6 +42,7 @@
 - Upgrade functionality of advanced export feature
 - Change dependency to base instead of CRM,HR and Project of helpdesk module.
 - Update the SaleOrderLine form to look like InvoiceLine form.
+- Update CRM & ICalendar events UI
 - Removed extra links from tasks to other tasks. Kept only 'Predecessors tasks'. 
 
 ## Bug Fixes
@@ -53,6 +54,7 @@
 - Fix default logo position
 - Fix create event from contact m2m of partner
 - Fix copy of manufacturing order
+- Fix multiple NPE in CRM events
 
 ## [Unreleased 4.x]
 

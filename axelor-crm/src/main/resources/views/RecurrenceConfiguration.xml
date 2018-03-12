@@ -8,7 +8,7 @@
     	onLoad="action-recurrence-assistant-method-compute-recurrence-name">
     	<panel name="main" >
     		<field name="recurrenceType" title="Recurrence" colSpan="12" width="25%" onChange="action-recurrence-assistant-attrs-title-period, action-recurrence-assistant-method-compute-recurrence-name"/>
-    		<field name="periodicity" title="Repeat every" colSpan="3" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
+    		<field name="periodicity" title="Repeat every" min="1" colSpan="3" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
     		<label name="period" title="Days" colSpan="9"/>
     		<label title="Repeat the:" colSpan="2" hidden="true" showIf="recurrenceType == 2"/>
     		<field name="sunday" title="Su" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
@@ -26,7 +26,6 @@
     			<field name="endDate" title="End date" hidden="true" showIf="endType == 2" colSpan="12" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
     		</panel>
     		<field name="recurrenceName" showTitle="false" colSpan="12" css="bold" readonly="true"/>
-    		<button name="applyButton" title="Apply" onClick="action-recurrence-assistant-method-generate" hideIf="id &gt; 0"/>
     	</panel>
     	<panel sidebar="true" hidden="true" showIf="id &gt; 0">
     		<button name="modifToAll" title="Apply modifications for all" onClick="save, action-recurrence-assistant-method-change-all"/>
@@ -40,7 +39,7 @@
 		<field name="recurrenceType" expr="1"/>
 		<field name="periodicity" expr="1"/>
 		<field name="endType" expr="1"/>
-		<field name="startDate" expr="eval: _parent?.startDateTime.toDate()"/>
+		<field name="startDate" expr="eval: _parent?.startDateTime"/>
 		<field name="monthRepeatType" expr="1"/>
 		<field name="repetitionsNumber" expr="1"/>
 	</action-record>
@@ -51,10 +50,6 @@
 		<attribute name="title" for="period" expr="eval: com.axelor.i18n.I18n.get('Months')" if="recurrenceType == 3"/>
 		<attribute name="title" for="period" expr="eval: com.axelor.i18n.I18n.get('Years')" if="recurrenceType == 4"/>
 	</action-attrs>
-	
-	<action-method name="action-recurrence-assistant-method-generate">
-		<call class="com.axelor.apps.crm.web.EventController" method="generateRecurrentEvents"/>
-	</action-method>
 	
 	<action-method name="action-recurrence-assistant-method-delete-this">
 		<call class="com.axelor.apps.crm.web.EventController" method="deleteThis"/>
