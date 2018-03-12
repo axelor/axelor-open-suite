@@ -405,6 +405,15 @@ public class InventoryService {
 		if (stockLocationLineList != null) {
 			Boolean succeed = false;
 			for (StockLocationLine stockLocationLine : stockLocationLineList) {
+				if (stockLocationLine.getTrackingNumber() == null) { // if no tracking number on stockLocationLine, check if there is a tracking number on the product
+					long numberOfTrackingNumberOnAProduct = Beans.get(StockLocationLineRepository.class).all()
+							.filter("self.product = ?1 AND self.trackingNumber IS NOT null",
+									stockLocationLine.getProduct()).count();
+
+					if (numberOfTrackingNumberOnAProduct != 0) { // there is a tracking number on the product
+						continue;
+					}
+				}
 				inventory.addInventoryLineListItem(this.createInventoryLine(inventory, stockLocationLine));
 				succeed = true;
 			}
