@@ -397,6 +397,15 @@ public class PurchaseOrderController {
 		response.setAttr("priceList", "domain", domain);
 	}
 
+	public void finishPurchaseOrder(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+
+		purchaseOrderService.finishPurchaseOrder(purchaseOrder);
+		response.setReload(true);
+	}
+
+
 	/**
 	 * Called on supplier partner select.
 	 * Set the domain for the field supplierPartner

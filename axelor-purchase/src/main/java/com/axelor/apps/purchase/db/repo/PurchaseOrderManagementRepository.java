@@ -38,8 +38,9 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
 	public PurchaseOrder save(PurchaseOrder purchaseOrder) {
 
 		try{
+			purchaseOrder = super.save(purchaseOrder);
 			Beans.get(PurchaseOrderService.class).setDraftSequence(purchaseOrder);
-			return super.save(purchaseOrder);
+			return purchaseOrder;
 		} catch(Exception e){
 			throw new PersistenceException(e.getLocalizedMessage());
 		}
