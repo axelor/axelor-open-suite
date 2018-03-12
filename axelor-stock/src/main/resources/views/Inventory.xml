@@ -30,6 +30,8 @@
         <panel>
             <field name="dateT" readonlyIf="statusSelect >= 2"/>
             <field name="stockLocation" onSelect="action-inventory-attrs-set-location-domain" readonlyIf="statusSelect >= 2" grid-view="stock-location-grid" form-view="stock-location-form"/>
+            <field name="validatedBy" readonly="true" showIf="validatedBy"/>
+            <field name="validatedOn" readonly="true" showIf="validatedOn"/>
             <field name="description" colSpan="12" height="3"/>
         </panel>
 
@@ -96,6 +98,7 @@
     <action-group name="action-group-stock-inventory-validate-click">
     	<action name="save"/>
     	<action name="action-inventory-method-realize-stock-move"/>
+    	<action name="action-inventory-record-set-validation-fields"/>
     	<action name="save"/>
     </action-group>
 
@@ -120,6 +123,8 @@
 	
 	<action-record name="action-inventory-record-draft" model="com.axelor.apps.stock.db.Inventory">
 	    <field name="statusSelect" expr="1"/>
+	    <field name="validatedBy" expr="eval: null"/>
+	    <field name="validatedOn" expr="eval: null"/>
 	</action-record>
 	
 	<action-record name="action-inventory-record-plan" model="com.axelor.apps.stock.db.Inventory">
@@ -132,6 +137,11 @@
 	
 	<action-record name="action-inventory-record-complete" model="com.axelor.apps.stock.db.Inventory">
 	    <field name="statusSelect" expr="4"/>
+	</action-record>
+
+	<action-record name="action-inventory-record-set-validation-fields" model="com.axelor.apps.stock.db.Inventory">
+		<field name="validatedBy" expr="eval: __user__"/>
+		<field name="validatedOn" expr="eval: __date__"/>
 	</action-record>
 
 	<action-method name="action-inventory-method-show-inventory">
