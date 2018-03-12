@@ -173,8 +173,6 @@ public class InventoryController {
 			TraceBackService.trace(response, e);
 		}
 	}
-	
-	
 }
 
   
