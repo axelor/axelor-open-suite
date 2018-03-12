@@ -26,6 +26,7 @@
 - Partial manuf order realization
 - Add a wizard to select a cancel reason and cancel a Stock move.
 - Add button to open tasks and task kanban view in project module
+- Manage shipment mode, freight carrier mode, incoterm, carrier partner, forwarder partner on Partner, Sale order, Stock move.
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
@@ -42,6 +43,7 @@
 - Change dependency to base instead of CRM,HR and Project of helpdesk module.
 - Update the SaleOrderLine form to look like InvoiceLine form.
 - Update CRM & ICalendar events UI
+- Removed extra links from tasks to other tasks. Kept only 'Predecessors tasks'. 
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)

@@ -32,7 +32,16 @@
 		    <button name="showPartner" title="Partners" hidden="true" colSpan="2" onClick="save,action-batch-show-partner"/>
 		    <button name="showAccountingSituation" title="Accounting situations" hidden="true" colSpan="2" onClick="save,action-batch-show-accounting-situation"/>
 		    <button name="showPaymentVoucher" title="Payment vouchers" hidden="true" colSpan="2" onClick="save,action-batch-show-payment-voucher"/>
-		    <button name="showAccountingReport" title="Accounting Export" hidden="true" colSpan="2" onClick="save,action-batch-show-accounting-report"/>
+        	<button name="showAccountingReport" title="Accounting Export" hidden="true" colSpan="2" onClick="save,action-batch-show-accounting-report"/>
+            <panel colSpan="12">
+                <button name="showBankOrder" title="Show bank order" hidden="true" colSpan="4"
+                    onClick="action-batch-show-bank-order,close" if-module="axelor-bank-payment" />
+            </panel>
+            <panel colSpan="12">
+                <button name="createBankOrder" title="Create bank order" hidden="true" colSpan="4"
+                    onClick="action-batch-create-bank-order,action-batch-show-bank-order,close" if-module="axelor-bank-payment" />
+            </panel>
+            <field name="bankOrder" hidden="true" if-module="axelor-bank-payment" />
 		</panel>
     </form>
     
@@ -48,6 +57,9 @@
     	<attribute name="hidden" for="showAccountingSituation" expr="eval: !(_parent?.actionSelect in [17])" if="_parent?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
     	
     	<attribute name="hidden" for="showAccountingReport" expr="eval: !(_parent?.actionSelect == 18)" if="_parent?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
+
+        <attribute name="hidden" for="showBankOrder" expr="eval: !bankOrder" if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
+        <attribute name="hidden" for="createBankOrder" expr="eval: !(__parent__?.actionSelect == 12 &amp;&amp; !bankOrder &amp;&amp; done)" if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
     </action-attrs>
 
 	<action-view name="action-batch-show-trace-back" title="Anomalies"

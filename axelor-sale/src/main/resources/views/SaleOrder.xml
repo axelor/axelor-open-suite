@@ -274,19 +274,19 @@
 	      		<field name="internalNote" showTitle="false" widget="Html" x-lite="true" colSpan="12"/>
 	      	</panel>
 	    </panel>
-      	<panel name="deliveryInformation" title="Delivery information" colSpan="12">
+      	<panel name="deliveryInformation" title="Delivery information" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
       		<field name="specificPackage" colSpan="12"/>
-  		    <field name="stockLocation" domain="self.company = :company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid" readonlyIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
+  		    <field name="stockLocation" domain="self.company = :company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid" readonlyIf="statusSelect == 3" />
   		    <field name="deliveryDate"/>
   		    <field name="deliveryCondition" colSpan="12"/>
-  		    <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" if="__config__.app.isApp('stock')" />
-			<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"  if="__config__.app.isApp('stock')" />
-  		    <panel-dashlet action="action-view-show-stock-move-line" title="Customer deliveries" colSpan="12" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" showIf="statusSelect >= 3" />
+  		    <field name="shipmentMode" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" />
+			<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" onChange="action-sale-order-record-freight-carrier"/>
+  		    <field name="carrierPartner" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)" form-view="partner-form" grid-view="partner-grid" canEdit="false"/>
+            <field name="forwarderPartner" domain=":company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid" canEdit="false"/>
+            <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false"/>
+  		    <panel-dashlet action="action-view-show-stock-move-line" title="Customer deliveries" colSpan="12" showIf="statusSelect &gt;= 3" />
       	</panel>
-
-
-<!-- 	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain" grid-view="sale-order-schedule-line-grid" form-view="sale-order-schedule-line-form"/>  -->
-	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" showIf="statusSelect >= 3"/>
+	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" showIf="statusSelect &gt;= 3"/>
 	    <panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
       		  <field name="project" domain="self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid" colSpan="12"/>
 			  <field name="$genProjTypePerOrderLine" title="Type of project's elements generated" x-enum-type="com.axelor.apps.project.db.GenProjTypePerOrderLine" showIf="project == null"/>
@@ -845,6 +845,8 @@
 		<action name="action-sale-order-record-interco"
 				if="__config__.app.isApp('supplychain')"/>
 		<action name="action-sale-order-record-set-contact-partner"/>
+		<action name="action-sale-order-record-partner-supplychain" 
+				if="__config__.app.isApp('supplychain')"/>
 	</action-group>
 
     <action-attrs name="action-sale-order-attrs-in-ati">
@@ -995,8 +997,6 @@
     		if="clientPartner != null &amp;&amp; __repo__(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails?.active"/>
     	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
     		if="!(clientPartner != null &amp;&amp; __repo__(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails?.active) &amp;&amp; company?.defaultBankDetails?.active"/>
-    	<field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"/>
-    	<field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
     </action-record>
 
     <action-record name="action-sale-order-record-hide-discount" model="com.axelor.apps.sale.db.SaleOrder">

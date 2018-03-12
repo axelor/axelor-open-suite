@@ -768,7 +768,7 @@
 	</action-record>
 
 	<action-record name="action-partner-record-freight-carrier" model="com.axelor.apps.base.db.Partner">
-		<field name="carrierPartner" expr="eval:freightCarrierMode.carrierPartner"/>
+		<field name="carrierPartner" expr="eval:freightCarrierMode?.carrierPartner"/>
 	</action-record>
 
 	<action-record name="action-partner-record-set-payment-modes" model="com.axelor.apps.base.db.Partner" if-module="axelor-account">

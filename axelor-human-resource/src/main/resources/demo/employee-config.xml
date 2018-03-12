@@ -11,7 +11,7 @@
 	
 	<input file="hr_eventsPlanning.csv" type="com.axelor.apps.base.db.EventsPlanning" separator=";" search="self.importId = :importId"/>
 	
-	<input file="hr_eventsPlanningLine.csv" type="com.axelor.apps.base.db.EventsPlanning" separator=";" search="self.importId = :importId"/>
+	<input file="hr_eventsPlanningLine.csv" type="com.axelor.apps.base.db.EventsPlanningLine" separator=";" search="self.importId = :importId"/>
 	
 	<input file="hr_leaveReason.csv" type="com.axelor.apps.hr.db.LeaveReason" separator=";" search="self.importId  = :importId"/>
 	

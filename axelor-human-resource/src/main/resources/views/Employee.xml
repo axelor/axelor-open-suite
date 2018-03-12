@@ -104,11 +104,11 @@
 			</panel>
 			<panel name="timesheets" title="Timesheets"
 				   if="__config__.app.isApp('timesheet')">
-				<field name="timeLoggingPreferenceSelect" colSpan="4"/>
-				<field name="product" canEdit="false" colSpan="4" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
-				<field name="timesheetReminder" colSpan="4"/>
-				<panel-dashlet action="action-employee-view-user-timesheets"
-							   colSpan="12"/>
+				<field name="timeLoggingPreferenceSelect" colSpan="3"/>
+				<field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
+				<field name="timesheetReminder" colSpan="3"/>
+                <field name="timesheetImputationSelect" colSpan="3" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()" if-module="axelor-business-production"/>
+				<panel-dashlet action="action-employee-view-user-timesheets" colSpan="12"/>
 			</panel>
 	       	<panel name="lunchVoucher" title="Lunch Vouchers"
 				   if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getLunchVoucher()">

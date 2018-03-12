@@ -206,7 +206,7 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 	}
 
 	@Override
-	@Transactional
+    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void preFillOperations(ManufOrder manufOrder) throws AxelorException{
 
 		BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
@@ -233,12 +233,6 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		manufOrderRepo.save(manufOrder);
 
 		manufOrder.setPlannedEndDateT(manufOrderWorkflowService.computePlannedEndDateT(manufOrder));
-
-		if(!manufOrder.getIsConsProOnOperation())  {
-			this.createToConsumeProdProductList(manufOrder);
-		}
-
-		this.createToProduceProdProductList(manufOrder);
 
 		manufOrderRepo.save(manufOrder);
 	}
@@ -342,11 +336,11 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		StockLocation wasteStockLocation = stockConfigService.getWasteStockLocation(stockConfig);
 
 		wasteStockMove = stockMoveService.createStockMove(virtualStockLocation.getAddress(), wasteStockLocation.getAddress(),
-				company, company.getPartner(), virtualStockLocation, wasteStockLocation, null, appBaseService.getTodayDate(),
-				manufOrder.getWasteProdDescription(), null, null);
+				company, virtualStockLocation, wasteStockLocation, null, appBaseService.getTodayDate(),
+				manufOrder.getWasteProdDescription());
 
 		for (ProdProduct prodProduct : manufOrder.getWasteProdProductList()) {
-			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
+			stockMoveLineService.createStockMoveLine(
 					prodProduct.getProduct(),
 					prodProduct.getProduct().getName(),
 					prodProduct.getProduct().getDescription(),
@@ -357,7 +351,6 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 					StockMoveLineService.TYPE_WASTE_PRODUCTIONS,
 					false,
 					BigDecimal.ZERO);
-			wasteStockMove.addStockMoveLineListItem(stockMoveLine);
 		}
 
 		stockMoveService.validate(wasteStockMove);

@@ -17,6 +17,18 @@
  */
 package com.axelor.apps.production.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ManufOrder;
@@ -35,18 +47,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 public class ManufOrderStockMoveService {
 
@@ -75,7 +75,6 @@ public class ManufOrderStockMoveService {
 			for(ProdProduct prodProduct: manufOrder.getToConsumeProdProductList()) {
 
 				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS);
-				stockMove.addStockMoveLineListItem(stockMoveLine);
 
 			}
 
@@ -104,8 +103,8 @@ public class ManufOrderStockMoveService {
 
 	    StockLocation fromStockLocation = getDefaultStockLocation(manufOrder, company);
 
-		return stockMoveService.createStockMove(null, null, company, null, fromStockLocation, virtualStockLocation,
-				null, manufOrder.getPlannedStartDateT().toLocalDate(), null, null, null);
+		return stockMoveService.createStockMove(null, null, company, fromStockLocation, virtualStockLocation,
+				null, manufOrder.getPlannedStartDateT().toLocalDate(), null);
 
 	}
 
@@ -130,7 +129,6 @@ public class ManufOrderStockMoveService {
 			for(ProdProduct prodProduct: manufOrder.getToProduceProdProductList()) {
 
 				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_OUT_PRODUCTIONS);
-				stockMove.addStockMoveLineListItem(stockMoveLine);
 
 			}
 
@@ -163,8 +161,8 @@ public class ManufOrderStockMoveService {
 			producedProductStockLocation = stockConfigService.getFinishedProductsDefaultStockLocation(stockConfig);
 		}
 
-		StockMove stockMove = stockMoveService.createStockMove(null, null, company, null, virtualStockLocation,
-				producedProductStockLocation, null, plannedEndDate, null, null, null);
+		StockMove stockMove = stockMoveService.createStockMove(null, null, company, virtualStockLocation,
+				producedProductStockLocation, null, plannedEndDate, null);
 		stockMove.setTypeSelect(StockMoveRepository.TYPE_INCOMING);
 
 		return stockMove;
@@ -273,10 +271,9 @@ public class ManufOrderStockMoveService {
 		//generate new stock move
 
 		StockMove newStockMove = stockMoveService.createStockMove(
-				null, null, company, null,
+				null, null, company,
 				fromStockLocation, toStockLocation, null,
-				manufOrder.getPlannedStartDateT().toLocalDate(),
-				null, null, null
+				manufOrder.getPlannedStartDateT().toLocalDate(), null
 		);
 
 		newStockMove.setStockMoveLineList(new ArrayList<>());
@@ -348,7 +345,6 @@ public class ManufOrderStockMoveService {
 		diffProdProductList.forEach(prodProduct -> prodProduct.setQty(prodProduct.getQty().negate()));
 		for (ProdProduct prodProduct : diffProdProductList) {
 			StockMoveLine stockMoveLine = _createStockMoveLine(prodProduct, stockMove, stockMoveLineType);
-			stockMove.addStockMoveLineListItem(stockMoveLine);
 		}
 	}
 

@@ -165,9 +165,13 @@
         <panel-related field="stockMoveLineList" onChange="action-stock-move-method-compute,action-stock-move-line-method-change-conformity" readonlyIf="statusSelect == 3" grid-view="stock-move-line-grid" form-view="stock-move-line-form"/>
 
         <panel-tabs>
-            <panel title="Freight Carrier">
-                <field name="shipmentMode" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
-                <field name="freightCarrierMode" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
+            <panel title="Freight Carrier" readonlyIf="statusSelect == 3 || statusSelect == 4" >
+                <field name="shipmentMode" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" />
+				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode"  form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" onChange="action-stock-move-record-freight-carrier" />
+                <field name="carrierPartner" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)" form-view="partner-form" grid-view="partner-grid" canEdit="false"/>
+            	<field name="forwarderPartner" domain=":company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid" canEdit="false" />
+            	<field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
+                
                 <field name="trackingNumber" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
 
                 <field name="numOfPackages" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
@@ -310,6 +314,7 @@
 		<action name="action-stock-move-record-partner-delivery-informations"/>
         <action name="action-stock-move-record-auto-mail"/>
 		<action name="action-stock-move-record-ispm-field"/>
+	   	<action name="action-stock-move-record-partner-shipment-informations"/>
 	</action-group>
 
      <action-attrs name="action-stock-move-attrs-typeselect-change">
@@ -540,5 +545,16 @@
 	<action-method name="action-stock-move-method-filter-printing-settings">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="filterPrintingSettings"/>
 	</action-method>
+	
+	<action-record name="action-stock-move-record-freight-carrier" model="com.axelor.apps.stock.db.StockMove">
+		<field name="carrierPartner" expr="eval:freightCarrierMode?.carrierPartner"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-record-partner-shipment-informations" model="com.axelor.apps.stock.db.StockMove">
+		<field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"/>
+    	<field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
+		<field name="carrierPartner" expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>
+	</action-record>
+		
 
 </object-views>

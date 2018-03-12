@@ -43,6 +43,8 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
 import com.axelor.apps.bankpayment.service.batch.AccountingBatchBankPaymentService;
+import com.axelor.apps.bankpayment.service.batch.BatchBankPaymentService;
+import com.axelor.apps.bankpayment.service.batch.BatchBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.batch.BatchCreditTransferPartnerReimbursementBankPayment;
 import com.axelor.apps.bankpayment.service.batch.BatchCreditTransferSupplierPaymentBankPayment;
 import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
@@ -84,6 +86,7 @@ public class BankPaymentModule extends AxelorModule {
 
 	     bind(AccountingBatchService.class).to(AccountingBatchBankPaymentService.class);
 
+	     bind(BatchBankPaymentService.class).to(BatchBankPaymentServiceImpl.class);
 	}
 
 }

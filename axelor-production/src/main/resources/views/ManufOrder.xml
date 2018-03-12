@@ -82,7 +82,7 @@
 			<field name="priority" readonlyIf="statusSelect == 6" colSpan="3"/>
 			<field name="company" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="3" form-view="company-form" grid-view="company-grid"/>
 			<field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
-			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" domain="self.defineSubBillOfMaterial = true AND self.prodProcess IS NOT null" onChange="action-manuf-order-on-change-bill-of-material, action-manuf-order-attrs-isConsProOnOperation, action-manuf-order-record-isConsProOnOperation,action-manuf-order-reset" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" canEdit="false"/>
+			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-on-change-bill-of-material, action-manuf-order-attrs-isConsProOnOperation, action-manuf-order-record-isConsProOnOperation,action-manuf-order-reset" onSelect="action-manuf-order-attrs-filter-bill-of-material" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" canEdit="false"/>
 			<field name="prodProcess" onChange="action-manuf-order-attrs-isConsProOnOperation, action-manuf-order-record-isConsProOnOperation" onSelect="action-manuf-order-attrs-filter-prodProcess" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"/>
     			<field name="prodProcess.outsourcing" colSpan="3"/>
 			<field name="product" canEdit="false" required="true" readonlyIf="statusSelect &gt; 1 || !product.isModel" form-view="product-form" grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"/>
@@ -125,24 +125,24 @@
 					<field name="wasteStockMove" form-view="stock-move-form" grid-view="stock-move-grid" readonly="true"/>
 				</panel>
 			</panel>
-			<panel name="consumedProducts" title="Consumed products" hideIf="isConsProOnOperation">
+			<panel name="consumedProducts" title="Consumed products" hideIf="isConsProOnOperation || statusSelect &lt; 3">
 				<button name="updatePlannedQty" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
 				<panel-related field="toConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 				<button name="updateRealQty" title="Update real quantities (Components and FP)" colSpan="12" showIf="[4,5].includes(statusSelect)" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
 				<panel-related field="consumedStockMoveLineList" onChange="action-manuf-order-method-compute-diff-prod-product-list" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-consumed-production-grid"/>
 				<panel-related field="diffConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 			</panel>
-   			<panel name="consumedProducts" title="Consumed products" showIf="isConsProOnOperation">
+   			<panel name="consumedProducts" title="Consumed products" showIf="isConsProOnOperation &amp;&amp; statusSelect &gt;= 3">
 				<button name="updatePlannedQty" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
 				<panel-dashlet readonly="true" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
-				<button name="updateRealQty" title="Update real quantities (Components and FP)" colSpan="12" showIf="[4,5].includes(statusSelect)" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
+				<button name="updateRealQty" title="Update real quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
 				<panel-dashlet readonly="true" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>
 				<panel-dashlet readonly="true" colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
 			</panel>
-			<panel name="finishedProducts" title="Finished products">
+			<panel name="finishedProducts" title="Finished products" showIf="statusSelect &gt;= 3">
 				<button name="updatePlannedQty" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
 				<panel-related field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 3" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
-				<button name="updateRealQty" title="Update real quantities (Components and FP)" colSpan="12" showIf="[4,5].includes(statusSelect)" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
+				<button name="updateRealQty" title="Update real quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
 				<panel-related field="producedStockMoveLineList" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-produced-production-grid"/>
 				<panel-related field="wasteProdProductList" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 				<panel name="description" title="Waste description" colSpan="12">
@@ -322,15 +322,20 @@
 	</action-method>
 
 	<action-attrs name="action-manuf-order-attrs-filter-prodProcess">
-		<attribute name="domain" for="prodProcess" expr="eval: &quot; self.id = ${prodProcess?.id} &quot;" if="prodProcess?.id != null &amp;&amp; billOfMaterial != null"/>
+		<attribute name="domain" for="prodProcess" expr="eval: &quot; self.id = ${prodProcess?.id} &quot;" if="prodProcess != null &amp;&amp; billOfMaterial != null"/>
 		<attribute name="domain" for="prodProcess" expr="eval: null" if="billOfMaterial == null"/>
 	</action-attrs>
 
 	<action-attrs name="action-manuf-order-attrs-filter-product">
-		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' &quot;" if="billOfMaterial?.product?.id != null &amp;&amp; prodProcess?.id != null"/>
-		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' &quot;" if="billOfMaterial?.product?.id != null &amp;&amp; prodProcess?.id == null"/>
-		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' &quot;" if="billOfMaterial?.product?.id == null &amp;&amp; prodProcess?.id != null"/>
-		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) &quot;" if="billOfMaterial?.product?.id == null &amp;&amp; prodProcess?.id == null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' &quot;" if="billOfMaterial?.product != null &amp;&amp; prodProcess != null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' &quot;" if="billOfMaterial?.product != null &amp;&amp; prodProcess == null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' &quot;" if="billOfMaterial?.product == null &amp;&amp; prodProcess != null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) &quot;" if="billOfMaterial?.product == null &amp;&amp; prodProcess == null"/>
+	</action-attrs>
+
+	<action-attrs name="action-manuf-order-attrs-filter-bill-of-material">
+		<attribute name="domain" for="billOfMaterial" expr="eval: &quot; self.defineSubBillOfMaterial = true AND self.prodProcess IS NOT null AND self.product.id = ${product?.id} &quot;" if="product != null"/>
+		<attribute name="domain" for="billOfMaterial" expr="eval: &quot; self.defineSubBillOfMaterial = true AND self.prodProcess IS NOT null &quot;" if="product == null"/>
 	</action-attrs>
 
   	<search-filters name="manuf-order-filters" model="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order filters">

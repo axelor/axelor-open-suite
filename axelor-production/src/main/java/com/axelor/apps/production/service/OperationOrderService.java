@@ -48,6 +48,14 @@ public interface OperationOrderService {
 	
 	public String computeName(ManufOrder manufOrder, int priority, String operationName);
 
+	/**
+     * Generate {@link OperationOrder#toConsumeProdProductList} from
+	 * the prod process line in param.
+	 * @param operationOrder
+	 *
+	 */
+	void createToConsumeProdProductList(OperationOrder operationOrder);
+
 
 	/**
 	 * Updates the diff prod product list.

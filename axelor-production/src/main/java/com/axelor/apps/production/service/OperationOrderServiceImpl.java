@@ -28,13 +28,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import com.axelor.apps.base.db.DayPlanning;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -98,8 +94,6 @@ public class OperationOrderServiceImpl implements OperationOrderService  {
 				IOperationOrder.STATUS_DRAFT, 
 				prodProcessLine);
 		
-		this._createToConsumeProdProductList(operationOrder, prodProcessLine);
-		
 		this._createHumanResourceList(operationOrder, machineWorkCenter);
 		
 		return Beans.get(OperationOrderRepository.class).save(operationOrder);
@@ -145,11 +139,12 @@ public class OperationOrderServiceImpl implements OperationOrderService  {
 		return name;
 	}
 	
-	
-	
-	protected void _createToConsumeProdProductList(OperationOrder operationOrder, ProdProcessLine prodProcessLine)  {
+
+	@Override
+	public void createToConsumeProdProductList(OperationOrder operationOrder)  {
 		
 		BigDecimal manufOrderQty = operationOrder.getManufOrder().getQty();
+		ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
 		
 		if(prodProcessLine.getToConsumeProdProductList() != null)  {
 			

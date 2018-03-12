@@ -68,8 +68,10 @@ public class OperationOrderWorkflowService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public OperationOrder plan(OperationOrder operationOrder) throws AxelorException  {
+
+		Beans.get(OperationOrderService.class).createToConsumeProdProductList(operationOrder);
 
 		operationOrder.setPlannedStartDateT(this.getLastOperationOrder(operationOrder));
 
@@ -353,12 +355,8 @@ public class OperationOrderWorkflowService {
 			operationOrder.setPlannedDuration(duration);
 		}
 
-		if(operationOrder.getRealStartDateT() != null && operationOrder.getRealEndDateT() != null) {
-			duration = this.getDuration(
-					Duration.between(operationOrder.getRealStartDateT(), operationOrder.getRealEndDateT())
-			);
-			operationOrder.setRealDuration(duration);
-		}
+		duration = getDuration(computeRealDuration(operationOrder));
+		operationOrder.setRealDuration(duration);
 
 		return operationOrder;
 	}
