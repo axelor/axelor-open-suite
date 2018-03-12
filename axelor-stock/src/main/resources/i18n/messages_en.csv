@@ -192,6 +192,7 @@
 "Inventory virtual stock location",,,
 "Inventory's lines' list has been filled.",,,
 "Inventory.code","Code",,
+"Inventory.company","Company",,
 "Inventory.date","Date",,
 "Inventory.description","Description",,
 "Inventory.name","Name",,
