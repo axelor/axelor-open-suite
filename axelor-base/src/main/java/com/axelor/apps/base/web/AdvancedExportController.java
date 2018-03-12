@@ -120,6 +120,23 @@ public class AdvancedExportController {
 		}
 	}
 	
+	public void fillTitle(ActionRequest request, ActionResponse response) {
+		
+		Context context = request.getContext();
+		MetaField metaField = (MetaField) context.get("metaField");
+		
+		if (metaField != null) {
+			if (Strings.isNullOrEmpty(metaField.getLabel())) {
+				inflector = Inflector.getInstance();
+				response.setValue("title", I18n.get(this.getFieldTitle(inflector, metaField.getName())));
+			} else {
+				response.setValue("title",  I18n.get(metaField.getLabel()));
+			}
+		} else {
+			response.setValue("title", null);
+		}
+	}
+	
 	private String getFieldTitle(Inflector inflector, String fieldName) {
 		return inflector.humanize(fieldName);
 	}
@@ -145,14 +162,12 @@ public class AdvancedExportController {
 	
 			if (metaField.getRelationship() != null) {
 				response.setValue("currentDomain", metaField.getTypeName());
-				response.setValue("metaField", "");
-			}
-			
-			if (Strings.isNullOrEmpty(metaField.getLabel())) {
-				inflector = Inflector.getInstance();
-				response.setValue("title", this.getFieldTitle(inflector, metaField.getName()));
+				response.setValue("metaField", null);
 			} else {
-				response.setValue("title", metaField.getLabel());
+				response.setAttr("metaField", "readonly", true);
+				response.setAttr("validateFieldSelection", "readonly", true);
+				response.setAttr("$viewerMessage", "hidden", false);
+				response.setAttr("$isValidate", "value", true);
 			}
 		}
 	}
@@ -160,7 +175,7 @@ public class AdvancedExportController {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void showAdvancedExportData(ActionRequest request, ActionResponse response) throws ClassNotFoundException {
 		
-		String criteria = null; 
+		String criteria = ""; 
 		if (request.getContext().get("_contextCriteria") != null)
 			criteria = request.getContext().get("_contextCriteria").toString();
 		List<Map> allDataList = new ArrayList<>();
@@ -179,7 +194,7 @@ public class AdvancedExportController {
 		
 		AdvancedExport advancedExport = request.getContext().asType(AdvancedExport.class);
 		MetaFile exportFile = advancedExport.getAdvancedExportFile();
-		String criteria = null; 
+		String criteria = ""; 
 		if (request.getContext().get("_contextCriteria") != null)
 			criteria = request.getContext().get("_contextCriteria").toString();
 		
@@ -215,7 +230,7 @@ public class AdvancedExportController {
 		
 		AdvancedExport advancedExport = request.getContext().asType(AdvancedExport.class);
 		MetaFile exportFile = advancedExport.getAdvancedExportFile();
-		String criteria = null; 
+		String criteria = ""; 
 		if (request.getContext().get("_contextCriteria") != null)
 			criteria = request.getContext().get("_contextCriteria").toString();
 		
@@ -252,7 +267,7 @@ public class AdvancedExportController {
 		LOG.debug("Call advanced export wizard for model : {} ", request.getModel());
 		
 		MetaModel metaModel = metaModelRepo.all().filter("self.fullName = ?", request.getModel()).fetchOne();
-		String criteria = null;
+		String criteria = "";
 		
 		if (request.getContext().get("_ids") != null) {
 			criteria = request.getContext().get("_ids").toString();
@@ -289,7 +304,7 @@ public class AdvancedExportController {
 		
 		AdvancedExport advancedExport = request.getContext().asType(AdvancedExport.class);
 		MetaFile exportFile = advancedExport.getAdvancedExportFile();
-		String criteria = null; 
+		String criteria = ""; 
 		if (request.getContext().get("_contextCriteria") != null)
 			criteria = request.getContext().get("_contextCriteria").toString();
 		
@@ -350,7 +365,7 @@ public class AdvancedExportController {
 				
 				MetaModel metaModel = metaModelRepo.find(Long.valueOf(((Map)request.getContext().get("_metaModel")).get("id").toString()));
 				allDataList = advancedExportService.showAdvancedExportData(advancedExportLineList, metaModel, criteria);
-				
+
 				if (exportFormatSelect == 0)
 					exportFile = advancedExportService.advancedExportPDF(exportFile, advancedExportLineList, allDataList, metaModel);
 				else if (exportFormatSelect == 1)
