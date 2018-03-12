@@ -37,6 +37,7 @@
 - Generate sale order from Opportunity in edit mode directly
 - Improved architecture of Message generation from a template, send email, and manage specific email account in a module without change the original behavior in the others
 - A freight carrier is now a carrier partner
+- Change the title "Delivery date" to "Estimated delivery date" in SaleOrder and PurchaseOrder
 - EndPeriod on currency conversion api
 - Allow to generate bank order file without using bic code in SEPA context.
 - Remove the field supplierPartner from Event Object
