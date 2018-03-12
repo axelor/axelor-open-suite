@@ -46,6 +46,7 @@
 - Update the SaleOrderLine form to look like InvoiceLine form.
 - Update CRM & ICalendar events UI
 - Removed extra links from tasks to other tasks. Kept only 'Predecessors tasks'. 
+- Allow to read the products from production, stock and crm modules
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)

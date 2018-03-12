@@ -45,7 +45,6 @@
 		<view type="cards" name="product-cards" />
 		<view type="grid" name="product-grid" />
 		<view type="form" name="product-form" />
-	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="products-filters"/>
 		<domain>self.isModel = false AND self.sellable = true AND self.isShippingCostsProduct = false</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
