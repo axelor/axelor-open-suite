@@ -13,7 +13,7 @@
   	<form name="advanced-export-line-form" title="Advanced export line" model="com.axelor.apps.base.db.AdvancedExportLine" onNew="action-advanced-export-line-record-set-current-domain"
   		onLoad="action-advanced-export-line-method-validate-field">
   		<panel>
-  			<field name="metaField" title="Select target field" required="true" onSelect="action-advanced-export-line-attr-change-domain"/>
+  			<field name="metaField" title="Select target field" required="true" onSelect="action-advanced-export-line-attr-change-domain" onChange="action-advanced-export-line-method-fill-title"/>
      		<field name="title" required="true"/>
      		<field name="targetField"/>
 	        <field name="orderBy" colSpan="2"/>
@@ -39,6 +39,10 @@
   	
   	<action-method name="action-advanced-export-line-method-validate-field">
   		<call class="com.axelor.apps.base.web.AdvancedExportController" method="fillTargetField"/>
+  	</action-method>
+  	
+  	<action-method name="action-advanced-export-line-method-fill-title">
+  		<call class="com.axelor.apps.base.web.AdvancedExportController" method="fillTitle"/>
   	</action-method>
   	
   	<action-attrs name="action-advanced-export-line-attr-change-domain">
