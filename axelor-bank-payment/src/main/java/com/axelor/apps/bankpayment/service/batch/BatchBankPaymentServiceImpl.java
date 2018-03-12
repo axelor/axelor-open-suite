@@ -42,7 +42,6 @@ import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
-import com.axelor.apps.bankpayment.db.repo.BankOrderManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
@@ -149,7 +148,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
         BankOrderCreateService bankOrderCreateService = Beans.get(BankOrderCreateService.class);
         BankOrderService bankOrderService = Beans.get(BankOrderService.class);
         BankOrderLineService bankOrderLineService = Beans.get(BankOrderLineService.class);
-        BankOrderManagementRepository bankOrderRepo = Beans.get(BankOrderManagementRepository.class);
+        BankOrderRepository bankOrderRepo = Beans.get(BankOrderRepository.class);
         BatchRepository batchRepo = Beans.get(BatchRepository.class);
 
         Currency currency = senderCompany.getCurrency();
