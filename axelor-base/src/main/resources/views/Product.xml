@@ -326,7 +326,6 @@
         <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
 		<action name="action-product-method-supplier-catalog-coeff"/>
 		<action name="action-product-attrs-cost-price-variant"/>
-		<action name="save"/>
     </action-group>
 
 	<action-group name="action-product-group-cost-type-select-onchange">
