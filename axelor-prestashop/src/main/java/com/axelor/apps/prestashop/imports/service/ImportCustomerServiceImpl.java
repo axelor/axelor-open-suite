@@ -19,18 +19,23 @@ package com.axelor.apps.prestashop.imports.service;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.EmailAddress;
@@ -72,17 +77,23 @@ public class ImportCustomerServiceImpl implements ImportCustomerService {
 
 			Partner localCustomer = partnerRepo.findByPrestaShopId(remoteCustomer.getId());
 			if(localCustomer == null) {
-				logBuffer.write("not found by ID, creating, ");
-				localCustomer = new Partner();
-				localCustomer.setPrestaShopId(remoteCustomer.getId());
-				localCustomer.setIsCustomer(Boolean.TRUE);
-				localCustomer.setContactPartnerSet(new HashSet<>());
-				if(appBaseService.getAppBase().getGeneratePartnerSequence() == Boolean.TRUE) {
-					localCustomer.setPartnerSeq(Beans.get(SequenceService.class).getSequenceNumber(IAdministration.PARTNER));
-					if(localCustomer.getPartnerSeq() == null) {
-						++errors;
-						logBuffer.write(String.format("No sequence configured for partners, unable to create customer, skipping [ERROR]%n"));
-						continue;
+				localCustomer = partnerRepo.findByRegistrationCode(remoteCustomer.getSiret());
+				if(localCustomer == null) {
+					logBuffer.write("not found by ID, creating, ");
+					localCustomer = new Partner();
+					localCustomer.setPrestaShopId(remoteCustomer.getId());
+					localCustomer.setIsCustomer(Boolean.TRUE);
+					localCustomer.setContactPartnerSet(new HashSet<>());
+					localCustomer.setCurrency(appConfig.getPrestaShopCurrency());
+					// Assign a company to generate an accounting situation
+					localCustomer.addCompanySetItem(AbstractBatch.getCurrentBatch().getPrestaShopBatch().getCompany());
+					if(appBaseService.getAppBase().getGeneratePartnerSequence() == Boolean.TRUE) {
+						localCustomer.setPartnerSeq(Beans.get(SequenceService.class).getSequenceNumber(IAdministration.PARTNER));
+						if(localCustomer.getPartnerSeq() == null) {
+							++errors;
+							logBuffer.write(String.format("No sequence configured for partners, unable to create customer, skipping [ERROR]%n"));
+							continue;
+						}
 					}
 				}
 			}
@@ -136,7 +147,15 @@ public class ImportCustomerServiceImpl implements ImportCustomerService {
 					email.setAddress(remoteCustomer.getEmail());
 					localCustomer.setEmailAddress(email);
 				}
+
 				partnerRepo.save(localCustomer);
+
+				if(remoteCustomer.getAllowedOutstandingAmount() != null && BigDecimal.ZERO.compareTo(remoteCustomer.getAllowedOutstandingAmount()) != 0 && CollectionUtils.isEmpty(localCustomer.getAccountingSituationList()) == false) {
+					AccountingSituation situation = localCustomer.getAccountingSituationList().get(0);
+					if(remoteCustomer.getAllowedOutstandingAmount().compareTo(situation.getAcceptedCredit()) != 0) {
+						situation.setAcceptedCredit(remoteCustomer.getAllowedOutstandingAmount().setScale(2, RoundingMode.HALF_UP));
+					}
+				}
 			} else {
 				logBuffer.write("local customer exists and PrestaShop isn't master for customers, leaving untouched");
 			}

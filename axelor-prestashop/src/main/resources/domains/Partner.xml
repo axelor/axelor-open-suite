@@ -9,6 +9,7 @@
 		<unique-constraint columns="prestaShopId"/>
 
 		<finder-method name="findByPrestaShopId" using="prestaShopId"/>
+		<finder-method name="findByRegistrationCode" using="registrationCode"/>
 	</entity>
 
 </domain-models>
