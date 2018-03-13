@@ -65,28 +65,16 @@
 	</form>
 	
 	<action-group name="action-group-supplychain-saleorder-onnew">
-		<action name="action-sale-order-record-default"/>
+        <action name="action-group-sale-saleorder-onnew"/>
 		<action name="action-sale-order-record-payment-mode"/>
-		<action name="action-sale-order-record-company-configuration"/>
 		<action name="action-supplychain-sale-order-method-get-stock-location"/>
-		<action name="action-sale-order-record-currency"/>
-		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
-		<action name="action-sale-order-record-in-ati"/>
-		<action name="action-sale-order-attrs-in-ati"/>
-		<action name="action-sale-order-attrs-hidden-bank-details"/>
-		<action name="action-sale-order-method-fill-company-bank-details"/>
         <action name="action-sale-order-attrs-interco"/>
 		<action name="action-sale-order-record-interco"/>
 	</action-group>
 	
 	<action-group name="action-group-supplychain-saleorder-onload">
-		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
-		<action name="action-partner-attrs-hide-contact-partner" />
-		<action name="action-sale-order-attrs-in-ati"/>
-		<action name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
-		<action name="action-sale-order-attrs-hidden-bank-details"/>
+        <action name="action-group-sale-saleorder-onload"/>
 		<action name="action-sale-order-attrs-interco"/>
-		<action name="save"/>
 	</action-group>
 
     <action-method name="action-supplychain-saleorder-onsave">
