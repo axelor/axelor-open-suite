@@ -29,13 +29,14 @@ import com.google.inject.persist.Transactional;
 
 import java.io.IOException;
 
-public class TemplateMessageServiceAccountImpl extends TemplateMessageServiceBaseImpl {
+public class TemplateMessageServiceAccountImpl extends TemplateMessageServiceBaseImpl implements TemplateMessageServiceAccount {
 
     @Inject
 	public TemplateMessageServiceAccountImpl(MessageService messageService) {
 		super(messageService);
 	}
 
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message generateMessage(DebtRecoveryHistory debtRecoveryHistory, Template template) throws ClassNotFoundException, IOException, InstantiationException, AxelorException, IllegalAccessException {
         Message message = super.generateMessage(debtRecoveryHistory, template);

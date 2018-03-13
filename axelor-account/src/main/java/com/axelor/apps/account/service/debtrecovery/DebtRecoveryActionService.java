@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.DebtRecoveryMethodLine;
 import com.axelor.apps.account.db.repo.DebtRecoveryHistoryRepository;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.TemplateMessageServiceAccount;
 import com.axelor.apps.account.service.TemplateMessageServiceAccountImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
@@ -55,18 +56,18 @@ public class DebtRecoveryActionService {
 	protected UserService userService;
 	protected DebtRecoveryRepository debtRecoveryRepo;
 	protected DebtRecoveryHistoryRepository debtRecoveryHistoryRepository;
-	protected TemplateMessageServiceAccountImpl templateMessageService;
+	protected TemplateMessageServiceAccount templateMessageServiceAccount;
 
 	protected AppAccountService appAccountService;
 
 	@Inject
 	public DebtRecoveryActionService(UserService userService, DebtRecoveryRepository debtRecoveryRepo, DebtRecoveryHistoryRepository debtRecoveryHistoryRepository, 
-			TemplateMessageServiceAccountImpl templateMessageService, AppAccountService appAccountService) {
+			TemplateMessageServiceAccount templateMessageServiceAccount, AppAccountService appAccountService) {
 
 		this.userService = userService;
 		this.debtRecoveryRepo = debtRecoveryRepo;
 		this.debtRecoveryHistoryRepository = debtRecoveryHistoryRepository;
-		this.templateMessageService = templateMessageService;
+		this.templateMessageServiceAccount = templateMessageServiceAccount;
 		
 		this.appAccountService = appAccountService;
 
@@ -132,7 +133,7 @@ public class DebtRecoveryActionService {
 		DebtRecoveryHistory debtRecoveryHistory = this.getDebtRecoveryHistory(debtRecovery);
 
 		for (Template template : templateSet) {
-			templateMessageService.generateMessage(debtRecoveryHistory, template);
+			templateMessageServiceAccount.generateMessage(debtRecoveryHistory, template);
 		}
 
 		return debtRecoveryHistory.getDebtRecoveryMessageSet();

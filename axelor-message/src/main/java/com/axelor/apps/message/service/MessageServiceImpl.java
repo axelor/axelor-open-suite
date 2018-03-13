@@ -26,11 +26,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
 
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.i18n.I18n;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,230 +63,261 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class MessageServiceImpl implements MessageService {
-	
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	private MetaAttachmentRepository metaAttachmentRepository;
-	protected MessageRepository messageRepository;
-	protected TemplateMessageService templateMessageService;
+    private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	@Inject
-	public MessageServiceImpl(MetaAttachmentRepository metaAttachmentRepository, MessageRepository messageRepository,
-							  TemplateMessageService templateMessageService) {
-		this.metaAttachmentRepository = metaAttachmentRepository;
-		this.messageRepository = messageRepository;
-		this.templateMessageService = templateMessageService;
-	}
+    private MetaAttachmentRepository metaAttachmentRepository;
+    protected MessageRepository messageRepository;
+    protected TemplateMessageService templateMessageService;
 
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
-			List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect, EmailAccount emailAccount)  {
-		
-		Message message = createMessage( content, fromEmailAddress,	model, id, null, 0, ZonedDateTime.now().toLocalDateTime(), false,	MessageRepository.STATUS_DRAFT, subject, MessageRepository.TYPE_SENT,
-				replyToEmailAddressList, toEmailAddressList, ccEmailAddressList, bccEmailAddressList, addressBlock, mediaTypeSelect, emailAccount) ;
+    @Inject
+    public MessageServiceImpl(MetaAttachmentRepository metaAttachmentRepository, MessageRepository messageRepository,
+                              TemplateMessageService templateMessageService) {
+        this.metaAttachmentRepository = metaAttachmentRepository;
+        this.messageRepository = messageRepository;
+        this.templateMessageService = templateMessageService;
+    }
 
-		messageRepository.save( message );
-		
-		attachMetaFiles(message, metaFiles);
-		
-		return message;
-	}
+    @Override
+    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+    public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList,
+                                 List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect, EmailAccount emailAccount) {
 
-	@Override
-	@Transactional(rollbackOn = Exception.class)
-	public void attachMetaFiles( Message message, Set<MetaFile> metaFiles ) {
-		
-		Preconditions.checkNotNull( message.getId() );
-		
-		if ( metaFiles == null || metaFiles.isEmpty() ){ return; }
+        Message message = createMessage(content, fromEmailAddress, model, id, null, 0, ZonedDateTime.now().toLocalDateTime(), false, MessageRepository.STATUS_DRAFT, subject, MessageRepository.TYPE_SENT,
+                replyToEmailAddressList, toEmailAddressList, ccEmailAddressList, bccEmailAddressList, addressBlock, mediaTypeSelect, emailAccount);
 
-		log.debug("Add metafiles to object {}:{}", Message.class.getName(), message.getId());
-		
-		for ( MetaFile metaFile: metaFiles ){
-			Beans.get(MetaFiles.class).attach(metaFile, metaFile.getFileName(), message);
-		}
-		
-	}
-	
-	protected Message createMessage(String content, EmailAddress fromEmailAddress, String relatedTo1Select, int relatedTo1SelectId, String relatedTo2Select, int relatedTo2SelectId, 
-			LocalDateTime sentDate, boolean sentByEmail, int statusSelect, String subject, int typeSelect,List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList, 
-			List<EmailAddress> ccEmailAddressList, List<EmailAddress> bccEmailAddressList, String addressBlock, int mediaTypeSelect, EmailAccount emailAccount)  {
+        messageRepository.save(message);
 
-		Set<EmailAddress> 
-			replyToEmailAddressSet = Sets.newHashSet(),
-			bccEmailAddressSet = Sets.newHashSet(),
-			toEmailAddressSet = Sets.newHashSet(),
-			ccEmailAddressSet = Sets.newHashSet();
-		
-		if ( mediaTypeSelect == MessageRepository.MEDIA_TYPE_EMAIL ) {
-			
-			if ( replyToEmailAddressList != null) { replyToEmailAddressSet.addAll(replyToEmailAddressList); }
-			if ( bccEmailAddressList != null) { bccEmailAddressSet.addAll(bccEmailAddressList); }
-			if ( toEmailAddressList != null ) { toEmailAddressSet.addAll(toEmailAddressList); }
-			if ( ccEmailAddressList != null ) { ccEmailAddressSet.addAll(ccEmailAddressList); }
-		}
-		
-		if(emailAccount != null)  {
-			
-			content += "<p></p><p></p>" + Beans.get(MailAccountService.class).getSignature(emailAccount);
+        attachMetaFiles(message, metaFiles);
 
-		}
-		
-		Message message = new Message(typeSelect, subject, content, statusSelect, mediaTypeSelect, addressBlock, fromEmailAddress, replyToEmailAddressSet, toEmailAddressSet, ccEmailAddressSet, bccEmailAddressSet, sentByEmail, emailAccount);
+        return message;
+    }
 
-		message.setRelatedTo1Select(relatedTo1Select);
-		message.setRelatedTo1SelectId(relatedTo1SelectId);
-		message.setRelatedTo2Select(relatedTo2Select);
-		message.setRelatedTo2SelectId(relatedTo2SelectId);
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void attachMetaFiles(Message message, Set<MetaFile> metaFiles) {
 
-		return message;
-	}
+        Preconditions.checkNotNull(message.getId());
 
-	public Message sendMessage ( Message message ) throws AxelorException  {
-		
-		try {
+        if (metaFiles == null || metaFiles.isEmpty()) {
+            return;
+        }
 
-			if ( message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_MAIL ) { return sendByMail(message); }
-			else if ( message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_EMAIL ) { return sendByEmail(message); }
-			else if ( message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_CHAT ) { return sendToUser(message); }
-			
-		} catch (MessagingException | IOException  e) { TraceBackService.trace(e); }
-		
-		return message;
-		
-	}
+        log.debug("Add metafiles to object {}:{}", Message.class.getName(), message.getId());
 
-	@Transactional(rollbackOn = Exception.class)
-	public Message sendToUser(Message message)  {
+        for (MetaFile metaFile : metaFiles) {
+            Beans.get(MetaFiles.class).attach(metaFile, metaFile.getFileName(), message);
+        }
 
-		if ( message.getRecipientUser() == null ){ return message; }
+    }
 
-		message.setSenderUser( AuthUtils.getUser() );
-		log.debug("Sent internal message to user ::: {}", message.getRecipientUser());
-		
-		message.setStatusSelect(MessageRepository.STATUS_SENT);
-		message.setSentByEmail(false);
-		message.setSentDateT(LocalDateTime.now());
-		return messageRepository.save(message);
-		
-	}
+    protected Message createMessage(String content, EmailAddress fromEmailAddress, String relatedTo1Select, int relatedTo1SelectId, String relatedTo2Select, int relatedTo2SelectId,
+                                    LocalDateTime sentDate, boolean sentByEmail, int statusSelect, String subject, int typeSelect, List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList,
+                                    List<EmailAddress> ccEmailAddressList, List<EmailAddress> bccEmailAddressList, String addressBlock, int mediaTypeSelect, EmailAccount emailAccount) {
 
-	@Transactional(rollbackOn = Exception.class)
-	public Message sendByMail(Message message){
+        Set<EmailAddress>
+                replyToEmailAddressSet = Sets.newHashSet(),
+                bccEmailAddressSet = Sets.newHashSet(),
+                toEmailAddressSet = Sets.newHashSet(),
+                ccEmailAddressSet = Sets.newHashSet();
 
-		log.debug("Sent mail");
-		message.setStatusSelect(MessageRepository.STATUS_SENT);
-		message.setSentByEmail(false);
-		message.setSentDateT(LocalDateTime.now());
-		return messageRepository.save(message);
-			
-	}
+        if (mediaTypeSelect == MessageRepository.MEDIA_TYPE_EMAIL) {
 
-	@Transactional(rollbackOn = { MessagingException.class, IOException.class, Exception.class })
-	public Message sendByEmail(Message message) throws MessagingException, IOException, AxelorException  {
-		
-		EmailAccount mailAccount = message.getMailAccount();
-		
-		if ( mailAccount == null ){ return message; }
+            if (replyToEmailAddressList != null) {
+                replyToEmailAddressSet.addAll(replyToEmailAddressList);
+            }
+            if (bccEmailAddressList != null) {
+                bccEmailAddressSet.addAll(bccEmailAddressList);
+            }
+            if (toEmailAddressList != null) {
+                toEmailAddressSet.addAll(toEmailAddressList);
+            }
+            if (ccEmailAddressList != null) {
+                ccEmailAddressSet.addAll(ccEmailAddressList);
+            }
+        }
 
-		log.debug("Sent email");
-		com.axelor.mail.MailAccount account = new SmtpAccount( mailAccount.getHost(), mailAccount.getPort().toString(), mailAccount.getLogin(), mailAccount.getPassword(), Beans.get(MailAccountService.class).getSecurity(mailAccount) );
+        if (emailAccount != null) {
 
-		List<String> 
-			replytoRecipients = this.getEmailAddresses(message.getReplyToEmailAddressSet()),
-			toRecipients = this.getEmailAddresses(message.getToEmailAddressSet()),
-			ccRecipients = this.getEmailAddresses(message.getCcEmailAddressSet()),
-			bccRecipients = this.getEmailAddresses(message.getBccEmailAddressSet());
+            content += "<p></p><p></p>" + Beans.get(MailAccountService.class).getSignature(emailAccount);
 
-		MailSender sender = new MailSender(account);
-		MailBuilder mailBuilder = sender.compose();
+        }
 
-		mailBuilder.subject(message.getSubject());
-		
-		if ( message.getFromEmailAddress() != null){
-			if(!Strings.isNullOrEmpty(message.getFromEmailAddress().getAddress())) {
-				log.debug( "Override from :::  {}", message.getFromEmailAddress().getAddress() );
-				mailBuilder.from( message.getFromEmailAddress().getAddress() );
-			} else {
-				throw new AxelorException(message, IException.CONFIGURATION_ERROR, IExceptionMessage.MESSAGE_7);
-			}
-		}
-		if ( replytoRecipients != null && !replytoRecipients.isEmpty() ) { mailBuilder.replyTo(Joiner.on(",").join(replytoRecipients)); }
-		if ( toRecipients != null && !toRecipients.isEmpty() ) { mailBuilder.to(Joiner.on(",").join(toRecipients));	}
-		if ( ccRecipients != null && !ccRecipients.isEmpty() ) { mailBuilder.cc(Joiner.on(",").join(ccRecipients)); }
-		if ( bccRecipients != null && !bccRecipients.isEmpty() ) { mailBuilder.bcc(Joiner.on(",").join(bccRecipients)); }
-		if ( !Strings.isNullOrEmpty( message.getContent() ) ) { mailBuilder.html(message.getContent()); }
-		
-		for ( MetaAttachment metaAttachment: getMetaAttachments(message) ){
-			MetaFile metaFile = metaAttachment.getMetaFile();
-			mailBuilder.attach( metaFile.getFileName(), MetaFiles.getPath( metaFile ).toString() );
-		}
-			
-		mailBuilder.send();
-		
-		message.setSentByEmail(true);
-		message.setStatusSelect(MessageRepository.STATUS_SENT);
-		message.setSentDateT(LocalDateTime.now());
-		message.setSenderUser(AuthUtils.getUser());
-		
-		return messageRepository.save(message);
-	
-	}
-	
-	public Set<MetaAttachment> getMetaAttachments( Message message ){
+        Message message = new Message(typeSelect, subject, content, statusSelect, mediaTypeSelect, addressBlock, fromEmailAddress, replyToEmailAddressSet, toEmailAddressSet, ccEmailAddressSet, bccEmailAddressSet, sentByEmail, emailAccount);
 
-		Query<MetaAttachment> query = metaAttachmentRepository.all().filter("self.objectId = ?1 AND self.objectName = ?2", message.getId(), Message.class.getName());
-		return Sets.newHashSet( query.fetch() );
-		
-	}
-	
-	
-	public List<String> getEmailAddresses(Set<EmailAddress> emailAddressSet)  {
-		               
-	   List<String> recipients = Lists.newArrayList();
-	   if(emailAddressSet != null){
-		   for(EmailAddress emailAddress : emailAddressSet)  {
-	           
-	           if( Strings.isNullOrEmpty( emailAddress.getAddress() ) ) { continue; }
-	           recipients.add( emailAddress.getAddress() );
-	           
-		   }
-	   }
-	   
-	   
-	   return recipients;
-	}
+        message.setRelatedTo1Select(relatedTo1Select);
+        message.setRelatedTo1SelectId(relatedTo1SelectId);
+        message.setRelatedTo2Select(relatedTo2Select);
+        message.setRelatedTo2SelectId(relatedTo2SelectId);
+
+        return message;
+    }
+
+    public Message sendMessage(Message message) throws AxelorException {
+
+        try {
+
+            if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_MAIL) {
+                return sendByMail(message);
+            } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_EMAIL) {
+                return sendByEmail(message);
+            } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_CHAT) {
+                return sendToUser(message);
+            }
+
+        } catch (MessagingException | IOException e) {
+            TraceBackService.trace(e);
+        }
+
+        return message;
+
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    public Message sendToUser(Message message) {
+
+        if (message.getRecipientUser() == null) {
+            return message;
+        }
+
+        message.setSenderUser(AuthUtils.getUser());
+        log.debug("Sent internal message to user ::: {}", message.getRecipientUser());
+
+        message.setStatusSelect(MessageRepository.STATUS_SENT);
+        message.setSentByEmail(false);
+        message.setSentDateT(LocalDateTime.now());
+        return messageRepository.save(message);
+
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    public Message sendByMail(Message message) {
+
+        log.debug("Sent mail");
+        message.setStatusSelect(MessageRepository.STATUS_SENT);
+        message.setSentByEmail(false);
+        message.setSentDateT(LocalDateTime.now());
+        return messageRepository.save(message);
+
+    }
+
+    @Transactional(rollbackOn = {MessagingException.class, IOException.class, Exception.class})
+    public Message sendByEmail(Message message) throws MessagingException, IOException, AxelorException {
+
+        EmailAccount mailAccount = message.getMailAccount();
+
+        if (mailAccount == null) {
+            return message;
+        }
+
+        log.debug("Sent email");
+        com.axelor.mail.MailAccount account = new SmtpAccount(mailAccount.getHost(), mailAccount.getPort().toString(), mailAccount.getLogin(), mailAccount.getPassword(), Beans.get(MailAccountService.class).getSecurity(mailAccount));
+
+        List<String>
+                replytoRecipients = this.getEmailAddresses(message.getReplyToEmailAddressSet()),
+                toRecipients = this.getEmailAddresses(message.getToEmailAddressSet()),
+                ccRecipients = this.getEmailAddresses(message.getCcEmailAddressSet()),
+                bccRecipients = this.getEmailAddresses(message.getBccEmailAddressSet());
+
+        MailSender sender = new MailSender(account);
+        MailBuilder mailBuilder = sender.compose();
+
+        mailBuilder.subject(message.getSubject());
+
+        if (message.getFromEmailAddress() != null) {
+            if (!Strings.isNullOrEmpty(message.getFromEmailAddress().getAddress())) {
+                log.debug("Override from :::  {}", message.getFromEmailAddress().getAddress());
+                mailBuilder.from(message.getFromEmailAddress().getAddress());
+            } else {
+                throw new AxelorException(message, IException.CONFIGURATION_ERROR, IExceptionMessage.MESSAGE_7);
+            }
+        }
+        if (replytoRecipients != null && !replytoRecipients.isEmpty()) {
+            mailBuilder.replyTo(Joiner.on(",").join(replytoRecipients));
+        }
+        if (toRecipients != null && !toRecipients.isEmpty()) {
+            mailBuilder.to(Joiner.on(",").join(toRecipients));
+        }
+        if (ccRecipients != null && !ccRecipients.isEmpty()) {
+            mailBuilder.cc(Joiner.on(",").join(ccRecipients));
+        }
+        if (bccRecipients != null && !bccRecipients.isEmpty()) {
+            mailBuilder.bcc(Joiner.on(",").join(bccRecipients));
+        }
+        if (!Strings.isNullOrEmpty(message.getContent())) {
+            mailBuilder.html(message.getContent());
+        }
+
+        for (MetaAttachment metaAttachment : getMetaAttachments(message)) {
+            MetaFile metaFile = metaAttachment.getMetaFile();
+            mailBuilder.attach(metaFile.getFileName(), MetaFiles.getPath(metaFile).toString());
+        }
+
+        mailBuilder.send();
+
+        message.setSentByEmail(true);
+        message.setStatusSelect(MessageRepository.STATUS_SENT);
+        message.setSentDateT(LocalDateTime.now());
+        message.setSenderUser(AuthUtils.getUser());
+
+        return messageRepository.save(message);
+
+    }
+
+    public Set<MetaAttachment> getMetaAttachments(Message message) {
+
+        Query<MetaAttachment> query = metaAttachmentRepository.all().filter("self.objectId = ?1 AND self.objectName = ?2", message.getId(), Message.class.getName());
+        return Sets.newHashSet(query.fetch());
+
+    }
 
 
-	@Override
-	public String printMessage(Message message)  throws AxelorException  { return null; }
+    public List<String> getEmailAddresses(Set<EmailAddress> emailAddressSet) {
 
-	@Override
-	@Transactional(rollbackOn = Exception.class)
-	public Message regenerateMessage(Message message) throws Exception {
-		Class m = Class.forName(message.getRelatedTo1Select());
-		Model model = JPA.all(m).filter("self.id = ?", message.getRelatedTo1SelectId()).fetchOne();
-		Message newMessage = templateMessageService.generateMessage(model, message.getTemplate());
-		messageRepository.remove(message);
-		return newMessage;
-	}
+        List<String> recipients = Lists.newArrayList();
+        if (emailAddressSet != null) {
+            for (EmailAddress emailAddress : emailAddressSet) {
 
-	@Transactional
-	public static void apply(List<Message> messageList, Consumer<Message> consumer) {
-		if (messageList == null || messageList.isEmpty() || consumer == null) {
-			return;
-		}
-		messageList.forEach(consumer);
-	}
+                if (Strings.isNullOrEmpty(emailAddress.getAddress())) {
+                    continue;
+                }
+                recipients.add(emailAddress.getAddress());
 
-	@Override
-	public List<Message> findMessages(List<Integer> integers) {
-		List<Message> messages = new ArrayList<>();
-		if (integers != null) {
-			integers.stream().map(i -> messageRepository.find(Long.valueOf(i))).forEach(messages::add);
-		}
-		return messages;
-	}
+            }
+        }
+
+
+        return recipients;
+    }
+
+
+    @Override
+    public String printMessage(Message message) throws AxelorException {
+        return null;
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public Message regenerateMessage(Message message) throws Exception {
+        Class m = Class.forName(message.getRelatedTo1Select());
+        Model model = JPA.all(m).filter("self.id = ?", message.getRelatedTo1SelectId()).fetchOne();
+        Message newMessage = templateMessageService.generateMessage(model, message.getTemplate());
+        messageRepository.remove(message);
+        return newMessage;
+    }
+
+    @Transactional
+    public static int apply(List<Message> messageList, Function<Message, Boolean> function) {
+        Preconditions.checkNotNull(messageList, I18n.get("messageList can't be null."));
+        Preconditions.checkNotNull(function, I18n.get("function can't be null."));
+        return messageList.stream().mapToInt(x -> (function.apply(x) ? 0 : 1)).sum();
+    }
+
+    @Override
+    public List<Message> findMessages(List<Integer> idList) {
+        return idList != null
+                ? idList.stream().map(i -> messageRepository.find(Long.valueOf(i))).collect(Collectors.toList())
+                : new ArrayList<>();
+    }
 
 }

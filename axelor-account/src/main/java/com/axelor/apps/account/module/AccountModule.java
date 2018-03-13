@@ -71,6 +71,7 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.apps.account.service.SubrogationReleaseService;
 import com.axelor.apps.account.service.SubrogationReleaseServiceImpl;
+import com.axelor.apps.account.service.TemplateMessageServiceAccount;
 import com.axelor.apps.account.service.TemplateMessageServiceAccountImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
@@ -190,7 +191,7 @@ public class AccountModule extends AxelorModule {
 
         bind(InvoiceLineService.class).to(InvoiceLineServiceImpl.class);
 
-        bind(TemplateMessageServiceBaseImpl.class).to(TemplateMessageServiceAccountImpl.class);
+        bind(TemplateMessageServiceAccount.class).to(TemplateMessageServiceAccountImpl.class);
 
         IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }

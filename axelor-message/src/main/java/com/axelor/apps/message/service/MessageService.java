@@ -42,7 +42,6 @@ public interface MessageService {
 	
 	public Set<MetaAttachment> getMetaAttachments( Message message );
 
-	@Transactional(rollbackOn = AxelorException.class)
 	public Message sendMessage(Message message) throws AxelorException;
 	
 	@Transactional(rollbackOn = { MessagingException.class, IOException.class, Exception.class })
@@ -56,9 +55,20 @@ public interface MessageService {
 	
 	public String printMessage(Message message) throws AxelorException;
 
-	@Transactional(rollbackOn = Exception.class)
+	/**
+	 * Regenerate message with template attached it.
+	 * @param message Message to regenerate.
+	 * @return The new message regenerated.
+	 * @throws Exception If a error append during generation.
+	 */
 	Message regenerateMessage(Message message) throws Exception;
 
+	/**
+	 * Find and return the list of messages with the ID associated
+	 * by the list integer passed in parameter.
+	 * @param integers List of messages ID
+	 * @return List of messages
+	 */
 	List<Message> findMessages(List<Integer> integers);
 	
 }
