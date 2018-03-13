@@ -110,7 +110,7 @@
 					<field name="plannedStartDateT" title="Start date" onChange="action-manuf-order-method-update-planned-dates"/>
 					<field name="plannedEndDateT" title="End date"/>
 				</panel>
-				<panel name="realDates" title="Real dates">
+				<panel name="realDates" title="Real dates" showIf="statusSelect &gt; 3">
 					<field name="realStartDateT" title="Start date"/>
 					<field name="realEndDateT" title="End date"/>
 				</panel>
