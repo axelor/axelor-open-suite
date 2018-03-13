@@ -58,6 +58,7 @@
     
     <form name="stock-location-line-product-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine">
 		<panel name="main">
+	        <field name="product" form-view="product-form" grid-view="product-grid"/>
 	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>

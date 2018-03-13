@@ -28,6 +28,7 @@
 - Add button to open tasks and task kanban view in project module
 - Manage shipment mode, freight carrier mode, incoterm, carrier partner, forwarder partner on Partner, Sale order, Stock move.
 - New user option to allow notifications to be sent by email on desired entities.
+- Add validation date in Inventory
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
@@ -37,6 +38,7 @@
 - Generate sale order from Opportunity in edit mode directly
 - Improved architecture of Message generation from a template, send email, and manage specific email account in a module without change the original behavior in the others
 - A freight carrier is now a carrier partner
+- Change the title "Delivery date" to "Estimated delivery date" in SaleOrder and PurchaseOrder
 - EndPeriod on currency conversion api
 - Allow to generate bank order file without using bic code in SEPA context.
 - Remove the field supplierPartner from Event Object
@@ -45,6 +47,7 @@
 - Update the SaleOrderLine form to look like InvoiceLine form.
 - Update CRM & ICalendar events UI
 - Removed extra links from tasks to other tasks. Kept only 'Predecessors tasks'. 
+- Allow to read the products from production, stock and crm modules
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
@@ -56,6 +59,7 @@
 - Fix create event from contact m2m of partner
 - Fix copy of manufacturing order
 - Fix multiple NPE in CRM events
+- Fix MRP calculation exception
 
 ## [Unreleased 4.x]
 

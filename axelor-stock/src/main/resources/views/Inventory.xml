@@ -8,6 +8,7 @@
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="dateT"/>
         <field name="statusSelect"/>
+		<field name="stockLocation.company"/>
     </grid>
 
     <form name="inventory-form" title="Inventory" model="com.axelor.apps.stock.db.Inventory" width="large" onSave="action-set-inventory-seq" onNew="action-inventory-record-new">
@@ -30,7 +31,10 @@
         <panel>
             <field name="dateT" readonlyIf="statusSelect >= 2"/>
             <field name="stockLocation" onSelect="action-inventory-attrs-set-location-domain" readonlyIf="statusSelect >= 2" grid-view="stock-location-grid" form-view="stock-location-form"/>
+            <field name="validatedBy" readonly="true" showIf="validatedBy"/>
+            <field name="validatedOn" readonly="true" showIf="validatedOn"/>
             <field name="description" colSpan="12" height="3"/>
+            <field name="stockLocation.company"/>
         </panel>
 
         <panel title="Fill inventory with" hideIf="statusSelect >= 2 || stockLocation == null">
@@ -120,6 +124,8 @@
 	
 	<action-record name="action-inventory-record-draft" model="com.axelor.apps.stock.db.Inventory">
 	    <field name="statusSelect" expr="1"/>
+	    <field name="validatedBy" expr="eval: null"/>
+	    <field name="validatedOn" expr="eval: null"/>
 	</action-record>
 	
 	<action-record name="action-inventory-record-plan" model="com.axelor.apps.stock.db.Inventory">
