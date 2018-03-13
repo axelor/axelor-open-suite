@@ -40,7 +40,7 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
 		try {
 
 			if(partner.getId() == null){
-				return super.save(partner);
+				partner = super.save(partner);
 			}
 			if(!partner.getIsContact() && appService.isApp("account")){
 				List<AccountingSituation> accountingSituationList = Beans.get(AccountingSituationService.class).createAccountingSituation(Beans.get(PartnerRepository.class).find(partner.getId()));
