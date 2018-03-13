@@ -58,6 +58,7 @@
 - Fix create event from contact m2m of partner
 - Fix copy of manufacturing order
 - Fix multiple NPE in CRM events
+- Fix MRP calculation exception
 
 ## [Unreleased 4.x]
 

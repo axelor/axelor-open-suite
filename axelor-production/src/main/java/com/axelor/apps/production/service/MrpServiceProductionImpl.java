@@ -105,7 +105,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 		}
 
 		List<ManufOrder> manufOrderList = manufOrderRepository.all()
-				.filter("self.product in (?1) AND self.prodProcess.stockLocation in (?2) "
+				.filter("self.product.id in (?1) AND self.prodProcess.stockLocation in (?2) "
 						+ "AND self.statusSelect NOT IN (?3) AND self.plannedStartDateT > ?4",
 						this.productMap.keySet(), this.stockLocationList, statusList, appBaseService.getTodayDate().atStartOfDay()).fetch();
 		
@@ -218,7 +218,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 	protected void assignProductAndLevel(Product product)  {
 		
 		log.debug("Add of the product : {}", product.getFullName());
-		this.productMap.put(product,  this.getMaxLevel(product, 0));
+		this.productMap.put(product.getId(),  this.getMaxLevel(product, 0));
 		
 		if(product.getDefaultBillOfMaterial() != null)  {
 			this.assignProductLevel(product.getDefaultBillOfMaterial(), 0);
@@ -228,8 +228,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 	
 	public int getMaxLevel(Product product, int level)  {
 		
-		if(this.productMap.containsKey(product))  {
-			return Math.max(level, this.productMap.get(product));
+		if(this.productMap.containsKey(product.getId()))  {
+			return Math.max(level, this.productMap.get(product.getId()));
 		}
 		
 		return level;
@@ -248,7 +248,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 			Product subProduct = billOfMaterial.getProduct();
 			
 			log.debug("Add of the sub product : {} for the level : {} ", subProduct.getFullName(), level);
-			this.productMap.put(subProduct, this.getMaxLevel(subProduct, level));
+			this.productMap.put(subProduct.getId(), this.getMaxLevel(subProduct, level));
 
 		}
 		else  {
