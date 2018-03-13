@@ -190,7 +190,7 @@ public class MessageServiceImpl implements MessageService {
 			ccRecipients = this.getEmailAddresses(message.getCcEmailAddressSet()),
 			bccRecipients = this.getEmailAddresses(message.getBccEmailAddressSet());
 
-		if (toRecipients.isEmpty()) {
+		if (toRecipients.isEmpty() && ccRecipients.isEmpty() && bccRecipients.isEmpty()) {
 			throw new AxelorException(message, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MESSAGE_8));
 		}
 
