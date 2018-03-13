@@ -211,8 +211,6 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 
 		BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
 
-		manufOrder.setIsConsProOnOperation(this.isManagedConsumedProduct(billOfMaterial));
-
 		if(manufOrder.getProdProcess() == null){
 			manufOrder.setProdProcess(billOfMaterial.getProdProcess());
 		}
