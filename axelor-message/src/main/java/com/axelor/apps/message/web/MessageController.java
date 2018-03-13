@@ -86,7 +86,7 @@ public class MessageController {
 					return false;
 				}
 			});
-			response.setFlash(String.format(I18n.get(IExceptionMessage.MESSAGES_REGENERATED),
+			response.setFlash(String.format(I18n.get(IExceptionMessage.MESSAGES_SENT),
 					messages.size() - error, error));
 			response.setReload(true);
 		} catch (AxelorException e) {
