@@ -21,6 +21,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.message.service.MessageService;
+import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -28,18 +29,24 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Singleton
 public class MessageController {
+
+	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private MessageRepository messageRepo;
 	
 	@Inject
 	private MessageService messageService;
-	
+
 	public void sendMessage(ActionRequest request, ActionResponse response) {
 		Message message = request.getContext().asType(Message.class);
 
@@ -59,29 +66,38 @@ public class MessageController {
 	}
 
 	public void sendMessages(ActionRequest request, ActionResponse response) {
-		List<Integer> ids = (List<Integer>) request.getContext().get("_ids");
-
-		if (ids != null && !ids.isEmpty()) {
-			int countError = 0;
-		    for (Integer id: ids) {
-		        Message message = messageRepo.find(Long.valueOf(id));
-		        try {
-		        	messageService.sendMessage(message);
-				} catch (AxelorException e) {
-		            countError++;
-				}
-			}
-			response.setFlash(
-					String.format("%d message%s sent and %d error%s append.",
-							ids.size() - countError,
-							(ids.size() - countError > 1 ? "s" : ""),
-							countError,
-							(countError > 1 ? "s" : "")
-					)
-			);
-			response.setReload(true);
+		List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+		List<Message> messages = messageService.findMessages(idList);
+		if (messages.isEmpty()) {
+			response.setFlash(I18n.get(IExceptionMessage.MESSAGE_8));
 		} else {
-			response.setFlash("Please select one or more message !");
+			MessageServiceImpl.apply(messages, message -> {
+				try {
+					messageService.sendMessage(message);
+				} catch (Exception e) {
+					TraceBackService.trace(e);
+				}
+			});
+			response.setFlash(I18n.get(IExceptionMessage.MESSAGE_9));
+			response.setReload(true);
+		}
+	}
+
+	public void regenerateMessages(ActionRequest request, ActionResponse response) {
+		List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+		List<Message> messages = messageService.findMessages(idList);
+		if (messages.isEmpty()) {
+			response.setFlash(I18n.get(IExceptionMessage.MESSAGE_8));
+		} else {
+			MessageServiceImpl.apply(messages, message -> {
+				try {
+					messageService.regenerateMessage(message);
+				} catch (Exception e) {
+					TraceBackService.trace(e);
+				}
+			});
+			response.setFlash(I18n.get(IExceptionMessage.MESSAGE_10));
+			response.setReload(true);
 		}
 	}
 }

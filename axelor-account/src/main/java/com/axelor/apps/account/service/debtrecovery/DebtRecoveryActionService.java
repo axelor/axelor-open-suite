@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.DebtRecoveryMethodLine;
 import com.axelor.apps.account.db.repo.DebtRecoveryHistoryRepository;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.TemplateMessageServiceAccountImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Partner;
@@ -54,13 +55,13 @@ public class DebtRecoveryActionService {
 	protected UserService userService;
 	protected DebtRecoveryRepository debtRecoveryRepo;
 	protected DebtRecoveryHistoryRepository debtRecoveryHistoryRepository;
-	protected TemplateMessageService templateMessageService;
+	protected TemplateMessageServiceAccountImpl templateMessageService;
 
 	protected AppAccountService appAccountService;
 
 	@Inject
 	public DebtRecoveryActionService(UserService userService, DebtRecoveryRepository debtRecoveryRepo, DebtRecoveryHistoryRepository debtRecoveryHistoryRepository, 
-			TemplateMessageService templateMessageService, AppAccountService appAccountService) {
+			TemplateMessageServiceAccountImpl templateMessageService, AppAccountService appAccountService) {
 
 		this.userService = userService;
 		this.debtRecoveryRepo = debtRecoveryRepo;
@@ -131,10 +132,7 @@ public class DebtRecoveryActionService {
 		DebtRecoveryHistory debtRecoveryHistory = this.getDebtRecoveryHistory(debtRecovery);
 
 		for (Template template : templateSet) {
-			Message message = templateMessageService.generateMessage(debtRecoveryHistory, template);
-			message.setRelatedTo2Select(Partner.class.getCanonicalName());
-			message.setRelatedTo2SelectId(Math.toIntExact(debtRecoveryHistory.getDebtRecovery().getAccountingSituation().getPartner().getId()));
-			debtRecoveryHistory.addDebtRecoveryMessageSetItem(message);
+			templateMessageService.generateMessage(debtRecoveryHistory, template);
 		}
 
 		return debtRecoveryHistory.getDebtRecoveryMessageSet();

@@ -21,11 +21,16 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import javax.mail.MessagingException;
 
+import com.axelor.db.JPA;
+import com.axelor.db.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,14 +65,15 @@ public class MessageServiceImpl implements MessageService {
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	private MetaAttachmentRepository metaAttachmentRepository;
-	
-	@Inject
 	protected MessageRepository messageRepository;
-	
+	protected TemplateMessageService templateMessageService;
+
 	@Inject
-	public MessageServiceImpl(MetaAttachmentRepository metaAttachmentRepository, MessageRepository messageRepository) {
+	public MessageServiceImpl(MetaAttachmentRepository metaAttachmentRepository, MessageRepository messageRepository,
+							  TemplateMessageService templateMessageService) {
 		this.metaAttachmentRepository = metaAttachmentRepository;
 		this.messageRepository = messageRepository;
+		this.templateMessageService = templateMessageService;
 	}
 
 	@Override
@@ -77,7 +83,7 @@ public class MessageServiceImpl implements MessageService {
 		
 		Message message = createMessage( content, fromEmailAddress,	model, id, null, 0, ZonedDateTime.now().toLocalDateTime(), false,	MessageRepository.STATUS_DRAFT, subject, MessageRepository.TYPE_SENT,
 				replyToEmailAddressList, toEmailAddressList, ccEmailAddressList, bccEmailAddressList, addressBlock, mediaTypeSelect, emailAccount) ;
-		
+
 		messageRepository.save( message );
 		
 		attachMetaFiles(message, metaFiles);
@@ -253,6 +259,32 @@ public class MessageServiceImpl implements MessageService {
 
 	@Override
 	public String printMessage(Message message)  throws AxelorException  { return null; }
-	
-	
+
+	@Override
+	@Transactional(rollbackOn = Exception.class)
+	public Message regenerateMessage(Message message) throws Exception {
+		Class m = Class.forName(message.getRelatedTo1Select());
+		Model model = JPA.all(m).filter("self.id = ?", message.getRelatedTo1SelectId()).fetchOne();
+		Message newMessage = templateMessageService.generateMessage(model, message.getTemplate());
+		messageRepository.remove(message);
+		return newMessage;
+	}
+
+	@Transactional
+	public static void apply(List<Message> messageList, Consumer<Message> consumer) {
+		if (messageList == null || messageList.isEmpty() || consumer == null) {
+			return;
+		}
+		messageList.forEach(consumer);
+	}
+
+	@Override
+	public List<Message> findMessages(List<Integer> integers) {
+		List<Message> messages = new ArrayList<>();
+		if (integers != null) {
+			integers.stream().map(i -> messageRepository.find(Long.valueOf(i))).forEach(messages::add);
+		}
+		return messages;
+	}
+
 }

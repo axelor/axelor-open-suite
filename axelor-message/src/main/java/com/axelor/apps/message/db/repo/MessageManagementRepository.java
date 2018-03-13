@@ -30,4 +30,5 @@ public class MessageManagementRepository extends MessageRepository {
 		entity.setRecipientUser(null);
 		return super.copy(entity, deep);
 	}
+
 }

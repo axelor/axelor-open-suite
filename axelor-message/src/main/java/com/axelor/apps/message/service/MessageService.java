@@ -42,6 +42,7 @@ public interface MessageService {
 	
 	public Set<MetaAttachment> getMetaAttachments( Message message );
 
+	@Transactional(rollbackOn = AxelorException.class)
 	public Message sendMessage(Message message) throws AxelorException;
 	
 	@Transactional(rollbackOn = { MessagingException.class, IOException.class, Exception.class })
@@ -54,5 +55,10 @@ public interface MessageService {
 	public Message sendByMail(Message message);
 	
 	public String printMessage(Message message) throws AxelorException;
+
+	@Transactional(rollbackOn = Exception.class)
+	Message regenerateMessage(Message message) throws Exception;
+
+	List<Message> findMessages(List<Integer> integers);
 	
 }

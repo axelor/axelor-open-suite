@@ -31,6 +31,7 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
+import com.axelor.apps.message.service.TemplateMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,8 +64,8 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	protected UserService userService;
 
 	@Inject
-	public MessageServiceBaseImpl( MetaAttachmentRepository metaAttachmentRepository, MessageRepository messageRepository, UserService userService) {
-		super(metaAttachmentRepository, messageRepository);
+	public MessageServiceBaseImpl(MetaAttachmentRepository metaAttachmentRepository, MessageRepository messageRepository, TemplateMessageService templateMessageService, UserService userService) {
+		super(metaAttachmentRepository, messageRepository, templateMessageService);
 		this.userService = userService;
 	}
 
