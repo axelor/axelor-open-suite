@@ -106,7 +106,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 		final List<InternetAddress> addresses = new ArrayList<>();
 		for (User user : query.fetch(maxResult)) {
 			try {
-				if (user.getPartner().getEmailAddress() != null && !Strings.isNullOrEmpty(user.getPartner().getEmailAddress().getAddress())) {
+				if (user.getPartner() != null && user.getPartner().getEmailAddress() != null && !Strings.isNullOrEmpty(user.getPartner().getEmailAddress().getAddress())) {
 					final InternetAddress item = new InternetAddress(user.getPartner().getEmailAddress().getAddress(), user.getFullName());
 					addresses.add(item);
 					selectedWithoutNull.add(user.getPartner().getEmailAddress().getAddress());
