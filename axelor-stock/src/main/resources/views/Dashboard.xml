@@ -126,11 +126,6 @@
 		<domain>self.outManufOrder IS NOT NULL AND statusSelect = 6</domain>
 	</action-view>
 
-	<!-- This portlet is used in stock-location-form -->
-	<action-view title="Location value" name="dashlet.stockLocationLine.stockLocation.value">
-	  <view type="chart" name="chart.stockLocationLine.stockLocation.value"/>
-	</action-view>
-
 	<!-- 	Product-form Actions Portlets -->
 	
 	<action-view name="action-product-view-stock" title="Stock" model="com.axelor.apps.stock.db.StockLocationLine">

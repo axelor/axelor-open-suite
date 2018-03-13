@@ -97,7 +97,7 @@ public class MrpServiceImpl implements MrpService  {
 	protected AppBaseService appBaseService;
 
 	protected List<StockLocation> stockLocationList = Lists.newArrayList();
-	protected Map<Product,Integer> productMap = Maps.newHashMap();
+	protected Map<Long,Integer> productMap = Maps.newHashMap();
 	protected Mrp mrp;
 	
 	
@@ -221,10 +221,10 @@ public class MrpServiceImpl implements MrpService  {
 		
 		List<Product> productList = Lists.newArrayList();
 		
-		for(Product product : this.productMap.keySet())  {
+		for(Long productId : this.productMap.keySet())  {
 			
-			if(this.productMap.get(product) == level)  {
-				productList.add(product);
+			if(this.productMap.get(productId) == level)  {
+				productList.add(productRepository.find(productId));
 			}
 			
 		}
@@ -419,9 +419,9 @@ public class MrpServiceImpl implements MrpService  {
 	
 	protected void computeCumulativeQty()  {
 		
-		for(Product product : this.productMap.keySet())  {
+		for(Long productId : this.productMap.keySet())  {
 		
-			this.computeCumulativeQty(product);
+			this.computeCumulativeQty(productRepository.find(productId));
 			
 		}
 		
@@ -469,7 +469,7 @@ public class MrpServiceImpl implements MrpService  {
 
 		// TODO : Manage the case where order is partially delivered
 		List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrderLineRepository.all()
-				.filter("self.product in (?1) AND self.purchaseOrder.stockLocation in (?2) AND self.purchaseOrder.receiptState = ?3 "
+				.filter("self.product.id in (?1) AND self.purchaseOrder.stockLocation in (?2) AND self.purchaseOrder.receiptState = ?3 "
 						+ "AND self.purchaseOrder.statusSelect IN (?4)",
 						this.productMap.keySet(), this.stockLocationList, IPurchaseOrder.STATE_NOT_RECEIVED, statusList).fetch();
 		
@@ -510,7 +510,7 @@ public class MrpServiceImpl implements MrpService  {
 		if(mrp.getSaleOrderLineSet().isEmpty())  {
 			
 			saleOrderLineList.addAll(saleOrderLineRepository.all()
-				.filter("self.product in (?1) AND self.saleOrder.stockLocation in (?2) AND self.saleOrder.deliveryState = ?3 "
+				.filter("self.product.id in (?1) AND self.saleOrder.stockLocation in (?2) AND self.saleOrder.deliveryState = ?3 "
 						+ "AND self.saleOrder.statusSelect IN (?4)",
 						this.productMap.keySet(), this.stockLocationList, SaleOrderRepository.STATE_NOT_DELIVERED, statusList).fetch());
 			
@@ -553,7 +553,7 @@ public class MrpServiceImpl implements MrpService  {
 
 			LocalDate today = appBaseService.getTodayDate();
 			mrpForecastList.addAll(mrpForecastRepository.all()
-					.filter("self.product in (?1) AND self.stockLocation in (?2) AND self.forecastDate >= ?3", 
+					.filter("self.product.id in (?1) AND self.stockLocation in (?2) AND self.forecastDate >= ?3", 
 							this.productMap.keySet(), this.stockLocationList, today, today).fetch());
 			
 		}
@@ -593,11 +593,11 @@ public class MrpServiceImpl implements MrpService  {
 		
 		MrpLineType availableStockMrpLineType = this.getMrpLineType(MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK);
 		
-		for(Product product : this.productMap.keySet())  {
+		for(Long productId : this.productMap.keySet())  {
 			
 			for(StockLocation stockLocation : this.stockLocationList)  {
 				
-				mrp.addMrpLineListItem(this.createAvailableStockMrpLine(product, stockLocation, availableStockMrpLineType));
+				mrp.addMrpLineListItem(this.createAvailableStockMrpLine(productRepository.find(productId), stockLocation, availableStockMrpLineType));
 				
 			}
 		}
@@ -709,14 +709,14 @@ public class MrpServiceImpl implements MrpService  {
 	protected void assignProductAndLevel(Product product)  {
 		
 		log.debug("Add of the product : {}", product.getFullName());
-		this.productMap.put(product, 0);
+		this.productMap.put(product.getId(), 0);
 		
 	}
 	
 	
 	protected MrpLine createMrpLine(Product product,  MrpLineType mrpLineType, BigDecimal qty, LocalDate maturityDate, BigDecimal cumulativeQty, StockLocation stockLocation, Model... models)  {
 		
-		return mrpLineService.createMrpLine(product, this.productMap.get(product), mrpLineType, qty, maturityDate, cumulativeQty, stockLocation, models);
+		return mrpLineService.createMrpLine(product, this.productMap.get(product.getId()), mrpLineType, qty, maturityDate, cumulativeQty, stockLocation, models);
 		
 	}
 	

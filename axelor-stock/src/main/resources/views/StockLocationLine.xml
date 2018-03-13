@@ -58,6 +58,7 @@
     
     <form name="stock-location-line-product-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine">
 		<panel name="main">
+	        <field name="product" form-view="product-form" grid-view="product-grid"/>
 	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
@@ -85,7 +86,7 @@
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
         <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"/>
-        <field name="trackingNumber"/>
+        <field name="trackingNumber" domain="self.product = :product"/>
         <field name="rack"/>
     </grid>
     
@@ -96,7 +97,7 @@
 	        <field name="futureQty"/>
             <field name="avgPrice" x-scale="2"/>
             <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
-	        <field name="trackingNumber"/>
+	        <field name="trackingNumber" domain="self.product = :product"/>
             <field name="rack"/>
         </panel>
 		<panel name="lastInventory" title="Last inventory">

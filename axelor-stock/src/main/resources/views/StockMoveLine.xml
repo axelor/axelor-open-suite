@@ -14,7 +14,7 @@
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="netWeight" onChange="action-stock-move-line-group-net-weight-onchange" />
-        <field name="trackingNumber" form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"/>
+        <field name="trackingNumber" form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
         <field name="conformitySelect"/>
         <field name="stockMove.statusSelect" hidden="true"/>
     </grid>
@@ -33,7 +33,7 @@
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
     	    <field name="netWeight" onChange="action-stock-move-line-group-net-weight-onchange" />
 	        <field name="totalNetWeight" readonly="true" showIf="totalNetWeight"/>
-	        <field name="trackingNumber" canNew="true" onChange="action-stock-move-line-record-product" form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"/>
+	        <field name="trackingNumber" canNew="true" onChange="action-stock-move-line-record-product" form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 	        <field name="conformitySelect" onChange="action-stock-move-attrs-change-conformity"/>
 	        <field name="description" colSpan="12" widget="html" />
         </panel>
@@ -47,7 +47,7 @@
 		<field name="unitPriceUntaxed" x-scale="2"/>
 		<field name="unitPriceTaxed" x-scale="2" hidden="true"/>
 		<field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
-		<field name="trackingNumber" readonly="true" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
+		<field name="trackingNumber" readonly="true" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 		<field name="conformitySelect" readonly="true"/>
 	</grid>
     
@@ -61,7 +61,7 @@
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
+        <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
         <field name="conformitySelect"/>
     </grid>
     
@@ -77,7 +77,7 @@
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
+        <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
         <field name="stockMove.statusSelect"/>
     </grid>
 
@@ -93,7 +93,7 @@
 		<field name="unitPriceUntaxed" x-scale="2" />
 		<field name="unitPriceTaxed" hidden="true" />
 		<field name="unit" form-view="unit-form" grid-view="unit-grid" />
-		<field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" />
+		<field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 		<field name="stockMove.statusSelect" />
 	</grid>
 
@@ -119,7 +119,7 @@
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
             <field name="netWeight" readonly="true" showIf="netWeight != 0" onChange="action-stock-move-line-group-net-weight-onchange" />
 	        <field name="totalNetWeight" readonly="true" showIf="totalNetWeight != 0"/>
-	        <field name="trackingNumber" onChange="action-stock-move-line-record-product" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
+	        <field name="trackingNumber" onChange="action-stock-move-line-record-product" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 	        <field name="stockMove.statusSelect" hidden="true"/>
 	        <field name="description" colSpan="12" widget="html" />
         </panel>
@@ -145,7 +145,7 @@
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
+        <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 		<field name="stockMove.statusSelect"/>
     </grid>
     
@@ -159,7 +159,7 @@
 	        <field name="unitPriceUntaxed"/>
         	<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
-	        <field name="trackingNumber" onChange="action-stock-move-line-record-product" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
+	        <field name="trackingNumber" onChange="action-stock-move-line-record-product" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 	        <field name="stockMove" hidden="true"/>
 			<field name="stockMove.statusSelect" hidden="true"/>
         </panel>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  
+  	<grid name="advanced-export-line-grid" title="Advanced export lines" model="com.axelor.apps.base.db.AdvancedExportLine">
+  		<field name="metaField" title="Select target field"/>
+   		<field name="title"/>
+   		<field name="targetField"/>
+        <field name="orderBy"/>
+  	</grid>
+  
+  	<form name="advanced-export-line-form" title="Advanced export line" model="com.axelor.apps.base.db.AdvancedExportLine" onNew="action-advanced-export-line-record-set-current-domain"
+  		onLoad="action-advanced-export-line-method-validate-field">
+  		<panel>
+  			<field name="metaField" title="Select target field" required="true" onSelect="action-advanced-export-line-attr-change-domain" onChange="action-advanced-export-line-method-fill-title"/>
+     		<field name="title" required="true"/>
+     		<field name="targetField"/>
+	        <field name="orderBy" colSpan="2"/>
+	        <field name="$isValidate" type="boolean" title="Validate" hidden="true" required="true" readonly="true" colSpan="2"/>
+	        <field name="currentDomain" hidden="true"/>
+	        <field name="$viewerMessage" showTitle="false" readonly="true" hidden="true">
+		      <viewer><![CDATA[
+	              <h4>
+	                  <span class="label label-success" x-translate>Your selection is valid</span>
+	              </h4>
+				]]></viewer>
+		    </field>
+	        <panel colSpan="12">
+	    		<button name="validateFieldSelection" title="Validate" colSpan="4" onClick="action-advanced-export-line-method-validate-field"/>
+	    		<button name="clearFieldSelection" title="Clear selection" colSpan="4" onClick="action-advanced-export-line-attr-reset"/>
+    		</panel>
+    	</panel>
+  	</form>
+  	
+  	<action-record name="action-advanced-export-line-record-set-current-domain" model="com.axelor.apps.base.db.AdvancedExportLine">
+  		<field name="currentDomain" expr="eval: _parent?.metaModel.name" if="_parent?.metaModel" />
+  	</action-record>
+  	
+  	<action-method name="action-advanced-export-line-method-validate-field">
+  		<call class="com.axelor.apps.base.web.AdvancedExportController" method="fillTargetField"/>
+  	</action-method>
+  	
+  	<action-method name="action-advanced-export-line-method-fill-title">
+  		<call class="com.axelor.apps.base.web.AdvancedExportController" method="fillTitle"/>
+  	</action-method>
+  	
+  	<action-attrs name="action-advanced-export-line-attr-change-domain">
+  		<attribute name="domain" expr="eval: &quot; self.metaModel.name = '${currentDomain}' &quot;" for="metaField"/>
+  	</action-attrs>
+  	
+  	<action-attrs name="action-advanced-export-line-attr-reset">
+  		<attribute name="value" for="metaField" expr="eval: null"/>
+  		<attribute name="value" for="title" expr="eval: null"/>
+  		<attribute name="value" for="targetField" expr="eval: null"/>
+  		<attribute name="value" for="orderBy" expr="eval: false"/>
+  		<attribute name="value" for="currentDomain" expr="eval: _parent?.metaModel.name" if="_parent?.metaModel"/>
+  		<attribute name="hidden" for="$viewerMessage" expr="eval: true"/>
+  		<attribute name="value" for="$isValidate" expr="eval: null"/>
+  		<attribute name="readonly" for="validateFieldSelection" expr="eval: false"/>
+  		<attribute name="readonly" for="metaField" expr="eval: false"/>
+  	</action-attrs>
+  	
+</object-views>

@@ -41,7 +41,7 @@ import com.google.inject.persist.Transactional;
 
 public abstract class AbstractBatch {
 
-	protected static final int FETCH_LIMIT = 10;
+    public static final int FETCH_LIMIT = 10;
 
 	@Inject
 	protected AppBaseService appBaseService;
@@ -137,29 +137,31 @@ public abstract class AbstractBatch {
 
 	}
 
-	protected void incrementDone(){
+    protected void incrementDone() {
+        findBatch();
+        _incrementDone();
+    }
 
-		batch = batchRepo.find( batch.getId() );
+    protected void _incrementDone() {
+        done += 1;
+        batch.setDone(done);
+        checkPoint();
 
-		done += 1;
-		batch.setDone( done );
-		checkPoint();
+        LOG.debug("Done ::: {}", done);
+    }
 
-		LOG.debug("Done ::: {}", done);
+    protected void incrementAnomaly() {
+        findBatch();
+        _incrementAnomaly();
+    }
 
-	}
+    protected void _incrementAnomaly() {
+        anomaly += 1;
+        batch.setAnomaly(anomaly);
+        checkPoint();
 
-	protected void incrementAnomaly(){
-
-		batch = batchRepo.find( batch.getId() );
-
-		anomaly += 1;
-		batch.setAnomaly(anomaly);
-		checkPoint();
-
-		LOG.debug("Anomaly ::: {}", anomaly);
-
-	}
+        LOG.debug("Anomaly ::: {}", anomaly);
+    }
 
 	protected void addComment(String comment){
 
@@ -221,5 +223,9 @@ public abstract class AbstractBatch {
 		return field.getType().equals( EntityHelper.getEntityClass(model) );
 
 	}
+
+    protected void findBatch() {
+        batch = batchRepo.find(batch.getId());
+    }
 
 }

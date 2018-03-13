@@ -70,7 +70,7 @@
 	</action-method>
 	
 	<action-validate name="action-validate-select-object-message">
-		<error message="Please select multiple records" if="_ids.size() &lt; 2" />
+		<error message="Please select multiple records" if="_ids == null ||  _ids.size() &lt; 2" />
 	</action-validate>
 	
 	<action-validate name="action-validate-replace-object-message">

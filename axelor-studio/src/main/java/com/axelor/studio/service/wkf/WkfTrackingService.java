@@ -21,18 +21,22 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.Map;
+
+import javax.script.SimpleBindings;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.db.EntityHelper;
+import com.axelor.db.Model;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.rpc.Context;
-import com.axelor.rpc.Resource;
+import com.axelor.rpc.JsonContext;
 import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.WkfTracking;
 import com.axelor.studio.db.WkfTrackingLine;
@@ -97,11 +101,21 @@ public class WkfTrackingService {
 			
 		if (object != null) {
 			
-			Context ctx = new Context(Resource.toMap(object), object.getClass());
-			log.debug("Ctx keys: {}, id: {}", ctx.keySet(), ctx.get("id"));
+			SimpleBindings ctx = null;
 			
-			if (ctx.get("id") == null) {
-				return;
+			object = EntityHelper.getEntity(object);
+			Model model = (Model) object;
+			
+			if (object instanceof MetaJsonRecord){
+				log.debug("Meta json record context");
+				MetaJsonRecord  metaJsonRecord = (MetaJsonRecord) object;
+				log.debug("Json id: {}, Json model: {}", metaJsonRecord.getId(), metaJsonRecord.getJsonModel());
+				ctx = new JsonContext((MetaJsonRecord) object);
+				ctx.put("id", metaJsonRecord.getId());
+				ctx.put("jsonModel", metaJsonRecord.getJsonModel());
+			}
+			else {
+				ctx = new Context(model.getId(), object.getClass());
 			}
 			
 			WkfTracking wkfTracking = getWorkflowTracking(ctx, object.getClass().getName());
@@ -113,15 +127,7 @@ public class WkfTrackingService {
 			MetaJsonField wkfField =  wkfTracking.getWkf().getStatusField();
 			
 			Object status = null;
-			
-			if (object instanceof MetaJsonRecord){
-				status = ctx.get(wkfField.getName());
-				log.debug("Status field: {} value: {}", wkfField.getName(), status);
-			}
-			else {
-				status = ((Map<String,Object>)ctx.get("$" + wkfTracking.getWkf().getJsonField())).get(wkfField.getName());
-			}	
-			
+			status = ctx.get(wkfField.getName());
 			log.debug("Status value: {}", status);
 			
 			if (status == null) {
@@ -156,9 +162,11 @@ public class WkfTrackingService {
 	 * @return WkfTracking instance created/found.s
 	 */
 	@Transactional
-	public WkfTracking getWorkflowTracking(Context ctx, String model) {
+	public WkfTracking getWorkflowTracking(SimpleBindings ctx, String model) {
 		
 		String jsonModel = (String) ctx.get("jsonModel");
+		
+		log.debug("Context json model: {}", jsonModel);
 		
 		if (jsonModel != null) {
 			model = jsonModel;
@@ -177,7 +185,7 @@ public class WkfTrackingService {
 		
 		if (wkfs.size() > 1){
 			for (Wkf w : wkfs) {
-				if (ctx.containsKey(w.getJsonField())) {
+				if (ctx.get(w.getJsonField()) != null) {
 					wkf = w;
 					break;
 				}
@@ -200,17 +208,6 @@ public class WkfTrackingService {
 			wkfTracking.setWkf(wkf);
 			wkfTracking.setRecordModel(model);
 			wkfTracking.setRecordId((Long) ctx.get("id"));
-
-			// Property property = mapper.getProperty("namecolumn");
-			// if(property != null){
-			// String nameColumn = property.getName();
-			// log.debug("Model: {} Name column: {}", model, nameColumn);
-			// wkfTracking.setRecordName(nameColumn);
-			// }
-			// } catch (ClassNotFoundException e) {
-			// e.printStackTrace();
-			// }
-
 			wkfTracking = wkfTrackingRepo.save(wkfTracking);
 		}
 

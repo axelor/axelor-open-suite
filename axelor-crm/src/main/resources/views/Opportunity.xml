@@ -169,19 +169,19 @@
 		<hilite color="warning" if="probability &lt; 50"/>
         <template>
             <![CDATA[
-            <h4>{{name}}</h4>
+            <h4>{{record.name}}</h4>
             <img ng-if="user" ng-src="{{$image('user', 'image')}}">
             <div class="card-body">
-                <p>{{description}}</p>
+                <p>{{record.description}}</p>
                 <dl>
-                    <dt ng-show="record.partner.name" x-translate>Customer</dt><dd ng-show="record.partner.name">{{partner.name}}</dd>
-                    <dt ng-show="record.partner.fixedPhone" x-translate>Fixed phone</dt><dd ng-show="record.partner.fixedPhone"><a href="tel:{{partner.fixedPhone}}">{{partner.fixedPhone}}</a></dd>
-                    <dt ng-show="record.partner.mobilePhone" x-translate>Mobile phone</dt><dd ng-show="record.partner.mobilePhone"><a href="tel:{{partner.mobilePhone}}">{{partner.mobilePhone}}</a></dd>
-                    <dt ng-show="record.amount" x-translate>Amount</dt><dd ng-show="record.amount">{{amount | currency : currency.symbol}}</dd>
+                    <dt ng-show="record.partner.name" x-translate>Customer</dt><dd ng-show="record.partner.name">{{record.partner.name}}</dd>
+                    <dt ng-show="record.partner.fixedPhone" x-translate>Fixed phone</dt><dd ng-show="record.partner.fixedPhone"><a href="tel:{{record.partner.fixedPhone}}">{{record.partner.fixedPhone}}</a></dd>
+                    <dt ng-show="record.partner.mobilePhone" x-translate>Mobile phone</dt><dd ng-show="record.partner.mobilePhone"><a href="tel:{{record.partner.mobilePhone}}">{{record.partner.mobilePhone}}</a></dd>
+                    <dt ng-show="record.amount" x-translate>Amount</dt><dd ng-show="record.amount">{{$fmt('amount') | currency : record.currency.symbol}}</dd>
                 </dl>
             </div>
             <div class="card-footer">
-                <i class='fa fa-clock-o'></i> <span>{{expectedCloseDate|date:'dd/MM/yyyy'}}</span>
+                <i class='fa fa-clock-o'></i> <span>{{record.expectedCloseDate|date:'dd/MM/yyyy'}}</span>
             </div>
             ]]>
         </template>
