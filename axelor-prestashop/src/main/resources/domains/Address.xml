@@ -5,6 +5,10 @@
 
 	<entity name="Address" lang="java">
 		<integer name="prestaShopId" nullable="true"/>
+
+		<unique-constraint columns="prestaShopId"/>
+
+		<finder-method name="findByPrestaShopId" using="prestaShopId"/>
 	</entity>
 
 </domain-models>

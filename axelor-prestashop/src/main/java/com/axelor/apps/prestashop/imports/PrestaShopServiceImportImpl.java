@@ -79,7 +79,7 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 		currencyService.importCurrency(appConfig, endDate, logWriter);
 		countryService.importCountry(appConfig, endDate, logWriter);
 		customerService.importCustomer(appConfig, endDate, logWriter);
-//		addressService.importAddress(logWriter);
+		addressService.importAddress(appConfig, endDate, logWriter);
 //		categoryService.importCategory(logWriter);
 //		productService.importProduct(logWriter);
 	}

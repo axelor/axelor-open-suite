@@ -17,13 +17,12 @@
  */
 package com.axelor.apps.prestashop.imports.service;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.HashMap;
+import java.io.Writer;
+import java.time.ZonedDateTime;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.TransformerException;
+import org.apache.shiro.util.CollectionUtils;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AppPrestashop;
@@ -32,166 +31,113 @@ import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.AddressRepository;
-import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.db.IPrestaShopBatch;
+import com.axelor.apps.prestashop.entities.PrestashopAddress;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
-import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
-import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
-import wslite.json.JSONException;
-import wslite.json.JSONObject;
-
+@Singleton
 public class ImportAddressServiceImpl implements ImportAddressService {
-
-	PSWebServiceClient ws;
-    HashMap<String,Object> opt;
-    JSONObject schema;
-    private final String shopUrl;
-	private final String key;
-
-	@Inject
+	private AddressRepository addressRepo;
 	private CityRepository cityRepo;
+	private CountryRepository countryRepo;
+	private PartnerRepository partnerRepo;
+	private AddressService addressService;
 
 	@Inject
-	private PartnerRepository partnerRepo;
-
-	/**
-	 * initialization
-	 */
-	public ImportAddressServiceImpl() {
-		AppPrestashop prestaShopObj = Beans.get(AppPrestashopRepository.class).all().fetchOne();
-		shopUrl = prestaShopObj.getPrestaShopUrl();
-		key = prestaShopObj.getPrestaShopKey();
+	public ImportAddressServiceImpl(AddressRepository addressRepo, CityRepository cityRepo, CountryRepository countryRepo, PartnerRepository partnerRepo, AddressService addressService) {
+		this.addressRepo = addressRepo;
+		this.cityRepo = cityRepo;
+		this.countryRepo = countryRepo;
+		this.partnerRepo = partnerRepo;
+		this.addressService = addressService;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
-	public BufferedWriter importAddress(BufferedWriter bwImport)
-			throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
-
+	public void importAddress(AppPrestashop appConfig, ZonedDateTime endDate, Writer logBuffer) throws IOException, PrestaShopWebserviceException {
 		Integer done = 0;
-		Integer anomaly = 0;
-		bwImport.newLine();
-		bwImport.write("-----------------------------------------------");
-		bwImport.newLine();
-		bwImport.write("Address");
+		Integer errors = 0;
 
-		String partnerId = null;
-		String deletedId = null;
-		Integer addressId = null;
-		String addressL4 = null;
-		String addressL5 = null;
-		String postcode = null;
-		String cityName = null;
-		String countryId = null;
-		Partner partner = null;
-		Address address = null;
-		PartnerAddress partnerAddress = null;
-		City city = null;
+		logBuffer.write(String.format("%n====== ADDRESSES ======%n"));
 
-		ws = new PSWebServiceClient(shopUrl,key);
-		List<Integer> addressIds = ws.fetchApiIds(PrestashopResourceType.ADDRESSES);
+		final PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
+		final List<PrestashopAddress> remoteAddresses = ws.fetchAll(PrestashopResourceType.ADDRESSES);
 
-		for (Integer id : addressIds) {
-			ws = new PSWebServiceClient(shopUrl, key);
-			Options options = new Options();
-			options.setResourceType(PrestashopResourceType.ADDRESSES);
-			options.setRequestedId(id);
-			schema = ws.getJson(options);
+		for(PrestashopAddress remoteAddress : remoteAddresses) {
+			logBuffer.write(String.format("Importing PrestaShop address #%d (%s %s) – ", remoteAddress.getId(), remoteAddress.getAddress1(), remoteAddress.getCity()));
 
+			Address localAddress = addressRepo.findByPrestaShopId(remoteAddress.getId());
 
-			deletedId = schema.getJSONObject("address").getString("deleted");
-			partnerId = schema.getJSONObject("address").getString("id_customer");
-
-			if(deletedId.equals("1"))
-				continue;
-
-			try {
-				if(partnerId == null || partnerId.equals("0"))
-					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_ADDRESS), IException.NO_VALUE);
-
-				addressId = schema.getJSONObject("address").getInt("id");
-				addressL4 = schema.getJSONObject("address").getString("address1");
-				addressL5 = schema.getJSONObject("address").getString("address2");
-				cityName = schema.getJSONObject("address").getString("city");
-				postcode = schema.getJSONObject("address").getString("postcode");
-				countryId = schema.getJSONObject("address").getString("id_country");
-				partner = Beans.get(PartnerRepository.class).all().filter("self.prestaShopId = ?", partnerId).fetchOne();
-				address = Beans.get(AddressRepository.class).all().filter("self.prestaShopId = ?", id).fetchOne();
-				city = cityRepo.findByName(cityName);
-
-				if(city == null) {
-					city = new City();
-				}
-
-				Country country = Beans.get(CountryRepository.class).all().filter("self.prestaShopId = ?", countryId).fetchOne();
-				if(country == null)
-					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_COUNTRY), IException.NO_VALUE);
-
-				if(address == null) {
-					address = new Address();
-					address.setAddressL4(addressL4);
-					address.setAddressL5(addressL5);
-					city.setName(cityName);
-					city.setHasZipOnRight(false);
-					address.setAddressL6(cityName + " " + postcode);
-					address.setFullName(address.getAddressL4().toString() + " " + address.getAddressL6().toString());
-					address.setCity(city);
-					address.setAddressL7Country(country);
-					partnerAddress = new PartnerAddress();
-					partnerAddress.setIsDeliveryAddr(true);
-					partnerAddress.setIsInvoicingAddr(true);
-					partnerAddress.setIsDefaultAddr(true);
-					partnerAddress.setAddress(address);
-					partnerAddress.setPartner(partner);
-					address.setPrestaShopId(addressId);
-					partner.addPartnerAddressListItem(partnerAddress);
-
-				} else {
-					address.setAddressL4(addressL4);
-					address.setAddressL5(addressL5);
-					city.setName(cityName);
-					city.setHasZipOnRight(false);
-					address.setAddressL6(cityName + " " + postcode);
-					address.setFullName(address.getAddressL4().toString() + " " + address.getAddressL6().toString());
-					address.setAddressL7Country(country);
-					address.setPrestaShopId(addressId);
-					address.setCity(city);
-				}
-				partnerRepo.save(partner);
-				done++;
-
-			} catch (AxelorException e) {
-
-				bwImport.newLine();
-				bwImport.newLine();
-				bwImport.write("Id - " + id + " " + e.getMessage());
-				anomaly++;
-				continue;
-			} catch (Exception e) {
-
-				bwImport.newLine();
-				bwImport.newLine();
-				bwImport.write("Id - " + id + " " + e.getMessage());
-				anomaly++;
+			if(remoteAddress.isDeleted()) {
+				if(localAddress != null) localAddress.setArchived(Boolean.TRUE);
+				logBuffer.write(String.format("[WARNING] Tagged as deleted, skipping%n"));
 				continue;
 			}
+
+			if(remoteAddress.getCustomerId() == null) {
+				logBuffer.write(String.format("[WARNING] Address is not bound to a customer, skipping%n"));
+				continue;
+			}
+
+			Country country = countryRepo.findByPrestaShopId(remoteAddress.getCountryId());
+			if(country == null) {
+				logBuffer.write(String.format(" [WARNING] Address belongs to a not-yet synced country, skipping%n"));
+				continue;
+			}
+
+			if(localAddress == null) {
+				localAddress = new Address();
+				localAddress.setImportOrigin(IPrestaShopBatch.IMPORT_ORIGIN_PRESTASHOP);
+				localAddress.setPrestaShopId(remoteAddress.getId());
+				Partner customer = partnerRepo.findByPrestaShopId(remoteAddress.getCustomerId());
+				if(customer == null) {
+					logBuffer.write(String.format(" [WARNING] Address belongs to a not-yet synced customer, skipping%n"));
+					continue;
+				}
+				PartnerAddress partnerAddress = new PartnerAddress();
+				partnerAddress.setAddress(localAddress);
+				partnerAddress.setPartner(customer);
+				if(CollectionUtils.size(customer.getPartnerAddressList()) == 0) {
+					partnerAddress.setIsDeliveryAddr(Boolean.TRUE);
+					partnerAddress.setIsInvoicingAddr(Boolean.TRUE);
+					partnerAddress.setIsDefaultAddr(Boolean.TRUE);
+					customer.addPartnerAddressListItem(partnerAddress);
+				}
+			}
+
+			if(localAddress == null || IPrestaShopBatch.IMPORT_ORIGIN_PRESTASHOP.equals(localAddress.getImportOrigin())) {
+				localAddress.setAddressL4(remoteAddress.getAddress1());
+				localAddress.setAddressL5(remoteAddress.getAddress2());
+				City city = cityRepo.findByName(remoteAddress.getCity());
+				if(city == null) {
+					city = new City();
+					city.setName(remoteAddress.getCity());
+				}
+				localAddress.setZip(remoteAddress.getZipcode());
+				localAddress.setCity(city);
+				localAddress.setAddressL7Country(country);
+
+				localAddress.setAddressL6(localAddress.getZip() + " " + localAddress.getCity().getName());
+				localAddress.setFullName(addressService.computeFullName(localAddress));
+
+				addressRepo.save(localAddress);
+			} else {
+				logBuffer.write("local address exists and wasn't created on PrestaShop, leaving untouched");
+			}
+
+			logBuffer.write(String.format(" [SUCCESS]%n"));
+			++done;
 		}
 
-		bwImport.newLine();
-		bwImport.newLine();
-		bwImport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);
-		return bwImport;
+		logBuffer.write(String.format("%n=== END OF ADDRESSES IMPORT, done: %d, errors: %d ===%n", done, errors));
 	}
 }

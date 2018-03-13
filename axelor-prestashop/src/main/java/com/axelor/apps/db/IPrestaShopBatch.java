@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.db;
 
+import com.axelor.db.Model;
+
 /**
  * Interface of Event object. Enum all static variable of object.
  *
@@ -34,4 +36,9 @@ public interface IPrestaShopBatch {
 
 	static final String TRACE_ORIGIN_IMPORT = "prestashopImport";
 	static final String TRACE_ORIGIN_EXPORT = "prestashopExport";
+
+	/**
+	 * @see Model#getImportOrigin()
+	 */
+	static final String IMPORT_ORIGIN_PRESTASHOP = "prestashop";
 }

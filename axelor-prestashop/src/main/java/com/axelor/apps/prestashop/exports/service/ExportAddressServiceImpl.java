@@ -36,6 +36,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.db.IPrestaShopBatch;
 import com.axelor.apps.prestashop.entities.PrestashopAddress;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
@@ -149,12 +150,15 @@ public class ExportAddressServiceImpl implements ExportAddressService {
 					remoteAddress.setCountryId(localAddress.getAddressL7Country().getPrestaShopId());
 				}
 
-				// Don't know if we should actually synchronize something on update…
-
-				remoteAddress.setUpdateDate(LocalDateTime.now());
-				remoteAddress = ws.save(PrestashopResourceType.ADDRESSES, remoteAddress);
-				logBuffer.write(String.format(" [SUCCESS]%n"));
-				localAddress.setPrestaShopId(remoteAddress.getId());
+				if(IPrestaShopBatch.IMPORT_ORIGIN_PRESTASHOP.equals(localAddress.getImportOrigin()) == false) {
+					// Don't know if we should actually synchronize something on update…
+					remoteAddress.setUpdateDate(LocalDateTime.now());
+					remoteAddress = ws.save(PrestashopResourceType.ADDRESSES, remoteAddress);
+					logBuffer.write(String.format(" [SUCCESS]%n"));
+					localAddress.setPrestaShopId(remoteAddress.getId());
+				} else {
+					logBuffer.write(String.format(" - address was imported from PrestaShop, leave it untouched [SUCCESS]%n"));
+				}
 				++done;
 			} catch (PrestaShopWebserviceException e) {
 				logBuffer.write(String.format(" [ERROR] %s (full trace is in application logs)%n", e.getLocalizedMessage()));
