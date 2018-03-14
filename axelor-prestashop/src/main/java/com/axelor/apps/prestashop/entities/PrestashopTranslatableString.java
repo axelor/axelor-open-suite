@@ -7,6 +7,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlValue;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public class PrestashopTranslatableString implements Cloneable {
 	private List<PrestashopTranslationEntry> translations = new LinkedList<>();
 
@@ -47,6 +49,13 @@ public class PrestashopTranslatableString implements Cloneable {
 		return null;
 	}
 
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this)
+				.append("translations", translations)
+				.toString();
+	}
+
 	public static class PrestashopTranslationEntry {
 		private int languageId;
 		private String translation;
@@ -75,6 +84,14 @@ public class PrestashopTranslatableString implements Cloneable {
 
 		public void setTranslation(String translation) {
 			this.translation = translation;
+		}
+
+		@Override
+		public String toString() {
+			return new ToStringBuilder(this)
+					.append("languageId", languageId)
+					.append("translation", translation)
+					.toString();
 		}
 	}
 
