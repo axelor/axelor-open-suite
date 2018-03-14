@@ -74,7 +74,7 @@
 			  <item title="Send email" action="save,action-send-by-email-with-template" hideIf="supplierPartner == null"/>
 <!-- 			  <item title="New version" showIf="statusSelect == 2" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()" action="save,action-purchase-record-newVersion,save"/> -->
 			  <item title="New version" showIf="statusSelect == 2" action="save,action-purchase-record-newVersion,save" hideIf="supplierPartner == null"/>
-			  <item title="Generate control invoice" showIf="statusSelect == 3" action="save,action-purchase-order-method-generate-control-invoice" hideIf="supplierPartner == null" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSupplierOrder()"/>
+			  <item title="Generate control invoice" showIf="statusSelect == 3" action="save,action-purchase-order-method-generate-control-invoice" hideIf="supplierPartner == null" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').generateInvoiceFromPurchaseOrder"/>
 			  <item title="Cancel receipt" showIf="statusSelect &gt;= 3" action="save,action-purchase-order-method-cancel-receipt" hideIf="supplierPartner == null"/>
 			</menu>
 		</menubar>

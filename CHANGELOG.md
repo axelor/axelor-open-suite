@@ -46,6 +46,8 @@
 - Update the SaleOrderLine form to look like InvoiceLine form.
 - Update CRM & ICalendar events UI
 - Removed extra links from tasks to other tasks. Kept only 'Predecessors tasks'. 
+- Allow to read the products from production, stock and crm modules
+- Improve manufacturing order workflow.
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
@@ -57,6 +59,8 @@
 - Fix create event from contact m2m of partner
 - Fix copy of manufacturing order
 - Fix multiple NPE in CRM events
+- Fix MRP calculation exception
+- Fix manufacturing order stock move generation in unusual case.
 
 ## [Unreleased 4.x]
 

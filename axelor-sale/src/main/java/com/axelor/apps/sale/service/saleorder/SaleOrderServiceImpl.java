@@ -39,7 +39,7 @@ import com.google.inject.persist.Transactional;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
 
-	protected final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Override
 	public String getFileName(SaleOrder saleOrder)  {

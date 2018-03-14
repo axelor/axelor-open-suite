@@ -27,6 +27,7 @@ import com.axelor.app.production.db.IManufOrder;
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.app.production.db.IWorkCenter;
 import com.axelor.apps.production.db.Machine;
+import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.apps.production.db.ProdHumanResource;
@@ -82,7 +83,10 @@ public class OperationOrderWorkflowService {
 						Duration.between(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())
 				));
 
-		operationOrderStockMoveService.createToConsumeStockMove(operationOrder);
+		ManufOrder manufOrder = operationOrder.getManufOrder();
+		if (manufOrder == null || manufOrder.getIsConsProOnOperation()) {
+			operationOrderStockMoveService.createToConsumeStockMove(operationOrder);
+		}
 
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_PLANNED);
 

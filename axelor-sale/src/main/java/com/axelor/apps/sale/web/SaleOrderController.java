@@ -19,6 +19,7 @@ package com.axelor.apps.sale.web;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -174,6 +176,19 @@ public class SaleOrderController {
 
 		try {
 			Beans.get(SaleOrderWorkflowService.class).finalizeSaleOrder(saleOrder);
+		} catch (Exception e) {
+		    TraceBackService.trace(response, e);
+		}
+
+		response.setReload(true);
+	}
+
+	public void finishSaleOrder(ActionRequest request, ActionResponse response) {
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		saleOrder = saleOrderRepo.find(saleOrder.getId());
+
+		try {
+            Beans.get(SaleOrderWorkflowServiceImpl.class).finishSaleOrder(saleOrder);
 		} catch (Exception e) {
 		    TraceBackService.trace(response, e);
 		}
