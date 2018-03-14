@@ -120,16 +120,20 @@ public class ExportCategoryServiceImpl implements ExportCategoryService {
 					remoteCategory.setLinkRewrite(str);
 				}
 
-				// FIXME handle language correctly, only override value for appConfig.textsLanguage
-				remoteCategory.setUpdateDate(LocalDateTime.now());
-				remoteCategory.getName().getTranslations().get(0).setTranslation(localCategory.getName());
-				if(localCategory.getParentProductCategory() == null || localCategory.getParentProductCategory().getPrestaShopId() == null) {
-					remoteCategory.setParentId(remoteRootCategory.getId());
+				if(remoteCategory.getId() == null || appConfig.getPrestaShopMasterForCategories() == Boolean.FALSE) {
+					// FIXME handle language correctly, only override value for appConfig.textsLanguage
+					remoteCategory.setUpdateDate(LocalDateTime.now());
+					remoteCategory.getName().getTranslations().get(0).setTranslation(localCategory.getName());
+					if(localCategory.getParentProductCategory() == null || localCategory.getParentProductCategory().getPrestaShopId() == null) {
+						remoteCategory.setParentId(remoteRootCategory.getId());
+					} else {
+						remoteCategory.setParentId(localCategory.getParentProductCategory().getPrestaShopId());
+					}
+					remoteCategory = ws.save(PrestashopResourceType.PRODUCT_CATEGORIES, remoteCategory);
+					localCategory.setPrestaShopId(remoteCategory.getId());
 				} else {
-					remoteCategory.setParentId(localCategory.getParentProductCategory().getPrestaShopId());
+					logBuffer.write("remote category exists and PrestaShop is master for categories, leaving untouched");
 				}
-				remoteCategory = ws.save(PrestashopResourceType.PRODUCT_CATEGORIES, remoteCategory);
-				localCategory.setPrestaShopId(remoteCategory.getId());
 				logBuffer.write(String.format(" [SUCCESS]%n"));
 				++done;
 			} catch (PrestaShopWebserviceException e) {
