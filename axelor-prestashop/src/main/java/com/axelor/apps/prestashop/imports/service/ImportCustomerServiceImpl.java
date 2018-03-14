@@ -78,6 +78,11 @@ public class ImportCustomerServiceImpl implements ImportCustomerService {
 			Partner localCustomer = partnerRepo.findByPrestaShopId(remoteCustomer.getId());
 			if(localCustomer == null) {
 				localCustomer = partnerRepo.findByRegistrationCode(remoteCustomer.getSiret());
+				if(localCustomer != null && localCustomer.getPrestaShopId() != null) {
+					logBuffer.write(String.format("[WARNING] found using registration code %s but partner is already bound to another PrestaShop customer, creating new one anyway, ", remoteCustomer.getSiret()));
+					localCustomer = null;
+				}
+
 				if(localCustomer == null) {
 					logBuffer.write("not found by ID, creating, ");
 					localCustomer = new Partner();
