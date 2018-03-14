@@ -19,7 +19,6 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainServiceImpl;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -37,7 +36,7 @@ public class AccountingSituationSupplychainController {
         try {
             accountingSituation = accountingSituationService.computeUsedCredit(accountingSituation);
             response.setValue("usedCredit", accountingSituation.getUsedCredit());
-        } catch (AxelorException e) {
+        } catch (Exception e) {
             TraceBackService.trace(e);
             response.setError(e.getMessage());
         }

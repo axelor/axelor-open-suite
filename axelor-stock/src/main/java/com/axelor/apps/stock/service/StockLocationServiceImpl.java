@@ -38,7 +38,6 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
@@ -66,7 +65,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 			StockConfigService stockConfigService = Beans.get(StockConfigService.class);
 			StockConfig stockConfig = stockConfigService.getStockConfig(company);
 			return stockConfig.getDefaultStockLocation();
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}

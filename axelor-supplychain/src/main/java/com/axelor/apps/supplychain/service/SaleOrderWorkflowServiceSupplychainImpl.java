@@ -92,7 +92,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
 		super.cancelSaleOrder(saleOrder, cancelReason, cancelReasonStr);
 		try {
 			accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

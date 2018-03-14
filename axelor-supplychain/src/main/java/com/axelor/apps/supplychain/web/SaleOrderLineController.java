@@ -103,7 +103,7 @@ public class SaleOrderLineController {
 					saleOrderLine.getProduct(),
 					qty
 			);
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			response.setAlert(e.getLocalizedMessage());
 		}
 	}
@@ -131,7 +131,7 @@ public class SaleOrderLineController {
 			if (stockMoveLine != null) {
 				Beans.get(StockMoveLineSupplychainServiceImpl.class).updateReservedQty(stockMoveLine, newReservedQty);
 			}
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}

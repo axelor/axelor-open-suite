@@ -421,8 +421,8 @@ public class SaleOrderController {
 						.context("_showRecord", String.valueOf(saleOrder.getId())).map());
 				response.setCanClose(true);
 			}
-		}catch(AxelorException ae){
-			response.setFlash(ae.getLocalizedMessage());
+		}catch(Exception e){
+			response.setFlash(e.getLocalizedMessage());
 		}
 	}
 

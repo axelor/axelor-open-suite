@@ -390,7 +390,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				try {
 					checkConformitySelection(stockMoveLine, stockMove);
 				}
-				catch (AxelorException e) {
+				catch (Exception e) {
 				    productsWithErrors.add(product.getName());
 				}
 			}

@@ -87,7 +87,7 @@ public class PaymentService {
 	public void useExcessPaymentOnMoveLinesDontThrow(List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines) {
 		try {
 			useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLines, true);
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			TraceBackService.trace(e);
 			log.debug(e.getMessage());
 		}
@@ -135,7 +135,7 @@ public class PaymentService {
 						if ((debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1) && (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)) {
 							try {
 								createReconcile(debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
-							} catch(AxelorException e) {
+							} catch(Exception e) {
 								if(dontThrow) {
 									TraceBackService.trace(e);
 									log.debug(e.getMessage());

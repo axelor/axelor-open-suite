@@ -118,7 +118,7 @@ public class EbicsController {
 		
 		try {
 			ebicsService.sendINIRequest(ebicsUser, null);
-		}catch (AxelorException e) {
+		}catch (Exception e) {
 			e.printStackTrace();
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
@@ -133,7 +133,7 @@ public class EbicsController {
 		
 		try {
 			ebicsService.sendHIARequest(ebicsUser, null);
-		}catch (AxelorException e) {
+		}catch (Exception e) {
 			e.printStackTrace();
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
@@ -148,7 +148,7 @@ public class EbicsController {
 		try {
 			X509Certificate[] certificates = ebicsService.sendHPBRequest(ebicsUser, null);
 			confirmCertificates(ebicsUser, certificates, response);
-		}catch (AxelorException e) {
+		}catch (Exception e) {
 			e.printStackTrace();
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
@@ -187,7 +187,7 @@ public class EbicsController {
 		
 		try {
 			ebicsService.sendSPRRequest(ebicsUser, null);
-		}catch (AxelorException e) {
+		}catch (Exception e) {
 			e.printStackTrace();
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
@@ -220,7 +220,7 @@ public class EbicsController {
 				response.setFlash(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
 			}
 			
-		}catch (AxelorException e) {
+		}catch (Exception e) {
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
 
@@ -243,7 +243,7 @@ public class EbicsController {
 				response.setFlash(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
 			}
 
-		}catch (AxelorException e) {
+		}catch (Exception e) {
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
 		
@@ -257,7 +257,7 @@ public class EbicsController {
 		try {
 			ebicsService.sendHTDRequest(ebicsUser, null, null, null);
 			downloadFile(response, ebicsUser);
-		}catch (AxelorException e) {
+		}catch (Exception e) {
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
 
@@ -271,7 +271,7 @@ public class EbicsController {
 		try {
 			ebicsService.sendPTKRequest(ebicsUser, null, null, null);
 			downloadFile(response, ebicsUser);
-		}catch (AxelorException e) {
+		}catch (Exception e) {
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
 
@@ -285,7 +285,7 @@ public class EbicsController {
 		try {
 			ebicsService.sendHPDRequest(ebicsUser, null, null, null);
 			downloadFile(response, ebicsUser);
-		}catch (AxelorException e) {
+		}catch (Exception e) {
 			response.setFlash(stripClass(e.getLocalizedMessage()));
 		}
 

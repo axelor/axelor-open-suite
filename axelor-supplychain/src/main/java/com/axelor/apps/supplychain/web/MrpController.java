@@ -47,7 +47,7 @@ public class MrpController {
 		
 		try {
 			mrpService.runCalculation(mrpRepository.find(mrp.getId()));
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 			mrpService.reset(mrpRepository.find(mrp.getId()));
 		}
@@ -87,7 +87,7 @@ public class MrpController {
 					.define(name)
 					.add("html", fileLink).map());
 
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}
@@ -114,7 +114,7 @@ public class MrpController {
                     .define(name)
                     .add("html", fileLink).map());
 
-        } catch (AxelorException e) {
+        } catch (Exception e) {
             TraceBackService.trace(response, e);
         }
     }

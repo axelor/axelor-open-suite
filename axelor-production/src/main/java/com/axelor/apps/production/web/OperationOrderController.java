@@ -279,7 +279,7 @@ public class OperationOrderController {
 		try {
 		    Beans.get(OperationOrderService.class).updateDiffProdProductList(operationOrder);
 			response.setValue("diffConsumeProdProductList", operationOrder.getDiffConsumeProdProductList());
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}
