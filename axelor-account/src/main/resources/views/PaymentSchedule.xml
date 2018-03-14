@@ -36,9 +36,9 @@
 				<field name="company" canEdit="false" readonlyIf="statusSelect != 1" widget="SuggestBox" form-view="company-form" grid-view="company-grid" />
 				<field name="companyBankDetails" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-payment-schedule-attrs-company-bank-details-domain" if="__config__.app.getApp('base').getManageMultiBanks()" />
 			</panel>
-			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" />
+			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" readonlyIf="statusSelect != 1" />
 			<field name="currency" canEdit="false" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
-			<field name="inTaxAmount" readonlyIf="statusSelect != 1" />
+			<field name="inTaxAmount" readonlyIf="statusSelect != 1 || typeSelect == 1" />
 		</panel>
 		
 		<panel-related title="Invoices" field="invoiceSet" grid-view="invoice-account-grid" form-view="invoice-form" 
