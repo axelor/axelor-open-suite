@@ -128,6 +128,14 @@ public abstract class XlinkEntry {
 		}
 	}
 
+	@XmlRootElement(name="deliveries")
+	public static class DeliveriesXlink extends XlinkEntry {
+		@Override
+		public PrestashopResourceType getEntryType() {
+			return PrestashopResourceType.DELIVERIES;
+		}
+	}
+
 	@XmlRootElement(name="images")
 	public static class ImagesXlink extends XlinkEntry {
 		@Override
@@ -160,6 +168,22 @@ public abstract class XlinkEntry {
 		}
 	}
 
+	@XmlRootElement(name="order_invoices")
+	public static class OrderInvoicesXlink extends XlinkEntry {
+		@Override
+		public PrestashopResourceType getEntryType() {
+			return PrestashopResourceType.ORDER_INVOICES;
+		}
+	}
+
+	@XmlRootElement(name="order_payments")
+	public static class OrderPaymentsXlink extends XlinkEntry {
+		@Override
+		public PrestashopResourceType getEntryType() {
+			return PrestashopResourceType.ORDER_PAYMENTS;
+		}
+	}
+
 	@XmlRootElement(name="orders")
 	public static class OrdersXlink extends XlinkEntry {
 		@Override
@@ -173,6 +197,14 @@ public abstract class XlinkEntry {
 		@Override
 		public PrestashopResourceType getEntryType() {
 			return PrestashopResourceType.PRODUCTS;
+		}
+	}
+
+	@XmlRootElement(name="stock_availables")
+	public static class StockAvailablesXlink extends XlinkEntry {
+		@Override
+		public PrestashopResourceType getEntryType() {
+			return PrestashopResourceType.STOCK_AVAILABLES;
 		}
 	}
 }

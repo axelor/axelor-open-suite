@@ -1,5 +1,6 @@
 package com.axelor.apps.prestashop;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -57,14 +58,14 @@ public class UnmarshalTest {
 
 	private Unmarshaller getUnmarshaller(final String contextPath) throws JAXBException {
 		Unmarshaller um = JAXBContext
-				.newInstance("com.axelor.apps.prestashop.entities:com.axelor.apps.prestashop.entities.xlink")
+				.newInstance(contextPath)
 				.createUnmarshaller();
 		um.setEventHandler(new DefaultValidationEventHandler());
 		return um;
 	}
 
 	@Test
-	public void testApi() throws JAXBException {
+	public void testApi() throws JAXBException, IOException {
 		Prestashop envelop = (Prestashop) getUnmarshaller("com.axelor.apps.prestashop.entities:com.axelor.apps.prestashop.entities.xlink")
 				.unmarshal(getClass().getResourceAsStream("api.xml"));
 
@@ -73,13 +74,18 @@ public class UnmarshalTest {
 				PrestashopResourceType.CARTS,
 				PrestashopResourceType.PRODUCT_CATEGORIES,
 				PrestashopResourceType.COUNTRIES,
+				PrestashopResourceType.CURRENCIES,
 				PrestashopResourceType.CUSTOMERS,
+				PrestashopResourceType.DELIVERIES,
 				PrestashopResourceType.IMAGES,
 				PrestashopResourceType.LANGUAGES,
 				PrestashopResourceType.ORDER_DETAILS,
 				PrestashopResourceType.ORDER_HISTORIES,
+				PrestashopResourceType.ORDER_INVOICES,
+				PrestashopResourceType.ORDER_PAYMENTS,
 				PrestashopResourceType.ORDERS,
-				PrestashopResourceType.PRODUCTS
+				PrestashopResourceType.PRODUCTS,
+				PrestashopResourceType.STOCK_AVAILABLES
 		);
 
 		Assert.assertNotNull(envelop.getContent());

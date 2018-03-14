@@ -6,9 +6,13 @@ XlinkEntry$CategoriesXlink
 XlinkEntry$CountriesXlink
 XlinkEntry$CurrenciesXlink
 XlinkEntry$CustomersXlink
+XlinkEntry$DeliveriesXlink
 XlinkEntry$ImagesXlink
 XlinkEntry$LanguagesXlink
 XlinkEntry$OrderDetailsXlink
 XlinkEntry$OrderHistoriesXlink
+XlinkEntry$OrderInvoicesXlink
+XlinkEntry$OrderPaymentsXlink
 XlinkEntry$OrdersXlink
 XlinkEntry$ProductsXlink
+XlinkEntry$StockAvailablesXlink
