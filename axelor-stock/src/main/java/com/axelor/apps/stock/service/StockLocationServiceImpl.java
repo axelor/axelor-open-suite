@@ -52,7 +52,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 	
 	protected ProductRepository productRepo;
 	
-	Set<Long> locationIdSet= new HashSet<>();
+	protected Set<Long> locationIdSet= new HashSet<>();
 
 	@Inject
 	public StockLocationServiceImpl(StockLocationRepository stockLocationRepo, StockLocationLineService stockLocationLineService, ProductRepository productRepo) {
@@ -83,7 +83,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 				if (!stockLocations.isEmpty()) {
 					BigDecimal qty = BigDecimal.ZERO;
 					for (StockLocation stockLocation : stockLocations) {
-						StockLocationLine stockLocationLine = stockLocationLineService.getStockLocationLine(stockLocationRepo.find(stockLocation.getId()), productRepo.find(productId));
+						StockLocationLine stockLocationLine = stockLocationLineService.getOrCreateStockLocationLine(stockLocationRepo.find(stockLocation.getId()), productRepo.find(productId));
 						
 						if (stockLocationLine != null) {
 							qty = qty.add(qtyType.equals("real") ? stockLocationLine.getCurrentQty() : stockLocationLine.getFutureQty());
@@ -92,7 +92,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 					return qty;
 				}
 			} else {
-				StockLocationLine stockLocationLine = stockLocationLineService.getStockLocationLine(stockLocationRepo.find(locationId), productRepo.find(productId));
+				StockLocationLine stockLocationLine = stockLocationLineService.getOrCreateStockLocationLine(stockLocationRepo.find(locationId), productRepo.find(productId));
 				
 				if (stockLocationLine != null) {
 					return qtyType.equals("real") ? stockLocationLine.getCurrentQty() : stockLocationLine.getFutureQty();
@@ -173,7 +173,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 	
 	private void findLocationIds(List<StockLocation> childStockLocations) {
 		
-		Long id = null;
+		Long id;
 		
 		childStockLocations = Beans.get(StockLocationRepository.class).all().filter("self.parentStockLocation IN ?", childStockLocations).fetch();
 			
@@ -203,7 +203,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 			locationIdSet.add(stockLocation.getId());
 			findLocationIds(stockLocations);
 		} else {
-			locationIdSet.add(0l);
+			locationIdSet.add(0L);
 		}
 		
 		return locationIdSet;
