@@ -367,15 +367,38 @@ public class PSWebServiceClient {
 	 * @throws PrestaShopWebserviceException
 	 */
 	public <T extends PrestashopContainerEntity> List<T> fetchAll(final PrestashopResourceType resourceType) throws PrestaShopWebserviceException {
-		return fetch(resourceType, Collections.emptyMap());
+		return fetchAll(resourceType, Collections.emptyList());
 	}
 
 	/**
-	 * Returns the first entity of thos matching filter
+	 * Fetches all entities of a given type, along with their attributes.
+	 * @param resourceType Type of entity to fetch.
+	 * @param sort List of sort fields (syntax is field_ASC or field_DESC as per PrestaShop
+	 * expectations) or <code>null</code> if no sorting is required.
+	 * @return A possibly empty list containing all entities.
+	 * @throws PrestaShopWebserviceException
+	 */
+	public <T extends PrestashopContainerEntity> List<T> fetchAll(final PrestashopResourceType resourceType, final List<String> sort) throws PrestaShopWebserviceException {
+		return fetch(resourceType, Collections.emptyMap(), sort);
+	}
+
+	/**
+	 * Fetches all entities of a given type, along with their attributes, with a filter
+	 * @param resourceType Type of entity to fetch.
+	 * @param filter fieldname → value filter
+	 * @return A possibly empty list containing all entities.
+	 * @throws PrestaShopWebserviceException
+	 */
+	public <T extends PrestashopContainerEntity> List<T> fetch(final PrestashopResourceType resourceType, final Map<String, String> filter) throws PrestaShopWebserviceException {
+		return fetch(resourceType, filter, Collections.emptyList());
+	}
+	/**
+	 * Returns the first entity of thoes matching filter
 	 * @param resourceType Resource type to fetch
 	 * @param filter Filter to apply
 	 * @return The first entry of filtered resultset, or null if resultset is empty
-	 * @throws PrestaShopWebserviceException
+	 * @throws PrestaShopWebserviceException If underlying webservice call fails or if filter
+	 * returns more than one entity.
 	 */
 	public <T extends PrestashopContainerEntity> T fetchOne(final PrestashopResourceType resourceType, final Map<String, String> filter) throws PrestaShopWebserviceException {
 		List<T> entities = fetch(resourceType, filter);
@@ -389,15 +412,17 @@ public class PSWebServiceClient {
 	 * attributes set.
 	 * @param resourceType Type of resource to fetch.
 	 * @param filter Filter to apply (depends on entity)
+	 * @param sort Entities sort criteria (<code>null</code> for no sorting)
 	 * @return A (possibly empty) list of entities
 	 * @throws PrestaShopWebserviceException
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends PrestashopContainerEntity> List<T> fetch(final PrestashopResourceType resourceType, final Map<String, String> filter) throws PrestaShopWebserviceException {
+	public <T extends PrestashopContainerEntity> List<T> fetch(final PrestashopResourceType resourceType, final Map<String, String> filter, final List<String> sort) throws PrestaShopWebserviceException {
 		Options options = new Options();
 		options.setResourceType(resourceType);
 		options.setFilter(filter);
 		options.setDisplay(Collections.singletonList("full"));
+		options.setSort(sort);
 
 		HttpGet httpget = new HttpGet(buildUri(options));
 		RequestResult result = null;
