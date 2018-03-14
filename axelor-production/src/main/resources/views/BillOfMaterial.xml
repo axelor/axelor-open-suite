@@ -34,7 +34,7 @@
 		<panel-tabs>
 			<panel title="Components" >
 				<button name="openBomTree" title="Open tree"  onClick="save,action-bill-of-material-method-open-bom-tree" colSpan="3"/>
-				<panel-related field="billOfMaterialSet" title="Components" colSpan="12" orderBy="priority" domain="self.defineSubBillOfMaterial = true AND self.personalized = false" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
+				<panel-related field="billOfMaterialSet" title="Components" colSpan="12" orderBy="priority" domain="self.defineSubBillOfMaterial = true AND self.personalized = false and (:id is null or self.id != :id)" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
 			</panel>
 			<panel-related field="prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form" if="__config__.app.getApp('production').getManageResidualProductOnBom()"/>	        
 			<panel name="cost" title="Cost">
