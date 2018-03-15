@@ -22,6 +22,7 @@
 		<boolean name="prestaShopMasterForCountries" title="Countries are handled on prestashop" default="false" help="If checked, export process will not update existing remote countries and local countries data will be overwritten by PrestaShop data"/>
 		<boolean name="prestaShopMasterForCustomers" title="Customers are handled on prestashop" default="false" help="If checked, export process will not update existing remote customers and local customers' data will be overwritten by PrestaShop data"/>
 		<boolean name="prestaShopMasterForCategories" title="Products categories are handled on prestashop" default="false" help="If checked, export process will not update existing remote categories and local categories' data will be overwritten by PrestaShop data"/>
+		<boolean name="prestaShopMasterForProducts" title="Products are handled on prestashop" default="false" help="If checked, export process will not update existing remote products and local products' data will be overwritten by PrestaShop data"/>
 	</entity>
 
 </domain-models>

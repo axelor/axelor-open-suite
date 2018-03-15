@@ -29,6 +29,7 @@
 			<field name="prestaShopMasterForCountries" widget="boolean-switch"/>
 			<field name="prestaShopMasterForCustomers" widget="boolean-switch"/>
 			<field name="prestaShopMasterForCategories" widget="boolean-switch"/>
+			<field name="prestaShopMasterForProducts" widget="boolean-switch"/>
 		</panel>
 	</form>
 </object-views>

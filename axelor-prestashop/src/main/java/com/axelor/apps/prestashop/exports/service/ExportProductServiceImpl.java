@@ -180,107 +180,123 @@ public class ExportProductServiceImpl implements ExportProductService {
 					}
 				}
 
-				// Here comes the real fun…
-				if(localProduct.getProductCategory() != null && localProduct.getProductCategory().getPrestaShopId() != null) {
-					remoteProduct.setDefaultCategoryId(localProduct.getProductCategory().getPrestaShopId());
-				} else {
-					remoteProduct.setDefaultCategoryId(remoteRootCategory.getId());
-				}
+				if(remoteProduct.getId() == null || appConfig.getPrestaShopMasterForProducts() == Boolean.FALSE) {
+					// Here comes the real fun…
+					if(localProduct.getProductCategory() != null && localProduct.getProductCategory().getPrestaShopId() != null) {
+						remoteProduct.setDefaultCategoryId(localProduct.getProductCategory().getPrestaShopId());
+					} else {
+						remoteProduct.setDefaultCategoryId(remoteRootCategory.getId());
+					}
 
-				final int defaultCategoryId = remoteProduct.getDefaultCategoryId();
-				if(remoteProduct.getAssociations().getCategories().getAssociations().stream().anyMatch(c -> c.getId() == defaultCategoryId) == false) {
-					CategoriesAssociationElement e = new CategoriesAssociationElement();
-					e.setId(defaultCategoryId);
-					remoteProduct.getAssociations().getCategories().getAssociations().add(e);
-				}
+					final int defaultCategoryId = remoteProduct.getDefaultCategoryId();
+					if(remoteProduct.getAssociations().getCategories().getAssociations().stream().anyMatch(c -> c.getId() == defaultCategoryId) == false) {
+						CategoriesAssociationElement e = new CategoriesAssociationElement();
+						e.setId(defaultCategoryId);
+						remoteProduct.getAssociations().getCategories().getAssociations().add(e);
+					}
 
-				if(localProduct.getSalePrice() != null) {
-					remoteProduct.setPrice(localProduct.getSalePrice().setScale(appConfig.getExportPriceScale(), BigDecimal.ROUND_HALF_UP));
-				}
-				if(localProduct.getPurchasePrice() != null) {
-					if(localProduct.getPurchaseCurrency() != null) {
-						try {
-							remoteProduct.setWholesalePrice(currencyService.getAmountCurrencyConvertedAtDate(
-									localProduct.getPurchaseCurrency(),
-									appConfig.getPrestaShopCurrency(),
-									localProduct.getPurchasePrice(),
-									today).setScale(appConfig.getExportPriceScale(), BigDecimal.ROUND_HALF_UP));
-						} catch(AxelorException e) {
-							logBuffer.write(" [WARNING] Unable to convert purchase price, check your currency convsersion rates");
+					if(localProduct.getSalePrice() != null) {
+						if(localProduct.getSaleCurrency() != null) {
+							try {
+								remoteProduct.setPrice(currencyService.getAmountCurrencyConvertedAtDate(
+										localProduct.getSaleCurrency(),
+										appConfig.getPrestaShopCurrency(),
+										localProduct.getSalePrice(),
+										today).setScale(appConfig.getExportPriceScale(), BigDecimal.ROUND_HALF_UP));
+							} catch(AxelorException e) {
+								logBuffer.write(" [WARNING] Unable to convert sale price, check your currency convsersion rates");
+							}
+						} else {
+							remoteProduct.setPrice(localProduct.getSalePrice().setScale(appConfig.getExportPriceScale(), BigDecimal.ROUND_HALF_UP));
 						}
+					}
+					if(localProduct.getPurchasePrice() != null) {
+						if(localProduct.getPurchaseCurrency() != null) {
+							try {
+								remoteProduct.setWholesalePrice(currencyService.getAmountCurrencyConvertedAtDate(
+										localProduct.getPurchaseCurrency(),
+										appConfig.getPrestaShopCurrency(),
+										localProduct.getPurchasePrice(),
+										today).setScale(appConfig.getExportPriceScale(), BigDecimal.ROUND_HALF_UP));
+							} catch(AxelorException e) {
+								logBuffer.write(" [WARNING] Unable to convert purchase price, check your currency convsersion rates");
+							}
+						} else {
+							remoteProduct.setWholesalePrice(localProduct.getPurchasePrice().setScale(appConfig.getExportPriceScale(), BigDecimal.ROUND_HALF_UP));
+						}
+					}
+					if(localProduct.getLengthUnit() != null) {
+						remoteProduct.setWidth(convert(appConfig.getPrestaShopLengthUnit(), localProduct.getLengthUnit(), localProduct.getWidth()));
+						remoteProduct.setHeight(convert(appConfig.getPrestaShopLengthUnit(), localProduct.getLengthUnit(), localProduct.getHeight()));
+						remoteProduct.setDepth(convert(appConfig.getPrestaShopLengthUnit(), localProduct.getLengthUnit(), localProduct.getLength()));
 					} else {
-						remoteProduct.setWholesalePrice(localProduct.getPurchasePrice().setScale(appConfig.getExportPriceScale(), BigDecimal.ROUND_HALF_UP));
+						// assume homogeneous units
+						remoteProduct.setWidth(localProduct.getWidth());
+						remoteProduct.setHeight(localProduct.getHeight());
+						remoteProduct.setDepth(localProduct.getLength());
 					}
-				}
-				if(localProduct.getLengthUnit() != null) {
-					remoteProduct.setWidth(convert(appConfig.getPrestaShopLengthUnit(), localProduct.getLengthUnit(), localProduct.getWidth()));
-					remoteProduct.setHeight(convert(appConfig.getPrestaShopLengthUnit(), localProduct.getLengthUnit(), localProduct.getHeight()));
-					remoteProduct.setDepth(convert(appConfig.getPrestaShopLengthUnit(), localProduct.getLengthUnit(), localProduct.getLength()));
-				} else {
-					// assume homogeneous units
-					remoteProduct.setWidth(localProduct.getWidth());
-					remoteProduct.setHeight(localProduct.getHeight());
-					remoteProduct.setDepth(localProduct.getLength());
-				}
-				BigDecimal weight = localProduct.getGrossWeight() == null ? localProduct.getNetWeight() : localProduct.getGrossWeight();
-				if(localProduct.getWeightUnit() != null) {
-					remoteProduct.setWeight(unitConversionService.convert(appConfig.getPrestaShopWeightUnit(), localProduct.getWeightUnit(), weight));
-				} else {
-					remoteProduct.setWeight(weight);
-				}
-
-				// FIXME handle language correctly, only override value for appConfig.textsLanguage
-				remoteProduct.getName().getTranslations().get(0).setTranslation(localProduct.getName());
-				remoteProduct.getDescription().getTranslations().get(0).setTranslation(localProduct.getDescription());
-				remoteProduct.setEan13(localProduct.getEan13());
-				if(localProduct.getSalesUnit() != null) {
-					remoteProduct.setUnity(localProduct.getSalesUnit().getLabelToPrinting());
-				} else if(localProduct.getUnit() != null) {
-					remoteProduct.setUnity(localProduct.getUnit().getLabelToPrinting());
-				}
-				remoteProduct.setVirtual(ProductRepository.PRODUCT_TYPE_SERVICE.equals(localProduct.getProductTypeSelect()));
-				// TODO Should we handle supplier?
-
-				remoteProduct.setUpdateDate(LocalDateTime.now());
-				remoteProduct = ws.save(PrestashopResourceType.PRODUCTS, remoteProduct);
-
-				if((remoteProduct.getDefaultImageId() == null || remoteProduct.getDefaultImageId() == 0) && localProduct.getPicture() != null) {
-					logBuffer.write(" – no image stored, adding a new one");
-					try(InputStream is = new FileInputStream(MetaFiles.getPath(localProduct.getPicture()).toFile())) {
-						PrestashopImage image = ws.addImage(PrestashopResourceType.PRODUCTS, remoteProduct, is);
-						remoteProduct.setDefaultImageId(image.getId());
-					}
-				}
-
-				// FIXME we should have a specific batch for this
-				AvailableStocksAssociationsEntry availableStocks = remoteProduct.getAssociations().getAvailableStocks();
-				if(availableStocks == null || availableStocks.getStock().size() == 0) {
-					logBuffer.write(" [WARNING] No stock for this product, skipping stock update");
-				} else if(availableStocks.getStock().size() > 1 || Objects.equal(availableStocks.getStock().get(0).getProductAttributeId(), 0) == false) {
-					logBuffer.write(" [WARNING] Remote product appears to have variants, skipping");
-				} else {
-					AvailableStocksAssociationElement availableStockRef = availableStocks.getStock().get(0);
-					PrestashopAvailableStock availableStock = ws.fetch(PrestashopResourceType.STOCK_AVAILABLES, availableStockRef.getId());
-					if(availableStock.isDependsOnStock()) {
-						logBuffer.write(" [WARNING] Remote product uses advanced stock management features, not updating stock");
+					BigDecimal weight = localProduct.getGrossWeight() == null ? localProduct.getNetWeight() : localProduct.getGrossWeight();
+					if(localProduct.getWeightUnit() != null) {
+						remoteProduct.setWeight(unitConversionService.convert(appConfig.getPrestaShopWeightUnit(), localProduct.getWeightUnit(), weight));
 					} else {
-						BigDecimal currentStock =  (BigDecimal)JPA.em().createQuery(
-								"SELECT SUM(line.realQty) " +
-								"FROM StockMoveLine line " +
-								"JOIN line.stockMove move " +
-								"JOIN move.fromStockLocation fromLocation " +
-								"JOIN move.toStockLocation toLocation " +
-								"WHERE move.statusSelect = 3 AND " +
-								"(fromLocation.typeSelect = 1 or toLocation.typeSelect = 1) and line.product = :product")
-						.setParameter("product", localProduct)
-						.getSingleResult();
-						if(currentStock == null) currentStock = BigDecimal.ZERO;
-						availableStock.setQuantity(currentStock.intValue());
-						ws.save(PrestashopResourceType.STOCK_AVAILABLES, availableStock);
+						remoteProduct.setWeight(weight);
 					}
-				}
 
-				localProduct.setPrestaShopId(remoteProduct.getId());
+					// FIXME handle language correctly, only override value for appConfig.textsLanguage
+					remoteProduct.getName().getTranslations().get(0).setTranslation(localProduct.getName());
+					remoteProduct.getDescription().getTranslations().get(0).setTranslation(localProduct.getDescription());
+					remoteProduct.setEan13(localProduct.getEan13());
+					if(localProduct.getSalesUnit() != null) {
+						remoteProduct.setUnity(localProduct.getSalesUnit().getLabelToPrinting());
+					} else if(localProduct.getUnit() != null) {
+						remoteProduct.setUnity(localProduct.getUnit().getLabelToPrinting());
+					}
+					remoteProduct.setVirtual(ProductRepository.PRODUCT_TYPE_SERVICE.equals(localProduct.getProductTypeSelect()));
+					// TODO Should we handle supplier?
+
+					remoteProduct.setUpdateDate(LocalDateTime.now());
+					remoteProduct = ws.save(PrestashopResourceType.PRODUCTS, remoteProduct);
+
+					if((remoteProduct.getDefaultImageId() == null || remoteProduct.getDefaultImageId() == 0) && localProduct.getPicture() != null) {
+						logBuffer.write(" – no image stored, adding a new one");
+						try(InputStream is = new FileInputStream(MetaFiles.getPath(localProduct.getPicture()).toFile())) {
+							PrestashopImage image = ws.addImage(PrestashopResourceType.PRODUCTS, remoteProduct, is);
+							remoteProduct.setDefaultImageId(image.getId());
+						}
+					}
+
+					// FIXME we should have a specific batch for this
+					AvailableStocksAssociationsEntry availableStocks = remoteProduct.getAssociations().getAvailableStocks();
+					if(availableStocks == null || availableStocks.getStock().size() == 0) {
+						logBuffer.write(" [WARNING] No stock for this product, skipping stock update");
+					} else if(availableStocks.getStock().size() > 1 || Objects.equal(availableStocks.getStock().get(0).getProductAttributeId(), 0) == false) {
+						logBuffer.write(" [WARNING] Remote product appears to have variants, skipping");
+					} else {
+						AvailableStocksAssociationElement availableStockRef = availableStocks.getStock().get(0);
+						PrestashopAvailableStock availableStock = ws.fetch(PrestashopResourceType.STOCK_AVAILABLES, availableStockRef.getId());
+						if(availableStock.isDependsOnStock()) {
+							logBuffer.write(" [WARNING] Remote product uses advanced stock management features, not updating stock");
+						} else {
+							BigDecimal currentStock =  (BigDecimal)JPA.em().createQuery(
+									"SELECT SUM(line.realQty) " +
+									"FROM StockMoveLine line " +
+									"JOIN line.stockMove move " +
+									"JOIN move.fromStockLocation fromLocation " +
+									"JOIN move.toStockLocation toLocation " +
+									"WHERE move.statusSelect = 3 AND " +
+									"(fromLocation.typeSelect = 1 or toLocation.typeSelect = 1) and line.product = :product")
+							.setParameter("product", localProduct)
+							.getSingleResult();
+							if(currentStock == null) currentStock = BigDecimal.ZERO;
+							availableStock.setQuantity(currentStock.intValue());
+							ws.save(PrestashopResourceType.STOCK_AVAILABLES, availableStock);
+						}
+					}
+
+					localProduct.setPrestaShopId(remoteProduct.getId());
+				} else {
+					logBuffer.write("remote product exists and PrestaShop is master for products, leaving untouched");
+				}
 				logBuffer.write(String.format(" [SUCCESS]%n"));
 				++done;
 			} catch (AxelorException | PrestaShopWebserviceException e) {
