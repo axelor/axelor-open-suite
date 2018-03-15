@@ -317,7 +317,7 @@ public class InvoiceController {
 				}else{
 					try {
 						invoiceService.validate(invoice);
-					} catch (AxelorException e) {
+					} catch (Exception e) {
 						TraceBackService.trace(e);
 					} finally{
 						if (count%10 == 0){
@@ -346,7 +346,7 @@ public class InvoiceController {
 				}else{
 					try {
 						invoiceService.ventilate(invoice);
-					} catch (AxelorException e) {
+					} catch (Exception e) {
 						TraceBackService.trace(e);
 					} finally{
 						if (count%10 == 0){
@@ -535,8 +535,8 @@ public class InvoiceController {
 						.context("_showRecord", String.valueOf(invoice.getId())).map());
 				response.setCanClose(true);
 			}
-		}catch(AxelorException ae){
-			response.setFlash(ae.getLocalizedMessage());
+		}catch(Exception e){
+			response.setFlash(e.getLocalizedMessage());
 		}
 	}
 
@@ -582,7 +582,7 @@ public class InvoiceController {
 					.createAdvancePaymentInvoiceSetDomain(invoice);
 			response.setAttr("advancePaymentInvoiceSet","domain", domain);
 
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			TraceBackService.trace(e);
 			response.setError(e.getMessage());
 		}
@@ -604,7 +604,7 @@ public class InvoiceController {
 			invoices = invoiceService
                     .getDefaultAdvancePaymentInvoice(invoice);
 			response.setValue("advancePaymentInvoiceSet", invoices);
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}

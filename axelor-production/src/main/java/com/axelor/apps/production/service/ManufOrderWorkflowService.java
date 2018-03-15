@@ -40,6 +40,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ManufOrderWorkflowService {
 	protected OperationOrderWorkflowService operationOrderWorkflowService;
@@ -61,8 +62,11 @@ public class ManufOrderWorkflowService {
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
-	    ManufOrderService manufOrderService = Beans.get(ManufOrderService.class);
+		ManufOrderService manufOrderService = Beans.get(ManufOrderService.class);
 
+		if (CollectionUtils.isEmpty(manufOrder.getOperationOrderList())) {
+			manufOrderService.preFillOperations(manufOrder);
+		}
 		if(!manufOrder.getIsConsProOnOperation())  {
 			manufOrderService.createToConsumeProdProductList(manufOrder);
 		}

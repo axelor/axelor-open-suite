@@ -92,7 +92,7 @@ public class LunchVoucherAdvanceController {
 					.generate()
 					.getFileLink();
 	    	response.setView(ActionView.define(name).add("html", fileLink).map());
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 	    	TraceBackService.trace(response, e);
 		}
 	}

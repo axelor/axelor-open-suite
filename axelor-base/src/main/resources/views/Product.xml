@@ -92,7 +92,7 @@
 					<field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
 					<field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
 					<panel name="units" title="Units" colSpan="6">
-						<field name="unit" canEdit="false" colSpan="12" form-view="unit-form" grid-view="unit-grid"/>
+						<field name="unit" canEdit="false" colSpan="12" form-view="unit-form" grid-view="unit-grid" readonlyIf="productTypeSelect = 'storable'"/>
 						<field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale').getManageSalesUnits()"/>
 						<field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('purchase').getManagePurchasesUnits()"/>
 					</panel>
@@ -326,7 +326,6 @@
         <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
 		<action name="action-product-method-supplier-catalog-coeff"/>
 		<action name="action-product-attrs-cost-price-variant"/>
-		<action name="save"/>
     </action-group>
 
 	<action-group name="action-product-group-cost-type-select-onchange">
@@ -459,21 +458,6 @@
 		<view type="form" name="product-form"/>
 		<domain>self.parentProduct.id = :_id</domain>
 	</action-view>	
-	
-	<action-view name="action-product-view-production-process" title="Production processes"
-		model="com.axelor.apps.production.db.ProdProcess">
-		<view type="grid" name="prod-process-grid"/>
-		<view type="form" name="prod-process-form"/>
-		<domain>self.product.id = :id </domain>
-	</action-view>	
-	
-	<action-attrs name="action-product-attrs-bill-of-material-domain">
-		<attribute name="domain" for="defaultBillOfMaterial" expr="eval: &quot;(self.product.id = ${parentProduct?.id} OR self.product.id = ${id}) AND self.defineSubBillOfMaterial = false&quot;"/>
-	</action-attrs>
-	
-	<action-attrs name="action-product-attrs-readonly-create-production-order">
-		<attribute name="readonly" for="createProductionOrder" expr="eval: __repo__(BillOfMaterial).all().filter('(self.product.id = ?1 OR self.product.id = ?2) AND self.defineSubBillOfMaterial = false', parentProduct?.id, id).fetch().isEmpty()"/>
-	</action-attrs>
 	
     <action-attrs name="action-product-attrs-title-unit" if-module="axelor-stock">
         <attribute name="title" for="unit" expr="eval: com.axelor.i18n.I18n.get('Unit')"/>

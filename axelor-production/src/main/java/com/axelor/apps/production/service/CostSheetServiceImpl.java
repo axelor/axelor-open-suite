@@ -214,7 +214,7 @@ public class CostSheetServiceImpl implements CostSheetService  {
 						costSheetLineService.createConsumedProductWasteCostSheetLine(product, billOfMaterialLine.getUnit(), bomLevel, parentCostSheetLine, billOfMaterialLine.getQty(), wasteRate);
 					}
 					
-					if(!billOfMaterialLine.getDefineSubBillOfMaterial())  {
+					if(billOfMaterialLine.getDefineSubBillOfMaterial())  {
 						this._computeCostPrice(billOfMaterialLine, bomLevel, costSheetLine);
 					}
 				}

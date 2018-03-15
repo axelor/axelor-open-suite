@@ -274,8 +274,8 @@ public class InvoiceController {
 								.context("_showRecord", String.valueOf(invoice.getId())).map());
 						response.setCanClose(true);
 					}
-				}catch(AxelorException ae){
-					response.setFlash(ae.getLocalizedMessage());
+				}catch(Exception e){
+					response.setFlash(e.getLocalizedMessage());
 				}
 			}
 			

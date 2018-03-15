@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
@@ -44,6 +45,7 @@ import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockLocation;
@@ -58,6 +60,7 @@ import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.tool.file.CsvTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -249,9 +252,12 @@ public class InventoryService {
 	
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public StockMove validateInventory(Inventory inventory) throws AxelorException {
+		AppBaseService baseService = Beans.get(AppBaseService.class);
 		StockMove stockMove = generateStockMove(inventory);
 		storeLastInventoryData(inventory);
 		inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
+		inventory.setValidatedBy(AuthUtils.getUser());
+		inventory.setValidatedOn(baseService.getTodayDate());
 		return stockMove;
 	}
 
@@ -405,6 +411,15 @@ public class InventoryService {
 		if (stockLocationLineList != null) {
 			Boolean succeed = false;
 			for (StockLocationLine stockLocationLine : stockLocationLineList) {
+				if (stockLocationLine.getTrackingNumber() == null) { // if no tracking number on stockLocationLine, check if there is a tracking number on the product
+					long numberOfTrackingNumberOnAProduct = Beans.get(StockLocationLineRepository.class).all()
+							.filter("self.product = ?1 AND self.trackingNumber IS NOT null",
+									stockLocationLine.getProduct()).count();
+
+					if (numberOfTrackingNumberOnAProduct != 0) { // there is a tracking number on the product
+						continue;
+					}
+				}
 				inventory.addInventoryLineListItem(this.createInventoryLine(inventory, stockLocationLine));
 				succeed = true;
 			}

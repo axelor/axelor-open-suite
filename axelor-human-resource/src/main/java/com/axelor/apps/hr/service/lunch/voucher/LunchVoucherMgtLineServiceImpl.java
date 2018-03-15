@@ -72,7 +72,7 @@ public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineServic
             compute(lunchVoucherMgtLine);
             fillLunchVoucherFormat(employee, lunchVoucherMgt, lunchVoucherMgtLine);
 		}
-		catch (AxelorException e) {
+		catch (Exception e) {
 			TraceBackService.trace(e);
 			lineStatus = LunchVoucherMgtLineRepository.STATUS_ANOMALY;
 		}

@@ -542,6 +542,7 @@
 
 	<action-view name="admin.root.calendars.ievents" title="IEvents"
 				 model="com.axelor.apps.base.db.ICalendarEvent">
+		<view type="calendar" name="calendar-event-all"/>
 		<view type="grid" name="calendar-event-grid"/>
 		<view type="form" name="calendar-event-form"/>
 	</action-view>

@@ -192,8 +192,8 @@ public class StockMoveInvoiceController {
 				}
 				response.setView(confirmView.map());
 			}
-		}catch(AxelorException ae){
-			response.setFlash(ae.getLocalizedMessage());
+		}catch(Exception e){
+			response.setFlash(e.getLocalizedMessage());
 		}
 	}
 

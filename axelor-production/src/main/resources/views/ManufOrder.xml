@@ -110,7 +110,7 @@
 					<field name="plannedStartDateT" title="Start date" onChange="action-manuf-order-method-update-planned-dates"/>
 					<field name="plannedEndDateT" title="End date"/>
 				</panel>
-				<panel name="realDates" title="Real dates">
+				<panel name="realDates" title="Real dates" showIf="statusSelect &gt; 3">
 					<field name="realStartDateT" title="Start date"/>
 					<field name="realEndDateT" title="End date"/>
 				</panel>
@@ -334,8 +334,8 @@
 	</action-attrs>
 
 	<action-attrs name="action-manuf-order-attrs-filter-bill-of-material">
-		<attribute name="domain" for="billOfMaterial" expr="eval: &quot; self.defineSubBillOfMaterial = true AND self.prodProcess IS NOT null AND self.product.id = ${product?.id} &quot;" if="product != null"/>
-		<attribute name="domain" for="billOfMaterial" expr="eval: &quot; self.defineSubBillOfMaterial = true AND self.prodProcess IS NOT null &quot;" if="product == null"/>
+		<attribute name="domain" for="billOfMaterial" expr="eval: &quot; self.defineSubBillOfMaterial = true AND self.product.id = ${product?.id} &quot;" if="product != null"/>
+		<attribute name="domain" for="billOfMaterial" expr="eval: &quot; self.defineSubBillOfMaterial = true &quot;" if="product == null"/>
 	</action-attrs>
 
   	<search-filters name="manuf-order-filters" model="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order filters">

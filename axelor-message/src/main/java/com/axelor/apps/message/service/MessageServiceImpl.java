@@ -17,35 +17,19 @@
  */
 package com.axelor.apps.message.service;
 
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.mail.MessagingException;
-
-import com.axelor.db.JPA;
-import com.axelor.db.Model;
-import com.axelor.i18n.I18n;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
+import com.axelor.db.JPA;
+import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.mail.MailBuilder;
 import com.axelor.mail.MailSender;
@@ -61,6 +45,19 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class MessageServiceImpl implements MessageService {
 
@@ -122,25 +119,14 @@ public class MessageServiceImpl implements MessageService {
                 ccEmailAddressSet = Sets.newHashSet();
 
         if (mediaTypeSelect == MessageRepository.MEDIA_TYPE_EMAIL) {
-
-            if (replyToEmailAddressList != null) {
-                replyToEmailAddressSet.addAll(replyToEmailAddressList);
-            }
-            if (bccEmailAddressList != null) {
-                bccEmailAddressSet.addAll(bccEmailAddressList);
-            }
-            if (toEmailAddressList != null) {
-                toEmailAddressSet.addAll(toEmailAddressList);
-            }
-            if (ccEmailAddressList != null) {
-                ccEmailAddressSet.addAll(ccEmailAddressList);
-            }
+            if (replyToEmailAddressList != null) { replyToEmailAddressSet.addAll(replyToEmailAddressList); }
+            if (bccEmailAddressList != null) { bccEmailAddressSet.addAll(bccEmailAddressList); }
+            if (toEmailAddressList != null) { toEmailAddressSet.addAll(toEmailAddressList); }
+            if (ccEmailAddressList != null) { ccEmailAddressSet.addAll(ccEmailAddressList); }
         }
 
         if (emailAccount != null) {
-
             content += "<p></p><p></p>" + Beans.get(MailAccountService.class).getSignature(emailAccount);
-
         }
 
         Message message = new Message(typeSelect, subject, content, statusSelect, mediaTypeSelect, addressBlock, fromEmailAddress, replyToEmailAddressSet, toEmailAddressSet, ccEmailAddressSet, bccEmailAddressSet, sentByEmail, emailAccount);
@@ -154,9 +140,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     public Message sendMessage(Message message) throws AxelorException {
-
         try {
-
             if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_MAIL) {
                 return sendByMail(message);
             } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_EMAIL) {
@@ -164,13 +148,10 @@ public class MessageServiceImpl implements MessageService {
             } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_CHAT) {
                 return sendToUser(message);
             }
-
         } catch (MessagingException | IOException e) {
             TraceBackService.trace(e);
         }
-
         return message;
-
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -218,6 +199,10 @@ public class MessageServiceImpl implements MessageService {
                 toRecipients = this.getEmailAddresses(message.getToEmailAddressSet()),
                 ccRecipients = this.getEmailAddresses(message.getCcEmailAddressSet()),
                 bccRecipients = this.getEmailAddresses(message.getBccEmailAddressSet());
+
+        if (toRecipients.isEmpty() && ccRecipients.isEmpty() && bccRecipients.isEmpty()) {
+            throw new AxelorException(message, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MESSAGE_8));
+        }
 
         MailSender sender = new MailSender(account);
         MailBuilder mailBuilder = sender.compose();
