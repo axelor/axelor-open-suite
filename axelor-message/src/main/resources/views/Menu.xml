@@ -45,7 +45,7 @@
 		<view type="form" name="message-form"/>
 	</action-view>
 
-	<menuitem name="mail-message-not-send" title="Messages not send" parent="mail-conf" order="26"
+	<menuitem name="mail-message-not-send" title="Messages not sent" parent="mail-conf" order="26"
 			  action="mail.root.messages.not.send"/>
     
 	<action-view name="mail.root.messages.not.send" title="Messages not sent" model="com.axelor.apps.message.db.Message">
