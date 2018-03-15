@@ -21,10 +21,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.mail.MessagingException;
@@ -58,7 +56,6 @@ import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.GeneralRepository;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -78,16 +75,12 @@ import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
-import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -525,23 +518,6 @@ public class ExpenseServiceImpl implements ExpenseService {
 		}
 		return invoiceLineGenerator.creates();
 	}
-
-	public void getExpensesTypes(ActionRequest request, ActionResponse response) {
-		List<Map<String, String>> dataList = new ArrayList<>();
-		try {
-			List<Product> productList = Beans.get(ProductRepository.class).all().filter("self.expense = true").fetch();
-			for (Product product : productList) {
-				Map<String, String> map = new HashMap<>();
-				map.put("name", product.getName());
-				map.put("id", product.getId().toString());
-				dataList.add(map);
-			}
-			response.setData(dataList);
-		} catch (Exception e) {
-			response.setStatus(-1);
-			response.setError(e.getMessage());
-		}
-	}
 	
 	@Override
 	public Expense getOrCreateExpense(User user) {
@@ -641,9 +617,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 		    LocalDate startDate = vehicle.getStartDate();
 			LocalDate endDate = vehicle.getEndDate();
 			if (startDate == null) {
-			    if (endDate == null) {
-					kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
-				} else if(expenseDate.compareTo(endDate)<=0) {
+			    if (endDate == null || expenseDate.compareTo(endDate)<=0) {
 					kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
 				}
 			} else if (endDate == null) {
@@ -654,10 +628,49 @@ public class ExpenseServiceImpl implements ExpenseService {
 				kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
 			}
 		}
-		
+
 		return kilometricAllowParamList;
 	}
-	
+
+	@Override
+	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine, Expense expense) throws AxelorException {
+
+		List<KilometricAllowParam> kilometricAllowParamList = new ArrayList<>();
+
+		if (expense == null) {
+			return kilometricAllowParamList;
+		}
+
+		if (expense.getId() != null) {
+			expense = expenseRepository.find(expense.getId());
+		}
+
+		if (expense.getUser() != null && expense.getUser().getEmployee() == null) {
+			return kilometricAllowParamList;
+		}
+
+		List<EmployeeVehicle> vehicleList = expense.getUser().getEmployee().getEmployeeVehicleList();
+		LocalDate expenseDate = expenseLine.getExpenseDate();
+
+		if (expenseDate == null) {
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_NO_DATE_SELECTED)),IException.MISSING_FIELD);
+		}
+
+		for (EmployeeVehicle vehicle : vehicleList) {
+		    if (vehicle.getKilometricAllowParam() == null) {
+		    	break;
+			}
+		    LocalDate startDate = vehicle.getStartDate();
+			LocalDate endDate = vehicle.getEndDate();
+			if ((startDate == null && (endDate == null || expenseDate.compareTo(endDate) <= 0))
+					|| (endDate == null && (expenseDate.compareTo(startDate) >= 0
+							|| (expenseDate.compareTo(startDate) >= 0 && expenseDate.compareTo(endDate) <= 0)))) {
+				kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
+			}
+		}
+		return kilometricAllowParamList;
+	}
+
 	public List<ExpenseLine> getExpenseLineList(Expense expense) {
 		List<ExpenseLine> expenseLineList = new ArrayList<>();
 		if (expense.getGeneralExpenseLineList() != null) {
