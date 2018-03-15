@@ -13,6 +13,7 @@ XlinkEntry$OrderDetailsXlink
 XlinkEntry$OrderHistoriesXlink
 XlinkEntry$OrderInvoicesXlink
 XlinkEntry$OrderPaymentsXlink
+XlinkEntry$OrderStatusesXlink
 XlinkEntry$OrdersXlink
 XlinkEntry$ProductsXlink
 XlinkEntry$StockAvailablesXlink

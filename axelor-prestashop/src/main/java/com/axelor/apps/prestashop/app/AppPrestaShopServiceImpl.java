@@ -52,9 +52,21 @@ public class AppPrestaShopServiceImpl implements AppPrestaShopService {
 			PrestashopResourceType.ORDER_HISTORIES,
 			PrestashopResourceType.ORDER_INVOICES,
 			PrestashopResourceType.ORDER_PAYMENTS,
+			PrestashopResourceType.ORDER_STATUSES,
 			PrestashopResourceType.ORDERS,
 			PrestashopResourceType.PRODUCTS,
 			PrestashopResourceType.STOCK_AVAILABLES
+	);
+
+	private static final Set<PrestashopResourceType> READONLY_XLINKS = Sets.newHashSet(
+			PrestashopResourceType.LANGUAGES,
+			PrestashopResourceType.ORDER_STATUSES
+	);
+
+	private static final Set<PrestashopResourceType> DELETABLE_XLINKS = Sets.newHashSet(
+			PrestashopResourceType.DELIVERIES,
+			PrestashopResourceType.ORDER_INVOICES,
+			PrestashopResourceType.ORDER_PAYMENTS
 	);
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
@@ -81,14 +93,14 @@ public class AppPrestaShopServiceImpl implements AppPrestaShopService {
 					if(entry.isRead() == false) {
 						errors.add(String.format(I18n.get("GET permission is missing for entity %s, related entities cannot be read"), entry.getEntryType().getLabel()));
 					}
-					if(entry.isCreate() == false && entry.getEntryType() != PrestashopResourceType.STOCK_AVAILABLES) {
+					if(entry.isCreate() == false && entry.getEntryType() != PrestashopResourceType.STOCK_AVAILABLES && READONLY_XLINKS.contains(entry.getEntryType()) == false) {
 						warnings.add(String.format(I18n.get("POST permission is missing for entity %s, related entities won't be created"), entry.getEntryType().getLabel()));
 					}
-					if(entry.isUpdate() == false) {
+					if(entry.isUpdate() == false && READONLY_XLINKS.contains(entry.getEntryType()) == false) {
 						warnings.add(String.format(I18n.get("PUT permission is missing for entity %s, related entities won't be updated"), entry.getEntryType().getLabel()));
 					}
-					if(entry.getEntryType() == PrestashopResourceType.ORDER_DETAILS && entry.isDelete() == false) {
-						warnings.add(I18n.get("DELETE permission is missing for entity order_details, orders wont be correctly updated"));
+					if(entry.isDelete() == false && DELETABLE_XLINKS.contains(entry.getEntryType())) {
+						warnings.add(String.format(I18n.get("DELETE permission is missing for entity %s, related entities wont be correctly updated"), entry.getEntryType().getLabel()));
 					}
 				} else {
 					info.add(String.format(I18n.get("Extra permission for %s is uneeded"), entry.getEntryType().getLabel()));

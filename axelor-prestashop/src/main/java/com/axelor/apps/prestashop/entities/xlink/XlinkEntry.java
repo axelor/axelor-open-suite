@@ -184,6 +184,14 @@ public abstract class XlinkEntry {
 		}
 	}
 
+	@XmlRootElement(name="order_states")
+	public static class OrderStatusesXlink extends XlinkEntry {
+		@Override
+		public PrestashopResourceType getEntryType() {
+			return PrestashopResourceType.ORDER_STATUSES;
+		}
+	}
+
 	@XmlRootElement(name="orders")
 	public static class OrdersXlink extends XlinkEntry {
 		@Override

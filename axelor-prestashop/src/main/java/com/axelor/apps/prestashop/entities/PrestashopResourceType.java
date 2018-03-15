@@ -18,6 +18,7 @@ public enum PrestashopResourceType {
 	ORDER_HISTORIES("order_histories"),
 	ORDER_INVOICES("order_invoices"),
 	ORDER_PAYMENTS("order_payments"),
+	ORDER_STATUSES("order_states"),
 	ORDERS("orders"),
 	PRODUCT_CATEGORIES("categories"),
 	PRODUCTS("products"),
