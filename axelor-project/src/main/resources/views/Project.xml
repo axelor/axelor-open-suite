@@ -150,6 +150,12 @@
                 <button name="allTask" title="All tasks" css="btn-custom text-left" icon="fa-tasks" colSpan="2" onClick="action-project-view-show-related-tasks"/>
 				<panel-dashlet title="Task Tree" colSpan="12" action="action-view-show-project-task-tree"/>
 			</panel>
+			<panel title="Phases" showIf="isProject &amp;&amp; childProjectList.length > 0">
+				<button name="addPhase" title="New" css="btn-custom text-left" icon="fa-plus" colSpan="2" onClick="save,action-project-view-phase-new"/>
+                <button name="allPhases" title="All phases" css="btn-custom text-left" icon="fa-tasks" colSpan="2" onClick="save,action-project-view-phase-all"/>
+                <button name="allPhaseTasks" title="All phase tasks" css="btn-custom text-left" icon="fa-tasks" colSpan="2" onClick="save,action-project-phase-view-show-phase-task"/>
+				<panel-dashlet title="Phases" colSpan="12" action="tree:project-phase-tree"/>
+			</panel>
 
 			<panel if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="invoicing" title="Invoicing" showIf="projInvTypeSelect == 3 &amp;&amp; isBusinessProject">
 				<field name="product" onChange="action-project-record-unit" requiredIf="projInvTypeSelect == 3 &amp;&amp; isBusinessProject"/>
@@ -321,6 +327,29 @@
     
 	</tree>
 	
+	<tree name="project-phase-tree" title="Phases">
+    	
+    	<column name="name" type="string"/>
+    	<column name="assignedTo" type="reference"/>
+    	<column name="progress" type="integer"/>
+		<column name="openTask" type="button"/>
+
+		<node model="com.axelor.apps.project.db.Project" domain="self.parentProject.id = :id" onClick="action-project-view-phase">
+			<field name="name" as="name"/>
+			<field name="assignedTo.fullName" as="assignedTo"/>
+			<field name="progress" as="progress"/>
+			<button name="openTask" title="Open phase" onClick="action-project-view-phase"/>
+		</node>
+		
+		<node model="com.axelor.team.db.TeamTask" parent="project" draggable="true" onClick="action-team-task-view-task">
+			<field name="name" as="name"/>
+			<field name="assignedTo.fullName" as="assignedTo"/>
+			<field name="progressSelect" as="progress"/>
+			<button name="openTask" title="Open task" onClick="action-team-task-open-task"/>
+		</node>
+		
+	</tree>
+	
 	<action-group name="action-project-group-on-new-project">
 		<action name="action-project-defaults"/>
 		<action name="action-project-attrs-duration-title"/>
@@ -357,6 +386,7 @@
 		<attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
 		<attribute name="value" for="isProject" expr="eval:_fromProject"/>
 		<attribute name="value" for="isBusinessProject" expr="eval:_fromBusinessProject"/>
+		<attribute name="value" for="parentProject" expr="eval:__repo__(Project).find(_parentProjectId)" if="_parentProjectId != null" />
 	</action-attrs>
 
 	<action-attrs name="action-attrs-project-add-member" model="com.axelor.apps.project.db.Project">
@@ -483,6 +513,47 @@
         <view type="form" name="invoice-line-form"/>
         <domain>self.invoice.operationTypeSelect = 3 AND self.project.id = :_id</domain>
     </action-view>
+	
+	<action-view name="action-project-view-phase" title="Project phase" model="com.axelor.apps.project.db.Project">
+		<view type="form" name="project-form"/>
+		<view type="grid" name="project-grid"/>
+		<view type="calendar" name="project-calendar"/>
+		<view type="kanban" name="project-kanban"/>
+		<domain>self.isProject = true and self.projectTypeSelect = :_xProjectTypeSelect and self.parentProject.id = :_parentId</domain>
+		<context name="_fromProject" expr="eval:true"/>
+		<context name="_xProjectTypeSelect" expr="eval: __repo__(Project).TYPE_PHASE"/>
+		<context name="_parentId" expr="eval:_id" />
+		<context name="_showRecord" expr="eval: id"/>
+	</action-view>
+	
+	<action-view name="action-project-view-phase-new" title="Project phase" model="com.axelor.apps.project.db.Project">
+		<view type="form" name="project-form"/>
+		<view type="grid" name="project-grid"/>
+		<view type="calendar" name="project-calendar"/>
+		<view type="kanban" name="project-kanban"/>
+		<domain>self.isProject = true and self.projectTypeSelect = :_xProjectTypeSelect and self.parentProject.id = :_parentProjectId</domain>
+		<context name="_fromProject" expr="eval:true"/>
+		<context name="_xProjectTypeSelect" expr="eval: __repo__(Project).TYPE_PHASE"/>
+		<context name="_parentProjectId" expr="eval:id" />
+	</action-view>
+	
+	<action-view name="action-project-view-phase-all" title="Project phases" model="com.axelor.apps.project.db.Project">
+		<view type="grid" name="project-grid"/>
+		<view type="form" name="project-form"/>
+		<view type="calendar" name="project-calendar"/>
+		<view type="kanban" name="project-kanban"/>
+		<domain>self.isProject = true and self.projectTypeSelect = :_xProjectTypeSelect and self.parentProject.id = :_parentProjectId</domain>
+		<context name="_fromProject" expr="eval:true"/>
+		<context name="_xProjectTypeSelect" expr="eval: __repo__(Project).TYPE_PHASE"/>
+		<context name="_parentProjectId" expr="eval:id" />
+	</action-view>
+	
+	<action-view name="action-project-phase-view-show-phase-task" title="Phase tasks" model="com.axelor.team.db.TeamTask">
+		<view type="grid" name="team-task-grid" />
+		<view type="form" name="team-task-form" />
+		<domain>self.project.parentProject.id = :_projectId</domain>
+		<context name="_projectId" expr="eval:id" />
+	</action-view>
 	 
 	<action-record name="action-project-record-compute-exTaxTotal" model="com.axelor.apps.project.db.Project">
 		<field name="exTaxTotal" expr="eval: price*qty"/>
