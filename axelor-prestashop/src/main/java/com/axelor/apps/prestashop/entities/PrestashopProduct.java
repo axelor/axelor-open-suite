@@ -24,6 +24,10 @@ public class PrestashopProduct extends PrestashopIdentifiableEntity {
 	);
 	private static String PRODUCT_BUNDLE_TAG = "product_bundle";
 
+	public static String PRODUCT_TYPE_SIMPLE = "simple";
+	public static String PRODUCT_TYPE_PACK = "pack";
+	public static String PRODUCT_TYPE_VIRTUAL = "virtual";
+
 	private Integer manufacturerId;
 	private Integer supplierId;
 	private Integer defaultCategoryId;
