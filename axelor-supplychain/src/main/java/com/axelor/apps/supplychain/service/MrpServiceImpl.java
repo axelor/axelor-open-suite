@@ -327,6 +327,9 @@ public class MrpServiceImpl implements MrpService  {
 		MrpLine mrpLine = this.getPreviousProposalMrpLine(product, mrpLineType, stockLocation, maturityDate);
 		
 		if(mrpLine != null)  {
+			if (mrpLineType.getTypeSelect() == MrpLineTypeRepository.TYPE_OUT) {
+			    reorderQty = reorderQty.negate();
+			}
 			mrpLine.setQty(mrpLine.getQty().add(reorderQty));
 			mrpLine.setRelatedToSelectName(null);
 

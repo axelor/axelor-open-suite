@@ -95,7 +95,7 @@ public class AccountClearanceService{
 
 		this.testCompanyField(company);
 
-		List<? extends MoveLine> moveLineList = moveLineRepo.all().filter("self.company = ?1 AND self.account.useForPartnerBalance = 'true' AND self.fromSchedulePaymentOk = 'false' " +
+		List<? extends MoveLine> moveLineList = moveLineRepo.all().filter("self.company = ?1 AND self.account.useForPartnerBalance = 'true' " +
 				"AND self.move.statusSelect = ?2 AND self.amountRemaining > 0 AND self.amountRemaining <= ?3 AND self.credit > 0 AND self.account in ?4 AND self.date <= ?5",
 				company, MoveRepository.STATUS_VALIDATED , accountClearance.getAmountThreshold(),
 				company.getAccountConfig().getClearanceAccountSet(), accountClearance.getDateThreshold()).fetch();

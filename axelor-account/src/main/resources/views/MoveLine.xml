@@ -295,9 +295,6 @@
 		<filter title="Due Sale Entries">
 			<domain>(self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect = 4) AND self.dueDate &lt; CURRENT_DATE AND self.amountRemaining &gt; 0</domain>
 		</filter>
-		<filter title="Payment Schedule Entries">
-			<domain>self.fromSchedulePaymentOk = true</domain>
-		</filter>
 		<filter title="Purchase Entries">
 			<domain>self.move.invoice.operationTypeSelect = 1 OR self.move.invoice.operationTypeSelect = 2</domain>
 		</filter>

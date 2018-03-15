@@ -375,8 +375,8 @@
                         <dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
                         <dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
 
-              			<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+              			<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
+           		 		<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
 
                         <dd ng-if="record.statusSelect == 1">-{{record.amount}} {{record.currency.symbol}}</dd>
                         <dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{record.amount}} {{record.currency.symbol}})</dd>
