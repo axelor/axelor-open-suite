@@ -562,6 +562,20 @@ public class PSWebServiceClient {
 		}
 	}
 
+	public byte[] fetchImage(final PrestashopResourceType resourceType, final PrestashopIdentifiableEntity boundEntity, final int imageId) throws PrestaShopWebserviceException {
+		HttpGet request = new HttpGet(String.format("%s/api/images/%s/%d/%d", this.url, resourceType.getLabel(), boundEntity.getId(), imageId));
+
+		RequestResult result = null;
+		try {
+			result = executeRequest(request);
+			return IOUtils.toByteArray(result.content);
+		} catch(Exception e) {
+			throw new PrestaShopWebserviceException("An error occured while fetching image", e);
+		} finally {
+			if(result != null) IOUtils.closeQuietly(result.response);
+		}
+	}
+
 	/**
 	 * Since Prestashop is unable to assign a correct invoice number, let's "compute" it…
 	 * This is not concurrency safe, but a quick glance at prestashop's code tells me than
