@@ -17,6 +17,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.db.HRConfig;
+import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
@@ -29,6 +31,7 @@ import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.KilometricService;
+import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
@@ -86,19 +89,29 @@ public class HumanResourceMobileController {
 			expenseLine.setKilometricTypeSelect(new Integer(request.getData().get("allowanceTypeSelect").toString()));
 			expenseLine.setComments(request.getData().get("comments").toString());
 			expenseLine.setExpenseDate(LocalDate.parse(request.getData().get("date").toString()));
-			expenseLine.setExpenseProduct(Beans.get(ProductRepository.class).find(new Long(request.getData().get("expenseProduct").toString())));
+			expenseLine.setProject(Beans.get(ProjectRepository.class).find(new Long(request.getData().get("projectTask").toString())));
+
+			HRConfigService hrConfigService = Beans.get(HRConfigService.class);
+			HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
+			Product expenseProduct = hrConfigService.getKilometricExpenseProduct(hrConfig);
+			expenseLine.setExpenseProduct(expenseProduct);
 
 			Employee employee = user.getEmployee();
 			if (employee != null) {
-				expenseLine.setKilometricAllowParam(
-						expenseService.getListOfKilometricAllowParamVehicleFilter(expenseLine).get(0));
-				expenseLine.setTotalAmount(
-						Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
+				List<KilometricAllowParam> kilometricAllowParam = expenseService.getListOfKilometricAllowParamVehicleFilter(expenseLine, expense);
+				if(!kilometricAllowParam.isEmpty()){
+					expenseLine.setKilometricAllowParam(kilometricAllowParam.get(0));
+					expenseLine.setTotalAmount(
+							Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
+
+				}
 				expenseLine.setUntaxedAmount(expenseLine.getTotalAmount());
 			}
 
 			expense.addGeneralExpenseLineListItem(expenseLine);
 			Beans.get(ExpenseRepository.class).save(expense);
+
+			response.setValue("id", expenseLine.getId());
 		}
 	}
 
@@ -125,34 +138,35 @@ public class HumanResourceMobileController {
 		User user = AuthUtils.getUser();
 
 		try {
-			if (user != null) {
-				ExpenseService expenseService = Beans.get(ExpenseService.class);
+			if (user == null) {
+				return;
+			}
 
-				Expense expense = Beans.get(ExpenseRepository.class).all()
-						.filter("self.statusSelect = ?1 AND self.user.id = ?2",
-								ExpenseRepository.STATUS_DRAFT,
-								user.getId())
-						.order("-id")
-						.fetchOne();
-				if(expense == null){ return ;}
+			Expense expense = Beans.get(ExpenseRepository.class).all()
+					.filter("self.statusSelect = ?1 AND self.user.id = ?2", ExpenseRepository.STATUS_DRAFT,
+							user.getId())
+					.order("-id").fetchOne();
 
-				List<ExpenseLine> expenseLineList = Beans.get(ExpenseService.class).getExpenseLineList(expense);
-				if (expenseLineList != null && !expenseLineList.isEmpty()) {
-					Iterator<ExpenseLine> expenseLineIter = expenseLineList.iterator();
-					while (expenseLineIter.hasNext()) {
-						ExpenseLine generalExpenseLine = expenseLineIter.next();
+			if (expense == null) {
+				return;
+			}
 
-						if (generalExpenseLine.getKilometricExpense() != null
-								&& (expense.getKilometricExpenseLineList() != null
-										&& !expense.getKilometricExpenseLineList().contains(generalExpenseLine)
-										|| expense.getKilometricExpenseLineList() == null)) {
+			List<ExpenseLine> expenseLineList = Beans.get(ExpenseService.class).getExpenseLineList(expense);
+			if (expenseLineList != null && !expenseLineList.isEmpty()) {
+				Iterator<ExpenseLine> expenseLineIter = expenseLineList.iterator();
+				while (expenseLineIter.hasNext()) {
+					ExpenseLine generalExpenseLine = expenseLineIter.next();
 
-							expenseLineIter.remove();
-						}
+					if (generalExpenseLine.getKilometricExpense() != null
+							&& (expense.getKilometricExpenseLineList() != null
+									&& !expense.getKilometricExpenseLineList().contains(generalExpenseLine)
+									|| expense.getKilometricExpenseLineList() == null)) {
+
+						expenseLineIter.remove();
 					}
 				}
-				response.setValue("expenseLineList", expenseLineList);
 			}
+			response.setValue("expenseLineList", expenseLineList);
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
@@ -363,6 +377,80 @@ public class HumanResourceMobileController {
 			HashMap<String, Object> data = new HashMap<String, Object>();
 			data.put("id", leave.getId());
 			response.setData(data);
+			Beans.get(LeaveRequestRepository.class).save(leave);
+
+			response.setValue("id", leaveLine.getId());
+		}
+	}
+
+	/*
+	 * This method is used in mobile application.
+	 * It was in LeaveServiceImpl
+	 * @param request
+	 * @param response
+	 *
+	 * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getLeaveReason
+	 * Content-Type: application/json
+	 *
+	 * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:getLeaveReason
+	 * fields: no field
+	 *
+	 * payload:
+	 * { "data": {
+	 * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:getLeaveReason"
+	 * } }
+	 */
+	public void getLeaveReason(ActionRequest request, ActionResponse response){
+		List<Map<String,String>> dataList = new ArrayList<>();
+		try{
+			List<LeaveReason> leaveReasonList = Beans.get(LeaveReasonRepository.class).all().fetch();
+			for (LeaveReason leaveReason : leaveReasonList) {
+				Map<String, String> map = new HashMap<>();
+				map.put("name", leaveReason.getLeaveReason());
+				map.put("id", leaveReason.getId().toString());
+				dataList.add(map);
+			}
+			response.setData(dataList);
+			response.setTotal(dataList.size());
+		}
+		catch(Exception e){
+			response.setStatus(-1);
+			response.setError(e.getMessage());
+		}
+	}
+
+	/*
+	 * This method is used in mobile application.
+	 * It was in ExpenseServiceImpl
+	 * @param request
+	 * @param response
+	 *
+	 * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getExpensesTypes
+	 * Content-Type: application/json
+	 *
+	 * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:getExpensesTypes
+	 * fields: no field
+	 *
+	 * payload:
+	 * { "data": {
+	 * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:getExpensesTypes"
+	 * } }
+	 */
+	public void getExpensesTypes(ActionRequest request, ActionResponse response) {
+		List<Map<String, String>> dataList = new ArrayList<>();
+		try {
+			List<Product> productList = Beans.get(ProductRepository.class).all().filter("self.expense = true").fetch();
+			for (Product product : productList) {
+				Map<String, String> map = new HashMap<>();
+				map.put("name", product.getName());
+				map.put("id", product.getId().toString());
+				dataList.add(map);
+			}
+			response.setData(dataList);
+			response.setTotal(dataList.size());
+		} catch (Exception e) {
+			response.setStatus(-1);
+			response.setError(e.getMessage());
 		}
 	}
 }

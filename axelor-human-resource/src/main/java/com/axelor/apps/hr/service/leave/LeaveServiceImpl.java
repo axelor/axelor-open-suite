@@ -22,15 +22,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.mail.MessagingException;
 
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
+import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
@@ -38,13 +34,11 @@ import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
-import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
@@ -52,13 +46,10 @@ import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -431,25 +422,6 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		}
 	
 		return leaveDays;
-	}
-	
-	public void getLeaveReason(ActionRequest request, ActionResponse response){
-		List<Map<String,String>> dataList = new ArrayList<>();
-		try{
-			List<LeaveReason> leaveReasonList = Beans.get(LeaveReasonRepository.class).all().fetch();
-			for (LeaveReason leaveReason : leaveReasonList) {
-				Map<String, String> map = new HashMap<>();
-				map.put("name", leaveReason.getLeaveReason());
-				map.put("id", leaveReason.getId().toString());
-				dataList.add(map);
-			}
-			response.setData(dataList);
-			response.setTotal(dataList.size());
-		}
-		catch(Exception e){
-			response.setStatus(-1);
-			response.setError(e.getMessage());
-		}
 	}
 
 	@Override
