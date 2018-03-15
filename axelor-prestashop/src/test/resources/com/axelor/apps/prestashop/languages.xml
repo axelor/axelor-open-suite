@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+	<languages>
+		<language>
+			<id><![CDATA[1]]></id>
+			<name><![CDATA[Français (French)]]></name>
+			<iso_code><![CDATA[fr]]></iso_code>
+			<locale><![CDATA[fr-FR]]></locale>
+			<language_code><![CDATA[fr]]></language_code>
+			<active><![CDATA[1]]></active>
+			<is_rtl><![CDATA[0]]></is_rtl>
+			<date_format_lite><![CDATA[d/m/Y]]></date_format_lite>
+			<date_format_full><![CDATA[d/m/Y H:i:s]]></date_format_full>
+		</language>
+		<language>
+			<id><![CDATA[2]]></id>
+			<name><![CDATA[Anglais]]></name>
+			<iso_code><![CDATA[en]]></iso_code>
+			<locale></locale>
+			<language_code><![CDATA[en-US]]></language_code>
+			<active><![CDATA[1]]></active>
+			<is_rtl><![CDATA[0]]></is_rtl>
+			<date_format_lite><![CDATA[Y-m-d]]></date_format_lite>
+			<date_format_full><![CDATA[Y-m-d H:i:s]]></date_format_full>
+		</language>
+	</languages>
+</prestashop>

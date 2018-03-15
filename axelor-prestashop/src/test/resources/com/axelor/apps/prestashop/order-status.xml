@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+	<order_state>
+		<id><![CDATA[1]]></id>
+		<unremovable><![CDATA[1]]></unremovable>
+		<delivery><![CDATA[0]]></delivery>
+		<hidden><![CDATA[0]]></hidden>
+		<send_email><![CDATA[1]]></send_email>
+		<module_name><![CDATA[ps_checkpayment]]></module_name>
+		<invoice><![CDATA[0]]></invoice>
+		<color><![CDATA[#4169E1]]></color>
+		<logable><![CDATA[0]]></logable>
+		<shipped><![CDATA[0]]></shipped>
+		<paid><![CDATA[0]]></paid>
+		<pdf_delivery><![CDATA[0]]></pdf_delivery>
+		<pdf_invoice><![CDATA[0]]></pdf_invoice>
+		<deleted><![CDATA[0]]></deleted>
+		<name>
+			<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[En attente du paiement par chèque]]></language>
+			<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[En attente du paiement par chèque]]></language>
+		</name>
+		<template>
+			<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[cheque]]></language>
+			<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[cheque]]></language>
+		</template>
+	</order_state>
+</prestashop>

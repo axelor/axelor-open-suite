@@ -51,6 +51,10 @@ public abstract class ListContainer<T extends PrestashopContainerEntity> extends
 	public static class DeliveriesContainer extends ListContainer<PrestashopDelivery> {
 	}
 
+	@XmlRootElement(name="languages")
+	public static class LanguagesContainer extends ListContainer<PrestashopLanguage> {
+	}
+
 	@XmlRootElement(name="order_details")
 	public static class OrderRowsDetailsContainer extends ListContainer<PrestashopOrder> {
 	}
@@ -65,6 +69,10 @@ public abstract class ListContainer<T extends PrestashopContainerEntity> extends
 
 	@XmlRootElement(name="order_payments")
 	public static class OrderPaymentsContainer extends ListContainer<PrestashopOrderPayment> {
+	}
+
+	@XmlRootElement(name="order_states")
+	public static class OrderStatusesContainer extends ListContainer<PrestashopOrderStatus> {
 	}
 
 	@XmlRootElement(name="orders")

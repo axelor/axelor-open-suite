@@ -4,10 +4,12 @@ ListContainer$CountriesContainer
 ListContainer$CurrenciesContainer
 ListContainer$CustomersContainer
 ListContainer$DeliveriesContainer
+ListContainer$LanguagesContainer
 ListContainer$OrderRowsDetailsContainer
 ListContainer$OrderHistoriesContainer
 ListContainer$OrderInvoicesContainer
 ListContainer$OrderPaymentsContainer
+ListContainer$OrderStatusesContainer
 ListContainer$OrdersContainer
 ListContainer$ProductCategoriesContainer
 ListContainer$ProductsContainer
@@ -21,10 +23,12 @@ PrestashopCurrency
 PrestashopCustomer
 PrestashopDelivery
 PrestashopImage
+PrestashopLanguage
 PrestashopOrder
 PrestashopOrderHistory
 PrestashopOrderInvoice
 PrestashopOrderPayment
 PrestashopOrderRowDetails
+PrestashopOrderStatus
 PrestashopProductCategory
 PrestashopProduct

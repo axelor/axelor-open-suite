@@ -22,10 +22,12 @@ import com.axelor.apps.prestashop.entities.ListContainer.CountriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CurrenciesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.CustomersContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.DeliveriesContainer;
+import com.axelor.apps.prestashop.entities.ListContainer.LanguagesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.OrderHistoriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.OrderInvoicesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.OrderPaymentsContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.OrderRowsDetailsContainer;
+import com.axelor.apps.prestashop.entities.ListContainer.OrderStatusesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.OrdersContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.ProductCategoriesContainer;
 import com.axelor.apps.prestashop.entities.ListContainer.ProductsContainer;
@@ -38,11 +40,13 @@ import com.axelor.apps.prestashop.entities.PrestashopCurrency;
 import com.axelor.apps.prestashop.entities.PrestashopCustomer;
 import com.axelor.apps.prestashop.entities.PrestashopDelivery;
 import com.axelor.apps.prestashop.entities.PrestashopImage;
+import com.axelor.apps.prestashop.entities.PrestashopLanguage;
 import com.axelor.apps.prestashop.entities.PrestashopOrder;
 import com.axelor.apps.prestashop.entities.PrestashopOrderHistory;
 import com.axelor.apps.prestashop.entities.PrestashopOrderInvoice;
 import com.axelor.apps.prestashop.entities.PrestashopOrderPayment;
 import com.axelor.apps.prestashop.entities.PrestashopOrderRowDetails;
+import com.axelor.apps.prestashop.entities.PrestashopOrderStatus;
 import com.axelor.apps.prestashop.entities.PrestashopProduct;
 import com.axelor.apps.prestashop.entities.PrestashopProductCategory;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
@@ -603,5 +607,72 @@ public class UnmarshalTest {
 		Assert.assertEquals(DeliveriesContainer.class, envelop.getContent().getClass());
 		DeliveriesContainer deliveries = envelop.getContent();
 		Assert.assertEquals(4, deliveries.getEntities().size());
+	}
+
+	@Test
+	public void testOrderStatus() throws JAXBException {
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("order-status.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(PrestashopOrderStatus.class, envelop.getContent().getClass());
+		PrestashopOrderStatus s = envelop.getContent();
+
+		Assert.assertEquals(Integer.valueOf(1), s.getId());
+		Assert.assertTrue(s.getUnremovable());
+		Assert.assertFalse(s.getDelivered());
+		Assert.assertFalse(s.getHidden());
+		Assert.assertTrue(s.getSendEmail());
+		Assert.assertEquals("ps_checkpayment", s.getModuleName());
+		Assert.assertFalse(s.getInvoiced());
+		Assert.assertEquals("#4169E1", s.getColor());
+		Assert.assertFalse(s.getLoggable());
+		Assert.assertFalse(s.getShipped());
+		Assert.assertFalse(s.getPaid());
+		Assert.assertFalse(s.getPdfDelivery());
+		Assert.assertFalse(s.getPdfInvoice());
+		Assert.assertFalse(s.getDeleted());
+		Assert.assertEquals("En attente du paiement par chèque", s.getName().getTranslation(1));
+		Assert.assertEquals("cheque", s.getTemplate().getTranslation(1));
+	}
+
+	@Test
+	public void testOrderStatuses() throws JAXBException {
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("order-statuses.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(OrderStatusesContainer.class, envelop.getContent().getClass());
+		OrderStatusesContainer statuses = envelop.getContent();
+
+		Assert.assertEquals(13, statuses.getEntities().size());
+	}
+
+	@Test
+	public void testLanguage() throws JAXBException {
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("language.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(PrestashopLanguage.class, envelop.getContent().getClass());
+		PrestashopLanguage l = envelop.getContent();
+
+		Assert.assertEquals(Integer.valueOf(1), l.getId());
+		Assert.assertEquals("Français (French)", l.getName());
+		Assert.assertEquals("fr", l.getIsoCode());
+		Assert.assertEquals("fr-FR", l.getLocale());
+		Assert.assertEquals("fr", l.getLanguageCode());
+		Assert.assertTrue(l.getActive());
+		Assert.assertFalse(l.getRtl());
+		Assert.assertEquals("d/m/Y", l.getLiteDateFormat());
+		Assert.assertEquals("d/m/Y H:i:s", l.getFullDateFormat());
+	}
+
+	@Test
+	public void testLanguages() throws JAXBException {
+		Prestashop envelop = (Prestashop) getUnmarshaller().unmarshal(getClass().getResourceAsStream("languages.xml"));
+
+		Assert.assertNotNull(envelop.getContent());
+		Assert.assertEquals(LanguagesContainer.class, envelop.getContent().getClass());
+		LanguagesContainer statuses = envelop.getContent();
+
+		Assert.assertEquals(2, statuses.getEntities().size());
 	}
 }
