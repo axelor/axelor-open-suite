@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.prestashop.imports;
 
-import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.Writer;
 import java.time.ZonedDateTime;
 
 import javax.xml.bind.JAXBException;
@@ -56,13 +56,11 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 	private ImportCategoryService categoryService;
 	private ImportProductService productService;
 	private ImportOrderService orderService;
-	private ImportOrderDetailService orderDetailService;
 
 	@Inject
 	public PrestaShopServiceImportImpl(MetaFiles metaFiles, ImportCurrencyService currencyService, ImportCountryService countryService,
 			ImportCustomerService customerService, ImportAddressService addressService,
-			ImportCategoryService categoryService, ImportProductService productService, ImportOrderService orderService,
-			ImportOrderDetailService orderDetailService) throws IOException {
+			ImportCategoryService categoryService, ImportProductService productService, ImportOrderService orderService) {
 		this.metaFiles = metaFiles;
 		this.currencyService = currencyService;
 		this.countryService = countryService;
@@ -71,11 +69,10 @@ public class PrestaShopServiceImportImpl implements PrestaShopServiceImport {
 		this.categoryService = categoryService;
 		this.productService = productService;
 		this.orderService = orderService;
-		this.orderDetailService = orderDetailService;
 	}
 
 
-	public void importAxelorBase(AppPrestashop appConfig, ZonedDateTime endDate, final BufferedWriter logWriter) throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
+	public void importAxelorBase(AppPrestashop appConfig, ZonedDateTime endDate, final Writer logWriter) throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
 		currencyService.importCurrency(appConfig, endDate, logWriter);
 		countryService.importCountry(appConfig, endDate, logWriter);
 		customerService.importCustomer(appConfig, endDate, logWriter);

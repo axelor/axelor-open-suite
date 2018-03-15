@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.prestashop.imports.service;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -64,7 +64,7 @@ public class ImportCurrencyServiceImpl implements ImportCurrencyService {
 
 	@Override
 	@Transactional
-	public void importCurrency(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter logBuffer) throws IOException, PrestaShopWebserviceException {
+	public void importCurrency(AppPrestashop appConfig, ZonedDateTime endDate, Writer logBuffer) throws IOException, PrestaShopWebserviceException {
 		Integer done = 0;
 		Integer errors = 0;
 

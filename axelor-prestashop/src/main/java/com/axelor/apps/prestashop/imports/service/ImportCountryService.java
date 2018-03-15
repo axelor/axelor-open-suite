@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.prestashop.imports.service;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.time.ZonedDateTime;
 
 import com.axelor.apps.base.db.AppPrestashop;
@@ -30,5 +30,5 @@ public interface ImportCountryService {
 	 * Import countries from prestashop.
 	 *
 	 */
-	public void importCountry(AppPrestashop appConfig, ZonedDateTime endDate, BufferedWriter logBuffer) throws IOException, PrestaShopWebserviceException;
+	public void importCountry(AppPrestashop appConfig, ZonedDateTime endDate, Writer logBuffer) throws IOException, PrestaShopWebserviceException;
 }
