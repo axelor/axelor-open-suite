@@ -15,8 +15,8 @@
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-form"/>
 		<view-param name="search-filters" value="customer-deliveries-filters"/>
-		<domain>self.toStockLocation.typeSelect = 2 OR self.toStockLocation.typeSelect = 3</domain>
-		<context name="_typeSelect" expr="2"/>
+        <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
+		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
 	</action-view>
 	
 	<menuitem name="stock-root-suparrivals" parent="stock-root"
@@ -28,8 +28,8 @@
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-form"/>
 		<view-param name="search-filters" value="supplier-arrivals-filters"/>
-		<domain>self.fromStockLocation.typeSelect = 2 OR self.fromStockLocation.typeSelect = 3</domain>
-		<context name="_typeSelect" expr="3"/>
+        <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
+		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
 		<context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
 	</action-view>	
 	
@@ -43,8 +43,8 @@
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-form"/>
 		<view-param name="search-filters" value="internal-stock-move-filters"/>
-		<domain>self.typeSelect = 1</domain>
-		<context name="_typeSelect" expr="1"/>
+		<domain>self.typeSelect = :_typeSelect</domain>
+		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INTERNAL"/>
 	</action-view>
 
 

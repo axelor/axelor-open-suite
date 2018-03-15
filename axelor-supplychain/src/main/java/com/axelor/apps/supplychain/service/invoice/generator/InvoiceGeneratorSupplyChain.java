@@ -33,23 +33,32 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
 
 	protected PurchaseOrder purchaseOrder;
 
-	protected InvoiceGeneratorSupplyChain(SaleOrder saleOrder) throws AxelorException {
+    protected InvoiceGeneratorSupplyChain(SaleOrder saleOrder) throws AxelorException {
+        this(saleOrder, false);
+    }
 
-		super(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, saleOrder.getCompany(), saleOrder.getPaymentCondition(), saleOrder.getPaymentMode(), saleOrder.getMainInvoicingAddress(), 
-				saleOrder.getClientPartner(), saleOrder.getContactPartner(), saleOrder.getCurrency(), saleOrder.getPriceList(), saleOrder.getSaleOrderSeq(), 
-				saleOrder.getExternalReference(), saleOrder.getInAti(), saleOrder.getCompanyBankDetails());
-		this.saleOrder = saleOrder;
-		
-	}
+    protected InvoiceGeneratorSupplyChain(SaleOrder saleOrder, boolean isRefund) throws AxelorException {
+        super(isRefund ? InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND : InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
+                saleOrder.getCompany(), saleOrder.getPaymentCondition(), saleOrder.getPaymentMode(),
+                saleOrder.getMainInvoicingAddress(), saleOrder.getClientPartner(), saleOrder.getContactPartner(),
+                saleOrder.getCurrency(), saleOrder.getPriceList(), saleOrder.getSaleOrderSeq(),
+                saleOrder.getExternalReference(), saleOrder.getInAti(), saleOrder.getCompanyBankDetails());
+        this.saleOrder = saleOrder;
+    }
 
-	protected InvoiceGeneratorSupplyChain(PurchaseOrder purchaseOrder) throws AxelorException {
+    protected InvoiceGeneratorSupplyChain(PurchaseOrder purchaseOrder) throws AxelorException {
+        this(purchaseOrder, false);
+    }
 
-		super(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE, purchaseOrder.getCompany(), purchaseOrder.getPaymentCondition(), purchaseOrder.getPaymentMode(), null, 
-				purchaseOrder.getSupplierPartner(), purchaseOrder.getContactPartner(), purchaseOrder.getCurrency(), purchaseOrder.getPriceList(), purchaseOrder.getPurchaseOrderSeq(),  
-				purchaseOrder.getExternalReference(), purchaseOrder.getInAti(), purchaseOrder.getCompanyBankDetails());
-		this.purchaseOrder = purchaseOrder;
-		
-	}
+    protected InvoiceGeneratorSupplyChain(PurchaseOrder purchaseOrder, boolean isRefund) throws AxelorException {
+        super(isRefund ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+                : InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE, purchaseOrder.getCompany(),
+                purchaseOrder.getPaymentCondition(), purchaseOrder.getPaymentMode(), null,
+                purchaseOrder.getSupplierPartner(), purchaseOrder.getContactPartner(), purchaseOrder.getCurrency(),
+                purchaseOrder.getPriceList(), purchaseOrder.getPurchaseOrderSeq(), purchaseOrder.getExternalReference(),
+                purchaseOrder.getInAti(), purchaseOrder.getCompanyBankDetails());
+        this.purchaseOrder = purchaseOrder;
+    }
 
 	/**
 	 * PaymentCondition, Paymentmode, MainInvoicingAddress, Currency récupérés du tiers

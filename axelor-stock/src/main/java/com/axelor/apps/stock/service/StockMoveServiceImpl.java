@@ -630,6 +630,9 @@ public class StockMoveServiceImpl implements StockMoveService {
 				if (split) {
 					newStockMoveLine.setQty(stockMoveLine.getRealQty().subtract(stockMoveLine.getQty()));
 					newStockMoveLine.setRealQty(newStockMoveLine.getQty());
+				} else {
+                    newStockMoveLine.setQty(stockMoveLine.getRealQty());
+				    newStockMoveLine.setRealQty(stockMoveLine.getRealQty());
 				}
 
 				newStockMove.addStockMoveLineListItem(newStockMoveLine);
@@ -641,6 +644,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
 		newStockMove.setName(computeName(newStockMove, newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_8) + " "
                 + stockMove.getStockMoveSeq() + " )"));
+		newStockMove.setIsReversion(true);
 
 		return stockMoveRepo.save(newStockMove);
 
