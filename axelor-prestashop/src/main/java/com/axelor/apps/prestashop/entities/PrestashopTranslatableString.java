@@ -49,6 +49,16 @@ public class PrestashopTranslatableString implements Cloneable {
 		return null;
 	}
 
+	public void setTranslation(final int language, final String translation) {
+		for(PrestashopTranslationEntry e : translations) {
+			if(e.getLanguageId() == language) {
+				e.setTranslation(translation);
+				return;
+			}
+		}
+		translations.add(new PrestashopTranslationEntry(language, translation));
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
@@ -66,6 +76,11 @@ public class PrestashopTranslatableString implements Cloneable {
 		public PrestashopTranslationEntry(final PrestashopTranslationEntry other) {
 			this.languageId = other.languageId;
 			this.translation = other.translation;
+		}
+
+		public PrestashopTranslationEntry(int languageId, String translation) {
+			this.languageId = languageId;
+			this.translation = translation;
 		}
 
 		@XmlAttribute(name="id")
