@@ -21,25 +21,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.bind.JAXBContext;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.axelor.apps.base.db.AppPrestashop;
-import com.axelor.apps.prestashop.entities.Prestashop;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.entities.xlink.ApiContainer;
 import com.axelor.apps.prestashop.entities.xlink.XlinkEntry;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
-import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
+import com.axelor.apps.prestashop.service.library.PrestashopHttpException;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Sets;
-
-import groovy.xml.XmlUtil;
 
 public class AppPrestaShopServiceImpl implements AppPrestaShopService {
 	// Static list of required xlinks, this could be made dynamic and built
@@ -77,29 +71,8 @@ public class AppPrestaShopServiceImpl implements AppPrestaShopService {
 				errors.add(I18n.get("URL is invalid, it should not be empty nor contain the trailing slash"));
 				return;
 			}
-			PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl() + "/api", appConfig.getPrestaShopKey());
-
-			Options options = new Options();
-			options.setFullUrl(appConfig.getPrestaShopUrl() + "/api");
-
-			// FIXME Should be moved to PSWSC instead of blindly translating php to Java
-			final Document doc = ws.get(options);
-			Prestashop envelop = (Prestashop) JAXBContext.newInstance("com.axelor.apps.prestashop.entities:com.axelor.apps.prestashop.entities.xlink")
-					.createUnmarshaller()
-					.unmarshal(doc);
-			if(envelop == null) {
-				errors.add(I18n.get("Server returned an unparseable response, see server logs for details"));
-				logger.warn("Unparseable response from server while trying to check Prestashop's access rights: " + XmlUtil.serialize(doc.getDocumentElement()));
-				return;
-			}
-
-			if((envelop.getContent() instanceof ApiContainer) == false) {
-				errors.add(I18n.get("Server returned an invalid response, see server logs for details"));
-				logger.warn("Invalid response from server while trying to check Prestashop's access rights: " + XmlUtil.serialize(doc.getDocumentElement()));
-				return;
-			}
-
-			ApiContainer api = envelop.getContent();
+			PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
+			final ApiContainer api = ws.fetch("api");
 
 			@SuppressWarnings("unchecked")
 			Set<PrestashopResourceType> requiredEntries = (HashSet<PrestashopResourceType>)REQUIRED_XLINKS.clone();
@@ -108,7 +81,7 @@ public class AppPrestaShopServiceImpl implements AppPrestaShopService {
 					if(entry.isRead() == false) {
 						errors.add(String.format(I18n.get("GET permission is missing for entity %s, related entities cannot be read"), entry.getEntryType().getLabel()));
 					}
-					if(entry.isCreate() == false) {
+					if(entry.isCreate() == false && entry.getEntryType() != PrestashopResourceType.STOCK_AVAILABLES) {
 						warnings.add(String.format(I18n.get("POST permission is missing for entity %s, related entities won't be created"), entry.getEntryType().getLabel()));
 					}
 					if(entry.isUpdate() == false) {
@@ -134,7 +107,11 @@ public class AppPrestaShopServiceImpl implements AppPrestaShopService {
 			}
 
 		} catch (Exception e) {
-			errors.add(I18n.get("An error occured while checking Prestashop access rights, see server logs for details"));
+			if(e.getCause() != null && e.getCause() instanceof PrestashopHttpException) {
+				errors.add(String.format(I18n.get("An HTTP error occured while checking access rights: %s"), e.getCause().getLocalizedMessage()));
+			} else {
+				errors.add(String.format(I18n.get("An error occured while checking Prestashop access rights: %s, see server logs for details"), e.getLocalizedMessage()));
+			}
 			logger.error("An error occured while checking Prestashop access rights", e);
 		}
 	}

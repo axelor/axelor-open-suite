@@ -441,6 +441,29 @@ public class PSWebServiceClient {
 		}
 	}
 
+	/**
+	 * Fetches a container entity from relative URI. Used for non-resource types URI (eg. /api)
+	 * @param relativeUri URI of the resource to fetch, relative to {@link #url}
+	 * @return The fetched entity
+	 * @throws PrestaShopWebserviceException If any underlying call fails
+	 */
+	public <T extends PrestashopContainerEntity> T fetch(final String relativeUri) throws PrestaShopWebserviceException {
+		HttpGet httpget = new HttpGet(String.format("%s/%s", this.url, relativeUri));
+		RequestResult result = null;
+
+		try {
+			result = executeRequest(httpget);
+			return ((Prestashop)jaxbContext
+					.createUnmarshaller()
+					.unmarshal(result.content)).getContent();
+		} catch (JAXBException e) {
+			throw new PrestaShopWebserviceException("Error while unmarshalling response from fetch", e);
+		} finally {
+			log.trace("Closing connection");
+			if(result != null) IOUtils.closeQuietly(result.response);
+		}
+	}
+
 	public <T extends PrestashopIdentifiableEntity> void delete(final PrestashopResourceType resourceType, final T entity) throws PrestaShopWebserviceException {
 		Options options = new Options();
 		options.entityId = entity.getId();
