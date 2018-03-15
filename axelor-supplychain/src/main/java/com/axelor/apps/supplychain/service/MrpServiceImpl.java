@@ -96,8 +96,8 @@ public class MrpServiceImpl implements MrpService  {
 	
 	protected AppBaseService appBaseService;
 
-	protected List<StockLocation> stockLocationList = Lists.newArrayList();
-	protected Map<Long,Integer> productMap = Maps.newHashMap();
+	protected List<StockLocation> stockLocationList;
+	protected Map<Long,Integer> productMap;
 	protected Mrp mrp;
 	
 	
@@ -696,6 +696,8 @@ public class MrpServiceImpl implements MrpService  {
 	
 	
 	protected void assignProductAndLevel(Set<Product> productList)  {
+		
+		productMap = Maps.newHashMap();
 		
 		for(Product product : productList)  {
 			
