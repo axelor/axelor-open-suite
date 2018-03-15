@@ -33,13 +33,4 @@ public interface AppPrestaShopService {
 	 * access rights).
 	 */
 	public void checkAccess(AppPrestashop appConfig, final List<String> errors, final List<String> warnings, final List<String> info);
-
-	/**
-	 * Check prestashop url is valid or not
-	 *
-	 * @param ps  object of AppPrestashop contains configuration details
-	 * @return <code>true</code> if specified URL is valid (not null and
-	 * not ending with a /), <code>false</code> otherwise.
-	 */
-	public boolean validateUrl(AppPrestashop ps);
 }

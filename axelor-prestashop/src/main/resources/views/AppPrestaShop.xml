@@ -3,9 +3,9 @@
 
 	<form name="app-prestashop-config-form" title="App prestashop" model="com.axelor.apps.base.db.AppPrestashop" canDelete="false" canNew="false" width="large">
 		<panel title="Connection">
-			<field name="prestaShopUrl" onChange="com.axelor.apps.prestashop.web.AppPrestaShopController:validUrl"/>
+			<field name="prestaShopUrl" pattern="^http(?:s)?://.*[^/]$" placeholder="https://my.shop.com"/>
 			<field name="prestaShopKey"/>
-			<button name="btnTest" title="Test" onClick="save,com.axelor.apps.prestashop.web.AppPrestaShopController:testConnection"/>
+			<button name="btnTest" title="Test" onClick="com.axelor.apps.prestashop.web.AppPrestaShopController:testConnection"/>
 			<spacer/>
 			<field name="prestaShopCurrency" required="true"/>
 			<field name="prestaShopLengthUnit" required="true"/>

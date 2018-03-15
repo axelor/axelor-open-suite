@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -79,10 +78,6 @@ public class AppPrestaShopServiceImpl implements AppPrestaShopService {
 	@Override
 	public void checkAccess(AppPrestashop appConfig, final List<String> errors, final List<String> warnings, final List<String> info) {
 		try {
-			if(validateUrl(appConfig) == false) {
-				errors.add(I18n.get("URL is invalid, it should not be empty nor contain the trailing slash"));
-				return;
-			}
 			PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
 			final ApiContainer api = ws.fetch("api");
 
@@ -127,14 +122,4 @@ public class AppPrestaShopServiceImpl implements AppPrestaShopService {
 			logger.error("An error occured while checking Prestashop access rights", e);
 		}
 	}
-
-	@Override
-	public boolean validateUrl(AppPrestashop ps) {
-
-		String url = null;
-		url = ps.getPrestaShopUrl();
-
-		return StringUtils.isNotBlank(url) && url.endsWith("/") == false;
-	}
-
 }
