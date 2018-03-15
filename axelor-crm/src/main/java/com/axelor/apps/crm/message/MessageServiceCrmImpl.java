@@ -29,13 +29,12 @@ import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
 
-	public MessageServiceCrmImpl(MetaAttachmentRepository metaAttachmentRepository, MessageRepository messageRepository, TemplateMessageService templateMessageService, UserService userService) {
-		super(metaAttachmentRepository, messageRepository, templateMessageService, userService);
+	public MessageServiceCrmImpl(MetaAttachmentRepository metaAttachmentRepository, MessageRepository messageRepository, UserService userService) {
+		super(metaAttachmentRepository, messageRepository, userService);
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

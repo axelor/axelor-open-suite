@@ -19,27 +19,28 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.DebtRecoveryHistory;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.MessageService;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 import java.io.IOException;
 
-public class TemplateMessageServiceAccountImpl extends TemplateMessageServiceBaseImpl implements TemplateMessageServiceAccount {
+public class TemplateMessageAccountServiceImpl implements TemplateMessageAccountService {
 
-    @Inject
-	public TemplateMessageServiceAccountImpl(MessageService messageService) {
-		super(messageService);
+	protected TemplateMessageService templateMessageService;
+
+	@Inject
+	public TemplateMessageAccountServiceImpl(TemplateMessageService templateMessageService) {
+	    this.templateMessageService = templateMessageService;
 	}
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Message generateMessage(DebtRecoveryHistory debtRecoveryHistory, Template template) throws ClassNotFoundException, IOException, InstantiationException, AxelorException, IllegalAccessException {
-        Message message = super.generateMessage(debtRecoveryHistory, template);
+        Message message = this.templateMessageService.generateMessage(debtRecoveryHistory, template);
 		message.setRelatedTo2Select(Partner.class.getCanonicalName());
 		message.setRelatedTo2SelectId(Math.toIntExact(debtRecoveryHistory.getDebtRecovery().getAccountingSituation().getPartner().getId()));
 		debtRecoveryHistory.addDebtRecoveryMessageSetItem(message);

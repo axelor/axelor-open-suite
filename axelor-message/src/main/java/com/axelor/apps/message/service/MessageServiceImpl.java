@@ -65,14 +65,11 @@ public class MessageServiceImpl implements MessageService {
 
     private MetaAttachmentRepository metaAttachmentRepository;
     protected MessageRepository messageRepository;
-    protected TemplateMessageService templateMessageService;
 
     @Inject
-    public MessageServiceImpl(MetaAttachmentRepository metaAttachmentRepository, MessageRepository messageRepository,
-                              TemplateMessageService templateMessageService) {
+    public MessageServiceImpl(MetaAttachmentRepository metaAttachmentRepository, MessageRepository messageRepository) {
         this.metaAttachmentRepository = metaAttachmentRepository;
         this.messageRepository = messageRepository;
-        this.templateMessageService = templateMessageService;
     }
 
     @Override
@@ -286,7 +283,7 @@ public class MessageServiceImpl implements MessageService {
     public Message regenerateMessage(Message message) throws Exception {
         Class m = Class.forName(message.getRelatedTo1Select());
         Model model = JPA.all(m).filter("self.id = ?", message.getRelatedTo1SelectId()).fetchOne();
-        Message newMessage = templateMessageService.generateMessage(model, message.getTemplate());
+        Message newMessage = Beans.get(TemplateMessageService.class).generateMessage(model, message.getTemplate());
         messageRepository.remove(message);
         return newMessage;
     }

@@ -22,8 +22,6 @@
 	<boolean name="isDefault" title="Default ?"/>
 	<boolean name="isSystem" title="System ?"/>
 
-	<one-to-many name="messageList" ref="com.axelor.apps.message.db.Message" mappedBy="template"/>
-	
 	<extra-code><![CDATA[
 		// MEDIA TYPE SELECT
 		public static final int MEDIA_TYPE_MAIL = 1;
