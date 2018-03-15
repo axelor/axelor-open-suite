@@ -119,29 +119,4 @@ public class ProjectTaskBusinessService extends ProjectTaskService{
 		return task;
 	}
 	
-	public void getProjects(ActionRequest request, ActionResponse response){
-		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
-		try{
-			User user = AuthUtils.getUser();
-			if(user != null){
-				List<ProjectTask> projectTaskList = Beans.get(ProjectTaskRepository.class).all().filter("self.imputable = true").fetch();
-				for (ProjectTask projectTask : projectTaskList) {
-					if((projectTask.getMembersUserSet() != null && projectTask.getMembersUserSet().contains(user))
-							|| user.equals(projectTask.getAssignedTo())){
-						Map<String, String> map = new HashMap<String,String>();
-						map.put("name", projectTask.getName());
-						map.put("id", projectTask.getId().toString());
-						dataList.add(map);
-					}
-				}
-			}
-			response.setData(dataList);
-		}
-		catch(Exception e){
-			response.setStatus(-1);
-			response.setError(e.getMessage());
-		}
-		
-	}
-
 }

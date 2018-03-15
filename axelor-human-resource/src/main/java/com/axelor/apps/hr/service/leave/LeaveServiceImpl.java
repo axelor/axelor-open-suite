@@ -438,24 +438,6 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	
 		return leaveDays;
 	}
-	
-	public void getLeaveReason(ActionRequest request, ActionResponse response){
-		List<Map<String,String>> dataList = new ArrayList<>();
-		try{
-			List<LeaveReason> leaveReasonList = Beans.get(LeaveReasonRepository.class).all().fetch();
-			for (LeaveReason leaveReason : leaveReasonList) {
-				Map<String, String> map = new HashMap<>();
-				map.put("name", leaveReason.getLeaveReason());
-				map.put("id", leaveReason.getId().toString());
-				dataList.add(map);
-			}
-			response.setData(dataList);
-		}
-		catch(Exception e){
-			response.setStatus(-1);
-			response.setError(e.getMessage());
-		}
-	}
 		
 	@Override
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
