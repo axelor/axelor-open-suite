@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<form name="app-prestashop-config-form" title="App prestashop" model="com.axelor.apps.base.db.AppPrestashop" canDelete="false" canNew="false" width="large">
+	<form name="app-prestashop-config-form" title="App prestashop" model="com.axelor.apps.base.db.AppPrestashop" canDelete="false" canNew="false" width="large" onSave="action-app-prestashop-method-fetch-metadata">
 		<panel title="Connection">
 			<field name="prestaShopUrl" pattern="^http(?:s)?://.*[^/]$" placeholder="https://my.shop.com"/>
 			<field name="prestaShopKey"/>
@@ -17,12 +17,14 @@
 			<field name="paymentMode" canNew="true" canEdit="true" form-view="prestaShop-payment-mode-form" grid-view="prestaShop-payment-mode-grid"/>
 			<panel-related colSpan="12" field="saleOrderStatusList" form-view="prestaShop-sale-order-status-form" grid-view="prestaShop-sale-order-status-grid"/>
 		</panel>
+
 		<panel title="Export options (Axelor → PrestaShop)">
 			<field name="exportPriceScale"/>
 			<field name="exportNonSoldProducts" widget="boolean-switch"/>
 			<field name="exportNonPrestashopOrders" widget="boolean-switch"/>
 			<field name="exportNonPrestashopCustomers" widget="boolean-switch"/>
 		</panel>
+
 		<panel title="Reference data">
 			<label title="This allows to tweak which &quot;side&quot; has reference data on various entities to avoid back and forth overwrites." colSpan="12"/>
 			<field name="prestaShopMasterForCurrencies" widget="boolean-switch"/>
@@ -32,4 +34,8 @@
 			<field name="prestaShopMasterForProducts" widget="boolean-switch"/>
 		</panel>
 	</form>
+
+	<action-method name="action-app-prestashop-method-fetch-metadata">
+		<call class="com.axelor.apps.prestashop.web.AppPrestaShopController" method="importMetadata"/>
+	</action-method>
 </object-views>

@@ -48,6 +48,8 @@ import com.axelor.apps.prestashop.imports.service.ImportCurrencyService;
 import com.axelor.apps.prestashop.imports.service.ImportCurrencyServiceImpl;
 import com.axelor.apps.prestashop.imports.service.ImportCustomerService;
 import com.axelor.apps.prestashop.imports.service.ImportCustomerServiceImpl;
+import com.axelor.apps.prestashop.imports.service.ImportMetaDataService;
+import com.axelor.apps.prestashop.imports.service.ImportMetaDataServiceImpl;
 import com.axelor.apps.prestashop.imports.service.ImportOrderDetailService;
 import com.axelor.apps.prestashop.imports.service.ImportOrderDetailServiceImpl;
 import com.axelor.apps.prestashop.imports.service.ImportOrderService;
@@ -78,5 +80,6 @@ public class PrestaShopModule extends AxelorModule {
         bind(ImportProductService.class).to(ImportProductServiceImpl.class);
         bind(ImportOrderService.class).to(ImportOrderServiceImpl.class);
         bind(ImportOrderDetailService.class).to(ImportOrderDetailServiceImpl.class);
+        bind(ImportMetaDataService.class).to(ImportMetaDataServiceImpl.class);
     }
 }

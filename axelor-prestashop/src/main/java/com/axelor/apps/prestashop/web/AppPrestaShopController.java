@@ -23,9 +23,13 @@ import java.util.List;
 import javax.xml.transform.TransformerException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.prestashop.app.AppPrestaShopService;
+import com.axelor.apps.prestashop.imports.service.ImportMetaDataService;
+import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
@@ -35,9 +39,13 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class AppPrestaShopController {
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Inject
 	private AppPrestaShopService service;
+
+	@Inject
+	private ImportMetaDataService metadataService;
 
 	/**
 	 * Test connection with prestashop
@@ -65,16 +73,15 @@ public class AppPrestaShopController {
 		}
 	}
 
-	/**
-	 * Validate url which are set in configuration
-	 *
-	 * @param request
-	 * @param response
-	 */
-	public void validUrl(ActionRequest request, ActionResponse response) {
-		AppPrestashop ps = request.getContext().asType(AppPrestashop.class);
-		if(service.validateUrl(ps) == false) {
-			response.setError(I18n.get("URL is invalid, it should not be empty nor contain the trailing slash"));
+	public void importMetadata(ActionRequest request, ActionResponse response) {
+		AppPrestashop appConfig = request.getContext().asType(AppPrestashop.class);
+		PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
+		try {
+			metadataService.importLanguages(ws);
+			metadataService.importOrderStatuses(appConfig.getTextsLanguage(), ws);
+		} catch(PrestaShopWebserviceException e) {
+			response.setError(String.format(I18n.get("Error while fetching metadata, please perform a connection check: %s"), e.getLocalizedMessage()));
+			log.error("Error while fetch PrestaShop metadata", e);
 		}
 	}
 }
