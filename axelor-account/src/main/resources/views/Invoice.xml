@@ -169,7 +169,7 @@
             </panel>
             <field name="operationSubTypeSelect" hideIf="statusSelect &gt; 1 || (operationTypeSelect != 1 &amp;&amp; operationTypeSelect != 3) || $readonly()" showTitle="true"/>
             <field name="company" canEdit="false" readonlyIf="statusSelect != 1 || partner != null" onChange="action-group-account-invoice-company-onchange" form-view="company-form" grid-view="company-grid"/>
-            <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement" readonlyIf="statusSelect != 1 || partner != null" domain=":company MEMBER OF self.companySet" onChange="action-invoice-method-filter-printing-settings"/>
+            <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement" readonlyIf="statusSelect != 1 || partner != null" domain=":company MEMBER OF self.companySet" onChange="action-invoice-method-printing-settings-default-values"/>
             <field name="companyBankDetails" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
             <field name="currency" canEdit="false" onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
             <field name="project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if-module="axelor-business-project" if="__config__.app.isApp('project')"/>
@@ -271,7 +271,7 @@
 				<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
 			</panel>
 			<panel title="Printing" name="printing" colSpan="12">
-				<field name="printingSettings" required="true" canEdit="false"/>
+				<field name="printingSettings" onSelect="action-invoice-method-filter-printing-settings" canEdit="false"/>
 				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>
 				<field name="hideDiscount" colSpan="6"/>
 				<field name="note" colSpan="12"/>
@@ -719,7 +719,6 @@
         <action name="action-invoice-attrs-show-validate-button"/>
 		<action name="action-invoice-attrs-interco-supplychain"/>
 		<action name="action-invoice-attrs-change-create-refund-title"/>
-		<action name="action-invoice-method-filter-printing-settings"/>
     </action-group>
     
     <action-group name="action-group-account-invoice-operationtype-onchange">
@@ -1021,6 +1020,10 @@
 
 	<action-method name="action-invoice-method-filter-printing-settings">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="filterPrintingSettings"/>
+	</action-method>
+
+	<action-method name="action-invoice-method-printing-settings-default-values">
+		<call class="com.axelor.apps.account.web.InvoiceController" method="fillDefaultPrintingSettings"/>
 	</action-method>
 
 	<action-method name="action-invoice-method-fill-price-list">

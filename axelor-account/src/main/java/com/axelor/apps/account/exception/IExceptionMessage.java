@@ -569,4 +569,9 @@ public interface IExceptionMessage {
      */
     String PARTNER_BANK_DETAILS_MISSING = /*$$(*/ "Bank details are missing for partner %s." /*)*/;
 
+    /*
+     * Invoice printing
+     */
+    String INVOICE_MISSING_PRINTING_SETTINGS = /*$$(*/ "Please fill printing settings on invoice %s." /*)*/;
+	String INVOICES_MISSING_PRINTING_SETTINGS = /*$$(*/ "Please fill printing settings on following invoices: %s" /*)*/;
 }

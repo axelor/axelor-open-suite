@@ -125,7 +125,7 @@
             <field name="partner" domain="self.isContact = false" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form"/>
             <field name="company" readonlyIf="statusSelect != 1" onChange="action-stock-move-record-update-info-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
             <field name="name" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
-            <field name="tradingName" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-stock-move-method-filter-printing-settings" canEdit="false" if="__config__.app.getApp('base').enableTradingNamesManagement" grid-view="trading-name-grid" form-view="trading-name-form"/>
+            <field name="tradingName" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-stock-move-method-printing-settings-default-value" canEdit="false" if="__config__.app.getApp('base').enableTradingNamesManagement" grid-view="trading-name-grid" form-view="trading-name-form"/>
             <spacer if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
 
             <field name="fromStockLocation" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
@@ -204,7 +204,7 @@
                 <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect == 3 || statusSelect == 4" grid-view="sale-order-grid" form-view="sale-order-form"/>
                 <field name="purchaseOrder" readonlyIf="statusSelect == 3 || statusSelect == 4" grid-view="purchase-order-grid" form-view="purchase-order-form"/>
                 <field name="invoice" readonlyIf="statusSelect == 3 || statusSelect == 4" grid-view="invoice-grid" form-view="invoice-form"/>
-                <field name="printingSettings" required="true" canEdit="false"/>
+                <field name="printingSettings" onSelect="action-stock-move-method-filter-printing-settings" canEdit="false"/>
             </panel>
         </panel-tabs>
     </form>
@@ -278,7 +278,6 @@
     <action-group name="action-group-stock-stockmove-onload">
         <action name="action-stock-move-attrs-typeselect-change"/>
         <action name="action-stock-move-hide-reserved-qty"/>
-		<action name="action-stock-move-method-filter-printing-settings"/>
     </action-group>
     
 	<action-group name="action-group-stock-stockmove-plan-click">
@@ -404,11 +403,11 @@
 	</action-method>
 	
 	<action-method name="action-supply-chain-method-update-so-on-cancel" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateSaleOrderOnCancel" if="__config__.app.isApp('supplychain')" />
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateSaleOrderOnCancel"/>
 	</action-method>
 	
 	<action-method name="action-supply-chain-method-update-po-on-cancel" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updatePurchaseOrderOnCancel" if="__config__.app.isApp('supplychain')"  />
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updatePurchaseOrderOnCancel"/>
 	</action-method>
 	
 	<action-method name="action-print-stock-move">
@@ -541,6 +540,10 @@
 		<field name="tradingName" expr="eval: null" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 		<field name="printingSettings" expr="eval: company?.printingSettings"/>
 	</action-record>
+
+	<action-method name="action-stock-move-method-printing-settings-default-value">
+		<call class="com.axelor.apps.stock.web.StockMoveController" method="fillDefaultPrintingSettings"/>
+	</action-method>
 
 	<action-method name="action-stock-move-method-filter-printing-settings">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="filterPrintingSettings"/>

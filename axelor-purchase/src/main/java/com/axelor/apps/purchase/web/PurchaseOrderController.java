@@ -109,7 +109,8 @@ public class PurchaseOrderController {
 
 
 	/**
-	 * Fonction appeler par le bouton imprimer
+	 * Called from grid or form purchase order view,
+	 * print selected purchase order.
 	 *
 	 * @param request
 	 * @param response
@@ -121,39 +122,11 @@ public class PurchaseOrderController {
 
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
-		String purchaseOrderIds = "";
+		List<Integer> lstSelectedMove = (List<Integer>) request.getContext().get("_ids");
+		String fileLink = purchaseOrderService.printPurchaseOrder(purchaseOrder, lstSelectedMove);
 
-		@SuppressWarnings("unchecked")
-		List<Integer> lstSelectedPurchaseOrder = (List<Integer>) request.getContext().get("_ids");
-		if(lstSelectedPurchaseOrder != null){
-			for(Integer it : lstSelectedPurchaseOrder) {
-				purchaseOrderIds+= it.toString()+",";
-			}
-		}
-
-		if(!purchaseOrderIds.equals("")){
-			purchaseOrderIds = purchaseOrderIds.substring(0,purchaseOrderIds.length()-1);
-			purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(new Long(lstSelectedPurchaseOrder.get(0)));
-		}else if(purchaseOrder.getId() != null){
-			purchaseOrderIds = purchaseOrder.getId().toString();
-		}
-		String language = ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner());
-
-		String title = I18n.get("Purchase order");
-		if(purchaseOrder.getPurchaseOrderSeq() != null)  {
-			title += purchaseOrder.getPurchaseOrderSeq();
-		}
-
-		String fileLink = ReportFactory.createReport(IReport.PURCHASE_ORDER, title+"-${date}")
-				.addParam("PurchaseOrderId", purchaseOrderIds)
-				.addParam("Locale", language)
-				.generate()
-				.getFileLink();
-
-		logger.debug("Printing "+title);
-	
 		response.setView(ActionView
-				.define(title)
+				.define(I18n.get("Purchase order"))
 				.add("html", fileLink).map());	
 			
 	}
@@ -357,12 +330,27 @@ public class PurchaseOrderController {
 	}
 
 	/**
-	 * Called on load from purchase order form view and on trading name change.
-	 * Set the default value and the domain for {@link PurchaseOrder#printingSettings}
+	 * Called on printing settings select.
+	 * Set the domain for {@link PurchaseOrder#printingSettings}
 	 * @param request
 	 * @param response
 	 */
 	public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+
+		List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(purchaseOrder.getTradingName(), purchaseOrder.getCompany());
+		String domain = String.format("self.id IN (%s)", !printingSettingsList.isEmpty() ? StringTool.getIdListString(printingSettingsList) : "0");
+
+		response.setAttr("printingSettings", "domain", domain);
+	}
+
+	/**
+	 * Called on trading name change.
+	 * Set the default value for {@link PurchaseOrder#printingSettings}
+	 * @param request
+	 * @param response
+	 */
+	public void fillDefaultPrintingSettings(ActionRequest request, ActionResponse response) {
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 		PrintingSettings printingSettings = purchaseOrder.getPrintingSettings();
 
@@ -370,10 +358,8 @@ public class PurchaseOrderController {
 		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
 			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
 		}
-		String domain = String.format("self.id IN (%s)", !printingSettingsList.isEmpty() ? StringTool.getIdListString(printingSettingsList) : "0");
 
 		response.setValue("printingSettings", printingSettings);
-		response.setAttr("printingSettings", "domain", domain);
 	}
 
 	/**
