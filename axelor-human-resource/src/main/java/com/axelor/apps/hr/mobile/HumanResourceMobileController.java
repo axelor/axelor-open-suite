@@ -62,7 +62,7 @@ public class HumanResourceMobileController {
 	 * Content-Type: application/json
 	 *
 	 * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertKMExpenses
-	 * fields: kmNumber, locationFrom, locationTo, allowanceTypeSelect, comments, date, expenseProduct
+	 * fields: kmNumber, locationFrom, locationTo, allowanceTypeSelect, comments, date, projectTask
 	 *
 	 * payload:
 	 * { "data": {
