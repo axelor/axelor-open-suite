@@ -82,12 +82,11 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 	
 	public void computeSeq(SaleOrder saleOrder){
 		try{
-			
-			if((saleOrder.getSaleOrderSeq() == null || Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq())) && !saleOrder.getTemplate()){
-				if ( saleOrder.getStatusSelect() == ISaleOrder.STATUS_DRAFT ){
-				    saleOrder.setSaleOrderSeq(Beans.get(SequenceService.class).getDraftSequenceNumber(saleOrder));
-				}
-			}
+            if (Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq()) && !saleOrder.getTemplate()) {
+                if (saleOrder.getStatusSelect() == ISaleOrder.STATUS_DRAFT) {
+                    saleOrder.setSaleOrderSeq(Beans.get(SequenceService.class).getDraftSequenceNumber(saleOrder));
+                }
+            }
 				
 		}
 		catch (Exception e) {
