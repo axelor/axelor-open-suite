@@ -78,6 +78,7 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 		}
 
 		final PrestashopCountry defaultCountry = ws.fetchDefault(PrestashopResourceType.COUNTRIES);
+		final int language = (appConfig.getTextsLanguage().getPrestaShopId() == null ? 1 : appConfig.getTextsLanguage().getPrestaShopId());
 
 
 		for(Country localCountry : countries) {
@@ -125,10 +126,7 @@ public class ExportCountryServiceImpl implements ExportCountryService {
 						}
 					}
 					remoteCountry.setCallPrefix(phonePrefix);
-					// FIXME handle language correctly, only override value for appConfig.textsLanguage
-					if(remoteCountry.getName().getTranslations().size() > 0) {
-						remoteCountry.getName().getTranslations().get(0).setTranslation(localCountry.getName());
-					}
+					remoteCountry.getName().setTranslation(language, localCountry.getName());
 
 					remoteCountry = ws.save(PrestashopResourceType.COUNTRIES, remoteCountry);
 					localCountry.setPrestaShopId(remoteCountry.getId());

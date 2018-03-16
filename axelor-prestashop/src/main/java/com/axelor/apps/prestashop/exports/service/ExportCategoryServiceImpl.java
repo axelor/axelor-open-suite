@@ -87,6 +87,7 @@ public class ExportCategoryServiceImpl implements ExportCategoryService {
 
 		final PrestashopProductCategory defaultCategory = ws.fetchDefault(PrestashopResourceType.PRODUCT_CATEGORIES);
 		final PrestashopProductCategory remoteRootCategory = ws.fetchOne(PrestashopResourceType.PRODUCT_CATEGORIES, Collections.singletonMap("is_root_category", "1"));
+		final int language = appConfig.getTextsLanguage().getPrestaShopId() == null ? 1 : appConfig.getTextsLanguage().getPrestaShopId();
 
 		if(remoteRootCategory == null) {
 			logBuffer.write(String.format("[ERROR] Unable to fetch root category from remote end, giving up%n"));
@@ -121,9 +122,8 @@ public class ExportCategoryServiceImpl implements ExportCategoryService {
 				}
 
 				if(remoteCategory.getId() == null || appConfig.getPrestaShopMasterForCategories() == Boolean.FALSE) {
-					// FIXME handle language correctly, only override value for appConfig.textsLanguage
 					remoteCategory.setUpdateDate(LocalDateTime.now());
-					remoteCategory.getName().getTranslations().get(0).setTranslation(localCategory.getName());
+					remoteCategory.getName().setTranslation(language, localCategory.getName());
 					if(localCategory.getParentProductCategory() == null || localCategory.getParentProductCategory().getPrestaShopId() == null) {
 						remoteCategory.setParentId(remoteRootCategory.getId());
 					} else {

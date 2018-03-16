@@ -55,6 +55,7 @@ public class ImportCategoryServiceImpl implements ImportCategoryService  {
 		final List<PrestashopProductCategory> remoteCategories = ws.fetchAll(PrestashopResourceType.PRODUCT_CATEGORIES, Collections.singletonList("id_parent_ASC"));
 
 		final PrestashopProductCategory remoteRootCategory = ws.fetchOne(PrestashopResourceType.PRODUCT_CATEGORIES, Collections.singletonMap("is_root_category", "1"));
+		final int language = (appConfig.getTextsLanguage().getPrestaShopId() == null ? 1 : appConfig.getTextsLanguage().getPrestaShopId());
 
 		if(remoteRootCategory == null) {
 			logWriter.write(String.format("[ERROR] Unable to fetch root category from remote end, giving up%n"));
@@ -62,7 +63,7 @@ public class ImportCategoryServiceImpl implements ImportCategoryService  {
 		}
 
 		for(PrestashopProductCategory remoteCategory : remoteCategories) {
-			logWriter.write(String.format("Importing PrestaShop product category #%d (%s) – ", remoteCategory.getId(), remoteCategory.getName().getTranslation(1)));
+			logWriter.write(String.format("Importing PrestaShop product category #%d (%s) – ", remoteCategory.getId(), remoteCategory.getName().getTranslation(language)));
 
 			if(remoteCategory.isRootCategory()) {
 				logWriter.write(String.format("flagged as root category, ignoring [SUCCESS]%n"));
@@ -81,7 +82,7 @@ public class ImportCategoryServiceImpl implements ImportCategoryService  {
 				}
 			}
 
-			final String categoryCode = remoteCategory.getLinkRewrite().getTranslation(1).toUpperCase(); // TODO Handle languages correctly
+			final String categoryCode = remoteCategory.getLinkRewrite().getTranslation(language).toUpperCase();
 
 			ProductCategory localCategory = productCategoryRepo.findByPrestaShopId(remoteCategory.getId());
 			if(localCategory == null) {
@@ -97,7 +98,7 @@ public class ImportCategoryServiceImpl implements ImportCategoryService  {
 
 			if(localCategory.getId() == null || appConfig.getPrestaShopMasterForCategories() == Boolean.TRUE) {
 				localCategory.setParentProductCategory(parentCategory);
-				localCategory.setName(remoteCategory.getName().getTranslation(1)); // TODO Handle languages correctly
+				localCategory.setName(remoteCategory.getName().getTranslation(language));
 				localCategory.setCode(categoryCode);
 				localCategory.setImportOrigin(IPrestaShopBatch.IMPORT_ORIGIN_PRESTASHOP);
 				productCategoryRepo.save(localCategory);

@@ -112,6 +112,7 @@ public class ExportProductServiceImpl implements ExportProductService {
 			productsById.put(p.getId(), p);
 			productsByReference.put(p.getReference(), p);
 		}
+		final int language = (appConfig.getTextsLanguage().getPrestaShopId() == null ? 1 : appConfig.getTextsLanguage().getPrestaShopId());
 
 		final LocalDate today = LocalDate.now();
 
@@ -243,8 +244,8 @@ public class ExportProductServiceImpl implements ExportProductService {
 					}
 
 					// FIXME handle language correctly, only override value for appConfig.textsLanguage
-					remoteProduct.getName().getTranslations().get(0).setTranslation(localProduct.getName());
-					remoteProduct.getDescription().getTranslations().get(0).setTranslation(localProduct.getDescription());
+					remoteProduct.getName().setTranslation(language, localProduct.getName());
+					remoteProduct.getDescription().setTranslation(language, localProduct.getDescription());
 					remoteProduct.setEan13(localProduct.getEan13());
 					if(localProduct.getSalesUnit() != null) {
 						remoteProduct.setUnity(localProduct.getSalesUnit().getLabelToPrinting());

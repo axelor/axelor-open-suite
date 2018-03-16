@@ -92,9 +92,10 @@ public class ImportProductServiceImpl implements ImportProductService {
 		final List<PrestashopProduct> remoteProducts = ws.fetchAll(PrestashopResourceType.PRODUCTS);
 
 		final Currency defaultCurrency = AbstractBatch.getCurrentBatch().getPrestaShopBatch().getCompany().getCurrency();
+		final int language = (appConfig.getTextsLanguage().getPrestaShopId() == null ? 1 : appConfig.getTextsLanguage().getPrestaShopId());
 
 		for(PrestashopProduct remoteProduct : remoteProducts) {
-			logWriter.write(String.format("Importing product %s (%s) – ", remoteProduct.getReference(), remoteProduct.getName().getTranslation(1)));
+			logWriter.write(String.format("Importing product %s (%s) – ", remoteProduct.getReference(), remoteProduct.getName().getTranslation(language)));
 
 			try {
 				if(PrestashopProduct.PRODUCT_TYPE_PACK.equals(remoteProduct.getType())) {
@@ -141,8 +142,8 @@ public class ImportProductServiceImpl implements ImportProductService {
 				if(localProduct.getId() == null || appConfig.getPrestaShopMasterForProducts() == Boolean.TRUE) {
 					localProduct.setProductTypeSelect(PrestashopProduct.PRODUCT_TYPE_VIRTUAL.equals(remoteProduct.getType()) ? ProductRepository.PRODUCT_TYPE_SERVICE : ProductRepository.PRODUCT_TYPE_STORABLE);
 					localProduct.setProductCategory(category);
-					localProduct.setName(remoteProduct.getName().getTranslation(1)); // TODO Handle language correctly
-					localProduct.setDescription(remoteProduct.getDescription().getTranslation(1));
+					localProduct.setName(remoteProduct.getName().getTranslation(language));
+					localProduct.setDescription(remoteProduct.getDescription().getTranslation(language));
 					localProduct.setEan13(StringUtils.defaultIfBlank(remoteProduct.getEan13(), null));
 					localProduct.setCode(StringUtils.defaultIfBlank(remoteProduct.getReference(), String.format("PRESTA-%04d", remoteProduct.getId())));
 					if(remoteProduct.getPrice() != null && BigDecimal.ZERO.compareTo(remoteProduct.getPrice()) != 0) {
@@ -199,7 +200,7 @@ public class ImportProductServiceImpl implements ImportProductService {
 				++done;
 			} catch(AxelorException e) {
 				logWriter.write(String.format(" [ERROR] %s (full trace is in application logs)%n", e.getLocalizedMessage()));
-				log.error(String.format("Exception while synchronizing product %s (%s)", remoteProduct.getReference(), remoteProduct.getName().getTranslation(1)), e);
+				log.error(String.format("Exception while synchronizing product %s (%s)", remoteProduct.getReference(), remoteProduct.getName().getTranslation(language)), e);
 				++errors;
 			}
 		}
