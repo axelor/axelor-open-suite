@@ -34,9 +34,6 @@
   	<many-to-one name="senderUser" ref="com.axelor.auth.db.User" title="Sender (User)" readonly="true"/>
   	<many-to-one name="recipientUser" ref="com.axelor.auth.db.User" title="Recipient"/>
 
-	<finder-method name="findByInvoice" using="int:invoiceId"
-		filter="self.relatedTo1SelectId = :invoiceId AND self.relatedTo1Select = 'com.axelor.apps.account.db.Invoice'" />
-
   	<extra-code><![CDATA[
 
 		// TYPE SELECT
