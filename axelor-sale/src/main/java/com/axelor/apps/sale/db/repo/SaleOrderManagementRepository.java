@@ -23,7 +23,6 @@ import javax.persistence.PersistenceException;
 
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
@@ -41,7 +40,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
 		List<SaleOrderLine> saleOrderLines = copy.getSaleOrderLineList();
 
-		copy.setStatusSelect(ISaleOrder.STATUS_DRAFT);
+		copy.setStatusSelect(SaleOrderRepository.STATUS_DRAFT);
 		copy.setSaleOrderSeq(null);
 		copy.clearBatchSet();
 		copy.setImportId(null);
@@ -83,7 +82,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 	public void computeSeq(SaleOrder saleOrder){
 		try{
             if (Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq()) && !saleOrder.getTemplate()) {
-                if (saleOrder.getStatusSelect() == ISaleOrder.STATUS_DRAFT) {
+                if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT) {
                     saleOrder.setSaleOrderSeq(Beans.get(SequenceService.class).getDraftSequenceNumber(saleOrder));
                 }
             }

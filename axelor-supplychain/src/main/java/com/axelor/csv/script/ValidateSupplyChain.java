@@ -29,7 +29,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -189,7 +188,7 @@ public class ValidateSupplyChain {
 				}
 			}
 			saleOrderComputeService.computeSaleOrder(saleOrder);
-			if(saleOrder.getStatusSelect() == ISaleOrder.STATUS_ORDER_CONFIRMED){
+			if(saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_CONFIRMED){
 				//taskSaleOrderService.createTasks(saleOrder); TODO once we will have done the generation of tasks in project module
 				saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
 				Beans.get(SaleOrderPurchaseService.class).createPurchaseOrders(saleOrder);
