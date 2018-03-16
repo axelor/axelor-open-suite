@@ -8,7 +8,7 @@
   <entity name="Message" lang="java">
   
   	<integer name="typeSelect" title="Type" selection="message.type.select" readonly="true" default="2" initParam="true"/>
-  	<string name="subject" title="Subject" initParam="true"/>
+	<string name="subject" title="Subject" initParam="true" namecolumn="true"/>
   	<string name="content" title="Content" large="true" initParam="true"/>
 	<datetime name="sentDateT" title="Sent date" readonly="true"/>
  	<date name="sendScheduleDate" title="Forecasted Sent Date" />
@@ -33,7 +33,10 @@
   	<!--   	Intern message -->
   	<many-to-one name="senderUser" ref="com.axelor.auth.db.User" title="Sender (User)" readonly="true"/>
   	<many-to-one name="recipientUser" ref="com.axelor.auth.db.User" title="Recipient"/>
-  	
+
+	<finder-method name="findByInvoice" using="int:invoiceId"
+		filter="self.relatedTo1SelectId = :invoiceId AND self.relatedTo1Select = 'com.axelor.apps.account.db.Invoice'" />
+
   	<extra-code><![CDATA[
 
 		// TYPE SELECT

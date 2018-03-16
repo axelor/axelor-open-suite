@@ -12,7 +12,7 @@
 	     	</menu>
 			<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
-	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" />
+	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation,action-invoice-record-message" prompt="Are you sure you want to ventilate all selected invoices ?" />
 	            <item title="Merge Cust. Invoices" action="action-invoice-mergecustinvoices" />
 	            <item title="See cust. invoices lines" action="action-customer-invoice-line-menu" />
 	     	</menu>
@@ -46,7 +46,7 @@
 	     	</menu>
 			<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
-	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" />
+	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation,action-invoice-record-message" prompt="Are you sure you want to ventilate all selected invoices ?" />
 	            <item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
 	     	</menu>
 		</menubar>
@@ -78,7 +78,7 @@
 	     	</menu>
 			<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
-	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" />
+	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation,action-invoice-record-message" prompt="Are you sure you want to ventilate all selected invoices ?" />
 	            <item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
 	            <item title="Generate subscriptions invoices" action="action-supplychain-method-generate-subscription-invoice" if="__config__.app.isApp('supplychain')"/>
 	     	</menu>
@@ -266,9 +266,10 @@
 					<field name="paymentSchedule" readonly="true" domain="self.company = :company AND self.partner = :partner" form-view="payment-schedule-form" grid-view="payment-schedule-grid"/>
 				</panel>
 			</panel>
-			<panel title="Automatic mail" readonlyIf="statusSelect == 3">
+			<panel title="Automatic mail" hideIf="statusSelect == 3 &amp;&amp; !invoiceAutomaticMail">
 				<field name="invoiceAutomaticMail"/>
 				<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
+				<field name="message" showIf="statusSelect == 3" readonly="true"/>
 			</panel>
 			<panel title="Printing" name="printing" colSpan="12">
 				<field name="printingSettings" required="true" canEdit="false"/>
@@ -285,8 +286,8 @@
             <field name="amountRemaining" hidden="true"/>
             <field name="hasPendingPayments" hidden="true"/>
             <button name="validate" hidden="true" title="Validate" onClick="save,action-invoice-method-validate"/>
-            <button name="ventilate" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
-            <button name="validateAndVentilate" hidden="true" title="Validate" onClick="save,action-invoice-method-validate-and-ventilate"/>
+            <button name="ventilate" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-ventilate,save,action-invoice-record-message,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
+            <button name="validateAndVentilate" hidden="true" title="Validate" onClick="save,action-invoice-method-validate-and-ventilate,action-invoice-record-message"/>
             <button name="cancel" hidden="true" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
             <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save,action-account-invoice-onload-group"/>
             <button name="addPayment" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
@@ -502,7 +503,7 @@
 
 	    <panel sidebar="true" name="actions" title="Actions" >
 	        <button name="validate" title="Validate" showIf="statusSelect == 1" onClick="save,action-invoice-method-validate"/>
-	        <button name="ventilate" title="Ventilate" showIf="statusSelect == 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
+	        <button name="ventilate" title="Ventilate" showIf="statusSelect == 2" onClick="save,action-invoice-method-ventilate,save,action-invoice-record-message,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
 	        <button name="cancel" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
 	        <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save"/>
         	<button name="addPayment" title="Register payment" showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
@@ -1054,6 +1055,10 @@
     <action-view name="action-invoice-mergecustinvoices" title="Merge Cust. Invoices" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="customer-invoices-merge-form"/>
 	</action-view>
+
+	<action-record name="action-invoice-record-message" model="com.axelor.apps.message.db.Message">
+		<field name="message" expr="eval: __repo__(Message).findByInvoice(id.intValue())"/>
+	</action-record>
 
 	<search-filters name="customer-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Customer invoices filters">
 		<filter title="Validated">
