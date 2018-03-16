@@ -17,193 +17,159 @@
  */
 package com.axelor.apps.prestashop.imports.service;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.HashMap;
+import java.io.Writer;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.ZonedDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.TransformerException;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.base.db.AppPrestashop;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.prestashop.exception.IExceptionMessage;
+import com.axelor.apps.prestashop.entities.PrestashopCustomer;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
-import com.axelor.auth.AuthUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
-import wslite.json.JSONException;
-import wslite.json.JSONObject;
-
+@Singleton
 public class ImportCustomerServiceImpl implements ImportCustomerService {
-	
-	PSWebServiceClient ws;
-    HashMap<String,Object> opt;
-    JSONObject schema;
-    private final String shopUrl;
-	private final String key;
-	
-	@Inject
 	private PartnerRepository partnerRepo;
-	
-	/**
-	 * Initialization
-	 */
-	public ImportCustomerServiceImpl() {
-		AppPrestashop prestaShopObj = Beans.get(AppPrestashopRepository.class).all().fetchOne();
-		shopUrl = prestaShopObj.getPrestaShopUrl();
-		key = prestaShopObj.getPrestaShopKey();
+	private AppBaseService appBaseService;
+	private PartnerService partnerService;
+
+	@Inject
+	public ImportCustomerServiceImpl(PartnerRepository partnerRepo, final AppBaseService appBaseService, final PartnerService partnerService) {
+		this.partnerRepo = partnerRepo;
+		this.appBaseService = appBaseService;
+		this.partnerService = partnerService;
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	@Override
 	@Transactional
-	public BufferedWriter importCustomer(BufferedWriter bwImport)
-			throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
-		
-		Integer done = 0;
-		Integer anomaly = 0;
-		bwImport.newLine();
-		bwImport.write("-----------------------------------------------");
-		bwImport.newLine();
-		bwImport.write("Customer");
-		
-		ws = new PSWebServiceClient(shopUrl,key);
-		List<Integer> customerIds = ws.fetchApiIds("customers");
-		
-		for (Integer id : customerIds) {
-			
-			ws = new PSWebServiceClient(shopUrl,key);
-			opt = new HashMap<String, Object>();
-			opt.put("resource", "customers");
-			opt.put("id", id);
-			schema = ws.getJson(opt);
-			
-			String emailName = null;
-			String firstName = null;
-			String name = null;
-			String company = null;
-			boolean flag = false; 
-			Partner partner = null;
-			Partner contactPartner = null;
+	public void importCustomer(AppPrestashop appConfig, ZonedDateTime endDate, Writer logBuffer) throws IOException, PrestaShopWebserviceException {
+		int done = 0;
+		int errors = 0;
 
-			try {
-				String prestashopId = String.valueOf(schema.getJSONObject("customer").getInt("id"));
-				partner = Beans.get(PartnerRepository.class).all().filter("self.prestaShopId = ?", prestashopId).fetchOne();
-						
-				if(partner == null) {
-					flag = true;
-					partner = new Partner();
-					partner.setPrestaShopId(prestashopId);
+		logBuffer.write(String.format("%n====== CUSTOMERS ======%n"));
+
+		final PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
+		final List<PrestashopCustomer> remoteCustomers = ws.fetchAll(PrestashopResourceType.CUSTOMERS);
+
+		for(PrestashopCustomer remoteCustomer : remoteCustomers) {
+			logBuffer.write(String.format("Importing customer #%d (%s) - ", remoteCustomer.getId(), remoteCustomer.getFullname()));
+
+			Partner localCustomer = partnerRepo.findByPrestaShopId(remoteCustomer.getId());
+			if(localCustomer == null) {
+				localCustomer = partnerRepo.findByRegistrationCode(remoteCustomer.getSiret());
+				if(localCustomer != null && localCustomer.getPrestaShopId() != null) {
+					logBuffer.write(String.format("[WARNING] found using registration code %s but partner is already bound to another PrestaShop customer, creating new one anyway, ", remoteCustomer.getSiret()));
+					localCustomer = null;
 				}
-						
-				if (!schema.getJSONObject("customer").getString("firstname").isEmpty() && 
-						!schema.getJSONObject("customer").getString("lastname").isEmpty()) {
-					
-					firstName = schema.getJSONObject("customer").getString("firstname");
-					name = schema.getJSONObject("customer").getString("lastname");
-					company =  schema.getJSONObject("customer").get("company").toString();
-					
-					if(!company.isEmpty() && company != null && company != "null" && !company.equals("")) {
-						
-						partner.setPartnerTypeSelect(1);
-						partner.setName(company);
-						
-						if(flag) {
-							contactPartner = new Partner();
-						} else {
-							contactPartner = partner.getContactPartnerSet().iterator().next();
-						}
-									
-						partner.setFullName(company);
-						contactPartner.setName(name);
-						contactPartner.setFirstName(firstName);
-						contactPartner.setIsContact(true);
-						contactPartner.setMainPartner(partner);
-						
-						if(name != null && firstName != null) {
-							contactPartner.setFullName(name + " " + firstName);
-						} else if (name != null && firstName == null) {
-							contactPartner.setFullName(name);
-						} else if (name == null && firstName != null) {
-							contactPartner.setFullName(firstName);
-						}
-									
-						if(flag) {
-							partner.addContactPartnerSetItem(contactPartner);
-						}
-						
-					} else {
-								
-						partner.setPartnerTypeSelect(2);
-						partner.setFirstName(firstName);
-						partner.setName(name);		
 
-						if(name != null && firstName != null) {
-							partner.setFullName(name + " " + firstName);
-						} else if (name != null && firstName == null) {
-							partner.setFullName(name);
-						} else if (name == null && firstName != null) {
-							partner.setFullName(firstName);
+				if(localCustomer == null) {
+					logBuffer.write("not found by ID, creating, ");
+					localCustomer = new Partner();
+					localCustomer.setPrestaShopId(remoteCustomer.getId());
+					localCustomer.setIsCustomer(Boolean.TRUE);
+					localCustomer.setContactPartnerSet(new HashSet<>());
+					localCustomer.setCurrency(appConfig.getPrestaShopCurrency());
+					// Assign a company to generate an accounting situation
+					localCustomer.addCompanySetItem(AbstractBatch.getCurrentBatch().getPrestaShopBatch().getCompany());
+					if(appBaseService.getAppBase().getGeneratePartnerSequence() == Boolean.TRUE) {
+						localCustomer.setPartnerSeq(Beans.get(SequenceService.class).getSequenceNumber(IAdministration.PARTNER));
+						if(localCustomer.getPartnerSeq() == null) {
+							++errors;
+							logBuffer.write(String.format("No sequence configured for partners, unable to create customer, skipping [ERROR]%n"));
+							continue;
+						}
+					}
+				}
+			}
+
+			if(localCustomer.getId() == null || appConfig.getPrestaShopMasterForCustomers()) {
+				if(StringUtils.isNotBlank(remoteCustomer.getCompany())) {
+					localCustomer.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_COMPANY);
+					localCustomer.setName(remoteCustomer.getCompany());
+					localCustomer.setRegistrationCode(remoteCustomer.getSiret());
+					if(StringUtils.isNotBlank(remoteCustomer.getLastname())) {
+						boolean found = false;
+						for(Partner contact : localCustomer.getContactPartnerSet()) {
+							if(Objects.equals(contact.getName(), remoteCustomer.getLastname())) {
+								found = true;
+								break;
+							}
+						}
+						if(found == false) {
+							logBuffer.write("local customer has no contact with the same lastname, adding a new one –");
+							Partner mainContact = new Partner();
+							mainContact.setIsContact(true);
+							mainContact.setTitleSelect(remoteCustomer.getGenderId() == PrestashopCustomer.GENDER_FEMALE ? PartnerRepository.PARTNER_TITLE_MS : PartnerRepository.PARTNER_TITLE_M);
+							mainContact.setFirstName(remoteCustomer.getFirstname());
+							mainContact.setName(remoteCustomer.getLastname());
+							mainContact.setFullName(partnerService.computeFullName(mainContact));
+							mainContact.setMainPartner(localCustomer);
+							if(appBaseService.getAppBase().getGeneratePartnerSequence() == Boolean.TRUE) {
+								mainContact.setPartnerSeq(Beans.get(SequenceService.class).getSequenceNumber(IAdministration.PARTNER));
+								if(mainContact.getPartnerSeq() == null) {
+									++errors;
+									logBuffer.write(String.format("No sequence configured for partners, unable to import main contact, skipping [ERROR]%n"));
+									continue;
+								}
+							}
+							localCustomer.addContactPartnerSetItem(mainContact);
 						}
 					}
 				} else {
-					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_COMPANY), IException.NO_VALUE);
+					localCustomer.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
+					localCustomer.setName(remoteCustomer.getLastname());
+					localCustomer.setFirstName(remoteCustomer.getFirstname());
+					localCustomer.setTitleSelect(remoteCustomer.getGenderId() == PrestashopCustomer.GENDER_FEMALE ? PartnerRepository.PARTNER_TITLE_MS : PartnerRepository.PARTNER_TITLE_M);
+
 				}
-				
-						partner.setTitleSelect(Integer.parseInt(schema.getJSONObject("customer").getString("id_gender")));
-						EmailAddress emailAddress = new EmailAddress();
-						emailAddress.setAddress(schema.getJSONObject("customer").getString("email"));
 
-						if (partner != null)
-							emailName = partner.getFullName();
-						
-						if (emailAddress.getAddress() != null)
-							emailName = emailAddress.getAddress();
-						
-						if(flag) {
-							partner.addCompanySetItem(AuthUtils.getUser().getActiveCompany());
-							flag = false;
-						}
+				localCustomer.setFullName(partnerService.computeFullName(localCustomer));
+				localCustomer.setWebSite(remoteCustomer.getWebsite());
+				if(localCustomer.getEmailAddress() == null || Objects.equals(remoteCustomer.getEmail(), localCustomer.getEmailAddress().getAddress()) == false) {
+					EmailAddress email = new EmailAddress();
+					email.setPartner(localCustomer);
+					email.setAddress(remoteCustomer.getEmail());
+					localCustomer.setEmailAddress(email);
+				}
 
-						emailAddress.setName(emailName);
-						partner.setEmailAddress(emailAddress);
-						partner.setWebSite(schema.getJSONObject("customer").get("website").toString());
-						partner.setSecureKey(schema.getJSONObject("customer").getString("secure_key"));
-						partner.setIsCustomer(true);
-						partnerRepo.persist(partner);
-						partnerRepo.save(partner);
-						done++;
+				partnerRepo.save(localCustomer);
 
-			} catch (AxelorException e) {
-				bwImport.newLine();
-				bwImport.newLine();
-				bwImport.write("Id - " + id + " " + e.getMessage());
-				anomaly++;
-				continue;
-				
-			} catch (Exception e) {
-				bwImport.newLine();
-				bwImport.newLine();
-				bwImport.write("Id - " + id + " " + e.getMessage());
-				anomaly++;
-				continue;
+				if(remoteCustomer.getAllowedOutstandingAmount() != null && BigDecimal.ZERO.compareTo(remoteCustomer.getAllowedOutstandingAmount()) != 0 && CollectionUtils.isEmpty(localCustomer.getAccountingSituationList()) == false) {
+					AccountingSituation situation = localCustomer.getAccountingSituationList().get(0);
+					if(remoteCustomer.getAllowedOutstandingAmount().compareTo(situation.getAcceptedCredit()) != 0) {
+						situation.setAcceptedCredit(remoteCustomer.getAllowedOutstandingAmount().setScale(2, RoundingMode.HALF_UP));
+					}
+				}
+			} else {
+				logBuffer.write("local customer exists and PrestaShop isn't master for customers, leaving untouched");
 			}
+
+			logBuffer.write(String.format(" [SUCCESS]%n"));
+			++done;
 		}
-		
-		bwImport.newLine();
-		bwImport.newLine();
-		bwImport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);
-		return bwImport;
+
+		logBuffer.write(String.format("%n=== END OF CUSTOMERS IMPORT, done: %d, errors: %d ===%n", done, errors));
 	}
-	
+
 }

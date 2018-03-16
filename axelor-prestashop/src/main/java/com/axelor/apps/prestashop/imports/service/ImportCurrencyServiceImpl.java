@@ -17,116 +17,113 @@
  */
 package com.axelor.apps.prestashop.imports.service;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.HashMap;
+import java.io.Writer;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.TransformerException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
-import com.axelor.apps.prestashop.exception.IExceptionMessage;
+import com.axelor.apps.base.service.CurrencyConversionService;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.prestashop.entities.PrestashopCurrency;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
-import wslite.json.JSONException;
-import wslite.json.JSONObject;
-
+@Singleton
 public class ImportCurrencyServiceImpl implements ImportCurrencyService {
+	private Logger log = LoggerFactory.getLogger(getClass());
 
-    PSWebServiceClient ws;
-    HashMap<String,Object> opt;
-    JSONObject schema;
-    private final String shopUrl;
-	private final String key;
-	
-	@Inject
 	private CurrencyRepository currencyRepo;
-	
-	/**
-	 * Initialization
-	 */
-	public ImportCurrencyServiceImpl() {
-		AppPrestashop prestaShopObj = Beans.get(AppPrestashopRepository.class).all().fetchOne();
-		shopUrl = prestaShopObj.getPrestaShopUrl();
-		key = prestaShopObj.getPrestaShopKey();
+	private AppBaseService appBaseService;
+	private CurrencyService currencyService;
+	private CurrencyConversionService currencyConversionService;
+
+	@Inject
+	public ImportCurrencyServiceImpl(CurrencyRepository currencyRepo, AppBaseService appBaseService,
+			CurrencyService currencyService, CurrencyConversionService currencyConversionService) {
+		this.currencyRepo = currencyRepo;
+		this.appBaseService = appBaseService;
+		this.currencyService = currencyService;
+		this.currencyConversionService = currencyConversionService;
 	}
-	
-	@SuppressWarnings("deprecation")
+
+
+
 	@Override
 	@Transactional
-	public BufferedWriter importCurrency(BufferedWriter bwImport) throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
-	
+	public void importCurrency(AppPrestashop appConfig, ZonedDateTime endDate, Writer logBuffer) throws IOException, PrestaShopWebserviceException {
 		Integer done = 0;
-		Integer anomaly = 0;
-		bwImport.newLine();
-		bwImport.write("-----------------------------------------------");
-		bwImport.newLine();
-		bwImport.write("Currency");
-		
-		ws = new PSWebServiceClient(shopUrl,key);
-		List<Integer> currencyIds = ws.fetchApiIds("currencies");
-		
-		for (Integer id : currencyIds) {
-		
-			try {
-				ws = new PSWebServiceClient(shopUrl,key);
-				opt = new HashMap<String, Object>();
-				opt.put("resource", "currencies");
-				opt.put("id", id);
-				schema = ws.getJson(opt);
+		Integer errors = 0;
 
-				Currency currency = null;
-				currency = Beans.get(CurrencyRepository.class).all().filter("self.prestaShopId = ?", id).fetchOne();
+		logBuffer.write(String.format("%n====== CURRENCIES ======%n"));
 
-				if(currency == null) {
-					currency = currencyRepo.findByCode(schema.getJSONObject("currency").getString("iso_code"));
-					if(currency == null) {
-						currency = new Currency();
-					}
-					currency.setPrestaShopId(String.valueOf(schema.getJSONObject("currency").getInt("id")));
-				}
+		final PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
+		// When endDate is not null, we could add a filter for date_add, date_upd (PS supports >=), but as
+		// we've no way of knowing which currencies have already been imported, it would imply that we must
+		// never miss a run
+		final List<PrestashopCurrency> remoteCurrencies = ws.fetchAll(PrestashopResourceType.CURRENCIES);
 
-				if(!schema.getJSONObject("currency").getString("iso_code").equals(null) &&
-						!schema.getJSONObject("currency").getString("name").equals(null)) {
-					
-					currency.setCode(schema.getJSONObject("currency").getString("iso_code"));
-					currency.setName(schema.getJSONObject("currency").getString("name"));
+		for(PrestashopCurrency remoteCurrency : remoteCurrencies) {
+			logBuffer.write("Importing currency " + remoteCurrency.getCode() + " – ");
+			Currency localCurrency = currencyRepo.findByPrestaShopId(remoteCurrency.getId());
+			if(localCurrency == null) {
+				localCurrency = currencyRepo.findByCode(remoteCurrency.getCode());
+				if(localCurrency == null) {
+					logBuffer.write("no ID and code not found, creating");
+					localCurrency = new Currency();
+					localCurrency.setCode(remoteCurrency.getCode());
+					localCurrency.setPrestaShopId(remoteCurrency.getId());
 				} else {
-					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CURRENCY), IException.NO_VALUE);
+					logBuffer.write(String.format("found locally using its code %s", localCurrency.getCode()));
 				}
-				
-				currencyRepo.save(currency);
-				done++;
-				
-			} catch (AxelorException e) {
-				bwImport.newLine();
-				bwImport.newLine();
-				bwImport.write("Id - " + id + " " + e.getMessage());
-				anomaly++;
-				continue;
-				
-			} catch (Exception e) {
-				bwImport.newLine();
-				bwImport.newLine();
-				bwImport.write("Id - " + id + " " + e.getMessage());
-				anomaly++;
-				continue;
-				
+			} else {
+				if(localCurrency.getCode().equals(remoteCurrency.getCode()) == false) {
+					log.error("Remote currency #{} has not the same ISO code as the local one ({} vs {}), skipping",
+							localCurrency.getPrestaShopId(), remoteCurrency.getCode(), localCurrency.getCode());
+					logBuffer.write(String.format(" [ERROR] ISO code mismatch: %s vs %s%n", remoteCurrency.getCode(), localCurrency.getCode()));
+					++errors;
+					continue;
+				}
 			}
+
+			if(appConfig.getPrestaShopMasterForCurrencies() || localCurrency.getId() == null) {
+				localCurrency.setName(remoteCurrency.getName());
+				currencyRepo.save(localCurrency);
+				BigDecimal currentRate;
+				try {
+					currentRate = currencyService.getCurrencyConversionRate(localCurrency, appConfig.getPrestaShopCurrency(), LocalDate.now());
+				} catch(AxelorException ae) {
+					// Would be far simpler if getCurrencyConversionRate was just returning null…
+					currentRate = BigDecimal.ONE;
+				}
+				if(remoteCurrency.getConversionRate() != null &&
+						BigDecimal.ZERO.compareTo(remoteCurrency.getConversionRate()) != 0 &&
+						BigDecimal.ONE.compareTo(remoteCurrency.getConversionRate()) != 0 &&
+						currentRate.compareTo(remoteCurrency.getConversionRate()) != 0) {
+					currencyConversionService.createCurrencyConversionLine(localCurrency, appConfig.getPrestaShopCurrency(),
+							LocalDate.now(), remoteCurrency.getConversionRate(),
+							appBaseService.getAppBase(), currencyConversionService.getVariations(remoteCurrency.getConversionRate(), currentRate));
+				}
+			} else {
+				logBuffer.write(" – local currency exists and PrestaShop isn't master for currencies, leaving untouched");
+			}
+			logBuffer.write(String.format(" [SUCCESS]%n"));
+			++done;
 		}
-		
-		bwImport.newLine();
-		bwImport.newLine();
-		bwImport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);
-		return bwImport;
+
+		logBuffer.write(String.format("%n=== END OF CURRENCIES IMPORT, done: %d, errors: %d ===%n", done, errors));
 	}
 }

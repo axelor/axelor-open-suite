@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+	<deliveries>
+		<delivery>
+			<id><![CDATA[1]]></id>
+			<id_carrier xlink:href="http://192.168.1.23/api/carriers/2"><![CDATA[2]]></id_carrier>
+			<id_range_price><![CDATA[0]]></id_range_price>
+			<id_range_weight xlink:href="http://192.168.1.23/api/weight_ranges/1"><![CDATA[1]]></id_range_weight>
+			<id_zone xlink:href="http://192.168.1.23/api/zones/1"><![CDATA[1]]></id_zone>
+			<id_shop></id_shop>
+			<id_shop_group></id_shop_group>
+			<price><![CDATA[5.000000]]></price>
+		</delivery>
+		<delivery>
+			<id><![CDATA[3]]></id>
+			<id_carrier xlink:href="http://192.168.1.23/api/carriers/2"><![CDATA[2]]></id_carrier>
+			<id_range_price xlink:href="http://192.168.1.23/api/price_ranges/1"><![CDATA[1]]></id_range_price>
+			<id_range_weight><![CDATA[0]]></id_range_weight>
+			<id_zone xlink:href="http://192.168.1.23/api/zones/1"><![CDATA[1]]></id_zone>
+			<id_shop></id_shop>
+			<id_shop_group></id_shop_group>
+			<price><![CDATA[5.000000]]></price>
+		</delivery>
+		<delivery>
+			<id><![CDATA[2]]></id>
+			<id_carrier xlink:href="http://192.168.1.23/api/carriers/2"><![CDATA[2]]></id_carrier>
+			<id_range_price><![CDATA[0]]></id_range_price>
+			<id_range_weight xlink:href="http://192.168.1.23/api/weight_ranges/1"><![CDATA[1]]></id_range_weight>
+			<id_zone xlink:href="http://192.168.1.23/api/zones/2"><![CDATA[2]]></id_zone>
+			<id_shop></id_shop>
+			<id_shop_group></id_shop_group>
+			<price><![CDATA[5.000000]]></price>
+		</delivery>
+		<delivery>
+			<id><![CDATA[4]]></id>
+			<id_carrier xlink:href="http://192.168.1.23/api/carriers/2"><![CDATA[2]]></id_carrier>
+			<id_range_price xlink:href="http://192.168.1.23/api/price_ranges/1"><![CDATA[1]]></id_range_price>
+			<id_range_weight><![CDATA[0]]></id_range_weight>
+			<id_zone xlink:href="http://192.168.1.23/api/zones/2"><![CDATA[2]]></id_zone>
+			<id_shop></id_shop>
+			<id_shop_group></id_shop_group>
+			<price><![CDATA[5.000000]]></price>
+		</delivery>
+	</deliveries>
+</prestashop>

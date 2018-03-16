@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+	<customer>
+		<id><![CDATA[1]]></id>
+		<id_default_group xlink:href="http://192.168.1.23/api/groups/3"><![CDATA[3]]></id_default_group>
+		<id_lang xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[1]]></id_lang>
+		<newsletter_date_add><![CDATA[0000-00-00 00:00:00]]></newsletter_date_add>
+		<ip_registration_newsletter></ip_registration_newsletter>
+		<last_passwd_gen><![CDATA[2018-02-09 00:40:06]]></last_passwd_gen>
+		<secure_key><![CDATA[a84879d9c1fbcd4055a1c1336e37b940]]></secure_key>
+		<deleted><![CDATA[0]]></deleted>
+		<passwd><![CDATA[$2y$10$F01yaIK63aXZXGHQWOsQ1.mISEtUONWzw325scoDlB/w5I2jyGGuC]]></passwd>
+		<lastname><![CDATA[Doe]]></lastname>
+		<firstname><![CDATA[John]]></firstname>
+		<email><![CDATA[john.doe@nowhere.com]]></email>
+		<id_gender><![CDATA[1]]></id_gender>
+		<birthday><![CDATA[1991-05-18]]></birthday>
+		<newsletter><![CDATA[0]]></newsletter>
+		<optin><![CDATA[0]]></optin>
+		<website><![CDATA[http://nowhere.com]]></website>
+		<company><![CDATA[Axelor]]></company>
+		<siret><![CDATA[00000000000]]></siret>
+		<ape><![CDATA[0000Z]]></ape>
+		<outstanding_allow_amount><![CDATA[1000.000000]]></outstanding_allow_amount>
+		<show_public_prices><![CDATA[0]]></show_public_prices>
+		<id_risk><![CDATA[1]]></id_risk>
+		<max_payment_days><![CDATA[45]]></max_payment_days>
+		<active><![CDATA[1]]></active>
+		<note></note>
+		<is_guest><![CDATA[0]]></is_guest>
+		<id_shop><![CDATA[1]]></id_shop>
+		<id_shop_group><![CDATA[1]]></id_shop_group>
+		<date_add><![CDATA[2018-02-09 06:40:06]]></date_add>
+		<date_upd><![CDATA[2018-02-09 06:40:06]]></date_upd>
+		<reset_password_token></reset_password_token>
+		<reset_password_validity><![CDATA[0000-00-00 00:00:00]]></reset_password_validity>
+		<associations>
+			<groups nodeType="group" api="groups">
+				<group xlink:href="http://192.168.1.23/api/groups/1">
+					<id><![CDATA[1]]></id>
+				</group>
+				<group xlink:href="http://192.168.1.23/api/groups/2">
+					<id><![CDATA[2]]></id>
+				</group>
+				<group xlink:href="http://192.168.1.23/api/groups/3">
+					<id><![CDATA[3]]></id>
+				</group>
+			</groups>
+		</associations>
+	</customer>
+</prestashop>

@@ -80,6 +80,11 @@
 	<![CDATA[
 		public static final int PARTNER_TYPE_COMPANY = 1;
 		public static final int PARTNER_TYPE_INDIVIDUAL = 2;
+
+		public static final int PARTNER_TITLE_M = 1;
+		public static final int PARTNER_TITLE_MS = 2;
+		public static final int PARTNER_TITLE_DR = 3;
+		public static final int PARTNER_TITLE_PROF = 4;
 	]]>
 	</extra-code>
 	

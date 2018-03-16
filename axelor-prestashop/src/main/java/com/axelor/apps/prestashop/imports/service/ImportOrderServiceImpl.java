@@ -46,8 +46,10 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.prestashop.db.SaleOrderStatus;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.exception.IExceptionMessage;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
+import com.axelor.apps.prestashop.service.library.PSWebServiceClient.Options;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -65,28 +67,25 @@ import wslite.json.JSONObject;
 
 public class ImportOrderServiceImpl implements ImportOrderService {
 
-	PSWebServiceClient ws;
-    HashMap<String,Object> opt;
-    JSONObject schema;
     private final String shopUrl;
 	private final String key;
 	private final boolean isStatus;
 	private final List<SaleOrderStatus> saleOrderStatus;
 	private final PaymentMode paymentMode;
-	
-	
+
+
 	@Inject
 	private PaymentConditionRepository paymentConditionRepo;
-	
+
 	@Inject
 	private CompanyRepository companyRepo;
-	
+
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
-	
+
 	@Inject
 	private SaleOrderWorkflowService saleOrderWorkflowService;
-	
+
 	/**
 	 * Initialization
 	 */
@@ -98,40 +97,39 @@ public class ImportOrderServiceImpl implements ImportOrderService {
 		saleOrderStatus = prestaShopObj.getSaleOrderStatusList();
 		paymentMode = prestaShopObj.getPaymentMode();
 	}
-	
+
 	/**
 	 * Get only order ids which is in draft state
-	 * 
+	 *
 	 * @return order ids which is in draft state
 	 * @throws PrestaShopWebserviceException
 	 * @throws JSONException
 	 */
 	public List<Integer> getDraftOrderIds() throws PrestaShopWebserviceException, JSONException {
-		
-		List<Integer> orderIds = new ArrayList<Integer>();
-		List<Integer> currentStatus = new ArrayList<Integer>();
-		
+
+		List<Integer> orderIds = new ArrayList<>();
+		List<Integer> currentStatus = new ArrayList<>();
+
 		for(SaleOrderStatus orderStatus : saleOrderStatus) {
 			if(orderStatus.getAbsStatus() == 1) {
 				currentStatus.add(orderStatus.getPrestaShopStatus());
 			}
 		}
-		
-		ws = new PSWebServiceClient(shopUrl, key);
-		HashMap<String, String> orderMap = null;
-		
+
+		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
+		HashMap<String, String> filter = new HashMap<>();
+		Options options = new Options();
+		options.setResourceType(PrestashopResourceType.ORDERS);
+
 		for(Integer id : currentStatus) {
-			orderMap = new HashMap<String, String>();
-			orderMap.put("current_state", id.toString());
-			opt = new HashMap<String, Object>();
-			opt.put("resource", "orders");
-			opt.put("filter", orderMap);
-			JSONObject schema =  ws.getJson(opt);
-			
+			filter.put("current_state", id.toString());
+			options.setFilter(filter);
+			JSONObject schema =  ws.getJson(options);
+
 			if(schema != null) {
-				JSONArray jsonMainArr = schema.getJSONArray("orders"); 
-				
-				for (int i = 0; i < jsonMainArr.length(); i++) { 
+				JSONArray jsonMainArr = schema.getJSONArray("orders");
+
+				for (int i = 0; i < jsonMainArr.length(); i++) {
 				     JSONObject childJSONObject = jsonMainArr.getJSONObject(i);
 				     orderIds.add(childJSONObject.getInt("id"));
 				}
@@ -139,10 +137,10 @@ public class ImportOrderServiceImpl implements ImportOrderService {
 		}
 		return orderIds;
 	}
-	
+
 	/**
-	 * Manage address of customer 
-	 * 
+	 * Manage address of customer
+	 *
 	 * @param deliveryAddressId id of address which is on prestashop
 	 * @param invoiceAddressId id of address which is on prestashop
 	 * @param order current sale order
@@ -152,56 +150,56 @@ public class ImportOrderServiceImpl implements ImportOrderService {
 
 		Address deliveryAddress = null;
 		Address invoiceAddress = null;
-		
+
 		if (deliveryAddressId != null) {
-			deliveryAddress = Beans.get(AddressRepository.class).all().filter("self.prestaShopId = ?" , deliveryAddressId).fetchOne(); 
+			deliveryAddress = Beans.get(AddressRepository.class).all().filter("self.prestaShopId = ?" , deliveryAddressId).fetchOne();
 			order.setDeliveryAddress(deliveryAddress);
-			order.setDeliveryAddressStr(deliveryAddress.getAddressL4() + "\n" + deliveryAddress.getAddressL5() 
+			order.setDeliveryAddressStr(deliveryAddress.getAddressL4() + "\n" + deliveryAddress.getAddressL5()
 				+ "\n" + deliveryAddress.getAddressL6() + "\n" + deliveryAddress.getAddressL7Country().getName());
 		}
-		
+
 		if(invoiceAddressId != null) {
 			invoiceAddress = Beans.get(AddressRepository.class).all().filter("self.prestaShopId = ?" , invoiceAddressId).fetchOne();
 			order.setMainInvoicingAddress(invoiceAddress);
-			order.setMainInvoicingAddressStr(invoiceAddress.getAddressL4() + "\n" + invoiceAddress.getAddressL5() 
+			order.setMainInvoicingAddressStr(invoiceAddress.getAddressL4() + "\n" + invoiceAddress.getAddressL5()
 				+ "\n" + invoiceAddress.getAddressL6() + "\n" + invoiceAddress.getAddressL7Country().getName());
 		}
-		
+
 		return order;
 	}
-	
+
 	/**
 	 * Update status of sale order on prestashop
-	 * 
+	 *
 	 * @param order current sale order
 	 * @param status sale order status
 	 * @return object of sale order
 	 * @throws Exception
 	 */
 	public SaleOrder updateOrderStatus(SaleOrder order, int status) throws Exception {
-		
+
 		for(SaleOrderStatus saleOrderStatus : saleOrderStatus) {
 			if(status == saleOrderStatus.getPrestaShopStatus()) {
 				if(saleOrderStatus.getAbsStatus() == 1) {
 					order.setStatusSelect(saleOrderStatus.getAbsStatus());
-						
+
 				} else if (saleOrderStatus.getAbsStatus() == 2) {
 					order.setManualUnblock(true);
 					saleOrderWorkflowService.finalizeSaleOrder(order);
 					order.setStatusSelect(saleOrderStatus.getAbsStatus());
-					
+
 				} else if (saleOrderStatus.getAbsStatus() == 3) {
 					order.setManualUnblock(true);
 					saleOrderWorkflowService.finalizeSaleOrder(order);
 					saleOrderWorkflowService.confirmSaleOrder(order);
 					order.setStatusSelect(saleOrderStatus.getAbsStatus());
-					
+
 				} else if (saleOrderStatus.getAbsStatus() == 4) {
 					order.setManualUnblock(true);
 					saleOrderWorkflowService.finalizeSaleOrder(order);
 					saleOrderWorkflowService.confirmSaleOrder(order);
 					order.setStatusSelect(saleOrderStatus.getAbsStatus());
-					
+
 				} else if (saleOrderStatus.getAbsStatus() == 5) {
 					CancelReason cancelReason = new CancelReason();
 					cancelReason.setName("From prestashop");
@@ -209,7 +207,7 @@ public class ImportOrderServiceImpl implements ImportOrderService {
 					order.setCancelReasonStr("From prestashop");
 					saleOrderWorkflowService.cancelSaleOrder(order, order.getCancelReason(), order.getCancelReasonStr());
 					order.setStatusSelect(saleOrderStatus.getAbsStatus());
-					
+
 				} else {
 					order.setStatusSelect(1);
 				}
@@ -217,13 +215,13 @@ public class ImportOrderServiceImpl implements ImportOrderService {
 		}
 		return order;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
 	public BufferedWriter importOrder(BufferedWriter bwImport)
 			throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
-		
+
 		Integer done = 0;
 		Integer anomaly = 0;
 		bwImport.newLine();
@@ -231,35 +229,36 @@ public class ImportOrderServiceImpl implements ImportOrderService {
 		bwImport.newLine();
 		bwImport.write("Order");
 		Long clientPartner = 0l;
-		String prestashopId = null;
+		Integer prestashopId = null;
 		List<Integer> orderIds = null;
-		
+
 		if(isStatus == true) {
-			ws = new PSWebServiceClient(shopUrl,key);
-			orderIds = ws.fetchApiIds("orders");
+			PSWebServiceClient ws = new PSWebServiceClient(shopUrl,key);
+			orderIds = ws.fetchApiIds(PrestashopResourceType.ORDERS);
 		} else {
 			orderIds = this.getDraftOrderIds();
 		}
 
 		for (Integer id : orderIds) {
 			try {
-				ws = new PSWebServiceClient(shopUrl + "/api/orders/" + id, key);
-				opt = new HashMap<String, Object>();
-				opt.put("resource", "orders");
-				schema = ws.getJson(opt);
+				PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
+				Options options = new Options();
+				options.setResourceType(PrestashopResourceType.ORDERS);
+				options.setRequestedId(id);
+				JSONObject schema = ws.getJson(options);
 
-				prestashopId = String.valueOf(schema.getJSONObject("order").getInt("id"));
+				prestashopId = schema.getJSONObject("order").getInt("id");
 				SaleOrder order = null;
 				Partner partner = null;
 				Integer status = null;
 				Currency currency = null;
 				order = Beans.get(SaleOrderRepository.class).all().filter("self.prestaShopId = ?", prestashopId).fetchOne();
-				
+
 				if(order == null) {
 					order = new SaleOrder();
 					order.setPrestaShopId(prestashopId);
 				}
-				
+
 				if (!schema.getJSONObject("order").getString("id_customer").isEmpty()) {
 					clientPartner = Long.parseLong(schema.getJSONObject("order").getString("id_customer"));
 				} else {
@@ -269,26 +268,26 @@ public class ImportOrderServiceImpl implements ImportOrderService {
 				partner = Beans.get(PartnerRepository.class).all().filter("self.prestaShopId = ?", clientPartner).fetchOne();
 				status = Integer.parseInt(schema.getJSONObject("order").getString("current_state"));
 				currency = Beans.get(CurrencyRepository.class).all().filter("self.prestaShopId = ?" , schema.getJSONObject("order").getString("id_currency")).fetchOne();
-				
+
 				if(partner == null)
 					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CUSTOMER), IException.NO_VALUE);
-				
+
 				if(currency == null)
 					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_CURRENCY), IException.NO_VALUE);
-				
+
 				String deliveryAddressId = schema.getJSONObject("order").getString("id_address_delivery");
 				String invoiceAddressId = schema.getJSONObject("order").getString("id_address_invoice");
 				String paymentCondition = schema.getJSONObject("order").getString("payment");
 				Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse( schema.getJSONObject("order").getString("date_add"));
 				String formattedDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
 				PaymentCondition paymentConditionObj = paymentConditionRepo.findByName(paymentCondition);
-				
+
 				if(paymentConditionObj == null) {
 					paymentConditionObj = new PaymentCondition();
 					paymentConditionObj.setCode(paymentCondition);
 					paymentConditionObj.setName(paymentCondition);
 				}
-				
+
 				order.setClientPartner(partner);
 				order = this.manageAddresses(deliveryAddressId, invoiceAddressId, order);
 				order.setExTaxTotal(new BigDecimal(schema.getJSONObject("order").getString("total_paid_tax_excl")).setScale(2, RoundingMode.HALF_UP));
@@ -320,7 +319,7 @@ public class ImportOrderServiceImpl implements ImportOrderService {
 				continue;
 			}
 		}
-		
+
 		bwImport.newLine();
 		bwImport.newLine();
 		bwImport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);

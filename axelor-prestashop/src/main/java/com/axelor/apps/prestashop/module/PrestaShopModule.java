@@ -32,8 +32,6 @@ import com.axelor.apps.prestashop.exports.service.ExportCurrencyService;
 import com.axelor.apps.prestashop.exports.service.ExportCurrencyServiceImpl;
 import com.axelor.apps.prestashop.exports.service.ExportCustomerService;
 import com.axelor.apps.prestashop.exports.service.ExportCustomerServiceImpl;
-import com.axelor.apps.prestashop.exports.service.ExportOrderDetailService;
-import com.axelor.apps.prestashop.exports.service.ExportOrderDetailServiceImpl;
 import com.axelor.apps.prestashop.exports.service.ExportOrderService;
 import com.axelor.apps.prestashop.exports.service.ExportOrderServiceImpl;
 import com.axelor.apps.prestashop.exports.service.ExportProductService;
@@ -50,6 +48,8 @@ import com.axelor.apps.prestashop.imports.service.ImportCurrencyService;
 import com.axelor.apps.prestashop.imports.service.ImportCurrencyServiceImpl;
 import com.axelor.apps.prestashop.imports.service.ImportCustomerService;
 import com.axelor.apps.prestashop.imports.service.ImportCustomerServiceImpl;
+import com.axelor.apps.prestashop.imports.service.ImportMetaDataService;
+import com.axelor.apps.prestashop.imports.service.ImportMetaDataServiceImpl;
 import com.axelor.apps.prestashop.imports.service.ImportOrderDetailService;
 import com.axelor.apps.prestashop.imports.service.ImportOrderDetailServiceImpl;
 import com.axelor.apps.prestashop.imports.service.ImportOrderService;
@@ -71,8 +71,7 @@ public class PrestaShopModule extends AxelorModule {
         bind(ExportCategoryService.class).to(ExportCategoryServiceImpl.class);
         bind(ExportProductService.class).to(ExportProductServiceImpl.class);
         bind(ExportOrderService.class).to(ExportOrderServiceImpl.class);
-        bind(ExportOrderDetailService.class).to(ExportOrderDetailServiceImpl.class);
-       
+
         bind(ImportCurrencyService.class).to(ImportCurrencyServiceImpl.class);
         bind(ImportCountryService.class).to(ImportCountryServiceImpl.class);
         bind(ImportCustomerService.class).to(ImportCustomerServiceImpl.class);
@@ -81,5 +80,6 @@ public class PrestaShopModule extends AxelorModule {
         bind(ImportProductService.class).to(ImportProductServiceImpl.class);
         bind(ImportOrderService.class).to(ImportOrderServiceImpl.class);
         bind(ImportOrderDetailService.class).to(ImportOrderDetailServiceImpl.class);
+        bind(ImportMetaDataService.class).to(ImportMetaDataServiceImpl.class);
     }
 }

@@ -17,28 +17,18 @@
  */
 package com.axelor.apps.prestashop.imports.service;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
+import java.time.ZonedDateTime;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.TransformerException;
-
+import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
 
-import wslite.json.JSONException;
-
 public interface ImportCountryService {
-	
+
 	/**
 	 * Import countries from prestashop.
-	 * 
-	 * @param bwImport object of import logfile
-	 * @return object import log file
-	 * @throws IOException
-	 * @throws PrestaShopWebserviceException
-	 * @throws TransformerException
-	 * @throws JAXBException
-	 * @throws JSONException
+	 *
 	 */
-	public BufferedWriter importCountry(BufferedWriter bwImport) throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException;
+	public void importCountry(AppPrestashop appConfig, ZonedDateTime endDate, Writer logBuffer) throws IOException, PrestaShopWebserviceException;
 }

@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+	<order_states>
+		<order_state>
+			<id><![CDATA[2]]></id>
+			<unremovable><![CDATA[1]]></unremovable>
+			<delivery><![CDATA[0]]></delivery>
+			<hidden><![CDATA[0]]></hidden>
+			<send_email><![CDATA[1]]></send_email>
+			<module_name></module_name>
+			<invoice><![CDATA[1]]></invoice>
+			<color><![CDATA[#32CD32]]></color>
+			<logable><![CDATA[1]]></logable>
+			<shipped><![CDATA[0]]></shipped>
+			<paid><![CDATA[1]]></paid>
+			<pdf_delivery><![CDATA[0]]></pdf_delivery>
+			<pdf_invoice><![CDATA[1]]></pdf_invoice>
+			<deleted><![CDATA[0]]></deleted>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Paiement accepté]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Paiement accepté]]></language>
+			</name>
+			<template>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[payment]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[payment]]></language>
+			</template>
+		</order_state>
+		<order_state>
+			<id><![CDATA[3]]></id>
+			<unremovable><![CDATA[1]]></unremovable>
+			<delivery><![CDATA[1]]></delivery>
+			<hidden><![CDATA[0]]></hidden>
+			<send_email><![CDATA[1]]></send_email>
+			<module_name></module_name>
+			<invoice><![CDATA[1]]></invoice>
+			<color><![CDATA[#FF8C00]]></color>
+			<logable><![CDATA[1]]></logable>
+			<shipped><![CDATA[0]]></shipped>
+			<paid><![CDATA[1]]></paid>
+			<pdf_delivery><![CDATA[0]]></pdf_delivery>
+			<pdf_invoice><![CDATA[0]]></pdf_invoice>
+			<deleted><![CDATA[0]]></deleted>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[En cours de préparation]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[En cours de préparation]]></language>
+			</name>
+			<template>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[preparation]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[preparation]]></language>
+			</template>
+		</order_state>
+		<order_state>
+			<id><![CDATA[4]]></id>
+			<unremovable><![CDATA[1]]></unremovable>
+			<delivery><![CDATA[1]]></delivery>
+			<hidden><![CDATA[0]]></hidden>
+			<send_email><![CDATA[1]]></send_email>
+			<module_name></module_name>
+			<invoice><![CDATA[1]]></invoice>
+			<color><![CDATA[#8A2BE2]]></color>
+			<logable><![CDATA[1]]></logable>
+			<shipped><![CDATA[1]]></shipped>
+			<paid><![CDATA[1]]></paid>
+			<pdf_delivery><![CDATA[0]]></pdf_delivery>
+			<pdf_invoice><![CDATA[0]]></pdf_invoice>
+			<deleted><![CDATA[0]]></deleted>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Expédié]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Expédié]]></language>
+			</name>
+			<template>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[shipped]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[shipped]]></language>
+			</template>
+		</order_state>
+		<order_state>
+			<id><![CDATA[5]]></id>
+			<unremovable><![CDATA[1]]></unremovable>
+			<delivery><![CDATA[1]]></delivery>
+			<hidden><![CDATA[0]]></hidden>
+			<send_email><![CDATA[0]]></send_email>
+			<module_name></module_name>
+			<invoice><![CDATA[1]]></invoice>
+			<color><![CDATA[#108510]]></color>
+			<logable><![CDATA[1]]></logable>
+			<shipped><![CDATA[1]]></shipped>
+			<paid><![CDATA[1]]></paid>
+			<pdf_delivery><![CDATA[0]]></pdf_delivery>
+			<pdf_invoice><![CDATA[0]]></pdf_invoice>
+			<deleted><![CDATA[0]]></deleted>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Livré]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Livré]]></language>
+			</name>
+			<template>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+				</language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+				</language>
+			</template>
+		</order_state>
+		<order_state>
+			<id><![CDATA[6]]></id>
+			<unremovable><![CDATA[1]]></unremovable>
+			<delivery><![CDATA[0]]></delivery>
+			<hidden><![CDATA[0]]></hidden>
+			<send_email><![CDATA[1]]></send_email>
+			<module_name></module_name>
+			<invoice><![CDATA[0]]></invoice>
+			<color><![CDATA[#DC143C]]></color>
+			<logable><![CDATA[0]]></logable>
+			<shipped><![CDATA[0]]></shipped>
+			<paid><![CDATA[0]]></paid>
+			<pdf_delivery><![CDATA[0]]></pdf_delivery>
+			<pdf_invoice><![CDATA[0]]></pdf_invoice>
+			<deleted><![CDATA[0]]></deleted>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Annulé]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Annulé]]></language>
+			</name>
+			<template>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[order_canceled]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[order_canceled]]></language>
+			</template>
+		</order_state>
+		<order_state>
+			<id><![CDATA[7]]></id>
+			<unremovable><![CDATA[1]]></unremovable>
+			<delivery><![CDATA[0]]></delivery>
+			<hidden><![CDATA[0]]></hidden>
+			<send_email><![CDATA[1]]></send_email>
+			<module_name></module_name>
+			<invoice><![CDATA[1]]></invoice>
+			<color><![CDATA[#ec2e15]]></color>
+			<logable><![CDATA[0]]></logable>
+			<shipped><![CDATA[0]]></shipped>
+			<paid><![CDATA[0]]></paid>
+			<pdf_delivery><![CDATA[0]]></pdf_delivery>
+			<pdf_invoice><![CDATA[0]]></pdf_invoice>
+			<deleted><![CDATA[0]]></deleted>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Remboursé]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Remboursé]]></language>
+			</name>
+			<template>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[refund]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[refund]]></language>
+			</template>
+		</order_state>
+		<order_state>
+			<id><![CDATA[8]]></id>
+			<unremovable><![CDATA[1]]></unremovable>
+			<delivery><![CDATA[0]]></delivery>
+			<hidden><![CDATA[0]]></hidden>
+			<send_email><![CDATA[1]]></send_email>
+			<module_name></module_name>
+			<invoice><![CDATA[0]]></invoice>
+			<color><![CDATA[#8f0621]]></color>
+			<logable><![CDATA[0]]></logable>
+			<shipped><![CDATA[0]]></shipped>
+			<paid><![CDATA[0]]></paid>
+			<pdf_delivery><![CDATA[0]]></pdf_delivery>
+			<pdf_invoice><![CDATA[0]]></pdf_invoice>
+			<deleted><![CDATA[0]]></deleted>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Erreur de paiement]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Erreur de paiement]]></language>
+			</name>
+			<template>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[payment_error]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[payment_error]]></language>
+			</template>
+		</order_state>
+		<order_state>
+			<id><![CDATA[9]]></id>
+			<unremovable><![CDATA[1]]></unremovable>
+			<delivery><![CDATA[0]]></delivery>
+			<hidden><![CDATA[0]]></hidden>
+			<send_email><![CDATA[1]]></send_email>
+			<module_name></module_name>
+			<invoice><![CDATA[1]]></invoice>
+			<color><![CDATA[#FF69B4]]></color>
+			<logable><![CDATA[0]]></logable>
+			<shipped><![CDATA[0]]></shipped>
+			<paid><![CDATA[1]]></paid>
+			<pdf_delivery><![CDATA[0]]></pdf_delivery>
+			<pdf_invoice><![CDATA[0]]></pdf_invoice>
+			<deleted><![CDATA[0]]></deleted>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[En attente de réapprovisionnement (payé)]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[En attente de réapprovisionnement (payé)]]></language>
+			</name>
+			<template>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[outofstock]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[outofstock]]></language>
+			</template>
+		</order_state>
+		<order_state>
+			<id><![CDATA[11]]></id>
+			<unremovable><![CDATA[1]]></unremovable>
+			<delivery><![CDATA[0]]></delivery>
+			<hidden><![CDATA[0]]></hidden>
+			<send_email><![CDATA[1]]></send_email>
+			<module_name></module_name>
+			<invoice><![CDATA[1]]></invoice>
+			<color><![CDATA[#32CD32]]></color>
+			<logable><![CDATA[1]]></logable>
+			<shipped><![CDATA[0]]></shipped>
+			<paid><![CDATA[1]]></paid>
+			<pdf_delivery><![CDATA[0]]></pdf_delivery>
+			<pdf_invoice><![CDATA[0]]></pdf_invoice>
+			<deleted><![CDATA[0]]></deleted>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Paiement à distance accepté]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[Paiement à distance accepté]]></language>
+			</name>
+			<template>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[payment]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[payment]]></language>
+			</template>
+		</order_state>
+		<order_state>
+			<id><![CDATA[12]]></id>
+			<unremovable><![CDATA[1]]></unremovable>
+			<delivery><![CDATA[0]]></delivery>
+			<hidden><![CDATA[0]]></hidden>
+			<send_email><![CDATA[1]]></send_email>
+			<module_name></module_name>
+			<invoice><![CDATA[0]]></invoice>
+			<color><![CDATA[#FF69B4]]></color>
+			<logable><![CDATA[0]]></logable>
+			<shipped><![CDATA[0]]></shipped>
+			<paid><![CDATA[0]]></paid>
+			<pdf_delivery><![CDATA[0]]></pdf_delivery>
+			<pdf_invoice><![CDATA[0]]></pdf_invoice>
+			<deleted><![CDATA[0]]></deleted>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[En attente de réapprovisionnement (non payé)]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[En attente de réapprovisionnement (non payé)]]></language>
+			</name>
+			<template>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[outofstock]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[outofstock]]></language>
+			</template>
+		</order_state>
+		<order_state>
+			<id><![CDATA[13]]></id>
+			<unremovable><![CDATA[1]]></unremovable>
+			<delivery><![CDATA[0]]></delivery>
+			<hidden><![CDATA[0]]></hidden>
+			<send_email><![CDATA[0]]></send_email>
+			<module_name><![CDATA[ps_cashondelivery]]></module_name>
+			<invoice><![CDATA[0]]></invoice>
+			<color><![CDATA[#4169E1]]></color>
+			<logable><![CDATA[0]]></logable>
+			<shipped><![CDATA[0]]></shipped>
+			<paid><![CDATA[0]]></paid>
+			<pdf_delivery><![CDATA[0]]></pdf_delivery>
+			<pdf_invoice><![CDATA[0]]></pdf_invoice>
+			<deleted><![CDATA[0]]></deleted>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[En attente de paiement à la livraison]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[En attente de paiement à la livraison]]></language>
+			</name>
+			<template>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[cashondelivery]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[cashondelivery]]></language>
+			</template>
+		</order_state>
+		<order_state>
+			<id><![CDATA[1]]></id>
+			<unremovable><![CDATA[1]]></unremovable>
+			<delivery><![CDATA[0]]></delivery>
+			<hidden><![CDATA[0]]></hidden>
+			<send_email><![CDATA[1]]></send_email>
+			<module_name><![CDATA[ps_checkpayment]]></module_name>
+			<invoice><![CDATA[0]]></invoice>
+			<color><![CDATA[#4169E1]]></color>
+			<logable><![CDATA[0]]></logable>
+			<shipped><![CDATA[0]]></shipped>
+			<paid><![CDATA[0]]></paid>
+			<pdf_delivery><![CDATA[0]]></pdf_delivery>
+			<pdf_invoice><![CDATA[0]]></pdf_invoice>
+			<deleted><![CDATA[0]]></deleted>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[En attente du paiement par chèque]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[En attente du paiement par chèque]]></language>
+			</name>
+			<template>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[cheque]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[cheque]]></language>
+			</template>
+		</order_state>
+		<order_state>
+			<id><![CDATA[10]]></id>
+			<unremovable><![CDATA[1]]></unremovable>
+			<delivery><![CDATA[0]]></delivery>
+			<hidden><![CDATA[0]]></hidden>
+			<send_email><![CDATA[1]]></send_email>
+			<module_name><![CDATA[ps_wirepayment]]></module_name>
+			<invoice><![CDATA[0]]></invoice>
+			<color><![CDATA[#4169E1]]></color>
+			<logable><![CDATA[0]]></logable>
+			<shipped><![CDATA[0]]></shipped>
+			<paid><![CDATA[0]]></paid>
+			<pdf_delivery><![CDATA[0]]></pdf_delivery>
+			<pdf_invoice><![CDATA[0]]></pdf_invoice>
+			<deleted><![CDATA[0]]></deleted>
+			<name>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[En attente de virement bancaire]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[En attente de virement bancaire]]></language>
+			</name>
+			<template>
+				<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[bankwire]]></language>
+				<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[bankwire]]></language>
+			</template>
+		</order_state>
+	</order_states>
+</prestashop>

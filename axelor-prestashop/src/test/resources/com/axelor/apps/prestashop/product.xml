@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+	<product>
+		<id><![CDATA[21]]></id>
+		<id_manufacturer><![CDATA[0]]></id_manufacturer>
+		<id_supplier><![CDATA[0]]></id_supplier>
+		<id_category_default xlink:href="http://192.168.1.23/api/categories/50"><![CDATA[50]]></id_category_default>
+		<new></new>
+		<cache_default_attribute><![CDATA[0]]></cache_default_attribute>
+		<id_default_image xlink:href="http://192.168.1.23/api/images/products/21/21" notFilterable="true"><![CDATA[21]]></id_default_image>
+		<id_default_combination notFilterable="true"></id_default_combination>
+		<id_tax_rules_group><![CDATA[0]]></id_tax_rules_group>
+		<position_in_category notFilterable="true"></position_in_category>
+		<manufacturer_name notFilterable="true"></manufacturer_name>
+		<quantity notFilterable="true"><![CDATA[0]]></quantity>
+		<type notFilterable="true"><![CDATA[simple]]></type>
+		<id_shop_default><![CDATA[1]]></id_shop_default>
+		<reference></reference>
+		<supplier_reference></supplier_reference>
+		<location></location>
+		<width><![CDATA[0.000000]]></width>
+		<height><![CDATA[0.000000]]></height>
+		<depth><![CDATA[0.000000]]></depth>
+		<weight><![CDATA[0.000000]]></weight>
+		<quantity_discount><![CDATA[0]]></quantity_discount>
+		<ean13></ean13>
+		<isbn></isbn>
+		<upc></upc>
+		<cache_is_pack><![CDATA[0]]></cache_is_pack>
+		<cache_has_attachments><![CDATA[0]]></cache_has_attachments>
+		<is_virtual><![CDATA[0]]></is_virtual>
+		<state><![CDATA[1]]></state>
+		<on_sale><![CDATA[0]]></on_sale>
+		<online_only><![CDATA[0]]></online_only>
+		<ecotax><![CDATA[0.000000]]></ecotax>
+		<minimal_quantity><![CDATA[2]]></minimal_quantity>
+		<price><![CDATA[200.000000]]></price>
+		<wholesale_price><![CDATA[0.000000]]></wholesale_price>
+		<unity></unity>
+		<unit_price_ratio><![CDATA[0.000000]]></unit_price_ratio>
+		<additional_shipping_cost><![CDATA[0.00]]></additional_shipping_cost>
+		<customizable><![CDATA[0]]></customizable>
+		<text_fields><![CDATA[0]]></text_fields>
+		<uploadable_files><![CDATA[0]]></uploadable_files>
+		<active><![CDATA[1]]></active>
+		<redirect_type></redirect_type>
+		<id_type_redirected><![CDATA[0]]></id_type_redirected>
+		<available_for_order><![CDATA[1]]></available_for_order>
+		<available_date><![CDATA[0000-00-00]]></available_date>
+		<show_condition><![CDATA[0]]></show_condition>
+		<condition><![CDATA[new]]></condition>
+		<show_price><![CDATA[1]]></show_price>
+		<indexed><![CDATA[1]]></indexed>
+		<visibility><![CDATA[both]]></visibility>
+		<advanced_stock_management><![CDATA[0]]></advanced_stock_management>
+		<date_add><![CDATA[2018-02-06 19:48:51]]></date_add>
+		<date_upd><![CDATA[2018-02-06 19:48:51]]></date_upd>
+		<pack_stock_type><![CDATA[0]]></pack_stock_type>
+		<meta_description>
+			<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+			</language>
+			<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+			</language>
+		</meta_description>
+		<meta_keywords>
+			<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+			</language>
+			<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+			</language>
+		</meta_keywords>
+		<meta_title>
+			<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+			</language>
+			<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+			</language>
+		</meta_title>
+		<link_rewrite>
+			<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[storable]]></language>
+			<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+			</language>
+		</link_rewrite>
+		<name>
+			<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Ecran LED HD 22 pouces]]></language>
+			<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+			</language>
+		</name>
+		<description>
+			<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Résolution maximale : 1920x1080p / Connectique : 2 HDMI, 1 VGA, 1 composite]]></language>
+			<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+			</language>
+		</description>
+		<description_short>
+			<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+			</language>
+			<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+			</language>
+		</description_short>
+		<available_now>
+			<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+			</language>
+			<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+			</language>
+		</available_now>
+		<available_later>
+			<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[]]>
+			</language>
+			<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[]]>
+			</language>
+		</available_later>
+		<associations>
+			<categories nodeType="category" api="categories">
+				<category xlink:href="http://192.168.1.23/api/categories/50">
+					<id><![CDATA[ 50 ]]></id>
+				</category>
+			</categories>
+			<images nodeType="image" api="images">
+				<image xlink:href="http://192.168.1.23/api/images/products/21/21">
+					<id><![CDATA[21]]></id>
+				</image>
+			</images>
+			<combinations nodeType="combination" api="combinations"/>
+			<product_option_values nodeType="product_option_value" api="product_option_values"/>
+			<product_features nodeType="product_feature" api="product_features"/>
+			<tags nodeType="tag" api="tags"/>
+			<stock_availables nodeType="stock_available" api="stock_availables">
+				<stock_available xlink:href="http://192.168.1.23/api/stock_availables/21">
+					<id><![CDATA[21]]></id>
+					<id_product_attribute><![CDATA[0]]></id_product_attribute>
+				</stock_available>
+			</stock_availables>
+			<accessories nodeType="product" api="products"/>
+			<product_bundle nodeType="product" api="products"/>
+		</associations>
+	</product>
+</prestashop>

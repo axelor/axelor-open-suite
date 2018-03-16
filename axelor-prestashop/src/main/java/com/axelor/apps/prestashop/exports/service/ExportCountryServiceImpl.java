@@ -17,194 +17,132 @@
  */
 package com.axelor.apps.prestashop.exports.service;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.io.Writer;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.Country;
-import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
-import com.axelor.apps.prestashop.db.Countries;
-import com.axelor.apps.prestashop.db.Language;
-import com.axelor.apps.prestashop.db.LanguageDetails;
-import com.axelor.apps.prestashop.db.Prestashop;
-import com.axelor.apps.prestashop.exception.IExceptionMessage;
+import com.axelor.apps.prestashop.entities.PrestashopCountry;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
+import com.axelor.apps.prestashop.entities.PrestashopTranslatableString.PrestashopTranslationEntry;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class ExportCountryServiceImpl implements ExportCountryService {
-	
-	Integer done = 0;
-	Integer anomaly = 0;
-	private final String shopUrl;
-	private final String key;
-	
-	@Inject
+	private Logger log = LoggerFactory.getLogger(getClass());
+
 	private CountryRepository countryRepo;
-	
-	/**
-	 * Initialization
-	 */
-	public ExportCountryServiceImpl() {
-		AppPrestashop prestaShopObj = Beans.get(AppPrestashopRepository.class).all().fetchOne();
-		shopUrl = prestaShopObj.getPrestaShopUrl();
-		key = prestaShopObj.getPrestaShopKey();
+
+	@Inject
+	public ExportCountryServiceImpl(CountryRepository countryRepo) {
+		this.countryRepo = countryRepo;
 	}
-	
-	/**
-	 *  Check on prestashop country is already there
-	 * 
-	 * @param countryCode unique code of country
-	 * @return id of prestashop's country if it is.
-	 * @throws PrestaShopWebserviceException
-	 */
-	public String isCountry(String countryCode) throws PrestaShopWebserviceException {
-		
-		String prestaShopId = null;
-		PSWebServiceClient ws = new PSWebServiceClient(shopUrl, key);
-		HashMap<String, String> countryMap = new HashMap<String, String>();
-		countryMap.put("iso_code", countryCode);
-		HashMap<String, Object> opt = new HashMap<String, Object>();
-		opt.put("resource", "countries");
-		opt.put("filter", countryMap);
-		Document str =  ws.get(opt);
-		
-		NodeList list = str.getElementsByTagName("countries");
-		for(int i = 0; i < list.getLength(); i++) {
-		    Element element = (Element) list.item(i);
-		    NodeList node = element.getElementsByTagName("country");
-		    Node country = node.item(i);
-		    if(node.getLength() > 0) {
-		    	prestaShopId = country.getAttributes().getNamedItem("id").getNodeValue();
-		    	return prestaShopId;
-		    }
-		}
-		return prestaShopId;
-	}
-	
-	@SuppressWarnings("deprecation")
+
 	@Override
 	@Transactional
-	public BufferedWriter exportCountry(ZonedDateTime endDate, BufferedWriter bwExport) throws IOException, PrestaShopWebserviceException, ParserConfigurationException, SAXException, TransformerException {
-		
-		PSWebServiceClient ws = null;
-		HashMap<String, Object> opt = null;
-		bwExport.newLine();
-		bwExport.write("-----------------------------------------------");
-		bwExport.newLine();
-		bwExport.write("Country");
-		List<Country> countries = null;
-		Document document = null;
-		String schema = null;
-		String prestaShopId = null;
-		
+	public void exportCountry(AppPrestashop appConfig, ZonedDateTime endDate, Writer logBuffer) throws IOException, PrestaShopWebserviceException {
+		int done = 0;
+		int errors = 0;
+
+		logBuffer.write(String.format("%n====== COUNTRIES ======%n"));
+
+		List<Country> countries;
 		if(endDate == null) {
-			countries = Beans.get(CountryRepository.class).all().fetch();
+			countries = countryRepo.all().fetch();
 		} else {
-			countries = Beans.get(CountryRepository.class).all().filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null", endDate, endDate).fetch();
+			countries = countryRepo.all().filter("self.createdOn > ?1 OR self.updatedOn > ?2 OR self.prestaShopId = null", endDate, endDate).fetch();
 		}
-		
-		for(Country countryObj : countries) {
+
+		final PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
+
+		// Same as usual, perform a global fetch to speed up process
+		final List<PrestashopCountry> remoteCountries = ws.fetchAll(PrestashopResourceType.COUNTRIES);
+		final Map<Integer, PrestashopCountry> countriesById = new HashMap<>();
+		final Map<String, PrestashopCountry> countriesByCode = new HashMap<>();
+		for(PrestashopCountry country : remoteCountries) {
+			countriesById.put(country.getId(), country);
+			countriesByCode.put(country.getIsoCode(), country);
+		}
+
+		final PrestashopCountry defaultCountry = ws.fetchDefault(PrestashopResourceType.COUNTRIES);
+		final int language = (appConfig.getTextsLanguage().getPrestaShopId() == null ? 1 : appConfig.getTextsLanguage().getPrestaShopId());
+
+
+		for(Country localCountry : countries) {
+			logBuffer.write(String.format("Exporting country #%d (%s) – ", localCountry.getId(), localCountry.getName()));
+
 			try {
-				
-				prestaShopId = this.isCountry(countryObj.getAlpha2Code());
-				
-				if(countryObj.getName() == null) {
-					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_COUNTRY), IException.NO_VALUE);		
-				}
-				
-				LanguageDetails languageObj = new LanguageDetails();
-				languageObj.setId("1");
-				languageObj.setValue(countryObj.getName());
-				
-				Language language = new Language();
-				language.setLanguage(languageObj);
-				
-				Countries country = new Countries();
-				if(prestaShopId != null) {
-					country.setId(prestaShopId);
+				PrestashopCountry remoteCountry;
+				if(localCountry.getPrestaShopId() != null) {
+					logBuffer.write("prestashop id=" + localCountry.getPrestaShopId());
+					remoteCountry = countriesById.get(localCountry.getPrestaShopId());
+					if(remoteCountry == null) {
+						logBuffer.write(String.format(" [ERROR] Not found remotely%n"));
+						log.error("Unable to fetch remote country #{} ({}), something's probably very wrong, skipping",
+								localCountry.getPrestaShopId(), localCountry.getName());
+						++errors;
+						continue;
+					} else if(localCountry.getAlpha2Code().equals(remoteCountry.getIsoCode()) == false) {
+						log.error("Remote country #{} has not the same ISO code as the local one ({} vs {}), skipping",
+								localCountry.getPrestaShopId(), remoteCountry.getIsoCode(), localCountry.getAlpha2Code());
+						logBuffer.write(String.format(" [ERROR] ISO code mismatch: %s vs %s%n", remoteCountry.getIsoCode(), localCountry.getAlpha2Code()));
+						++errors;
+						continue;
+					}
 				} else {
-					country.setId(countryObj.getPrestaShopId());
+					remoteCountry = countriesByCode.get(localCountry.getAlpha2Code());
+					if(remoteCountry == null) {
+						logBuffer.write("no ID and code not found, creating");
+						remoteCountry = new PrestashopCountry();
+						remoteCountry.setIsoCode(localCountry.getAlpha2Code());
+						remoteCountry.setName(defaultCountry.getName().clone());
+						for(PrestashopTranslationEntry e : remoteCountry.getName().getTranslations()) {
+							e.setTranslation(localCountry.getName());
+						}
+					} else {
+						logBuffer.write(String.format("found remotely using its code %s", localCountry.getAlpha2Code()));
+					}
 				}
-				
-				country.setName(language);
-				country.setIso_code(countryObj.getAlpha2Code());
-				country.setId_zone("1");
-				country.setContains_states("0");
-				country.setNeed_identification_number("0");
-				country.setDisplay_tax_label("1");
-				country.setActive("1");
-				Prestashop prestaShop = new Prestashop();
-				prestaShop.setPrestashop(country);
-				
-				StringWriter sw = new StringWriter();
-				JAXBContext contextObj = JAXBContext.newInstance(Prestashop.class);
-				Marshaller marshallerObj = contextObj.createMarshaller();  
-				marshallerObj.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);  
-				marshallerObj.marshal(prestaShop, sw);
-				schema = sw.toString();
-				
-				ws = new PSWebServiceClient(shopUrl + "/api/" + "countries" + "?schema=synopsis", key);
-				opt = new HashMap<String, Object>();
-				opt.put("resource", "countries");
-				opt.put("postXml", schema);
-				
-				if (countryObj.getPrestaShopId() == null && prestaShopId == null) {
-					document = ws.add(opt);
-					
-				} else if (prestaShopId != null){
-					opt.put("id", prestaShopId);
-					ws = new PSWebServiceClient(shopUrl, key);
-					document = ws.edit(opt);
-					
+
+				if(remoteCountry.getId() == null || appConfig.getPrestaShopMasterForCountries() == Boolean.FALSE) {
+					Integer phonePrefix = null;
+					if(StringUtils.isNotEmpty(localCountry.getPhonePrefix())) {
+						String localPhonePrefix = localCountry.getPhonePrefix().replaceAll("[^0-9]", "");
+						if(StringUtils.isNotEmpty(localPhonePrefix)) {
+							phonePrefix = Integer.parseInt(localPhonePrefix);
+						}
+					}
+					remoteCountry.setCallPrefix(phonePrefix);
+					remoteCountry.getName().setTranslation(language, localCountry.getName());
+
+					remoteCountry = ws.save(PrestashopResourceType.COUNTRIES, remoteCountry);
+					localCountry.setPrestaShopId(remoteCountry.getId());
 				} else {
-					opt.put("id", countryObj.getPrestaShopId());
-					ws = new PSWebServiceClient(shopUrl, key);
-					document = ws.edit(opt);
+					logBuffer.write(" — remote country exists and countries are managed on prestashop, skipping");
 				}
-				
-				countryObj.setPrestaShopId(document.getElementsByTagName("id").item(0).getTextContent());
-				countryRepo.save(countryObj);
-				done++;
-				
-			} catch (AxelorException e) {
-				bwExport.newLine();
-				bwExport.newLine();
-				bwExport.write("Id - " + countryObj.getId().toString() + " " + e.getMessage());
-				anomaly++;
-				continue;
-				
-			} catch (Exception e) {
-				
-				bwExport.newLine();
-				bwExport.newLine();
-				bwExport.write("Id - " + countryObj.getId().toString() + " " + e.getMessage());
-				anomaly++;
-				continue;
+				logBuffer.write(String.format(" [SUCCESS]%n"));
+				++done;
+			} catch (PrestaShopWebserviceException e) {
+				logBuffer.write(String.format(" [ERROR] %s (full trace is in application logs)%n", e.getLocalizedMessage()));
+				log.error(String.format("Exception while synchronizing country #%d (%s)", localCountry.getId(), localCountry.getAlpha2Code()), e);
+				++errors;
 			}
 		}
-		
-		bwExport.newLine();
-		bwExport.newLine();
-		bwExport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);
-		return bwExport;
+
+		logBuffer.write(String.format("%n=== END OF COUNTRIES EXPORT, done: %d, errors: %d ===%n", done, errors));
 	}
+
 }

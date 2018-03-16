@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+	<image>
+		<id><![CDATA[29]]></id>
+		<id_product><![CDATA[57]]></id_product>
+		<position><![CDATA[1]]></position>
+		<cover><![CDATA[1]]></cover>
+		<legend>
+			<language id="1" xlink:href="http://192.168.1.23/api/languages/1"><![CDATA[Une jolie image]]></language>
+			<language id="2" xlink:href="http://192.168.1.23/api/languages/2"><![CDATA[A nice picture]]></language>
+		</legend>
+	</image>
+	<content encode="base64"><![CDATA[Base64EncodedImage]]></content>
+</prestashop>

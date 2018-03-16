@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+	<order_detail>
+		<id><![CDATA[3]]></id>
+		<id_order xlink:href="http://192.168.1.23/api/orders/2"><![CDATA[2]]></id_order>
+		<product_id xlink:href="http://192.168.1.23/api/products/21"><![CDATA[21]]></product_id>
+		<product_attribute_id xlink:href="http://192.168.1.23/api/combinations/0"><![CDATA[0]]></product_attribute_id>
+		<product_quantity_reinjected><![CDATA[0]]></product_quantity_reinjected>
+		<group_reduction><![CDATA[0.00]]></group_reduction>
+		<discount_quantity_applied><![CDATA[0]]></discount_quantity_applied>
+		<download_hash></download_hash>
+		<download_deadline><![CDATA[0000-00-00 00:00:00]]></download_deadline>
+		<id_order_invoice><![CDATA[2]]></id_order_invoice>
+		<id_warehouse><![CDATA[0]]></id_warehouse>
+		<id_shop><![CDATA[1]]></id_shop>
+		<id_customization><![CDATA[0]]></id_customization>
+		<product_name><![CDATA[Imprimante Laser]]></product_name>
+		<product_quantity><![CDATA[8]]></product_quantity>
+		<product_quantity_in_stock><![CDATA[8]]></product_quantity_in_stock>
+		<product_quantity_return><![CDATA[0]]></product_quantity_return>
+		<product_quantity_refunded><![CDATA[0]]></product_quantity_refunded>
+		<product_price><![CDATA[429.000000]]></product_price>
+		<reduction_percent><![CDATA[0.00]]></reduction_percent>
+		<reduction_amount><![CDATA[0.000000]]></reduction_amount>
+		<reduction_amount_tax_incl><![CDATA[0.000000]]></reduction_amount_tax_incl>
+		<reduction_amount_tax_excl><![CDATA[0.000000]]></reduction_amount_tax_excl>
+		<product_quantity_discount><![CDATA[0.000000]]></product_quantity_discount>
+		<product_ean13></product_ean13>
+		<product_isbn></product_isbn>
+		<product_upc></product_upc>
+		<product_reference><![CDATA[EQPT-0006]]></product_reference>
+		<product_supplier_reference></product_supplier_reference>
+		<product_weight><![CDATA[0.000000]]></product_weight>
+		<tax_computation_method><![CDATA[0]]></tax_computation_method>
+		<id_tax_rules_group><![CDATA[0]]></id_tax_rules_group>
+		<ecotax><![CDATA[0.000000]]></ecotax>
+		<ecotax_tax_rate><![CDATA[0.000]]></ecotax_tax_rate>
+		<download_nb><![CDATA[0]]></download_nb>
+		<unit_price_tax_incl><![CDATA[429.000000]]></unit_price_tax_incl>
+		<unit_price_tax_excl><![CDATA[429.000000]]></unit_price_tax_excl>
+		<total_price_tax_incl><![CDATA[3432.000000]]></total_price_tax_incl>
+		<total_price_tax_excl><![CDATA[3432.000000]]></total_price_tax_excl>
+		<total_shipping_price_tax_excl><![CDATA[0.000000]]></total_shipping_price_tax_excl>
+		<total_shipping_price_tax_incl><![CDATA[0.000000]]></total_shipping_price_tax_incl>
+		<purchase_supplier_price><![CDATA[360.360000]]></purchase_supplier_price>
+		<original_product_price><![CDATA[429.000000]]></original_product_price>
+		<original_wholesale_price><![CDATA[360.360000]]></original_wholesale_price>
+		<associations>
+			<taxes nodeType="tax" api="taxes"/>
+		</associations>
+	</order_detail>
+</prestashop>

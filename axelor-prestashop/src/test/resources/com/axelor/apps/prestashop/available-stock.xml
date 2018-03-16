@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+	<stock_available>
+		<id><![CDATA[10]]></id>
+		<id_product xlink:href="http://192.168.1.23/api/products/10"><![CDATA[10]]></id_product>
+		<id_product_attribute><![CDATA[0]]></id_product_attribute>
+		<id_shop xlink:href="http://192.168.1.23/api/shops/1"><![CDATA[1]]></id_shop>
+		<id_shop_group><![CDATA[0]]></id_shop_group>
+		<quantity><![CDATA[0]]></quantity>
+		<depends_on_stock><![CDATA[0]]></depends_on_stock>
+		<out_of_stock><![CDATA[2]]></out_of_stock>
+	</stock_available>
+</prestashop>

@@ -17,115 +17,85 @@
  */
 package com.axelor.apps.prestashop.imports.service;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.HashMap;
+import java.io.Writer;
+import java.time.ZonedDateTime;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.TransformerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.AppPrestashop;
 import com.axelor.apps.base.db.Country;
-import com.axelor.apps.base.db.repo.AppPrestashopRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
-import com.axelor.apps.prestashop.exception.IExceptionMessage;
+import com.axelor.apps.prestashop.entities.PrestashopCountry;
+import com.axelor.apps.prestashop.entities.PrestashopResourceType;
 import com.axelor.apps.prestashop.service.library.PSWebServiceClient;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-import wslite.json.JSONArray;
-import wslite.json.JSONException;
-import wslite.json.JSONObject;
-
 public class ImportCountryServiceImpl implements ImportCountryService {
+	private Logger log = LoggerFactory.getLogger(getClass());
 
-	PSWebServiceClient ws;
-    HashMap<String,Object> opt;
-    JSONObject schema;
-    private final String shopUrl;
-	private final String key;
-	
-	@Inject
 	private CountryRepository countryRepo;
-	
-	/**
-	 * Initialization
-	 */
-	public ImportCountryServiceImpl() {
-			AppPrestashop prestaShopObj = Beans.get(AppPrestashopRepository.class).all().fetchOne();
-			shopUrl = prestaShopObj.getPrestaShopUrl();
-			key = prestaShopObj.getPrestaShopKey();
+
+	@Inject
+	public ImportCountryServiceImpl(CountryRepository countryRepo) {
+		this.countryRepo = countryRepo;
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	@Override
 	@Transactional
-	public BufferedWriter importCountry(BufferedWriter bwImport)
-			throws IOException, PrestaShopWebserviceException, TransformerException, JAXBException, JSONException {
-		
-		Integer done = 0;
-		Integer anomaly = 0;
-		bwImport.newLine();
-		bwImport.write("-----------------------------------------------");
-		bwImport.newLine();
-		bwImport.write("Country");
-		
-		ws = new PSWebServiceClient(shopUrl,key);
-		List<Integer> countryIds = ws.fetchApiIds("countries");
-		
-		for (Integer id : countryIds) {
-			
-			ws = new PSWebServiceClient(shopUrl,key);
-			opt = new HashMap<String, Object>();
-			opt.put("resource", "countries");
-			opt.put("id", id);
-			schema = ws.getJson(opt);
-			
-			try {
-				
-				JSONArray names = schema.getJSONObject("country").getJSONArray("name");
-				JSONObject childJSONObject = names.getJSONObject(0);
-				
-				if(childJSONObject.getString("value").isEmpty()) {
-					throw new AxelorException(I18n.get(IExceptionMessage.INVALID_COUNTRY), IException.NO_VALUE);
-				}
-						
-				Country country = Beans.get(CountryRepository.class).all().filter("self.alpha2Code = ?", schema.getJSONObject("country").getString("iso_code")).fetchOne();
-				if(country == null) {
-					country = new Country();
-				}
-				country.setName(childJSONObject.getString("value"));
-				country.setAlpha2Code(schema.getJSONObject("country").getString("iso_code"));
-				country.setPrestaShopId(String.valueOf(schema.getJSONObject("country").getInt("id")));
-				countryRepo.save(country);
-				done++;
-						
-			} catch (AxelorException e) {
-				bwImport.newLine();
-				bwImport.newLine();
-				bwImport.write("Id - " + id + " " + e.getMessage());
-				anomaly++;
-				continue;
+	public void importCountry(AppPrestashop appConfig, ZonedDateTime endDate, Writer logBuffer) throws IOException, PrestaShopWebserviceException {
+		int done = 0;
+		int errors = 0;
 
-			} catch (Exception e) {
-						
-				bwImport.newLine();
-				bwImport.newLine();
-				bwImport.write("Id - " + id + " " + e.getMessage());
-				anomaly++;
-				continue;
+		logBuffer.write(String.format("%n====== COUNTRIES ======%n"));
+
+		final PSWebServiceClient ws = new PSWebServiceClient(appConfig.getPrestaShopUrl(), appConfig.getPrestaShopKey());
+		List<PrestashopCountry> remoteCountries = ws.fetchAll(PrestashopResourceType.COUNTRIES);
+
+		for(PrestashopCountry remoteCountry : remoteCountries) {
+			logBuffer.write(String.format("Importing country #%d (%s) – ", remoteCountry.getId(), remoteCountry.getName().getTranslation(1)));
+
+			Country localCountry = countryRepo.findByPrestaShopId(remoteCountry.getId());
+			if(localCountry == null) {
+				localCountry = countryRepo.findByAlpha2Code(remoteCountry.getIsoCode());
+				if(localCountry== null) {
+					logBuffer.write("not found by ID and code not found, creating");
+					localCountry = new Country();
+					localCountry.setAlpha2Code(remoteCountry.getIsoCode());
+					localCountry.setPrestaShopId(remoteCountry.getId());
+				} else {
+					logBuffer.write(String.format("found locally using its code %s", localCountry.getAlpha2Code()));
+				}
+			} else {
+				if(localCountry.getAlpha2Code().equals(remoteCountry.getIsoCode()) == false) {
+					log.error("Remote country #{} has not the same ISO code as the local one ({} vs {}), skipping",
+							remoteCountry.getId(), remoteCountry.getIsoCode(), localCountry.getAlpha2Code());
+					logBuffer.write(String.format(" [ERROR] ISO code mismatch: %s vs %s%n", remoteCountry.getIsoCode(), localCountry.getAlpha2Code()));
+					++errors;
+					continue;
+				}
 			}
+
+			// As the field is prestashop specific, always update it
+			localCountry.setPrestaShopZoneId(remoteCountry.getZoneId());
+
+			if(localCountry.getId() == null || appConfig.getPrestaShopMasterForCountries() == Boolean.TRUE) {
+				localCountry.setName(remoteCountry.getName().getTranslation(1)); // TODO Handle language correctly
+				if(remoteCountry.getCallPrefix() != null) {
+					localCountry.setPhonePrefix(remoteCountry.getCallPrefix().toString());
+				}
+				countryRepo.save(localCountry);
+			} else {
+				logBuffer.write(" – local country exists and PrestaShop isn't master for countries, leaving untouched");
+			}
+			logBuffer.write(String.format(" [SUCCESS]%n"));
+			++done;
 		}
-		
-		bwImport.newLine();
-		bwImport.newLine();
-		bwImport.write("Succeed : " + done + " " + "Anomaly : " + anomaly);
-		return bwImport;
+
+		logBuffer.write(String.format("%n=== END OF COUNTRIES IMPORT, done: %d, errors: %d ===%n", done, errors));
 	}
 }
