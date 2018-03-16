@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.prestashop.imports;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Writer;
@@ -35,7 +36,6 @@ import com.axelor.apps.prestashop.imports.service.ImportCategoryService;
 import com.axelor.apps.prestashop.imports.service.ImportCountryService;
 import com.axelor.apps.prestashop.imports.service.ImportCurrencyService;
 import com.axelor.apps.prestashop.imports.service.ImportCustomerService;
-import com.axelor.apps.prestashop.imports.service.ImportOrderDetailService;
 import com.axelor.apps.prestashop.imports.service.ImportOrderService;
 import com.axelor.apps.prestashop.imports.service.ImportProductService;
 import com.axelor.apps.prestashop.service.library.PrestaShopWebserviceException;
