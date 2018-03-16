@@ -34,8 +34,12 @@
   	<many-to-one name="senderUser" ref="com.axelor.auth.db.User" title="Sender (User)" readonly="true"/>
   	<many-to-one name="recipientUser" ref="com.axelor.auth.db.User" title="Recipient"/>
 
-	<finder-method name="findByRelatedTo1" using="int:relatedTo1SelectId,String:relatedTo1Select"
-		filter="self.relatedTo1SelectId = :relatedTo1SelectId AND self.relatedTo1Select = :relatedTo1Select" all="true"/>
+	<finder-method name="findByRelatedTo"
+		using="int:relatedToSelectId,String:relatedToSelect"
+		filter="self.relatedTo1SelectId = :relatedToSelectId
+				AND self.relatedTo1Select = :relatedToSelect
+			OR self.relatedTo2SelectId = :relatedToSelectId
+				AND self.relatedTo2Select = :relatedToSelect" all="true"/>
 
   	<extra-code><![CDATA[
 
