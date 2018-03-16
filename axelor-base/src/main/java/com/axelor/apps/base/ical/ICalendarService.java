@@ -84,8 +84,8 @@ import net.fortuna.ical4j.util.UidGenerator;
 import net.fortuna.ical4j.util.Uris;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 
 import com.axelor.apps.base.db.ICalendar;
 import com.axelor.apps.base.db.ICalendarEvent;
@@ -306,7 +306,7 @@ public class ICalendarService {
 			event.setCalendar(calendar);
 		}
 
-		ZoneId zoneId = ZoneOffset.UTC;
+		ZoneId zoneId = OffsetDateTime.now().getOffset();
 		if (dtStart.getDate() != null) {
 			if (dtStart.getTimeZone() != null) {
 				zoneId = dtStart.getTimeZone().toZoneId();
@@ -360,7 +360,8 @@ public class ICalendarService {
 				iCalendarUserRepository.save(attendee);
 			}
 		}
-
+		iEventRepo.save(event);
+		
 		return event;
 	}
 	
@@ -488,8 +489,8 @@ public class ICalendarService {
 
 	protected Date toDate(LocalDateTime dt, boolean allDay) {
 		if (dt == null) return null;
-		if (allDay) return new Date(java.util.Date.from(dt.atZone(ZoneOffset.UTC).toInstant()));
-		return new DateTime(java.util.Date.from(dt.atZone(ZoneOffset.UTC).toInstant()));
+		if (allDay) return new Date(java.util.Date.from(dt.toInstant(OffsetDateTime.now().getOffset())));
+		return new DateTime(java.util.Date.from(dt.toInstant(OffsetDateTime.now().getOffset())));
 	}
 
 	protected URI createUri(String uri) {
@@ -538,13 +539,13 @@ public class ICalendarService {
 			items.add(createUri(event.getUrl()));
 		}
 		if (event.getUpdatedOn() != null) {
-			DateTime date = new DateTime(java.util.Date.from(event.getUpdatedOn().atZone(ZoneOffset.UTC).toInstant()));
+			DateTime date = new DateTime(java.util.Date.from(event.getUpdatedOn().toInstant(OffsetDateTime.now().getOffset())));
 			date.setUtc(true);
 			LastModified lastModified = new LastModified(date);
 			items.add(lastModified);
 		}
 		else{
-			DateTime date = new DateTime(java.util.Date.from(event.getCreatedOn().atZone(ZoneOffset.UTC).toInstant()));
+			DateTime date = new DateTime(java.util.Date.from(event.getCreatedOn().toInstant(OffsetDateTime.now().getOffset())));
 			date.setUtc(true);
 			LastModified lastModified = new LastModified(date);
 			items.add(lastModified);
@@ -691,6 +692,7 @@ public class ICalendarService {
 			VEvent source = createVEvent(item);
 			VEvent target = remoteEvents.get(source.getUid().getValue());
 			if (target == null && Strings.isNullOrEmpty(item.getUid())) {
+				item.setUid(source.getUid().getValue());
 				target = source;
 			}
 			
@@ -702,7 +704,7 @@ public class ICalendarService {
 				}
 				else{
 					if(source.getLastModified() != null && target.getLastModified() != null){
-						ZoneId zoneId = ZoneOffset.UTC;
+						ZoneId zoneId = OffsetDateTime.now().getOffset();
 						if (source.getLastModified().getTimeZone() != null) {
 							zoneId = source.getLastModified().getTimeZone().toZoneId();
 						}
@@ -751,15 +753,13 @@ public class ICalendarService {
 			}
 		}
 		
+		// update local events
 		List<ICalendarEvent> oldEvents = getICalendarEvents(calendar);
-		
 		for (VEvent item : localEvents) {
 			ICalendarEvent iEvent = findOrCreateEvent(item, calendar);
-			if (oldEvents.contains(iEvent)) {
+			if (oldEvents.contains(iEvent))
 				oldEvents.remove(iEvent);
-			}
 		}
-		
 		removeOldEvents(oldEvents);
 
 		// update remote events
@@ -878,7 +878,8 @@ public class ICalendarService {
 						}
 
 						VEvent target = remoteEvents.get(event.getUid());
-						removeCalendar(collection,target.getUid().getValue());
+						if (target != null)
+							removeCalendar(collection,target.getUid().getValue());
 					}
 				} else {
 					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CALENDAR_NOT_VALID));

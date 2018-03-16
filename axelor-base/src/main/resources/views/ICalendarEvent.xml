@@ -71,7 +71,7 @@
         <view type="grid" name="calendar-event-grid"/>
         <view type="form" name="calendar-event-calendar-grid"/>
         <domain>self.calendar.id = :calendarId</domain>
-        <context name="calendarId" expr="eval:_id"/>
+        <context name="calendarId" expr="eval:id"/>
     </action-view>
 
     <action-method name="action-icalendar-event-method-add-email-guest">
