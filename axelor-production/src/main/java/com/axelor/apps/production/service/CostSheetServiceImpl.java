@@ -45,6 +45,8 @@ public class CostSheetServiceImpl implements CostSheetService  {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
+	private final int QTY_MAX_SCALE = 10;
+
 	protected UnitConversionService unitConversionService;
 	protected CostSheetLineService costSheetLineService;
 	protected BillOfMaterialRepository billOfMaterialRepo;
@@ -302,6 +304,7 @@ public class CostSheetServiceImpl implements CostSheetService  {
 		else if(costType == IWorkCenter.COST_PER_HOUR)  {
 
 			BigDecimal qty = new BigDecimal(prodProcessLine.getDurationPerCycle()).divide(new BigDecimal(3600), appProductionService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_EVEN).multiply(this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()));
+			qty = qty.setScale( QTY_MAX_SCALE, BigDecimal.ROUND_HALF_EVEN);
 			BigDecimal costPrice = workCenter.getCostAmount().multiply(qty);
 			
 			costSheetLineService.createWorkCenterCostSheetLine(workCenter, prodProcessLine.getPriority(), bomLevel, parentCostSheetLine, qty, costPrice, hourUnit);
