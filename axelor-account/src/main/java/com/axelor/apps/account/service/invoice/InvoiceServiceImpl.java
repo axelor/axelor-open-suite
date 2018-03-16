@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -411,6 +412,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
 	@Override
 	public ReportSettings printInvoice(Invoice invoice, boolean toAttach) throws AxelorException {
+		if (invoice.getPrintingSettings() == null) {
+			throw new AxelorException(IException.MISSING_FIELD,
+					String.format(I18n.get(IExceptionMessage.INVOICE_MISSING_PRINTING_SETTINGS), invoice.getInvoiceId()),
+					invoice
+            );
+		}
 		String locale = ReportSettings.getPrintingLocale(invoice.getPartner());
 		
 		String title = I18n.get("Invoice");
@@ -428,6 +435,19 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	@Override
 	public ReportSettings printInvoices(List<Long> ids) throws AxelorException {
 		String locale = Beans.get(AppBaseService.class).getAppBase().getDefaultPartnerLanguage();
+		List<Invoice> invoiceList = invoiceRepo.all()
+				.filter("self.id IN (" +
+						ids.stream().map(Object::toString).collect(Collectors.joining(",")) +
+						") AND self.printingSettings IS NULL")
+				.fetch();
+		if (!invoiceList.isEmpty()) {
+		    String exceptionMessage = String.format(I18n.get(IExceptionMessage.INVOICES_MISSING_PRINTING_SETTINGS),
+					"<ul>" + invoiceList.stream()
+									.map(Invoice::getInvoiceId)
+									.collect(Collectors.joining("</li><li>", "<li>", "</li>"))
+							+ "<ul>");
+		    throw new AxelorException(IException.MISSING_FIELD, exceptionMessage);
+		}
 		
 		String title = I18n.get("Invoices");
 		

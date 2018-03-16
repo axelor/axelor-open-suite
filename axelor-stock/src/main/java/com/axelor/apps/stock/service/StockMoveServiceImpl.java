@@ -938,41 +938,49 @@ public class StockMoveServiceImpl implements StockMoveService {
 	public String printStockMove(StockMove stockMove,
 								 List<Integer> lstSelectedMove,
 								 boolean isPicking) throws AxelorException {
-		String stockMoveIds = "";
-
-		if (lstSelectedMove != null) {
-		    StringBuilder bld = new StringBuilder();
-			for(Integer it : lstSelectedMove) {
-				bld.append(it.toString()).append(",");
-			}
-			stockMoveIds = bld.toString();
-		}
-
-		if (!stockMoveIds.equals("")) {
-			stockMoveIds = stockMoveIds.substring(0, stockMoveIds.length()-1);
-			stockMove = stockMoveRepo.find(Long.valueOf(lstSelectedMove.get(0)));
-		} else if (stockMove.getId() != null) {
-			stockMoveIds = stockMove.getId().toString();
-		}
-
-		if (!stockMoveIds.equals("")) {
-			String title = I18n.get("Stock move");
-			if(stockMove.getStockMoveSeq() != null)  {
-				title = lstSelectedMove == null ? I18n.get("StockMove") + " " + stockMove.getStockMoveSeq() : I18n.get("StockMove(s)");
-			}
-
-			String report = isPicking ? IReport.PICKING_STOCK_MOVE : IReport.STOCK_MOVE;
-
-			LOG.debug("Printing "+title);
-
-			return ReportFactory.createReport(report, title+"-${date}")
-					.addParam("StockMoveId", stockMoveIds)
-					.addParam("Locale", ReportSettings.getPrintingLocale(stockMove.getPartner()))
-					.generate()
-					.getFileLink();
+	    List<Long> selectedStockMoveListId;
+	    if (lstSelectedMove != null && !lstSelectedMove.isEmpty()) {
+			selectedStockMoveListId = lstSelectedMove.stream()
+					.map(integer -> Long.parseLong(integer.toString()))
+					.collect(Collectors.toList());
+			stockMove = stockMoveRepo.find(selectedStockMoveListId.get(0));
+		} else if (stockMove != null && stockMove.getId() != null) {
+	    	 selectedStockMoveListId = new ArrayList<>();
+	    	 selectedStockMoveListId.add(stockMove.getId());
 		} else {
 			throw new AxelorException(StockMove.class, IException.INCONSISTENCY, I18n.get(IExceptionMessage.STOCK_MOVE_10));
 		}
+
+		List<StockMove> stockMoveList = stockMoveRepo.all()
+				.filter("self.id IN (" +
+						selectedStockMoveListId.stream().map(Object::toString).collect(Collectors.joining(",")) +
+						") AND self.printingSettings IS NULL")
+				.fetch();
+		if (!stockMoveList.isEmpty()) {
+			String exceptionMessage = String.format(I18n.get(IExceptionMessage.STOCK_MOVES_MISSING_PRINTING_SETTINGS),
+					"<ul>" + stockMoveList.stream()
+							.map(StockMove::getStockMoveSeq)
+							.collect(Collectors.joining("</li><li>", "<li>", "</li>"))
+							+ "<ul>");
+			throw new AxelorException(IException.MISSING_FIELD, exceptionMessage);
+		}
+
+		String stockMoveIds = selectedStockMoveListId.stream()
+				.map(Object::toString)
+				.collect(Collectors.joining(","));
+
+		String title = I18n.get("Stock move");
+		if (stockMove.getStockMoveSeq() != null) {
+			title = selectedStockMoveListId.size() == 1 ? I18n.get("StockMove") + " " + stockMove.getStockMoveSeq() : I18n.get("StockMove(s)");
+		}
+
+		String report = isPicking ? IReport.PICKING_STOCK_MOVE : IReport.STOCK_MOVE;
+
+		return ReportFactory.createReport(report, title + "-${date}")
+				.addParam("StockMoveId", stockMoveIds)
+				.addParam("Locale", ReportSettings.getPrintingLocale(stockMove.getPartner()))
+				.generate()
+				.getFileLink();
 	}
 
 	@Override

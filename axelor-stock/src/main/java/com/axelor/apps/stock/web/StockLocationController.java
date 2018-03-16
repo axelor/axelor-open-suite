@@ -122,6 +122,6 @@ public class StockLocationController {
 		
 		List<?> result = query.getResultList();
 		
-		response.setValue("$stockLocationValue", (result.get(0) == null ?  BigDecimal.ZERO : (BigDecimal) result.get(0)).setScale(3));
+		response.setValue("$stockLocationValue", (result.get(0) == null ?  BigDecimal.ZERO : (BigDecimal) result.get(0)).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 	}
 }
