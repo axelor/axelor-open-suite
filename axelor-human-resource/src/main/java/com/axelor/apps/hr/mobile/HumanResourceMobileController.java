@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +16,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EmployeeVehicle;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.HRConfig;
@@ -24,6 +26,7 @@ import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.EmployeeVehicleRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
@@ -453,4 +456,48 @@ public class HumanResourceMobileController {
 			response.setError(e.getMessage());
 		}
 	}
+
+	/*
+	 * This method is used in mobile application.
+	 * @param request
+	 * @param response
+	 *
+	 * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getKilometricAllowParam
+	 * Content-Type: application/json
+	 *
+	 * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:getKilometricAllowParam
+	 * fields: no field
+	 *
+	 * payload:
+	 * { "data": {
+	 * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:getKilometricAllowParam"
+	 * } }
+	 */
+	public void getKilometricAllowParam(ActionRequest request, ActionResponse response) {
+		List<Map<String,String>> dataList = new ArrayList<>();
+		try{
+			User user = AuthUtils.getUser();
+			List<EmployeeVehicle> employeeVehicleList = Beans.get(EmployeeVehicleRepository.class).all().filter("self.employee = ?1", user.getEmployee()).fetch();
+
+			employeeVehicleList.sort(new Comparator<EmployeeVehicle>() { // Not sorted by default ?
+				@Override
+				public int compare(EmployeeVehicle employeeVehicle1, EmployeeVehicle employeeVehicle2) {
+					return employeeVehicle1.getKilometricAllowParam().getCode().compareTo(employeeVehicle2.getKilometricAllowParam().getCode());
+				}
+			});
+
+			for (EmployeeVehicle employeeVehicle : employeeVehicleList) {
+				Map<String, String> map = new HashMap<>();
+				map.put("kilometricAllowParam", employeeVehicle.getKilometricAllowParam().getId().toString());
+				map.put("employeeVehicle", employeeVehicle.getId().toString());
+				dataList.add(map);
+			}
+			response.setData(dataList);
+		}
+		catch(Exception e){
+			response.setStatus(-1);
+			response.setError(e.getMessage());
+		}
+	}
+
 }
