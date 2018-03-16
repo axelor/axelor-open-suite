@@ -141,7 +141,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
         if (appSaleService.getAppSale().getManageSaleOrderVersion()) {
             this.saveSaleOrderPDFAsAttachment(saleOrder);
         }
-        if (saleOrder.getVersionNumber() == 1) {
+        if (saleOrder.getVersionNumber() == 1 && sequenceService.isEmptyOrDraftSequenceNumber(saleOrder.getSaleOrderSeq())) {
             saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
         }
     }
