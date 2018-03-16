@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <action-group name="action-operation-order-group-finish"
+                  id="action-business-production-operation-order-group-finish">
+        <action name="action-operation-order-business-production-method-alert-timesheet"/>
+        <action name="action-operation-order-method-finish"/>
+        <action name="action-operation-order-method-compute-duration"/>
+    </action-group>
+
+    <action-method name="action-operation-order-business-production-method-alert-timesheet">
+        <call class="com.axelor.apps.businessproduction.web.OperationOrderBusinessController"
+              method="alertNonValidatedTimesheet"/>
+    </action-method>
+
+</object-views>

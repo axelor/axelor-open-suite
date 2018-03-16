@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2017 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,43 +17,16 @@
  */
 package com.axelor.apps.businessproduction.web;
 
-import java.lang.invoke.MethodHandles;
-
 import com.axelor.apps.businessproduction.exception.IExceptionMessage;
-import com.axelor.apps.businessproduction.service.ManufOrderValidateBusinessService;
 import com.axelor.apps.businessproduction.service.OperationOrderValidateBusinessService;
+import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.exception.service.TraceBackService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.apps.businessproduction.service.ManufOrderServiceBusinessImpl;
-import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
-@Singleton
-public class ManufOrderBusinessController {
-	
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Inject
-	private ManufOrderRepository manufOrderRepo;
-	
-	public void propagateIsToInvoice (ActionRequest request, ActionResponse response) {
-		
-		ManufOrderServiceBusinessImpl manufOrderService = Beans.get(ManufOrderServiceBusinessImpl.class);
-		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
-
-		manufOrderService.propagateIsToInvoice(manufOrderRepo.find(manufOrder.getId()));
-		
-		response.setReload(true);
-		
-	}
+public class OperationOrderBusinessController {
 
     /**
      * Called from operation order view before finish.
@@ -65,10 +38,10 @@ public class ManufOrderBusinessController {
      */
     public void alertNonValidatedTimesheet(ActionRequest request, ActionResponse response) {
         try {
-            ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+            OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
             if (Beans.get(AppProductionService.class).getAppProduction().getEnableTimesheetOnManufOrder()
-                    && Beans.get(ManufOrderValidateBusinessService.class).checkTimesheet(manufOrder) > 0) {
-                response.setAlert(IExceptionMessage.MANUF_ORDER_TIMESHEET_WAITING_VALIDATION);
+                    && Beans.get(OperationOrderValidateBusinessService.class).checkTimesheet(operationOrder) > 0) {
+                response.setAlert(IExceptionMessage.OPERATION_ORDER_TIMESHEET_WAITING_VALIDATION);
             }
         } catch (Exception e) {
             TraceBackService.trace(response, e);

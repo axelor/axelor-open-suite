@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.apps.production.db.repo.OperationOrderDurationRepository;
@@ -30,6 +31,7 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OperationOrderWorkflowServiceBusinessImpl extends OperationOrderWorkflowService {
 
@@ -54,7 +56,14 @@ public class OperationOrderWorkflowServiceBusinessImpl extends OperationOrderWor
                 return Duration.ZERO;
             }
             long totalSecDuration = 0L;
-            for (TimesheetLine timesheetLine : timesheetLineList) {
+            List<TimesheetLine> timesheetLineDurationList = timesheetLineList
+                    .stream()
+                    .filter(timesheetLine -> timesheetLine.getTimesheet() != null)
+                    .filter(timesheetLine ->
+                            timesheetLine.getTimesheet().getStatusSelect() == TimesheetRepository.STATUS_VALIDATED
+                                    || timesheetLine.getTimesheet().getStatusSelect() == TimesheetRepository.STATUS_CONFIRMED)
+                    .collect(Collectors.toList());
+            for (TimesheetLine timesheetLine : timesheetLineDurationList) {
                 totalSecDuration += timesheetLine.getDurationStored().multiply(new BigDecimal("3600")).longValue();
             }
             return Duration.ofSeconds(totalSecDuration);
