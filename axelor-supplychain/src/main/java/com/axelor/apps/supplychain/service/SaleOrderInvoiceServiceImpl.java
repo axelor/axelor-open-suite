@@ -498,17 +498,30 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		return invoiceLineGenerator.creates();
 	}
 
-	@Override
-	public void updateAndCheckInvoicedAmount(SaleOrder saleOrder,
-											 Long currentInvoiceId,
-											 boolean excludeCurrentInvoice) throws AxelorException {
-	    BigDecimal amountInvoiced = this.getInvoicedAmount(saleOrder,
-				currentInvoiceId, excludeCurrentInvoice);
-	    if (amountInvoiced.compareTo(saleOrder.getExTaxTotal()) > 0) {
-	    	throw new AxelorException(saleOrder, IException.FUNCTIONNAL, I18n.get(IExceptionMessage.SO_INVOICE_TOO_MUCH_INVOICED), saleOrder.getSaleOrderSeq());
-		}
-		saleOrder.setAmountInvoiced(amountInvoiced);
-	}
+    @Override
+    public void updateAndCheckInvoicedAmount(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice)
+            throws AxelorException {
+
+        update(saleOrder, currentInvoiceId, excludeCurrentInvoice, true);
+    }
+
+    @Override
+    public void update(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice)
+            throws AxelorException {
+
+        update(saleOrder, currentInvoiceId, excludeCurrentInvoice, false);
+    }
+
+    protected void update(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice,
+            boolean checkInvoicedAmount) throws AxelorException {
+
+        BigDecimal amountInvoiced = this.getInvoicedAmount(saleOrder, currentInvoiceId, excludeCurrentInvoice);
+        if (checkInvoicedAmount && amountInvoiced.compareTo(saleOrder.getExTaxTotal()) > 0) {
+            throw new AxelorException(saleOrder, IException.FUNCTIONNAL,
+                    I18n.get(IExceptionMessage.SO_INVOICE_TOO_MUCH_INVOICED), saleOrder.getSaleOrderSeq());
+        }
+        saleOrder.setAmountInvoiced(amountInvoiced);
+    }
 
 	@Override
 	public BigDecimal getInvoicedAmount(SaleOrder saleOrder)  {

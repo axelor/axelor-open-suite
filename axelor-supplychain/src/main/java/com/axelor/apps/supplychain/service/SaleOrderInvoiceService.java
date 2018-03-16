@@ -231,6 +231,18 @@ public interface SaleOrderInvoiceService {
 									  Long currentInvoiceId,
 									  boolean excludeCurrentInvoice) throws AxelorException;
 
+	/**
+	 * Set the updated sale order amount invoiced without checking.
+	 * 
+	 * @param saleOrder
+	 * @param currentInvoiceId
+	 * @param excludeCurrentInvoice
+	 * @throws AxelorException
+	 */
+	void update(SaleOrder saleOrder,
+            Long currentInvoiceId,
+            boolean excludeCurrentInvoice) throws AxelorException;
+
 	BigDecimal getInvoicedAmount(SaleOrder saleOrder);
 
 	BigDecimal getInvoicedAmount(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice);
