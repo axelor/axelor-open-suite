@@ -33,7 +33,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,9 +41,11 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.AppPrestashop;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.prestashop.db.SaleOrderStatus;
 import com.axelor.apps.prestashop.entities.Associations.CartRowsAssociationElement;
@@ -75,20 +76,22 @@ import com.google.inject.persist.Transactional;
 public class ExportOrderServiceImpl implements ExportOrderService {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private SaleOrderRepository saleOrderRepo;
-	private AddressService addressService;
-	private CurrencyService currencyService;
-	private UnitConversionService unitConversionService;
-	private InvoiceRepository invoiceRepository;
+	protected SaleOrderRepository saleOrderRepo;
+	protected AddressService addressService;
+	protected CurrencyService currencyService;
+	protected UnitConversionService unitConversionService;
+	protected InvoiceRepository invoiceRepository;
+	protected PartnerService partnerService;
 
 	@Inject
 	public ExportOrderServiceImpl(SaleOrderRepository saleOrderRepo, AddressService addressService, InvoiceRepository invoiceRepository,
-			CurrencyService currencyService, UnitConversionService unitConversionService) {
+			CurrencyService currencyService, UnitConversionService unitConversionService, PartnerService partnerService) {
 		this.saleOrderRepo = saleOrderRepo;
 		this.addressService = addressService;
 		this.invoiceRepository = invoiceRepository;
 		this.currencyService = currencyService;
 		this.unitConversionService = unitConversionService;
+		this.partnerService = partnerService;
 	}
 
 
@@ -178,7 +181,8 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 				remoteOrder = new PrestashopOrder();
 				remoteCart = new PrestashopCart();
 
-				remoteOrder.setCustomerId(localOrder.getClientPartner().getPrestaShopId());
+				Partner clientPartner = localOrder.getClientPartner();
+				remoteOrder.setCustomerId(clientPartner.getPrestaShopId());
 				remoteOrder.setCurrencyId(localOrder.getCurrency().getPrestaShopId());
 				remoteOrder.setDeliveryAddressId(localOrder.getDeliveryAddress().getPrestaShopId());
 				remoteOrder.setInvoiceAddressId(localOrder.getMainInvoicingAddress().getPrestaShopId());
@@ -188,7 +192,7 @@ public class ExportOrderServiceImpl implements ExportOrderService {
 				if(localOrder.getPaymentCondition() != null) {
 					remoteOrder.setPayment(localOrder.getPaymentCondition().getName());
 				} else {
-					remoteOrder.setPayment(I18n.getBundle(new Locale(StringUtils.defaultString(localOrder.getClientPartner().getLanguageSelect(), "en"))).getString("Unknown"));
+					remoteOrder.setPayment(I18n.getBundle(new Locale(partnerService.getPartnerLanguageCode(clientPartner))).getString("Unknown"));
 				}
 				remoteOrder.setModule("ps_checkpayment"); // FIXME make this configurable (through translation table?)
 				remoteOrder.setSecureKey(RandomStringUtils.random(32, "0123456789abcdef"));

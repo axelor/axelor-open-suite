@@ -49,7 +49,7 @@
 - Allow to read the products from production, stock and crm modules
 - Improve manufacturing order workflow.
 - When we treat a component of a manuf order that is not loaded on MRP because there is no default BOM or because the component of manuf order is not a component of the bill of material, we add it with the level of manuf order product + 1.
-
+- Replaced selection field for language on Partner per a M2O to Language object to be able to add new partner language easily.
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)

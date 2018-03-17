@@ -36,6 +36,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.db.IPrestaShopBatch;
 import com.axelor.apps.prestashop.entities.PrestashopAddress;
 import com.axelor.apps.prestashop.entities.PrestashopResourceType;
@@ -50,11 +51,14 @@ import com.google.inject.persist.Transactional;
 public class ExportAddressServiceImpl implements ExportAddressService {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private PartnerAddressRepository partnerAddressRepo;
+	protected PartnerAddressRepository partnerAddressRepo;
+	
+	protected PartnerService partnerService; 
 
 	@Inject
-	public ExportAddressServiceImpl(PartnerAddressRepository partnerAddressRepo) {
+	public ExportAddressServiceImpl(PartnerAddressRepository partnerAddressRepo, PartnerService partnerService) {
 		this.partnerAddressRepo = partnerAddressRepo;
+		this.partnerService = partnerService;
 	}
 
 	@Override
@@ -98,13 +102,14 @@ public class ExportAddressServiceImpl implements ExportAddressService {
 						continue;
 					}
 				} else {
-					if(partnerAddress.getPartner().getPrestaShopId() == null) {
+					Partner partner = partnerAddress.getPartner();
+					if(partner.getPrestaShopId() == null) {
 						logBuffer.write(String.format(" [WARNING] Address belongs to a not-yet synced customer, skipping%n"));
 						continue;
 					}
 					remoteAddress = new PrestashopAddress();
-					remoteAddress.setCustomerId(partnerAddress.getPartner().getPrestaShopId());
-					remoteAddress.setAlias(I18n.getBundle(new Locale(partnerAddress.getPartner().getLanguageSelect())).getString("Main address"));
+					remoteAddress.setCustomerId(partner.getPrestaShopId());
+					remoteAddress.setAlias(I18n.getBundle(new Locale(partnerService.getPartnerLanguageCode(partner))).getString("Main address"));
 
 					// Do this on creation, it seems hazardous to update data since user can update them on its
 					// side too… I guess import job should trigger new address creation when too much data

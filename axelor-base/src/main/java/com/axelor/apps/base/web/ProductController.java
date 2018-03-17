@@ -119,14 +119,12 @@ public class ProductController {
 		Product product = request.getContext().asType(Product.class);
 		User user =  Beans.get(UserService.class).getUser();
 
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
-
 		String name = I18n.get("Product") + " " + product.getCode();
 		
 		String fileLink = ReportFactory.createReport(IReport.PRODUCT_SHEET, name+"-${date}")
 				.addParam("ProductId", product.getId())
 				.addParam("CompanyId", user.getActiveCompany().getId())
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.generate()
 				.getFileLink();
 

@@ -20,7 +20,6 @@
     
     <grid name="printing-setting-grid" title="Printing Setting" model="com.axelor.apps.base.db.PrintingSettings">
     	<field name="name"/>
-    	<field name="languageSelect"/>
     </grid>
 
 </object-views>

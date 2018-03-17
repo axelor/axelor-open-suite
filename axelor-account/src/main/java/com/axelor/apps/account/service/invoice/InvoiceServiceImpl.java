@@ -434,7 +434,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	
 	@Override
 	public ReportSettings printInvoices(List<Long> ids) throws AxelorException {
-		String locale = Beans.get(AppBaseService.class).getAppBase().getDefaultPartnerLanguage();
 		List<Invoice> invoiceList = invoiceRepo.all()
 				.filter("self.id IN (" +
 						ids.stream().map(Object::toString).collect(Collectors.joining(",")) +
@@ -453,7 +452,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		
 		ReportSettings reportSetting = ReportFactory.createReport(IReport.INVOICE, title + " - ${date}");	
 		return reportSetting.addParam("InvoiceId", Joiner.on(",").join(ids))
-				.addParam("Locale", locale)
+				.addParam("Locale", Beans.get(AppBaseService.class).getDefaultPartnerLanguageCode())
 				.addParam("InvoicesCopy", 0)
 				.generate();
 	}

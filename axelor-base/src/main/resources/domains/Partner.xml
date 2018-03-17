@@ -23,7 +23,8 @@
     <boolean name="isContact" title="Contact ?" default="false" />
     
     
-    <string name="languageSelect" title="Language" selection="select.language" massUpdate="true"/>
+    <many-to-one name="language" ref="com.axelor.apps.base.db.Language" title="Language" massUpdate="true"/>
+    
     <many-to-one name="parentPartner" ref="com.axelor.apps.base.db.Partner" title="Mother company" massUpdate="true" index="false"/>
     <one-to-many name="partnerAddressList" ref="com.axelor.apps.base.db.PartnerAddress" title="Addresses" mappedBy="partner"/>
     
