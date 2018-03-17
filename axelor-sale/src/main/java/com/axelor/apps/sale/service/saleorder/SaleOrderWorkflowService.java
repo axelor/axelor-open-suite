@@ -26,7 +26,6 @@ import com.google.inject.persist.Transactional;
 
 public interface SaleOrderWorkflowService {
 
-
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Partner validateCustomer(SaleOrder saleOrder);
 
@@ -36,14 +35,12 @@ public interface SaleOrderWorkflowService {
 
 	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr);
 
-	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception;
+	public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
-	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception;
+	public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException;
-	
+
 	public String getFileName(SaleOrder saleOrder);
-
-
 
 }
