@@ -306,6 +306,7 @@
 
 	<selection name="message.related.to.select" id="account.message.related.to.select">
 		<option value="com.axelor.apps.account.db.DebtRecoveryHistory">Debt Recovery History</option>
+		<option value="com.axelor.apps.account.db.Invoice">Invoice</option>
 	</selection>
 
 </object-views>
