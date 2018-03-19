@@ -35,13 +35,12 @@ import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.common.collect.Lists;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BatchDebtRecovery extends BatchStrategy {
@@ -117,7 +116,6 @@ public class BatchDebtRecovery extends BatchStrategy {
 		List<Partner> partnerList;
 		while (!(partnerList = query.fetch(FETCH_LIMIT)).isEmpty()) {
 			for (Partner partner : partnerList) {
-				partner = partnerRepository.find(partner.getId());
 				try {
 					boolean remindedOk = debtRecoveryService.debtRecoveryGenerate(partner, company);
 					if (remindedOk) {
@@ -144,20 +142,19 @@ public class BatchDebtRecovery extends BatchStrategy {
 		Query<DebtRecovery> query = debtRecoveryRepository
 				.all()
 				.filter(":_batch MEMBER OF self.batchSet")
-				.bind("_batch", batch);
+				.bind("_batch", batch)
+				.order("id");
 
 		int offset = 0;
 		List<DebtRecovery> debtRecoveries;
 		while (!(debtRecoveries = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
 			for (DebtRecovery debtRecovery: debtRecoveries) {
 				try {
-					debtRecovery = debtRecoveryRepository.find(debtRecovery.getId());
 					DebtRecoveryHistory debtRecoveryHistory = debtRecoveryActionService.getDebtRecoveryHistory(debtRecovery);
 					if (debtRecoveryHistory == null) {
 						continue;
 					}
-					if (debtRecoveryHistory.getDebtRecoveryMessageSet() == null
-							|| debtRecoveryHistory.getDebtRecoveryMessageSet().isEmpty()) {
+					if (CollectionUtils.isEmpty(debtRecoveryHistory.getDebtRecoveryMessageSet())) {
 						debtRecoveryActionService.runMessage(debtRecovery);
 					}
 				} catch (Exception e) {
@@ -183,7 +180,7 @@ public class BatchDebtRecovery extends BatchStrategy {
 
 		super.stop();
 		addComment(comment);
-		
+
 	}
 
 }
