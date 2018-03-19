@@ -19,12 +19,18 @@ package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.ICalendarUser;
+import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 public class ICalendarEventManagementRepository extends ICalendarEventRepository{
+	
+	@Inject
+	private ICalendarService calendarService;
 	
 	@Override
 	public ICalendarEvent save(ICalendarEvent entity){
@@ -57,5 +63,16 @@ public class ICalendarEventManagementRepository extends ICalendarEventRepository
 		}
 		
 		return super.save(entity);
+	}
+	
+	@Override
+	public void remove(ICalendarEvent entity) {
+		
+		try {
+			calendarService.removeEventFromIcal(entity);
+		} catch (Exception e) {
+			TraceBackService.trace(e);
+		}
+		super.remove(entity);
 	}
 }
