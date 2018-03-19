@@ -176,6 +176,8 @@ public interface SaleOrderInvoiceService {
 
 	InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder) throws AxelorException;
 
+	InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder, boolean isRefund) throws AxelorException;
+
 	/**
      * Creates an invoice line.
 	 * @param invoice  the created line will be linked to this invoice

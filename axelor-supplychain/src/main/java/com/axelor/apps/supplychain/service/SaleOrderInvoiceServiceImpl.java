@@ -425,28 +425,25 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 	}
 
+    @Override
+    public InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder) throws AxelorException {
+        return createInvoiceGenerator(saleOrder, false);
+    }
 
-	@Override
-	public InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder) throws AxelorException  {
+    @Override
+    public InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder, boolean isRefund) throws AxelorException {
+        if (saleOrder.getCurrency() == null) {
+            throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR,
+                    I18n.get(IExceptionMessage.SO_INVOICE_6), saleOrder.getSaleOrderSeq());
+        }
 
-		if (saleOrder.getCurrency() == null) {
-			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_INVOICE_6), saleOrder.getSaleOrderSeq());
-		}
-
-		InvoiceGenerator invoiceGenerator = new InvoiceGeneratorSupplyChain(saleOrder) {
-
-			@Override
-			public Invoice generate() throws AxelorException {
-
-				return super.createInvoiceHeader();
-			}
-		};
-
-		return invoiceGenerator;
-
-	}
-
-
+        return new InvoiceGeneratorSupplyChain(saleOrder, isRefund) {
+            @Override
+            public Invoice generate() throws AxelorException {
+                return super.createInvoiceHeader();
+            }
+        };
+    }
 
 	// TODO ajouter tri sur les séquences
 	@Override
