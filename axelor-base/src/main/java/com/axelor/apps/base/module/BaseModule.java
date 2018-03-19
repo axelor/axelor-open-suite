@@ -32,6 +32,8 @@ import com.axelor.apps.base.db.repo.BaseBatchBaseRepository;
 import com.axelor.apps.base.db.repo.BaseBatchRepository;
 import com.axelor.apps.base.db.repo.DurationBaseRepository;
 import com.axelor.apps.base.db.repo.DurationRepository;
+import com.axelor.apps.base.db.repo.ICalendarEventManagementRepository;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
@@ -128,6 +130,7 @@ public class BaseModule extends AxelorModule {
         bind(TradingNameService.class).to(TradingNameServiceImpl.class);
         bind(PartnerPriceListService.class).to(PartnerPriceListServiceImpl.class);
         bind(ICalendarEventService.class).to(ICalendarEventServiceImpl.class);
+        bind(ICalendarEventRepository.class).to(ICalendarEventManagementRepository.class);
         IPartner.modelPartnerFieldMap.put(PartnerAddress.class.getName(), "_parent");
     }
 }

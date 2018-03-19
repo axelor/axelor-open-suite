@@ -124,6 +124,12 @@
    			public static final int STATE_NOT_DELIVERED = 1;
    			public static final int STATE_PARTIALLY_DELIVERED = 2;
    			public static final int STATE_DELIVERED = 3;
+
+			public static final int STATUS_DRAFT = 1;
+			public static final int STATUS_FINALIZED = 2;
+			public static final int STATUS_CONFIRMED = 3;
+			public static final int STATUS_FINISHED = 4;
+			public static final int STATUS_CANCELED = 5;
    		]]>
    	</extra-code>
    	

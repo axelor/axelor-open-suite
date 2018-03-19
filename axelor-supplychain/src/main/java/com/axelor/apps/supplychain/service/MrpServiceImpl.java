@@ -42,7 +42,6 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
-import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -504,7 +503,7 @@ public class MrpServiceImpl implements MrpService  {
 		List<Integer> statusList = StringTool.getIntegerList(statusSelect);
 
 		if (statusList.isEmpty()) {
-			statusList.add(ISaleOrder.STATUS_ORDER_CONFIRMED);
+			statusList.add(SaleOrderRepository.STATUS_CONFIRMED);
 		}
 
 		// TODO : Manage the case where order is partially delivered

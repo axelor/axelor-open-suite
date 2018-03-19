@@ -78,6 +78,11 @@ public interface IExceptionMessage {
 	static final String STOCK_MOVE_QTY_BY_TRACKING = /*$$(*/ "The tracking number configuration quantity is equal to zero, it must be at least one." /*)*/;
 	static final String STOCK_MOVE_TOO_MANY_ITERATION = /*$$(*/ "Too many iterations while trying to generate stock move line with tracking numbers." /*)*/;
 
+	/*
+	 * Stock Move printing
+	 */
+	String STOCK_MOVES_MISSING_PRINTING_SETTINGS  = /*$$(*/ "Please fill printing settings on following stock moves: %s" /*)*/;
+
 	/**
 	 * Tracking Number Service
 	 */

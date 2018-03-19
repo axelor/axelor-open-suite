@@ -631,12 +631,27 @@ public class InvoiceController {
 	}
 
 	/**
-	 * Called on load from invoice form view and on trading name change.
-	 * Set the default value and the domain for {@link Invoice#printingSettings}
+	 * Called on printing settings select.
+	 * Set the domain for {@link Invoice#printingSettings}
 	 * @param request
 	 * @param response
 	 */
 	public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
+		Invoice invoice = request.getContext().asType(Invoice.class);
+
+		List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(invoice.getTradingName(), invoice.getCompany());
+		String domain = String.format("self.id IN (%s)", !printingSettingsList.isEmpty() ? StringTool.getIdListString(printingSettingsList) : "0");
+
+		response.setAttr("printingSettings", "domain", domain);
+    }
+
+	/**
+	 * Called on trading name change.
+	 * Set the default value for {@link Invoice#printingSettings}
+	 * @param request
+	 * @param response
+	 */
+	public void fillDefaultPrintingSettings(ActionRequest request, ActionResponse response) {
 		Invoice invoice = request.getContext().asType(Invoice.class);
 		PrintingSettings printingSettings = invoice.getPrintingSettings();
 
@@ -644,10 +659,8 @@ public class InvoiceController {
 		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
 			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
 		}
-		String domain = String.format("self.id IN (%s)", !printingSettingsList.isEmpty() ? StringTool.getIdListString(printingSettingsList) : "0");
 
 		response.setValue("printingSettings", printingSettings);
-		response.setAttr("printingSettings", "domain", domain);
 	}
 
 	/**

@@ -11,7 +11,9 @@
     	<bind to="resetDate" eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate()" />
     </input>
 	
-	<input file="message_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.name = :name" />
+	<input file="message_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.name = :name" >
+		<bind to="language" search="self.code = :languageCode"/>
+	</input>
 	
 	<input file="talent_hiringStage.csv" separator=";" type="com.axelor.apps.talent.db.HiringStage" search="self.name = :name" />
 	

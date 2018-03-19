@@ -171,8 +171,8 @@ public class BatchDebtRecovery extends BatchStrategy {
 				if (debtRecoveryHistory == null) {
 					continue;
 				}
-				if (CollectionUtils.isEmpty(messageRepository.findByRelatedTo1(DebtRecoveryHistory.class.getCanonicalName(),
-						Math.toIntExact(debtRecoveryHistory.getId())).fetch())) {
+				if (CollectionUtils.isEmpty(messageRepository.findByRelatedTo(Math.toIntExact(debtRecoveryHistory.getId()),
+						DebtRecoveryHistory.class.getCanonicalName()).fetch())) {
 					Beans.get(DebtRecoveryActionService.class).runMessage(debtRecovery);
 				}
 			} catch (Exception e) {

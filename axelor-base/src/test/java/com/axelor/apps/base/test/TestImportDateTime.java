@@ -20,11 +20,6 @@ package com.axelor.apps.base.test;
 import java.time.LocalDate;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import com.axelor.apps.base.test.TestModule;
-//import com.axelor.csv.script.ImportDate;
-import com.axelor.csv.script.ImportDateTime;
 public class TestImportDateTime {
 	@Test
 	public void testDateTimeImport(){

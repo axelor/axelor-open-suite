@@ -25,7 +25,7 @@ import java.util.List;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.PeriodService;
-import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
@@ -109,7 +109,7 @@ public class LunchVoucherMgtController {
 		try {
 			String fileLink = ReportFactory.createReport(IReport.LUNCH_VOUCHER_MGT_MONTHLY, name)
 					.addParam("lunchVoucherMgtId", lunchVoucherMgt.getId())
-					.addParam("Locale", Beans.get(AppBaseService.class).getAppBase().getDefaultPartnerLanguage())
+					.addParam("Locale", Beans.get(UserService.class).getLanguage())
 					.addFormat(ReportSettings.FORMAT_PDF)
 					.generate()
 					.getFileLink();

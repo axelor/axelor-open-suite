@@ -161,7 +161,7 @@ public class ConvertLeadWizardController {
 		response.setAttr("user", "value", lead.getUser());
 		response.setAttr("team", "value", lead.getTeam());
 		response.setAttr("jobTitle", "value", lead.getJobTitle());
-		response.setAttr("languageSelect", "value", appBase.getDefaultPartnerLanguage());
+		response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
 	}
 	
 	public void setConvertLeadIntoPartner(ActionRequest request, ActionResponse response) { 
@@ -187,7 +187,7 @@ public class ConvertLeadWizardController {
 		response.setAttr("team", "value", lead.getTeam());
 		response.setAttr("isProspect", "value", true);
 		response.setAttr("partnerTypeSelect", "value", "1");
-		response.setAttr("languageSelect", "value", appBase.getDefaultPartnerLanguage());
+		response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
 	}
 	
 	public void setConvertLeadIntoOpportunity(ActionRequest request, ActionResponse response) { 
@@ -214,7 +214,7 @@ public class ConvertLeadWizardController {
 		response.setAttr("team", "value", lead.getTeam());
 		response.setAttr("isCustomer", "value", true);
 		response.setAttr("partnerTypeSelect", "value", "1");
-		response.setAttr("languageSelect", "value", appBase.getDefaultPartnerLanguage());
+		response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
 		if(lead.getUser() != null) {
 			if(lead.getUser().getActiveCompany() != null) {
 				response.setAttr("company", "value", lead.getUser().getActiveCompany());

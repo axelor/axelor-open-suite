@@ -19,12 +19,11 @@ package com.axelor.apps.businessproduction.service;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-
 import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.production.db.IManufOrder;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductVariantService;
@@ -32,8 +31,6 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.db.ProdProcess;
-import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.ManufOrderWorkflowService;

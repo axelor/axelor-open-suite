@@ -60,6 +60,7 @@
     <many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"/>
 
     <boolean name="isIspmRequired" title="Is ISPM15 required ?"/>
+    <boolean name="isReversion" readonly="true" />
 
     <unique-constraint columns="stockMoveSeq,company"/>
     

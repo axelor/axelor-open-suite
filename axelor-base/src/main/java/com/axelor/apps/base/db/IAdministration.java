@@ -20,6 +20,7 @@ package com.axelor.apps.base.db;
 /**
  * Interface of Administration package. Enum all static variable of packages.
  */
+@Deprecated
 public interface IAdministration {
 
 	/**

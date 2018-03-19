@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.tool.date;
 
-import java.time.Duration;
+import java.lang.invoke.MethodHandles;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,8 +26,7 @@ import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 public class DateTool{
 	
@@ -53,8 +52,8 @@ public class DateTool{
 	
 	private static long daysBetween(LocalDate date1, LocalDate date2) {
 
-		if (date2.isBefore(date1)) { return Duration.between(date1, date2).toDays() - 1; }
-		else { return Duration.between(date1, date2).toDays() + 1; }
+		if (date2.isBefore(date1)) { return DAYS.between(date1, date2) - 1; }
+		else { return DAYS.between(date1, date2) + 1; }
 	}
 	
 	private static int days360Between(LocalDate startDate, LocalDate endDate) {

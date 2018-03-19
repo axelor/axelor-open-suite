@@ -26,6 +26,7 @@ import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -37,6 +38,9 @@ public class UserServiceImpl implements UserService  {
 
 	@Inject
 	private UserRepository userRepo;
+	
+	public static String DEFAULT_LOCALE = "en";
+
 	
 	/**
 	 * Method that return the current connected user
@@ -175,6 +179,16 @@ public class UserServiceImpl implements UserService  {
 
 		user.setPartner(partner);
 		userRepo.save(user);
+	}
+	
+	public String getLanguage()  {
+		
+		User user = getUser();
+		if (user != null && !Strings.isNullOrEmpty(user.getLanguage())) {
+			return user.getLanguage();
+		}
+		return DEFAULT_LOCALE;
+		
 	}
 }
  
