@@ -28,6 +28,7 @@
 - Add button to open tasks and task kanban view in project module
 - Manage shipment mode, freight carrier mode, incoterm, carrier partner, forwarder partner on Partner, Sale order, Stock move.
 - Add validation date in Inventory
+- Remove teams app module.
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
