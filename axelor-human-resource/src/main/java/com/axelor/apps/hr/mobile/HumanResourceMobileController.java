@@ -29,6 +29,7 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeVehicleRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.db.repo.KilometricAllowParamRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
@@ -65,7 +66,7 @@ public class HumanResourceMobileController {
 	 * Content-Type: application/json
 	 *
 	 * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertKMExpenses
-	 * fields: kmNumber, locationFrom, locationTo, allowanceTypeSelect, comments, date, projectTask
+	 * fields: kmNumber, locationFrom, locationTo, allowanceTypeSelect, comments, date, projectTask, kilometricAllowParam
 	 *
 	 * payload:
 	 * { "data": {
@@ -85,6 +86,7 @@ public class HumanResourceMobileController {
 		if (user != null) {
 			ExpenseService expenseService = Beans.get(ExpenseService.class);
 			Expense expense = expenseService.getOrCreateExpense(user);
+
 			ExpenseLine expenseLine = new ExpenseLine();
 			expenseLine.setDistance(new BigDecimal(request.getData().get("kmNumber").toString()));
 			expenseLine.setFromCity(request.getData().get("locationFrom").toString());
@@ -101,17 +103,18 @@ public class HumanResourceMobileController {
 
 			Employee employee = user.getEmployee();
 			if (employee != null) {
-				List<KilometricAllowParam> kilometricAllowParam = expenseService.getListOfKilometricAllowParamVehicleFilter(expenseLine, expense);
-				if(!kilometricAllowParam.isEmpty()){
-					expenseLine.setKilometricAllowParam(kilometricAllowParam.get(0));
-					expenseLine.setTotalAmount(
-							Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
+				KilometricAllowParamRepository kilometricAllowParamRepo = Beans.get(KilometricAllowParamRepository.class);
 
-				}
+				expenseLine.setKilometricAllowParam(kilometricAllowParamRepo
+						.find(new Long(request.getData().get("kilometricAllowParam").toString())));
+
+				expenseLine.setTotalAmount(
+						Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
+
 				expenseLine.setUntaxedAmount(expenseLine.getTotalAmount());
 			}
 
-			expense.addGeneralExpenseLineListItem(expenseLine);
+			expense.addKilometricExpenseLineListItem(expenseLine);
 			Beans.get(ExpenseRepository.class).save(expense);
 
 			response.setValue("id", expenseLine.getId());
