@@ -9,7 +9,7 @@
 		<datetime name="today" title="Today date" tz="true"/>
 		<many-to-one name="defaultProjectUnit" title="Default Project unit" ref="com.axelor.apps.base.db.Unit"/>
 		<many-to-one name="defaultPartnerLanguage" ref="com.axelor.apps.base.db.Language" title="Default Partner language"/>
-		<boolean name="mailAccountByUser" title="Manage mail account by user ?" default="false"/>
+		<boolean name="emailAccountByUser" title="Manage mail account by user ?" default="false"/>
 		
 		<!-- Interfaces QAS et SVI -->
 		<string name="qasWsdlUrl" title="URL to QAS WSDL"/>
