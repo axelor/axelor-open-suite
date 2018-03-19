@@ -43,7 +43,6 @@ public class TemplateMessageAccountServiceImpl implements TemplateMessageAccount
         Message message = this.templateMessageService.generateMessage(debtRecoveryHistory, template);
 		message.setRelatedTo2Select(Partner.class.getCanonicalName());
 		message.setRelatedTo2SelectId(Math.toIntExact(debtRecoveryHistory.getDebtRecovery().getAccountingSituation().getPartner().getId()));
-		debtRecoveryHistory.addDebtRecoveryMessageSetItem(message);
 		return message;
 	}
 }

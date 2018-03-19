@@ -17,8 +17,7 @@
 	<decimal name="balanceDue" title="Partner Balance due"/>
 	<decimal name="balanceDueDebtRecovery" title="Balance due recoverable"/>
 	<many-to-one name="userDebtRecovery" ref="com.axelor.auth.db.User" title="User"/>
-	<!--many-to-many name="debtRecoveryMessageSet" ref="com.axelor.apps.message.db.Message" title="Debt recovery messages"/-->
-	
+
     <string name="name" namecolumn="true" search="referenceDate,debtRecovery" title="Name">
 	    <![CDATA[
 	    	String name = " - ";

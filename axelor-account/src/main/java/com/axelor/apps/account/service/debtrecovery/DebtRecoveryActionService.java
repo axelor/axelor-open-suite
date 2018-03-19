@@ -32,7 +32,6 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -197,7 +196,6 @@ public class DebtRecoveryActionService {
 			Beans.get(MessageRepository.class).save(message);
 			Beans.get(MessageService.class).sendMessage(message);
 		}
-		this.updateDebtRecoveryHistory(debtRecovery, messageSet);
 	}
 
 	/**
@@ -261,16 +259,5 @@ public class DebtRecoveryActionService {
 		debtRecoveryHistoryRepository.save(debtRecoveryHistory);
 
 	}
-
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateDebtRecoveryHistory(DebtRecovery debtRecovery, Set<Message> debtRecoveryMessageSet)  {
-
-		if(!debtRecovery.getDebtRecoveryHistoryList().isEmpty())  {
-			DebtRecoveryHistory debtRecoveryHistory = getDebtRecoveryHistory(debtRecovery);
-			debtRecoveryMessageSet.forEach(debtRecoveryHistory::addDebtRecoveryMessageSetItem);
-		}
-
-	}
-
 
 }

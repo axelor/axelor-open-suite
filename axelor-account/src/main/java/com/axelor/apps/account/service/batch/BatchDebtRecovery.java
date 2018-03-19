@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -36,6 +37,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,12 +54,14 @@ public class BatchDebtRecovery extends BatchStrategy {
 
 	protected boolean stopping = false;
 	protected PartnerRepository partnerRepository;
+	protected MessageRepository messageRepository;
 	
 	@Inject
-	public BatchDebtRecovery(DebtRecoveryService debtRecoveryService, PartnerRepository partnerRepository) {
+	public BatchDebtRecovery(DebtRecoveryService debtRecoveryService, PartnerRepository partnerRepository, MessageRepository messageRepository) {
 		
 		super(debtRecoveryService);
 		this.partnerRepository = partnerRepository;
+		this.messageRepository = messageRepository;
 	}
 
 
@@ -167,8 +171,8 @@ public class BatchDebtRecovery extends BatchStrategy {
 				if (debtRecoveryHistory == null) {
 					continue;
 				}
-				if (debtRecoveryHistory.getDebtRecoveryMessageSet() == null
-						|| debtRecoveryHistory.getDebtRecoveryMessageSet().isEmpty()) {
+				if (CollectionUtils.isEmpty(messageRepository.findByRelatedTo1(DebtRecoveryHistory.class.getCanonicalName(),
+						Math.toIntExact(debtRecoveryHistory.getId())).fetch())) {
 					Beans.get(DebtRecoveryActionService.class).runMessage(debtRecovery);
 				}
 			} catch (Exception e) {

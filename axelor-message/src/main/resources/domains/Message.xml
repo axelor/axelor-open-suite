@@ -35,6 +35,8 @@
   	<many-to-one name="recipientUser" ref="com.axelor.auth.db.User" title="Recipient"/>
 
 	<many-to-one name="template" ref="com.axelor.apps.message.db.Template" readonly="true"/>
+
+	<finder-method name="findByRelatedTo1" using="relatedTo1Select,relatedTo1SelectId" all="true"/>
   	
   	<extra-code><![CDATA[
 
