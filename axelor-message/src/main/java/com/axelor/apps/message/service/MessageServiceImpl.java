@@ -285,7 +285,7 @@ public class MessageServiceImpl implements MessageService {
         Class m = Class.forName(message.getRelatedTo1Select());
         Model model = JPA.all(m).filter("self.id = ?", message.getRelatedTo1SelectId()).fetchOne();
         Message newMessage = Beans.get(TemplateMessageService.class).generateMessage(model, message.getTemplate());
-        message.setArchived(true);
+        messageRepository.remove(message);
         return newMessage;
     }
 

@@ -32,6 +32,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -45,6 +46,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Set;
 
 public class DebtRecoveryActionService {
@@ -115,6 +117,7 @@ public class DebtRecoveryActionService {
 	 * @throws IOException
 	 */
 	public Set<Message> runStandardMessage(DebtRecovery debtRecovery) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
+	    Set<Message> messages = new HashSet<>();
 
 		DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getDebtRecoveryMethodLine();
 		Partner partner =  debtRecovery.getAccountingSituation().getPartner();
@@ -128,11 +131,10 @@ public class DebtRecoveryActionService {
 		DebtRecoveryHistory debtRecoveryHistory = this.getDebtRecoveryHistory(debtRecovery);
 
 		for (Template template : templateSet) {
-			templateMessageAccountService.generateMessage(debtRecoveryHistory, template);
+			messages.add(templateMessageAccountService.generateMessage(debtRecoveryHistory, template));
 		}
 
-		return debtRecoveryHistory.getDebtRecoveryMessageSet();
-
+		return messages;
 	}
 
 
