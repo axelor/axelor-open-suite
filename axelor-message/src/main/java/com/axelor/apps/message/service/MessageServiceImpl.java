@@ -45,6 +45,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,11 +54,9 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class MessageServiceImpl implements MessageService {
 
@@ -281,26 +280,37 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public Message regenerateMessage(Message message) throws Exception {
+        Preconditions.checkNotNull(message.getTemplate(), "cannot regenerate message without template associated to message");
         Preconditions.checkNotNull(message.getRelatedTo1Select(), "cannot regenerate message without related model");
         Class m = Class.forName(message.getRelatedTo1Select());
         Model model = JPA.all(m).filter("self.id = ?", message.getRelatedTo1SelectId()).fetchOne();
         Message newMessage = Beans.get(TemplateMessageService.class).generateMessage(model, message.getTemplate());
-        messageRepository.remove(message);
+        if (StringUtils.isNotEmpty(message.getRelatedTo2Select()) && message.getRelatedTo2SelectId() != null) {
+            newMessage.setRelatedTo2Select(message.getRelatedTo2Select());
+            newMessage.setRelatedTo2SelectId(message.getRelatedTo2SelectId());
+        }
+        message.setArchived(true);
         return newMessage;
     }
 
+    /**
+     * Find messages by id from id list and apply given function on each message found.
+     * @param messageList The list of message ids.
+     * @param function Function to apply on each message.
+     * @return The number of errors append.
+     */
     @Transactional
-    public static int apply(List<Message> messageList, Function<Message, Boolean> function) {
+    public static int apply(List<Integer> messageList, Function<Message, Boolean> function) {
         Preconditions.checkNotNull(messageList, I18n.get("messageList can't be null."));
         Preconditions.checkNotNull(function, I18n.get("function can't be null."));
-        return messageList.stream().mapToInt(x -> (function.apply(x) ? 0 : 1)).sum();
+        MessageRepository messageRepository = Beans.get(MessageRepository.class);
+        int error = 0;
+        for (Integer id: messageList) {
+            Message message = messageRepository.find(Long.valueOf(id));
+            if (message == null) { error++; continue; }
+            error += (function.apply(message) ? 0 : 1);
+            JPA.clear();
+        }
+        return error;
     }
-
-    @Override
-    public List<Message> findMessages(List<Integer> idList) {
-        return idList != null
-                ? idList.stream().map(i -> messageRepository.find(Long.valueOf(i))).collect(Collectors.toList())
-                : new ArrayList<>();
-    }
-
 }

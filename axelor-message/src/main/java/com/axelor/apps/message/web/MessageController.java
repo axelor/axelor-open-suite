@@ -28,19 +28,13 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import groovy.lang.Tuple2;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Singleton
 public class MessageController {
@@ -76,8 +70,7 @@ public class MessageController {
 		List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
 		try {
 			if (idList == null) {throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.MESSAGE_MISSING_SELECTED_MESSAGES));}
-			List<Message> messages = messageService.findMessages(idList);
-			int error = applyFunctionOnMessages(messages, message -> {
+			int error = MessageServiceImpl.apply(idList, message -> {
 				try {
 					messageService.sendMessage(message);
 					return true;
@@ -87,7 +80,7 @@ public class MessageController {
 				}
 			});
 			response.setFlash(String.format(I18n.get(IExceptionMessage.MESSAGES_SENT),
-					messages.size() - error, error));
+					idList.size() - error, error));
 			response.setReload(true);
 		} catch (AxelorException e) {
 			TraceBackService.trace(response, e);
@@ -99,8 +92,7 @@ public class MessageController {
 		List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
 		try {
 			if (idList == null) {throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.MESSAGE_MISSING_SELECTED_MESSAGES));}
-			List<Message> messages = messageService.findMessages(idList);
-			int error = applyFunctionOnMessages(messages, message -> {
+			int error = MessageServiceImpl.apply(idList, message -> {
 				try {
 					messageService.regenerateMessage(message);
 					return true;
@@ -110,23 +102,10 @@ public class MessageController {
 				}
 			});
 			response.setFlash(String.format(I18n.get(IExceptionMessage.MESSAGES_REGENERATED),
-					messages.size() - error, error));
+					idList.size() - error, error));
 			response.setReload(true);
 		} catch (AxelorException e) {
 		    TraceBackService.trace(response, e);
 		}
-	}
-
-	/**
-	 * Find all messages by id from idMessageList, apply function to each
-	 * messages and return a tuple with number of success and error.
-	 * @param messages The list of messages id.
-	 * @param function The function to apply to each messages.
-	 * @return Error count.
-	 */
-	private int applyFunctionOnMessages(List<Message> messages, Function<Message, Boolean> function) {
-		Preconditions.checkNotNull(messages);
-		Preconditions.checkNotNull(function);
-		return MessageServiceImpl.apply(messages, function);
 	}
 }

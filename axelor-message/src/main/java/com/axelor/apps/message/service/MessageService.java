@@ -63,12 +63,4 @@ public interface MessageService {
 	 */
 	Message regenerateMessage(Message message) throws Exception;
 
-	/**
-	 * Find and return the list of messages with the ID associated
-	 * by the list integer passed in parameter.
-	 * @param integers List of messages ID
-	 * @return List of messages
-	 */
-	List<Message> findMessages(List<Integer> integers);
-	
 }
