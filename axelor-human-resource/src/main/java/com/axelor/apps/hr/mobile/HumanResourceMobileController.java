@@ -21,7 +21,6 @@ import com.axelor.apps.hr.db.EmployeeVehicle;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.HRConfig;
-import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
@@ -220,7 +219,11 @@ public class HumanResourceMobileController {
 			expenseLine.setUntaxedAmount(new BigDecimal(request.getData().get("amountWithoutVat").toString()));
 			expenseLine.setTotalTax(new BigDecimal(request.getData().get("vatAmount").toString()));
 			expenseLine.setTotalAmount(expenseLine.getUntaxedAmount().add(expenseLine.getTotalTax()));
-			expenseLine.setJustification(request.getData().get("justification").toString().getBytes());
+
+			Object justificationObject = request.getData().get("justification");
+			if(justificationObject != null){
+				expenseLine.setJustification(justificationObject.toString().getBytes());
+			}
 			expense.addGeneralExpenseLineListItem(expenseLine);
 
 			Beans.get(ExpenseRepository.class).save(expense);
