@@ -466,8 +466,8 @@ public class HumanResourceMobileController {
 
 			for (EmployeeVehicle employeeVehicle : employeeVehicleList) {
 				Map<String, String> map = new HashMap<>();
-				map.put("kilometricAllowParam", employeeVehicle.getKilometricAllowParam().getId().toString());
-				map.put("employeeVehicle", employeeVehicle.getId().toString());
+				map.put("name", employeeVehicle.getKilometricAllowParam().getName());
+				map.put("id", employeeVehicle.getKilometricAllowParam().getId().toString());
 				dataList.add(map);
 			}
 			response.setData(dataList);
