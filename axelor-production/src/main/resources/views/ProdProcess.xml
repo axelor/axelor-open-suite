@@ -11,7 +11,7 @@
         <field name="prodProcessLineList" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
     </grid>
     
-    <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"
+    <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess" onNew="action-prod-process-record-set-default-company"
     	onSave="action-prod-process-method-validate-prod-process" width="large">
     	<toolbar>
 			<button name="print" title="Print" icon="fa-print" onClick="save,action-production-process-print"/>
@@ -66,5 +66,9 @@
 	
 	<action-record name="action-prod-process-record-set-second-location" model="com.axelor.apps.production.db.ProdProcess">
 		<field name="producedProductStockLocation" expr="eval: stockLocation" if="producedProductStockLocation == null"/>
+	</action-record>
+	
+	<action-record name="action-prod-process-record-set-default-company" model="com.axelor.apps.production.db.ProdProcess">
+		<field name="company" expr="eval: __user__.getActiveCompany()"/>
 	</action-record>
 </object-views>
