@@ -19,7 +19,10 @@ package com.axelor.apps.stock.web;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.util.List;
+
+import javax.persistence.Query;
 
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
@@ -31,6 +34,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
@@ -106,4 +110,18 @@ public class StockLocationController {
 		}	
 	}
 	
+	public void setStocklocationValue(ActionRequest request, ActionResponse response) {
+	
+		StockLocation stockLocation = request.getContext().asType(StockLocation.class );
+		
+		Query query = JPA.em().createQuery( "SELECT SUM( self.currentQty * CASE WHEN (product.costTypeSelect = 3) THEN "
+				+ "(self.avgPrice) ELSE (self.product.costPrice) END ) AS value "
+				+ "FROM StockLocationLine AS self "
+				+ "WHERE self.stockLocation.id =:id");
+		query.setParameter("id", stockLocation.getId());
+		
+		List<?> result = query.getResultList();
+		
+		response.setValue("$stockLocationValue", (result.get(0) == null ?  BigDecimal.ZERO : (BigDecimal) result.get(0)).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+	}
 }

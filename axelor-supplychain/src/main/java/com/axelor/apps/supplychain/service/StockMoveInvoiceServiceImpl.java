@@ -88,7 +88,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 				&& stockMove.getInvoice().getStatusSelect() != InvoiceRepository.STATUS_CANCELED){
 			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName());
 		}
-		InvoiceGenerator invoiceGenerator = saleOrderInvoiceService.createInvoiceGenerator(saleOrder);
+		InvoiceGenerator invoiceGenerator = saleOrderInvoiceService.createInvoiceGenerator(saleOrder, stockMove.getIsReversion());
 
 		Invoice invoice = invoiceGenerator.generate();
 
@@ -124,7 +124,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 				&& stockMove.getInvoice().getStatusSelect() != InvoiceRepository.STATUS_CANCELED){
 			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName());
 		}
-		InvoiceGenerator invoiceGenerator = purchaseOrderInvoiceService.createInvoiceGenerator(purchaseOrder);
+		InvoiceGenerator invoiceGenerator = purchaseOrderInvoiceService.createInvoiceGenerator(purchaseOrder, stockMove.getIsReversion());
 
 		Invoice invoice = invoiceGenerator.generate();
 
@@ -153,11 +153,25 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 		int stockMoveType = stockMove.getTypeSelect();
 		Invoice invoice = stockMove.getInvoice();
 		int invoiceOperationType;
-		
-		if(stockMoveType == StockMoveRepository.TYPE_INCOMING)  {  invoiceOperationType = InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;  }
-		else if(stockMoveType == StockMoveRepository.TYPE_OUTGOING)  {  invoiceOperationType = InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;  }
-		else  {  return null;  }
-		
+
+        if (stockMove.getIsReversion()) {
+            if (stockMoveType == StockMoveRepository.TYPE_INCOMING) {
+                invoiceOperationType = InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
+            } else if (stockMoveType == StockMoveRepository.TYPE_OUTGOING) {
+                invoiceOperationType = InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
+            } else {
+                return null;
+            }
+        } else {
+            if (stockMoveType == StockMoveRepository.TYPE_INCOMING) {
+                invoiceOperationType = InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
+            } else if (stockMoveType == StockMoveRepository.TYPE_OUTGOING) {
+                invoiceOperationType = InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
+            } else {
+                return null;
+            }
+        }
+
 		if (invoice != null && invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED) {
 			if (stockMoveType == StockMoveRepository.TYPE_INCOMING) {
 				throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS), stockMove.getName());

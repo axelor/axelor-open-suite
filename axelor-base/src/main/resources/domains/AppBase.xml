@@ -8,8 +8,8 @@
 
 		<datetime name="today" title="Today date" tz="true"/>
 		<many-to-one name="defaultProjectUnit" title="Default Project unit" ref="com.axelor.apps.base.db.Unit"/>
-		<string name="defaultPartnerLanguage" title="Default Partner language" selection="select.language"/>
-		<boolean name="mailAccountByUser" title="Manage mail account by user ?" default="false"/>
+		<many-to-one name="defaultPartnerLanguage" ref="com.axelor.apps.base.db.Language" title="Default Partner language"/>
+		<boolean name="emailAccountByUser" title="Manage mail account by user ?" default="false"/>
 		
 		<!-- Interfaces QAS et SVI -->
 		<string name="qasWsdlUrl" title="URL to QAS WSDL"/>
@@ -43,7 +43,8 @@
 		<boolean name="activateSendingEmail" title="Activate sending email" default="true"/>
 
 		<boolean name="activateBarCodeGeneration" title="Activate bar code generation for products" default="false"/>
-
+		<boolean name="editProductBarcodeType" title="Edit product barcode type?" default="false"/>
+		<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
 		<boolean name="generateProductSequence" title="Generate sequence for products" default="false"/>
 		
 		<boolean name="generatePartnerSequence" title="Generate sequence for partners" default="true"/>

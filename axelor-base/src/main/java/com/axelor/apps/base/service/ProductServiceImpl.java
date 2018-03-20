@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.IProductVariant;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantAttr;
@@ -29,6 +28,7 @@ import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
+import com.axelor.apps.base.db.repo.ProductVariantValueRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -102,7 +102,7 @@ public class ProductServiceImpl implements ProductService  {
 
 			if(product.getProductVariant() != null)  {
 
-				product.setCostPrice(product.getCostPrice().add(this.getProductExtraPrice(product.getProductVariant(), IProductVariant.APPLICATION_COST_PRICE)));
+				product.setCostPrice(product.getCostPrice().add(this.getProductExtraPrice(product.getProductVariant(), ProductVariantValueRepository.APPLICATION_COST_PRICE)));
 
 			}
 
@@ -114,7 +114,7 @@ public class ProductServiceImpl implements ProductService  {
 
 			if(product.getProductVariant() != null)  {
 
-				product.setSalePrice(product.getSalePrice().add(this.getProductExtraPrice(product.getProductVariant(), IProductVariant.APPLICATION_SALE_PRICE)));
+				product.setSalePrice(product.getSalePrice().add(this.getProductExtraPrice(product.getProductVariant(), ProductVariantValueRepository.APPLICATION_SALE_PRICE)));
 
 			}
 		}

@@ -42,7 +42,9 @@
 	
 	<input file="base_printSetting.csv" separator=";" type="com.axelor.apps.base.db.PrintingSettings" search="self.importId = :importId"  />
 	     
-	<input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.name = :name" />
+	<input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.name = :name" >
+		<bind to="language" search="self.code = :languageCode"/>
+	</input>
     
     <input file="message_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.importId = :importId"/>
     
@@ -98,6 +100,7 @@
 		<bind to="inPaymentMode" column="inPaymentMode.importId" if="false"/>
  		<bind to="outPaymentMode" column="outPaymentMode.importId" if="false"/>
  		<bind to="paymentCondition" column="paymentCondition.importId" if="false"/>
+ 		<bind to="language" search="self.code = :languageCode"/>
 	</input>
 	
 	<!-- A BESOIN DE PARTNER -->
@@ -175,7 +178,9 @@
 		<bind column="importId" to="importId"/>
 	</input>
 	
-	<input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase"  search="self.code = :code" update="true" />
+	<input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase"  search="self.code = :code" update="true" >
+		<bind to="defaultPartnerLanguage" search="self.code = :defaultPartnerLanguageCode"/>
+	</input>
 
 <!-- 	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true"> -->
 <!-- 		<bind column="bankDetailsSet_id" to="bankDetailsSet" search="self.importId in :bankDetailsSet_id" update="true" /> -->

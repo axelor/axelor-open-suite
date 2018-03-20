@@ -307,7 +307,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	@Override
 	public void updateAveragePriceLocationLine(StockLocation stockLocation, StockMoveLine stockMoveLine, int toStatus) {
 		StockLocationLine stockLocationLine = Beans.get(StockLocationLineService.class)
-				.getStockLocationLine(stockLocation, stockMoveLine.getProduct());
+				.getOrCreateStockLocationLine(stockLocation, stockMoveLine.getProduct());
 		if (toStatus == StockMoveRepository.STATUS_REALIZED) {
 			this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
 		}
@@ -390,7 +390,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				try {
 					checkConformitySelection(stockMoveLine, stockMove);
 				}
-				catch (AxelorException e) {
+				catch (Exception e) {
 				    productsWithErrors.add(product.getName());
 				}
 			}

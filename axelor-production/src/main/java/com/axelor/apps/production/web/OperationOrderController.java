@@ -17,6 +17,17 @@
  */
 package com.axelor.apps.production.web;
 
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.birt.core.exception.BirtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.apps.ReportFactory;
@@ -29,7 +40,6 @@ import com.axelor.apps.production.service.OperationOrderService;
 import com.axelor.apps.production.service.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.OperationOrderWorkflowService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -37,16 +47,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import org.eclipse.birt.core.exception.BirtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
 
 @Singleton
 public class OperationOrderController {
@@ -279,7 +279,7 @@ public class OperationOrderController {
 		try {
 		    Beans.get(OperationOrderService.class).updateDiffProdProductList(operationOrder);
 			response.setValue("diffConsumeProdProductList", operationOrder.getDiffConsumeProdProductList());
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}

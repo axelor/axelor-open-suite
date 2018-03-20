@@ -17,6 +17,10 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Set;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -24,16 +28,14 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Set;
+import com.google.inject.persist.Transactional;
 
 public class WorkflowVentilationServiceImpl implements WorkflowVentilationService {
 
@@ -50,6 +52,7 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
 
 
     @Override
+    @Transactional(rollbackOn={Exception.class, AxelorException.class})
     public void afterVentilation(Invoice invoice) throws AxelorException {
         Company company = invoice.getCompany();
 

@@ -210,23 +210,4 @@ public class ProjectServiceImpl implements ProjectService {
 		order.setClientPartner(project.getClientPartner());
 		return Beans.get(SaleOrderRepository.class).save(order);
 	}
-
-	@Override
-	@Transactional
-	public void cascadeUpdateTeam(Project project, Team team, Boolean synchronisingMembers) throws AxelorException {
-		if (team == null) {
-			throw new AxelorException(project, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PROJECT_NO_TEAM));
-		}
-	    project.setTeam(team);
-		project.setSynchronisable(synchronisingMembers);
-	    if (synchronisingMembers) {
-	    	team.getMembers().parallelStream().forEach(project::addMembersUserSetItem);
-		}
-		projectRepository.save(project);
-
-		List<Project> phases = projectRepository.findAllByParentProject(project).fetch();
-	    for (Project phase : phases) {
-	    	cascadeUpdateTeam(phase, project.getTeam(), synchronisingMembers);
-		}
-	}
 }

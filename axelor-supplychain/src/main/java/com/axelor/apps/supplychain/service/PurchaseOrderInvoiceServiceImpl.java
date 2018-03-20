@@ -92,22 +92,27 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 		return invoice;
 	}
 
-	@Override
-	public InvoiceGenerator createInvoiceGenerator(PurchaseOrder purchaseOrder) throws AxelorException  {
+    @Override
+    public InvoiceGenerator createInvoiceGenerator(PurchaseOrder purchaseOrder) throws AxelorException {
+        return createInvoiceGenerator(purchaseOrder, false);
+    }
 
-		if (purchaseOrder.getCurrency() == null) {
-			throw new AxelorException(purchaseOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PO_INVOICE_1), purchaseOrder.getPurchaseOrderSeq());
-		}
+    @Override
+    public InvoiceGenerator createInvoiceGenerator(PurchaseOrder purchaseOrder, boolean isRefund)
+            throws AxelorException {
 
-		return new InvoiceGeneratorSupplyChain(purchaseOrder) {
+        if (purchaseOrder.getCurrency() == null) {
+            throw new AxelorException(purchaseOrder, IException.CONFIGURATION_ERROR,
+                    I18n.get(IExceptionMessage.PO_INVOICE_1), purchaseOrder.getPurchaseOrderSeq());
+        }
 
-			@Override
-			public Invoice generate() throws AxelorException {
-
-				return super.createInvoiceHeader();
-			}
-		};
-	}
+        return new InvoiceGeneratorSupplyChain(purchaseOrder, isRefund) {
+            @Override
+            public Invoice generate() throws AxelorException {
+                return super.createInvoiceHeader();
+            }
+        };
+    }
 
 	@Override
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<PurchaseOrderLine> purchaseOrderLineList) throws AxelorException {

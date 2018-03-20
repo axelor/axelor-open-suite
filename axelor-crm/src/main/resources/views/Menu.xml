@@ -36,14 +36,6 @@
 		<context name="_domain" expr="self.isContact = true AND self.mainPartner.isCustomer = true"/>
 	</action-view>
 	
-	<menuitem name="crm-root-projects" title="Projects" order="12"
-			  parent="crm-root" action="crm.root.projects"/>
-
-	<action-view name="crm.root.projects" title="Projects" model="com.axelor.apps.project.db.Project">
-        <view type="grid" name="crm-project-grid"/>
-		<view type="form" name="crm-project-form"/>
-	</action-view>
-	
 	<menuitem name="crm-root-event" parent="crm-root"
 		title="Events" action="crm.root.event" order="15"/>
 
@@ -77,7 +69,7 @@
 		title="Opportunities" action="crm.root.opportunity" order="25"/>
 
 	<action-view name="crm.root.opportunity" title="Opportunities"
-		model="com.axelor.apps.crm.db.Opportunity" >
+		model="com.axelor.apps.crm.db.Opportunity" home="true">
 		<view type="kanban" name="opportunity-kanban"/>
 		<view type="grid" name="opportunity-grid"/>
 		<view type="form" name="opportunity-form"/>

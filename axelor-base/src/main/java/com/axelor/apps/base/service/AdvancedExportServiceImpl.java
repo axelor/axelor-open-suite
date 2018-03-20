@@ -205,6 +205,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 		List<String> orderByColumns = new ArrayList<>();
 		selectJoinFieldList.clear();
 		joinFieldSet.clear();
+		counter = 0;
 		
 		language = AuthUtils.getUser().getLanguage();
 
@@ -217,7 +218,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
 			int cnt = this.getExportData(splitField, 0, metaModel);
 
-			if (joinFieldSet.size() > 0 || !selectNormalField.equals("")) {
+			if (joinFieldSet.size() > 0 && (!selectNormalField.equals("") || selectNormalField.indexOf(0) == '.')) {
 				selectJoinFieldList.add(temp + selectNormalField + " AS " + ("Col_" + (col)));
 			}
 
@@ -263,33 +264,43 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
 	private String getCriteria(MetaModel metaModel, String criteria) {
 		
-		if (StringUtils.isNullOrEmpty(criteria))
-			criteria = "";
-		else {
+		if (!StringUtils.isNullOrEmpty(criteria)){
 			log.debug("criteria : {}", criteria.substring(1, criteria.length()-1));
 			criteria = " WHERE self.id IN (" + criteria.substring(1, criteria.length()-1) + ")";
+			return criteria;
+		}	
+		
+		Filter filter = getJpaSecurityFilter(metaModel);
+		
+		if (filter != null) {
+			String permissionFilter = filter.getQuery();
+			if (StringUtils.isNullOrEmpty(criteria)) {
+				criteria = " WHERE " + permissionFilter;
+			}
+			else {
+				criteria = criteria + " AND (" + permissionFilter + ")"; 
+			}
+			params = filter.getParams();
 		}
 		
+		return criteria;
+	}
+	
+	@Override
+	public Filter getJpaSecurityFilter(MetaModel metaModel) {
+		
 		JpaSecurity jpaSecurity = Beans.get(JpaSecurity.class);
+		
 		try {
 			Filter filter = jpaSecurity.getFilter(JpaSecurity.CAN_EXPORT, 
 					(Class<? extends Model>) Class.forName(metaModel.getFullName()), null);
-			if (filter != null) {
-				String permissionFilter = filter.getQuery();
-				if (criteria.isEmpty()) {
-					criteria = " WHERE " + permissionFilter;
-				}
-				else {
-					criteria = criteria + " AND (" + permissionFilter + ")"; 
-				}
-				params = filter.getParams();
-			}
+			
+			return filter;
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		
-		
-		return criteria;
+		return null;
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -499,64 +510,41 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			
 			if (!relationalField.getPackageName().startsWith("java")) {
 				
-				if (relationalField.getRelationship().equals("OneToMany") || relationalField.getRelationship().equals("ManyToMany") || relationalField.getRelationship().equals("ManyToOne")) {
-					
-					counter++;
-					if (counter2 != 0 || counter3 != 0) {
-						selectNormalField = "";
-					}
-					if (i != 0) {
-						for (int j = 0; j <= i; j++) {
-							if (j == 0) {
-								if (nbrField > 0 && joinFieldSet.size() > 0) {
-									joinFieldSet.add("LEFT JOIN self." + splitField[j] + " " + splitField[j]);
-									temp = splitField[j];
-								} else {
-									joinFieldSet.add("self." + splitField[j] + " " + splitField[j]);
-									temp = splitField[j];
-								}
+				counter++;
+				if (counter2 != 0 || counter3 != 0) {
+					selectNormalField = "";
+				}
+				if (i != 0) {
+					for (int j = 0; j <= i; j++) {
+						if (j == 0) {
+							if (nbrField > 0 && joinFieldSet.size() > 0) {
+								joinFieldSet.add("LEFT JOIN self." + splitField[j] + " " + splitField[j]);
+								temp = splitField[j];
 							} else {
-								if (!temp.equals(splitField[i])) {
-									joinFieldSet.add("LEFT JOIN " + temp + "." + splitField[j] + " " + splitField[j]);
-									temp = splitField[j];
-								}
-							}
-						}
-					} else {
-						if (nbrField > 0 && joinFieldSet.size() > 0) {
-							if (!joinFieldSet.contains("self." + splitField[i] + " " + splitField[i])) {
-								joinFieldSet.add("LEFT JOIN self." + splitField[i] + " " + splitField[i]);
-								temp = splitField[i];
-							} else {
-								temp = splitField[i];
+								joinFieldSet.add("self." + splitField[j] + " " + splitField[j]);
+								temp = splitField[j];
 							}
 						} else {
-							joinFieldSet.add("self." + splitField[i] + " " + splitField[i]);
+							if (!temp.equals(splitField[i])) {
+								joinFieldSet.add("LEFT JOIN " + temp + "." + splitField[j] + " " + splitField[j]);
+								temp = splitField[j];
+							}
+						}
+					}
+				} else {
+					if (nbrField > 0 && joinFieldSet.size() > 0) {
+						if (!joinFieldSet.contains("self." + splitField[i] + " " + splitField[i])) {
+							joinFieldSet.add("LEFT JOIN self." + splitField[i] + " " + splitField[i]);
+							temp = splitField[i];
+						} else {
 							temp = splitField[i];
 						}
-					}
-					
-				} else if (relationalField.getRelationship().equals("OneToOne")) {
-					
-					if (counter != 0 && joinFieldSet.size() > 1 && counter2 > 1) {
-						joinFieldSet.add("LEFT JOIN " + temp + "." + splitField[i] + " " + splitField[i]);
-						temp = splitField[i];
-						
 					} else {
-						if (counter != 0 && joinFieldSet.size() > 1 && counter2 != 0) {
-							selectNormalField += "." + splitField[i];
-						} else {
-							if (i == 0) {
-								counter2++;
-								selectNormalField = "";
-								selectNormalField += "self." + splitField[i];
-							} else {
-								counter3++;
-								selectNormalField += "." + splitField[i];
-							}
-						}
+						joinFieldSet.add("self." + splitField[i] + " " + splitField[i]);
+						temp = splitField[i];
 					}
 				}
+					
 			} else {
 				
 				this.checkSelectionField(splitField, i, metaModel);
@@ -790,7 +778,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			for(Integer colIndex: allColIndices) {
 				String colName = "Col_" + String.valueOf(colIndex);
 				Object value = field.get(colName);
-				if (value == null) {
+				if (value == null || value == "") {
 					totalCols[i++] = null;
 				} else {
 					totalCols[i++] = value.toString();

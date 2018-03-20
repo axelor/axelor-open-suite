@@ -19,7 +19,6 @@ package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
@@ -61,76 +60,91 @@ public interface StockLocationLineService {
 
 	public StockLocationLine updateLocation(StockLocationLine stockLocationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
 									   LocalDate lastFutureStockMoveDate, BigDecimal reservedQty);
+
+	/**
+	 * Getting the stock location line :
+	 * We check if the location has a detailed line for a given product.
+	 * If no detailed location line is found, we create it.
+	 *
+	 * @param stockLocation
+	 * 		A location
+	 * @param product
+	 * 		A product
+	 * @return
+	 * 		The found or created location line
+	 */
+	public StockLocationLine getOrCreateStockLocationLine(StockLocation stockLocation, Product product);
 	
+	/**
+     * Getting the detailed stock location line :
+	 * We check if the location has a detailed line for a given product,
+	 * product variant and tracking number.
+     * If no detailed location line is found, we create it.
+	 *
+	 * @param detailLocation
+	 * 		A location
+	 * @param product
+	 * 		A product
+	 * @param trackingNumber
+	 * 		A tracking number
+	 * @return
+     * 		The found or created detailed location line
+	 */
+	public StockLocationLine getOrCreateDetailLocationLine(StockLocation detailLocation, Product product, TrackingNumber trackingNumber);
+	
+	
+	/**
+	 * Allow to get the location line of a given product in a given location.
+	 * @param stockLocation
+	 * 		A location
+	 * @param product
+	 * 		A product
+	 * @return
+	 * 		The stock location line if found, else null
+	 */
 	public StockLocationLine getStockLocationLine(StockLocation stockLocation, Product product);
 	
-	/**
-	 * Récupération de la ligne détaillée de stock :
-	 * On vérifie si l'entrepot contient une ligne détaillée de stock pour un produit, une vairante de produit et un numéro de suivi donnés.
-	 * Si l'entrepot ne contient pas de ligne détaillée de stock pour ces paramètres, alors on vérifie que
-	 * et on créé une ligne détaillée de stock. 
-	 * 
-	 * @param detailLocation
-	 * 			Entrepot détaillé
-	 * @param product
-	 * 			Produit concerné
-	 * @param trackingNumber
-	 * 			Le numéro de suivi concerné
-	 * @return
-	 * 			Une ligne détaillée de stock
-	 */
-	public StockLocationLine getDetailLocationLine(StockLocation detailLocation, Product product, TrackingNumber trackingNumber);
-	
 	
 	/**
-	 * Permet de récupérer la ligne de stock d'un entrepot en fonction d'un produit donné.
-	 * @param stockLocationLineList
-	 * 		Une liste de ligne de stock
-	 * @param product
-	 * 		Un produit
-	 * @return
-	 * 		La ligne de stock
-	 */
-	public StockLocationLine getStockLocationLine(List<StockLocationLine> stockLocationLineList, Product product);
-	
-	
-	/**
-	 * Permet de récupérer la ligne détaillée de stock d'un entrepot en fonction d'un produit, d'une variante de produit et d'un numéro de suivi donnés.
-	 * @param detailLocationLineList
-	 * 		Une liste de ligne détaillée de stock
-	 * @param product
-	 * 		Un produit
-	 * @param trackingNumber
-	 * 		Un numéro de suivi
-	 * @return
-	 * 		Un ligne de stock
-	 */
-	public StockLocationLine getDetailLocationLine(List<StockLocationLine> detailLocationLineList, Product product, TrackingNumber trackingNumber);
-	
-	
-	
-	/**
-	 * Permet de créer une ligne de stock pour un entrepot et un produit donnés.
+	 * Allow to get the detailed location line of a given product,
+	 * product variant and tracking number in a given location.
+	 *
 	 * @param stockLocation
-	 * 		Un entrepot
+     * 		A location
 	 * @param product
-	 * 		Un produit
+	 * 		A product
+	 * @param trackingNumber
+	 * 		A tracking number
 	 * @return
-	 * 		La ligne de stock
+	 * 		The stock location line if found, else null
+	 */
+	public StockLocationLine getDetailLocationLine(StockLocation stockLocation, Product product, TrackingNumber trackingNumber);
+	
+	
+	
+	/**
+	 * Allow the creation of a location line of a given product in a given location.
+	 * @param stockLocation
+	 * 		A location
+	 * @param product
+	 * 		A product
+	 * @return
+	 * 		The created stock location line
 	 */
 	public StockLocationLine createLocationLine(StockLocation stockLocation, Product product);
 	
 	
 	/**
-	 * Permet de créer une ligne détaillée de stock pour un entrepot, un produit, une variante de produit et un numéro de suivi donnés.
+	 * Allow the creation of a detailed location line of a given product,
+	 * product variant, and tracking number in a given location.
 	 * @param stockLocation
-	 * 		Un entrepot
+	 * 		A location
 	 * @param product
-	 * 		Un produit
+	 * 		A product
 	 * @param trackingNumber
-	 * 		Un numéro de suivi
+	 * 		A tracking number
 	 * @return
-	 * 		La ligne détaillée de stock
+	 * 		The created detailed stock location line
 	 */
 	public StockLocationLine createDetailLocationLine(StockLocation stockLocation, Product product, TrackingNumber trackingNumber);
 		

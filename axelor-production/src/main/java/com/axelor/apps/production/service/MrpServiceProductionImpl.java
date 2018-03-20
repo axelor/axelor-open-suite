@@ -105,7 +105,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 		}
 
 		List<ManufOrder> manufOrderList = manufOrderRepository.all()
-				.filter("self.product in (?1) AND self.prodProcess.stockLocation in (?2) "
+				.filter("self.product.id in (?1) AND self.prodProcess.stockLocation in (?2) "
 						+ "AND self.statusSelect NOT IN (?3) AND self.plannedStartDateT > ?4",
 						this.productMap.keySet(), this.stockLocationList, statusList, appBaseService.getTodayDate().atStartOfDay()).fetch();
 		
@@ -150,6 +150,14 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
  					Product product = prodProduct.getProduct();
 					
 					if(this.isMrpProduct(product))  {
+
+						// A component of a manuf order that is not loaded on MRP because there is no default BOM or 
+						// because the component of manuf order is not a component of the bill of material, we add it with the level of manuf order product + 1.
+						if(!this.productMap.containsKey(product.getId()))  {
+							this.assignProductAndLevel(product, manufOrder.getProduct());
+							this.createAvailableStockMrpLine(product, manufOrder.getProdProcess().getStockLocation());
+						}
+
 						mrp.addMrpLineListItem(this.createMrpLine(product, manufOrderNeedMrpLineType, prodProduct.getQty(), 
 								manufOrder.getPlannedStartDateT().toLocalDate(), BigDecimal.ZERO, stockLocation, manufOrder));
 					}
@@ -218,7 +226,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 	protected void assignProductAndLevel(Product product)  {
 		
 		log.debug("Add of the product : {}", product.getFullName());
-		this.productMap.put(product,  this.getMaxLevel(product, 0));
+		this.productMap.put(product.getId(),  this.getMaxLevel(product, 0));
 		
 		if(product.getDefaultBillOfMaterial() != null)  {
 			this.assignProductLevel(product.getDefaultBillOfMaterial(), 0);
@@ -228,8 +236,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 	
 	public int getMaxLevel(Product product, int level)  {
 		
-		if(this.productMap.containsKey(product))  {
-			return Math.max(level, this.productMap.get(product));
+		if(this.productMap.containsKey(product.getId()))  {
+			return Math.max(level, this.productMap.get(product.getId()));
 		}
 		
 		return level;
@@ -248,7 +256,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 			Product subProduct = billOfMaterial.getProduct();
 			
 			log.debug("Add of the sub product : {} for the level : {} ", subProduct.getFullName(), level);
-			this.productMap.put(subProduct, this.getMaxLevel(subProduct, level));
+			this.productMap.put(subProduct.getId(), this.getMaxLevel(subProduct, level));
 
 		}
 		else  {
@@ -272,7 +280,25 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 	}
 	
 	
+	/**
+	 * Add a component product of a manuf order where the component product is not contained on the default bill of material of the produced product.
+	 * @param manufOrderComponentProduct
+	 * @param manufOrderProducedProduct
+	 */
+	protected void assignProductAndLevel(Product manufOrderComponentProduct, Product manufOrderProducedProduct)  {
+		
+		log.debug("Add of the product : {}", manufOrderComponentProduct.getFullName());
+		this.productMap.put(manufOrderComponentProduct.getId(),  this.getMaxLevel(manufOrderProducedProduct, 0)+1);
+		
+	}
 	
+	protected void createAvailableStockMrpLine(Product product, StockLocation stockLocation) throws AxelorException  {
+		
+		MrpLineType availableStockMrpLineType = this.getMrpLineType(MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK);
+		
+		mrp.addMrpLineListItem(this.createAvailableStockMrpLine(productRepository.find(product.getId()), stockLocation, availableStockMrpLineType));
+				
+	}
 	
 }
 

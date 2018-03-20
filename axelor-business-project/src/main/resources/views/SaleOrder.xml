@@ -5,19 +5,18 @@
 	
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="business-project-sale-order-form"
 	onNew="action-group-supplychain-saleorder-onnew"
-	onLoad="action-group-businness-project-saleorder-onload"
+	onLoad="action-group-business-project-saleorder-onload"
     onSave="action-supplychain-saleorder-onsave">
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
 	
 	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder" id="business-project-sale-order-template-form"
 		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
-		onLoad="action-group-businness-project-saleorder-onload">
+		onLoad="action-group-business-project-saleorder-onload">
 		<panel-include view="sale-order-template-form" from="axelor-sale"/>
 	</form>
 	
-	<action-group name="action-group-businness-project-saleorder-onload">
-		<action name="action-sale-method-filter-printing-settings"/>
+	<action-group name="action-group-business-project-saleorder-onload">
 		<action name="action-group-supplychain-saleorder-onload"/>
         <action name="action-sale-order-attrs-project"/>
 	</action-group>

@@ -2,54 +2,88 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <grid name="calendar-event-grid" model="com.axelor.apps.base.db.ICalendarEvent" title="Events" orderBy="-startDateTime">
+        <field name="calendar"/>
+        <field name="typeSelect" />
+        <field name="user" />
+        <field name="subject" />
+        <field name="startDateTime" />
+        <field name="endDateTime" />
+        <field name="allDay" />
+    </grid>
 	
-	<grid name="calendar-event-grid" model="com.axelor.apps.base.db.ICalendarEvent" title="Events">
-	  <field name="calendar"/>
-	  <field name="typeSelect" />
-	  <field name="user" />
-	  <field name="subject" />
-	  <field name="startDateTime" />
-	  <field name="endDateTime" />
-	  <field name="allDay" />
-	</grid>
+    <grid name="calendar-event-calendar-grid" model="com.axelor.apps.base.db.ICalendarEvent" title="Events">
+        <field name="typeSelect" />
+        <field name="user" />
+        <field name="subject" />
+        <field name="startDateTime" />
+        <field name="endDateTime" />
+        <field name="allDay" />
+    </grid>
+
+    <form name="calendar-event-form" title="Event" model="com.axelor.apps.base.db.ICalendarEvent" onNew="action-icalendar-event-default-record">
+        <panel>
+            <field name="subject" colSpan="12"/>
+            <field name="startDateTime" colSpan="5"/>
+            <field name="endDateTime" colSpan="5"/>
+            <field name="allDay" colSpan="2"/>
+            <field name="calendar"/>
+            <field name="computedAttendeeList" hidden="true"/>
+        </panel>
+        <panel-tabs>
+	        <panel title="Description">
+	            <field name="Description" colSpan="12" widget="html" showTitle="false"/>
+	        </panel>
+	        <panel title="Organization">
+	            <field name="location"/>
+	            <field name="geo"/>
+	            <field name="user"/>
+	            <field name="organizer"/>
+	        </panel>
+	        <panel title="Information">
+	            <field name="typeSelect"/>
+	            <field name="subjectTeam"/>
+	            <field name="visibilitySelect"/>
+	            <field name="disponibilitySelect"/>
+	            <field name="status"/>
+	        </panel>
+        </panel-tabs>
+        <panel name="addGuests" title="Add Guests" sidebar="true">
+            <field name="$guestEmail" title="Email address" colSpan="12" type="many-to-one" canNew="true" onChange="action-icalendar-event-method-add-email-guest" target="com.axelor.apps.message.db.EmailAddress"/>
+        </panel>
+        <panel name="guests" title="Guests" showIf="attendees.length != 0" colSpan="12" sidebar="true">
+            <field name="attendees" showTitle="false" colSpan="12" canSelect="false" canNew="false">
+	            <editor layout="table" x-show-titles="false">
+	                <field name="name" readonly="true"/>
+	                <field name="statusSelect"/>
+	            </editor>
+            </field>
+        </panel>
+    </form>
 	
-	<grid name="calendar-event-calendar-grid" model="com.axelor.apps.base.db.ICalendarEvent" title="Events">
-	  <field name="typeSelect" />
-	  <field name="user" />
-	  <field name="subject" />
-	  <field name="startDateTime" />
-	  <field name="endDateTime" />
-	  <field name="allDay" />
-	</grid>
-	
-	<form name="calendar-event-form" model="com.axelor.apps.base.db.ICalendarEvent" title="Event" >
-	  <panel>
-		  <field name="calendar"/>
-		  <field name="subject" />
-		  <field name="status" />
-		  <field name="allDay" />
-		  <field name="organizer" />
-		  <field name="startDateTime" />
-		  <field name="endDateTime" />
-		  <field name="location" />
-		  <field name="geo" />
-	  </panel>
-	  <panel-tabs>
-	   	<panel-related field="attendees" />
-	   	<panel-related field="description" />
-	  </panel-tabs>
-	</form>
-	
-	<calendar name="calendar-all" model="com.axelor.apps.base.db.ICalendarEvent" title="Calendar"
+    <calendar name="calendar-event-all" model="com.axelor.apps.base.db.ICalendarEvent" title="Calendar"
 	  eventStart="startDateTime" eventStop="endDateTime" colorBy="calendar">
-	  <field name="subject" />
-	</calendar>
+        <field name="subject" />
+    </calendar>
 	
-	<action-view name="action-icalendar-view-ievent-dashlet" title="Events" model="com.axelor.apps.base.db.ICalendarEvent">
-		<view type="grid" name="calendar-event-grid"/>
-		<view type="form" name="calendar-event-calendar-grid"/>
-		<domain>self.calendar.id = :calendarId</domain>
-		<context name="calendarId" expr="eval:_id"/>
-	</action-view>
+    <action-view name="action-icalendar-view-ievent-dashlet" title="Events" model="com.axelor.apps.base.db.ICalendarEvent">
+        <view type="grid" name="calendar-event-grid"/>
+        <view type="form" name="calendar-event-calendar-grid"/>
+        <domain>self.calendar.id = :calendarId</domain>
+        <context name="calendarId" expr="eval:id"/>
+    </action-view>
+
+    <action-method name="action-icalendar-event-method-add-email-guest">
+        <call class="com.axelor.apps.base.web.ICalendarEventController" method="addEmailGuest"/>
+    </action-method>
+
+    <action-record name="action-event-record-compute-attendee-list" model="com.axelor.apps.crm.db.Event">
+        <field if="attendees" name="computedAttendeeList" expr="eval:attendees.collect{it?.name}.join(', ')"/>
+    </action-record>
+
+    <action-record name="action-icalendar-event-default-record" model="com.axelor.apps.base.db.ICalendarEvent">
+        <field name="calendar" expr="eval: __repo__(ICalendar).findByUser(__user__)" />
+    </action-record>
 
 </object-views>

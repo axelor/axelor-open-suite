@@ -15,6 +15,12 @@
 			<decimal name="minQty" title="Qty min (by product)"/>
 
 			<finder-method name="findByPriceListAndProduct" using="priceList,product"/>
+
+			<extra-code>
+				public static final int TYPE_PERCENT = 1;
+				public static final int TYPE_FIXED = 2;
+				public static final int TYPE_NONE = 3;
+			</extra-code>
 		</entity>
 		
 </domain-models>

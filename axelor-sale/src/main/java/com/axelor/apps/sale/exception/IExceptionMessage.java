@@ -67,4 +67,9 @@ public interface IExceptionMessage {
 
 	static final String CONFIGURATOR_NOT_FOUND = /*$$(*/ "This product has no configurator." /*)*/;
 
+	/*
+	 * Invoice printing
+	 */
+	String SALE_ORDER_MISSING_PRINTING_SETTINGS = /*$$(*/ "Please fill printing settings on sale order %s." /*)*/;
+
 }

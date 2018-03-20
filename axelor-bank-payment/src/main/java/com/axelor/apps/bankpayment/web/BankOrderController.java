@@ -186,7 +186,7 @@ public class BankOrderController {
 					
 				}
 				
-				BankOrder bankOrder = Beans.get(BankOrderMergeService.class).mergeBankOrderList(bankOrderList);
+				BankOrder bankOrder = Beans.get(BankOrderMergeService.class).mergeBankOrders(bankOrderList);
 				
 				response.setView(ActionView
 					.define(I18n.get("Bank Order"))

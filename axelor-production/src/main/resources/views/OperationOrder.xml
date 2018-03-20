@@ -36,7 +36,7 @@
 				readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
         <button name="start" icon="fa-play" onClick="action-operation-order-group-start" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
        	<button name="pause" icon="fa-pause" onClick="action-operation-order-method-pause,save" readonlyIf="statusSelect != 4"/>
-   		<button name="finish" icon="fa-power-off" onClick="action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
+   		<button name="finish" icon="fa-power-off" onClick="action-operation-order-group-finish" readonlyIf="statusSelect != 4"/>
    		<button name="cancel" icon="fa-times-circle"
 				onClick="action-operation-order-method-cancel,save"
 				readonlyIf="statusSelect == 2 || statusSelect == 6"/>
@@ -59,7 +59,7 @@
 				readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
         <button name="start" icon="fa-play" onClick="save,action-operation-order-group-start" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
        	<button name="pause" icon="fa-pause" onClick="save,action-operation-order-method-pause,save" readonlyIf="statusSelect != 4"/>
-   		<button name="finish" icon="fa-power-off" onClick="save,action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
+   		<button name="finish" icon="fa-power-off" onClick="action-operation-order-group-finish" readonlyIf="statusSelect != 4"/>
    		<button name="cancel" icon="fa-times-circle"
 				onClick="save,action-operation-order-method-cancel,save"
 				readonlyIf="statusSelect == 2 || statusSelect == 6"/>
@@ -125,7 +125,7 @@
 			<button name="cancel" title="Cancel" icon="fa-times-circle"
 					showIf="statusSelect != 2 &amp;&amp; statusSelect != 6"
 					colSpan="12" onClick="save,action-operation-order-method-cancel,save"/>
-			<button name="finish" title="Finish" icon="fa-power-off"  showIf="statusSelect == 4" colSpan="12" onClick="save,action-operation-order-method-finish,action-operation-order-method-compute-duration,save"/>
+			<button name="finish" title="Finish" icon="fa-power-off"  showIf="statusSelect == 4" colSpan="12" onClick="save,action-operation-order-group-finish"/>
 			<button name="finishPart" icon="fa-power-off" title="Partial Finish" colSpan="12" showIf="statusSelect == 4" onClick="save, action-operation-order-method-part-finish"/>
 			<button name="pause" title="Pause" icon="fa-pause" showIf="statusSelect == 4" colSpan="12" onClick="save,action-operation-order-method-pause,save"/>
 			<button name="resume" title="Resume" icon="fa-step-forward" showIf="statusSelect == 5" colSpan="12" onClick="save,action-operation-order-method-resume,save"/>
@@ -164,6 +164,11 @@
     	<action name="action-operation-order-method-start"/>
         <action name="action-operation-order-method-compute-duration"/>
     </action-group>
+
+	<action-group name="action-operation-order-group-finish">
+		<action name="action-operation-order-method-finish"/>
+        <action name="action-operation-order-method-compute-duration"/>
+	</action-group>
     
     <action-method name="action-operation-order-method-pause">
     	<call class="com.axelor.apps.production.web.OperationOrderController" method="pause"/>

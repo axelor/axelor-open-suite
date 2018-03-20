@@ -41,7 +41,7 @@
             <field name="code"/>
             <field name="name"/>
             <field name="bomLevel"/>
-            <field name="costSheetGroup"/>
+            <field name="costSheetGroup.name" as="costSheetGroup"/>
             <field name="consumptionQty"/>
             <field name="unit"/>
             <field name="costPrice"/>
@@ -51,7 +51,7 @@
             <field name="code"/>
             <field name="name"/>
             <field name="bomLevel"/>
-            <field name="costSheetGroup"/>
+            <field name="costSheetGroup.name" as="costSheetGroup"/>
             <field name="consumptionQty"/>
             <field name="unit"/>
             <field name="costPrice"/>

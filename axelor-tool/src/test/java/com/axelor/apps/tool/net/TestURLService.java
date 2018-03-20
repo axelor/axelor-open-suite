@@ -20,6 +20,9 @@ package com.axelor.apps.tool.net;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.axelor.apps.tool.exception.IExceptionMessage;
+import com.axelor.i18n.I18n;
+
 
 public class TestURLService {
 	
@@ -27,8 +30,12 @@ public class TestURLService {
 	public void testNotExist() {
 		
 		Assert.assertNull(URLService.notExist("http://www.google.com"));
-		Assert.assertEquals("Problème de format de l'URL", URLService.notExist("www.google.com"));
-		Assert.assertEquals("Ce document n'existe pas", URLService.notExist("http://www.testtrgfgfdg.com/"));
+		
+		String url = "www.google.com";
+		Assert.assertEquals(String.format(I18n.get(IExceptionMessage.URL_SERVICE_2), url), URLService.notExist(url));
+		
+		url = "http://www.testtrgfgfdg.com/";
+		Assert.assertEquals(String.format(I18n.get(IExceptionMessage.URL_SERVICE_3), url), URLService.notExist(url));
 	}
 	
 }

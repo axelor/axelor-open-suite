@@ -57,7 +57,7 @@
     
     <action-attrs name="action-message-attribute-mail-account">
     	<attribute name="domain" for="mailAccount" expr="self.isValid IS TRUE"/>
-    	<attribute name="domain" for="mailAccount" expr="self.isValid IS TRUE AND self.user = :__user__" if="eval: __config__.app.getApp('base').getMailAccountByUser()"/>
+    	<attribute name="domain" for="mailAccount" expr="self.isValid IS TRUE AND self.user = :__user__" if="eval: __config__.app.getApp('base').getEmailAccountByUser()"/>
     </action-attrs>
 	
     <action-record model="com.axelor.apps.message.db.Message" name="action-message-record-active-company">

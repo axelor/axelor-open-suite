@@ -23,7 +23,8 @@
     <boolean name="isContact" title="Contact ?" default="false" />
     
     
-    <string name="languageSelect" title="Language" selection="select.language" massUpdate="true"/>
+    <many-to-one name="language" ref="com.axelor.apps.base.db.Language" title="Language" massUpdate="true"/>
+    
     <many-to-one name="parentPartner" ref="com.axelor.apps.base.db.Partner" title="Mother company" massUpdate="true" index="false"/>
     <one-to-many name="partnerAddressList" ref="com.axelor.apps.base.db.PartnerAddress" title="Addresses" mappedBy="partner"/>
     
@@ -80,6 +81,11 @@
 	<![CDATA[
 		public static final int PARTNER_TYPE_COMPANY = 1;
 		public static final int PARTNER_TYPE_INDIVIDUAL = 2;
+
+		public static final int PARTNER_TITLE_M = 1;
+		public static final int PARTNER_TITLE_MS = 2;
+		public static final int PARTNER_TITLE_DR = 3;
+		public static final int PARTNER_TITLE_PROF = 4;
 	]]>
 	</extra-code>
 	
