@@ -482,8 +482,12 @@
 "Electronic signature","Signature électronique",,
 "Email","Email",,
 "Email Page",,,
+<<<<<<< 3dcd952b02ed866fc57bdfb8bb862c68029fcdae
 "Email address","Adresse email",,
 "Email accounts",,,
+=======
+"Email address",,,
+>>>>>>> RM11187: StockMove UI improvements.
 "Emails",,,
 "Employee","Salarié",,
 "Employee List",,,
@@ -590,7 +594,11 @@
 "Gross weight","Poids brut",,
 "Group",,,
 "Groups",,,
+<<<<<<< 3dcd952b02ed866fc57bdfb8bb862c68029fcdae
 "Guests","Invités",,
+=======
+"Guests",,,
+>>>>>>> RM11187: StockMove UI improvements.
 "Height","Hauteur",,
 "Height(px)",,,
 "Hide Discount on prints?","Cacher remise sur impressions",,
@@ -844,7 +852,7 @@
 "Picklist QAS","Sélection QAS",,
 "Picture","Image",,
 "Please configure unit conversion from '%s' to '%s'.","Veuillez configurer les conversions d'unités de '%s' à '%s'.",,
-"Please configure units.","Veuillez configurer les unités.",,
+"Please configure weight units for this product packaging.","Veuillez configurer les unités de poids pour le packaging de ce produit",,
 "Please enter a tax version for the tax %s","Veuillez configurer une version de taxe pour la taxe %s",,
 "Please select active company","Veuillez sélectionner une société active.",,
 "Please select fields for export.",,,

@@ -617,17 +617,16 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
             stockMoveLine.setProductModel(product.getParentProduct());
         }
 
-        BigDecimal netWeight;
+        BigDecimal netWeight = null;
 
-        if (company != null && company.getStockConfig() != null
-                && company.getStockConfig().getCustomsWeightUnit() != null) {
-            Unit startUnit = product.getWeightUnit();
-            Unit endUnit = company.getStockConfig().getCustomsWeightUnit();
-            netWeight = Beans.get(UnitConversionService.class).convertWithProduct(startUnit, endUnit,
-                    product.getNetWeight(), product);
-        } else {
-            netWeight = BigDecimal.ZERO;
-        }
+
+		if (product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE) && company != null
+				&& company.getStockConfig() != null && company.getStockConfig().getCustomsWeightUnit() != null) {
+			Unit startUnit = product.getWeightUnit();
+			Unit endUnit = company.getStockConfig().getCustomsWeightUnit();
+			netWeight = Beans.get(UnitConversionService.class).convertWithProduct(startUnit, endUnit,
+					product.getNetWeight(), product);
+		}
 
         stockMoveLine.setNetWeight(netWeight);
     }
