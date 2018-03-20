@@ -43,7 +43,8 @@
 		<boolean name="activateSendingEmail" title="Activate sending email" default="true"/>
 
 		<boolean name="activateBarCodeGeneration" title="Activate bar code generation for products" default="false"/>
-
+		<boolean name="editProductBarcodeType" title="Edit product barcode type?" default="false"/>
+		<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
 		<boolean name="generateProductSequence" title="Generate sequence for products" default="false"/>
 		
 		<boolean name="generatePartnerSequence" title="Generate sequence for partners" default="true"/>

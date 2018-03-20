@@ -228,4 +228,17 @@ public interface IExceptionMessage {
 	 */
 	static final String ADVANCED_EXPORT_1 = /*$$(*/ "Please select fields for export." /*)*/;
 	static final String ADVANCED_EXPORT_2 = /*$$(*/ "There is no records to export." /*)*/;
+	
+		
+	/**
+	 * Barcode Generator Service
+	 */
+		
+	static final public String BARCODE_GENERATOR_1 =  /*$$(*/ "Invalid serial number '%s' for '%s' barcode type.It must be of %d digits only." /*)*/;
+	static final public String BARCODE_GENERATOR_2 =  /*$$(*/ "Invalid serial number '%s' for '%s' barcode type.It must be digits only with even number length." /*)*/;
+	static final public String BARCODE_GENERATOR_3 =  /*$$(*/ "Invalid serial number '%s' for '%s' barcode type.It must be digits only" /*)*/;
+	static final public String BARCODE_GENERATOR_4 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.Alphabets must be in uppercase only" /*)*/;
+	static final public String BARCODE_GENERATOR_5 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.Its length limit must be greater than %d and less than %d" /*)*/;
+	static final public String BARCODE_GENERATOR_6 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.It must be alphanumeric" /*)*/;
+	 
 }

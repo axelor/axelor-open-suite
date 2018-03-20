@@ -76,6 +76,16 @@
 		<view type="grid" name="keyword-grid"/>
 		<view type="form" name="keyword-form"/>
 	</action-view>
+	
+	<menuitem name="admin-root-general-barcode"
+		parent="admin-root-general" title="Barcode type configuration"
+		action="admin.root.general.barcode"/>
+
+	<action-view name="admin.root.general.barcode"
+		title="Barcode type configuration" model="com.axelor.apps.base.db.BarcodeTypeConfig" >
+		<view type="grid" name="barcodeTypeConfig-grid"/>
+		<view type="form" name="barcodeTypeConfig-form"/>
+	</action-view>
 
 	<menuitem name="referential-root" title="Referential" order="15" parent="admin-root"/>
 		
