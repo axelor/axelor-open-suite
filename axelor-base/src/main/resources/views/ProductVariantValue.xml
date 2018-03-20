@@ -6,7 +6,7 @@
     <grid name="product-variant-value-grid" title="Product variant values" model="com.axelor.apps.base.db.ProductVariantValue">
         <field name="name"/>
         <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        <field name="priceExtra"/>
+        <field name="priceExtra" x-scale="2"/>
         <field name="applicationPriceSelect"/>
     </grid>
     
@@ -14,7 +14,7 @@
     	<panel name="main" >
 	        <field name="name"/>
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
-	        <field name="priceExtra"/>
+	        <field name="priceExtra" x-scale="2"/>
 	        <field name="applicationPriceSelect"/>
         </panel>
     </form>   
