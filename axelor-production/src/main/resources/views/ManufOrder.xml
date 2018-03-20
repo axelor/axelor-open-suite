@@ -108,7 +108,7 @@
 			<panel name="dates" title="Dates" readonlyIf="statusSelect == 6">
 				<panel name="plannedDates" title="Planned dates">
 					<field name="plannedStartDateT" title="Start date" onChange="action-manuf-order-method-update-planned-dates"/>
-					<field name="plannedEndDateT" title="End date"/>
+					<field name="plannedEndDateT" title="End date" onChange="action-manuf-order-validate-planned-end-date"/>
 				</panel>
 				<panel name="realDates" title="Real dates" showIf="statusSelect &gt; 3">
 					<field name="realStartDateT" title="Start date"/>
@@ -341,6 +341,12 @@
 		<attribute name="domain" for="billOfMaterial" expr="eval: &quot; self.defineSubBillOfMaterial = true AND self.product.id = ${product?.id} &quot;" if="product != null"/>
 		<attribute name="domain" for="billOfMaterial" expr="eval: &quot; self.defineSubBillOfMaterial = true &quot;" if="product == null"/>
 	</action-attrs>
+
+	<action-validate name="action-manuf-order-validate-planned-end-date"
+	   model="com.axelor.apps.production.db.ManufOrder">
+	   <alert message="The planned end date is inferior to the actual date"
+	       if="plannedEndDateT.isBefore(__config__.app.getTodayDateTime().toLocalDateTime())"/>
+	</action-validate>
 
   	<search-filters name="manuf-order-filters" model="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order filters">
 		<filter title="Draft MOs">
