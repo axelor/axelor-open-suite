@@ -20,7 +20,6 @@ import com.axelor.apps.hr.db.EmployeeVehicle;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.HRConfig;
-import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
