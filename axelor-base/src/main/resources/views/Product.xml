@@ -92,7 +92,7 @@
 					<field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
 					<field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
 					<panel name="units" title="Units" colSpan="6">
-						<field name="unit" canEdit="false" colSpan="12" form-view="unit-form" grid-view="unit-grid" readonlyIf="productTypeSelect = 'storable'"/>
+						<field name="unit" canEdit="false" colSpan="12" form-view="unit-form" grid-view="unit-grid" readonlyIf="productTypeSelect == 'storable'"/>
 						<field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale').getManageSalesUnits()"/>
 						<field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('purchase').getManagePurchasesUnits()"/>
 					</panel>
