@@ -36,6 +36,7 @@ public interface ITranslation {
 	public static final String OPERATION_ORDER_DELAY_BTW_CYCLE = /*$$(*/ "OperationOrder.delayBtwCycle"; /*)*/
 	public static final String OPERATION_ORDER_OPERATION_DETAILS = /*$$(*/ "OperationOrder.operationDetails"; /*)*/
 	public static final String OPERATION_ORDER_PRODUCT_PREPARE = /*$$(*/ "OperationOrder.productToPrepare"; /*)*/
+	public static final String OPERATION_ORDER_PRODUCT_BARCODE = /*$$(*/ "OperationOrder.productBarcode"; /*)*/
 	public static final String OPERATION_ORDER_PRODUCT_NAME = /*$$(*/ "OperationOrder.productName"; /*)*/
 	public static final String OPERATION_ORDER_QTY = /*$$(*/ "OperationOrder.qty"; /*)*/
 	public static final String OPERATION_ORDER_TRACKING_NUMBER = /*$$(*/ "OperationOrder.trackingNumber"; /*)*/
@@ -61,6 +62,7 @@ public interface ITranslation {
 	public static final String MANUF_ORDER_PRODUCTS_TO_PREPARE = /*$$(*/ "ManufOrder.productsToPrepare"; /*)*/
 	public static final String MANUF_ORDER_PRODUCT_CODE = /*$$(*/ "ManufOrder.productCode"; /*)*/
 	public static final String MANUF_ORDER_PRODUCT_NAME = /*$$(*/ "ManufOrder.productName"; /*)*/
+	public static final String MANUF_ORDER_PRODUCT_BARCODE = /*$$(*/ "ManufOrder.productBarcode"; /*)*/
 	public static final String MANUF_ORDER_TRACKING_NUMBER = /*$$(*/ "ManufOrder.trackingNumber"; /*)*/
 	public static final String MANUF_ORDER_FROM = /*$$(*/ "ManufOrder.from"; /*)*/
 	public static final String MANUF_ORDER_TO = /*$$(*/ "ManufOrder.to"; /*)*/

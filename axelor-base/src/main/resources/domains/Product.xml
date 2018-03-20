@@ -9,7 +9,7 @@
 
 		<string name="name" title="Name" required="true" initParam="true"
 			translatable="true" />
-
+		<string name="serialNumber" title="Serial Nbr"/>
 		<string name="sequence" title="Product N°" readonly="true" />
 		<string name="code" title="Code" required="true" initParam="true" />
 		<string name="ean13" title="EAN13 Code" unique="true" />
@@ -98,7 +98,7 @@
 
 		<many-to-one name="barCode" title="Barcode"
 			ref="com.axelor.meta.db.MetaFile" />
-
+		<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
 		<string name="fullName" title="Full name" namecolumn="true" />
 
 

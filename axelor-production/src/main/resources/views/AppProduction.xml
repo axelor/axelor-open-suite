@@ -25,6 +25,9 @@
 				<field name="manageBusinessProduction" onChange="action-app-production-manage-business-production-record-onchange" title="Manage business production" if-module="axelor-business-production" widget="boolean-switch" />
 				<field name="enableTimesheetOnManufOrder" widget="boolean-switch" if-module="axelor-business-production" showIf="manageBusinessProduction" />
 			</panel>
+			<panel name="barcodeTypeConfig">
+				<field name="barcodeTypeConfig" title="Barcode Type"/>
+			</panel>
 			<panel name="costSheet" title="Cost sheet">
 			    <field name="productCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
   				<field name="workCenterCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>

@@ -442,4 +442,18 @@
         <option value="com.axelor.apps.stock.db.StockMove">Stock move</option>
 	</selection>
 
+ 	<selection name="base.barcode.select">
+        <option value="AZTEC">AZTEC</option>
+		<option value="CODABAR">CODABAR</option>
+		<option value="CODE_39">CODE_39</option>
+		<option value="CODE_128">CODE_128</option>
+		<option value="DATA_MATRIX">DATA_MATRIX</option>
+		<option value="EAN_8">EAN_8</option>
+		<option value="EAN_13">EAN_13</option>
+		<option value="ITF">ITF</option>
+		<option value="PDF_417">PDF_417</option>
+		<option value="QR_CODE">QR_CODE</option>
+		<option value="UPC_A">UPC_A</option>
+    </selection>
+    
 </object-views>
