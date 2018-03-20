@@ -73,7 +73,7 @@
 			<field name="followersCalUserSet" widget="TagSelect" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
 			<panel-related field="calendarManagementList" colSpan="12"/>
 			<field name="receiveEmails"/>
-			<field hideIf="receiveEmails == false" name="followedModelSet" widget="TagSelect" colSpan="12" canNew="false" form-view="meta-model-form" grid-view="meta-model-grid"/>
+			<field hideIf="receiveEmails == false" name="followedMetaModelSet" widget="TagSelect" colSpan="12" canNew="false" form-view="meta-model-form" grid-view="meta-model-grid"/>
 		</panel>
 	</form>
     

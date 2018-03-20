@@ -36,7 +36,7 @@
    	<boolean name="blocked" default="false" help="Specify whether to block the user for an indeterminate times." massUpdate="true"/>
     <string name="homeAction" massUpdate="true"/>
     <boolean name="receiveEmails" title="Receive notifications by email" help="Allow notifications to be sent by email" default="true"/>
-    <many-to-many name="followedModelSet" title="Entities you wish to follow by email" ref="com.axelor.meta.db.MetaModel"/>
+    <many-to-many name="followedMetaModelSet" title="Entities you wish to follow by email" ref="com.axelor.meta.db.MetaModel"/>
   </entity>
 
 </domain-models>
