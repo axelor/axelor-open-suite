@@ -307,8 +307,13 @@ public class OperationOrderWorkflowService {
 		Duration totalDuration = Duration.ZERO;
 
 		List<OperationOrderDuration> operationOrderDurations = operationOrder.getOperationOrderDurationList();
-		for (OperationOrderDuration operationOrderDuration : operationOrderDurations) {
-			totalDuration = totalDuration.plus(Duration.between(operationOrderDuration.getStartingDateTime(), operationOrderDuration.getStoppingDateTime()));
+		if (operationOrderDurations != null) {
+			for (OperationOrderDuration operationOrderDuration : operationOrderDurations) {
+			    if (operationOrderDuration.getStartingDateTime() != null
+						&& operationOrderDuration.getStoppingDateTime() != null) {
+					totalDuration = totalDuration.plus(Duration.between(operationOrderDuration.getStartingDateTime(), operationOrderDuration.getStoppingDateTime()));
+				}
+			}
 		}
 
 		return totalDuration;
