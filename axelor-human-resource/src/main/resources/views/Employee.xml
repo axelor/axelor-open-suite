@@ -174,9 +174,12 @@
 		<call class="com.axelor.apps.hr.web.EmployeeController" method="showAnnualReport"/>
 	</action-method>
 	
-	<search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee" title="Employee filters">
-		<field name="mainEmploymentContract.payCompany" title="Société de paie du contrat de travail principal"/>
-		<field name="mainEmploymentContract.executiveStatusSelect" title="Statut du contrat de travail principal"/>
-	</search-filters>
+    <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
+        title="Employee filters">
+        <field name="mainEmploymentContract.payCompany"
+            title="Pay company main employment contract"/>
+        <field name="mainEmploymentContract.executiveStatusSelect"
+            title="Main employment contract status"/>
+    </search-filters>
 	
 </object-views>
