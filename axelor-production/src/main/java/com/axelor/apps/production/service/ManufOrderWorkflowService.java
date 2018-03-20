@@ -153,7 +153,6 @@ public class ManufOrderWorkflowService {
 			}
 		}
 
-		manufOrderStockMoveService.finish(manufOrder);
 		//create cost sheet
 		CostSheet costSheet = Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
 
@@ -177,6 +176,7 @@ public class ManufOrderWorkflowService {
 			}
 		}
 
+		manufOrderStockMoveService.finish(manufOrder);
 		manufOrder.setRealEndDateT(Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
 		manufOrder.setStatusSelect(ManufOrderRepository.STATUS_FINISHED);
 		manufOrderRepo.save(manufOrder);
