@@ -7,9 +7,16 @@
 		<field name="name"/>
 	</grid>
 	
-	<form model="com.axelor.apps.helpdesk.db.TicketType" title="Ticket type" name="ticket-type-form">
-		<panel>
-			<field name="name"/>
-		</panel>
-	</form>
+    <form model="com.axelor.apps.helpdesk.db.TicketType" title="Ticket type"
+        name="ticket-type-form" width="large">
+        <panel>
+            <field name="name"/>
+            <field name="ticket" colSpan="12"/>
+        </panel>
+
+        <panel-dashlet
+            action="chart:chart.ticket.type.percentage.repartition.ticket.per.state"
+            colSpan="12"/>
+    </form>
+
 </object-views>

@@ -6,9 +6,12 @@
   <module name="helpdesk" package="com.axelor.apps.helpdesk.db"/>
 
   <entity name="TicketType">
-      
-		<string name="name" required="true" />
-		
+
+        <string name="name" required="true"/>
+
+        <one-to-many name="ticket" ref="com.axelor.apps.helpdesk.db.Ticket"
+            title="Ticket" mappedBy="ticketType"/>
+
   </entity>
-  
+
 </domain-models>
