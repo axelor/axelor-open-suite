@@ -13,6 +13,7 @@
     
     <form name="product-variant-value-form" title="Product variant value"
         model="com.axelor.apps.base.db.ProductVariantValue"
+        onNew="action-product-attrs-scale-and-precision"
         onLoad="action-product-attrs-scale-and-precision">
     	<panel name="main" >
 	        <field name="name"/>
