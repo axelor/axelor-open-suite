@@ -2,7 +2,7 @@
 
     Axelor Business Solutions
 
-    Copyright (C) 2012-2014 Axelor (<http://axelor.com>).
+    Copyright (C) 2012-2018 Axelor (<http://axelor.com>).
 
     This program is free software: you can redistribute it and/or  modify
     it under the terms of the GNU Affero General Public License, version 3,
@@ -35,6 +35,10 @@
 	    query = decodeURIComponent(query);
 	
 	    function loadGoogleMapAPIJS(key, callback) {
+			if (!key) {
+				throw 'Google Maps API key is missing.';
+			}
+
 	        var url = 'https://maps.googleapis.com/maps/api/js?v=3&key=' + key;
 	        var script = document.createElement('script');
 	        script.src = url;
@@ -80,9 +84,13 @@
 
 
 	    window.onload = function() {
-	        loadGoogleMapAPIJS(getQueryVariable('key'), function() {
-	        	initialize();
-	        });
+			try {
+				loadGoogleMapAPIJS(getQueryVariable('key'), function() {
+					initialize();
+				});
+			} catch (err) {
+				alert(err);
+			}
 	    }
     </script>
   </head>
