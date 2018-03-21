@@ -172,23 +172,28 @@ public class AppBaseController {
 	}
 
 	
-	public void showCustomersOnMap(ActionRequest request, ActionResponse response) throws AxelorException {
+    public void showCustomersOnMap(ActionRequest request, ActionResponse response) throws AxelorException {
+        try {
+            mapService.showMap("customer", I18n.get("Customers"), response);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
 
-		mapService.showMap("customer", I18n.get("Customers"), response);
-	
-	}
-		 	
-	public void showProspectsOnMap(ActionRequest request, ActionResponse response) throws AxelorException {
-		
-		mapService.showMap("prospect", I18n.get("Prospect"), response);
- 	
-	}
-		 	
- 	public void showSuppliersOnMap(ActionRequest request, ActionResponse response) throws AxelorException {
- 
- 		mapService.showMap("supplier", I18n.get("Supplier"), response);
- 	
- 	}
- 	
+    public void showProspectsOnMap(ActionRequest request, ActionResponse response) throws AxelorException {
+        try {
+            mapService.showMap("prospect", I18n.get("Prospect"), response);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
+
+    public void showSuppliersOnMap(ActionRequest request, ActionResponse response) throws AxelorException {
+        try {
+            mapService.showMap("supplier", I18n.get("Supplier"), response);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
 		 	
 }

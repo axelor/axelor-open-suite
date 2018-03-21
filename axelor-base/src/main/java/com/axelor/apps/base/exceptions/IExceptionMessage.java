@@ -242,5 +242,6 @@ public interface IExceptionMessage {
 	static final public String BARCODE_GENERATOR_6 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.It must be alphanumeric" /*)*/;
 
     public static final String MAP_RESPONSE_ERROR = /*$$(*/ "Response error from map API: %s" /*)*/;;
+    public static final String MAP_GOOGLE_MAPS_API_KEY_MISSING = /*$$(*/ "Google Maps API key is missing." /*)*/;;
 
 }

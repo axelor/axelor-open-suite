@@ -32,22 +32,23 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.hr.db.HRConfig;
-import com.axelor.apps.hr.service.config.HRConfigService;
 import org.apache.http.client.utils.URIBuilder;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Year;
+import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.KilometricAllowanceRate;
 import com.axelor.apps.hr.db.KilometricAllowanceRule;
 import com.axelor.apps.hr.db.KilometricLog;
 import com.axelor.apps.hr.db.repo.KilometricAllowanceRateRepository;
 import com.axelor.apps.hr.db.repo.KilometricLogRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -69,10 +70,10 @@ public class KilometricService {
 	private String googleMapsApiKey;
 
 	@Inject
-	public KilometricService(AppBaseService appBaseService, KilometricLogRepository kilometricLogRepo) {
+	public KilometricService(AppBaseService appBaseService, KilometricLogRepository kilometricLogRepo, MapService mapService) {
 		this.appBaseService = appBaseService;
 		this.kilometricLogRepo = kilometricLogRepo;
-		googleMapsApiKey = appBaseService.getAppBase().getGoogleMapApiKey();
+		googleMapsApiKey = mapService.getGoogleMapApiKey();
 	}
 
 	public KilometricLog getKilometricLog(Employee employee, LocalDate refDate) {
