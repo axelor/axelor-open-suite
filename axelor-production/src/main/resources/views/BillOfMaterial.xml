@@ -137,7 +137,7 @@
     </action-record>
     
     <action-record name="action-bill-of-material-record-count-number-of-components" model="com.axelor.apps.production.db.BillOfMaterial">
-  		<field name="$totalNumberOfComponents" expr="eval: billOfMaterialSet.size()"/>
+  		<field name="$numberOfComponents" expr="eval: billOfMaterialSet.size()"/>
 	</action-record>
     
     

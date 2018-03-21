@@ -29,6 +29,7 @@
 - Manage shipment mode, freight carrier mode, incoterm, carrier partner, forwarder partner on Partner, Sale order, Stock move.
 - Add validation date in Inventory
 - Remove teams app module.
+- Add the number of components on Bill of material form view.
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
