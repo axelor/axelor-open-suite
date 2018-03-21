@@ -240,5 +240,7 @@ public interface IExceptionMessage {
 	static final public String BARCODE_GENERATOR_4 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.Alphabets must be in uppercase only" /*)*/;
 	static final public String BARCODE_GENERATOR_5 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.Its length limit must be greater than %d and less than %d" /*)*/;
 	static final public String BARCODE_GENERATOR_6 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.It must be alphanumeric" /*)*/;
-	 
+
+    public static final String MAP_RESPONSE_ERROR = /*$$(*/ "Response error from map API: %s" /*)*/;;
+
 }
