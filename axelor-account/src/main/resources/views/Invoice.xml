@@ -1070,7 +1070,7 @@
 			OR self.relatedTo2SelectId = :relatedToSelectId
 				AND self.relatedTo2Select = :relatedToSelect
 		  </domain>
-		<context name="relatedToSelectId" expr="eval: id.intValue()"/>
+		<context name="relatedToSelectId" expr="eval: id"/>
 		<context name="relatedToSelect"
 			expr="eval: _model"/>
 	</action-view>
