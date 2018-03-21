@@ -118,7 +118,8 @@ public class CostSheetServiceImpl implements CostSheetService  {
 		this.computeRealResidualProduct(manufOrder);
 
 		this.computeCostPrice(costSheet);
-		manufOrder.setCostSheet(costSheet);
+		manufOrder.addCostSheetListItem(costSheet);
+		manufOrder.setCostPrice(costSheet.getCostPrice());
 		Beans.get(ManufOrderRepository.class).save(manufOrder);
 
 		return costSheet;

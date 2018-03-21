@@ -149,14 +149,10 @@
 					<field name="wasteProdDescription" showTitle="false" colSpan="12"/>
 				</panel>
 			</panel>
-			<panel name="cost" title="Cost" readonly="true" showIf="statusSelect == 6">
-				<field name="costSheet" form-view="cost-sheet-bill-of-material-form" grid-view="cost-sheet-bill-of-material-grid">
-					<editor>
-						<field name="createdOn"/>
-						<field name="costPrice"/>
-					</editor>
-				</field>
-				<panel-dashlet action="action-manuf-order-cost-sheet-line-view-tree" colSpan="12"  height="600"/>
+			<panel name="cost" title="Cost" showIf="statusSelect &gt; 3">
+                <button name="computeCostPrice" title="Compute cost price" onClick="save,action-manuf-order-method-compute-cost-price"/>
+                <field name="costPrice" readonly="true"/>
+                <field name="costSheetList" colSpan="12" readonly="true" form-view="cost-sheet-bill-of-material-form" grid-view="cost-sheet-bill-of-material-grid"/>
 			</panel>
 		</panel-tabs>
 	</form>
@@ -175,11 +171,6 @@
 		</panel>
 	</form>
 
-	<action-view name="action-manuf-order-cost-sheet-line-view-tree" title="Cost sheet line detail" model="com.axelor.apps.production.db.CostSheetLine">
-		<view type="tree" name="cost-sheet-line-tree"/>
-		<context name="_costSheetId" expr="eval: costSheet?.id ?: 0"/>
-	</action-view>
-	
 	<action-view name="action-manuf-order-update-planned-qty-popup-form-view" title="Update planned quantities (Components and FP)" model="com.axelor.apps.production.db.ManufOrder">
 		<view type="form" name="popup-manuf-order-form-update-planned-qty"/>
 		<view-param name="popup" value="reload"/>
@@ -208,10 +199,14 @@
 		<call class="com.axelor.apps.production.web.ManufOrderController" method="updateRealQty"/>
 	</action-method>
 
+	<action-method name="action-manuf-order-method-compute-cost-price">
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="computeCostPrice"/>
+	</action-method>
+
 	<action-method name="action-manuf-order-method-is-to-invoice">
 		<call class="com.axelor.apps.businessproduction.web.ManufOrderBusinessController" method="propagateIsToInvoice"/>
 	</action-method>
-    
+
     <action-record name="action-manuf-order-record-isConsProOnOperation" model="com.axelor.apps.production.db.ManufOrder">
     	<field name="isConsProOnOperation" expr="eval: prodProcess?.isConsProOnOperation"/>
     </action-record>

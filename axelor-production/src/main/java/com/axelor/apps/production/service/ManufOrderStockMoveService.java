@@ -216,7 +216,7 @@ public class ManufOrderStockMoveService {
 				.filter(stockMoveLine -> stockMoveLine.getProduct() != null
 						&& stockMoveLine.getProduct().getRealOrEstimatedPriceSelect()
 						== ProductRepository.PRICE_METHOD_REAL)
-                .forEach(stockMoveLine -> stockMoveLine.setUnitPriceUntaxed(manufOrder.getCostSheet().getCostPrice()));
+                .forEach(stockMoveLine -> stockMoveLine.setUnitPriceUntaxed(manufOrder.getCostPrice()));
 	}
 
 	public void finishStockMove(StockMove stockMove) throws AxelorException  {
@@ -282,9 +282,10 @@ public class ManufOrderStockMoveService {
 		    toStockLocation = getDefaultStockLocation(manufOrder, company);
 		}
 
-		//realize current stock move
+		//realize current stock move and update the price
 		Optional<StockMove> stockMoveToRealize = getPlannedStockMove(stockMoveList);
 		if (stockMoveToRealize.isPresent()) {
+			updateRealPrice(manufOrder, stockMoveToRealize.get());
 			finishStockMove(stockMoveToRealize.get());
 		}
 

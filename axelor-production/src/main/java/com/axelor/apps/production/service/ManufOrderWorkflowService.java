@@ -197,6 +197,7 @@ public class ManufOrderWorkflowService {
 				}
 			}
 		}
+		Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
         Beans.get(ManufOrderStockMoveService.class).partialFinish(manufOrder);
     }
 

@@ -22,6 +22,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.axelor.apps.production.service.CostSheetService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -333,6 +334,24 @@ public class ManufOrderController {
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
+	}
+
+	/**
+	 * Called from manuf order form, on clicking "compute cost price" button.
+     * Call {@link CostSheetService#computeCostPrice(ManufOrder)}.
+	 *
+	 * @param request
+	 * @param response
+	 */
+	public void computeCostPrice(ActionRequest request, ActionResponse response) {
+	    try {
+	        ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+	        manufOrder = manufOrderRepo.find(manufOrder.getId());
+	        Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
+	        response.setReload(true);
+	    } catch (Exception e) {
+	        TraceBackService.trace(response, e);
+	    }
 	}
 
 }
