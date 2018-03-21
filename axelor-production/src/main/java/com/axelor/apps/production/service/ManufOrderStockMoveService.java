@@ -36,6 +36,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -194,6 +195,13 @@ public class ManufOrderStockMoveService {
 
 
 	public void finish(ManufOrder manufOrder) throws AxelorException  {
+		//clear empty stock move
+		manufOrder.getInStockMoveList()
+				.removeIf(stockMove -> CollectionUtils.isEmpty(stockMove.getStockMoveLineList()));
+		manufOrder.getOutStockMoveList()
+				.removeIf(stockMove -> CollectionUtils.isEmpty(stockMove.getStockMoveLineList()));
+
+		//finish remaining stock move
 	    for (StockMove stockMove : manufOrder.getInStockMoveList()) {
 			this.finishStockMove(stockMove);
 		}
