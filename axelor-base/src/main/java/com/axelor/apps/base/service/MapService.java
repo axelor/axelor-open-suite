@@ -17,36 +17,41 @@
  */
 package com.axelor.apps.base.service;
 
-import groovy.util.XmlSlurper;
-import groovy.util.slurpersupport.GPathResult;
-import groovy.util.slurpersupport.Node;
-
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.rpc.ActionResponse;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Inject;
+
+import groovy.util.XmlSlurper;
+import groovy.util.slurpersupport.GPathResult;
+import groovy.util.slurpersupport.Node;
 import wslite.json.JSONArray;
 import wslite.json.JSONException;
 import wslite.json.JSONObject;
 import wslite.rest.ContentType;
 import wslite.rest.RESTClient;
 import wslite.rest.Response;
-
-import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.AppBase;
-import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.exception.service.TraceBackService;
-import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.rpc.ActionResponse;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Inject;
 
 
 public class MapService {
@@ -56,7 +61,7 @@ public class MapService {
 
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	public JSONObject geocodeGoogle(String qString) {
+	public JSONObject geocodeGoogle(String qString) throws AxelorException, JSONException {
 		if(qString == null){
 			return null;
 		}
@@ -67,6 +72,7 @@ public class MapService {
 		Map<String,Object> responseQuery = new HashMap<String,Object>();
 		responseQuery.put("address", qString.trim());
 		responseQuery.put("sensor", "false");
+        responseQuery.put("key", appBaseService.getAppBase().getGoogleMapApiKey());
 		Map<String,Object> responseMap = new HashMap<String,Object>();
 		responseMap.put("path", "/maps/api/geocode/json");
 		responseMap.put("accept", ContentType.JSON);
@@ -77,22 +83,23 @@ public class MapService {
 		responseMap.put("followRedirects", false);
 		responseMap.put("useCaches", false);
 		responseMap.put("sslTrustAllCerts", true);
-		JSONObject restResponse = null;
-		try {
-			restResponse = new JSONObject(restClient.get(responseMap).getContentAsString());
-			LOG.debug("Gmap response: {}",restResponse);
-			if(restResponse != null && restResponse.containsKey("results")){
-				JSONObject result = (JSONObject)((JSONArray)restResponse.get("results")).get(0);
-				if(result != null && result.containsKey("geometry"))
-					restResponse = (JSONObject)((JSONObject) result.get("geometry")).get("location");
-				else restResponse = null;
-			}
-			else restResponse = null;
 
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		JSONObject restResponse = getJSON(restClient.get(responseMap));
+        LOG.debug("Gmap response: {}", restResponse);
+		
+        if (restResponse.containsKey("results")) {
+            JSONArray results = (JSONArray) restResponse.get("results");
+            
+            if (CollectionUtils.isNotEmpty(results)) {
+                JSONObject result = (JSONObject) results.iterator().next();
+                
+                if (result != null && result.containsKey("geometry")) {
+                    return (JSONObject)((JSONObject) result.get("geometry")).get("location");
+                }
+            }
+        }
+
+        throw new AxelorException(appBaseService.getAppBase(), IException.NO_VALUE, I18n.get(IExceptionMessage.MAP_RESPONSE_ERROR), restResponse);
 
 		/*
 		log.debug("restResponse = {}", restResponse)
@@ -125,8 +132,6 @@ public class MapService {
 		}
 	*/
 	//}
-
-		return restResponse;
 	}
 
 	public HashMap<String,Object> getMapGoogle(String qString){
@@ -216,13 +221,13 @@ public class MapService {
 
 	public String getMapUrl(BigDecimal latitude, BigDecimal longitude){
 		if (appBaseService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_GOOGLE)
-			return "map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18";
+			return "map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18"+"&key="+appBaseService.getAppBase().getGoogleMapApiKey();
 		else
 			return "map/oneMarker.html?x="+latitude+"&y="+longitude+"&z=18";
 	}
 
 	public String getDirectionUrl(BigDecimal dLat, BigDecimal dLon, BigDecimal aLat, BigDecimal aLon){
-			return "map/directions.html?dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon;
+			return "map/directions.html?dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon+"&key="+appBaseService.getAppBase().getGoogleMapApiKey();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -297,38 +302,54 @@ public class MapService {
 
 		return addressString.toString();
 	}
-	
-	public boolean testGMapService(){
-		
-		RESTClient restClient = new RESTClient("https://maps.googleapis.com");
-		
-		Map<String,Object> responseQuery = new HashMap<String,Object>();
-		responseQuery.put("address", "google");
-		responseQuery.put("sensor", "false");
 
-		Map<String,Object> responseMap = new HashMap<String,Object>();
-		responseMap.put("path", "/maps/api/geocode/json");
-		responseMap.put("accept", ContentType.JSON);
-		responseMap.put("query", responseQuery);
+    public void testGMapService() throws AxelorException, JSONException {
+        RESTClient restClient = new RESTClient("https://maps.googleapis.com");
 
-		responseMap.put("connectTimeout", 5000);
-		responseMap.put("readTimeout", 10000);
-		responseMap.put("followRedirects", false);
-		responseMap.put("useCaches", false);
-		responseMap.put("sslTrustAllCerts", true);
-		
-		Response response = restClient.get(responseMap);
-		
-		LOG.debug("Gmap connection status code: {}, message: {}", response.getStatusCode(), response.getStatusMessage());
-		
-		if(response.getStatusCode() == 200){
-			return true;
-		}
-		
-		return false;
-	}
-	
-	public void showMap(String name, String title, ActionResponse response) {
+        Map<String, Object> responseQuery = new HashMap<>();
+        responseQuery.put("address", "google");
+        responseQuery.put("sensor", "false");
+        responseQuery.put("key", appBaseService.getAppBase().getGoogleMapApiKey());
+
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("path", "/maps/api/geocode/json");
+        responseMap.put("accept", ContentType.JSON);
+        responseMap.put("query", responseQuery);
+
+        responseMap.put("connectTimeout", 5000);
+        responseMap.put("readTimeout", 10000);
+        responseMap.put("followRedirects", false);
+        responseMap.put("useCaches", false);
+        responseMap.put("sslTrustAllCerts", true);
+
+        Response response = restClient.get(responseMap);
+        getJSON(response);
+    }
+
+    private JSONObject getJSON(Response response) throws AxelorException, JSONException {
+        LOG.debug("Gmap connection status code: {}, message: {}", response.getStatusCode(),
+                response.getStatusMessage());
+
+        AppBase appBase = appBaseService.getAppBase();
+
+        if (response.getStatusCode() != HttpStatus.SC_OK) {
+            String msg = String.format("%d: %s", response.getStatusCode(), response.getStatusMessage());
+            throw new AxelorException(appBase, IException.CONFIGURATION_ERROR, msg);
+        }
+
+        JSONObject json = new JSONObject(response.getContentAsString());
+        String status = json.getString("status");
+
+        if (!"OK".equalsIgnoreCase(status)) {
+            String msg = json.has("error_message") ? String.format("%s: %s", status, json.getString("error_message"))
+                    : status;
+            throw new AxelorException(appBase, IException.CONFIGURATION_ERROR, msg);
+        }
+        
+        return json;
+    }
+
+    public void showMap(String name, String title, ActionResponse response) {
 
  		AppBase appBase = appBaseService.getAppBase();
 		String googleMapApiKey = appBase.getGoogleMapApiKey();

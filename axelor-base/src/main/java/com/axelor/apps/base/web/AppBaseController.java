@@ -17,29 +17,30 @@
  */
 package com.axelor.apps.base.web;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
-import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.time.LocalDate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
-import com.axelor.app.AppSettings;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.ExportDbObjectService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
@@ -86,27 +87,21 @@ public class AppBaseController {
 					  .map());
 		}
 	}
-	
-	public void checkMapApi(ActionRequest request, ActionResponse response)  {
-		
-		AppBase appBase = request.getContext().asType(AppBase.class);;
-		
-		boolean connected = false;
-		
-		Integer apiType = appBase.getMapApiSelect();
-		
-		if(apiType == 1){
-			connected = mapService.testGMapService();
-		}
-		
-		if(connected){
-			response.setFlash(IExceptionMessage.GENERAL_6);
-		}
-		else{
-			response.setFlash(IExceptionMessage.GENERAL_7);
-		}
-	}
-	
+
+    public void checkMapApi(ActionRequest request, ActionResponse response) {
+        try {
+            AppBase appBase = request.getContext().asType(AppBase.class);
+            Integer apiType = appBase.getMapApiSelect();
+
+            if (apiType == 1) {
+                mapService.testGMapService();
+                response.setFlash(IExceptionMessage.GENERAL_6);
+            }
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
+
 	public void updateCurrencyConversion(ActionRequest request, ActionResponse response) throws AxelorException, MalformedURLException, JSONException {
 		 AppBase appBase = request.getContext().asType(AppBase.class);
 		 LocalDate today = appBaseService.getTodayDate();
