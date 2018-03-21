@@ -20,7 +20,11 @@
     query = decodeURIComponent(query);
 
     function loadGoogleMapAPIJS(key, callback) {
-        var url = 'https://maps.googleapis.com/maps/api/js?v=3&key=' + key;
+		if (!key) {
+			throw 'Google Maps API key is missing.';
+		}
+
+    	var url = 'https://maps.googleapis.com/maps/api/js?v=3&key=' + key;
         var script = document.createElement('script');
         script.src = url;
         script.onload = callback;
@@ -147,8 +151,12 @@
 
 
     window.onload = function() {
-        loadGoogleMapAPIJS(getQueryVariable('key'), function() {
-            loadMap();
-        });
+		try {
+	        loadGoogleMapAPIJS(getQueryVariable('key'), function() {
+	            loadMap();
+	        });
+		} catch (err) {
+			alert(err);
+		}
     }
 })();
