@@ -41,8 +41,6 @@ import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.rpc.ActionResponse;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
@@ -56,7 +54,6 @@ import wslite.json.JSONObject;
 import wslite.rest.ContentType;
 import wslite.rest.RESTClient;
 import wslite.rest.Response;
-
 
 public class MapService {
 
@@ -352,14 +349,6 @@ public class MapService {
         
         return json;
     }
-
-    @Deprecated
-    public void showMap(String name, String title, ActionResponse response) {
-		String mapUrl = "map/gmap-objs.html?key="+ getGoogleMapsApiKey()  +"&object=" + name;
-		response.setView(ActionView.define(title)
-				.add("html", mapUrl)
-				.map());
-	}
 
     public String getMapURI(String name) {
         final String uri = "map/gmap-objs.html";
