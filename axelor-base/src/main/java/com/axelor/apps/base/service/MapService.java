@@ -19,12 +19,14 @@ package com.axelor.apps.base.service;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +76,7 @@ public class MapService {
 		Map<String,Object> responseQuery = new HashMap<String,Object>();
 		responseQuery.put("address", qString.trim());
 		responseQuery.put("sensor", "false");
-        responseQuery.put("key", getGoogleMapApiKey());
+        responseQuery.put("key", getGoogleMapsApiKey());
 		Map<String,Object> responseMap = new HashMap<String,Object>();
 		responseMap.put("path", "/maps/api/geocode/json");
 		responseMap.put("accept", ContentType.JSON);
@@ -146,7 +148,7 @@ public class MapService {
 					BigDecimal latitude = new BigDecimal(googleResponse.get("lat").toString());
 					BigDecimal longitude = new BigDecimal(googleResponse.get("lng").toString());
 					LOG.debug("URL:"+"map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18");
-					result.put("url","map/gmaps.html?key=" + getGoogleMapApiKey()
+					result.put("url","map/gmaps.html?key=" + getGoogleMapsApiKey()
 							+  "&x="+latitude+"&y="+longitude+"&z=18");
 					result.put("latitude", latitude);
 					result.put("longitude",longitude);
@@ -223,13 +225,13 @@ public class MapService {
 
 	public String getMapUrl(BigDecimal latitude, BigDecimal longitude){
 		if (appBaseService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_GOOGLE)
-			return "map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18"+"&key="+getGoogleMapApiKey();
+			return "map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18"+"&key="+getGoogleMapsApiKey();
 		else
 			return "map/oneMarker.html?x="+latitude+"&y="+longitude+"&z=18";
 	}
 
 	public String getDirectionUrl(BigDecimal dLat, BigDecimal dLon, BigDecimal aLat, BigDecimal aLon){
-			return "map/directions.html?dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon+"&key="+getGoogleMapApiKey();
+			return "map/directions.html?dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon+"&key="+getGoogleMapsApiKey();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -256,7 +258,7 @@ public class MapService {
 			LOG.debug("arrivalLat = {}, arrivalLng={}", aLat,aLon);
 			if(BigDecimal.ZERO.compareTo(dLat) != 0  && BigDecimal.ZERO.compareTo(dLon) != 0){
 				if(BigDecimal.ZERO.compareTo(aLat) != 0 && BigDecimal.ZERO.compareTo(aLon) != 0){
-					result.put("url","map/directions.html?key=" + getGoogleMapApiKey()
+					result.put("url","map/directions.html?key=" + getGoogleMapsApiKey()
 							+ "&dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon);
 					result.put("aLat", aLat);
 					result.put("dLat", dLat);
@@ -311,7 +313,7 @@ public class MapService {
         Map<String, Object> responseQuery = new HashMap<>();
         responseQuery.put("address", "google");
         responseQuery.put("sensor", "false");
-        responseQuery.put("key", getGoogleMapApiKey());
+        responseQuery.put("key", getGoogleMapsApiKey());
 
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("path", "/maps/api/geocode/json");
@@ -351,17 +353,48 @@ public class MapService {
         return json;
     }
 
+    @Deprecated
     public void showMap(String name, String title, ActionResponse response) {
-		String mapUrl = "map/gmap-objs.html?key="+ getGoogleMapApiKey()  +"&object=" + name;
+		String mapUrl = "map/gmap-objs.html?key="+ getGoogleMapsApiKey()  +"&object=" + name;
 		response.setView(ActionView.define(title)
 				.add("html", mapUrl)
 				.map());
 	}
 
-    public String getGoogleMapApiKey() {
-        Preconditions.checkArgument(StringUtils.notBlank(appBaseService.getAppBase().getGoogleMapApiKey()),
+    public String getMapURI(String name) {
+        final String uri = "map/gmap-objs.html";
+
+        try {
+            URIBuilder ub = new URIBuilder(uri);
+            ub.addParameter("key", getGoogleMapsApiKey());
+            ub.addParameter("object", name);
+
+            return ub.toString();
+        } catch (Exception e) {
+            TraceBackService.trace(e);
+            return getErrorURI(e.getMessage());
+        }
+    }
+
+    private String getErrorURI(String msg) {
+        final String uri = "map/error.html";
+
+        try {
+            URIBuilder ub = new URIBuilder(uri);
+            ub.addParameter("msg", msg);
+
+            return ub.toString();
+        } catch (URISyntaxException e) {
+            TraceBackService.trace(e);
+        }
+
+        return uri;
+    }
+
+    public String getGoogleMapsApiKey() {
+        Preconditions.checkArgument(StringUtils.notBlank(appBaseService.getAppBase().getGoogleMapsApiKey()),
                 I18n.get(IExceptionMessage.MAP_GOOGLE_MAPS_API_KEY_MISSING));
-        return appBaseService.getAppBase().getGoogleMapApiKey();
+        return appBaseService.getAppBase().getGoogleMapsApiKey();
     }
 
 }

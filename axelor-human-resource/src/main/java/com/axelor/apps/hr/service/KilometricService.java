@@ -73,7 +73,7 @@ public class KilometricService {
 	public KilometricService(AppBaseService appBaseService, KilometricLogRepository kilometricLogRepo, MapService mapService) {
 		this.appBaseService = appBaseService;
 		this.kilometricLogRepo = kilometricLogRepo;
-		googleMapsApiKey = mapService.getGoogleMapApiKey();
+		googleMapsApiKey = mapService.getGoogleMapsApiKey();
 	}
 
 	public KilometricLog getKilometricLog(Employee employee, LocalDate refDate) {
