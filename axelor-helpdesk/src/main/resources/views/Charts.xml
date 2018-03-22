@@ -105,7 +105,7 @@
 		<series key="total_row" type="bar" title="Tickets"/>
 	</chart>
 	
-	<chart name="chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.team" title="Percentage of ticket per SLA &amp; per team">
+	<chart name="chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.team" title="Percentage of tickets per SLA &amp; per team">
 	  <search-fields>
 	    <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.Sla" x-required="true"/>
 	    <field name="team" title="Team" type="reference" target="com.axelor.team.db.Team" x-required="true"/>
@@ -160,7 +160,7 @@
 	  <config name="percent" value="true"/>
 	</chart>
 	
-	<chart name="chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.user" title="Percentage of ticket per SLA &amp; per user">
+	<chart name="chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.user" title="Percentage of tickets per SLA &amp; per user">
 	  <search-fields>
 	    <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.Sla" x-required="true"/>
 	    <field name="user" title="User" type="reference" target="com.axelor.auth.db.User" x-required="true"/>
@@ -207,7 +207,7 @@
 	  <config name="percent" value="true"/>
 	</chart>
 	
-	<chart name="chart.SLA.number.of.ticket.solved.not.solved.in.time.per.SLA.per.team" title="Number of ticket per SLA &amp; per team">
+	<chart name="chart.SLA.number.of.ticket.solved.not.solved.in.time.per.SLA.per.team" title="Number of tickets per SLA &amp; per team">
 	  <search-fields>
 	    <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.Sla" x-required="true"/>
 	    <field name="team" title="Team" type="reference" target="com.axelor.team.db.Team" x-required="true"/>
@@ -261,7 +261,7 @@
 	  <series key="_total" type="bar" title="Total tickets"/>
 	</chart>
 	
-	<chart name="chart.SLA.number.of.ticket.solved.not.solved.in.time.per.SLA.per.user" title="Number of ticket per SLA &amp; per user">
+	<chart name="chart.SLA.number.of.ticket.solved.not.solved.in.time.per.SLA.per.user" title="Number of tickets per SLA &amp; per user">
 	  <search-fields>
 	    <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.Sla" x-required="true"/>
 	    <field name="user" title="User" type="reference" target="com.axelor.auth.db.User" x-required="true"/>
@@ -314,7 +314,7 @@
 
 
     <chart name="chart.ticket.type.percentage.repartition.ticket.per.state"
-        title="Percentage of repartition ticket per state">
+        title="Percentage of repartition tickets per state">
         <dataset type="jpql">
         <![CDATA[
 	        SELECT COUNT(self.id) * 100. / (SELECT COUNT(self2.id) FROM Ticket self2 WHERE self2.ticketType = :id) AS _percentage,
