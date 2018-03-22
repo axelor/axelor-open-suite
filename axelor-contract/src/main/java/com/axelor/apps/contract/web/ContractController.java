@@ -88,7 +88,7 @@ public class ContractController {
 		}
 	}
 
-	public void invoicing(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void invoicing(ActionRequest request, ActionResponse response) {
 		try  {
 			Invoice invoice = contractService.invoicingContract(JPA.find(Contract.class, request.getContext().asType(Contract.class).getId()));
 			
@@ -111,42 +111,10 @@ public class ContractController {
 		}
 	}
 
-	public void terminated(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void terminated(ActionRequest request, ActionResponse response) {
 		Contract contract = JPA.find(Contract.class, request.getContext().asType(Contract.class).getId());
 		try  {
-			
-			if (contract.getTerminatedDate() == null){
-				response.setError("Please enter a terminated date for this version.");
-				return;
-			}
-			
-			DurationService durationService = Beans.get(DurationService.class);
-			
-			if ( contract.getCurrentVersion().getIsWithEngagement() ){
-				
-				if (contract.getEngagementStartDate() == null){
-					response.setError("Please enter a engagement date.");
-					return;
-				}
-					if (contract.getTerminatedDate().isBefore( durationService.computeDuration(contract.getCurrentVersion().getEngagementDuration(), contract.getEngagementStartDate() ) ) ){
-					response.setError("Engagement duration is not fullfilled.");
-					return;
-				}
-			}
-			
-			if (contract.getCurrentVersion().getIsWithPriorNotice()){
-				
-				if (contract.getEngagementStartDate() == null){
-					response.setError("Please enter a engagement date.");
-					return;
-				}
-				
-				if (contract.getTerminatedDate().isBefore( durationService.computeDuration(contract.getCurrentVersion().getPriorNoticeDuration(), getToDay()) ) ){
-					response.setError("Prior notice duration is not respected.");  
-					return;
-				}
-			}
-			
+		    contractService.checkCanTerminateContract(contract);
 			contractService.terminateContract( contract, true, getToDay());
 			response.setReload(true);
 		} catch(Exception e) {
@@ -155,7 +123,7 @@ public class ContractController {
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void renew(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void renew(ActionRequest request, ActionResponse response) {
 		try  {
 			Contract contract = JPA.find(Contract.class, request.getContext().asType(Contract.class).getId());
 			contractService.renewContract(contract, getToDay());

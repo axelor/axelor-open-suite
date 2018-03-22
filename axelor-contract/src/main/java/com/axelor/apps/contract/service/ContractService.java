@@ -34,7 +34,7 @@ public interface ContractService {
 	 * @param date
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void activeContract(Contract contract, LocalDate date);
+	void activeContract(Contract contract, LocalDate date);
 
 	/**
 	 * Waiting current version
@@ -43,7 +43,7 @@ public interface ContractService {
 	 * @param date
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void waitingCurrentVersion(Contract contract, LocalDate date);
+	void waitingCurrentVersion(Contract contract, LocalDate date);
 
 	/**
 	 * On going current version. It :
@@ -55,7 +55,7 @@ public interface ContractService {
 	 * @param date
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice ongoingCurrentVersion(Contract contract, LocalDate date) throws AxelorException;
+	Invoice ongoingCurrentVersion(Contract contract, LocalDate date) throws AxelorException;
 
 	/**
 	 * Waiting next version
@@ -64,7 +64,7 @@ public interface ContractService {
 	 * @param date
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void waitingNextVersion(Contract contract, LocalDate date);
+	void waitingNextVersion(Contract contract, LocalDate date);
 
 	/**
 	 * Active the next version. It :
@@ -76,7 +76,7 @@ public interface ContractService {
 	 * @param date
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void activeNextVersion(Contract contract, LocalDate date) throws AxelorException;
+	void activeNextVersion(Contract contract, LocalDate date) throws AxelorException;
 
 	/**
 	 * Archive the current version (moved to history) and move
@@ -86,7 +86,14 @@ public interface ContractService {
 	 * @param date
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void archiveVersion(Contract contract, LocalDate date);
+	void archiveVersion(Contract contract, LocalDate date);
+
+	/**
+	 * Check if can terminate the contract.
+	 * @param contract The contract to check.
+	 * @throws AxelorException Check condition failed.
+	 */
+	void checkCanTerminateContract(Contract contract) throws AxelorException;
 
 	/**
 	 * Terminate the contract
@@ -96,7 +103,7 @@ public interface ContractService {
 	 * @param date
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void terminateContract(Contract contract, Boolean isManual, LocalDate date) throws AxelorException;
+	void terminateContract(Contract contract, Boolean isManual, LocalDate date) throws AxelorException;
 
 	/**
 	 * Invoicing the contract
@@ -105,7 +112,7 @@ public interface ContractService {
 	 * @throws AxelorException 
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice invoicingContract(Contract contract) throws AxelorException;
+	Invoice invoicingContract(Contract contract) throws AxelorException;
 
 	/**
 	 * Renew a contract
@@ -114,7 +121,7 @@ public interface ContractService {
 	 * @param date
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void renewContract(Contract contract, LocalDate date) throws AxelorException;
+	void renewContract(Contract contract, LocalDate date) throws AxelorException;
 	
 	/**
 	 * Generate a new contract based on template
@@ -122,8 +129,5 @@ public interface ContractService {
 	 * @param template
 	 */
 	@Transactional
-	public Contract createContractFromTemplate(ContractTemplate template) ;
-	
-	
-
+	Contract createContractFromTemplate(ContractTemplate template) ;
 }

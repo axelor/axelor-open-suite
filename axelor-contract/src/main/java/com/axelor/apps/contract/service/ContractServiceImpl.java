@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
+import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.ConsumptionLine;
 import com.axelor.apps.contract.db.Contract;
@@ -40,10 +41,13 @@ import com.axelor.apps.contract.db.repo.ConsumptionLineRepository;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
+import com.axelor.apps.contract.exception.IExceptionMessage;
 import com.axelor.apps.contract.supplychain.service.InvoiceGeneratorContract;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.beust.jcommander.internal.Maps;
 import com.google.common.collect.HashMultimap;
@@ -53,14 +57,21 @@ import com.google.inject.persist.Transactional;
 
 public class ContractServiceImpl extends ContractRepository implements ContractService {
 
-	@Inject
+	protected ContractService contractService;
 	protected ContractVersionService versionService;
-	
-	@Inject
+	protected DurationService durationService;
 	protected ContractLineRepository contractLineRepo;
-	
-	@Inject
 	protected ConsumptionLineRepository consumptionLineRepo;
+
+	@Inject
+	public ContractServiceImpl(ContractService contractService, ContractVersionService versionService, DurationService durationService,
+							   ContractLineRepository contractLineRepo, ConsumptionLineRepository consumptionLineRepo) {
+        this.contractService = contractService;
+		this.versionService = versionService;
+		this.durationService = durationService;
+		this.contractLineRepo = contractLineRepo;
+		this.consumptionLineRepo = consumptionLineRepo;
+	}
 	
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -164,6 +175,37 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 		contract.setNextVersion(null);
 
 		save(contract);
+	}
+
+	@Override
+	public void checkCanTerminateContract(Contract contract) throws AxelorException {
+		if (contract.getTerminatedDate() == null){
+		    throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.CONTRACT_MISSING_TERMINATE_DATE));
+		}
+
+		if ( contract.getCurrentVersion().getIsWithEngagement() ){
+			if (contract.getEngagementStartDate() == null){
+			    throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.CONTRACT_MISSING_ENGAGEMENT_DATE));
+			}
+			if (contract.getTerminatedDate().isBefore(
+					durationService.computeDuration(contract.getCurrentVersion().getEngagementDuration(),contract.getEngagementStartDate())
+			)){
+				throw new AxelorException(IException.FUNCTIONNAL, I18n.get(IExceptionMessage.CONTRACT_ENGAGEMENT_DURATION_NOT_RESPECTED));
+			}
+		}
+
+		if (contract.getCurrentVersion().getIsWithPriorNotice()){
+
+			if (contract.getEngagementStartDate() == null){
+			    throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.CONTRACT_MISSING_ENGAGEMENT_DATE));
+			}
+
+			if (contract.getTerminatedDate().isBefore(
+					durationService.computeDuration(contract.getCurrentVersion().getPriorNoticeDuration(), Beans.get(AppBaseService.class).getTodayDate())
+			)){
+				throw new AxelorException(IException.FUNCTIONNAL, I18n.get(IExceptionMessage.CONTRACT_PRIOR_DURATION_NOT_RESPECTED));
+			}
+		}
 	}
 
 	@Override

@@ -121,7 +121,7 @@
                 <field name="terminatedDate"/>
                 <field name="terminatedBy" readonly="true" hideIf="!terminatedManually" colSpan="3"/>
                 <field name="terminatedManually" showIf="terminatedManually" colSpan="3"/>
-                <button name="terminatedBtn" title="Terminate" showIf="id &amp;&amp; statusSelect == 2" onClick="save,com.axelor.apps.contract.web.ContractController:terminated"/>
+                <button name="terminatedBtn" title="Terminate" showIf="id &amp;&amp; statusSelect == 2" onClick="save,action-contract-method-terminated"/>
             </panel>
             <panel if="__config__.app.getApp('contract').isConfigContract" title="Config.">
                 <panel if="__config__.app.getApp('contract').isInvoicingManagement" title="Invoicing" colSpan="12">
@@ -411,5 +411,9 @@
         <attribute for="partner" name="domain" expr="eval: &quot;self.isCustomer = true&quot;" if="targetType == 1"/>
         <attribute for="partner" name="domain" expr="eval: &quot;self.isSupplier = true&quot;" if="targetType == 2"/>
     </action-attrs>
+
+    <action-method name="action-contract-method-terminated">
+        <call class="com.axelor.apps.contract.web.ContractController" method="terminated"/>
+    </action-method>
 
 </object-views>
