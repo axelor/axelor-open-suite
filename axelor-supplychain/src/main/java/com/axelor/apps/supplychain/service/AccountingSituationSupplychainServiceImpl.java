@@ -30,7 +30,6 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -113,7 +112,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 			if (accountingSituation.getCompany().equals(saleOrder.getCompany())) {
 				// Update UsedCredit
 				accountingSituation = this.computeUsedCredit(accountingSituation);
-				if (saleOrder.getStatusSelect() == ISaleOrder.STATUS_DRAFT) {
+				if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT) {
 				    BigDecimal inTaxInvoicedAmount =
 							Beans.get(SaleOrderInvoiceService.class)
 									.getInTaxInvoicedAmount(saleOrder);
@@ -145,7 +144,8 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 		BigDecimal sum = BigDecimal.ZERO;
 		List<SaleOrder> saleOrderList = Beans.get(SaleOrderRepository.class)
 											 .all()
-											 .filter("self.company = ?1 AND self.clientPartner = ?2 AND self.statusSelect > ?3 AND self.statusSelect < ?4", accountingSituation.getCompany(), accountingSituation.getPartner(), ISaleOrder.STATUS_DRAFT, ISaleOrder.STATUS_CANCELED)
+											 .filter("self.company = ?1 AND self.clientPartner = ?2 AND self.statusSelect > ?3 AND self.statusSelect < ?4", 
+													 accountingSituation.getCompany(), accountingSituation.getPartner(), SaleOrderRepository.STATUS_DRAFT, SaleOrderRepository.STATUS_CANCELED)
 											 .fetch();
 		for (SaleOrder saleOrder : saleOrderList) {
 			sum = sum.add(saleOrder.getInTaxTotal()

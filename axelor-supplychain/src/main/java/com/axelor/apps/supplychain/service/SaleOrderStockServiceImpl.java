@@ -109,6 +109,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 					stockMove.setFullySpreadOverLogisticalFormsFlag(true);
 				}
 
+                stockMove.setEstimatedDate(saleOrder.getDeliveryDate());
 				stockMoveService.plan(stockMove);
 				return stockMove;
 			}
@@ -124,7 +125,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
 		StockMove stockMove = stockMoveService.createStockMove(null, saleOrder.getDeliveryAddress(), company,
 				saleOrder.getClientPartner(), saleOrder.getStockLocation(), toStockLocation, null, saleOrder.getShipmentDate(),
-				saleOrder.getDescription(), saleOrder.getShipmentMode(), saleOrder.getFreightCarrierMode());
+				saleOrder.getDescription(), saleOrder.getShipmentMode(), saleOrder.getFreightCarrierMode(), 
+				saleOrder.getCarrierPartner(), saleOrder.getForwarderPartner(), saleOrder.getIncoterm());
 
 		stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
 		stockMove.setSaleOrder(saleOrder);
@@ -217,7 +219,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 			if (stockMoveLine != null) {
 	            stockMoveLine.setSaleOrderLine(saleOrderLine);
 	            stockMoveLine.setReservedQty(saleOrderLine.getReservedQty());
-	            stockMove.addStockMoveLineListItem(stockMoveLine);
 			}
 
 			return stockMoveLine;
@@ -236,9 +237,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 			saleOrderLine.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
 			stockMoveLine.setSaleOrderLine(saleOrderLine);
 
-			if(stockMoveLine != null) {
-				stockMove.addStockMoveLineListItem(stockMoveLine);
-			}
 			return stockMoveLine;
 		}
 		return null;

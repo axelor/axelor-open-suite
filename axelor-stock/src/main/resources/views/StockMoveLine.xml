@@ -3,18 +3,39 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="stock-move-line-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
-        <field name="productName" required="true" />
-        <field name="product" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-product-domain" form-view="product-form" grid-view="product-grid"/>
-        <field name="productModel" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
-        <field name="qty" aggregate="sum" onChange="action-stock-move-line-group-qty-onchange" readonlyIf="$get('stockMove.statusSelect') == 2"/>
-        <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange" />
-		<field name="reservedQty" if-module="axelor-supplychain" onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"/>
-        <field name="unitPriceUntaxed" x-scale="2"/>
+    <grid name="stock-move-line-grid" title="Stock move lines"
+        model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
+        <field name="productName" required="true" width="200px"/>
+        <field name="product"
+            onChange="action-group-stock-stockmoveline-product-onchange"
+            onSelect="action-stock-move-line-product-domain"
+            form-view="product-form"
+            grid-view="product-grid"
+            width="250px"/>
+        <field name="productModel" domain="self.isModel = true"
+            form-view="product-form" grid-view="product-grid"
+            if="__config__.app.getApp('base').getManageProductVariants()"/>
+        <field name="qty" aggregate="sum"
+            onChange="action-stock-move-line-group-qty-onchange"
+            readonlyIf="$get('stockMove.statusSelect') == 2" width="100px"/>
+        <field name="realQty" aggregate="sum"
+            onChange="action-stock-move-line-group-real-qty-onchange"
+            width="100px"/>
+        <field name="reservedQty" if-module="axelor-supplychain"
+            onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty"
+            if="__config__.app.getApp('supplychain').getManageStockReservation()"
+            aggregate="sum"/>
+        <field name="unitPriceUntaxed" x-scale="2" width="120px"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
-        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="netWeight" onChange="action-stock-move-line-group-net-weight-onchange" />
-        <field name="trackingNumber" form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"
+            width="70px"/>
+        <field name="netWeight"
+            onChange="action-stock-move-line-group-net-weight-onchange"
+            width="100px"/>
+        <field name="trackingNumber"
+            form-view="tracking-number-stock-move-line-form"
+            grid-view="tracking-number-grid"
+            domain="self.product = :product"/>
         <field name="conformitySelect"/>
         <field name="stockMove.statusSelect" hidden="true"/>
     </grid>
@@ -33,9 +54,8 @@
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
     	    <field name="netWeight" onChange="action-stock-move-line-group-net-weight-onchange" />
 	        <field name="totalNetWeight" readonly="true" showIf="totalNetWeight"/>
-	        <field name="trackingNumber" canNew="true" onChange="action-stock-move-line-record-product" form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"/>
+	        <field name="trackingNumber" canNew="true" onChange="action-stock-move-line-record-product" form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 	        <field name="conformitySelect" onChange="action-stock-move-attrs-change-conformity"/>
-	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true AND self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('business-project')"  />
 	        <field name="description" colSpan="12" widget="html" />
         </panel>
     </form>
@@ -48,7 +68,7 @@
 		<field name="unitPriceUntaxed" x-scale="2"/>
 		<field name="unitPriceTaxed" x-scale="2" hidden="true"/>
 		<field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
-		<field name="trackingNumber" readonly="true" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
+		<field name="trackingNumber" readonly="true" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 		<field name="conformitySelect" readonly="true"/>
 	</grid>
     
@@ -62,7 +82,7 @@
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
+        <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
         <field name="conformitySelect"/>
     </grid>
     
@@ -78,7 +98,7 @@
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
+        <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
         <field name="stockMove.statusSelect"/>
     </grid>
 
@@ -94,7 +114,7 @@
 		<field name="unitPriceUntaxed" x-scale="2" />
 		<field name="unitPriceTaxed" hidden="true" />
 		<field name="unit" form-view="unit-form" grid-view="unit-grid" />
-		<field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" />
+		<field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 		<field name="stockMove.statusSelect" />
 	</grid>
 
@@ -120,14 +140,13 @@
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
             <field name="netWeight" readonly="true" showIf="netWeight != 0" onChange="action-stock-move-line-group-net-weight-onchange" />
 	        <field name="totalNetWeight" readonly="true" showIf="totalNetWeight != 0"/>
-	        <field name="trackingNumber" onChange="action-stock-move-line-record-product" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
+	        <field name="trackingNumber" onChange="action-stock-move-line-record-product" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 	        <field name="stockMove.statusSelect" hidden="true"/>
-	        <field name="businessProject" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" domain="self.isBusinessProject = true AND self.projectTypeSelect = 1" form-view="project-form" grid-view="project-grid"/>
 	        <field name="description" colSpan="12" widget="html" />
         </panel>
     </form>
 
-    <grid name="stock-move-line-consumed-production-grid" title="Stock move lines" groupBy="stockMove.statusSelect" model="com.axelor.apps.stock.db.StockMoveLine">
+    <grid name="stock-move-line-consumed-production-grid" title="Stock move lines" orderBy="stockMove.statusSelect" model="com.axelor.apps.stock.db.StockMoveLine">
 		<hilite if="$get('stockMove.statusSelect') == 3" background="success"/>
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="productModel" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
@@ -139,7 +158,7 @@
 		<field name="stockMove.statusSelect"/>
     </grid>
 
-    <grid name="stock-move-line-produced-production-grid" title="Stock move lines" groupBy="stockMove.statusSelect" model="com.axelor.apps.stock.db.StockMoveLine">
+    <grid name="stock-move-line-produced-production-grid" title="Stock move lines" orderBy="stockMove.statusSelect" model="com.axelor.apps.stock.db.StockMoveLine">
 		<hilite if="$get('stockMove.statusSelect') == 3" background="success"/>
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="productModel" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()"/>
@@ -147,7 +166,7 @@
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
+        <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 		<field name="stockMove.statusSelect"/>
     </grid>
     
@@ -161,8 +180,7 @@
 	        <field name="unitPriceUntaxed"/>
         	<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
-	        <field name="trackingNumber" onChange="action-stock-move-line-record-product" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
-	        <field name="businessProject" if-module="axelor-business-project" domain="self.businessProject = true AND self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('business-project')"  />
+	        <field name="trackingNumber" onChange="action-stock-move-line-record-product" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 	        <field name="stockMove" hidden="true"/>
 			<field name="stockMove.statusSelect" hidden="true"/>
         </panel>

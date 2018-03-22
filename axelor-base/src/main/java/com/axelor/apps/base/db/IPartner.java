@@ -24,6 +24,7 @@ import java.util.Map;
  * Interface of Partner object. Enum all static variable of object.
  * 
  */
+@Deprecated
 public interface IPartner {
 
 	/**

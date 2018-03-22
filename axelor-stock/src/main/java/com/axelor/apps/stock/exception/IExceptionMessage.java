@@ -41,6 +41,10 @@ public interface IExceptionMessage {
 	static final String INVENTORY_10 = /*$$(*/ "Inventory's lines' list has been filled." /*)*/;
 	static final String INVENTORY_11 = /*$$(*/ "No inventory lines has been created." /*)*/;
 	static final String INVENTORY_12 = /*$$(*/ "An error occurred while importing the file data, there are multiple products with code :" /*)*/;
+	static final String INVENTORY_3_LINE_LENGHT = /*$$(*/ "Line length too big" /*)*/;
+	static final String INVENTORY_3_REAL_QUANTITY = /*$$(*/ "Real quantity problem" /*)*/;
+	static final String INVENTORY_3_CURRENT_QUANTITY = /*$$(*/ "Current quantity problem" /*)*/;
+	static final String INVENTORY_3_DATA_NULL_OR_EMPTY = /*$$(*/ "Data is null or empty" /*)*/;
 
 	/**
 	 * Stock Location Line Service Impl
@@ -77,6 +81,11 @@ public interface IExceptionMessage {
 	static final String STOCK_MOVE_MISSING_TEMPLATE = /*$$(*/ "The template to send message on realization is missing." /*)*/;
 	static final String STOCK_MOVE_QTY_BY_TRACKING = /*$$(*/ "The tracking number configuration quantity is equal to zero, it must be at least one." /*)*/;
 	static final String STOCK_MOVE_TOO_MANY_ITERATION = /*$$(*/ "Too many iterations while trying to generate stock move line with tracking numbers." /*)*/;
+
+	/*
+	 * Stock Move printing
+	 */
+	String STOCK_MOVES_MISSING_PRINTING_SETTINGS  = /*$$(*/ "Please fill printing settings on following stock moves: %s" /*)*/;
 
 	/**
 	 * Tracking Number Service

@@ -258,8 +258,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				stockMoveLine.getStockMove(),
 				trackingNumber);
 
-		stockMoveLine.getStockMove().addStockMoveLineListItem(newStockMoveLine);
-
 		stockMoveLine.setQty(stockMoveLine.getQty().subtract(qty));
 		stockMoveLine.setRealQty(stockMoveLine.getRealQty().subtract(qty));
 
@@ -309,7 +307,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	@Override
 	public void updateAveragePriceLocationLine(StockLocation stockLocation, StockMoveLine stockMoveLine, int toStatus) {
 		StockLocationLine stockLocationLine = Beans.get(StockLocationLineService.class)
-				.getStockLocationLine(stockLocation, stockMoveLine.getProduct());
+				.getOrCreateStockLocationLine(stockLocation, stockMoveLine.getProduct());
 		if (toStatus == StockMoveRepository.STATUS_REALIZED) {
 			this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
 		}
@@ -392,7 +390,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				try {
 					checkConformitySelection(stockMoveLine, stockMove);
 				}
-				catch (AxelorException e) {
+				catch (Exception e) {
 				    productsWithErrors.add(product.getName());
 				}
 			}
@@ -598,15 +596,10 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
         return stockMoveLine.getRealQty().subtract(qtySpreadOverLogisticalMoveLines);
     }
 
-    @Override
-    public void setProductInfo(StockMoveLine stockMoveLine) throws AxelorException {
-        setProductInfo(stockMoveLine, stockMoveLine.getStockMove());
-    }
-
-    @Override
-    public void setProductInfo(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException {
+	@Override
+    public void setProductInfo(StockMoveLine stockMoveLine, Company company) throws AxelorException {
         Preconditions.checkNotNull(stockMoveLine);
-        Preconditions.checkNotNull(stockMove);
+        Preconditions.checkNotNull(company);
         Product product = stockMoveLine.getProduct();
 
         if (product == null) {
@@ -620,7 +613,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
             stockMoveLine.setProductModel(product.getParentProduct());
         }
 
-        Company company = stockMove.getCompany();
         BigDecimal netWeight;
 
         if (company != null && company.getStockConfig() != null

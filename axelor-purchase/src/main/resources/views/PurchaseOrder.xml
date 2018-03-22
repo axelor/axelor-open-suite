@@ -74,7 +74,7 @@
 			  <item title="Send email" action="save,action-send-by-email-with-template" hideIf="supplierPartner == null"/>
 <!-- 			  <item title="New version" showIf="statusSelect == 2" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()" action="save,action-purchase-record-newVersion,save"/> -->
 			  <item title="New version" showIf="statusSelect == 2" action="save,action-purchase-record-newVersion,save" hideIf="supplierPartner == null"/>
-			  <item title="Generate control invoice" showIf="statusSelect == 3" action="save,action-purchase-order-method-generate-control-invoice" hideIf="supplierPartner == null" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSupplierOrder()"/>
+			  <item title="Generate control invoice" showIf="statusSelect == 3" action="save,action-purchase-order-method-generate-control-invoice" hideIf="supplierPartner == null" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').generateInvoiceFromPurchaseOrder"/>
 			  <item title="Cancel receipt" showIf="statusSelect &gt;= 3" action="save,action-purchase-order-method-cancel-receipt" hideIf="supplierPartner == null"/>
 			</menu>
 		</menubar>
@@ -98,7 +98,7 @@
 			<field name="versionNumber"
 				if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
 			<field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement"
-				   readonlyIf="statusSelect >= 3 || supplierPartner != null" domain=":company MEMBER OF self.companySet" onChange="action-purchase-order-method-filter-printing-settings"/>
+				   readonlyIf="statusSelect >= 3 || supplierPartner != null" domain=":company MEMBER OF self.companySet" onChange="action-purchase-order-method-printing-settings-default-value"/>
 			<field name="companyBankDetails" widget="SuggestBox"
 					onSelect="action-invoice-attrs-domain-company-bank-details"
 					form-view="bank-details-form" grid-view="bank-details-grid"
@@ -148,7 +148,7 @@
 				<field name="priceRequest" hideIf="priceDisplay" colSpan="12" x-height="5"/>
 			</panel>
 			<panel name="printing" title="Printing">
-				<field name="printingSettings" required="true" canEdit="false"/>
+				<field name="printingSettings" onSelect="action-purchase-order-method-filter-printing-settings" canEdit="false"/>
 			</panel>
 			<panel name="invoicing" title="Invoicing" hideIf="statusSelect &lt; 3">
 				<field if="__config__.app.isApp('invoice')" if-module="axelor-account" name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>
@@ -167,7 +167,7 @@
 			<button name="validate" title="Validate" showIf="statusSelect == 2"   onClick="action-group-purchase-order-on-validate-actions"/>
 			<button name="completed" title="Completed" showIf="statusSelect == 3"   onClick="action-purchase-order-record-completed,save"/>
 			<button name="showInvoice" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
-			<button name="generateSupplierStockMove" title="Generate supplier arrival" showIf="statusSelect == 3 || statusSelect == 4" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getSupplStockMoveMgtOnSO() &amp;&amp; !__config__.app.getApp('supplychain').getSupplierStockMoveGenerationAuto()" onClick="action-purchase-order-create-stock-move" if-module="axelor-supplychain" />
+			<button name="generateSupplierStockMove" title="Generate supplier arrival" showIf="statusSelect == 3 || statusSelect == 4" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getSupplStockMoveMgtOnSO() &amp;&amp; !__config__.app.getApp('supplychain').getSupplierStockMoveGenerationAuto()" onClick="save, action-purchase-order-create-stock-move" if-module="axelor-supplychain" />
 			<spacer/>
 			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2"   onClick="save,action-purchase-order-record-cancel"/>
 		</panel>
@@ -349,7 +349,6 @@
     </action-group>
 
     <action-group name="action-group-purchase-order-on-load-actions">
-		<action name="action-purchase-order-method-filter-printing-settings"/>
 		<action name="action-purchase-order-attrs-hide-contact-partner"/>
 		<action name="action-purchase-order-attrs-in-ati"/>
 		<action name="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable"/>
@@ -615,6 +614,10 @@
 
 	<action-method name="action-purchase-order-method-filter-printing-settings">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="filterPrintingSettings"/>
+	</action-method>
+
+	<action-method name="action-purchase-order-method-printing-settings-default-value">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="fillDefaultPrintingSettings"/>
 	</action-method>
 
 </object-views>

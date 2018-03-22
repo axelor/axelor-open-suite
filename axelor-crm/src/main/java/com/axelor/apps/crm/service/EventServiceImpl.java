@@ -17,64 +17,41 @@
  */
 package com.axelor.apps.crm.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.mail.MessagingException;
-
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.crm.db.CrmConfig;
 import com.axelor.apps.crm.db.Event;
-import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.RecurrenceConfigurationRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
-import com.axelor.apps.crm.service.config.CrmConfigService;
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.EmailAccountRepository;
-import com.axelor.apps.message.db.repo.EmailAddressRepository;
-import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.User;
-import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.mail.db.MailAddress;
+import com.axelor.mail.db.MailFollower;
 import com.axelor.mail.db.repo.MailAddressRepository;
 import com.axelor.mail.db.repo.MailFollowerRepository;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
-import net.fortuna.ical4j.model.ValidationException;
 
 public class EventServiceImpl implements EventService {
 	
@@ -82,31 +59,17 @@ public class EventServiceImpl implements EventService {
 	
 	private static final DateTimeFormatter MONTH_FORMAT = DateTimeFormatter.ofPattern("dd/MM");
 
-	private EventAttendeeService eventAttendeeService;
-
 	private PartnerService partnerService;
 	
 	private EventRepository eventRepo;
 	
-	private MailFollowerRepository mailFollowerRepo;
-	
-	private ICalendarService icalService;
-
-	private MessageService messageService;
-
-	private TemplateMessageService templateMessageService;
 
 	@Inject
 	public EventServiceImpl(EventAttendeeService eventAttendeeService, PartnerService partnerService, EventRepository eventRepository,
 							MailFollowerRepository mailFollowerRepo, ICalendarService iCalendarService, MessageService messageService,
 							TemplateMessageService templateMessageService) {
-		this.eventAttendeeService = eventAttendeeService;
 		this.partnerService = partnerService;
 		this.eventRepo = eventRepository;
-		this.mailFollowerRepo = mailFollowerRepo;
-		this.icalService = iCalendarService;
-		this.messageService = messageService;
-		this.templateMessageService = templateMessageService;
 	}
 
 	@Override
@@ -135,13 +98,6 @@ public class EventServiceImpl implements EventService {
 		eventRepo.save(event);
 	}
 
-
-	@Override
-	@Transactional
-	public void addLeadAttendee(Event event, Lead lead, Partner contactPartner)  {
-		event.addEventAttendeeListItem(eventAttendeeService.createEventAttendee(event, lead, contactPartner));
-		eventRepo.save(event);
-	}
 
 	@Override
 	public Event createEvent(LocalDateTime fromDateTime, LocalDateTime toDateTime, User user, String description, int type, String subject){
@@ -175,8 +131,16 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void manageFollowers(Event event){
+		MailFollowerRepository mailFollowerRepo = Beans.get(MailFollowerRepository.class);
+		List<MailFollower> followers = mailFollowerRepo.findAll(event);
 		List<ICalendarUser> attendeesSet = event.getAttendees();
+
+		if(followers != null)
+			followers.forEach(x -> mailFollowerRepo.remove(x));
+		mailFollowerRepo.follow(event, event.getUser());
+
 		if(attendeesSet != null){
 			for (ICalendarUser user : attendeesSet) {
 				if(user.getUser() != null){
@@ -186,200 +150,10 @@ public class EventServiceImpl implements EventService {
 					MailAddress mailAddress = Beans.get(MailAddressRepository.class).findOrCreate(user.getEmail(), user.getName());
 					mailFollowerRepo.follow(event, mailAddress);
 				}
-				
 			}
 		}
 	}
 
-	@Override
-	public Event checkModifications(Event event, Event previousEvent) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, MessagingException{
-		Set<User> previousUserSet = previousEvent.getInternalGuestSet();
-		Set<User> userSet = event.getInternalGuestSet();
-		Set<Partner> previousContactSet = previousEvent.getExternalGuestSet();
-		Set<Partner> contactSet = previousEvent.getExternalGuestSet();
-
-		List<User> deletedUsers = this.deletedGuests(previousUserSet, userSet);
-		List<User> addedUsers = this.addedGuests(previousUserSet, userSet);
-
-		List<Partner> deletedContacts = this.deletedGuests(previousContactSet, contactSet);
-		List<Partner> addedContacts = this.addedGuests(previousContactSet, contactSet);
-
-		Template deletedGuestsTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingGuestDeletedTemplate();
-		Template addedGuestsTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingGuestAddedTemplate();
-		Template changedDateTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingDateChangeTemplate();
-
-		if(deletedGuestsTemplate == null || addedGuestsTemplate == null || changedDateTemplate == null){
-			throw new AxelorException(event, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CRM_CONFIG_TEMPLATES), event.getUser().getActiveCompany());
-		}
-
-		List<EmailAddress> emailAddresses = new ArrayList<>();
-
-		if(!event.getEndDateTime().isEqual(previousEvent.getEndDateTime())){
-			contactSet.forEach(p -> emailAddresses.add(p.getEmailAddress()));
-			userSet.forEach(u -> emailAddresses.add(u.getPartner().getEmailAddress()));
-
-			Message message = templateMessageService.generateMessage(event, changedDateTemplate);
-			if(message.getFromEmailAddress() == null){
-				message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
-			}
-			message.addToEmailAddressSetItem(event.getUser().getPartner().getEmailAddress());
-			messageService.sendByEmail(message);
-		}
-
-		addedContacts.forEach(p -> emailAddresses.add(p.getEmailAddress()));
-		deletedContacts.forEach(p -> emailAddresses.add(p.getEmailAddress()));
-		addedUsers.forEach(u -> emailAddresses.add(u.getPartner().getEmailAddress()));
-		deletedUsers.forEach(u -> emailAddresses.add(u.getPartner().getEmailAddress()));
-
-		for (EmailAddress emailAddress: emailAddresses) {
-			Message message = templateMessageService.generateMessage(event, addedGuestsTemplate);
-			if(message.getFromEmailAddress() == null){
-				message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
-			}
-			message.addToEmailAddressSetItem(emailAddress);
-			messageService.sendByEmail(message);
-		}
-
-		return event;
-	}
-
-	@Override
-	public <T> List<T> deletedGuests (Set<T> previousSet, Set<T> set){
-		List<T> deletedList = new ArrayList<T>();
-		if(previousSet != null){
-			for (T object : previousSet) {
-				if(set == null || set.isEmpty() || !set.contains(object)){
-					deletedList.add(object);
-				}
-			}
-		}
-		return deletedList;
-	}
-
-	@Override
-	public <T> List<T> addedGuests (Set<T> previousSet, Set<T> set){
-		List<T> addedList = new ArrayList<T>();
-		if(set != null){
-			for (T object : set) {
-				if(previousSet == null || previousSet.isEmpty() || !previousSet.contains(object)){
-					addedList.add(object);
-				}
-			}
-		}
-		return addedList;
-	}
-
-	@Override
-	public void sendMails(Event event) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, MessagingException{
-		Template guestAddedTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingGuestAddedTemplate();
-		if (guestAddedTemplate == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CRM_CONFIG_TEMPLATES), event.getUser().getActiveCompany());
-		}
-		if(event.getExternalGuestSet() != null){
-			for (Partner partner : event.getExternalGuestSet()) {
-				Message message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate);
-				if(message.getFromEmailAddress() == null){
-					message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
-				}
-				message.addToEmailAddressSetItem(partner.getEmailAddress());
-				message = Beans.get(MessageService.class).sendByEmail(message);
-			}
-		}
-		if(event.getInternalGuestSet() != null){
-			for (User user : event.getInternalGuestSet()) {
-				Message message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate);
-				if(message.getFromEmailAddress() == null){
-					message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
-				}
-				message.addToEmailAddressSetItem(user.getPartner().getEmailAddress());
-				message = Beans.get(MessageService.class).sendByEmail(message);
-			}
-		}
-
-		Message message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate);
-		if(message.getFromEmailAddress() == null){
-			message.setFromEmailAddress(event.getUser().getPartner().getEmailAddress());
-		}
-		message.addToEmailAddressSetItem(event.getUser().getPartner().getEmailAddress());
-		message = Beans.get(MessageService.class).sendByEmail(message);
-	}
-
-
-
-	@Override
-	@Transactional
-	public void addEmailGuest(EmailAddress email, Event event) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
-		if(event.getAttendees() != null && email != null){
-			boolean exist = false;
-			for (ICalendarUser attendee : event.getAttendees()) {
-				if(email.getAddress().equals(attendee.getEmail())){
-					exist = true;
-					break;
-				}
-			}
-			if(!exist){
-				ICalendarUser calUser = new ICalendarUser();
-				calUser.setEmail(email.getAddress());
-				calUser.setName(email.getName());
-				if(email.getPartner() != null && email.getPartner().getUser() != null){
-					calUser.setUser(email.getPartner().getUser());
-				}
-				event.addAttendee(calUser);
-				eventRepo.save(event);
-			}
-		}
-	}
-
-	@Override
-	@Transactional
-	public void sendMail(Event event, String email) throws AxelorException, MessagingException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, ValidationException, ParseException, ICalendarException{
- 
-		
-		EmailAddress emailAddress = Beans.get(EmailAddressRepository.class).all().filter("self.address = ?1", email).fetchOne();
-		User user = Beans.get(UserRepository.class).all().filter("self.partner.emailAddress.address = ?1", email).fetchOne();
-		CrmConfig crmConfig = Beans.get(CrmConfigService.class).getCrmConfig(user.getActiveCompany());
-		
-		
-		if(crmConfig.getSendMail() == true) {
-			if(emailAddress == null){
-				emailAddress = new EmailAddress(email);
-			}
-			
-			Template guestAddedTemplate = crmConfig.getMeetingGuestAddedTemplate();
-			Message message = new Message();
-			if(guestAddedTemplate == null){
-				
-				if(message.getFromEmailAddress() == null){
-					message.setFromEmailAddress(user.getPartner().getEmailAddress());
-				}
-				message.addToEmailAddressSetItem(emailAddress);
-				message.setSubject(event.getSubject());
-				message.setMailAccount(Beans.get(MailAccountService.class).getDefaultMailAccount(EmailAccountRepository.SERVER_TYPE_SMTP));
-			}
-			else{
-				message = Beans.get(TemplateMessageService.class).generateMessage(event, guestAddedTemplate);
-				if(message.getFromEmailAddress() == null){
-					message.setFromEmailAddress(user.getPartner().getEmailAddress());
-				}
-				message.addToEmailAddressSetItem(emailAddress);	
-			}
-			if(event.getUid() != null){
-				File file = MetaFiles.createTempFile("Calendar", ".ics").toFile();
-				icalService.export(event.getCalendar(), file);
-				Path filePath = file.toPath();
-				MetaFile metaFile = new MetaFile();
-				metaFile.setFileName( file.getName() );
-				metaFile.setFileType( Files.probeContentType( filePath ) );
-				metaFile.setFileSize( Files.size( filePath ) );
-				metaFile.setFilePath( file.getName() );
-				Set<MetaFile> fileSet = new HashSet<MetaFile>();
-				fileSet.add(metaFile);
-				Beans.get(MessageRepository.class).save(message);
-				Beans.get(MessageService.class).attachMetaFiles(message, fileSet);
-			}
-			message = Beans.get(MessageService.class).sendByEmail(message);
-		}
-	}
 
 	@Override
 	@Transactional
@@ -841,5 +615,102 @@ public class EventServiceImpl implements EventService {
 			break;
 		}
 		return recurrName;
+	}
+
+	@Override
+	public void generateRecurrentEvents(Event event, RecurrenceConfiguration conf) throws AxelorException {
+		if(conf.getRecurrenceType() == null){
+			throw new AxelorException(IException.CONFIGURATION_ERROR, IExceptionMessage.RECURRENCE_RECURRENCE_TYPE);
+		}
+
+		int recurrenceType = new Integer(conf.getRecurrenceType().toString());
+
+		if(conf.getPeriodicity() == null){
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_PERIODICITY));
+		}
+
+		int periodicity = new Integer(conf.getPeriodicity().toString());
+
+		if(periodicity < 1){
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_PERIODICITY));
+		}
+
+		boolean monday = (boolean) conf.getMonday();
+		boolean tuesday = (boolean) conf.getTuesday();
+		boolean wednesday = (boolean) conf.getWednesday();
+		boolean thursday = (boolean) conf.getThursday();
+		boolean friday = (boolean) conf.getFriday();
+		boolean saturday = (boolean) conf.getSaturday();
+		boolean sunday = (boolean) conf.getSunday();
+		Map<Integer,Boolean> daysMap = new HashMap<Integer,Boolean>();
+		Map<Integer,Boolean> daysCheckedMap = new HashMap<Integer,Boolean>();
+		if(recurrenceType == RecurrenceConfigurationRepository.TYPE_WEEK){
+			daysMap.put(DayOfWeek.MONDAY.getValue(), monday);
+			daysMap.put(DayOfWeek.TUESDAY.getValue(), tuesday);
+			daysMap.put(DayOfWeek.WEDNESDAY.getValue(), wednesday);
+			daysMap.put(DayOfWeek.THURSDAY.getValue(), thursday);
+			daysMap.put(DayOfWeek.FRIDAY.getValue(), friday);
+			daysMap.put(DayOfWeek.SATURDAY.getValue(), saturday);
+			daysMap.put(DayOfWeek.SUNDAY.getValue(), sunday);
+
+			for (Integer day : daysMap.keySet()) {
+				if(daysMap.get(day)){
+					daysCheckedMap.put(day, daysMap.get(day));
+				}
+			}
+			if(daysMap.isEmpty()){
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_DAYS_CHECKED));
+			}
+		}
+
+		int monthRepeatType = new Integer(conf.getMonthRepeatType().toString());
+
+		int endType = new Integer(conf.getEndType().toString());
+
+		int repetitionsNumber = 0;
+
+		if(endType == RecurrenceConfigurationRepository.END_TYPE_REPET ){
+			if(conf.getRepetitionsNumber() == null){
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_REPETITION_NUMBER));
+			}
+
+			repetitionsNumber = new Integer(conf.getRepetitionsNumber().toString());
+
+			if(repetitionsNumber < 1){
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_REPETITION_NUMBER));
+			}
+		}
+		LocalDate endDate = LocalDate.now();
+		if(endType == RecurrenceConfigurationRepository.END_TYPE_DATE){
+			if(conf.getEndDate() == null){
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_END_DATE));
+			}
+
+			endDate = LocalDate.parse(conf.getEndDate().toString(), DateTimeFormatter.ISO_DATE);
+
+			if(endDate.isBefore(event.getStartDateTime().toLocalDate()) && endDate.isEqual(event.getStartDateTime().toLocalDate())){
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_END_DATE));
+			}
+		}
+		switch (recurrenceType) {
+		case RecurrenceConfigurationRepository.TYPE_DAY:
+			addRecurrentEventsByDays(event, periodicity, endType, repetitionsNumber, endDate);
+			break;
+
+		case RecurrenceConfigurationRepository.TYPE_WEEK:
+			addRecurrentEventsByWeeks(event, periodicity, endType, repetitionsNumber, endDate, daysCheckedMap);
+			break;
+
+		case RecurrenceConfigurationRepository.TYPE_MONTH:
+			addRecurrentEventsByMonths(event, periodicity, endType, repetitionsNumber, endDate, monthRepeatType);
+			break;
+
+		case RecurrenceConfigurationRepository.TYPE_YEAR:
+			addRecurrentEventsByYears(event, periodicity, endType, repetitionsNumber, endDate);
+			break;
+
+		default:
+			break;
+		}
 	}
 }

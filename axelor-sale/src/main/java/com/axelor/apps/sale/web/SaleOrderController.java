@@ -49,6 +49,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -137,23 +138,30 @@ public class SaleOrderController {
 		
 	}
 	
-	public void exportSaleOrder(ActionRequest request, ActionResponse response, boolean proforma, String format) throws AxelorException {
+	public void exportSaleOrder(ActionRequest request, ActionResponse response, boolean proforma, String format) {
+	    try {
+			SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+			if (saleOrder.getPrintingSettings() == null) {
 
-		String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
+			}
 
-		SaleOrderService saleOrderService = Beans.get(SaleOrderService.class);
-		
-		String name = saleOrderService.getFileName(saleOrder);
-		
-		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, proforma, format);
-		
-		logger.debug("Printing "+name);
+			String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());
+			SaleOrderService saleOrderService = Beans.get(SaleOrderService.class);
+
+			String name = saleOrderService.getFileName(saleOrder);
+
+			String fileLink = saleOrderService.getReportLink(saleOrder, name, language, proforma, format);
+
+			logger.debug("Printing " + name);
+
+			response.setView(ActionView
+					.define(name)
+					.add("html", fileLink).map());
+		} catch (AxelorException e) {
+	        TraceBackService.trace(response, e);
+		}
 		
 	}
 
@@ -174,6 +182,19 @@ public class SaleOrderController {
 
 		try {
 			Beans.get(SaleOrderWorkflowService.class).finalizeSaleOrder(saleOrder);
+		} catch (Exception e) {
+		    TraceBackService.trace(response, e);
+		}
+
+		response.setReload(true);
+	}
+
+	public void finishSaleOrder(ActionRequest request, ActionResponse response) {
+		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+		saleOrder = saleOrderRepo.find(saleOrder.getId());
+
+		try {
+            Beans.get(SaleOrderWorkflowServiceImpl.class).finishSaleOrder(saleOrder);
 		} catch (Exception e) {
 		    TraceBackService.trace(response, e);
 		}
@@ -406,8 +427,8 @@ public class SaleOrderController {
 						.context("_showRecord", String.valueOf(saleOrder.getId())).map());
 				response.setCanClose(true);
 			}
-		}catch(AxelorException ae){
-			response.setFlash(ae.getLocalizedMessage());
+		}catch(Exception e){
+			response.setFlash(e.getLocalizedMessage());
 		}
 	}
 
@@ -469,23 +490,42 @@ public class SaleOrderController {
     }
 
 	/**
-	 * Called on load from sale order form view and on trading name change.
-	 * Set the default value and the domain for {@link SaleOrder#printingSettings}
+	 * Called on printing settings select.
+	 * Set the domain for {@link SaleOrder#printingSettings}
 	 * @param request
 	 * @param response
 	 */
-	public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		PrintingSettings printingSettings = saleOrder.getPrintingSettings();
-
-		List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(saleOrder.getTradingName(), saleOrder.getCompany());
-		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
-			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
+    public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
+		try {
+			SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+			List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(saleOrder.getTradingName(), saleOrder.getCompany());
+			String domain = String.format("self.id IN (%s)", !printingSettingsList.isEmpty() ? StringTool.getIdListString(printingSettingsList) : "0");
+			response.setAttr("printingSettings", "domain", domain);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
 		}
-		String domain = String.format("self.id IN (%s)", !printingSettingsList.isEmpty() ? StringTool.getIdListString(printingSettingsList) : "0");
+	}
 
-		response.setValue("printingSettings", printingSettings);
-		response.setAttr("printingSettings", "domain", domain);
+	/**
+	 * Called on trading name change.
+	 * Set the default value for {@link SaleOrder#printingSettings}
+	 * @param request
+	 * @param response
+	 */
+	public void fillDefaultPrintingSettings(ActionRequest request, ActionResponse response) {
+		try {
+			SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+			PrintingSettings printingSettings = saleOrder.getPrintingSettings();
+
+			List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(saleOrder.getTradingName(), saleOrder.getCompany());
+			if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
+				printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
+			}
+
+			response.setValue("printingSettings", printingSettings);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 
 	/**

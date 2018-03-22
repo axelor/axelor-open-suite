@@ -32,12 +32,11 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.axelor.apps.base.db.DayPlanning;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import org.slf4j.Logger;
@@ -98,8 +97,6 @@ public class OperationOrderServiceImpl implements OperationOrderService  {
 				IOperationOrder.STATUS_DRAFT, 
 				prodProcessLine);
 		
-		this._createToConsumeProdProductList(operationOrder, prodProcessLine);
-		
 		this._createHumanResourceList(operationOrder, machineWorkCenter);
 		
 		return Beans.get(OperationOrderRepository.class).save(operationOrder);
@@ -145,11 +142,12 @@ public class OperationOrderServiceImpl implements OperationOrderService  {
 		return name;
 	}
 	
-	
-	
-	protected void _createToConsumeProdProductList(OperationOrder operationOrder, ProdProcessLine prodProcessLine)  {
+
+	@Override
+	public void createToConsumeProdProductList(OperationOrder operationOrder)  {
 		
 		BigDecimal manufOrderQty = operationOrder.getManufOrder().getQty();
+		ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
 		
 		if(prodProcessLine.getToConsumeProdProductList() != null)  {
 			
@@ -343,6 +341,24 @@ public class OperationOrderServiceImpl implements OperationOrderService  {
 		List<ProdProduct> diffConsumeList = Beans.get(ManufOrderService.class).createDiffProdProductList(prodProductList, stockMoveLineList);
 		diffConsumeList.forEach(prodProduct -> prodProduct.setDiffConsumeOperationOrder(operationOrder));
 		return diffConsumeList;
+	}
+
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void updateConsumedStockMoveFromOperationOrder(OperationOrder operationOrder) throws AxelorException {
+	    this.updateDiffProdProductList(operationOrder);
+		List<StockMoveLine> consumedStockMoveLineList = operationOrder.getConsumedStockMoveLineList();
+		if (consumedStockMoveLineList == null) {
+			return;
+		}
+		Optional<StockMove> stockMoveOpt = operationOrder.getInStockMoveList()
+				.stream().filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED).findFirst();
+		if (!stockMoveOpt.isPresent()) {
+			return;
+		}
+		StockMove stockMove = stockMoveOpt.get();
+
+		Beans.get(ManufOrderService.class).updateStockMoveFromManufOrder(consumedStockMoveLineList, stockMove);
 	}
 }
 

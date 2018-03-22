@@ -29,7 +29,6 @@
 	
 	<extra-code><![CDATA[
 		// TYPE SELECT
-		public static final int TYPE_NONE = 0;
 		public static final int TYPE_TERMS = 1;
 		public static final int TYPE_MONTHLY = 2;
 

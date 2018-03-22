@@ -45,13 +45,14 @@ public class EmployeeBonusController {
 
 	public void compute(ActionRequest request, ActionResponse response) throws AxelorException{
 		EmployeeBonusMgt employeeBonusMgt = request.getContext().asType(EmployeeBonusMgt.class);
-		employeeBonusMgt = employeeBonusMgtRepo.find(employeeBonusMgt.getId());
-		employeeBonusService.compute(employeeBonusMgt);
-		response.setReload(true);
+		
 		try {
+			employeeBonusMgt = employeeBonusMgtRepo.find(employeeBonusMgt.getId());
+			employeeBonusService.compute(employeeBonusMgt);
+			response.setReload(true);
 			Beans.get(PeriodService.class).checkPeriod(employeeBonusMgt.getPayPeriod());
 			Beans.get(PeriodService.class).checkPeriod(employeeBonusMgt.getLeavePeriod());
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			response.setFlash(e.getMessage());
 		}
 	}

@@ -77,8 +77,8 @@
 		</panel>
 		
 		<panel readonlyIf="statusSelect == 3 || payboxPaidOk" colSpan="12">
-		 	<field name="paidAmount" colSpan="4"/>
-			<field name="currency" canEdit="false" colSpan="4" form-view="currency-form" grid-view="currency-grid"/>
+		 	<field name="paidAmount" colSpan="4" onChange="action-group-payment-voucher-reset-imputation" />
+			<field name="currency" canEdit="false" colSpan="4" form-view="currency-form" grid-view="currency-grid" onChange="action-group-payment-voucher-reset-imputation" />
 			<field name="remainingAmount" readonly="true" colSpan="4"/>
             <field name="moveLine" onChange="action-record-fill-paidAmount-fromMoveLine,action-pv-moveLine-attrs"
                 onSelect="action-pv-moveLine-domain" colSpan="4" showIf="operationTypeSelect == 3 || operationTypeSelect == 4"
@@ -282,5 +282,15 @@
     <action-method name="action-payment-voucher-from-invoice" model="com.axelor.apps.account.db.PaymentVoucher">
         <call class="com.axelor.apps.account.web.PaymentVoucherController" method="initFromInvoice"/>
     </action-method>
+
+	<action-group name="action-group-payment-voucher-reset-imputation" model="com.axelor.apps.account.db.PaymentVoucher">
+		<action name="save" if="payVoucherElementToPayList"/>
+		<action name="action-payment-voucher-reset-imputation" if="payVoucherElementToPayList"/>
+		<action name="save" if="payVoucherElementToPayList"/>
+	</action-group>
+
+	<action-method name="action-payment-voucher-reset-imputation">
+		<call class="com.axelor.apps.account.web.PaymentVoucherController" method="resetImputation"/>
+	</action-method>
 
 </object-views>

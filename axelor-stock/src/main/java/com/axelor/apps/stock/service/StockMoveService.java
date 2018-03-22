@@ -19,7 +19,6 @@ package com.axelor.apps.stock.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +27,7 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.FreightCarrierMode;
+import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -48,7 +48,7 @@ public interface StockMoveService {
 
 	
 	/**
-	 * Méthode générique permettant de créer un StockMove.
+	 * Generic method to create any stock move
 	 * 
 	 * @param fromAddress
 	 * @param toAddress
@@ -61,12 +61,39 @@ public interface StockMoveService {
 	 * @param description
 	 * @param shipmentMode
 	 * @param freightCarrierMode
+	 * @param carrierPartner
+	 * @param forwarderPartner
+	 * @param incoterm
 	 * @return
-	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
+	 * @throws AxelorException No Stock move sequence defined
 	 */
 	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, StockLocation fromStockLocation,
-			StockLocation toStockLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException;
+			StockLocation toStockLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode,
+			Partner carrierPartner, Partner forwarderPartner, Incoterm incoterm) throws AxelorException;
 
+	/**
+	 * Generic method to create any stock move for internal stock move (without partner information)
+	 * 
+	 * @param fromAddress
+	 * @param toAddress
+	 * @param company
+	 * @param clientPartner
+	 * @param fromStockLocation
+	 * @param toStockLocation
+	 * @param realDate
+	 * @param estimatedDate
+	 * @param description
+	 * @param shipmentMode
+	 * @param freightCarrierMode
+	 * @param carrierPartner
+	 * @param forwarderPartner
+	 * @param incoterm
+	 * @return
+	 * @throws AxelorException No Stock move sequence defined
+	 */
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company,  StockLocation fromStockLocation,
+			StockLocation toStockLocation, LocalDate realDate, LocalDate estimatedDate, String description) throws AxelorException;
+	
 	public int getStockMoveType(StockLocation fromStockLocation, StockLocation toStockLocation);
 
 	public void validate(StockMove stockMove) throws AxelorException;

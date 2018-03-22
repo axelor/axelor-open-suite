@@ -176,6 +176,8 @@ public interface SaleOrderInvoiceService {
 
 	InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder) throws AxelorException;
 
+	InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder, boolean isRefund) throws AxelorException;
+
 	/**
      * Creates an invoice line.
 	 * @param invoice  the created line will be linked to this invoice
@@ -230,6 +232,18 @@ public interface SaleOrderInvoiceService {
 	void updateAndCheckInvoicedAmount(SaleOrder saleOrder,
 									  Long currentInvoiceId,
 									  boolean excludeCurrentInvoice) throws AxelorException;
+
+	/**
+	 * Set the updated sale order amount invoiced without checking.
+	 * 
+	 * @param saleOrder
+	 * @param currentInvoiceId
+	 * @param excludeCurrentInvoice
+	 * @throws AxelorException
+	 */
+	void update(SaleOrder saleOrder,
+            Long currentInvoiceId,
+            boolean excludeCurrentInvoice) throws AxelorException;
 
 	BigDecimal getInvoicedAmount(SaleOrder saleOrder);
 

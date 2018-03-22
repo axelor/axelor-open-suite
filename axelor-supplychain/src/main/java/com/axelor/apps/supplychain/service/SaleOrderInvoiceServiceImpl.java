@@ -425,28 +425,25 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 	}
 
+    @Override
+    public InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder) throws AxelorException {
+        return createInvoiceGenerator(saleOrder, false);
+    }
 
-	@Override
-	public InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder) throws AxelorException  {
+    @Override
+    public InvoiceGenerator createInvoiceGenerator(SaleOrder saleOrder, boolean isRefund) throws AxelorException {
+        if (saleOrder.getCurrency() == null) {
+            throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR,
+                    I18n.get(IExceptionMessage.SO_INVOICE_6), saleOrder.getSaleOrderSeq());
+        }
 
-		if (saleOrder.getCurrency() == null) {
-			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_INVOICE_6), saleOrder.getSaleOrderSeq());
-		}
-
-		InvoiceGenerator invoiceGenerator = new InvoiceGeneratorSupplyChain(saleOrder) {
-
-			@Override
-			public Invoice generate() throws AxelorException {
-
-				return super.createInvoiceHeader();
-			}
-		};
-
-		return invoiceGenerator;
-
-	}
-
-
+        return new InvoiceGeneratorSupplyChain(saleOrder, isRefund) {
+            @Override
+            public Invoice generate() throws AxelorException {
+                return super.createInvoiceHeader();
+            }
+        };
+    }
 
 	// TODO ajouter tri sur les séquences
 	@Override
@@ -498,17 +495,30 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		return invoiceLineGenerator.creates();
 	}
 
-	@Override
-	public void updateAndCheckInvoicedAmount(SaleOrder saleOrder,
-											 Long currentInvoiceId,
-											 boolean excludeCurrentInvoice) throws AxelorException {
-	    BigDecimal amountInvoiced = this.getInvoicedAmount(saleOrder,
-				currentInvoiceId, excludeCurrentInvoice);
-	    if (amountInvoiced.compareTo(saleOrder.getExTaxTotal()) > 0) {
-	    	throw new AxelorException(saleOrder, IException.FUNCTIONNAL, I18n.get(IExceptionMessage.SO_INVOICE_TOO_MUCH_INVOICED), saleOrder.getSaleOrderSeq());
-		}
-		saleOrder.setAmountInvoiced(amountInvoiced);
-	}
+    @Override
+    public void updateAndCheckInvoicedAmount(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice)
+            throws AxelorException {
+
+        update(saleOrder, currentInvoiceId, excludeCurrentInvoice, true);
+    }
+
+    @Override
+    public void update(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice)
+            throws AxelorException {
+
+        update(saleOrder, currentInvoiceId, excludeCurrentInvoice, false);
+    }
+
+    protected void update(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice,
+            boolean checkInvoicedAmount) throws AxelorException {
+
+        BigDecimal amountInvoiced = this.getInvoicedAmount(saleOrder, currentInvoiceId, excludeCurrentInvoice);
+        if (checkInvoicedAmount && amountInvoiced.compareTo(saleOrder.getExTaxTotal()) > 0) {
+            throw new AxelorException(saleOrder, IException.FUNCTIONNAL,
+                    I18n.get(IExceptionMessage.SO_INVOICE_TOO_MUCH_INVOICED), saleOrder.getSaleOrderSeq());
+        }
+        saleOrder.setAmountInvoiced(amountInvoiced);
+    }
 
 	@Override
 	public BigDecimal getInvoicedAmount(SaleOrder saleOrder)  {

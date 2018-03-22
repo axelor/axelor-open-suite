@@ -23,6 +23,7 @@ package com.axelor.exception.db;
  * @author belloy
  * 
  */
+@Deprecated
 public interface IException {
 	
 	/**

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.purchase.db;
 
+@Deprecated
 public interface IPurchaseOrder {
 
 

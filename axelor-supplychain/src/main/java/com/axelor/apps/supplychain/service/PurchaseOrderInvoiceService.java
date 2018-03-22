@@ -37,6 +37,8 @@ public interface PurchaseOrderInvoiceService {
 
 	public InvoiceGenerator createInvoiceGenerator(PurchaseOrder purchaseOrder) throws AxelorException;
 
+	public InvoiceGenerator createInvoiceGenerator(PurchaseOrder purchaseOrder, boolean isRefund) throws AxelorException;
+
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<PurchaseOrderLine> purchaseOrderLineList) throws AxelorException;
 
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, PurchaseOrderLine purchaseOrderLine) throws AxelorException;

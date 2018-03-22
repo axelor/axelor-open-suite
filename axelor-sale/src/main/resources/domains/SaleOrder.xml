@@ -35,7 +35,7 @@
   	<date name="endOfValidityDate" title="End of validity"/>
   	
 <!--   	Ligne de devis -->
-	<one-to-many name="saleOrderLineList" ref="com.axelor.apps.sale.db.SaleOrderLine" mappedBy="saleOrder" title="Sale order lines"/>
+	<one-to-many name="saleOrderLineList" ref="com.axelor.apps.sale.db.SaleOrderLine" mappedBy="saleOrder" title="Sale order lines" orderBy="sequence"/>
 
 <!--   	Ligne de Taxe -->	
 	<one-to-many name="saleOrderLineTaxList" ref="com.axelor.apps.sale.db.SaleOrderLineTax" mappedBy="saleOrder" title="Tax Lines" readonly="true"/>
@@ -83,7 +83,7 @@
     
     <boolean name="hideDiscount" title="Hide Discount on prints?"/>
     
-	<date name="deliveryDate" title="Delivery date"/>
+	<date name="deliveryDate" title="Estimated delivery date"/>
 	<string name="deliveryCondition" title="Delivery conditions" large="true" multiline="true"/>
 	<string name="specificPackage" title="Specific package" large="true" multiline="true"/>
 	
@@ -124,6 +124,12 @@
    			public static final int STATE_NOT_DELIVERED = 1;
    			public static final int STATE_PARTIALLY_DELIVERED = 2;
    			public static final int STATE_DELIVERED = 3;
+
+			public static final int STATUS_DRAFT = 1;
+			public static final int STATUS_FINALIZED = 2;
+			public static final int STATUS_CONFIRMED = 3;
+			public static final int STATUS_FINISHED = 4;
+			public static final int STATUS_CANCELED = 5;
    		]]>
    	</extra-code>
    	

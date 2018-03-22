@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.sale.db;
 
+@Deprecated
 public interface ISaleBatch {
 
 	/**

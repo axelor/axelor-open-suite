@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.suppliermanagement.db;
 
+@Deprecated
 public interface IPurchaseOrderSupplierLine {
 
 	/**

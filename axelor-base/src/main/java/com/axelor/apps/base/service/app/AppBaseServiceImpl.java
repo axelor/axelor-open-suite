@@ -28,11 +28,13 @@ import javax.inject.Singleton;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.CurrencyConversionLine;
+import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -44,6 +46,8 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 	private long appBaseId;
 	
 	private static AppBaseServiceImpl INSTANCE;
+	
+	protected static String DEFAULT_LOCALE = "en";
 	
 	@Inject
 	public AppBaseServiceImpl() {
@@ -130,6 +134,19 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 		}
 
 		return DEFAULT_NB_DECIMAL_DIGITS;
+	}
+	
+	@Override
+	public String getDefaultPartnerLanguageCode()  {
+		
+		AppBase appBase = getAppBase();
+		
+		if (appBase != null){
+			Language language = appBase.getDefaultPartnerLanguage();
+			if(language != null && !Strings.isNullOrEmpty(language.getCode()))  {  return language.getCode();  }
+		}
+		return DEFAULT_LOCALE;
+
 	}
 
 
