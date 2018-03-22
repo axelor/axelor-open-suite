@@ -15,7 +15,7 @@
   	<many-to-one name="eventCategory" ref="com.axelor.apps.crm.db.EventCategory" title="Category"/>
   	
   	<string name="relatedToSelect" title="Related to" selection="crm.event.related.to.select"/>
-  	<integer name="relatedToSelectId"/>
+    <long name="relatedToSelectId"/>
   	<integer name="statusSelect" title="Status" selection="crm.event.status.select"/>
     
   	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
