@@ -30,6 +30,7 @@
 - Add validation date in Inventory
 - Remove teams app module.
 - Add the number of components on Bill of material form view.
+- Add grid for easily regenerating and resending messages that were not sent.
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
