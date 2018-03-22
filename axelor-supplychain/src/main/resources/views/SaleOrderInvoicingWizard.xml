@@ -48,13 +48,12 @@
 
 	<grid name="invoicing-wizard-sale-order-line-grid" title="Lines to invoice"
 		  model="com.axelor.apps.sale.db.SaleOrderLine">
-		<field name="productName"/>
-		<field name="qty" aggregate="sum"/>
-		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-		<field name="price" x-scale="2"/>
-		<field name="exTaxTotal" aggregate="sum"/>
-		<field name="inTaxTotal" aggregate="sum"/>
-		<field name="amountInvoiced"/>
+		<field name="productName" readonly="true"/>
+		<field name="qty" readonly="true" aggregate="sum"/>
+		<field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
+		<field name="price" readonly="true" x-scale="2"/>
+		<field name="exTaxTotal" readonly="true" aggregate="sum"/>
+		<field name="amountInvoiced" readonly="true"/>
         <field name="qtyToInvoice" title="Qty to invoice" type="decimal"
 			   readonlyIf="invoiceAll" min="0"/>
         <field name="invoiceAll" title="Invoice all ?" type="boolean"
@@ -67,8 +66,10 @@
 	</action-group>
 
 	<action-attrs name="action-attrs-sale-order-line-invoicing-wizard-fill-qty">
-		<attribute for="qtyToInvoice" name="value" if="invoiceAll"
+		<attribute for="qtyToInvoice" name="value" if="invoiceAll &amp;&amp; !__parent__?.isPercent"
 				   expr="eval: qty"/>
+		<attribute for="qtyToInvoice" name="value" if="invoiceAll &amp;&amp; __parent__?.isPercent"
+				   expr="eval: 100"/>
 	</action-attrs>
 
 	<action-attrs name="action-attrs-sale-order-invoicing-wizard-hide-advance-payment">
