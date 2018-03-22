@@ -40,7 +40,7 @@
 		<panel name="context" title="Context">
 			<field name="project" onChange="action-record-value-on-customer-and-contact" form-view="helpdesk-project-form" grid-view="helpdesk-project-grid"/>
 			<field name="customer" domain="self.isCustomer = true" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="contact" onSelect="action-ticket-domain-on-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="contact" onSelect="action-ticket-domain-on-contact-partner" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<field name="lead" form-view="lead-form" grid-view="lead-grid" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 			<field name="assignedToUser" form-view="user-form" grid-view="user-grid" onChange="action-ticket-attrs-hidden-to-takeCharge-btn"/>
 			<field name="responsibleUser" form-view="user-form" grid-view="user-grid"/>

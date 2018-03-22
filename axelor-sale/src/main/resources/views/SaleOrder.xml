@@ -231,9 +231,9 @@
 	    <field name="currency" canEdit="false"  form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect >= 3"/>
           <field name="saleOrderTypeSelect" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()" readonlyIf="statusSelect >= 3"/>
 	    <field name="versionNumber" if="__config__.app.getApp('sale').getManageSaleOrderVersion()"/>
-	    <field name="companyBankDetails" widget="SuggestBox" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-	    <field name="inAti" onChange="action-sale-order-attrs-in-ati"/>
-		<field name="interco" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+	    <field name="companyBankDetails" hidden="true" widget="SuggestBox" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+	    <field name="inAti" hidden="true" onChange="action-sale-order-attrs-in-ati"/>
+		<field name="interco" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 	  </panel>
 	  <panel name="customerInformation" title="Customer information" hideIf="company == null">
 	      <field name="clientPartner" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect == 3"/>

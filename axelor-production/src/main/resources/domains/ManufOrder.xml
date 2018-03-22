@@ -34,8 +34,9 @@
     
     <many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BoM" initParam="true"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" initParam="true"/>
-    <one-to-one name="costSheet" ref="com.axelor.apps.production.db.CostSheet" title="Cost sheet"/>
-    
+    <one-to-many name="costSheetList" ref="com.axelor.apps.production.db.CostSheet" title="Cost sheet" mappedBy="manufOrder"/>
+    <decimal name="costPrice" title="Cost price" precision="20" scale="10"/>
+
 <!--     Champ pointé ? -->
     <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process" initParam="true" required="true"/> 
   

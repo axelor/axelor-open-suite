@@ -13,7 +13,8 @@
 
 	<form name="bill-of-material-form" title="Bill of material"
 		model="com.axelor.apps.production.db.BillOfMaterial" onSave="save,action-bill-of-material-record-name,action-bill-of-material-method-validate-prod-process"
-		onNew="action-bill-of-material-default-record,action-bill-of-material-attrs-price-and-qty-digits" onLoad="action-bill-of-material-attrs-price-and-qty-digits" width="large">
+		onNew="action-bill-of-material-default-record,action-bill-of-material-attrs-price-and-qty-digits,action-bill-of-material-record-count-number-of-components" 
+		onLoad="action-bill-of-material-attrs-price-and-qty-digits,action-bill-of-material-record-count-number-of-components" width="large">
 		<toolbar>
 			<button name="newVersion" title="Generate new version"  if="__config__.app.getApp('production').manageBillOfMaterialVersion" onClick="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"/>
 		</toolbar>
@@ -34,7 +35,18 @@
 		<panel-tabs>
 			<panel title="Components" >
 				<button name="openBomTree" title="Open tree"  onClick="save,action-bill-of-material-method-open-bom-tree" colSpan="3"/>
-				<panel-related field="billOfMaterialSet" title="Components" colSpan="12" orderBy="priority" domain="self.defineSubBillOfMaterial = true AND self.personalized = false and (:id is null or self.id != :id)" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
+				<field name="$numberOfComponents" title="Number of components" showTitle="false" readonly="true">
+					<viewer depends="$numberOfComponents"><![CDATA[
+            			<h4 class="text-right">
+                            <span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial; 
+                            border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" x-translate>Number of components</span><span class="label label-default" 
+                            style="background-color: #23C6C8; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; 
+                            border-bottom-left-radius: 0;">{{record.$numberOfComponents}}</span>
+                        </h4>
+					]]></viewer>
+  				</field>
+				<panel-related field="billOfMaterialSet" title="Components" colSpan="12" orderBy="priority" domain="self.defineSubBillOfMaterial = true AND self.personalized = false and (:id is null or self.id != :id)" 
+				form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid" onChange="action-bill-of-material-record-count-number-of-components"/>
 			</panel>
 			<panel-related field="prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form" if="__config__.app.getApp('production').getManageResidualProductOnBom()"/>	        
 			<panel name="cost" title="Cost">
@@ -123,6 +135,11 @@
      <action-record name="action-bill-of-material-record-name" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="name" expr="eval: product.name + ' - ' + qty + unit.name + ' - ' + id" if="name == null"/>
     </action-record>
+    
+    <action-record name="action-bill-of-material-record-count-number-of-components" model="com.axelor.apps.production.db.BillOfMaterial">
+  		<field name="$numberOfComponents" expr="eval: billOfMaterialSet.size()"/>
+	</action-record>
+    
     
     <action-method name="action-bill-of-material-method-compute-cost-price">
     	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="computeCostPrice"/>

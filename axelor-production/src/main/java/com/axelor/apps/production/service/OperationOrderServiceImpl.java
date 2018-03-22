@@ -28,12 +28,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import org.slf4j.Logger;
@@ -338,6 +341,24 @@ public class OperationOrderServiceImpl implements OperationOrderService  {
 		List<ProdProduct> diffConsumeList = Beans.get(ManufOrderService.class).createDiffProdProductList(prodProductList, stockMoveLineList);
 		diffConsumeList.forEach(prodProduct -> prodProduct.setDiffConsumeOperationOrder(operationOrder));
 		return diffConsumeList;
+	}
+
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void updateConsumedStockMoveFromOperationOrder(OperationOrder operationOrder) throws AxelorException {
+	    this.updateDiffProdProductList(operationOrder);
+		List<StockMoveLine> consumedStockMoveLineList = operationOrder.getConsumedStockMoveLineList();
+		if (consumedStockMoveLineList == null) {
+			return;
+		}
+		Optional<StockMove> stockMoveOpt = operationOrder.getInStockMoveList()
+				.stream().filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED).findFirst();
+		if (!stockMoveOpt.isPresent()) {
+			return;
+		}
+		StockMove stockMove = stockMoveOpt.get();
+
+		Beans.get(ManufOrderService.class).updateStockMoveFromManufOrder(consumedStockMoveLineList, stockMove);
 	}
 }
 

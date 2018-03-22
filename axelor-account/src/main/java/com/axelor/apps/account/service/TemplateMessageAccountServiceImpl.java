@@ -42,7 +42,7 @@ public class TemplateMessageAccountServiceImpl implements TemplateMessageAccount
 	public Message generateMessage(DebtRecoveryHistory debtRecoveryHistory, Template template) throws ClassNotFoundException, IOException, InstantiationException, AxelorException, IllegalAccessException {
         Message message = this.templateMessageService.generateMessage(debtRecoveryHistory, template);
 		message.setRelatedTo2Select(Partner.class.getCanonicalName());
-		message.setRelatedTo2SelectId(Math.toIntExact(debtRecoveryHistory.getDebtRecovery().getAccountingSituation().getPartner().getId()));
+		message.setRelatedTo2SelectId(debtRecoveryHistory.getDebtRecovery().getAccountingSituation().getPartner().getId());
 		return message;
 	}
 }

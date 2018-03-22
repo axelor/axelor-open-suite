@@ -59,7 +59,6 @@ import java.util.Set;
 import java.util.function.Function;
 
 public class MessageServiceImpl implements MessageService {
-
     private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private MetaAttachmentRepository metaAttachmentRepository;
@@ -104,7 +103,7 @@ public class MessageServiceImpl implements MessageService {
 
     }
 
-    protected Message createMessage(String content, EmailAddress fromEmailAddress, String relatedTo1Select, int relatedTo1SelectId, String relatedTo2Select, int relatedTo2SelectId,
+    protected Message createMessage(String content, EmailAddress fromEmailAddress, String relatedTo1Select, long relatedTo1SelectId, String relatedTo2Select, long relatedTo2SelectId,
                                     LocalDateTime sentDate, boolean sentByEmail, int statusSelect, String subject, int typeSelect, List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList,
                                     List<EmailAddress> ccEmailAddressList, List<EmailAddress> bccEmailAddressList, String addressBlock, int mediaTypeSelect, EmailAccount emailAccount) {
 

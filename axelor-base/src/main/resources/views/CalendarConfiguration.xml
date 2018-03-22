@@ -18,8 +18,8 @@
 			<field name="calendarGroup" form-view="group-form" grid-view="group-grid"/>
 		</panel>
 		<panel sidebar="true" name="action" title="Actions">
-			<button name="createAction" title="Create menu entrie" onClick="save,action-calendar-configuration-method-create-Action" />
-			<button name="deleteAction" title="Delete menu entrie" onClick="save,action-calendar-configuration-method-delete-Action" />
+			<button name="createAction" title="Create menu entry" onClick="save,action-calendar-configuration-method-create-Action" />
+			<button name="deleteAction" title="Delete menu entry" onClick="save,action-calendar-configuration-method-delete-Action" />
 		</panel>
 		<panel-related field="calendarSet" form-view="calendar-form" grid-view="calendar-grid"/>
 	</form>
