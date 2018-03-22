@@ -430,6 +430,24 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 				diffConsumeList.add(diffProdProduct);
 			}
 		}
+		//There are stock move lines with products that are not available in
+		//prod product list. It needs to appear in the prod product list
+		List<StockMoveLine> stockMoveLineMissingProductList = stockMoveLineList.stream()
+				.filter(stockMoveLine1 -> stockMoveLine1.getProduct() != null)
+				.filter(stockMoveLine1 ->
+						!prodProductList.stream().map(ProdProduct::getProduct)
+								.collect(Collectors.toList())
+								.contains(stockMoveLine1.getProduct()))
+				.collect(Collectors.toList());
+		for (StockMoveLine stockMoveLine : stockMoveLineMissingProductList) {
+		    if (stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
+				ProdProduct diffProdProduct = new ProdProduct();
+				diffProdProduct.setQty(stockMoveLine.getQty());
+				diffProdProduct.setProduct(stockMoveLine.getProduct());
+				diffProdProduct.setUnit(stockMoveLine.getUnit());
+				diffConsumeList.add(diffProdProduct);
+			}
+		}
 		return diffConsumeList;
 	}
 
