@@ -72,7 +72,7 @@
 			        <field name="isActivity" showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
                     <field name="procurementMethodSelect" colSpan="6"
                         requiredIf="productTypeSelect == 'storable'"
-                        onChange="action-product-method-tick-checkbox-purchasable"/>
+                        onChange="action-product-record-tick-checkbox-purchasable"/>
 			        <field name="standardDelay" colSpan="12" showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       			</panel>
 		      	<panel name="categorization" title="Categorization" colSpan="6" colWidths="30%,70%">
@@ -328,7 +328,7 @@
     
     <action-group name="action-group-base-product-enddate-onchange">
     	<action name="action-product-validate-end-date"/>
-    	<action name="action-product-method-reset-end-date"/>
+        <action name="action-product-record-reset-end-date"/>
     </action-group>
     
     <action-group name="action-group-product-onload">
@@ -450,7 +450,7 @@
     	<alert message="The product pulled-off date must be greater than the launch date." if="endDate &lt; startDate"/>
     </action-validate>
     
-    <action-record name="action-product-method-reset-end-date" model="com.axelor.apps.base.db.Product">
+    <action-record name="action-product-record-reset-end-date" model="com.axelor.apps.base.db.Product">
     	<field name="endDate" expr="eval:__config__.app.getTodayDate()" if="endDate &lt; startDate"/>
     </action-record>
     
@@ -482,7 +482,7 @@
         <attribute name="title" for="unit" expr="eval: com.axelor.i18n.I18n.get('Stock Unit')" if="__config__.app.getApp('purchase').getManagePurchasesUnits()"/>
     </action-attrs>
 
-    <action-record name="action-product-method-tick-checkbox-purchasable"
+    <action-record name="action-product-record-tick-checkbox-purchasable"
         model="com.axelor.apps.base.db.Product">
         <field name="purchasable" expr="eval: procurementMethodSelect == 'buy'"/>
     </action-record>
