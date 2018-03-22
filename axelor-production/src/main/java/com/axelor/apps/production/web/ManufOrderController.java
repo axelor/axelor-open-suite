@@ -326,11 +326,33 @@ public class ManufOrderController {
 		}
 	}
 
-	public void updateDiffProdProductList(ActionRequest request, ActionResponse response) {
+	/**
+     * Called from manuf order form, on produced stock move line change.
+	 * @param request
+	 * @param response
+	 */
+	public void updateProducedStockMoveFromManufOrder(ActionRequest request, ActionResponse response) {
+	    try {
+	        ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+	        manufOrder = manufOrderRepo.find(manufOrder.getId());
+	        manufOrderService.updateProducedStockMoveFromManufOrder(manufOrder);
+	        response.setReload(true);
+	    } catch (Exception e) {
+	        TraceBackService.trace(response, e);
+	    }
+	}
+
+	/**
+	 * Called from manuf order form, on consumed stock move line change.
+	 * @param request
+	 * @param response
+	 */
+	public void updateConsumedStockMoveFromManufOrder(ActionRequest request, ActionResponse response) {
 		try {
 			ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
-			manufOrderService.updateDiffProdProductList(manufOrder);
-			response.setValue("diffConsumeProdProductList", manufOrder.getDiffConsumeProdProductList());
+			manufOrder = manufOrderRepo.find(manufOrder.getId());
+			manufOrderService.updateConsumedStockMoveFromManufOrder(manufOrder);
+			response.setReload(true);
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
