@@ -55,11 +55,15 @@ import com.google.inject.servlet.RequestScoped;
 @RequestScoped
 public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
-	@Inject
 	private TrackingNumberService trackingNumberService;
 
-	@Inject
 	protected AppBaseService appBaseService;
+
+	@Inject
+	public StockMoveLineServiceImpl(TrackingNumberService trackingNumberService, AppBaseService appBaseService) {
+		this.trackingNumberService = trackingNumberService;
+		this.appBaseService = appBaseService;
+	}
 
 	/**
 	 * Méthode générique permettant de créer une ligne de mouvement de stock en gérant les numéros de suivi en fonction du type d'opération.
@@ -281,7 +285,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				Unit productUnit = stockMoveLine.getProduct().getUnit();
 				Unit stockMoveLineUnit = stockMoveLine.getUnit();
 
-				BigDecimal qty = null;
+				BigDecimal qty;
 				if(realQty)  {
 					qty = stockMoveLine.getRealQty();
 				}
@@ -296,7 +300,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 				if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL)  {
 					this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, toStatus);
 				}
-				this.updateLocations(fromStockLocation, toStockLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
+				this.updateLocations(stockMoveLine, fromStockLocation, toStockLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
 						lastFutureStockMoveDate, stockMoveLine.getTrackingNumber(), BigDecimal.ZERO);
 				stockLocationServiceImpl.computeAvgPriceForProduct(stockMoveLine.getProduct());
 			}
@@ -433,7 +437,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	}
 
 	@Override
-	public void updateLocations(StockLocation fromStockLocation, StockLocation toStockLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
+	public void updateLocations(StockMoveLine stockMoveLine, StockLocation fromStockLocation, StockLocation toStockLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
 			lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException  {
 
 		StockLocationLineService stockLocationLineService = Beans.get(StockLocationLineService.class);
