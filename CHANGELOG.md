@@ -27,6 +27,7 @@
 - Add a wizard to select a cancel reason and cancel a Stock move.
 - Add button to open tasks and task kanban view in project module
 - Manage shipment mode, freight carrier mode, incoterm, carrier partner, forwarder partner on Partner, Sale order, Stock move.
+- New user option to allow notifications to be sent by email on desired entities.
 - Add validation date in Inventory
 - Remove teams app module.
 - Add the number of components on Bill of material form view.
