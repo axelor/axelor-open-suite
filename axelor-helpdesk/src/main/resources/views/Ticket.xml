@@ -151,8 +151,8 @@
 	</action-record>
 	
 	<action-attrs name="action-ticket-attrs-hidden-to-takeCharge-btn">
-		<attribute if="(assignedToUser != null &amp;&amp; assignedToUser.id == _user.id) || statusSelect == 3" name="hidden" expr="true" for="takeCharge"/>
-		<attribute if="(assignedToUser == null || assignedToUser.id != _user.id) &amp;&amp; statusSelect &lt; 3" name="hidden" expr="false" for="takeCharge"/>
+		<attribute if="(assignedToUser != null &amp;&amp; assignedToUser?.id == _user?.id) || statusSelect == 3" name="hidden" expr="true" for="takeCharge"/>
+		<attribute if="(assignedToUser == null || assignedToUser?.id != _user?.id) &amp;&amp; statusSelect &lt; 3" name="hidden" expr="false" for="takeCharge"/>
 	</action-attrs>
 	
 	<action-attrs name="action-ticket-domain-on-contact-partner">
