@@ -249,7 +249,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 	@Override
 	public StockLocationLine getDetailLocationLine(StockLocation stockLocation, Product product, TrackingNumber trackingNumber)  {
 		return stockLocationLineRepo.all()
-				.filter("self.stockLocation.id = :_stockLocationId " +
+				.filter("self.detailsStockLocation.id = :_stockLocationId " +
 						"AND self.product.id = :_productId " +
 						"AND self.trackingNumber.id = :_trackingNumberId")
 				.bind("_stockLocationId", stockLocation.getId())

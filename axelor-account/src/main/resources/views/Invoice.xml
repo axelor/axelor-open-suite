@@ -156,7 +156,7 @@
             <field name="invoiceId" colSpan="12" css="label-bold bold large" showTitle="false" showIf="id">
                 <viewer>
                     <![CDATA[
-                        <span ng-show="record.statusSelect &lt; 3" x-translate>Proforma</span> <span>{{record.invoiceId}}</span>
+                        <span ng-show="(record.operationSubTypeSelect != 2 && record.statusSelect &lt; 3) || (record.operationSubTypeSelect == 2 && record.statusSelect == 0)" x-translate>Proforma</span> <span>{{record.invoiceId}}</span>
                     ]]>
                 </viewer>
             </field>
@@ -1070,7 +1070,7 @@
 			OR self.relatedTo2SelectId = :relatedToSelectId
 				AND self.relatedTo2Select = :relatedToSelect
 		  </domain>
-		<context name="relatedToSelectId" expr="eval: id.intValue()"/>
+		<context name="relatedToSelectId" expr="eval: id"/>
 		<context name="relatedToSelect"
 			expr="eval: _model"/>
 	</action-view>

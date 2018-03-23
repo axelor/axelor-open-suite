@@ -136,13 +136,13 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
         }
 
         saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINALIZED);
-        saleOrderRepo.save(saleOrder);
         if (appSaleService.getAppSale().getManageSaleOrderVersion()) {
             this.saveSaleOrderPDFAsAttachment(saleOrder);
         }
         if (saleOrder.getVersionNumber() == 1 && sequenceService.isEmptyOrDraftSequenceNumber(saleOrder.getSaleOrderSeq())) {
             saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
         }
+        saleOrderRepo.save(saleOrder);
     }
 
 	@Override

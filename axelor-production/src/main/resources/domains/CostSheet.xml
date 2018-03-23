@@ -8,7 +8,7 @@
   <entity name="CostSheet" lang="java">
   
   	<many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BillOfMaterial"/>
-    <one-to-one name="manufOrder" ref="com.axelor.apps.production.db.ManufOrder" mappedBy="costSheet" title="ManufOrder"/>
+    <many-to-one name="manufOrder" ref="com.axelor.apps.production.db.ManufOrder" title="ManufOrder"/>
   	<one-to-many name="costSheetLineList" ref="com.axelor.apps.production.db.CostSheetLine" mappedBy="costSheet" title="Cost sheet lines"/>
     <decimal name="costPrice" title="Cost price"/>
   	

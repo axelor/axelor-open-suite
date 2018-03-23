@@ -18,7 +18,10 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.CalendarConfiguration;
+import com.axelor.apps.base.db.repo.CalendarConfigurationRepository;
 import com.axelor.apps.base.ical.CalendarConfigurationService;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -27,21 +30,31 @@ import com.google.inject.Singleton;
 @Singleton
 public class CalendarConfigurationController {
 
-	@Inject
-	private CalendarConfigurationService calendarConfigurationService;
-	
-	public void createAction(ActionRequest request, ActionResponse response) {
-		
-		CalendarConfiguration calendarConfiguration = request.getContext().asType(CalendarConfiguration.class);
-		
-		calendarConfigurationService.createEntryMenu(calendarConfiguration);		
-	}
-	
-	public void deleteAction(ActionRequest request, ActionResponse response) {
-	
-		CalendarConfiguration calendarConfiguration = request.getContext().asType(CalendarConfiguration.class);
-		
-		calendarConfigurationService.deleteEntryMenu(calendarConfiguration);
-	}
+    @Inject
+    private CalendarConfigurationService calendarConfigurationService;
+
+    public void createAction(ActionRequest request, ActionResponse response) {
+        try {
+            CalendarConfiguration calendarConfiguration = request.getContext().asType(CalendarConfiguration.class);
+            calendarConfiguration = Beans.get(CalendarConfigurationRepository.class)
+                    .find(calendarConfiguration.getId());
+
+            calendarConfigurationService.createEntryMenu(calendarConfiguration);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
+
+    public void deleteAction(ActionRequest request, ActionResponse response) {
+        try {
+            CalendarConfiguration calendarConfiguration = request.getContext().asType(CalendarConfiguration.class);
+            calendarConfiguration = Beans.get(CalendarConfigurationRepository.class)
+                    .find(calendarConfiguration.getId());
+
+            calendarConfigurationService.deleteEntryMenu(calendarConfiguration);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
 
 }

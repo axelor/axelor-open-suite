@@ -11,11 +11,19 @@
   	<integer name="versionSelect" title="Version" selection="base.product.version.select"/>
   	
   	<many-to-one name="costSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
-  	
+    <integer name="realOrEstimatedPriceSelect" title="Price method" selection="production.product.price.method.select" default="1"/>
+		<extra-code>
+	   		<![CDATA[
+				// PRICE METHOD SELECT
+				public static final int PRICE_METHOD_FORECAST = 1;
+				public static final int PRICE_METHOD_REAL = 2;
+	   		]]>
+	   	</extra-code>
+
   	<track>
       <field name="costPrice"/>
     </track>
-  
+
   </entity>
 
 </domain-models>

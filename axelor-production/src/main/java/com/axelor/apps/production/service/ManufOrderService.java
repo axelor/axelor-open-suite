@@ -115,4 +115,30 @@ public interface ManufOrderService {
 	 * @throws AxelorException
 	 */
 	List<ProdProduct> createDiffProdProductList(List<ProdProduct> prodProductList, List<StockMoveLine> stockMoveLineList) throws AxelorException;
+
+	/**
+	 * On changing {@link ManufOrder#consumedStockMoveLineList},
+	 * we also update the stock move.
+	 *
+	 * @param manufOrder
+	 */
+	void updateConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
+
+	/**
+	 * On changing {@link ManufOrder#producedStockMoveLineList},
+	 * we also update the stock move.
+	 *
+	 * @param manufOrder
+	 */
+	void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder);
+
+	/**
+     * Compute {@link ManufOrder#diffConsumeProdProductList},
+	 * then add and remove lines to the stock move to match the stock move line list.
+	 * The list can be from manuf order or operation order.
+	 *
+	 * @param stockMoveLineList
+	 * @param stockMove
+	 */
+	void updateStockMoveFromManufOrder(List<StockMoveLine> stockMoveLineList, StockMove stockMove);
 }

@@ -37,6 +37,7 @@ import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -103,13 +104,16 @@ public class LeadController {
 			response.setFlash(I18n.get(IExceptionMessage.LEAD_1));
 		}	
 	}
-	
-	public void showLeadsOnMap(ActionRequest request, ActionResponse response) throws IOException {
-		
-		Beans.get(MapService.class).showMap("lead", I18n.get("Leads"), response);
+
+	public void showLeadsOnMap(ActionRequest request, ActionResponse response) {
+        try {
+            response.setView(ActionView.define(I18n.get("Leads"))
+                    .add("html", Beans.get(MapService.class).getMapURI("lead")).map());
+        } catch (Exception e) {
+            TraceBackService.trace(e);
+        }
 	}	
-	
-	
+
 	public void setSocialNetworkUrl(ActionRequest request, ActionResponse response) throws IOException {
 		
 		Lead lead = request.getContext().asType(Lead.class );

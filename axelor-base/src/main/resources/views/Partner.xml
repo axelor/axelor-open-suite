@@ -232,7 +232,7 @@
 				</panel>
 				<panel name="settings" title="Settings" colSpan="12">
 					<field name="partnerSeq" colSpan="6"/>
-					<field name="language" colSpan="6"/>
+					<field name="language" colSpan="6" canEdit="false"/>
 					<panel title="Assigned to" colSpan="12">
 						<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" hideIf="isEmployee" canNew="false" canEdit="false" canView="false"/>
 						<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" hideIf="isEmployee"/>
@@ -436,7 +436,7 @@
 		</panel-tabs>
 		<panel name="settings" sidebar="true" title="Settings">
 			<field name="partnerSeq"/>
-			<field name="language"/>
+			<field name="language" canEdit="false"/>
 			<panel title="Assigned to" canCollapse="true" colSpan="12">
 				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 				<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
@@ -602,7 +602,7 @@
 		</panel-tabs>
 		<panel name="settings" sidebar="true" title="Settings">
 			<field name="partnerSeq"/>
-			<field name="language"/>
+			<field name="language" canEdit="false"/>
 			<panel title="Assigned to" canCollapse="true" colSpan="12">
 				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 				<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>

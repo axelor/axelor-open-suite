@@ -17,15 +17,12 @@
  */
 package com.axelor.apps.base.web;
 
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +33,6 @@ import com.axelor.apps.base.service.DuplicateObjectsService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.schema.actions.ActionView;
@@ -142,25 +138,6 @@ public class DuplicateObjectsController {
 		response.setAttr("$duplicateObjects", "value", duplicateObj);
 	}
 	
-	/*
-	 * set fields on wizard
-	 */
-	public Set<MetaField> setFields(String model) throws IOException {
-		LOG.debug("Model: {}",model);
-		Set<MetaField> fieldSet = new HashSet<MetaField>();
-		List<String> fields = new ArrayList<String>();
-
-		MetaFieldRepository metaFieldRepository = Beans.get(MetaFieldRepository.class);
-
-		for(MetaField field : metaFieldRepository.all().filter("metaModel.fullName = ?1 AND (relationship = null OR relationship = 'ManyToOne')",model).fetch()){
-			fieldSet.add(field);
-			fields.add(field.getName());
-		}
-
-		LOG.debug("Fields set: {}",fields);
-		return fieldSet;
-	}
-	
 	/**
 	 * show duplicate records
 	 * 
@@ -173,59 +150,62 @@ public class DuplicateObjectsController {
 		String model = (String)request.getContext().get("object");
 		List<String> fields = new ArrayList<String>();
 		
-		if(model == null){
+		if (model == null) {
 			model = request.getModel();
-			String searchFields = (String)request.getContext().get("searchFields");
-			if(searchFields != null){
+			String searchFields = (String) request.getContext().get("searchFields");
+			if (searchFields != null) {
 				fields.addAll(Arrays.asList(searchFields.split(";")));
 			}
-		}else{
-			List<HashMap<String,Object>> fieldsSet = (List<HashMap<String,Object>>)request.getContext().get("fieldsSet");
-			for(HashMap<String,Object> field : fieldsSet){
-				if(field.get("selected") != null && (Boolean)field.get("selected")){
+		} else {
+			
+			if (request.getContext().get("fieldsSet") != null) {
+				List<HashMap<String, Object>> fieldsSet = (List<HashMap<String, Object>>) request.getContext().get("fieldsSet");
+				
+				for (HashMap<String, Object> field : fieldsSet) {
 					MetaField metaField = metaFieldRepo.find(Long.parseLong(field.get("id").toString()));
 					fields.add(metaField.getName());
 				}
 			}
 		}
 		
-		LOG.debug("Duplicate record model: {}",model);
-		
-		if(fields.size() > 0){
+		LOG.debug("Duplicate record model: {}", model);
+
+		if (fields.size() > 0) {
+			
 			LOG.debug("Duplicate record joinList: {}", fields);
-			String selectedRecored =  String.valueOf((request.getContext().get("_ids")));
+			
+			String selectedRecored = String.valueOf((request.getContext().get("_ids")));
 			String filter = String.valueOf(request.getContext().get("_domain_"));
-			if(selectedRecored.equals("null") || selectedRecored.isEmpty()) {
+			
+			if (selectedRecored.equals("null") || selectedRecored.isEmpty())
 				selectedRecored = null;
-			} else {
-				selectedRecored = selectedRecored.substring(1, selectedRecored.length()-1);
-			}
-			String ids = duplicateObjectService.findDuplicateRecords(fields,model,selectedRecored,filter);
-			if(ids.isEmpty())
+			else
+				selectedRecored = selectedRecored.substring(1, selectedRecored.length() - 1);
+
+			String ids = duplicateObjectService.findDuplicateRecords(fields, model, selectedRecored, filter);
+			
+			if (ids.isEmpty())
 				response.setFlash(I18n.get(IExceptionMessage.GENERAL_1));
-			else{
+			
+			else {
 				String domain = null;
-				if(filter.equals("null")) {
-					domain = "self.id in ("+ids+")";
-				} else {
-					domain = "self.id in ("+ids+") And " + filter;
-				}
-				response.setView(ActionView
-						  .define(I18n.get(IExceptionMessage.GENERAL_2))
+				if (filter.equals("null"))
+					domain = "self.id in (" + ids + ")";
+				else
+					domain = "self.id in (" + ids + ") And " + filter;
+				
+				response.setView(ActionView.define(I18n.get(IExceptionMessage.GENERAL_2))
 						  .model(model)
 						  .add("grid")
 						  .add("form")
 						  .domain(domain)
 						  .context("_domain", domain)
 						  .map());
+				
 				response.setCanClose(true);
 			}
-		}
-		else
+		} else
 			response.setFlash(I18n.get(IExceptionMessage.GENERAL_3));
 	}
 	
-	
-
-
 }

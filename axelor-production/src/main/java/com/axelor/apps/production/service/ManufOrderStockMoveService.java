@@ -17,24 +17,13 @@
  */
 package com.axelor.apps.production.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
@@ -47,6 +36,18 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class ManufOrderStockMoveService {
 
@@ -74,7 +75,7 @@ public class ManufOrderStockMoveService {
 
 			for(ProdProduct prodProduct: manufOrder.getToConsumeProdProductList()) {
 
-				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS);
+				this._createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS);
 
 			}
 
@@ -128,7 +129,7 @@ public class ManufOrderStockMoveService {
 
 			for(ProdProduct prodProduct: manufOrder.getToProduceProdProductList()) {
 
-				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_OUT_PRODUCTIONS);
+				this._createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_OUT_PRODUCTIONS, prodProduct.getQty(), manufOrder.getBillOfMaterial().getCostPrice());
 
 			}
 
@@ -174,14 +175,18 @@ public class ManufOrderStockMoveService {
 
 	}
 
-	protected StockMoveLine _createStockMoveLine(ProdProduct prodProduct, StockMove stockMove, int inOrOutType, BigDecimal qty) throws AxelorException  {
+	protected StockMoveLine _createStockMoveLine(ProdProduct prodProduct, StockMove stockMove, int inOrOutType, BigDecimal qty) throws AxelorException {
+		return _createStockMoveLine(prodProduct, stockMove, inOrOutType, qty, prodProduct.getProduct().getCostPrice());
+	}
+
+	protected StockMoveLine _createStockMoveLine(ProdProduct prodProduct, StockMove stockMove, int inOrOutType, BigDecimal qty, BigDecimal costPrice) throws AxelorException  {
 
 		return stockMoveLineService.createStockMoveLine(
 				prodProduct.getProduct(),
 				prodProduct.getProduct().getName(),
 				prodProduct.getProduct().getDescription(),
 				qty,
-				prodProduct.getProduct().getCostPrice(),
+				costPrice,
 				prodProduct.getUnit(),
 				stockMove,
 				inOrOutType, false, BigDecimal.ZERO);
@@ -190,14 +195,37 @@ public class ManufOrderStockMoveService {
 
 
 	public void finish(ManufOrder manufOrder) throws AxelorException  {
+		//clear empty stock move
+		manufOrder.getInStockMoveList()
+				.removeIf(stockMove -> CollectionUtils.isEmpty(stockMove.getStockMoveLineList()));
+		manufOrder.getOutStockMoveList()
+				.removeIf(stockMove -> CollectionUtils.isEmpty(stockMove.getStockMoveLineList()));
+
+		//finish remaining stock move
 	    for (StockMove stockMove : manufOrder.getInStockMoveList()) {
 			this.finishStockMove(stockMove);
 		}
 		for (StockMove stockMove : manufOrder.getOutStockMoveList()) {
+			updateRealPrice(manufOrder, stockMove);
 			this.finishStockMove(stockMove);
 		}
 	}
 
+	/**
+	 * Update price in stock move line: if the product price is configured to
+	 * be real, then we use the cost price from costsheet.
+	 * Else, we do nothing as the planned price is already filled.
+	 *
+	 * @param manufOrder
+	 * @param stockMove
+	 */
+	protected void updateRealPrice(ManufOrder manufOrder, StockMove stockMove) {
+		stockMove.getStockMoveLineList().stream()
+				.filter(stockMoveLine -> stockMoveLine.getProduct() != null
+						&& stockMoveLine.getProduct().getRealOrEstimatedPriceSelect()
+						== ProductRepository.PRICE_METHOD_REAL)
+                .forEach(stockMoveLine -> stockMoveLine.setUnitPriceUntaxed(manufOrder.getCostPrice()));
+	}
 
 	public void finishStockMove(StockMove stockMove) throws AxelorException  {
 
@@ -218,7 +246,7 @@ public class ManufOrderStockMoveService {
 	public void partialFinish(ManufOrder manufOrder) throws AxelorException {
 		if (manufOrder.getIsConsProOnOperation()) {
 			for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-				if (operationOrder.getStatusSelect() == IOperationOrder.STATUS_IN_PROGRESS) {
+				if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS) {
 					Beans.get(OperationOrderStockMoveService.class).partialFinish(operationOrder);
 				}
 			}
@@ -262,9 +290,10 @@ public class ManufOrderStockMoveService {
 		    toStockLocation = getDefaultStockLocation(manufOrder, company);
 		}
 
-		//realize current stock move
+		//realize current stock move and update the price
 		Optional<StockMove> stockMoveToRealize = getPlannedStockMove(stockMoveList);
 		if (stockMoveToRealize.isPresent()) {
+			updateRealPrice(manufOrder, stockMoveToRealize.get());
 			finishStockMove(stockMoveToRealize.get());
 		}
 
@@ -344,7 +373,7 @@ public class ManufOrderStockMoveService {
 	public void createNewStockMoveLines(List<ProdProduct> diffProdProductList, StockMove stockMove, int stockMoveLineType) throws AxelorException {
 		diffProdProductList.forEach(prodProduct -> prodProduct.setQty(prodProduct.getQty().negate()));
 		for (ProdProduct prodProduct : diffProdProductList) {
-			StockMoveLine stockMoveLine = _createStockMoveLine(prodProduct, stockMove, stockMoveLineType);
+			_createStockMoveLine(prodProduct, stockMove, stockMoveLineType);
 		}
 	}
 
@@ -425,7 +454,7 @@ public class ManufOrderStockMoveService {
 		//create a new list
 		for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
 			BigDecimal qty = getFractionQty(manufOrder, prodProduct, qtyToUpdate);
-		    _createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_OUT_PRODUCTIONS, qty);
+		    _createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_OUT_PRODUCTIONS, qty, manufOrder.getBillOfMaterial().getCostPrice());
 
 		    //Update produced StockMoveLineList with created stock move lines
             stockMove.getStockMoveLineList()

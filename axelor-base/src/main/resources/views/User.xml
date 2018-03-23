@@ -49,6 +49,7 @@
 		    <panel name="electronicSignature" title="Electronic signature" if="__config__.app.isApp('sale') || __config__.app.isApp('purchase')">
 		    	<field name="electronicSignature" widget="Image" />
 		    </panel>
+		    <panel-related field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid"/>
         </panel-tabs>
     </form>
     
@@ -72,6 +73,7 @@
 			<panel-related title="Internal companies" field="companySet" hidden="true"/>
 			<field name="followersCalUserSet" widget="TagSelect" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
 			<panel-related field="calendarManagementList" colSpan="12"/>
+			<panel-related field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid"/>
 		</panel>
 	</form>
     
