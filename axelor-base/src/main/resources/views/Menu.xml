@@ -76,6 +76,26 @@
 		<view type="grid" name="keyword-grid"/>
 		<view type="form" name="keyword-form"/>
 	</action-view>
+	
+	<menuitem name="admin-root-general-barcode"
+		parent="admin-root-general" title="Barcode type configuration"
+		action="admin.root.general.barcode"/>
+
+	<action-view name="admin.root.general.barcode"
+		title="Barcode type configuration" model="com.axelor.apps.base.db.BarcodeTypeConfig" >
+		<view type="grid" name="barcodeTypeConfig-grid"/>
+		<view type="form" name="barcodeTypeConfig-form"/>
+	</action-view>
+
+    <menuitem name="admin-root-general-language"
+        parent="admin-root-general" title="Language"
+        action="admin.root.general.language"/>
+
+    <action-view name="admin.root.general.language"
+        title="Language" model="com.axelor.apps.base.db.Language" >
+        <view type="grid" name="language-grid"/>
+        <view type="form" name="language-form"/>
+    </action-view>
 
 	<menuitem name="referential-root" title="Referential" order="15" parent="admin-root"/>
 		
@@ -161,7 +181,7 @@
 	
 	<menuitem name="referential-root-price-list" parent="referential-root"
 		if="__config__.app.isApp('account') || __config__.app.isApp('sale') || __config__.app.isApp('purchase')"
-		title="Price lists" action="referential.root.price.list"  order="95" />
+		title="Price lists" action="referential.root.price.list" order="95"/>
 
 	<action-view name="referential.root.price.list" title="Price lists"
 		model="com.axelor.apps.base.db.PriceList" >
@@ -173,7 +193,7 @@
 		/>
 	
 	<menuitem name="referential-conf-address" parent="referential-conf"
-		title="Addresses" action="referential.conf.address"  />
+		title="Addresses" action="referential.conf.address" order="110"/>
 
 	<action-view name="referential.conf.address" title="Addresses"
 		model="com.axelor.apps.base.db.Address" >
@@ -184,7 +204,7 @@
 	</action-view>
 	
 	<menuitem name="referential-conf-invoice-rib" parent="referential-conf"
-		title="Bank details" action="referential.conf.invoice.rib" />
+		title="Bank details" action="referential.conf.invoice.rib" order="120"/>
 
 	<action-view name="referential.conf.invoice.rib"
 		title="Bank details" model="com.axelor.apps.base.db.BankDetails" >
@@ -193,7 +213,7 @@
 	</action-view>
 
 	<menuitem name="referential-conf-invoice-bank" parent="referential-conf"
-		title="SWIFT codes" action="referential.conf.invoice.bank"/>
+		title="SWIFT codes" action="referential.conf.invoice.bank" order="130"/>
 
 	<action-view name="referential.conf.invoice.bank"
 		title="SWIFT codes" model="com.axelor.apps.base.db.Bank" >
@@ -202,7 +222,7 @@
 	</action-view>
 	
 	<menuitem name="referential-conf-partner-category" parent="referential-conf"
-		title="Partner categories" action="referential.conf.partner.category" />
+		title="Partner categories" action="referential.conf.partner.category" order="140"/>
 
 	<action-view name="referential.conf.partner.category" title="Partner categories"
 		model="com.axelor.apps.base.db.PartnerCategory" >
@@ -212,7 +232,7 @@
 
 	<menuitem name="referential-conf-partner-sources"
 		parent="referential-conf" title="Partner sources"
-		action="referential.conf.partner.sources" />
+		action="referential.conf.partner.sources" order="150"/>
 
 	<action-view name="referential.conf.partner.sources"
 		title="Partner sources" model="com.axelor.apps.base.db.Source" >
@@ -221,7 +241,7 @@
 	</action-view>
 
 	<menuitem name="referential-conf-industry-sector-config" parent="referential-conf"
-		title="Industry sectors" action="referential.conf.industry.sector.config" />
+		title="Industry sectors" action="referential.conf.industry.sector.config" order="160"/>
 
 	<action-view name="referential.conf.industry.sector.config" title="Industry sectors"
 		model="com.axelor.apps.base.db.IndustrySector" >
@@ -230,7 +250,7 @@
 	</action-view>
 
 	<menuitem name="referential-conf-product-category" parent="referential-conf"
-		title="Product categories" action="referential.conf.product.category" />
+		title="Product categories" action="referential.conf.product.category" order="170"/>
 
 	<action-view name="referential.conf.product.category" title="Product categories"
 		model="com.axelor.apps.base.db.ProductCategory" >
@@ -239,7 +259,7 @@
 	</action-view>
 
 	<menuitem name="referential-conf-product-family" parent="referential-conf"
-		title="Product families" action="referential.conf.product.family" />
+		title="Product families" action="referential.conf.product.family" order="180"/>
 
 	<action-view name="referential.conf.product.family" title="Product families"
 		model="com.axelor.apps.base.db.ProductFamily" >
@@ -248,8 +268,19 @@
 		<context name="fromMenu" expr="eval:true"/>		
 	</action-view>
 	
+    <menuitem name="referential-conf-product-variant-attr"
+        parent="referential-conf"
+        title="Products variant attributes" action="referential.conf.product.variant.attr" order="190"/>
+
+    <action-view name="referential.conf.product.variant.attr"
+        title="Product variant attributes"
+        model="com.axelor.apps.base.db.ProductVariantAttr" >
+        <view type="grid" name="product-variant-attr-grid"/>
+        <view type="form" name="product-variant-attr-form"/>
+    </action-view>
+
 	<menuitem name="referential-conf-stop-reason" parent="referential-conf"
-		title="Blocking reasons" action="referential.conf.stop.reason" />
+		title="Blocking reasons" action="referential.conf.stop.reason" order="200"/>
 
 	<action-view name="referential.conf.stop.reason" title="Blocking reasons"
 		model="com.axelor.apps.base.db.StopReason" >

@@ -18,12 +18,15 @@
 			    <field name="nbDecimalDigitForBomQty"/>
 			</panel>
 			<panel name="manufacturingProcess" title="Manufacturing process">
-   				<field name="workCenterProduct" form-view="product-form" grid-view="product-grid" canEdit="false"/>
+   				<field name="workCenterProduct" domain="self.productTypeSelect = 'service'" form-view="product-form" grid-view="product-grid" canEdit="false"/>
 			</panel>
 			<panel name="prodProcess" title="Production process">
  				<field name="manageProdProcessVersion" widget="boolean-switch"/>
 				<field name="manageBusinessProduction" onChange="action-app-production-manage-business-production-record-onchange" title="Manage business production" if-module="axelor-business-production" widget="boolean-switch" />
 				<field name="enableTimesheetOnManufOrder" widget="boolean-switch" if-module="axelor-business-production" showIf="manageBusinessProduction" />
+			</panel>
+			<panel name="barcodeTypeConfig">
+				<field name="barcodeTypeConfig" title="Barcode Type"/>
 			</panel>
 			<panel name="costSheet" title="Cost sheet">
 			    <field name="productCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>

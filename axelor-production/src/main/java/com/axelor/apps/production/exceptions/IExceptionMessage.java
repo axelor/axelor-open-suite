@@ -111,5 +111,10 @@ public interface IExceptionMessage {
 	 * Configurator Bom Service
 	 */
 	String CONFIGURATOR_BOM_TOO_MANY_CALLS = /*$$(*/ "Too many recursive calls to create the bill of material." /*)*/;
+
+	/**
+	 * Stock move line production controller
+	 */
+	String STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT = /*$$(*/ "Unknown parent context class." /*)*/;
 }
 

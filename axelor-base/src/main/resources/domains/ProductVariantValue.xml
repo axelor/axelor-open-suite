@@ -13,6 +13,12 @@
 	<integer name="applicationPriceSelect" title="Application" selection="ibase.product.variant.value.application.price.select"/>
 	<many-to-one name="productVariantAttr" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
 	
-  </entity>
+	<extra-code>
+		// APPLICATION PRICE SELECT
+		public static final int APPLICATION_SALE_PRICE = 0;
+		public static final int APPLICATION_COST_PRICE = 1;
+	</extra-code>
 
+  </entity>
+  
 </domain-models>

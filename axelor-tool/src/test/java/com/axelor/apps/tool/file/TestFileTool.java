@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.tool.file;
 
+import java.io.File;
 import java.io.IOException;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TestFileTool {
@@ -30,15 +30,22 @@ public class TestFileTool {
 		
 		String destinationFolder = System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + "tata/titi/toto";
 		String fileName = "toto.txt";
-		Assert.assertTrue(FileTool.create(destinationFolder, fileName).createNewFile());
 		
+		File file = FileTool.create(destinationFolder, fileName);
+		file.deleteOnExit();
+		
+		Assert.assertTrue( file.createNewFile() );
+
 	}
 	
 	@Test
 	public void create2() throws IOException {
 		
 		String fileName = System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + "tata2/titi2/toto2/toto.txt";
-		Assert.assertTrue(FileTool.create(fileName).createNewFile());
+		File file = FileTool.create( fileName );
+		file.deleteOnExit();
 		
+		Assert.assertTrue( file.createNewFile() );
+
 	}
 }

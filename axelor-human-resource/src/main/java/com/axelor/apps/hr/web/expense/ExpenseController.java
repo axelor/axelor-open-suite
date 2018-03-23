@@ -536,7 +536,7 @@ public class ExpenseController {
 		BigDecimal amount = BigDecimal.ZERO;
 		try {
 			amount = Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee);
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
 

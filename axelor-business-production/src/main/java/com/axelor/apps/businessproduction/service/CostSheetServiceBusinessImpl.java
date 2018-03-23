@@ -53,8 +53,8 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl  {
 		
 		if(employee != null)  {
 
-			BigDecimal durationHours = new BigDecimal(prodHumanResource.getDuration()/3600);
-			
+			BigDecimal durationHours = new BigDecimal(prodHumanResource.getDuration()).divide(BigDecimal.valueOf(3600), appProductionService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_EVEN );
+
 			costSheet.addCostSheetLineListItem(
 					costSheetLineService.createWorkCenterCostSheetLine(prodHumanResource.getWorkCenter(), priority, bomLevel, parentCostSheetLine, 
 							durationHours, employee.getHourlyRate().multiply(durationHours), hourUnit));

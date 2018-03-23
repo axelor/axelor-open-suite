@@ -18,24 +18,22 @@
 package com.axelor.apps.hr.web.lunch.voucher;
 
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.PeriodService;
-import com.axelor.apps.hr.db.HRConfig;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
-import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -44,17 +42,10 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
 @Singleton
 public class LunchVoucherMgtController {
 	
 	@Inject private Provider<LunchVoucherMgtService> lunchVoucherMgtProvider;
-	
-	@Inject private Provider<HRConfigService> hrConfigService;
 	
 	public void calculate(ActionRequest request, ActionResponse response) {
 		
@@ -83,7 +74,7 @@ public class LunchVoucherMgtController {
 		try {
 			Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getPayPeriod());
 			Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getLeavePeriod());
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			response.setFlash(e.getMessage());
 		}
 	}
@@ -102,10 +93,6 @@ public class LunchVoucherMgtController {
 		LunchVoucherMgt lunchVoucherMgt = Beans.get(LunchVoucherMgtRepository.class).find(request.getContext().asType(LunchVoucherMgt.class).getId());
 		
 		try {
-/*
-			LunchVoucherMgtService lunchVoucherMgtService = lunchVoucherMgtProvider.get();
-			lunchVoucherMgtService.exportLunchVoucherMgt(lunchVoucherMgt);
-*/
 			lunchVoucherMgtProvider.get().export(lunchVoucherMgt);
 			response.setReload(true);
 		} catch (Exception e) {
@@ -122,7 +109,7 @@ public class LunchVoucherMgtController {
 		try {
 			String fileLink = ReportFactory.createReport(IReport.LUNCH_VOUCHER_MGT_MONTHLY, name)
 					.addParam("lunchVoucherMgtId", lunchVoucherMgt.getId())
-					.addParam("Locale", Beans.get(AppBaseService.class).getAppBase().getDefaultPartnerLanguage())
+					.addParam("Locale", Beans.get(UserService.class).getLanguage())
 					.addFormat(ReportSettings.FORMAT_PDF)
 					.generate()
 					.getFileLink();
@@ -131,7 +118,7 @@ public class LunchVoucherMgtController {
 					.define(name)
 					.add("html", fileLink).map());
 			
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}

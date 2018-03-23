@@ -9,6 +9,7 @@
 	<menuitem title="Current tickets" name="helpdesk-ticket-current" action="helpdesk.ticket.current" order="-100" parent="helpdesk-root"/>
 	
 	<action-view name="helpdesk.ticket.current" title="Tickets" model="com.axelor.apps.helpdesk.db.Ticket">
+		<view type="kanban" name="ticket-kanban"/>
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
@@ -19,6 +20,7 @@
 	<menuitem title="My tickets" name="helpdesk-my-ticket-all" action="helpdesk.my.ticket.all" order="-90" parent="helpdesk-root"/>
 	
 	<action-view name="helpdesk.my.ticket.all" title="My tickets" model="com.axelor.apps.helpdesk.db.Ticket">
+		<view type="kanban" name="ticket-kanban"/>
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
@@ -29,6 +31,7 @@
 	<menuitem title="My team tickets" name="helpdesk-my-team-ticket-all" action="helpdesk.my.team.ticket.all" order="-80" parent="helpdesk-root"/>
 	
 	<action-view name="helpdesk.my.team.ticket.all" title="My team tickets" model="com.axelor.apps.helpdesk.db.Ticket">
+		<view type="kanban" name="ticket-kanban"/>
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
@@ -40,6 +43,7 @@
 	<menuitem title="Not assigned tickets" name="helpdesk-not-assigned-ticket" action="helpdesk.not.assigned.ticket" order="-70" parent="helpdesk-root"/>
 	
 	<action-view name="helpdesk.not.assigned.ticket" title="Not assigned tickets" model="com.axelor.apps.helpdesk.db.Ticket">
+		<view type="kanban" name="ticket-kanban"/>
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
@@ -50,6 +54,7 @@
 	<menuitem title="Late tickets" name="helpdesk-late-ticket" action="helpdesk.late.ticket" order="-60" parent="helpdesk-root"/>
 	
 	<action-view name="helpdesk.late.ticket" title="Late tickets" model="com.axelor.apps.helpdesk.db.Ticket">
+		<view type="kanban" name="ticket-kanban"/>
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
@@ -61,6 +66,7 @@
 	<menuitem title="All tickets" name="helpdesk-ticket-all" action="helpdesk.ticket.all" order="-50" parent="helpdesk-root"/>
 	
 	<action-view name="helpdesk.ticket.all" title="All tickets" model="com.axelor.apps.helpdesk.db.Ticket">
+		<view type="kanban" name="ticket-kanban"/>
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>

@@ -46,7 +46,7 @@ public class PriceListController {
 		PriceList priceList = request.getContext().asType(PriceList.class);
 		try {
 			priceListService.checkDates(priceList);
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 		    response.setError(e.getMessage());
 		}
 

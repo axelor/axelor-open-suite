@@ -21,6 +21,7 @@ package com.axelor.apps.base.db;
  * Interface of PriceListLine object. Enum all static variable of packages.
  * 
  */
+@Deprecated
 public interface IPriceListLine {
 
 	/**

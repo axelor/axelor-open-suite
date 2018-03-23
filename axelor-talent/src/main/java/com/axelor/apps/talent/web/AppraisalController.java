@@ -27,6 +27,7 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.talent.db.Appraisal;
 import com.axelor.apps.talent.db.repo.AppraisalRepository;
 import com.axelor.apps.talent.service.AppraisalService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -48,84 +49,105 @@ public class AppraisalController {
 		
 		Appraisal appraisal = request.getContext().asType(Appraisal.class);
 		
-		appraisal = appraisalRepo.find(appraisal.getId());
-		
-		appraisalService.send(appraisal);
-		
-		response.setReload(true);
-		
+		try {
+			appraisal = appraisalRepo.find(appraisal.getId());
+			
+			appraisalService.send(appraisal);
+			
+			response.setReload(true);
+		}
+		catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 	
 	public void realize(ActionRequest request, ActionResponse response) {
 		
 		Appraisal appraisal = request.getContext().asType(Appraisal.class);
 		
-		appraisal = appraisalRepo.find(appraisal.getId());
-		
-		appraisalService.realize(appraisal);
-		
-		response.setReload(true);
-		
+		try {
+			appraisal = appraisalRepo.find(appraisal.getId());
+			
+			appraisalService.realize(appraisal);
+			
+			response.setReload(true);
+		}
+		catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 	
 	public void cancel(ActionRequest request, ActionResponse response) {
 		
 		Appraisal appraisal = request.getContext().asType(Appraisal.class);
 		
-		appraisal = appraisalRepo.find(appraisal.getId());
-		
-		appraisalService.cancel(appraisal);
-		
-		response.setReload(true);
-		
+		try  {
+			appraisal = appraisalRepo.find(appraisal.getId());
+			
+			appraisalService.cancel(appraisal);
+			
+			response.setReload(true);
+		}
+		catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 	
 	public void draft(ActionRequest request, ActionResponse response) {
 		
 		Appraisal appraisal = request.getContext().asType(Appraisal.class);
 		
-		appraisal = appraisalRepo.find(appraisal.getId());
-		
-		appraisalService.draft(appraisal);
-		
-		response.setReload(true);
-		
+		try  {
+			appraisal = appraisalRepo.find(appraisal.getId());
+			
+			appraisalService.draft(appraisal);
+			
+			response.setReload(true);
+		}
+		catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 	
 	public void createAppraisals(ActionRequest request, ActionResponse response) {
 		
-		Context context = request.getContext();
-		
-		Set<Map<String,Object>> employeeSet = new HashSet<Map<String,Object>>();
-		
-		employeeSet.addAll((Collection<? extends Map<String, Object>>) context.get("employeeSet"));
-		
-		Set<Employee> employees = new HashSet<Employee>();
-		
-		EmployeeRepository employeeRepo = Beans.get(EmployeeRepository.class);
-		
-		for (Map<String, Object> emp : employeeSet) {
-			Long empId = Long.parseLong(emp.get("id").toString());
-			employees.add(employeeRepo.find(empId));
+		try  {
+			Context context = request.getContext();
+			
+			Set<Map<String,Object>> employeeSet = new HashSet<Map<String,Object>>();
+			
+			employeeSet.addAll((Collection<? extends Map<String, Object>>) context.get("employeeSet"));
+			
+			Set<Employee> employees = new HashSet<Employee>();
+			
+			EmployeeRepository employeeRepo = Beans.get(EmployeeRepository.class);
+			
+			for (Map<String, Object> emp : employeeSet) {
+				Long empId = Long.parseLong(emp.get("id").toString());
+				employees.add(employeeRepo.find(empId));
+			}
+			
+			Long templateId = Long.parseLong(context.get("templateId").toString());
+			
+			Appraisal appraisalTemplate = appraisalRepo.find(templateId);
+			
+			Boolean send = (Boolean) context.get("sendAppraisals");
+			
+			Set<Long> createdIds = appraisalService.createAppraisals(appraisalTemplate, employees, send);
+			
+			response.setView(ActionView.define("Appraisal")
+					.model(Appraisal.class.getName())
+					.add("grid","appraisal-grid")
+					.add("form","appraisal-form")
+					.domain("self.id in :createdIds")
+					.context("createdIds", createdIds)
+					.map());
+			
+			response.setCanClose(true);
 		}
-		
-		Long templateId = Long.parseLong(context.get("templateId").toString());
-		
-		Appraisal appraisalTemplate = appraisalRepo.find(templateId);
-		
-		Boolean send = (Boolean) context.get("sendAppraisals");
-		
-		Set<Long> createdIds = appraisalService.createAppraisals(appraisalTemplate, employees, send);
-		
-		response.setView(ActionView.define("Appraisal")
-				.model(Appraisal.class.getName())
-				.add("grid","appraisal-grid")
-				.add("form","appraisal-form")
-				.domain("self.id in :createdIds")
-				.context("createdIds", createdIds)
-				.map());
-		
-		response.setCanClose(true);
+		catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 		
 	}
 }

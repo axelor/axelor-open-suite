@@ -23,6 +23,7 @@ package com.axelor.app.production.db;
  * @author dubaux
  * 
  */
+@Deprecated
 public interface IOperationOrder {
 
 

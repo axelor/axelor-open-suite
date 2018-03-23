@@ -14,6 +14,16 @@
 		<integer name="statusSelect" title="Status" selection="appraisal.status.selected" readonly="true"/>
 		<boolean name="isTemplate" title="Is template" />
 		
+		<extra-code><![CDATA[
+	
+	   	// TYPE SELECT
+		public static final int STATUS_DRAFT = 0;
+		public static final int STATUS_SENT = 1;
+		public static final int STATUS_COMPLETED = 2;
+		public static final int STATUS_CANCELED = 3;
+	
+		]]></extra-code>
+		
 		<track>
 			<field name="employee"/>
 			<field name="company"/>
@@ -30,6 +40,7 @@
 			<message if="statusSelect == 0" on="UPDATE">Appraisal draft</message>
 		</track>
 		
+		
 	</entity>
-
+	
 </domain-models>

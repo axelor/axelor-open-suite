@@ -37,7 +37,7 @@
 			<field name="statusSelect" hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2" selection-in="[0,1,2]"/>
 			<button name="cancel" title="Cancel" readonlyIf="statusSelect == 2" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel"/>
 		</panel>
-</form>
+	</form>
 
 	
 	<action-group name="action-invoice-payment-group-new">

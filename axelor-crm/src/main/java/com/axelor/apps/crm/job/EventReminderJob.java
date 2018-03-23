@@ -23,7 +23,6 @@ import org.quartz.JobExecutionException;
 
 import com.axelor.apps.crm.db.repo.CrmBatchRepository;
 import com.axelor.apps.crm.service.batch.CrmBatchService;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 
@@ -34,7 +33,7 @@ public class EventReminderJob implements Job{
 		try{
 			Beans.get(CrmBatchService.class).run(CrmBatchRepository.CODE_BATCH_EVENT_REMINDER);
 		}
-		catch(AxelorException e){
+		catch(Exception e){
 			TraceBackService.trace(new Exception(e));
 		}
 	}

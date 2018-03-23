@@ -25,7 +25,7 @@ public class BillOfMaterialManagementRepository extends BillOfMaterialRepository
 	public BillOfMaterial save(BillOfMaterial billOfMaterial){
 		
 		if (billOfMaterial.getVersionNumber() != null && billOfMaterial.getVersionNumber() > 1){
-			billOfMaterial.setFullName( billOfMaterial.getName() + " - v" + String.valueOf(billOfMaterial.getVersionNumber()) );
+			billOfMaterial.setFullName( billOfMaterial.getName() + " - v" + billOfMaterial.getVersionNumber() );
 		}
 		else{
 			billOfMaterial.setFullName( billOfMaterial.getName() );

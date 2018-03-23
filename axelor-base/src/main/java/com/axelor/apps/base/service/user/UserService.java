@@ -96,4 +96,7 @@ public interface UserService {
 
 	@Transactional
 	public void createPartner(User user);
+	
+	public String getLanguage();
+
 }

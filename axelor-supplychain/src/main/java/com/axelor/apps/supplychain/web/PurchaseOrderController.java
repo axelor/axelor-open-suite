@@ -274,8 +274,8 @@ public class PurchaseOrderController {
 						.context("_showRecord", String.valueOf(purchaseOrder.getId())).map());
 				response.setCanClose(true);
 			}
-		}catch(AxelorException ae){
-			response.setFlash(ae.getLocalizedMessage());
+		}catch(Exception e){
+			response.setFlash(e.getLocalizedMessage());
 		}
 	}
 

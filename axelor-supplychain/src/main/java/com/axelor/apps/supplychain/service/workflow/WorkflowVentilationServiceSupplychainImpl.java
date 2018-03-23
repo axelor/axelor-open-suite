@@ -100,7 +100,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
         if (invoiceSaleOrder != null) {
 
-            saleOrderInvoiceService.updateAndCheckInvoicedAmount(invoiceSaleOrder, invoice.getId(), false);
+            saleOrderInvoiceService.update(invoiceSaleOrder, invoice.getId(), false);
             accountingSituationSupplychainService.updateUsedCredit(invoiceSaleOrder.getClientPartner());
             log.debug("Update the invoiced amount of the sale order : {}", invoiceSaleOrder.getSaleOrderSeq());
 
@@ -127,7 +127,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
             for (SaleOrder saleOrder : saleOrderList) {
                 log.debug("Update the invoiced amount of the sale order : {}", saleOrder.getSaleOrderSeq());
-                saleOrderInvoiceService.updateAndCheckInvoicedAmount(saleOrder, invoice.getId(), false);
+                saleOrderInvoiceService.update(saleOrder, invoice.getId(), false);
                 saleOrderRepository.save(saleOrder);
                 accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
             }

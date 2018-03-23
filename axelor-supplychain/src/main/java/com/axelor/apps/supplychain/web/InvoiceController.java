@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
@@ -35,7 +37,6 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
@@ -261,8 +262,8 @@ public class InvoiceController {
 						.context("_showRecord", String.valueOf(invoice.getId())).map());
 				response.setCanClose(true);
 			}
-		}catch(AxelorException ae){
-			response.setFlash(ae.getLocalizedMessage());
+		}catch(Exception e){
+			response.setFlash(e.getLocalizedMessage());
 		}
 	}
 	
@@ -272,6 +273,10 @@ public class InvoiceController {
 			List<Invoice> invoices = subscriptionInvoiceService.generateSubscriptionInvoices();
 			response.setFlash(String.format(I18n.get(com.axelor.apps.supplychain.exception.IExceptionMessage.TOTAL_SUBSCRIPTION_INVOICE_GENERATED),
 					invoices.size()));
+
+			if (!CollectionUtils.isEmpty(invoices)) {
+	            response.setReload(true);
+			}
 		} catch(Exception e) {
 			response.setFlash(String.format(I18n.get(com.axelor.apps.supplychain.exception.IExceptionMessage.SUBSCRIPTION_INVOICE_GENERATION_ERROR),
 					e.getMessage()));

@@ -26,9 +26,9 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.DurationService;
-import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.exception.AxelorException;
@@ -59,6 +59,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	
 	@Override
 	public String getReportLink(SaleOrder saleOrder, String name, String language, boolean proforma, String format) throws AxelorException{
+
+		if (saleOrder.getPrintingSettings() == null) {
+			throw new AxelorException(IException.MISSING_FIELD,
+					String.format(I18n.get(IExceptionMessage.SALE_ORDER_MISSING_PRINTING_SETTINGS), saleOrder.getSaleOrderSeq()),
+					saleOrder
+			);
+		}
         return ReportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
                 .addParam("Locale", language)
                 .addParam("SaleOrderId", saleOrder.getId())
@@ -88,7 +95,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	@Override
     @Transactional(rollbackOn = { Exception.class, AxelorException.class })
 	public void enableEditOrder(SaleOrder saleOrder) throws AxelorException {
-	    if (saleOrder.getStatusSelect() == ISaleOrder.STATUS_FINISHED) {
+	    if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINISHED) {
 	        throw new AxelorException(saleOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.SALES_ORDER_FINISHED));
 	    }
 

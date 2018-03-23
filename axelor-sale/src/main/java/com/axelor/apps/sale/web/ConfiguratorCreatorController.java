@@ -103,7 +103,7 @@ public class ConfiguratorCreatorController {
 		configuratorCreatorService.authorizeUser(creator, currentUser);
 		try {
 			configuratorCreatorService.addRequiredFormulas(creator);
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			TraceBackService.trace(e);
 			response.setError(e.getMessage());
 		}

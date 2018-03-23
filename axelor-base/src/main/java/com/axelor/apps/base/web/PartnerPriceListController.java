@@ -20,7 +20,6 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerPriceList;
 import com.axelor.apps.base.service.PartnerPriceListService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -49,7 +48,7 @@ public class PartnerPriceListController {
         }
         try {
             Beans.get(PartnerPriceListService.class).checkDates(partnerPriceList);
-        } catch (AxelorException e) {
+        } catch (Exception e) {
             response.setAlert(e.getMessage());
         }
     }
