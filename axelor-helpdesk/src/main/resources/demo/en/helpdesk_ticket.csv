@@ -1,0 +1,7 @@
+ticketSeq;subject;ticketType.name;startDateT;endDateT;assignedToUser.name;prioritySelect;statusSelect;progressSelect
+TKT0001;Or download the sources of the ERP?;Technical Support;26/02/18 18:30;26/02/18 20:30;Kevin DEMOERP;1;2;100
+TKT0002;How to access the technical doc?;Technical Support;27/02/18 13:30;27/02/18 16:30;Kevin DEMOERP;1;2;100
+TKT0003;Can not connect with the user Admin;Technical Support;27/02/18 14:30;28/02/18 14:00;Cyril MARCHAL;3;2;100
+TKT0004;How to attach an attachment?;Functionnal Support;27/02/18 18:30;;Charles DEMOCRM;2;1;10
+TKT0005;How to perform an advanced search?;Functionnal Support;28/02/18 13:30;;Charles DEMOCRM;3;0;
+TKT0006;How to perform a mass update of records?;Functionnal Support;28/02/18 14:00;;Kevin DEMOERP;4;0;
