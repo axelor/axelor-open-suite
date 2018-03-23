@@ -40,7 +40,7 @@
 		<panel name="context" title="Context">
 			<field name="project" onChange="action-record-value-on-customer-and-contact" form-view="helpdesk-project-form" grid-view="helpdesk-project-grid"/>
 			<field name="customer" domain="self.isCustomer = true" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="contact" onSelect="action-ticket-domain-on-contact-partner" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+			<field name="contactPartner" onSelect="action-ticket-domain-on-contact-partner" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<field name="lead" form-view="lead-form" grid-view="lead-grid" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 			<field name="assignedToUser" form-view="user-form" grid-view="user-grid" onChange="action-ticket-attrs-hidden-to-takeCharge-btn"/>
 			<field name="responsibleUser" form-view="user-form" grid-view="user-grid"/>
@@ -126,7 +126,7 @@
 	
 	<action-record name="action-record-value-on-customer-and-contact" model="com.axelor.apps.helpdesk.db.Ticket">
 		<field name="customer" expr="eval: project.clientPartner"/>
-		<field name="contact" expr="eval: project.contactPartner"/>
+		<field name="contactPartner" expr="eval: project.contactPartner"/>
 	</action-record>
 	
 	<action-record name="action-ticket-record-set-start-status" model="com.axelor.apps.helpdesk.db.Ticket">
@@ -156,9 +156,9 @@
 	</action-attrs>
 	
 	<action-attrs name="action-ticket-domain-on-contact-partner">
-		<attribute for="contact" if="customer != null &amp;&amp; !customer.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (${customer.contactPartnerSet?.collect{it.id}.join(',')})&quot;"/>
- 		<attribute for="contact" if="customer != null &amp;&amp; customer.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (0)&quot;"/>
- 		<attribute for="contact" if="customer == null" name="domain" expr="eval: &quot;self.isContact = true&quot;"/>
+		<attribute for="contactPartner" if="customer != null &amp;&amp; !customer.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (${customer.contactPartnerSet?.collect{it.id}.join(',')})&quot;"/>
+ 		<attribute for="contactPartner" if="customer != null &amp;&amp; customer.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (0)&quot;"/>
+ 		<attribute for="contactPartner" if="customer == null" name="domain" expr="eval: &quot;self.isContact = true&quot;"/>
 	</action-attrs>
     
 </object-views>
