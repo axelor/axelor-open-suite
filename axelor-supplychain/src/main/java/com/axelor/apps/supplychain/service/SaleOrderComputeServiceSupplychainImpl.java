@@ -21,6 +21,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +71,7 @@ public class SaleOrderComputeServiceSupplychainImpl extends SaleOrderComputeServ
 		if (Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice()) {
 			saleOrder.setAdvanceTotal(computeTotalInvoiceAdvancePayment(saleOrder));
 		}
+		Beans.get(SaleOrderServiceSupplychainImpl.class).updateAmountToBeSpreadOverTheTimetable(saleOrder);
 	}
 
     protected BigDecimal computeTotalInvoiceAdvancePayment(SaleOrder saleOrder) {

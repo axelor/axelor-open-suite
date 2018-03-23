@@ -27,7 +27,6 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
@@ -80,7 +79,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
 				.getAppSupplychain()
 				.getIntercoSaleCreatingStatusSelect();
 		if (saleOrder.getInterco()
-				&& intercoSaleCreatingStatus == ISaleOrder.STATUS_ORDER_CONFIRMED) {
+				&& intercoSaleCreatingStatus == SaleOrderRepository.STATUS_CONFIRMED) {
 		    Beans.get(IntercoService.class)
 					.generateIntercoPurchaseFromSale(saleOrder);
 		}
@@ -92,7 +91,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
 		super.cancelSaleOrder(saleOrder, cancelReason, cancelReasonStr);
 		try {
 			accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -107,7 +106,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
 				.getAppSupplychain()
 				.getIntercoSaleCreatingStatusSelect();
 		if (saleOrder.getInterco()
-				&& intercoSaleCreatingStatus == ISaleOrder.STATUS_FINALIZE) {
+				&& intercoSaleCreatingStatus == SaleOrderRepository.STATUS_FINALIZED) {
 		    Beans.get(IntercoService.class)
 					.generateIntercoPurchaseFromSale(saleOrder);
 		}

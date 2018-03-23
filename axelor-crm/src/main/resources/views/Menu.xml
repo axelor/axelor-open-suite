@@ -69,7 +69,7 @@
 		title="Opportunities" action="crm.root.opportunity" order="25"/>
 
 	<action-view name="crm.root.opportunity" title="Opportunities"
-		model="com.axelor.apps.crm.db.Opportunity" >
+		model="com.axelor.apps.crm.db.Opportunity" home="true">
 		<view type="kanban" name="opportunity-kanban"/>
 		<view type="grid" name="opportunity-grid"/>
 		<view type="form" name="opportunity-form"/>

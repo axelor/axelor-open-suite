@@ -17,18 +17,6 @@
  */
 package com.axelor.apps.message.service;
 
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Set;
-
-import javax.mail.MessagingException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
@@ -39,6 +27,7 @@ import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.mail.MailBuilder;
 import com.axelor.mail.MailSender;
@@ -54,6 +43,16 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Set;
 
 public class MessageServiceImpl implements MessageService {
 	
@@ -101,7 +100,7 @@ public class MessageServiceImpl implements MessageService {
 		
 	}
 	
-	protected Message createMessage(String content, EmailAddress fromEmailAddress, String relatedTo1Select, int relatedTo1SelectId, String relatedTo2Select, int relatedTo2SelectId, 
+	protected Message createMessage(String content, EmailAddress fromEmailAddress, String relatedTo1Select, long relatedTo1SelectId, String relatedTo2Select, long relatedTo2SelectId,
 			LocalDateTime sentDate, boolean sentByEmail, int statusSelect, String subject, int typeSelect,List<EmailAddress> replyToEmailAddressList, List<EmailAddress> toEmailAddressList, 
 			List<EmailAddress> ccEmailAddressList, List<EmailAddress> bccEmailAddressList, String addressBlock, int mediaTypeSelect, EmailAccount emailAccount)  {
 
@@ -191,6 +190,10 @@ public class MessageServiceImpl implements MessageService {
 			ccRecipients = this.getEmailAddresses(message.getCcEmailAddressSet()),
 			bccRecipients = this.getEmailAddresses(message.getBccEmailAddressSet());
 
+		if (toRecipients.isEmpty() && ccRecipients.isEmpty() && bccRecipients.isEmpty()) {
+			throw new AxelorException(message, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MESSAGE_8));
+		}
+
 		MailSender sender = new MailSender(account);
 		MailBuilder mailBuilder = sender.compose();
 
@@ -214,9 +217,9 @@ public class MessageServiceImpl implements MessageService {
 			MetaFile metaFile = metaAttachment.getMetaFile();
 			mailBuilder.attach( metaFile.getFileName(), MetaFiles.getPath( metaFile ).toString() );
 		}
-			
+
 		mailBuilder.send();
-		
+
 		message.setSentByEmail(true);
 		message.setStatusSelect(MessageRepository.STATUS_SENT);
 		message.setSentDateT(LocalDateTime.now());

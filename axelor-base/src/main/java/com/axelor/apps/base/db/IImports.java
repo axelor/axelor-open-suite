@@ -21,6 +21,7 @@ package com.axelor.apps.base.db;
  * Interface of Imports package. Enum all static variable of packages.
  * 
  */
+@Deprecated
 public interface IImports {
 
 	/**

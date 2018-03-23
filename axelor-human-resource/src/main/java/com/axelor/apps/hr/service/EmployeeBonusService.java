@@ -97,7 +97,7 @@ public class EmployeeBonusService {
 			Integer lineStatus = EmployeeBonusMgtLineRepository.STATUS_CALCULATED;
 			try {
 				formula = replaceExpressionInFormula(formula, bonus.getCompany().getHrConfig(), employee, bonus.getPayPeriod() );
-			} catch (AxelorException e) {
+			} catch (Exception e) {
 				TraceBackService.trace(e);
 				formula = "true";
 				lineStatus = EmployeeBonusMgtLineRepository.STATUS_ANOMALY;
@@ -108,7 +108,7 @@ public class EmployeeBonusService {
 			if (shell.evaluate(eval).toString().equals("true")) {
 				try{
 					formula = replaceExpressionInFormula(bonus.getEmployeeBonusType().getFormula(), bonus.getCompany().getHrConfig(), employee, bonus.getPayPeriod());
-				}catch (AxelorException e){
+				}catch (Exception e){
 					lineStatus = EmployeeBonusMgtLineRepository.STATUS_ANOMALY;
 				}
 

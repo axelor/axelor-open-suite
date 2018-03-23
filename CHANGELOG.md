@@ -29,6 +29,8 @@
 - Manage shipment mode, freight carrier mode, incoterm, carrier partner, forwarder partner on Partner, Sale order, Stock move.
 - New user option to allow notifications to be sent by email on desired entities.
 - Add validation date in Inventory
+- Remove teams app module.
+- Add the number of components on Bill of material form view.
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
@@ -48,6 +50,10 @@
 - Update CRM & ICalendar events UI
 - Removed extra links from tasks to other tasks. Kept only 'Predecessors tasks'. 
 - Allow to read the products from production, stock and crm modules
+- Improve manufacturing order workflow.
+- When we treat a component of a manuf order that is not loaded on MRP because there is no default BOM or because the component of manuf order is not a component of the bill of material, we add it with the level of manuf order product + 1.
+- Replaced selection field for language on Partner per a M2O to Language object to be able to add new partner language easily.
+- New select on product to choose if we want real or planned price for last product price or average price.
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
@@ -60,6 +66,7 @@
 - Fix copy of manufacturing order
 - Fix multiple NPE in CRM events
 - Fix MRP calculation exception
+- Fix manufacturing order stock move generation in unusual case.
 
 ## [Unreleased 4.x]
 

@@ -19,7 +19,7 @@ dependencies {
 	compile "org.mnode.ical4j:ical4j:1.0.6"
 	compile "org.mnode.ical4j:ical4j-extensions:0.9.2"
 	compile "org.mnode.ical4j:ical4j-connector:0.9.4.3"
-	compile "com.google.zxing:core:3.3.0"
+	compile "com.google.zxing:core:3.3.2"
 	compile 'org.iban4j:iban4j:3.2.1'
 	compile 'com.itextpdf:itextpdf:5.0.6'
 }

@@ -112,17 +112,7 @@ public class EventManagementRepository extends EventRepository {
 			TraceBackService.trace(e);
 		}
 		
-		ICalendar calendar = entity.getCalendar();
 		super.remove(entity);
-		if(calendar != null){
-			try{
-				calendarService.sync(calendar);
-			}
-			catch(Exception e){
-				TraceBackService.trace(e);
-			}
-		}
-		
 	}
 
 }

@@ -42,7 +42,6 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
-import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -96,8 +95,8 @@ public class MrpServiceImpl implements MrpService  {
 	
 	protected AppBaseService appBaseService;
 
-	protected List<StockLocation> stockLocationList = Lists.newArrayList();
-	protected Map<Long,Integer> productMap = Maps.newHashMap();
+	protected List<StockLocation> stockLocationList;
+	protected Map<Long,Integer> productMap;
 	protected Mrp mrp;
 	
 	
@@ -327,6 +326,9 @@ public class MrpServiceImpl implements MrpService  {
 		MrpLine mrpLine = this.getPreviousProposalMrpLine(product, mrpLineType, stockLocation, maturityDate);
 		
 		if(mrpLine != null)  {
+			if (mrpLineType.getTypeSelect() == MrpLineTypeRepository.TYPE_OUT) {
+			    reorderQty = reorderQty.negate();
+			}
 			mrpLine.setQty(mrpLine.getQty().add(reorderQty));
 			mrpLine.setRelatedToSelectName(null);
 
@@ -501,7 +503,7 @@ public class MrpServiceImpl implements MrpService  {
 		List<Integer> statusList = StringTool.getIntegerList(statusSelect);
 
 		if (statusList.isEmpty()) {
-			statusList.add(ISaleOrder.STATUS_ORDER_CONFIRMED);
+			statusList.add(SaleOrderRepository.STATUS_CONFIRMED);
 		}
 
 		// TODO : Manage the case where order is partially delivered
@@ -696,6 +698,8 @@ public class MrpServiceImpl implements MrpService  {
 	
 	
 	protected void assignProductAndLevel(Set<Product> productList)  {
+		
+		productMap = Maps.newHashMap();
 		
 		for(Product product : productList)  {
 			

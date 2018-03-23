@@ -40,7 +40,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 
 	@Override
 	public boolean checkDefaultMailAccount(EmailAccount mailAccount) {
-		if ( appBaseService.getAppBase().getMailAccountByUser() && mailAccount.getIsDefault()) {
+		if ( appBaseService.getAppBase().getEmailAccountByUser() && mailAccount.getIsDefault()) {
 			String request = "self.user = ?1 AND self.isDefault = true";
 			List<Object> params = Lists.newArrayList();
 			params.add(userService.getUser());
@@ -58,7 +58,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 	@Override
 	public EmailAccount getDefaultMailAccount(int serverType)  {
 
-		if ( appBaseService.getAppBase().getMailAccountByUser() ) {
+		if ( appBaseService.getAppBase().getEmailAccountByUser() ) {
 			return mailAccountRepo.all()
 					.filter("self.user = ?1 AND self.isDefault = true AND self.serverTypeSelect = ?2",
 					userService.getUser()

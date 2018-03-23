@@ -62,7 +62,7 @@
 			<field name="leaveLine.quantity" title="Available quantity (acquired)" />
 			<field name="injectConsumeSelect" hidden="true" onChange="action-leave-request-attrs-inject-change"/>
 			<spacer/>
-			<field name="fromDate" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration" default="__date__"/>
+			<field name="fromDate" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
 			<field name="startOnSelect" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
 			<field name="toDate" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
 			<field name="endOnSelect" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>

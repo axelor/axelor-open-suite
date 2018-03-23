@@ -165,7 +165,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 				
 				if(reimbursementExportService.canBeReimbursed(partner, companyRepo.find(company.getId())))  {
 				
-					List<MoveLine> moveLineList = (List<MoveLine>) moveLineRepo.all().filter("self.account.useForPartnerBalance = 'true' AND self.fromSchedulePaymentOk = 'false' " +
+					List<MoveLine> moveLineList = (List<MoveLine>) moveLineRepo.all().filter("self.account.useForPartnerBalance = 'true' " +
 							"AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.company = ?3 AND " +
 							"self.reimbursementStatusSelect = ?4 ",
 							MoveRepository.STATUS_VALIDATED, partnerRepository.find(partner.getId()), companyRepo.find(company.getId()), MoveLineRepository.REIMBURSEMENT_STATUS_NULL).fetch();

@@ -176,7 +176,7 @@ case when certificate.type_select = 'signature' then 'EbicsCertificateReport.sig
  end as certificate_hash,
  bank.host_id,
  bank.name as "bank_name",
- bank.language_select,
+ language.code as "bank_language",
  ebics_user.user_id,
  partner.partner_id,
  case when certificate.type_select = 'signature' then 'EbicsCertificateReport.signatureVersion'
@@ -193,6 +193,7 @@ from bankpayment_ebics_certificate certificate
 left join bankpayment_ebics_user ebics_user on (ebics_user.id = ?)
 left join bankpayment_ebics_partner partner on (partner.id = ebics_user.ebics_partner)
 left join bankpayment_ebics_bank bank on (bank.id = partner.ebics_bank)
+left join base_language language on (language.id = bank.language)
 order by certificate.type_select desc;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -423,9 +424,9 @@ where message_key = ? and language = ? ]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">language_select</property>
-                    <text-property name="displayName">language_select</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["language_select"]</expression>
+                    <property name="name">bank_language</property>
+                    <text-property name="displayName">bank_language</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["bank_language"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -529,7 +530,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_2</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">row["language_select"]</value>
+                                                    <value type="javascript">row["bank_language"]</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -625,7 +626,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_2</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">row["language_select"]</value>
+                                                    <value type="javascript">row["bank_language"]</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -705,7 +706,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_2</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">row["language_select"]</value>
+                                                    <value type="javascript">row["bank_language"]</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -768,7 +769,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                                         <structure>
                                                             <property name="paramName">param_2</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">row["language_select"]</value>
+                                                                <value type="javascript">row["bank_language"]</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>
@@ -818,7 +819,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                                         <structure>
                                                             <property name="paramName">param_2</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">row["language_select"]</value>
+                                                                <value type="javascript">row["bank_language"]</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>
@@ -857,7 +858,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                                         <structure>
                                                             <property name="paramName">param_2</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">row["language_select"]</value>
+                                                                <value type="javascript">row["bank_language"]</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>
@@ -907,7 +908,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                                         <structure>
                                                             <property name="paramName">param_2</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">row["language_select"]</value>
+                                                                <value type="javascript">row["bank_language"]</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>

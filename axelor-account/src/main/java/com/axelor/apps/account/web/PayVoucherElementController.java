@@ -57,7 +57,7 @@ public class PayVoucherElementController {
                     elementToPay.getAmountToPay(),
                     elementToPay.getPaymentVoucher().getPaymentDate()
             );
-        } catch(AxelorException e) {
+        } catch(Exception e) {
             TraceBackService.trace(response, e);
         }
         if (amountToPayCurrency != null) {

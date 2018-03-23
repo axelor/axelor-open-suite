@@ -735,7 +735,6 @@ group by month_val,month_text]]></xml-property>
 from project_project_planning pp
 left join auth_user usr on (usr.id = pp.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
-left join team_task task on (task.project = pp.project)
 left join project_project project on (project.id = pp.project)
 where project.id = ? and pp.total_planned_hrs > 0
 group by emp.id,emp.name;]]></xml-property>
@@ -1114,7 +1113,7 @@ left join (
 	from hr_timesheet_line tml_real
 	left join hr_timesheet tm_real on (tm_real.id = tml_real.timesheet)
 	left join auth_user user_real on (user_real.id = tm_real.user_id)
-	left join hr_employee emp_real on (emp_real.id = tm_real.user_id)
+	left join hr_employee emp_real on (emp_real.id = user_real.employee)
 	where tm_real.status_select = 3 and tml_real.project = ?
 	group by month_val) real_time 
 on (ts.month_val = real_time.month_val)
@@ -1124,7 +1123,7 @@ left join (
 	from hr_timesheet_line tml_planned
 	left join hr_timesheet tm_planned on (tm_planned.id = tml_planned.timesheet)
 	left join auth_user user_planned on (user_planned.id = tml_planned.user_id)
-	left join hr_employee emp_planned on (emp_planned.id = tm_planned.user_id)
+	left join hr_employee emp_planned on (emp_planned.id = user_planned.employee)
 	where tm_planned.status_select < 3  and tml_planned.project = ?
 	group by month_val) theory_time
 on (ts.month_val = theory_time.month_val)
@@ -1211,7 +1210,7 @@ order by ts.month_val]]></xml-property>
     </page-setup>
     <body>
         <grid id="4785">
-            <property name="height">17.5625in</property>
+            <property name="height">18.583333333333332in</property>
             <property name="width">7.947916666666667in</property>
             <property name="dataSet">Project</property>
             <list-property name="boundDataColumns">
@@ -1341,6 +1340,7 @@ order by ts.month_val]]></xml-property>
                 </cell>
             </row>
             <row id="4803">
+                <property name="height">0.90625in</property>
                 <cell id="4804">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
@@ -1359,6 +1359,7 @@ order by ts.month_val]]></xml-property>
                                 <text-property name="displayName">total_hours</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["total_hours"]</expression>
                                 <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">emp_rate</property>
@@ -1770,6 +1771,7 @@ order by ts.month_val]]></xml-property>
                         </header>
                         <detail>
                             <row id="4795">
+                                <property name="height">0.25in</property>
                                 <cell id="4796">
                                     <property name="borderLeftColor">#000000</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -1827,10 +1829,59 @@ order by ts.month_val]]></xml-property>
                                     <property name="showIfBlank">false</property>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
-                                    <data id="4829">
+                                    <text id="5190">
+                                        <property name="backgroundAttachment">scroll</property>
+                                        <property name="backgroundPositionX">0%</property>
+                                        <property name="backgroundPositionY">0%</property>
+                                        <property name="backgroundRepeat">repeat</property>
+                                        <property name="fontFamily">serif</property>
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="fontStyle">normal</property>
+                                        <property name="fontVariant">normal</property>
+                                        <property name="color">black</property>
+                                        <property name="textLineThrough">none</property>
+                                        <property name="textOverline">none</property>
+                                        <property name="textUnderline">none</property>
+                                        <property name="borderBottomColor">black</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderBottomWidth">medium</property>
+                                        <property name="borderLeftColor">black</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderLeftWidth">medium</property>
+                                        <property name="borderRightColor">black</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderRightWidth">medium</property>
+                                        <property name="borderTopColor">black</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="borderTopWidth">medium</property>
+                                        <property name="marginTop">0pt</property>
+                                        <property name="marginLeft">0pt</property>
+                                        <property name="marginBottom">0pt</property>
+                                        <property name="marginRight">0pt</property>
+                                        <property name="paddingTop">1pt</property>
+                                        <property name="paddingLeft">1pt</property>
+                                        <property name="paddingBottom">1pt</property>
+                                        <property name="paddingRight">1pt</property>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">total_hours</property>
-                                    </data>
+                                        <property name="textIndent">0em</property>
+                                        <property name="letterSpacing">normal</property>
+                                        <property name="lineHeight">normal</property>
+                                        <property name="orphans">2</property>
+                                        <property name="textTransform">none</property>
+                                        <property name="whiteSpace">normal</property>
+                                        <property name="widows">2</property>
+                                        <property name="wordSpacing">normal</property>
+                                        <property name="display">block</property>
+                                        <property name="pageBreakAfter">auto</property>
+                                        <property name="pageBreakBefore">auto</property>
+                                        <property name="pageBreakInside">auto</property>
+                                        <property name="showIfBlank">false</property>
+                                        <property name="canShrink">false</property>
+                                        <property name="overflow">hidden</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="###0.00{RoundingMode=HALF_UP}">row["total_hours"]</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4851">
                                     <property name="backgroundAttachment">scroll</property>
@@ -1881,10 +1932,59 @@ order by ts.month_val]]></xml-property>
                                     <property name="showIfBlank">false</property>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
-                                    <data id="4828">
+                                    <text id="5193">
+                                        <property name="backgroundAttachment">scroll</property>
+                                        <property name="backgroundPositionX">0%</property>
+                                        <property name="backgroundPositionY">0%</property>
+                                        <property name="backgroundRepeat">repeat</property>
+                                        <property name="fontFamily">serif</property>
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="fontStyle">normal</property>
+                                        <property name="fontVariant">normal</property>
+                                        <property name="color">black</property>
+                                        <property name="textLineThrough">none</property>
+                                        <property name="textOverline">none</property>
+                                        <property name="textUnderline">none</property>
+                                        <property name="borderBottomColor">black</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderBottomWidth">medium</property>
+                                        <property name="borderLeftColor">black</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderLeftWidth">medium</property>
+                                        <property name="borderRightColor">black</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderRightWidth">medium</property>
+                                        <property name="borderTopColor">black</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="borderTopWidth">medium</property>
+                                        <property name="marginTop">0pt</property>
+                                        <property name="marginLeft">0pt</property>
+                                        <property name="marginBottom">0pt</property>
+                                        <property name="marginRight">0pt</property>
+                                        <property name="paddingTop">1pt</property>
+                                        <property name="paddingLeft">1pt</property>
+                                        <property name="paddingBottom">1pt</property>
+                                        <property name="paddingRight">1pt</property>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">emp_rate</property>
-                                    </data>
+                                        <property name="textIndent">0em</property>
+                                        <property name="letterSpacing">normal</property>
+                                        <property name="lineHeight">normal</property>
+                                        <property name="orphans">2</property>
+                                        <property name="textTransform">none</property>
+                                        <property name="whiteSpace">normal</property>
+                                        <property name="widows">2</property>
+                                        <property name="wordSpacing">normal</property>
+                                        <property name="display">block</property>
+                                        <property name="pageBreakAfter">auto</property>
+                                        <property name="pageBreakBefore">auto</property>
+                                        <property name="pageBreakInside">auto</property>
+                                        <property name="showIfBlank">false</property>
+                                        <property name="canShrink">false</property>
+                                        <property name="overflow">hidden</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="###0.00{RoundingMode=HALF_UP}">row["emp_rate"]</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4799">
                                     <property name="backgroundAttachment">scroll</property>
@@ -1935,10 +2035,59 @@ order by ts.month_val]]></xml-property>
                                     <property name="showIfBlank">false</property>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
-                                    <data id="4830">
+                                    <text id="5194">
+                                        <property name="backgroundAttachment">scroll</property>
+                                        <property name="backgroundPositionX">0%</property>
+                                        <property name="backgroundPositionY">0%</property>
+                                        <property name="backgroundRepeat">repeat</property>
+                                        <property name="fontFamily">serif</property>
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="fontStyle">normal</property>
+                                        <property name="fontVariant">normal</property>
+                                        <property name="color">black</property>
+                                        <property name="textLineThrough">none</property>
+                                        <property name="textOverline">none</property>
+                                        <property name="textUnderline">none</property>
+                                        <property name="borderBottomColor">black</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderBottomWidth">medium</property>
+                                        <property name="borderLeftColor">black</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderLeftWidth">medium</property>
+                                        <property name="borderRightColor">black</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderRightWidth">medium</property>
+                                        <property name="borderTopColor">black</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="borderTopWidth">medium</property>
+                                        <property name="marginTop">0pt</property>
+                                        <property name="marginLeft">0pt</property>
+                                        <property name="marginBottom">0pt</property>
+                                        <property name="marginRight">0pt</property>
+                                        <property name="paddingTop">1pt</property>
+                                        <property name="paddingLeft">1pt</property>
+                                        <property name="paddingBottom">1pt</property>
+                                        <property name="paddingRight">1pt</property>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">emp_cost</property>
-                                    </data>
+                                        <property name="textIndent">0em</property>
+                                        <property name="letterSpacing">normal</property>
+                                        <property name="lineHeight">normal</property>
+                                        <property name="orphans">2</property>
+                                        <property name="textTransform">none</property>
+                                        <property name="whiteSpace">normal</property>
+                                        <property name="widows">2</property>
+                                        <property name="wordSpacing">normal</property>
+                                        <property name="display">block</property>
+                                        <property name="pageBreakAfter">auto</property>
+                                        <property name="pageBreakBefore">auto</property>
+                                        <property name="pageBreakInside">auto</property>
+                                        <property name="showIfBlank">false</property>
+                                        <property name="canShrink">false</property>
+                                        <property name="overflow">hidden</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="###0.00{RoundingMode=HALF_UP}">row["emp_rate"]</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                             </row>
                         </detail>
@@ -2715,6 +2864,11 @@ order by ts.month_val]]></xml-property>
           <DataPoint>
             <Components>
               <Type>Orthogonal_Value</Type>
+              <FormatSpecifier xsi:type="attribute:NumberFormatSpecifier">
+                <Prefix></Prefix>
+                <Suffix></Suffix>
+                <FractionDigits>2</FractionDigits>
+              </FormatSpecifier>
             </Components>
             <Separator>, </Separator>
           </DataPoint>
@@ -2780,6 +2934,11 @@ order by ts.month_val]]></xml-property>
         </Insets>
         <Visible>true</Visible>
       </Label>
+      <FormatSpecifier xsi:type="attribute:NumberFormatSpecifier">
+        <Prefix></Prefix>
+        <Suffix></Suffix>
+        <FractionDigits>2</FractionDigits>
+      </FormatSpecifier>
       <LabelPosition>Left</LabelPosition>
       <MajorGrid>
         <LineAttributes>
@@ -4327,6 +4486,11 @@ order by ts.month_val]]></xml-property>
           <DataPoint>
             <Components>
               <Type>Orthogonal_Value</Type>
+              <FormatSpecifier xsi:type="attribute:NumberFormatSpecifier">
+                <Prefix></Prefix>
+                <Suffix></Suffix>
+                <FractionDigits>2</FractionDigits>
+              </FormatSpecifier>
             </Components>
             <Separator>, </Separator>
           </DataPoint>
@@ -4392,6 +4556,11 @@ order by ts.month_val]]></xml-property>
         </Insets>
         <Visible>true</Visible>
       </Label>
+      <FormatSpecifier xsi:type="attribute:NumberFormatSpecifier">
+        <Prefix></Prefix>
+        <Suffix></Suffix>
+        <FractionDigits>2</FractionDigits>
+      </FormatSpecifier>
       <LabelPosition>Left</LabelPosition>
       <MajorGrid>
         <LineAttributes>
@@ -5735,6 +5904,7 @@ order by ts.month_val]]></xml-property>
                         </header>
                         <detail>
                             <row id="4977">
+                                <property name="height">0.23958333333333334in</property>
                                 <cell id="4978">
                                     <property name="borderLeftColor">#000000</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -5792,10 +5962,59 @@ order by ts.month_val]]></xml-property>
                                     <property name="showIfBlank">false</property>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
-                                    <data id="4981">
+                                    <text id="5195">
+                                        <property name="backgroundAttachment">scroll</property>
+                                        <property name="backgroundPositionX">0%</property>
+                                        <property name="backgroundPositionY">0%</property>
+                                        <property name="backgroundRepeat">repeat</property>
+                                        <property name="fontFamily">serif</property>
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="fontStyle">normal</property>
+                                        <property name="fontVariant">normal</property>
+                                        <property name="color">black</property>
+                                        <property name="textLineThrough">none</property>
+                                        <property name="textOverline">none</property>
+                                        <property name="textUnderline">none</property>
+                                        <property name="borderBottomColor">black</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderBottomWidth">medium</property>
+                                        <property name="borderLeftColor">black</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderLeftWidth">medium</property>
+                                        <property name="borderRightColor">black</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderRightWidth">medium</property>
+                                        <property name="borderTopColor">black</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="borderTopWidth">medium</property>
+                                        <property name="marginTop">0pt</property>
+                                        <property name="marginLeft">0pt</property>
+                                        <property name="marginBottom">0pt</property>
+                                        <property name="marginRight">0pt</property>
+                                        <property name="paddingTop">1pt</property>
+                                        <property name="paddingLeft">1pt</property>
+                                        <property name="paddingBottom">1pt</property>
+                                        <property name="paddingRight">1pt</property>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">total_hours</property>
-                                    </data>
+                                        <property name="textIndent">0em</property>
+                                        <property name="letterSpacing">normal</property>
+                                        <property name="lineHeight">normal</property>
+                                        <property name="orphans">2</property>
+                                        <property name="textTransform">none</property>
+                                        <property name="whiteSpace">normal</property>
+                                        <property name="widows">2</property>
+                                        <property name="wordSpacing">normal</property>
+                                        <property name="display">block</property>
+                                        <property name="pageBreakAfter">auto</property>
+                                        <property name="pageBreakBefore">auto</property>
+                                        <property name="pageBreakInside">auto</property>
+                                        <property name="showIfBlank">false</property>
+                                        <property name="canShrink">false</property>
+                                        <property name="overflow">hidden</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="###0.00{RoundingMode=HALF_UP}">row["total_hours"]</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4982">
                                     <property name="backgroundAttachment">scroll</property>
@@ -5846,10 +6065,59 @@ order by ts.month_val]]></xml-property>
                                     <property name="showIfBlank">false</property>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
-                                    <data id="4983">
+                                    <text id="5196">
+                                        <property name="backgroundAttachment">scroll</property>
+                                        <property name="backgroundPositionX">0%</property>
+                                        <property name="backgroundPositionY">0%</property>
+                                        <property name="backgroundRepeat">repeat</property>
+                                        <property name="fontFamily">serif</property>
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="fontStyle">normal</property>
+                                        <property name="fontVariant">normal</property>
+                                        <property name="color">black</property>
+                                        <property name="textLineThrough">none</property>
+                                        <property name="textOverline">none</property>
+                                        <property name="textUnderline">none</property>
+                                        <property name="borderBottomColor">black</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderBottomWidth">medium</property>
+                                        <property name="borderLeftColor">black</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderLeftWidth">medium</property>
+                                        <property name="borderRightColor">black</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderRightWidth">medium</property>
+                                        <property name="borderTopColor">black</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="borderTopWidth">medium</property>
+                                        <property name="marginTop">0pt</property>
+                                        <property name="marginLeft">0pt</property>
+                                        <property name="marginBottom">0pt</property>
+                                        <property name="marginRight">0pt</property>
+                                        <property name="paddingTop">1pt</property>
+                                        <property name="paddingLeft">1pt</property>
+                                        <property name="paddingBottom">1pt</property>
+                                        <property name="paddingRight">1pt</property>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">emp_rate</property>
-                                    </data>
+                                        <property name="textIndent">0em</property>
+                                        <property name="letterSpacing">normal</property>
+                                        <property name="lineHeight">normal</property>
+                                        <property name="orphans">2</property>
+                                        <property name="textTransform">none</property>
+                                        <property name="whiteSpace">normal</property>
+                                        <property name="widows">2</property>
+                                        <property name="wordSpacing">normal</property>
+                                        <property name="display">block</property>
+                                        <property name="pageBreakAfter">auto</property>
+                                        <property name="pageBreakBefore">auto</property>
+                                        <property name="pageBreakInside">auto</property>
+                                        <property name="showIfBlank">false</property>
+                                        <property name="canShrink">false</property>
+                                        <property name="overflow">hidden</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="###0.00{RoundingMode=HALF_UP}">row["emp_rate"]</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4984">
                                     <property name="backgroundAttachment">scroll</property>
@@ -5900,10 +6168,59 @@ order by ts.month_val]]></xml-property>
                                     <property name="showIfBlank">false</property>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
-                                    <data id="4985">
+                                    <text id="5197">
+                                        <property name="backgroundAttachment">scroll</property>
+                                        <property name="backgroundPositionX">0%</property>
+                                        <property name="backgroundPositionY">0%</property>
+                                        <property name="backgroundRepeat">repeat</property>
+                                        <property name="fontFamily">serif</property>
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="fontStyle">normal</property>
+                                        <property name="fontVariant">normal</property>
+                                        <property name="color">black</property>
+                                        <property name="textLineThrough">none</property>
+                                        <property name="textOverline">none</property>
+                                        <property name="textUnderline">none</property>
+                                        <property name="borderBottomColor">black</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderBottomWidth">medium</property>
+                                        <property name="borderLeftColor">black</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderLeftWidth">medium</property>
+                                        <property name="borderRightColor">black</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderRightWidth">medium</property>
+                                        <property name="borderTopColor">black</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="borderTopWidth">medium</property>
+                                        <property name="marginTop">0pt</property>
+                                        <property name="marginLeft">0pt</property>
+                                        <property name="marginBottom">0pt</property>
+                                        <property name="marginRight">0pt</property>
+                                        <property name="paddingTop">1pt</property>
+                                        <property name="paddingLeft">1pt</property>
+                                        <property name="paddingBottom">1pt</property>
+                                        <property name="paddingRight">1pt</property>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">emp_cost</property>
-                                    </data>
+                                        <property name="textIndent">0em</property>
+                                        <property name="letterSpacing">normal</property>
+                                        <property name="lineHeight">normal</property>
+                                        <property name="orphans">2</property>
+                                        <property name="textTransform">none</property>
+                                        <property name="whiteSpace">normal</property>
+                                        <property name="widows">2</property>
+                                        <property name="wordSpacing">normal</property>
+                                        <property name="display">block</property>
+                                        <property name="pageBreakAfter">auto</property>
+                                        <property name="pageBreakBefore">auto</property>
+                                        <property name="pageBreakInside">auto</property>
+                                        <property name="showIfBlank">false</property>
+                                        <property name="canShrink">false</property>
+                                        <property name="overflow">hidden</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="###0.00{RoundingMode=HALF_UP}">row["emp_cost"]</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                             </row>
                         </detail>
@@ -6689,6 +7006,11 @@ order by ts.month_val]]></xml-property>
           <DataPoint>
             <Components>
               <Type>Orthogonal_Value</Type>
+              <FormatSpecifier xsi:type="attribute:NumberFormatSpecifier">
+                <Prefix></Prefix>
+                <Suffix></Suffix>
+                <FractionDigits>2</FractionDigits>
+              </FormatSpecifier>
             </Components>
             <Separator>, </Separator>
           </DataPoint>
@@ -6754,6 +7076,11 @@ order by ts.month_val]]></xml-property>
         </Insets>
         <Visible>true</Visible>
       </Label>
+      <FormatSpecifier xsi:type="attribute:NumberFormatSpecifier">
+        <Prefix></Prefix>
+        <Suffix></Suffix>
+        <FractionDigits>2</FractionDigits>
+      </FormatSpecifier>
       <LabelPosition>Left</LabelPosition>
       <MajorGrid>
         <LineAttributes>
@@ -8295,6 +8622,11 @@ order by ts.month_val]]></xml-property>
           <DataPoint>
             <Components>
               <Type>Orthogonal_Value</Type>
+              <FormatSpecifier xsi:type="attribute:NumberFormatSpecifier">
+                <Prefix></Prefix>
+                <Suffix></Suffix>
+                <FractionDigits>2</FractionDigits>
+              </FormatSpecifier>
             </Components>
             <Separator>, </Separator>
           </DataPoint>
@@ -8360,6 +8692,11 @@ order by ts.month_val]]></xml-property>
         </Insets>
         <Visible>true</Visible>
       </Label>
+      <FormatSpecifier xsi:type="attribute:NumberFormatSpecifier">
+        <Prefix></Prefix>
+        <Suffix></Suffix>
+        <FractionDigits>2</FractionDigits>
+      </FormatSpecifier>
       <LabelPosition>Left</LabelPosition>
       <MajorGrid>
         <LineAttributes>
@@ -9273,6 +9610,7 @@ order by ts.month_val]]></xml-property>
                 </cell>
             </row>
             <row id="5043">
+                <property name="height">0.9270833333333334in</property>
                 <cell id="5044">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
@@ -9370,7 +9708,7 @@ order by ts.month_val]]></xml-property>
                                 <property name="name">TotalPlannedHrs</property>
                                 <text-property name="displayName">TotalPlannedHrs</text-property>
                                 <property name="dataType">float</property>
-                                <property name="aggregateFunction">STDDEV</property>
+                                <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
@@ -9407,7 +9745,7 @@ order by ts.month_val]]></xml-property>
                         </column>
                         <header>
                             <row id="5048">
-                                <property name="height">0.2708333333333333in</property>
+                                <property name="height">0.3645833333333333in</property>
                                 <cell id="5049">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -10264,7 +10602,7 @@ order by ts.month_val]]></xml-property>
                                         <property name="fontWeight">normal</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###0.00{RoundingMode=HALF_UP}"><VALUE-OF>row["TotalPlannedCost"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="###0.00{RoundingMode=HALF_UP}">row["TotalPlannedCost"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
@@ -10957,6 +11295,11 @@ order by ts.month_val]]></xml-property>
           <DataPoint>
             <Components>
               <Type>Orthogonal_Value</Type>
+              <FormatSpecifier xsi:type="attribute:NumberFormatSpecifier">
+                <Prefix></Prefix>
+                <Suffix></Suffix>
+                <FractionDigits>2</FractionDigits>
+              </FormatSpecifier>
             </Components>
             <Separator>, </Separator>
           </DataPoint>
@@ -11223,6 +11566,11 @@ order by ts.month_val]]></xml-property>
           <DataPoint>
             <Components>
               <Type>Orthogonal_Value</Type>
+              <FormatSpecifier xsi:type="attribute:NumberFormatSpecifier">
+                <Prefix></Prefix>
+                <Suffix></Suffix>
+                <FractionDigits>2</FractionDigits>
+              </FormatSpecifier>
             </Components>
             <Separator>, </Separator>
           </DataPoint>
@@ -11288,6 +11636,11 @@ order by ts.month_val]]></xml-property>
         </Insets>
         <Visible>true</Visible>
       </Label>
+      <FormatSpecifier xsi:type="attribute:NumberFormatSpecifier">
+        <Prefix></Prefix>
+        <Suffix></Suffix>
+        <FractionDigits>2</FractionDigits>
+      </FormatSpecifier>
       <LabelPosition>Left</LabelPosition>
       <MajorGrid>
         <LineAttributes>
@@ -12858,6 +13211,11 @@ order by ts.month_val]]></xml-property>
           <DataPoint>
             <Components>
               <Type>Orthogonal_Value</Type>
+              <FormatSpecifier xsi:type="attribute:NumberFormatSpecifier">
+                <Prefix></Prefix>
+                <Suffix></Suffix>
+                <FractionDigits>2</FractionDigits>
+              </FormatSpecifier>
             </Components>
             <Separator>, </Separator>
           </DataPoint>
@@ -13124,6 +13482,11 @@ order by ts.month_val]]></xml-property>
           <DataPoint>
             <Components>
               <Type>Orthogonal_Value</Type>
+              <FormatSpecifier xsi:type="attribute:NumberFormatSpecifier">
+                <Prefix></Prefix>
+                <Suffix></Suffix>
+                <FractionDigits>2</FractionDigits>
+              </FormatSpecifier>
             </Components>
             <Separator>, </Separator>
           </DataPoint>
@@ -13189,6 +13552,11 @@ order by ts.month_val]]></xml-property>
         </Insets>
         <Visible>true</Visible>
       </Label>
+      <FormatSpecifier xsi:type="attribute:NumberFormatSpecifier">
+        <Prefix></Prefix>
+        <Suffix></Suffix>
+        <FractionDigits>2</FractionDigits>
+      </FormatSpecifier>
       <LabelPosition>Left</LabelPosition>
       <MajorGrid>
         <LineAttributes>
@@ -14757,6 +15125,11 @@ order by ts.month_val]]></xml-property>
           <DataPoint>
             <Components>
               <Type>Orthogonal_Value</Type>
+              <FormatSpecifier xsi:type="attribute:NumberFormatSpecifier">
+                <Prefix></Prefix>
+                <Suffix></Suffix>
+                <FractionDigits>2</FractionDigits>
+              </FormatSpecifier>
             </Components>
             <Separator>, </Separator>
           </DataPoint>
@@ -14822,6 +15195,11 @@ order by ts.month_val]]></xml-property>
         </Insets>
         <Visible>true</Visible>
       </Label>
+      <FormatSpecifier xsi:type="attribute:NumberFormatSpecifier">
+        <Prefix></Prefix>
+        <Suffix></Suffix>
+        <FractionDigits>2</FractionDigits>
+      </FormatSpecifier>
       <LabelPosition>Left</LabelPosition>
       <MajorGrid>
         <LineAttributes>
@@ -16388,6 +16766,11 @@ order by ts.month_val]]></xml-property>
           <DataPoint>
             <Components>
               <Type>Orthogonal_Value</Type>
+              <FormatSpecifier xsi:type="attribute:NumberFormatSpecifier">
+                <Prefix></Prefix>
+                <Suffix></Suffix>
+                <FractionDigits>2</FractionDigits>
+              </FormatSpecifier>
             </Components>
             <Separator>, </Separator>
           </DataPoint>
@@ -16453,6 +16836,11 @@ order by ts.month_val]]></xml-property>
         </Insets>
         <Visible>true</Visible>
       </Label>
+      <FormatSpecifier xsi:type="attribute:NumberFormatSpecifier">
+        <Prefix></Prefix>
+        <Suffix></Suffix>
+        <FractionDigits>2</FractionDigits>
+      </FormatSpecifier>
       <LabelPosition>Left</LabelPosition>
       <MajorGrid>
         <LineAttributes>

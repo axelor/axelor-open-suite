@@ -227,13 +227,13 @@
 	  		]]></viewer>
 	    </field>
 		<field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement"
-			readonlyIf="statusSelect == 3 || clientPartner != null" domain=":company MEMBER OF self.companySet" onChange="action-sale-method-filter-printing-settings"/>
+			readonlyIf="statusSelect == 3 || clientPartner != null" domain=":company MEMBER OF self.companySet" onChange="action-sale-method-printing-settings-default-values"/>
 	    <field name="currency" canEdit="false"  form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect >= 3"/>
           <field name="saleOrderTypeSelect" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()" readonlyIf="statusSelect >= 3"/>
 	    <field name="versionNumber" if="__config__.app.getApp('sale').getManageSaleOrderVersion()"/>
-	    <field name="companyBankDetails" widget="SuggestBox" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-	    <field name="inAti" onChange="action-sale-order-attrs-in-ati"/>
-		<field name="interco" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+	    <field name="companyBankDetails" hidden="true" widget="SuggestBox" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+	    <field name="inAti" hidden="true" onChange="action-sale-order-attrs-in-ati"/>
+		<field name="interco" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 	  </panel>
 	  <panel name="customerInformation" title="Customer information" hideIf="company == null">
 	      <field name="clientPartner" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect == 3"/>
@@ -303,7 +303,7 @@
 
 		<panel-related field="advancePaymentList" colSpan="12" grid-view="advance-payment-grid" form-view="advance-payment-form" readonly="true" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice()" />
         <panel name="printing" title="Printing">
-			<field name="printingSettings" required="true" canEdit="false"/>
+			<field name="printingSettings" onSelect="action-sale-method-filter-printing-settings" canEdit="false"/>
             <field name="hideDiscount"/>
             <field name="specificNotes" colSpan="12" readonly="true" showIf="specificNotes"/>
         </panel>
@@ -798,6 +798,7 @@
 		<action name="action-partner-attrs-hide-contact-partner"/>
 		<action name="action-sale-order-validate-information"/>
 		<action name="action-sale-order-method-fill-company-bank-details"/>
+		<action name="action-sale-method-printing-settings-default-values"/>
 	</action-group>
 
     <action-group name="action-group-sale-saleorder-onnew">
@@ -808,6 +809,7 @@
     	<action name="action-sale-order-record-in-ati"/>
     	<action name="action-sale-order-attrs-in-ati"/>
         <action name="action-sale-order-attrs-hidden-bank-details"/>
+        <action name="action-sale-order-method-fill-company-bank-details"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorder-onload">
@@ -815,10 +817,7 @@
     	<action name="action-partner-attrs-hide-contact-partner" />
     	<action name="action-sale-oder-attrs-generate-stockmove-readonly"/>
     	<action name="action-sale-order-attrs-in-ati"/>
-		<action name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
-		<action name="action-sale-order-attrs-project"/>
-		<action name="action-sale-method-filter-printing-settings"/>
     </action-group>
 
 	<action-group name="action-sale-group-confirmed">
@@ -1159,6 +1158,10 @@
 
 	<action-method name="action-sale-method-filter-printing-settings">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="filterPrintingSettings"/>
+	</action-method>
+
+	<action-method name="action-sale-method-printing-settings-default-values">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="fillDefaultPrintingSettings"/>
 	</action-method>
 
 	<action-validate name="action-sale-order-validate-check-on-confirm">

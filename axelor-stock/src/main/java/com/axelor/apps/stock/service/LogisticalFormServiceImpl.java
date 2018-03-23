@@ -40,6 +40,7 @@ import javax.persistence.TypedQuery;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
@@ -55,7 +56,6 @@ import com.axelor.apps.stock.exception.LogisticalFormWarning;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.apps.tool.StringTool;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -171,7 +171,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     protected void checkInconsistentQties(LogisticalForm logisticalForm, List<String> errorMessageList) {
         Map<StockMoveLine, BigDecimal> spreadableQtyMap = getSpreadableQtyMap(logisticalForm);
         Map<StockMoveLine, BigDecimal> spreadQtyMap = getSpreadQtyMap(logisticalForm);
-        Locale locale = new Locale(AuthUtils.getUser().getLanguage());
+        Locale locale = new Locale(Beans.get(UserService.class).getLanguage());
         NumberFormat nf = NumberFormat.getInstance(locale);
 
         for (Entry<StockMoveLine, BigDecimal> entry : spreadableQtyMap.entrySet()) {

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="BarcodeTypeConfig" lang="java">
+  
+		<string name="name" title="Name" selection="base.barcode.select" required="true"/> 
+		<integer name="height" title="Height(px)" required="true"/>
+		<integer name="width" title="Width(px)" required="true"/> 
+
+  </entity>
+  </domain-models>

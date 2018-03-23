@@ -72,5 +72,9 @@
 	<selection name="mrp.line.proposal.ref.select" id="production.mrp.line.proposal.ref.select">
 		<option value="com.axelor.apps.production.db.ManufOrder">Manufacturing order</option>
 	</selection>
-	
+
+	<selection name="production.product.price.method.select">
+		<option value="1">Forecast</option>
+		<option value="2">Real</option>
+	</selection>
 </object-views>

@@ -40,15 +40,11 @@ import org.xml.sax.SAXException;
 
 import com.axelor.apps.tool.file.CsvTool;
 import com.google.common.base.CaseFormat;
-import com.google.inject.Inject;
 
 public class PrepareCsv {
 	
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
-	@Inject
-	CsvTool cTool;
-
 	@Test
 	public void prepareCsv(){
 		String xmlDir = System.getProperty("xmlDir");
@@ -96,7 +92,7 @@ public class PrepareCsv {
 									
 								count++;
 							}
-							cTool.csvWriter(csvDir, csvFileName, ';', StringUtils.join(fieldList,",").split(","), blankData);
+							CsvTool.csvWriter(csvDir, csvFileName, ';', StringUtils.join(fieldList,",").split(","), blankData);
 							LOG.info("CSV file prepared: "+csvFileName);
 						}
 					}

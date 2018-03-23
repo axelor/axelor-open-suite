@@ -101,7 +101,7 @@ public class InvoicePaymentCreateServiceImpl  implements  InvoicePaymentCreateSe
 		}
 		invoicePayment = this.createInvoicePayment(invoice, amountConverted, paymentDate, currency, paymentMode, typePaymentMove);
 		invoicePayment.setMove(paymentMove);
-		invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_DRAFT);
+		invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
 		PaymentVoucher paymentVoucher = paymentMove.getPaymentVoucher();
 		if (paymentVoucher != null) {
 			invoicePayment.setCompanyBankDetails(paymentVoucher.getCompanyBankDetails());

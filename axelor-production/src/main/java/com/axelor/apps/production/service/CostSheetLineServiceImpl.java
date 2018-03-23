@@ -115,7 +115,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService  {
 	
 	public CostSheetLine createConsumedProductWasteCostSheetLine(Product product, Unit unit, int bomLevel, CostSheetLine parentCostSheetLine, BigDecimal consumptionQty, BigDecimal wasteRate) throws AxelorException  {
 		
-		BigDecimal qty = consumptionQty.multiply(wasteRate).divide(new BigDecimal("100"));
+		BigDecimal qty = consumptionQty.multiply(wasteRate).divide(new BigDecimal("100"), appProductionService.getNbDecimalDigitForBomQty(), BigDecimal.ROUND_HALF_EVEN);
 		
 		BigDecimal costPrice = unitConversionService.convert(product.getUnit(), unit, product.getCostPrice().multiply(qty));
 		

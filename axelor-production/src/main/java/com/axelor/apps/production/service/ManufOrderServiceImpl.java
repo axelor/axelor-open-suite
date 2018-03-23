@@ -41,6 +41,7 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
@@ -60,6 +61,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ManufOrderServiceImpl implements  ManufOrderService  {
@@ -210,8 +212,6 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 	public void preFillOperations(ManufOrder manufOrder) throws AxelorException{
 
 		BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
-
-		manufOrder.setIsConsProOnOperation(this.isManagedConsumedProduct(billOfMaterial));
 
 		if(manufOrder.getProdProcess() == null){
 			manufOrder.setProdProcess(billOfMaterial.getProdProcess());
@@ -430,7 +430,77 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 				diffConsumeList.add(diffProdProduct);
 			}
 		}
+		//There are stock move lines with products that are not available in
+		//prod product list. It needs to appear in the prod product list
+		List<StockMoveLine> stockMoveLineMissingProductList = stockMoveLineList.stream()
+				.filter(stockMoveLine1 -> stockMoveLine1.getProduct() != null)
+				.filter(stockMoveLine1 ->
+						!prodProductList.stream().map(ProdProduct::getProduct)
+								.collect(Collectors.toList())
+								.contains(stockMoveLine1.getProduct()))
+				.collect(Collectors.toList());
+		for (StockMoveLine stockMoveLine : stockMoveLineMissingProductList) {
+		    if (stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
+				ProdProduct diffProdProduct = new ProdProduct();
+				diffProdProduct.setQty(stockMoveLine.getQty());
+				diffProdProduct.setProduct(stockMoveLine.getProduct());
+				diffProdProduct.setUnit(stockMoveLine.getUnit());
+				diffConsumeList.add(diffProdProduct);
+			}
+		}
 		return diffConsumeList;
+	}
+
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void updateConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException {
+	    this.updateDiffProdProductList(manufOrder);
+	    List<StockMoveLine> consumedStockMoveLineList = manufOrder.getConsumedStockMoveLineList();
+	    if (consumedStockMoveLineList == null) {
+	    	return;
+		}
+	    Optional<StockMove> stockMoveOpt = manufOrder.getInStockMoveList()
+				.stream().filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED).findFirst();
+	    if (!stockMoveOpt.isPresent()) {
+	        return;
+		}
+		StockMove stockMove = stockMoveOpt.get();
+
+	   updateStockMoveFromManufOrder(consumedStockMoveLineList, stockMove);
+	}
+
+	@Override
+	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	public void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) {
+	    List<StockMoveLine> producedStockMoveLineList = manufOrder.getProducedStockMoveLineList();
+	    Optional<StockMove> stockMoveOpt = manufOrder.getOutStockMoveList()
+				.stream().filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED).findFirst();
+	    if (!stockMoveOpt.isPresent()) {
+	        return;
+		}
+		StockMove stockMove = stockMoveOpt.get();
+
+	   updateStockMoveFromManufOrder(producedStockMoveLineList, stockMove);
+	}
+
+	@Override
+	public void updateStockMoveFromManufOrder(List<StockMoveLine> stockMoveLineList, StockMove stockMove) {
+		if (stockMoveLineList == null) {
+			return;
+		}
+
+		//add missing lines in stock move
+		stockMoveLineList.stream()
+				.filter(stockMoveLine -> stockMoveLine.getStockMove() == null
+						|| !stockMoveLine.getStockMove().equals(stockMove))
+				.forEach(stockMove::addStockMoveLineListItem);
+
+		//remove lines in stock move removed in manuf order
+		if (stockMove.getStockMoveLineList() != null) {
+			stockMove.getStockMoveLineList().removeIf(
+					stockMoveLine -> !stockMoveLineList.contains(stockMoveLine)
+			);
+		}
 	}
 
 	/**

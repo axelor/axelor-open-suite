@@ -36,7 +36,6 @@ import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
@@ -104,13 +103,13 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr){
 		Query q = JPA.em().createQuery("select count(*) FROM SaleOrder as self WHERE self.statusSelect = ?1 AND self.clientPartner = ?2 ");
-		q.setParameter(1, ISaleOrder.STATUS_ORDER_CONFIRMED);
+		q.setParameter(1, SaleOrderRepository.STATUS_CONFIRMED);
 		q.setParameter(2, saleOrder.getClientPartner());
 		if((long) q.getSingleResult() == 1)  {
 			saleOrder.getClientPartner().setIsCustomer(false);
 			saleOrder.getClientPartner().setIsProspect(true);
 		}
-		saleOrder.setStatusSelect(ISaleOrder.STATUS_CANCELED);
+		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_CANCELED);
 		saleOrder.setCancelReason(cancelReason);
 		if (Strings.isNullOrEmpty(cancelReasonStr)) {
 			saleOrder.setCancelReasonStr(cancelReason.getName());
@@ -136,20 +135,20 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
             }
         }
 
-        saleOrder.setStatusSelect(ISaleOrder.STATUS_FINALIZE);
-        saleOrderRepo.save(saleOrder);
+        saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINALIZED);
         if (appSaleService.getAppSale().getManageSaleOrderVersion()) {
             this.saveSaleOrderPDFAsAttachment(saleOrder);
         }
-        if (saleOrder.getVersionNumber() == 1) {
+        if (saleOrder.getVersionNumber() == 1 && sequenceService.isEmptyOrDraftSequenceNumber(saleOrder.getSaleOrderSeq())) {
             saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
         }
+        saleOrderRepo.save(saleOrder);
     }
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception  {
-		saleOrder.setStatusSelect(ISaleOrder.STATUS_ORDER_CONFIRMED);
+		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_CONFIRMED);
 		saleOrder.setConfirmationDate(appSaleService.getTodayDate());
 		saleOrder.setConfirmedByUser(this.currentUser);
 		
@@ -160,7 +159,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void finishSaleOrder(SaleOrder saleOrder) throws AxelorException {
-		saleOrder.setStatusSelect(ISaleOrder.STATUS_FINISHED);
+		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINISHED);
 
 		saleOrderRepo.save(saleOrder);
 	}
@@ -168,6 +167,12 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
 	@Override
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException  {
+		if (saleOrder.getPrintingSettings() == null) {
+			throw new AxelorException(IException.MISSING_FIELD,
+					String.format(I18n.get(IExceptionMessage.SALE_ORDER_MISSING_PRINTING_SETTINGS), saleOrder.getSaleOrderSeq()),
+					saleOrder
+			);
+		}
 		ReportFactory.createReport(IReport.SALES_ORDER, this.getFileName(saleOrder)+"-${date}")
 				.addParam("Locale", ReportSettings.getPrintingLocale(saleOrder.getClientPartner()))
 				.addParam("SaleOrderId", saleOrder.getId())

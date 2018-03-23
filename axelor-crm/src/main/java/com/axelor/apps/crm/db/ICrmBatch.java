@@ -23,6 +23,7 @@ package com.axelor.apps.crm.db;
  * @author dubaux
  * 
  */
+@Deprecated
 public interface ICrmBatch {
 
 
