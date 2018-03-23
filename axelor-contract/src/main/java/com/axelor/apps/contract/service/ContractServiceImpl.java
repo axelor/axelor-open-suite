@@ -198,17 +198,11 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 			}
 		}
 
-		if (contract.getCurrentVersion().getIsWithPriorNotice()){
-
-			if (contract.getEngagementStartDate() == null){
-			    throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.CONTRACT_MISSING_ENGAGEMENT_DATE));
-			}
-
-			if (contract.getTerminatedDate().isBefore(
-					durationService.computeDuration(contract.getCurrentVersion().getPriorNoticeDuration(), Beans.get(AppBaseService.class).getTodayDate())
-			)){
-				throw new AxelorException(IException.FUNCTIONNAL, I18n.get(IExceptionMessage.CONTRACT_PRIOR_DURATION_NOT_RESPECTED));
-			}
+		if (contract.getCurrentVersion().getIsWithPriorNotice() &&
+				contract.getTerminatedDate().isBefore(
+						durationService.computeDuration(contract.getCurrentVersion().getPriorNoticeDuration(), Beans.get(AppBaseService.class).getTodayDate())
+				)){
+			throw new AxelorException(IException.FUNCTIONNAL, I18n.get(IExceptionMessage.CONTRACT_PRIOR_DURATION_NOT_RESPECTED));
 		}
 	}
 
@@ -218,6 +212,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 		ContractVersion currentVersion = contract.getCurrentVersion();
 		
 		if (isManual) {
+			contract.setTerminationDemandDate(getTodayDate());
 			contract.setTerminatedManually(true);
 			contract.setTerminatedDate(date);
 			contract.setTerminatedBy(AuthUtils.getUser());
