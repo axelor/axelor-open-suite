@@ -17,7 +17,7 @@
 		<!-- Mapping API -->
 		<integer name="mapApiSelect" title="Mapping service provider" selection="base.app.base.map.api.select" default="1" />
 		
-		<string name="googleMapApiKey" title="Google Map Api Key"/>
+		<string name="googleMapsApiKey" title="Google Maps API key"/>
 		
 		<!-- Currency Conversion Webservice URL -->
 		<string name="currencyWsURL" title="Currency Ws URL" selection="base.app.base.currency.api.select"/>

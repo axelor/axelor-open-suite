@@ -8,7 +8,7 @@
   <entity name="CampaignAttendee" lang="java" sequential="true">
   	
   	<string name="relatedToSelect" title="Related to" selection="campaign.attendee.related.to.select"/>
-  	<integer name="relatedToSelectId"/>
+    <long name="relatedToSelectId"/>
   	<many-to-one name="campaign" ref="Campaign" />
   
   </entity>

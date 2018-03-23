@@ -19,7 +19,9 @@
 	  <boolean name="isSslConnection" title="SSL ?"/>
 	  <integer name="port" title="Port"  default="80" />
 	  <boolean name="isValid" title="Valid"/>
-	  
+
+      <finder-method name="findByUser" using="user" />
+
 	  <extra-code>
       	<![CDATA[
       		// TYPE SELECT

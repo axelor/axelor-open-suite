@@ -87,6 +87,16 @@
 		<view type="form" name="barcodeTypeConfig-form"/>
 	</action-view>
 
+    <menuitem name="admin-root-general-language"
+        parent="admin-root-general" title="Language"
+        action="admin.root.general.language"/>
+
+    <action-view name="admin.root.general.language"
+        title="Language" model="com.axelor.apps.base.db.Language" >
+        <view type="grid" name="language-grid"/>
+        <view type="form" name="language-form"/>
+    </action-view>
+
 	<menuitem name="referential-root" title="Referential" order="15" parent="admin-root"/>
 		
 	<menuitem name="referential-root-partners" parent="referential-root"

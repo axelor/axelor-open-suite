@@ -18,7 +18,7 @@
 			    <field name="nbDecimalDigitForBomQty"/>
 			</panel>
 			<panel name="manufacturingProcess" title="Manufacturing process">
-   				<field name="workCenterProduct" form-view="product-form" grid-view="product-grid" canEdit="false"/>
+   				<field name="workCenterProduct" domain="self.productTypeSelect = 'service'" form-view="product-form" grid-view="product-grid" canEdit="false"/>
 			</panel>
 			<panel name="prodProcess" title="Production process">
  				<field name="manageProdProcessVersion" widget="boolean-switch"/>

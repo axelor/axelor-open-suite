@@ -29,6 +29,7 @@ import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -65,11 +66,13 @@ public class ManufOrderWorkflowService {
 		if (CollectionUtils.isEmpty(manufOrder.getOperationOrderList())) {
 			manufOrderService.preFillOperations(manufOrder);
 		}
-		if(!manufOrder.getIsConsProOnOperation())  {
+		if(!manufOrder.getIsConsProOnOperation() && CollectionUtils.isEmpty(manufOrder.getToConsumeProdProductList()))  {
 			manufOrderService.createToConsumeProdProductList(manufOrder);
 		}
 
-		manufOrderService.createToProduceProdProductList(manufOrder);
+		if (CollectionUtils.isEmpty(manufOrder.getToProduceProdProductList())) {
+			manufOrderService.createToProduceProdProductList(manufOrder);
+		}
 
 		if (manufOrder.getPlannedStartDateT() == null) {
 			manufOrder.setPlannedStartDateT(Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
@@ -153,7 +156,6 @@ public class ManufOrderWorkflowService {
 			}
 		}
 
-		manufOrderStockMoveService.finish(manufOrder);
 		//create cost sheet
 		CostSheet costSheet = Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
 
@@ -177,6 +179,7 @@ public class ManufOrderWorkflowService {
 			}
 		}
 
+		manufOrderStockMoveService.finish(manufOrder);
 		manufOrder.setRealEndDateT(Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
 		manufOrder.setStatusSelect(ManufOrderRepository.STATUS_FINISHED);
 		manufOrderRepo.save(manufOrder);
@@ -197,6 +200,7 @@ public class ManufOrderWorkflowService {
 				}
 			}
 		}
+		Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
         Beans.get(ManufOrderStockMoveService.class).partialFinish(manufOrder);
     }
 
@@ -210,7 +214,16 @@ public class ManufOrderWorkflowService {
 			}
 		}
 
+
 		manufOrderStockMoveService.cancel(manufOrder);
+
+		if (manufOrder.getConsumedStockMoveLineList() != null) {
+			manufOrder.getConsumedStockMoveLineList().forEach(stockMoveLine -> stockMoveLine.setConsumedManufOrder(null));
+		}
+		if (manufOrder.getProducedStockMoveLineList() != null) {
+			manufOrder.getProducedStockMoveLineList().forEach(stockMoveLine -> stockMoveLine.setProducedManufOrder(null));
+		}
+
 		manufOrder.setStatusSelect(ManufOrderRepository.STATUS_CANCELED);
 		manufOrderRepo.save(manufOrder);
 	}

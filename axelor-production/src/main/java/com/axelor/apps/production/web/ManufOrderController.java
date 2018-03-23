@@ -22,6 +22,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.axelor.apps.production.service.CostSheetService;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +61,7 @@ public class ManufOrderController {
 	private ManufOrderRepository manufOrderRepo;
 	
 
-	public void start (ActionRequest request, ActionResponse response) throws AxelorException {
+	public void start (ActionRequest request, ActionResponse response) {
 		
 		try  {
 			Long manufOrderId = (Long)request.getContext().get("id");
@@ -325,14 +326,54 @@ public class ManufOrderController {
 		}
 	}
 
-	public void updateDiffProdProductList(ActionRequest request, ActionResponse response) {
+	/**
+     * Called from manuf order form, on produced stock move line change.
+	 * @param request
+	 * @param response
+	 */
+	public void updateProducedStockMoveFromManufOrder(ActionRequest request, ActionResponse response) {
+	    try {
+	        ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+	        manufOrder = manufOrderRepo.find(manufOrder.getId());
+	        manufOrderService.updateProducedStockMoveFromManufOrder(manufOrder);
+	        response.setReload(true);
+	    } catch (Exception e) {
+	        TraceBackService.trace(response, e);
+	    }
+	}
+
+	/**
+	 * Called from manuf order form, on consumed stock move line change.
+	 * @param request
+	 * @param response
+	 */
+	public void updateConsumedStockMoveFromManufOrder(ActionRequest request, ActionResponse response) {
 		try {
 			ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
-			manufOrderService.updateDiffProdProductList(manufOrder);
-			response.setValue("diffConsumeProdProductList", manufOrder.getDiffConsumeProdProductList());
+			manufOrder = manufOrderRepo.find(manufOrder.getId());
+			manufOrderService.updateConsumedStockMoveFromManufOrder(manufOrder);
+			response.setReload(true);
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
+	}
+
+	/**
+	 * Called from manuf order form, on clicking "compute cost price" button.
+     * Call {@link CostSheetService#computeCostPrice(ManufOrder)}.
+	 *
+	 * @param request
+	 * @param response
+	 */
+	public void computeCostPrice(ActionRequest request, ActionResponse response) {
+	    try {
+	        ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+	        manufOrder = manufOrderRepo.find(manufOrder.getId());
+	        Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
+	        response.setReload(true);
+	    } catch (Exception e) {
+	        TraceBackService.trace(response, e);
+	    }
 	}
 
 }
