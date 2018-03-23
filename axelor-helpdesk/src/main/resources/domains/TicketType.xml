@@ -9,9 +9,6 @@
 
         <string name="name" required="true"/>
 
-        <one-to-many name="ticket" ref="com.axelor.apps.helpdesk.db.Ticket"
-            title="Ticket" mappedBy="ticketType"/>
-
   </entity>
 
 </domain-models>

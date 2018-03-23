@@ -11,12 +11,20 @@
         name="ticket-type-form" width="large">
         <panel>
             <field name="name"/>
-            <field name="ticket" colSpan="12"/>
         </panel>
+
+        <panel-dashlet action="dashlet.ticket.by.ticket.type" colSpan="12"/>
 
         <panel-dashlet
             action="chart:chart.ticket.type.percentage.repartition.ticket.per.state"
             colSpan="12"/>
     </form>
+
+    <action-view name="dashlet.ticket.by.ticket.type" title="Tickets by ticket type"
+        model="com.axelor.apps.helpdesk.db.Ticket">
+        <view type="grid" name="ticket-grid"/>
+        <view type="form" name="ticket-form"/>
+        <domain>self.ticketType = :id </domain>
+    </action-view>
 
 </object-views>

@@ -320,8 +320,7 @@
 	        SELECT COUNT(self.id) * 100. / (SELECT COUNT(self2.id) FROM Ticket self2 WHERE self2.ticketType = :id) AS _percentage,
 	            CASE self.statusSelect WHEN 0 THEN 'New' WHEN 1 THEN 'In progress' WHEN 2 THEN 'Resolved' ELSE 'Closed' END AS _status
 	        FROM Ticket self
-	        LEFT JOIN self.assignedToUser AS _user
-	        WHERE self.ticketType = :id AND _user = :__user__
+	        WHERE self.ticketType = :id
 	        GROUP BY self.statusSelect
 	        ORDER BY self.statusSelect
         ]]>
