@@ -115,7 +115,7 @@ public class ContractController {
 		Contract contract = JPA.find(Contract.class, request.getContext().asType(Contract.class).getId());
 		try  {
 		    contractService.checkCanTerminateContract(contract);
-			contractService.terminateContract( contract, true, getToDay());
+			contractService.terminateContract(contract, true, contract.getTerminatedDate());
 			response.setReload(true);
 		} catch(Exception e) {
 			TraceBackService.trace(response, e);

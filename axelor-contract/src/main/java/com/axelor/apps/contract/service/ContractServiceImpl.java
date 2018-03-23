@@ -183,6 +183,10 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 		    throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.CONTRACT_MISSING_TERMINATE_DATE));
 		}
 
+		if (contract.getTerminatedDate().isBefore(contract.getCurrentVersion().getActivationDate())) {
+			throw new AxelorException(IException.FUNCTIONNAL, I18n.get(IExceptionMessage.CONTRACT_UNVALIDE_TERMINATE_DATE));
+		}
+
 		if ( contract.getCurrentVersion().getIsWithEngagement() ){
 			if (contract.getEngagementStartDate() == null){
 			    throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.CONTRACT_MISSING_ENGAGEMENT_DATE));
@@ -213,22 +217,25 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 	public void terminateContract(Contract contract, Boolean isManual, LocalDate date) throws AxelorException {
 		ContractVersion currentVersion = contract.getCurrentVersion();
 		
-		if(isManual) {
-			contract.setTerminatedManually(isManual);
+		if (isManual) {
+			contract.setTerminatedManually(true);
 			contract.setTerminatedDate(date);
 			contract.setTerminatedBy(AuthUtils.getUser());
-		}else{
-			if ( currentVersion.getIsTacitRenewal() == true && currentVersion.getDoNotRenew() == false ) {
+		} else {
+			if (currentVersion.getIsTacitRenewal() && !currentVersion.getDoNotRenew()) {
 				renewContract(contract, date);
 				return;
 			}
 		}
 
-		if (contract.getTerminatedDate().equals(date)){
+		if (contract.getTerminatedDate().isBefore(getTodayDate()) || contract.getTerminatedDate().equals(getTodayDate())){
 			versionService.terminate(currentVersion, date);
 			contract.setEndDate(date);
 			contract.setStatusSelect(CLOSED_CONTRACT);
+		} else {
+			contract.setEndDate(date);
 		}
+
 		save(contract);
 	}
 
@@ -511,6 +518,10 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 			}
 		}
 		return false;
+	}
+
+	protected LocalDate getTodayDate() {
+		return Beans.get(AppBaseService.class).getTodayDate();
 	}
 
 }
