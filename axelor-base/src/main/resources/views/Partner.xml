@@ -130,7 +130,7 @@
 					<field name="fullName" colSpan="9" showTitle="false">
 						<hilite strong="true" if="true" color="primary"/>
 						<editor x-show-titles="false">
-							<field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="4" placeholder="Partner Type"/>
+							<field name="partnerTypeSelect" showTitle="false" onChange="action-partner-partner-type-select-change,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="4" placeholder="Partner Type"/>
 							<spacer colSpan="8"/>
 							<field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
 							<field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="3"/>
@@ -323,7 +323,7 @@
 				<field name="name" css="highlight" onChange="action-partner-record-full-name"/>
 				<field name="firstName" hideIf="partnerTypeSelect != 2" css="highlight" onChange="action-partner-record-full-name"/>
 				<field name="partnerCategory" widget="SuggestBox"/>
-				<field name="partnerTypeSelect" onChange="action-partner-attrs-change-name"/>
+				<field name="partnerTypeSelect" onChange="action-partner-partner-type-select-change"/>
 				<field name="isContact" hideIf="partnerTypeSelect != 2"/>
 				<spacer/>
 				<field name="mainPartner" hideIf="!isContact" form-view="partner-form" grid-view="partner-grid"/>
@@ -664,12 +664,19 @@
 		<attribute name="readonly" for="partnerSeq" expr="__config__.app.getApp('base').getGeneratePartnerSequence()"/>
 	</action-attrs>
 
-	<action-attrs name="action-partner-attrs-change-name">
-		<attribute name="title" for="name" expr="Raison sociale" if="partnerTypeSelect != 2"/>
-		<attribute name="title" for="name" expr="Nom" if="partnerTypeSelect == 2"/>
-		<attribute name="required" for="name" expr="true"/>
-		<attribute name="value" for="firstName" expr="eval:null" if="partnerTypeSelect != 2"/>
-	</action-attrs>
+    <action-attrs name="action-partner-attrs-change-name">
+        <attribute name="title" for="name" expr="Business name" if="partnerTypeSelect == __repo__(Partner).PARTNER_TYPE_COMPANY" />
+        <attribute name="title" for="name" expr="Name" if="partnerTypeSelect == __repo__(Partner).PARTNER_TYPE_INDIVIDUAL" />
+    </action-attrs>
+
+    <action-group name="action-partner-partner-type-select-change">
+        <action name="action-partner-attrs-change-name"/>
+        <action name="action-partner-empty-first-name" if="partnerTypeSelect != __repo__(Partner).PARTNER_TYPE_INDIVIDUAL" />
+    </action-group>
+
+    <action-record name="action-partner-empty-first-name" model="com.axelor.apps.base.db.Partner">
+        <field name="firstName" expr="eval: null" />
+    </action-record>
 
 	<action-attrs name="action-partner-attrs-hide-contact-partner">
 		<attribute name="hidden" for="contactPartner" expr="#{clientPartner != null &amp;&amp; clientPartner.partnerTypeSelect == 2}" />
