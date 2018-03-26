@@ -9,7 +9,7 @@
 	</selection>
 	
 	<selection name="fleet.vehicle.cost.type.select">
-		<option value="0">Omnium</option>
+		<option value="0">Insurance</option>
 		<option value="1">Leasing</option>
 		<option value="2">Repairing</option>
 	</selection>
