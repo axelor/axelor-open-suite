@@ -16,18 +16,31 @@
    		<button name="cancel" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel" readonlyIf="statusSelect == 2"/>
 	</grid>
     
-	<form name="invoice-payment-form" title="Payment" model="com.axelor.apps.account.db.InvoicePayment" onNew="action-invoice-payment-group-new">
+    <form name="invoice-payment-form" title="Payment"
+        model="com.axelor.apps.account.db.InvoicePayment"
+        onNew="action-invoice-payment-group-new">
 		<panel name="main" readonlyIf="statusSelect != 0">
-			<field name="amount"/>
-			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
-   			<field name="paymentDate"/>
-   			<field name="invoice.dueDate" showIf="paymentDate &gt; invoice.dueDate"/>
-   			<field name="delayReason" showIf="paymentDate &gt; invoice.dueDate" readonly="false"/>
-			<field name="paymentMode" onChange="action-invoice-payment-method-fill-bank-details" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
-			<field name="companyBankDetails" onSelect="action-invoice-payment-method-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="bankDepositDate" showIf="paymentMode.typeSelect == 7"/>
-			<field name="chequeNumber" showIf="paymentMode.typeSelect == 7"/>
-			<field name="paymentMode.typeSelect" hidden="true"/>
+            <field name="amount"/>
+            <field name="currency" canEdit="false"
+                form-view="currency-form" grid-view="currency-grid"/>
+            <panel itemSpan="12">
+                <field name="paymentDate"/>
+                <field name="delayReason"
+                    showIf="paymentDate &gt; invoice.dueDate" readonly="false"/>
+            </panel>
+            <panel itemSpan="12">
+                <field name="invoice.dueDate"
+                    showIf="paymentDate &gt; invoice.dueDate"/>
+                <field name="paymentMode"
+                    onChange="action-invoice-payment-method-fill-bank-details"
+                    form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+            </panel>
+            <field name="companyBankDetails"
+                onSelect="action-invoice-payment-method-bank-details-domain"
+                form-view="bank-details-form" grid-view="bank-details-grid"/>
+            <field name="bankDepositDate" showIf="paymentMode.typeSelect == 7"/>
+            <field name="chequeNumber" showIf="paymentMode.typeSelect == 7"/>
+            <field name="paymentMode.typeSelect" hidden="true"/>
             <field name="invoice" hidden="true" />
 		</panel>
 		<panel showIf="id">
