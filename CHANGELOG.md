@@ -67,6 +67,7 @@
 - Fix multiple NPE in CRM events
 - Fix MRP calculation exception
 - Fix manufacturing order stock move generation in unusual case.
+- Fix default supplier in purchase order generation from sale order.
 
 ## [Unreleased 4.x]
 
