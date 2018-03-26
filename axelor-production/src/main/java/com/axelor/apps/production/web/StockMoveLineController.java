@@ -23,6 +23,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
@@ -42,8 +43,9 @@ public class StockMoveLineController {
      * @param response
      */
     public void setProductInfo(ActionRequest request, ActionResponse response) {
-        try {
-            StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    	StockMoveLine stockMoveLine;
+    	try {
+            stockMoveLine = request.getContext().asType(StockMoveLine.class);
             Company company;
             StockMove stockMove = stockMoveLine.getStockMove();
             if (stockMove == null) {
@@ -65,6 +67,8 @@ public class StockMoveLineController {
             Beans.get(StockMoveLineService.class).setProductInfo(stockMoveLine, company);
             response.setValues(stockMoveLine);
         } catch (Exception e) {
+            stockMoveLine = new StockMoveLine();
+            response.setValues(Mapper.toMap(stockMoveLine));
             TraceBackService.trace(response, e);
         }
     }
