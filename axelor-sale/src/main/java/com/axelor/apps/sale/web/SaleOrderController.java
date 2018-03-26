@@ -515,14 +515,12 @@ public class SaleOrderController {
 	public void fillDefaultPrintingSettings(ActionRequest request, ActionResponse response) {
 		try {
 			SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-			PrintingSettings printingSettings = saleOrder.getPrintingSettings();
-
-			List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(saleOrder.getTradingName(), saleOrder.getCompany());
-			if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
-				printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
-			}
-
-			response.setValue("printingSettings", printingSettings);
+			response.setValue("printingSettings",
+					Beans.get(TradingNameService.class).getDefaultPrintingSettings(
+							saleOrder.getTradingName(),
+							saleOrder.getCompany()
+					)
+			);
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
