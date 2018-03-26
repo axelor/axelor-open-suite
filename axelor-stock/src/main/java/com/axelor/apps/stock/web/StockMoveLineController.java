@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.stock.web;
 
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveLineService;
