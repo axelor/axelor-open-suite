@@ -17,11 +17,16 @@
  */
 package com.axelor.apps.message.web;
 
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -31,11 +36,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.util.List;
 
 @Singleton
 public class MessageController {

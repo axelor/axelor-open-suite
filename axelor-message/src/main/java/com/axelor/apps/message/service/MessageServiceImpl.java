@@ -17,6 +17,18 @@
  */
 package com.axelor.apps.message.service;
 
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Set;
+
+import javax.mail.MessagingException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
@@ -45,18 +57,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
 
 public class MessageServiceImpl implements MessageService {
     private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
