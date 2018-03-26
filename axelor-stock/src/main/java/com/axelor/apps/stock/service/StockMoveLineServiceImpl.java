@@ -621,9 +621,15 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 
 		if (product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE) && company != null
-				&& company.getStockConfig() != null && company.getStockConfig().getCustomsWeightUnit() != null) {
+				&& company != null && company.getStockConfig() != null
+				&& company.getStockConfig().getCustomsWeightUnit() != null) {
 			Unit startUnit = product.getWeightUnit();
 			Unit endUnit = company.getStockConfig().getCustomsWeightUnit();
+
+			if (startUnit == null) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MISSING_UNIT));
+			}
+
 			netWeight = Beans.get(UnitConversionService.class).convertWithProduct(startUnit, endUnit,
 					product.getNetWeight(), product);
 		}
