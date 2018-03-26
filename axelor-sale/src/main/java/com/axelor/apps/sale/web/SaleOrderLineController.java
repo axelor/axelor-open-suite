@@ -277,11 +277,20 @@ public class SaleOrderLineController {
 				if (!subLines.isEmpty()) {
 					response.setValue("subLineList", subLines);
 				}
-				response.setValue("typeSelect", 2);
+				response.setValue("typeSelect", SaleOrderLineRepository.TYPE_PACK);
 				response.setValue("qty", 0);
 			}
 
 		}
+		
+	}
+	
+	public void checkQty(ActionRequest request, ActionResponse response) {
+
+		Context context = request.getContext();
+		SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+		
+		saleOrderLineService.checkMultipleQty(saleOrderLine, response);
 		
 	}
 

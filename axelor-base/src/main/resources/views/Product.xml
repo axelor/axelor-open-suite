@@ -111,6 +111,10 @@
 			      	</panel>
 			        <field name="isPrototype" showIf="productTypeSelect =='storable'"/>
 		        	<field name="versionSelect" colSpan="12"/>
+		        	<panel title="Multiple quantities" colSpan="12">
+						<field name="allowToForceSaleQty"/>
+						<panel-related field="saleProductMultipleQtyList" grid-view="product-multiple-qty-grid" form-view="product-multiple-qty-form" colSpan="12" editable="true"/>
+					</panel>
 				</panel>
 	      		<panel name="description" title="Description" colSpan="12">
 	        		<field name="description" showTitle="false" colSpan="12" widget="html"/>
@@ -126,6 +130,10 @@
 			        <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
 			        <field name="defaultSupplierPartner" canEdit="false" showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			        <field name="supplierDeliveryTime" showIf="purchasable" colSpan="6"/>
+			        <panel title="Multiple quantities" colSpan="12">
+						<field name="allowToForcePurchaseQty"/>
+						<panel-related field="purchaseProductMultipleQtyList" grid-view="product-multiple-qty-grid" form-view="product-multiple-qty-form" colSpan="12" editable="true"/>
+					</panel>
 		      	</panel>
 	      		<panel name="costs" title="Costs" colSpan="6">
 			        <field name="costPrice" colSpan="6" readonlyIf="costTypeSelect != 1" onChange="action-product-record-compute-sale-price"/>
