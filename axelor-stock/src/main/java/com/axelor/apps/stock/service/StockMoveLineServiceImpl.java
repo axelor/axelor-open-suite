@@ -635,6 +635,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
     }
 
     public BigDecimal computeNetWeight(StockMoveLine stockMoveLine, Company company) throws AxelorException {
+
     	BigDecimal netWeight = null;
     	Product product = stockMoveLine.getProduct();
     	Unit startUnit = null;

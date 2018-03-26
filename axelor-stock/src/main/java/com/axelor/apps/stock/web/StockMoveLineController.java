@@ -53,6 +53,7 @@ public class StockMoveLineController {
 	}
 
     public void setProductInfo(ActionRequest request, ActionResponse response) {
+
     	StockMoveLine stockMoveLine;
 
     	try {
