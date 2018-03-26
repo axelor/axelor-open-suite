@@ -13,8 +13,8 @@
 		</toolbar>
 		<panel>
 			<panel title="General" colSpan="12">
-				<field name="isUnchangableContract" colSpan="3" widget="boolean-switch"/>
-				<field name="isAmendmentManagement" colSpan="3" widget="boolean-switch"/>
+				<field name="isUnchangableContract" colSpan="4" widget="boolean-switch"/>
+				<field name="isAmendmentManagement" colSpan="4" widget="boolean-switch"/>
 			</panel>
             <panel title="Advanced" colSpan="12">
 				<field name="isConfigContract" colSpan="4" widget="boolean-switch"/>

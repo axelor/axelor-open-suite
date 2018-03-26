@@ -390,22 +390,16 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 		
 		ContractVersion currentVersion = contract.getCurrentVersion();
 		ContractVersion nextVersion = Beans.get(ContractVersionRepository.class).copy(currentVersion, true);
-		
-		// Terminate currentVersion
+
 		versionService.terminate(currentVersion, date.minusDays(1));
 
-		// Archive current version
 		contract.addVersionHistory(currentVersion);
 		currentVersion.setContract(null);
 		
-		// Set new version
 		contract.setCurrentVersion(nextVersion);
 		nextVersion.setContractNext(null);
 		nextVersion.setContract(contract);
-
-		// Ongoing current version : Don't call contract ongoingCurrentVersion because
-		// in case of renewal, we don't need to inc contract version number.
-		versionService.ongoing(currentVersion, date);
+		versionService.ongoing(nextVersion, date);
 
 		contract.setLastRenewalDate(date);
 		contract.setRenewalNumber(contract.getRenewalNumber() + 1);

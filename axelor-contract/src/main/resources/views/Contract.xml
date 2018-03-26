@@ -52,7 +52,7 @@
                     <button if="__config__.app.getApp('contract').isAmendmentManagement" name="deleteNextVersionBtn" title="Delete next version" showIf="id &amp;&amp; nextVersion != null &amp;&amp; statusSelect != 3" onClick="save,action-contract-method-delete-next-version"/>
                     <button name="waitingBtn" title="Waiting" showIf="id &amp;&amp; currentVersion.statusSelect == 1" onClick="save,action-contract-method-waiting"/>
                     <button name="ongoingBtn" title="Ongoing" showIf="id &amp;&amp; currentVersion.statusSelect == 2" onClick="save,action-contract-method-ongoing"/>
-                    <button if="__config__.app.getApp('contract').isRenewalManagement" name="testBtn" title="Renew (test)" showIf="id &amp;&amp; statusSelect != 3" onClick="save,action-contract-method-renew"/>
+                    <button if="__config__.app.getApp('contract').isRenewalManagement" name="renewBtn" title="Renew" hidden="true" showIf="id &amp;&amp; statusSelect == 2 &amp;&amp; currentVersion.isTacitRenewal" onClick="save,action-contract-method-renew"/>
                 </panel>
                 <panel title="Notes" stacked="true">
                     <field name="note" showTitle="false"/>
@@ -75,7 +75,6 @@
                                 <field name="supposedEndDate" hidden="true" readonly="true" showIf="statusSelect == 3" colSpan="12"/>
                                 <field name="endDate" hidden="true" readonly="true" showIf="statusSelect == 4" colSpan="12"/>
                             </panel>
-                            <field name="doNotRenew" hidden="true" showIf="isTacitRenewal" colSpan="3"/>
                         </panel>
                         <field name="supposedActivationDate" hidden="true" showIf="statusSelect &lt;= 2" colSpan="3"/>
                         <field name="supposedEndDate" hidden="true" showIf="statusSelect &lt;= 2" colSpan="3"/>
@@ -107,18 +106,18 @@
                 <button name="invoicingBtn" title="Invoicing" showIf="id &amp;&amp; currentVersion.statusSelect == 3 &amp;&amp; $get('currentVersion.isPeriodicInvoicing') == false" onClick="save,com.axelor.apps.contract.web.ContractController:invoicing"/>
                 <panel-dashlet readonly="false" colSpan="12" height="350" action="action-contract-view-invoicing"/>
             </panel>
-            <panel if="__config__.app.getApp('contract').getIsRenewalManagement()" title="Reconductions" colSpan="12">
-                <field name="renewalNumber" hidden="true" showIf="renewalNumber > 0"/>
-                <field name="lastRenewalDate" hidden="true" showIf="renewalNumber > 0"/>
-                <panel title="Next renewal" colSpan="12">
-                    <field name="currentVersion" showTitle="false" hidden="true" showIf="currentVersion.isTacitRenewal" x-show-icons="false">
+            <panel if="__config__.app.getApp('contract').getIsRenewalManagement()" title="Reconductions" hidden="true" showIf="renewalNumber > 0 || currentVersion.isTacitRenewal" colSpan="12">
+                <field name="renewalNumber" hidden="true" showIf="renewalNumber > 0" readonly="true"/>
+                <field name="lastRenewalDate" hidden="true" showIf="renewalNumber > 0" readonly="true"/>
+                <panel title="Next renewal" colSpan="12" hidden="true" showIf="currentVersion.isTacitRenewal">
+                    <field name="currentVersion" showTitle="false" x-show-icons="false">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                             <field name="doNotRenew" colSpan="12"/>
                         </editor>
                     </field>
                 </panel>
             </panel>
-            <panel title="Termination" showIf="statusSelect != 1" colSpan="12">
+            <panel title="Termination" hidden="true" showIf="statusSelect != 1" colSpan="12">
                 <panel colSpan="12">
                     <field name="terminatedDate" readonlyIf="terminatedManually" colSpan="3"/>
                     <field name="terminatedBy" readonly="true" hideIf="!terminatedManually" colSpan="3"/>
@@ -171,7 +170,7 @@
                     <field name="currentVersion" showTitle="false" readonlyIf="currentVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                             <field name="isTacitRenewal" widget="boolean-switch"/>
-                            <field name="renewalDuration"/>
+                            <field name="renewalDuration" requiredIf="isTacitRenewal"/>
                         </editor>
                     </field>
                 </panel>

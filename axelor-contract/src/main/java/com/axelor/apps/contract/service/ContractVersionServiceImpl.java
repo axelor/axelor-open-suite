@@ -17,16 +17,21 @@
  */
 package com.axelor.apps.contract.service;
 
+import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 import java.time.LocalDate;
 
 public class ContractVersionServiceImpl extends ContractVersionRepository implements ContractVersionService {
+
+	@Inject
+	DurationService durationService;
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -46,6 +51,9 @@ public class ContractVersionServiceImpl extends ContractVersionRepository implem
 		version.setActivationDate(date);
 		version.setActivatedBy(AuthUtils.getUser());
 		version.setStatusSelect(ONGOING_VERSION);
+		if (version.getIsTacitRenewal()) {
+			version.setSupposedEndDate(durationService.computeDuration(version.getRenewalDuration(), date));
+		}
 
 		save(version);
 	}
