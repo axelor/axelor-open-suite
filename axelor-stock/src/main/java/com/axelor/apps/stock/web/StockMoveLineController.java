@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.stock.web;
 
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
@@ -53,17 +53,23 @@ public class StockMoveLineController {
 	}
 
     public void setProductInfo(ActionRequest request, ActionResponse response) {
-        try {
-			StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
-			StockMove stockMove = stockMoveLine.getStockMove();
-			if (stockMove == null) {
-				stockMove = request.getContext().getParent().asType(StockMove.class);
-			}
+
+    	StockMoveLine stockMoveLine;
+
+    	try {
+        	stockMoveLine = request.getContext().asType(StockMoveLine.class);
+            StockMove stockMove = stockMoveLine.getStockMove();
+
+            if (stockMove == null) {
+                stockMove = request.getContext().getParent().asType(StockMove.class);
+            }
 
             stockMoveLineService.setProductInfo(stockMoveLine, stockMove.getCompany());
             response.setValues(stockMoveLine);
         } catch (Exception e) {
-            TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+        	stockMoveLine = new StockMoveLine();
+            response.setValues(Mapper.toMap(stockMoveLine));
+            TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
         }
     }
 

@@ -163,9 +163,8 @@
             </field>
         </panel>
 
-        <panel-related field="stockMoveLineList" onChange="action-stock-move-method-compute,action-stock-move-line-method-change-conformity" readonlyIf="statusSelect == 3" grid-view="stock-move-line-grid" form-view="stock-move-line-form"/>
-
         <panel-tabs>
+            <panel-related height="6" field="stockMoveLineList" onChange="action-stock-move-method-compute,action-stock-move-line-method-change-conformity" readonlyIf="statusSelect == 3" grid-view="stock-move-line-grid" form-view="stock-move-line-form"/>
             <panel title="Freight Carrier" readonlyIf="statusSelect == 3 || statusSelect == 4" >
                 <field name="shipmentMode" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" />
 				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode"  form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" onChange="action-stock-move-record-freight-carrier" />
@@ -360,11 +359,11 @@
 	    <field name="isWithBackorder" expr="eval:true" />
 	    <field name="estimatedDate" expr="eval:__config__.app.getTodayDate()"/>
 	    <field name="typeSelect" expr="eval: _typeSelect"/>
-	    <field if="_typeSelect == '3'" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.defaultStockLocation"/>
-		<field if="_typeSelect == '3'" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierVirtualStockLocation"/>
-		<field if="_typeSelect == '2'" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.defaultStockLocation"/>
-		<field if="_typeSelect == '2'" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.customerVirtualStockLocation"/>
-		<field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings" if="__user__.activeCompany != null"/>
+	    <field if="_typeSelect == __repo__(StockMove).TYPE_INCOMING" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.defaultStockLocation"/>
+	    <field if="_typeSelect == __repo__(StockMove).TYPE_INCOMING" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierVirtualStockLocation"/>
+	    <field if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.defaultStockLocation"/>
+	    <field if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.customerVirtualStockLocation"/>
+	    <field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings" if="__user__.activeCompany != null"/>
 	</action-record>
 
 	<action-record name="action-stock-move-record-auto-mail" model="com.axelor.apps.stock.db.StockMove">
@@ -387,10 +386,10 @@
 	</action-record>
 	
 	<action-record name="action-stock-move-set-default-stock-locations" model="com.axelor.apps.stock.db.StockMove">
-	    <field if="typeSelect == 2" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.defaultStockLocation"/>
-  		<field if="typeSelect == 2" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.customerVirtualStockLocation"/>
-  		<field if="typeSelect == 3" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.defaultStockLocation"/>
-  		<field if="typeSelect == 3" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.supplierVirtualStockLocation"/>
+	    <field if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.defaultStockLocation"/>
+	    <field if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.customerVirtualStockLocation"/>
+	    <field if="_typeSelect == __repo__(StockMove).TYPE_INCOMING" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.defaultStockLocation"/>
+	    <field if="_typeSelect == __repo__(StockMove).TYPE_INCOMING" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.supplierVirtualStockLocation"/>
 	</action-record>
 	
 	<action-record name="action-stock-move-record-partner-delivery-informations" model="com.axelor.apps.stock.db.StockMove">
