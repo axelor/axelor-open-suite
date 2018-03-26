@@ -351,15 +351,17 @@ public class PurchaseOrderController {
 	 * @param response
 	 */
 	public void fillDefaultPrintingSettings(ActionRequest request, ActionResponse response) {
-		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-		PrintingSettings printingSettings = purchaseOrder.getPrintingSettings();
-
-		List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(purchaseOrder.getTradingName(), purchaseOrder.getCompany());
-		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
-			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
+		try {
+			PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+			response.setValue("printingSettings",
+					Beans.get(TradingNameService.class).getDefaultPrintingSettings(
+							purchaseOrder.getTradingName(),
+							purchaseOrder.getCompany()
+					)
+			);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
 		}
-
-		response.setValue("printingSettings", printingSettings);
 	}
 
 	/**

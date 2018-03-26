@@ -67,8 +67,8 @@
       		</panel-related>
     			<panel-related field="vehicleServiceLogList" title="Vehicle service" colSpan="12">
               <field name="date" />
-            	<field name="purchasePartner	"/>
-              <field name="invocieRef" />
+                <field name="purchasePartner"/>
+              <field name="invoiceRef"/>
               <field name="vendorPartner" />
       		</panel-related>
       		<panel-related field="vehicleContractList" title="Vehicle Contract" colSpan="12">

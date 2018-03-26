@@ -25,4 +25,11 @@ import java.util.List;
 
 public interface TradingNameService {
     List<PrintingSettings> getPrintingSettingsList(TradingName tradingName, Company company);
+
+    /**
+     * @param tradingName
+     * @param company
+     * @return the default printing settings for the given trading name and company.
+     */
+    PrintingSettings getDefaultPrintingSettings(TradingName tradingName, Company company);
 }

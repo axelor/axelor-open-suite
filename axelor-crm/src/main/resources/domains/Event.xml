@@ -38,6 +38,9 @@
   	<boolean name="isRecurrent" title="Recurrent"/>
   	<many-to-one name="parentEvent" ref="com.axelor.apps.crm.db.Event"/>
   	
+    <integer name="prioritySelect" title="Priority"
+        selection="crm.event.priority.select" default="2"/>
+
   	<many-to-one name="recurrenceConfiguration" ref="com.axelor.apps.crm.db.RecurrenceConfiguration"/>
 	
   	<extra-code>
