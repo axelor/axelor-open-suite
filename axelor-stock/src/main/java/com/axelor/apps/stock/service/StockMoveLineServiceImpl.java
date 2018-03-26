@@ -628,6 +628,10 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	                && company.getStockConfig().getCustomsWeightUnit() != null) {
 	            Unit startUnit = product.getWeightUnit();
 	            Unit endUnit = company.getStockConfig().getCustomsWeightUnit();
+
+	            if(startUnit == null) {
+	            	throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MISSING_UNIT));
+	            }
 	            netWeight = Beans.get(UnitConversionService.class).convertWithProduct(startUnit, endUnit,
 	                    product.getNetWeight(), product);
 	        }

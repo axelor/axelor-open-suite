@@ -50,7 +50,7 @@ public interface IExceptionMessage {
 	 */
 
 	static final String UNIT_CONVERSION_1 = /*$$(*/ "Please configure unit conversion from '%s' to '%s'." /*)*/ ;
-	static final String UNIT_CONVERSION_2 = /*$$(*/ "Please configure weight units for this product packaging." /*)*/ ;
+	static final String UNIT_CONVERSION_2 = /*$$(*/ "Please configure units." /*)*/ ;
 
 	static final String CURRENCY_CONVERSION_1 = /*$$(*/ "WARNING : Please close the current conversion period before creating new one" /*)*/ ;
 	static final String CURRENCY_CONVERSION_2 = /*$$(*/ "WARNING : To Date must be after or equals to From Date" /*)*/ ;
