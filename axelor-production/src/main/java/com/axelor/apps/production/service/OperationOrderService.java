@@ -79,5 +79,15 @@ public interface OperationOrderService {
 	 * @throws AxelorException
 	 */
 	List<ProdProduct> createDiffProdProductList(OperationOrder operationOrder, List<ProdProduct> prodProductList, List<StockMoveLine> stockMoveLineList) throws AxelorException;
+
+
+	/**
+	 * On changing {@link OperationOrder#consumedStockMoveLineList},
+	 * we update {@link OperationOrder#diffConsumeProdProductList}, and also
+	 * the stock move.
+	 *
+	 * @param operationOrder
+	 */
+	void updateConsumedStockMoveFromOperationOrder(OperationOrder operationOrder) throws AxelorException;
 }
 

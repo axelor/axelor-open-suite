@@ -133,16 +133,14 @@ public class OperationOrderStockMoveService {
 		List<StockMove> stockMoveList = operationOrder.getInStockMoveList();
 
 		if(stockMoveList != null) {
-			List<StockMove> stockMoveToRealizeList = stockMoveList
-					.stream()
-					.filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
-							&& stockMove.getStockMoveLineList() != null)
-					.collect(Collectors.toList());
-            for (StockMove stockMove : stockMoveToRealizeList) {
-				stockMoveService.realize(stockMove);
+			//clear empty stock move
+			stockMoveList.removeIf(stockMove ->
+					CollectionUtils.isEmpty(stockMove.getStockMoveLineList()));
+
+			for (StockMove stockMove : stockMoveList) {
+				Beans.get(ManufOrderStockMoveService.class).finishStockMove(stockMove);
 			}
 		}
-
 	}
 
 	/**

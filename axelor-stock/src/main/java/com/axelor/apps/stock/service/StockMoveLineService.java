@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.stock.db.LogisticalForm;
@@ -92,7 +93,7 @@ public interface StockMoveLineService {
 			LocalDate lastFutureStockMoveDate, boolean realQty) throws AxelorException;
 
 
-	public void updateLocations(StockLocation fromStockLocation, StockLocation toStockLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
+	public void updateLocations(StockMoveLine stockMoveLine, StockLocation fromStockLocation, StockLocation toStockLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
 			lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException;
 
 	public void updateAveragePriceLocationLine(StockLocation stockLocation, StockMoveLine stockMoveLine, int toStatus);
@@ -167,21 +168,13 @@ public interface StockMoveLineService {
 	 */
 	BigDecimal computeSpreadableQtyOverLogisticalFormLines(StockMoveLine stockMoveLine, LogisticalForm logisticalForm);
 
-	/**
-     * Set product information.
-     * 
-     * @param stockMoveLine
-     * @throws AxelorException
-     */
-    public void setProductInfo(StockMoveLine stockMoveLine) throws AxelorException;
-
     /**
      * Set product information.
      * 
      * @param stockMoveLine
-     * @param stockMove
+     * @param company
      * @throws AxelorException
      */
-    public void setProductInfo(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException;
+    public void setProductInfo(StockMoveLine stockMoveLine, Company company) throws AxelorException;
 
 }

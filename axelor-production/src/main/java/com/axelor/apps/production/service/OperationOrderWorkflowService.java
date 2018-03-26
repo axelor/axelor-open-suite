@@ -21,7 +21,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
 
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.app.production.db.IOperationOrder;
@@ -33,12 +36,16 @@ import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderDurationRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -72,7 +79,9 @@ public class OperationOrderWorkflowService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public OperationOrder plan(OperationOrder operationOrder) throws AxelorException  {
 
-		Beans.get(OperationOrderService.class).createToConsumeProdProductList(operationOrder);
+		if (CollectionUtils.isEmpty(operationOrder.getToConsumeProdProductList())) {
+			Beans.get(OperationOrderService.class).createToConsumeProdProductList(operationOrder);
+		}
 
 		operationOrder.setPlannedStartDateT(this.getLastOperationOrder(operationOrder));
 
@@ -178,12 +187,21 @@ public class OperationOrderWorkflowService {
 			startOperationOrderDuration(operationOrder);
 
 			if (operationOrder.getManufOrder() != null) {
-				int beforeOrAfterConfig = Beans
-						.get(ProductionConfigService.class)
+				int beforeOrAfterConfig = Beans.get(ProductionConfigService.class)
 						.getProductionConfig(operationOrder.getManufOrder().getCompany())
 						.getStockMoveRealizeOrderSelect();
 				if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
-					operationOrderStockMoveService.finish(operationOrder);
+					for (StockMove stockMove : operationOrder.getInStockMoveList()) {
+						Beans.get(ManufOrderStockMoveService.class).finishStockMove(stockMove);
+					}
+
+					StockMove newStockMove = operationOrderStockMoveService
+							._createToConsumeStockMove(operationOrder,
+									operationOrder.getManufOrder().getCompany()
+							);
+					newStockMove.setStockMoveLineList(new ArrayList<>());
+					Beans.get(StockMoveService.class).plan(newStockMove);
+					operationOrder.addInStockMoveListItem(newStockMove);
 				}
 			}
 			operationOrderRepo.save(operationOrder);
@@ -254,6 +272,9 @@ public class OperationOrderWorkflowService {
 
 		if (oldStatus == IOperationOrder.STATUS_IN_PROGRESS) {
 			stopOperationOrderDuration(operationOrder);
+		}
+		if (operationOrder.getConsumedStockMoveLineList() != null) {
+			operationOrder.getConsumedStockMoveLineList().forEach(stockMoveLine -> stockMoveLine.setConsumedOperationOrder(null));
 		}
 		operationOrderStockMoveService.cancel(operationOrder);
 

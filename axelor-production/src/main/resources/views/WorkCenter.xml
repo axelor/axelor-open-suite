@@ -25,7 +25,7 @@
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
 	        <panel name="costingSettings" title="Costing settings" colSpan="12">
-	          <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"/>
+	          <field name="product" domain="self.productTypeSelect = 'service'" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	          <field name="costTypeSelect" colSpan="3"/>
 	          <field name="costAmount" colSpan="3"/>
   		  	  <field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
@@ -55,7 +55,7 @@
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
 	        <panel name="costingSettings" title="Costing settings" colSpan="12">
-	          <field name="product" canEdit="false"/>
+	          <field name="product" domain="self.productTypeSelect = 'service'" canEdit="false"/>
 	          <field name="costTypeSelect" colSpan="3"/>
 	          <field name="costAmount" colSpan="3"/>
    		  	  <field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
@@ -82,7 +82,7 @@
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
 	        <panel name="costingSettings" title="Costing settings" colSpan="12">
-	          <field name="product" canEdit="false"/>
+	          <field name="product" domain="self.productTypeSelect = 'service'" canEdit="false"/>
 	          <field name="costTypeSelect" colSpan="3"/>
 	          <field name="costAmount" colSpan="3"/>
    		  	  <field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>

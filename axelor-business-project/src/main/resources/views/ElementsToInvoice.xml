@@ -2,14 +2,14 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<grid name="elements-to-invoice-grid" title="Elements To Invoice" model="com.axelor.apps.businessproject.db.ElementsToInvoice">
+	<grid name="elements-to-invoice-grid" title="Elements To Invoice" model="com.axelor.apps.businessproject.db.ElementsToInvoice" editable="true">
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="date"/>
        	<field name="product" form-view="product-form" grid-view="product-grid"/>
   		<field name="qty"/>
   		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-  		<field name="costPrice"/>
-  		<field name="salePrice"/>
+  		<field name="costPrice" x-scale="2"/>
+  		<field name="salePrice" x-scale="2"/>
         <field name="invoiced"/>
 	</grid>
 

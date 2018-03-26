@@ -434,7 +434,7 @@
 	</form>
 	
 	<action-group name="action-group-crm-convlead-partnertype-onchange">
-		<action name="action-partner-attrs-change-name"/>
+		<action name="action-partner-partner-type-select-change"/>
 	</action-group>
     
     <action-record name="action-convert-lead-wizard-record-default-partner-address" model="com.axelor.apps.base.db.Partner">

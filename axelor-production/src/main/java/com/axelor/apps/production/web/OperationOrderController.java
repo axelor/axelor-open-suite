@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
@@ -274,15 +275,20 @@ public class OperationOrderController {
 	}
 
 
-	public void updateDiffProdProductList(ActionRequest request, ActionResponse response) {
-		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+	/**
+	 * Called from operation order form, on consumed stock move line change.
+	 * @param request
+	 * @param response
+	 */
+	public void updateConsumedStockMoveFromOperationOrder(ActionRequest request, ActionResponse response) {
 		try {
-		    Beans.get(OperationOrderService.class).updateDiffProdProductList(operationOrder);
-			response.setValue("diffConsumeProdProductList", operationOrder.getDiffConsumeProdProductList());
+			OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+			operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
+			Beans.get(OperationOrderService.class).updateConsumedStockMoveFromOperationOrder(operationOrder);
+			response.setReload(true);
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}
-
 }
 

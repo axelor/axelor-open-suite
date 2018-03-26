@@ -43,6 +43,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -222,6 +223,9 @@ public class StockMoveServiceImpl implements StockMoveService {
 		stockMove.setFromStockLocation(fromStockLocation);
 		stockMove.setToStockLocation(toStockLocation);
 		stockMove.setDescription(description);
+
+		stockMove.setPrintingSettings(Beans.get(TradingNameService.class)
+				.getDefaultPrintingSettings(null, company));
 
 		stockMove.setTypeSelect(getStockMoveType(fromStockLocation, toStockLocation));
 		if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
