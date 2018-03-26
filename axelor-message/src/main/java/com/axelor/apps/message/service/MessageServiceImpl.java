@@ -290,24 +290,4 @@ public class MessageServiceImpl implements MessageService {
         return newMessage;
     }
 
-    /**
-     * Find messages by id from id list and apply given function on each message found.
-     * @param messageList The list of message ids.
-     * @param function Function to apply on each message.
-     * @return The number of errors append.
-     */
-    @Transactional
-    public static int apply(List<Integer> messageList, Function<Message, Boolean> function) {
-        Preconditions.checkNotNull(messageList, I18n.get("messageList can't be null."));
-        Preconditions.checkNotNull(function, I18n.get("function can't be null."));
-        MessageRepository messageRepository = Beans.get(MessageRepository.class);
-        int error = 0;
-        for (Integer id: messageList) {
-            Message message = messageRepository.find(Long.valueOf(id));
-            if (message == null) { error++; continue; }
-            error += (function.apply(message) ? 0 : 1);
-            JPA.clear();
-        }
-        return error;
-    }
 }
