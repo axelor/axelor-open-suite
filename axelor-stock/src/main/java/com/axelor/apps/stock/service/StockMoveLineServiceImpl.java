@@ -46,6 +46,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -185,7 +186,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	 * @throws AxelorException
 	 */
 	@Override
-	public StockMoveLine createStockMoveLine(Product product, String  productName, String description, BigDecimal quantity, BigDecimal unitPriceUntaxed, BigDecimal unitPriceTaxed, Unit unit, StockMove stockMove, TrackingNumber trackingNumber) {
+	public StockMoveLine createStockMoveLine(Product product, String  productName, String description, BigDecimal quantity, BigDecimal unitPriceUntaxed, BigDecimal unitPriceTaxed, Unit unit, StockMove stockMove, TrackingNumber trackingNumber) throws AxelorException {
 
 		StockMoveLine stockMoveLine = new StockMoveLine();
 		if (stockMove != null) {
@@ -200,6 +201,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
 		stockMoveLine.setUnit(unit);
 		stockMoveLine.setTrackingNumber(trackingNumber);
+		stockMoveLine.setNetWeight(this.computeNetWeight(stockMoveLine, stockMove));
+		stockMoveLine.setTotalNetWeight(stockMoveLine.getRealQty().multiply(stockMoveLine.getNetWeight()));
 
 		if (product != null) {
 			stockMoveLine.setProductTypeSelect(product.getProductTypeSelect());
@@ -532,8 +535,14 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 			quantity = quantity.add(stockMoveLine.getQty());
 		}
 
-		return createStockMoveLine(product, productName, description, quantity, unitPriceUntaxed, unitPriceTaxed, unit,
-				stockMove, trackingNumber);
+		StockMoveLine stockMoveLine = null;
+		try {
+			stockMoveLine = createStockMoveLine(product, productName, description, quantity, unitPriceUntaxed, unitPriceTaxed, unit,
+					stockMove, trackingNumber);
+		} catch (Exception e) {
+			TraceBackService.trace(e);
+		}
+		return stockMoveLine;
 	}
 
 	@Override
@@ -618,26 +627,37 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
             stockMoveLine.setProductModel(product.getParentProduct());
         }
 
-        BigDecimal netWeight = null;
-
-        if(product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
-
-	        Company company = stockMove.getCompany();
-
-	        if (company != null && company.getStockConfig() != null
-	                && company.getStockConfig().getCustomsWeightUnit() != null) {
-	            Unit startUnit = product.getWeightUnit();
-	            Unit endUnit = company.getStockConfig().getCustomsWeightUnit();
-
-	            if(startUnit == null) {
-	            	throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MISSING_UNIT));
-	            }
-	            netWeight = Beans.get(UnitConversionService.class).convertWithProduct(startUnit, endUnit,
-	                    product.getNetWeight(), product);
-	        }
-        }
-
+        BigDecimal netWeight = this.computeNetWeight(stockMoveLine, stockMove);
         stockMoveLine.setNetWeight(netWeight);
     }
 
+    public BigDecimal computeNetWeight(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException {
+    	BigDecimal netWeight = null;
+    	Product product = stockMoveLine.getProduct();
+    	Unit startUnit = null;
+    	Unit endUnit = null;
+
+        if(!product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
+        	return netWeight;
+        }
+
+        startUnit = product.getWeightUnit();
+        if(startUnit == null) {
+        	throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MISSING_PRODUCT_WEIGHT_UNIT), product.getName());
+        }
+
+    	if(stockMove != null && stockMove.getCompany() != null) {
+    		Company company = stockMove.getCompany();
+    		if (company.getStockConfig() != null
+                    && company.getStockConfig().getCustomsWeightUnit() != null) {
+    			endUnit = company.getStockConfig().getCustomsWeightUnit();
+    		}
+    		else {
+    			endUnit = startUnit;
+    		}
+    	}
+        netWeight = Beans.get(UnitConversionService.class).convertWithProduct(startUnit, endUnit,
+                    product.getNetWeight(), product);
+        return netWeight;
+    }
 }
