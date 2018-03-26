@@ -229,7 +229,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	@Override
 	public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws AxelorException  {
 		if (purchaseOrder.getPrintingSettings() == null) {
-			throw new AxelorException(IException.MISSING_FIELD, IExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS);
+			throw new AxelorException(IException.MISSING_FIELD, String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS), purchaseOrder.getPurchaseOrderSeq()));
 		}
 
 		String language= ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner());

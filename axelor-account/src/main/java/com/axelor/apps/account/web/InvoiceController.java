@@ -599,9 +599,8 @@ public class InvoiceController {
 											 ActionResponse response) {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		Set<Invoice> invoices = null;
 		try {
-			invoices = invoiceService
+			Set<Invoice> invoices = invoiceService
                     .getDefaultAdvancePaymentInvoice(invoice);
 			response.setValue("advancePaymentInvoiceSet", invoices);
 		} catch (Exception e) {
