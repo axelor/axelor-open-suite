@@ -96,7 +96,7 @@ public class ManufOrderStockMoveService {
 	}
 
 
-	protected StockMove _createToConsumeStockMove(ManufOrder manufOrder, Company company) throws AxelorException  {
+	public StockMove _createToConsumeStockMove(ManufOrder manufOrder, Company company) throws AxelorException  {
 
 	    StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
 	    StockConfig stockConfig = stockConfigService.getStockConfig(company);

@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -35,11 +36,14 @@ import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderDurationRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -183,12 +187,21 @@ public class OperationOrderWorkflowService {
 			startOperationOrderDuration(operationOrder);
 
 			if (operationOrder.getManufOrder() != null) {
-				int beforeOrAfterConfig = Beans
-						.get(ProductionConfigService.class)
+				int beforeOrAfterConfig = Beans.get(ProductionConfigService.class)
 						.getProductionConfig(operationOrder.getManufOrder().getCompany())
 						.getStockMoveRealizeOrderSelect();
 				if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
-					operationOrderStockMoveService.finish(operationOrder);
+					for (StockMove stockMove : operationOrder.getInStockMoveList()) {
+						Beans.get(ManufOrderStockMoveService.class).finishStockMove(stockMove);
+					}
+
+					StockMove newStockMove = operationOrderStockMoveService
+							._createToConsumeStockMove(operationOrder,
+									operationOrder.getManufOrder().getCompany()
+							);
+					newStockMove.setStockMoveLineList(new ArrayList<>());
+					Beans.get(StockMoveService.class).plan(newStockMove);
+					operationOrder.addInStockMoveListItem(newStockMove);
 				}
 			}
 			operationOrderRepo.save(operationOrder);

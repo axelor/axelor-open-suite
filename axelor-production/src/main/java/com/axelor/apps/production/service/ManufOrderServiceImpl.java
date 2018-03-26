@@ -491,8 +491,7 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 
 		//add missing lines in stock move
 		stockMoveLineList.stream()
-				.filter(stockMoveLine -> stockMoveLine.getStockMove() == null
-						|| !stockMoveLine.getStockMove().equals(stockMove))
+				.filter(stockMoveLine -> stockMoveLine.getStockMove() == null)
 				.forEach(stockMove::addStockMoveLineListItem);
 
 		//remove lines in stock move removed in manuf order
