@@ -279,15 +279,13 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public Message regenerateMessage(Message message) throws Exception {
-        Preconditions.checkNotNull(message.getTemplate(), "cannot regenerate message without template associated to message");
-        Preconditions.checkNotNull(message.getRelatedTo1Select(), "cannot regenerate message without related model");
+        Preconditions.checkNotNull(message.getTemplate(), I18n.get("Cannot regenerate message without template associated to message."));
+        Preconditions.checkNotNull(message.getRelatedTo1Select(), I18n.get("Cannot regenerate message without related model."));
         Class m = Class.forName(message.getRelatedTo1Select());
         Model model = JPA.all(m).filter("self.id = ?", message.getRelatedTo1SelectId()).fetchOne();
         Message newMessage = Beans.get(TemplateMessageService.class).generateMessage(model, message.getTemplate());
-        if (StringUtils.isNotEmpty(message.getRelatedTo2Select()) && message.getRelatedTo2SelectId() != null) {
-            newMessage.setRelatedTo2Select(message.getRelatedTo2Select());
-            newMessage.setRelatedTo2SelectId(message.getRelatedTo2SelectId());
-        }
+        newMessage.setRelatedTo2Select(message.getRelatedTo2Select());
+        newMessage.setRelatedTo2SelectId(message.getRelatedTo2SelectId());
         message.setArchived(true);
         return newMessage;
     }
