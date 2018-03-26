@@ -283,7 +283,7 @@
 "Planned",,,
 "Planned Inventories",,,
 "Planned stock move lines",,,
-"Please configure weight units for this product packaging.",,,
+"Please configure weight units for this product packaging : %s",,,
 "Please enter a valid split quantity",,,
 "Please fill in the delivery (to) address to get the delivery itinerary.",,,
 "Please fill in the source (from) location address to get the delivery itinerary.",,,

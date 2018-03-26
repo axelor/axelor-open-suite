@@ -113,7 +113,7 @@ public interface IExceptionMessage {
 	static final String STOCK_MOVE_LINE_MUST_FILL_CONFORMITY =
 			/*$$(*/ "Please fill the conformity for the product(s) : %s" /*)*/;
 	static final String STOCK_MOVE_LINE_EXPIRED_PRODUCTS = /*$$(*/ "Expired product(s): %s" /*)*/;
-	static final String MISSING_UNIT = /*$$(*/ "Please configure weight units for this product packaging." /*)*/ ;
+	static final String MISSING_PRODUCT_WEIGHT_UNIT = /*$$(*/ "Please configure weight units for this product packaging : %s" /*)*/ ;
 
 	/**
 	 * Partner Product Quality Rating Service
