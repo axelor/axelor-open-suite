@@ -8,21 +8,24 @@
 	 <chart name="chart.dashboard.opportunities.sale.stage.amount.bar" title="Opportunities By Sale Stage">
 	    <dataset type="sql">
 	    <![CDATA[
-			SELECT
-	          SUM(self.amount) AS amount,
-		      selection_item.title as _sale_stage
-		    FROM
-		        crm_opportunity self
-		    LEFT JOIN
-		        meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
-		    LEFT JOIN 
-		    	meta_select_item as selection_item ON selection_item.select_id = selection.id
-			WHERE
-				cast(selection_item.value as decimal) = self.sales_stage_select			
-		    GROUP BY
-			   selection_item.id
-			ORDER BY
-			   selection_item.id
+            SELECT
+                SUM(self.amount) AS amount,
+                coalesce(nullif(message_value, ''), message_key) as _sale_stage
+            FROM
+                crm_opportunity self
+            LEFT JOIN
+                meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
+            LEFT JOIN
+                meta_select_item as selection_item ON selection_item.select_id = selection.id
+            LEFT JOIN
+                meta_translation ON selection_item.select_id = selection.id
+            WHERE
+                cast(selection_item.value as decimal) = self.sales_stage_select
+                AND message_key = selection_item.title AND language = 'fr'
+            GROUP BY
+                selection_item.id, message_value, message_key
+            ORDER BY
+                selection_item.id
 	    ]]>
 	    </dataset>
 	    <category key="_sale_stage" type="text" title="Sales Stage"/>
@@ -34,17 +37,20 @@
 	    <![CDATA[
 			SELECT
 	          SUM(self.amount) AS amount,
-		      selection_item.title as _sale_stage
+              coalesce(nullif(message_value, ''), message_key) as _sale_stage
 		    FROM
 		        crm_opportunity self
 		    LEFT JOIN
 		        meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
 		    LEFT JOIN 
 		    	meta_select_item as selection_item ON selection_item.select_id = selection.id
+            LEFT JOIN
+                meta_translation ON selection_item.select_id = selection.id
 			WHERE
 				cast(selection_item.value as decimal) = self.sales_stage_select AND self.sales_stage_select != 10		
+		        AND message_key = selection_item.title AND language = 'fr'
 		    GROUP BY
-			   selection_item.id
+			   selection_item.id, message_value, message_key
 			ORDER BY
 			   selection_item.id
 	    ]]>
@@ -58,17 +64,20 @@
 	    <![CDATA[
 			SELECT
 	          SUM(self.amount) AS amount,
-		      selection_item.title as _sale_stage
+              coalesce(nullif(message_value, ''), message_key) as _sale_stage
 		    FROM
 		        crm_opportunity self
 		    LEFT JOIN
 		        meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
 		    LEFT JOIN 
 		    	meta_select_item as selection_item ON selection_item.select_id = selection.id
+            LEFT JOIN
+                meta_translation ON selection_item.select_id = selection.id
 			WHERE
 				cast(selection_item.value as decimal) = self.sales_stage_select	and self.sales_stage_select not in (9, 10)		
+                AND message_key = selection_item.title AND language = 'fr'
 		    GROUP BY
-			   selection_item.id
+			   selection_item.id, message_value, message_key
 			ORDER BY
 			   selection_item.id
 	    ]]>
@@ -162,9 +171,9 @@
 		<dataset type="sql">
 		    <![CDATA[
 		    SELECT
-    		    SUM(self.amount)    AS amount,
+                SUM(self.amount) AS amount,
 			    src.name    AS source,
-			    selection_item.title AS stage
+			    coalesce(nullif(message_value, ''), message_key) as stage
 			FROM
 			    crm_opportunity self
             LEFT JOIN 
@@ -173,11 +182,14 @@
 	        	meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
 	    	LEFT JOIN 
 	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
+            LEFT JOIN
+                meta_translation ON selection_item.select_id = selection.id
 			WHERE
-				selection_item.value = cast(self.sales_stage_select as char)		
+				selection_item.value = cast(self.sales_stage_select as char)
+                AND message_key = selection_item.title AND language = 'fr'
 			GROUP BY
 			    selection_item.id,
-			    src.name
+			    src.name, message_value, message_key
 			ORDER BY
 			    selection_item.id,
 			    src.name
@@ -192,7 +204,7 @@
 		    <![CDATA[
 		SELECT  
     		SUM(self.amount)    AS amount,
-    		selection_item.title AS stage,
+            coalesce(nullif(message_value, ''), message_key) as stage,
     		'Pipeline' as pipeline
 		FROM
 			crm_opportunity self
@@ -200,18 +212,21 @@
 			meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
 		JOIN 
 	 		meta_select_item as selection_item ON selection_item.select_id = selection.id
+        LEFT JOIN
+            meta_translation ON selection_item.select_id = selection.id
 		WHERE
 			selection_item.value = cast(self.sales_stage_select as char)
 		AND
     		self.expected_close_date < current_date+ interval '90 day' 
 		AND 
     		self.sales_stage_select <9
+        AND
+            message_key = selection_item.title AND language = 'fr'
                 
 		GROUP BY
-			selection_item.id, pipeline
+			selection_item.id, pipeline, message_value, message_key
 		ORDER BY
 			selection_item.id
-
 		    ]]>
 	    </dataset>
 	    <category key="pipeline" type="text" title="Pipeline"/>
@@ -258,7 +273,7 @@
 		    SELECT
 			    COUNT(self.id) AS _leads,
 			    team.name AS _team,
-			    selection_item.title as _status
+			    coalesce(nullif(message_value, ''), message_key) as _status
 			FROM
 			   crm_lead as self
 			LEFT JOIN   
@@ -267,15 +282,18 @@
 	        	meta_select as selection ON selection.name = 'crm.lead.status.select'
 	    	LEFT JOIN 
 	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
+            LEFT JOIN
+                meta_translation ON selection_item.select_id = selection.id
 			WHERE
 				selection_item.value = cast(self.status_select as char)	AND
-				self.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)		
+				self.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
+                AND message_key = selection_item.title AND language = 'fr'
 	    	GROUP BY
 			  	_status,
-			  	_team
+                _team, message_value, message_key
 			ORDER BY
 			   	_status,
-			   	_team	
+                _team
     ]]>
 	    </dataset>
 	    <category key="_team" type="text" title="Team"/>
@@ -292,7 +310,7 @@
 		    SELECT
 			    COUNT(self.id)    AS _leads,
 			    sale_man.full_name as _sale_man,
-			    selection_item.title as _status
+			    coalesce(nullif(message_value, ''), message_key) as _status
 			FROM
 			    crm_lead as self
 			LEFT JOIN
@@ -301,15 +319,18 @@
 	        	meta_select as selection ON selection.name = 'crm.lead.status.select'
 	    	LEFT JOIN 
 	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
+            LEFT JOIN
+                meta_translation ON selection_item.select_id = selection.id
 			WHERE
 				selection_item.value = cast(self.status_select as char)	and sale_man.full_name != '' AND
-				self.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)	
+				self.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
+                AND message_key = selection_item.title AND meta_translation.language = 'fr'
 	    	GROUP BY
 			  	_status,
-			  	_sale_man
+                _sale_man, message_value, message_key
 			ORDER BY
 			   	_status,
-			   	_sale_man	
+                _sale_man
 			  ]]>
 	    </dataset>
 	    <category key="_sale_man" type="text" title="Salesman"/>
@@ -323,36 +344,42 @@
 		</search-fields>
 		<dataset type="sql">
 		    <![CDATA[
-				SELECT    
-				    COUNT(_event.id) AS _total_calls,
-					_user.full_name AS _user_name,
-					_meta._select_title AS _call_type
-				FROM
-					ical_event AS _event
-				LEFT JOIN
-					auth_user AS _user
-					ON _event.user_id = _user.id
-				JOIN
-					(SELECT 
-						cast(_item.value as int) AS _select_value,
-				        _item.title AS _select_title
-					FROM	
-						meta_select AS _selection		
-					JOIN
-						meta_select_item AS _item
-						ON _selection.name = 'crm.event.call.type.select'
-						AND _item.select_id = _selection.id	
-					) AS _meta
-				ON
-					_meta._select_value = _event.call_type_select	
-				WHERE
-        			_event.type_select = 1 AND
-        			_event.start_date_time BETWEEN (cast(:fromDateT as TIMESTAMP) AT TIME ZONE 'UTC') AND (cast(:toDateT as TIMESTAMP) AT TIME ZONE 'UTC')
-				GROUP BY
-					_user_name, _call_type
-				ORDER BY
-					_user_name, _total_calls DESC	
-			  ]]>
+            SELECT
+                COUNT(_event.id) AS _total_calls,
+                _user.full_name AS _user_name,
+                _meta._select_title AS _call_type
+            FROM
+                ical_event AS _event
+            LEFT JOIN
+                auth_user AS _user
+                ON _event.user_id = _user.id
+            JOIN
+                (SELECT
+                    cast(_item.value as int) AS _select_value,
+                    coalesce(nullif(message_value, ''), message_key) AS _select_title
+                FROM
+                    meta_select AS _selection
+                JOIN
+                    meta_select_item AS _item
+                    ON _selection.name = 'crm.event.call.type.select'
+                    AND _item.select_id = _selection.id
+                LEFT JOIN
+                    meta_translation ON _item.select_id = _selection.id
+                WHERE
+                    message_key = _item.title AND meta_translation.language = 'fr'
+                GROUP BY
+                    _item.value, message_value, message_key
+                ) AS _meta
+            ON
+                _meta._select_value = _event.call_type_select
+            WHERE
+                _event.type_select = 1 AND
+                _event.start_date_time BETWEEN (cast(:fromDateT as TIMESTAMP) AT TIME ZONE 'UTC') AND (cast(:toDateT as TIMESTAMP) AT TIME ZONE 'UTC')
+            GROUP BY
+                _user_name, _call_type
+            ORDER BY
+                _user_name, _total_calls DESC
+            ]]>
 	    </dataset>
 	    <category key="_user_name" type="text" title="User"/>
 	    <series key="_total_calls" groupBy="_call_type" type="bar" title="Calls"/>
@@ -377,13 +404,19 @@
 				JOIN
 					(SELECT 
 						cast(_item.value as int) AS _select_value,
-				        _item.title AS _select_title
+				        coalesce(nullif(message_value, ''), message_key) AS _select_title
 					FROM	
 						meta_select AS _selection		
 					JOIN
 						meta_select_item AS _item
 						ON _selection.name = 'crm.event.call.type.select'
-						AND _item.select_id = _selection.id	
+						AND _item.select_id = _selection.id
+                    LEFT JOIN
+                        meta_translation ON _item.select_id = _selection.id
+                    WHERE
+                        message_key = _item.title AND meta_translation.language = 'fr'
+                    GROUP BY
+                        _item.value, message_value, message_key
 					) AS _meta
 				ON
 					_meta._select_value = _event.call_type_select	
@@ -419,13 +452,19 @@
 				JOIN
 					(SELECT 
 						cast(_item.value as int) AS _select_value,
-				        _item.title AS _select_title
+				        coalesce(nullif(message_value, ''), message_key) AS _select_title
 					FROM	
 						meta_select AS _selection		
 					JOIN
 						meta_select_item AS _item
 						ON _selection.name = 'crm.event.call.type.select'
-						AND _item.select_id = _selection.id	
+						AND _item.select_id = _selection.id
+					LEFT JOIN
+                        meta_translation ON _item.select_id = _selection.id
+                    WHERE
+                        message_key = _item.title AND meta_translation.language = 'fr'
+                    GROUP BY
+                        _item.value, message_value, message_key
 					) AS _meta
 				ON
 					_meta._select_value = _event.call_type_select
@@ -461,13 +500,19 @@
 				JOIN
 					(SELECT 
 						cast(_item.value as int) AS _select_value,
-				        _item.title AS _select_title
+				        coalesce(nullif(message_value, ''), message_key) AS _select_title
 					FROM	
 						meta_select AS _selection		
 					JOIN
 						meta_select_item AS _item
 						ON _selection.name = 'crm.event.call.type.select'
-						AND _item.select_id = _selection.id	
+						AND _item.select_id = _selection.id
+                    LEFT JOIN
+                        meta_translation ON _item.select_id = _selection.id
+                    WHERE
+                        message_key = _item.title AND meta_translation.language = 'fr'
+                    GROUP BY
+                        _item.value, message_value, message_key
 					) AS _meta
 				ON
 					_meta._select_value = _event.call_type_select
@@ -551,7 +596,7 @@
 	    SELECT
 	      COUNT(self.id)      AS   _cases,
 	      sale_man.full_name AS _sale_man,
-	      selection_item.title   AS   _status
+	      coalesce(nullif(message_value, ''), message_key) AS _status
 	    FROM
 	        ical_event as self
 	    JOIN
@@ -560,12 +605,15 @@
 	      meta_select as selection    ON selection.name = 'crm.event.status.select'
 	    JOIN 
 	      meta_select_item as selection_item  ON selection_item.select_id = selection.id
+        LEFT JOIN
+            meta_translation ON selection_item.select_id = selection.id
 	    WHERE
 	      self.status_select != 25    
-	      AND cast(selection_item.value as decimal) = self.status_select       
+	      AND cast(selection_item.value as decimal) = self.status_select
+	      AND message_key = selection_item.title AND meta_translation.language = 'fr'
 	    GROUP BY
 	        _status,
-	        _sale_man
+	        _sale_man, message_value, message_key
 	    ORDER BY
 	         _status,  
 	         _sale_man
@@ -1336,7 +1384,7 @@
 		      WHERE 
 		            selection.name = 'crm.event.type.select'
 		      GROUP BY
-		            _type    
+		            _type
 		  </dataset>
 		  <category key="_type" type="text" title="Type"/>
 		  <series key="_num_event" type="bar" title="Activities"/>
