@@ -25,6 +25,15 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
@@ -101,10 +110,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 	}
 
 	@Override
-	public BigDecimal[] computeValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException {
+	public Map<String, BigDecimal> computeValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException {
 
+		HashMap<String, BigDecimal> map = new HashMap<>();
 		if(saleOrder == null || (saleOrderLine.getProduct() == null && saleOrderLine.getProductName() == null) || saleOrderLine.getPrice() == null || saleOrderLine.getQty() == null)  {
-			return null;
+			return map;
 		}
 
 		BigDecimal exTaxTotal;
@@ -112,8 +122,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 		BigDecimal inTaxTotal;
 		BigDecimal companyInTaxTotal;
 		BigDecimal priceDiscounted = this.computeDiscount(saleOrderLine);
-
 		BigDecimal taxRate = BigDecimal.ZERO;
+
 		if(saleOrderLine.getTaxLine() != null)  {  taxRate = saleOrderLine.getTaxLine().getValue();  }
 
 		if(!saleOrder.getInAti()){
@@ -131,10 +141,15 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
 		saleOrderLine.setInTaxTotal(inTaxTotal);
 		saleOrderLine.setExTaxTotal(exTaxTotal);
+		saleOrderLine.setPriceDiscounted(priceDiscounted);
 		saleOrderLine.setCompanyInTaxTotal(companyInTaxTotal);
 		saleOrderLine.setCompanyExTaxTotal(companyExTaxTotal);
-
-		return new BigDecimal[]{exTaxTotal,inTaxTotal,companyInTaxTotal,companyExTaxTotal,priceDiscounted};
+		map.put("inTaxTotal", inTaxTotal);
+		map.put("exTaxTotal", exTaxTotal);
+		map.put("priceDiscounted", priceDiscounted);
+		map.put("companyExTaxTotal", companyExTaxTotal);
+		map.put("companyInTaxTotal", companyInTaxTotal);
+		return map;
 	}
 
 

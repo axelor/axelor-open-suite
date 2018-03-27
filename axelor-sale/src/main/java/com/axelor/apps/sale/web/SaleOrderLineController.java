@@ -46,7 +46,6 @@ public class SaleOrderLineController {
 	@Inject
 	private SaleOrderLineService saleOrderLineService;
 
-
 	public void compute(ActionRequest request, ActionResponse response) {
 
 		Context context = request.getContext();
@@ -56,18 +55,10 @@ public class SaleOrderLineController {
 		SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
 		
 		try{
-			BigDecimal[] values = saleOrderLineService.computeValues(saleOrder, saleOrderLine);
-			if (values == null) {
-				this.resetProductInformation(response);
-				return;
-			}
-			response.setValue("exTaxTotal", values[0]);
-			response.setValue("inTaxTotal", values[1]);
-			response.setValue("companyInTaxTotal", values[2]);
-			response.setValue("companyExTaxTotal", values[3]);
-			response.setValue("priceDiscounted", values[4]);
-			response.setAttr("priceDiscounted", "hidden", values[4].compareTo(saleOrderLine.getPrice()) == 0);
+			Map<String, BigDecimal> map = saleOrderLineService.computeValues(saleOrder, saleOrderLine);
 
+			response.setValues(map);
+			response.setAttr("priceDiscounted", "hidden", map.getOrDefault("priceDiscounted", BigDecimal.ZERO).compareTo(saleOrderLine.getPrice()) == 0);
 		}
 		catch(Exception e) {
 			TraceBackService.trace(response, e);

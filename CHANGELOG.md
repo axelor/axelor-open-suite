@@ -42,6 +42,7 @@
 - Generate sale order from Opportunity in edit mode directly
 - Improved architecture of Message generation from a template, send email, and manage specific email account in a module without change the original behavior in the others
 - A freight carrier is now a carrier partner
+- Add purchase order line and sale order line import processes to compute tax related fields.
 - Change the title "Delivery date" to "Estimated delivery date" in SaleOrder and PurchaseOrder
 - EndPeriod on currency conversion api
 - Allow to generate bank order file without using bic code in SEPA context.
@@ -50,7 +51,7 @@
 - Change dependency to base instead of CRM,HR and Project of helpdesk module.
 - Update the SaleOrderLine form to look like InvoiceLine form.
 - Update CRM & ICalendar events UI
-- Removed extra links from tasks to other tasks. Kept only 'Predecessors tasks'. 
+- Removed extra links from tasks to other tasks. Kept only 'Predecessors tasks'.
 - Allow to read the products from production, stock and crm modules
 - Improve manufacturing order workflow.
 - When we treat a component of a manuf order that is not loaded on MRP because there is no default BOM or because the component of manuf order is not a component of the bill of material, we add it with the level of manuf order product + 1.
@@ -58,10 +59,12 @@
 - New select on product to choose if we want real or planned price for last product price or average price.
 - Improve filter for supplier partner in sale order lines.
 
+
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
 - Fix the default amount on new invoice payment to use the amount remaining of the invoice.
 - Fix demo data en and fr on AppSuplychain to set the correct value on the field supplStockMoveMgtOnSO
+- Fix purchase order status in demo data.
 - Fix different split methods in StockMove
 - Fix event hide when we create new from calendar and set domain for my calendar and team calendar
 - Fix default logo position
@@ -71,6 +74,7 @@
 - Fix MRP calculation exception
 - Fix manufacturing order stock move generation in unusual case.
 - Fix default supplier in purchase order generation from sale order.
+
 
 ## [Unreleased 4.x]
 
